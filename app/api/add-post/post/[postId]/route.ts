@@ -1,7 +1,7 @@
 import prisma from "@/prisma/client";
 import { NextResponse } from "next/server";
 
-export const DELETE = async (request: Request, { params }) => {
+export const DELETE = async (request: Request, { params }: any) => {
   try {
     const id = params.postId;
 
