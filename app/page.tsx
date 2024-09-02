@@ -12,7 +12,7 @@ import BasicBreadcrumbs from "./_components/Breadcrumbs";
 import Header from "./_components/Header";
 import Sidebar from "./_components/Sidebar";
 import PostForm from "./_components/PostForm";
-import prisma from "@/prisma/client";
+import prisma from "@/prisma/prisma";
 import DeletePostButton from "./_components/DeletePost";
 async function getPosts() {
   const posts = await prisma.post.findMany({
