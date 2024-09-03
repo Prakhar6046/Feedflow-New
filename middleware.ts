@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getCookie } from "cookies-next";
 
 // 1. Specify protected and public routes
-const protectedRoutes = ["/"];
+const protectedRoutes = ["/", "/dashboard/organisation"];
 const publicRoutes = ["/auth/login", "/auth/signup"];
 
 export default async function middleware(req: NextRequest, res: NextResponse) {
@@ -21,8 +21,14 @@ export default async function middleware(req: NextRequest, res: NextResponse) {
   }
 
   // 6. Redirect to /dashboard if the user is authenticated
-  if (isPublicRoute && session && !req.nextUrl.pathname.startsWith("/")) {
-    return NextResponse.redirect(new URL("/", req.nextUrl));
+  if (
+    isPublicRoute &&
+    session &&
+    !req.nextUrl.pathname.startsWith("/dashboard/organisation")
+  ) {
+    return NextResponse.redirect(
+      new URL("/dashboard/organisation", req.nextUrl)
+    );
   }
 
   return NextResponse.next();

@@ -13,14 +13,15 @@ export default function Page() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await fetch("/api/auth/login", {
+    const response = await fetch("/api/auth/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ email, password }),
     });
-    // router.push("/");
+    const data = await response.json();
+    if (data.status) router.push("/dashboard/organisation");
   };
 
   return (
