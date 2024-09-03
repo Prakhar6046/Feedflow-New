@@ -1,3 +1,4 @@
+"use client";
 import {
   Box,
   List,
@@ -10,35 +11,31 @@ import {
 import BasicTable from "./_components/BasicTable";
 import BasicBreadcrumbs from "./_components/Breadcrumbs";
 import Header from "./_components/Header";
-import Sidebar from "./_components/Sidebar";
-import PostForm from "./_components/PostForm";
-import prisma from "@/prisma/prisma";
-import DeletePostButton from "./_components/DeletePost";
-async function getPosts() {
-  const posts = await prisma.post.findMany({
-    where: { published: true },
-    include: {
-      author: {
-        select: { name: true },
-      },
-    },
-  });
-  return posts;
-}
-export default async function Home() {
-  const posts = await getPosts();
 
+// async function getPosts() {
+//   const posts = await prisma.post.findMany({
+//     where: { published: true },
+//     include: {
+//       author: {
+//         select: { name: true },
+//       },
+//     },
+//   });
+//   return posts;
+// }
+
+export default function Home() {
   return (
     <>
       {/* <Sidebar /> */}
-      {posts?.map((post) => {
+      {/* {posts?.map((post) => {
         return (
           <div key={post.id}>
             {post.title}
             <DeletePostButton postId={post.id} />
           </div>
         );
-      })}
+      })} */}
       <Stack display={"flex"} direction={"row"} height={"100vh"}>
         <Box
           position={"relative"}
@@ -190,7 +187,6 @@ export default async function Home() {
           <BasicTable />
         </Box>
       </Stack>
-      <PostForm />
     </>
   );
 }

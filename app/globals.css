@@ -26,7 +26,7 @@ body {
 .edit-popover .css-uywun8-MuiPaper-root-MuiPopover-paper {
   box-shadow: 2px 2px 5px rgba(151, 151, 151, 0.3);
   width: 150px;
-  transform: translate(-90px, -35px) !important;
+  transform: translate(-120px, -35px) !important;
 }
 
 .edit-popover-content:hover {
@@ -34,8 +34,95 @@ body {
   cursor: pointer;
 }
 
-.edit-popover-content{
-    margin: 4px;
-    padding: 4px;
-    border-radius: 4px;
+.edit-popover-content {
+  margin: 4px;
+  padding: 4px;
+  border-radius: 4px;
+}
+
+.profile-dropdown
+  .css-g0cb43-MuiButtonBase-root-MuiMenuItem-root
+  .MuiListItemIcon-root {
+  min-width: 30px;
+}
+
+.profile-dropdown .css-qehfkt-MuiPaper-root-MuiPopover-paper-MuiMenu-paper {
+  border-radius: 14px;
+  top: 75px !important;
+}
+
+.profile-dropdown
+  .css-qehfkt-MuiPaper-root-MuiPopover-paper-MuiMenu-paper::before {
+  display: none;
+}
+.profile-dropdown .css-99wn1p-MuiList-root-MuiMenu-list {
+  padding: 8px;
+}
+
+.profile-dropdown .css-g0cb43-MuiButtonBase-root-MuiMenuItem-root {
+  padding-left: 8px;
+}
+
+.profile-dropdown .css-g0cb43-MuiButtonBase-root-MuiMenuItem-root:hover {
+  border-radius: 8px;
+}
+
+.profile-dropdown .css-1mi6xpr-MuiTypography-root {
+  line-height: 1;
+}
+
+.search-filter
+  .css-j882ge-MuiInputBase-root-MuiOutlinedInput-root.Mui-focused
+  .MuiOutlinedInput-notchedOutline {
+  border-color: #979797;
+  border-width: 1px;
+}
+
+.search-filter .css-1jk99ih-MuiInputBase-input-MuiOutlinedInput-input {
+  padding: 10px 14px 10px 40px;
+}
+
+.search-filter .css-18pjc51-MuiFormLabel-root-MuiInputLabel-root.Mui-focused {
+  color: #979797;
+}
+
+.search-filter .search-icon {
+  position: absolute;
+  left: 5%;
+  top: 50%;
+  transform: translate(-5%, -50%);
+}
+
+.settings
+.css-qehfkt-MuiPaper-root-MuiPopover-paper-MuiMenu-paper {
+  min-width: 300px;
+}
+
+.settings .css-qehfkt-MuiPaper-root-MuiPopover-paper-MuiMenu-paper {
+  border-radius: 14px;
+  top: 75px !important;
+}
+
+.settings
+  .css-qehfkt-MuiPaper-root-MuiPopover-paper-MuiMenu-paper::before {
+  display: none;
+}
+.settings .css-99wn1p-MuiList-root-MuiMenu-list {
+  padding: 24px 16px;
+}
+
+.settings .css-g0cb43-MuiButtonBase-root-MuiMenuItem-root {
+  padding-left: 8px;
+}
+
+.settings .css-g0cb43-MuiButtonBase-root-MuiMenuItem-root:hover {
+  border-radius: 8px;
+}
+
+.settings .css-1mi6xpr-MuiTypography-root {
+  line-height: 1;
+}
+
+.sidebar .css-193q0wg-MuiListItem-root {
+  padding: 0;
 }
