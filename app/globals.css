@@ -126,3 +126,15 @@ body {
 .sidebar .css-193q0wg-MuiListItem-root {
   padding: 0;
 }
+
+.login-inputs
+  .css-j882ge-MuiInputBase-root-MuiOutlinedInput-root.Mui-focused
+  .MuiOutlinedInput-notchedOutline {
+  border-color: #979797;
+  border-width: 1px;
+}
+
+
+.login-inputs .css-18pjc51-MuiFormLabel-root-MuiInputLabel-root.Mui-focused {
+  color: #979797;
+}
