@@ -9,6 +9,7 @@ import Grid from '@mui/material/Grid';
 import logo from "@/public/static/img/logo-bigone.jpg";
 import Image from "next/image";
 import { url } from "inspector";
+import Link from "next/link";
 
 
 export default function Page() {
@@ -88,7 +89,7 @@ export default function Page() {
           backgroundImage: "url(/static/img/login-bgImg.png)",
           backgroundRepeat: "no-repeat",
           backgroundSize: "100% 100%",
-          minHeight: "80vh",
+          minHeight: "78.7vh",
           // height: "900px",
           paddingBlock: 7
         }}>
@@ -206,25 +207,54 @@ export default function Page() {
           lg: 4,
           xs: 3
         },
-        paddingBlock: 2
-      }} display={"flex"} justifyContent={"space-between"} direction={"row"} alignItems={"center"}>
-        <Box display={"flex"} gap={2} alignItems={"center"}>
-          <Typography variant="h6" color="#fff" fontWeight={400}>Consulting Animal Nutritionists</Typography>
+        paddingBlock: 2,
+        rowGap: 2,
+        columnGap: 5
+      }} display={"flex"} justifyContent={"space-between"} direction={"row"} alignItems={"center"} flexWrap={"wrap"}>
 
-          <Box display={"flex"} alignItems={"center"} gap={1}>
-            <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 200 200" style={{ maxHeight: "40px", maxWidth: "40px" }}>
-              <g fill="#fff" fill-rule="evenodd" stroke="none" stroke-width="1">
-                <circle cx="100" cy="100" r="80" stroke="#fff" stroke-width="16" fill="transparent">
-                </circle>
-                <text x="40" y="128" font-family="'__Varela_Round_143227', '__Varela_Round_Fallback_143227', Helvetica, Arial, sans-serif" font-size="96" font-weight="400">nh</text>
-              </g>
-            </svg>
+        <Box display={"flex"} sx={{
+          rowGap: 2,
+          columnGap: 5
+        }} alignItems={"center"} flexWrap={"wrap"}>
 
-            <Typography variant="h6" color="#fff">nutritionhub</Typography>
+          <Box display={"flex"} gap={2} alignItems={"center"}>
+            <Typography variant="subtitle1" color="#fff" fontWeight={400}>Consulting Animal Nutritionists</Typography>
+
+            <Box display={"flex"} alignItems={"center"} gap={1}>
+              <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 200 200" style={{ maxHeight: "40px", maxWidth: "40px" }}>
+                <g fill="#fff" fill-rule="evenodd" stroke="none" stroke-width="1">
+                  <circle cx="100" cy="100" r="80" stroke="#fff" stroke-width="16" fill="transparent">
+                  </circle>
+                  <text x="40" y="128" font-family="'__Varela_Round_143227', '__Varela_Round_Fallback_143227', Helvetica, Arial, sans-serif" font-size="96" font-weight="400">nh</text>
+                </g>
+              </svg>
+
+              <Typography variant="subtitle1" fontWeight={600} color="#fff">nutritionhub</Typography>
+            </Box>
           </Box>
+
+          <Box display={"flex"} gap={2} alignItems={"center"}>
+
+            <Button variant="contained" sx={{
+              background: "#06A19B",
+              fontWeight: 600,
+              padding: "4px 16px",
+              width: "fit-content",
+              textTransform: "capitalize",
+              borderRadius: "4px"
+            }}>
+              Contact
+            </Button>
+
+            <Typography variant="body1" color="#fff">
+              www.nutritionhub.co.za
+            </Typography>
+          </Box>
+
         </Box>
 
-        <Typography variant="substitle1" color="#fff">All right reserved - 2024 Nutritionhub</Typography>
+
+        <Typography variant="subtitle2" color="#fff" fontWeight={400}>All right reserved - 2024 Nutritionhub</Typography>
 
 
       </Stack>
