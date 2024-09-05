@@ -93,8 +93,7 @@ body {
   transform: translate(-5%, -50%);
 }
 
-.settings
-.css-qehfkt-MuiPaper-root-MuiPopover-paper-MuiMenu-paper {
+.settings .css-qehfkt-MuiPaper-root-MuiPopover-paper-MuiMenu-paper {
   min-width: 300px;
 }
 
@@ -103,8 +102,7 @@ body {
   top: 75px !important;
 }
 
-.settings
-  .css-qehfkt-MuiPaper-root-MuiPopover-paper-MuiMenu-paper::before {
+.settings .css-qehfkt-MuiPaper-root-MuiPopover-paper-MuiMenu-paper::before {
   display: none;
 }
 .settings .css-99wn1p-MuiList-root-MuiMenu-list {
@@ -134,7 +132,20 @@ body {
   border-width: 1px;
 }
 
-
 .login-inputs .css-18pjc51-MuiFormLabel-root-MuiInputLabel-root.Mui-focused {
   color: #979797;
+}
+
+.css-18pjc51-MuiFormLabel-root-MuiInputLabel-root.Mui-focused {
+  color: #06a19b;
+}
+
+.css-1o0kqxp-MuiInputBase-root-MuiOutlinedInput-root.Mui-focused
+  .MuiOutlinedInput-notchedOutline {
+  border-color: #06a19b;
+}
+
+.sidebar .css-1edfpdg-MuiTypography-root{
+  font-size: 0.85rem;
+  font-weight: 500;
 }

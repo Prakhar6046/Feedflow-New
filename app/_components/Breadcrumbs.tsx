@@ -98,19 +98,46 @@ export default function BasicBreadcrumbs({
         <Stack
           marginBlock={2}
           display="flex"
-          direction="row"
-          justifyContent="space-between"
           gap={1}
-          alignItems="center"
+          sx={{
+            flexDirection: {
+              md: "row",
+              xs: "column"
+            },
+            justifyContent: {
+              md: "space-between",
+              xs: "flex-end"
+            },
+            alignItems: {
+              md: "center",
+              xs: "flex-start"
+            }
+          }}
         >
           <Box
             display="flex"
             justifyContent="flex-start"
             alignItems="center"
             gap={2}
+            sx={{
+              width: {
+                md: "fit-content",
+                xs: "100%"
+              },
+            }}
           >
-            <Box position="relative" className="search-filter">
-              <TextField label="Search" focused />
+            <Box position="relative" className="search-filter" sx={{
+              width: {
+                md: "fit-content",
+                xs: "100%"
+              },
+            }}>
+              <TextField label="Search" focused sx={{
+                width: {
+                  md: "fit-content",
+                  xs: "100%"
+                },
+              }} />
 
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -170,6 +197,10 @@ export default function BasicBreadcrumbs({
             justifyContent="flex-end"
             flexDirection="column"
             gap={0.5}
+            sx={{
+              width: { md: "fit-content", xs: "100%" },
+              textAlign: "end"
+            }}
           >
             <Box
               display="flex"

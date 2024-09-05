@@ -105,11 +105,15 @@ const AddOrganization: React.FC<Props> = ({ setOpen, open }) => {
           </Box>
         </Box>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <Box paddingInline={3} paddingTop={2} paddingBottom={7}>
+          <Box padding={3}>
             <TextField
               label="Name"
               variant="outlined"
               fullWidth
+              type="text"
+              sx={{
+                marginBottom: 2
+              }}
               {...register("name", { required: true })}
               error={!!errors.name}
               helperText={errors.name ? "Name is required" : ""}
@@ -118,6 +122,10 @@ const AddOrganization: React.FC<Props> = ({ setOpen, open }) => {
               label="Email"
               variant="outlined"
               fullWidth
+              type="email"
+              sx={{
+                marginBottom: 2
+              }}
               {...register("email", {
                 required: "Email is required",
                 pattern: {
@@ -130,8 +138,12 @@ const AddOrganization: React.FC<Props> = ({ setOpen, open }) => {
             />
             <TextField
               label="Contact Person"
+              type="text"
               variant="outlined"
               fullWidth
+              sx={{
+                marginBottom: 2
+              }}
               {...register("contactPerson", { required: true })}
               error={!!errors.contactPerson}
               helperText={
@@ -142,6 +154,7 @@ const AddOrganization: React.FC<Props> = ({ setOpen, open }) => {
               label="Contact Number"
               variant="outlined"
               fullWidth
+              type="text"
               {...register("contactNumber", {
                 required: "Contact Number is required",
                 pattern: {
