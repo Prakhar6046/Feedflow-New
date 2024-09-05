@@ -1,14 +1,9 @@
 import BasicTable from "@/app/_components/BasicTable";
 import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
+import { getOrganisations } from "@/app/_lib/action";
 
 export default async function Page() {
-  // const data = await fetch(`${process.env.BASE_URL}/api/organisation`, {
-  //   method: "GET",
-  //   headers: {
-  //     "Content-Type": "application/json",
-  //   },
-  // });
-  // const organisations = await data.json();
+  const organisations = await getOrganisations();
 
   return (
     <>
@@ -20,8 +15,8 @@ export default async function Page() {
           { name: "Organisation", link: "/dashboard/organisation" },
         ]}
       />
-      <BasicTable />
-      {/* <BasicTable organisations={organisations.data} /> */}
+
+      <BasicTable organisations={organisations?.data} />
     </>
   );
 }
