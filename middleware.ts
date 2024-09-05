@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getCookie } from "cookies-next";
 
 // 1. Specify protected and public routes
-const protectedRoutes = ["/", "/dashboard/organisation"];
+const protectedRoutes = ["/", "/dashboard", "/dashboard/organisation"];
 const publicRoutes = ["/auth/login", "/auth/signup"];
 
 export default async function middleware(req: NextRequest, res: NextResponse) {

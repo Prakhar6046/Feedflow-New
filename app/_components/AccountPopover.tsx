@@ -10,15 +10,26 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
+import { useRouter } from "next/navigation";
 import React from "react";
 
 const AccountPopover = () => {
+  const router = useRouter();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
   const handleClose = () => {
+    setAnchorEl(null);
+  };
+  const handleLogout = async () => {
+    const data = await fetch("/api/auth/logout", { method: "GET" });
+    const response = await data.json();
+    if (response.status) {
+      router.push("/auth/login");
+    }
+
     setAnchorEl(null);
   };
 
@@ -144,7 +155,7 @@ const AccountPopover = () => {
           Profile
         </MenuItem>
         <MenuItem
-          onClick={handleClose}
+          onClick={handleLogout}
           sx={{
             fontSize: 14,
             fontWeight: 500,
