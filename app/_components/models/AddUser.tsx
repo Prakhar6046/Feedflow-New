@@ -28,11 +28,9 @@ interface Props {
 interface FormInputs {
   name: string;
   email: string;
-  contactPerson: string;
-  contactNumber: string;
 }
 
-const AddOrganization: React.FC<Props> = ({ setOpen, open }) => {
+const AddUser: React.FC<Props> = ({ setOpen, open }) => {
   const {
     register,
     handleSubmit,
@@ -43,15 +41,14 @@ const AddOrganization: React.FC<Props> = ({ setOpen, open }) => {
   const handleClose = () => setOpen(false);
 
   const onSubmit: SubmitHandler<FormInputs> = async (data) => {
-    if (data.email) {
-      const response = await fetch("/api/add-organisation", {
+    if (data.email && data.name) {
+      const response = await fetch("/api/add-new-user", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(data),
       });
-
       const responseData = await response.json();
       if (responseData.status) {
         handleClose();
@@ -89,7 +86,7 @@ const AddOrganization: React.FC<Props> = ({ setOpen, open }) => {
             fontSize={18}
             fontWeight={600}
           >
-            Invite by email
+            Add a new user
           </Typography>
 
           <Box
@@ -128,32 +125,7 @@ const AddOrganization: React.FC<Props> = ({ setOpen, open }) => {
               error={!!errors.email}
               helperText={errors.email ? errors.email.message : ""}
             />
-            <TextField
-              label="Contact Person"
-              variant="outlined"
-              fullWidth
-              {...register("contactPerson", { required: true })}
-              error={!!errors.contactPerson}
-              helperText={
-                errors.contactPerson ? "Contact Person is required" : ""
-              }
-            />
-            <TextField
-              label="Contact Number"
-              variant="outlined"
-              fullWidth
-              {...register("contactNumber", {
-                required: "Contact Number is required",
-                pattern: {
-                  value: /^[0-9]+$/,
-                  message: "Invalid contact number",
-                },
-              })}
-              error={!!errors.contactNumber}
-              helperText={
-                errors.contactNumber ? errors.contactNumber.message : ""
-              }
-            />
+
             <Button
               type="submit"
               variant="contained"
@@ -169,7 +141,7 @@ const AddOrganization: React.FC<Props> = ({ setOpen, open }) => {
                 marginTop: 3,
               }}
             >
-              Send Invite
+              Create New User
             </Button>
           </Box>
         </form>
@@ -178,4 +150,4 @@ const AddOrganization: React.FC<Props> = ({ setOpen, open }) => {
   );
 };
 
-export default AddOrganization;
+export default AddUser;

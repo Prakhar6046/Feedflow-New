@@ -8,20 +8,23 @@ const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key";
 export const POST = async (request: Request) => {
   try {
     const { email, password } = await request.json();
-    const user = await prisma.superAdmin.findUnique({ where: { email } });
+    const user = await prisma.user.findUnique({ where: { email } });
 
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
     // Check the password
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (user.password) {
+      const isPasswordValid = await bcrypt.compare(password, user.password);
 
-    if (!isPasswordValid) {
-      return NextResponse.json(
-        { error: "Invalid credentials" },
-        { status: 401 }
-      );
+      if (!isPasswordValid) {
+        return NextResponse.json(
+          { error: "Invalid credentials" },
+          { status: 401 }
+        );
+      }
     }
+
     // Generate a JWT token
     const token = jwt.sign(
       {
