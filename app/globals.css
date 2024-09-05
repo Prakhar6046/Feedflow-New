@@ -137,15 +137,15 @@ body {
 }
 
 .css-18pjc51-MuiFormLabel-root-MuiInputLabel-root.Mui-focused {
-  color: #06a19b;
+  color: #06a19b !important;
 }
 
 .css-1o0kqxp-MuiInputBase-root-MuiOutlinedInput-root.Mui-focused
   .MuiOutlinedInput-notchedOutline {
-  border-color: #06a19b;
+  border-color: #06a19b !important;
 }
 
-.sidebar .css-1edfpdg-MuiTypography-root{
+.sidebar .css-1edfpdg-MuiTypography-root {
   font-size: 0.85rem;
   font-weight: 500;
 }
