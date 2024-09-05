@@ -9,13 +9,13 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { Button, Popover, Stack, Typography } from "@mui/material";
 interface Props {
-  organisations: {
+  organisation: {
     id: Number;
     name: String;
     contactNumber: String;
     contactPerson: String;
     userId: Number;
-  }[];
+  };
 }
 function createData(
   name: string,
@@ -35,7 +35,7 @@ const rows = [
   createData("Gingerbread", 356, 16.0, 49, 3.9),
 ];
 
-export default function BasicTable({ organisations }: Props) {
+export default function BasicTable({ organisation }: Props) {
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null
   );
@@ -137,9 +137,9 @@ export default function BasicTable({ organisations }: Props) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {organisations.map((organisation, i) => (
+          {rows.map((row) => (
             <TableRow
-              key={i}
+              key={row.name}
               sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
             >
               <TableCell
@@ -157,9 +157,9 @@ export default function BasicTable({ organisations }: Props) {
                 component="th"
                 scope="row"
               >
-                {organisation.name}
+                {row.name}
               </TableCell>
-              {/* <TableCell
+              <TableCell
                 sx={{
                   borderBottomColor: "#F5F6F8",
                   borderBottomWidth: 2,
@@ -254,7 +254,7 @@ export default function BasicTable({ organisations }: Props) {
                     <Typography variant="subtitle2">Edit</Typography>
                   </Stack>
                 </Popover>
-              </TableCell> */}
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
