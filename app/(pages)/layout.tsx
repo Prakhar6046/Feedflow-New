@@ -14,7 +14,6 @@ export default function RootLayout({
 
       <Box width={"100%"} paddingTop={4} paddingInline={5}>
         <Header />
-        <BasicBreadcrumbs />
         {children}
       </Box>
     </Stack>

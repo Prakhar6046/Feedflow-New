@@ -12,24 +12,25 @@ const transporter = nodemailer.createTransport({
 });
 export async function POST(req: NextRequest) {
   try {
-    const { email, name, contactNumber, contactPerson } = await req.json();
+    const { email, name } = await req.json();
 
     if (!email) {
       return NextResponse.json({ error: "Email is required" }, { status: 400 });
     }
-    const user = await prisma.user.create({
+
+    const checkEmailExist = await prisma.user.findUnique({
+      where: { email },
+    });
+    if (checkEmailExist) {
+      return NextResponse.json(
+        { error: "Email already used" },
+        { status: 400 }
+      );
+    }
+    const results = await prisma.user.create({
       data: {
         email,
         name,
-      },
-    });
-
-    const results = await prisma.organisation.create({
-      data: {
-        name,
-        contactNumber,
-        contactPerson,
-        userId: user.id,
       },
     });
 
@@ -39,7 +40,7 @@ export async function POST(req: NextRequest) {
       to: email, // List of recipients
       subject: "Welcome!", // Subject line
       text: "Thank you for signing up!", // Plain text body
-      html: `<h1>Welcome!</h1><p>Thank you for signing up!</p><a href="${process.env.BASE_URL}/newOrganisation/${user.id}">Click Here</a>`, // HTML body
+      html: `<h1>Welcome!</h1><p>Thank you for signing up!</p><a href="${process.env.BASE_URL}/newUser/${results.id}">Click Here</a>`, // HTML body
     };
 
     const info = await transporter.sendMail(mailOptions);
