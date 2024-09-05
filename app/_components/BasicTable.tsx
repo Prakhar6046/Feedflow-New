@@ -8,15 +8,15 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { Button, Popover, Stack, Typography } from "@mui/material";
-interface Props {
-  organisation: {
-    id: Number;
-    name: String;
-    contactNumber: String;
-    contactPerson: String;
-    userId: Number;
-  };
-}
+// interface Props {
+//   organisation: {
+//     id: Number;
+//     name: String;
+//     contactNumber: String;
+//     contactPerson: String;
+//     userId: Number;
+//   };
+// }
 function createData(
   name: string,
   calories: number,
@@ -35,7 +35,7 @@ const rows = [
   createData("Gingerbread", 356, 16.0, 49, 3.9),
 ];
 
-export default function BasicTable({ organisation }: Props) {
+export default function BasicTable() {
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null
   );
