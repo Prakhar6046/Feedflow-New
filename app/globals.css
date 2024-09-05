@@ -153,3 +153,8 @@ body {
   font-size: 0.85rem;
   font-weight: 500;
 }
+
+.nav-links {
+  text-decoration: none;
+  color: unset;
+}
