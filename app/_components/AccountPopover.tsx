@@ -49,6 +49,10 @@ const AccountPopover = () => {
 
     setAnchorEl(null);
   };
+  const handleChangePage = (route: string) => {
+    handleClose();
+    router.push(route);
+  };
   const loggedUser: any = getCookie("logged-user");
   useEffect(() => {
     if (loggedUser) {
@@ -131,7 +135,7 @@ const AccountPopover = () => {
         />
 
         <MenuItem
-          onClick={handleClose}
+          onClick={() => handleChangePage("/dashboard")}
           sx={{
             fontSize: 14,
             fontWeight: 500,

@@ -183,3 +183,7 @@ fieldset {
 .css-1d3z3hw-MuiOutlinedInput-notchedOutline {
   border-color: #979797;
 }
+
+.cursor-pointer {
+  cursor: pointer;
+}

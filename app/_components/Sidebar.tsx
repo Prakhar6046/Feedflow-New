@@ -31,6 +31,7 @@ function Sidebar() {
             justifyContent: "center",
             alignItems: "center",
           }}
+          className="cursor-pointer"
           onClick={() => router.push("/dashboard")}
         >
           <img src="/static/img/logo.svg" alt="Logo" width={78} height={63} />
