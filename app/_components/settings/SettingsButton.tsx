@@ -57,7 +57,7 @@ export default function SettingsButton() {
       </IconButtonAnimate>
 
       <MenuPopover
-        open={Boolean(open)}
+        open={open}
         anchorEl={open}
         onClose={handleClose}
         sx={{
