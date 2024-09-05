@@ -1,19 +1,15 @@
 "use client";
 
-import { signIn } from "next-auth/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Box, Button, Stack, TextField, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import logo from "@/public/static/img/logo-bigone.jpg";
 import Image from "next/image";
-import { url } from "inspector";
-import { hashPassword } from "@/app/_lib/hash";
 
 export default function Page() {
   const [email, setEmail] = useState("abhishek.choudhary@ensuesoft.com");
   const [password, setPassword] = useState("12345678");
-  const [error, setError] = useState("");
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -318,7 +314,7 @@ export default function Page() {
           </Box>
         </Box>
 
-        <Typography variant="substitle1" color="#fff">
+        <Typography variant="subtitle1" color="#fff">
           All right reserved - 2024 Nutritionhub
         </Typography>
       </Stack>

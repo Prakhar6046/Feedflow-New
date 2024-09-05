@@ -226,7 +226,7 @@ export default function BasicBreadcrumbs({
               </Box>
             </Box>
 
-            <Typography variant="body" color="#979797" fontSize={14}>
+            <Typography variant="body1" color="#979797" fontSize={14}>
               Last update less than a minutes ago
             </Typography>
           </Box>

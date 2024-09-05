@@ -29,6 +29,8 @@ model User {
   status       UserStatus     @default(ACTIVE)
   role         UserRole       @default(MEMBER)
   Organisation Organisation[]
+
+  createdAt DateTime @default(now())
 }
 
 model Organisation {

@@ -14,14 +14,17 @@ export const POST = async (request: Request) => {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
     // Check the password
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (user.password) {
+      const isPasswordValid = await bcrypt.compare(password, user.password);
 
-    if (!isPasswordValid) {
-      return NextResponse.json(
-        { error: "Invalid credentials" },
-        { status: 401 }
-      );
+      if (!isPasswordValid) {
+        return NextResponse.json(
+          { error: "Invalid credentials" },
+          { status: 401 }
+        );
+      }
     }
+
     // Generate a JWT token
     const token = jwt.sign(
       {
