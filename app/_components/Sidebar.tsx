@@ -58,6 +58,7 @@ function Sidebar() {
                   sx={{
                     display: "grid",
                     placeItems: "center",
+                    marginRight: 0
                   }}
                 >
                   <svg
@@ -100,6 +101,7 @@ function Sidebar() {
                   sx={{
                     display: "grid",
                     placeItems: "center",
+                    marginRight: 0
                   }}
                 >
                   <svg
@@ -144,6 +146,7 @@ function Sidebar() {
                   sx={{
                     display: "grid",
                     placeItems: "center",
+                    marginRight: 0
                   }}
                 >
                   <svg
@@ -163,7 +166,7 @@ function Sidebar() {
             </ListItem>
           </Link>
 
-          <ListItem
+          {/* <ListItem
             sx={{
               paddingX: 0,
             }}
@@ -180,6 +183,7 @@ function Sidebar() {
                 sx={{
                   display: "grid",
                   placeItems: "center",
+                  marginRight: 0
                 }}
               >
                 <svg
@@ -221,6 +225,7 @@ function Sidebar() {
                 sx={{
                   display: "grid",
                   placeItems: "center",
+                  marginRight: 0
                 }}
               >
                 <svg
@@ -256,6 +261,7 @@ function Sidebar() {
                 sx={{
                   display: "grid",
                   placeItems: "center",
+                  marginRight: 0
                 }}
               >
                 <svg
@@ -291,6 +297,7 @@ function Sidebar() {
                 sx={{
                   display: "grid",
                   placeItems: "center",
+                  marginRight: 0
                 }}
               >
                 <svg
@@ -307,7 +314,7 @@ function Sidebar() {
               </ListItemIcon>
               <ListItemText>lorem</ListItemText>
             </ListItemButton>
-          </ListItem>
+          </ListItem> */}
         </List>
         <Box position={"absolute"} top={90} right={-15}>
           <img

@@ -176,6 +176,10 @@ fieldset {
   color: unset;
 }
 
+.nav-links span{
+  font-size: 0.85rem;
+}
+
 /* .css-j882ge-MuiInputBase-root-MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
   border-color: #1976d2 !important;
 } */
