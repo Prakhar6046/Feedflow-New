@@ -168,9 +168,9 @@ export default function Page() {
                 <Box position="relative" className="login-inputs">
                   <form onSubmit={handleSubmit}>
                     <TextField
-                      label="Email *"
+                      label="Email"
                       type="email"
-                      focused
+                      // focused
                       sx={{
                         width: "100%",
                         marginBottom: 4,
@@ -181,9 +181,9 @@ export default function Page() {
                     />
 
                     <TextField
-                      label="Password *"
+                      label="Password"
                       type="password"
-                      focused
+                      // focused
                       sx={{
                         width: "100%",
                         marginBottom: 3,
