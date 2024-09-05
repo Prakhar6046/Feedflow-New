@@ -22,11 +22,11 @@ export default function BasicBreadcrumbs({
   const [open, setOpen] = React.useState(false);
   const pathName = usePathname();
 
-  const [age, setAge] = React.useState('');
+  // const [age, setAge] = React.useState('');
 
-  const handleChange = (event: SelectChangeEvent) => {
-    setAge(event.target.value);
-  };
+  // const handleChange = (event: SelectChangeEvent) => {
+  //   setAge(event.target.value);
+  // };
 
 
   return (
@@ -169,7 +169,7 @@ export default function BasicBreadcrumbs({
               </svg>
             </Box>
 
-            <Stack className="select-input">
+            {/* <Stack className="select-input">
               <FormControl sx={{ m: 1, minWidth: 80 }}>
                 <InputLabel id="demo-simple-select-autowidth-label">Age</InputLabel>
                 <Select
@@ -191,7 +191,7 @@ export default function BasicBreadcrumbs({
                   </MenuItem>
                 </Select>
               </FormControl>
-            </Stack>
+            </Stack> */}
 
             <Box
               fontSize={14}
@@ -297,7 +297,7 @@ export default function BasicBreadcrumbs({
               </Box>
             </Box>
 
-            <Typography variant="body" color="#979797" fontSize={14}>
+            <Typography variant="body1" color="#979797" fontSize={14}>
               Last update less than a minutes ago
             </Typography>
           </Box>
