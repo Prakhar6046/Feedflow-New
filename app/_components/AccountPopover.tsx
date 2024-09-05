@@ -10,13 +10,29 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
+import { deleteCookie, getCookie } from "cookies-next";
 import { useRouter } from "next/navigation";
-import React from "react";
-
+import React, { useEffect, useState } from "react";
+interface LoggedUser {
+  status: Boolean;
+  data: {
+    token: String;
+    user: {
+      id: Number;
+      name: String;
+      email: String;
+      password: String;
+      status: String;
+      role: String;
+      createdAt: String;
+    };
+  };
+}
 const AccountPopover = () => {
   const router = useRouter();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
+  const [loggedUserData, setLoggedUserData] = useState<LoggedUser>();
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -28,10 +44,17 @@ const AccountPopover = () => {
     const response = await data.json();
     if (response.status) {
       router.push("/auth/login");
+      deleteCookie("logged-user");
     }
 
     setAnchorEl(null);
   };
+  const loggedUser: any = getCookie("logged-user");
+  useEffect(() => {
+    if (loggedUser) {
+      setLoggedUserData(JSON.parse(loggedUser));
+    }
+  }, [loggedUser]);
 
   return (
     <React.Fragment>
@@ -93,10 +116,10 @@ const AccountPopover = () => {
       >
         <Box paddingInline={1.5}>
           <Typography variant="subtitle2" fontWeight={600}>
-            Lorem Ipsum
+            {loggedUserData ? loggedUserData?.data?.user.name : "Demo"}
           </Typography>
           <Typography variant="body2" fontSize={13} fontWeight={400}>
-            lorem@ipsum.com
+            {loggedUserData ? loggedUserData?.data?.user.email : "Demo"}
           </Typography>
         </Box>
 

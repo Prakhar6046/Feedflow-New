@@ -6,7 +6,10 @@ export default function Page() {
       <BasicBreadcrumbs
         heading={"User"}
         buttonName={"+Add User"}
-        links={[{ name: "Dashboard" }, { name: "User" }]}
+        links={[
+          { name: "Dashboard", link: "/dashboard" },
+          { name: "User", link: "/dashboard/user" },
+        ]}
       />
       user
     </>

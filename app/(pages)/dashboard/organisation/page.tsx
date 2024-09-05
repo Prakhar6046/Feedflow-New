@@ -15,7 +15,10 @@ export default async function Page() {
       <BasicBreadcrumbs
         heading={"Organization"}
         buttonName={"+Add Organization"}
-        links={[{ name: "Dashboard" }, { name: "Organisation" }]}
+        links={[
+          { name: "Dashboard", link: "/dashboard" },
+          { name: "Organisation", link: "/dashboard/organisation" },
+        ]}
       />
       <BasicTable />
       {/* <BasicTable organisations={organisations.data} /> */}
