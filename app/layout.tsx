@@ -1,6 +1,17 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import ThemeProvider from "./_components/theme";
+import { SettingsProvider } from "./contexts/SettingsContext";
+import { SettingsValueProps } from "./_components/settings/types";
+
+// Define the default settings according to SettingsValueProps
+const settings: SettingsValueProps = {
+  themeMode: "light",
+  themeLayout: "horizontal",
+  autoThemeMode: true,
+  themeStretch: false,
+};
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -16,7 +27,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <SettingsProvider defaultSettings={settings}>
+        <ThemeProvider>
+          <body className={inter.className}>{children}</body>
+        </ThemeProvider>
+      </SettingsProvider>
     </html>
   );
 }

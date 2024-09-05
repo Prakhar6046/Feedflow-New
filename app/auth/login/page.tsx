@@ -1,7 +1,6 @@
 "use client";
 
-import { signIn } from "next-auth/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Box, Button, Stack, TextField, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid";
@@ -15,7 +14,6 @@ import { hashPassword } from "@/app/_lib/hash";
 export default function Page() {
   const [email, setEmail] = useState("abhishek.choudhary@ensuesoft.com");
   const [password, setPassword] = useState("12345678");
-  const [error, setError] = useState("");
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -61,41 +59,58 @@ export default function Page() {
           </Box>
         </Box>
 
-        <Box display={"flex"} justifyContent={"center"} alignItems={"center"} sx={{
-          backgroundImage: "url(/static/img/login-bgImg.png)",
-          backgroundRepeat: "no-repeat",
-          backgroundSize: "100% 100%",
-          minHeight: "78.7vh",
-          // height: "900px",
-          paddingBlock: 7
-        }}>
-
-          <Grid container alignItems={"flex-end"} sx={{
-            justifyContent: {
-              xs: "space-between",
-            },
-            gap: {
-              md: 0,
-              xs: 3
-            }
-          }}>
-            <Grid item md={5} xs={10} bgcolor={"#0E848E"} sx={{
-              borderTopRightRadius: 100,
-              borderBottomRightRadius: 100,
-            }}>
-              <Box color={"#fff"} sx={{
-                fontSize: {
-                  xl: 30,
-                  lg: 24,
-                  md: 20
-                },
-                padding: {
-                  lg: 4,
-                  xs: 3
-                }
-              }}>
-                Aquafeed management to optimize
-                production and environmental sustainability.
+        <Box
+          display={"flex"}
+          justifyContent={"center"}
+          alignItems={"center"}
+          sx={{
+            backgroundImage: "url(/static/img/login-bgImg.png)",
+            backgroundRepeat: "no-repeat",
+            backgroundSize: "100% 100%",
+            minHeight: "78.7vh",
+            // height: "900px",
+            paddingBlock: 7,
+          }}
+        >
+          <Grid
+            container
+            alignItems={"flex-end"}
+            sx={{
+              justifyContent: {
+                xs: "space-between",
+              },
+              gap: {
+                md: 0,
+                xs: 3,
+              },
+            }}
+          >
+            <Grid
+              item
+              md={5}
+              xs={10}
+              bgcolor={"#0E848E"}
+              sx={{
+                borderTopRightRadius: 100,
+                borderBottomRightRadius: 100,
+              }}
+            >
+              <Box
+                color={"#fff"}
+                sx={{
+                  fontSize: {
+                    xl: 30,
+                    lg: 24,
+                    md: 20,
+                  },
+                  padding: {
+                    lg: 4,
+                    xs: 3,
+                  },
+                }}
+              >
+                Aquafeed management to optimize production and environmental
+                sustainability.
               </Box>
             </Grid>
 
@@ -155,7 +170,7 @@ export default function Page() {
                     <TextField
                       label="Email"
                       type="email"
-                      focused
+                      // focused
                       sx={{
                         width: "100%",
                         marginBottom: 4,
@@ -168,7 +183,7 @@ export default function Page() {
                     <TextField
                       label="Password"
                       type="password"
-                      focused
+                      // focused
                       sx={{
                         width: "100%",
                         marginBottom: 3,
@@ -249,47 +264,89 @@ export default function Page() {
         </Box>
       </Stack>
 
-      <Stack bgcolor={"#272727"} sx={{
-        paddingInline: {
-          lg: 4,
-          xs: 3
-        },
-        paddingBlock: 2,
-        rowGap: 2,
-        columnGap: 5
-      }} display={"flex"} justifyContent={"space-between"} direction={"row"} alignItems={"center"} flexWrap={"wrap"}>
-
-        <Box display={"flex"} sx={{
+      <Stack
+        bgcolor={"#272727"}
+        sx={{
+          paddingInline: {
+            lg: 4,
+            xs: 3,
+          },
+          paddingBlock: 2,
           rowGap: 2,
-          columnGap: 5
-        }} alignItems={"center"} flexWrap={"wrap"}>
-
+          columnGap: 5,
+        }}
+        display={"flex"}
+        justifyContent={"space-between"}
+        direction={"row"}
+        alignItems={"center"}
+        flexWrap={"wrap"}
+      >
+        <Box
+          display={"flex"}
+          sx={{
+            rowGap: 2,
+            columnGap: 5,
+          }}
+          alignItems={"center"}
+          flexWrap={"wrap"}
+        >
           <Box display={"flex"} gap={2} alignItems={"center"}>
-            <Typography variant="subtitle1" color="#fff" fontWeight={400}>Consulting Animal Nutritionists</Typography>
+            <Typography variant="subtitle1" color="#fff" fontWeight={400}>
+              Consulting Animal Nutritionists
+            </Typography>
 
             <Box display={"flex"} alignItems={"center"} gap={1}>
-              <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 200 200" style={{ maxHeight: "40px", maxWidth: "40px" }}>
-                <g fill="#fff" fill-rule="evenodd" stroke="none" stroke-width="1">
-                  <circle cx="100" cy="100" r="80" stroke="#fff" stroke-width="16" fill="transparent">
-                  </circle>
-                  <text x="40" y="128" font-family="'__Varela_Round_143227', '__Varela_Round_Fallback_143227', Helvetica, Arial, sans-serif" font-size="96" font-weight="400">nh</text>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="100%"
+                height="100%"
+                viewBox="0 0 200 200"
+                style={{ maxHeight: "40px", maxWidth: "40px" }}
+              >
+                <g
+                  fill="#fff"
+                  fill-rule="evenodd"
+                  stroke="none"
+                  stroke-width="1"
+                >
+                  <circle
+                    cx="100"
+                    cy="100"
+                    r="80"
+                    stroke="#fff"
+                    stroke-width="16"
+                    fill="transparent"
+                  ></circle>
+                  <text
+                    x="40"
+                    y="128"
+                    font-family="'__Varela_Round_143227', '__Varela_Round_Fallback_143227', Helvetica, Arial, sans-serif"
+                    font-size="96"
+                    font-weight="400"
+                  >
+                    nh
+                  </text>
                 </g>
               </svg>
 
-              <Typography variant="subtitle1" fontWeight={600} color="#fff">nutritionhub</Typography>
+              <Typography variant="subtitle1" fontWeight={600} color="#fff">
+                nutritionhub
+              </Typography>
             </Box>
           </Box>
 
           <Box display={"flex"} gap={2} alignItems={"center"}>
-
-            <Button variant="contained" sx={{
-              background: "#06A19B",
-              fontWeight: 600,
-              padding: "4px 16px",
-              width: "fit-content",
-              textTransform: "capitalize",
-              borderRadius: "4px"
-            }}>
+            <Button
+              variant="contained"
+              sx={{
+                background: "#06A19B",
+                fontWeight: 600,
+                padding: "4px 16px",
+                width: "fit-content",
+                textTransform: "capitalize",
+                borderRadius: "4px",
+              }}
+            >
               Contact
             </Button>
 
@@ -297,13 +354,11 @@ export default function Page() {
               www.nutritionhub.co.za
             </Typography>
           </Box>
-
         </Box>
 
-
-        <Typography variant="subtitle2" color="#fff" fontWeight={400}>All right reserved - 2024 Nutritionhub</Typography>
-
-
+        <Typography variant="subtitle2" color="#fff" fontWeight={400}>
+          All right reserved - 2024 Nutritionhub
+        </Typography>
       </Stack>
       {/* Login Section End */}
     </>

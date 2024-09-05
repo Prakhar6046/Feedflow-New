@@ -74,7 +74,7 @@ body {
 .search-filter
   .css-j882ge-MuiInputBase-root-MuiOutlinedInput-root.Mui-focused
   .MuiOutlinedInput-notchedOutline {
-  border-color: #979797;
+  border-color: #06a19b;
   border-width: 1px;
 }
 
@@ -125,11 +125,14 @@ body {
   padding: 0;
 }
 
-.login-inputs
-  .css-j882ge-MuiInputBase-root-MuiOutlinedInput-root.Mui-focused
+.css-j882ge-MuiInputBase-root-MuiOutlinedInput-root.Mui-focused
   .MuiOutlinedInput-notchedOutline {
-  border-color: #979797;
+  border-color: #06a19b !important;
   border-width: 1px;
+}
+
+fieldset {
+  border: 1px solid #979797;
 }
 
 .login-inputs .css-18pjc51-MuiFormLabel-root-MuiInputLabel-root.Mui-focused {
@@ -137,12 +140,16 @@ body {
 }
 
 .css-18pjc51-MuiFormLabel-root-MuiInputLabel-root.Mui-focused {
-  color: #06a19b;
+  color: #06a19b !important;
 }
+
+/* .css-18w7by0.Mui-focused {
+  color: red !important;
+} */
 
 .css-1o0kqxp-MuiInputBase-root-MuiOutlinedInput-root.Mui-focused
   .MuiOutlinedInput-notchedOutline {
-  border-color: #06a19b;
+  border-color: #06a19b !important;
 }
 
 .sidebar .css-1edfpdg-MuiTypography-root {
@@ -162,4 +169,17 @@ body {
 .select-input .css-1q964xs-MuiFormLabel-root-MuiInputLabel-root {
   top: -5px;
   border-color: #979797 !important;
+}
+
+.nav-links {
+  text-decoration: none;
+  color: unset;
+}
+
+/* .css-j882ge-MuiInputBase-root-MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-color: #1976d2 !important;
+} */
+
+.css-1d3z3hw-MuiOutlinedInput-notchedOutline {
+  border-color: #979797;
 }
