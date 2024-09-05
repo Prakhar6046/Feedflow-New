@@ -3,7 +3,8 @@ import * as React from "react";
 import Typography from "@mui/material/Typography";
 import Breadcrumbs from "@mui/material/Breadcrumbs";
 import Link from "@mui/material/Link";
-import { Box, Button, Stack, TextField } from "@mui/material";
+import InputLabel from '@mui/material/InputLabel';
+import { Box, Button, FormControl, MenuItem, Select, Stack, TextField } from "@mui/material";
 
 import AddOrganization from "./models/AddOrganisation";
 import AddUser from "./models/AddUser";
@@ -21,6 +22,13 @@ export default function BasicBreadcrumbs({
   const [open, setOpen] = React.useState(false);
   const pathName = usePathname();
 
+  const [age, setAge] = React.useState('');
+
+  const handleChange = (event: SelectChangeEvent) => {
+    setAge(event.target.value);
+  };
+
+
   return (
     <>
       {/* Breadcrumb Section Start */}
@@ -30,7 +38,9 @@ export default function BasicBreadcrumbs({
           justifyContent: "space-between",
           alignItems: "center",
           flexDirection: "row",
-          gap: 5,
+          rowGap: 1,
+          columnGap: 5,
+          flexWrap: "wrap"
         }}
       >
         <Box>
@@ -42,6 +52,7 @@ export default function BasicBreadcrumbs({
             sx={{
               fontSize: {
                 md: "2.65rem",
+                xs: "1.85rem"
               },
             }}
           >
@@ -79,6 +90,7 @@ export default function BasicBreadcrumbs({
               width: "fit-content",
               textTransform: "capitalize",
               borderRadius: "12px",
+              textWrap: "nowrap"
             }}
           >
             {buttonName}
@@ -111,6 +123,10 @@ export default function BasicBreadcrumbs({
             alignItems: {
               md: "center",
               xs: "flex-start"
+            },
+            marginTop: {
+              sm: 2,
+              xs: 4
             }
           }}
         >
@@ -152,6 +168,30 @@ export default function BasicBreadcrumbs({
                 />
               </svg>
             </Box>
+
+            <Stack className="select-input">
+              <FormControl sx={{ m: 1, minWidth: 80 }}>
+                <InputLabel id="demo-simple-select-autowidth-label">Age</InputLabel>
+                <Select
+                  labelId="demo-simple-select-autowidth-label"
+                  id="demo-simple-select-autowidth"
+                  value={age}
+                  onChange={handleChange}
+                  autoWidth
+                  label="Status"
+                >
+                  <MenuItem value="All">
+                    All
+                  </MenuItem>
+                  <MenuItem value="Active">
+                    Active
+                  </MenuItem>
+                  <MenuItem value="Suspended">
+                    Suspended
+                  </MenuItem>
+                </Select>
+              </FormControl>
+            </Stack>
 
             <Box
               fontSize={14}
@@ -263,7 +303,6 @@ export default function BasicBreadcrumbs({
           </Box>
         </Stack>
       )}
-
       {/* Search Section End */}
     </>
   );

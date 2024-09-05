@@ -145,7 +145,21 @@ body {
   border-color: #06a19b;
 }
 
-.sidebar .css-1edfpdg-MuiTypography-root{
+.sidebar .css-1edfpdg-MuiTypography-root {
   font-size: 0.85rem;
   font-weight: 500;
+}
+
+.select-input {
+  display: none;
+}
+
+.select-input
+  .css-15k6ek6-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input {
+  padding: 10px;
+}
+
+.select-input .css-1q964xs-MuiFormLabel-root-MuiInputLabel-root {
+  top: -5px;
+  border-color: #979797 !important;
 }
