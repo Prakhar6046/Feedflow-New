@@ -1,3 +1,4 @@
+"use client";
 import * as React from "react";
 import Box from "@mui/material/Box";
 import List from "@mui/material/List";
@@ -7,7 +8,9 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import { Stack } from "@mui/material";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 function Sidebar() {
+  const router = useRouter();
   return (
     <Stack className="sidebar">
       <Box
@@ -28,6 +31,7 @@ function Sidebar() {
             justifyContent: "center",
             alignItems: "center",
           }}
+          onClick={() => router.push("/dashboard")}
         >
           <img src="/static/img/logo.svg" alt="Logo" width={78} height={63} />
         </Box>
