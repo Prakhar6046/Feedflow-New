@@ -4,8 +4,7 @@ import { Box, Button, Stack, TextField, Typography } from "@mui/material";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useForm, SubmitHandler } from "react-hook-form";
-// import logo from "@/public/static/img/logo.svg";
-import logo from "@/public/static/img/logo-bigone.jpg";
+import logo from "@/public/static/img/logo.svg";
 
 
 interface IFormInput {
@@ -81,9 +80,8 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
     // </form>
     // Set Password Section Start
     <Stack display={"flex"} justifyContent={"center"} alignItems={"center"} minHeight={"100vh"} sx={{
-      // background:
-      //   "linear-gradient(349.33deg, rgba(6, 161, 155, 0.4) -27.15%, rgba(2, 59, 57, 0) 103.57%)",
-      background: "#06A19B"
+      background:
+        "linear-gradient(349.33deg, rgba(6, 161, 155, 0.4) -27.15%, rgba(2, 59, 57, 0) 103.57%)",
     }}>
 
 
@@ -107,7 +105,7 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
         <Image
           src={logo}
           alt="Logo"
-          width={200}
+          width={80}
         />
         <Typography
           mt={2}
