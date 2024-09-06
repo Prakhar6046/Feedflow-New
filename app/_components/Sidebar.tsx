@@ -164,7 +164,7 @@ function Sidebar() {
             </ListItem>
           </Link>
 
-          <ListItem
+          {/* <ListItem
             sx={{
               paddingX: 0,
             }}
@@ -308,7 +308,7 @@ function Sidebar() {
               </ListItemIcon>
               <ListItemText>lorem</ListItemText>
             </ListItemButton>
-          </ListItem>
+          </ListItem> */}
         </List>
         <Box position={"absolute"} top={90} right={-15}>
           <img

@@ -4,6 +4,7 @@ import "./globals.css";
 import ThemeProvider from "./_components/theme";
 import { SettingsProvider } from "./contexts/SettingsContext";
 import { SettingsValueProps } from "./_components/settings/types";
+import { CssBaseline } from "@mui/material";
 
 // Define the default settings according to SettingsValueProps
 const settings: SettingsValueProps = {
@@ -29,6 +30,7 @@ export default function RootLayout({
     <html lang="en">
       {/* <SettingsProvider defaultSettings={settings}>
         <ThemeProvider> */}
+      <CssBaseline />
       <body className={inter.className}>{children}</body>
       {/* </ThemeProvider>
       </SettingsProvider> */}
