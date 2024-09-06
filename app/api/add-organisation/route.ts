@@ -70,7 +70,7 @@ export async function POST(req: NextRequest) {
           "
         >
           <img
-            src="/static/img/logo-ensuesoft.jpg"
+            src="/public/static/img/logo-bigone.jpg"
             alt="Logo"
             class="logo-img"
             style="width: 200px; margin-bottom: 20px"

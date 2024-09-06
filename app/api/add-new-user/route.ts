@@ -71,7 +71,7 @@ export async function POST(req: NextRequest) {
                 "
               >
                 <img
-                  src="/static/img/logo-ensuesoft.jpg"
+                 src="/public/static/img/logo-bigone.jpg"
                   alt="Logo"
                   class="logo-img"
                   style="width: 200px; margin-bottom: 20px"
@@ -86,7 +86,7 @@ export async function POST(req: NextRequest) {
                 <p
                   style="line-height: 1.4; font-size: 16px; color: #505050; margin:0"
                 >
-                   <a href="${process.env.BASE_URL}/newUser/${results.id}"> Click here</a> to join and set password.
+                   <a href="${process.env.BASE_URL}/joinOrganisation/${results.id}"> Click here</a> to join and set password.
                 </p>
              
                 <div style="margin-block: 15px; border: 1px solid #ededed"></div>
