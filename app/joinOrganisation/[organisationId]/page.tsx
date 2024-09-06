@@ -82,7 +82,7 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
             },
           }}
         >
-          Lorem ipsum dolor sit amet.
+          Set Password
         </Typography>
 
         <Box position="relative" className="login-inputs">
