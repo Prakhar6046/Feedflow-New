@@ -1,15 +1,11 @@
 "use client";
-
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Box, Button, Stack, TextField, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import logo from "@/public/static/img/logo-bigone.jpg";
 import Image from "next/image";
-import { url } from "inspector";
-import Link from "next/link";
-
-import { hashPassword } from "@/app/_lib/hash";
+import { setCookie } from "cookies-next";
 
 export default function Page() {
   const [email, setEmail] = useState("abhishek.choudhary@ensuesoft.com");
@@ -26,6 +22,7 @@ export default function Page() {
       body: JSON.stringify({ email, password }),
     });
     const data = await response.json();
+    setCookie("logged-user", data);
     if (data.status) router.push("/dashboard/organisation");
   };
 

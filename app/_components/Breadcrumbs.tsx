@@ -2,17 +2,16 @@
 import * as React from "react";
 import Typography from "@mui/material/Typography";
 import Breadcrumbs from "@mui/material/Breadcrumbs";
-import Link from "@mui/material/Link";
-import InputLabel from '@mui/material/InputLabel';
-import { Box, Button, FormControl, MenuItem, Select, Stack, TextField } from "@mui/material";
+import { Box, Button, Stack, TextField } from "@mui/material";
 
 import AddOrganization from "./models/AddOrganisation";
 import AddUser from "./models/AddUser";
 import { usePathname } from "next/navigation";
+import Link from "next/link";
 interface Props {
   heading: string;
   buttonName?: string;
-  links?: { name: string }[];
+  links?: { name: string; link: string }[];
 }
 export default function BasicBreadcrumbs({
   heading,
@@ -28,7 +27,6 @@ export default function BasicBreadcrumbs({
   //   setAge(event.target.value);
   // };
 
-
   return (
     <>
       {/* Breadcrumb Section Start */}
@@ -40,7 +38,7 @@ export default function BasicBreadcrumbs({
           flexDirection: "row",
           rowGap: 1,
           columnGap: 5,
-          flexWrap: "wrap"
+          flexWrap: "wrap",
         }}
       >
         <Box>
@@ -52,7 +50,7 @@ export default function BasicBreadcrumbs({
             sx={{
               fontSize: {
                 md: "2.65rem",
-                xs: "1.85rem"
+                xs: "1.85rem",
               },
             }}
           >
@@ -64,13 +62,7 @@ export default function BasicBreadcrumbs({
             <Breadcrumbs aria-label="breadcrumb" separator="›">
               {links.map((link, i) => {
                 return (
-                  <Link
-                    key={i}
-                    underline="hover"
-                    fontWeight={500}
-                    color="#555555"
-                    href="/"
-                  >
+                  <Link key={i} href={link.link} className="nav-links">
                     {link.name}
                   </Link>
                 );
@@ -90,7 +82,7 @@ export default function BasicBreadcrumbs({
               width: "fit-content",
               textTransform: "capitalize",
               borderRadius: "12px",
-              textWrap: "nowrap"
+              textWrap: "nowrap",
             }}
           >
             {buttonName}
@@ -114,20 +106,20 @@ export default function BasicBreadcrumbs({
           sx={{
             flexDirection: {
               md: "row",
-              xs: "column"
+              xs: "column",
             },
             justifyContent: {
               md: "space-between",
-              xs: "flex-end"
+              xs: "flex-end",
             },
             alignItems: {
               md: "center",
-              xs: "flex-start"
+              xs: "flex-start",
             },
             marginTop: {
               sm: 2,
-              xs: 4
-            }
+              xs: 4,
+            },
           }}
         >
           <Box
@@ -138,22 +130,30 @@ export default function BasicBreadcrumbs({
             sx={{
               width: {
                 md: "fit-content",
-                xs: "100%"
+                xs: "100%",
               },
             }}
           >
-            <Box position="relative" className="search-filter" sx={{
-              width: {
-                md: "fit-content",
-                xs: "100%"
-              },
-            }}>
-              <TextField label="Search" focused sx={{
+            <Box
+              position="relative"
+              className="search-filter"
+              sx={{
                 width: {
                   md: "fit-content",
-                  xs: "100%"
+                  xs: "100%",
                 },
-              }} />
+              }}
+            >
+              <TextField
+                label="Search"
+                focused
+                sx={{
+                  width: {
+                    md: "fit-content",
+                    xs: "100%",
+                  },
+                }}
+              />
 
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -239,7 +239,7 @@ export default function BasicBreadcrumbs({
             gap={0.5}
             sx={{
               width: { md: "fit-content", xs: "100%" },
-              textAlign: "end"
+              textAlign: "end",
             }}
           >
             <Box

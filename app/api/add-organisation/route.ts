@@ -39,7 +39,7 @@ export async function POST(req: NextRequest) {
       to: email, // List of recipients
       subject: "Welcome!", // Subject line
       text: "Thank you for signing up!", // Plain text body
-      html: `<h1>Welcome!</h1><p>Thank you for signing up!</p><a href="${process.env.BASE_URL}/newOrganisation/${user.id}">Click Here</a>`, // HTML body
+      html: `<h1>Welcome!</h1><p>Thank you for signing up!</p><a href="${process.env.BASE_URL}/joinOrganisation/${user.id}">Click Here</a>`, // HTML body
     };
 
     const info = await transporter.sendMail(mailOptions);

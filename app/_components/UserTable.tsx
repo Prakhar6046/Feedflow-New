@@ -8,17 +8,23 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { Button, Popover, Stack, Typography } from "@mui/material";
+import { readableDate } from "../_lib/utils";
 interface Props {
-  organisations: {
+  users: {
     id: Number;
     name: String;
-    contactNumber: String;
-    contactPerson: String;
-    userId: Number;
+    email: String;
+    password: String;
+    status: String;
+    role: String;
+    createdAt: String;
+    Organisation: {
+      name: String;
+    }[];
   }[];
 }
 
-export default function BasicTable({ organisations }: Props) {
+export default function UserTable({ users }: Props) {
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null
   );
@@ -65,7 +71,7 @@ export default function BasicTable({ organisations }: Props) {
                 },
               }}
             >
-              Organizations
+              Name
             </TableCell>
             <TableCell
               sx={{
@@ -78,7 +84,7 @@ export default function BasicTable({ organisations }: Props) {
                 fontWeight: 600,
               }}
             >
-              Contact Number
+              Status
             </TableCell>
             <TableCell
               sx={{
@@ -91,9 +97,9 @@ export default function BasicTable({ organisations }: Props) {
                 fontWeight: 600,
               }}
             >
-              Contact Person
+              Role
             </TableCell>
-            {/* <TableCell
+            <TableCell
               sx={{
                 borderBottom: 0,
                 color: "#67737F",
@@ -104,8 +110,21 @@ export default function BasicTable({ organisations }: Props) {
                 fontWeight: 600,
               }}
             >
-              Product
-            </TableCell> */}
+              Organisation
+            </TableCell>
+            <TableCell
+              sx={{
+                borderBottom: 0,
+                color: "#67737F",
+                fontSize: {
+                  md: 16,
+                  xs: 14,
+                },
+                fontWeight: 600,
+              }}
+            >
+              Joined
+            </TableCell>
             <TableCell
               sx={{
                 borderBottom: 0,
@@ -120,8 +139,8 @@ export default function BasicTable({ organisations }: Props) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {organisations && organisations.length > 0 ? (
-            organisations?.map((organisation, i) => (
+          {users && users.length > 0 ? (
+            users.map((user, i) => (
               <TableRow
                 key={i}
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
@@ -141,7 +160,7 @@ export default function BasicTable({ organisations }: Props) {
                   component="th"
                   scope="row"
                 >
-                  {organisation.name}
+                  {user?.name ?? ""}
                 </TableCell>
                 <TableCell
                   sx={{
@@ -151,7 +170,7 @@ export default function BasicTable({ organisations }: Props) {
                     fontWeight: 500,
                   }}
                 >
-                  {organisation.contactNumber}
+                  {user?.status ?? ""}
                 </TableCell>
                 <TableCell
                   sx={{
@@ -161,18 +180,28 @@ export default function BasicTable({ organisations }: Props) {
                     fontWeight: 500,
                   }}
                 >
-                  {organisation.contactPerson}
+                  {user?.role ?? ""}
                 </TableCell>
-                {/* <TableCell
-                sx={{
-                  borderBottomColor: "#F5F6F8",
-                  borderBottomWidth: 2,
-                  color: "#555555",
-                  fontWeight: 500,
-                }}
-              >
-                {row.carbs}
-              </TableCell> */}
+                <TableCell
+                  sx={{
+                    borderBottomColor: "#F5F6F8",
+                    borderBottomWidth: 2,
+                    color: "#555555",
+                    fontWeight: 500,
+                  }}
+                >
+                  {user?.Organisation[0]?.name ?? "No Organisation"}
+                </TableCell>
+                <TableCell
+                  sx={{
+                    borderBottomColor: "#F5F6F8",
+                    borderBottomWidth: 2,
+                    color: "#555555",
+                    fontWeight: 500,
+                  }}
+                >
+                  {readableDate(user?.createdAt) ?? ""}
+                </TableCell>
                 <TableCell
                   align="center"
                   sx={{
@@ -243,7 +272,7 @@ export default function BasicTable({ organisations }: Props) {
             ))
           ) : (
             <TableRow
-              key={"nodata"}
+              key={"no table"}
               sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
             >
               No Data Found
