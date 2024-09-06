@@ -15,8 +15,8 @@ const Header = () => {
       gap={2}
       spacing={{ xs: 0.5, sm: 1.5 }}
     >
-      <Divider orientation="vertical" variant="middle" flexItem />
-      <SettingsButton />
+      {/* <Divider orientation="vertical" variant="middle" flexItem /> */}
+      {/* <SettingsButton /> */}
       <AccountPopover />
     </Stack>
   );

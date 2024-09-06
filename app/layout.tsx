@@ -27,11 +27,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <SettingsProvider defaultSettings={settings}>
-        <ThemeProvider>
-          <body className={inter.className}>{children}</body>
-        </ThemeProvider>
-      </SettingsProvider>
+      {/* <SettingsProvider defaultSettings={settings}>
+        <ThemeProvider> */}
+      <body className={inter.className}>{children}</body>
+      {/* </ThemeProvider>
+      </SettingsProvider> */}
     </html>
   );
 }
