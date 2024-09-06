@@ -102,7 +102,7 @@ const AddUser: React.FC<Props> = ({ setOpen, open }) => {
           </Box>
         </Box>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <Box paddingInline={3} paddingTop={2} paddingBottom={7}>
+          <Box padding={3}>
             <TextField
               label="Name"
               variant="outlined"
@@ -110,11 +110,17 @@ const AddUser: React.FC<Props> = ({ setOpen, open }) => {
               {...register("name", { required: true })}
               error={!!errors.name}
               helperText={errors.name ? "Name is required" : ""}
+              sx={{
+                marginBottom: 2,
+              }}
             />
             <TextField
               label="Email"
               variant="outlined"
               fullWidth
+              sx={{
+                marginBottom: 2,
+              }}
               {...register("email", {
                 required: "Email is required",
                 pattern: {

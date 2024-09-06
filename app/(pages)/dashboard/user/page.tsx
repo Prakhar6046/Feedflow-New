@@ -21,7 +21,7 @@ export default async function Page() {
     <>
       <BasicBreadcrumbs
         heading={"User"}
-        buttonName={"+Add User"}
+        buttonName={"Add User"}
         links={[
           { name: "Dashboard", link: "/dashboard" },
           { name: "User", link: "/dashboard/user" },

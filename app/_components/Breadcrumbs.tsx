@@ -51,6 +51,7 @@ export default function BasicBreadcrumbs({
     <>
       {/* Breadcrumb Section Start */}
       <Stack
+        marginTop={1}
         sx={{
           display: "flex",
           justifyContent: "space-between",
@@ -66,11 +67,11 @@ export default function BasicBreadcrumbs({
           <Typography
             variant="h2"
             marginBottom={"4px"}
-            fontWeight={"bold"}
+            fontWeight={600}
             sx={{
               fontSize: {
-                md: "2.65rem",
-                xs: "1.85rem",
+                md: "1.5rem",
+                xs: "1.25rem",
               },
             }}
           >
@@ -79,7 +80,14 @@ export default function BasicBreadcrumbs({
           {/* Main Heading */}
 
           {links && (
-            <Breadcrumbs aria-label="breadcrumb" separator="›">
+            <Breadcrumbs
+              aria-label="breadcrumb"
+              separator="•"
+              className="breadcrumb-links"
+              sx={{
+                mt: 2,
+              }}
+            >
               {links.map((link, i) => {
                 return (
                   <Link key={i} href={link.link} className="nav-links">
@@ -97,14 +105,31 @@ export default function BasicBreadcrumbs({
             onClick={() => setOpen(true)}
             sx={{
               background: "#06A19B",
-              fontWeight: "bold",
-              padding: "9px 28px",
+              fontWeight: 600,
+              padding: "8px 20px",
               width: "fit-content",
               textTransform: "capitalize",
-              borderRadius: "12px",
+              borderRadius: "8px",
               textWrap: "nowrap",
+              display: "flex",
+              gap: 1,
+              alignItems: "center",
             }}
           >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="1.5em"
+              height="1.5em"
+              viewBox="0 0 24 24"
+            >
+              <path
+                fill="none"
+                stroke="#fff"
+                stroke-linecap="round"
+                stroke-width="2"
+                d="M12 6v12m6-6H6"
+              />
+            </svg>
             {buttonName}
           </Button>
         )}

@@ -9,17 +9,18 @@ import ListItemText from "@mui/material/ListItemText";
 import { Stack } from "@mui/material";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 function Sidebar() {
   const router = useRouter();
   return (
     <Stack className="sidebar">
       <Box
         position={"relative"}
-        paddingBlock={4}
-        paddingInline={3}
+        paddingBlock={3}
+        paddingInline={1}
         height={"100%"}
         sx={{
-          width: 160,
+          width: 90,
           background:
             "linear-gradient(349.33deg, rgba(6, 161, 155, 0.4) -27.15%, rgba(2, 59, 57, 0) 103.57%)",
         }}
@@ -34,13 +35,9 @@ function Sidebar() {
           className="cursor-pointer"
           onClick={() => router.push("/dashboard")}
         >
-          <img src="/static/img/logo.svg" alt="Logo" width={78} height={63} />
+          <img src="/static/img/logo.svg" alt="Logo" width={50} height={40} />
         </Box>
-        <List
-          sx={{
-            marginTop: 5,
-          }}
-        >
+        <List>
           <Link href={"/dashboard"} className="nav-links">
             <ListItem
               sx={{
@@ -59,12 +56,13 @@ function Sidebar() {
                   sx={{
                     display: "grid",
                     placeItems: "center",
+                    marginRight: 0
                   }}
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    width="1.5em"
-                    height="1.5em"
+                    width="1.1em"
+                    height="1.1em"
                     viewBox="0 0 24 24"
                   >
                     <g
@@ -79,10 +77,13 @@ function Sidebar() {
                     </g>
                   </svg>
                 </ListItemIcon>
-                <ListItemText>Dashboard</ListItemText>
+                <ListItemText sx={{
+                  mt: 0.5
+                }}>Dashboard</ListItemText>
               </ListItemButton>
             </ListItem>
           </Link>
+
           <Link href={"/dashboard/organisation"} className="nav-links">
             <ListItem
               sx={{
@@ -101,12 +102,13 @@ function Sidebar() {
                   sx={{
                     display: "grid",
                     placeItems: "center",
+                    marginRight: 0
                   }}
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    width="1.8em"
-                    height="1.8em"
+                    width="1.3em"
+                    height="1.3em"
                     viewBox="0 0 16 16"
                   >
                     <path
@@ -116,10 +118,13 @@ function Sidebar() {
                   </svg>
                 </ListItemIcon>
                 <ListItemText
-                // sx={{
-                //   borderBottom: "2px solid #06A19B",
-                //   paddingBottom: 0.5,
-                // }}
+                  // sx={{
+                  //   borderBottom: "2px solid #06A19B",
+                  //   paddingBottom: 0.5,
+                  // }}
+                  sx={{
+                    mt: 0.5
+                  }}
                 >
                   Organisations
                 </ListItemText>
@@ -145,12 +150,13 @@ function Sidebar() {
                   sx={{
                     display: "grid",
                     placeItems: "center",
+                    marginRight: 0
                   }}
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    width="1.7em"
-                    height="1.7em"
+                    width="1.2em"
+                    height="1.2em"
                     viewBox="0 0 256 256"
                   >
                     <path
@@ -159,7 +165,9 @@ function Sidebar() {
                     />
                   </svg>
                 </ListItemIcon>
-                <ListItemText>Users</ListItemText>
+                <ListItemText sx={{
+                  mt: 0.5
+                }}>Users</ListItemText>
               </ListItemButton>
             </ListItem>
           </Link>
@@ -181,6 +189,7 @@ function Sidebar() {
                 sx={{
                   display: "grid",
                   placeItems: "center",
+                  marginRight: 0
                 }}
               >
                 <svg
@@ -222,6 +231,7 @@ function Sidebar() {
                 sx={{
                   display: "grid",
                   placeItems: "center",
+                  marginRight: 0
                 }}
               >
                 <svg
@@ -257,6 +267,7 @@ function Sidebar() {
                 sx={{
                   display: "grid",
                   placeItems: "center",
+                  marginRight: 0
                 }}
               >
                 <svg
@@ -292,6 +303,7 @@ function Sidebar() {
                 sx={{
                   display: "grid",
                   placeItems: "center",
+                  marginRight: 0
                 }}
               >
                 <svg
@@ -310,11 +322,10 @@ function Sidebar() {
             </ListItemButton>
           </ListItem> */}
         </List>
-        <Box position={"absolute"} top={90} right={-15}>
-          <img
-            src="/static/img/icons/ic-expand-sidebar.svg"
-            alt="Sidebar Expand Icon"
-          />
+        <Box position={"absolute"} top={35} right={-7} sx={{
+          cursor: "pointer",
+        }}>
+          <Image src={"/static/img/icons/ic-expand-sidebar.svg"} width={17} height={17} alt="Sidebar Expand Icon" />
         </Box>
       </Box>
     </Stack>
