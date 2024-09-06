@@ -8,6 +8,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { Button, Popover, Stack, Typography } from "@mui/material";
+import { getCookie } from "cookies-next";
 interface Props {
   organisations: {
     id: Number;
@@ -19,6 +20,7 @@ interface Props {
 }
 
 export default function BasicTable({ organisations }: Props) {
+  // const role: any = getCookie("role");
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null
   );

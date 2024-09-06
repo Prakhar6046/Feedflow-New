@@ -9,6 +9,7 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { Button, Popover, Stack, Typography } from "@mui/material";
 import { readableDate } from "../_lib/utils";
+import { getCookie } from "cookies-next";
 interface Props {
   users: {
     id: Number;
@@ -25,6 +26,8 @@ interface Props {
 }
 
 export default function UserTable({ users }: Props) {
+  // console.log();
+
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null
   );

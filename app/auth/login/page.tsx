@@ -23,6 +23,7 @@ export default function Page() {
     });
     const data = await response.json();
     setCookie("logged-user", data);
+    setCookie("role", data?.data?.user?.role);
     if (data.status) router.push("/dashboard/organisation");
   };
 

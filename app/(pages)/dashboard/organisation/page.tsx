@@ -3,7 +3,7 @@ import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
 import { getOrganisations } from "@/app/_lib/action";
 
 export default async function Page() {
-  const organisations = await getOrganisations();
+  let organisations = await getOrganisations();
 
   return (
     <>
