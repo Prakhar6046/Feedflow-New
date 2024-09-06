@@ -1,6 +1,12 @@
 "use client";
+// import Typography from "@/app/_components/theme/overrides/Typography";
+import { Box, Button, Stack, TextField, Typography } from "@mui/material";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useForm, SubmitHandler } from "react-hook-form";
+// import logo from "@/public/static/img/logo.svg";
+import logo from "@/public/static/img/logo-bigone.jpg";
+
 
 interface IFormInput {
   password: string;
@@ -39,40 +45,135 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
   const password = watch("password");
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <div>
-        <label htmlFor="password">Password</label>
-        <input
-          id="password"
-          type="password"
-          {...register("password", {
-            required: "Password is required",
-            minLength: {
-              value: 8,
-              message: "Password must be at least 8 characters",
-            },
-          })}
-        />
-        {errors.password && <span>{errors.password.message}</span>}
-      </div>
+    // <form onSubmit={handleSubmit(onSubmit)}>
+    //   <div>
+    //     <label htmlFor="password">Password</label>
+    //     <input
+    //       id="password"
+    //       type="password"
+    //       {...register("password", {
+    //         required: "Password is required",
+    //         minLength: {
+    //           value: 8,
+    //           message: "Password must be at least 8 characters",
+    //         },
+    //       })}
+    //     />
+    //     {errors.password && <span>{errors.password.message}</span>}
+    //   </div>
 
-      <div>
-        <label htmlFor="confirmPassword">Confirm Password</label>
-        <input
-          id="confirmPassword"
-          type="password"
-          {...register("confirmPassword", {
-            required: "Please confirm your password",
-            validate: (value) => value === password || "Passwords do not match",
-          })}
-        />
-        {errors.confirmPassword && (
-          <span>{errors.confirmPassword.message}</span>
-        )}
-      </div>
+    //   <div>
+    //     <label htmlFor="confirmPassword">Confirm Password</label>
+    //     <input
+    //       id="confirmPassword"
+    //       type="password"
+    //       {...register("confirmPassword", {
+    //         required: "Please confirm your password",
+    //         validate: (value) => value === password || "Passwords do not match",
+    //       })}
+    //     />
+    //     {errors.confirmPassword && (
+    //       <span>{errors.confirmPassword.message}</span>
+    //     )}
+    //   </div>
 
-      <button type="submit">Submit</button>
-    </form>
+    //   <button type="submit">Submit</button>
+    // </form>
+    // Set Password Section Start
+    <Stack display={"flex"} justifyContent={"center"} alignItems={"center"} minHeight={"100vh"} sx={{
+      // background:
+      //   "linear-gradient(349.33deg, rgba(6, 161, 155, 0.4) -27.15%, rgba(2, 59, 57, 0) 103.57%)",
+      background: "#06A19B"
+    }}>
+
+
+      <Box
+        sx={{
+          padding: {
+            lg: 5,
+            xs: 3,
+          },
+          border: "1px solid #06A19B",
+          borderRadius: "14px",
+          background: "#fff",
+          marginX: {
+            md: 0,
+            xs: 3
+          }
+        }}
+
+      >
+
+        <Image
+          src={logo}
+          alt="Logo"
+          width={200}
+        />
+        <Typography
+          mt={2}
+          variant="h5"
+          fontWeight={600}
+          marginBottom={4}
+          textTransform={"capitalize"}
+          sx={{
+            fontSize: {
+              md: "24px",
+              xs: "20px"
+            }
+          }}
+        >
+          Lorem ipsum dolor sit amet.
+        </Typography>
+
+        <Box position="relative" className="login-inputs">
+          <form>
+            <TextField
+              label="Password"
+              type="password"
+              // focused
+              sx={{
+                width: "100%",
+                marginBottom: 4,
+              }}
+              // value={email}
+              // onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+
+            <TextField
+              label="Confirm Password"
+              type="password"
+              // focused
+              sx={{
+                width: "100%",
+                marginBottom: 3,
+              }}
+              // value={password}
+              // onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+
+            <Button
+              variant="contained"
+              sx={{
+                background: "#06A19B",
+                fontWeight: "600",
+                padding: "10px 24px",
+                width: "100%",
+                textTransform: "capitalize",
+                borderRadius: "8px",
+                fontSize: 18,
+              }}
+              type="submit"
+            >
+              Continue
+            </Button>
+          </form>
+        </Box>
+      </Box>
+
+    </Stack>
+    // Set Password Section End
   );
 };
 
