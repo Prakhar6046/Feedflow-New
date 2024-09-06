@@ -153,7 +153,7 @@ fieldset {
 }
 
 .sidebar .css-1edfpdg-MuiTypography-root {
-  font-size: 0.85rem;
+  font-size: 10px;
   font-weight: 500;
 }
 
@@ -176,8 +176,8 @@ fieldset {
   color: unset;
 }
 
-.nav-links span{
-  font-size: 0.85rem;
+.nav-links span {
+  font-size: 10px;
 }
 
 /* .css-j882ge-MuiInputBase-root-MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
@@ -190,4 +190,22 @@ fieldset {
 
 .cursor-pointer {
   cursor: pointer;
+}
+
+/* 06/09 */
+.nav-links li > div:hover {
+  border-radius: 8px;
+}
+
+.breadcrumb-links {
+  font-size: 14px;
+}
+
+.breadcrumb-links ol li:nth-child(1) {
+  color: #272727;
+  font-weight: 500;
+}
+
+.breadcrumb-links ol li:nth-child(1):hover {
+  text-decoration: underline;
 }

@@ -40,6 +40,7 @@ export default function BasicTable({ organisations }: Props) {
       sx={{
         borderRadius: "14px",
         boxShadow: "0px 0px 16px 5px #0000001A",
+        mt: 4
       }}
     >
       <Table sx={{ minWidth: 650 }} aria-label="simple table">

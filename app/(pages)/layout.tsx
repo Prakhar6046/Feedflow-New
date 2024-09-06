@@ -12,7 +12,7 @@ export default function RootLayout({
     <Stack display={"flex"} direction={"row"} height={"100vh"}>
       <Sidebar />
 
-      <Box width={"100%"} paddingTop={4} paddingInline={5}>
+      <Box width={"100%"} paddingTop={2} paddingInline={5}>
         <Header />
         {children}
       </Box>
