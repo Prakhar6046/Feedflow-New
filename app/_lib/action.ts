@@ -30,3 +30,18 @@ export const getUsers = async () => {
     return error;
   }
 };
+export const getUser = async (userId: string) => {
+  try {
+    const data = await fetch(`${process.env.BASE_URL}/api/user/${userId}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    revalidatePath(`/dashboard/user/${userId}`);
+    return await data.json();
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
+};

@@ -30,12 +30,17 @@ export default function Page() {
 
   return (
     <>
-      <Stack sx={{
-        backgroundImage: "url(/static/img/login-bgImg.png)",
-        backgroundRepeat: "no-repeat",
-        backgroundSize: "100% 100%",
-        minHeight: "100vh"
-      }} display={"flex"} justifyContent={"space-between"} alignItems={"stretch"}>
+      <Stack
+        sx={{
+          backgroundImage: "url(/static/img/login-bgImg.png)",
+          backgroundRepeat: "no-repeat",
+          backgroundSize: "100% 100%",
+          minHeight: "100vh",
+        }}
+        display={"flex"}
+        justifyContent={"space-between"}
+        alignItems={"stretch"}
+      >
         {/* Login Section Start */}
         <Stack>
           <Box padding={1.5} bgcolor={"#06A19B"}></Box>
@@ -65,20 +70,17 @@ export default function Page() {
               </Link>
             </Box>
           </Box>
-
         </Stack>
 
-        <Stack sx={{
-          paddingBlock: {
-            lg: 7,
-            xs: 4
-          },
-        }}>
-          <Box
-            display={"flex"}
-            justifyContent={"center"}
-            alignItems={"center"}
-          >
+        <Stack
+          sx={{
+            paddingBlock: {
+              lg: 7,
+              xs: 4,
+            },
+          }}
+        >
+          <Box display={"flex"} justifyContent={"center"} alignItems={"center"}>
             <Grid
               container
               alignItems={"flex-end"}
@@ -225,9 +227,17 @@ export default function Page() {
                     alignItems={"center"}
                     marginBlock={3}
                   >
-                    <Box bgcolor={"#979797"} height={"1px"} width={"100%"}></Box>
+                    <Box
+                      bgcolor={"#979797"}
+                      height={"1px"}
+                      width={"100%"}
+                    ></Box>
                     or
-                    <Box bgcolor={"#979797"} height={"1px"} width={"100%"}></Box>
+                    <Box
+                      bgcolor={"#979797"}
+                      height={"1px"}
+                      width={"100%"}
+                    ></Box>
                   </Box>
 
                   <Box
@@ -297,12 +307,17 @@ export default function Page() {
             alignItems={"center"}
             flexWrap={"wrap"}
           >
-            <Box display={"flex"} alignItems={"center"} flexWrap={"wrap"} sx={{
-              gap: {
-                md: 2,
-                xs: 1
-              }
-            }}>
+            <Box
+              display={"flex"}
+              alignItems={"center"}
+              flexWrap={"wrap"}
+              sx={{
+                gap: {
+                  md: 2,
+                  xs: 1,
+                },
+              }}
+            >
               <Typography variant="subtitle1" color="#fff" fontWeight={400}>
                 Consulting Animal Nutritionists
               </Typography>
@@ -317,16 +332,16 @@ export default function Page() {
                 >
                   <g
                     fill="#fff"
-                    fill-rule="evenodd"
+                    fillRule="evenodd"
                     stroke="none"
-                    stroke-width="1"
+                    strokeWidth="1"
                   >
                     <circle
                       cx="100"
                       cy="100"
                       r="80"
                       stroke="#fff"
-                      stroke-width="16"
+                      strokeWidth="16"
                       fill="transparent"
                     ></circle>
                     <text

@@ -209,3 +209,7 @@ fieldset {
 .breadcrumb-links ol li:nth-child(1):hover {
   text-decoration: underline;
 }
+
+.loading-spinner svg {
+  color: #06a19b;
+}
