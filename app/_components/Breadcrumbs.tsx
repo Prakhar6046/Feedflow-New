@@ -3,7 +3,7 @@ import * as React from "react";
 import Typography from "@mui/material/Typography";
 import Breadcrumbs from "@mui/material/Breadcrumbs";
 import { Box, Button, Stack, TextField } from "@mui/material";
-
+import { alpha, styled } from "@mui/material/styles";
 import AddOrganization from "./models/AddOrganisation";
 import AddUser from "./models/AddUser";
 import { usePathname } from "next/navigation";
@@ -26,7 +26,25 @@ export default function BasicBreadcrumbs({
   // const handleChange = (event: SelectChangeEvent) => {
   //   setAge(event.target.value);
   // };
-
+  const CssTextField = styled(TextField)({
+    "& label.Mui-focused": {
+      color: "#A0AAB4",
+    },
+    "& .MuiInput-underline:after": {
+      borderBottomColor: "#B2BAC2",
+    },
+    "& .MuiOutlinedInput-root": {
+      "& fieldset": {
+        borderColor: "#E0E3E7",
+      },
+      "&:hover fieldset": {
+        borderColor: "#B2BAC2",
+      },
+      "&.Mui-focused fieldset": {
+        borderColor: "#6F7E8C",
+      },
+    },
+  });
   return (
     <>
       {/* Breadcrumb Section Start */}
@@ -154,7 +172,7 @@ export default function BasicBreadcrumbs({
                   },
                 }}
               />
-
+              <CssTextField label="Custom CSS" id="custom-css-outlined-input" />
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="1.5em"
