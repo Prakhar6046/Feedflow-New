@@ -1,7 +1,7 @@
 import prisma from "@/prisma/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import nodemailer from "nodemailer";
-
+import Logo from "@/public/static/img/logo-bigone.jpg";
 // Create a transporter using your email provider's SMTP settings
 const transporter = nodemailer.createTransport({
   service: "gmail", // You can use any other email service provider
@@ -70,7 +70,7 @@ export async function POST(req: NextRequest) {
           "
         >
           <img
-            src="/public/static/img/logo-bigone.jpg"
+            src="${Logo}"
             alt="Logo"
             class="logo-img"
             style="width: 200px; margin-bottom: 20px"

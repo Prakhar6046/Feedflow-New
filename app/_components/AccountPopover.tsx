@@ -157,7 +157,9 @@ const AccountPopover = () => {
           Dashboard
         </MenuItem>
         <MenuItem
-          onClick={handleClose}
+          onClick={() =>
+            handleChangePage(`/dashboard/user/${loggedUserData?.data?.user.id}`)
+          }
           sx={{
             fontSize: 14,
             fontWeight: 500,
