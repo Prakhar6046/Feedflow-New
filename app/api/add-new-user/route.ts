@@ -81,12 +81,12 @@ export async function POST(req: NextRequest) {
       
                 <h3 class="m-0" style="margin: 0">Hi There!</h3>
                 <p class="m-0" style="margin: 10px 0">
-                  Thank you for adding your organisation to nutrition hub.
+                   You are invited to join Feedflow.
                 </p>
                 <p
                   style="line-height: 1.4; font-size: 16px; color: #505050; margin:0"
                 >
-      Click here to <a  href="${process.env.BASE_URL}/newUser/${results.id}">Continue</a> to set your password
+                   <a href="${process.env.BASE_URL}/newUser/${results.id}"> Click here</a> to join and set password.
                 </p>
              
                 <div style="margin-block: 15px; border: 1px solid #ededed"></div>

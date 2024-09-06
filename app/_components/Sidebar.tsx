@@ -13,7 +13,15 @@ import Image from "next/image";
 function Sidebar() {
   const router = useRouter();
   return (
-    <Stack className="sidebar">
+    <Stack
+      className="sidebar"
+      sx={{
+        position: "fixed",
+        top: "0",
+        left: "0",
+        height: "100vh !important",
+      }}
+    >
       <Box
         position={"relative"}
         paddingBlock={3}

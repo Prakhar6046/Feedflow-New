@@ -213,3 +213,19 @@ fieldset {
 .loading-spinner svg {
   color: #06a19b;
 }
+.upload-file-input > span {
+  margin-right: 0;
+}
+
+.switch-input
+  .css-1x2e00o-MuiSwitch-root
+  .MuiSwitch-switchBase.Mui-checked
+  + .MuiSwitch-track {
+  background: rgba(116, 154, 55, 0.48);
+}
+
+.switch-input .css-1edfpdg-MuiTypography-root {
+  font-size: 14px;
+  color: rgb(145, 158, 171);
+  margin-left: 16px;
+}

@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation";
 import { useForm, SubmitHandler } from "react-hook-form";
 import logo from "@/public/static/img/logo.svg";
 
-
 interface IFormInput {
   password: string;
   confirmPassword: string;
@@ -44,47 +43,16 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
   const password = watch("password");
 
   return (
-    // <form onSubmit={handleSubmit(onSubmit)}>
-    //   <div>
-    //     <label htmlFor="password">Password</label>
-    //     <input
-    //       id="password"
-    //       type="password"
-    //       {...register("password", {
-    //         required: "Password is required",
-    //         minLength: {
-    //           value: 8,
-    //           message: "Password must be at least 8 characters",
-    //         },
-    //       })}
-    //     />
-    //     {errors.password && <span>{errors.password.message}</span>}
-    //   </div>
-
-    //   <div>
-    //     <label htmlFor="confirmPassword">Confirm Password</label>
-    //     <input
-    //       id="confirmPassword"
-    //       type="password"
-    //       {...register("confirmPassword", {
-    //         required: "Please confirm your password",
-    //         validate: (value) => value === password || "Passwords do not match",
-    //       })}
-    //     />
-    //     {errors.confirmPassword && (
-    //       <span>{errors.confirmPassword.message}</span>
-    //     )}
-    //   </div>
-
-    //   <button type="submit">Submit</button>
-    // </form>
-    // Set Password Section Start
-    <Stack display={"flex"} justifyContent={"center"} alignItems={"center"} minHeight={"100vh"} sx={{
-      background:
-        "linear-gradient(349.33deg, rgba(6, 161, 155, 0.4) -27.15%, rgba(2, 59, 57, 0) 103.57%)",
-    }}>
-
-
+    <Stack
+      display={"flex"}
+      justifyContent={"center"}
+      alignItems={"center"}
+      minHeight={"100vh"}
+      sx={{
+        background:
+          "linear-gradient(349.33deg, rgba(6, 161, 155, 0.4) -27.15%, rgba(2, 59, 57, 0) 103.57%)",
+      }}
+    >
       <Box
         sx={{
           padding: {
@@ -96,17 +64,11 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
           background: "#fff",
           marginX: {
             md: 0,
-            xs: 3
-          }
+            xs: 3,
+          },
         }}
-
       >
-
-        <Image
-          src={logo}
-          alt="Logo"
-          width={80}
-        />
+        <Image src={logo} alt="Logo" width={80} />
         <Typography
           mt={2}
           variant="h5"
@@ -116,15 +78,15 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
           sx={{
             fontSize: {
               md: "24px",
-              xs: "20px"
-            }
+              xs: "20px",
+            },
           }}
         >
           Lorem ipsum dolor sit amet.
         </Typography>
 
         <Box position="relative" className="login-inputs">
-          <form>
+          <form onSubmit={handleSubmit(onSubmit)}>
             <TextField
               label="Password"
               type="password"
@@ -133,11 +95,17 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
                 width: "100%",
                 marginBottom: 4,
               }}
-              // value={email}
-              // onChange={(e) => setEmail(e.target.value)}
+              id="password"
+              {...register("password", {
+                required: "Password is required",
+                minLength: {
+                  value: 8,
+                  message: "Password must be at least 8 characters",
+                },
+              })}
               required
             />
-
+            {errors.password && <span>{errors.password.message}</span>}
             <TextField
               label="Confirm Password"
               type="password"
@@ -146,11 +114,17 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
                 width: "100%",
                 marginBottom: 3,
               }}
-              // value={password}
-              // onChange={(e) => setPassword(e.target.value)}
+              id="confirmPassword"
+              {...register("confirmPassword", {
+                required: "Please confirm your password",
+                validate: (value) =>
+                  value === password || "Passwords do not match",
+              })}
               required
             />
-
+            {errors.confirmPassword && (
+              <span>{errors.confirmPassword.message}</span>
+            )}
             <Button
               variant="contained"
               sx={{
@@ -169,7 +143,6 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
           </form>
         </Box>
       </Box>
-
     </Stack>
     // Set Password Section End
   );
