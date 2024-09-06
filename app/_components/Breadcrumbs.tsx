@@ -28,20 +28,20 @@ export default function BasicBreadcrumbs({
   // };
   const CssTextField = styled(TextField)({
     "& label.Mui-focused": {
-      color: "red",
+      color: "#06a19b",
     },
     "& .MuiInput-underline:after": {
-      borderBottomColor: "red",
+      borderBottomColor: "#979797",
     },
     "& .MuiOutlinedInput-root": {
       "& fieldset": {
-        borderColor: "red",
+        borderColor: "#979797",
       },
       "&:hover fieldset": {
-        borderColor: "red",
+        borderColor: "#979797",
       },
       "&.Mui-focused fieldset": {
-        borderColor: "red",
+        borderColor: "#979797",
       },
     },
   });
