@@ -179,6 +179,7 @@ const AddOrganization: React.FC<Props> = ({ setOpen, open }) => {
               label="Organisation Code"
               variant="outlined"
               fullWidth
+              className="form-input"
               type="text"
               {...register("organisationCode", {
                 required: "Organisation Code is required",
