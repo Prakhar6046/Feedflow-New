@@ -31,7 +31,6 @@ interface Props {
 
 export default function UserTable() {
   const router = useRouter();
-  const role = getCookie("role");
   const loggedUser = getCookie("logged-user");
   const [users, setUsers] = useState<User[]>();
   const [loading, setLoading] = useState<boolean>(false);
@@ -54,11 +53,11 @@ export default function UserTable() {
 
   useEffect(() => {
     setLoading(true);
-    if (role && loggedUser) {
+    if (loggedUser) {
       const data = async () => {
         const loggedData = JSON.parse(loggedUser);
         const res = await getUsers({
-          role,
+          role: loggedData.data.user.role,
           organisationId: loggedData.data.user.organisationId,
         });
         setUsers(res.data);
@@ -66,7 +65,7 @@ export default function UserTable() {
       };
       data();
     }
-  }, [role, loggedUser]);
+  }, [loggedUser]);
 
   if (loading) {
     return <Loader />;
