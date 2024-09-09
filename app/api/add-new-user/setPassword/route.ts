@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
     setCookie("auth-token", token, { cookies });
     // Return a success response
     return NextResponse.json({
-      data: user,
+      data: { user },
       token,
       status: true,
     });

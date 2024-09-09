@@ -1,7 +1,6 @@
 import prisma from "@/prisma/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import nodemailer from "nodemailer";
-import Logo from "@/public/static/img/logo-bigone.jpg";
 // Create a transporter using your email provider's SMTP settings
 const transporter = nodemailer.createTransport({
   service: "gmail", // You can use any other email service provider
@@ -12,24 +11,25 @@ const transporter = nodemailer.createTransport({
 });
 export async function POST(req: NextRequest) {
   try {
-    const { email, name, contactNumber, contactPerson } = await req.json();
+    const { email, name, contactNumber, contactPerson, organisationCode } =
+      await req.json();
 
     if (!email) {
       return NextResponse.json({ error: "Email is required" }, { status: 400 });
     }
-    const user = await prisma.user.create({
-      data: {
-        email,
-        name,
-      },
-    });
-
     const results = await prisma.organisation.create({
       data: {
         name,
         contactNumber,
         contactPerson,
-        userId: user.id,
+        organisationCode,
+      },
+    });
+    const user = await prisma.user.create({
+      data: {
+        email,
+        name,
+        organisationId: Number(results.id),
       },
     });
 
@@ -70,7 +70,7 @@ export async function POST(req: NextRequest) {
           "
         >
           <img
-            src="${Logo}"
+            src="https://ibb.co/vJyFwv7"
             alt="Logo"
             class="logo-img"
             style="width: 200px; margin-bottom: 20px"
@@ -105,7 +105,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({
       message: "Email sent successfully",
       info: info.response,
-      data: results,
+      data: { results, user },
       status: true,
     });
   } catch (error) {

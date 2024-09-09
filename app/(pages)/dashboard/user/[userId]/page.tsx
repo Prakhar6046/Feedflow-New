@@ -231,10 +231,8 @@ export default function Page({ params }: { params: { userId: string } }) {
                   label="Organisation"
                   type="text"
                   className="form-input"
-                  focused={userData?.data?.Organisation[0]?.name ? true : false}
-                  value={
-                    userData?.data?.Organisation[0]?.name ?? "Nutrition Hub"
-                  }
+                  focused={userData?.data?.organisation?.name ? true : false}
+                  value={userData?.data?.organisation?.name ?? "Nutrition Hub"}
                   sx={{
                     width: "100%",
                     marginBottom: 2,

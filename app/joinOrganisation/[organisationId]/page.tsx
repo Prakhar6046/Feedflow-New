@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useForm, SubmitHandler } from "react-hook-form";
 import logo from "@/public/static/img/logo.svg";
+import { setCookie } from "cookies-next";
 
 interface IFormInput {
   password: string;
@@ -33,6 +34,8 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
         }),
       });
       const responseData = await response.json();
+      console.log(responseData);
+      setCookie("logged-user", responseData);
       if (responseData.status && responseData.token) {
         router.push("/dashboard/organisation");
       }

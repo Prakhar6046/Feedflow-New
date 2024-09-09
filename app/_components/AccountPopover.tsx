@@ -59,6 +59,7 @@ const AccountPopover = () => {
       setLoggedUserData(JSON.parse(loggedUser));
     }
   }, [loggedUser]);
+  console.log(loggedUserData);
 
   return (
     <React.Fragment>

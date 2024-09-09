@@ -143,7 +143,7 @@ export default function BasicBreadcrumbs({
           <AddUser
             open={open}
             setOpen={setOpen}
-            organisations={organisations}
+            organisations={organisations ?? []}
           />
         )}
       </Stack>
@@ -207,8 +207,20 @@ export default function BasicBreadcrumbs({
                   },
                 }}
               />
-              <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" className="search-icon">
-                <path fill="none" stroke="#979797" stroke-linecap="round" stroke-width="2" d="m21 21l-4.486-4.494M19 10.5a8.5 8.5 0 1 1-17 0a8.5 8.5 0 0 1 17 0Z" />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="1em"
+                height="1em"
+                viewBox="0 0 24 24"
+                className="search-icon"
+              >
+                <path
+                  fill="none"
+                  stroke="#979797"
+                  stroke-linecap="round"
+                  stroke-width="2"
+                  d="m21 21l-4.486-4.494M19 10.5a8.5 8.5 0 1 1-17 0a8.5 8.5 0 0 1 17 0Z"
+                />
               </svg>
             </Box>
 

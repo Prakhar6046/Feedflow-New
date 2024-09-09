@@ -17,7 +17,6 @@ export default async function Page() {
           .filter((user: any) => user.role! !== "SUPERADMIN")
           .filter((user: any) => user.role !== "ADMIN")
       : users.data.filter((user: any) => user.role! !== "SUPERADMIN");
-  console.log(filteredUsers);
 
   return (
     <>

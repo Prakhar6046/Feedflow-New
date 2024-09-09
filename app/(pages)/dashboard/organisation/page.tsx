@@ -10,6 +10,7 @@ export default async function Page() {
       <BasicBreadcrumbs
         heading={"Organization"}
         buttonName={"Add Organization"}
+        organisations={organisations?.data}
         links={[
           { name: "Dashboard", link: "/dashboard" },
           { name: "Organisation", link: "/dashboard/organisation" },
