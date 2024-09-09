@@ -1,5 +1,5 @@
 "use client";
-import * as React from "react";
+import React, { useEffect, useState } from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -11,6 +11,8 @@ import { Box, Button, Popover, Stack, Typography } from "@mui/material";
 import { readableDate } from "../_lib/utils";
 import { getCookie } from "cookies-next";
 import { useRouter } from "next/navigation";
+import { getUsers } from "../_lib/action";
+import Loader from "./Loader";
 export interface User {
   id: Number;
   name: String;
@@ -27,8 +29,12 @@ interface Props {
   users: User[];
 }
 
-export default function UserTable({ users }: Props) {
+export default function UserTable() {
   const router = useRouter();
+  const role = getCookie("role");
+  const loggedUser = getCookie("logged-user");
+  const [users, setUsers] = useState<User[]>();
+  const [loading, setLoading] = useState<boolean>(false);
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null
   );
@@ -46,6 +52,25 @@ export default function UserTable({ users }: Props) {
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
 
+  useEffect(() => {
+    setLoading(true);
+    if (role && loggedUser) {
+      const data = async () => {
+        const loggedData = JSON.parse(loggedUser);
+        const res = await getUsers({
+          role,
+          organisationId: loggedData.data.user.organisationId,
+        });
+        setUsers(res.data);
+        setLoading(false);
+      };
+      data();
+    }
+  }, [role, loggedUser]);
+
+  if (loading) {
+    return <Loader />;
+  }
   return (
     <TableContainer
       component={Paper}

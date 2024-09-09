@@ -8,7 +8,10 @@ const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key";
 export const POST = async (request: Request) => {
   try {
     const { email, password } = await request.json();
-    const user = await prisma.user.findUnique({ where: { email } });
+    const user = await prisma.user.findUnique({
+      where: { email },
+      include: { organisation: { select: { id: true } } },
+    });
 
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });

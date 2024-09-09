@@ -1,24 +1,37 @@
 import prisma from "@/prisma/prisma";
-import { NextResponse } from "next/server";
-
-export const GET = async () => {
+import { NextResponse, NextRequest } from "next/server";
+export const GET = async (request: NextRequest) => {
   try {
-    const organisations = await prisma.user.findMany({
-      include: {
-        organisation: {
-          select: {
-            name: true,
+    const searchParams = request.nextUrl.searchParams;
+    const role = searchParams.get("role");
+    const organisationId = searchParams.get("organisationId");
+    let users;
+    if (role === "SUPERADMIN") {
+      users = await prisma.user.findMany({
+        include: {
+          organisation: {
+            select: {
+              name: true,
+            },
           },
         },
-      },
-    });
+      });
+    } else {
+      users = await prisma.user.findMany({
+        where: { organisationId: Number(organisationId) },
+        include: {
+          organisation: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      });
+    }
 
-    return new NextResponse(
-      JSON.stringify({ status: true, data: organisations }),
-      {
-        status: 200,
-      }
-    );
+    return new NextResponse(JSON.stringify({ status: true, data: users }), {
+      status: 200,
+    });
   } catch (error) {
     return new NextResponse(JSON.stringify({ status: false, error }), {
       status: 500,

@@ -1,5 +1,8 @@
 import { revalidatePath } from "next/cache";
-
+// interface GETUSERS {
+//   role: string |;
+//   organisationId: number;
+// }
 export const getOrganisations = async () => {
   try {
     const data = await fetch(`${process.env.BASE_URL}/api/organisation`, {
@@ -15,15 +18,17 @@ export const getOrganisations = async () => {
     return error;
   }
 };
-export const getUsers = async () => {
+export const getUsers = async (payload: any) => {
   try {
-    const data = await fetch(`${process.env.BASE_URL}/api/users`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    revalidatePath("/dashboard/user");
+    const data = await fetch(
+      `http://localhost:3000/api/users?role=${payload.role}&organisationId=${payload.organisationId}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
     return await data.json();
   } catch (error) {
     console.log(error);

@@ -5,18 +5,19 @@ import { getCookie } from "cookies-next";
 import { cookies } from "next/headers";
 
 export default async function Page() {
-  const users = await getUsers();
   let organisations = await getOrganisations();
   const role = getCookie("role", { cookies });
+  // const users = await getUsers();
+  // console.log(users);
+  // const filteredUsers =
 
-  const filteredUsers =
-    role === "SUPERADMIN"
-      ? users.data.filter((user: any) => user.role !== "SUPERADMIN")
-      : role === "MEMBER"
-      ? users.data
-          .filter((user: any) => user.role! !== "SUPERADMIN")
-          .filter((user: any) => user.role !== "ADMIN")
-      : users.data.filter((user: any) => user.role! !== "SUPERADMIN");
+  //   role === "SUPERADMIN"
+  //     ? users.data.filter((user: any) => user.role !== "SUPERADMIN")
+  //     : role === "MEMBER"
+  //     ? users.data
+  //         .filter((user: any) => user.role! !== "SUPERADMIN")
+  //         .filter((user: any) => user.role !== "ADMIN")
+  //     : users.data.filter((user: any) => user.role! !== "SUPERADMIN");
 
   return (
     <>
@@ -29,7 +30,7 @@ export default async function Page() {
           { name: "User", link: "/dashboard/user" },
         ]}
       />
-      <UserTable users={filteredUsers} />
+      <UserTable />
     </>
   );
 }

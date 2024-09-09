@@ -10,6 +10,7 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Organisation } from "./BasicTable";
+import { getCookie } from "cookies-next";
 interface Props {
   heading: string;
   buttonName?: string;
@@ -22,9 +23,11 @@ export default function BasicBreadcrumbs({
   links,
   organisations,
 }: Props) {
+  const role = getCookie("role");
   const [open, setOpen] = useState(false);
   const pathName = usePathname();
   const [status, setStatus] = useState("Updating..");
+  const [currentRole, setCurrentRole] = useState<string>("");
   // const [age, setAge] = React.useState('');
 
   // const handleChange = (event: SelectChangeEvent) => {
@@ -49,6 +52,11 @@ export default function BasicBreadcrumbs({
       () => clearTimeout(timer);
     };
   }, [status]);
+  useEffect(() => {
+    if (role) {
+      setCurrentRole(role);
+    }
+  }, [role]);
 
   return (
     <>
@@ -102,7 +110,7 @@ export default function BasicBreadcrumbs({
           )}
         </Box>
 
-        {buttonName && (
+        {currentRole === "SUPERADMIN" && buttonName ? (
           <Button
             variant="contained"
             onClick={() => setOpen(true)}
@@ -135,6 +143,41 @@ export default function BasicBreadcrumbs({
             </svg>
             {buttonName}
           </Button>
+        ) : (
+          buttonName !== "Add Organization" && (
+            <Button
+              variant="contained"
+              onClick={() => setOpen(true)}
+              sx={{
+                background: "#06A19B",
+                fontWeight: 600,
+                padding: "8px 20px",
+                width: "fit-content",
+                textTransform: "capitalize",
+                borderRadius: "8px",
+                textWrap: "nowrap",
+                display: "flex",
+                gap: 1,
+                alignItems: "center",
+              }}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="1.5em"
+                height="1.5em"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  fill="none"
+                  stroke="#fff"
+                  stroke-linecap="round"
+                  strokeWidth="2"
+                  d="M12 6v12m6-6H6"
+                />
+              </svg>
+              {buttonName}
+            </Button>
+          )
         )}
 
         {heading === "Organization" ? (
