@@ -19,9 +19,9 @@ export interface User {
   status: String;
   role: String;
   createdAt: String;
-  Organisation: {
+  organisation: {
     name: String;
-  }[];
+  };
 }
 interface Props {
   users: User[];
@@ -226,7 +226,7 @@ export default function UserTable({ users }: Props) {
                       fontWeight: 500,
                     }}
                   >
-                    {user?.Organisation[0]?.name ?? "No Organisation"}
+                    {user?.organisation?.name ?? "No Organisation"}
                   </TableCell>
                   <TableCell
                     sx={{

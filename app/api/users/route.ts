@@ -5,13 +5,14 @@ export const GET = async () => {
   try {
     const organisations = await prisma.user.findMany({
       include: {
-        Organisation: {
+        organisation: {
           select: {
             name: true,
           },
         },
       },
     });
+
     return new NextResponse(
       JSON.stringify({ status: true, data: organisations }),
       {

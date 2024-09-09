@@ -12,7 +12,7 @@ const transporter = nodemailer.createTransport({
 });
 export async function POST(req: NextRequest) {
   try {
-    const { email, name } = await req.json();
+    const { email, name, organisationId } = await req.json();
 
     if (!email) {
       return NextResponse.json({ error: "Email is required" }, { status: 400 });
@@ -27,10 +27,23 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       );
     }
+
+    const organisation = await prisma.organisation.findUnique({
+      where: { id: Number(organisationId) },
+    });
+    console.log(organisation);
+
+    if (!organisation) {
+      return NextResponse.json(
+        { error: "Organisation not found" },
+        { status: 400 }
+      );
+    }
     const results = await prisma.user.create({
       data: {
         email,
         name,
+        organisationId: Number(organisationId),
       },
     });
 

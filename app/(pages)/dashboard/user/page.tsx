@@ -1,11 +1,12 @@
 import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
 import UserTable from "@/app/_components/UserTable";
-import { getUsers } from "@/app/_lib/action";
+import { getOrganisations, getUsers } from "@/app/_lib/action";
 import { getCookie } from "cookies-next";
 import { cookies } from "next/headers";
 
 export default async function Page() {
   const users = await getUsers();
+  let organisations = await getOrganisations();
   const role = getCookie("role", { cookies });
 
   const filteredUsers =
@@ -16,12 +17,14 @@ export default async function Page() {
           .filter((user: any) => user.role! !== "SUPERADMIN")
           .filter((user: any) => user.role !== "ADMIN")
       : users.data.filter((user: any) => user.role! !== "SUPERADMIN");
+  console.log(filteredUsers);
 
   return (
     <>
       <BasicBreadcrumbs
         heading={"User"}
         buttonName={"Add User"}
+        organisations={organisations?.data}
         links={[
           { name: "Dashboard", link: "/dashboard" },
           { name: "User", link: "/dashboard/user" },

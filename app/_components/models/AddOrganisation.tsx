@@ -30,6 +30,7 @@ interface FormInputs {
   email: string;
   contactPerson: string;
   contactNumber: string;
+  organisationCode: string;
 }
 
 const AddOrganization: React.FC<Props> = ({ setOpen, open }) => {
@@ -112,7 +113,7 @@ const AddOrganization: React.FC<Props> = ({ setOpen, open }) => {
               fullWidth
               type="text"
               sx={{
-                marginBottom: 2
+                marginBottom: 2,
               }}
               {...register("name", { required: true })}
               error={!!errors.name}
@@ -124,7 +125,7 @@ const AddOrganization: React.FC<Props> = ({ setOpen, open }) => {
               fullWidth
               type="email"
               sx={{
-                marginBottom: 2
+                marginBottom: 2,
               }}
               {...register("email", {
                 required: "Email is required",
@@ -142,7 +143,7 @@ const AddOrganization: React.FC<Props> = ({ setOpen, open }) => {
               variant="outlined"
               fullWidth
               sx={{
-                marginBottom: 2
+                marginBottom: 2,
               }}
               {...register("contactPerson", { required: true })}
               error={!!errors.contactPerson}
@@ -154,6 +155,9 @@ const AddOrganization: React.FC<Props> = ({ setOpen, open }) => {
               label="Contact Number"
               variant="outlined"
               fullWidth
+              sx={{
+                marginBottom: 2,
+              }}
               type="text"
               {...register("contactNumber", {
                 required: "Contact Number is required",
@@ -165,6 +169,19 @@ const AddOrganization: React.FC<Props> = ({ setOpen, open }) => {
               error={!!errors.contactNumber}
               helperText={
                 errors.contactNumber ? errors.contactNumber.message : ""
+              }
+            />
+            <TextField
+              label="Organisation Code"
+              variant="outlined"
+              fullWidth
+              type="text"
+              {...register("organisationCode", {
+                required: "Organisation Code is required",
+              })}
+              error={!!errors.organisationCode}
+              helperText={
+                errors.organisationCode ? errors.organisationCode.message : ""
               }
             />
             <Button

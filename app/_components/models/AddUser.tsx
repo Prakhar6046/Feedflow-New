@@ -9,7 +9,12 @@ import {
 import Image from "next/image";
 import closeIcon from "@/public/static/img/icons/ic-close.svg";
 import { useForm, SubmitHandler } from "react-hook-form";
-
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
+import { useState } from "react";
+import { Organisation } from "../BasicTable";
 const style = {
   position: "absolute" as "absolute",
   top: "50%",
@@ -23,14 +28,17 @@ const style = {
 interface Props {
   setOpen: (open: boolean) => void;
   open: boolean;
+  organisations: Organisation[];
 }
 
 interface FormInputs {
   name: string;
   email: string;
+  organisationId: Number;
 }
 
-const AddUser: React.FC<Props> = ({ setOpen, open }) => {
+const AddUser: React.FC<Props> = ({ setOpen, open, organisations }) => {
+  const [selectedOrganisation, setSelectedOrganisation] = useState<any>("");
   const {
     register,
     handleSubmit,
@@ -41,7 +49,9 @@ const AddUser: React.FC<Props> = ({ setOpen, open }) => {
   const handleClose = () => setOpen(false);
 
   const onSubmit: SubmitHandler<FormInputs> = async (data) => {
-    if (data.email && data.name) {
+    console.log(data);
+
+    if (data.email && data.name && data.organisationId) {
       const response = await fetch("/api/add-new-user", {
         method: "POST",
         headers: {
@@ -55,6 +65,11 @@ const AddUser: React.FC<Props> = ({ setOpen, open }) => {
         reset();
       }
     }
+  };
+
+  const handleChange = (event: SelectChangeEvent) => {
+    console.log(event);
+    setSelectedOrganisation(event.target.value as string);
   };
 
   return (
@@ -131,6 +146,31 @@ const AddUser: React.FC<Props> = ({ setOpen, open }) => {
               error={!!errors.email}
               helperText={errors.email ? errors.email.message : ""}
             />
+            <Box sx={{ minWidth: 120 }}>
+              <FormControl fullWidth>
+                <InputLabel id="demo-simple-select-label">
+                  Organisation
+                </InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={selectedOrganisation}
+                  label="Organisation"
+                  {...register("organisationId")}
+                  onChange={handleChange}
+                >
+                  {organisations?.map((organisation, i) => {
+                    return (
+                      <MenuItem value={Number(organisation.id)} key={i}>
+                        {organisation.name}
+                      </MenuItem>
+                    );
+                  })}
+                  {/* <MenuItem value={20}>Twenty</MenuItem>
+                  <MenuItem value={30}>Thirty</MenuItem> */}
+                </Select>
+              </FormControl>
+            </Box>
 
             <Button
               type="submit"

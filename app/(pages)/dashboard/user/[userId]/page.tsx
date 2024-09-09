@@ -109,8 +109,6 @@ export default function Page({ params }: { params: { userId: string } }) {
     user();
   }, []);
 
-  console.log(userData);
-
   if (loading) {
     return <Loader />;
   }

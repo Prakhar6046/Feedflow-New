@@ -9,15 +9,18 @@ import AddUser from "./models/AddUser";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { Organisation } from "./BasicTable";
 interface Props {
   heading: string;
   buttonName?: string;
   links?: { name: string; link: string }[];
+  organisations?: Organisation[];
 }
 export default function BasicBreadcrumbs({
   heading,
   buttonName,
   links,
+  organisations,
 }: Props) {
   const [open, setOpen] = useState(false);
   const pathName = usePathname();
@@ -137,7 +140,11 @@ export default function BasicBreadcrumbs({
         {heading === "Organization" ? (
           <AddOrganization open={open} setOpen={setOpen} />
         ) : (
-          <AddUser open={open} setOpen={setOpen} />
+          <AddUser
+            open={open}
+            setOpen={setOpen}
+            organisations={organisations}
+          />
         )}
       </Stack>
       {/* Breadcrumb Section End */}

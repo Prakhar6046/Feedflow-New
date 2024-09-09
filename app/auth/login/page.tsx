@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Box, Button, Stack, TextField, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid";
@@ -7,6 +7,7 @@ import logo from "@/public/static/img/logo-bigone.jpg";
 import Image from "next/image";
 import { setCookie } from "cookies-next";
 import Link from "next/link";
+import { hashPassword } from "@/app/_lib/hash";
 
 export default function Page() {
   const [email, setEmail] = useState("abhishek.choudhary@ensuesoft.com");

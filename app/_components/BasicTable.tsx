@@ -8,14 +8,18 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { Box, Button, Popover, Stack, Typography } from "@mui/material";
+export interface Organisation {
+  id: Number;
+  name: String;
+  contactNumber: String;
+  contactPerson: String;
+  image: String;
+  organisationCode: String;
+  createdAt: String;
+  updatedAt: String;
+}
 interface Props {
-  organisations: {
-    id: Number;
-    name: String;
-    contactNumber: String;
-    contactPerson: String;
-    userId: Number;
-  }[];
+  organisations: Organisation[];
 }
 
 export default function BasicTable({ organisations }: Props) {
