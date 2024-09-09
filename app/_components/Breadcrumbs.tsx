@@ -144,6 +144,7 @@ export default function BasicBreadcrumbs({
             {buttonName}
           </Button>
         ) : (
+          buttonName &&
           buttonName !== "Add Organization" && (
             <Button
               variant="contained"

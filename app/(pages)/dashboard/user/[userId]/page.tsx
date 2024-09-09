@@ -388,43 +388,43 @@ export default function Page({ params }: { params: { userId: string } }) {
               <Box display={"flex"} flexDirection={"column"} gap={4}>
                 <FormControlLabel
                   className="switch-input"
-                  control={<IOSSwitch defaultChecked />}
+                  control={<IOSSwitch defaultChecked disabled />}
                   label="View Batch Reports"
                 />
 
                 <FormControlLabel
                   className="switch-input"
-                  control={<IOSSwitch defaultChecked />}
+                  control={<IOSSwitch defaultChecked disabled />}
                   label="View Batch Reports"
                 />
 
                 <FormControlLabel
                   className="switch-input"
-                  control={<IOSSwitch defaultChecked />}
+                  control={<IOSSwitch defaultChecked disabled />}
                   label="View Batch Reports"
                 />
 
                 <FormControlLabel
                   className="switch-input"
-                  control={<IOSSwitch defaultChecked />}
+                  control={<IOSSwitch defaultChecked disabled />}
                   label="View Batch Reports"
                 />
 
                 <FormControlLabel
                   className="switch-input"
-                  control={<IOSSwitch defaultChecked />}
+                  control={<IOSSwitch defaultChecked disabled />}
                   label="View Batch Reports"
                 />
 
                 <FormControlLabel
                   className="switch-input"
-                  control={<IOSSwitch defaultChecked />}
+                  control={<IOSSwitch defaultChecked disabled />}
                   label="View Batch Reports"
                 />
 
                 <FormControlLabel
                   className="switch-input"
-                  control={<IOSSwitch defaultChecked />}
+                  control={<IOSSwitch defaultChecked disabled />}
                   label="View Batch Reports"
                 />
               </Box>
@@ -469,43 +469,43 @@ export default function Page({ params }: { params: { userId: string } }) {
               <Box display={"flex"} flexDirection={"column"} gap={4}>
                 <FormControlLabel
                   className="switch-input"
-                  control={<IOSSwitch defaultChecked />}
+                  control={<IOSSwitch defaultChecked disabled />}
                   label="View Batch Reports"
                 />
 
                 <FormControlLabel
                   className="switch-input"
-                  control={<IOSSwitch defaultChecked />}
+                  control={<IOSSwitch defaultChecked disabled />}
                   label="View Batch Reports"
                 />
 
                 <FormControlLabel
                   className="switch-input"
-                  control={<IOSSwitch defaultChecked />}
+                  control={<IOSSwitch defaultChecked disabled />}
                   label="View Batch Reports"
                 />
 
                 <FormControlLabel
                   className="switch-input"
-                  control={<IOSSwitch defaultChecked />}
+                  control={<IOSSwitch defaultChecked disabled />}
                   label="View Batch Reports"
                 />
 
                 <FormControlLabel
                   className="switch-input"
-                  control={<IOSSwitch defaultChecked />}
+                  control={<IOSSwitch defaultChecked disabled />}
                   label="View Batch Reports"
                 />
 
                 <FormControlLabel
                   className="switch-input"
-                  control={<IOSSwitch defaultChecked />}
+                  control={<IOSSwitch defaultChecked disabled />}
                   label="View Batch Reports"
                 />
 
                 <FormControlLabel
                   className="switch-input"
-                  control={<IOSSwitch defaultChecked />}
+                  control={<IOSSwitch defaultChecked disabled />}
                   label="View Batch Reports"
                 />
               </Box>
@@ -551,43 +551,43 @@ export default function Page({ params }: { params: { userId: string } }) {
               <Box display={"flex"} flexDirection={"column"} gap={4}>
                 <FormControlLabel
                   className="switch-input"
-                  control={<IOSSwitch defaultChecked />}
+                  control={<IOSSwitch defaultChecked disabled />}
                   label="View Batch Reports"
                 />
 
                 <FormControlLabel
                   className="switch-input"
-                  control={<IOSSwitch defaultChecked />}
+                  control={<IOSSwitch defaultChecked disabled />}
                   label="View Batch Reports"
                 />
 
                 <FormControlLabel
                   className="switch-input"
-                  control={<IOSSwitch defaultChecked />}
+                  control={<IOSSwitch defaultChecked disabled />}
                   label="View Batch Reports"
                 />
 
                 <FormControlLabel
                   className="switch-input"
-                  control={<IOSSwitch defaultChecked />}
+                  control={<IOSSwitch defaultChecked disabled />}
                   label="View Batch Reports"
                 />
 
                 <FormControlLabel
                   className="switch-input"
-                  control={<IOSSwitch defaultChecked />}
+                  control={<IOSSwitch defaultChecked disabled />}
                   label="View Batch Reports"
                 />
 
                 <FormControlLabel
                   className="switch-input"
-                  control={<IOSSwitch defaultChecked />}
+                  control={<IOSSwitch defaultChecked disabled />}
                   label="View Batch Reports"
                 />
 
                 <FormControlLabel
                   className="switch-input"
-                  control={<IOSSwitch defaultChecked />}
+                  control={<IOSSwitch defaultChecked disabled />}
                   label="View Batch Reports"
                 />
               </Box>
