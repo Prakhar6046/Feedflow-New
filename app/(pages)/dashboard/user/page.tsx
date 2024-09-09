@@ -8,16 +8,17 @@ export default async function Page() {
   const users = await getUsers();
   let organisations = await getOrganisations();
   const role = getCookie("role", { cookies });
+console.log(users);
 
-  const filteredUsers =
-    role === "SUPERADMIN"
-      ? users.data.filter((user: any) => user.role !== "SUPERADMIN")
-      : role === "MEMBER"
-      ? users.data
-          .filter((user: any) => user.role! !== "SUPERADMIN")
-          .filter((user: any) => user.role !== "ADMIN")
-      : users.data.filter((user: any) => user.role! !== "SUPERADMIN");
-  console.log(filteredUsers);
+  // const filteredUsers =
+  //   role === "SUPERADMIN"
+  //     ? users.data.filter((user: any) => user.role !== "SUPERADMIN")
+  //     : role === "MEMBER"
+  //     ? users.data
+  //         .filter((user: any) => user.role! !== "SUPERADMIN")
+  //         .filter((user: any) => user.role !== "ADMIN")
+  //     : users.data.filter((user: any) => user.role! !== "SUPERADMIN");
+  // console.log(filteredUsers);
 
   return (
     <>
@@ -30,7 +31,7 @@ export default async function Page() {
           { name: "User", link: "/dashboard/user" },
         ]}
       />
-      <UserTable users={filteredUsers} />
+      {/* <UserTable users={filteredUsers} /> */}
     </>
   );
 }
