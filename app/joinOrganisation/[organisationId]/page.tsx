@@ -91,6 +91,7 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
               label="Password"
               type="password"
               // focused
+              className="form-input"
               sx={{
                 width: "100%",
                 marginBottom: 4,
@@ -109,6 +110,7 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
             <TextField
               label="Confirm Password"
               type="password"
+              className="form-input"
               // focused
               sx={{
                 width: "100%",

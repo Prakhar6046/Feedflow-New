@@ -206,6 +206,7 @@ export default function Page({ params }: { params: { userId: string } }) {
                 <TextField
                   label="Name"
                   type="text"
+                  className="form-input"
                   focused={userData?.data.name ? true : false}
                   value={userData?.data.name}
                   sx={{
@@ -217,6 +218,7 @@ export default function Page({ params }: { params: { userId: string } }) {
                 <TextField
                   label="Email"
                   type="email"
+                  className="form-input"
                   focused={userData?.data.email ? true : false}
                   value={userData?.data.email}
                   sx={{
@@ -228,6 +230,7 @@ export default function Page({ params }: { params: { userId: string } }) {
                 <TextField
                   label="Organisation"
                   type="text"
+                  className="form-input"
                   focused={userData?.data?.Organisation[0]?.name ? true : false}
                   value={
                     userData?.data?.Organisation[0]?.name ?? "Nutrition Hub"
@@ -270,6 +273,7 @@ export default function Page({ params }: { params: { userId: string } }) {
                 <TextField
                   label="Password"
                   type="text"
+                  className="form-input"
                   // focused
                   sx={{
                     width: "100%",
@@ -280,6 +284,7 @@ export default function Page({ params }: { params: { userId: string } }) {
                 <TextField
                   label="Re-enter Password"
                   type="text"
+                  className="form-input"
                   // focused
                   sx={{
                     width: "100%",
@@ -330,8 +335,8 @@ export default function Page({ params }: { params: { userId: string } }) {
 
           <Box
             my={3}
-            bgcolor={"rgb(216, 251, 222)"}
-            color={"rgb(10, 85, 84)"}
+            bgcolor={"#06a19b"}
+            color={"#fff"}
             sx={{
               p: "14px 16px",
               borderRadius: "8px",
@@ -348,7 +353,7 @@ export default function Page({ params }: { params: { userId: string } }) {
               viewBox="0 0 24 24"
             >
               <path
-                fill="rgb(54, 179, 126)"
+                fill="#fff"
                 fill-rule="evenodd"
                 d="M12 1C5.925 1 1 5.925 1 12s4.925 11 11 11s11-4.925 11-11S18.075 1 12 1m4.768 9.14a1 1 0 1 0-1.536-1.28l-4.3 5.159l-2.225-2.226a1 1 0 0 0-1.414 1.414l3 3a1 1 0 0 0 1.475-.067z"
                 clip-rule="evenodd"

@@ -121,6 +121,7 @@ const AddUser: React.FC<Props> = ({ setOpen, open, organisations }) => {
             <TextField
               label="Name"
               variant="outlined"
+              className="form-input"
               fullWidth
               {...register("name", { required: true })}
               error={!!errors.name}
@@ -133,6 +134,7 @@ const AddUser: React.FC<Props> = ({ setOpen, open, organisations }) => {
               label="Email"
               variant="outlined"
               fullWidth
+              className="form-input"
               sx={{
                 marginBottom: 2,
               }}

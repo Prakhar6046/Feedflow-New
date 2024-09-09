@@ -71,15 +71,8 @@ body {
   line-height: 1;
 }
 
-.search-filter
-  .css-j882ge-MuiInputBase-root-MuiOutlinedInput-root.Mui-focused
-  .MuiOutlinedInput-notchedOutline {
-  border-color: #06a19b;
-  border-width: 1px;
-}
-
 .search-filter .css-1jk99ih-MuiInputBase-input-MuiOutlinedInput-input {
-  padding: 10px 14px 10px 40px;
+  padding: 8.5px 14px 8.5px 36px;
 }
 
 .search-filter .css-18pjc51-MuiFormLabel-root-MuiInputLabel-root.Mui-focused {
@@ -88,9 +81,9 @@ body {
 
 .search-filter .search-icon {
   position: absolute;
-  left: 5%;
+  left: 6%;
   top: 50%;
-  transform: translate(-5%, -50%);
+  transform: translate(-6%, -50%);
 }
 
 .settings .css-qehfkt-MuiPaper-root-MuiPopover-paper-MuiMenu-paper {
@@ -125,32 +118,9 @@ body {
   padding: 0;
 }
 
-/* .css-j882ge-MuiInputBase-root-MuiOutlinedInput-root.Mui-focused
-  .MuiOutlinedInput-notchedOutline {
-  border-color: #06a19b !important;
-  border-width: 1px;
-} */
-
-fieldset {
-  border: 1px solid #979797;
-}
-
 .login-inputs .css-18pjc51-MuiFormLabel-root-MuiInputLabel-root.Mui-focused {
   color: #979797;
 }
-
-/* .css-18pjc51-MuiFormLabel-root-MuiInputLabel-root.Mui-focused {
-  color: #06a19b !important;
-} */
-
-/* .css-18w7by0.Mui-focused {
-  color: red !important;
-} */
-
-/* .css-1o0kqxp-MuiInputBase-root-MuiOutlinedInput-root.Mui-focused
-  .MuiOutlinedInput-notchedOutline {
-  border-color: #06a19b !important;
-} */
 
 .sidebar .css-1edfpdg-MuiTypography-root {
   font-size: 10px;
@@ -180,19 +150,10 @@ fieldset {
   font-size: 10px;
 }
 
-/* .css-j882ge-MuiInputBase-root-MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
-  border-color: #1976d2 !important;
-} */
-
-/* .css-1d3z3hw-MuiOutlinedInput-notchedOutline {
-  border-color: #979797;
-} */
-
 .cursor-pointer {
   cursor: pointer;
 }
 
-/* 06/09 */
 .nav-links li > div:hover {
   border-radius: 8px;
 }
@@ -221,11 +182,23 @@ fieldset {
   .css-1x2e00o-MuiSwitch-root
   .MuiSwitch-switchBase.Mui-checked
   + .MuiSwitch-track {
-  background: rgba(116, 154, 55, 0.48);
+  background: rgba(6, 161, 155, 0.48);
 }
 
 .switch-input .css-1edfpdg-MuiTypography-root {
   font-size: 14px;
   color: rgb(145, 158, 171);
   margin-left: 16px;
+}
+
+.search-filter .css-j882ge-MuiInputBase-root-MuiOutlinedInput-root {
+  border-radius: 8px;
+}
+
+.form-input > div > fieldset {
+  border: 1px solid #979797 !important;
+}
+
+.form-input > label {
+  color: #979797 !important;
 }

@@ -198,6 +198,7 @@ export default function BasicBreadcrumbs({
             >
               <TextField
                 label="Search"
+                className="form-input"
                 focused
                 sx={{
                   width: {
@@ -206,18 +207,8 @@ export default function BasicBreadcrumbs({
                   },
                 }}
               />
-
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="1.5em"
-                height="1.5em"
-                viewBox="0 0 24 24"
-                className="search-icon"
-              >
-                <path
-                  fill="#06a19b"
-                  d="M5 10a5 5 0 1 1 10 0a5 5 0 0 1-10 0m5-7a7 7 0 1 0 4.192 12.606l5.1 5.101a1 1 0 0 0 1.415-1.414l-5.1-5.1A7 7 0 0 0 10 3"
-                />
+              <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" className="search-icon">
+                <path fill="none" stroke="#979797" stroke-linecap="round" stroke-width="2" d="m21 21l-4.486-4.494M19 10.5a8.5 8.5 0 1 1-17 0a8.5 8.5 0 0 1 17 0Z" />
               </svg>
             </Box>
 
@@ -253,9 +244,9 @@ export default function BasicBreadcrumbs({
               alignItems="center"
               gap={0.5}
               bgcolor="#06A19B"
-              paddingBlock={1}
+              paddingBlock={1.175}
               paddingInline={1.5}
-              borderRadius={1.8}
+              borderRadius={2}
               color="white"
               width="fit-content"
             >

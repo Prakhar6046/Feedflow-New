@@ -180,6 +180,7 @@ export default function Page() {
                       <TextField
                         label="Email"
                         type="email"
+                        className="form-input"
                         // focused
                         sx={{
                           width: "100%",
@@ -194,6 +195,7 @@ export default function Page() {
                         label="Password"
                         type="password"
                         // focused
+                        className="form-input"
                         sx={{
                           width: "100%",
                           marginBottom: 3,

@@ -112,6 +112,7 @@ const AddOrganization: React.FC<Props> = ({ setOpen, open }) => {
               variant="outlined"
               fullWidth
               type="text"
+              className="form-input"
               sx={{
                 marginBottom: 2,
               }}
@@ -123,6 +124,7 @@ const AddOrganization: React.FC<Props> = ({ setOpen, open }) => {
               label="Email"
               variant="outlined"
               fullWidth
+              className="form-input"
               type="email"
               sx={{
                 marginBottom: 2,
@@ -141,6 +143,7 @@ const AddOrganization: React.FC<Props> = ({ setOpen, open }) => {
               label="Contact Person"
               type="text"
               variant="outlined"
+              className="form-input"
               fullWidth
               sx={{
                 marginBottom: 2,
@@ -158,6 +161,7 @@ const AddOrganization: React.FC<Props> = ({ setOpen, open }) => {
               sx={{
                 marginBottom: 2,
               }}
+              className="form-input"
               type="text"
               {...register("contactNumber", {
                 required: "Contact Number is required",
