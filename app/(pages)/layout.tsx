@@ -13,6 +13,7 @@ export default function RootLayout({
       <Sidebar />
 
       <Box width={"100%"} paddingTop={2} paddingRight={5} paddingLeft={17}>
+        {/* <Box width={"100%"} paddingTop={2} paddingRight={5} paddingLeft={39}> */}
         <Header />
         {children}
       </Box>

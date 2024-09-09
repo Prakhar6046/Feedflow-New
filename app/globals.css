@@ -122,10 +122,10 @@ body {
   color: #979797;
 }
 
-.sidebar .css-1edfpdg-MuiTypography-root {
+/* .sidebar .css-1edfpdg-MuiTypography-root {
   font-size: 10px;
   font-weight: 500;
-}
+} */
 
 .select-input {
   display: none;
@@ -146,8 +146,20 @@ body {
   color: unset;
 }
 
+/* for small sidebar */
+
 .nav-links span {
   font-size: 10px;
+}
+
+/* for bigger sidebar */
+
+/* .nav-links span {
+  font-size: 14px;
+} */
+
+.nav-links li {
+  padding: 0;
 }
 
 .cursor-pointer {
