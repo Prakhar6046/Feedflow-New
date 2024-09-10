@@ -11,51 +11,36 @@ body {
   font-size: 1rem;
 }
 
-.edit-option {
+/* CSS For Table Edit option  */
+.table-edit-option {
   border-radius: 50%;
   min-width: 30px;
   min-height: 30px;
   padding: 0 !important;
 }
 
-.edit-option:hover {
+.table-edit-option:hover {
   background-color: rgba(99, 115, 129, 0.08);
   box-shadow: none;
 }
 
-.edit-popover .css-uywun8-MuiPaper-root-MuiPopover-paper {
-  box-shadow: 2px 2px 5px rgba(151, 151, 151, 0.3);
-  width: 150px;
-  transform: translate(-110px, -35px) !important;
-}
-
-/* .edit-popover-content:hover {
-  background-color: rgba(99, 115, 129, 0.08);
-  cursor: pointer;
-} */
-
-/* .edit-popover-content {
-  margin: 4px;
-  padding: 4px;
-  border-radius: 4px;
-} */
-
-.testy1 ul {
+.table-edit-menu ul {
   padding: 6px;
 }
 
-.testy1 ul li {
+.table-edit-menu ul li {
   border-radius: 8px;
   padding: 4px 8px;
 }
 
-.testy1 div:nth-child(3){
+.table-edit-menu div:nth-child(3) {
   border-radius: 8px;
-  box-shadow: 0 0.125rem 0.2rem rgba(151, 151, 151, 0.15);
+  box-shadow: 1px 1px 5px rgba(151, 151, 151, 0.03);
   width: 150px;
   transform: translate(-130px, -35px) !important;
 }
 
+/* CSS For User Profile Dropdown  */
 .profile-dropdown
   .css-g0cb43-MuiButtonBase-root-MuiMenuItem-root
   .MuiListItemIcon-root {
@@ -71,6 +56,7 @@ body {
   .css-qehfkt-MuiPaper-root-MuiPopover-paper-MuiMenu-paper::before {
   display: none;
 }
+
 .profile-dropdown .css-99wn1p-MuiList-root-MuiMenu-list {
   padding: 8px;
 }
@@ -87,6 +73,7 @@ body {
   line-height: 1;
 }
 
+/* CSS For Search Filter Input  */
 .search-filter .css-1jk99ih-MuiInputBase-input-MuiOutlinedInput-input {
   padding: 8.5px 14px 8.5px 36px;
 }
@@ -102,6 +89,11 @@ body {
   transform: translate(-6%, -50%);
 }
 
+.search-filter .css-j882ge-MuiInputBase-root-MuiOutlinedInput-root {
+  border-radius: 8px;
+}
+
+/* CSS For Setting Dropdown */
 .settings .css-qehfkt-MuiPaper-root-MuiPopover-paper-MuiMenu-paper {
   min-width: 300px;
 }
@@ -114,6 +106,7 @@ body {
 .settings .css-qehfkt-MuiPaper-root-MuiPopover-paper-MuiMenu-paper::before {
   display: none;
 }
+
 .settings .css-99wn1p-MuiList-root-MuiMenu-list {
   padding: 24px 16px;
 }
@@ -130,31 +123,9 @@ body {
   line-height: 1;
 }
 
+/* CSS For Sidebar Menu  */
 .sidebar .css-193q0wg-MuiListItem-root {
   padding: 0;
-}
-
-.login-inputs .css-18pjc51-MuiFormLabel-root-MuiInputLabel-root.Mui-focused {
-  color: #979797;
-}
-
-/* .sidebar .css-1edfpdg-MuiTypography-root {
-  font-size: 10px;
-  font-weight: 500;
-} */
-
-.select-input {
-  display: none;
-}
-
-.select-input
-  .css-15k6ek6-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input {
-  padding: 10px;
-}
-
-.select-input .css-1q964xs-MuiFormLabel-root-MuiInputLabel-root {
-  top: -5px;
-  border-color: #979797 !important;
 }
 
 .nav-links {
@@ -173,8 +144,8 @@ body {
   border-radius: 8px;
 }
 
-.nav-links .active span{
-  color: #0E848E;
+.nav-links .active span {
+  color: #0e848e;
   font-weight: 500;
 }
 
@@ -188,14 +159,30 @@ body {
   padding: 0;
 }
 
-.cursor-pointer {
-  cursor: pointer;
-}
-
 .nav-links li > div:hover {
   border-radius: 8px;
 }
 
+/* CSS For Sidebar Menu  */
+/* .login-inputs .css-18pjc51-MuiFormLabel-root-MuiInputLabel-root.Mui-focused {
+  color: #979797;
+} */
+
+/* .select-input {
+  display: none;
+} */
+
+/* .select-input
+  .css-15k6ek6-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input {
+  padding: 10px;
+}
+
+.select-input .css-1q964xs-MuiFormLabel-root-MuiInputLabel-root {
+  top: -5px;
+  border-color: #979797 !important;
+} */
+
+/* CSS For Breadcrumb  */
 .breadcrumb-links {
   font-size: 14px;
 }
@@ -209,9 +196,13 @@ body {
   text-decoration: underline;
 }
 
+/* CSS For Loading Spinner */
 .loading-spinner svg {
   color: #06a19b;
 }
+
+/* CSS For Edit Profile */
+
 .upload-file-input > span {
   margin-right: 0;
 }
@@ -229,14 +220,15 @@ body {
   margin-left: 16px;
 }
 
-.search-filter .css-j882ge-MuiInputBase-root-MuiOutlinedInput-root {
-  border-radius: 8px;
-}
-
+/* CSS for Common Elements */
 .form-input > div > fieldset {
   border: 1px solid #979797 !important;
 }
 
 .form-input > label {
   color: #979797 !important;
+}
+
+.cursor-pointer {
+  cursor: pointer;
 }
