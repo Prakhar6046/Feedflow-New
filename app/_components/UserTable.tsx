@@ -7,7 +7,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { Box, Button, Popover, Stack, Typography } from "@mui/material";
+import { Box, Button, Menu, MenuItem, Popover, Stack, Typography } from "@mui/material";
 import { readableDate } from "../_lib/utils";
 import { getCookie } from "cookies-next";
 import { useRouter } from "next/navigation";
@@ -271,9 +271,74 @@ export default function UserTable() {
                       fontWeight: 500,
                     }}
                     className="cursor-pointer"
-                    onClick={() => handleEdit(user)}
+                  // onClick={() => handleEdit(user)}
                   >
-                    Edit
+
+                    <Button
+                      id="basic-button"
+                      aria-controls={open ? 'basic-menu' : undefined}
+                      aria-haspopup="true"
+                      aria-expanded={open ? 'true' : undefined}
+                      onClick={handleClick}
+
+                      className="edit-option"
+                      sx={{
+                        background: "transparent",
+                        color: "#555555",
+                        boxShadow: "none",
+                      }}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="1em"
+                        height="1em"
+                        viewBox="0 0 16 16"
+                      >
+                        <path
+                          fill="currentColor"
+                          d="M9.5 13a1.5 1.5 0 1 1-3 0a1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0a1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0a1.5 1.5 0 0 1 3 0"
+                        />
+                      </svg>
+                    </Button>
+                    <Menu
+                      id="basic-menu"
+                      className="testy1"
+                      anchorEl={anchorEl}
+                      open={open}
+                      onClose={handleClose}
+                      MenuListProps={{
+                        'aria-labelledby': 'basic-button',
+                      }}
+                    >
+                      <MenuItem className="testy2">
+
+                        {/* onClick={handleClose} */}
+
+                        <Stack
+                          display="flex"
+                          gap={1.2}
+                          alignItems="center"
+                          direction="row"
+                          // className="edit-popover-content"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="1em"
+                            height="1em"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              fill="currentColor"
+                              d="M3 21v-4.25L16.2 3.575q.3-.275.663-.425t.762-.15t.775.15t.65.45L20.425 5q.3.275.438.65T21 6.4q0 .4-.137.763t-.438.662L7.25 21zM17.6 7.8L19 6.4L17.6 5l-1.4 1.4z"
+                            />
+                          </svg>
+
+                          <Typography variant="subtitle2">Edit</Typography>
+                        </Stack>
+
+                      </MenuItem>
+                    </Menu>
+
                     {/* <Button
                       aria-describedby={id}
                       variant="contained"

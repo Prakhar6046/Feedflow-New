@@ -26,18 +26,34 @@ body {
 .edit-popover .css-uywun8-MuiPaper-root-MuiPopover-paper {
   box-shadow: 2px 2px 5px rgba(151, 151, 151, 0.3);
   width: 150px;
-  transform: translate(-120px, -35px) !important;
+  transform: translate(-110px, -35px) !important;
 }
 
-.edit-popover-content:hover {
+/* .edit-popover-content:hover {
   background-color: rgba(99, 115, 129, 0.08);
   cursor: pointer;
-}
+} */
 
-.edit-popover-content {
+/* .edit-popover-content {
   margin: 4px;
   padding: 4px;
   border-radius: 4px;
+} */
+
+.testy1 ul {
+  padding: 6px;
+}
+
+.testy1 ul li {
+  border-radius: 8px;
+  padding: 4px 8px;
+}
+
+.testy1 div:nth-child(3){
+  border-radius: 8px;
+  box-shadow: 0 0.125rem 0.2rem rgba(151, 151, 151, 0.15);
+  width: 150px;
+  transform: translate(-130px, -35px) !important;
 }
 
 .profile-dropdown
@@ -150,6 +166,16 @@ body {
 
 .nav-links span {
   font-size: 10px;
+}
+
+.nav-links .active {
+  background: rgba(6, 161, 155, 0.1);
+  border-radius: 8px;
+}
+
+.nav-links .active span{
+  color: #0E848E;
+  font-weight: 500;
 }
 
 /* for bigger sidebar */
