@@ -184,7 +184,7 @@ const ExpandedSidebar = () => {
                     </g>
                   </svg>
                 </ListItemIcon>
-                <ListItemText>Dashboard</ListItemText>
+                <ListItemText className="expand-nav-links">Dashboard</ListItemText>
               </ListItemButton>
             </ListItem>
           </Link>
@@ -240,6 +240,7 @@ const ExpandedSidebar = () => {
                   </svg>
                 </ListItemIcon>
                 <ListItemText
+                className="expand-nav-links"
                   sx={{
                     mt: 0.5,
                   }}
@@ -287,6 +288,7 @@ const ExpandedSidebar = () => {
                   </svg>
                 </ListItemIcon>
                 <ListItemText
+                className="expand-nav-links"
                   sx={{
                     mt: 0.5,
                   }}
