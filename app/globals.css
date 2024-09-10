@@ -96,8 +96,21 @@ body {
 }
 
 /* CSS For Search Filter Input  */
-.search-filter .css-1jk99ih-MuiInputBase-input-MuiOutlinedInput-input {
+.search-filter input {
   padding: 8.5px 14px 8.5px 36px;
+}
+
+.search-filter {
+  position: relative;
+}
+
+@media only screen and (max-width: 900px) {
+  .search-filter .search-icon {
+    position: sticky;
+    left: 40px !important;
+    top: 50%;
+    transform: translate(-25px, -50%) !important;
+  }
 }
 
 .search-filter .css-18pjc51-MuiFormLabel-root-MuiInputLabel-root.Mui-focused {
@@ -253,4 +266,8 @@ body {
 
 .cursor-pointer {
   cursor: pointer;
+}
+
+.custom-hover-effect:hover {
+  background: rgba(6, 161, 155, 0.088);
 }

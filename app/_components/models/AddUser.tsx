@@ -110,6 +110,7 @@ const AddUser: React.FC<Props> = ({ setOpen, open, organisations }) => {
             alignItems="center"
             sx={{
               opacity: 0.5,
+              cursor: "pointer"
             }}
             onClick={handleClose}
           >
@@ -149,7 +150,7 @@ const AddUser: React.FC<Props> = ({ setOpen, open, organisations }) => {
               helperText={errors.email ? errors.email.message : ""}
             />
             <Box sx={{ minWidth: 120 }}>
-              <FormControl fullWidth>
+              <FormControl fullWidth className="form-input">
                 <InputLabel id="demo-simple-select-label">
                   Organisation
                 </InputLabel>
