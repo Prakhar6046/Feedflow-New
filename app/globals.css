@@ -170,7 +170,7 @@ body {
 
 /* for small sidebar */
 
-.nav-links span {
+.nav-links .closed-nav-links span {
   font-size: 10px;
 }
 
@@ -186,9 +186,9 @@ body {
 
 /* for bigger sidebar */
 
-/* .nav-links span {
+.nav-links .expand-nav-links span {
   font-size: 14px;
-} */
+}
 
 .nav-links li {
   padding: 0;

@@ -103,6 +103,7 @@ function ClosedSidebar() {
                   </svg>
                 </ListItemIcon>
                 <ListItemText
+                className="closed-nav-links"
                   sx={{
                     mt: 0.5,
                   }}
@@ -160,6 +161,7 @@ function ClosedSidebar() {
                   </svg>
                 </ListItemIcon>
                 <ListItemText
+                className="closed-nav-links"
                   sx={{
                     mt: 0.5,
                   }}
@@ -205,6 +207,7 @@ function ClosedSidebar() {
                   </svg>
                 </ListItemIcon>
                 <ListItemText
+                className="closed-nav-links"
                   sx={{
                     mt: 0.5,
                   }}
