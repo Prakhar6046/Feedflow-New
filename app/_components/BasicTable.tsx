@@ -7,7 +7,15 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { Box, Button, Popover, Stack, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Menu,
+  MenuItem,
+  Popover,
+  Stack,
+  Typography,
+} from "@mui/material";
 import {
   selectOrganisationLoading,
   selectOrganisations,
@@ -241,10 +249,12 @@ export default function BasicTable({ organisations }: Props) {
                   }}
                 >
                   <Button
-                    aria-describedby={id}
-                    variant="contained"
-                    onClick={handleClick}
-                    className="edit-option"
+                    id="basic-button"
+                    aria-controls={open ? "basic-menu" : undefined}
+                    aria-haspopup="true"
+                    aria-expanded={open ? "true" : undefined}
+                    onClick={(e) => handleClick(e)}
+                    className="table-edit-option"
                     sx={{
                       background: "transparent",
                       color: "#555555",
@@ -263,39 +273,39 @@ export default function BasicTable({ organisations }: Props) {
                       />
                     </svg>
                   </Button>
-                  <Popover
-                    id={id}
-                    open={open}
+                  <Menu
+                    id="basic-menu"
+                    className="table-edit-menu"
                     anchorEl={anchorEl}
+                    open={open}
                     onClose={handleClose}
-                    anchorOrigin={{
-                      vertical: "bottom",
-                      horizontal: "left",
+                    MenuListProps={{
+                      "aria-labelledby": "basic-button",
                     }}
-                    className="edit-popover"
                   >
-                    <Stack
-                      display="flex"
-                      gap={1.2}
-                      alignItems="center"
-                      direction="row"
-                      className="edit-popover-content"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="1em"
-                        height="1em"
-                        viewBox="0 0 24 24"
+                    <MenuItem>
+                      <Stack
+                        display="flex"
+                        gap={1.2}
+                        alignItems="center"
+                        direction="row"
                       >
-                        <path
-                          fill="currentColor"
-                          d="M3 21v-4.25L16.2 3.575q.3-.275.663-.425t.762-.15t.775.15t.65.45L20.425 5q.3.275.438.65T21 6.4q0 .4-.137.763t-.438.662L7.25 21zM17.6 7.8L19 6.4L17.6 5l-1.4 1.4z"
-                        />
-                      </svg>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="1em"
+                          height="1em"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            fill="currentColor"
+                            d="M3 21v-4.25L16.2 3.575q.3-.275.663-.425t.762-.15t.775.15t.65.45L20.425 5q.3.275.438.65T21 6.4q0 .4-.137.763t-.438.662L7.25 21zM17.6 7.8L19 6.4L17.6 5l-1.4 1.4z"
+                          />
+                        </svg>
 
-                      <Typography variant="subtitle2">Edit</Typography>
-                    </Stack>
-                  </Popover>
+                        <Typography variant="subtitle2">Edit</Typography>
+                      </Stack>
+                    </MenuItem>
+                  </Menu>
                 </TableCell>
               </TableRow>
             ))
