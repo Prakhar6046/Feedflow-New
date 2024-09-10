@@ -24,13 +24,15 @@ interface Props {
 }
 async function SeachedOrganisation(query: string) {
   let res = await fetch(
-    `http://localhost:3000/api/organisation/search?name=${query}`
+    `https://feedflow.vercel.app/api/organisation/search?name=${query}`
   );
   let data = await res.json();
   return data;
 }
 async function SeachedUsers(query: string) {
-  let res = await fetch(`http://localhost:3000/api/users/search?name=${query}`);
+  let res = await fetch(
+    `https://feedflow.vercel.app/api/users/search?name=${query}`
+  );
   let data = await res.json();
   return data;
 }

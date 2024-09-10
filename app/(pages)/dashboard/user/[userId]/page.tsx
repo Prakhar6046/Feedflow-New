@@ -219,8 +219,9 @@ export default function Page({ params }: { params: { userId: string } }) {
                   label="Email"
                   type="email"
                   className="form-input"
-                  focused={userData?.data.email ? true : false}
-                  value={userData?.data.email}
+                  disabled
+                  focused={true}
+                  value={userData?.data.email ?? "Demo@gmail.com"}
                   sx={{
                     width: "100%",
                     marginBottom: 2,
@@ -231,7 +232,8 @@ export default function Page({ params }: { params: { userId: string } }) {
                   label="Organisation"
                   type="text"
                   className="form-input"
-                  focused={userData?.data?.organisation?.name ? true : false}
+                  disabled
+                  focused={true}
                   value={userData?.data?.organisation?.name ?? "Nutrition Hub"}
                   sx={{
                     width: "100%",
