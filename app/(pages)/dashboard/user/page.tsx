@@ -1,10 +1,19 @@
 import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
 import UserTable from "@/app/_components/UserTable";
 import { getOrganisations } from "@/app/_lib/action";
+import { getCookie } from "cookies-next";
+import { cookies } from "next/headers";
 // import { getCookie } from "cookies-next";
 // import { cookies } from "next/headers";
 
 export default async function Page() {
+  const loggedUser: any = getCookie("logged-user", { cookies });
+  const user = JSON.parse(loggedUser);
+
+  let organisations = await getOrganisations(
+    user?.data?.user?.organisationId,
+    user?.data?.user?.role
+  );
   // let organisations = await getOrganisations();
   // const role = getCookie("role", { cookies });
   // console.log(users);
@@ -25,6 +34,7 @@ export default async function Page() {
         heading={"User"}
         buttonName={"Add User"}
         searchUsers={true}
+        organisations={organisations?.data}
         searchOrganisations={false}
         links={[
           { name: "Dashboard", link: "/dashboard" },
