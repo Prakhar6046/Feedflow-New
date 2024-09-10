@@ -29,9 +29,13 @@ async function SeachedOrganisation(query: string) {
   let data = await res.json();
   return data;
 }
-async function SeachedUsers(query: string) {
+async function SeachedUsers(
+  query: string,
+  organisationId: number,
+  role: string
+) {
   let res = await fetch(
-    `https://feedflow.vercel.app/api/users/search?name=${query}`
+    `https://feedflow.vercel.app/api/users/search?name=${query}&organisationId=${organisationId}&role=${role}`
   );
   let data = await res.json();
   return data;
@@ -45,12 +49,12 @@ export default function BasicBreadcrumbs({
   searchUsers,
 }: Props) {
   const role = getCookie("role");
+  const loggedUser: any = getCookie("logged-user");
   const [open, setOpen] = useState(false);
   const pathName = usePathname();
   const [status, setStatus] = useState("Updating...");
   const [currentRole, setCurrentRole] = useState<string>("");
   const [searchQuery, setSearchQuery] = useState<string>("");
-
   const dispatch = useAppDispatch();
   const handleClear = () => {
     setSearchQuery("");
@@ -71,19 +75,20 @@ export default function BasicBreadcrumbs({
   }, [role]);
   useEffect(() => {
     if (searchOrganisations) {
-      dispatch(organisationAction.handleLoading(true));
       const getSearchOrganisations = async () => {
         const res = await SeachedOrganisation(searchQuery);
-        dispatch(organisationAction.handleLoading(false));
         dispatch(organisationAction.updateOrganisations(res.data));
       };
       getSearchOrganisations();
     }
     if (searchUsers) {
-      dispatch(userAction.handleLoading(true));
+      const user = JSON.parse(loggedUser);
       const getSearchUsers = async () => {
-        const res = await SeachedUsers(searchQuery);
-        dispatch(userAction.handleLoading(false));
+        const res = await SeachedUsers(
+          searchQuery,
+          user?.data?.user?.organisationId,
+          user?.data?.user?.role
+        );
         dispatch(userAction.updateUsers(res.data));
       };
       getSearchUsers();
