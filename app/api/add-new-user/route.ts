@@ -83,12 +83,12 @@ export async function POST(req: NextRequest) {
                 "
               >
                 <img
-                 src="https://ibb.co/vJyFwv7"
+                 src="https://ibb.co/qBKmYmd"
                   alt="Logo"
                   class="logo-img"
                   style="width: 200px; margin-bottom: 20px"
                 />
-                <h3 class="m-0" style="margin: 0">Hi There!</h3>
+                <h3 class="m-0" style="margin: 0">Hi ${name}</h3>
                 <p class="m-0" style="margin: 10px 0">
                    You are invited to join Feedflow.
                 </p>
