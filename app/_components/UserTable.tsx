@@ -62,19 +62,24 @@ export default function UserTable() {
   const loggedUser = getCookie("logged-user");
   const [users, setUsers] = useState<User[]>();
   const [loading, setLoading] = useState<boolean>(false);
-  const handleEdit = (user: any) => {
-    router.push(`/dashboard/user/${user.id}`);
-  };
 
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null
   );
-
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleEdit = (user: any) => {
+    router.push(`/dashboard/user/${selectedUser?.id}`);
+  };
+  const handleClick = (
+    event: React.MouseEvent<HTMLButtonElement>,
+    user: User
+  ) => {
     setAnchorEl(event.currentTarget);
+    setSelectedUser(user);
   };
   const handleClose = () => {
     setAnchorEl(null);
+    setSelectedUser(null);
   };
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
@@ -105,18 +110,23 @@ export default function UserTable() {
   }
 
   return (
-    <Paper sx={{
-      width: "100%", overflow: "hidden", borderRadius: "14px",
-      boxShadow: "0px 0px 16px 5px #0000001A",
-      mt: 4
-    }}>
-      <TableContainer sx={{
-        maxHeight: "72.5vh"
-      }}>
+    <Paper
+      sx={{
+        width: "100%",
+        overflow: "hidden",
+        borderRadius: "14px",
+        boxShadow: "0px 0px 16px 5px #0000001A",
+        mt: 4,
+      }}
+    >
+      <TableContainer
+        sx={{
+          maxHeight: "72.5vh",
+        }}
+      >
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
-            <TableRow
-            >
+            <TableRow>
               <TableCell
                 sx={{
                   borderBottom: 0,
@@ -309,14 +319,14 @@ export default function UserTable() {
                         fontWeight: 500,
                       }}
                       className="cursor-pointer"
-                    // onClick={() => handleEdit(user)}
+                      // onClick={() => handleEdit(user)}
                     >
                       <Button
                         id="basic-button"
                         aria-controls={open ? "basic-menu" : undefined}
                         aria-haspopup="true"
                         aria-expanded={open ? "true" : undefined}
-                        onClick={handleClick}
+                        onClick={(e) => handleClick(e, user)}
                         className="table-edit-option"
                         sx={{
                           background: "transparent",
@@ -346,8 +356,7 @@ export default function UserTable() {
                           "aria-labelledby": "basic-button",
                         }}
                       >
-                        <MenuItem>
-
+                        <MenuItem onClick={handleEdit}>
                           <Stack
                             display="flex"
                             gap={1.2}
