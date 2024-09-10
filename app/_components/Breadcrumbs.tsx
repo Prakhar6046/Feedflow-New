@@ -22,9 +22,13 @@ interface Props {
   searchOrganisations?: boolean;
   searchUsers?: boolean;
 }
-async function SeachedOrganisation(query: string) {
+async function SeachedOrganisation(
+  query: string,
+  organisationId: number,
+  role: string
+) {
   let res = await fetch(
-    `https://feedflow.vercel.app/api/organisation/search?name=${query}`
+    `https://feedflow.vercel.app/api/organisation/search?name=${query}&organisationId=${organisationId}&role=${role}`
   );
   let data = await res.json();
   return data;
@@ -74,15 +78,19 @@ export default function BasicBreadcrumbs({
     }
   }, [role]);
   useEffect(() => {
+    const user = JSON.parse(loggedUser);
     if (searchOrganisations) {
       const getSearchOrganisations = async () => {
-        const res = await SeachedOrganisation(searchQuery);
+        const res = await SeachedOrganisation(
+          searchQuery,
+          user?.data?.user?.organisationId,
+          user?.data?.user?.role
+        );
         dispatch(organisationAction.updateOrganisations(res.data));
       };
       getSearchOrganisations();
     }
     if (searchUsers) {
-      const user = JSON.parse(loggedUser);
       const getSearchUsers = async () => {
         const res = await SeachedUsers(
           searchQuery,
@@ -301,7 +309,7 @@ export default function BasicBreadcrumbs({
                   fill="none"
                   stroke="#979797"
                   stroke-linecap="round"
-                  stroke-width="2"
+                  strokeWidth="2"
                   d="m21 21l-4.486-4.494M19 10.5a8.5 8.5 0 1 1-17 0a8.5 8.5 0 0 1 17 0Z"
                 />
               </svg>

@@ -5,7 +5,7 @@ import { getOrganisations } from "@/app/_lib/action";
 // import { cookies } from "next/headers";
 
 export default async function Page() {
-  let organisations = await getOrganisations();
+  // let organisations = await getOrganisations();
   // const role = getCookie("role", { cookies });
   // console.log(users);
 
@@ -24,7 +24,6 @@ export default async function Page() {
       <BasicBreadcrumbs
         heading={"User"}
         buttonName={"Add User"}
-        organisations={organisations?.data}
         searchUsers={true}
         searchOrganisations={false}
         links={[

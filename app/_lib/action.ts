@@ -3,14 +3,20 @@ import { revalidatePath } from "next/cache";
 //   role: string |;
 //   organisationId: number;
 // }
-export const getOrganisations = async () => {
+export const getOrganisations = async (
+  organisationId: number,
+  role: string
+) => {
   try {
-    const data = await fetch(`${process.env.BASE_URL}/api/organisation`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    const data = await fetch(
+      `${process.env.BASE_URL}/api/organisation?organisationId=${organisationId}&role=${role}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
     revalidatePath("/dashboard/organisation");
     return await data.json();
   } catch (error) {
