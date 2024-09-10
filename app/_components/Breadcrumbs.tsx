@@ -50,6 +50,7 @@ export default function BasicBreadcrumbs({
   const [status, setStatus] = useState("Updating...");
   const [currentRole, setCurrentRole] = useState<string>("");
   const [searchQuery, setSearchQuery] = useState<string>("");
+
   const dispatch = useAppDispatch();
   const handleClear = () => {
     setSearchQuery("");
@@ -70,15 +71,19 @@ export default function BasicBreadcrumbs({
   }, [role]);
   useEffect(() => {
     if (searchOrganisations) {
+      dispatch(organisationAction.handleLoading(true));
       const getSearchOrganisations = async () => {
         const res = await SeachedOrganisation(searchQuery);
+        dispatch(organisationAction.handleLoading(false));
         dispatch(organisationAction.updateOrganisations(res.data));
       };
       getSearchOrganisations();
     }
     if (searchUsers) {
+      dispatch(userAction.handleLoading(true));
       const getSearchUsers = async () => {
         const res = await SeachedUsers(searchQuery);
+        dispatch(userAction.handleLoading(false));
         dispatch(userAction.updateUsers(res.data));
       };
       getSearchUsers();

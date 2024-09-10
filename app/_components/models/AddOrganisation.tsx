@@ -9,6 +9,7 @@ import {
 import Image from "next/image";
 import closeIcon from "@/public/static/img/icons/ic-close.svg";
 import { useForm, SubmitHandler } from "react-hook-form";
+import toast from "react-hot-toast";
 
 const style = {
   position: "absolute" as "absolute",
@@ -54,6 +55,8 @@ const AddOrganization: React.FC<Props> = ({ setOpen, open }) => {
       });
 
       const responseData = await response.json();
+      toast.success(responseData.message);
+
       if (responseData.status) {
         handleClose();
         reset();

@@ -8,8 +8,12 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { Box, Button, Popover, Stack, Typography } from "@mui/material";
-import { selectOrganisations } from "@/lib/features/organisation/organisationSlice";
+import {
+  selectOrganisationLoading,
+  selectOrganisations,
+} from "@/lib/features/organisation/organisationSlice";
 import { useAppSelector } from "@/lib/hooks";
+import Loader from "./Loader";
 export interface Organisation {
   id: Number;
   name: String;
@@ -26,6 +30,7 @@ interface Props {
 
 export default function BasicTable({ organisations }: Props) {
   const searchedOrganisations = useAppSelector(selectOrganisations);
+  const loading = useAppSelector(selectOrganisationLoading);
   const [organisationData, setOrganisationData] = useState<Organisation[]>();
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null
@@ -54,6 +59,9 @@ export default function BasicTable({ organisations }: Props) {
     }
   }, [searchedOrganisations]);
 
+  if (loading) {
+    return <Loader />;
+  }
   return (
     <TableContainer
       component={Paper}

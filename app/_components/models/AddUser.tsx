@@ -15,6 +15,7 @@ import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import { useState } from "react";
 import { Organisation } from "../BasicTable";
+import toast from "react-hot-toast";
 const style = {
   position: "absolute" as "absolute",
   top: "50%",
@@ -49,8 +50,6 @@ const AddUser: React.FC<Props> = ({ setOpen, open, organisations }) => {
   const handleClose = () => setOpen(false);
 
   const onSubmit: SubmitHandler<FormInputs> = async (data) => {
-    console.log(data);
-
     if (data.email && data.name && data.organisationId) {
       const response = await fetch("/api/add-new-user", {
         method: "POST",
@@ -60,6 +59,7 @@ const AddUser: React.FC<Props> = ({ setOpen, open, organisations }) => {
         body: JSON.stringify(data),
       });
       const responseData = await response.json();
+      toast.success(responseData.message);
       if (responseData.status) {
         handleClose();
         reset();
