@@ -46,11 +46,7 @@ body {
   box-shadow: none;
 }
 
-.table-edit-list:hover {
-  background-color: rgba(99, 115, 129, 0.08);
-}
-
-/* .table-edit-menu ul {
+.table-edit-menu ul {
   padding: 6px;
 }
 
@@ -64,7 +60,7 @@ body {
   box-shadow: 1px 1px 5px rgba(151, 151, 151, 0.03);
   width: 150px;
   transform: translate(-130px, -35px) !important;
-} */
+}
 
 /* CSS For User Profile Dropdown  */
 .profile-dropdown
@@ -100,8 +96,21 @@ body {
 }
 
 /* CSS For Search Filter Input  */
-.search-filter .css-1jk99ih-MuiInputBase-input-MuiOutlinedInput-input {
+.search-filter input {
   padding: 8.5px 14px 8.5px 36px;
+}
+
+.search-filter {
+  position: relative;
+}
+
+@media only screen and (max-width: 900px) {
+  .search-filter .search-icon {
+    position: sticky;
+    left: 40px !important;
+    top: 50%;
+    transform: translate(-25px, -50%) !important;
+  }
 }
 
 .search-filter .css-18pjc51-MuiFormLabel-root-MuiInputLabel-root.Mui-focused {
@@ -257,4 +266,8 @@ body {
 
 .cursor-pointer {
   cursor: pointer;
+}
+
+.custom-hover-effect:hover {
+  background: rgba(6, 161, 155, 0.088);
 }

@@ -372,11 +372,11 @@ export default function BasicBreadcrumbs({
               >
                 <Box
                   padding={1}
-                  bgcolor={"white"}
                   borderRadius={1.8}
                   width="fit-content"
                   boxShadow="0px 0px 10px 0px #0000001A;"
-                  className="cursor-pointer"
+                  border={"1px solid #0000001A"}
+                  className="cursor-pointer custom-hover-effect"
                   display="flex"
                   justifyContent="center"
                   alignItems="center"
@@ -402,15 +402,14 @@ export default function BasicBreadcrumbs({
               >
                 <Box
                   padding={1}
-                  bgcolor={"white"}
                   borderRadius={1.8}
                   width="fit-content"
-                  boxShadow="0px 0px 10px 0px #0000001A;
-"
+                  boxShadow="0px 0px 10px 0px #0000001A;"
+                  border={"1px solid #0000001A"}
                   display="flex"
                   justifyContent="center"
                   alignItems="center"
-                  className="cursor-pointer"
+                  className="cursor-pointer custom-hover-effect"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
