@@ -11,6 +11,28 @@ body {
   font-size: 1rem;
 }
 
+/* CSS For Scrollbar */
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: rgba(99, 115, 130, 0.25);
+  border-radius: 20px;
+}
+
+/* CSS for Selection */
+::selection {
+  color: #fff;
+  background: #06a19b;
+}
+
 /* CSS For Table Edit option  */
 .table-edit-option {
   border-radius: 50%;
@@ -24,7 +46,11 @@ body {
   box-shadow: none;
 }
 
-.table-edit-menu ul {
+.table-edit-list:hover {
+  background-color: rgba(99, 115, 129, 0.08);
+}
+
+/* .table-edit-menu ul {
   padding: 6px;
 }
 
@@ -38,7 +64,7 @@ body {
   box-shadow: 1px 1px 5px rgba(151, 151, 151, 0.03);
   width: 150px;
   transform: translate(-130px, -35px) !important;
-}
+} */
 
 /* CSS For User Profile Dropdown  */
 .profile-dropdown

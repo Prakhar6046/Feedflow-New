@@ -13,7 +13,7 @@ import { useRouter } from "next/navigation";
 import Loader from "./Loader";
 import { useAppSelector } from "@/lib/hooks";
 import { selectUsers } from "@/lib/features/user/userSlice";
-import { Box, Button, Menu, MenuItem, Stack, Typography } from "@mui/material";
+import { Box, Button, Stack, Typography } from "@mui/material";
 import { readableDate } from "../_lib/utils";
 export interface User {
   id: Number;
@@ -105,19 +105,23 @@ export default function UserTable() {
   }
 
   return (
-    <Paper sx={{ width: "100%", overflow: "hidden" }}>
-      <TableContainer sx={{ maxHeight: 440 }}>
+    <Paper sx={{
+      width: "100%", overflow: "hidden", borderRadius: "14px",
+      boxShadow: "0px 0px 16px 5px #0000001A",
+      mt: 4
+    }}>
+      <TableContainer sx={{
+        maxHeight: "72.5vh"
+      }}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow
-              sx={{
-                background: "#F5F6F8",
-              }}
             >
               <TableCell
                 sx={{
                   borderBottom: 0,
                   color: "#67737F",
+                  background: "#F5F6F8",
                   fontSize: {
                     md: 16,
                     xs: 14,
@@ -135,6 +139,7 @@ export default function UserTable() {
               <TableCell
                 sx={{
                   borderBottom: 0,
+                  background: "#F5F6F8",
                   color: "#67737F",
                   fontSize: {
                     md: 16,
@@ -148,6 +153,7 @@ export default function UserTable() {
               <TableCell
                 sx={{
                   borderBottom: 0,
+                  background: "#F5F6F8",
                   color: "#67737F",
                   fontSize: {
                     md: 16,
@@ -162,6 +168,7 @@ export default function UserTable() {
                 sx={{
                   borderBottom: 0,
                   color: "#67737F",
+                  background: "#F5F6F8",
                   fontSize: {
                     md: 16,
                     xs: 14,
@@ -175,6 +182,7 @@ export default function UserTable() {
                 sx={{
                   borderBottom: 0,
                   color: "#67737F",
+                  background: "#F5F6F8",
                   fontSize: {
                     md: 16,
                     xs: 14,
@@ -188,6 +196,7 @@ export default function UserTable() {
                 sx={{
                   borderBottom: 0,
                   color: "#67737F",
+                  background: "#F5F6F8",
                   fontSize: {
                     md: 16,
                     xs: 14,
@@ -300,9 +309,9 @@ export default function UserTable() {
                         fontWeight: 500,
                       }}
                       className="cursor-pointer"
-                      // onClick={() => handleEdit(user)}
+                    // onClick={() => handleEdit(user)}
                     >
-                      <Button
+                      {/* <Button
                         id="basic-button"
                         aria-controls={open ? "basic-menu" : undefined}
                         aria-haspopup="true"
@@ -338,15 +347,12 @@ export default function UserTable() {
                         }}
                       >
                         <MenuItem className="testy2">
-                          {/* onClick={handleClose} */}
 
                           <Stack
                             display="flex"
                             gap={1.2}
                             alignItems="center"
                             direction="row"
-                            // onClick={() => console.log(user)}
-                            // className="edit-popover-content"
                           >
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
@@ -363,7 +369,72 @@ export default function UserTable() {
                             <Typography variant="subtitle2">Edit</Typography>
                           </Stack>
                         </MenuItem>
-                      </Menu>
+                      </Menu> */}
+
+                      <Stack className="table-edit-option" sx={{
+                        position: "relative",
+                        width: "fit-content",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}>
+
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="1em"
+                          height="1em"
+                          viewBox="0 0 16 16"
+                        >
+                          <path
+                            fill="currentColor"
+                            d="M9.5 13a1.5 1.5 0 1 1-3 0a1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0a1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0a1.5 1.5 0 0 1 3 0"
+                          />
+                        </svg>
+
+
+                        <Stack
+                          display={"none"}
+                          sx={{
+                            boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px",
+                            padding: 0.8,
+                            borderRadius: 3,
+                            minWidth: 170,
+                            width: "100%",
+                            position: "absolute",
+                            top: "50%",
+                            left: "-100px",
+                            transform: "translate(-80px, -50%)",
+                            zIndex: 100
+                          }}
+                        >
+
+                          <Stack display="flex"
+                            gap={1.2}
+                            alignItems="center"
+                            direction="row" px={1} py={0.5} borderRadius={1.5} className="table-edit-list">
+
+
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="1em"
+                              height="1em"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                fill="currentColor"
+                                d="M3 21v-4.25L16.2 3.575q.3-.275.663-.425t.762-.15t.775.15t.65.45L20.425 5q.3.275.438.65T21 6.4q0 .4-.137.763t-.438.662L7.25 21zM17.6 7.8L19 6.4L17.6 5l-1.4 1.4z"
+                              />
+                            </svg>
+
+                            <Typography variant="subtitle2">Edit</Typography>
+
+                          </Stack>
+
+                        </Stack>
+
+
+                      </Stack>
+
                     </TableCell>
                   </TableRow>
                 );
