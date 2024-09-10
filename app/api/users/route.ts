@@ -8,6 +8,9 @@ export const GET = async (request: NextRequest) => {
     let users;
     if (role === "SUPERADMIN") {
       users = await prisma.user.findMany({
+        where: {
+          id: { not: 1 }, // Exclude the user by ID
+        },
         include: {
           organisation: {
             select: {
@@ -18,7 +21,7 @@ export const GET = async (request: NextRequest) => {
       });
     } else {
       users = await prisma.user.findMany({
-        where: { organisationId: Number(organisationId) },
+        where: { organisationId: Number(organisationId), id: { not: 1 } },
         include: {
           organisation: {
             select: {
