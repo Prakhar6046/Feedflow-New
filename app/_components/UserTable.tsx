@@ -280,8 +280,7 @@ export default function UserTable() {
                       aria-haspopup="true"
                       aria-expanded={open ? 'true' : undefined}
                       onClick={handleClick}
-
-                      className="edit-option"
+                      className="table-edit-option"
                       sx={{
                         background: "transparent",
                         color: "#555555",
@@ -302,7 +301,7 @@ export default function UserTable() {
                     </Button>
                     <Menu
                       id="basic-menu"
-                      className="testy1"
+                      className="table-edit-menu"
                       anchorEl={anchorEl}
                       open={open}
                       onClose={handleClose}
@@ -310,7 +309,7 @@ export default function UserTable() {
                         'aria-labelledby': 'basic-button',
                       }}
                     >
-                      <MenuItem className="testy2">
+                      <MenuItem>
 
                         {/* onClick={handleClose} */}
 
@@ -337,6 +336,7 @@ export default function UserTable() {
                         </Stack>
 
                       </MenuItem>
+                      
                     </Menu>
 
                     {/* <Button

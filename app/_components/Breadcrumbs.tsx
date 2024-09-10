@@ -26,7 +26,7 @@ export default function BasicBreadcrumbs({
   const role = getCookie("role");
   const [open, setOpen] = useState(false);
   const pathName = usePathname();
-  const [status, setStatus] = useState("Updating..");
+  const [status, setStatus] = useState("Updating...");
   const [currentRole, setCurrentRole] = useState<string>("");
   // const [age, setAge] = React.useState('');
 
@@ -367,7 +367,7 @@ export default function BasicBreadcrumbs({
                     width="1.1em"
                     height="1.1em"
                     viewBox="-1.5 -2.5 24 24"
-                    onClick={() => setStatus("Updating..")}
+                    onClick={() => setStatus("Updating...")}
                   >
                     <path
                       fill="#637382"
