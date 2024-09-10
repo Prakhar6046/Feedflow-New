@@ -4,12 +4,16 @@ import { revalidatePath } from "next/cache";
 //   organisationId: number;
 // }
 export const getOrganisations = async (
-  organisationId: number,
-  role: string
+  organisationId?: number,
+  role?: string
 ) => {
   try {
     const data = await fetch(
-      `${process.env.BASE_URL}/api/organisation?organisationId=${organisationId}&role=${role}`,
+      `${process.env.BASE_URL}/api/organisation${
+        organisationId && role
+          ? `?organisationId=${organisationId}&role=${role}`
+          : ""
+      }`,
       {
         method: "GET",
         headers: {
