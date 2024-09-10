@@ -1,4 +1,6 @@
 "use client";
+import { sidebarAction } from "@/lib/features/sidebar/sidebarSlice";
+import { useAppDispatch } from "@/lib/hooks";
 import {
   Avatar,
   Box,
@@ -13,7 +15,7 @@ import {
 import { deleteCookie, getCookie } from "cookies-next";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-interface LoggedUser {
+export interface LoggedUser {
   status: Boolean;
   data: {
     token: String;
@@ -30,6 +32,7 @@ interface LoggedUser {
 }
 const AccountPopover = () => {
   const router = useRouter();
+  const dispatch = useAppDispatch();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const [loggedUserData, setLoggedUserData] = useState<LoggedUser>();
@@ -45,6 +48,7 @@ const AccountPopover = () => {
     if (response.status) {
       router.push("/auth/login");
       deleteCookie("logged-user");
+      dispatch(sidebarAction.handleSwitchSidebar(false));
     }
 
     setAnchorEl(null);
@@ -59,7 +63,6 @@ const AccountPopover = () => {
       setLoggedUserData(JSON.parse(loggedUser));
     }
   }, [loggedUser]);
-  console.log(loggedUserData);
 
   return (
     <React.Fragment>

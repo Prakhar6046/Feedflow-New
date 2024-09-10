@@ -11,6 +11,8 @@ export default async function Page() {
         heading={"Organization"}
         buttonName={"Add Organization"}
         organisations={organisations?.data}
+        searchOrganisations={true}
+        searchUsers={false}
         links={[
           { name: "Dashboard", link: "/dashboard" },
           { name: "Organisation", link: "/dashboard/organisation" },

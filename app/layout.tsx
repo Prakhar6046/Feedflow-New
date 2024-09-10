@@ -5,6 +5,7 @@ import ThemeProvider from "./_components/theme";
 import { SettingsProvider } from "./contexts/SettingsContext";
 import { SettingsValueProps } from "./_components/settings/types";
 import { CssBaseline } from "@mui/material";
+import StoreProvider from "./StoreProvider";
 
 // Define the default settings according to SettingsValueProps
 const settings: SettingsValueProps = {
@@ -28,12 +29,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      {/* <SettingsProvider defaultSettings={settings}>
+      <StoreProvider>
+        {/* <SettingsProvider defaultSettings={settings}>
         <ThemeProvider> */}
-      <CssBaseline />
-      <body className={inter.className}>{children}</body>
-      {/* </ThemeProvider>
+        <CssBaseline />
+        <body className={inter.className}>{children}</body>
+        {/* </ThemeProvider>
       </SettingsProvider> */}
+      </StoreProvider>
     </html>
   );
 }

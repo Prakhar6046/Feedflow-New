@@ -1,9 +1,15 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { OrganisationReducer } from "./features/organisation/organisationSlice";
+import { UserReducer } from "./features/user/userSlice";
+import { SidebarReducer } from "./features/sidebar/sidebarSlice";
 
 export const makeStore = () => {
   return configureStore({
-    reducer: { organisation: OrganisationReducer },
+    reducer: {
+      organisation: OrganisationReducer,
+      user: UserReducer,
+      sidebar: SidebarReducer,
+    },
   });
 };
 

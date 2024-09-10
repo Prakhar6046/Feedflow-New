@@ -1,5 +1,5 @@
 "use client";
-import * as React from "react";
+import React, { useEffect, useState } from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -8,6 +8,8 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { Box, Button, Popover, Stack, Typography } from "@mui/material";
+import { selectOrganisations } from "@/lib/features/organisation/organisationSlice";
+import { useAppSelector } from "@/lib/hooks";
 export interface Organisation {
   id: Number;
   name: String;
@@ -23,7 +25,8 @@ interface Props {
 }
 
 export default function BasicTable({ organisations }: Props) {
-  // const role: any = getCookie("role");
+  const searchedOrganisations = useAppSelector(selectOrganisations);
+  const [organisationData, setOrganisationData] = useState<Organisation[]>();
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null
   );
@@ -38,6 +41,18 @@ export default function BasicTable({ organisations }: Props) {
 
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
+  useEffect(() => {
+    if (organisations) {
+      setOrganisationData(organisations);
+    }
+  }, [organisations]);
+  useEffect(() => {
+    if (searchedOrganisations) {
+      setOrganisationData(searchedOrganisations);
+    } else {
+      setOrganisationData(organisations);
+    }
+  }, [searchedOrganisations]);
 
   return (
     <TableContainer
@@ -126,8 +141,8 @@ export default function BasicTable({ organisations }: Props) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {organisations && organisations.length > 0 ? (
-            organisations?.map((organisation, i) => (
+          {organisationData && organisationData.length > 0 ? (
+            organisationData?.map((organisation, i) => (
               <TableRow
                 key={i}
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
