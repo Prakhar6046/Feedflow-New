@@ -42,7 +42,7 @@ interface Data {
 export const getUsers = async (payload: any) => {
   try {
     const data = await fetch(
-      `https://feedflow.vercel.app/api/users?role=${payload.role}&organisationId=${payload.organisationId}`,
+      `http://localhost:3000/api/users?role=${payload.role}&organisationId=${payload.organisationId}`,
       {
         method: "GET",
         headers: {

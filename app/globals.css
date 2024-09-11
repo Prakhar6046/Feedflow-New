@@ -271,3 +271,9 @@ body {
 .custom-hover-effect:hover {
   background: rgba(6, 161, 155, 0.088);
 }
+
+.add-contact-btn:hover {
+  border-style: solid !important;
+  background: rgba(6, 161, 155, 0.088);
+  cursor: pointer;
+}
