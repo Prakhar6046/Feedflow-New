@@ -369,7 +369,8 @@ export default function BasicTable({ organisations }: Props) {
       }}>
         <Grid
           item
-          md={3}
+          xl={3}
+          md={5}
           xs={12}
           sx={{
             display: "flex",
@@ -438,7 +439,15 @@ export default function BasicTable({ organisations }: Props) {
 
         <Grid
           item
-          md={9}
+          xl={9}
+          md={7}
+          xs={12}
+          sx={{
+            mt: {
+              md: 0,
+              xs: 5
+            }
+          }}
         >
           <form>
             <TextField
@@ -460,8 +469,11 @@ export default function BasicTable({ organisations }: Props) {
               marginBottom: 2,
               gap: 1.5
             }}>
-              <FormControl className="form-input" sx={{
-                width: "15%",
+              <FormControl className="form-input" focused sx={{
+                width: {
+                  md: "15%",
+                  xs: "50%"
+                }
               }}>
                 <InputLabel id="demo-simple-select-label">Organisation Type</InputLabel>
                 <Select
@@ -482,8 +494,12 @@ export default function BasicTable({ organisations }: Props) {
                 className="form-input"
                 // disabled
                 sx={{
-                  width: "85%"
+                  width: {
+                    md: "85%",
+                    xs: "50%"
+                  }
                 }}
+                focused
               // focused={true}
               // value={userData?.data.email ?? "Demo@gmail.com"}
               />
@@ -566,10 +582,14 @@ export default function BasicTable({ organisations }: Props) {
               Contacts
             </Typography>
 
-            <Stack display={"flex"} justifyContent={"flex-start"} direction={"row"} sx={{
+            <Stack display={"flex"} justifyContent={"center"} direction={"row"} sx={{
               width: "100%",
               marginBottom: 2,
-              gap: 1.5
+              gap: 1.5,
+              flexWrap: {
+                lg: "nowrap",
+                xs: "wrap"
+              }
             }}>
 
               <TextField
@@ -578,7 +598,11 @@ export default function BasicTable({ organisations }: Props) {
                 className="form-input"
                 focused
                 sx={{
-                  width: "100%",
+                  width: {
+                    lg: "100%",
+                    md: "48.4%",
+                    xs: "100%"
+                  },
                 }}
               />
 
@@ -588,7 +612,11 @@ export default function BasicTable({ organisations }: Props) {
                 className="form-input"
                 focused
                 sx={{
-                  width: "100%",
+                  width: {
+                    lg: "100%",
+                    md: "48.4%",
+                    xs: "100%"
+                  },
                 }}
               />
 
@@ -598,7 +626,11 @@ export default function BasicTable({ organisations }: Props) {
                 className="form-input"
                 focused
                 sx={{
-                  width: "100%",
+                  width: {
+                    lg: "100%",
+                    md: "48.4%",
+                    xs: "100%"
+                  },
                 }}
               />
 
@@ -608,12 +640,20 @@ export default function BasicTable({ organisations }: Props) {
                 className="form-input"
                 focused
                 sx={{
-                  width: "100%",
+                  width: {
+                    lg: "100%",
+                    md: "48.4%",
+                    xs: "100%"
+                  },
                 }}
               />
 
-              <Box display={"flex"} justifyContent={"center"} alignItems={"center"} width={250} sx={{
+              <Box display={"flex"} justifyContent={"center"} alignItems={"center"} width={150} sx={{
                 cursor: "pointer",
+                width: {
+                  lg: 150,
+                  xs: "auto"
+                },
               }}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="1.4em" height="1.4em" viewBox="0 0 24 24">
                   <g fill="none">
