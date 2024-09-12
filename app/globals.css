@@ -47,12 +47,13 @@ body {
 }
 
 .table-edit-menu ul {
-  padding: 6px;
+  padding: 0;
 }
 
 .table-edit-menu ul li {
   border-radius: 8px;
   padding: 4px 8px;
+  margin: 6px;
 }
 
 .table-edit-menu div:nth-child(3) {
