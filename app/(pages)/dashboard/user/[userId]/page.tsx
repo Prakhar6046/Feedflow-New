@@ -2,8 +2,11 @@
 import {
   Box,
   Divider,
+  FormControl,
   FormControlLabel,
   Grid,
+  InputLabel,
+  Select,
   Stack,
   Switch,
   SwitchProps,
@@ -16,6 +19,9 @@ import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { useEffect, useState } from "react";
 import { User } from "@/app/_components/UserTable";
 import Loader from "@/app/_components/Loader";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { Organisation } from "@/app/_components/BasicTable";
+import toast from "react-hot-toast";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -89,6 +95,13 @@ const IOSSwitch = styled((props: SwitchProps) => (
   },
 }));
 
+interface FormInputs {
+  name: string;
+  image: string;
+  organisation: string;
+  organisationId: Number;
+  email: string;
+}
 export default function Page({ params }: { params: { userId: string } }) {
   const [userData, setUserData] = useState<{ data: User }>();
   const [loading, setLoading] = useState<boolean>(false);
@@ -100,6 +113,32 @@ export default function Page({ params }: { params: { userId: string } }) {
     }
     return data.json();
   };
+  const {
+    register,
+    setValue,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormInputs>();
+  const onSubmit: SubmitHandler<FormInputs> = async (data) => {
+    console.log(data);
+    console.log(userData?.data.organisationId);
+
+    const formData = new FormData();
+    formData.append("name", data.name);
+    formData.append("email", data.email);
+    formData.append("organisationId", String(userData?.data.organisationId));
+    formData.append("image", data.image[0]);
+
+    const res = await fetch(`/api/users/${params.userId}`, {
+      method: "PUT",
+      body: formData,
+    });
+
+    if (res.ok) {
+      const updatedUser = await res.json();
+      toast.success(updatedUser.message);
+    }
+  };
   useEffect(() => {
     const user = async () => {
       setLoading(true);
@@ -108,7 +147,15 @@ export default function Page({ params }: { params: { userId: string } }) {
     };
     user();
   }, []);
-
+  useEffect(() => {
+    if (userData) {
+      setValue("name", String(userData?.data?.name));
+      setValue("image", String(userData?.data?.image));
+      setValue("email", String(userData?.data?.email));
+      setValue("organisation", String(userData?.data?.organisation.name));
+      setValue("organisationId", userData?.data?.organisationId);
+    }
+  }, [userData]);
   if (loading) {
     return <Loader />;
   }
@@ -124,91 +171,91 @@ export default function Page({ params }: { params: { userId: string } }) {
             padding: 3,
           }}
         >
-          <Grid container>
-            <Grid
-              item
-              md={3}
-              xs={12}
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "flex-start",
-                gap: {
-                  sm: 5,
-                  xs: 3,
-                },
-                alignItems: "center",
-              }}
-            >
-              <Typography
-                variant="h6"
-                color="rgb(99, 115, 129)"
-                fontSize={14}
-                alignSelf={"flex-start"}
-              >
-                Profile Picture
-              </Typography>
-
-              <Button
-                component="label"
-                role={undefined}
-                variant="contained"
-                tabIndex={-1}
-                startIcon={<CloudUploadIcon />}
-                className="upload-file-input"
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <Grid container>
+              <Grid
+                item
+                md={3}
+                xs={12}
                 sx={{
-                  textTransform: "unset",
-                  fontSize: 12,
-                  width: 140,
-                  height: 140,
-                  borderRadius: 100,
-                  border: "7px solid white",
-                  outline: "1px dashed rgba(145, 158, 171, 0.32)",
-                  backgroundColor: "rgb(244, 246, 248)",
-                  boxShadow: "none",
-                  color: "rgb(99, 115, 129)",
                   display: "flex",
                   flexDirection: "column",
-                  justifyContent: "center",
+                  justifyContent: "flex-start",
+                  gap: {
+                    sm: 5,
+                    xs: 3,
+                  },
                   alignItems: "center",
                 }}
               >
-                Upload photo
-                <VisuallyHiddenInput
-                  type="file"
-                  onChange={(event) => console.log(event.target.files)}
-                  multiple
-                />
-              </Button>
-            </Grid>
+                <Typography
+                  variant="h6"
+                  color="rgb(99, 115, 129)"
+                  fontSize={14}
+                  alignSelf={"flex-start"}
+                >
+                  Profile Picture
+                </Typography>
+                <Button
+                  component="label"
+                  role={undefined}
+                  variant="contained"
+                  tabIndex={-1}
+                  startIcon={<CloudUploadIcon />}
+                  className="upload-file-input"
+                  sx={{
+                    textTransform: "unset",
+                    fontSize: 12,
+                    width: 140,
+                    height: 140,
+                    borderRadius: 100,
+                    border: "7px solid white",
+                    outline: "1px dashed rgba(145, 158, 171, 0.32)",
+                    backgroundColor: "rgb(244, 246, 248)",
+                    boxShadow: "none",
+                    color: "rgb(99, 115, 129)",
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  Upload photo
+                  <VisuallyHiddenInput
+                    type="file"
+                    {...register("image")}
+                    // onChange={(event) => console.log(event.target.files)}
+                    multiple
+                  />
+                </Button>
+              </Grid>
 
-            <Grid
-              item
-              md={9}
-              sx={{
-                mt: {
-                  md: 0,
-                  xs: 3,
-                },
-              }}
-            >
-              <Typography
-                variant="h6"
-                color="rgb(99, 115, 129)"
-                fontSize={14}
-                alignSelf={"flex-start"}
-                marginBottom={1}
+              <Grid
+                item
+                md={9}
+                sx={{
+                  mt: {
+                    md: 0,
+                    xs: 3,
+                  },
+                }}
               >
-                Information
-              </Typography>
+                <Typography
+                  variant="h6"
+                  color="rgb(99, 115, 129)"
+                  fontSize={14}
+                  alignSelf={"flex-start"}
+                  marginBottom={1}
+                >
+                  Information
+                </Typography>
 
-              <form>
                 <TextField
                   label="Name"
                   type="text"
                   className="form-input"
+                  {...register("name")}
                   focused={userData?.data.name ? true : false}
-                  value={userData?.data.name}
                   sx={{
                     width: "100%",
                     marginBottom: 2,
@@ -219,9 +266,8 @@ export default function Page({ params }: { params: { userId: string } }) {
                   label="Email"
                   type="email"
                   className="form-input"
-                  disabled
                   focused={true}
-                  value={userData?.data.email ?? "Demo@gmail.com"}
+                  {...register("email")}
                   sx={{
                     width: "100%",
                     marginBottom: 2,
@@ -232,14 +278,36 @@ export default function Page({ params }: { params: { userId: string } }) {
                   label="Organisation"
                   type="text"
                   className="form-input"
-                  disabled
                   focused={true}
-                  value={userData?.data?.organisation?.name ?? "Nutrition Hub"}
+                  {...register("organisation")}
                   sx={{
                     width: "100%",
                     marginBottom: 2,
                   }}
                 />
+                {/* <FormControl fullWidth className="form-input">
+                  <InputLabel id="demo-simple-select-label">
+                    Organisation
+                  </InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    // value={selectedOrganisation}
+                    label="Organisation"
+                    {...register("organisationId")}
+                    // onChange={handleChange}
+                  >
+                    {/* {organisations?.map((organisation, i) => {
+                    return (
+                      <MenuItem value={Number(organisation.id)} key={i}>
+                        {organisation.name}
+                      </MenuItem>
+                    );
+                  })} */}
+                {/* <MenuItem value={20}>Twenty</MenuItem>
+                  <MenuItem value={30}>Thirty</MenuItem> */}
+                {/* </Select> */}
+                {/* </FormControl> */}
 
                 <Divider
                   sx={{
@@ -309,9 +377,9 @@ export default function Page({ params }: { params: { userId: string } }) {
                 >
                   Save Changes
                 </Button>
-              </form>
+              </Grid>
             </Grid>
-          </Grid>
+          </form>
         </Stack>
         {/* Profile Section End */}
 

@@ -1,7 +1,9 @@
 import prisma from "@/prisma/prisma";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import fs from "fs/promises";
+import path from "path";
 
-export const GET = async (request: Request, context: { params: any }) => {
+export const GET = async (request: NextRequest, context: { params: any }) => {
   //   const { searchParams } = new URL(request.url);
   //   console.log(searchParams);
   const userId = context.params.userId;
@@ -32,3 +34,58 @@ export const GET = async (request: Request, context: { params: any }) => {
     });
   }
 };
+
+export async function PUT(req: NextRequest, context: { params: any }) {
+  try {
+    const userId = context.params.userId;
+
+    // Check if a user exists
+    const user = await prisma.user.findUnique({
+      where: { id: Number(userId) },
+    });
+
+    if (!user) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+
+    // Upload the image using multer
+    const formData = await req.formData();
+    const image = formData.get("image");
+
+    let imageUrl: string | undefined;
+
+    // if (image) {
+    //   // Ensure the upload directory exists
+    //   const targetDir = path.resolve("./public/static/uploads");
+    //   await fs.mkdir(targetDir, { recursive: true });
+
+    //   const imagePath = path.join(targetDir, `${userId}-${Date.now()}.png`);
+    //   await fs.writeFile(imagePath, Buffer.from(await image.arrayBuffer()));
+
+    //   // Construct the image URL
+    //   imageUrl = `${userId}-${Date.now()}.png`;
+    // }
+
+    // Update user with imageUrl
+    const updatedUser = await prisma.user.update({
+      where: { id: Number(userId) },
+      data: {
+        name: formData.get("name") as string,
+        email: formData.get("email") as string,
+        organisationId: Number(formData.get("organisationId") as string),
+        // image: imageUrl ?? user.image,
+      },
+    });
+
+    return new NextResponse(
+      JSON.stringify({ message: "Profile successfully updated!" }),
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json(
+      { error: "Something went wrong" },
+      { status: 500 }
+    );
+  }
+}
