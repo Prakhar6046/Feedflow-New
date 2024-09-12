@@ -397,7 +397,7 @@ export default function BasicTable({ organisations }: Props) {
                 md: "90%",
                 xs: "100%",
               },
-              height: 140,
+              height: 200,
               borderRadius: 3,
               border: "7px solid white",
               outline: "1px dashed rgba(145, 158, 171, 0.32)",
@@ -570,7 +570,6 @@ export default function BasicTable({ organisations }: Props) {
               />
 
             </Stack>
-
 
             <Typography
               variant="h6"
