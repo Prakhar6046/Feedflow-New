@@ -29,6 +29,7 @@ model User {
   status   UserStatus @default(ACTIVE)
   role     UserRole   @default(MEMBER)
   image    String?
+  imageUrl String?
 
   organisationId Int
   organisation   Organisation @relation(fields: [organisationId], references: [id], onUpdate: Cascade)

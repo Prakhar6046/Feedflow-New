@@ -19,11 +19,22 @@ export async function POST(req: NextRequest) {
     }
 
     const contact = await prisma.contact.create({
-      data: {},
+      data: {
+        name: "",
+        phone: "",
+        role: "",
+        email: "",
+      },
     });
 
     const address = await prisma.address.create({
-      data: {},
+      data: {
+        city: "",
+        postCode: "",
+        province: "",
+        name: "",
+        street: "",
+      },
     });
 
     const results = await prisma.organisation.create({

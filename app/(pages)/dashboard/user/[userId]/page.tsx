@@ -166,12 +166,14 @@ export default function Page({ params }: { params: { userId: string } }) {
   useEffect(() => {
     if (userData) {
       setValue("name", String(userData?.data?.name));
-      setValue("image", String(userData?.data?.image));
+      setValue("image", String(userData?.data?.imageUrl));
       setValue("email", String(userData?.data?.email));
       setValue("organisation", String(userData?.data?.organisation.name));
       setValue("organisationId", userData?.data?.organisationId);
     }
   }, [userData]);
+  console.log(userData);
+
   if (loading) {
     return <Loader />;
   }
@@ -214,6 +216,10 @@ export default function Page({ params }: { params: { userId: string } }) {
                 </Typography>
                 <Button
                   component="label"
+                  // style={{
+                  //   backgroundImage: `url(http://localhost:3000/api/profile-pic/2-1726233416107.png)`,
+                  //   backgroundSize: "100% 100%",
+                  // }}
                   role={undefined}
                   variant="contained"
                   tabIndex={-1}
@@ -239,7 +245,9 @@ export default function Page({ params }: { params: { userId: string } }) {
                   Upload photo
                   <VisuallyHiddenInput
                     type="file"
-                    {...register("image")}
+                    {...register("image", {
+                      onChange: (e) => setValue("image", e.target.files),
+                    })}
                     multiple
                   />
                 </Button>
@@ -264,7 +272,6 @@ export default function Page({ params }: { params: { userId: string } }) {
                 >
                   Information
                 </Typography>
-
                 <TextField
                   label="Name"
                   type="text"

@@ -28,7 +28,7 @@ async function SeachedOrganisation(
   role: string
 ) {
   let res = await fetch(
-    `https://feedflow.vercel.app/api/organisation/search?name=${query}&organisationId=${organisationId}&role=${role}`
+    `http://localhost:3000/api/organisation/search?name=${query}&organisationId=${organisationId}&role=${role}`
   );
   let data = await res.json();
   return data;
@@ -39,7 +39,7 @@ async function SeachedUsers(
   role: string
 ) {
   let res = await fetch(
-    `https://feedflow.vercel.app/api/users/search?name=${query}&organisationId=${organisationId}&role=${role}`
+    `http://localhost:3000/api/users/search?name=${query}&organisationId=${organisationId}&role=${role}`
   );
   let data = await res.json();
   return data;

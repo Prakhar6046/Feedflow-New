@@ -50,27 +50,22 @@ export async function PUT(req: NextRequest, context: { params: any }) {
 
     // Upload the image using multer
     const formData = await req.formData();
-    const image = formData.get("image");
+    const image: any = formData.get("image");
 
     let imageUrl: string | undefined;
+    const dateNow = Date.now();
+    if (image) {
+      // Ensure the upload directory exists
+      const targetDir = path.resolve("./public/static/uploads");
+      await fs.mkdir(targetDir, { recursive: true });
 
-    // if (image) {
-    //   // Ensure the upload directory exists
-    //   const targetDir = path.resolve("./public/static/uploads");
-    //   await fs.mkdir(targetDir, { recursive: true });
+      const imagePath = path.join(targetDir, `${userId}-${dateNow}.png`);
+      await fs.writeFile(imagePath, Buffer.from(await image.arrayBuffer()));
 
-    //   const imagePath = path.join(targetDir, `${userId}-${Date.now()}.png`);
-    //   await fs.writeFile(imagePath, Buffer.from(await image.arrayBuffer()));
+      // Construct the image URL
+      imageUrl = `${userId}-${dateNow}.png`;
+    }
 
-    //   // Construct the image URL
-    //   imageUrl = `${userId}-${Date.now()}.png`;
-    // }
-
-    // Update user with imageUrl
-    // const newPassword = formData.get("password");
-    // console.log(newPassword?.toString().length);
-
-    // console.log(formData.get("password") as string);
     const newPassword = formData.get("password") as string;
     let encryptedPassword;
     let updateData;
@@ -82,21 +77,27 @@ export async function PUT(req: NextRequest, context: { params: any }) {
         email: formData.get("email") as string,
         organisationId: Number(formData.get("organisationId") as string),
         password: encryptedPassword,
+        image: imageUrl ?? user.image,
+        imageUrl: `${process.env.BASE_URL}/${imageUrl}` ?? user.imageUrl,
       };
     } else {
       updateData = {
         name: formData.get("name") as string,
         email: formData.get("email") as string,
         organisationId: Number(formData.get("organisationId") as string),
+        image: imageUrl ?? user.image,
+        imageUrl:
+          `${process.env.BASE_URL}/api/profile-pic/${imageUrl}` ??
+          user.imageUrl,
       };
     }
-    // const updatedData = await prisma.user.update({
-    //   where: { id: Number(userId) },
-    //   data: {
-    //     ...updateData,
-    //     // image: imageUrl ?? user.image,
-    //   },
-    // });
+    const updatedUser = await prisma.user.update({
+      where: { id: Number(userId) },
+      data: {
+        ...updateData,
+      },
+    });
+    console.log(updatedUser);
 
     return new NextResponse(
       JSON.stringify({ message: "Profile successfully updated!" }),

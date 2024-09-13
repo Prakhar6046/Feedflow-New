@@ -30,6 +30,7 @@ export const GET = async (request: NextRequest) => {
               },
             }
           : { organisationId: Number(organisationId) },
+        include: { organisation: { select: { name: true } } },
       });
     }
 
