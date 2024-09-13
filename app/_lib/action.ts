@@ -3,6 +3,21 @@ import { revalidatePath } from "next/cache";
 //   role: string |;
 //   organisationId: number;
 // }
+
+export const getAllOrganisations = async () => {
+  try {
+    const data = await fetch(`${process.env.BASE_URL}/api/organisation/all`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    revalidatePath("/dashboard/organisation");
+    return await data.json();
+  } catch (error) {
+    return error;
+  }
+};
 export const getOrganisations = async (
   organisationId?: number,
   role?: string
@@ -24,7 +39,6 @@ export const getOrganisations = async (
     revalidatePath("/dashboard/organisation");
     return await data.json();
   } catch (error) {
-    console.log(error);
     return error;
   }
 };
@@ -56,7 +70,6 @@ export const getUser = async (userId: string) => {
     revalidatePath(`/dashboard/user/${userId}`);
     return await data.json();
   } catch (error) {
-    console.log(error);
     return error;
   }
 };

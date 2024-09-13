@@ -22,6 +22,7 @@ import Loader from "@/app/_components/Loader";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Organisation } from "@/app/_components/BasicTable";
 import toast from "react-hot-toast";
+import { getCookie } from "cookies-next";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -101,10 +102,14 @@ interface FormInputs {
   organisation: string;
   organisationId: Number;
   email: string;
+  password: string;
+  confirmPassword: string;
 }
 export default function Page({ params }: { params: { userId: string } }) {
+  const loggedUser: any = getCookie("logged-user");
   const [userData, setUserData] = useState<{ data: User }>();
   const [loading, setLoading] = useState<boolean>(false);
+  const [currentUserId, setCurrentUserId] = useState<Number>();
   const getUser = async () => {
     setLoading(true);
     const data = await fetch(`/api/users/${params.userId}`, { method: "GET" });
@@ -117,16 +122,18 @@ export default function Page({ params }: { params: { userId: string } }) {
     register,
     setValue,
     handleSubmit,
+    getValues,
+    resetField,
     formState: { errors },
   } = useForm<FormInputs>();
   const onSubmit: SubmitHandler<FormInputs> = async (data) => {
-    console.log(data);
-    console.log(userData?.data.organisationId);
-
     const formData = new FormData();
     formData.append("name", data.name);
     formData.append("email", data.email);
     formData.append("organisationId", String(userData?.data.organisationId));
+    if (data.password) {
+      formData.append("password", data.password);
+    }
     formData.append("image", data.image[0]);
 
     const res = await fetch(`/api/users/${params.userId}`, {
@@ -137,6 +144,8 @@ export default function Page({ params }: { params: { userId: string } }) {
     if (res.ok) {
       const updatedUser = await res.json();
       toast.success(updatedUser.message);
+      resetField("confirmPassword");
+      resetField("password");
     }
   };
   useEffect(() => {
@@ -147,6 +156,13 @@ export default function Page({ params }: { params: { userId: string } }) {
     };
     user();
   }, []);
+  useEffect(() => {
+    if (loggedUser) {
+      const user = JSON.parse(loggedUser);
+      setCurrentUserId(user.data.user.id);
+    }
+  }, [loggedUser]);
+
   useEffect(() => {
     if (userData) {
       setValue("name", String(userData?.data?.name));
@@ -224,7 +240,6 @@ export default function Page({ params }: { params: { userId: string } }) {
                   <VisuallyHiddenInput
                     type="file"
                     {...register("image")}
-                    // onChange={(event) => console.log(event.target.files)}
                     multiple
                   />
                 </Button>
@@ -263,10 +278,15 @@ export default function Page({ params }: { params: { userId: string } }) {
                 />
 
                 <TextField
-                  label="Email"
+                  label={Number(params.userId) === currentUserId ? "" : "Email"}
                   type="email"
                   className="form-input"
-                  focused={true}
+                  focused={
+                    Number(params.userId) === currentUserId ? false : true
+                  }
+                  disabled={
+                    Number(params.userId) === currentUserId ? true : false
+                  }
                   {...register("email")}
                   sx={{
                     width: "100%",
@@ -275,10 +295,11 @@ export default function Page({ params }: { params: { userId: string } }) {
                 />
 
                 <TextField
-                  label="Organisation"
+                  // label="Organisation"
                   type="text"
                   className="form-input"
-                  focused={true}
+                  disabled
+                  // focused={userData?.data.organisation.name ? true : false}
                   {...register("organisation")}
                   sx={{
                     width: "100%",
@@ -340,9 +361,10 @@ export default function Page({ params }: { params: { userId: string } }) {
 
                 <TextField
                   label="Password"
-                  type="text"
+                  type="password"
                   className="form-input"
-                  // focused
+                  {...register("password")}
+                  focused
                   sx={{
                     width: "100%",
                     marginBottom: 2,
@@ -351,15 +373,20 @@ export default function Page({ params }: { params: { userId: string } }) {
 
                 <TextField
                   label="Re-enter Password"
-                  type="text"
+                  type="password"
                   className="form-input"
-                  // focused
+                  {...register("confirmPassword", {
+                    validate: (value) =>
+                      value === getValues().password ||
+                      "Confirm Password do not match!",
+                  })}
+                  focused
                   sx={{
                     width: "100%",
                     marginBottom: 2,
                   }}
                 />
-
+                {errors.confirmPassword?.message}
                 <Button
                   type="submit"
                   variant="contained"

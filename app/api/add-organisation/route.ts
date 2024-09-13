@@ -17,12 +17,23 @@ export async function POST(req: NextRequest) {
     if (!email) {
       return NextResponse.json({ error: "Email is required" }, { status: 400 });
     }
+
+    const contact = await prisma.contact.create({
+      data: {},
+    });
+
+    const address = await prisma.address.create({
+      data: {},
+    });
+
     const results = await prisma.organisation.create({
       data: {
         name,
         contactNumber,
         contactPerson,
         organisationCode,
+        contactId: contact.id,
+        addressId: address.id,
       },
     });
     const user = await prisma.user.create({

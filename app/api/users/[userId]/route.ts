@@ -2,7 +2,7 @@ import prisma from "@/prisma/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import fs from "fs/promises";
 import path from "path";
-
+import bcrypt from "bcryptjs";
 export const GET = async (request: NextRequest, context: { params: any }) => {
   //   const { searchParams } = new URL(request.url);
   //   console.log(searchParams);
@@ -67,15 +67,36 @@ export async function PUT(req: NextRequest, context: { params: any }) {
     // }
 
     // Update user with imageUrl
-    const updatedUser = await prisma.user.update({
-      where: { id: Number(userId) },
-      data: {
+    // const newPassword = formData.get("password");
+    // console.log(newPassword?.toString().length);
+
+    // console.log(formData.get("password") as string);
+    const newPassword = formData.get("password") as string;
+    let encryptedPassword;
+    let updateData;
+
+    if (newPassword) {
+      encryptedPassword = bcrypt.hashSync(newPassword, 8);
+      updateData = {
         name: formData.get("name") as string,
         email: formData.get("email") as string,
         organisationId: Number(formData.get("organisationId") as string),
-        // image: imageUrl ?? user.image,
-      },
-    });
+        password: encryptedPassword,
+      };
+    } else {
+      updateData = {
+        name: formData.get("name") as string,
+        email: formData.get("email") as string,
+        organisationId: Number(formData.get("organisationId") as string),
+      };
+    }
+    // const updatedData = await prisma.user.update({
+    //   where: { id: Number(userId) },
+    //   data: {
+    //     ...updateData,
+    //     // image: imageUrl ?? user.image,
+    //   },
+    // });
 
     return new NextResponse(
       JSON.stringify({ message: "Profile successfully updated!" }),

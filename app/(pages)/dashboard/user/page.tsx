@@ -1,12 +1,13 @@
 import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
 import UserTable from "@/app/_components/UserTable";
-import { getOrganisations } from "@/app/_lib/action";
+import { getAllOrganisations, getOrganisations } from "@/app/_lib/action";
 
 // import { getCookie } from "cookies-next";
 // import { cookies } from "next/headers";
 
 export default async function Page() {
-  let organisations = await getOrganisations();
+  let organisations = await getAllOrganisations();
+
   // let organisations = await getOrganisations();
   // const role = getCookie("role", { cookies });
   // console.log(users);
