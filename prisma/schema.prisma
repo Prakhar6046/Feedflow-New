@@ -80,8 +80,8 @@ model Address {
 model Contact {
   id    String  @id @default(cuid())
   name  String?
-  email String? @unique
-  phone String? @unique
+  email String?
+  phone String?
   role  String?
 
   createdAt DateTime @default(now())
