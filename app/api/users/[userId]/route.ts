@@ -53,18 +53,18 @@ export async function PUT(req: NextRequest, context: { params: any }) {
     const image: any = formData.get("image");
 
     let imageUrl: string | undefined;
-    const dateNow = Date.now();
-    if (image) {
-      // Ensure the upload directory exists
-      const targetDir = path.resolve("./public/static/uploads");
-      await fs.mkdir(targetDir, { recursive: true });
+    // const dateNow = Date.now();
+    // if (image) {
+    //   // Ensure the upload directory exists
+    //   const targetDir = path.resolve("./public/static/uploads");
+    //   await fs.mkdir(targetDir, { recursive: true });
 
-      const imagePath = path.join(targetDir, `${userId}-${dateNow}.png`);
-      await fs.writeFile(imagePath, Buffer.from(await image.arrayBuffer()));
+    //   const imagePath = path.join(targetDir, `${userId}-${dateNow}.png`);
+    //   await fs.writeFile(imagePath, Buffer.from(await image.arrayBuffer()));
 
-      // Construct the image URL
-      imageUrl = `${userId}-${dateNow}.png`;
-    }
+    //   // Construct the image URL
+    //   imageUrl = `${userId}-${dateNow}.png`;
+    // }
 
     const newPassword = formData.get("password") as string;
     let encryptedPassword;
