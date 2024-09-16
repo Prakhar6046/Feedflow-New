@@ -156,7 +156,7 @@ export default function Page({ params }: { params: { userId: string } }) {
     formData.append("userId", params.userId);
     const old: any = profilePic?.split("/");
 
-    formData.append("oldImageName", old[old?.length - 1]);
+    formData.append("oldImageName", old ? old[old?.length - 1] : "");
 
     const response = await fetch(`/api/profile-pic/upload`, {
       method: "POST",
