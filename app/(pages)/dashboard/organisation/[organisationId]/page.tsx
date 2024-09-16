@@ -113,9 +113,9 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
     const formData = new FormData();
     formData.append("image", imagePath[0]);
     formData.append("organisationId", params.organisationId);
-    const old: any = profilePic?.split("/");
+    const oldImageName = profilePic?.split("/").pop()?.split(".")[0];
 
-    formData.append("oldImageName", old ? old[old?.length - 1] : "");
+    formData.append("oldImageName", oldImageName || "");
 
     const response = await fetch(`/api/profile-pic/upload/organisation`, {
       method: "POST",

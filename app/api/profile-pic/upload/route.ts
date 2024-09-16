@@ -1,15 +1,7 @@
 // import prisma from "@/prisma/prisma";
 import { NextRequest, NextResponse } from "next/server";
-import { v2 as cloudinary } from "cloudinary";
 import prisma from "@/prisma/prisma";
-
-// Cloudinary configuration
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-});
-
+import cloudinary from "@/lib/cloudinary";
 export const POST = async (request: NextRequest) => {
   try {
     const formData = await request.formData();
