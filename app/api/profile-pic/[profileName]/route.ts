@@ -1,4 +1,3 @@
-import prisma from "@/prisma/prisma";
 import fs from "fs/promises";
 import path from "path";
 import { NextRequest, NextResponse } from "next/server";
@@ -28,6 +27,7 @@ export const GET = async (
     });
   }
 };
+
 function getContentType(ext: string) {
   switch (ext.toLowerCase()) {
     case ".jpg":

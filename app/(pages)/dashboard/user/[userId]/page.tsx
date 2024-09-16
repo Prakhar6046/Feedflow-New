@@ -110,6 +110,7 @@ export default function Page({ params }: { params: { userId: string } }) {
   const [userData, setUserData] = useState<{ data: User }>();
   const [loading, setLoading] = useState<boolean>(false);
   const [currentUserId, setCurrentUserId] = useState<Number>();
+  const [profilePic, setProfilePic] = useState<String>();
   const getUser = async () => {
     setLoading(true);
     const data = await fetch(`/api/users/${params.userId}`, { method: "GET" });
@@ -148,6 +149,28 @@ export default function Page({ params }: { params: { userId: string } }) {
       resetField("password");
     }
   };
+
+  const handleUpload = async (imagePath: FileList) => {
+    const formData = new FormData();
+    formData.append("image", imagePath[0]);
+    formData.append("userId", params.userId);
+    const old: any = profilePic?.split("/");
+
+    formData.append("oldImageName", old[old?.length - 1]);
+
+    const response = await fetch(`/api/profile-pic/upload`, {
+      method: "POST",
+      body: formData,
+    });
+
+    if (response.ok) {
+      const updatedUser = await response.json();
+      setProfilePic(updatedUser.data.imageUrl);
+      // toast.success(updatedUser.message);
+      // resetField("confirmPassword");
+      // resetField("password");
+    }
+  };
   useEffect(() => {
     const user = async () => {
       setLoading(true);
@@ -170,9 +193,9 @@ export default function Page({ params }: { params: { userId: string } }) {
       setValue("email", String(userData?.data?.email));
       setValue("organisation", String(userData?.data?.organisation.name));
       setValue("organisationId", userData?.data?.organisationId);
+      setProfilePic(userData.data.imageUrl);
     }
   }, [userData]);
-  console.log(userData);
 
   if (loading) {
     return <Loader />;
@@ -216,10 +239,10 @@ export default function Page({ params }: { params: { userId: string } }) {
                 </Typography>
                 <Button
                   component="label"
-                  // style={{
-                  //   backgroundImage: `url(http://localhost:3000/api/profile-pic/2-1726233416107.png)`,
-                  //   backgroundSize: "100% 100%",
-                  // }}
+                  style={{
+                    backgroundImage: `url(${profilePic})`,
+                    backgroundSize: "100% 100%",
+                  }}
                   role={undefined}
                   variant="contained"
                   tabIndex={-1}
@@ -246,7 +269,7 @@ export default function Page({ params }: { params: { userId: string } }) {
                   <VisuallyHiddenInput
                     type="file"
                     {...register("image", {
-                      onChange: (e) => setValue("image", e.target.files),
+                      onChange: (e) => handleUpload(e.target.files),
                     })}
                     multiple
                   />

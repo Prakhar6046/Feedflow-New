@@ -41,6 +41,7 @@ model User {
 model Organisation {
   id               Int     @id @default(autoincrement())
   image            String?
+  imageUrl         String?
   name             String
   contactNumber    String
   contactPerson    String

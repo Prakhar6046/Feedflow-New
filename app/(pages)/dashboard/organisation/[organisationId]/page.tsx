@@ -58,6 +58,7 @@ interface FormInputs {
 const Page = ({ params }: { params: { organisationId: string } }) => {
   const [organisationData, setOrganisationData] = useState<Organisation>();
   const [loading, setLoading] = useState<boolean>(false);
+  const [profilePic, setProfilePic] = useState<String>();
   const getOrganisation = async () => {
     setLoading(true);
     const data = await fetch(`/api/organisation/${params.organisationId}`, {
@@ -108,6 +109,27 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
       // resetField("password");
     }
   };
+  const handleUpload = async (imagePath: FileList) => {
+    const formData = new FormData();
+    formData.append("image", imagePath[0]);
+    formData.append("organisationId", params.organisationId);
+    const old: any = profilePic?.split("/");
+
+    formData.append("oldImageName", old ? old[old?.length - 1] : "");
+
+    const response = await fetch(`/api/profile-pic/upload/organisation`, {
+      method: "POST",
+      body: formData,
+    });
+
+    if (response.ok) {
+      const updatedUser = await response.json();
+      setProfilePic(updatedUser.data.imageUrl);
+      // toast.success(updatedUser.message);
+      // resetField("confirmPassword");
+      // resetField("password");
+    }
+  };
   useEffect(() => {
     const organisation = async () => {
       // setLoading(true);
@@ -132,13 +154,15 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
       setValue("phone", String(organisationData.contact?.phone));
       setValue("role", String(organisationData.contact?.role));
       setValue("name", String(organisationData.contact?.name));
-
+      setProfilePic(organisationData.imageUrl);
       // setValue("email", organisationData.address?.city);
     }
   }, [organisationData]);
   if (loading) {
     return <Loader />;
   }
+  console.log(profilePic);
+
   return (
     <Stack
       sx={{
@@ -193,6 +217,13 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
             role={undefined}
             variant="contained"
             tabIndex={-1}
+            style={{
+              backgroundImage: `url(${profilePic})`,
+              backgroundSize: "contain",
+              backgroundPosition: "center",
+              backgroundRepeat: "no-repeat",
+              margin: "0 !important",
+            }}
             startIcon={<CloudUploadIcon />}
             className="upload-file-input"
             sx={{
@@ -214,9 +245,6 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
               justifyContent: "center",
               alignItems: "center",
             }}
-            style={{
-              margin: "0 !important",
-            }}
           >
             <Box>
               Drag file here or{" "}
@@ -229,7 +257,13 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
               Upload from Device
               {/* </Link> */}
             </Box>
-            <VisuallyHiddenInput type="file" {...register("image")} multiple />
+            <VisuallyHiddenInput
+              type="file"
+              {...register("image", {
+                onChange: (e) => handleUpload(e.target.files),
+              })}
+              multiple
+            />
           </Button>
 
           <Box

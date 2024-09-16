@@ -1,7 +1,5 @@
 import prisma from "@/prisma/prisma";
 import { NextRequest, NextResponse } from "next/server";
-import fs from "fs/promises";
-import path from "path";
 import bcrypt from "bcryptjs";
 export const GET = async (request: NextRequest, context: { params: any }) => {
   //   const { searchParams } = new URL(request.url);
@@ -50,21 +48,6 @@ export async function PUT(req: NextRequest, context: { params: any }) {
 
     // Upload the image using multer
     const formData = await req.formData();
-    const image: any = formData.get("image");
-
-    let imageUrl: string | undefined;
-    // const dateNow = Date.now();
-    // if (image) {
-    //   // Ensure the upload directory exists
-    //   const targetDir = path.resolve("./public/static/uploads");
-    //   await fs.mkdir(targetDir, { recursive: true });
-
-    //   const imagePath = path.join(targetDir, `${userId}-${dateNow}.png`);
-    //   await fs.writeFile(imagePath, Buffer.from(await image.arrayBuffer()));
-
-    //   // Construct the image URL
-    //   imageUrl = `${userId}-${dateNow}.png`;
-    // }
 
     const newPassword = formData.get("password") as string;
     let encryptedPassword;
@@ -77,27 +60,20 @@ export async function PUT(req: NextRequest, context: { params: any }) {
         email: formData.get("email") as string,
         organisationId: Number(formData.get("organisationId") as string),
         password: encryptedPassword,
-        image: imageUrl ?? user.image,
-        imageUrl: `${process.env.BASE_URL}/${imageUrl}` ?? user.imageUrl,
       };
     } else {
       updateData = {
         name: formData.get("name") as string,
         email: formData.get("email") as string,
         organisationId: Number(formData.get("organisationId") as string),
-        image: imageUrl ?? user.image,
-        imageUrl:
-          `${process.env.BASE_URL}/api/profile-pic/${imageUrl}` ??
-          user.imageUrl,
       };
     }
-    const updatedUser = await prisma.user.update({
+    await prisma.user.update({
       where: { id: Number(userId) },
       data: {
         ...updateData,
       },
     });
-    console.log(updatedUser);
 
     return new NextResponse(
       JSON.stringify({ message: "Profile successfully updated!" }),
