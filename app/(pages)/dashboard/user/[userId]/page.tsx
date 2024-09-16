@@ -154,10 +154,12 @@ export default function Page({ params }: { params: { userId: string } }) {
     const formData = new FormData();
     formData.append("image", imagePath[0]);
     formData.append("userId", params.userId);
-    const old: any = profilePic?.split("/");
+    // const old: any = profilePic?.split("/");
 
-    formData.append("oldImageName", old ? old[old?.length - 1] : "");
+    // formData.append("oldImageName", old ? old[old?.length - 1] : "");
+    const oldImageName = profilePic?.split("/").pop()?.split(".")[0];
 
+    formData.append("oldImageName", oldImageName || "");
     const response = await fetch(`/api/profile-pic/upload`, {
       method: "POST",
       body: formData,
