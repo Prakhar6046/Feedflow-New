@@ -12,10 +12,19 @@ export const POST = async (request: NextRequest) => {
     const oldImageName: any = formData.get("oldImageName");
     const buffer = Buffer.from(await image.arrayBuffer());
     const fileName = `${Date.now()}-${image.name}`;
-    const savePath = path.join("./public/static/uploads/", fileName);
+    const outputDir = path.join("/tmp", "uploads");
+    if (!fs.existsSync(outputDir)) {
+      await fs.mkdir(outputDir, { recursive: true }); // Make the directory asynchronously
+    }
+    const savePath = path.join(outputDir, fileName);
+
+    // const outputDir = path.join(__dirname, "..", "..", "uploads", "OutputFile");
+    // if (!fs.existsSync(outputDir)) {
+    //   fs.mkdirSync(outputDir, { recursive: true });
+    // }
     // Delete old image if it exists
     if (oldImageName && oldImageName !== "") {
-      const oldImagePath = path.join("./public/static/uploads/", oldImageName);
+      const oldImagePath = path.join(outputDir, oldImageName);
 
       try {
         await fs.access(oldImagePath); // Check if the file exists
