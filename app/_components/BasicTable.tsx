@@ -51,7 +51,7 @@ export interface Organisation {
   addressId?: String;
   contactId?: String;
   address?: Address;
-  contact?: Contact;
+  contact?: Contact[];
 }
 
 interface Props {

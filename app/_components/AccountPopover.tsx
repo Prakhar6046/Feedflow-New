@@ -27,6 +27,7 @@ export interface LoggedUser {
       status: String;
       role: String;
       createdAt: String;
+      imageUrl: String;
     };
   };
 }
@@ -75,12 +76,27 @@ const AccountPopover = () => {
             aria-haspopup="true"
             aria-expanded={open ? "true" : undefined}
           >
-            <Avatar
-              sx={{
-                width: 40,
-                height: 40,
-              }}
-            />
+            {loggedUserData ? (
+              <Box
+                borderRadius={100}
+                width={40}
+                height={40}
+                style={{
+                  backgroundImage: `url(${loggedUserData?.data?.user?.imageUrl})`,
+                  backgroundSize: "contain",
+                  backgroundPosition: "center",
+                  backgroundRepeat: "no-repeat",
+                  margin: "0 !important",
+                }}
+              ></Box>
+            ) : (
+              <Avatar
+                sx={{
+                  width: 40,
+                  height: 40,
+                }}
+              />
+            )}
           </IconButton>
         </Tooltip>
       </Box>

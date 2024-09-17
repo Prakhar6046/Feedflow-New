@@ -49,6 +49,8 @@ export async function PUT(req: NextRequest, context: { params: any }) {
     // const contacts = formData.get("contacts") as any;
     const addressData = JSON.parse(formData.get("address") as string);
     const contactsData = JSON.parse(formData.get("contacts") as string);
+    console.log(contactsData);
+
     const image = formData.get("image") as any;
 
     // Handle address update or create
@@ -71,30 +73,46 @@ export async function PUT(req: NextRequest, context: { params: any }) {
       },
     });
 
-    const updatedContact = await prisma.contact.upsert({
-      where: { id: organisation.contactId || "" },
-      update: {
-        name: contactsData.name,
-        role: contactsData.role,
-        email: contactsData.email,
-        phone: contactsData.phone,
-      },
-      create: {
-        name: contactsData.name,
-        role: contactsData.role,
-        email: contactsData.email,
-        phone: contactsData.phone,
-        organisation: { connect: { id: organisation.id } },
-      },
-    });
-
+    // const updatedContact = await prisma.contact.upsert({
+    //   where: { id: organisation.contactId || "" },
+    //   update: {
+    //     name: contactsData.name,
+    //     role: contactsData.role,
+    //     email: contactsData.email,
+    //     phone: contactsData.phone,
+    //   },
+    //   create: {
+    //     name: contactsData.name,
+    //     role: contactsData.role,
+    //     email: contactsData.email,
+    //     phone: contactsData.phone,
+    //     organisation: { connect: { id: organisation.id } },
+    //   },
+    // });
+    for (const contact of contactsData) {
+      await prisma.contact.upsert({
+        where: { id: contact.id || "" }, // Assuming each contact has an `id`
+        update: {
+          name: contact.name,
+          role: contact.role,
+          email: contact.email,
+          phone: contact.phone,
+        },
+        create: {
+          name: contact.name,
+          role: contact.role,
+          email: contact.email,
+          phone: contact.phone,
+          organisation: { connect: { id: organisation.id } },
+        },
+      });
+    }
     const updatedOrganisation = await prisma.organisation.update({
       where: { id: Number(organisationId) },
       data: {
         name: name || organisation.name,
         organisationCode: organisationCode || organisation.organisationCode,
         addressId: updatedAddress.id,
-        contactId: updatedContact.id,
         image: image || null,
       },
     });

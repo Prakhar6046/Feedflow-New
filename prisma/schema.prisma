@@ -51,10 +51,11 @@ model Organisation {
   updatedAt DateTime @updatedAt
 
   users     User[]
-  addressId String?  @unique
-  address   Address? @relation(fields: [addressId], references: [id], onUpdate: Cascade)
-  contactId String?  @unique
-  contact   Contact? @relation(fields: [contactId], references: [id], onUpdate: Cascade)
+  addressId String?   @unique
+  address   Address?  @relation(fields: [addressId], references: [id], onUpdate: Cascade)
+  contactId String?   @unique
+  contact   Contact[]
+  // contact   Contact? @relation(fields: [contactId], references: [id], onUpdate: Cascade)
 
   @@index([createdAt])
   @@index([updatedAt])
@@ -88,7 +89,7 @@ model Contact {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  organisation   Organisation?
+  organisation   Organisation? @relation(fields: [organisationId], references: [id])
   organisationId Int?
 
   @@index([createdAt])

@@ -28,7 +28,7 @@ import { NextPage } from "next";
 import { useEffect, useState } from "react";
 import { Organisation } from "@/app/_components/BasicTable";
 import Loader from "@/app/_components/Loader";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -41,6 +41,7 @@ const VisuallyHiddenInput = styled("input")({
   whiteSpace: "nowrap",
   width: 1,
 });
+
 interface FormInputs {
   organisationName: String;
   image: FileList;
@@ -50,13 +51,15 @@ interface FormInputs {
   province: String;
   city: String;
   postCode: String;
-  name: String;
-  email: String;
-  phone: String;
-  role: String;
+  contacts: {
+    name: string;
+    role: string;
+    email: string;
+    phone: string;
+  }[];
 }
 const Page = ({ params }: { params: { organisationId: string } }) => {
-  const [organisationData, setOrganisationData] = useState<Organisation>();
+  const [organisationData, setOrganisationData] = useState<any>();
   const [loading, setLoading] = useState<boolean>(false);
   const [profilePic, setProfilePic] = useState<String>();
   const getOrganisation = async () => {
@@ -74,10 +77,15 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
     register,
     setValue,
     handleSubmit,
+    control,
     getValues,
     resetField,
     formState: { errors },
-  } = useForm<FormInputs>();
+  } = useForm<FormInputs>({
+    defaultValues: {
+      contacts: [{ name: "", role: "", email: "", phone: "" }],
+    },
+  });
   const onSubmit: SubmitHandler<FormInputs> = async (data) => {
     const address: any = {
       address: data.address,
@@ -85,17 +93,12 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
       province: data.province,
       postCode: data.postCode,
     };
-    const contacts: any = {
-      name: data.name,
-      role: data.role,
-      email: data.email,
-      phone: data.phone,
-    };
+
     const formData = new FormData();
     formData.append("name", String(data.organisationName));
     formData.append("organisationCode", String(data.organisationCode));
     formData.append("address", JSON.stringify(address));
-    formData.append("contacts", JSON.stringify(contacts));
+    formData.append("contacts", JSON.stringify(data.contacts));
     formData.append("image", data.image[0]);
     const res = await fetch(`/api/organisation/${params.organisationId}`, {
       method: "PUT",
@@ -109,6 +112,10 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
       // resetField("password");
     }
   };
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "contacts",
+  });
   const handleUpload = async (imagePath: FileList) => {
     const formData = new FormData();
     formData.append("image", imagePath[0]);
@@ -150,10 +157,11 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
       setValue("street", String(organisationData.address?.street));
       setValue("province", String(organisationData.address?.province));
       setValue("postCode", String(organisationData.address?.postCode));
-      setValue("email", String(organisationData.contact?.email));
-      setValue("phone", String(organisationData.contact?.phone));
-      setValue("role", String(organisationData.contact?.role));
-      setValue("name", String(organisationData.contact?.name));
+      setValue("contacts", organisationData?.contact);
+      // setValue("email", String(organisationData.contact?.email));
+      // setValue("phone", String(organisationData.contact?.phone));
+      // setValue("role", String(organisationData.contact?.role));
+      // setValue("name", String(organisationData.contact?.name));
       setProfilePic(organisationData.imageUrl);
       // setValue("email", organisationData.address?.city);
     }
@@ -457,117 +465,229 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
               Contacts
             </Typography>
 
-            <Stack
-              display={"flex"}
-              justifyContent={"center"}
-              direction={"row"}
-              sx={{
-                width: "100%",
-                marginBottom: 2,
-                gap: 1.5,
-                flexWrap: {
-                  lg: "nowrap",
-                  xs: "wrap",
-                },
-              }}
-            >
-              <TextField
-                label="Name"
-                type="text"
-                className="form-input"
-                {...register("name")}
-                focused
-                sx={{
-                  width: {
-                    lg: "100%",
-                    md: "48.4%",
-                    xs: "100%",
-                  },
-                }}
-              />
+            {/* {organisationData?.contact?.map((contact, i) => {
+              return (
+                <Stack
+                  key={i}
+                  display={"flex"}
+                  justifyContent={"center"}
+                  direction={"row"}
+                  sx={{
+                    width: "100%",
+                    marginBottom: 2,
+                    gap: 1.5,
+                    flexWrap: {
+                      lg: "nowrap",
+                      xs: "wrap",
+                    },
+                  }}
+                >
+                  <TextField
+                    label="Name"
+                    type="text"
+                    className="form-input"
+                    {...register("name")}
+                    focused
+                    sx={{
+                      width: {
+                        lg: "100%",
+                        md: "48.4%",
+                        xs: "100%",
+                      },
+                    }}
+                  />
 
-              <TextField
-                label="Role"
-                type="text"
-                className="form-input"
-                {...register("role")}
-                focused
-                sx={{
-                  width: {
-                    lg: "100%",
-                    md: "48.4%",
-                    xs: "100%",
-                  },
-                }}
-              />
+                  <TextField
+                    label="Role"
+                    type="text"
+                    className="form-input"
+                    {...register("role")}
+                    focused
+                    sx={{
+                      width: {
+                        lg: "100%",
+                        md: "48.4%",
+                        xs: "100%",
+                      },
+                    }}
+                  />
 
-              <TextField
-                label="Email"
-                type="email"
-                className="form-input"
-                {...register("email")}
-                focused
-                sx={{
-                  width: {
-                    lg: "100%",
-                    md: "48.4%",
-                    xs: "100%",
-                  },
-                }}
-              />
+                  <TextField
+                    label="Email"
+                    type="email"
+                    className="form-input"
+                    {...register("email")}
+                    focused
+                    sx={{
+                      width: {
+                        lg: "100%",
+                        md: "48.4%",
+                        xs: "100%",
+                      },
+                    }}
+                  />
 
-              <TextField
-                label="Phone"
-                type="text"
-                {...register("phone")}
-                className="form-input"
-                focused
-                sx={{
-                  width: {
-                    lg: "100%",
-                    md: "48.4%",
-                    xs: "100%",
-                  },
-                }}
-              />
+                  <TextField
+                    label="Phone"
+                    type="text"
+                    {...register("phone")}
+                    className="form-input"
+                    focused
+                    sx={{
+                      width: {
+                        lg: "100%",
+                        md: "48.4%",
+                        xs: "100%",
+                      },
+                    }}
+                  />
 
-              {/* <Box
+                  <Box
+                    display={"flex"}
+                    justifyContent={"center"}
+                    alignItems={"center"}
+                    width={150}
+                    sx={{
+                      cursor: "pointer",
+                      width: {
+                        lg: 150,
+                        xs: "auto",
+                      },
+                    }}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="1.4em"
+                      height="1.4em"
+                      viewBox="0 0 24 24"
+                    >
+                      <g fill="none">
+                        <path d="m12.593 23.258l-.011.002l-.071.035l-.02.004l-.014-.004l-.071-.035q-.016-.005-.024.005l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.017-.018m.265-.113l-.013.002l-.185.093l-.01.01l-.003.011l.018.43l.005.012l.008.007l.201.093q.019.005.029-.008l.004-.014l-.034-.614q-.005-.018-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.614q.001.018.017.024l.015-.002l.201-.093l.01-.008l.004-.011l.017-.43l-.003-.012l-.01-.01z" />
+                        <path
+                          fill="#ff0000"
+                          d="M14.28 2a2 2 0 0 1 1.897 1.368L16.72 5H20a1 1 0 1 1 0 2l-.003.071l-.867 12.143A3 3 0 0 1 16.138 22H7.862a3 3 0 0 1-2.992-2.786L4.003 7.07L4 7a1 1 0 0 1 0-2h3.28l.543-1.632A2 2 0 0 1 9.721 2zm3.717 5H6.003l.862 12.071a1 1 0 0 0 .997.929h8.276a1 1 0 0 0 .997-.929zM10 10a1 1 0 0 1 .993.883L11 11v5a1 1 0 0 1-1.993.117L9 16v-5a1 1 0 0 1 1-1m4 0a1 1 0 0 1 1 1v5a1 1 0 1 1-2 0v-5a1 1 0 0 1 1-1m.28-6H9.72l-.333 1h5.226z"
+                        />
+                      </g>
+                    </svg>
+                  </Box>
+                </Stack>
+              );
+            })} */}
+            {fields.map((item, index) => (
+              <Stack
+                key={item.id}
                 display={"flex"}
                 justifyContent={"center"}
-                alignItems={"center"}
-                width={150}
+                direction={"row"}
                 sx={{
-                  cursor: "pointer",
-                  width: {
-                    lg: 150,
-                    xs: "auto",
+                  width: "100%",
+                  marginBottom: 2,
+                  gap: 1.5,
+                  flexWrap: {
+                    lg: "nowrap",
+                    xs: "wrap",
                   },
                 }}
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="1.4em"
-                  height="1.4em"
-                  viewBox="0 0 24 24"
-                >
-                  <g fill="none">
-                    <path d="m12.593 23.258l-.011.002l-.071.035l-.02.004l-.014-.004l-.071-.035q-.016-.005-.024.005l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.017-.018m.265-.113l-.013.002l-.185.093l-.01.01l-.003.011l.018.43l.005.012l.008.007l.201.093q.019.005.029-.008l.004-.014l-.034-.614q-.005-.018-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.614q.001.018.017.024l.015-.002l.201-.093l.01-.008l.004-.011l.017-.43l-.003-.012l-.01-.01z" />
-                    <path
-                      fill="#ff0000"
-                      d="M14.28 2a2 2 0 0 1 1.897 1.368L16.72 5H20a1 1 0 1 1 0 2l-.003.071l-.867 12.143A3 3 0 0 1 16.138 22H7.862a3 3 0 0 1-2.992-2.786L4.003 7.07L4 7a1 1 0 0 1 0-2h3.28l.543-1.632A2 2 0 0 1 9.721 2zm3.717 5H6.003l.862 12.071a1 1 0 0 0 .997.929h8.276a1 1 0 0 0 .997-.929zM10 10a1 1 0 0 1 .993.883L11 11v5a1 1 0 0 1-1.993.117L9 16v-5a1 1 0 0 1 1-1m4 0a1 1 0 0 1 1 1v5a1 1 0 1 1-2 0v-5a1 1 0 0 1 1-1m.28-6H9.72l-.333 1h5.226z"
-                    />
-                  </g>
-                </svg>
-              </Box> */}
-            </Stack>
+                <TextField
+                  label="Name"
+                  type="text"
+                  className="form-input"
+                  {...register(`contacts.${index}.name` as const)}
+                  focused
+                  sx={{
+                    width: {
+                      lg: "100%",
+                      md: "48.4%",
+                      xs: "100%",
+                    },
+                  }}
+                />
 
-            {/* <Divider
+                <TextField
+                  label="Role"
+                  type="text"
+                  className="form-input"
+                  {...register(`contacts.${index}.role` as const)}
+                  focused
+                  sx={{
+                    width: {
+                      lg: "100%",
+                      md: "48.4%",
+                      xs: "100%",
+                    },
+                  }}
+                />
+
+                <TextField
+                  label="Email"
+                  type="email"
+                  className="form-input"
+                  {...register(`contacts.${index}.email` as const)}
+                  focused
+                  sx={{
+                    width: {
+                      lg: "100%",
+                      md: "48.4%",
+                      xs: "100%",
+                    },
+                  }}
+                />
+
+                <TextField
+                  label="Phone"
+                  type="text"
+                  className="form-input"
+                  {...register(`contacts.${index}.phone` as const)}
+                  focused
+                  sx={{
+                    width: {
+                      lg: "100%",
+                      md: "48.4%",
+                      xs: "100%",
+                    },
+                  }}
+                />
+
+                <Box
+                  display={"flex"}
+                  justifyContent={"center"}
+                  alignItems={"center"}
+                  width={150}
+                  sx={{
+                    cursor: "pointer",
+                    width: {
+                      lg: 150,
+                      xs: "auto",
+                    },
+                  }}
+                  onClick={() => remove(index)}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="1.4em"
+                    height="1.4em"
+                    viewBox="0 0 24 24"
+                  >
+                    <g fill="none">
+                      <path d="m12.593 23.258l-.011.002l-.071.035l-.02.004l-.014-.004l-.071-.035q-.016-.005-.024.005l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.017-.018m.265-.113l-.013.002l-.185.093l-.01.01l-.003.011l.018.43l.005.012l.008.007l.201.093q.019.005.029-.008l.004-.014l-.034-.614q-.005-.018-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.614q.001.018.017.024l.015-.002l.201-.093l.01-.008l.004-.011l.017-.43l-.003-.012l-.01-.01z" />
+                      <path
+                        fill="#ff0000"
+                        d="M14.28 2a2 2 0 0 1 1.897 1.368L16.72 5H20a1 1 0 1 1 0 2l-.003.071l-.867 12.143A3 3 0 0 1 16.138 22H7.862a3 3 0 0 1-2.992-2.786L4.003 7.07L4 7a1 1 0 0 1 0-2h3.28l.543-1.632A2 2 0 0 1 9.721 2zm3.717 5H6.003l.862 12.071a1 1 0 0 0 .997.929h8.276a1 1 0 0 0 .997-.929zM10 10a1 1 0 0 1 .993.883L11 11v5a1 1 0 0 1-1.993.117L9 16v-5a1 1 0 0 1 1-1m4 0a1 1 0 0 1 1 1v5a1 1 0 1 1-2 0v-5a1 1 0 0 1 1-1m.28-6H9.72l-.333 1h5.226z"
+                      />
+                    </g>
+                  </svg>
+                </Box>
+              </Stack>
+            ))}
+
+            <Divider
               sx={{
                 borderColor: "#979797",
                 my: 1,
               }}
-            /> */}
-            {/* 
+            />
+
             <Stack
               p={1.5}
               direction={"row"}
@@ -582,6 +702,9 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
               gap={0.5}
               border={"2px dashed #06a19b"}
               className="add-contact-btn"
+              onClick={() =>
+                append({ name: "", role: "", email: "", phone: "" })
+              }
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -595,7 +718,7 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
                 />
               </svg>
               Add Contact
-            </Stack> */}
+            </Stack>
 
             <Button
               type="submit"
