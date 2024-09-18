@@ -68,7 +68,6 @@ const AddUser: React.FC<Props> = ({ setOpen, open, organisations }) => {
   };
 
   const handleChange = (event: SelectChangeEvent) => {
-    console.log(event);
     setSelectedOrganisation(event.target.value as string);
   };
 
@@ -110,7 +109,7 @@ const AddUser: React.FC<Props> = ({ setOpen, open, organisations }) => {
             alignItems="center"
             sx={{
               opacity: 0.5,
-              cursor: "pointer"
+              cursor: "pointer",
             }}
             onClick={handleClose}
           >

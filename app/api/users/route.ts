@@ -15,6 +15,7 @@ export const GET = async (request: NextRequest) => {
           organisation: {
             select: {
               name: true,
+              imageUrl: true,
             },
           },
         },
@@ -26,6 +27,7 @@ export const GET = async (request: NextRequest) => {
           organisation: {
             select: {
               name: true,
+              imageUrl: true,
             },
           },
         },

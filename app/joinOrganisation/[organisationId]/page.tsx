@@ -34,7 +34,6 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
         }),
       });
       const responseData = await response.json();
-      console.log(responseData);
       setCookie("logged-user", responseData);
       setCookie("role", responseData?.data?.user?.role);
 

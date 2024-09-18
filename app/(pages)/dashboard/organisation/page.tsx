@@ -19,7 +19,7 @@ export default async function Page() {
     <>
       <BasicBreadcrumbs
         heading={"Organization"}
-        buttonName={"Add Organization"}
+        buttonName={"Invite Organization"}
         organisations={organisations?.data}
         searchOrganisations={true}
         searchUsers={false}

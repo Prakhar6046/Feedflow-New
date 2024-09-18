@@ -18,6 +18,14 @@ export const GET = async (request: NextRequest) => {
               },
             }
           : {},
+        include: {
+          organisation: {
+            select: {
+              name: true,
+              imageUrl: true,
+            },
+          },
+        },
       });
     } else {
       users = await prisma.user.findMany({
@@ -30,6 +38,14 @@ export const GET = async (request: NextRequest) => {
               },
             }
           : { organisationId: Number(organisationId) },
+        include: {
+          organisation: {
+            select: {
+              name: true,
+              imageUrl: true,
+            },
+          },
+        },
       });
     }
 

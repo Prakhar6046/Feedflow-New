@@ -37,7 +37,7 @@ export default function Page() {
           backgroundRepeat: "no-repeat",
           backgroundSize: "100% 100%",
           minHeight: "100vh",
-          backgroundBlendMode: "luminosity"
+          backgroundBlendMode: "luminosity",
         }}
         display={"flex"}
         justifyContent={"space-between"}
