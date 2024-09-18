@@ -47,7 +47,7 @@ interface Data {
 export const getUsers = async (payload: any) => {
   try {
     const data = await fetch(
-      `https://feedflow.vercel.app/api/users?role=${payload.role}&organisationId=${payload.organisationId}`,
+      `http://localhost:3000/api/users?role=${payload.role}&organisationId=${payload.organisationId}`,
       {
         method: "GET",
         headers: {
@@ -245,13 +245,14 @@ export default function UserTable() {
                     >
                       <Box display={"flex"} alignItems={"center"} gap={1.5}>
                         {user?.imageUrl ? (
-                          <img
+                          <Image
                             src={String(user.imageUrl)}
                             width={40}
                             height={40}
                             style={{
                               borderRadius: "8px",
                             }}
+                            alt="img not found"
                           />
                         ) : (
                           <Box
@@ -320,7 +321,7 @@ export default function UserTable() {
                         gap={"12px"}
                       >
                         {user?.organisation.imageUrl ? (
-                          <img
+                          <Image
                             src={String(user.organisation.imageUrl)}
                             width={80}
                             height={40}
@@ -328,6 +329,7 @@ export default function UserTable() {
                               borderRadius: "8px",
                               objectFit: "contain",
                             }}
+                            alt="img not found"
                           />
                         ) : (
                           <Box

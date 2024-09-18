@@ -12,6 +12,7 @@ import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 import { useAppDispatch } from "@/lib/hooks";
 import { sidebarAction } from "@/lib/features/sidebar/sidebarSlice";
+import Logo from "@/public/static/img/logo.svg";
 
 function ClosedSidebar() {
   const router = useRouter();
@@ -58,7 +59,7 @@ function ClosedSidebar() {
           className="cursor-pointer"
           onClick={() => router.push("/dashboard")}
         >
-          <img src="/static/img/logo.svg" alt="Logo" width={50} height={40} />
+          <Image src={Logo} alt="Logo" width={50} height={40} />
         </Box>
         <List>
           <Link href={"/dashboard"} className="nav-links">
@@ -103,7 +104,7 @@ function ClosedSidebar() {
                   </svg>
                 </ListItemIcon>
                 <ListItemText
-                className="closed-nav-links"
+                  className="closed-nav-links"
                   sx={{
                     mt: 0.5,
                   }}
@@ -161,7 +162,7 @@ function ClosedSidebar() {
                   </svg>
                 </ListItemIcon>
                 <ListItemText
-                className="closed-nav-links"
+                  className="closed-nav-links"
                   sx={{
                     mt: 0.5,
                   }}
@@ -207,7 +208,7 @@ function ClosedSidebar() {
                   </svg>
                 </ListItemIcon>
                 <ListItemText
-                className="closed-nav-links"
+                  className="closed-nav-links"
                   sx={{
                     mt: 0.5,
                   }}

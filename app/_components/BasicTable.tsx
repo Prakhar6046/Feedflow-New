@@ -16,6 +16,7 @@ import {
 import { useAppSelector } from "@/lib/hooks";
 import Loader from "./Loader";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 interface Address {
   id: String;
@@ -207,7 +208,7 @@ export default function BasicTable({ organisations }: Props) {
                     >
                       <Box display={"flex"} alignItems={"center"} gap={1.5}>
                         {organisation?.imageUrl ? (
-                          <img
+                          <Image
                             src={String(organisation.imageUrl)}
                             width={80}
                             height={40}
@@ -215,6 +216,7 @@ export default function BasicTable({ organisations }: Props) {
                               borderRadius: "8px",
                               objectFit: "contain",
                             }}
+                            alt="img not found"
                           />
                         ) : (
                           <Box

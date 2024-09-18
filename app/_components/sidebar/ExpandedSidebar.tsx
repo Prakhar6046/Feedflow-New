@@ -17,7 +17,7 @@ import {
 } from "@/lib/features/sidebar/sidebarSlice";
 import { getCookie } from "cookies-next";
 import { LoggedUser } from "../AccountPopover";
-
+import Logo from "@/public/static/img/logo.svg";
 const ExpandedSidebar = () => {
   const router = useRouter();
   const loggedUser: any = getCookie("logged-user");
@@ -69,7 +69,7 @@ const ExpandedSidebar = () => {
           className="cursor-pointer"
           onClick={() => router.push("/dashboard")}
         >
-          <img src="/static/img/logo.svg" alt="Logo" width={50} height={40} />
+          <Image src={Logo} alt="Logo" width={50} height={40} />
         </Box>
 
         <Box
