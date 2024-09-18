@@ -278,3 +278,22 @@ body {
   background: rgba(6, 161, 155, 0.088);
   cursor: pointer;
 }
+
+.stepper svg {
+  fill: #06a19b;
+  width: 60px;
+  height: 60px;
+}
+
+.stepper > span:nth-child(2) > span {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.stepper > span:nth-child(1) > svg > text {
+  font-weight: 700;
+}
+
+.stepper-container > div > div:nth-child(even) {
+  visibility: hidden;
+}
