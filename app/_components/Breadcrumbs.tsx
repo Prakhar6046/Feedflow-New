@@ -168,7 +168,7 @@ export default function BasicBreadcrumbs({
         {currentRole === "SUPERADMIN" && buttonName ? (
           <Button
             variant="contained"
-            onClick={() => setOpen(true)}
+            onClick={handleClick}
             sx={{
               background: "#06A19B",
               fontWeight: 600,
