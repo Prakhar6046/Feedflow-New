@@ -332,6 +332,6 @@ body {
   fill: #06a19b;
 }
 
-.form-radio > span:nth-child(2){
+.form-radio > span:nth-child(2) {
   font-size: 14px;
 }

@@ -6,7 +6,7 @@ import { Box, Button, Stack, TextField, Tooltip } from "@mui/material";
 
 import AddOrganization from "./models/AddOrganisation";
 import AddUser from "./models/AddUser";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Organisation } from "./BasicTable";
@@ -21,6 +21,7 @@ interface Props {
   organisations?: Organisation[];
   searchOrganisations?: boolean;
   searchUsers?: boolean;
+  hideSearchInput?: boolean;
 }
 async function SeachedOrganisation(
   query: string,
@@ -28,7 +29,7 @@ async function SeachedOrganisation(
   role: string
 ) {
   let res = await fetch(
-    `http://localhost:3000/api/organisation/search?name=${query}&organisationId=${organisationId}&role=${role}`
+    `https://feedflow.vercel.app/api/organisation/search?name=${query}&organisationId=${organisationId}&role=${role}`
   );
   let data = await res.json();
   return data;
@@ -39,7 +40,7 @@ async function SeachedUsers(
   role: string
 ) {
   let res = await fetch(
-    `http://localhost:3000/api/users/search?name=${query}&organisationId=${organisationId}&role=${role}`
+    `https://feedflow.vercel.app/api/users/search?name=${query}&organisationId=${organisationId}&role=${role}`
   );
   let data = await res.json();
   return data;
@@ -51,8 +52,10 @@ export default function BasicBreadcrumbs({
   organisations,
   searchOrganisations,
   searchUsers,
+  hideSearchInput,
 }: Props) {
   const role = getCookie("role");
+  const router = useRouter();
   const loggedUser: any = getCookie("logged-user");
   const [open, setOpen] = useState(false);
   const pathName = usePathname();
@@ -62,6 +65,13 @@ export default function BasicBreadcrumbs({
   const dispatch = useAppDispatch();
   const handleClear = () => {
     setSearchQuery("");
+  };
+  const handleClick = () => {
+    if (heading === "Batches") {
+      router.push("/dashboard/batches/new");
+    } else {
+      setOpen(true);
+    }
   };
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -193,7 +203,7 @@ export default function BasicBreadcrumbs({
           buttonName !== "Add Organization" && (
             <Button
               variant="contained"
-              onClick={() => setOpen(true)}
+              onClick={handleClick}
               sx={{
                 background: "#06A19B",
                 fontWeight: 600,
@@ -226,7 +236,7 @@ export default function BasicBreadcrumbs({
           )
         )}
 
-        {heading === "Organization" ? (
+        {heading !== "Batches" && heading === "Organization" ? (
           <AddOrganization open={open} setOpen={setOpen} />
         ) : (
           <AddUser
@@ -275,45 +285,47 @@ export default function BasicBreadcrumbs({
               },
             }}
           >
-            <Box
-              position="relative"
-              className="search-filter"
-              sx={{
-                width: {
-                  md: "fit-content",
-                  xs: "100%",
-                },
-              }}
-            >
-              <TextField
-                label="Search"
-                className="form-input"
-                focused
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+            {!hideSearchInput && (
+              <Box
+                position="relative"
+                className="search-filter"
                 sx={{
                   width: {
                     md: "fit-content",
                     xs: "100%",
                   },
                 }}
-              />
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="1em"
-                height="1em"
-                viewBox="0 0 24 24"
-                className="search-icon"
               >
-                <path
-                  fill="none"
-                  stroke="#979797"
-                  stroke-linecap="round"
-                  strokeWidth="2"
-                  d="m21 21l-4.486-4.494M19 10.5a8.5 8.5 0 1 1-17 0a8.5 8.5 0 0 1 17 0Z"
+                <TextField
+                  label="Search"
+                  className="form-input"
+                  focused
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  sx={{
+                    width: {
+                      md: "fit-content",
+                      xs: "100%",
+                    },
+                  }}
                 />
-              </svg>
-            </Box>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="1em"
+                  height="1em"
+                  viewBox="0 0 24 24"
+                  className="search-icon"
+                >
+                  <path
+                    fill="none"
+                    stroke="#979797"
+                    stroke-linecap="round"
+                    strokeWidth="2"
+                    d="m21 21l-4.486-4.494M19 10.5a8.5 8.5 0 1 1-17 0a8.5 8.5 0 0 1 17 0Z"
+                  />
+                </svg>
+              </Box>
+            )}
 
             {searchQuery && (
               <Box
