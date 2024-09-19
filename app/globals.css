@@ -283,6 +283,7 @@ body {
   fill: #06a19b;
   width: 60px;
   height: 60px;
+  margin-right: 8px !important;
 }
 
 .stepper > span:nth-child(2) > span {
@@ -296,4 +297,41 @@ body {
 
 .stepper-container > div > div:nth-child(even) {
   visibility: hidden;
+  margin: 12px 0;
+}
+
+@media only screen and (max-width: 900px) {
+  .stepper-container > div {
+    flex-direction: row !important;
+    /* flex-wrap: wrap; */
+    gap: 16px;
+    overflow-x: scroll;
+    /* justify-content: flex-start !important; */
+  }
+
+  .stepper svg {
+    width: 30px;
+    height: 30px;
+    margin-right: 0 !important;
+  }
+
+  .stepper > span:nth-child(2) > span {
+    font-size: 16px;
+    font-weight: 600;
+    text-wrap: nowrap;
+  }
+
+  .stepper-container > div > div:nth-child(even) {
+    display: none;
+  }
+}
+
+.form-radio > span > span > svg {
+  width: 14px !important;
+  height: 14px !important;
+  fill: #06a19b;
+}
+
+.form-radio > span:nth-child(2){
+  font-size: 14px;
 }
