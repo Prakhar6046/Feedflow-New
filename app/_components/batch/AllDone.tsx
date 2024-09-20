@@ -44,7 +44,7 @@ const AllDone: NextPage<Props> = ({ setActiveStep, activeStep }) => {
         {`So what's next?`}
       </Typography>
 
-      <Stack my={5}>
+      <Stack my={3}>
         <Box
           display={"flex"}
           alignItems={"start"}
@@ -147,8 +147,8 @@ const AllDone: NextPage<Props> = ({ setActiveStep, activeStep }) => {
               xs: 1.5,
             },
             marginTop: {
-              md: 8,
-              xs: 4,
+              md: 5,
+              xs: 2.5,
             },
           }}
         >
@@ -277,6 +277,7 @@ const AllDone: NextPage<Props> = ({ setActiveStep, activeStep }) => {
         justifyContent={"flex-end"}
         alignItems={"center"}
         gap={3}
+        mt={3}
       >
         {activeStep !== 5 && (
           <Button
@@ -290,7 +291,6 @@ const AllDone: NextPage<Props> = ({ setActiveStep, activeStep }) => {
               width: "fit-content",
               textTransform: "capitalize",
               borderRadius: "8px",
-              marginTop: 5,
               border: "1px solid #06A19B",
             }}
             onClick={() => setActiveStep(3)}
@@ -309,8 +309,6 @@ const AllDone: NextPage<Props> = ({ setActiveStep, activeStep }) => {
             width: "fit-content",
             textTransform: "capitalize",
             borderRadius: "8px",
-
-            marginTop: 5,
           }}
           onClick={handleClick}
         >

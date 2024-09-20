@@ -36,7 +36,10 @@ const BatchReport: NextPage<Props> = ({ setActiveStep }) => {
             md: 24,
             xs: 20,
           },
-          marginBottom: 3,
+          marginBottom: {
+            md: 3,
+            xs: 2
+          },
         }}
       >
         Batch Information
@@ -62,7 +65,7 @@ const BatchReport: NextPage<Props> = ({ setActiveStep }) => {
             py: 0,
             display: "flex",
             flexWrap: "wrap",
-            rowGap: 2,
+            rowGap: 1,
             columnGap: 3,
           }}
         >
@@ -202,13 +205,18 @@ const BatchReport: NextPage<Props> = ({ setActiveStep }) => {
 
         <Stack
           mt={1}
-          mb={7}
           display={"flex"}
           direction={"row"}
           justifyContent={"flex-start"}
           alignItems={"center"}
           gap={2}
           flexWrap={"wrap"}
+          sx={{
+            mb : {
+              md: 5,
+              xs: 3
+            }
+          }}
         >
           <Button
             type="submit"
@@ -355,6 +363,7 @@ const BatchReport: NextPage<Props> = ({ setActiveStep }) => {
             justifyContent={"flex-end"}
             alignItems={"center"}
             gap={3}
+            mt={3}
           >
             <Button
               type="submit"
@@ -367,7 +376,6 @@ const BatchReport: NextPage<Props> = ({ setActiveStep }) => {
                 width: "fit-content",
                 textTransform: "capitalize",
                 borderRadius: "8px",
-                marginTop: 5,
                 border: "1px solid #06A19B",
               }}
               onClick={() => setActiveStep(0)}
@@ -384,7 +392,6 @@ const BatchReport: NextPage<Props> = ({ setActiveStep }) => {
                 width: "fit-content",
                 textTransform: "capitalize",
                 borderRadius: "8px",
-                marginTop: 5,
               }}
               onClick={() => setActiveStep(2)}
             >

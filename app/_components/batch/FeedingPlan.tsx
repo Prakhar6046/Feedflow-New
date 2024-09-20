@@ -39,7 +39,7 @@ const FeedingPlan: NextPage<Props> = ({ setActiveStep }) => {
             md: 24,
             xs: 20,
           },
-          marginBottom: 3,
+          marginBottom: 2,
         }}
       >
         Feeding Plan
@@ -95,7 +95,7 @@ const FeedingPlan: NextPage<Props> = ({ setActiveStep }) => {
                 borderRadius: "8px",
                 marginLeft: "auto",
                 display: "block",
-                marginTop: 5,
+                marginTop: 1,
               }}
             >
               Add
@@ -111,7 +111,7 @@ const FeedingPlan: NextPage<Props> = ({ setActiveStep }) => {
                   md: 24,
                   xs: 20,
                 },
-                marginBottom: 1.5,
+                marginBlock: 1.5,
               }}
             >
               Your feed coverage:
@@ -205,7 +205,7 @@ const FeedingPlan: NextPage<Props> = ({ setActiveStep }) => {
               </Grid>
             </Grid>
 
-            <Grid container spacing={2} mt={3}>
+            <Grid container spacing={2} mt={1}>
               <Grid item md={6} xs={12}>
                 <TextField
                   label="Feed Price"
@@ -239,6 +239,7 @@ const FeedingPlan: NextPage<Props> = ({ setActiveStep }) => {
             justifyContent={"flex-end"}
             alignItems={"center"}
             gap={3}
+            mt={1}
           >
             <Button
               type="submit"
@@ -251,7 +252,6 @@ const FeedingPlan: NextPage<Props> = ({ setActiveStep }) => {
                 width: "fit-content",
                 textTransform: "capitalize",
                 borderRadius: "8px",
-                marginTop: 5,
                 border: "1px solid #06A19B",
               }}
               onClick={() => setActiveStep(2)}
@@ -268,7 +268,6 @@ const FeedingPlan: NextPage<Props> = ({ setActiveStep }) => {
                 width: "fit-content",
                 textTransform: "capitalize",
                 borderRadius: "8px",
-                marginTop: 5,
               }}
               onClick={() => setActiveStep(4)}
             >

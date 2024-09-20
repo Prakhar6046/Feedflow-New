@@ -80,6 +80,7 @@ const HarvestingInfo: NextPage<Props> = ({ setActiveStep }) => {
             justifyContent={"flex-end"}
             alignItems={"center"}
             gap={3}
+            mt={3}
           >
             <Button
               type="submit"
@@ -92,7 +93,6 @@ const HarvestingInfo: NextPage<Props> = ({ setActiveStep }) => {
                 width: "fit-content",
                 textTransform: "capitalize",
                 borderRadius: "8px",
-                marginTop: 5,
                 border: "1px solid #06A19B",
               }}
               onClick={() => setActiveStep(1)}
@@ -109,8 +109,6 @@ const HarvestingInfo: NextPage<Props> = ({ setActiveStep }) => {
                 width: "fit-content",
                 textTransform: "capitalize",
                 borderRadius: "8px",
-
-                marginTop: 5,
               }}
               onClick={() => setActiveStep(3)}
             >

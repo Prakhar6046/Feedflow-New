@@ -45,7 +45,6 @@ export default function Page() {
           overflow: "hidden",
           borderRadius: "14px",
           boxShadow: "0px 0px 16px 5px #0000001A",
-          mt: 4,
           p: 3,
         }}
       >
@@ -54,7 +53,7 @@ export default function Page() {
             className="stepper-container"
             sx={{
               my: {
-                md: 10,
+                md: 3,
                 xs: 0,
               },
             }}
@@ -96,7 +95,7 @@ export default function Page() {
           item
           md={6}
           xs={12}
-          my={5}
+          my={2}
           // sx={{
           //     mt: {
           //         md: 0,

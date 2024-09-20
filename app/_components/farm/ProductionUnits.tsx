@@ -16,7 +16,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep }) => {
             md: 24,
             xs: 20,
           },
-          marginBottom: 3,
+          marginBottom: 2
         }}
       >
         Production Units
@@ -25,7 +25,6 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep }) => {
       <Box>
         <Typography
           variant="h6"
-          gutterBottom
           fontWeight={700}
           sx={{
             fontSize: {
@@ -149,7 +148,6 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep }) => {
                 width: "fit-content",
                 textTransform: "capitalize",
                 borderRadius: "8px",
-                marginTop: 2,
                 boxShadow: "none",
               }}
             >
@@ -166,7 +164,6 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep }) => {
                 width: "fit-content",
                 textTransform: "capitalize",
                 borderRadius: "8px",
-                marginTop: 2,
                 color: "#06A19B",
                 border: "1px solid #06A19B",
                 boxShadow: "none",
@@ -185,7 +182,6 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep }) => {
                 width: "fit-content",
                 textTransform: "capitalize",
                 borderRadius: "8px",
-                marginTop: 2,
                 boxShadow: "none",
               }}
             >
@@ -225,6 +221,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep }) => {
             justifyContent={"flex-end"}
             alignItems={"center"}
             gap={3}
+            mt={1}
           >
             <Button
               type="submit"
@@ -237,7 +234,6 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep }) => {
                 width: "fit-content",
                 textTransform: "capitalize",
                 borderRadius: "8px",
-                marginTop: 5,
                 border: "1px solid #06A19B",
               }}
               onClick={() => setActiveStep(1)}
@@ -254,7 +250,6 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep }) => {
                 width: "fit-content",
                 textTransform: "capitalize",
                 borderRadius: "8px",
-                marginTop: 5,
               }}
               onClick={() => setActiveStep(3)}
             >

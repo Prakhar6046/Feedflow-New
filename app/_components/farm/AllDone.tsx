@@ -40,7 +40,7 @@ const AllDone: NextPage<Props> = ({ setActiveStep }) => {
         {` So what's next?`}
       </Typography>
 
-      <Stack my={5}>
+      <Stack my={3}>
         <Box
           display={"flex"}
           alignItems={"start"}
@@ -149,7 +149,9 @@ const AllDone: NextPage<Props> = ({ setActiveStep }) => {
         display={"flex"}
         justifyContent={"flex-end"}
         alignItems={"center"}
+        flexWrap={"wrap"}
         gap={3}
+        mt={1}
       >
         <Button
           type="submit"
@@ -162,7 +164,6 @@ const AllDone: NextPage<Props> = ({ setActiveStep }) => {
             width: "fit-content",
             textTransform: "capitalize",
             borderRadius: "8px",
-            marginTop: 5,
             border: "1px solid #06A19B",
           }}
           onClick={() => setActiveStep(2)}
@@ -179,7 +180,6 @@ const AllDone: NextPage<Props> = ({ setActiveStep }) => {
             width: "fit-content",
             textTransform: "capitalize",
             borderRadius: "8px",
-            marginTop: 5,
           }}
           onClick={handleClick}
         >

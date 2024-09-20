@@ -10,7 +10,6 @@ const AquaFarmWizard: NextPage<Props> = ({ setActiveStep }) => {
     <Stack>
       <Typography
         variant="h6"
-        gutterBottom
         fontWeight={700}
         sx={{
           fontSize: {
@@ -27,7 +26,7 @@ const AquaFarmWizard: NextPage<Props> = ({ setActiveStep }) => {
         The steps you will be following will proceed as follows:
       </Typography>
 
-      <Stack my={5}>
+      <Stack mt={4}>
         <Box
           display={"flex"}
           alignItems={"start"}
@@ -107,9 +106,9 @@ const AquaFarmWizard: NextPage<Props> = ({ setActiveStep }) => {
               md: 2,
               xs: 1.5,
             },
-            marginTop: {
-              md: 8,
-              xs: 4,
+            marginBlock: {
+              md: 5,
+              xs: 2.5,
             },
           }}
         >

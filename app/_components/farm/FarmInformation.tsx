@@ -16,7 +16,7 @@ const FarmInformation: NextPage<Props> = ({ setActiveStep }) => {
             md: 24,
             xs: 20,
           },
-          marginBottom: 3,
+          marginBottom: 2,
         }}
       >
         Farm Information
@@ -41,7 +41,8 @@ const FarmInformation: NextPage<Props> = ({ setActiveStep }) => {
             alignItems={"center"}
             gap={2}
             flexWrap={"wrap"}
-            mb={3}
+            mt={1}
+            mb={2}
           >
             <Button
               type="submit"
@@ -53,7 +54,6 @@ const FarmInformation: NextPage<Props> = ({ setActiveStep }) => {
                 width: "fit-content",
                 textTransform: "capitalize",
                 borderRadius: "8px",
-                marginTop: 2,
                 boxShadow: "none",
                 border: "1px solid #06A19B",
               }}
@@ -71,7 +71,6 @@ const FarmInformation: NextPage<Props> = ({ setActiveStep }) => {
                 width: "fit-content",
                 textTransform: "capitalize",
                 borderRadius: "8px",
-                marginTop: 2,
                 color: "#06A19B",
                 border: "1px solid #06A19B",
                 boxShadow: "none",
@@ -183,6 +182,7 @@ const FarmInformation: NextPage<Props> = ({ setActiveStep }) => {
             justifyContent={"flex-end"}
             alignItems={"center"}
             gap={3}
+            mt={1}
           >
             <Button
               type="submit"
@@ -195,7 +195,6 @@ const FarmInformation: NextPage<Props> = ({ setActiveStep }) => {
                 width: "fit-content",
                 textTransform: "capitalize",
                 borderRadius: "8px",
-                marginTop: 5,
                 border: "1px solid #06A19B",
               }}
               onClick={() => setActiveStep(0)}
@@ -212,7 +211,6 @@ const FarmInformation: NextPage<Props> = ({ setActiveStep }) => {
                 width: "fit-content",
                 textTransform: "capitalize",
                 borderRadius: "8px",
-                marginTop: 5,
               }}
               onClick={() => setActiveStep(2)}
             >

@@ -10,7 +10,6 @@ const BatchWizard: NextPage<Props> = ({ setActiveStep }) => {
     <Stack>
       <Typography
         variant="h6"
-        gutterBottom
         fontWeight={700}
         sx={{
           fontSize: {
@@ -28,7 +27,7 @@ const BatchWizard: NextPage<Props> = ({ setActiveStep }) => {
         The steps you will be following will proceed as follows:
       </Typography>
 
-      <Stack my={5}>
+      <Stack mt={4}>
         <Box
           display={"flex"}
           alignItems={"start"}
@@ -108,8 +107,8 @@ const BatchWizard: NextPage<Props> = ({ setActiveStep }) => {
               xs: 1.5,
             },
             marginBlock: {
-              md: 8,
-              xs: 4,
+              md: 5,
+              xs: 2.5,
             },
           }}
         >
@@ -259,7 +258,7 @@ const BatchWizard: NextPage<Props> = ({ setActiveStep }) => {
             width: "fit-content",
             textTransform: "capitalize",
             borderRadius: "8px",
-            marginTop: 2,
+            marginTop: 3,
             border: "1px solid #06A19B",
           }}
           onClick={() => setActiveStep(1)}

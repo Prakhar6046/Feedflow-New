@@ -297,7 +297,7 @@ body {
 
 .stepper-container > div > div:nth-child(even) {
   visibility: hidden;
-  margin: 12px 0;
+  /* margin: 12px 0; */
 }
 
 @media only screen and (max-width: 900px) {
