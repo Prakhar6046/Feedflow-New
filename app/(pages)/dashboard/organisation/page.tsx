@@ -23,6 +23,7 @@ export default async function Page() {
         organisations={organisations?.data}
         searchOrganisations={true}
         searchUsers={false}
+        isTable={true}
         links={[
           { name: "Dashboard", link: "/dashboard" },
           { name: "Organisation", link: "/dashboard/organisation" },

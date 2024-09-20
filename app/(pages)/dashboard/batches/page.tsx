@@ -16,6 +16,7 @@ export default function Page() {
       <BasicBreadcrumbs
         heading={"Batches"}
         buttonName={"New Batch"}
+        isTable={true}
         links={[
           { name: "Dashboard", link: "/dashboard" },
           { name: "Batches", link: "/dashboard/batches" },
