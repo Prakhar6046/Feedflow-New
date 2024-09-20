@@ -23,28 +23,7 @@ interface Props {
   searchUsers?: boolean;
   hideSearchInput?: boolean;
 }
-async function SeachedOrganisation(
-  query: string,
-  organisationId: number,
-  role: string
-) {
-  let res = await fetch(
-    `https://feedflow.vercel.app/api/organisation/search?name=${query}&organisationId=${organisationId}&role=${role}`
-  );
-  let data = await res.json();
-  return data;
-}
-async function SeachedUsers(
-  query: string,
-  organisationId: number,
-  role: string
-) {
-  let res = await fetch(
-    `https://feedflow.vercel.app/api/users/search?name=${query}&organisationId=${organisationId}&role=${role}`
-  );
-  let data = await res.json();
-  return data;
-}
+
 export default function BasicBreadcrumbs({
   heading,
   buttonName,
@@ -63,6 +42,29 @@ export default function BasicBreadcrumbs({
   const [currentRole, setCurrentRole] = useState<string>("");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const dispatch = useAppDispatch();
+
+  async function SeachedOrganisation(
+    query: string,
+    organisationId: number,
+    role: string
+  ) {
+    let res = await fetch(
+      `/api/organisation/search?name=${query}&organisationId=${organisationId}&role=${role}`
+    );
+    let data = await res.json();
+    return data;
+  }
+  async function SeachedUsers(
+    query: string,
+    organisationId: number,
+    role: string
+  ) {
+    let res = await fetch(
+      `/api/users/search?name=${query}&organisationId=${organisationId}&role=${role}`
+    );
+    let data = await res.json();
+    return data;
+  }
   const handleClear = () => {
     setSearchQuery("");
   };

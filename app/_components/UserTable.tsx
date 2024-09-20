@@ -52,33 +52,33 @@ interface Data {
   density: number;
 }
 
-export const getUsers = async (payload: any) => {
-  try {
-    const data = await fetch(
-      `https://feedflow.vercel.app/api/users?role=${payload.role}&organisationId=${payload.organisationId}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    return await data.json();
-  } catch (error) {
-    return error;
-  }
-};
 export default function UserTable() {
   const router = useRouter();
   const searchUsers = useAppSelector(selectUsers);
   const loggedUser = getCookie("logged-user");
   const [users, setUsers] = useState<User[]>();
   const [loading, setLoading] = useState<boolean>(false);
-
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null
   );
+  const getUsers = async (payload: any) => {
+    try {
+      const data = await fetch(
+        `/api/users?role=${payload.role}&organisationId=${payload.organisationId}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      return await data.json();
+    } catch (error) {
+      return error;
+    }
+  };
+
   const handleEdit = (user: any) => {
     router.push(`/dashboard/user/${selectedUser?.id}`);
   };
