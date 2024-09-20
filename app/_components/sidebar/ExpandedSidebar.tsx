@@ -285,6 +285,59 @@ const ExpandedSidebar = () => {
             </ListItem>
           </Link>
 
+          <Link href={"/dashboard/farm"} className="nav-links">
+            <ListItem
+              sx={{
+                paddingX: 0,
+                mb: 0.5,
+              }}
+            >
+              <ListItemButton
+                className={
+                  activePage === "farm" || activePage === "newFarm"
+                    ? "active"
+                    : ""
+                }
+                sx={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  gap: 1.7,
+                }}
+              >
+                <ListItemIcon
+                  sx={{
+                    display: "grid",
+                    placeItems: "center",
+                    marginRight: 0,
+                    minWidth: "fit-content",
+                  }}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="1.6em"
+                    height="1.2em"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      fill="#0E848E"
+                      d="M20 21h-3v-2h3zm0-4h-3v-2h3zm0-4h-3v-2h3zm4-5.2C23.6 4.5 20.8 2 17.5 2c-1.7 0-3.4.7-4.6 1.9c-.7.7-1.2 1.4-1.5 2.3L15.6 9H22v13h2zM13.3 7c.6-1.8 2.3-3 4.2-3s3.6 1.2 4.2 3zM7.5 6L0 11v11h15V11zM13 20h-3v-6H5v6H2v-8l5.5-3.5L13 12z"
+                    />
+                  </svg>
+                </ListItemIcon>
+                <ListItemText
+                  className="expand-nav-links"
+                  sx={{
+                    mt: 0.5,
+                  }}
+                >
+                  Farm
+                </ListItemText>
+              </ListItemButton>
+            </ListItem>
+          </Link>
+
           <Typography
             variant="body1"
             fontSize={12}

@@ -14,6 +14,7 @@ import { getCookie } from "cookies-next";
 import { useAppDispatch } from "@/lib/hooks";
 import { organisationAction } from "@/lib/features/organisation/organisationSlice";
 import { userAction } from "@/lib/features/user/userSlice";
+import { useDebounce } from "../hooks/useDebounce";
 interface Props {
   heading: string;
   buttonName?: string;
@@ -41,6 +42,7 @@ export default function BasicBreadcrumbs({
   const [status, setStatus] = useState("Updating...");
   const [currentRole, setCurrentRole] = useState<string>("");
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const debouncedSearchQuery = useDebounce(searchQuery);
   const dispatch = useAppDispatch();
 
   async function SeachedOrganisation(
@@ -71,6 +73,8 @@ export default function BasicBreadcrumbs({
   const handleClick = () => {
     if (heading === "Batches") {
       router.push("/dashboard/batches/new");
+    } else if (heading === "Farm") {
+      router.push("/dashboard/farm/newFarm");
     } else {
       setOpen(true);
     }
@@ -94,7 +98,7 @@ export default function BasicBreadcrumbs({
     if (searchOrganisations) {
       const getSearchOrganisations = async () => {
         const res = await SeachedOrganisation(
-          searchQuery,
+          debouncedSearchQuery,
           user?.data?.user?.organisationId,
           user?.data?.user?.role
         );
@@ -105,7 +109,7 @@ export default function BasicBreadcrumbs({
     if (searchUsers) {
       const getSearchUsers = async () => {
         const res = await SeachedUsers(
-          searchQuery,
+          debouncedSearchQuery,
           user?.data?.user?.organisationId,
           user?.data?.user?.role
         );
@@ -113,7 +117,7 @@ export default function BasicBreadcrumbs({
       };
       getSearchUsers();
     }
-  }, [searchQuery, searchOrganisations, searchUsers]);
+  }, [debouncedSearchQuery, searchOrganisations, searchUsers]);
 
   return (
     <>
