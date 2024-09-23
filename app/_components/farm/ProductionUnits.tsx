@@ -1,10 +1,29 @@
-import { Box, Button, Grid, Stack, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  FormControl,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Select,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { NextPage } from "next";
 
 interface Props {
   setActiveStep: (val: number) => void;
 }
-
+const arr = [
+  "Rectangular Tank",
+  "Earthen Pond",
+  "Raceway",
+  "Cage",
+  "Hapa",
+  "Circular Tank",
+  "D-end Tank",
+];
 const ProductionUnits: NextPage<Props> = ({ setActiveStep }) => {
   return (
     <Stack>
@@ -36,7 +55,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep }) => {
           New Production Unit
         </Typography>
 
-        <Stack
+        {/* <Stack
           mb={5}
           display={"flex"}
           direction={"row"}
@@ -97,7 +116,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep }) => {
           >
             Hide
           </Button>
-        </Stack>
+        </Stack> */}
 
         <form>
           <Grid container spacing={2}>
@@ -115,7 +134,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep }) => {
             </Grid>
 
             <Grid item md={6} xs={12}>
-              <TextField
+              {/* <TextField
                 label="Production Unit Shape"
                 type="text"
                 className="form-input"
@@ -124,11 +143,36 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep }) => {
                   width: "100%",
                   marginBottom: 2,
                 }}
-              />
+              /> */}
+              <Box sx={{ minWidth: 120 }}>
+                <FormControl fullWidth className="form-input">
+                  <InputLabel id="demo-simple-select-label">
+                    Production Unit Shape
+                  </InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    // value={selectedOrganisation}
+                    label="Organisation"
+                    // {...register("organisationId")}
+                    // onChange={handleChange}
+                  >
+                    {arr?.map((data, i) => {
+                      return (
+                        <MenuItem value={data} key={i}>
+                          {data}
+                        </MenuItem>
+                      );
+                    })}
+                    {/* <MenuItem value={20}>Twenty</MenuItem>
+                  <MenuItem value={30}>Thirty</MenuItem> */}
+                  </Select>
+                </FormControl>
+              </Box>
             </Grid>
           </Grid>
 
-          <Stack
+          {/* <Stack
             mt={2}
             mb={5}
             display={"flex"}
@@ -187,7 +231,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep }) => {
             >
               Hide
             </Button>
-          </Stack>
+          </Stack> */}
 
           <Grid container spacing={2}>
             <Grid item md={6} xs={12}>
