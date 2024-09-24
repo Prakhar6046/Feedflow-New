@@ -258,7 +258,7 @@ export default function BasicTable({ organisations }: Props) {
                         fontWeight: 500,
                       }}
                     >
-                      {organisation.contactNumber}
+                      {organisation.contactNumber ?? ""}
                     </TableCell>
                     <TableCell
                       sx={{
@@ -268,7 +268,7 @@ export default function BasicTable({ organisations }: Props) {
                         fontWeight: 500,
                       }}
                     >
-                      {organisation.contactPerson}
+                      {organisation.contactPerson ?? ""}
                     </TableCell>
 
                     <TableCell
