@@ -104,6 +104,8 @@ model Farm {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  productionUnits ProductionUnit?[]
+
   @@index([createdAt])
   @@index([updatedAt])
 }
@@ -120,6 +122,22 @@ model FarmAddress {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   Farm      Farm?
+
+  @@index([createdAt])
+  @@index([updatedAt])
+}
+
+model ProductionUnit {
+  id            String @id @default(cuid())
+  name          String
+  type          String
+  capacity      String
+  waterflowRate String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Farm      Farm?    @relation(fields: [farmId], references: [id])
+  farmId    String?
 
   @@index([createdAt])
   @@index([updatedAt])

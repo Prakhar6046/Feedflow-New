@@ -24,18 +24,6 @@ import React, { useState } from "react";
 import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import CalculateVolume from "../models/CalculateVolume";
 
-function createData(
-  name: string,
-  calories: number,
-  fat: number,
-  carbs: number,
-  protein: number
-) {
-  return { name, calories, fat, carbs, protein };
-}
-
-const rows = [createData("Frozen yoghurt", 159, 6.0, 24, 4.0)];
-
 interface Props {
   setActiveStep: (val: number) => void;
 }
@@ -61,7 +49,14 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep }) => {
     name: string;
     formula: string;
   }>();
+  const [length, setLength] = useState<number>();
+  const [width, setWidth] = useState<number>();
+  const [depth, setDepth] = useState<number>();
+  const [radius, setRadius] = useState<number>();
+  const [area, setArea] = useState<number>();
+  const [heigth, setHeigth] = useState<number>();
   const [open, setopen] = useState<boolean>(false);
+  const [calculatedValue, setCalculatedValue] = useState<number>();
   const { register, handleSubmit, control, setValue, trigger } =
     useForm<FormTypes>({
       defaultValues: {
@@ -92,13 +87,22 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep }) => {
   const handleCalculate = (item: any) => {
     if (item.type) {
       setopen(true);
+      setRadius(0);
+      setArea(0);
+      setDepth(0);
+      setHeigth(0);
+      setLength(0);
+      setWidth(0);
       const getFormula = unitsTypes.find((unit) => unit.name === item.type);
       setSelectedUnit(getFormula);
+      setCalculatedValue(0);
     }
   };
   const onSubmit: SubmitHandler<FormTypes> = (data) => {
     console.log(data);
+    setActiveStep(3);
   };
+
   return (
     <Stack>
       <Typography
@@ -116,68 +120,6 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep }) => {
       </Typography>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Box>
-          {/* <Stack
-          mb={5}
-          display={"flex"}
-          direction={"row"}
-          justifyContent={"flex-start"}
-          alignItems={"center"}
-          gap={2}
-          flexWrap={"wrap"}
-        >
-          <Button
-            type="submit"
-            variant="contained"
-            sx={{
-              background: "#06A19B",
-              fontWeight: 600,
-              padding: "6px 16px",
-              width: "fit-content",
-              textTransform: "capitalize",
-              borderRadius: "8px",
-              marginTop: 2,
-              boxShadow: "none",
-            }}
-          >
-            Change
-          </Button>
-
-          <Button
-            type="submit"
-            variant="contained"
-            sx={{
-              background: "#fff",
-              fontWeight: 600,
-              padding: "6px 16px",
-              width: "fit-content",
-              textTransform: "capitalize",
-              borderRadius: "8px",
-              marginTop: 2,
-              color: "#06A19B",
-              border: "1px solid #06A19B",
-              boxShadow: "none",
-            }}
-          >
-            Remove
-          </Button>
-
-          <Button
-            type="submit"
-            variant="contained"
-            sx={{
-              background: "#06A19B",
-              fontWeight: 600,
-              padding: "6px 16px",
-              width: "fit-content",
-              textTransform: "capitalize",
-              borderRadius: "8px",
-              marginTop: 2,
-              boxShadow: "none",
-            }}
-          >
-            Hide
-          </Button>
-        </Stack> */}
           {fields.map((item, index) => {
             return (
               <TableContainer
@@ -267,6 +209,9 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep }) => {
                             type="text"
                             className="form-input"
                             // focused
+                            {...register(
+                              `productionUnits.${index}.capacity` as const
+                            )}
                             sx={{
                               width: "100%",
                               minWidth: 150,
@@ -310,6 +255,9 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep }) => {
                             type="text"
                             className="form-input"
                             // focused
+                            {...register(
+                              `productionUnits.${index}.waterflowRate` as const
+                            )}
                             sx={{
                               width: "100%",
                               minWidth: 150,
@@ -384,20 +332,6 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep }) => {
             >
               Add A Production Unit
             </Button>
-            <Button
-              type="submit"
-              variant="contained"
-              sx={{
-                background: "#06A19B",
-                fontWeight: 600,
-                padding: "6px 16px",
-                width: "fit-content",
-                textTransform: "capitalize",
-                borderRadius: "8px",
-              }}
-            >
-              Save
-            </Button>
 
             <Box
               display={"flex"}
@@ -422,8 +356,9 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep }) => {
               >
                 Previous
               </Button>
+
               <Button
-                type="button"
+                type="submit"
                 variant="contained"
                 sx={{
                   background: "#06A19B",
@@ -433,9 +368,8 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep }) => {
                   textTransform: "capitalize",
                   borderRadius: "8px",
                 }}
-                onClick={() => setActiveStep(3)}
               >
-                Next
+                Save
               </Button>
             </Box>
           </Box>
@@ -445,6 +379,20 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep }) => {
         open={open}
         setOpen={setopen}
         selectedUnit={selectedUnit}
+        setCalculatedValue={setCalculatedValue}
+        area={area}
+        setArea={setArea}
+        depth={depth}
+        setDepth={setDepth}
+        heigth={heigth}
+        setHeigth={setHeigth}
+        length={length}
+        setLength={setLength}
+        radius={radius}
+        setRadius={setRadius}
+        width={width}
+        setWidth={setWidth}
+        calculatedValue={calculatedValue}
       />
     </Stack>
   );
