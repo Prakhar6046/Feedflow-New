@@ -1,9 +1,11 @@
 import {
   Box,
   Button,
+  IconButton,
   Modal,
   Stack,
   TextField,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import Image from "next/image";
@@ -143,10 +145,18 @@ const CalculateVolume: React.FC<Props> = ({
             <Image src={closeIcon} width={25} height={25} alt="Close Icon" />
           </Box>
         </Box>
-        {selectedUnit?.name}
-        {selectedUnit?.formula}
+        <Box px={3} pt={2} display={"flex"} alignItems={"center"} gap={1} justifyContent={"end"}>
+          <Typography variant="body2" color="black" fontWeight={500}>
+            {selectedUnit?.name} Formula
+          </Typography>
+          <Typography variant="body2" color="#555555">
+            = &nbsp;
+            {selectedUnit?.formula}
+          </Typography>
+
+        </Box>
         {selectedUnit?.name === "Rectangular Tank" ? (
-          <Box padding={3}>
+          <Box padding={3} display={"flex"} alignItems={"center"} gap={1}>
             <TextField
               label="Length"
               variant="outlined"
@@ -185,7 +195,7 @@ const CalculateVolume: React.FC<Props> = ({
             />
           </Box>
         ) : selectedUnit?.name === "Earthen Pond" ? (
-          <Box padding={3}>
+          <Box padding={3} display={"flex"} alignItems={"center"} gap={1}>
             <TextField
               label="Surface area"
               variant="outlined"
@@ -213,7 +223,7 @@ const CalculateVolume: React.FC<Props> = ({
             />
           </Box>
         ) : selectedUnit?.name === "Raceway" ? (
-          <Box padding={3}>
+          <Box padding={3} display={"flex"} alignItems={"center"} gap={1}>
             <TextField
               label="Length"
               variant="outlined"
@@ -252,7 +262,7 @@ const CalculateVolume: React.FC<Props> = ({
             />
           </Box>
         ) : selectedUnit?.name === "Cage" ? (
-          <Box padding={3}>
+          <Box padding={3} display={"flex"} alignItems={"center"} gap={1}>
             <TextField
               label="Length"
               variant="outlined"
@@ -291,7 +301,7 @@ const CalculateVolume: React.FC<Props> = ({
             />
           </Box>
         ) : selectedUnit?.name === "Hapa" ? (
-          <Box padding={3}>
+          <Box padding={3} display={"flex"} alignItems={"center"} gap={1}>
             <TextField
               label="Length"
               variant="outlined"
@@ -330,7 +340,7 @@ const CalculateVolume: React.FC<Props> = ({
             />
           </Box>
         ) : selectedUnit?.name === "Circular Tank" ? (
-          <Box padding={3}>
+          <Box padding={3} display={"flex"} alignItems={"center"} gap={1}>
             <TextField
               label="Radius"
               variant="outlined"
@@ -358,7 +368,7 @@ const CalculateVolume: React.FC<Props> = ({
             />
           </Box>
         ) : (
-          <Box padding={3}>
+          <Box padding={3} display={"flex"} alignItems={"center"} gap={1}>
             <TextField
               label="Radius"
               variant="outlined"
@@ -409,7 +419,29 @@ const CalculateVolume: React.FC<Props> = ({
             />
           </Box>
         )}
-        {calculatedValue}
+        <Stack px={3} display={"flex"} justifyContent={"space-between"} direction={"row"} alignItems={"center"} gap={1}>
+          <Box display={"flex"} alignItems={"center"} gap={1} justifyContent={"end"}>
+
+            <Typography variant="body1" color="black" fontWeight={500}>
+              Output
+            </Typography>
+            <Typography variant="body1" color="#555555">
+              = &nbsp;
+              {calculatedValue}
+            </Typography>
+          </Box>
+
+          <Tooltip title="copy">
+            <IconButton>
+              <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
+                <path fill="#0E848E" d="M19 19H8q-.825 0-1.412-.587T6 17V3q0-.825.588-1.412T8 1h7l6 6v10q0 .825-.587 1.413T19 19M14 8V3H8v14h11V8zM4 23q-.825 0-1.412-.587T2 21V7h2v14h11v2zM8 3v5zv14z" />
+              </svg>
+            </IconButton>
+          </Tooltip>
+
+        </Stack>
+
+
         <Box padding={3}>
           <Button
             type="button"
@@ -423,7 +455,6 @@ const CalculateVolume: React.FC<Props> = ({
               borderRadius: "12px",
               marginLeft: "auto",
               display: "block",
-              marginTop: 3,
             }}
             onClick={handleCalculate}
           >

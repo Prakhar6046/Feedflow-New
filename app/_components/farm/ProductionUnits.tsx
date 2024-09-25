@@ -223,7 +223,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep }) => {
                           </Typography>
 
                           <Button
-                            type="submit"
+                            type="button"
                             variant="contained"
                             sx={{
                               background: "#06a19b",
