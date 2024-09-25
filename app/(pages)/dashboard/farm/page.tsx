@@ -8,6 +8,7 @@ export default async function Page() {
         searchOrganisations={true}
         searchUsers={false}
         isTable={true}
+        buttonRoute="/dashboard/farm/newFarm"
         links={[
           { name: "Dashboard", link: "/dashboard" },
           { name: "Farm", link: "/dashboard/farm" },

@@ -1,3 +1,4 @@
+import AddNewOrganisation from "@/app/_components/AddNewOrganisation";
 import BasicTable from "@/app/_components/BasicTable";
 import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
 import Loader from "@/app/_components/Loader";
@@ -18,21 +19,16 @@ export default async function Page() {
   return (
     <>
       <BasicBreadcrumbs
-        heading={"Organization"}
-        buttonName={"Add Organization"}
+        heading={"Organisation"}
         organisations={organisations?.data}
-        buttonRoute={"/dashboard/organisation/new"}
-        searchOrganisations={true}
-        searchUsers={false}
-        isTable={true}
+        hideSearchInput={true}
         links={[
           { name: "Dashboard", link: "/dashboard" },
           { name: "Organisation", link: "/dashboard/organisation" },
+          { name: "New", link: "/dashboard/organisation/new" },
         ]}
       />
-      <Suspense fallback={<Loader />}>
-        <BasicTable organisations={organisations?.data} />
-      </Suspense>
+      <AddNewOrganisation />
     </>
   );
 }

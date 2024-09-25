@@ -43,19 +43,18 @@ model Organisation {
   image            String?
   imageUrl         String?
   name             String
-  contactNumber    String
-  contactPerson    String
+  // contactNumber    String
+  // contactPerson    String
   organisationCode String  @default("")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   users     User[]
-  addressId String?   @unique
-  address   Address?  @relation(fields: [addressId], references: [id], onUpdate: Cascade)
-  contactId String?   @unique
-  contact   Contact[]
-  // contact   Contact? @relation(fields: [contactId], references: [id], onUpdate: Cascade)
+  addressId String?  @unique
+  address   Address? @relation(fields: [addressId], references: [id], onUpdate: Cascade)
+
+  contact Contact[]
 
   @@index([createdAt])
   @@index([updatedAt])
@@ -91,6 +90,36 @@ model Contact {
 
   organisation   Organisation? @relation(fields: [organisationId], references: [id])
   organisationId Int?
+
+  @@index([createdAt])
+  @@index([updatedAt])
+}
+
+model Farm {
+  id            String       @id @default(cuid())
+  name          String
+  farmAddressId String?      @unique
+  farmAddress   FarmAddress? @relation(fields: [farmAddressId], references: [id], onUpdate: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([createdAt])
+  @@index([updatedAt])
+}
+
+model FarmAddress {
+  id           String  @id @default(cuid())
+  addressLine1 String
+  addressLine2 String?
+  province     String
+  city         String
+  zipCode      String
+  country      String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Farm      Farm?
 
   @@index([createdAt])
   @@index([updatedAt])

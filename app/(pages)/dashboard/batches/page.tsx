@@ -17,6 +17,7 @@ export default function Page() {
         heading={"Batches"}
         buttonName={"New Batch"}
         isTable={true}
+        buttonRoute="/dashboard/batches/new"
         links={[
           { name: "Dashboard", link: "/dashboard" },
           { name: "Batches", link: "/dashboard/batches" },
