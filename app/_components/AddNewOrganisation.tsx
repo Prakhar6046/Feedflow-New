@@ -52,6 +52,7 @@ interface FormInputs {
   province: String;
   city: String;
   postCode: String;
+  organisationType: String;
   contacts: {
     name: string;
     role: string;
@@ -59,6 +60,13 @@ interface FormInputs {
     phone: string;
   }[];
 }
+const OrganisationType = [
+  "Fish Farmer",
+  "Hatchery",
+  "Feed Supplier",
+  "Testing Facility",
+  "Unspecified",
+];
 const AddNewOrganisation = () => {
   const [profilePic, setProfilePic] = useState<String>();
   const router = useRouter();
@@ -76,20 +84,20 @@ const AddNewOrganisation = () => {
     },
   });
   const onSubmit: SubmitHandler<FormInputs> = async (data) => {
-    const response = await fetch("/api/add-organisation", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
-
-    const responseData = await response.json();
-    toast.success(responseData.message);
-
-    if (responseData.status) {
-      router.push("/dashboard/organisation");
-      reset();
+    if (data) {
+      const response = await fetch("/api/add-organisation", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+      const responseData = await response.json();
+      toast.success(responseData.message);
+      if (responseData.status) {
+        router.push("/dashboard/organisation");
+        reset();
+      }
     }
   };
   const { fields, append, remove } = useFieldArray({
@@ -335,7 +343,33 @@ const AddNewOrganisation = () => {
                 // value={userData?.data.email ?? "Demo@gmail.com"}
               />
             </Stack>
-
+            <FormControl className="form-input" fullWidth>
+              <InputLabel id="demo-simple-select-label">
+                Organisation Type
+              </InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                label="Production Unit Type"
+                {...register("organisationType")}
+                // onChange={(e) => handleChange(e, item)}
+                sx={{
+                  px: {
+                    xl: 10,
+                    md: 5,
+                    xs: 3,
+                  },
+                }}
+              >
+                {OrganisationType.map((organisation, i) => {
+                  return (
+                    <MenuItem value={organisation} key={i}>
+                      {organisation}
+                    </MenuItem>
+                  );
+                })}
+              </Select>
+            </FormControl>
             <Typography
               variant="h6"
               color="rgb(99, 115, 129)"

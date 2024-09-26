@@ -103,6 +103,7 @@ export default function BasicTable({ organisations }: Props) {
   if (loading) {
     return <Loader />;
   }
+  console.log(organisationData);
 
   return (
     <Paper
@@ -258,7 +259,11 @@ export default function BasicTable({ organisations }: Props) {
                         fontWeight: 500,
                       }}
                     >
-                      {organisation.contactNumber ?? ""}
+                      {(organisation &&
+                        organisation.contact &&
+                        organisation.contact[0] &&
+                        organisation.contact[0].phone) ??
+                        ""}
                     </TableCell>
                     <TableCell
                       sx={{
@@ -268,7 +273,11 @@ export default function BasicTable({ organisations }: Props) {
                         fontWeight: 500,
                       }}
                     >
-                      {organisation.contactPerson ?? ""}
+                      {(organisation &&
+                        organisation.contact &&
+                        organisation.contact[0] &&
+                        organisation.contact[0].name) ??
+                        ""}
                     </TableCell>
 
                     <TableCell

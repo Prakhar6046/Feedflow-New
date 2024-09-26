@@ -9,10 +9,13 @@ export const GET = async (request: NextRequest) => {
     const organisationId = searchParams.get("organisationId");
     let organisations;
     if (role === "SUPERADMIN") {
-      organisations = await prisma.organisation.findMany({});
+      organisations = await prisma.organisation.findMany({
+        include: { contact: true },
+      });
     } else {
       organisations = await prisma.organisation.findMany({
         where: { id: Number(organisationId) },
+        include: { contact: true },
       });
     }
     return new NextResponse(

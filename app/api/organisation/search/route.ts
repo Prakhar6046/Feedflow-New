@@ -18,6 +18,7 @@ export const GET = async (request: NextRequest) => {
               },
             }
           : {},
+        include: { contact: true },
       });
     } else {
       organisations = await prisma.organisation.findMany({
@@ -30,6 +31,7 @@ export const GET = async (request: NextRequest) => {
               },
             }
           : { id: Number(organisationId) },
+        include: { contact: true },
       });
     }
 
