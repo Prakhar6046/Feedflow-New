@@ -28,7 +28,12 @@ import { NextPage } from "next";
 import { useEffect, useState } from "react";
 import { Organisation } from "@/app/_components/BasicTable";
 import Loader from "@/app/_components/Loader";
-import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
+import {
+  FieldErrors,
+  SubmitHandler,
+  useFieldArray,
+  useForm,
+} from "react-hook-form";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 const VisuallyHiddenInput = styled("input")({
@@ -96,6 +101,7 @@ const AddNewOrganisation = () => {
     control,
     name: "contacts",
   });
+  console.log(errors);
   const handleUpload = async (imagePath: FileList) => {
     const formData = new FormData();
     formData.append("image", imagePath[0]);
@@ -274,7 +280,9 @@ const AddNewOrganisation = () => {
               type="text"
               className="form-input"
               focused
-              {...register("organisationName")}
+              {...register("organisationName", {
+                required: true,
+              })}
               // focused={userData?.data.name ? true : false}
               // value={userData?.data.name}
               sx={{
@@ -282,7 +290,11 @@ const AddNewOrganisation = () => {
                 marginBottom: 2,
               }}
             />
-
+            {errors &&
+              errors.organisationName &&
+              errors.organisationName.type === "required" && (
+                <p>This Field is required.</p>
+              )}
             <Stack
               display={"flex"}
               justifyContent={"flex-start"}
@@ -322,7 +334,9 @@ const AddNewOrganisation = () => {
                 label="Organisation Code"
                 type="text"
                 className="form-input"
-                {...register("organisationCode")}
+                {...register("organisationCode", {
+                  required: true,
+                })}
                 // disabled
                 sx={{
                   width: {
@@ -334,6 +348,11 @@ const AddNewOrganisation = () => {
                 // focused={true}
                 // value={userData?.data.email ?? "Demo@gmail.com"}
               />
+              {errors &&
+                errors.organisationCode &&
+                errors.organisationCode.type === "required" && (
+                  <p>This Field is required.</p>
+                )}
             </Stack>
 
             <Typography
@@ -360,23 +379,35 @@ const AddNewOrganisation = () => {
                 label="Address"
                 type="text"
                 className="form-input"
-                {...register("address")}
+                {...register("address", {
+                  required: true,
+                })}
                 focused
                 sx={{
                   width: "100%",
                 }}
               />
+              {errors &&
+                errors.address &&
+                errors.address.type === "required" && (
+                  <p>This Field is required.</p>
+                )}
 
               <TextField
                 label="City"
                 type="text"
                 className="form-input"
-                {...register("city")}
+                {...register("city", {
+                  required: true,
+                })}
                 focused
                 sx={{
                   width: "100%",
                 }}
               />
+              {errors && errors.city && errors.city.type === "required" && (
+                <p>This Field is required.</p>
+              )}
             </Stack>
 
             <Stack
@@ -393,23 +424,36 @@ const AddNewOrganisation = () => {
                 label="Province"
                 type="text"
                 className="form-input"
-                {...register("province")}
+                {...register("province", {
+                  required: true,
+                })}
                 focused
                 sx={{
                   width: "100%",
                 }}
               />
-
+              {errors &&
+                errors.province &&
+                errors.province.type === "required" && (
+                  <p>This Field is required.</p>
+                )}
               <TextField
                 label="Post Code"
                 type="text"
                 className="form-input"
-                {...register("postCode")}
+                {...register("postCode", {
+                  required: true,
+                })}
                 focused
                 sx={{
                   width: "100%",
                 }}
               />
+              {errors &&
+                errors.postCode &&
+                errors.postCode.type === "required" && (
+                  <p>This Field is required.</p>
+                )}
             </Stack>
 
             <Typography
@@ -550,7 +594,9 @@ const AddNewOrganisation = () => {
                   label="Name"
                   type="text"
                   className="form-input"
-                  {...register(`contacts.${index}.name` as const)}
+                  {...register(`contacts.${index}.name` as const, {
+                    required: true,
+                  })}
                   focused
                   sx={{
                     width: {
@@ -560,12 +606,22 @@ const AddNewOrganisation = () => {
                     },
                   }}
                 />
+
+                {errors &&
+                  errors?.contacts &&
+                  errors?.contacts[index] &&
+                  errors?.contacts[index]?.name &&
+                  errors?.contacts[index]?.name.type === "required" && (
+                    <p>This Field is required.</p>
+                  )}
 
                 <TextField
                   label="Role"
                   type="text"
                   className="form-input"
-                  {...register(`contacts.${index}.role` as const)}
+                  {...register(`contacts.${index}.role` as const, {
+                    required: true,
+                  })}
                   focused
                   sx={{
                     width: {
@@ -575,12 +631,20 @@ const AddNewOrganisation = () => {
                     },
                   }}
                 />
-
+                {errors &&
+                  errors?.contacts &&
+                  errors?.contacts[index] &&
+                  errors?.contacts[index]?.role &&
+                  errors?.contacts[index]?.role.type === "required" && (
+                    <p>This Field is required.</p>
+                  )}
                 <TextField
                   label="Email"
                   type="email"
                   className="form-input"
-                  {...register(`contacts.${index}.email` as const)}
+                  {...register(`contacts.${index}.email` as const, {
+                    required: true,
+                  })}
                   focused
                   sx={{
                     width: {
@@ -590,12 +654,20 @@ const AddNewOrganisation = () => {
                     },
                   }}
                 />
-
+                {errors &&
+                  errors?.contacts &&
+                  errors?.contacts[index] &&
+                  errors?.contacts[index]?.email &&
+                  errors?.contacts[index]?.email.type === "required" && (
+                    <p>This Field is required.</p>
+                  )}
                 <TextField
                   label="Phone"
                   type="text"
                   className="form-input"
-                  {...register(`contacts.${index}.phone` as const)}
+                  {...register(`contacts.${index}.phone` as const, {
+                    required: true,
+                  })}
                   focused
                   sx={{
                     width: {
@@ -605,7 +677,13 @@ const AddNewOrganisation = () => {
                     },
                   }}
                 />
-
+                {errors &&
+                  errors?.contacts &&
+                  errors?.contacts[index] &&
+                  errors?.contacts[index]?.phone &&
+                  errors?.contacts[index]?.phone.type === "required" && (
+                    <p>This Field is required.</p>
+                  )}
                 <Box
                   display={"flex"}
                   justifyContent={"center"}

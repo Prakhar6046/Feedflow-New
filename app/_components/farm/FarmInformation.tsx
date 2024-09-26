@@ -11,7 +11,11 @@ interface Props {
 
 const FarmInformation: NextPage<Props> = ({ setActiveStep }) => {
   const dispatch = useAppDispatch();
-  const { register, handleSubmit } = useForm<Farm>();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<Farm>();
   const [selectedSwtich, setSelectedSwtich] = useState<string>("address");
   const onSubmit: SubmitHandler<Farm> = (data) => {
     dispatch(farmAction.updateFarm(data));
@@ -40,12 +44,17 @@ const FarmInformation: NextPage<Props> = ({ setActiveStep }) => {
             type="text"
             className="form-input"
             // focused
-            {...register("name")}
+            {...register("name", {
+              required: true,
+            })}
             sx={{
               width: "100%",
               marginBottom: 2,
             }}
           />
+          {errors && errors.name && errors.name.type === "required" && (
+            <p>This field is required.</p>
+          )}
 
           <Box
             display={"flex"}
@@ -120,12 +129,19 @@ const FarmInformation: NextPage<Props> = ({ setActiveStep }) => {
                     type="text"
                     className="form-input"
                     // focused
-                    {...register("addressLine1")}
+                    {...register("addressLine1", {
+                      required: true,
+                    })}
                     sx={{
                       width: "100%",
                       marginBottom: 2,
                     }}
                   />
+                  {errors &&
+                    errors.addressLine1 &&
+                    errors.addressLine1.type === "required" && (
+                      <p>This field is required.</p>
+                    )}
                 </Grid>
 
                 <Grid item md={6} xs={12}>
@@ -148,12 +164,17 @@ const FarmInformation: NextPage<Props> = ({ setActiveStep }) => {
                     type="text"
                     className="form-input"
                     // focused
-                    {...register("city")}
+                    {...register("city", {
+                      required: true,
+                    })}
                     sx={{
                       width: "100%",
                       marginBottom: 2,
                     }}
                   />
+                  {errors && errors.city && errors.city.type === "required" && (
+                    <p>This field is required.</p>
+                  )}
                 </Grid>
 
                 <Grid item md={6} xs={12}>
@@ -162,12 +183,19 @@ const FarmInformation: NextPage<Props> = ({ setActiveStep }) => {
                     type="text"
                     className="form-input"
                     // focused
-                    {...register("province")}
+                    {...register("province", {
+                      required: true,
+                    })}
                     sx={{
                       width: "100%",
                       marginBottom: 2,
                     }}
                   />
+                  {errors &&
+                    errors.province &&
+                    errors.province.type === "required" && (
+                      <p>This field is required.</p>
+                    )}
                 </Grid>
 
                 <Grid item md={6} xs={12}>
@@ -176,12 +204,19 @@ const FarmInformation: NextPage<Props> = ({ setActiveStep }) => {
                     type="text"
                     className="form-input"
                     // focused
-                    {...register("zipCode")}
+                    {...register("zipCode", {
+                      required: true,
+                    })}
                     sx={{
                       width: "100%",
                       marginBottom: 2,
                     }}
                   />
+                  {errors &&
+                    errors.zipCode &&
+                    errors.zipCode.type === "required" && (
+                      <p>This field is required.</p>
+                    )}
                 </Grid>
 
                 <Grid item md={6} xs={12}>
@@ -190,12 +225,19 @@ const FarmInformation: NextPage<Props> = ({ setActiveStep }) => {
                     type="text"
                     className="form-input"
                     // focused
-                    {...register("country")}
+                    {...register("country", {
+                      required: true,
+                    })}
                     sx={{
                       width: "100%",
                       marginBottom: 2,
                     }}
                   />
+                  {errors &&
+                    errors.country &&
+                    errors.country.type === "required" && (
+                      <p>This field is required.</p>
+                    )}
                 </Grid>
               </Grid>
             </>
