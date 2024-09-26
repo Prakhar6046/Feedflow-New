@@ -5,6 +5,7 @@ export const GET = async (request: NextRequest) => {
   try {
     const searchParams = request.nextUrl.searchParams;
     const role = searchParams.get("role");
+
     const organisationId = searchParams.get("organisationId");
     let organisations;
     if (role === "SUPERADMIN") {

@@ -76,7 +76,7 @@ const AccountPopover = () => {
             aria-haspopup="true"
             aria-expanded={open ? "true" : undefined}
           >
-            {loggedUserData ? (
+            {loggedUserData?.data?.user?.imageUrl ? (
               <Box
                 borderRadius={100}
                 width={40}
@@ -194,7 +194,7 @@ const AccountPopover = () => {
             >
               <g fill="none" stroke="currentColor" strokeWidth="1.5">
                 <path
-                  stroke-linejoin="round"
+                  strokeLinejoin="round"
                   d="M4 18a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"
                 />
                 <circle cx="12" cy="7" r="3" />

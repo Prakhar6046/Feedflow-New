@@ -30,6 +30,7 @@ import { Organisation } from "@/app/_components/BasicTable";
 import Loader from "@/app/_components/Loader";
 import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
   clipPath: "inset(50%)",
@@ -58,28 +59,16 @@ interface FormInputs {
     phone: string;
   }[];
 }
-const Page = ({ params }: { params: { organisationId: string } }) => {
-  const [organisationData, setOrganisationData] = useState<any>();
-  const [loading, setLoading] = useState<boolean>(false);
+const AddNewOrganisation = () => {
   const [profilePic, setProfilePic] = useState<String>();
-  const getOrganisation = async () => {
-    setLoading(true);
-    const data = await fetch(`/api/organisation/${params.organisationId}`, {
-      method: "GET",
-    });
-    if (data) {
-      setLoading(false);
-    }
-    return data.json();
-  };
-
+  const router = useRouter();
   const {
     register,
     setValue,
     handleSubmit,
     control,
     getValues,
-    resetField,
+    reset,
     formState: { errors },
   } = useForm<FormInputs>({
     defaultValues: {
@@ -87,29 +76,20 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
     },
   });
   const onSubmit: SubmitHandler<FormInputs> = async (data) => {
-    const address: any = {
-      address: data.address,
-      city: data.city,
-      province: data.province,
-      postCode: data.postCode,
-    };
-
-    const formData = new FormData();
-    formData.append("name", String(data.organisationName));
-    formData.append("organisationCode", String(data.organisationCode));
-    formData.append("address", JSON.stringify(address));
-    formData.append("contacts", JSON.stringify(data.contacts));
-    formData.append("image", data.image[0]);
-    const res = await fetch(`/api/organisation/${params.organisationId}`, {
-      method: "PUT",
-      body: formData,
+    const response = await fetch("/api/add-organisation", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
     });
-    if (res.ok) {
-      const updatedOrganisation = await res.json();
 
-      toast.success(updatedOrganisation.message);
-      // resetField("confirmPassword");
-      // resetField("password");
+    const responseData = await response.json();
+    toast.success(responseData.message);
+
+    if (responseData.status) {
+      router.push("/dashboard/organisation");
+      reset();
     }
   };
   const { fields, append, remove } = useFieldArray({
@@ -119,7 +99,6 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
   const handleUpload = async (imagePath: FileList) => {
     const formData = new FormData();
     formData.append("image", imagePath[0]);
-    formData.append("organisationId", params.organisationId);
     const oldImageName = profilePic?.split("/").pop()?.split(".")[0];
 
     formData.append("oldImageName", oldImageName || "");
@@ -137,38 +116,17 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
       // resetField("password");
     }
   };
-  useEffect(() => {
-    const organisation = async () => {
-      // setLoading(true);
-      const data = await getOrganisation();
+  //   useEffect(() => {
+  //     const organisation = async () => {
+  //       // setLoading(true);
+  //       const data = await getOrganisation();
 
-      setOrganisationData(data.data);
+  //       setOrganisationData(data.data);
 
-      // setUserData(data);
-    };
-    organisation();
-  }, []);
-  useEffect(() => {
-    if (organisationData) {
-      setValue("organisationName", organisationData.name);
-      setValue("organisationCode", organisationData.organisationCode);
-      setValue("address", String(organisationData?.address?.name));
-      setValue("city", String(organisationData.address?.city));
-      setValue("street", String(organisationData.address?.street));
-      setValue("province", String(organisationData.address?.province));
-      setValue("postCode", String(organisationData.address?.postCode));
-      setValue("contacts", organisationData?.contact);
-      // setValue("email", String(organisationData.contact?.email));
-      // setValue("phone", String(organisationData.contact?.phone));
-      // setValue("role", String(organisationData.contact?.role));
-      // setValue("name", String(organisationData.contact?.name));
-      setProfilePic(organisationData.imageUrl);
-      // setValue("email", organisationData.address?.city);
-    }
-  }, [organisationData]);
-  if (loading) {
-    return <Loader />;
-  }
+  //       // setUserData(data);
+  //     };
+  //     organisation();
+  //   }, []);
 
   return (
     <Stack
@@ -734,7 +692,7 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
                 marginTop: 2,
               }}
             >
-              Save Changes
+              Save New Organisation
             </Button>
           </form>
         </Grid>
@@ -743,4 +701,4 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
   );
 };
 
-export default Page;
+export default AddNewOrganisation;

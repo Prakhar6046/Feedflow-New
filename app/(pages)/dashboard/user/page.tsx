@@ -27,6 +27,7 @@ export default async function Page() {
       <BasicBreadcrumbs
         heading={"User"}
         buttonName={"Add User"}
+        buttonRoute="/dashboard/user/new"
         searchUsers={true}
         organisations={organisations?.data}
         searchOrganisations={false}

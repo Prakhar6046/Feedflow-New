@@ -24,6 +24,7 @@ interface Props {
   searchUsers?: boolean;
   hideSearchInput?: boolean;
   isTable?: boolean;
+  buttonRoute?: string;
 }
 
 export default function BasicBreadcrumbs({
@@ -35,6 +36,7 @@ export default function BasicBreadcrumbs({
   searchUsers,
   hideSearchInput,
   isTable,
+  buttonRoute,
 }: Props) {
   const role = getCookie("role");
   const router = useRouter();
@@ -73,13 +75,14 @@ export default function BasicBreadcrumbs({
     setSearchQuery("");
   };
   const handleClick = () => {
-    if (heading === "Batches") {
-      router.push("/dashboard/batches/new");
-    } else if (heading === "Farm") {
-      router.push("/dashboard/farm/newFarm");
-    } else {
-      setOpen(true);
-    }
+    router.push(String(buttonRoute));
+    // if (heading === "Batches") {
+    //   router.push("/dashboard/batches/new");
+    // } else if (heading === "Farm") {
+    //   router.push("/dashboard/farm/newFarm");
+    // } else {
+    //   setOpen(true);
+    // }
   };
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -199,7 +202,7 @@ export default function BasicBreadcrumbs({
               <path
                 fill="none"
                 stroke="#fff"
-                stroke-linecap="round"
+                strokeLinecap="round"
                 strokeWidth="2"
                 d="M12 6v12m6-6H6"
               />
@@ -234,7 +237,7 @@ export default function BasicBreadcrumbs({
                 <path
                   fill="none"
                   stroke="#fff"
-                  stroke-linecap="round"
+                  strokeLinecap="round"
                   strokeWidth="2"
                   d="M12 6v12m6-6H6"
                 />
@@ -244,7 +247,7 @@ export default function BasicBreadcrumbs({
           )
         )}
 
-        {heading !== "Batches" && heading === "Organization" ? (
+        {/* {heading !== "Batches" && heading === "Organization" ? (
           <AddOrganization open={open} setOpen={setOpen} />
         ) : (
           <AddUser
@@ -252,7 +255,7 @@ export default function BasicBreadcrumbs({
             setOpen={setOpen}
             organisations={organisations ?? []}
           />
-        )}
+        )} */}
       </Stack>
       {/* Breadcrumb Section End */}
 
@@ -327,7 +330,7 @@ export default function BasicBreadcrumbs({
                   <path
                     fill="none"
                     stroke="#979797"
-                    stroke-linecap="round"
+                    strokeLinecap="round"
                     strokeWidth="2"
                     d="m21 21l-4.486-4.494M19 10.5a8.5 8.5 0 1 1-17 0a8.5 8.5 0 0 1 17 0Z"
                   />

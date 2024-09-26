@@ -73,3 +73,17 @@ export const getUser = async (userId: string) => {
     return error;
   }
 };
+export const getFarms = async () => {
+  try {
+    const data = await fetch(`${process.env.BASE_URL}/api/farm`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    revalidatePath(`/dashboard/farm}`);
+    return await data.json();
+  } catch (error) {
+    return error;
+  }
+};

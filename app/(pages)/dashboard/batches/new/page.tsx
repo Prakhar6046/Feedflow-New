@@ -79,7 +79,7 @@ export default function Page() {
           p: 3,
         }}
       >
-        <Grid item xl={2} md={4} xs={12}>
+        <Grid item xl={2} md={3} xs={12}>
           <Box
             className="stepper-container"
             sx={{
@@ -124,7 +124,8 @@ export default function Page() {
 
         <Grid
           item
-          md={6}
+          xl={9}
+          md={8}
           xs={12}
           my={2}
           // sx={{
