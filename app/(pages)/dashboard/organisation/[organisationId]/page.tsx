@@ -316,7 +316,9 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
               type="text"
               className="form-input"
               focused
-              {...register("organisationName")}
+              {...register("organisationName", {
+                required: true,
+              })}
               // focused={userData?.data.name ? true : false}
               // value={userData?.data.name}
               sx={{
@@ -324,7 +326,11 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
                 marginBottom: 2,
               }}
             />
-
+            {errors &&
+              errors.organisationName &&
+              errors.organisationName.type === "required" && (
+                <p>This field is required.</p>
+              )}
             <Stack
               display={"flex"}
               justifyContent={"flex-start"}
@@ -364,7 +370,9 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
                 label="Organisation Code"
                 type="text"
                 className="form-input"
-                {...register("organisationCode")}
+                {...register("organisationCode", {
+                  required: true,
+                })}
                 // disabled
                 sx={{
                   width: {
@@ -376,6 +384,11 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
                 // focused={true}
                 // value={userData?.data.email ?? "Demo@gmail.com"}
               />
+              {errors &&
+                errors.organisationCode &&
+                errors.organisationCode.type === "required" && (
+                  <p>This field is required.</p>
+                )}
             </Stack>
 
             <Typography
@@ -402,23 +415,34 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
                 label="Address"
                 type="text"
                 className="form-input"
-                {...register("address")}
+                {...register("address", {
+                  required: true,
+                })}
                 focused
                 sx={{
                   width: "100%",
                 }}
               />
-
+              {errors &&
+                errors.address &&
+                errors.address.type === "required" && (
+                  <p>This field is required.</p>
+                )}
               <TextField
                 label="City"
                 type="text"
                 className="form-input"
-                {...register("city")}
+                {...register("city", {
+                  required: true,
+                })}
                 focused
                 sx={{
                   width: "100%",
                 }}
               />
+              {errors && errors.city && errors.city.type === "required" && (
+                <p>This field is required.</p>
+              )}
             </Stack>
 
             <Stack
@@ -435,23 +459,37 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
                 label="Province"
                 type="text"
                 className="form-input"
-                {...register("province")}
+                {...register("province", {
+                  required: true,
+                })}
                 focused
                 sx={{
                   width: "100%",
                 }}
               />
 
+              {errors &&
+                errors.province &&
+                errors.province.type === "required" && (
+                  <p>This field is required.</p>
+                )}
               <TextField
                 label="Post Code"
                 type="text"
                 className="form-input"
-                {...register("postCode")}
+                {...register("postCode", {
+                  required: true,
+                })}
                 focused
                 sx={{
                   width: "100%",
                 }}
               />
+              {errors &&
+                errors.postCode &&
+                errors.postCode.type === "required" && (
+                  <p>This field is required.</p>
+                )}
             </Stack>
 
             <Typography
@@ -592,7 +630,9 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
                   label="Name"
                   type="text"
                   className="form-input"
-                  {...register(`contacts.${index}.name` as const)}
+                  {...register(`contacts.${index}.name` as const, {
+                    required: true,
+                  })}
                   focused
                   sx={{
                     width: {
@@ -602,12 +642,21 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
                     },
                   }}
                 />
+                {errors &&
+                  errors?.contacts &&
+                  errors?.contacts[index] &&
+                  errors?.contacts[index]?.name &&
+                  errors?.contacts[index]?.name.type === "required" && (
+                    <p>This Field is required.</p>
+                  )}
 
                 <TextField
                   label="Role"
                   type="text"
                   className="form-input"
-                  {...register(`contacts.${index}.role` as const)}
+                  {...register(`contacts.${index}.role` as const, {
+                    required: true,
+                  })}
                   focused
                   sx={{
                     width: {
@@ -617,12 +666,21 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
                     },
                   }}
                 />
+                {errors &&
+                  errors?.contacts &&
+                  errors?.contacts[index] &&
+                  errors?.contacts[index]?.role &&
+                  errors?.contacts[index]?.role.type === "required" && (
+                    <p>This Field is required.</p>
+                  )}
 
                 <TextField
                   label="Email"
                   type="email"
                   className="form-input"
-                  {...register(`contacts.${index}.email` as const)}
+                  {...register(`contacts.${index}.email` as const, {
+                    required: true,
+                  })}
                   focused
                   sx={{
                     width: {
@@ -632,12 +690,21 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
                     },
                   }}
                 />
+                {errors &&
+                  errors?.contacts &&
+                  errors?.contacts[index] &&
+                  errors?.contacts[index]?.email &&
+                  errors?.contacts[index]?.email.type === "required" && (
+                    <p>This Field is required.</p>
+                  )}
 
                 <TextField
                   label="Phone"
                   type="text"
                   className="form-input"
-                  {...register(`contacts.${index}.phone` as const)}
+                  {...register(`contacts.${index}.phone` as const, {
+                    required: true,
+                  })}
                   focused
                   sx={{
                     width: {
@@ -647,6 +714,13 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
                     },
                   }}
                 />
+                {errors &&
+                  errors?.contacts &&
+                  errors?.contacts[index] &&
+                  errors?.contacts[index]?.phone &&
+                  errors?.contacts[index]?.phone.type === "required" && (
+                    <p>This Field is required.</p>
+                  )}
 
                 <Box
                   display={"flex"}

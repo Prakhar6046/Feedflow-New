@@ -216,24 +216,32 @@ export default function AddNewUser({ organisations }: Props) {
                   label="Name"
                   type="text"
                   className="form-input"
-                  {...register("name")}
+                  {...register("name", {
+                    required: true,
+                  })}
                   sx={{
                     width: "100%",
                     marginBottom: 2,
                   }}
                 />
-
+                {errors && errors.name && errors.name.type === "required" && (
+                  <p>This field is required.</p>
+                )}
                 <TextField
                   label={"Email"}
                   type="email"
                   className="form-input"
-                  {...register("email")}
+                  {...register("email", {
+                    required: true,
+                  })}
                   sx={{
                     width: "100%",
                     marginBottom: 2,
                   }}
                 />
-
+                {errors && errors.email && errors.email.type === "required" && (
+                  <p>This field is required.</p>
+                )}
                 <FormControl fullWidth className="form-input">
                   <InputLabel id="demo-simple-select-label">
                     Organisation
@@ -243,7 +251,9 @@ export default function AddNewUser({ organisations }: Props) {
                     id="demo-simple-select"
                     value={selectedOrganisation}
                     label="Organisation"
-                    {...register("organisationId")}
+                    {...register("organisationId", {
+                      required: true,
+                    })}
                     onChange={handleChange}
                   >
                     {organisations?.map((organisation, i) => {
@@ -254,6 +264,11 @@ export default function AddNewUser({ organisations }: Props) {
                       );
                     })}
                   </Select>
+                  {errors &&
+                    errors.organisationId &&
+                    errors.organisationId.type === "required" && (
+                      <p>This field is required.</p>
+                    )}
                 </FormControl>
 
                 <Button

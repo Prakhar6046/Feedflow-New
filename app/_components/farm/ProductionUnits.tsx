@@ -12,7 +12,7 @@ import {
   Typography,
 } from "@mui/material";
 import { NextPage } from "next";
-
+import { v4 as uuidv4 } from "uuid";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -21,7 +21,12 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import React, { useEffect, useState } from "react";
-import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
+import {
+  Controller,
+  SubmitHandler,
+  useFieldArray,
+  useForm,
+} from "react-hook-form";
 import CalculateVolume from "../models/CalculateVolume";
 import { useAppSelector } from "@/lib/hooks";
 import { selectFarm } from "@/lib/features/farm/farmSlice";
@@ -50,13 +55,15 @@ interface FormTypes {
     type: string;
     capacity: string;
     waterflowRate: string;
+    id: any;
   }[];
 }
 export interface CalculateType {
   output: number;
-  id: string;
+  id: any;
 }
 const ProductionUnits: NextPage<Props> = ({ setActiveStep }) => {
+  uuidv4();
   const farm = useAppSelector(selectFarm);
   const [selectedUnit, setSelectedUnit] = React.useState<UnitsTypes>();
   const [length, setLength] = useState<number>();
@@ -67,35 +74,34 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep }) => {
   const [heigth, setHeigth] = useState<number>();
   const [open, setopen] = useState<boolean>(false);
   const [calculatedValue, setCalculatedValue] = useState<CalculateType>();
-  const { register, handleSubmit, control, setValue, trigger } =
-    useForm<FormTypes>({
-      defaultValues: {
-        productionUnits: [
-          { name: "", type: "", capacity: "", waterflowRate: "" },
-        ],
-      },
-    });
+  const {
+    register,
+    handleSubmit,
+    control,
+    setValue,
+    watch,
+    formState: { errors },
+  } = useForm<FormTypes>({
+    defaultValues: {
+      productionUnits: [
+        {
+          name: "",
+          type: "",
+          capacity: "",
+          waterflowRate: "",
+          id: uuidv4(),
+        },
+      ],
+    },
+  });
   const { fields, append, remove } = useFieldArray({
     control,
     name: "productionUnits",
   });
-  const handleChange = (event: SelectChangeEvent, item: any) => {
-    const updatedFields = fields.map((field) => {
-      if (field.id === item.id) {
-        // Update only the type field and retain other values
-        return { ...field, type: event.target.value };
-      }
-      return field;
-    });
+  const productionUnits = watch("productionUnits");
 
-    // Update the form state
-    setValue("productionUnits", updatedFields);
-
-    // Trigger form validation and re-rendering
-    // trigger("productionUnits");
-  };
-  const handleCalculate = (item: any) => {
-    if (item.type) {
+  const handleCalculate = (item: any, index: any) => {
+    if (item) {
       setopen(true);
       setRadius(0);
       setArea(0);
@@ -103,13 +109,15 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep }) => {
       setHeigth(0);
       setLength(0);
       setWidth(0);
-      const getFormula = unitsTypes.find((unit) => unit.name === item.type);
+      const getFormula = unitsTypes.find(
+        (unit) => unit.name === watch(`productionUnits.${index}.type`)
+      );
       setSelectedUnit({
         name: getFormula?.name,
         formula: getFormula?.formula,
-        id: item.id,
+        id: productionUnits[index].id,
       });
-      setCalculatedValue({ output: 0, id: "" });
+      setCalculatedValue({ output: 0, id: null });
     }
   };
   const onSubmit: SubmitHandler<FormTypes> = async (data) => {
@@ -145,7 +153,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep }) => {
   };
   useEffect(() => {
     if (calculatedValue?.id && calculatedValue.output) {
-      const updatedFields = fields.map((field) => {
+      const updatedFields = productionUnits.map((field) => {
         if (field.id === calculatedValue.id) {
           return { ...field, capacity: String(calculatedValue.output) };
         } else {
@@ -197,11 +205,35 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep }) => {
                           pr: 1,
                         }}
                       >
-                        <TextField
+                        <Controller
+                          name={`productionUnits.${index}.name`} // Dynamic field name
+                          control={control}
+                          defaultValue="" // Set default value if necessary
+                          render={({ field }) => (
+                            <TextField
+                              {...field} // Spread field props
+                              label="Production Unit Name"
+                              type="text"
+                              className="form-input"
+                              sx={{
+                                width: "100%",
+                                minWidth: 150,
+                              }}
+                            />
+                          )}
+                          rules={{
+                            required: true,
+                          }} // Add validation
+                        />
+                        {errors &&
+                          errors.productionUnits &&
+                          errors.productionUnits[index]?.name && (
+                            <p>This field is required.</p>
+                          )}
+                        {/* <TextField
                           label="Production Unit Name"
                           type="text"
                           className="form-input"
-                          // focused
                           {...register(
                             `productionUnits.${index}.name` as const
                           )}
@@ -209,7 +241,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep }) => {
                             width: "100%",
                             minWidth: 150,
                           }}
-                        />
+                        /> */}
                       </TableCell>
                       <TableCell
                         sx={{
@@ -222,15 +254,49 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep }) => {
                           <InputLabel id="demo-simple-select-label">
                             Production Unit Type
                           </InputLabel>
-                          <Select
+                          <Controller
+                            name={`productionUnits.${index}.type`} // Dynamic name for production unit type
+                            control={control}
+                            defaultValue={fields[index]?.type || ""} // Default value, fall back to empty string
+                            render={({ field }) => (
+                              <Select
+                                labelId={`demo-simple-select-label-${index}`}
+                                id={`demo-simple-select-${index}`}
+                                label="Production Unit Type"
+                                {...field} // Spread the field props for value and onChange
+                                sx={{
+                                  px: {
+                                    xl: 10,
+                                    md: 5,
+                                    xs: 3,
+                                  },
+                                }}
+                              >
+                                {unitsTypes.map((unit, i) => (
+                                  <MenuItem value={unit.name} key={i}>
+                                    {unit.name}
+                                  </MenuItem>
+                                ))}
+                              </Select>
+                            )}
+                            rules={{
+                              required: true,
+                            }} // Validation rule
+                          />
+                          {errors &&
+                            errors.productionUnits &&
+                            errors.productionUnits[index]?.type && (
+                              <p>This field is required.</p>
+                            )}
+                          {/* <Select
                             labelId="demo-simple-select-label"
                             id="demo-simple-select"
                             value={fields[index]?.type || ""}
                             {...register(
-                              `productionUnits.${index}.type` as const
+                              `productionUnits.${index}.type` as const,
+                              { onChange: (e) => handleChange(e, item) }
                             )}
                             label="Production Unit Type"
-                            onChange={(e) => handleChange(e, item)}
                             sx={{
                               px: {
                                 xl: 10,
@@ -246,7 +312,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep }) => {
                                 </MenuItem>
                               );
                             })}
-                          </Select>
+                          </Select> */}
                         </FormControl>
                       </TableCell>
                       <TableCell
@@ -263,14 +329,21 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep }) => {
                             className="form-input"
                             // focused
                             {...register(
-                              `productionUnits.${index}.capacity` as const
+                              `productionUnits.${index}.capacity` as const,
+                              {
+                                required: true,
+                              }
                             )}
                             sx={{
                               width: "100%",
                               minWidth: 150,
                             }}
                           />
-
+                          {errors &&
+                            errors.productionUnits &&
+                            errors.productionUnits[index]?.capacity && (
+                              <p>This field is required.</p>
+                            )}
                           <Typography variant="body1" color="#555555">
                             L
                           </Typography>
@@ -289,7 +362,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep }) => {
                               border: "1px solid #06A19B",
                               minWidth: 90,
                             }}
-                            onClick={() => handleCalculate(item)}
+                            onClick={() => handleCalculate(item, index)}
                           >
                             Calculate
                           </Button>
@@ -309,14 +382,21 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep }) => {
                             className="form-input"
                             // focused
                             {...register(
-                              `productionUnits.${index}.waterflowRate` as const
+                              `productionUnits.${index}.waterflowRate` as const,
+                              {
+                                required: true,
+                              }
                             )}
                             sx={{
                               width: "100%",
                               minWidth: 150,
                             }}
                           />
-
+                          {errors &&
+                            errors.productionUnits &&
+                            errors.productionUnits[index]?.waterflowRate && (
+                              <p>This field is required.</p>
+                            )}
                           <Typography variant="body1" color="#555555">
                             L/H
                           </Typography>
@@ -380,7 +460,13 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep }) => {
                 borderRadius: "8px",
               }}
               onClick={() =>
-                append({ name: "", capacity: "", type: "", waterflowRate: "" })
+                append({
+                  name: "",
+                  capacity: "",
+                  type: "",
+                  waterflowRate: "",
+                  id: uuidv4(),
+                })
               }
             >
               Add A Production Unit
