@@ -39,15 +39,13 @@ model User {
 }
 
 model Organisation {
-  id       Int     @id @default(autoincrement())
-  image    String?
-  imageUrl String?
-  name     String
-
+  id               Int     @id @default(autoincrement())
+  image            String?
+  imageUrl         String?
+  name             String
   // contactNumber    String
   // contactPerson    String
-  organisationCode String @default("")
-  organisationType String
+  organisationCode String  @default("")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
