@@ -20,12 +20,20 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import CalculateVolume from "../models/CalculateVolume";
+import { useAppSelector } from "@/lib/hooks";
+import { selectFarm } from "@/lib/features/farm/farmSlice";
+import toast from "react-hot-toast";
 
 interface Props {
   setActiveStep: (val: number) => void;
+}
+export interface UnitsTypes {
+  name: string | undefined;
+  formula: string | undefined;
+  id: string;
 }
 const unitsTypes = [
   { name: "Rectangular Tank", formula: "L×W×D" },
@@ -44,11 +52,13 @@ interface FormTypes {
     waterflowRate: string;
   }[];
 }
+export interface CalculateType {
+  output: number;
+  id: string;
+}
 const ProductionUnits: NextPage<Props> = ({ setActiveStep }) => {
-  const [selectedUnit, setSelectedUnit] = React.useState<{
-    name: string;
-    formula: string;
-  }>();
+  const farm = useAppSelector(selectFarm);
+  const [selectedUnit, setSelectedUnit] = React.useState<UnitsTypes>();
   const [length, setLength] = useState<number>();
   const [width, setWidth] = useState<number>();
   const [depth, setDepth] = useState<number>();
@@ -56,7 +66,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep }) => {
   const [area, setArea] = useState<number>();
   const [heigth, setHeigth] = useState<number>();
   const [open, setopen] = useState<boolean>(false);
-  const [calculatedValue, setCalculatedValue] = useState<number>();
+  const [calculatedValue, setCalculatedValue] = useState<CalculateType>();
   const { register, handleSubmit, control, setValue, trigger } =
     useForm<FormTypes>({
       defaultValues: {
@@ -94,14 +104,57 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep }) => {
       setLength(0);
       setWidth(0);
       const getFormula = unitsTypes.find((unit) => unit.name === item.type);
-      setSelectedUnit(getFormula);
-      setCalculatedValue(0);
+      setSelectedUnit({
+        name: getFormula?.name,
+        formula: getFormula?.formula,
+        id: item.id,
+      });
+      setCalculatedValue({ output: 0, id: "" });
     }
   };
-  const onSubmit: SubmitHandler<FormTypes> = (data) => {
-    console.log(data);
-    setActiveStep(3);
+  const onSubmit: SubmitHandler<FormTypes> = async (data) => {
+    const payload = {
+      farmAddress: {
+        addressLine1: farm.addressLine1,
+        addressLine2: farm.addressLine2,
+        city: farm.city,
+        province: farm.province,
+        zipCode: farm.zipCode,
+        country: farm.country,
+      },
+      productionUnits: data.productionUnits,
+      name: farm.name,
+    };
+
+    if (Object.keys(payload).length && payload.name) {
+      const response = await fetch("/api/farm/add-farm", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+      const responseData = await response.json();
+      toast.success(responseData.message);
+      if (responseData.status) {
+        setActiveStep(3);
+      }
+    } else {
+      toast.error("Please fill out the all feilds");
+    }
   };
+  useEffect(() => {
+    if (calculatedValue?.id && calculatedValue.output) {
+      const updatedFields = fields.map((field) => {
+        if (field.id === calculatedValue.id) {
+          return { ...field, capacity: String(calculatedValue.output) };
+        } else {
+          return field;
+        }
+      });
+      setValue("productionUnits", updatedFields);
+    }
+  }, [calculatedValue]);
 
   return (
     <Stack>

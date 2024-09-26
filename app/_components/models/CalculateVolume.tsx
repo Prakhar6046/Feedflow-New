@@ -12,7 +12,8 @@ import Image from "next/image";
 import closeIcon from "@/public/static/img/icons/ic-close.svg";
 import { useForm, SubmitHandler } from "react-hook-form";
 import toast from "react-hot-toast";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { CalculateType, UnitsTypes } from "../farm/ProductionUnits";
 
 const style = {
   position: "absolute" as "absolute",
@@ -27,15 +28,15 @@ const style = {
 interface Props {
   setOpen: (open: boolean) => void;
   open: boolean;
-  selectedUnit: { name: string; formula: string };
-  setCalculatedValue: (val: number) => void;
-  length: number;
-  width: number;
-  depth: number;
-  radius: number;
-  area: number;
-  heigth: number;
-  calculatedValue: number;
+  selectedUnit: UnitsTypes | undefined;
+  setCalculatedValue: (val: CalculateType) => void;
+  length: number | undefined;
+  width: number | undefined;
+  depth: number | undefined;
+  radius: number | undefined;
+  area: number | undefined;
+  heigth: number | undefined;
+  calculatedValue: CalculateType | undefined;
   setLength: (val: number) => void;
   setWidth: (val: number) => void;
   setDepth: (val: number) => void;
@@ -95,10 +96,11 @@ const CalculateVolume: React.FC<Props> = ({
       //   console.log((2 * 3.14159 * r * 2 + (l - r) * w) * d);
     } else {
     }
-    setCalculatedValue(Number(output));
-    // setOpen(false);
+    if (selectedUnit?.id) {
+      setCalculatedValue({ output: Number(output), id: selectedUnit.id });
+    }
+    setOpen(false);
   };
-  console.log(calculatedValue);
 
   return (
     <Modal
@@ -145,7 +147,14 @@ const CalculateVolume: React.FC<Props> = ({
             <Image src={closeIcon} width={25} height={25} alt="Close Icon" />
           </Box>
         </Box>
-        <Box px={3} pt={2} display={"flex"} alignItems={"center"} gap={1} justifyContent={"end"}>
+        <Box
+          px={3}
+          pt={2}
+          display={"flex"}
+          alignItems={"center"}
+          gap={1}
+          justifyContent={"end"}
+        >
           <Typography variant="body2" color="black" fontWeight={500}>
             {selectedUnit?.name} Formula
           </Typography>
@@ -153,7 +162,6 @@ const CalculateVolume: React.FC<Props> = ({
             = &nbsp;
             {selectedUnit?.formula}
           </Typography>
-
         </Box>
         {selectedUnit?.name === "Rectangular Tank" ? (
           <Box padding={3} display={"flex"} alignItems={"center"} gap={1}>
@@ -419,7 +427,7 @@ const CalculateVolume: React.FC<Props> = ({
             />
           </Box>
         )}
-        <Stack px={3} display={"flex"} justifyContent={"space-between"} direction={"row"} alignItems={"center"} gap={1}>
+        {/* <Stack px={3} display={"flex"} justifyContent={"space-between"} direction={"row"} alignItems={"center"} gap={1}>
           <Box display={"flex"} alignItems={"center"} gap={1} justifyContent={"end"}>
 
             <Typography variant="body1" color="black" fontWeight={500}>
@@ -439,8 +447,7 @@ const CalculateVolume: React.FC<Props> = ({
             </IconButton>
           </Tooltip>
 
-        </Stack>
-
+        </Stack> */}
 
         <Box padding={3}>
           <Button

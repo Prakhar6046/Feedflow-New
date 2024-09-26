@@ -1,13 +1,22 @@
+import { Farm, farmAction } from "@/lib/features/farm/farmSlice";
+import { useAppDispatch } from "@/lib/hooks";
 import { Box, Button, Grid, Stack, TextField, Typography } from "@mui/material";
 import { NextPage } from "next";
 import { useState } from "react";
+import { useForm, SubmitHandler } from "react-hook-form";
 
 interface Props {
   setActiveStep: (val: number) => void;
 }
 
 const FarmInformation: NextPage<Props> = ({ setActiveStep }) => {
+  const dispatch = useAppDispatch();
+  const { register, handleSubmit } = useForm<Farm>();
   const [selectedSwtich, setSelectedSwtich] = useState<string>("address");
+  const onSubmit: SubmitHandler<Farm> = (data) => {
+    dispatch(farmAction.updateFarm(data));
+    setActiveStep(2);
+  };
   return (
     <Stack>
       <Typography
@@ -25,12 +34,13 @@ const FarmInformation: NextPage<Props> = ({ setActiveStep }) => {
       </Typography>
 
       <Box>
-        <form>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <TextField
             label="Farm Name"
             type="text"
             className="form-input"
             // focused
+            {...register("name")}
             sx={{
               width: "100%",
               marginBottom: 2,
@@ -110,6 +120,7 @@ const FarmInformation: NextPage<Props> = ({ setActiveStep }) => {
                     type="text"
                     className="form-input"
                     // focused
+                    {...register("addressLine1")}
                     sx={{
                       width: "100%",
                       marginBottom: 2,
@@ -123,6 +134,7 @@ const FarmInformation: NextPage<Props> = ({ setActiveStep }) => {
                     type="text"
                     className="form-input"
                     // focused
+                    {...register("addressLine2")}
                     sx={{
                       width: "100%",
                       marginBottom: 2,
@@ -136,6 +148,7 @@ const FarmInformation: NextPage<Props> = ({ setActiveStep }) => {
                     type="text"
                     className="form-input"
                     // focused
+                    {...register("city")}
                     sx={{
                       width: "100%",
                       marginBottom: 2,
@@ -149,6 +162,7 @@ const FarmInformation: NextPage<Props> = ({ setActiveStep }) => {
                     type="text"
                     className="form-input"
                     // focused
+                    {...register("province")}
                     sx={{
                       width: "100%",
                       marginBottom: 2,
@@ -162,6 +176,7 @@ const FarmInformation: NextPage<Props> = ({ setActiveStep }) => {
                     type="text"
                     className="form-input"
                     // focused
+                    {...register("zipCode")}
                     sx={{
                       width: "100%",
                       marginBottom: 2,
@@ -175,6 +190,7 @@ const FarmInformation: NextPage<Props> = ({ setActiveStep }) => {
                     type="text"
                     className="form-input"
                     // focused
+                    {...register("country")}
                     sx={{
                       width: "100%",
                       marginBottom: 2,
@@ -195,7 +211,7 @@ const FarmInformation: NextPage<Props> = ({ setActiveStep }) => {
             mt={1}
           >
             <Button
-              type="submit"
+              type="button"
               variant="contained"
               sx={{
                 background: "#fff",
@@ -222,7 +238,6 @@ const FarmInformation: NextPage<Props> = ({ setActiveStep }) => {
                 textTransform: "capitalize",
                 borderRadius: "8px",
               }}
-              onClick={() => setActiveStep(2)}
             >
               Next
             </Button>

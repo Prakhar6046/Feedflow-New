@@ -1,5 +1,12 @@
 import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
+import CommonTable from "@/app/_components/table/CommonTable";
+import FarmTable from "@/app/_components/table/FarmTable";
+import { getFarms } from "@/app/_lib/action";
+export const revalidate = 0;
 export default async function Page() {
+  const farms = await getFarms();
+  console.log(farms);
+
   return (
     <>
       <BasicBreadcrumbs
@@ -14,7 +21,7 @@ export default async function Page() {
           { name: "Farm", link: "/dashboard/farm" },
         ]}
       />
-      Farm
+      <FarmTable farms={farms.data} />
     </>
   );
 }

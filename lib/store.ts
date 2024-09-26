@@ -2,6 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import { OrganisationReducer } from "./features/organisation/organisationSlice";
 import { UserReducer } from "./features/user/userSlice";
 import { SidebarReducer } from "./features/sidebar/sidebarSlice";
+import { FarmReducer } from "./features/farm/farmSlice";
 
 export const makeStore = () => {
   return configureStore({
@@ -9,6 +10,7 @@ export const makeStore = () => {
       organisation: OrganisationReducer,
       user: UserReducer,
       sidebar: SidebarReducer,
+      farm: FarmReducer,
     },
   });
 };
