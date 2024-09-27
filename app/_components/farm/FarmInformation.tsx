@@ -88,6 +88,8 @@ const FarmInformation: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                 marginBottom: 2,
               }}
             />
+            {/* console.log(); */}
+
             {errors &&
               errors.farmAltitude &&
               errors.farmAltitude.type === "required" && (
