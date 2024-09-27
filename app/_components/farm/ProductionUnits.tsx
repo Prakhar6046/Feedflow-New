@@ -266,7 +266,14 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                         {errors &&
                           errors.productionUnits &&
                           errors.productionUnits[index]?.name && (
-                            <Typography variant="body2" color="red" fontSize={13} mt={0.5}>This field is required.</Typography>
+                            <Typography
+                              variant="body2"
+                              color="red"
+                              fontSize={13}
+                              mt={0.5}
+                            >
+                              This field is required.
+                            </Typography>
                           )}
                         {/* <TextField
                           label="Production Unit Name"
@@ -324,7 +331,14 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                           {errors &&
                             errors.productionUnits &&
                             errors.productionUnits[index]?.type && (
-                              <Typography variant="body2" color="red" fontSize={13} mt={0.5}>This field is required.</Typography>
+                              <Typography
+                                variant="body2"
+                                color="red"
+                                fontSize={13}
+                                mt={0.5}
+                              >
+                                This field is required.
+                              </Typography>
                             )}
                           {/* <Select
                             labelId="demo-simple-select-label"
@@ -361,7 +375,6 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                         }}
                       >
                         <Box display={"flex"} gap={2} alignItems={"center"}>
-
                           <TextField
                             label="Capacity"
                             type="text"
@@ -403,10 +416,17 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                           </Button>
                         </Box>
                         {errors &&
-                            errors.productionUnits &&
-                            errors.productionUnits[index]?.capacity && (
-                              <Typography variant="body2" color="red" fontSize={13} mt={0.5}>This field is required.</Typography>
-                            )}
+                          errors.productionUnits &&
+                          errors.productionUnits[index]?.capacity && (
+                            <Typography
+                              variant="body2"
+                              color="red"
+                              fontSize={13}
+                              mt={0.5}
+                            >
+                              This field is required.
+                            </Typography>
+                          )}
                       </TableCell>
                       <TableCell
                         sx={{
@@ -438,20 +458,24 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                         </Box>
 
                         {errors &&
-                            errors.productionUnits &&
-                            errors.productionUnits[index]?.waterflowRate && (
-
-                              <Typography variant="body2" color="red" fontSize={13} mt={0.5}>This field is required.</Typography>
-
-                            )}
-
+                          errors.productionUnits &&
+                          errors.productionUnits[index]?.waterflowRate && (
+                            <Typography
+                              variant="body2"
+                              color="red"
+                              fontSize={13}
+                              mt={0.5}
+                            >
+                              This field is required.
+                            </Typography>
+                          )}
                       </TableCell>
                       <TableCell
                         sx={{
                           border: 0,
                           pl: 0,
                           pr: 1,
-                          position: "relative"
+                          position: "relative",
                         }}
                         onClick={() => remove(index)}
                       >

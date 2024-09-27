@@ -27,12 +27,12 @@ const FarmInformation: NextPage<Props> = ({ setActiveStep, editFarm }) => {
     if (editFarm) {
       setValue("name", editFarm?.name);
       setValue("farmAltitude", editFarm?.farmAltitude);
-      setValue("addressLine1", editFarm?.farmAddress.addressLine1);
-      setValue("addressLine2", editFarm?.farmAddress.addressLine2);
-      setValue("city", editFarm?.farmAddress.city);
-      setValue("country", editFarm?.farmAddress.country);
-      setValue("zipCode", editFarm?.farmAddress.zipCode);
-      setValue("province", editFarm?.farmAddress.province);
+      setValue("addressLine1", editFarm?.farmAddress?.addressLine1);
+      setValue("addressLine2", editFarm?.farmAddress?.addressLine2 || "");
+      setValue("city", editFarm?.farmAddress?.city);
+      setValue("country", editFarm?.farmAddress?.country);
+      setValue("zipCode", editFarm?.farmAddress?.zipCode);
+      setValue("province", editFarm?.farmAddress?.province);
     }
   }, [editFarm]);
   return (
