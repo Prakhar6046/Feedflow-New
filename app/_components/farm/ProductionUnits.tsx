@@ -228,7 +228,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep }) => {
                         {errors &&
                           errors.productionUnits &&
                           errors.productionUnits[index]?.name && (
-                            <p>This field is required.</p>
+                            <Typography variant="body2" color="red" fontSize={13} mt={0.5}>This field is required.</Typography>
                           )}
                         {/* <TextField
                           label="Production Unit Name"
@@ -286,7 +286,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep }) => {
                           {errors &&
                             errors.productionUnits &&
                             errors.productionUnits[index]?.type && (
-                              <p>This field is required.</p>
+                              <Typography variant="body2" color="red" fontSize={13} mt={0.5}>This field is required.</Typography>
                             )}
                           {/* <Select
                             labelId="demo-simple-select-label"
@@ -323,6 +323,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep }) => {
                         }}
                       >
                         <Box display={"flex"} gap={2} alignItems={"center"}>
+
                           <TextField
                             label="Capacity"
                             type="text"
@@ -339,11 +340,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep }) => {
                               minWidth: 150,
                             }}
                           />
-                          {errors &&
-                            errors.productionUnits &&
-                            errors.productionUnits[index]?.capacity && (
-                              <p>This field is required.</p>
-                            )}
+
                           <Typography variant="body1" color="#555555">
                             L
                           </Typography>
@@ -367,6 +364,11 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep }) => {
                             Calculate
                           </Button>
                         </Box>
+                        {errors &&
+                            errors.productionUnits &&
+                            errors.productionUnits[index]?.capacity && (
+                              <Typography variant="body2" color="red" fontSize={13} mt={0.5}>This field is required.</Typography>
+                            )}
                       </TableCell>
                       <TableCell
                         sx={{
@@ -392,21 +394,26 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep }) => {
                               minWidth: 150,
                             }}
                           />
-                          {errors &&
-                            errors.productionUnits &&
-                            errors.productionUnits[index]?.waterflowRate && (
-                              <p>This field is required.</p>
-                            )}
                           <Typography variant="body1" color="#555555">
                             L/H
                           </Typography>
                         </Box>
+
+                        {errors &&
+                            errors.productionUnits &&
+                            errors.productionUnits[index]?.waterflowRate && (
+
+                              <Typography variant="body2" color="red" fontSize={13} mt={0.5}>This field is required.</Typography>
+
+                            )}
+
                       </TableCell>
                       <TableCell
                         sx={{
                           border: 0,
                           pl: 0,
                           pr: 1,
+                          position: "relative"
                         }}
                         onClick={() => remove(index)}
                       >
@@ -414,6 +421,8 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep }) => {
                           sx={{
                             cursor: "pointer",
                             width: "fit-content",
+                            px: 1,
+                            // transform: "translateY(-10px)"
                           }}
                         >
                           <svg

@@ -650,8 +650,7 @@ const AddNewOrganisation = () => {
                     xs: "wrap",
                   },
                   justifyContent: {
-                    lg: "center",
-                    xs: "end"
+                    md: "center"
                   }
                 }}
               >
