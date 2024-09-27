@@ -301,14 +301,18 @@ export default function Page({ params }: { params: { userId: string } }) {
                   label="Name"
                   type="text"
                   className="form-input"
-                  {...register("name")}
+                  {...register("name", {
+                    required: true,
+                  })}
                   focused={userData?.data.name ? true : false}
                   sx={{
                     width: "100%",
                     marginBottom: 2,
                   }}
                 />
-
+                {errors && errors.name && errors.name.type === "required" && (
+                  <p>This Field is required.</p>
+                )}
                 <TextField
                   label={Number(params.userId) === currentUserId ? "" : "Email"}
                   type="email"
@@ -319,13 +323,17 @@ export default function Page({ params }: { params: { userId: string } }) {
                   disabled={
                     Number(params.userId) === currentUserId ? true : false
                   }
-                  {...register("email")}
+                  {...register("email", {
+                    required: true,
+                  })}
                   sx={{
                     width: "100%",
                     marginBottom: 2,
                   }}
                 />
-
+                {errors && errors.email && errors.email.type === "required" && (
+                  <p>This Field is required.</p>
+                )}
                 <TextField
                   // label="Organisation"
                   type="text"
