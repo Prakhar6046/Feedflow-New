@@ -283,26 +283,30 @@ const AddNewOrganisation = () => {
           }}
         >
           <form onSubmit={handleSubmit(onSubmit)}>
-            <TextField
-              label="Organisation Name"
-              type="text"
-              className="form-input"
-              focused
-              {...register("organisationName", {
-                required: true,
-              })}
-              // focused={userData?.data.name ? true : false}
-              // value={userData?.data.name}
-              sx={{
-                width: "100%",
-                marginBottom: 2,
-              }}
-            />
-            {errors &&
-              errors.organisationName &&
-              errors.organisationName.type === "required" && (
-                <p>This Field is required.</p>
-              )}
+            <Box mb={2}>
+
+              <TextField
+                label="Organisation Name"
+                type="text"
+                className="form-input"
+                focused
+                {...register("organisationName", {
+                  required: true,
+                })}
+                // focused={userData?.data.name ? true : false}
+                // value={userData?.data.name}
+                sx={{
+                  width: "100%",
+                }}
+              />
+              {errors &&
+                errors.organisationName &&
+                errors.organisationName.type === "required" && (
+                  <Typography variant="body2" color="red" fontSize={13} mt={0.5}>This field is required.</Typography>
+                )}
+
+            </Box>
+
             <Stack
               display={"flex"}
               justifyContent={"flex-start"}
@@ -338,29 +342,31 @@ const AddNewOrganisation = () => {
                 </Select>
               </FormControl> */}
 
-              <TextField
-                label="Organisation Code"
-                type="text"
-                className="form-input"
-                {...register("organisationCode", {
-                  required: true,
-                })}
-                // disabled
-                sx={{
-                  width: {
-                    md: "85%",
-                    xs: "50%",
-                  },
-                }}
-                focused
+              <Box width={"100%"}>
+
+                <TextField
+                  label="Organisation Code"
+                  type="text"
+                  className="form-input"
+                  {...register("organisationCode", {
+                    required: true,
+                  })}
+                  // disabled
+                  sx={{
+                    width: "100%"
+                  }}
+                  focused
                 // focused={true}
                 // value={userData?.data.email ?? "Demo@gmail.com"}
-              />
-              {errors &&
-                errors.organisationCode &&
-                errors.organisationCode.type === "required" && (
-                  <p>This Field is required.</p>
-                )}
+                />
+                {errors &&
+                  errors.organisationCode &&
+                  errors.organisationCode.type === "required" && (
+                    <Typography variant="body2" color="red" fontSize={13} mt={0.5}>This field is required.</Typography>
+                  )}
+
+              </Box>
+
             </Stack>
             <FormControl className="form-input" fullWidth>
               <InputLabel id="demo-simple-select-label">
@@ -409,39 +415,50 @@ const AddNewOrganisation = () => {
                 gap: 1.5,
               }}
             >
-              <TextField
-                label="Address"
-                type="text"
-                className="form-input"
-                {...register("address", {
-                  required: true,
-                })}
-                focused
-                sx={{
-                  width: "100%",
-                }}
-              />
-              {errors &&
-                errors.address &&
-                errors.address.type === "required" && (
-                  <p>This Field is required.</p>
+
+              <Box width={"100%"}>
+
+                <TextField
+                  label="Address"
+                  type="text"
+                  className="form-input"
+                  {...register("address", {
+                    required: true,
+                  })}
+                  focused
+                  sx={{
+                    width: "100%",
+                  }}
+                />
+                {errors &&
+                  errors.address &&
+                  errors.address.type === "required" && (
+                    <Typography variant="body2" color="red" fontSize={13} mt={0.5}>This field is required.</Typography>
+                  )}
+
+              </Box>
+
+
+              <Box width={"100%"}>
+
+                <TextField
+                  label="City"
+                  type="text"
+                  className="form-input"
+                  {...register("city", {
+                    required: true,
+                  })}
+                  focused
+                  sx={{
+                    width: "100%",
+                  }}
+                />
+                {errors && errors.city && errors.city.type === "required" && (
+                  <Typography variant="body2" color="red" fontSize={13} mt={0.5}>This field is required.</Typography>
                 )}
 
-              <TextField
-                label="City"
-                type="text"
-                className="form-input"
-                {...register("city", {
-                  required: true,
-                })}
-                focused
-                sx={{
-                  width: "100%",
-                }}
-              />
-              {errors && errors.city && errors.city.type === "required" && (
-                <p>This Field is required.</p>
-              )}
+              </Box>
+
             </Stack>
 
             <Stack
@@ -454,40 +471,51 @@ const AddNewOrganisation = () => {
                 gap: 1.5,
               }}
             >
-              <TextField
-                label="Province"
-                type="text"
-                className="form-input"
-                {...register("province", {
-                  required: true,
-                })}
-                focused
-                sx={{
-                  width: "100%",
-                }}
-              />
-              {errors &&
-                errors.province &&
-                errors.province.type === "required" && (
-                  <p>This Field is required.</p>
-                )}
-              <TextField
-                label="Post Code"
-                type="text"
-                className="form-input"
-                {...register("postCode", {
-                  required: true,
-                })}
-                focused
-                sx={{
-                  width: "100%",
-                }}
-              />
-              {errors &&
-                errors.postCode &&
-                errors.postCode.type === "required" && (
-                  <p>This Field is required.</p>
-                )}
+
+              <Box width={"100%"}>
+
+                <TextField
+                  label="Province"
+                  type="text"
+                  className="form-input"
+                  {...register("province", {
+                    required: true,
+                  })}
+                  focused
+                  sx={{
+                    width: "100%",
+                  }}
+                />
+                {errors &&
+                  errors.province &&
+                  errors.province.type === "required" && (
+                    <Typography variant="body2" color="red" fontSize={13} mt={0.5}>This field is required.</Typography>
+                  )}
+              </Box>
+
+              <Box width={"100%"}>
+
+                <TextField
+                  label="Post Code"
+                  type="text"
+                  className="form-input"
+                  {...register("postCode", {
+                    required: true,
+                  })}
+                  focused
+                  sx={{
+                    width: "100%",
+                  }}
+                />
+                {errors &&
+                  errors.postCode &&
+                  errors.postCode.type === "required" && (
+                    <Typography variant="body2" color="red" fontSize={13} mt={0.5}>This field is required.</Typography>
+                  )}
+
+              </Box>
+
+
             </Stack>
 
             <Typography
@@ -612,7 +640,6 @@ const AddNewOrganisation = () => {
               <Stack
                 key={item.id}
                 display={"flex"}
-                justifyContent={"center"}
                 direction={"row"}
                 sx={{
                   width: "100%",
@@ -622,102 +649,130 @@ const AddNewOrganisation = () => {
                     lg: "nowrap",
                     xs: "wrap",
                   },
+                  justifyContent: {
+                    lg: "center",
+                    xs: "end"
+                  }
                 }}
               >
-                <TextField
-                  label="Name"
-                  type="text"
-                  className="form-input"
-                  {...register(`contacts.${index}.name` as const, {
-                    required: true,
-                  })}
-                  focused
-                  sx={{
-                    width: {
-                      lg: "100%",
-                      md: "48.4%",
-                      xs: "100%",
-                    },
-                  }}
-                />
 
-                {errors &&
-                  errors?.contacts &&
-                  errors?.contacts[index] &&
-                  errors?.contacts[index]?.name &&
-                  errors?.contacts[index]?.name.type === "required" && (
-                    <p>This Field is required.</p>
-                  )}
+                <Box sx={{
+                  width: {
+                      lg: "100%",
+                      md: "48.4%",
+                      xs: "100%",
+                  }
+                }}>
+                  <TextField
+                    label="Name"
+                    type="text"
+                    className="form-input"
+                    {...register(`contacts.${index}.name` as const, {
+                      required: true,
+                    })}
+                    focused
+                    sx={{
+                      width: "100%"
+                    }}
+                  />
 
-                <TextField
-                  label="Role"
-                  type="text"
-                  className="form-input"
-                  {...register(`contacts.${index}.role` as const, {
-                    required: true,
-                  })}
-                  focused
-                  sx={{
-                    width: {
+                  {errors &&
+                    errors?.contacts &&
+                    errors?.contacts[index] &&
+                    errors?.contacts[index]?.name &&
+                    errors?.contacts[index]?.name.type === "required" && (
+                      <Typography variant="body2" color="red" fontSize={13} mt={0.5}>This field is required.</Typography>
+                    )}
+
+                </Box>
+
+                <Box sx={{
+                  width: {
                       lg: "100%",
                       md: "48.4%",
                       xs: "100%",
-                    },
-                  }}
-                />
-                {errors &&
-                  errors?.contacts &&
-                  errors?.contacts[index] &&
-                  errors?.contacts[index]?.role &&
-                  errors?.contacts[index]?.role.type === "required" && (
-                    <p>This Field is required.</p>
-                  )}
-                <TextField
-                  label="Email"
-                  type="email"
-                  className="form-input"
-                  {...register(`contacts.${index}.email` as const, {
-                    required: true,
-                  })}
-                  focused
-                  sx={{
-                    width: {
+                  }
+                }}>
+                  <TextField
+                    label="Role"
+                    type="text"
+                    className="form-input"
+                    {...register(`contacts.${index}.role` as const, {
+                      required: true,
+                    })}
+                    focused
+                    sx={{
+                      width: "100%"
+                    }}
+                  />
+                  {errors &&
+                    errors?.contacts &&
+                    errors?.contacts[index] &&
+                    errors?.contacts[index]?.role &&
+                    errors?.contacts[index]?.role.type === "required" && (
+                      <Typography variant="body2" color="red" fontSize={13} mt={0.5}>This field is required.</Typography>
+                    )}
+                </Box>
+
+                <Box sx={{
+                  width: {
                       lg: "100%",
                       md: "48.4%",
                       xs: "100%",
-                    },
-                  }}
-                />
-                {errors &&
-                  errors?.contacts &&
-                  errors?.contacts[index] &&
-                  errors?.contacts[index]?.email &&
-                  errors?.contacts[index]?.email.type === "required" && (
-                    <p>This Field is required.</p>
-                  )}
-                <TextField
-                  label="Phone"
-                  type="text"
-                  className="form-input"
-                  {...register(`contacts.${index}.phone` as const, {
-                    required: true,
-                  })}
-                  focused
-                  sx={{
-                    width: {
+                  }
+                }}>
+
+                  <TextField
+                    label="Email"
+                    type="email"
+                    className="form-input"
+                    {...register(`contacts.${index}.email` as const, {
+                      required: true,
+                    })}
+                    focused
+                    sx={{
+                      width: "100%"
+                    }}
+                  />
+                  {errors &&
+                    errors?.contacts &&
+                    errors?.contacts[index] &&
+                    errors?.contacts[index]?.email &&
+                    errors?.contacts[index]?.email.type === "required" && (
+                      <Typography variant="body2" color="red" fontSize={13} mt={0.5}>This field is required.</Typography>
+                    )}
+
+                </Box>
+
+                <Box sx={{
+                  width: {
                       lg: "100%",
                       md: "48.4%",
                       xs: "100%",
-                    },
-                  }}
-                />
-                {errors &&
-                  errors?.contacts &&
-                  errors?.contacts[index] &&
-                  errors?.contacts[index]?.phone &&
-                  errors?.contacts[index]?.phone.type === "required" && (
-                    <p>This Field is required.</p>
-                  )}
+                  }
+                }}>
+                  <TextField
+                    label="Phone"
+                    type="text"
+                    className="form-input"
+                    {...register(`contacts.${index}.phone` as const, {
+                      required: true,
+                    })}
+                    focused
+                    sx={{
+                      width: "100%"
+                    }}
+                  />
+                  {errors &&
+                    errors?.contacts &&
+                    errors?.contacts[index] &&
+                    errors?.contacts[index]?.phone &&
+                    errors?.contacts[index]?.phone.type === "required" && (
+                      <Typography variant="body2" color="red" fontSize={13} mt={0.5}>This field is required.</Typography>
+                    )}
+
+                </Box>
+
                 <Box
                   display={"flex"}
                   justifyContent={"center"}
