@@ -65,7 +65,7 @@ interface FormInputs {
     phone: string;
   }[];
 }
-const OrganisationType = [
+export const OrganisationType = [
   "Fish Farmer",
   "Hatchery",
   "Feed Supplier",

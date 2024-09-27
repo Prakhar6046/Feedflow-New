@@ -10,9 +10,10 @@ import {
 } from "@/lib/features/farm/farmSlice";
 import { useAppSelector } from "@/lib/hooks";
 import { Box, Divider, Grid, Step, StepLabel, Stepper } from "@mui/material";
-
+import { NextPage } from "next";
 import { useEffect, useState } from "react";
 
+interface Props {}
 const steps = [
   {
     label: "Intro",
@@ -27,22 +28,27 @@ const steps = [
     label: "Finished",
   },
 ];
-
-export default function Page() {
+const Page = ({ params }: { params: { FarmId: string } }) => {
   const [activeStep, setActiveStep] = useState<number>(0);
+  const isEditFarm = useAppSelector(selectIsEditFarm);
+  const editFarm = useAppSelector(selectEditFarm);
 
+  useEffect(() => {
+    if (isEditFarm) {
+      setActiveStep(1);
+    }
+  }, [isEditFarm]);
   return (
     <>
       <BasicBreadcrumbs
-        heading={"New Farm"}
+        heading={"Edit Farm"}
         hideSearchInput={true}
         links={[
           { name: "Dashboard", link: "/dashboard" },
           { name: "Farm", link: "/dashboard/farm" },
-          { name: "New", link: "/dashboard/newFarm" },
+          { name: "Edit", link: `/dashboard/edit/${params.FarmId}` },
         ]}
       />
-
       <Grid
         container
         sx={{
@@ -111,14 +117,22 @@ export default function Page() {
         >
           {activeStep === 0 && <AquaFarmWizard setActiveStep={setActiveStep} />}
           {activeStep === 1 && (
-            <FarmInformation setActiveStep={setActiveStep} />
+            <FarmInformation
+              setActiveStep={setActiveStep}
+              editFarm={editFarm}
+            />
           )}
           {activeStep === 2 && (
-            <ProductionUnits setActiveStep={setActiveStep} />
+            <ProductionUnits
+              setActiveStep={setActiveStep}
+              editFarm={editFarm}
+            />
           )}
           {activeStep === 3 && <AllDone setActiveStep={setActiveStep} />}
         </Grid>
       </Grid>
     </>
   );
-}
+};
+
+export default Page;

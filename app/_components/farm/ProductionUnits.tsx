@@ -28,12 +28,18 @@ import {
   useForm,
 } from "react-hook-form";
 import CalculateVolume from "../models/CalculateVolume";
-import { useAppSelector } from "@/lib/hooks";
-import { selectFarm } from "@/lib/features/farm/farmSlice";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import {
+  farmAction,
+  selectFarm,
+  selectIsEditFarm,
+} from "@/lib/features/farm/farmSlice";
 import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 interface Props {
   setActiveStep: (val: number) => void;
+  editFarm?: any;
 }
 export interface UnitsTypes {
   name: string | undefined;
@@ -62,9 +68,12 @@ export interface CalculateType {
   output: number;
   id: any;
 }
-const ProductionUnits: NextPage<Props> = ({ setActiveStep }) => {
+const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
   uuidv4();
+  const router = useRouter();
+  const dispatch = useAppDispatch();
   const farm = useAppSelector(selectFarm);
+  const isEditFarm = useAppSelector(selectIsEditFarm);
   const [selectedUnit, setSelectedUnit] = React.useState<UnitsTypes>();
   const [length, setLength] = useState<number>();
   const [width, setWidth] = useState<number>();
@@ -120,23 +129,44 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep }) => {
       setCalculatedValue({ output: 0, id: null });
     }
   };
+
   const onSubmit: SubmitHandler<FormTypes> = async (data) => {
-    const payload = {
-      farmAddress: {
-        addressLine1: farm.addressLine1,
-        addressLine2: farm.addressLine2,
-        city: farm.city,
-        province: farm.province,
-        zipCode: farm.zipCode,
-        country: farm.country,
-      },
-      productionUnits: data.productionUnits,
-      name: farm.name,
-    };
+    let payload;
+    if (isEditFarm) {
+      payload = {
+        farmAddress: {
+          addressLine1: farm.addressLine1,
+          addressLine2: farm.addressLine2,
+          city: farm.city,
+          province: farm.province,
+          zipCode: farm.zipCode,
+          country: farm.country,
+          id: editFarm.farmAddress.id,
+        },
+        productionUnits: data.productionUnits,
+        name: farm.name,
+        farmAltitude: farm.farmAltitude,
+        id: editFarm.id,
+      };
+    } else {
+      payload = {
+        farmAddress: {
+          addressLine1: farm.addressLine1,
+          addressLine2: farm.addressLine2,
+          city: farm.city,
+          province: farm.province,
+          zipCode: farm.zipCode,
+          country: farm.country,
+        },
+        productionUnits: data.productionUnits,
+        name: farm.name,
+        farmAltitude: farm.farmAltitude,
+      };
+    }
 
     if (Object.keys(payload).length && payload.name) {
       const response = await fetch("/api/farm/add-farm", {
-        method: "POST",
+        method: isEditFarm ? "PUT" : "POST",
         headers: {
           "Content-Type": "application/json",
         },
@@ -145,6 +175,10 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep }) => {
       const responseData = await response.json();
       toast.success(responseData.message);
       if (responseData.status) {
+        if (isEditFarm) {
+          dispatch(farmAction.resetState());
+          router.push("/dashboard/farm");
+        }
         setActiveStep(3);
       }
     } else {
@@ -163,7 +197,11 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep }) => {
       setValue("productionUnits", updatedFields);
     }
   }, [calculatedValue]);
-
+  useEffect(() => {
+    if (editFarm) {
+      setValue("productionUnits", editFarm?.productionUnits);
+    }
+  }, [editFarm]);
   return (
     <Stack>
       <Typography

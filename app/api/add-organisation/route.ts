@@ -23,6 +23,7 @@ export async function POST(req: NextRequest) {
       data: {
         name: body.organisationName,
         organisationCode: body.organisationCode,
+        organisationType: body.organisationType,
         addressId: address.id,
       },
     });

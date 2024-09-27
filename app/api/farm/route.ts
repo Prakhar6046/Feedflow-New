@@ -4,7 +4,10 @@ import { NextResponse } from "next/server";
 export const GET = async () => {
   try {
     const farms = await prisma.farm.findMany({
-      include: { productionUnits: { include: { Farm: true } } },
+      include: {
+        farmAddress: true,
+        productionUnits: true,
+      },
     });
     return new NextResponse(JSON.stringify({ status: true, data: farms }), {
       status: 200,

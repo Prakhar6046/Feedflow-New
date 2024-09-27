@@ -28,7 +28,12 @@ export default function Page() {
     setCookie("role", data?.data?.user?.role);
     if (data.status) router.push("/dashboard/organisation");
   };
-
+  useEffect(() => {
+    const d = async () => {
+      console.log(await hashPassword("12345678"));
+    };
+    d();
+  }, []);
   return (
     <>
       <Stack

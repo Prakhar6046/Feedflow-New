@@ -2,8 +2,10 @@
 // import UploadFileOutlinedIcon from '@mui/icons-material/UploadFileOutlined';
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 
-import Select, { SelectChangeEvent } from "@mui/material/Select";
+import Select from "@mui/material/Select";
 
+import { OrganisationType } from "@/app/_components/AddNewOrganisation";
+import Loader from "@/app/_components/Loader";
 import {
   Box,
   Button,
@@ -11,23 +13,13 @@ import {
   FormControl,
   Grid,
   InputLabel,
-  Menu,
   MenuItem,
   Stack,
   TextField,
   Typography,
 } from "@mui/material";
-import {
-  selectOrganisationLoading,
-  selectOrganisations,
-} from "@/lib/features/organisation/organisationSlice";
-import { useAppSelector } from "@/lib/hooks";
 import { styled } from "@mui/material/styles";
-import Link from "next/link";
-import { NextPage } from "next";
 import { useEffect, useState } from "react";
-import { Organisation } from "@/app/_components/BasicTable";
-import Loader from "@/app/_components/Loader";
 import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 const VisuallyHiddenInput = styled("input")({
@@ -46,6 +38,7 @@ interface FormInputs {
   organisationName: String;
   image: FileList;
   organisationCode: String;
+  organisationType: String;
   address: String;
   street: String;
   province: String;
@@ -58,6 +51,21 @@ interface FormInputs {
     phone: string;
   }[];
 }
+
+const steps = [
+  {
+    label: "Intro",
+  },
+  {
+    label: "Farm",
+  },
+  {
+    label: "Production Units",
+  },
+  {
+    label: "Finished",
+  },
+];
 const Page = ({ params }: { params: { organisationId: string } }) => {
   const [organisationData, setOrganisationData] = useState<any>();
   const [loading, setLoading] = useState<boolean>(false);
@@ -80,12 +88,14 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
     control,
     getValues,
     resetField,
+    watch,
     formState: { errors },
   } = useForm<FormInputs>({
     defaultValues: {
       contacts: [{ name: "", role: "", email: "", phone: "" }],
     },
   });
+  const selectedOrganisationType = watch("organisationType");
   const onSubmit: SubmitHandler<FormInputs> = async (data) => {
     const address: any = {
       address: data.address,
@@ -97,6 +107,7 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
     const formData = new FormData();
     formData.append("name", String(data.organisationName));
     formData.append("organisationCode", String(data.organisationCode));
+    formData.append("organisationType", String(data.organisationType));
     formData.append("address", JSON.stringify(address));
     formData.append("contacts", JSON.stringify(data.contacts));
     formData.append("image", data.image[0]);
@@ -150,6 +161,8 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
   }, []);
   useEffect(() => {
     if (organisationData) {
+      console.log(organisationData);
+
       setValue("organisationName", organisationData.name);
       setValue("organisationCode", organisationData.organisationCode);
       setValue("address", String(organisationData?.address?.name));
@@ -158,6 +171,7 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
       setValue("province", String(organisationData.address?.province));
       setValue("postCode", String(organisationData.address?.postCode));
       setValue("contacts", organisationData?.contact);
+      setValue("organisationType", organisationData?.organisationType);
       // setValue("email", String(organisationData.contact?.email));
       // setValue("phone", String(organisationData.contact?.phone));
       // setValue("role", String(organisationData.contact?.role));
@@ -166,6 +180,7 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
       // setValue("email", organisationData.address?.city);
     }
   }, [organisationData]);
+
   if (loading) {
     return <Loader />;
   }
@@ -390,7 +405,34 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
                   <p>This field is required.</p>
                 )}
             </Stack>
-
+            <FormControl className="form-input" fullWidth>
+              <InputLabel id="demo-simple-select-label">
+                Organisation Type
+              </InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                label="Production Unit Type"
+                {...register("organisationType")}
+                value={selectedOrganisationType || ""}
+                // onChange={(e) => handleChange(e, item)}
+                sx={{
+                  px: {
+                    xl: 10,
+                    md: 5,
+                    xs: 3,
+                  },
+                }}
+              >
+                {OrganisationType.map((organisation, i) => {
+                  return (
+                    <MenuItem value={organisation} key={i}>
+                      {organisation}
+                    </MenuItem>
+                  );
+                })}
+              </Select>
+            </FormControl>
             <Typography
               variant="h6"
               color="rgb(99, 115, 129)"

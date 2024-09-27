@@ -3,20 +3,28 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 export interface Farm {
   name: String;
   addressLine1: String;
+  farmAltitude: String;
   addressLine2: String;
   province: String;
   city: String;
   zipCode: String;
   country: String;
+  id?: string;
 }
 interface InitialState {
   isLoading: boolean;
   farm: Farm;
+  farms: Farm[];
+  editFarm: Farm;
+  isEditFarm: boolean;
 }
 
 const initialState: InitialState = {
   isLoading: false,
   farm: {} as Farm,
+  farms: [],
+  editFarm: {} as Farm,
+  isEditFarm: false,
 };
 
 const farmSlice = createSlice({
@@ -29,6 +37,16 @@ const farmSlice = createSlice({
     updateFarm: (state, action: PayloadAction<Farm>) => {
       state.farm = action.payload;
     },
+    updateFarms: (state, action: PayloadAction<Farm[]>) => {
+      state.farms = action.payload;
+    },
+    editFarm: (state, action: PayloadAction<Farm>) => {
+      state.editFarm = action.payload;
+      state.isEditFarm = true;
+    },
+    resetState: (state) => {
+      state.isEditFarm = false;
+    },
   },
 });
 
@@ -37,5 +55,8 @@ export const farmAction = farmSlice.actions;
 //selector
 export const selectFarmLoading = (state: RootState) => state.farm.isLoading;
 export const selectFarm = (state: RootState) => state.farm.farm;
+export const selectFarms = (state: RootState) => state.farm.farms;
+export const selectEditFarm = (state: RootState) => state.farm.editFarm;
+export const selectIsEditFarm = (state: RootState) => state.farm.isEditFarm;
 
 export const FarmReducer = farmSlice.reducer;

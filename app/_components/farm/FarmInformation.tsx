@@ -2,25 +2,39 @@ import { Farm, farmAction } from "@/lib/features/farm/farmSlice";
 import { useAppDispatch } from "@/lib/hooks";
 import { Box, Button, Grid, Stack, TextField, Typography } from "@mui/material";
 import { NextPage } from "next";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 
 interface Props {
   setActiveStep: (val: number) => void;
+  editFarm?: any;
 }
 
-const FarmInformation: NextPage<Props> = ({ setActiveStep }) => {
+const FarmInformation: NextPage<Props> = ({ setActiveStep, editFarm }) => {
   const dispatch = useAppDispatch();
   const {
     register,
     handleSubmit,
     formState: { errors },
+    setValue,
   } = useForm<Farm>();
   const [selectedSwtich, setSelectedSwtich] = useState<string>("address");
   const onSubmit: SubmitHandler<Farm> = (data) => {
     dispatch(farmAction.updateFarm(data));
     setActiveStep(2);
   };
+  useEffect(() => {
+    if (editFarm) {
+      setValue("name", editFarm?.name);
+      setValue("farmAltitude", editFarm?.farmAltitude);
+      setValue("addressLine1", editFarm?.farmAddress.addressLine1);
+      setValue("addressLine2", editFarm?.farmAddress.addressLine2);
+      setValue("city", editFarm?.farmAddress.city);
+      setValue("country", editFarm?.farmAddress.country);
+      setValue("zipCode", editFarm?.farmAddress.zipCode);
+      setValue("province", editFarm?.farmAddress.province);
+    }
+  }, [editFarm]);
   return (
     <Stack>
       <Typography
@@ -39,9 +53,7 @@ const FarmInformation: NextPage<Props> = ({ setActiveStep }) => {
 
       <Box>
         <form onSubmit={handleSubmit(onSubmit)}>
-
           <Box mb={2} width={"100%"}>
-
             <TextField
               label="Farm Name"
               type="text"
@@ -52,15 +64,38 @@ const FarmInformation: NextPage<Props> = ({ setActiveStep }) => {
               })}
               sx={{
                 width: "100%",
+                marginBottom: 2,
               }}
             />
             {errors && errors.name && errors.name.type === "required" && (
-              <Typography variant="body2" color="red" fontSize={13} mt={0.5}>This field is required.</Typography>
+              <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                This field is required.
+              </Typography>
             )}
-
           </Box>
 
-
+          <Box mb={2} width={"100%"}>
+            <TextField
+              label="Farm Altitude"
+              type="text"
+              className="form-input"
+              // focused
+              {...register("farmAltitude", {
+                required: true,
+              })}
+              sx={{
+                width: "100%",
+                marginBottom: 2,
+              }}
+            />
+            {errors &&
+              errors.farmAltitude &&
+              errors.farmAltitude.type === "required" && (
+                <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                  This field is required.
+                </Typography>
+              )}
+          </Box>
           <Box
             display={"flex"}
             justifyContent={"end"}
@@ -129,9 +164,7 @@ const FarmInformation: NextPage<Props> = ({ setActiveStep }) => {
 
               <Grid container spacing={2} mt={0}>
                 <Grid item md={6} xs={12}>
-
                   <Box>
-
                     <TextField
                       label="Address Line 1"
                       type="text"
@@ -147,13 +180,16 @@ const FarmInformation: NextPage<Props> = ({ setActiveStep }) => {
                     {errors &&
                       errors.addressLine1 &&
                       errors.addressLine1.type === "required" && (
-                        <Typography variant="body2" color="red" fontSize={13} mt={0.5}>This field is required.</Typography>
+                        <Typography
+                          variant="body2"
+                          color="red"
+                          fontSize={13}
+                          mt={0.5}
+                        >
+                          This field is required.
+                        </Typography>
                       )}
-
                   </Box>
-
-
-
                 </Grid>
 
                 <Grid item md={6} xs={12}>
@@ -171,9 +207,7 @@ const FarmInformation: NextPage<Props> = ({ setActiveStep }) => {
                 </Grid>
 
                 <Grid item md={6} xs={12}>
-
                   <Box>
-
                     <TextField
                       label="City"
                       type="text"
@@ -186,13 +220,19 @@ const FarmInformation: NextPage<Props> = ({ setActiveStep }) => {
                         width: "100%",
                       }}
                     />
-                    {errors && errors.city && errors.city.type === "required" && (
-                      <Typography variant="body2" color="red" fontSize={13} mt={0.5}>This field is required.</Typography>
-                    )}
-
+                    {errors &&
+                      errors.city &&
+                      errors.city.type === "required" && (
+                        <Typography
+                          variant="body2"
+                          color="red"
+                          fontSize={13}
+                          mt={0.5}
+                        >
+                          This field is required.
+                        </Typography>
+                      )}
                   </Box>
-
-
                 </Grid>
 
                 <Grid item md={6} xs={12}>
@@ -212,16 +252,19 @@ const FarmInformation: NextPage<Props> = ({ setActiveStep }) => {
                     {errors &&
                       errors.province &&
                       errors.province.type === "required" && (
-                        <Typography variant="body2" color="red" fontSize={13} mt={0.5}>This field is required.</Typography>
+                        <Typography
+                          variant="body2"
+                          color="red"
+                          fontSize={13}
+                          mt={0.5}
+                        >
+                          This field is required.
+                        </Typography>
                       )}
-
                   </Box>
-
-
                 </Grid>
 
                 <Grid item md={6} xs={12}>
-
                   <Box>
                     <TextField
                       label="Zip Code"
@@ -238,21 +281,22 @@ const FarmInformation: NextPage<Props> = ({ setActiveStep }) => {
                     {errors &&
                       errors.zipCode &&
                       errors.zipCode.type === "required" && (
-                        <Typography variant="body2" color="red" fontSize={13} mt={0.5}>This field is required.</Typography>
+                        <Typography
+                          variant="body2"
+                          color="red"
+                          fontSize={13}
+                          mt={0.5}
+                        >
+                          This field is required.
+                        </Typography>
                       )}
                   </Box>
-
-
                 </Grid>
 
                 <Grid item md={6} xs={12}>
+                  <Box></Box>
 
                   <Box>
-
-                  </Box>
-
-                  <Box>
-
                     <TextField
                       label="Country"
                       type="text"
@@ -268,12 +312,16 @@ const FarmInformation: NextPage<Props> = ({ setActiveStep }) => {
                     {errors &&
                       errors.country &&
                       errors.country.type === "required" && (
-                        <Typography variant="body2" color="red" fontSize={13} mt={0.5}>This field is required.</Typography>
+                        <Typography
+                          variant="body2"
+                          color="red"
+                          fontSize={13}
+                          mt={0.5}
+                        >
+                          This field is required.
+                        </Typography>
                       )}
-
                   </Box>
-
-
                 </Grid>
               </Grid>
             </>

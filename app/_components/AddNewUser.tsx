@@ -87,16 +87,14 @@ export default function AddNewUser({ organisations }: Props) {
             method: "POST",
             body: formData,
           });
-
-          if (response.ok) {
-            const updatedUser = await response.json();
-            setProfilePic(updatedUser.data.imageUrl);
-            toast.success(responseData.message);
-
-            router.push("/dashboard/user");
-            reset();
-          }
+          const updatedUser = await response.json();
+          setProfilePic(updatedUser.data.imageUrl);
         }
+      }
+      if (response.ok) {
+        toast.success(responseData.message);
+        router.push("/dashboard/user");
+        reset();
       }
     }
   };

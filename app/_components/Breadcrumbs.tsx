@@ -15,6 +15,7 @@ import { useAppDispatch } from "@/lib/hooks";
 import { organisationAction } from "@/lib/features/organisation/organisationSlice";
 import { userAction } from "@/lib/features/user/userSlice";
 import { useDebounce } from "../hooks/useDebounce";
+import { farmAction } from "@/lib/features/farm/farmSlice";
 interface Props {
   heading: string;
   buttonName?: string;
@@ -25,6 +26,7 @@ interface Props {
   hideSearchInput?: boolean;
   isTable?: boolean;
   buttonRoute?: string;
+  searchFarm?: boolean;
 }
 
 export default function BasicBreadcrumbs({
@@ -37,6 +39,7 @@ export default function BasicBreadcrumbs({
   hideSearchInput,
   isTable,
   buttonRoute,
+  searchFarm,
 }: Props) {
   const role = getCookie("role");
   const router = useRouter();
@@ -71,18 +74,16 @@ export default function BasicBreadcrumbs({
     let data = await res.json();
     return data;
   }
+  async function SeachedFarms(query: string) {
+    let res = await fetch(`/api/farm/search?name=${query}`);
+    let data = await res.json();
+    return data;
+  }
   const handleClear = () => {
     setSearchQuery("");
   };
   const handleClick = () => {
     router.push(String(buttonRoute));
-    // if (heading === "Batches") {
-    //   router.push("/dashboard/batches/new");
-    // } else if (heading === "Farm") {
-    //   router.push("/dashboard/farm/newFarm");
-    // } else {
-    //   setOpen(true);
-    // }
   };
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -122,7 +123,15 @@ export default function BasicBreadcrumbs({
       };
       getSearchUsers();
     }
-  }, [debouncedSearchQuery, searchOrganisations, searchUsers]);
+    if (searchFarm) {
+      const getSearchFarms = async () => {
+        const res = await SeachedFarms(debouncedSearchQuery);
+
+        dispatch(farmAction.updateFarms(res.data));
+      };
+      getSearchFarms();
+    }
+  }, [debouncedSearchQuery, searchOrganisations, searchUsers, searchFarm]);
 
   return (
     <>

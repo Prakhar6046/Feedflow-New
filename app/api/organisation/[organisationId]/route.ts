@@ -45,11 +45,11 @@ export async function PUT(req: NextRequest, context: { params: any }) {
     const formData = await req.formData();
     const name = formData.get("name") as string;
     const organisationCode = formData.get("organisationCode") as string;
+    const organisationType = formData.get("organisationType") as string;
     // const address = formData.get("address") as any;
     // const contacts = formData.get("contacts") as any;
     const addressData = JSON.parse(formData.get("address") as string);
     const contactsData = JSON.parse(formData.get("contacts") as string);
-    console.log(contactsData);
 
     const image = formData.get("image") as any;
 
@@ -114,6 +114,7 @@ export async function PUT(req: NextRequest, context: { params: any }) {
         organisationCode: organisationCode || organisation.organisationCode,
         addressId: updatedAddress.id,
         image: image || null,
+        organisationType: organisationType || organisation.organisationType,
       },
     });
 
