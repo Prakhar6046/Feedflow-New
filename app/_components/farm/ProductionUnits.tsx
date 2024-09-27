@@ -141,12 +141,12 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
           province: farm.province,
           zipCode: farm.zipCode,
           country: farm.country,
-          id: editFarm.farmAddress.id,
+          id: editFarm.farmAddress?.id,
         },
         productionUnits: data.productionUnits,
         name: farm.name,
         farmAltitude: farm.farmAltitude,
-        id: editFarm.id,
+        id: editFarm?.id,
       };
     } else {
       payload = {
