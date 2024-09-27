@@ -297,43 +297,53 @@ export default function Page({ params }: { params: { userId: string } }) {
                 >
                   Information
                 </Typography>
-                <TextField
-                  label="Name"
-                  type="text"
-                  className="form-input"
-                  {...register("name", {
-                    required: true,
-                  })}
-                  focused={userData?.data.name ? true : false}
-                  sx={{
-                    width: "100%",
-                    marginBottom: 2,
-                  }}
-                />
-                {errors && errors.name && errors.name.type === "required" && (
-                  <p>This Field is required.</p>
-                )}
-                <TextField
-                  label={Number(params.userId) === currentUserId ? "" : "Email"}
-                  type="email"
-                  className="form-input"
-                  focused={
-                    Number(params.userId) === currentUserId ? false : true
-                  }
-                  disabled={
-                    Number(params.userId) === currentUserId ? true : false
-                  }
-                  {...register("email", {
-                    required: true,
-                  })}
-                  sx={{
-                    width: "100%",
-                    marginBottom: 2,
-                  }}
-                />
-                {errors && errors.email && errors.email.type === "required" && (
-                  <p>This Field is required.</p>
-                )}
+
+                <Box mb={3} width={"100%"}>
+                  <TextField
+                    label="Name"
+                    type="text"
+                    className="form-input"
+                    {...register("name", {
+                      required: true,
+                    })}
+                    focused={userData?.data.name ? true : false}
+                    sx={{
+                      width: "100%",
+                    }}
+                  />
+                  {errors && errors.name && errors.name.type === "required" && (
+
+                    <Typography variant="body2" color="red" fontSize={13} mt={0.5}>This field is required.</Typography>
+
+                  )}
+
+                </Box>
+
+                <Box mb={2} width={"100%"}>
+
+                  <TextField
+                    label={Number(params.userId) === currentUserId ? "" : "Email"}
+                    type="email"
+                    className="form-input"
+                    focused={
+                      Number(params.userId) === currentUserId ? false : true
+                    }
+                    disabled={
+                      Number(params.userId) === currentUserId ? true : false
+                    }
+                    {...register("email", {
+                      required: true,
+                    })}
+                    sx={{
+                      width: "100%",
+                    }}
+                  />
+                  {errors && errors.email && errors.email.type === "required" && (
+                    <Typography variant="body2" color="red" fontSize={13} mt={0.5}>This field is required.</Typography>
+                  )}
+
+                </Box>
+
                 <TextField
                   // label="Organisation"
                   type="text"

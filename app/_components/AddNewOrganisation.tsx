@@ -376,7 +376,9 @@ const AddNewOrganisation = () => {
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
                 label="Production Unit Type"
-                {...register("organisationType")}
+                {...register("organisationType",{
+                  required:true
+                })}
                 // onChange={(e) => handleChange(e, item)}
                 sx={{
                   px: {
@@ -394,6 +396,9 @@ const AddNewOrganisation = () => {
                   );
                 })}
               </Select>
+              {errors && errors.organisationType && errors.organisationType.type === "required" && (
+                  <Typography variant="body2" color="red" fontSize={13} mt={0.5}>This field is required.</Typography>
+                )}
             </FormControl>
             <Typography
               variant="h6"
