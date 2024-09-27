@@ -24,6 +24,7 @@ import {
 } from "@mui/material";
 import { readableDate } from "../_lib/utils";
 import Image from "next/image";
+import toast from "react-hot-toast";
 export interface User {
   id: Number;
   name: String;
@@ -95,6 +96,25 @@ export default function UserTable() {
   };
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
+  const handleInviteUser = async () => {
+    if (selectedUser) {
+      const response = await fetch("/api/invite/user", {
+        method: "POST",
+        body: JSON.stringify({
+          name: selectedUser.name,
+          email: selectedUser.email,
+          userId: selectedUser.id,
+        }),
+      });
+      if (response.ok) {
+        const res = await response.json();
+        toast.success(res.message);
+        // resetField("confirmPassword");
+        // resetField("password");
+      }
+    }
+    setAnchorEl(null);
+  };
   useEffect(() => {
     setLoading(true);
     if (loggedUser) {
@@ -455,7 +475,35 @@ export default function UserTable() {
                             my: 0.5,
                           }}
                         />
+                        <MenuItem onClick={handleInviteUser}>
+                          <Stack
+                            display="flex"
+                            gap={1.2}
+                            alignItems="center"
+                            direction="row"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="1em"
+                              height="1em"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                fill="currentColor"
+                                d="M3 21v-4.25L16.2 3.575q.3-.275.663-.425t.762-.15t.775.15t.65.45L20.425 5q.3.275.438.65T21 6.4q0 .4-.137.763t-.438.662L7.25 21zM17.6 7.8L19 6.4L17.6 5l-1.4 1.4z"
+                              />
+                            </svg>
 
+                            <Typography variant="subtitle2">Invite</Typography>
+                          </Stack>
+                        </MenuItem>
+
+                        <Divider
+                          sx={{
+                            borderColor: "#9797971A",
+                            my: 0.5,
+                          }}
+                        />
                         <MenuItem onClick={handleEdit}>
                           <Stack
                             display="flex"

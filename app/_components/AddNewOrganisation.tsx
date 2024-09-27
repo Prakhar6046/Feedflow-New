@@ -284,7 +284,6 @@ const AddNewOrganisation = () => {
         >
           <form onSubmit={handleSubmit(onSubmit)}>
             <Box mb={2}>
-
               <TextField
                 label="Organisation Name"
                 type="text"
@@ -302,9 +301,15 @@ const AddNewOrganisation = () => {
               {errors &&
                 errors.organisationName &&
                 errors.organisationName.type === "required" && (
-                  <Typography variant="body2" color="red" fontSize={13} mt={0.5}>This field is required.</Typography>
+                  <Typography
+                    variant="body2"
+                    color="red"
+                    fontSize={13}
+                    mt={0.5}
+                  >
+                    This field is required.
+                  </Typography>
                 )}
-
             </Box>
 
             <Stack
@@ -343,7 +348,6 @@ const AddNewOrganisation = () => {
               </FormControl> */}
 
               <Box width={"100%"}>
-
                 <TextField
                   label="Organisation Code"
                   type="text"
@@ -353,20 +357,25 @@ const AddNewOrganisation = () => {
                   })}
                   // disabled
                   sx={{
-                    width: "100%"
+                    width: "100%",
                   }}
                   focused
-                // focused={true}
-                // value={userData?.data.email ?? "Demo@gmail.com"}
+                  // focused={true}
+                  // value={userData?.data.email ?? "Demo@gmail.com"}
                 />
                 {errors &&
                   errors.organisationCode &&
                   errors.organisationCode.type === "required" && (
-                    <Typography variant="body2" color="red" fontSize={13} mt={0.5}>This field is required.</Typography>
+                    <Typography
+                      variant="body2"
+                      color="red"
+                      fontSize={13}
+                      mt={0.5}
+                    >
+                      This field is required.
+                    </Typography>
                   )}
-
               </Box>
-
             </Stack>
             <FormControl className="form-input" fullWidth>
               <InputLabel id="demo-simple-select-label">
@@ -376,17 +385,17 @@ const AddNewOrganisation = () => {
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
                 label="Production Unit Type"
-                {...register("organisationType",{
-                  required:true
+                {...register("organisationType", {
+                  required: true,
                 })}
                 // onChange={(e) => handleChange(e, item)}
-                sx={{
-                  px: {
-                    xl: 10,
-                    md: 5,
-                    xs: 3,
-                  },
-                }}
+                // sx={{
+                //   px: {
+                //     xl: 10,
+                //     md: 5,
+                //     xs: 3,
+                //   },
+                // }}
               >
                 {OrganisationType.map((organisation, i) => {
                   return (
@@ -396,8 +405,17 @@ const AddNewOrganisation = () => {
                   );
                 })}
               </Select>
-              {errors && errors.organisationType && errors.organisationType.type === "required" && (
-                  <Typography variant="body2" color="red" fontSize={13} mt={0.5}>This field is required.</Typography>
+              {errors &&
+                errors.organisationType &&
+                errors.organisationType.type === "required" && (
+                  <Typography
+                    variant="body2"
+                    color="red"
+                    fontSize={13}
+                    mt={0.5}
+                  >
+                    This field is required.
+                  </Typography>
                 )}
             </FormControl>
             <Typography
@@ -420,9 +438,7 @@ const AddNewOrganisation = () => {
                 gap: 1.5,
               }}
             >
-
               <Box width={"100%"}>
-
                 <TextField
                   label="Address"
                   type="text"
@@ -438,14 +454,18 @@ const AddNewOrganisation = () => {
                 {errors &&
                   errors.address &&
                   errors.address.type === "required" && (
-                    <Typography variant="body2" color="red" fontSize={13} mt={0.5}>This field is required.</Typography>
+                    <Typography
+                      variant="body2"
+                      color="red"
+                      fontSize={13}
+                      mt={0.5}
+                    >
+                      This field is required.
+                    </Typography>
                   )}
-
               </Box>
 
-
               <Box width={"100%"}>
-
                 <TextField
                   label="City"
                   type="text"
@@ -459,11 +479,16 @@ const AddNewOrganisation = () => {
                   }}
                 />
                 {errors && errors.city && errors.city.type === "required" && (
-                  <Typography variant="body2" color="red" fontSize={13} mt={0.5}>This field is required.</Typography>
+                  <Typography
+                    variant="body2"
+                    color="red"
+                    fontSize={13}
+                    mt={0.5}
+                  >
+                    This field is required.
+                  </Typography>
                 )}
-
               </Box>
-
             </Stack>
 
             <Stack
@@ -476,9 +501,7 @@ const AddNewOrganisation = () => {
                 gap: 1.5,
               }}
             >
-
               <Box width={"100%"}>
-
                 <TextField
                   label="Province"
                   type="text"
@@ -494,12 +517,18 @@ const AddNewOrganisation = () => {
                 {errors &&
                   errors.province &&
                   errors.province.type === "required" && (
-                    <Typography variant="body2" color="red" fontSize={13} mt={0.5}>This field is required.</Typography>
+                    <Typography
+                      variant="body2"
+                      color="red"
+                      fontSize={13}
+                      mt={0.5}
+                    >
+                      This field is required.
+                    </Typography>
                   )}
               </Box>
 
               <Box width={"100%"}>
-
                 <TextField
                   label="Post Code"
                   type="text"
@@ -515,12 +544,16 @@ const AddNewOrganisation = () => {
                 {errors &&
                   errors.postCode &&
                   errors.postCode.type === "required" && (
-                    <Typography variant="body2" color="red" fontSize={13} mt={0.5}>This field is required.</Typography>
+                    <Typography
+                      variant="body2"
+                      color="red"
+                      fontSize={13}
+                      mt={0.5}
+                    >
+                      This field is required.
+                    </Typography>
                   )}
-
               </Box>
-
-
             </Stack>
 
             <Typography
@@ -655,18 +688,19 @@ const AddNewOrganisation = () => {
                     xs: "wrap",
                   },
                   justifyContent: {
-                    md: "center"
-                  }
+                    md: "center",
+                  },
                 }}
               >
-
-                <Box sx={{
-                  width: {
+                <Box
+                  sx={{
+                    width: {
                       lg: "100%",
                       md: "48.4%",
                       xs: "100%",
-                  }
-                }}>
+                    },
+                  }}
+                >
                   <TextField
                     label="Name"
                     type="text"
@@ -676,7 +710,7 @@ const AddNewOrganisation = () => {
                     })}
                     focused
                     sx={{
-                      width: "100%"
+                      width: "100%",
                     }}
                   />
 
@@ -685,18 +719,26 @@ const AddNewOrganisation = () => {
                     errors?.contacts[index] &&
                     errors?.contacts[index]?.name &&
                     errors?.contacts[index]?.name.type === "required" && (
-                      <Typography variant="body2" color="red" fontSize={13} mt={0.5}>This field is required.</Typography>
+                      <Typography
+                        variant="body2"
+                        color="red"
+                        fontSize={13}
+                        mt={0.5}
+                      >
+                        This field is required.
+                      </Typography>
                     )}
-
                 </Box>
 
-                <Box sx={{
-                  width: {
+                <Box
+                  sx={{
+                    width: {
                       lg: "100%",
                       md: "48.4%",
                       xs: "100%",
-                  }
-                }}>
+                    },
+                  }}
+                >
                   <TextField
                     label="Role"
                     type="text"
@@ -706,7 +748,7 @@ const AddNewOrganisation = () => {
                     })}
                     focused
                     sx={{
-                      width: "100%"
+                      width: "100%",
                     }}
                   />
                   {errors &&
@@ -714,18 +756,26 @@ const AddNewOrganisation = () => {
                     errors?.contacts[index] &&
                     errors?.contacts[index]?.role &&
                     errors?.contacts[index]?.role.type === "required" && (
-                      <Typography variant="body2" color="red" fontSize={13} mt={0.5}>This field is required.</Typography>
+                      <Typography
+                        variant="body2"
+                        color="red"
+                        fontSize={13}
+                        mt={0.5}
+                      >
+                        This field is required.
+                      </Typography>
                     )}
                 </Box>
 
-                <Box sx={{
-                  width: {
+                <Box
+                  sx={{
+                    width: {
                       lg: "100%",
                       md: "48.4%",
                       xs: "100%",
-                  }
-                }}>
-
+                    },
+                  }}
+                >
                   <TextField
                     label="Email"
                     type="email"
@@ -735,7 +785,7 @@ const AddNewOrganisation = () => {
                     })}
                     focused
                     sx={{
-                      width: "100%"
+                      width: "100%",
                     }}
                   />
                   {errors &&
@@ -743,18 +793,26 @@ const AddNewOrganisation = () => {
                     errors?.contacts[index] &&
                     errors?.contacts[index]?.email &&
                     errors?.contacts[index]?.email.type === "required" && (
-                      <Typography variant="body2" color="red" fontSize={13} mt={0.5}>This field is required.</Typography>
+                      <Typography
+                        variant="body2"
+                        color="red"
+                        fontSize={13}
+                        mt={0.5}
+                      >
+                        This field is required.
+                      </Typography>
                     )}
-
                 </Box>
 
-                <Box sx={{
-                  width: {
+                <Box
+                  sx={{
+                    width: {
                       lg: "100%",
                       md: "48.4%",
                       xs: "100%",
-                  }
-                }}>
+                    },
+                  }}
+                >
                   <TextField
                     label="Phone"
                     type="text"
@@ -764,7 +822,7 @@ const AddNewOrganisation = () => {
                     })}
                     focused
                     sx={{
-                      width: "100%"
+                      width: "100%",
                     }}
                   />
                   {errors &&
@@ -772,9 +830,15 @@ const AddNewOrganisation = () => {
                     errors?.contacts[index] &&
                     errors?.contacts[index]?.phone &&
                     errors?.contacts[index]?.phone.type === "required" && (
-                      <Typography variant="body2" color="red" fontSize={13} mt={0.5}>This field is required.</Typography>
+                      <Typography
+                        variant="body2"
+                        color="red"
+                        fontSize={13}
+                        mt={0.5}
+                      >
+                        This field is required.
+                      </Typography>
                     )}
-
                 </Box>
 
                 <Box

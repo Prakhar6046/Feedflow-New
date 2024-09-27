@@ -344,9 +344,15 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
               {errors &&
                 errors.organisationName &&
                 errors.organisationName.type === "required" && (
-                  <Typography variant="body2" color="red" fontSize={13} mt={0.5}>This field is required.</Typography>
+                  <Typography
+                    variant="body2"
+                    color="red"
+                    fontSize={13}
+                    mt={0.5}
+                  >
+                    This field is required.
+                  </Typography>
                 )}
-
             </Box>
             <Stack
               display={"flex"}
@@ -384,7 +390,6 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
               </FormControl> */}
 
               <Box width={"100%"}>
-
                 <TextField
                   label="Organisation Code"
                   type="text"
@@ -394,20 +399,25 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
                   })}
                   // disabled
                   sx={{
-                    width: "100%"
+                    width: "100%",
                   }}
                   focused
-                // focused={true}
-                // value={userData?.data.email ?? "Demo@gmail.com"}
+                  // focused={true}
+                  // value={userData?.data.email ?? "Demo@gmail.com"}
                 />
                 {errors &&
                   errors.organisationCode &&
                   errors.organisationCode.type === "required" && (
-                    <Typography variant="body2" color="red" fontSize={13} mt={0.5}>This field is required.</Typography>
+                    <Typography
+                      variant="body2"
+                      color="red"
+                      fontSize={13}
+                      mt={0.5}
+                    >
+                      This field is required.
+                    </Typography>
                   )}
-
               </Box>
-
             </Stack>
             <FormControl className="form-input" fullWidth>
               <InputLabel id="demo-simple-select-label">
@@ -420,13 +430,13 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
                 {...register("organisationType")}
                 value={selectedOrganisationType || ""}
                 // onChange={(e) => handleChange(e, item)}
-                sx={{
-                  px: {
-                    xl: 10,
-                    md: 5,
-                    xs: 3,
-                  },
-                }}
+                // sx={{
+                //   px: {
+                //     xl: 10,
+                //     md: 5,
+                //     xs: 3,
+                //   },
+                // }}
               >
                 {OrganisationType.map((organisation, i) => {
                   return (
@@ -457,9 +467,7 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
                 gap: 1.5,
               }}
             >
-
               <Box width={"100%"}>
-
                 <TextField
                   label="Address"
                   type="text"
@@ -475,14 +483,18 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
                 {errors &&
                   errors.address &&
                   errors.address.type === "required" && (
-                    <Typography variant="body2" color="red" fontSize={13} mt={0.5}>This field is required.</Typography>
+                    <Typography
+                      variant="body2"
+                      color="red"
+                      fontSize={13}
+                      mt={0.5}
+                    >
+                      This field is required.
+                    </Typography>
                   )}
-
               </Box>
 
               <Box width={"100%"}>
-
-
                 <TextField
                   label="City"
                   type="text"
@@ -496,11 +508,16 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
                   }}
                 />
                 {errors && errors.city && errors.city.type === "required" && (
-                  <Typography variant="body2" color="red" fontSize={13} mt={0.5}>This field is required.</Typography>
+                  <Typography
+                    variant="body2"
+                    color="red"
+                    fontSize={13}
+                    mt={0.5}
+                  >
+                    This field is required.
+                  </Typography>
                 )}
-
               </Box>
-
             </Stack>
 
             <Stack
@@ -513,10 +530,7 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
                 gap: 1.5,
               }}
             >
-
               <Box width={"100%"}>
-
-
                 <TextField
                   label="Province"
                   type="text"
@@ -533,14 +547,18 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
                 {errors &&
                   errors.province &&
                   errors.province.type === "required" && (
-                    <Typography variant="body2" color="red" fontSize={13} mt={0.5}>This field is required.</Typography>
+                    <Typography
+                      variant="body2"
+                      color="red"
+                      fontSize={13}
+                      mt={0.5}
+                    >
+                      This field is required.
+                    </Typography>
                   )}
-
               </Box>
 
-
               <Box width={"100%"}>
-
                 <TextField
                   label="Post Code"
                   type="text"
@@ -556,11 +574,16 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
                 {errors &&
                   errors.postCode &&
                   errors.postCode.type === "required" && (
-                    <Typography variant="body2" color="red" fontSize={13} mt={0.5}>This field is required.</Typography>
+                    <Typography
+                      variant="body2"
+                      color="red"
+                      fontSize={13}
+                      mt={0.5}
+                    >
+                      This field is required.
+                    </Typography>
                   )}
-
               </Box>
-
             </Stack>
 
             <Typography
@@ -692,7 +715,7 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
                   gap: 1.5,
                   justifyContent: {
                     lg: "center",
-                    xs: "end"
+                    xs: "end",
                   },
                   flexWrap: {
                     lg: "nowrap",
@@ -700,7 +723,6 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
                   },
                 }}
               >
-
                 <Box sx={{ width: "100%" }}>
                   <TextField
                     label="Name"
@@ -723,13 +745,18 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
                     errors?.contacts[index] &&
                     errors?.contacts[index]?.name &&
                     errors?.contacts[index]?.name.type === "required" && (
-                      <Typography variant="body2" color="red" fontSize={13} mt={0.5}>This field is required.</Typography>
+                      <Typography
+                        variant="body2"
+                        color="red"
+                        fontSize={13}
+                        mt={0.5}
+                      >
+                        This field is required.
+                      </Typography>
                     )}
-
                 </Box>
 
                 <Box width={"100%"}>
-
                   <TextField
                     label="Role"
                     type="text"
@@ -751,13 +778,18 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
                     errors?.contacts[index] &&
                     errors?.contacts[index]?.role &&
                     errors?.contacts[index]?.role.type === "required" && (
-                      <Typography variant="body2" color="red" fontSize={13} mt={0.5}>This field is required.</Typography>
+                      <Typography
+                        variant="body2"
+                        color="red"
+                        fontSize={13}
+                        mt={0.5}
+                      >
+                        This field is required.
+                      </Typography>
                     )}
-
                 </Box>
 
                 <Box width={"100%"}>
-
                   <TextField
                     label="Email"
                     type="email"
@@ -779,38 +811,49 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
                     errors?.contacts[index] &&
                     errors?.contacts[index]?.email &&
                     errors?.contacts[index]?.email.type === "required" && (
-                      <Typography variant="body2" color="red" fontSize={13} mt={0.5}>This field is required.</Typography>
+                      <Typography
+                        variant="body2"
+                        color="red"
+                        fontSize={13}
+                        mt={0.5}
+                      >
+                        This field is required.
+                      </Typography>
                     )}
-
                 </Box>
 
-<Box width={"100%"}>
-
-                <TextField
-                  label="Phone"
-                  type="text"
-                  className="form-input"
-                  {...register(`contacts.${index}.phone` as const, {
-                    required: true,
-                  })}
-                  focused
-                  sx={{
-                    width: {
-                      lg: "100%",
-                      md: "48.4%",
-                      xs: "100%",
-                    },
-                  }}
-                />
-                {errors &&
-                  errors?.contacts &&
-                  errors?.contacts[index] &&
-                  errors?.contacts[index]?.phone &&
-                  errors?.contacts[index]?.phone.type === "required" && (
-                    <Typography variant="body2" color="red" fontSize={13} mt={0.5}>This field is required.</Typography>
-)}
-
-                  </Box>
+                <Box width={"100%"}>
+                  <TextField
+                    label="Phone"
+                    type="text"
+                    className="form-input"
+                    {...register(`contacts.${index}.phone` as const, {
+                      required: true,
+                    })}
+                    focused
+                    sx={{
+                      width: {
+                        lg: "100%",
+                        md: "48.4%",
+                        xs: "100%",
+                      },
+                    }}
+                  />
+                  {errors &&
+                    errors?.contacts &&
+                    errors?.contacts[index] &&
+                    errors?.contacts[index]?.phone &&
+                    errors?.contacts[index]?.phone.type === "required" && (
+                      <Typography
+                        variant="body2"
+                        color="red"
+                        fontSize={13}
+                        mt={0.5}
+                      >
+                        This field is required.
+                      </Typography>
+                    )}
+                </Box>
 
                 <Box
                   display={"flex"}

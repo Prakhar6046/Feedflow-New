@@ -46,27 +46,27 @@ export async function POST(req: NextRequest) {
     });
 
     // Retrieve users with their IDs
-    const createdUsers = await prisma.user.findMany({
-      where: {
-        email: {
-          in: newUsers.map((user: any) => user.email),
-        },
-      },
-      select: {
-        id: true,
-        email: true,
-        name: true,
-        // Add any other fields you need
-      },
-    });
+    // const createdUsers = await prisma.user.findMany({
+    //   where: {
+    //     email: {
+    //       in: newUsers.map((user: any) => user.email),
+    //     },
+    //   },
+    //   select: {
+    //     id: true,
+    //     email: true,
+    //     name: true,
+    //     // Add any other fields you need
+    //   },
+    // });
 
     //Sending emails to all created users
-    createdUsers.map((user) => {
-      InvitationEmail(user);
-    });
+    // createdUsers.map((user) => {
+    //   InvitationEmail(user);
+    // });
 
     return NextResponse.json({
-      message: "Email sent successfully",
+      message: "Organisation Added successfully",
       data: { results, newUsers },
       status: true,
     });
