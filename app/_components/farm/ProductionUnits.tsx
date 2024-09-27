@@ -132,7 +132,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
 
   const onSubmit: SubmitHandler<FormTypes> = async (data) => {
     let payload;
-    if (isEditFarm) {
+    if (isEditFarm && editFarm.farmAddress.id) {
       payload = {
         farmAddress: {
           addressLine1: farm.addressLine1,
