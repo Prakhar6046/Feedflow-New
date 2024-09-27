@@ -39,22 +39,27 @@ const FarmInformation: NextPage<Props> = ({ setActiveStep }) => {
 
       <Box>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <TextField
-            label="Farm Name"
-            type="text"
-            className="form-input"
-            // focused
-            {...register("name", {
-              required: true,
-            })}
-            sx={{
-              width: "100%",
-              marginBottom: 2,
-            }}
-          />
-          {errors && errors.name && errors.name.type === "required" && (
-            <p>This field is required.</p>
-          )}
+
+          <Box mb={2} width={"100%"}>
+
+            <TextField
+              label="Farm Name"
+              type="text"
+              className="form-input"
+              // focused
+              {...register("name", {
+                required: true,
+              })}
+              sx={{
+                width: "100%",
+              }}
+            />
+            {errors && errors.name && errors.name.type === "required" && (
+              <Typography variant="body2" color="red" fontSize={13} mt={0.5}>This field is required.</Typography>
+            )}
+
+          </Box>
+
 
           <Box
             display={"flex"}
@@ -124,24 +129,31 @@ const FarmInformation: NextPage<Props> = ({ setActiveStep }) => {
 
               <Grid container spacing={2} mt={0}>
                 <Grid item md={6} xs={12}>
-                  <TextField
-                    label="Address Line 1"
-                    type="text"
-                    className="form-input"
-                    // focused
-                    {...register("addressLine1", {
-                      required: true,
-                    })}
-                    sx={{
-                      width: "100%",
-                      marginBottom: 2,
-                    }}
-                  />
-                  {errors &&
-                    errors.addressLine1 &&
-                    errors.addressLine1.type === "required" && (
-                      <p>This field is required.</p>
-                    )}
+
+                  <Box>
+
+                    <TextField
+                      label="Address Line 1"
+                      type="text"
+                      className="form-input"
+                      // focused
+                      {...register("addressLine1", {
+                        required: true,
+                      })}
+                      sx={{
+                        width: "100%",
+                      }}
+                    />
+                    {errors &&
+                      errors.addressLine1 &&
+                      errors.addressLine1.type === "required" && (
+                        <Typography variant="body2" color="red" fontSize={13} mt={0.5}>This field is required.</Typography>
+                      )}
+
+                  </Box>
+
+
+
                 </Grid>
 
                 <Grid item md={6} xs={12}>
@@ -159,85 +171,109 @@ const FarmInformation: NextPage<Props> = ({ setActiveStep }) => {
                 </Grid>
 
                 <Grid item md={6} xs={12}>
-                  <TextField
-                    label="City"
-                    type="text"
-                    className="form-input"
-                    // focused
-                    {...register("city", {
-                      required: true,
-                    })}
-                    sx={{
-                      width: "100%",
-                      marginBottom: 2,
-                    }}
-                  />
-                  {errors && errors.city && errors.city.type === "required" && (
-                    <p>This field is required.</p>
-                  )}
+
+                  <Box>
+
+                    <TextField
+                      label="City"
+                      type="text"
+                      className="form-input"
+                      // focused
+                      {...register("city", {
+                        required: true,
+                      })}
+                      sx={{
+                        width: "100%",
+                      }}
+                    />
+                    {errors && errors.city && errors.city.type === "required" && (
+                      <Typography variant="body2" color="red" fontSize={13} mt={0.5}>This field is required.</Typography>
+                    )}
+
+                  </Box>
+
+
                 </Grid>
 
                 <Grid item md={6} xs={12}>
-                  <TextField
-                    label="State/Province"
-                    type="text"
-                    className="form-input"
-                    // focused
-                    {...register("province", {
-                      required: true,
-                    })}
-                    sx={{
-                      width: "100%",
-                      marginBottom: 2,
-                    }}
-                  />
-                  {errors &&
-                    errors.province &&
-                    errors.province.type === "required" && (
-                      <p>This field is required.</p>
-                    )}
+                  <Box>
+                    <TextField
+                      label="State/Province"
+                      type="text"
+                      className="form-input"
+                      // focused
+                      {...register("province", {
+                        required: true,
+                      })}
+                      sx={{
+                        width: "100%",
+                      }}
+                    />
+                    {errors &&
+                      errors.province &&
+                      errors.province.type === "required" && (
+                        <Typography variant="body2" color="red" fontSize={13} mt={0.5}>This field is required.</Typography>
+                      )}
+
+                  </Box>
+
+
                 </Grid>
 
                 <Grid item md={6} xs={12}>
-                  <TextField
-                    label="Zip Code"
-                    type="text"
-                    className="form-input"
-                    // focused
-                    {...register("zipCode", {
-                      required: true,
-                    })}
-                    sx={{
-                      width: "100%",
-                      marginBottom: 2,
-                    }}
-                  />
-                  {errors &&
-                    errors.zipCode &&
-                    errors.zipCode.type === "required" && (
-                      <p>This field is required.</p>
-                    )}
+
+                  <Box>
+                    <TextField
+                      label="Zip Code"
+                      type="text"
+                      className="form-input"
+                      // focused
+                      {...register("zipCode", {
+                        required: true,
+                      })}
+                      sx={{
+                        width: "100%",
+                      }}
+                    />
+                    {errors &&
+                      errors.zipCode &&
+                      errors.zipCode.type === "required" && (
+                        <Typography variant="body2" color="red" fontSize={13} mt={0.5}>This field is required.</Typography>
+                      )}
+                  </Box>
+
+
                 </Grid>
 
                 <Grid item md={6} xs={12}>
-                  <TextField
-                    label="Country"
-                    type="text"
-                    className="form-input"
-                    // focused
-                    {...register("country", {
-                      required: true,
-                    })}
-                    sx={{
-                      width: "100%",
-                      marginBottom: 2,
-                    }}
-                  />
-                  {errors &&
-                    errors.country &&
-                    errors.country.type === "required" && (
-                      <p>This field is required.</p>
-                    )}
+
+                  <Box>
+
+                  </Box>
+
+                  <Box>
+
+                    <TextField
+                      label="Country"
+                      type="text"
+                      className="form-input"
+                      // focused
+                      {...register("country", {
+                        required: true,
+                      })}
+                      sx={{
+                        width: "100%",
+                      }}
+                    />
+                    {errors &&
+                      errors.country &&
+                      errors.country.type === "required" && (
+                        <Typography variant="body2" color="red" fontSize={13} mt={0.5}>This field is required.</Typography>
+                      )}
+
+                  </Box>
+
+
                 </Grid>
               </Grid>
             </>

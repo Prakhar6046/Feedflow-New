@@ -212,64 +212,78 @@ export default function AddNewUser({ organisations }: Props) {
                 >
                   Information
                 </Typography>
-                <TextField
-                  label="Name"
-                  type="text"
-                  className="form-input"
-                  {...register("name", {
-                    required: true,
-                  })}
-                  sx={{
-                    width: "100%",
-                    marginBottom: 2,
-                  }}
-                />
-                {errors && errors.name && errors.name.type === "required" && (
-                  <p>This field is required.</p>
-                )}
-                <TextField
-                  label={"Email"}
-                  type="email"
-                  className="form-input"
-                  {...register("email", {
-                    required: true,
-                  })}
-                  sx={{
-                    width: "100%",
-                    marginBottom: 2,
-                  }}
-                />
-                {errors && errors.email && errors.email.type === "required" && (
-                  <p>This field is required.</p>
-                )}
-                <FormControl fullWidth className="form-input">
-                  <InputLabel id="demo-simple-select-label">
-                    Organisation
-                  </InputLabel>
-                  <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    value={selectedOrganisation}
-                    label="Organisation"
-                    {...register("organisationId", {
+
+                <Box mb={2} width={"100%"}>
+
+                  <TextField
+                    label="Name"
+                    type="text"
+                    className="form-input"
+                    {...register("name", {
                       required: true,
                     })}
-                    onChange={handleChange}
-                  >
-                    {organisations?.map((organisation, i) => {
-                      return (
-                        <MenuItem value={Number(organisation.id)} key={i}>
-                          {organisation.name}
-                        </MenuItem>
-                      );
+                    sx={{
+                      width: "100%",
+                    }}
+                  />
+                  {errors && errors.name && errors.name.type === "required" && (
+                    <Typography variant="body2" color="red" fontSize={13} mt={0.5}>This field is required.</Typography>
+                  )}
+
+                </Box>
+
+
+                <Box width={"100%"} mb={2}>
+                  <TextField
+                    label={"Email"}
+                    type="email"
+                    className="form-input"
+                    {...register("email", {
+                      required: true,
                     })}
-                  </Select>
-                  {errors &&
-                    errors.organisationId &&
-                    errors.organisationId.type === "required" && (
-                      <p>This field is required.</p>
-                    )}
-                </FormControl>
+                    sx={{
+                      width: "100%",
+                    }}
+                  />
+                  {errors && errors.email && errors.email.type === "required" && (
+                    <Typography variant="body2" color="red" fontSize={13} mt={0.5}>This field is required.</Typography>
+                  )}
+
+                </Box>
+
+
+                <Box width={"100%"}>
+                  <FormControl fullWidth className="form-input">
+                    <InputLabel id="demo-simple-select-label">
+                      Organisation
+                    </InputLabel>
+                    <Select
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                      value={selectedOrganisation}
+                      label="Organisation"
+                      {...register("organisationId", {
+                        required: true,
+                      })}
+                      onChange={handleChange}
+                    >
+                      {organisations?.map((organisation, i) => {
+                        return (
+                          <MenuItem value={Number(organisation.id)} key={i}>
+                            {organisation.name}
+                          </MenuItem>
+                        );
+                      })}
+                    </Select>
+                    {errors &&
+                      errors.organisationId &&
+                      errors.organisationId.type === "required" && (
+
+                        <Typography variant="body2" color="red" fontSize={13} mt={0.5}>This field is required.</Typography>
+
+                      )}
+                  </FormControl>
+                </Box>
 
                 <Button
                   type="submit"
