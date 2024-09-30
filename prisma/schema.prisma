@@ -144,3 +144,35 @@ model ProductionUnit {
   @@index([createdAt])
   @@index([updatedAt])
 }
+
+model FeedSupply {
+  id                  String  @id @default(cuid())
+  feedIngredients     String
+  feedingGuide        String
+  productionIntensity String
+  unit                String
+  feedingPhase        String
+  lifeStage           String
+  shelfLife           String
+  productCode         String
+  feedSupplierCode    String
+  brandCode           String
+  productNameCode     String
+  productFormatCode   String
+  animalSizeInLength  String?
+  animalSizeInWeight  String?
+  specie              String
+  nutritionalPurpose  String
+  nutritionalClass    String
+  particleSize        String
+  productFormat       String
+  productName         String
+  brandName           String
+  feedSupplier        String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([createdAt])
+  @@index([updatedAt])
+}

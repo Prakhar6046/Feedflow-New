@@ -97,6 +97,7 @@ export default function UserTable() {
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
   const handleInviteUser = async () => {
+    setAnchorEl(null);
     if (selectedUser) {
       const response = await fetch("/api/invite/user", {
         method: "POST",
@@ -109,11 +110,8 @@ export default function UserTable() {
       if (response.ok) {
         const res = await response.json();
         toast.success(res.message);
-        // resetField("confirmPassword");
-        // resetField("password");
       }
     }
-    setAnchorEl(null);
   };
   useEffect(() => {
     setLoading(true);

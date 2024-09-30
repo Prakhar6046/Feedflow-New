@@ -2,17 +2,15 @@ import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
 import CommonTable from "@/app/_components/table/CommonTable";
 import FarmTable from "@/app/_components/table/FarmTable";
 import { getFarms } from "@/app/_lib/action";
-export const revalidate = 0;
 export default async function Page() {
   const farms = await getFarms();
-  console.log(farms);
 
   return (
     <>
       <BasicBreadcrumbs
         heading={"Farm"}
         buttonName={"Add Farm"}
-        searchOrganisations={true}
+        searchOrganisations={false}
         searchUsers={false}
         searchFarm={true}
         isTable={true}
@@ -22,7 +20,7 @@ export default async function Page() {
           { name: "Farm", link: "/dashboard/farm" },
         ]}
       />
-      <FarmTable farms={farms.data} />
+      <FarmTable />
     </>
   );
 }

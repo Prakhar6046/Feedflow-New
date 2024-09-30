@@ -87,6 +87,7 @@ export default function BasicTable({ organisations }: Props) {
     router.push(`/dashboard/organisation/${selectedOrganisation?.id}`);
   };
   const handleInviteOrganisation = async () => {
+    setAnchorEl(null);
     if (selectedOrganisation) {
       const response = await fetch("/api/invite/organisation", {
         method: "POST",
@@ -98,11 +99,8 @@ export default function BasicTable({ organisations }: Props) {
       if (response.ok) {
         const res = await response.json();
         toast.success(res.message);
-        // resetField("confirmPassword");
-        // resetField("password");
       }
     }
-    setAnchorEl(null);
   };
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
@@ -122,7 +120,6 @@ export default function BasicTable({ organisations }: Props) {
   if (loading) {
     return <Loader />;
   }
-  console.log(organisationData);
 
   return (
     <Paper

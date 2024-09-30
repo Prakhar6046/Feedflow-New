@@ -18,38 +18,61 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-interface Props {
-  farms?: any;
-}
+import Loader from "../Loader";
+
 const tableData: Array<string> = ["Farm", "Production Unit Count", ""];
-export default function FarmTable({ farms }: Props) {
+export default function FarmTable() {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const allFarms = useAppSelector(selectFarms);
   const [farmsData, setFarmsData] = useState<any>();
+  const [selectedFarm, setSelectedFarm] = useState<any>(null);
+  const [loading, setLoading] = useState<Boolean>(false);
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null
   );
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+  async function getFarms() {
+    setLoading(true);
+    let res = await fetch(`/api/farm`);
+    let data = await res.json();
+    return data;
+  }
+  const handleClick = (
+    event: React.MouseEvent<HTMLButtonElement>,
+    farm: any
+  ) => {
     setAnchorEl(event.currentTarget);
+    setSelectedFarm(farm);
   };
   const handleEdit = (farm: any) => {
-    dispatch(farmAction.editFarm(farm));
-    router.push(`/dashboard/farm/edit/${farm.id}`);
+    dispatch(farmAction.editFarm(selectedFarm));
+    router.push(`/dashboard/farm/edit/${selectedFarm.id}`);
   };
   const handleClose = () => {
     setAnchorEl(null);
   };
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
+  // useEffect(() => {
+  //   if (farms) setFarmsData(farms);
+  // }, [farms]);
+  // useEffect(() => {
+  //   if (allFarms) {
+  //     setFarmsData(allFarms);
+  //   }
+  // }, [allFarms]);
   useEffect(() => {
-    if (farms) setFarmsData(farms);
-  }, [farms]);
-  useEffect(() => {
-    if (allFarms) {
-      setFarmsData(allFarms);
-    }
-  }, [allFarms]);
+    const resonse = async () => {
+      const data = await getFarms();
+      setFarmsData(data.data);
+      setLoading(false);
+    };
+    resonse();
+  }, []);
+  if (loading) {
+    return <Loader />;
+  }
+
   return (
     <Paper
       sx={{
@@ -96,8 +119,8 @@ export default function FarmTable({ farms }: Props) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {farms && farms.length > 0 ? (
-              farms.map((farm: any, i: number) => {
+            {farmsData && farmsData.length > 0 ? (
+              farmsData.map((farm: any, i: number) => {
                 return (
                   <TableRow
                     key={i}
@@ -150,7 +173,7 @@ export default function FarmTable({ farms }: Props) {
                         aria-controls={open ? "basic-menu" : undefined}
                         aria-haspopup="true"
                         aria-expanded={open ? "true" : undefined}
-                        onClick={(e) => handleClick(e)}
+                        onClick={(e) => handleClick(e, farm)}
                         className="table-edit-option"
                         sx={{
                           background: "transparent",
