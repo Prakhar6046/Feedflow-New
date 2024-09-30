@@ -310,12 +310,15 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                                 label="Production Unit Type"
                                 {...field} // Spread the field props for value and onChange
                                 sx={{
-                                  px: {
-                                    xl: 10,
-                                    md: 5,
-                                    xs: 3,
-                                  },
+                                  minWidth: "190px",
                                 }}
+                                // sx={{
+                                //   px: {
+                                //     xl: 10,
+                                //     md: 5,
+                                //     xs: 3,
+                                //   },
+                                // }}
                               >
                                 {unitsTypes.map((unit, i) => (
                                   <MenuItem value={unit.name} key={i}>
