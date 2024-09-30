@@ -64,7 +64,6 @@ const FarmInformation: NextPage<Props> = ({ setActiveStep, editFarm }) => {
               })}
               sx={{
                 width: "100%",
-                marginBottom: 2,
               }}
             />
             {errors && errors.name && errors.name.type === "required" && (
@@ -85,7 +84,6 @@ const FarmInformation: NextPage<Props> = ({ setActiveStep, editFarm }) => {
               })}
               sx={{
                 width: "100%",
-                marginBottom: 2,
               }}
             />
             {/* console.log(); */}
@@ -203,7 +201,6 @@ const FarmInformation: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                     {...register("addressLine2")}
                     sx={{
                       width: "100%",
-                      marginBottom: 2,
                     }}
                   />
                 </Grid>

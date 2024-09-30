@@ -38,7 +38,7 @@ export async function POST(req: NextRequest) {
               style="
                 background-color: #f2f2f2;
                 line-height: 1.7rem;
-                font-family: 'Arial', sans-serif;
+                fontFamily: 'Arial', sans-serif;
                 padding: 25px 0px;
                 height: 100vh !important;
                 font-size: 18px;
