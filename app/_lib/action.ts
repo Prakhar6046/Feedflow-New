@@ -76,6 +76,7 @@ export const getUser = async (userId: string) => {
 export const getFarms = async () => {
   try {
     const data = await fetch(`${process.env.BASE_URL}/api/farm`, {
+      cache: "no-store",
       method: "GET",
       headers: {
         "Content-Type": "application/json",
