@@ -18,46 +18,10 @@ import Loader from "./Loader";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import toast from "react-hot-toast";
-
-interface Address {
-  id: String;
-  name: String;
-  street: String;
-  province: String;
-  city: String;
-  postCode: String;
-  createdAt: String;
-  updatedAt: String;
-  organisationId: String;
-}
-interface Contact {
-  id: String;
-  name: String;
-  email: String;
-  phone: String;
-  role: String;
-  createdAt: String;
-  updatedAt: String;
-  organisationId: String;
-}
-export interface Organisation {
-  id: Number;
-  name: String;
-  contactNumber: String;
-  contactPerson: String;
-  image?: String;
-  imageUrl?: String;
-  organisationCode: String;
-  createdAt: String;
-  updatedAt: String;
-  addressId?: String;
-  contactId?: String;
-  address?: Address;
-  contact?: Contact[];
-}
+import { SingleOrganisation } from "../_typeModels/Organization";
 
 interface Props {
-  organisations: Organisation[];
+  organisations: SingleOrganisation[];
 }
 
 export default function BasicTable({ organisations }: Props) {
@@ -65,15 +29,16 @@ export default function BasicTable({ organisations }: Props) {
   const searchedOrganisations = useAppSelector(selectOrganisations);
   const loading = useAppSelector(selectOrganisationLoading);
   const [selectedOrganisation, setSelectedOrganisation] =
-    useState<Organisation | null>(null);
-  const [organisationData, setOrganisationData] = useState<Organisation[]>();
+    useState<SingleOrganisation | null>(null);
+  const [organisationData, setOrganisationData] =
+    useState<SingleOrganisation[]>();
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null
   );
 
   const handleClick = (
     event: React.MouseEvent<HTMLButtonElement>,
-    organisation: Organisation
+    organisation: SingleOrganisation
   ) => {
     setAnchorEl(event.currentTarget);
     setSelectedOrganisation(organisation);

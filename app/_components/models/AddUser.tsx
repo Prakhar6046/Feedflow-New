@@ -14,8 +14,9 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import { useState } from "react";
-import { Organisation } from "../BasicTable";
+
 import toast from "react-hot-toast";
+import { SingleOrganisation } from "@/app/_typeModels/Organization";
 const style = {
   position: "absolute" as "absolute",
   top: "50%",
@@ -29,7 +30,7 @@ const style = {
 interface Props {
   setOpen: (open: boolean) => void;
   open: boolean;
-  organisations: Organisation[];
+  organisations: SingleOrganisation[];
 }
 
 interface FormInputs {

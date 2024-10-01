@@ -13,7 +13,6 @@ import { Box, Divider, Grid, Step, StepLabel, Stepper } from "@mui/material";
 import { NextPage } from "next";
 import { useEffect, useState } from "react";
 
-interface Props {}
 const steps = [
   {
     label: "Intro",

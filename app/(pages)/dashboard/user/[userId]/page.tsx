@@ -17,12 +17,12 @@ import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { useEffect, useState } from "react";
-import { User } from "@/app/_components/UserTable";
 import Loader from "@/app/_components/Loader";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { Organisation } from "@/app/_components/BasicTable";
+
 import toast from "react-hot-toast";
 import { getCookie } from "cookies-next";
+import { SingleUser, UserEditFormInputs } from "@/app/_typeModels/User";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -96,18 +96,9 @@ const IOSSwitch = styled((props: SwitchProps) => (
   },
 }));
 
-interface FormInputs {
-  name: string;
-  image: string;
-  organisation: string;
-  organisationId: Number;
-  email: string;
-  password: string;
-  confirmPassword: string;
-}
 export default function Page({ params }: { params: { userId: string } }) {
   const loggedUser: any = getCookie("logged-user");
-  const [userData, setUserData] = useState<{ data: User }>();
+  const [userData, setUserData] = useState<{ data: SingleUser }>();
   const [loading, setLoading] = useState<boolean>(false);
   const [currentUserId, setCurrentUserId] = useState<Number>();
   const [profilePic, setProfilePic] = useState<String>();
@@ -126,8 +117,8 @@ export default function Page({ params }: { params: { userId: string } }) {
     getValues,
     resetField,
     formState: { errors },
-  } = useForm<FormInputs>();
-  const onSubmit: SubmitHandler<FormInputs> = async (data) => {
+  } = useForm<UserEditFormInputs>();
+  const onSubmit: SubmitHandler<UserEditFormInputs> = async (data) => {
     const formData = new FormData();
     formData.append("name", data.name);
     formData.append("email", data.email);

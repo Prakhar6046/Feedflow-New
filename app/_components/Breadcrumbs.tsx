@@ -9,18 +9,19 @@ import AddUser from "./models/AddUser";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Organisation } from "./BasicTable";
+
 import { getCookie } from "cookies-next";
 import { useAppDispatch } from "@/lib/hooks";
 import { organisationAction } from "@/lib/features/organisation/organisationSlice";
 import { userAction } from "@/lib/features/user/userSlice";
 import { useDebounce } from "../hooks/useDebounce";
 import { farmAction } from "@/lib/features/farm/farmSlice";
+import { SingleOrganisation } from "../_typeModels/Organization";
 interface Props {
   heading: string;
   buttonName?: string;
   links?: { name: string; link: string }[];
-  organisations?: Organisation[];
+  organisations?: SingleOrganisation[];
   searchOrganisations?: boolean;
   searchUsers?: boolean;
   hideSearchInput?: boolean;

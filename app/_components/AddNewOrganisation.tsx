@@ -26,7 +26,7 @@ import { styled } from "@mui/material/styles";
 import Link from "next/link";
 import { NextPage } from "next";
 import { useEffect, useState } from "react";
-import { Organisation } from "@/app/_components/BasicTable";
+
 import Loader from "@/app/_components/Loader";
 import {
   FieldErrors,
@@ -36,6 +36,7 @@ import {
 } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { AddOrganizationFormInputs } from "../_typeModels/Organization";
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
   clipPath: "inset(50%)",
@@ -48,23 +49,6 @@ const VisuallyHiddenInput = styled("input")({
   width: 1,
 });
 
-interface FormInputs {
-  organisationName: String;
-  image: FileList;
-  organisationCode: String;
-  address: String;
-  street: String;
-  province: String;
-  city: String;
-  postCode: String;
-  organisationType: String;
-  contacts: {
-    name: string;
-    role: string;
-    email: string;
-    phone: string;
-  }[];
-}
 export const OrganisationType = [
   "Fish Farmer",
   "Hatchery",
@@ -83,12 +67,12 @@ const AddNewOrganisation = () => {
     getValues,
     reset,
     formState: { errors },
-  } = useForm<FormInputs>({
+  } = useForm<AddOrganizationFormInputs>({
     defaultValues: {
       contacts: [{ name: "", role: "", email: "", phone: "" }],
     },
   });
-  const onSubmit: SubmitHandler<FormInputs> = async (data) => {
+  const onSubmit: SubmitHandler<AddOrganizationFormInputs> = async (data) => {
     if (data) {
       const response = await fetch("/api/add-organisation", {
         method: "POST",

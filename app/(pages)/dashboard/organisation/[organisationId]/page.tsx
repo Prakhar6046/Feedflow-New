@@ -22,6 +22,7 @@ import { styled } from "@mui/material/styles";
 import { useEffect, useState } from "react";
 import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
+import { AddOrganizationFormInputs } from "@/app/_typeModels/Organization";
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
   clipPath: "inset(50%)",
@@ -33,24 +34,6 @@ const VisuallyHiddenInput = styled("input")({
   whiteSpace: "nowrap",
   width: 1,
 });
-
-interface FormInputs {
-  organisationName: String;
-  image: FileList;
-  organisationCode: String;
-  organisationType: String;
-  address: String;
-  street: String;
-  province: String;
-  city: String;
-  postCode: String;
-  contacts: {
-    name: string;
-    role: string;
-    email: string;
-    phone: string;
-  }[];
-}
 
 const steps = [
   {
@@ -90,13 +73,13 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
     resetField,
     watch,
     formState: { errors },
-  } = useForm<FormInputs>({
+  } = useForm<AddOrganizationFormInputs>({
     defaultValues: {
       contacts: [{ name: "", role: "", email: "", phone: "" }],
     },
   });
   const selectedOrganisationType = watch("organisationType");
-  const onSubmit: SubmitHandler<FormInputs> = async (data) => {
+  const onSubmit: SubmitHandler<AddOrganizationFormInputs> = async (data) => {
     const address: any = {
       address: data.address,
       city: data.city,

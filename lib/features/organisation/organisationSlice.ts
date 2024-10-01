@@ -1,20 +1,8 @@
+import { OrganizationInitialState } from "@/app/_typeModels/Organization";
 import { RootState } from "@/lib/store";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-interface InitialState {
-  isLoading: boolean;
-  organisations: Organisation[];
-}
-export interface Organisation {
-  id: Number;
-  name: String;
-  contactNumber: String;
-  contactPerson: String;
-  image: String;
-  organisationCode: String;
-  createdAt: String;
-  updatedAt: String;
-}
-const initialState: InitialState = {
+
+const initialState: OrganizationInitialState = {
   isLoading: false,
   organisations: [],
 };

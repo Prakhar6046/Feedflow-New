@@ -36,16 +36,17 @@ import {
 } from "@/lib/features/farm/farmSlice";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import {
+  CalculateType,
+  ProductionUnitsFormTypes,
+  UnitsTypes,
+} from "@/app/_typeModels/Farm";
 
 interface Props {
   setActiveStep: (val: number) => void;
   editFarm?: any;
 }
-export interface UnitsTypes {
-  name: string | undefined;
-  formula: string | undefined;
-  id: string;
-}
+
 const unitsTypes = [
   { name: "Rectangular Tank", formula: "L×W×D" },
   { name: "Earthen Pond", formula: "A×D" },
@@ -55,19 +56,7 @@ const unitsTypes = [
   { name: "Circular Tank", formula: "π×r2×D" },
   { name: "D-end Tank", formula: "(2π×r2+(L−r)×W)×D" },
 ];
-interface FormTypes {
-  productionUnits: {
-    name: string;
-    type: string;
-    capacity: string;
-    waterflowRate: string;
-    id: any;
-  }[];
-}
-export interface CalculateType {
-  output: number;
-  id: any;
-}
+
 const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
   uuidv4();
   const router = useRouter();
@@ -90,7 +79,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
     setValue,
     watch,
     formState: { errors },
-  } = useForm<FormTypes>({
+  } = useForm<ProductionUnitsFormTypes>({
     defaultValues: {
       productionUnits: [
         {
@@ -130,7 +119,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
     }
   };
 
-  const onSubmit: SubmitHandler<FormTypes> = async (data) => {
+  const onSubmit: SubmitHandler<ProductionUnitsFormTypes> = async (data) => {
     let payload;
     if (isEditFarm && editFarm.farmAddress.id) {
       payload = {

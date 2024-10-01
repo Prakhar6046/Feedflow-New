@@ -1,25 +1,8 @@
+import { Farm, FarmInitialState } from "@/app/_typeModels/Farm";
 import { RootState } from "@/lib/store";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-export interface Farm {
-  name: String;
-  addressLine1: String;
-  farmAltitude: String;
-  addressLine2: String;
-  province: String;
-  city: String;
-  zipCode: String;
-  country: String;
-  id?: string;
-}
-interface InitialState {
-  isLoading: boolean;
-  farm: Farm;
-  farms: Farm[];
-  editFarm: Farm;
-  isEditFarm: boolean;
-}
 
-const initialState: InitialState = {
+const initialState: FarmInitialState = {
   isLoading: false,
   farm: {} as Farm,
   farms: [],

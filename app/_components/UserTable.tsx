@@ -25,24 +25,10 @@ import {
 import { readableDate } from "../_lib/utils";
 import Image from "next/image";
 import toast from "react-hot-toast";
-export interface User {
-  id: Number;
-  name: String;
-  email: String;
-  image: String;
-  imageUrl: String;
-  password: String;
-  status: String;
-  role: String;
-  createdAt: String;
-  organisationId: Number;
-  organisation: {
-    name: String;
-    imageUrl: String;
-  };
-}
+import { SingleUser } from "../_typeModels/User";
+
 interface Props {
-  users: User[];
+  users: SingleUser[];
 }
 
 interface Data {
@@ -57,9 +43,9 @@ export default function UserTable() {
   const router = useRouter();
   const searchUsers = useAppSelector(selectUsers);
   const loggedUser = getCookie("logged-user");
-  const [users, setUsers] = useState<User[]>();
+  const [users, setUsers] = useState<SingleUser[]>();
   const [loading, setLoading] = useState<boolean>(false);
-  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [selectedUser, setSelectedUser] = useState<SingleUser | null>(null);
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null
   );
@@ -85,7 +71,7 @@ export default function UserTable() {
   };
   const handleClick = (
     event: React.MouseEvent<HTMLButtonElement>,
-    user: User
+    user: SingleUser
   ) => {
     setAnchorEl(event.currentTarget);
     setSelectedUser(user);

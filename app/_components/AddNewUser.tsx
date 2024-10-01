@@ -19,16 +19,18 @@ import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { useEffect, useState } from "react";
-import { User } from "@/app/_components/UserTable";
+
 import Loader from "@/app/_components/Loader";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { Organisation } from "@/app/_components/BasicTable";
+
 import toast from "react-hot-toast";
 import { getCookie } from "cookies-next";
 import { useRouter } from "next/navigation";
+import { AddUserFormInputs, SingleUser } from "../_typeModels/User";
+import { SingleOrganisation } from "../_typeModels/Organization";
 
 interface Props {
-  organisations?: Organisation[];
+  organisations?: SingleOrganisation[];
 }
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -42,16 +44,10 @@ const VisuallyHiddenInput = styled("input")({
   width: 1,
 });
 
-interface FormInputs {
-  name: string;
-  image: string;
-  organisationId: Number;
-  email: string;
-}
 export default function AddNewUser({ organisations }: Props) {
   const router = useRouter();
   const loggedUser: any = getCookie("logged-user");
-  const [userData, setUserData] = useState<{ data: User }>();
+  const [userData, setUserData] = useState<{ data: SingleUser }>();
   const [selectedOrganisation, setSelectedOrganisation] = useState<any>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [currentUserId, setCurrentUserId] = useState<Number>();
@@ -65,8 +61,8 @@ export default function AddNewUser({ organisations }: Props) {
     getValues,
     reset,
     formState: { errors },
-  } = useForm<FormInputs>();
-  const onSubmit: SubmitHandler<FormInputs> = async (data) => {
+  } = useForm<AddUserFormInputs>();
+  const onSubmit: SubmitHandler<AddUserFormInputs> = async (data) => {
     if (data.email && data.name && data.organisationId) {
       const response = await fetch("/api/add-new-user", {
         method: "POST",
@@ -212,7 +208,6 @@ export default function AddNewUser({ organisations }: Props) {
                 </Typography>
 
                 <Box mb={2} width={"100%"}>
-
                   <TextField
                     label="Name"
                     type="text"
@@ -225,11 +220,16 @@ export default function AddNewUser({ organisations }: Props) {
                     }}
                   />
                   {errors && errors.name && errors.name.type === "required" && (
-                    <Typography variant="body2" color="red" fontSize={13} mt={0.5}>This field is required.</Typography>
+                    <Typography
+                      variant="body2"
+                      color="red"
+                      fontSize={13}
+                      mt={0.5}
+                    >
+                      This field is required.
+                    </Typography>
                   )}
-
                 </Box>
-
 
                 <Box width={"100%"} mb={2}>
                   <TextField
@@ -243,12 +243,19 @@ export default function AddNewUser({ organisations }: Props) {
                       width: "100%",
                     }}
                   />
-                  {errors && errors.email && errors.email.type === "required" && (
-                    <Typography variant="body2" color="red" fontSize={13} mt={0.5}>This field is required.</Typography>
-                  )}
-
+                  {errors &&
+                    errors.email &&
+                    errors.email.type === "required" && (
+                      <Typography
+                        variant="body2"
+                        color="red"
+                        fontSize={13}
+                        mt={0.5}
+                      >
+                        This field is required.
+                      </Typography>
+                    )}
                 </Box>
-
 
                 <Box width={"100%"}>
                   <FormControl fullWidth className="form-input">
@@ -276,9 +283,14 @@ export default function AddNewUser({ organisations }: Props) {
                     {errors &&
                       errors.organisationId &&
                       errors.organisationId.type === "required" && (
-
-                        <Typography variant="body2" color="red" fontSize={13} mt={0.5}>This field is required.</Typography>
-
+                        <Typography
+                          variant="body2"
+                          color="red"
+                          fontSize={13}
+                          mt={0.5}
+                        >
+                          This field is required.
+                        </Typography>
                       )}
                   </FormControl>
                 </Box>

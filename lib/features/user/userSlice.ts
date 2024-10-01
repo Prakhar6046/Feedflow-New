@@ -1,11 +1,8 @@
+import { UserInitialState } from "@/app/_typeModels/User";
 import { RootState } from "@/lib/store";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-interface InitialState {
-  isLoading: boolean;
-  users: any;
-}
 
-const initialState: InitialState = {
+const initialState: UserInitialState = {
   isLoading: false,
   users: [],
 };

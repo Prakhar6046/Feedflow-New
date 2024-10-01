@@ -13,7 +13,7 @@ import closeIcon from "@/public/static/img/icons/ic-close.svg";
 import { useForm, SubmitHandler } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useEffect, useState } from "react";
-import { CalculateType, UnitsTypes } from "../farm/ProductionUnits";
+import { CalculateType, UnitsTypes } from "@/app/_typeModels/Farm";
 
 const style = {
   position: "absolute" as "absolute",

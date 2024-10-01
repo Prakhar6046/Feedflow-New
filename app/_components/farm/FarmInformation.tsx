@@ -1,4 +1,5 @@
-import { Farm, farmAction } from "@/lib/features/farm/farmSlice";
+import { Farm } from "@/app/_typeModels/Farm";
+import { farmAction } from "@/lib/features/farm/farmSlice";
 import { useAppDispatch } from "@/lib/hooks";
 import { Box, Button, Grid, Stack, TextField, Typography } from "@mui/material";
 import { NextPage } from "next";
