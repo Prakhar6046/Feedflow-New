@@ -18,25 +18,19 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import Loader from "../Loader";
-
+interface Props {
+  farms?: any;
+}
 const tableData: Array<string> = ["Farm", "Production Unit Count", ""];
-export default function FarmTable() {
+export default function FarmTable({ farms }: Props) {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const allFarms = useAppSelector(selectFarms);
   const [farmsData, setFarmsData] = useState<any>();
-  const [selectedFarm, setSelectedFarm] = useState<any>(null);
-  const [loading, setLoading] = useState<Boolean>(false);
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null
   );
-  async function getFarms() {
-    setLoading(true);
-    let res = await fetch(`/api/farm`);
-    let data = await res.json();
-    return data;
-  }
+  const [selectedFarm, setSelectedFarm] = useState<any>(null);
   const handleClick = (
     event: React.MouseEvent<HTMLButtonElement>,
     farm: any
@@ -53,26 +47,14 @@ export default function FarmTable() {
   };
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
-  // useEffect(() => {
-  //   if (farms) setFarmsData(farms);
-  // }, [farms]);
-  // useEffect(() => {
-  //   if (allFarms) {
-  //     setFarmsData(allFarms);
-  //   }
-  // }, [allFarms]);
   useEffect(() => {
-    const resonse = async () => {
-      const data = await getFarms();
-      setFarmsData(data.data);
-      setLoading(false);
-    };
-    resonse();
-  }, []);
-  if (loading) {
-    return <Loader />;
-  }
-
+    if (farms) setFarmsData(farms);
+  }, [farms]);
+  useEffect(() => {
+    if (allFarms) {
+      setFarmsData(allFarms);
+    }
+  }, [allFarms]);
   return (
     <Paper
       sx={{
@@ -119,8 +101,8 @@ export default function FarmTable() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {farmsData && farmsData.length > 0 ? (
-              farmsData.map((farm: any, i: number) => {
+            {farms && farms.length > 0 ? (
+              farms.map((farm: any, i: number) => {
                 return (
                   <TableRow
                     key={i}
