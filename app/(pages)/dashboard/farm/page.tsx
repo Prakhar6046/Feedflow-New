@@ -5,7 +5,7 @@ import FarmTable from "@/app/_components/table/FarmTable";
 import { getFarms } from "@/app/_lib/action";
 import { Suspense } from "react";
 export default async function Page() {
-  // const farms = await getFarms();
+  const farms = await getFarms();
 
   return (
     <>
@@ -23,7 +23,7 @@ export default async function Page() {
         ]}
       />
       <Suspense fallback={<Loader />}>
-        <FarmTable />
+        <FarmTable farms={farms?.data} />
       </Suspense>
     </>
   );

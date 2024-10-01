@@ -1,7 +1,7 @@
 import prisma from "@/prisma/prisma";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
-export const GET = async (request: NextRequest, response: NextResponse) => {
+export const GET = async () => {
   try {
     const farms = await prisma.farm.findMany({
       include: {
@@ -11,22 +11,10 @@ export const GET = async (request: NextRequest, response: NextResponse) => {
     });
     return new NextResponse(JSON.stringify({ status: true, data: farms }), {
       status: 200,
-      headers: {
-        "Cache-Control":
-          "no-store, no-cache, must-revalidate, proxy-revalidate",
-        Pragma: "no-cache",
-        Expires: "0",
-      },
     });
   } catch (error) {
     return new NextResponse(JSON.stringify({ status: false, error }), {
       status: 500,
-      headers: {
-        "Cache-Control":
-          "no-store, no-cache, must-revalidate, proxy-revalidate",
-        Pragma: "no-cache",
-        Expires: "0",
-      },
     });
   }
 };

@@ -19,9 +19,11 @@ import TableRow from "@mui/material/TableRow";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import Loader from "../Loader";
-
+interface Props {
+  farms: any;
+}
 const tableData: Array<string> = ["Farm", "Production Unit Count", ""];
-export default function FarmTable() {
+export default function FarmTable({ farms }: Props) {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const allFarms = useAppSelector(selectFarms);
@@ -32,26 +34,26 @@ export default function FarmTable() {
     null
   );
 
-  const getFarms = async () => {
-    try {
-      let res = await fetch(`/api/farm?timestamp=${new Date().getTime()}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "Cache-Control":
-            "no-store, no-cache, must-revalidate, proxy-revalidate",
-          Expires: "0",
-          Pragma: "no-cache",
-        },
-        cache: "no-store",
-        next: { revalidate: 0 },
-      });
-      let data = await res.json();
-      return data;
-    } catch (error) {
-      return error;
-    }
-  };
+  // const getFarms = async () => {
+  //   try {
+  //     let res = await fetch(`/api/farm?timestamp=${new Date().getTime()}`, {
+  //       method: "GET",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         "Cache-Control":
+  //           "no-store, no-cache, must-revalidate, proxy-revalidate",
+  //         Expires: "0",
+  //         Pragma: "no-cache",
+  //       },
+  //       cache: "no-store",
+  //       next: { revalidate: 0 },
+  //     });
+  //     let data = await res.json();
+  //     return data;
+  //   } catch (error) {
+  //     return error;
+  //   }
+  // };
   const handleClick = (
     event: React.MouseEvent<HTMLButtonElement>,
     farm: any
@@ -70,6 +72,11 @@ export default function FarmTable() {
   };
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
+  useEffect(() => {
+    if (farms) {
+      setFarmsData(farms);
+    }
+  }, [farms]);
   // useEffect(() => {
   //   if (farms) setFarmsData(farms);
   // }, [farms]);
@@ -78,15 +85,15 @@ export default function FarmTable() {
   //     setFarmsData(allFarms);
   //   }
   // }, [allFarms]);
-  useEffect(() => {
-    setLoading(true);
-    const resonse = async () => {
-      const data = await getFarms();
-      setFarmsData(data.data);
-      setLoading(false);
-    };
-    resonse();
-  }, []);
+  // useEffect(() => {
+  //   setLoading(true);
+  //   const resonse = async () => {
+  //     const data = await getFarms();
+  //     setFarmsData(data.data);
+  //     setLoading(false);
+  //   };
+  //   resonse();
+  // }, []);
   if (loading) {
     return <Loader />;
   }

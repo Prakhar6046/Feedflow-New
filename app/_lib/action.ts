@@ -83,7 +83,7 @@ export const getFarms = async () => {
         "Content-Type": "application/json",
       },
     });
-    revalidatePath(`/dashboard/farm}`);
+    revalidatePath(`/dashboard/farm`);
     return await data.json();
   } catch (error) {
     return error;
