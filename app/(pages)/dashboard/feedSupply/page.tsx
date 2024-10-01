@@ -846,47 +846,6 @@ export default function Page() {
 
                                 </Grid>
 
-                                {/* <Box
-                                    display={"flex"}
-                                    justifyContent={"flex-end"}
-                                    alignItems={"center"}
-                                    gap={3}
-                                    mt={3}
-                                >
-                                    <Button
-                                        type="submit"
-                                        variant="contained"
-                                        sx={{
-                                            background: "#fff",
-                                            color: "#06A19B",
-                                            fontWeight: 600,
-                                            padding: "6px 16px",
-                                            width: "fit-content",
-                                            textTransform: "capitalize",
-                                            borderRadius: "8px",
-                                            border: "1px solid #06A19B",
-                                        }}
-                                    //   onClick={() => setActiveStep(1)}
-                                    >
-                                        Previous
-                                    </Button>
-                                    <Button
-                                        type="submit"
-                                        variant="contained"
-                                        sx={{
-                                            background: "#06A19B",
-                                            fontWeight: 600,
-                                            padding: "6px 16px",
-                                            width: "fit-content",
-                                            textTransform: "capitalize",
-                                            borderRadius: "8px",
-                                        }}
-                                    //   onClick={() => setActiveStep(3)}
-                                    >
-                                        Next
-                                    </Button>
-                                </Box> */}
-
                                 <Stack>
                                     <Typography
                                         variant="h6"
@@ -1133,9 +1092,9 @@ export default function Page() {
                                                     width="fit-content"
                                                     // onClick={handleClear}
                                                     style={{ cursor: "pointer" }}
-                                                sx={{
-                                                    // visibility: "hidden"
-                                                }}
+                                                    sx={{
+                                                        // visibility: "hidden"
+                                                    }}
                                                 >
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 24 24">
                                                         <path fill="red" d="M12 20c-4.41 0-8-3.59-8-8s3.59-8 8-8s8 3.59 8 8s-3.59 8-8 8m0-18C6.47 2 2 6.47 2 12s4.47 10 10 10s10-4.47 10-10S17.53 2 12 2m2.59 6L12 10.59L9.41 8L8 9.41L10.59 12L8 14.59L9.41 16L12 13.41L14.59 16L16 14.59L13.41 12L16 9.41z" />
@@ -1229,9 +1188,9 @@ export default function Page() {
                                                     width="fit-content"
                                                     // onClick={handleClear}
                                                     style={{ cursor: "pointer" }}
-                                                sx={{
-                                                    visibility: "hidden"
-                                                }}
+                                                    sx={{
+                                                        visibility: "hidden"
+                                                    }}
                                                 >
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 24 24">
                                                         <path fill="red" d="M12 20c-4.41 0-8-3.59-8-8s3.59-8 8-8s8 3.59 8 8s-3.59 8-8 8m0-18C6.47 2 2 6.47 2 12s4.47 10 10 10s10-4.47 10-10S17.53 2 12 2m2.59 6L12 10.59L9.41 8L8 9.41L10.59 12L8 14.59L9.41 16L12 13.41L14.59 16L16 14.59L13.41 12L16 9.41z" />
@@ -1241,12 +1200,12 @@ export default function Page() {
                                             </Grid>
 
                                             <Grid item xl={6} xs={12} sx={{
-                                               display: "flex",
-                                               gap: 1.5,
-                                               alignItems: "center",
-                                               minWidth: "200px",
-                                               overflowX: "auto",
-                                               pb: 1.5
+                                                display: "flex",
+                                                gap: 1.5,
+                                                alignItems: "center",
+                                                minWidth: "200px",
+                                                overflowX: "auto",
+                                                pb: 1.5
                                             }}>
 
                                                 <Typography variant="subtitle1" fontWeight={600}>3. </Typography>
@@ -1325,9 +1284,9 @@ export default function Page() {
                                                     width="fit-content"
                                                     // onClick={handleClear}
                                                     style={{ cursor: "pointer" }}
-                                                sx={{
-                                                    visibility: "hidden"
-                                                }}
+                                                    sx={{
+                                                        visibility: "hidden"
+                                                    }}
                                                 >
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 24 24">
                                                         <path fill="red" d="M12 20c-4.41 0-8-3.59-8-8s3.59-8 8-8s8 3.59 8 8s-3.59 8-8 8m0-18C6.47 2 2 6.47 2 12s4.47 10 10 10s10-4.47 10-10S17.53 2 12 2m2.59 6L12 10.59L9.41 8L8 9.41L10.59 12L8 14.59L9.41 16L12 13.41L14.59 16L16 14.59L13.41 12L16 9.41z" />
@@ -1421,9 +1380,9 @@ export default function Page() {
                                                     width="fit-content"
                                                     // onClick={handleClear}
                                                     style={{ cursor: "pointer" }}
-                                                sx={{
-                                                    visibility: "hidden"
-                                                }}
+                                                    sx={{
+                                                        visibility: "hidden"
+                                                    }}
                                                 >
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 24 24">
                                                         <path fill="red" d="M12 20c-4.41 0-8-3.59-8-8s3.59-8 8-8s8 3.59 8 8s-3.59 8-8 8m0-18C6.47 2 2 6.47 2 12s4.47 10 10 10s10-4.47 10-10S17.53 2 12 2m2.59 6L12 10.59L9.41 8L8 9.41L10.59 12L8 14.59L9.41 16L12 13.41L14.59 16L16 14.59L13.41 12L16 9.41z" />
@@ -1433,12 +1392,12 @@ export default function Page() {
                                             </Grid>
 
                                             <Grid item xl={6} xs={12} sx={{
-                                                 display: "flex",
-                                                 gap: 1.5,
-                                                 alignItems: "center",
-                                                 minWidth: "200px",
-                                                 overflowX: "auto",
-                                                 pb: 1.5
+                                                display: "flex",
+                                                gap: 1.5,
+                                                alignItems: "center",
+                                                minWidth: "200px",
+                                                overflowX: "auto",
+                                                pb: 1.5
                                             }}>
 
                                                 <Typography variant="subtitle1" fontWeight={600}>5. </Typography>
@@ -1517,9 +1476,9 @@ export default function Page() {
                                                     width="fit-content"
                                                     // onClick={handleClear}
                                                     style={{ cursor: "pointer" }}
-                                                sx={{
-                                                    visibility: "hidden"
-                                                }}
+                                                    sx={{
+                                                        visibility: "hidden"
+                                                    }}
                                                 >
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 24 24">
                                                         <path fill="red" d="M12 20c-4.41 0-8-3.59-8-8s3.59-8 8-8s8 3.59 8 8s-3.59 8-8 8m0-18C6.47 2 2 6.47 2 12s4.47 10 10 10s10-4.47 10-10S17.53 2 12 2m2.59 6L12 10.59L9.41 8L8 9.41L10.59 12L8 14.59L9.41 16L12 13.41L14.59 16L16 14.59L13.41 12L16 9.41z" />
@@ -1529,12 +1488,12 @@ export default function Page() {
                                             </Grid>
 
                                             <Grid item xl={6} xs={12} sx={{
-                                              display: "flex",
-                                              gap: 1.5,
-                                              alignItems: "center",
-                                              minWidth: "200px",
-                                              overflowX: "auto",
-                                              pb: 1.5
+                                                display: "flex",
+                                                gap: 1.5,
+                                                alignItems: "center",
+                                                minWidth: "200px",
+                                                overflowX: "auto",
+                                                pb: 1.5
                                             }}>
 
                                                 <Typography variant="subtitle1" fontWeight={600}>6. </Typography>
@@ -1613,9 +1572,9 @@ export default function Page() {
                                                     width="fit-content"
                                                     // onClick={handleClear}
                                                     style={{ cursor: "pointer" }}
-                                                sx={{
-                                                    visibility: "hidden"
-                                                }}
+                                                    sx={{
+                                                        visibility: "hidden"
+                                                    }}
                                                 >
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 24 24">
                                                         <path fill="red" d="M12 20c-4.41 0-8-3.59-8-8s3.59-8 8-8s8 3.59 8 8s-3.59 8-8 8m0-18C6.47 2 2 6.47 2 12s4.47 10 10 10s10-4.47 10-10S17.53 2 12 2m2.59 6L12 10.59L9.41 8L8 9.41L10.59 12L8 14.59L9.41 16L12 13.41L14.59 16L16 14.59L13.41 12L16 9.41z" />
@@ -1625,12 +1584,12 @@ export default function Page() {
                                             </Grid>
 
                                             <Grid item xl={6} xs={12} sx={{
-                                                 display: "flex",
-                                                 gap: 1.5,
-                                                 alignItems: "center",
-                                                 minWidth: "200px",
-                                                 overflowX: "auto",
-                                                 pb: 1.5
+                                                display: "flex",
+                                                gap: 1.5,
+                                                alignItems: "center",
+                                                minWidth: "200px",
+                                                overflowX: "auto",
+                                                pb: 1.5
                                             }}>
 
                                                 <Typography variant="subtitle1" fontWeight={600}>7. </Typography>
@@ -1709,9 +1668,9 @@ export default function Page() {
                                                     width="fit-content"
                                                     // onClick={handleClear}
                                                     style={{ cursor: "pointer" }}
-                                                sx={{
-                                                    visibility: "hidden"
-                                                }}
+                                                    sx={{
+                                                        visibility: "hidden"
+                                                    }}
                                                 >
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 24 24">
                                                         <path fill="red" d="M12 20c-4.41 0-8-3.59-8-8s3.59-8 8-8s8 3.59 8 8s-3.59 8-8 8m0-18C6.47 2 2 6.47 2 12s4.47 10 10 10s10-4.47 10-10S17.53 2 12 2m2.59 6L12 10.59L9.41 8L8 9.41L10.59 12L8 14.59L9.41 16L12 13.41L14.59 16L16 14.59L13.41 12L16 9.41z" />
@@ -1805,9 +1764,9 @@ export default function Page() {
                                                     width="fit-content"
                                                     // onClick={handleClear}
                                                     style={{ cursor: "pointer" }}
-                                                sx={{
-                                                    visibility: "hidden"
-                                                }}
+                                                    sx={{
+                                                        visibility: "hidden"
+                                                    }}
                                                 >
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 24 24">
                                                         <path fill="red" d="M12 20c-4.41 0-8-3.59-8-8s3.59-8 8-8s8 3.59 8 8s-3.59 8-8 8m0-18C6.47 2 2 6.47 2 12s4.47 10 10 10s10-4.47 10-10S17.53 2 12 2m2.59 6L12 10.59L9.41 8L8 9.41L10.59 12L8 14.59L9.41 16L12 13.41L14.59 16L16 14.59L13.41 12L16 9.41z" />
@@ -2090,6 +2049,48 @@ export default function Page() {
                                     </Box>
 
                                 </Stack>
+
+                                <Box
+                                    display={"flex"}
+                                    justifyContent={"flex-end"}
+                                    alignItems={"center"}
+                                    gap={3}
+                                    mt={3}
+                                >
+                                    <Button
+                                        type="submit"
+                                        variant="contained"
+                                        sx={{
+                                            background: "#fff",
+                                            color: "#06A19B",
+                                            fontWeight: 600,
+                                            padding: "6px 16px",
+                                            width: "fit-content",
+                                            textTransform: "capitalize",
+                                            borderRadius: "8px",
+                                            border: "1px solid #06A19B",
+                                        }}
+                                    //   onClick={() => setActiveStep(1)}
+                                    >
+                                        Previous
+                                    </Button>
+                                    <Button
+                                        type="submit"
+                                        variant="contained"
+                                        sx={{
+                                            background: "#06A19B",
+                                            fontWeight: 600,
+                                            padding: "6px 16px",
+                                            width: "fit-content",
+                                            textTransform: "capitalize",
+                                            borderRadius: "8px",
+                                        }}
+                                    //   onClick={() => setActiveStep(3)}
+                                    >
+                                        Add feed
+                                    </Button>
+                                </Box>
+
                             </form>
                         </Box>
                     </Stack>

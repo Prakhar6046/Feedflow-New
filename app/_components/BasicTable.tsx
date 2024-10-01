@@ -8,7 +8,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 
-import { Box, Button, Menu, MenuItem, Stack, Typography } from "@mui/material";
+import { Box, Button, Divider, Menu, MenuItem, Stack, Typography } from "@mui/material";
 import {
   selectOrganisationLoading,
   selectOrganisations,
@@ -308,7 +308,7 @@ export default function BasicTable({ organisations }: Props) {
                         fontWeight: 500,
                       }}
                       className="cursor-pointer"
-                      // onClick={() => handleEdit(user)}
+                    // onClick={() => handleEdit(user)}
                     >
                       <Button
                         id="basic-button"
@@ -367,6 +367,14 @@ export default function BasicTable({ organisations }: Props) {
                             <Typography variant="subtitle2">Edit</Typography>
                           </Stack>
                         </MenuItem>
+
+                        <Divider
+                          sx={{
+                            borderColor: "#9797971A",
+                            my: 0.5,
+                          }}
+                        />
+
                         <MenuItem onClick={handleInviteOrganisation}>
                           <Stack
                             display="flex"
@@ -374,16 +382,9 @@ export default function BasicTable({ organisations }: Props) {
                             alignItems="center"
                             direction="row"
                           >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="1em"
-                              height="1em"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                fill="currentColor"
-                                d="M3 21v-4.25L16.2 3.575q.3-.275.663-.425t.762-.15t.775.15t.65.45L20.425 5q.3.275.438.65T21 6.4q0 .4-.137.763t-.438.662L7.25 21zM17.6 7.8L19 6.4L17.6 5l-1.4 1.4z"
-                              />
+
+                            <svg xmlns="http://www.w3.org/2000/svg" width="1.1em" height="1.1em" viewBox="0 0 24 24">
+                              <path fill="currentColor" d="M15 4a4 4 0 0 0-4 4a4 4 0 0 0 4 4a4 4 0 0 0 4-4a4 4 0 0 0-4-4m0 1.9a2.1 2.1 0 1 1 0 4.2A2.1 2.1 0 0 1 12.9 8A2.1 2.1 0 0 1 15 5.9M4 7v3H1v2h3v3h2v-3h3v-2H6V7zm11 6c-2.67 0-8 1.33-8 4v3h16v-3c0-2.67-5.33-4-8-4m0 1.9c2.97 0 6.1 1.46 6.1 2.1v1.1H8.9V17c0-.64 3.1-2.1 6.1-2.1" />
                             </svg>
 
                             <Typography variant="subtitle2">Invite</Typography>
