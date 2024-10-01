@@ -13,6 +13,7 @@ export const getAllOrganisations = async () => {
       },
     });
     revalidatePath("/dashboard/organisation");
+    revalidatePath("/dashboard/user");
     return await data.json();
   } catch (error) {
     return error;
