@@ -272,9 +272,11 @@ export default function FarmTable() {
     setAnchorEl(event.currentTarget);
     setSelectedFarm(farm);
   };
-  const handleEdit = (farm: any) => {
-    dispatch(farmAction.editFarm(selectedFarm));
-    router.push(`/dashboard/farm/edit/${selectedFarm.id}`);
+  const handleEdit = () => {
+    if (selectedFarm) {
+      dispatch(farmAction.editFarm(selectedFarm));
+      router.push(`/dashboard/farm/edit/${selectedFarm.id}`);
+    }
   };
   const handleClose = () => {
     setAnchorEl(null);
@@ -431,7 +433,7 @@ export default function FarmTable() {
                           "aria-labelledby": "basic-button",
                         }}
                       >
-                        <MenuItem onClick={() => handleEdit(farm)}>
+                        <MenuItem onClick={handleEdit}>
                           <Stack
                             display="flex"
                             gap={1.2}
