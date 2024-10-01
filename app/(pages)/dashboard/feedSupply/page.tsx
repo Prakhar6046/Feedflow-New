@@ -1,6 +1,6 @@
 "use client"
 import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
-import { Box, Button, Divider, FormControl, FormControlLabel, FormLabel, Grid, InputLabel, MenuItem, Paper, Radio, RadioGroup, Select, SelectChangeEvent, Stack, Step, StepLabel, Stepper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from "@mui/material";
+import { Box, Button, Divider, FormControl, FormControlLabel, FormLabel, Grid, InputLabel, List, ListItem, ListItemButton, ListItemIcon, ListItemText, MenuItem, Paper, Radio, RadioGroup, Select, SelectChangeEvent, Stack, Step, StepLabel, Stepper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from "@mui/material";
 
 import { useState } from "react";
 
@@ -844,6 +844,36 @@ export default function Page() {
 
                                     </Grid>
 
+                                    <Grid item lg={6} xs={12}>
+
+                                        <TextField
+                                            label="Feed Ingredients"
+                                            type="text"
+                                            multiline
+                                            rows={5}
+                                            className="form-input"
+                                            sx={{
+                                                width: "100%"
+                                            }}
+                                        />
+
+                                    </Grid>
+
+                                    <Grid item lg={6} xs={12}>
+
+                                        <TextField
+                                            label="Feeding Guide"
+                                            type="text"
+                                            multiline
+                                            rows={5}
+                                            className="form-input"
+                                            sx={{
+                                                width: "100%"
+                                            }}
+                                        />
+
+                                    </Grid>
+
                                 </Grid>
 
                                 <Stack>
@@ -861,141 +891,6 @@ export default function Page() {
                                     >
                                         Nutritional Guarantee
                                     </Typography>
-
-                                    {/* <TableContainer component={Paper}
-                                    // sx={{
-                                    //     boxShadow: 'none'
-                                    // }}
-                                    >
-                                        <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                                            <TableBody>
-                                                <TableRow
-                                                // sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                                >
-                                                    <TableCell component="th" scope="row" align="center">
-                                                        <Typography variant="subtitle1" fontWeight={600}>1. </Typography>
-                                                    </TableCell>
-                                                    <TableCell>
-
-                                                        <Box display={"flex"} gap={2} alignItems={"center"} position={"relative"}>
-                                                            <TextField
-                                                                label="Moisture"
-                                                                type="text"
-                                                                className="form-input"
-                                                                // {...register("organisationName", {
-                                                                //     required: true,
-                                                                // })}
-                                                                // focused={userData?.data.name ? true : false}
-                                                                // value={userData?.data.name}
-                                                                sx={{
-                                                                    width: "100%",
-                                                                }}
-                                                            />
-
-                                                            <Typography variant="body2" color="#555555AC" sx={{
-                                                                position: "absolute",
-                                                                right: 6,
-                                                                top: "50%",
-                                                                transform: "translate(-6px, -50%)",
-                                                                backgroundColor: "#fff",
-                                                                height: 30,
-                                                                display: "grid",
-                                                                placeItems: "center",
-                                                                zIndex: 1,
-                                                                pl: 1
-                                                            }}>
-                                                                g/kg
-                                                            </Typography>
-                                                        </Box>
-
-                                                    </TableCell>
-                                                    <TableCell>
-
-                                                        <Button
-                                                            type="button"
-                                                            variant="contained"
-                                                            sx={{
-                                                                background: "#06a19b",
-                                                                color: "#fff",
-                                                                fontWeight: 600,
-                                                                padding: "6px 16px",
-                                                                width: "fit-content",
-                                                                textTransform: "capitalize",
-                                                                borderRadius: "8px",
-                                                                border: "1px solid #06A19B",
-                                                                minWidth: 90,
-                                                            }}
-                                                        // onClick={() => handleCalculate(item, index)}
-                                                        >
-                                                            Calculate
-                                                        </Button>
-
-                                                    </TableCell>
-                                                    <TableCell>
-
-                                                        <FormControl fullWidth className="form-input">
-                                                            <InputLabel id="feed-supply-select-label10">Min</InputLabel>
-                                                            <Select
-                                                                labelId="feed-supply-select-label10"
-                                                                id="feed-supply-select10"
-                                                                value={age}
-                                                                label="Min"
-                                                                onChange={handleChange}
-                                                            >
-                                                                <MenuItem value={10}>Ten</MenuItem>
-                                                                <MenuItem value={20}>Twenty</MenuItem>
-                                                                <MenuItem value={30}>Thirty</MenuItem>
-                                                            </Select>
-                                                        </FormControl>
-
-                                                    </TableCell>
-                                                    <TableCell>
-
-                                                        <Box
-                                                            fontSize={14}
-                                                            fontWeight={500}
-                                                            display="flex"
-                                                            justifyContent="flex-start"
-                                                            alignItems="center"
-                                                            gap={0.5}
-                                                            bgcolor="#06A19B"
-                                                            paddingBlock={1.175}
-                                                            paddingInline={1.5}
-                                                            borderRadius={2}
-                                                            color="white"
-                                                            width="fit-content"
-                                                            // onClick={handleClear}
-                                                            style={{ cursor: "pointer" }}
-                                                        >
-                                                            <svg
-                                                                xmlns="http://www.w3.org/2000/svg"
-                                                                width="1.3em"
-                                                                height="1.3em"
-                                                                viewBox="0 0 24 24"
-                                                            >
-                                                                <path
-                                                                    fill="currentColor"
-                                                                    fillRule="evenodd"
-                                                                    d="M10.31 2.25h3.38c.217 0 .406 0 .584.028a2.25 2.25 0 0 1 1.64 1.183c.084.16.143.339.212.544l.111.335l.03.085a1.25 1.25 0 0 0 1.233.825h3a.75.75 0 0 1 0 1.5h-17a.75.75 0 0 1 0-1.5h3.09a1.25 1.25 0 0 0 1.173-.91l.112-.335c.068-.205.127-.384.21-.544a2.25 2.25 0 0 1 1.641-1.183c.178-.028.367-.028.583-.028m-1.302 3a3 3 0 0 0 .175-.428l.1-.3c.091-.273.112-.328.133-.368a.75.75 0 0 1 .547-.395a3 3 0 0 1 .392-.009h3.29c.288 0 .348.002.392.01a.75.75 0 0 1 .547.394c.021.04.042.095.133.369l.1.3l.039.112q.059.164.136.315z"
-                                                                    clipRule="evenodd"
-                                                                />
-                                                                <path
-                                                                    fill="currentColor"
-                                                                    d="M5.915 8.45a.75.75 0 1 0-1.497.1l.464 6.952c.085 1.282.154 2.318.316 3.132c.169.845.455 1.551 1.047 2.104s1.315.793 2.17.904c.822.108 1.86.108 3.146.108h.879c1.285 0 2.324 0 3.146-.108c.854-.111 1.578-.35 2.17-.904c.591-.553.877-1.26 1.046-2.104c.162-.813.23-1.85.316-3.132l.464-6.952a.75.75 0 0 0-1.497-.1l-.46 6.9c-.09 1.347-.154 2.285-.294 2.99c-.137.685-.327 1.047-.6 1.303c-.274.256-.648.422-1.34.512c-.713.093-1.653.095-3.004.095h-.774c-1.35 0-2.29-.002-3.004-.095c-.692-.09-1.066-.256-1.34-.512c-.273-.256-.463-.618-.6-1.302c-.14-.706-.204-1.644-.294-2.992z"
-                                                                />
-                                                                <path
-                                                                    fill="currentColor"
-                                                                    d="M9.425 10.254a.75.75 0 0 1 .821.671l.5 5a.75.75 0 0 1-1.492.15l-.5-5a.75.75 0 0 1 .671-.821m5.15 0a.75.75 0 0 1 .671.82l-.5 5a.75.75 0 0 1-1.492-.149l.5-5a.75.75 0 0 1 .82-.671"
-                                                                />
-                                                            </svg>
-                                                            Clear
-                                                        </Box>
-
-                                                    </TableCell>
-                                                </TableRow>
-                                            </TableBody>
-                                        </Table>
-                                    </TableContainer> */}
 
                                     <Box sx={{
                                         borderRadius: 3,
@@ -1775,275 +1670,6 @@ export default function Page() {
 
                                             </Grid>
 
-                                            {/* <Grid item xs={6} sx={{
-                                                display: "flex",
-                                                gap: 2,
-                                                alignItems: "center",
-                                            }}>
-
-                                                <Typography variant="subtitle1" fontWeight={600}>2. </Typography>
-
-                                                <Box display={"flex"} gap={2} alignItems={"center"} position={"relative"}>
-                                                    <TextField
-                                                        label="Crude protein"
-                                                        type="number"
-                                                        className="form-input"
-                                                        // {...register("organisationName", {
-                                                        //     required: true,
-                                                        // })}
-                                                        // focused={userData?.data.name ? true : false}
-                                                        // value={userData?.data.name}
-                                                        sx={{
-                                                            width: "100%",
-                                                            minWidth: 275
-                                                        }}
-                                                    />
-
-                                                    <Typography variant="body2" color="#555555AC" sx={{
-                                                        position: "absolute",
-                                                        right: 6,
-                                                        top: "50%",
-                                                        transform: "translate(-6px, -50%)",
-                                                        backgroundColor: "#fff",
-                                                        height: 30,
-                                                        display: "grid",
-                                                        placeItems: "center",
-                                                        zIndex: 1,
-                                                        pl: 1
-                                                    }}>
-                                                        g/kg
-                                                    </Typography>
-                                                </Box>
-
-                                                <Button
-                                                    type="button"
-                                                    variant="contained"
-                                                    sx={{
-                                                        background: "#06a19b",
-                                                        color: "#fff",
-                                                        fontWeight: 600,
-                                                        padding: "6px 16px",
-                                                        width: "fit-content",
-                                                        textTransform: "capitalize",
-                                                        borderRadius: "8px",
-                                                        border: "1px solid #06A19B",
-                                                        minWidth: 90,
-                                                    }}
-                                                // onClick={() => handleCalculate(item, index)}
-                                                >
-                                                    Calculate
-                                                </Button>
-
-                                                <FormControl fullWidth className="form-input">
-                                                    <InputLabel id="feed-supply-select-label10">Min</InputLabel>
-                                                    <Select
-                                                        labelId="feed-supply-select-label10"
-                                                        id="feed-supply-select10"
-                                                        value={age}
-                                                        label="Min"
-                                                        onChange={handleChange}
-                                                    >
-                                                        <MenuItem value={10}>Ten</MenuItem>
-                                                        <MenuItem value={20}>Twenty</MenuItem>
-                                                        <MenuItem value={30}>Thirty</MenuItem>
-                                                    </Select>
-                                                </FormControl>
-
-                                                <Box
-                                                    fontSize={14}
-                                                    fontWeight={500}
-                                                    display="flex"
-                                                    justifyContent="flex-start"
-                                                    alignItems="center"
-                                                    gap={0.5}
-                                                    bgcolor="#06A19B"
-                                                    paddingBlock={1.175}
-                                                    paddingInline={1.5}
-                                                    borderRadius={2}
-                                                    color="white"
-                                                    width="fit-content"
-                                                    // onClick={handleClear}
-                                                    style={{ cursor: "pointer" }}
-                                                // sx={{
-                                                //     visibility: "hidden"
-                                                // }}
-                                                >
-                                                    <svg
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                        width="1.3em"
-                                                        height="1.3em"
-                                                        viewBox="0 0 24 24"
-                                                    >
-                                                        <path
-                                                            fill="currentColor"
-                                                            fillRule="evenodd"
-                                                            d="M10.31 2.25h3.38c.217 0 .406 0 .584.028a2.25 2.25 0 0 1 1.64 1.183c.084.16.143.339.212.544l.111.335l.03.085a1.25 1.25 0 0 0 1.233.825h3a.75.75 0 0 1 0 1.5h-17a.75.75 0 0 1 0-1.5h3.09a1.25 1.25 0 0 0 1.173-.91l.112-.335c.068-.205.127-.384.21-.544a2.25 2.25 0 0 1 1.641-1.183c.178-.028.367-.028.583-.028m-1.302 3a3 3 0 0 0 .175-.428l.1-.3c.091-.273.112-.328.133-.368a.75.75 0 0 1 .547-.395a3 3 0 0 1 .392-.009h3.29c.288 0 .348.002.392.01a.75.75 0 0 1 .547.394c.021.04.042.095.133.369l.1.3l.039.112q.059.164.136.315z"
-                                                            clipRule="evenodd"
-                                                        />
-                                                        <path
-                                                            fill="currentColor"
-                                                            d="M5.915 8.45a.75.75 0 1 0-1.497.1l.464 6.952c.085 1.282.154 2.318.316 3.132c.169.845.455 1.551 1.047 2.104s1.315.793 2.17.904c.822.108 1.86.108 3.146.108h.879c1.285 0 2.324 0 3.146-.108c.854-.111 1.578-.35 2.17-.904c.591-.553.877-1.26 1.046-2.104c.162-.813.23-1.85.316-3.132l.464-6.952a.75.75 0 0 0-1.497-.1l-.46 6.9c-.09 1.347-.154 2.285-.294 2.99c-.137.685-.327 1.047-.6 1.303c-.274.256-.648.422-1.34.512c-.713.093-1.653.095-3.004.095h-.774c-1.35 0-2.29-.002-3.004-.095c-.692-.09-1.066-.256-1.34-.512c-.273-.256-.463-.618-.6-1.302c-.14-.706-.204-1.644-.294-2.992z"
-                                                        />
-                                                        <path
-                                                            fill="currentColor"
-                                                            d="M9.425 10.254a.75.75 0 0 1 .821.671l.5 5a.75.75 0 0 1-1.492.15l-.5-5a.75.75 0 0 1 .671-.821m5.15 0a.75.75 0 0 1 .671.82l-.5 5a.75.75 0 0 1-1.492-.149l.5-5a.75.75 0 0 1 .82-.671"
-                                                        />
-                                                    </svg>
-                                                    Clear
-                                                </Box>
-
-                                            </Grid> */}
-
-                                            {/* <Grid item xs={12}
-                                            // sx={{
-                                            //     display: "flex",
-                                            //     gap: 2,
-                                            //     alignItems: "center",
-                                            // }}
-                                            >
-
-                                                <Grid container alignItems={"center"} justifyContent={"space-between"}>
-
-
-                                                    <Grid item xs={1} display={"grid"} sx={{
-                                                        placeItems: "center",
-                                                    }}>
-                                                        <Typography variant="subtitle1" fontWeight={600}>1. </Typography>
-                                                    </Grid>
-
-                                                    <Grid item xs={4} display={"flex"} gap={2} alignItems={"center"} position={"relative"}>
-                                                        <TextField
-                                                            label="Crude protein"
-                                                            type="number"
-                                                            className="form-input"
-                                                            // {...register("organisationName", {
-                                                            //     required: true,
-                                                            // })}
-                                                            // focused={userData?.data.name ? true : false}
-                                                            // value={userData?.data.name}
-                                                            sx={{
-                                                                width: "100%",
-                                                                // minWidth: 275
-                                                            }}
-                                                        />
-
-                                                        <Typography variant="body2" color="#555555AC" sx={{
-                                                            position: "absolute",
-                                                            right: 6,
-                                                            top: "50%",
-                                                            transform: "translate(-6px, -50%)",
-                                                            backgroundColor: "#fff",
-                                                            height: 30,
-                                                            display: "grid",
-                                                            placeItems: "center",
-                                                            zIndex: 1,
-                                                            pl: 1
-                                                        }}>
-                                                            g/kg
-                                                        </Typography>
-                                                    </Grid>
-
-                                                    <Grid xs={1} item display={"grid"} sx={{
-                                                        placeItems: "center",
-                                                    }}>
-
-
-                                                        <Button
-                                                            type="button"
-                                                            variant="contained"
-                                                            sx={{
-                                                                background: "#06a19b",
-                                                                color: "#fff",
-                                                                fontWeight: 600,
-                                                                padding: "6px 16px",
-                                                                width: "fit-content",
-                                                                textTransform: "capitalize",
-                                                                borderRadius: "8px",
-                                                                border: "1px solid #06A19B",
-                                                                minWidth: 90,
-                                                            }}
-                                                        // onClick={() => handleCalculate(item, index)}
-                                                        >
-                                                            Calculate
-                                                        </Button>
-
-                                                    </Grid>
-
-                                                    <Grid item xs={4}>
-
-                                                        <FormControl fullWidth className="form-input">
-                                                            <InputLabel id="feed-supply-select-label10">Min</InputLabel>
-                                                            <Select
-                                                                labelId="feed-supply-select-label10"
-                                                                id="feed-supply-select10"
-                                                                value={age}
-                                                                label="Min"
-                                                                onChange={handleChange}
-                                                            >
-                                                                <MenuItem value={10}>Ten</MenuItem>
-                                                                <MenuItem value={20}>Twenty</MenuItem>
-                                                                <MenuItem value={30}>Thirty</MenuItem>
-                                                            </Select>
-                                                        </FormControl>
-
-                                                    </Grid>
-
-                                                    <Grid item xs={1} display={"grid"} sx={{
-                                                        placeItems: "center",
-                                                    }}>
-
-
-                                                        <Box
-                                                            fontSize={14}
-                                                            fontWeight={500}
-                                                            display="flex"
-                                                            justifyContent="center"
-                                                            alignItems="center"
-                                                            gap={0.5}
-                                                            bgcolor="#06A19B"
-                                                            paddingBlock={1.175}
-                                                            paddingInline={1.5}
-                                                            borderRadius={2}
-                                                            color="white"
-                                                            width="fit-content"
-                                                            // onClick={handleClear}
-                                                            style={{ cursor: "pointer" }}
-                                                        // sx={{
-                                                        //     visibility: "hidden"
-                                                        // }}
-                                                        >
-                                                            <svg
-                                                                xmlns="http://www.w3.org/2000/svg"
-                                                                width="1.3em"
-                                                                height="1.3em"
-                                                                viewBox="0 0 24 24"
-                                                            >
-                                                                <path
-                                                                    fill="currentColor"
-                                                                    fillRule="evenodd"
-                                                                    d="M10.31 2.25h3.38c.217 0 .406 0 .584.028a2.25 2.25 0 0 1 1.64 1.183c.084.16.143.339.212.544l.111.335l.03.085a1.25 1.25 0 0 0 1.233.825h3a.75.75 0 0 1 0 1.5h-17a.75.75 0 0 1 0-1.5h3.09a1.25 1.25 0 0 0 1.173-.91l.112-.335c.068-.205.127-.384.21-.544a2.25 2.25 0 0 1 1.641-1.183c.178-.028.367-.028.583-.028m-1.302 3a3 3 0 0 0 .175-.428l.1-.3c.091-.273.112-.328.133-.368a.75.75 0 0 1 .547-.395a3 3 0 0 1 .392-.009h3.29c.288 0 .348.002.392.01a.75.75 0 0 1 .547.394c.021.04.042.095.133.369l.1.3l.039.112q.059.164.136.315z"
-                                                                    clipRule="evenodd"
-                                                                />
-                                                                <path
-                                                                    fill="currentColor"
-                                                                    d="M5.915 8.45a.75.75 0 1 0-1.497.1l.464 6.952c.085 1.282.154 2.318.316 3.132c.169.845.455 1.551 1.047 2.104s1.315.793 2.17.904c.822.108 1.86.108 3.146.108h.879c1.285 0 2.324 0 3.146-.108c.854-.111 1.578-.35 2.17-.904c.591-.553.877-1.26 1.046-2.104c.162-.813.23-1.85.316-3.132l.464-6.952a.75.75 0 0 0-1.497-.1l-.46 6.9c-.09 1.347-.154 2.285-.294 2.99c-.137.685-.327 1.047-.6 1.303c-.274.256-.648.422-1.34.512c-.713.093-1.653.095-3.004.095h-.774c-1.35 0-2.29-.002-3.004-.095c-.692-.09-1.066-.256-1.34-.512c-.273-.256-.463-.618-.6-1.302c-.14-.706-.204-1.644-.294-2.992z"
-                                                                />
-                                                                <path
-                                                                    fill="currentColor"
-                                                                    d="M9.425 10.254a.75.75 0 0 1 .821.671l.5 5a.75.75 0 0 1-1.492.15l-.5-5a.75.75 0 0 1 .671-.821m5.15 0a.75.75 0 0 1 .671.82l-.5 5a.75.75 0 0 1-1.492-.149l.5-5a.75.75 0 0 1 .82-.671"
-                                                                />
-                                                            </svg>
-                                                            Clear
-                                                        </Box>
-
-                                                    </Grid>
-
-
-                                                </Grid>
-
-
-                                            </Grid> */}
-
                                         </Grid>
 
                                     </Box>
@@ -2095,6 +1721,517 @@ export default function Page() {
                         </Box>
                     </Stack>
                     {/* Feed Specification */}
+
+                    {/* Feed Selection */}
+                    {/* <Stack>
+                        <Typography
+                            variant="h6"
+                            fontWeight={700}
+                            sx={{
+                                fontSize: {
+                                    md: 24,
+                                    xs: 20,
+                                },
+                                marginBottom: 3,
+                            }}
+                        >
+                            Feed Selection
+                        </Typography>
+
+                        <Grid container spacing={2}>
+
+                            <Grid item xs="auto">
+
+                                <Box border={"1px solid #555555AC"} borderRadius={3} p={2}
+                                    sx={{
+                                        width: "ft-content",
+                                        maxWidth: "370px",
+                                    }}
+                                >
+
+                                    <Box display={"flex"} gap={1} alignItems={"flex-start"} justifyContent={"space-between"}>
+                                        <Box textAlign={"center"}>
+                                            <Typography
+                                                color="#06a19b"
+                                                variant="h6"
+                                                fontWeight={600}
+                                                fontSize={20}
+                                            >
+                                                SAF Tiplapia PreStarter
+                                            </Typography>
+
+                                            <Typography
+                                                color="#000"
+                                                variant="subtitle2"
+                                                fontWeight={500}
+                                                fontSize={11}
+                                            >
+                                                Product code [SAF-TG-4208-1mm-C]
+                                            </Typography>
+                                        </Box>
+
+                                        <Box bgcolor={"rgba(6, 161, 155, 0.15)"} p={1.5} borderRadius={1.5} display={"flex"} flexDirection={"column"} justifyContent={"center"} alignItems={"center"}>
+
+                                            <Typography
+                                                color="#06a19b"
+                                                variant="h6"
+                                                fontWeight={600}
+                                                fontSize={20}
+                                                display={"flex"}
+                                                alignItems={"end"}
+                                                lineHeight={1}
+                                                gap={1}
+                                            >
+                                                1
+
+                                                <Typography
+                                                    color="#06a19b"
+                                                    variant="h6"
+                                                    fontWeight={700}
+                                                    fontSize={12}
+                                                    lineHeight={1}
+
+                                                >
+                                                    mm
+                                                </Typography>
+
+                                            </Typography>
+
+                                            <Typography
+                                                color="#06a19b"
+                                                variant="h6"
+                                                fontWeight={600}
+                                                fontSize={12}
+                                            >
+                                                Crumble
+                                            </Typography>
+
+                                        </Box>
+                                    </Box>
+
+                                    <Divider
+                                        sx={{
+                                            borderColor: "#06a19bBC",
+                                            borderWidth: 1,
+                                            my: 1.5,
+                                            borderRadius: 50
+                                        }}
+                                    />
+
+                                    <Box>
+
+                                        <Typography
+                                            color="#000"
+                                            variant="h6"
+                                            fontWeight={500}
+                                            fontSize={14}
+                                            textAlign={"center"}
+                                        >
+                                            [Complete & Balanced] Feed for [Tilapia] production. <br />
+                                            Suitable for use as [Primary Food Source] in [Intensive Production Systems].
+                                        </Typography>
+
+                                        <Box display={"flex"} justifyContent={"center"} alignItems={"stretch"} gap={1} mt={1}>
+
+                                            <Box display={"grid"} alignItems={"stretch"}>
+
+                                                <Box display={"flex"} flexDirection={"column"} justifyContent={"center"} alignItems={"center"} gap={0.5}>
+
+                                                    <Typography
+                                                        color="#06a19b"
+                                                        variant="h6"
+                                                        fontWeight={500}
+                                                        fontSize={14}
+                                                        textAlign={"center"}
+                                                    >
+                                                        Feeding Phase
+                                                    </Typography>
+
+                                                    <Box bgcolor={"rgba(6, 161, 155, 0.15)"} p={1.5} borderRadius={1.5} width={160}>
+                                                        <List sx={{
+                                                            p: 0,
+                                                            display: "flex",
+                                                            justifyContent: "center",
+                                                            alignItems: "center",
+                                                            columnGap: 1,
+                                                            flexWrap: "wrap"
+                                                        }}>
+                                                            <ListItem sx={{
+                                                                p: 0,
+                                                                color: "#06a19b",
+                                                                fontWeight: 600,
+                                                                fontSize: 16,
+                                                                width: "fit-content"
+                                                            }}>
+                                                                Hatchery
+                                                            </ListItem>
+
+                                                            <ListItem sx={{
+                                                                p: 0,
+                                                                color: "#06a19b",
+                                                                fontWeight: 600,
+                                                                fontSize: 16,
+                                                                width: "fit-content"
+                                                            }}>
+
+                                                                <ListItemIcon sx={{
+                                                                    p: 0,
+                                                                    minWidth: "fit-content",
+                                                                    mr: 1,
+                                                                    fontSize: 6,
+                                                                    color: "#06a19b"
+                                                                }}>
+                                                                    ⬤
+                                                                </ListItemIcon>
+
+
+                                                                Fry
+                                                            </ListItem>
+
+                                                            <ListItem sx={{
+                                                                p: 0,
+                                                                color: "#06a19b",
+                                                                fontWeight: 600,
+                                                                fontSize: 16,
+                                                                width: "fit-content"
+                                                            }}>
+
+                                                                <ListItemIcon sx={{
+                                                                    p: 0,
+                                                                    minWidth: "fit-content",
+                                                                    mr: 1,
+                                                                    fontSize: 6,
+                                                                    color: "#06a19b"
+                                                                }}>
+                                                                    ⬤
+                                                                </ListItemIcon>
+
+
+                                                                PreStarter
+                                                            </ListItem>
+                                                        </List>
+                                                    </Box>
+
+                                                </Box>
+
+                                            </Box>
+
+                                            <Box display={"grid"} alignItems={"stretch"}>
+
+                                                <Box display={"flex"} flexDirection={"column"} gap={0.5}>
+
+                                                    <Typography
+                                                        color="#06a19b"
+                                                        variant="h6"
+                                                        fontWeight={500}
+                                                        fontSize={14}
+                                                        textAlign={"center"}
+                                                        sx={{
+                                                            textWrap: "nowrap"
+                                                        }}
+                                                    >
+                                                        Fish Size Class
+                                                    </Typography>
+
+                                                    <Box bgcolor={"rgba(6, 161, 155, 0.15)"} p={1.5} borderRadius={1.5} width={160} height={"100%"}
+                                                        display={"flex"} justifyContent={"center"} alignItems={"center"}
+                                                    >
+                                                        <Typography
+                                                            color="#06a19b"
+                                                            variant="h6"
+                                                            fontWeight={600}
+                                                            fontSize={16}
+                                                            textAlign={"center"}
+                                                        >
+                                                            5 - 30g
+                                                        </Typography>
+                                                    </Box>
+
+                                                </Box>
+
+                                            </Box>
+
+                                        </Box>
+
+
+
+                                    </Box>
+
+                                    <Divider
+                                        sx={{
+                                            borderColor: "#06a19bBC",
+                                            borderWidth: 1,
+                                            my: 1.5,
+                                            borderRadius: 50
+                                        }}
+                                    />
+
+                                    <Box>
+                                        <Typography
+                                            variant="h6"
+                                            fontWeight={600}
+                                            fontSize={18}
+                                            color="#000"
+                                        >
+                                            Nutritional Guarantees
+                                        </Typography>
+
+                                        <Grid container mt={0.5}>
+                                            <Grid item xs={6}>
+                                                <Typography
+                                                    variant="subtitle1"
+                                                    fontWeight={500}
+                                                    fontSize={14}
+                                                >
+                                                    Moisture (Max)
+                                                </Typography>
+                                            </Grid>
+
+                                            <Grid item xs={6} textAlign={"right"}>
+                                                <Typography
+                                                    variant="subtitle1"
+                                                    fontWeight={600}
+                                                    fontSize={14}
+                                                >
+                                                    100
+                                                </Typography>
+                                            </Grid>
+
+                                            <Grid item xs={6}>
+                                                <Typography
+                                                    variant="subtitle1"
+                                                    fontWeight={500}
+                                                    fontSize={14}
+                                                >
+                                                    Crude Protein
+                                                </Typography>
+                                            </Grid>
+
+                                            <Grid item xs={6} textAlign={"right"}>
+                                                <Typography
+                                                    variant="subtitle1"
+                                                    fontWeight={600}
+                                                    fontSize={14}
+                                                >
+                                                    420
+                                                </Typography>
+                                            </Grid>
+
+                                            <Grid item xs={6}>
+                                                <Typography
+                                                    variant="subtitle1"
+                                                    fontWeight={500}
+                                                    fontSize={14}
+                                                >
+                                                    Crude Fat (Min)
+                                                </Typography>
+                                            </Grid>
+
+                                            <Grid item xs={6} textAlign={"right"}>
+                                                <Typography
+                                                    variant="subtitle1"
+                                                    fontWeight={600}
+                                                    fontSize={14}
+                                                >
+                                                    80
+                                                </Typography>
+                                            </Grid>
+
+                                            <Grid item xs={6}>
+                                                <Typography
+                                                    variant="subtitle1"
+                                                    fontWeight={500}
+                                                    fontSize={14}
+                                                >
+                                                    Crude Fiber (Max)
+                                                </Typography>
+                                            </Grid>
+
+                                            <Grid item xs={6} textAlign={"right"}>
+                                                <Typography
+                                                    variant="subtitle1"
+                                                    fontWeight={600}
+                                                    fontSize={14}
+                                                >
+                                                    50
+                                                </Typography>
+                                            </Grid>
+
+                                            <Grid item xs={6}>
+                                                <Typography
+                                                    variant="subtitle1"
+                                                    fontWeight={500}
+                                                    fontSize={14}
+                                                >
+                                                    Crude Ash (Max)
+                                                </Typography>
+                                            </Grid>
+
+                                            <Grid item xs={6} textAlign={"right"}>
+                                                <Typography
+                                                    variant="subtitle1"
+                                                    fontWeight={600}
+                                                    fontSize={14}
+                                                >
+                                                    50
+                                                </Typography>
+                                            </Grid>
+
+                                            <Grid item xs={6}>
+                                                <Typography
+                                                    variant="subtitle1"
+                                                    fontWeight={500}
+                                                    fontSize={14}
+                                                >
+                                                    Calcium (Min)
+                                                </Typography>
+                                            </Grid>
+
+                                            <Grid item xs={6} textAlign={"right"}>
+                                                <Typography
+                                                    variant="subtitle1"
+                                                    fontWeight={600}
+                                                    fontSize={14}
+                                                >
+                                                    510
+                                                </Typography>
+                                            </Grid>
+
+                                            <Grid item xs={6}>
+                                                <Typography
+                                                    variant="subtitle1"
+                                                    fontWeight={500}
+                                                    fontSize={14}
+                                                >
+                                                    Phosphorous (Min)
+                                                </Typography>
+                                            </Grid>
+
+                                            <Grid item xs={6} textAlign={"right"}>
+                                                <Typography
+                                                    variant="subtitle1"
+                                                    fontWeight={600}
+                                                    fontSize={14}
+                                                >
+                                                    19
+                                                </Typography>
+                                            </Grid>
+
+                                        </Grid>
+
+                                    </Box>
+
+                                    <Divider
+                                        sx={{
+                                            borderColor: "#06a19bBC",
+                                            borderWidth: 1,
+                                            my: 1.5,
+                                            borderRadius: 50
+                                        }}
+                                    />
+
+                                    <Box>
+                                        <Typography
+                                            variant="h6"
+                                            fontWeight={600}
+                                            fontSize={18}
+                                            color="#000"
+                                        >
+                                            Feed Ingredients
+                                        </Typography>
+
+                                        <Typography
+                                            variant="h6"
+                                            fontWeight={500}
+                                            fontSize={14}
+                                            color="#000"
+                                            mt={0.5}
+                                            textAlign={"justify"}
+                                        >
+                                            [Yellow Maize, Soyabean Meal, Fish Meal, Wheat Bran, Soyabean Oil, Monocalcium Phosphate, Limestone, Vitamins & Minerals]
+                                        </Typography>
+
+
+
+                                    </Box>
+
+                                    <Divider
+                                        sx={{
+                                            borderColor: "#06a19bBC",
+                                            borderWidth: 1,
+                                            my: 1.5,
+                                            borderRadius: 50
+                                        }}
+                                    />
+
+                                    <Box>
+                                        <Typography
+                                            variant="h6"
+                                            fontWeight={600}
+                                            fontSize={18}
+                                            color="#000"
+                                        >
+                                            Feeding Guide
+                                        </Typography>
+
+                                        <Typography
+                                            variant="h6"
+                                            fontWeight={500}
+                                            fontSize={14}
+                                            color="#000"
+                                            mt={0.5}
+                                        >
+                                            Feed according to the Feedflow guide or as directed by a fish nutritionist
+                                        </Typography>
+
+                                    </Box>
+
+                                    <Divider
+                                        sx={{
+                                            borderColor: "#06a19bBC",
+                                            borderWidth: 1,
+                                            my: 1.5,
+                                            borderRadius: 50
+                                        }}
+                                    />
+
+                                    <Typography
+                                        variant="h6"
+                                        fontWeight={600}
+                                        fontSize={18}
+                                        color="#06a19b"
+                                        textAlign={"center"}
+                                    >
+                                        Shelf Life: 12 months
+                                    </Typography>
+
+
+                                    <Divider
+                                        sx={{
+                                            borderColor: "#06a19bBC",
+                                            borderWidth: 1,
+                                            my: 1.5,
+                                            borderRadius: 50
+                                        }}
+                                    />
+
+                                    <Typography
+                                        variant="h6"
+                                        fontWeight={500}
+                                        fontSize={14}
+                                        color="#000"
+                                    >
+                                        Specialized Aquatic Feeds(Pty) Ltd. Corner Church and Stil St, Westcliff, Hermanus 7200, South Africa <br />
+                                        Tel: +27 28 313 8581 / info@safeeds.co.za
+                                    </Typography>
+
+                                </Box>
+
+                            </Grid>
+
+                        </Grid>
+                    </Stack> */}
+                    {/* Feed Selection */}
 
                 </Grid>
             </Grid>
