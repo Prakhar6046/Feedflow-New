@@ -1,9 +1,9 @@
 import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
-import CommonTable from "@/app/_components/table/CommonTable";
+// import CommonTable from "@/app/_components/table/CommonTable";
 import FarmTable from "@/app/_components/table/FarmTable";
-import { getFarms } from "@/app/_lib/action";
+// import { getFarms } from "@/app/_lib/action";
 export default async function Page() {
-  const farms = await getFarms();
+  // const farms = await getFarms();
 
   return (
     <>
