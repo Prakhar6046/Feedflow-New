@@ -177,7 +177,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
       if (responseData.status) {
         if (isEditFarm) {
           dispatch(farmAction.resetState());
-          router.push("/dashboard/farm");
+          // router.push("/dashboard/farm");
         }
         setActiveStep(3);
       }
