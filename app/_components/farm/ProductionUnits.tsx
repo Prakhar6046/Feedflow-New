@@ -154,13 +154,16 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
     }
 
     if (Object.keys(payload).length && payload.name) {
-      const response = await fetch("/api/farm/add-farm", {
-        method: isEditFarm ? "PUT" : "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
+      const response = await fetch(
+        `${isEditFarm ? "/api/farm/edit-farm" : "/api/farm/add-farm"}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        }
+      );
       const responseData = await response.json();
       toast.success(responseData.message);
       if (responseData.status) {
