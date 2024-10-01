@@ -20,7 +20,7 @@ export default async function Page() {
           { name: "Farm", link: "/dashboard/farm" },
         ]}
       />
-      <FarmTable farms={farms.data} />
+      <FarmTable />
     </>
   );
 }
