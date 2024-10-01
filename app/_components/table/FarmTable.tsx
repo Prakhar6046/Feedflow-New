@@ -31,12 +31,12 @@ export default function FarmTable() {
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null
   );
-  async function getFarms() {
+  const getFarms = async () => {
     setLoading(true);
     let res = await fetch(`/api/farm`);
     let data = await res.json();
     return data;
-  }
+  };
   const handleClick = (
     event: React.MouseEvent<HTMLButtonElement>,
     farm: any
