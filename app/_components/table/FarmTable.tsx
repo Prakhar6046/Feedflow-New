@@ -33,7 +33,12 @@ export default function FarmTable() {
   );
   const getFarms = async () => {
     setLoading(true);
-    let res = await fetch(`/api/farm`);
+    let res = await fetch(`/api/farm`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
     let data = await res.json();
     return data;
   };
