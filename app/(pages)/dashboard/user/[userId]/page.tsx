@@ -300,7 +300,7 @@ export default function Page({ params }: { params: { userId: string } }) {
 
                 <Box mb={3} width={"100%"}>
                   <TextField
-                    label="Name"
+                    label="Name *"
                     type="text"
                     className="form-input"
                     {...register("name", {
@@ -322,7 +322,7 @@ export default function Page({ params }: { params: { userId: string } }) {
                 <Box mb={2} width={"100%"}>
 
                   <TextField
-                    label={Number(params.userId) === currentUserId ? "" : "Email"}
+                    label={Number(params.userId) === currentUserId ? "" : "Email *"}
                     type="email"
                     className="form-input"
                     focused={
@@ -433,10 +433,13 @@ export default function Page({ params }: { params: { userId: string } }) {
                   focused
                   sx={{
                     width: "100%",
-                    marginBottom: 2,
                   }}
                 />
-                {errors.confirmPassword?.message}
+
+                <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                  {errors.confirmPassword?.message}
+                </Typography>
+
                 <Button
                   type="submit"
                   variant="contained"

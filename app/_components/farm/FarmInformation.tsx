@@ -1,9 +1,12 @@
 import { Farm, farmAction } from "@/lib/features/farm/farmSlice";
 import { useAppDispatch } from "@/lib/hooks";
-import { Box, Button, Grid, Stack, TextField, Typography } from "@mui/material";
+import { Box, Button, Grid, Modal, Stack, TextField, Typography } from "@mui/material";
 import { NextPage } from "next";
-import { useEffect, useState } from "react";
+import Image from "next/image";
+import React, { useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
+
+import closeIcon from "@/public/static/img/icons/ic-close.svg";
 
 interface Props {
   setActiveStep: (val: number) => void;
@@ -35,6 +38,22 @@ const FarmInformation: NextPage<Props> = ({ setActiveStep, editFarm }) => {
       setValue("province", editFarm?.farmAddress?.province);
     }
   }, [editFarm]);
+
+  // const [open, setOpen] = React.useState(false);
+  // const handleOpen = () => setOpen(true);
+  // const handleClose = () => setOpen(false);
+
+  const style = {
+    position: "absolute" as "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: 400,
+    bgcolor: "background.paper",
+    boxShadow: 24,
+  };
+
+
   return (
     <Stack>
       <Typography
@@ -55,7 +74,7 @@ const FarmInformation: NextPage<Props> = ({ setActiveStep, editFarm }) => {
         <form onSubmit={handleSubmit(onSubmit)}>
           <Box mb={2} width={"100%"}>
             <TextField
-              label="Farm Name"
+              label="Farm Name *"
               type="text"
               className="form-input"
               // focused
@@ -75,7 +94,7 @@ const FarmInformation: NextPage<Props> = ({ setActiveStep, editFarm }) => {
 
           <Box mb={2} width={"100%"}>
             <TextField
-              label="Farm Altitude"
+              label="Farm Altitude *"
               type="text"
               className="form-input"
               // focused
@@ -123,9 +142,89 @@ const FarmInformation: NextPage<Props> = ({ setActiveStep, editFarm }) => {
               Use Address
             </Button>
 
+            {/* Modal */}
+            {/* <Modal
+              open={open}
+              onClose={handleClose}
+              aria-labelledby="modal-modal-title"
+              aria-describedby="modal-modal-description"
+            >
+              <Stack sx={style} borderRadius="14px">
+                <Box
+                  bgcolor="#F5F6F8"
+                  paddingInline={3}
+                  paddingBlock={2}
+                  display="flex"
+                  justifyContent="space-between"
+                  gap={2}
+                  alignItems={"center"}
+                  sx={{
+                    borderTopLeftRadius: "14px",
+                    borderTopRightRadius: "14px",
+                  }}
+                >
+                  <Typography
+                    id="modal-modal-title"
+                    variant="h6"
+                    component="h2"
+                    color="#67737F"
+                    fontSize={18}
+                    fontWeight={600}
+                  >
+                    Use Coordinates
+                  </Typography>
+
+                  <Box
+                    display="flex"
+                    justifyContent="center"
+                    alignItems="center"
+                    sx={{
+                      opacity: 0.5,
+                      cursor: "pointer",
+                    }}
+                    onClick={handleClose}
+                  >
+                    <Image src={closeIcon} width={25} height={25} alt="Close Icon" />
+                  </Box>
+                </Box>
+
+                <Grid container p={3}>
+                  <Grid item xs={6}>
+                    <TextField
+                      label="Lorem"
+                      type="text"
+                      className="form-input"
+                    />
+                  </Grid>
+                </Grid>
+
+                <Box padding={3}>
+                  <Button
+                    type="button"
+                    variant="contained"
+                    sx={{
+                      background: "#06A19B",
+                      fontWeight: "bold",
+                      padding: "8px 24px",
+                      width: "fit-content",
+                      textTransform: "capitalize",
+                      borderRadius: "12px",
+                      marginLeft: "auto",
+                      display: "block",
+                    }}
+                  // onClick={handleCalculate}
+                  >
+                    Save
+                  </Button>
+                </Box>
+              </Stack>
+            </Modal> */}
+            {/* Modal */}
+
             <Button
               type="button"
               onClick={() => setSelectedSwtich("coordinates")}
+              // onClick={handleOpen}
               variant="contained"
               sx={{
                 background: "#fff",
@@ -166,7 +265,7 @@ const FarmInformation: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                 <Grid item md={6} xs={12}>
                   <Box>
                     <TextField
-                      label="Address Line 1"
+                      label="Address Line 1 *"
                       type="text"
                       className="form-input"
                       // focused
@@ -208,7 +307,7 @@ const FarmInformation: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                 <Grid item md={6} xs={12}>
                   <Box>
                     <TextField
-                      label="City"
+                      label="City *"
                       type="text"
                       className="form-input"
                       // focused
@@ -237,7 +336,7 @@ const FarmInformation: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                 <Grid item md={6} xs={12}>
                   <Box>
                     <TextField
-                      label="State/Province"
+                      label="State/Province *"
                       type="text"
                       className="form-input"
                       // focused
@@ -266,7 +365,7 @@ const FarmInformation: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                 <Grid item md={6} xs={12}>
                   <Box>
                     <TextField
-                      label="Zip Code"
+                      label="Zip Code *"
                       type="text"
                       className="form-input"
                       // focused
@@ -297,7 +396,7 @@ const FarmInformation: NextPage<Props> = ({ setActiveStep, editFarm }) => {
 
                   <Box>
                     <TextField
-                      label="Country"
+                      label="Country *"
                       type="text"
                       className="form-input"
                       // focused

@@ -153,7 +153,7 @@ const CalculateVolume: React.FC<Props> = ({
           display={"flex"}
           alignItems={"center"}
           gap={1}
-          justifyContent={"end"}
+          justifyContent={"start"}
         >
           <Typography variant="body2" color="black" fontWeight={500}>
             {selectedUnit?.name} Formula
