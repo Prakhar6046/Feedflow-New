@@ -1,9 +1,11 @@
 import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
+import Loader from "@/app/_components/Loader";
 // import CommonTable from "@/app/_components/table/CommonTable";
 import FarmTable from "@/app/_components/table/FarmTable";
-// import { getFarms } from "@/app/_lib/action";
+import { getFarms } from "@/app/_lib/action";
+import { Suspense } from "react";
 export default async function Page() {
-  // const farms = await getFarms();
+  const farms = await getFarms();
 
   return (
     <>
@@ -20,7 +22,9 @@ export default async function Page() {
           { name: "Farm", link: "/dashboard/farm" },
         ]}
       />
-      <FarmTable />
+      <Suspense fallback={<Loader />}>
+        <FarmTable farms={farms?.data} />
+      </Suspense>
     </>
   );
 }
