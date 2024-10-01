@@ -21,9 +21,10 @@ import React, { useEffect, useState } from "react";
 import Loader from "../Loader";
 interface Props {
   farms: any;
+  status: any;
 }
 const tableData: Array<string> = ["Farm", "Production Unit Count", ""];
-export default function FarmTable({ farms }: Props) {
+export default function FarmTable({ farms, status }: Props) {
   const router = useRouter();
   const dispatch = useAppDispatch();
   // const allFarms = useAppSelector(selectFarms);
@@ -61,7 +62,7 @@ export default function FarmTable({ farms }: Props) {
   if (loading) {
     return <Loader />;
   }
-  console.log(farms);
+  console.log(status);
 
   return (
     <Paper

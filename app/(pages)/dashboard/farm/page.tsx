@@ -23,7 +23,7 @@ export default async function Page() {
         ]}
       />
       <Suspense fallback={<Loader />}>
-        <FarmTable farms={farms?.data} />
+        <FarmTable farms={farms?.data} status={farms} />
       </Suspense>
     </>
   );
