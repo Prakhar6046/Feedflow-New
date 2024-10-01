@@ -356,7 +356,7 @@ export default function Page() {
                     <text
                       x="40"
                       y="128"
-                      font-family="'__Varela_Round_143227', '__Varela_Round_Fallback_143227', Helvetica, Arial, sans-serif"
+                      fontFamily="'__Varela_Round_143227', '__Varela_Round_Fallback_143227', Helvetica, Arial, sans-serif"
                       font-size="96"
                       font-weight="400"
                     >
