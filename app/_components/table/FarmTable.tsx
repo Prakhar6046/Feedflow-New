@@ -33,21 +33,24 @@ export default function FarmTable() {
   );
 
   const getFarms = async () => {
-    setLoading(true);
-    let res = await fetch(`/api/farm?timestamp=${new Date().getTime()}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        "Cache-Control":
-          "no-store, no-cache, must-revalidate, proxy-revalidate",
-        Expires: "0",
-        Pragma: "no-cache",
-      },
-      cache: "no-store",
-      next: { revalidate: 0 },
-    });
-    let data = await res.json();
-    return data;
+    try {
+      let res = await fetch(`/api/farm?timestamp=${new Date().getTime()}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Cache-Control":
+            "no-store, no-cache, must-revalidate, proxy-revalidate",
+          Expires: "0",
+          Pragma: "no-cache",
+        },
+        cache: "no-store",
+        next: { revalidate: 0 },
+      });
+      let data = await res.json();
+      return data;
+    } catch (error) {
+      return error;
+    }
   };
   const handleClick = (
     event: React.MouseEvent<HTMLButtonElement>,
@@ -76,6 +79,7 @@ export default function FarmTable() {
   //   }
   // }, [allFarms]);
   useEffect(() => {
+    setLoading(true);
     const resonse = async () => {
       const data = await getFarms();
       setFarmsData(data.data);
