@@ -31,13 +31,19 @@ export default function FarmTable() {
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null
   );
+
   const getFarms = async () => {
     setLoading(true);
     let res = await fetch(`/api/farm`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
+        "Cache-Control":
+          "no-store, no-cache, must-revalidate, proxy-revalidate",
+        Expires: "0",
+        Pragma: "no-cache",
       },
+      cache: "no-store",
     });
     let data = await res.json();
     return data;
