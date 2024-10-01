@@ -141,7 +141,7 @@ export async function POST(req: NextRequest) {
       //             </p>
 
       //             <div style="margin-block: 15px; border: 1px solid #ededed"></div>
-      //             <p style="font-size: 16px; font-weight: 600; margin: 0">Thanks,</p>
+      //             <p style="font-size: 16px; fontWeight: 600; margin: 0">Thanks,</p>
       //             <p style="margin: 0">
       //              Team Feedflow
       //             </p>

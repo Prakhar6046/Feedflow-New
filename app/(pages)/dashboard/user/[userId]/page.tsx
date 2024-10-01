@@ -312,17 +312,22 @@ export default function Page({ params }: { params: { userId: string } }) {
                     }}
                   />
                   {errors && errors.name && errors.name.type === "required" && (
-
-                    <Typography variant="body2" color="red" fontSize={13} mt={0.5}>This field is required.</Typography>
-
+                    <Typography
+                      variant="body2"
+                      color="red"
+                      fontSize={13}
+                      mt={0.5}
+                    >
+                      This field is required.
+                    </Typography>
                   )}
-
                 </Box>
 
                 <Box mb={2} width={"100%"}>
-
                   <TextField
-                    label={Number(params.userId) === currentUserId ? "" : "Email"}
+                    label={
+                      Number(params.userId) === currentUserId ? "" : "Email"
+                    }
                     type="email"
                     className="form-input"
                     focused={
@@ -338,10 +343,18 @@ export default function Page({ params }: { params: { userId: string } }) {
                       width: "100%",
                     }}
                   />
-                  {errors && errors.email && errors.email.type === "required" && (
-                    <Typography variant="body2" color="red" fontSize={13} mt={0.5}>This field is required.</Typography>
-                  )}
-
+                  {errors &&
+                    errors.email &&
+                    errors.email.type === "required" && (
+                      <Typography
+                        variant="body2"
+                        color="red"
+                        fontSize={13}
+                        mt={0.5}
+                      >
+                        This field is required.
+                      </Typography>
+                    )}
                 </Box>
 
                 <TextField
@@ -501,7 +514,7 @@ export default function Page({ params }: { params: { userId: string } }) {
                 fill="#fff"
                 fillRule="evenodd"
                 d="M12 1C5.925 1 1 5.925 1 12s4.925 11 11 11s11-4.925 11-11S18.075 1 12 1m4.768 9.14a1 1 0 1 0-1.536-1.28l-4.3 5.159l-2.225-2.226a1 1 0 0 0-1.414 1.414l3 3a1 1 0 0 0 1.475-.067z"
-                clip-rule="evenodd"
+                clipRule="evenodd"
               />
             </svg>
             {`Admins have full access to the system. If you want to change the

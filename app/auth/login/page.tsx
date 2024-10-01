@@ -358,7 +358,7 @@ export default function Page() {
                       y="128"
                       fontFamily="'__Varela_Round_143227', '__Varela_Round_Fallback_143227', Helvetica, Arial, sans-serif"
                       font-size="96"
-                      font-weight="400"
+                      fontWeight="400"
                     >
                       nh
                     </text>
