@@ -9,11 +9,6 @@ const nextConfig = {
       },
     ],
   },
-  swcMinify: false,
-  compiler: {
-    removeConsole: false,
-  },
-  productionBrowserSourceMaps: true,
 };
 
 export default nextConfig;
