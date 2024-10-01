@@ -44,6 +44,7 @@ export default function FarmTable() {
         Pragma: "no-cache",
       },
       cache: "no-store",
+      next: { revalidate: 0 },
     });
     let data = await res.json();
     return data;
