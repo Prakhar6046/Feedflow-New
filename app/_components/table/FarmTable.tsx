@@ -26,7 +26,7 @@ const tableData: Array<string> = ["Farm", "Production Unit Count", ""];
 export default function FarmTable({ farms }: Props) {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const allFarms = useAppSelector(selectFarms);
+  // const allFarms = useAppSelector(selectFarms);
   const [farmsData, setFarmsData] = useState<any>();
   const [selectedFarm, setSelectedFarm] = useState<any>(null);
   const [loading, setLoading] = useState<Boolean>(false);
