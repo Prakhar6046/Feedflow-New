@@ -61,6 +61,7 @@ export default function FarmTable({ farms }: Props) {
   if (loading) {
     return <Loader />;
   }
+  console.log(farms);
 
   return (
     <Paper
