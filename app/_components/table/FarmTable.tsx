@@ -34,26 +34,6 @@ export default function FarmTable({ farms }: Props) {
     null
   );
 
-  // const getFarms = async () => {
-  //   try {
-  //     let res = await fetch(`/api/farm?timestamp=${new Date().getTime()}`, {
-  //       method: "GET",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //         "Cache-Control":
-  //           "no-store, no-cache, must-revalidate, proxy-revalidate",
-  //         Expires: "0",
-  //         Pragma: "no-cache",
-  //       },
-  //       cache: "no-store",
-  //       next: { revalidate: 0 },
-  //     });
-  //     let data = await res.json();
-  //     return data;
-  //   } catch (error) {
-  //     return error;
-  //   }
-  // };
   const handleClick = (
     event: React.MouseEvent<HTMLButtonElement>,
     farm: any
@@ -72,28 +52,12 @@ export default function FarmTable({ farms }: Props) {
   };
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
-  useEffect(() => {
-    if (farms) {
-      setFarmsData(farms);
-    }
-  }, [farms]);
   // useEffect(() => {
-  //   if (farms) setFarmsData(farms);
-  // }, [farms]);
-  // useEffect(() => {
-  //   if (allFarms) {
-  //     setFarmsData(allFarms);
+  //   if (farms) {
+  //     setFarmsData(farms);
   //   }
-  // }, [allFarms]);
-  // useEffect(() => {
-  //   setLoading(true);
-  //   const resonse = async () => {
-  //     const data = await getFarms();
-  //     setFarmsData(data.data);
-  //     setLoading(false);
-  //   };
-  //   resonse();
-  // }, []);
+  // }, [farms]);
+
   if (loading) {
     return <Loader />;
   }
@@ -144,8 +108,8 @@ export default function FarmTable({ farms }: Props) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {farmsData && farmsData.length > 0 ? (
-              farmsData.map((farm: any, i: number) => {
+            {farms && farms.length > 0 ? (
+              farms.map((farm: any, i: number) => {
                 return (
                   <TableRow
                     key={i}
