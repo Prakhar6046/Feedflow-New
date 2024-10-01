@@ -1,6 +1,6 @@
 "use client";
 import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
-import AllDone from "@/app/_components/farm/AllDone";
+import AllDone from "@/app/_components/feedSupply/AllDone";
 import AquaFarmWizard from "@/app/_components/farm/AquaFarmWizard";
 import FarmInformation from "@/app/_components/farm/FarmInformation";
 import ProductionUnits from "@/app/_components/farm/ProductionUnits";
