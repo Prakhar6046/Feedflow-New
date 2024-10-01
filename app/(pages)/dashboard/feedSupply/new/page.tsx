@@ -27,7 +27,6 @@ const steps = [
 
 export default function Page() {
   const [activeStep, setActiveStep] = useState<number>(0);
-  console.log(activeStep);
 
   return (
     <>

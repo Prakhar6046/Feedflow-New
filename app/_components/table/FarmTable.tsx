@@ -52,7 +52,7 @@ export default function FarmTable() {
   const handleEdit = () => {
     if (selectedFarm) {
       dispatch(farmAction.editFarm(selectedFarm));
-      router.push(`/dashboard/farm/edit/${selectedFarm.id}`);
+      router.push(`/dashboard/farm/edit`);
     }
   };
   const handleClose = () => {

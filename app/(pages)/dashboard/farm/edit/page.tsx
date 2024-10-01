@@ -27,7 +27,7 @@ const steps = [
     label: "Finished",
   },
 ];
-const Page = ({ params }: { params: { farmId: string } }) => {
+const Page = () => {
   const [activeStep, setActiveStep] = useState<number>(0);
   const isEditFarm = useAppSelector(selectIsEditFarm);
   const editFarm = useAppSelector(selectEditFarm);
@@ -45,7 +45,7 @@ const Page = ({ params }: { params: { farmId: string } }) => {
         links={[
           { name: "Dashboard", link: "/dashboard" },
           { name: "Farm", link: "/dashboard/farm" },
-          { name: "Edit", link: `/dashboard/edit/${params.farmId}` },
+          // { name: "Edit", link: `/dashboard/edit/${params.farmId}` },
         ]}
       />
       <Grid
