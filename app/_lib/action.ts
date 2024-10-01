@@ -85,6 +85,8 @@ export const getFarms = async () => {
     });
     const res = await data.json();
     revalidatePath(`/dashboard/farm`);
+    console.log(res);
+
     return res;
   } catch (error) {
     return error;
