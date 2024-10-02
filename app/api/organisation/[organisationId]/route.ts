@@ -29,7 +29,7 @@ export async function PUT(req: NextRequest, context: { params: any }) {
   try {
     const organisationId = context.params.organisationId;
 
-    // Check if a user exists
+    // Check if the organisation exists
     const organisation = await prisma.organisation.findUnique({
       where: { id: Number(organisationId) },
     });
@@ -41,16 +41,13 @@ export async function PUT(req: NextRequest, context: { params: any }) {
       );
     }
 
-    // Upload the image using multer
+    // Parse form data
     const formData = await req.formData();
     const name = formData.get("name") as string;
     const organisationCode = formData.get("organisationCode") as string;
     const organisationType = formData.get("organisationType") as string;
-    // const address = formData.get("address") as any;
-    // const contacts = formData.get("contacts") as any;
     const addressData = JSON.parse(formData.get("address") as string);
     const contactsData = JSON.parse(formData.get("contacts") as string);
-
     const image = formData.get("image") as any;
 
     // Handle address update or create
@@ -73,40 +70,67 @@ export async function PUT(req: NextRequest, context: { params: any }) {
       },
     });
 
-    // const updatedContact = await prisma.contact.upsert({
-    //   where: { id: organisation.contactId || "" },
-    //   update: {
-    //     name: contactsData.name,
-    //     role: contactsData.role,
-    //     email: contactsData.email,
-    //     phone: contactsData.phone,
-    //   },
-    //   create: {
-    //     name: contactsData.name,
-    //     role: contactsData.role,
-    //     email: contactsData.email,
-    //     phone: contactsData.phone,
-    //     organisation: { connect: { id: organisation.id } },
-    //   },
-    // });
+    // Handle contacts update or create
     for (const contact of contactsData) {
-      await prisma.contact.upsert({
-        where: { id: contact.id || "" }, // Assuming each contact has an `id`
-        update: {
-          name: contact.name,
-          role: contact.role,
-          email: contact.email,
-          phone: contact.phone,
-        },
-        create: {
-          name: contact.name,
-          role: contact.role,
-          email: contact.email,
-          phone: contact.phone,
-          organisation: { connect: { id: organisation.id } },
-        },
-      });
+      let userId = contact.userId;
+
+      // If contact has no id, it's a new contact
+      if (!contact.id) {
+        // If userId is not provided, find or create a user
+        if (!userId) {
+          const user = await prisma.user.findUnique({
+            where: { email: contact.email },
+            select: { id: true },
+          });
+
+          if (user) {
+            userId = user.id;
+            // Update user's email if it's different
+          } else {
+            // If the user doesn't exist, create a new one and get the ID
+            const newUser = await prisma.user.create({
+              data: {
+                email: contact.email,
+                name: contact.name,
+                organisationId: Number(organisationId),
+              },
+              select: { id: true },
+            });
+            userId = newUser.id;
+          }
+        }
+
+        // Create the new contact with the userId
+        await prisma.contact.create({
+          data: {
+            name: contact.name,
+            role: contact.role,
+            email: contact.email,
+            phone: contact.phone,
+            userId: String(userId), // Associate the new userId with the contact
+            organisation: { connect: { id: organisation.id } },
+          },
+        });
+      } else {
+        await prisma.user.update({
+          where: { id: Number(userId) },
+          data: { email: contact.email },
+        });
+        // If contact exists (has an id), update the contact information
+        await prisma.contact.update({
+          where: { id: contact.id },
+          data: {
+            name: contact.name,
+            role: contact.role,
+            email: contact.email,
+            phone: contact.phone,
+            userId: String(userId), // Keep the userId association
+          },
+        });
+      }
     }
+
+    // Update organisation details
     const updatedOrganisation = await prisma.organisation.update({
       where: { id: Number(organisationId) },
       data: {

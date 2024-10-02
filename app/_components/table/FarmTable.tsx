@@ -18,7 +18,6 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import Loader from "../Loader";
 interface Props {
   farms: any;
 }
@@ -26,9 +25,8 @@ const tableData: Array<string> = ["Farm", "Production Unit Count", ""];
 export default function FarmTable({ farms }: Props) {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const [farmsData, setFarmsData] = useState<any>();
+  // const [farmsData, setFarmsData] = useState<any>();
   const [selectedFarm, setSelectedFarm] = useState<any>(null);
-  const [loading, setLoading] = useState<Boolean>(false);
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null
   );
@@ -51,15 +49,6 @@ export default function FarmTable({ farms }: Props) {
   };
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
-  // useEffect(() => {
-  //   if (farms) {
-  //     setFarmsData(farms);
-  //   }
-  // }, [farms]);
-
-  if (loading) {
-    return <Loader />;
-  }
 
   return (
     <Paper
