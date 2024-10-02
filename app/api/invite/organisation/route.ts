@@ -43,6 +43,7 @@ export async function POST(req: NextRequest) {
 
     //   return InvitationEmail(user);
     // });
+
     createdUsers.forEach((user: any) => {
       const mailOptions = {
         from: process.env.EMAIL_USER, // Sender address
@@ -109,7 +110,7 @@ export async function POST(req: NextRequest) {
     `,
       };
 
-      transporter.sendMail(mailOptions);
+      return transporter.sendMail(mailOptions);
     });
     // Return a success response
     return NextResponse.json({
