@@ -81,6 +81,7 @@ export const getFarms = async () => {
       headers: {
         "Content-Type": "application/json",
       },
+      cache: "no-store",
     });
     const res = await data.json();
     revalidatePath(`/dashboard/farm`);
