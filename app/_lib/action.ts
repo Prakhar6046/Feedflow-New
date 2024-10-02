@@ -77,14 +77,13 @@ export const getUser = async (userId: string) => {
 export const getFarms = async () => {
   try {
     const data = await fetch(`${process.env.BASE_URL}/api/farm`, {
-      cache: "no-store",
       method: "GET",
       headers: {
         "Content-Type": "application/json",
       },
     });
     const res = await data.json();
-    revalidatePath(`/dashboard/farm`, "page");
+    revalidatePath(`/dashboard/farm`);
     console.log(res);
 
     return res;

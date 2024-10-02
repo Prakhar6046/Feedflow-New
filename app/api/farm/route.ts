@@ -1,7 +1,9 @@
 import prisma from "@/prisma/prisma";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export const GET = async () => {
+export const GET = async (request: NextRequest) => {
+  const searchParams = request.nextUrl.searchParams;
+  const role = searchParams.get("role");
   try {
     const farms = await prisma.farm.findMany({
       include: {

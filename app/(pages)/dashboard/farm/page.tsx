@@ -1,12 +1,12 @@
 import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
+import { Farm } from "@/app/_components/Farm";
 import Loader from "@/app/_components/Loader";
 // import CommonTable from "@/app/_components/table/CommonTable";
 import FarmTable from "@/app/_components/table/FarmTable";
 import { getFarms } from "@/app/_lib/action";
 import { Suspense } from "react";
+export const revalidate = 0;
 export default async function Page() {
-  const farms = await getFarms();
-
   return (
     <>
       <BasicBreadcrumbs
@@ -23,7 +23,7 @@ export default async function Page() {
         ]}
       />
       <Suspense fallback={<Loader />}>
-        <FarmTable farms={farms?.data} status={JSON.stringify(farms)} />
+        <Farm />
       </Suspense>
     </>
   );

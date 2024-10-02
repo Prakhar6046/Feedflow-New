@@ -144,8 +144,6 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
   }, []);
   useEffect(() => {
     if (organisationData) {
-      console.log(organisationData);
-
       setValue("organisationName", organisationData.name);
       setValue("organisationCode", organisationData.organisationCode);
       setValue("address", String(organisationData?.address?.name));

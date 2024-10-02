@@ -21,10 +21,9 @@ import React, { useEffect, useState } from "react";
 import Loader from "../Loader";
 interface Props {
   farms: any;
-  status: any;
 }
 const tableData: Array<string> = ["Farm", "Production Unit Count", ""];
-export default function FarmTable({ farms, status }: Props) {
+export default function FarmTable({ farms }: Props) {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const [farmsData, setFarmsData] = useState<any>();
@@ -44,7 +43,7 @@ export default function FarmTable({ farms, status }: Props) {
   const handleEdit = () => {
     if (selectedFarm) {
       dispatch(farmAction.editFarm(selectedFarm));
-      router.push(`/dashboard/farm/edit`);
+      router.push(`/dashboard/farm/${selectedFarm.id}`);
     }
   };
   const handleClose = () => {
@@ -61,7 +60,6 @@ export default function FarmTable({ farms, status }: Props) {
   if (loading) {
     return <Loader />;
   }
-  console.log(status);
 
   return (
     <Paper
