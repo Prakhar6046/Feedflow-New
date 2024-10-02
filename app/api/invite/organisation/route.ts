@@ -2,7 +2,14 @@ import { InvitationEmail } from "@/app/_lib/emailTemplate/invitationEmail";
 import prisma from "@/prisma/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import nodemailer from "nodemailer";
-
+// Create a transporter using your email provider's SMTP settings
+const transporter = nodemailer.createTransport({
+  service: "gmail", // You can use any other email service provider
+  auth: {
+    user: process.env.EMAIL_USER, // Your email address
+    pass: process.env.EMAIL_PASS, // Your email password or app-specific password
+  },
+});
 export async function POST(req: NextRequest) {
   try {
     const { organisationId, users } = await req.json();
@@ -31,7 +38,7 @@ export async function POST(req: NextRequest) {
     });
     //Sending emails to all created users
     createdUsers.map((user: any) => {
-      InvitationEmail(user);
+      return InvitationEmail(user);
     });
 
     // Return a success response
