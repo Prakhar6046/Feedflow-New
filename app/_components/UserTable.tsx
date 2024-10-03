@@ -482,13 +482,13 @@ export default function UserTable() {
                           </Stack>
                         </MenuItem>
 
-                        <Divider
+                        {/* <Divider
                           sx={{
                             borderColor: "#9797971A",
                             my: 0.5,
                           }}
-                        />
-                        <MenuItem onClick={handleEdit}>
+                        /> */}
+                        {/* <MenuItem onClick={handleEdit}>
                           <Stack
                             display="flex"
                             gap={1.2}
@@ -514,7 +514,7 @@ export default function UserTable() {
                               Delete
                             </Typography>
                           </Stack>
-                        </MenuItem>
+                        </MenuItem> */}
                       </Menu>
                     </TableCell>
                   </TableRow>

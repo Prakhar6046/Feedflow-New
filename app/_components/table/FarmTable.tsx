@@ -1,5 +1,9 @@
 "use client";
-import { farmAction, selectFarms } from "@/lib/features/farm/farmSlice";
+import {
+  farmAction,
+  selectFarmLoading,
+  selectFarms,
+} from "@/lib/features/farm/farmSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import {
   Button,
@@ -18,19 +22,26 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import Loader from "../Loader";
 interface Props {
   farms: any;
 }
 const tableData: Array<string> = ["Farm", "Production Unit Count", ""];
-export default function FarmTable({ farms }: Props) {
+export default function FarmTable() {
   const router = useRouter();
   const dispatch = useAppDispatch();
+  const farms = useAppSelector(selectFarms);
+  const loading = useAppSelector(selectFarmLoading);
   // const [farmsData, setFarmsData] = useState<any>();
   const [selectedFarm, setSelectedFarm] = useState<any>(null);
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null
   );
-
+  const getFarms = async () => {
+    const response = await fetch("/api/farm");
+    const res = response.json();
+    return res;
+  };
   const handleClick = (
     event: React.MouseEvent<HTMLButtonElement>,
     farm: any
@@ -49,7 +60,18 @@ export default function FarmTable({ farms }: Props) {
   };
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
-
+  useEffect(() => {
+    dispatch(farmAction.handleLoading(true));
+    const data = async () => {
+      const res = await getFarms();
+      dispatch(farmAction.updateFarms(res.data));
+      dispatch(farmAction.handleLoading(false));
+    };
+    data();
+  }, []);
+  if (loading) {
+    return <Loader />;
+  }
   return (
     <Paper
       sx={{
