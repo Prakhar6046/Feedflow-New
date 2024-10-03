@@ -4,6 +4,8 @@ import { useAppDispatch } from "@/lib/hooks";
 import { Box, Button, Grid, Stack, TextField, Typography } from "@mui/material";
 import { NextPage } from "next";
 import { useEffect, useState } from "react";
+import * as validationPattern from "@/app/_lib/utils/validationPatterns/index";
+import * as validationMessage from "@/app/_lib/utils/validationsMessage/index";
 import { useForm, SubmitHandler } from "react-hook-form";
 import MapComponent from "./MapComponent";
 interface Props {
@@ -81,7 +83,7 @@ const FarmInformation: NextPage<Props> = ({ setActiveStep, editFarm }) => {
             />
             {errors && errors.name && errors.name.type === "required" && (
               <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
-                This field is required.
+                {validationMessage.required}
               </Typography>
             )}
           </Box>
@@ -94,18 +96,25 @@ const FarmInformation: NextPage<Props> = ({ setActiveStep, editFarm }) => {
               // focused
               {...register("farmAltitude", {
                 required: true,
+                pattern: validationPattern.onlyNumbersPattern,
               })}
               sx={{
                 width: "100%",
               }}
             />
-            {/* console.log(); */}
 
             {errors &&
               errors.farmAltitude &&
               errors.farmAltitude.type === "required" && (
                 <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
-                  This field is required.
+                  {validationMessage.required}
+                </Typography>
+              )}
+            {errors &&
+              errors.farmAltitude &&
+              errors.farmAltitude.type === "pattern" && (
+                <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                  {validationMessage.onlyNumbers}
                 </Typography>
               )}
           </Box>
@@ -167,7 +176,7 @@ const FarmInformation: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                           fontSize={13}
                           mt={0.5}
                         >
-                          This field is required.
+                          {validationMessage.required}
                         </Typography>
                       )}
                   </Box>
@@ -195,6 +204,7 @@ const FarmInformation: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                       // focused
                       {...register("city", {
                         required: true,
+                        pattern: validationPattern.alphabetsAndSpacesPattern,
                       })}
                       sx={{
                         width: "100%",
@@ -209,7 +219,19 @@ const FarmInformation: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                           fontSize={13}
                           mt={0.5}
                         >
-                          This field is required.
+                          {validationMessage.required}
+                        </Typography>
+                      )}
+                    {errors &&
+                      errors.city &&
+                      errors.city.type === "pattern" && (
+                        <Typography
+                          variant="body2"
+                          color="red"
+                          fontSize={13}
+                          mt={0.5}
+                        >
+                          {validationMessage.OnlyAlphabatsMessage}
                         </Typography>
                       )}
                   </Box>
@@ -224,6 +246,7 @@ const FarmInformation: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                       // focused
                       {...register("province", {
                         required: true,
+                        pattern: validationPattern.alphabetsAndSpacesPattern,
                       })}
                       sx={{
                         width: "100%",
@@ -238,7 +261,19 @@ const FarmInformation: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                           fontSize={13}
                           mt={0.5}
                         >
-                          This field is required.
+                          {validationMessage.required}
+                        </Typography>
+                      )}
+                    {errors &&
+                      errors.province &&
+                      errors.province.type === "pattern" && (
+                        <Typography
+                          variant="body2"
+                          color="red"
+                          fontSize={13}
+                          mt={0.5}
+                        >
+                          {validationMessage.OnlyAlphabatsMessage}
                         </Typography>
                       )}
                   </Box>
@@ -253,6 +288,7 @@ const FarmInformation: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                       // focused
                       {...register("zipCode", {
                         required: true,
+                        pattern: validationPattern.onlyNumbersPattern,
                       })}
                       sx={{
                         width: "100%",
@@ -267,7 +303,19 @@ const FarmInformation: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                           fontSize={13}
                           mt={0.5}
                         >
-                          This field is required.
+                          {validationMessage.required}
+                        </Typography>
+                      )}
+                    {errors &&
+                      errors.zipCode &&
+                      errors.zipCode.type === "pattern" && (
+                        <Typography
+                          variant="body2"
+                          color="red"
+                          fontSize={13}
+                          mt={0.5}
+                        >
+                          {validationMessage.onlyNumbers}
                         </Typography>
                       )}
                   </Box>
@@ -284,6 +332,7 @@ const FarmInformation: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                       // focused
                       {...register("country", {
                         required: true,
+                        pattern: validationPattern.alphabetsAndSpacesPattern,
                       })}
                       sx={{
                         width: "100%",
@@ -298,7 +347,19 @@ const FarmInformation: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                           fontSize={13}
                           mt={0.5}
                         >
-                          This field is required.
+                          {validationMessage.required}
+                        </Typography>
+                      )}
+                    {errors &&
+                      errors.country &&
+                      errors.country.type === "pattern" && (
+                        <Typography
+                          variant="body2"
+                          color="red"
+                          fontSize={13}
+                          mt={0.5}
+                        >
+                          {validationMessage.OnlyAlphabatsMessage}
                         </Typography>
                       )}
                   </Box>

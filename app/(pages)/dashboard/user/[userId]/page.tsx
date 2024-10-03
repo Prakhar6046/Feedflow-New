@@ -19,13 +19,16 @@ import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { useEffect, useState } from "react";
 import Loader from "@/app/_components/Loader";
 import { SubmitHandler, useForm } from "react-hook-form";
-
+import EyeClosed from "@/public/static/img/icons/ic-eye-closed.svg";
 import toast from "react-hot-toast";
 import { getCookie } from "cookies-next";
 import { SingleUser, UserEditFormInputs } from "@/app/_typeModels/User";
 import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
 import { useRouter } from "next/navigation";
-
+import Image from "next/image";
+import EyeOpened from "@/public/static/img/icons/ic-eye-open.svg";
+import * as validationPattern from "@/app/_lib/utils/validationPatterns/index";
+import * as validationMessage from "@/app/_lib/utils/validationsMessage/index";
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
   clipPath: "inset(50%)",
@@ -105,6 +108,8 @@ export default function Page({ params }: { params: { userId: string } }) {
   const [loading, setLoading] = useState<boolean>(false);
   const [currentUserId, setCurrentUserId] = useState<Number>();
   const [profilePic, setProfilePic] = useState<String>();
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [showConfirmPassword, setshowConfirmPassword] = useState<boolean>();
   const getUser = async () => {
     setLoading(true);
     const data = await fetch(`/api/users/${params.userId}`, { method: "GET" });
@@ -432,34 +437,102 @@ export default function Page({ params }: { params: { userId: string } }) {
                   change it here.
                 </Typography>
 
-                <TextField
-                  label="Password"
-                  type="password"
-                  className="form-input"
-                  {...register("password")}
-                  focused
-                  sx={{
-                    width: "100%",
-                    marginBottom: 2,
-                  }}
-                />
+                <Box position={"relative"} mb={2}>
+                  <TextField
+                    label="Password"
+                    type={showPassword ? "text" : "password"}
+                    className="form-input"
+                    {...register("password", {
+                      pattern: validationPattern.passwordPattern,
+                    })}
+                    focused
+                    sx={{
+                      width: "100%",
+                      // marginBottom: 2,
+                    }}
+                  />
 
-                <TextField
-                  label="Re-enter Password"
-                  type="password"
-                  className="form-input"
-                  {...register("confirmPassword", {
-                    validate: (value) =>
-                      value === getValues().password ||
-                      "Confirm Password do not match!",
-                  })}
-                  focused
-                  sx={{
-                    width: "100%",
-                    marginBottom: 2,
-                  }}
-                />
-                {errors.confirmPassword?.message}
+                  <Box
+                    bgcolor={"white"}
+                    sx={{
+                      position: "absolute",
+                      right: "7px",
+                      top: errors?.password ? "35%" : "50%",
+                      transform: "translate(-7px,-50%)",
+                      width: 20,
+                      height: 20,
+                    }}
+                  >
+                    <Image
+                      onClick={() => setShowPassword(!showPassword)}
+                      src={showPassword ? EyeOpened : EyeClosed}
+                      width={20}
+                      height={20}
+                      alt="Eye Icon"
+                    />
+                  </Box>
+                  {errors &&
+                    errors.password &&
+                    errors.password.type === "pattern" && (
+                      <Typography
+                        variant="body2"
+                        color="red"
+                        fontSize={13}
+                        mt={0.5}
+                      >
+                        {validationMessage.passwordPatternMessage}
+                      </Typography>
+                    )}
+                </Box>
+                <Box position={"relative"}>
+                  <TextField
+                    label="Re-enter Password"
+                    type={showConfirmPassword ? "text" : "password"}
+                    className="form-input"
+                    {...register("confirmPassword", {
+                      validate: (value) =>
+                        value === getValues().password ||
+                        "Confirm Password do not match!",
+                    })}
+                    focused
+                    sx={{
+                      width: "100%",
+                    }}
+                  />
+
+                  <Box
+                    bgcolor={"white"}
+                    sx={{
+                      position: "absolute",
+                      right: "7px",
+                      top: errors?.confirmPassword ? "35%" : "50%",
+                      transform: "translate(-7px,-50%)",
+                      width: 20,
+                      height: 20,
+                    }}
+                  >
+                    <Image
+                      onClick={() =>
+                        setshowConfirmPassword(!showConfirmPassword)
+                      }
+                      src={showConfirmPassword ? EyeOpened : EyeClosed}
+                      width={20}
+                      height={20}
+                      alt="Eye Icon"
+                    />
+                  </Box>
+                  {errors && errors.confirmPassword?.type == "validate" && (
+                    <Typography
+                      variant="body2"
+                      color="red"
+                      fontSize={13}
+                      mt={0.5}
+                    >
+                      {errors.confirmPassword?.message}
+                    </Typography>
+                  )}
+                </Box>
+
                 <Button
                   type="submit"
                   variant="contained"
