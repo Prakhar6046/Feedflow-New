@@ -549,10 +549,11 @@ const FeedSelection: NextPage<Props> = ({ setActiveStep, editFarm }) => {
         <Box
           display={"flex"}
           alignItems={"center"}
-          mt={1}
+          mt={3}
           gap={2}
           flexWrap={"wrap"}
-          justifyContent={"space-between"}
+          justifyContent={"end"}
+          width={"100%"}
         >
           <Box
             display={"flex"}
