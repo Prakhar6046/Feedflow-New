@@ -73,6 +73,8 @@ export const InvitationEmail = async (user: any) => {
       </html>
       `,
     };
-    transporter.sendMail(mailOptions);
-  } catch (error) {}
+    await transporter.sendMail(mailOptions);
+  } catch (error) {
+    return error;
+  }
 };
