@@ -31,7 +31,7 @@ export default function Page() {
   return (
     <>
       <BasicBreadcrumbs
-        heading={"Feed"}
+        heading={"Feed Supply"}
         searchOrganisations={false}
         searchUsers={false}
         searchFarm={false}

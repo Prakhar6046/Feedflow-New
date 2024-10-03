@@ -17,7 +17,7 @@ export default function Page() {
   return (
     <>
       <BasicBreadcrumbs
-        heading={"Feed"}
+        heading={"Feed Supply"}
         buttonName={"Add Feed"}
         searchOrganisations={false}
         searchUsers={false}

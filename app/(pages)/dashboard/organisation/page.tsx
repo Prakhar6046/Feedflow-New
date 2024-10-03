@@ -18,7 +18,7 @@ export default async function Page() {
   return (
     <>
       <BasicBreadcrumbs
-        heading={"Organisation"}
+        heading={"Organisations"}
         buttonName={"Add Organisation"}
         organisations={organisations?.data}
         buttonRoute={"/dashboard/organisation/new"}
@@ -27,7 +27,7 @@ export default async function Page() {
         isTable={true}
         links={[
           { name: "Dashboard", link: "/dashboard" },
-          { name: "Organisation", link: "/dashboard/organisation" },
+          { name: "Organisations", link: "/dashboard/organisation" },
         ]}
       />
       <Suspense fallback={<Loader />}>

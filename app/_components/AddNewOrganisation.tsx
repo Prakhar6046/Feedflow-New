@@ -60,12 +60,14 @@ export const OrganisationType = [
 const AddNewOrganisation = () => {
   const [profilePic, setProfilePic] = useState<String>();
   const router = useRouter();
+  const [contactError, setcontactError] = useState<string>("");
   const {
     register,
     setValue,
     handleSubmit,
     control,
     getValues,
+    watch,
     reset,
     formState: { errors },
   } = useForm<AddOrganizationFormInputs>({
@@ -94,7 +96,25 @@ const AddNewOrganisation = () => {
     control,
     name: "contacts",
   });
-  console.log(errors);
+  const AddContactField = () => {
+    const conatcts = watch("contacts");
+    if (conatcts) {
+      const lastContact = conatcts[conatcts.length - 1];
+      console.log(lastContact);
+      if (
+        lastContact &&
+        lastContact.name &&
+        lastContact.role &&
+        lastContact.email &&
+        lastContact.phone
+      ) {
+        setcontactError("");
+        append({ name: "", role: "", email: "", phone: "" });
+      } else {
+        setcontactError("Please fill previous contact details.");
+      }
+    }
+  };
   const handleUpload = async (imagePath: FileList) => {
     const formData = new FormData();
     formData.append("image", imagePath[0]);
@@ -993,6 +1013,11 @@ const AddNewOrganisation = () => {
                 </Box>
               </Stack>
             ))}
+            {contactError && (
+              <Typography variant="body2" color="red" fontSize={13} my={0.5}>
+                {contactError}
+              </Typography>
+            )}
 
             <Divider
               sx={{
@@ -1015,9 +1040,7 @@ const AddNewOrganisation = () => {
               gap={0.5}
               border={"2px dashed #06a19b"}
               className="add-contact-btn"
-              onClick={() =>
-                append({ name: "", role: "", email: "", phone: "" })
-              }
+              onClick={() => AddContactField()}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"

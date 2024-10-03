@@ -144,6 +144,7 @@ export default function Page({ params }: { params: { userId: string } }) {
     if (res.ok) {
       const updatedUser = await res.json();
       toast.success(updatedUser.message);
+      router.push("/dashboard/user");
       resetField("confirmPassword");
       resetField("password");
     }
@@ -167,7 +168,7 @@ export default function Page({ params }: { params: { userId: string } }) {
     if (response.ok) {
       const updatedUser = await response.json();
       setProfilePic(updatedUser.data.imageUrl);
-      router.push("/dashboard/user");
+
       // toast.success(updatedUser.message);
       // resetField("confirmPassword");
       // resetField("password");

@@ -73,6 +73,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
   const {
     register,
     handleSubmit,
+
     formState: { errors },
   } = useForm<FormInputs>();
   const onSubmit: SubmitHandler<FormInputs> = (data) => {
@@ -109,7 +110,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                   <Select
                     labelId="feed-supply-select-label1"
                     id="feed-supply-select1"
-                    {...register("feedSupplier", { required: true })}
+                    {...register("feedSupplier")}
                     label="Feed Supplier"
                   >
                     <MenuItem value={10}>Ten</MenuItem>
@@ -1018,7 +1019,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                         id="feed-supply-select10"
                         {...register("nutritionalGuarantee.crudeAsh.value")}
                         label="Min"
-                        onChange={handleChange}
+                        // onChange={handleChange}
                       >
                         {nutritionalGuarantee.map((guarantee, i) => {
                           return (
@@ -1081,7 +1082,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                         label="Calcium"
                         type="number"
                         className="form-input"
-                        {...register("nutritionalGuarantee.calcium.value")}
+                        {...register("nutritionalGuarantee.calcium.kg")}
                         sx={{
                           width: "100%",
                           minWidth: 190,
@@ -1545,6 +1546,22 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                 mt={3}
               >
                 <Button
+                  type="submit"
+                  variant="contained"
+                  sx={{
+                    background: "#fff",
+                    color: "#06A19B",
+                    fontWeight: 600,
+                    padding: "6px 16px",
+                    width: "fit-content",
+                    textTransform: "capitalize",
+                    borderRadius: "8px",
+                    border: "1px solid #06A19B",
+                  }}
+                >
+                  Add feed
+                </Button>
+                <Button
                   type="button"
                   variant="contained"
                   sx={{
@@ -1562,7 +1579,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                   Previous
                 </Button>
                 <Button
-                  type="submit"
+                  type="button"
                   variant="contained"
                   sx={{
                     background: "#06A19B",
@@ -1572,7 +1589,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                     textTransform: "capitalize",
                     borderRadius: "8px",
                   }}
-                  onClick={() => setActiveStep(2)}
+                  // onClick={() => setActiveStep(2)}
                 >
                   Next
                 </Button>

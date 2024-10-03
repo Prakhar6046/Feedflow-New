@@ -56,6 +56,7 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
   const [organisationData, setOrganisationData] = useState<any>();
   const [loading, setLoading] = useState<boolean>(false);
   const [profilePic, setProfilePic] = useState<String>();
+  const [contactError, setcontactError] = useState<string>("");
   const getOrganisation = async () => {
     setLoading(true);
     const data = await fetch(`/api/organisation/${params.organisationId}`, {
@@ -126,9 +127,10 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
         lastContact.email &&
         lastContact.phone
       ) {
+        setcontactError("");
         append({ name: "", role: "", email: "", phone: "" });
       } else {
-        toast.error("Please fill previous contact details.");
+        setcontactError("Please fill previous contact details.");
       }
     }
   };
@@ -198,7 +200,7 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
         hideSearchInput={true}
         links={[
           { name: "Dashboard", link: "/dashboard" },
-          { name: "Organisation", link: "/dashboard/organisation" },
+          { name: "Organisations", link: "/dashboard/organisation" },
           {
             name: "Edit Organisation",
             link: `/dashboard/organisation/${params.organisationId}`,
@@ -897,7 +899,11 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
                   </Box>
                 </Stack>
               ))}
-
+              {contactError && (
+                <Typography variant="body2" color="red" fontSize={13} my={0.5}>
+                  {contactError}
+                </Typography>
+              )}
               <Divider
                 sx={{
                   borderColor: "#979797",
