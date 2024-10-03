@@ -1,7 +1,8 @@
 "use client";
 // import UploadFileOutlinedIcon from '@mui/icons-material/UploadFileOutlined';
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-
+import * as validationPattern from "@/app/_lib/utils/validationPatterns/index";
+import * as validationMessage from "@/app/_lib/utils/validationsMessage/index";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 
 import {
@@ -275,6 +276,7 @@ const AddNewOrganisation = () => {
                 focused
                 {...register("organisationName", {
                   required: true,
+                  pattern: validationPattern.alphabetsNumbersAndSpacesPattern,
                 })}
                 // focused={userData?.data.name ? true : false}
                 // value={userData?.data.name}
@@ -291,7 +293,19 @@ const AddNewOrganisation = () => {
                     fontSize={13}
                     mt={0.5}
                   >
-                    This field is required.
+                    {validationMessage.required}
+                  </Typography>
+                )}
+              {errors &&
+                errors.organisationName &&
+                errors.organisationName.type === "pattern" && (
+                  <Typography
+                    variant="body2"
+                    color="red"
+                    fontSize={13}
+                    mt={0.5}
+                  >
+                    {validationMessage.OnlyAlphabetsandNumberMessage}
                   </Typography>
                 )}
             </Box>
@@ -338,6 +352,7 @@ const AddNewOrganisation = () => {
                   className="form-input"
                   {...register("organisationCode", {
                     required: true,
+                    pattern: validationPattern.alphabetsNumbersAndSpacesPattern,
                   })}
                   // disabled
                   sx={{
@@ -356,7 +371,19 @@ const AddNewOrganisation = () => {
                       fontSize={13}
                       mt={0.5}
                     >
-                      This field is required.
+                      {validationMessage.required}
+                    </Typography>
+                  )}
+                {errors &&
+                  errors.organisationCode &&
+                  errors.organisationCode.type === "pattern" && (
+                    <Typography
+                      variant="body2"
+                      color="red"
+                      fontSize={13}
+                      mt={0.5}
+                    >
+                      {validationMessage.OnlyAlphabetsandNumberMessage}
                     </Typography>
                   )}
               </Box>
@@ -398,7 +425,7 @@ const AddNewOrganisation = () => {
                     fontSize={13}
                     mt={0.5}
                   >
-                    This field is required.
+                    {validationMessage.required}
                   </Typography>
                 )}
             </FormControl>
@@ -429,6 +456,7 @@ const AddNewOrganisation = () => {
                   className="form-input"
                   {...register("address", {
                     required: true,
+                    pattern: validationPattern.addressPattern,
                   })}
                   focused
                   sx={{
@@ -444,7 +472,19 @@ const AddNewOrganisation = () => {
                       fontSize={13}
                       mt={0.5}
                     >
-                      This field is required.
+                      {validationMessage.required}
+                    </Typography>
+                  )}
+                {errors &&
+                  errors.address &&
+                  errors.address.type === "pattern" && (
+                    <Typography
+                      variant="body2"
+                      color="red"
+                      fontSize={13}
+                      mt={0.5}
+                    >
+                      {validationMessage.AddressMessage}
                     </Typography>
                   )}
               </Box>
@@ -456,6 +496,7 @@ const AddNewOrganisation = () => {
                   className="form-input"
                   {...register("city", {
                     required: true,
+                    pattern: validationPattern.alphabetsAndSpacesPattern,
                   })}
                   focused
                   sx={{
@@ -469,7 +510,17 @@ const AddNewOrganisation = () => {
                     fontSize={13}
                     mt={0.5}
                   >
-                    This field is required.
+                    {validationMessage.required}
+                  </Typography>
+                )}
+                {errors && errors.city && errors.city.type === "pattern" && (
+                  <Typography
+                    variant="body2"
+                    color="red"
+                    fontSize={13}
+                    mt={0.5}
+                  >
+                    {validationMessage.OnlyAlphabatsMessage}
                   </Typography>
                 )}
               </Box>
@@ -492,6 +543,7 @@ const AddNewOrganisation = () => {
                   className="form-input"
                   {...register("province", {
                     required: true,
+                    pattern: validationPattern.alphabetsAndSpacesPattern,
                   })}
                   focused
                   sx={{
@@ -507,7 +559,19 @@ const AddNewOrganisation = () => {
                       fontSize={13}
                       mt={0.5}
                     >
-                      This field is required.
+                      {validationMessage.required}
+                    </Typography>
+                  )}
+                {errors &&
+                  errors.province &&
+                  errors.province.type === "pattern" && (
+                    <Typography
+                      variant="body2"
+                      color="red"
+                      fontSize={13}
+                      mt={0.5}
+                    >
+                      {validationMessage.OnlyAlphabatsMessage}
                     </Typography>
                   )}
               </Box>
@@ -519,6 +583,7 @@ const AddNewOrganisation = () => {
                   className="form-input"
                   {...register("postCode", {
                     required: true,
+                    pattern: validationPattern.onlyNumbersPattern,
                   })}
                   focused
                   sx={{
@@ -534,7 +599,19 @@ const AddNewOrganisation = () => {
                       fontSize={13}
                       mt={0.5}
                     >
-                      This field is required.
+                      {validationMessage.required}
+                    </Typography>
+                  )}
+                {errors &&
+                  errors.postCode &&
+                  errors.postCode.type === "pattern" && (
+                    <Typography
+                      variant="body2"
+                      color="red"
+                      fontSize={13}
+                      mt={0.5}
+                    >
+                      {validationMessage.onlyNumbers}
                     </Typography>
                   )}
               </Box>
@@ -691,6 +768,7 @@ const AddNewOrganisation = () => {
                     className="form-input"
                     {...register(`contacts.${index}.name` as const, {
                       required: true,
+                      pattern: validationPattern.alphabetsAndSpacesPattern,
                     })}
                     focused
                     sx={{
@@ -709,7 +787,21 @@ const AddNewOrganisation = () => {
                         fontSize={13}
                         mt={0.5}
                       >
-                        This field is required.
+                        {validationMessage.required}
+                      </Typography>
+                    )}
+                  {errors &&
+                    errors?.contacts &&
+                    errors?.contacts[index] &&
+                    errors?.contacts[index]?.name &&
+                    errors?.contacts[index]?.name.type === "pattern" && (
+                      <Typography
+                        variant="body2"
+                        color="red"
+                        fontSize={13}
+                        mt={0.5}
+                      >
+                        {validationMessage.OnlyAlphabatsMessage}
                       </Typography>
                     )}
                 </Box>
@@ -729,6 +821,7 @@ const AddNewOrganisation = () => {
                     className="form-input"
                     {...register(`contacts.${index}.role` as const, {
                       required: true,
+                      pattern: validationPattern.alphabetsAndSpacesPattern,
                     })}
                     focused
                     sx={{
@@ -746,7 +839,21 @@ const AddNewOrganisation = () => {
                         fontSize={13}
                         mt={0.5}
                       >
-                        This field is required.
+                        {validationMessage.required}
+                      </Typography>
+                    )}
+                  {errors &&
+                    errors?.contacts &&
+                    errors?.contacts[index] &&
+                    errors?.contacts[index]?.role &&
+                    errors?.contacts[index]?.role.type === "pattern" && (
+                      <Typography
+                        variant="body2"
+                        color="red"
+                        fontSize={13}
+                        mt={0.5}
+                      >
+                        {validationMessage.OnlyAlphabatsMessage}
                       </Typography>
                     )}
                 </Box>
@@ -762,10 +869,11 @@ const AddNewOrganisation = () => {
                 >
                   <TextField
                     label="Email"
-                    type="email"
+                    type="text"
                     className="form-input"
                     {...register(`contacts.${index}.email` as const, {
                       required: true,
+                      pattern: validationPattern.emailPattern,
                     })}
                     focused
                     sx={{
@@ -783,7 +891,21 @@ const AddNewOrganisation = () => {
                         fontSize={13}
                         mt={0.5}
                       >
-                        This field is required.
+                        {validationMessage.required}
+                      </Typography>
+                    )}
+                  {errors &&
+                    errors?.contacts &&
+                    errors?.contacts[index] &&
+                    errors?.contacts[index]?.email &&
+                    errors?.contacts[index]?.email.type === "pattern" && (
+                      <Typography
+                        variant="body2"
+                        color="red"
+                        fontSize={13}
+                        mt={0.5}
+                      >
+                        {validationMessage.emailPatternMessage}
                       </Typography>
                     )}
                 </Box>
@@ -803,6 +925,7 @@ const AddNewOrganisation = () => {
                     className="form-input"
                     {...register(`contacts.${index}.phone` as const, {
                       required: true,
+                      pattern: validationPattern.phonePattern,
                     })}
                     focused
                     sx={{
@@ -820,7 +943,21 @@ const AddNewOrganisation = () => {
                         fontSize={13}
                         mt={0.5}
                       >
-                        This field is required.
+                        {validationMessage.required}
+                      </Typography>
+                    )}
+                  {errors &&
+                    errors?.contacts &&
+                    errors?.contacts[index] &&
+                    errors?.contacts[index]?.phone &&
+                    errors?.contacts[index]?.phone.type === "pattern" && (
+                      <Typography
+                        variant="body2"
+                        color="red"
+                        fontSize={13}
+                        mt={0.5}
+                      >
+                        {validationMessage.passwordPatternMessage}
                       </Typography>
                     )}
                 </Box>

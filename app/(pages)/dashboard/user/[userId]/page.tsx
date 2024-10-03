@@ -24,6 +24,7 @@ import toast from "react-hot-toast";
 import { getCookie } from "cookies-next";
 import { SingleUser, UserEditFormInputs } from "@/app/_typeModels/User";
 import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
+import { useRouter } from "next/navigation";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -98,6 +99,7 @@ const IOSSwitch = styled((props: SwitchProps) => (
 }));
 
 export default function Page({ params }: { params: { userId: string } }) {
+  const router = useRouter();
   const loggedUser: any = getCookie("logged-user");
   const [userData, setUserData] = useState<{ data: SingleUser }>();
   const [loading, setLoading] = useState<boolean>(false);
@@ -160,6 +162,7 @@ export default function Page({ params }: { params: { userId: string } }) {
     if (response.ok) {
       const updatedUser = await response.json();
       setProfilePic(updatedUser.data.imageUrl);
+      router.push("/dashboard/user");
       // toast.success(updatedUser.message);
       // resetField("confirmPassword");
       // resetField("password");
