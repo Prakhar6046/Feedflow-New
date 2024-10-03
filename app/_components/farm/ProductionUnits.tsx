@@ -41,7 +41,8 @@ import {
   ProductionUnitsFormTypes,
   UnitsTypes,
 } from "@/app/_typeModels/Farm";
-
+import * as validationPattern from "@/app/_lib/utils/validationPatterns/index";
+import * as validationMessage from "@/app/_lib/utils/validationsMessage/index";
 interface Props {
   setActiveStep: (val: number) => void;
   editFarm?: any;
@@ -80,6 +81,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
     watch,
     formState: { errors },
   } = useForm<ProductionUnitsFormTypes>({
+    mode: "onChange",
     defaultValues: {
       productionUnits: [
         {
@@ -97,6 +99,29 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
     name: "productionUnits",
   });
   const productionUnits = watch("productionUnits");
+  const AddProdunctionUnit = () => {
+    const productionUnits = watch("productionUnits");
+    if (productionUnits) {
+      const lastProductionUnit = productionUnits[productionUnits.length - 1];
+      if (
+        lastProductionUnit &&
+        lastProductionUnit.name &&
+        lastProductionUnit.type &&
+        lastProductionUnit.capacity &&
+        lastProductionUnit.waterflowRate
+      ) {
+        append({
+          name: "",
+          capacity: "",
+          type: "",
+          waterflowRate: "",
+          id: uuidv4(),
+        });
+      } else {
+        toast.error("Please fill previous production unit details.");
+      }
+    }
+  };
 
   const handleCalculate = (item: any, index: any) => {
     if (item) {
@@ -263,7 +288,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                               fontSize={13}
                               mt={0.5}
                             >
-                              This field is required.
+                              {validationMessage.required}
                             </Typography>
                           )}
                         {/* <TextField
@@ -331,7 +356,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                                 fontSize={13}
                                 mt={0.5}
                               >
-                                This field is required.
+                                {validationMessage.required}
                               </Typography>
                             )}
                           {/* <Select
@@ -378,6 +403,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                               `productionUnits.${index}.capacity` as const,
                               {
                                 required: true,
+                                pattern: validationPattern.onlyNumbersPattern,
                               }
                             )}
                             sx={{
@@ -411,14 +437,30 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                         </Box>
                         {errors &&
                           errors.productionUnits &&
-                          errors.productionUnits[index]?.capacity && (
+                          errors.productionUnits[index]?.capacity &&
+                          errors.productionUnits[index]?.capacity.type ===
+                            "required" && (
                             <Typography
                               variant="body2"
                               color="red"
                               fontSize={13}
                               mt={0.5}
                             >
-                              This field is required.
+                              {validationMessage.required}
+                            </Typography>
+                          )}
+                        {errors &&
+                          errors.productionUnits &&
+                          errors.productionUnits[index]?.capacity &&
+                          errors.productionUnits[index]?.capacity.type ===
+                            "pattern" && (
+                            <Typography
+                              variant="body2"
+                              color="red"
+                              fontSize={13}
+                              mt={0.5}
+                            >
+                              {validationMessage.onlyNumbers}
                             </Typography>
                           )}
                       </TableCell>
@@ -439,6 +481,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                               `productionUnits.${index}.waterflowRate` as const,
                               {
                                 required: true,
+                                pattern: validationPattern.onlyNumbersPattern,
                               }
                             )}
                             sx={{
@@ -453,14 +496,28 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
 
                         {errors &&
                           errors.productionUnits &&
-                          errors.productionUnits[index]?.waterflowRate && (
+                          errors.productionUnits[index]?.waterflowRate?.type ===
+                            "required" && (
                             <Typography
                               variant="body2"
                               color="red"
                               fontSize={13}
                               mt={0.5}
                             >
-                              This field is required.
+                              {validationMessage.required}
+                            </Typography>
+                          )}
+                        {errors &&
+                          errors.productionUnits &&
+                          errors.productionUnits[index]?.waterflowRate?.type ===
+                            "pattern" && (
+                            <Typography
+                              variant="body2"
+                              color="red"
+                              fontSize={13}
+                              mt={0.5}
+                            >
+                              {validationMessage.onlyNumbers}
                             </Typography>
                           )}
                       </TableCell>
@@ -524,15 +581,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                 textTransform: "capitalize",
                 borderRadius: "8px",
               }}
-              onClick={() =>
-                append({
-                  name: "",
-                  capacity: "",
-                  type: "",
-                  waterflowRate: "",
-                  id: uuidv4(),
-                })
-              }
+              onClick={() => AddProdunctionUnit()}
             >
               Add A Production Unit
             </Button>
