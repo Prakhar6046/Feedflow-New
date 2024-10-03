@@ -17,9 +17,14 @@ const FeedSupplyIntro: NextPage<Props> = ({ setActiveStep }) => {
             xs: 20,
           },
         }}
-      ></Typography>
+      >
+        Lorem ipsum dolor sit amet
+      </Typography>
 
-      <Typography variant="body1" color="#555555"></Typography>
+      <Typography variant="body1" color="#555555">
+        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Illum, tenetur architecto impedit recusandae eius omnis. <br />{" "}
+        The steps you will be following will proceed as follows:
+      </Typography>
 
       <Stack mt={4}>
         <Box
@@ -74,7 +79,9 @@ const FeedSupplyIntro: NextPage<Props> = ({ setActiveStep }) => {
                   xs: 0,
                 },
               }}
-            ></Typography>
+            >
+              Lorem ipsum dolor sit amet
+            </Typography>
             <Typography
               variant="body1"
               color="#555555"
@@ -84,7 +91,9 @@ const FeedSupplyIntro: NextPage<Props> = ({ setActiveStep }) => {
                   xs: 14,
                 },
               }}
-            ></Typography>
+            >
+              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ratione nihil laborum optio illo?
+            </Typography>
           </Box>
         </Box>
 
@@ -144,7 +153,9 @@ const FeedSupplyIntro: NextPage<Props> = ({ setActiveStep }) => {
                   xs: 0,
                 },
               }}
-            ></Typography>
+            >
+              Lorem, ipsum
+            </Typography>
             <Typography
               variant="body1"
               color="#555555"
@@ -154,7 +165,9 @@ const FeedSupplyIntro: NextPage<Props> = ({ setActiveStep }) => {
                   xs: 14,
                 },
               }}
-            ></Typography>
+            >
+              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolorem pariatur qui minus adipisci eveniet exercitationem iure ut sapiente? Culpa eos fugit aut. Illo, architecto error.
+            </Typography>
           </Box>
         </Box>
       </Stack>
