@@ -5,7 +5,7 @@ import { Box, Button, Grid, Stack, TextField, Typography } from "@mui/material";
 import { NextPage } from "next";
 import { useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-
+import MapComponent from "./MapComponent";
 interface Props {
   setActiveStep: (val: number) => void;
   editFarm?: any;
@@ -18,8 +18,11 @@ const FarmInformation: NextPage<Props> = ({ setActiveStep, editFarm }) => {
     handleSubmit,
     formState: { errors },
     setValue,
+    reset,
   } = useForm<Farm>();
   const [selectedSwtich, setSelectedSwtich] = useState<string>("address");
+  const [addressInformation, setAddressInformation] = useState<any>();
+  const [searchedAddress, setSearchedAddress] = useState<any>();
   const onSubmit: SubmitHandler<Farm> = (data) => {
     dispatch(farmAction.updateFarm(data));
     setActiveStep(2);
@@ -36,6 +39,15 @@ const FarmInformation: NextPage<Props> = ({ setActiveStep, editFarm }) => {
       setValue("province", editFarm?.farmAddress?.province);
     }
   }, [editFarm]);
+  useEffect(() => {
+    if (addressInformation) {
+      setValue("addressLine1", searchedAddress);
+      setValue("city", addressInformation.city);
+      setValue("country", addressInformation.country);
+      setValue("zipCode", addressInformation.postcode);
+      setValue("province", addressInformation.state);
+    }
+  }, [addressInformation]);
   return (
     <Stack>
       <Typography
@@ -106,42 +118,10 @@ const FarmInformation: NextPage<Props> = ({ setActiveStep, editFarm }) => {
             mt={1}
             mb={2}
           >
-            <Button
-              type="button"
-              onClick={() => setSelectedSwtich("address")}
-              variant="contained"
-              sx={{
-                background: "#06A19B",
-                fontWeight: 600,
-                padding: "6px 16px",
-                width: "fit-content",
-                textTransform: "capitalize",
-                borderRadius: "8px",
-                boxShadow: "none",
-                border: "1px solid #06A19B",
-              }}
-            >
-              Use Address
-            </Button>
-
-            <Button
-              type="button"
-              onClick={() => setSelectedSwtich("coordinates")}
-              variant="contained"
-              sx={{
-                background: "#fff",
-                fontWeight: 600,
-                padding: "6px 16px",
-                width: "fit-content",
-                textTransform: "capitalize",
-                borderRadius: "8px",
-                color: "#06A19B",
-                border: "1px solid #06A19B",
-                boxShadow: "none",
-              }}
-            >
-              Use Coordinates
-            </Button>
+            <MapComponent
+              setAddressInformation={setAddressInformation}
+              setSearchedAddress={setSearchedAddress}
+            />
           </Box>
 
           {selectedSwtich === "address" ? (
