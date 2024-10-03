@@ -18,8 +18,8 @@ export default async function Page() {
   return (
     <>
       <BasicBreadcrumbs
-        heading={"Organization"}
-        buttonName={"Add Organization"}
+        heading={"Organisation"}
+        buttonName={"Add Organisation"}
         organisations={organisations?.data}
         buttonRoute={"/dashboard/organisation/new"}
         searchOrganisations={true}

@@ -23,6 +23,7 @@ import { useEffect, useState } from "react";
 import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { AddOrganizationFormInputs } from "@/app/_typeModels/Organization";
+import { useRouter } from "next/navigation";
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
   clipPath: "inset(50%)",
@@ -50,6 +51,7 @@ const steps = [
   },
 ];
 const Page = ({ params }: { params: { organisationId: string } }) => {
+  const router = useRouter();
   const [organisationData, setOrganisationData] = useState<any>();
   const [loading, setLoading] = useState<boolean>(false);
   const [profilePic, setProfilePic] = useState<String>();
@@ -102,6 +104,7 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
       const updatedOrganisation = await res.json();
 
       toast.success(updatedOrganisation.message);
+      router.push("/dashboard/organisation");
       // resetField("confirmPassword");
       // resetField("password");
     }
@@ -110,6 +113,24 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
     control,
     name: "contacts",
   });
+  const AddContactField = () => {
+    const conatcts = watch("contacts");
+    if (conatcts) {
+      const lastContact = conatcts[conatcts.length - 1];
+      console.log(lastContact);
+      if (
+        lastContact &&
+        lastContact.name &&
+        lastContact.role &&
+        lastContact.email &&
+        lastContact.phone
+      ) {
+        append({ name: "", role: "", email: "", phone: "" });
+      } else {
+        toast.error("Please fill previous contact details.");
+      }
+    }
+  };
   const handleUpload = async (imagePath: FileList) => {
     const formData = new FormData();
     formData.append("image", imagePath[0]);
@@ -889,9 +910,7 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
               gap={0.5}
               border={"2px dashed #06a19b"}
               className="add-contact-btn"
-              onClick={() =>
-                append({ name: "", role: "", email: "", phone: "" })
-              }
+              onClick={() => AddContactField()}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"

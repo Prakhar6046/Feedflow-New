@@ -121,7 +121,7 @@ export default function BasicTable({ organisations }: Props) {
                   },
                 }}
               >
-                Organizations
+                Organisations
               </TableCell>
               <TableCell
                 sx={{
