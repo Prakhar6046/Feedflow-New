@@ -31,13 +31,17 @@ export const lifeStage = [
   "Maintenance",
   "None",
 ];
-// export const lifeStage = [
-//   "Fry",
-//   "Juvenile",
-//   "Breeder",
-//   "Adult",
-//   "Fingerling",
-//   "Grower",
-//   "Maintenance",
-//   "None",
-// ];
+export const species = ["Tilapia"];
+export const nutritionalPurpose = [
+  "Primary Feed Source",
+  "Supplementary Feeding",
+];
+export const nutritionalClass = ["Complete & Balanced", "Complementary"];
+export const ProductFormatCode = [
+  "Mash",
+  "Compress Pellets",
+  "Other",
+  "Crumbles",
+  "Extruded Pellets",
+];
+export const nutritionalGuarantee = ["Minimum", "Maximum", "Typical"];

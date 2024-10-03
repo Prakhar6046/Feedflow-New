@@ -1,3 +1,14 @@
+import {
+  feedingPhase,
+  lifeStage,
+  nutritionalClass,
+  nutritionalGuarantee,
+  nutritionalPurpose,
+  ProductFormatCode,
+  productionIntensity,
+  species,
+  units,
+} from "@/app/_lib/utils";
 import { useAppDispatch } from "@/lib/hooks";
 import {
   Box,
@@ -20,6 +31,16 @@ import { useForm, SubmitHandler } from "react-hook-form";
 interface Props {
   setActiveStep: (val: number) => void;
   editFarm?: any;
+}
+interface nutritionalGuarantee {
+  moisture: { kg: String; value: String };
+  crudeProtein: { kg: String; value: String };
+  crudeFat: { kg: String; value: String };
+  crudeAsh: { kg: String; value: String };
+  calcium: { kg: String; value: String };
+  phosphorous: { kg: String; value: String };
+  carbohydrates: { kg: String; value: String };
+  metabolizableEnergy: { kg: String; value: String };
 }
 interface FormInputs {
   feedIngredients: String;
@@ -44,6 +65,7 @@ interface FormInputs {
   productName: String;
   brandName: String;
   feedSupplier: String;
+  nutritionalGuarantee: nutritionalGuarantee;
 }
 const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
   const dispatch = useAppDispatch();
@@ -201,13 +223,16 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                   <Select
                     labelId="feed-supply-select-label2"
                     id="feed-supply-select2"
-                    value={age}
                     label="Product Format"
-                    onChange={handleChange}
+                    {...register("productFormatCode")}
                   >
-                    <MenuItem value={10}>Ten</MenuItem>
-                    <MenuItem value={20}>Twenty</MenuItem>
-                    <MenuItem value={30}>Thirty</MenuItem>
+                    {ProductFormatCode.map((format, i) => {
+                      return (
+                        <MenuItem value={format} key={i}>
+                          {format}
+                        </MenuItem>
+                      );
+                    })}
                   </Select>
                 </FormControl>
               </Grid>
@@ -282,9 +307,13 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                     label="Nutritional Class"
                     onChange={handleChange}
                   >
-                    <MenuItem value={10}>Ten</MenuItem>
-                    <MenuItem value={20}>Twenty</MenuItem>
-                    <MenuItem value={30}>Thirty</MenuItem>
+                    {nutritionalClass.map((nutritional, i) => {
+                      return (
+                        <MenuItem value={nutritional} key={i}>
+                          {nutritional}
+                        </MenuItem>
+                      );
+                    })}
                   </Select>
                 </FormControl>
               </Grid>
@@ -297,13 +326,16 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                   <Select
                     labelId="feed-supply-select-label4"
                     id="feed-supply-select4"
-                    value={age}
                     label="Nutritional Purpose"
-                    onChange={handleChange}
+                    {...register("nutritionalPurpose")}
                   >
-                    <MenuItem value={10}>Ten</MenuItem>
-                    <MenuItem value={20}>Twenty</MenuItem>
-                    <MenuItem value={30}>Thirty</MenuItem>
+                    {nutritionalPurpose.map((intensity, i) => {
+                      return (
+                        <MenuItem value={intensity} key={i}>
+                          {intensity}
+                        </MenuItem>
+                      );
+                    })}
                   </Select>
                 </FormControl>
               </Grid>
@@ -320,13 +352,16 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                   <Select
                     labelId="feed-supply-select-label5"
                     id="feed-supply-select5"
-                    value={age}
                     label="Specie"
-                    onChange={handleChange}
+                    {...register("specie")}
                   >
-                    <MenuItem value={10}>Ten</MenuItem>
-                    <MenuItem value={20}>Twenty</MenuItem>
-                    <MenuItem value={30}>Thirty</MenuItem>
+                    {species.map((specie, i) => {
+                      return (
+                        <MenuItem value={specie} key={i}>
+                          {specie}
+                        </MenuItem>
+                      );
+                    })}
                   </Select>
                 </FormControl>
               </Grid>
@@ -423,13 +458,16 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                   <Select
                     labelId="feed-supply-select-label6"
                     id="feed-supply-select6"
-                    value={age}
+                    {...register("productionIntensity")}
                     label="Production Intensity"
-                    onChange={handleChange}
                   >
-                    <MenuItem value={10}>Ten</MenuItem>
-                    <MenuItem value={20}>Twenty</MenuItem>
-                    <MenuItem value={30}>Thirty</MenuItem>
+                    {productionIntensity.map((intensity, i) => {
+                      return (
+                        <MenuItem value={intensity} key={i}>
+                          {intensity}
+                        </MenuItem>
+                      );
+                    })}
                   </Select>
                 </FormControl>
               </Grid>
@@ -440,13 +478,16 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                   <Select
                     labelId="feed-supply-select-label7"
                     id="feed-supply-select7"
-                    value={age}
+                    {...register("unit")}
                     label="Unit"
-                    onChange={handleChange}
                   >
-                    <MenuItem value={10}>Ten</MenuItem>
-                    <MenuItem value={20}>Twenty</MenuItem>
-                    <MenuItem value={30}>Thirty</MenuItem>
+                    {units.map((unit, i) => {
+                      return (
+                        <MenuItem value={unit} key={i}>
+                          {unit}
+                        </MenuItem>
+                      );
+                    })}
                   </Select>
                 </FormControl>
               </Grid>
@@ -459,13 +500,16 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                   <Select
                     labelId="feed-supply-select-label8"
                     id="feed-supply-select8"
-                    value={age}
+                    {...register("feedingPhase")}
                     label="Feeding Phase"
-                    onChange={handleChange}
                   >
-                    <MenuItem value={10}>Ten</MenuItem>
-                    <MenuItem value={20}>Twenty</MenuItem>
-                    <MenuItem value={30}>Thirty</MenuItem>
+                    {feedingPhase.map((intensity, i) => {
+                      return (
+                        <MenuItem value={intensity} key={i}>
+                          {intensity}
+                        </MenuItem>
+                      );
+                    })}
                   </Select>
                 </FormControl>
               </Grid>
@@ -478,13 +522,16 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                   <Select
                     labelId="feed-supply-select-label9"
                     id="feed-supply-select9"
-                    value={age}
                     label="Life Stage"
-                    onChange={handleChange}
+                    {...register("lifeStage")}
                   >
-                    <MenuItem value={10}>Ten</MenuItem>
-                    <MenuItem value={20}>Twenty</MenuItem>
-                    <MenuItem value={30}>Thirty</MenuItem>
+                    {lifeStage.map((stage, i) => {
+                      return (
+                        <MenuItem value={stage} key={i}>
+                          {stage}
+                        </MenuItem>
+                      );
+                    })}
                   </Select>
                 </FormControl>
               </Grid>
@@ -615,11 +662,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                         label="Moisture"
                         type="number"
                         className="form-input"
-                        // {...register("organisationName", {
-                        //     required: true,
-                        // })}
-                        // focused={userData?.data.name ? true : false}
-                        // value={userData?.data.name}
+                        {...register("nutritionalGuarantee.moisture.kg")}
                         sx={{
                           width: "100%",
                           minWidth: 190,
@@ -678,13 +721,16 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                       <Select
                         labelId="feed-supply-select-label10"
                         id="feed-supply-select10"
-                        value={age}
+                        {...register("nutritionalGuarantee.moisture.value")}
                         label="Min"
-                        onChange={handleChange}
                       >
-                        <MenuItem value={10}>Ten</MenuItem>
-                        <MenuItem value={20}>Twenty</MenuItem>
-                        <MenuItem value={30}>Thirty</MenuItem>
+                        {nutritionalGuarantee.map((guarantee, i) => {
+                          return (
+                            <MenuItem value={guarantee} key={i}>
+                              {guarantee}
+                            </MenuItem>
+                          );
+                        })}
                       </Select>
                     </FormControl>
 
@@ -741,11 +787,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                         label="Crude Protein"
                         type="number"
                         className="form-input"
-                        // {...register("organisationName", {
-                        //     required: true,
-                        // })}
-                        // focused={userData?.data.name ? true : false}
-                        // value={userData?.data.name}
+                        {...register("nutritionalGuarantee.crudeProtein.kg")}
                         sx={{
                           width: "100%",
                           minWidth: 190,
@@ -804,13 +846,16 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                       <Select
                         labelId="feed-supply-select-label10"
                         id="feed-supply-select10"
-                        value={age}
                         label="Min"
-                        onChange={handleChange}
+                        {...register("nutritionalGuarantee.crudeProtein.value")}
                       >
-                        <MenuItem value={10}>Ten</MenuItem>
-                        <MenuItem value={20}>Twenty</MenuItem>
-                        <MenuItem value={30}>Thirty</MenuItem>
+                        {nutritionalGuarantee.map((guarantee, i) => {
+                          return (
+                            <MenuItem value={guarantee} key={i}>
+                              {guarantee}
+                            </MenuItem>
+                          );
+                        })}
                       </Select>
                     </FormControl>
 
@@ -865,11 +910,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                         label="Crude Fat"
                         type="number"
                         className="form-input"
-                        // {...register("organisationName", {
-                        //     required: true,
-                        // })}
-                        // focused={userData?.data.name ? true : false}
-                        // value={userData?.data.name}
+                        {...register("nutritionalGuarantee.crudeFat.kg")}
                         sx={{
                           width: "100%",
                           minWidth: 190,
@@ -928,13 +969,16 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                       <Select
                         labelId="feed-supply-select-label10"
                         id="feed-supply-select10"
-                        value={age}
                         label="Min"
-                        onChange={handleChange}
+                        {...register("nutritionalGuarantee.crudeFat.value")}
                       >
-                        <MenuItem value={10}>Ten</MenuItem>
-                        <MenuItem value={20}>Twenty</MenuItem>
-                        <MenuItem value={30}>Thirty</MenuItem>
+                        {nutritionalGuarantee.map((guarantee, i) => {
+                          return (
+                            <MenuItem value={guarantee} key={i}>
+                              {guarantee}
+                            </MenuItem>
+                          );
+                        })}
                       </Select>
                     </FormControl>
 
@@ -989,11 +1033,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                         label="Crude Ash"
                         type="number"
                         className="form-input"
-                        // {...register("organisationName", {
-                        //     required: true,
-                        // })}
-                        // focused={userData?.data.name ? true : false}
-                        // value={userData?.data.name}
+                        {...register("nutritionalGuarantee.crudeAsh.kg")}
                         sx={{
                           width: "100%",
                           minWidth: 190,
@@ -1052,13 +1092,17 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                       <Select
                         labelId="feed-supply-select-label10"
                         id="feed-supply-select10"
-                        value={age}
+                        {...register("nutritionalGuarantee.crudeAsh.value")}
                         label="Min"
                         onChange={handleChange}
                       >
-                        <MenuItem value={10}>Ten</MenuItem>
-                        <MenuItem value={20}>Twenty</MenuItem>
-                        <MenuItem value={30}>Thirty</MenuItem>
+                        {nutritionalGuarantee.map((guarantee, i) => {
+                          return (
+                            <MenuItem value={guarantee} key={i}>
+                              {guarantee}
+                            </MenuItem>
+                          );
+                        })}
                       </Select>
                     </FormControl>
 
@@ -1113,11 +1157,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                         label="Calcium"
                         type="number"
                         className="form-input"
-                        // {...register("organisationName", {
-                        //     required: true,
-                        // })}
-                        // focused={userData?.data.name ? true : false}
-                        // value={userData?.data.name}
+                        {...register("nutritionalGuarantee.calcium.value")}
                         sx={{
                           width: "100%",
                           minWidth: 190,
@@ -1176,13 +1216,16 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                       <Select
                         labelId="feed-supply-select-label10"
                         id="feed-supply-select10"
-                        value={age}
                         label="Min"
-                        onChange={handleChange}
+                        {...register("nutritionalGuarantee.calcium.value")}
                       >
-                        <MenuItem value={10}>Ten</MenuItem>
-                        <MenuItem value={20}>Twenty</MenuItem>
-                        <MenuItem value={30}>Thirty</MenuItem>
+                        {nutritionalGuarantee.map((guarantee, i) => {
+                          return (
+                            <MenuItem value={guarantee} key={i}>
+                              {guarantee}
+                            </MenuItem>
+                          );
+                        })}
                       </Select>
                     </FormControl>
 
@@ -1237,11 +1280,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                         label="Phosphorous"
                         type="number"
                         className="form-input"
-                        // {...register("organisationName", {
-                        //     required: true,
-                        // })}
-                        // focused={userData?.data.name ? true : false}
-                        // value={userData?.data.name}
+                        {...register("nutritionalGuarantee.phosphorous.kg")}
                         sx={{
                           width: "100%",
                           minWidth: 190,
@@ -1300,13 +1339,16 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                       <Select
                         labelId="feed-supply-select-label10"
                         id="feed-supply-select10"
-                        value={age}
                         label="Min"
-                        onChange={handleChange}
+                        {...register("nutritionalGuarantee.phosphorous.value")}
                       >
-                        <MenuItem value={10}>Ten</MenuItem>
-                        <MenuItem value={20}>Twenty</MenuItem>
-                        <MenuItem value={30}>Thirty</MenuItem>
+                        {nutritionalGuarantee.map((guarantee, i) => {
+                          return (
+                            <MenuItem value={guarantee} key={i}>
+                              {guarantee}
+                            </MenuItem>
+                          );
+                        })}
                       </Select>
                     </FormControl>
 
@@ -1361,11 +1403,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                         label="Carbohydrates"
                         type="number"
                         className="form-input"
-                        // {...register("organisationName", {
-                        //     required: true,
-                        // })}
-                        // focused={userData?.data.name ? true : false}
-                        // value={userData?.data.name}
+                        {...register("nutritionalGuarantee.carbohydrates.kg")}
                         sx={{
                           width: "100%",
                           minWidth: 190,
@@ -1424,13 +1462,18 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                       <Select
                         labelId="feed-supply-select-label10"
                         id="feed-supply-select10"
-                        value={age}
                         label="Min"
-                        onChange={handleChange}
+                        {...register(
+                          "nutritionalGuarantee.carbohydrates.value"
+                        )}
                       >
-                        <MenuItem value={10}>Ten</MenuItem>
-                        <MenuItem value={20}>Twenty</MenuItem>
-                        <MenuItem value={30}>Thirty</MenuItem>
+                        {nutritionalGuarantee.map((guarantee, i) => {
+                          return (
+                            <MenuItem value={guarantee} key={i}>
+                              {guarantee}
+                            </MenuItem>
+                          );
+                        })}
                       </Select>
                     </FormControl>
 
@@ -1485,11 +1528,9 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                         label="Metabolizable Energy"
                         type="number"
                         className="form-input"
-                        // {...register("organisationName", {
-                        //     required: true,
-                        // })}
-                        // focused={userData?.data.name ? true : false}
-                        // value={userData?.data.name}
+                        {...register(
+                          "nutritionalGuarantee.metabolizableEnergy.kg"
+                        )}
                         sx={{
                           width: "100%",
                           minWidth: 190,
@@ -1548,13 +1589,18 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                       <Select
                         labelId="feed-supply-select-label10"
                         id="feed-supply-select10"
-                        value={age}
                         label="Min"
-                        onChange={handleChange}
+                        {...register(
+                          "nutritionalGuarantee.metabolizableEnergy.value"
+                        )}
                       >
-                        <MenuItem value={10}>Ten</MenuItem>
-                        <MenuItem value={20}>Twenty</MenuItem>
-                        <MenuItem value={30}>Thirty</MenuItem>
+                        {nutritionalGuarantee.map((guarantee, i) => {
+                          return (
+                            <MenuItem value={guarantee} key={i}>
+                              {guarantee}
+                            </MenuItem>
+                          );
+                        })}
                       </Select>
                     </FormControl>
 
