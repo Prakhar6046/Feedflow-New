@@ -6,13 +6,18 @@ import { useRouter } from "next/navigation";
 import { useForm, SubmitHandler } from "react-hook-form";
 import logo from "@/public/static/img/logo.svg";
 import { setCookie } from "cookies-next";
-
+import EyeOpened from "@/public/static/img/icons/ic-eye-open.svg";
+import EyeClosed from "@/public/static/img/icons/ic-eye-closed.svg";
+import { useState } from "react";
 interface IFormInput {
   password: string;
   confirmPassword: string;
 }
 
 const Page = ({ params }: { params: { organisationId: string } }) => {
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [showConfirmPassword, setshowConfirmPassword] =
+    useState<boolean>(false);
   const router = useRouter();
   const {
     register,
@@ -55,6 +60,7 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
       sx={{
         background:
           "linear-gradient(349.33deg, rgba(6, 161, 155, 0.4) -27.15%, rgba(2, 59, 57, 0) 103.57%)",
+        px: 3,
       }}
     >
       <Box
@@ -66,9 +72,9 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
           border: "1px solid #06A19B",
           borderRadius: "14px",
           background: "#fff",
-          marginX: {
-            md: 0,
-            xs: 3,
+          minWidth: {
+            sm: 500,
+            xs: "100%",
           },
         }}
       >
@@ -91,27 +97,95 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
 
         <Box position="relative" className="login-inputs">
           <form onSubmit={handleSubmit(onSubmit)}>
-            <TextField
-              label="Password"
-              type="password"
-              // focused
-              className="form-input"
-              sx={{
-                width: "100%",
-                marginBottom: 4,
-              }}
-              id="password"
-              {...register("password", {
-                required: "Password is required",
-                minLength: {
-                  value: 8,
-                  message: "Password must be at least 8 characters",
-                },
-              })}
-              required
-            />
-            {errors.password && <span>{errors.password.message}</span>}
-            <TextField
+            <Box position={"relative"} mb={3}>
+              <TextField
+                label="Password"
+                type={showPassword ? "text" : "password"}
+                // focused
+                className="form-input"
+                sx={{
+                  width: "100%",
+                  // marginBottom: 4,
+                }}
+                id="password"
+                {...register("password", {
+                  required: "Password is required",
+                  minLength: {
+                    value: 8,
+                    message: "Password must be at least 8 characters",
+                  },
+                })}
+              />
+
+              <Box
+                bgcolor={"white"}
+                sx={{
+                  position: "absolute",
+                  right: "7px",
+                  top: errors?.password ? "35%" : "50%",
+                  transform: "translate(-7px,-50%)",
+                  width: 20,
+                  height: 20,
+                }}
+              >
+                <Image
+                  onClick={() => setShowPassword(!showPassword)}
+                  src={showPassword ? EyeOpened : EyeClosed}
+                  width={20}
+                  height={20}
+                  alt="Eye Icon"
+                />
+              </Box>
+              {errors.password && (
+                <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                  {errors.password.message}
+                </Typography>
+              )}
+            </Box>
+            <Box position={"relative"} mb={5}>
+              <TextField
+                label="Confirm Password"
+                type={showConfirmPassword ? "text" : "password"}
+                className="form-input"
+                // focused
+                sx={{
+                  width: "100%",
+                  // marginBottom: 3,
+                }}
+                id="confirmPassword"
+                {...register("confirmPassword", {
+                  required: "Please confirm your password",
+                  validate: (value) =>
+                    value === password || "Passwords do not match",
+                })}
+              />
+
+              <Box
+                bgcolor={"white"}
+                sx={{
+                  position: "absolute",
+                  right: "7px",
+                  top: errors?.confirmPassword ? "35%" : "50%",
+                  transform: "translate(-7px,-50%)",
+                  width: 20,
+                  height: 20,
+                }}
+              >
+                <Image
+                  onClick={() => setshowConfirmPassword(!showConfirmPassword)}
+                  src={showConfirmPassword ? EyeOpened : EyeClosed}
+                  width={20}
+                  height={20}
+                  alt="Eye Icon"
+                />
+              </Box>
+              {errors.confirmPassword && (
+                <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                  {errors.confirmPassword.message}
+                </Typography>
+              )}
+            </Box>
+            {/* <TextField
               label="Confirm Password"
               type="password"
               className="form-input"
@@ -126,11 +200,8 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
                 validate: (value) =>
                   value === password || "Passwords do not match",
               })}
-              required
-            />
-            {errors.confirmPassword && (
-              <span>{errors.confirmPassword.message}</span>
-            )}
+            /> */}
+
             <Button
               variant="contained"
               sx={{

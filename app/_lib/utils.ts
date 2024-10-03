@@ -40,8 +40,8 @@ export const nutritionalClass = ["Complete & Balanced", "Complementary"];
 export const ProductFormatCode = [
   "Mash",
   "Compress Pellets",
-  "Other",
   "Crumbles",
   "Extruded Pellets",
+  "Other",
 ];
 export const nutritionalGuarantee = ["Minimum", "Maximum", "Typical"];

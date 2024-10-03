@@ -204,7 +204,8 @@ const FarmInformation: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                       // focused
                       {...register("city", {
                         required: true,
-                        pattern: validationPattern.alphabetsAndSpacesPattern,
+                        pattern:
+                          validationPattern.alphabetsSpacesAndSpecialCharsPattern,
                       })}
                       sx={{
                         width: "100%",
@@ -231,7 +232,7 @@ const FarmInformation: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                           fontSize={13}
                           mt={0.5}
                         >
-                          {validationMessage.OnlyAlphabatsMessage}
+                          {validationMessage.alphabetswithSpecialCharacter}
                         </Typography>
                       )}
                   </Box>
@@ -246,7 +247,8 @@ const FarmInformation: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                       // focused
                       {...register("province", {
                         required: true,
-                        pattern: validationPattern.alphabetsAndSpacesPattern,
+                        pattern:
+                          validationPattern.alphabetsSpacesAndSpecialCharsPattern,
                       })}
                       sx={{
                         width: "100%",
@@ -273,7 +275,7 @@ const FarmInformation: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                           fontSize={13}
                           mt={0.5}
                         >
-                          {validationMessage.OnlyAlphabatsMessage}
+                          {validationMessage.alphabetswithSpecialCharacter}
                         </Typography>
                       )}
                   </Box>
@@ -332,7 +334,8 @@ const FarmInformation: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                       // focused
                       {...register("country", {
                         required: true,
-                        pattern: validationPattern.alphabetsAndSpacesPattern,
+                        pattern:
+                          validationPattern.alphabetsSpacesAndSpecialCharsPattern,
                       })}
                       sx={{
                         width: "100%",
@@ -359,7 +362,7 @@ const FarmInformation: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                           fontSize={13}
                           mt={0.5}
                         >
-                          {validationMessage.OnlyAlphabatsMessage}
+                          {validationMessage.alphabetswithSpecialCharacter}
                         </Typography>
                       )}
                   </Box>
