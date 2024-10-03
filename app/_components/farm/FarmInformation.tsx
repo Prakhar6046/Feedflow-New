@@ -118,10 +118,10 @@ const FarmInformation: NextPage<Props> = ({ setActiveStep, editFarm }) => {
             mt={1}
             mb={2}
           >
-            <MapComponent
+            {/* <MapComponent
               setAddressInformation={setAddressInformation}
               setSearchedAddress={setSearchedAddress}
-            />
+            /> */}
           </Box>
 
           {selectedSwtich === "address" ? (
