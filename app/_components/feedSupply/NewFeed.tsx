@@ -689,25 +689,6 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                       </Typography>
                     </Box>
 
-                    <Button
-                      type="button"
-                      variant="contained"
-                      sx={{
-                        background: "#06a19b",
-                        color: "#fff",
-                        fontWeight: 600,
-                        padding: "6px 16px",
-                        width: "fit-content",
-                        textTransform: "capitalize",
-                        borderRadius: "8px",
-                        border: "1px solid #06A19B",
-                        minWidth: 90,
-                      }}
-                      // onClick={() => handleCalculate(item, index)}
-                    >
-                      Calculate
-                    </Button>
-
                     <FormControl
                       fullWidth
                       className="form-input"
@@ -814,25 +795,6 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                       </Typography>
                     </Box>
 
-                    <Button
-                      type="button"
-                      variant="contained"
-                      sx={{
-                        background: "#06a19b",
-                        color: "#fff",
-                        fontWeight: 600,
-                        padding: "6px 16px",
-                        width: "fit-content",
-                        textTransform: "capitalize",
-                        borderRadius: "8px",
-                        border: "1px solid #06A19B",
-                        minWidth: 90,
-                      }}
-                      // onClick={() => handleCalculate(item, index)}
-                    >
-                      Calculate
-                    </Button>
-
                     <FormControl
                       fullWidth
                       className="form-input"
@@ -937,25 +899,6 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                       </Typography>
                     </Box>
 
-                    <Button
-                      type="button"
-                      variant="contained"
-                      sx={{
-                        background: "#06a19b",
-                        color: "#fff",
-                        fontWeight: 600,
-                        padding: "6px 16px",
-                        width: "fit-content",
-                        textTransform: "capitalize",
-                        borderRadius: "8px",
-                        border: "1px solid #06A19B",
-                        minWidth: 90,
-                      }}
-                      // onClick={() => handleCalculate(item, index)}
-                    >
-                      Calculate
-                    </Button>
-
                     <FormControl
                       fullWidth
                       className="form-input"
@@ -1059,25 +1002,6 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                         g/kg
                       </Typography>
                     </Box>
-
-                    <Button
-                      type="button"
-                      variant="contained"
-                      sx={{
-                        background: "#06a19b",
-                        color: "#fff",
-                        fontWeight: 600,
-                        padding: "6px 16px",
-                        width: "fit-content",
-                        textTransform: "capitalize",
-                        borderRadius: "8px",
-                        border: "1px solid #06A19B",
-                        minWidth: 90,
-                      }}
-                      // onClick={() => handleCalculate(item, index)}
-                    >
-                      Calculate
-                    </Button>
 
                     <FormControl
                       fullWidth
@@ -1184,25 +1108,6 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                       </Typography>
                     </Box>
 
-                    <Button
-                      type="button"
-                      variant="contained"
-                      sx={{
-                        background: "#06a19b",
-                        color: "#fff",
-                        fontWeight: 600,
-                        padding: "6px 16px",
-                        width: "fit-content",
-                        textTransform: "capitalize",
-                        borderRadius: "8px",
-                        border: "1px solid #06A19B",
-                        minWidth: 90,
-                      }}
-                      // onClick={() => handleCalculate(item, index)}
-                    >
-                      Calculate
-                    </Button>
-
                     <FormControl
                       fullWidth
                       className="form-input"
@@ -1307,7 +1212,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                       </Typography>
                     </Box>
 
-                    <Button
+                    {/* <Button
                       type="button"
                       variant="contained"
                       sx={{
@@ -1324,7 +1229,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                       // onClick={() => handleCalculate(item, index)}
                     >
                       Calculate
-                    </Button>
+                    </Button> */}
 
                     <FormControl
                       fullWidth
