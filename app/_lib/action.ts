@@ -92,3 +92,20 @@ export const getFarms = async () => {
     return error;
   }
 };
+export const AddNewFeedSupply = async (formData: any) => {
+  try {
+    const data = await fetch(`${process.env.BASE_URL}/api/feed/new-feed`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    });
+    const res = await data.json();
+    revalidatePath(`/dashboard/feedSupply`);
+
+    return res;
+  } catch (error) {
+    return error;
+  }
+};
