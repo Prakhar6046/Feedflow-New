@@ -22,10 +22,10 @@ function ClosedSidebar() {
   const dispatch = useAppDispatch();
   useEffect(() => {
     if (pathName) {
-      const pathArr = pathName.split("/");
-      setActivePage(pathArr[pathArr.length - 1]);
+      setActivePage(pathName);
     }
   }, [pathName]);
+
   return (
     <Stack
       className="sidebar"
@@ -70,7 +70,7 @@ function ClosedSidebar() {
               }}
             >
               <ListItemButton
-                className={activePage === "dashboard" ? "active" : ""}
+                className={activePage === "/dashboard" ? "active" : ""}
                 sx={{
                   display: "flex",
                   flexDirection: "column",
@@ -135,9 +135,7 @@ function ClosedSidebar() {
             >
               <ListItemButton
                 className={
-                  activePage === "batches" || activePage === "new"
-                    ? "active"
-                    : ""
+                  activePage.startsWith("/dashboard/batches") ? "active" : ""
                 }
                 sx={{
                   display: "flex",
@@ -193,9 +191,7 @@ function ClosedSidebar() {
             >
               <ListItemButton
                 className={
-                  activePage === "farm" || activePage === "newFarm"
-                    ? "active"
-                    : ""
+                  activePage.startsWith("/dashboard/farm") ? "active" : ""
                 }
                 sx={{
                   display: "flex",
@@ -244,9 +240,7 @@ function ClosedSidebar() {
             >
               <ListItemButton
                 className={
-                  activePage === "feedSupply" || activePage === "newFarm"
-                    ? "active"
-                    : ""
+                  activePage.startsWith("/dashboard/feedSupply") ? "active" : ""
                 }
                 sx={{
                   display: "flex",
@@ -306,7 +300,11 @@ function ClosedSidebar() {
               }}
             >
               <ListItemButton
-                className={activePage === "organisation" ? "active" : ""}
+                className={
+                  activePage.startsWith("/dashboard/organisation")
+                    ? "active"
+                    : ""
+                }
                 sx={{
                   display: "flex",
                   flexDirection: "column",
@@ -352,7 +350,9 @@ function ClosedSidebar() {
               }}
             >
               <ListItemButton
-                className={activePage === "user" ? "active" : ""}
+                className={
+                  activePage.startsWith("/dashboard/user") ? "active" : ""
+                }
                 sx={{
                   display: "flex",
                   flexDirection: "column",

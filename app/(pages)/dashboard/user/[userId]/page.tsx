@@ -23,6 +23,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { getCookie } from "cookies-next";
 import { SingleUser, UserEditFormInputs } from "@/app/_typeModels/User";
+import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -195,6 +196,21 @@ export default function Page({ params }: { params: { userId: string } }) {
   }
   return (
     <>
+      <BasicBreadcrumbs
+        heading={"Edit User"}
+        searchOrganisations={false}
+        searchUsers={false}
+        isTable={false}
+        hideSearchInput={true}
+        links={[
+          { name: "Dashboard", link: "/dashboard" },
+          { name: "Users", link: "/dashboard/user" },
+          {
+            name: "Edit User",
+            link: `/dashboard/user/${params.userId}`,
+          },
+        ]}
+      />
       <Stack pb={5}>
         {/* Profile Section Start */}
         <Stack
@@ -239,7 +255,7 @@ export default function Page({ params }: { params: { userId: string } }) {
                   role={undefined}
                   variant="contained"
                   tabIndex={-1}
-                  startIcon={<CloudUploadIcon />}
+                  startIcon={profilePic ? null : <CloudUploadIcon />}
                   className="upload-file-input"
                   sx={{
                     textTransform: "unset",
@@ -258,7 +274,7 @@ export default function Page({ params }: { params: { userId: string } }) {
                     alignItems: "center",
                   }}
                 >
-                  Upload photo
+                  {profilePic ? "" : "Upload photo"}
                   <VisuallyHiddenInput
                     type="file"
                     {...register("image", {
