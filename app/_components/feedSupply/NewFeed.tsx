@@ -9,7 +9,7 @@ import {
   species,
   units,
 } from "@/app/_lib/utils";
-import { useAppDispatch } from "@/lib/hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import {
   Box,
   Button,
@@ -31,6 +31,7 @@ import toast from "react-hot-toast";
 import * as validationPattern from "@/app/_lib/utils/validationPatterns/index";
 import * as validationMessage from "@/app/_lib/utils/validationsMessage/index";
 import { FeedSupply } from "./FeedSelection";
+import { feedAction, selectIsEditFeed } from "@/lib/features/feed/feedSlice";
 
 interface Props {
   setActiveStep: (val: number) => void;
@@ -76,6 +77,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
   const loggedUser: any = getCookie("logged-user");
   const [loading, setLoading] = useState<boolean>(false);
   const [feedSuppliers, setFeedSuppliers] = useState<any>();
+  const isEditFeed = useAppSelector(selectIsEditFeed);
   const {
     register,
 
@@ -88,22 +90,35 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
   const onSubmit: SubmitHandler<FormInputs> = async (data) => {
     const loggedUserData = JSON.parse(loggedUser);
     if (data) {
-      const response = await fetch("/api/feed/new-feed", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          ...data,
-          createdBy: String(loggedUserData.data.user.id),
-        }),
-      });
+      const response = await fetch(
+        isEditFeed ? "/api/feed/edit-feed" : "/api/feed/new-feed",
+        {
+          method: isEditFeed ? "PUT" : "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: isEditFeed
+            ? JSON.stringify({
+                ...data,
+                createdBy: editFeed?.createdBy,
+                updatedBy: String(loggedUserData.data.user.id),
+                id: editFeed?.id,
+              })
+            : JSON.stringify({
+                ...data,
+                createdBy: String(loggedUserData.data.user.id),
+              }),
+        }
+      );
       const res = await response.json();
       if (res.status) {
         toast.success(res.message);
+        if (isEditFeed) {
+          setActiveStep(2);
+          dispatch(feedAction.resetState());
+        }
         reset();
       }
-      console.log(res);
     }
   };
 
@@ -2601,40 +2616,44 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                     border: "1px solid #06A19B",
                   }}
                 >
-                  Add feed
+                  {isEditFeed ? "Edit feed" : "Add feed"}
                 </Button>
-                <Button
-                  type="button"
-                  variant="contained"
-                  sx={{
-                    background: "#fff",
-                    color: "#06A19B",
-                    fontWeight: 600,
-                    padding: "6px 16px",
-                    width: "fit-content",
-                    textTransform: "capitalize",
-                    borderRadius: "8px",
-                    border: "1px solid #06A19B",
-                  }}
-                  onClick={() => setActiveStep(0)}
-                >
-                  Previous
-                </Button>
-                <Button
-                  type="button"
-                  variant="contained"
-                  sx={{
-                    background: "#06A19B",
-                    fontWeight: 600,
-                    padding: "6px 16px",
-                    width: "fit-content",
-                    textTransform: "capitalize",
-                    borderRadius: "8px",
-                  }}
-                  onClick={() => setActiveStep(2)}
-                >
-                  Next
-                </Button>
+                {!isEditFeed && (
+                  <>
+                    <Button
+                      type="button"
+                      variant="contained"
+                      sx={{
+                        background: "#fff",
+                        color: "#06A19B",
+                        fontWeight: 600,
+                        padding: "6px 16px",
+                        width: "fit-content",
+                        textTransform: "capitalize",
+                        borderRadius: "8px",
+                        border: "1px solid #06A19B",
+                      }}
+                      onClick={() => setActiveStep(0)}
+                    >
+                      Previous
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="contained"
+                      sx={{
+                        background: "#06A19B",
+                        fontWeight: 600,
+                        padding: "6px 16px",
+                        width: "fit-content",
+                        textTransform: "capitalize",
+                        borderRadius: "8px",
+                      }}
+                      onClick={() => setActiveStep(2)}
+                    >
+                      Next
+                    </Button>
+                  </>
+                )}
               </Box>
             </Box>
           </form>
