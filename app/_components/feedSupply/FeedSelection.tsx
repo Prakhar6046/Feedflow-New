@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import { NextPage } from "next";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 interface Props {
   setActiveStep: (val: number) => void;
@@ -19,6 +20,18 @@ interface Props {
 
 const FeedSelection: NextPage<Props> = ({ setActiveStep, editFarm }) => {
   const router = useRouter();
+  const [feedSupply, setFeedSupply] = useState<any>();
+  const getFeedSupplys = async () => {
+    const response = await fetch("/api/feed");
+    return response.json();
+  };
+  useEffect(() => {
+    const getFeedSupplyer = async () => {
+      const res = await getFeedSupplys();
+      console.log(res);
+    };
+    getFeedSupplyer();
+  }, []);
   return (
     <Stack>
       <Typography

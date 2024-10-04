@@ -16,9 +16,6 @@ function createData(
 export default function Page() {
   return (
     <>
-      {/* console.log('====================================');
-    console.log();
-    console.log('===================================='); */}
       <BasicBreadcrumbs
         heading={"Feed Supply"}
         buttonName={"Add Feed"}

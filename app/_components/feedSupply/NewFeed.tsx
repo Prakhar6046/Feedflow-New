@@ -14,19 +14,20 @@ import {
   Box,
   Button,
   FormControl,
-  FormControlLabel,
   Grid,
   InputLabel,
   MenuItem,
   Select,
-  SelectChangeEvent,
   Stack,
   TextField,
   Typography,
 } from "@mui/material";
 import { NextPage } from "next";
-import { useState } from "react";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useEffect, useState } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
+import Loader from "../Loader";
+import { getCookie } from "cookies-next";
+import toast from "react-hot-toast";
 
 interface Props {
   setActiveStep: (val: number) => void;
@@ -69,19 +70,56 @@ interface FormInputs {
 }
 const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
   const dispatch = useAppDispatch();
-  const [age, setAge] = useState("");
+  const loggedUser: any = getCookie("logged-user");
+
+  const [loading, setLoading] = useState<boolean>(false);
+  const [feedSuppliers, setFeedSuppliers] = useState<any>();
   const {
     register,
     handleSubmit,
-
+    reset,
     formState: { errors },
   } = useForm<FormInputs>();
-  const onSubmit: SubmitHandler<FormInputs> = (data) => {
-    console.log(data);
+  const onSubmit: SubmitHandler<FormInputs> = async (data) => {
+    const loggedUserData = JSON.parse(loggedUser);
+    if (data) {
+      const response = await fetch("/api/feed/new-feed", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...data,
+          createdBy: String(loggedUserData.data.user.id),
+        }),
+      });
+      const res = await response.json();
+      if (res.status) {
+        toast.success(res.message);
+        reset();
+      }
+      console.log(res);
+    }
   };
-  const handleChange = (event: SelectChangeEvent) => {
-    setAge(event.target.value as string);
+
+  const getFeedSuppliers = async () => {
+    const response = await fetch(`/api/organisation/feedSuppliers`);
+    const res = response.json();
+    return res;
   };
+  useEffect(() => {
+    setLoading(true);
+    const feedSupplierGetter = async () => {
+      const res = await getFeedSuppliers();
+      setFeedSuppliers(res.data);
+      setLoading(false);
+    };
+    feedSupplierGetter();
+  }, []);
+
+  if (loading) {
+    return <Loader />;
+  }
   return (
     <>
       <Stack>
@@ -113,9 +151,13 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                     {...register("feedSupplier")}
                     label="Feed Supplier"
                   >
-                    <MenuItem value={10}>Ten</MenuItem>
-                    <MenuItem value={20}>Twenty</MenuItem>
-                    <MenuItem value={30}>Thirty</MenuItem>
+                    {feedSuppliers?.map((supplier: any) => {
+                      return (
+                        <MenuItem value={String(supplier.id)} key={supplier.id}>
+                          {supplier.name}
+                        </MenuItem>
+                      );
+                    })}
                   </Select>
                 </FormControl>
               </Grid>
@@ -125,6 +167,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                   label="Feed Supplier Code"
                   type="text"
                   className="form-input"
+                  {...register("feedSupplierCode")}
                   // {...register("organisationName", {
                   //     required: true,
                   // })}
@@ -141,6 +184,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                   label="Brand Name"
                   type="text"
                   className="form-input"
+                  {...register("brandName")}
                   // {...register("organisationName", {
                   //     required: true,
                   // })}
@@ -157,6 +201,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                   label="Brand Code"
                   type="text"
                   className="form-input"
+                  {...register("brandCode")}
                   // {...register("organisationName", {
                   //     required: true,
                   // })}
@@ -173,6 +218,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                   label="Product Name"
                   type="text"
                   className="form-input"
+                  {...register("productName")}
                   // {...register("organisationName", {
                   //     required: true,
                   // })}
@@ -189,6 +235,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                   label="Product Code"
                   type="text"
                   className="form-input"
+                  {...register("productCode")}
                   // {...register("organisationName", {
                   //     required: true,
                   // })}
@@ -205,6 +252,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                   label="Product Name Code"
                   type="text"
                   className="form-input"
+                  {...register("productNameCode")}
                   // {...register("organisationName", {
                   //     required: true,
                   // })}
@@ -225,7 +273,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                     labelId="feed-supply-select-label2"
                     id="feed-supply-select2"
                     label="Product Format"
-                    {...register("productFormatCode")}
+                    {...register("productFormat")}
                   >
                     {ProductFormatCode.map((format, i) => {
                       return (
@@ -243,6 +291,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                   label="Product Format Code"
                   type="text"
                   className="form-input"
+                  {...register("productFormatCode")}
                   // {...register("organisationName", {
                   //     required: true,
                   // })}
@@ -265,6 +314,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                     label="Particle Size"
                     type="text"
                     className="form-input"
+                    {...register("particleSize")}
                     // {...register("organisationName", {
                     //     required: true,
                     // })}
@@ -304,9 +354,8 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                   <Select
                     labelId="feed-supply-select-label3"
                     id="feed-supply-select3"
-                    value={age}
                     label="Nutritional Class"
-                    onChange={handleChange}
+                    {...register("nutritionalClass")}
                   >
                     {nutritionalClass.map((nutritional, i) => {
                       return (
@@ -378,6 +427,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                     label="Animal Size (Length)"
                     type="text"
                     className="form-input"
+                    {...register("animalSizeInLength")}
                     // {...register("organisationName", {
                     //     required: true,
                     // })}
@@ -420,6 +470,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                     label="Animal Size (Weight)"
                     type="text"
                     className="form-input"
+                    {...register("animalSizeInWeight")}
                     // {...register("organisationName", {
                     //     required: true,
                     // })}
@@ -548,6 +599,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                     label="Shelf Live (from date of manufacturing)"
                     type="text"
                     className="form-input"
+                    {...register("shelfLife")}
                     // {...register("organisationName", {
                     //     required: true,
                     // })}
@@ -586,6 +638,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                   multiline
                   rows={5}
                   className="form-input"
+                  {...register("feedIngredients")}
                   sx={{
                     width: "100%",
                   }}
@@ -602,6 +655,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                   sx={{
                     width: "100%",
                   }}
+                  {...register("feedingGuide")}
                 />
               </Grid>
             </Grid>
@@ -1214,23 +1268,23 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                     </Box>
 
                     {/* <Button
-                      type="button"
-                      variant="contained"
-                      sx={{
-                        background: "#06a19b",
-                        color: "#fff",
-                        fontWeight: 600,
-                        padding: "6px 16px",
-                        width: "fit-content",
-                        textTransform: "capitalize",
-                        borderRadius: "8px",
-                        border: "1px solid #06A19B",
-                        minWidth: 90,
-                      }}
-                      // onClick={() => handleCalculate(item, index)}
-                    >
-                      Calculate
-                    </Button> */}
+                    type="button"
+                    variant="contained"
+                    sx={{
+                      background: "#06a19b",
+                      color: "#fff",
+                      fontWeight: 600,
+                      padding: "6px 16px",
+                      width: "fit-content",
+                      textTransform: "capitalize",
+                      borderRadius: "8px",
+                      border: "1px solid #06A19B",
+                      minWidth: 90,
+                    }}
+                    // onClick={() => handleCalculate(item, index)}
+                  >
+                    Calculate
+                  </Button> */}
 
                     <FormControl
                       fullWidth
@@ -1459,7 +1513,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                           pl: 1,
                         }}
                       >
-                        g/kg
+                        MJ/kg
                       </Typography>
                     </Box>
 
@@ -1589,7 +1643,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                     textTransform: "capitalize",
                     borderRadius: "8px",
                   }}
-                  // onClick={() => setActiveStep(2)}
+                  onClick={() => setActiveStep(2)}
                 >
                   Next
                 </Button>
