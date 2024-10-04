@@ -27,8 +27,6 @@ const ExpandedSidebar = () => {
   const pathName = usePathname();
   useEffect(() => {
     if (pathName) {
-      // const pathArr = pathName.split("/");
-      // setActivePage(pathArr[pathArr.length - 1]);
       setActivePage(pathName);
     }
   }, [pathName]);
