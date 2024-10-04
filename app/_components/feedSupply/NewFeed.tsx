@@ -986,7 +986,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                       required: true,
                     })}
                     label="Unit"
-                    value={watch("unit") !== "None" ? watch("unit") : "" || ""}
+                    value={watch("unit") !== "None" ? watch("unit") : ""}
                     onChange={(e) => setValue("unit", e.target.value)}
                   >
                     {units.map((unit, i) => {
