@@ -11,11 +11,17 @@ export const GET = async (request: NextRequest) => {
     if (role === "SUPERADMIN") {
       organisations = await prisma.organisation.findMany({
         include: { contact: true },
+        orderBy: {
+          createdAt: "desc", // Sort by createdAt in descending order
+        },
       });
     } else {
       organisations = await prisma.organisation.findMany({
         where: { id: Number(organisationId) },
         include: { contact: true },
+        orderBy: {
+          createdAt: "desc", // Sort by createdAt in descending order
+        },
       });
     }
     return new NextResponse(

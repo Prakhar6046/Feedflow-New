@@ -149,8 +149,10 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
         Number(nutritionalGuarantee?.crudeProtein?.kg) +
         Number(nutritionalGuarantee?.crudeFat?.kg) +
         Number(nutritionalGuarantee?.crudeAsh?.kg);
+
+      setValue("nutritionalGuarantee.carbohydrates.kg", String(value));
     } else {
-      toast.error("Please all nutritional guarantee");
+      toast.error("Please fill moisture, crudeProtein, crudeFat and crudeAsh");
     }
   };
   useEffect(() => {

@@ -86,6 +86,8 @@ export default function AddNewUser({ organisations }: Props) {
           const updatedUser = await response.json();
           setProfilePic(updatedUser.data.imageUrl);
         }
+      } else {
+        toast.error(responseData.message);
       }
       if (response.ok) {
         toast.success(responseData.message);

@@ -10,6 +10,9 @@ export const GET = async (request: NextRequest) => {
         farmAddress: true,
         productionUnits: true,
       },
+      orderBy: {
+        createdAt: "desc", // Sort by createdAt in descending order
+      },
     });
     return new NextResponse(JSON.stringify({ status: true, data: farms }), {
       status: 200,

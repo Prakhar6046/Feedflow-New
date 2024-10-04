@@ -19,6 +19,9 @@ export const GET = async (request: NextRequest) => {
             }
           : {},
         include: { contact: true },
+        orderBy: {
+          createdAt: "desc", // Sort by createdAt in descending order
+        },
       });
     } else {
       organisations = await prisma.organisation.findMany({
@@ -32,20 +35,12 @@ export const GET = async (request: NextRequest) => {
             }
           : { id: Number(organisationId) },
         include: { contact: true },
+        orderBy: {
+          createdAt: "desc", // Sort by createdAt in descending order
+        },
       });
     }
 
-    // const organisations = await prisma.organisation.findMany({
-    //   where: searchQuery
-    //     ? {
-    //         id: 24,
-    //         name: {
-    //           contains: searchQuery,
-    //           mode: "insensitive", // Optional: Makes the search case-insensitive
-    //         },
-    //       }
-    //     : {}, // If searchQuery is empty, no filtering will be applied
-    // });
     return new NextResponse(
       JSON.stringify({ status: true, data: organisations }),
       {
