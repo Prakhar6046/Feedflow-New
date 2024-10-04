@@ -11,7 +11,7 @@ export const productionIntensity = [
   "Semi-Intensive",
   "Recreational",
 ];
-export const units = ["None", "Hatchery", "Grow-out", "Nursery", "Breeding"];
+export const units = ["Hatchery", "Grow-out", "Nursery", "Breeding", "None"];
 export const feedingPhase = [
   "Pre-Starter",
   "Grower",
@@ -22,7 +22,6 @@ export const feedingPhase = [
   "None",
 ];
 export const lifeStage = [
-  "None",
   "Fry",
   "Juvenile",
   "Breeder",
@@ -30,6 +29,7 @@ export const lifeStage = [
   "Fingerling",
   "Grower",
   "Maintenance",
+  "None",
 ];
 export const species = ["Tilapia"];
 export const nutritionalPurpose = [
