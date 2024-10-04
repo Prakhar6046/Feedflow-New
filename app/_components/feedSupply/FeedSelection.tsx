@@ -147,7 +147,7 @@ const FeedSelection: NextPage<Props> = ({ setActiveStep, editFarm }) => {
         {feedSupply?.length ? (
           feedSupply?.map((supply) => {
             return (
-              <Stack>
+              <Stack key={String(supply.id)}>
                 <Grid
                   item
                   xs="auto"
