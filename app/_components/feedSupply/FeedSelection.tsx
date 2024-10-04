@@ -147,12 +147,7 @@ const FeedSelection: NextPage<Props> = ({ setActiveStep, editFarm }) => {
         {feedSupply?.length ? (
           feedSupply?.map((supply) => {
             return (
-              <Grid
-                item
-                xs="auto"
-                key={Number(supply?.id)}
-                onClick={() => handleEditFeedSupply(supply)}
-              >
+              <Grid item xs="auto" key={Number(supply?.id)}>
                 <Box
                   position={"relative"}
                   border={"1px solid #555555AC"}
@@ -164,7 +159,12 @@ const FeedSelection: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                     height: "100%",
                   }}
                 >
-                  <Box display={"flex"} justifyContent={"end"} mb={2}>
+                  <Box
+                    display={"flex"}
+                    justifyContent={"end"}
+                    mb={2}
+                    onClick={() => handleEditFeedSupply(supply)}
+                  >
                     <Button
                       type="button"
                       variant="contained"
