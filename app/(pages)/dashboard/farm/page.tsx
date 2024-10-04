@@ -14,7 +14,7 @@ export default async function Page() {
         buttonName={"Add Farm"}
         searchOrganisations={false}
         searchUsers={false}
-        searchFarm={false}
+        searchFarm={true}
         isTable={true}
         buttonRoute="/dashboard/farm/newFarm"
         links={[

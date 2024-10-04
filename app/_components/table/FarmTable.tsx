@@ -69,6 +69,7 @@ export default function FarmTable() {
     };
     data();
   }, []);
+
   if (loading) {
     return <Loader />;
   }

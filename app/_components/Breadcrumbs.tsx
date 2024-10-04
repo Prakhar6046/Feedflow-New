@@ -75,11 +75,11 @@ export default function BasicBreadcrumbs({
     let data = await res.json();
     return data;
   }
-  // async function SeachedFarms(query: string) {
-  //   let res = await fetch(`/api/farm/search?name=${query}`);
-  //   let data = await res.json();
-  //   return data;
-  // }
+  async function SeachedFarms(query: string) {
+    let res = await fetch(`/api/farm/search?name=${query}`);
+    let data = await res.json();
+    return data;
+  }
 
   const handleClear = () => {
     setSearchQuery("");
@@ -126,14 +126,13 @@ export default function BasicBreadcrumbs({
       getSearchUsers();
     }
     if (searchFarm) {
-      // const getSearchFarms = async () => {
-      //   const res = await SeachedFarms(debouncedSearchQuery);
-      //   console.log(res.data);
-      //   dispatch(farmAction.updateFarms(res.data));
-      // };
-      // getSearchFarms();
+      const getSearchFarms = async () => {
+        const res = await SeachedFarms(debouncedSearchQuery);
+        dispatch(farmAction.updateFarms(res.data));
+      };
+      getSearchFarms();
     }
-  }, [debouncedSearchQuery, searchOrganisations, searchUsers]);
+  }, [debouncedSearchQuery, searchOrganisations, searchUsers, searchFarm]);
 
   return (
     <>

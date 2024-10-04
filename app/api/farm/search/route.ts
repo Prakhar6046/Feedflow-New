@@ -15,6 +15,11 @@ export const GET = async (request: NextRequest) => {
             },
           }
         : {},
+      include: {
+        farmAddress: true,
+        productionUnits: true,
+      },
+
       orderBy: {
         createdAt: "desc", // Sort by createdAt in descending order
       },

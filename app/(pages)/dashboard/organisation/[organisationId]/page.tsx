@@ -119,7 +119,6 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
     const conatcts = watch("contacts");
     if (conatcts) {
       const lastContact = conatcts[conatcts.length - 1];
-      console.log(lastContact);
       if (
         lastContact &&
         lastContact.name &&
