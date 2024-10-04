@@ -29,6 +29,7 @@ import Image from "next/image";
 import EyeOpened from "@/public/static/img/icons/ic-eye-open.svg";
 import * as validationPattern from "@/app/_lib/utils/validationPatterns/index";
 import * as validationMessage from "@/app/_lib/utils/validationsMessage/index";
+
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
   clipPath: "inset(50%)",
@@ -109,7 +110,8 @@ export default function Page({ params }: { params: { userId: string } }) {
   const [currentUserId, setCurrentUserId] = useState<Number>();
   const [profilePic, setProfilePic] = useState<String>();
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [showConfirmPassword, setshowConfirmPassword] = useState<boolean>();
+  const [showConfirmPassword, setshowConfirmPassword] =
+    useState<boolean>(false);
   const getUser = async () => {
     setLoading(true);
     const data = await fetch(`/api/users/${params.userId}`, { method: "GET" });
@@ -124,6 +126,7 @@ export default function Page({ params }: { params: { userId: string } }) {
     handleSubmit,
     getValues,
     resetField,
+    watch,
     formState: { errors },
   } = useForm<UserEditFormInputs>();
   const onSubmit: SubmitHandler<UserEditFormInputs> = async (data) => {
@@ -491,6 +494,7 @@ export default function Page({ params }: { params: { userId: string } }) {
                     type={showConfirmPassword ? "text" : "password"}
                     className="form-input"
                     {...register("confirmPassword", {
+                      required: watch("password") ? true : false,
                       validate: (value) =>
                         value === getValues().password ||
                         "Confirm Password do not match!",
@@ -522,6 +526,16 @@ export default function Page({ params }: { params: { userId: string } }) {
                       alt="Eye Icon"
                     />
                   </Box>
+                  {errors && errors.confirmPassword?.type == "required" && (
+                    <Typography
+                      variant="body2"
+                      color="red"
+                      fontSize={13}
+                      mt={0.5}
+                    >
+                      Please Re-enter Password.
+                    </Typography>
+                  )}
                   {errors && errors.confirmPassword?.type == "validate" && (
                     <Typography
                       variant="body2"
@@ -529,7 +543,7 @@ export default function Page({ params }: { params: { userId: string } }) {
                       fontSize={13}
                       mt={0.5}
                     >
-                      {errors.confirmPassword?.message}
+                      {validationMessage.confirmPasswordMessage}
                     </Typography>
                   )}
                 </Box>

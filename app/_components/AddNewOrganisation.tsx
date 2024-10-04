@@ -516,7 +516,8 @@ const AddNewOrganisation = () => {
                   className="form-input"
                   {...register("city", {
                     required: true,
-                    pattern: validationPattern.alphabetsAndSpacesPattern,
+                    pattern:
+                      validationPattern.alphabetsSpacesAndSpecialCharsPattern,
                   })}
                   focused
                   sx={{
@@ -540,7 +541,7 @@ const AddNewOrganisation = () => {
                     fontSize={13}
                     mt={0.5}
                   >
-                    {validationMessage.OnlyAlphabatsMessage}
+                    {validationMessage.alphabetswithSpecialCharacter}
                   </Typography>
                 )}
               </Box>
@@ -563,7 +564,8 @@ const AddNewOrganisation = () => {
                   className="form-input"
                   {...register("province", {
                     required: true,
-                    pattern: validationPattern.alphabetsAndSpacesPattern,
+                    pattern:
+                      validationPattern.alphabetsSpacesAndSpecialCharsPattern,
                   })}
                   focused
                   sx={{
@@ -591,7 +593,7 @@ const AddNewOrganisation = () => {
                       fontSize={13}
                       mt={0.5}
                     >
-                      {validationMessage.OnlyAlphabatsMessage}
+                      {validationMessage.alphabetswithSpecialCharacter}
                     </Typography>
                   )}
               </Box>
@@ -977,7 +979,7 @@ const AddNewOrganisation = () => {
                         fontSize={13}
                         mt={0.5}
                       >
-                        {validationMessage.passwordPatternMessage}
+                        {validationMessage.phonePatternMessage}
                       </Typography>
                     )}
                 </Box>
