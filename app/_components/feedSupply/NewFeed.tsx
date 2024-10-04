@@ -82,7 +82,6 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
   const isEditFeed = useAppSelector(selectIsEditFeed);
   const {
     register,
-
     handleSubmit,
     reset,
     setValue,
@@ -762,12 +761,12 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
               <Grid item md={6} xs={12}>
                 <FormControl fullWidth className="form-input">
                   <InputLabel id="feed-supply-select-label5">
-                    Species
+                    Species *
                   </InputLabel>
                   <Select
                     labelId="feed-supply-select-label5"
                     id="feed-supply-select5"
-                    label="Specie"
+                    label="Species *"
                     {...register("specie", {
                       required: true,
                     })}
@@ -1295,7 +1294,6 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                     >
                       1.{" "}
                     </Typography>
-
                     <Box
                       // display={"flex"}
                       // gap={2}
@@ -1315,7 +1313,6 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                           minWidth: 190,
                         }}
                       />
-
                       {errors &&
                         errors?.nutritionalGuarantee?.moisture?.kg &&
                         errors.nutritionalGuarantee.moisture.kg.type ===
@@ -1342,7 +1339,6 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                             {validationMessage.onlyNumbers}
                           </Typography>
                         )}
-
                       <Typography
                         variant="body2"
                         color="#555555AC"
@@ -1364,7 +1360,6 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                         g/kg
                       </Typography>
                     </Box>
-
                     <Box width={"100%"}>
                       <FormControl
                         fullWidth
@@ -1467,125 +1462,140 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                       2.{" "}
                     </Typography>
 
-                    <Box
-                      // display={"flex"}
-                      // gap={2}
-                      // alignItems={"center"}
-                      position={"relative"}
-                    >
-                      <TextField
-                        label="Crude Protein"
-                        type="text"
-                        className="form-input"
-                        {...register("nutritionalGuarantee.crudeProtein.kg", {
-                          required: true,
-                          pattern: validationPattern.onlyNumbersPattern,
-                        })}
-                        sx={{
-                          width: "100%",
-                          minWidth: 190,
-                        }}
-                      />
-                      {errors &&
-                        errors?.nutritionalGuarantee?.crudeProtein?.kg &&
-                        errors.nutritionalGuarantee.crudeProtein.kg.type ===
-                          "required" && (
+                    <Grid container spacing={2}>
+                      <Grid item xs={12} md={6}>
+                        <Box
+                          // display={"flex"}
+                          // gap={2}
+                          // alignItems={"center"}
+                          position={"relative"}
+                        >
+                          <TextField
+                            label="Crude Protein *"
+                            type="text"
+                            className="form-input"
+                            {...register(
+                              "nutritionalGuarantee.crudeProtein.kg",
+                              {
+                                required: true,
+                                pattern: validationPattern.onlyNumbersPattern,
+                              }
+                            )}
+                            sx={{
+                              width: "100%",
+                              // minWidth: 190,
+                            }}
+                          />
+                          {errors &&
+                            errors?.nutritionalGuarantee?.crudeProtein?.kg &&
+                            errors.nutritionalGuarantee.crudeProtein.kg.type ===
+                              "required" && (
+                              <Typography
+                                variant="body2"
+                                color="red"
+                                fontSize={13}
+                                mt={0.5}
+                              >
+                                {validationMessage.required}
+                              </Typography>
+                            )}
+                          {errors &&
+                            errors?.nutritionalGuarantee?.crudeProtein?.kg &&
+                            errors.nutritionalGuarantee.crudeProtein.kg.type ===
+                              "pattern" && (
+                              <Typography
+                                variant="body2"
+                                color="red"
+                                fontSize={13}
+                                mt={0.5}
+                              >
+                                {validationMessage.onlyNumbers}
+                              </Typography>
+                            )}
                           <Typography
                             variant="body2"
-                            color="red"
-                            fontSize={13}
-                            mt={0.5}
+                            color="#555555AC"
+                            sx={{
+                              position: "absolute",
+                              right: 6,
+                              top: errors?.nutritionalGuarantee?.crudeProtein
+                                ?.kg
+                                ? "35%"
+                                : "50%",
+                              transform: "translate(-6px, -50%)",
+                              backgroundColor: "#fff",
+                              height: 30,
+                              display: "grid",
+                              placeItems: "center",
+                              zIndex: 1,
+                              pl: 1,
+                            }}
                           >
-                            {validationMessage.required}
+                            g/kg
                           </Typography>
-                        )}
-                      {errors &&
-                        errors?.nutritionalGuarantee?.crudeProtein?.kg &&
-                        errors.nutritionalGuarantee.crudeProtein.kg.type ===
-                          "pattern" && (
-                          <Typography
-                            variant="body2"
-                            color="red"
-                            fontSize={13}
-                            mt={0.5}
-                          >
-                            {validationMessage.onlyNumbers}
-                          </Typography>
-                        )}
-                      <Typography
-                        variant="body2"
-                        color="#555555AC"
-                        sx={{
-                          position: "absolute",
-                          right: 6,
-                          top: errors?.nutritionalGuarantee?.crudeProtein?.kg
-                            ? "35%"
-                            : "50%",
-                          transform: "translate(-6px, -50%)",
-                          backgroundColor: "#fff",
-                          height: 30,
-                          display: "grid",
-                          placeItems: "center",
-                          zIndex: 1,
-                          pl: 1,
-                        }}
-                      >
-                        g/kg
-                      </Typography>
-                    </Box>
+                        </Box>
+                      </Grid>
 
-                    <FormControl
-                      fullWidth
-                      className="form-input"
-                      sx={{
-                        minWidth: 110,
-                      }}
-                    >
-                      <InputLabel id="feed-supply-select-label10">
-                        Min
-                      </InputLabel>
-                      <Select
-                        labelId="feed-supply-select-label10"
-                        id="feed-supply-select10"
-                        label="Min"
-                        {...register(
-                          "nutritionalGuarantee.crudeProtein.value",
-                          {
-                            required: true,
-                          }
-                        )}
-                        value={
-                          watch("nutritionalGuarantee.crudeProtein.value") || ""
-                        }
-                        onChange={(e) =>
-                          setValue(
-                            "nutritionalGuarantee.crudeProtein.value",
-                            e.target.value
-                          )
-                        }
-                      >
-                        {nutritionalGuarantee.map((guarantee, i) => {
-                          return (
-                            <MenuItem value={guarantee} key={i}>
-                              {guarantee}
-                            </MenuItem>
-                          );
-                        })}
-                      </Select>
-                      {errors &&
-                        errors?.nutritionalGuarantee?.crudeProtein?.value &&
-                        errors.nutritionalGuarantee.crudeProtein.value.type ===
-                          "required" && (
-                          <Typography
-                            variant="body2"
-                            color="red"
-                            fontSize={13}
-                            mt={0.5}
+                      <Grid item xs={12} md={6}>
+                        <Box width={"100%"}>
+                          <FormControl
+                            fullWidth
+                            className="form-input"
+                            sx={{
+                              minWidth: 110,
+                            }}
                           >
-                            {validationMessage.required}
-                          </Typography>
-                        )}
-                    </FormControl>
+                            <InputLabel id="feed-supply-select-label10">
+                              Min *
+                            </InputLabel>
+                            <Select
+                              labelId="feed-supply-select-label10"
+                              id="feed-supply-select10"
+                              label="Min *"
+                              {...register(
+                                "nutritionalGuarantee.crudeProtein.value",
+                                {
+                                  required: true,
+                                }
+                              )}
+                              value={
+                                watch(
+                                  "nutritionalGuarantee.crudeProtein.value"
+                                ) || ""
+                              }
+                              onChange={(e) =>
+                                setValue(
+                                  "nutritionalGuarantee.crudeProtein.value",
+                                  e.target.value
+                                )
+                              }
+                            >
+                              {nutritionalGuarantee.map((guarantee, i) => {
+                                return (
+                                  <MenuItem value={guarantee} key={i}>
+                                    {guarantee}
+                                  </MenuItem>
+                                );
+                              })}
+                            </Select>
+                            {errors &&
+                              errors?.nutritionalGuarantee?.crudeProtein
+                                ?.value &&
+                              errors.nutritionalGuarantee.crudeProtein.value
+                                .type === "required" && (
+                                <Typography
+                                  variant="body2"
+                                  color="red"
+                                  fontSize={13}
+                                  mt={0.5}
+                                >
+                                  {validationMessage.required}
+                                </Typography>
+                              )}
+                          </FormControl>
+                        </Box>
+                      </Grid>
+                    </Grid>
 
                     {(watch("nutritionalGuarantee.crudeProtein.value") ||
                       watch("nutritionalGuarantee.crudeProtein.kg")) && (
@@ -1644,122 +1654,134 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                       3.{" "}
                     </Typography>
 
-                    <Box
-                      // display={"flex"}
-                      // gap={2}
-                      // alignItems={"center"}
-                      position={"relative"}
-                    >
-                      <TextField
-                        label="Crude Fat"
-                        type="text"
-                        className="form-input"
-                        {...register("nutritionalGuarantee.crudeFat.kg", {
-                          required: true,
-                          pattern: validationPattern.onlyNumbersPattern,
-                        })}
-                        sx={{
-                          width: "100%",
-                          minWidth: 190,
-                        }}
-                      />
-                      {errors &&
-                        errors?.nutritionalGuarantee?.crudeFat?.kg &&
-                        errors?.nutritionalGuarantee?.crudeFat?.kg.type ===
-                          "required" && (
+                    <Grid container spacing={2}>
+                      <Grid item xs={12} md={6}>
+                        <Box
+                          // display={"flex"}
+                          // gap={2}
+                          // alignItems={"center"}
+                          position={"relative"}
+                        >
+                          <TextField
+                            label="Crude Fat *"
+                            type="text"
+                            className="form-input"
+                            {...register("nutritionalGuarantee.crudeFat.kg", {
+                              required: true,
+                              pattern: validationPattern.onlyNumbersPattern,
+                            })}
+                            sx={{
+                              width: "100%",
+                              // minWidth: 190,
+                            }}
+                          />
+                          {errors &&
+                            errors?.nutritionalGuarantee?.crudeFat?.kg &&
+                            errors?.nutritionalGuarantee?.crudeFat?.kg.type ===
+                              "required" && (
+                              <Typography
+                                variant="body2"
+                                color="red"
+                                fontSize={13}
+                                mt={0.5}
+                              >
+                                {validationMessage.required}
+                              </Typography>
+                            )}
+                          {errors &&
+                            errors?.nutritionalGuarantee?.crudeFat?.kg &&
+                            errors?.nutritionalGuarantee?.crudeFat?.kg.type ===
+                              "pattern" && (
+                              <Typography
+                                variant="body2"
+                                color="red"
+                                fontSize={13}
+                                mt={0.5}
+                              >
+                                {validationMessage.onlyNumbers}
+                              </Typography>
+                            )}
                           <Typography
                             variant="body2"
-                            color="red"
-                            fontSize={13}
-                            mt={0.5}
+                            color="#555555AC"
+                            sx={{
+                              position: "absolute",
+                              right: 6,
+                              top: errors?.nutritionalGuarantee?.crudeFat?.kg
+                                ? "35%"
+                                : "50%",
+                              transform: "translate(-6px, -50%)",
+                              backgroundColor: "#fff",
+                              height: 30,
+                              display: "grid",
+                              placeItems: "center",
+                              zIndex: 1,
+                              pl: 1,
+                            }}
                           >
-                            {validationMessage.required}
+                            g/kg
                           </Typography>
-                        )}
-                      {errors &&
-                        errors?.nutritionalGuarantee?.crudeFat?.kg &&
-                        errors?.nutritionalGuarantee?.crudeFat?.kg.type ===
-                          "pattern" && (
-                          <Typography
-                            variant="body2"
-                            color="red"
-                            fontSize={13}
-                            mt={0.5}
-                          >
-                            {validationMessage.onlyNumbers}
-                          </Typography>
-                        )}
-                      <Typography
-                        variant="body2"
-                        color="#555555AC"
-                        sx={{
-                          position: "absolute",
-                          right: 6,
-                          top: errors?.nutritionalGuarantee?.crudeFat?.kg
-                            ? "35%"
-                            : "50%",
-                          transform: "translate(-6px, -50%)",
-                          backgroundColor: "#fff",
-                          height: 30,
-                          display: "grid",
-                          placeItems: "center",
-                          zIndex: 1,
-                          pl: 1,
-                        }}
-                      >
-                        g/kg
-                      </Typography>
-                    </Box>
+                        </Box>
+                      </Grid>
 
-                    <FormControl
-                      fullWidth
-                      className="form-input"
-                      sx={{
-                        minWidth: 110,
-                      }}
-                    >
-                      <InputLabel id="feed-supply-select-label10">
-                        Min
-                      </InputLabel>
-                      <Select
-                        labelId="feed-supply-select-label10"
-                        id="feed-supply-select10"
-                        label="Min"
-                        {...register("nutritionalGuarantee.crudeFat.value", {
-                          required: true,
-                        })}
-                        value={
-                          watch("nutritionalGuarantee.crudeFat.value") || ""
-                        }
-                        onChange={(e) =>
-                          setValue(
-                            "nutritionalGuarantee.crudeFat.value",
-                            e.target.value
-                          )
-                        }
-                      >
-                        {nutritionalGuarantee.map((guarantee, i) => {
-                          return (
-                            <MenuItem value={guarantee} key={i}>
-                              {guarantee}
-                            </MenuItem>
-                          );
-                        })}
-                      </Select>
-                      {errors &&
-                        errors?.nutritionalGuarantee?.crudeFat?.value &&
-                        errors?.nutritionalGuarantee?.crudeFat?.value.type ===
-                          "required" && (
-                          <Typography
-                            variant="body2"
-                            color="red"
-                            fontSize={13}
-                            mt={0.5}
+                      <Grid item xs={12} md={6}>
+                        <Box width={"100%"}>
+                          <FormControl
+                            fullWidth
+                            className="form-input"
+                            sx={{
+                              minWidth: 110,
+                            }}
                           >
-                            {validationMessage.required}
-                          </Typography>
-                        )}
-                    </FormControl>
+                            <InputLabel id="feed-supply-select-label10">
+                              Min *
+                            </InputLabel>
+                            <Select
+                              labelId="feed-supply-select-label10"
+                              id="feed-supply-select10"
+                              label="Min *"
+                              {...register(
+                                "nutritionalGuarantee.crudeFat.value",
+                                {
+                                  required: true,
+                                }
+                              )}
+                              value={
+                                watch("nutritionalGuarantee.crudeFat.value") ||
+                                ""
+                              }
+                              onChange={(e) =>
+                                setValue(
+                                  "nutritionalGuarantee.crudeFat.value",
+                                  e.target.value
+                                )
+                              }
+                            >
+                              {nutritionalGuarantee.map((guarantee, i) => {
+                                return (
+                                  <MenuItem value={guarantee} key={i}>
+                                    {guarantee}
+                                  </MenuItem>
+                                );
+                              })}
+                            </Select>
+                            {errors &&
+                              errors?.nutritionalGuarantee?.crudeFat?.value &&
+                              errors?.nutritionalGuarantee?.crudeFat?.value
+                                .type === "required" && (
+                                <Typography
+                                  variant="body2"
+                                  color="red"
+                                  fontSize={13}
+                                  mt={0.5}
+                                >
+                                  {validationMessage.required}
+                                </Typography>
+                              )}
+                          </FormControl>
+                        </Box>
+                      </Grid>
+                    </Grid>
 
                     {(watch("nutritionalGuarantee.crudeFat.value") ||
                       watch("nutritionalGuarantee.crudeFat.kg")) && (
@@ -1812,123 +1834,134 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                       4.{" "}
                     </Typography>
 
-                    <Box
-                      // display={"flex"}
-                      // gap={2}
-                      // alignItems={"center"}
-                      position={"relative"}
-                    >
-                      <TextField
-                        label="Crude Ash"
-                        type="text"
-                        className="form-input"
-                        {...register("nutritionalGuarantee.crudeAsh.kg", {
-                          required: true,
-                          pattern: validationPattern.onlyNumbersPattern,
-                        })}
-                        sx={{
-                          width: "100%",
-                          minWidth: 190,
-                        }}
-                      />
-                      {errors &&
-                        errors?.nutritionalGuarantee?.crudeAsh?.kg &&
-                        errors?.nutritionalGuarantee?.crudeAsh.kg.type ===
-                          "required" && (
+                    <Grid container spacing={2}>
+                      <Grid item xs={12} md={6}>
+                        <Box
+                          // display={"flex"}
+                          // gap={2}
+                          // alignItems={"center"}
+                          position={"relative"}
+                        >
+                          <TextField
+                            label="Crude Ash *"
+                            type="text"
+                            className="form-input"
+                            {...register("nutritionalGuarantee.crudeAsh.kg", {
+                              required: true,
+                              pattern: validationPattern.onlyNumbersPattern,
+                            })}
+                            sx={{
+                              width: "100%",
+                              minWidth: 190,
+                            }}
+                          />
+                          {errors &&
+                            errors?.nutritionalGuarantee?.crudeAsh?.kg &&
+                            errors?.nutritionalGuarantee?.crudeAsh.kg.type ===
+                              "required" && (
+                              <Typography
+                                variant="body2"
+                                color="red"
+                                fontSize={13}
+                                mt={0.5}
+                              >
+                                {validationMessage.required}
+                              </Typography>
+                            )}
+                          {errors &&
+                            errors?.nutritionalGuarantee?.crudeAsh?.kg &&
+                            errors?.nutritionalGuarantee?.crudeAsh.kg.type ===
+                              "pattern" && (
+                              <Typography
+                                variant="body2"
+                                color="red"
+                                fontSize={13}
+                                mt={0.5}
+                              >
+                                {validationMessage.onlyNumbers}
+                              </Typography>
+                            )}
                           <Typography
                             variant="body2"
-                            color="red"
-                            fontSize={13}
-                            mt={0.5}
+                            color="#555555AC"
+                            sx={{
+                              position: "absolute",
+                              right: 6,
+                              top: errors?.nutritionalGuarantee?.crudeAsh?.kg
+                                ? "35%"
+                                : "50%",
+                              transform: "translate(-6px, -50%)",
+                              backgroundColor: "#fff",
+                              height: 30,
+                              display: "grid",
+                              placeItems: "center",
+                              zIndex: 1,
+                              pl: 1,
+                            }}
                           >
-                            {validationMessage.required}
+                            g/kg
                           </Typography>
-                        )}
-                      {errors &&
-                        errors?.nutritionalGuarantee?.crudeAsh?.kg &&
-                        errors?.nutritionalGuarantee?.crudeAsh.kg.type ===
-                          "pattern" && (
-                          <Typography
-                            variant="body2"
-                            color="red"
-                            fontSize={13}
-                            mt={0.5}
+                        </Box>
+                      </Grid>
+                      <Grid item xs={12} md={6}>
+                        <Box width={"100%"}>
+                          <FormControl
+                            fullWidth
+                            className="form-input"
+                            sx={{
+                              minWidth: 110,
+                            }}
                           >
-                            {validationMessage.onlyNumbers}
-                          </Typography>
-                        )}
-                      <Typography
-                        variant="body2"
-                        color="#555555AC"
-                        sx={{
-                          position: "absolute",
-                          right: 6,
-                          top: errors?.nutritionalGuarantee?.crudeAsh?.kg
-                            ? "35%"
-                            : "50%",
-                          transform: "translate(-6px, -50%)",
-                          backgroundColor: "#fff",
-                          height: 30,
-                          display: "grid",
-                          placeItems: "center",
-                          zIndex: 1,
-                          pl: 1,
-                        }}
-                      >
-                        g/kg
-                      </Typography>
-                    </Box>
-
-                    <FormControl
-                      fullWidth
-                      className="form-input"
-                      sx={{
-                        minWidth: 110,
-                      }}
-                    >
-                      <InputLabel id="feed-supply-select-label10">
-                        Min
-                      </InputLabel>
-                      <Select
-                        labelId="feed-supply-select-label10"
-                        id="feed-supply-select10"
-                        {...register("nutritionalGuarantee.crudeAsh.value", {
-                          required: true,
-                        })}
-                        label="Min"
-                        value={
-                          watch("nutritionalGuarantee.crudeAsh.value") || ""
-                        }
-                        onChange={(e) =>
-                          setValue(
-                            "nutritionalGuarantee.crudeAsh.value",
-                            e.target.value
-                          )
-                        }
-                        // onChange={handleChange}
-                      >
-                        {nutritionalGuarantee.map((guarantee, i) => {
-                          return (
-                            <MenuItem value={guarantee} key={i}>
-                              {guarantee}
-                            </MenuItem>
-                          );
-                        })}
-                      </Select>
-                      {errors &&
-                        errors?.nutritionalGuarantee?.crudeAsh?.value &&
-                        errors?.nutritionalGuarantee?.crudeAsh.value.type ===
-                          "required" && (
-                          <Typography
-                            variant="body2"
-                            color="red"
-                            fontSize={13}
-                            mt={0.5}
-                          >
-                            {validationMessage.required}
-                          </Typography>
-                        )}
-                    </FormControl>
+                            <InputLabel id="feed-supply-select-label10">
+                              Min *
+                            </InputLabel>
+                            <Select
+                              labelId="feed-supply-select-label10"
+                              id="feed-supply-select10"
+                              {...register(
+                                "nutritionalGuarantee.crudeAsh.value",
+                                {
+                                  required: true,
+                                }
+                              )}
+                              label="Min *"
+                              value={
+                                watch("nutritionalGuarantee.crudeAsh.value") ||
+                                ""
+                              }
+                              onChange={(e) =>
+                                setValue(
+                                  "nutritionalGuarantee.crudeAsh.value",
+                                  e.target.value
+                                )
+                              }
+                              // onChange={handleChange}
+                            >
+                              {nutritionalGuarantee.map((guarantee, i) => {
+                                return (
+                                  <MenuItem value={guarantee} key={i}>
+                                    {guarantee}
+                                  </MenuItem>
+                                );
+                              })}
+                            </Select>
+                            {errors &&
+                              errors?.nutritionalGuarantee?.crudeAsh?.value &&
+                              errors?.nutritionalGuarantee?.crudeAsh.value
+                                .type === "required" && (
+                                <Typography
+                                  variant="body2"
+                                  color="red"
+                                  fontSize={13}
+                                  mt={0.5}
+                                >
+                                  {validationMessage.required}
+                                </Typography>
+                              )}
+                          </FormControl>
+                        </Box>
+                      </Grid>
+                    </Grid>
 
                     {(watch("nutritionalGuarantee.crudeAsh.value") ||
                       watch("nutritionalGuarantee.crudeAsh.kg")) && (
@@ -1981,122 +2014,133 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                       5.{" "}
                     </Typography>
 
-                    <Box
-                      // display={"flex"}
-                      // gap={2}
-                      // alignItems={"center"}
-                      position={"relative"}
-                    >
-                      <TextField
-                        label="Calcium"
-                        type="text"
-                        className="form-input"
-                        {...register("nutritionalGuarantee.calcium.kg", {
-                          required: true,
-                          pattern: validationPattern.onlyNumbersPattern,
-                        })}
-                        sx={{
-                          width: "100%",
-                          minWidth: 190,
-                        }}
-                      />
-                      {errors &&
-                        errors?.nutritionalGuarantee?.calcium?.kg &&
-                        errors?.nutritionalGuarantee?.calcium.kg.type ===
-                          "required" && (
+                    <Grid container spacing={2}>
+                      <Grid item xs={12} md={6}>
+                        <Box
+                          // display={"flex"}
+                          // gap={2}
+                          // alignItems={"center"}
+                          position={"relative"}
+                        >
+                          <TextField
+                            label="Calcium *"
+                            type="text"
+                            className="form-input"
+                            {...register("nutritionalGuarantee.calcium.kg", {
+                              required: true,
+                              pattern: validationPattern.onlyNumbersPattern,
+                            })}
+                            sx={{
+                              width: "100%",
+                              // minWidth: 190,
+                            }}
+                          />
+                          {errors &&
+                            errors?.nutritionalGuarantee?.calcium?.kg &&
+                            errors?.nutritionalGuarantee?.calcium.kg.type ===
+                              "required" && (
+                              <Typography
+                                variant="body2"
+                                color="red"
+                                fontSize={13}
+                                mt={0.5}
+                              >
+                                {validationMessage.required}
+                              </Typography>
+                            )}
+                          {errors &&
+                            errors?.nutritionalGuarantee?.calcium?.kg &&
+                            errors?.nutritionalGuarantee?.calcium.kg.type ===
+                              "pattern" && (
+                              <Typography
+                                variant="body2"
+                                color="red"
+                                fontSize={13}
+                                mt={0.5}
+                              >
+                                {validationMessage.onlyNumbers}
+                              </Typography>
+                            )}
                           <Typography
                             variant="body2"
-                            color="red"
-                            fontSize={13}
-                            mt={0.5}
+                            color="#555555AC"
+                            sx={{
+                              position: "absolute",
+                              right: 6,
+                              top: errors?.nutritionalGuarantee?.calcium?.kg
+                                ? "35%"
+                                : "50%",
+                              transform: "translate(-6px, -50%)",
+                              backgroundColor: "#fff",
+                              height: 30,
+                              display: "grid",
+                              placeItems: "center",
+                              zIndex: 1,
+                              pl: 1,
+                            }}
                           >
-                            {validationMessage.required}
+                            g/kg
                           </Typography>
-                        )}
-                      {errors &&
-                        errors?.nutritionalGuarantee?.calcium?.kg &&
-                        errors?.nutritionalGuarantee?.calcium.kg.type ===
-                          "pattern" && (
-                          <Typography
-                            variant="body2"
-                            color="red"
-                            fontSize={13}
-                            mt={0.5}
+                        </Box>
+                      </Grid>
+                      <Grid item xs={12} md={6}>
+                        <Box width={"100%"}>
+                          <FormControl
+                            fullWidth
+                            className="form-input"
+                            sx={{
+                              minWidth: 110,
+                            }}
                           >
-                            {validationMessage.onlyNumbers}
-                          </Typography>
-                        )}
-                      <Typography
-                        variant="body2"
-                        color="#555555AC"
-                        sx={{
-                          position: "absolute",
-                          right: 6,
-                          top: errors?.nutritionalGuarantee?.calcium?.kg
-                            ? "35%"
-                            : "50%",
-                          transform: "translate(-6px, -50%)",
-                          backgroundColor: "#fff",
-                          height: 30,
-                          display: "grid",
-                          placeItems: "center",
-                          zIndex: 1,
-                          pl: 1,
-                        }}
-                      >
-                        g/kg
-                      </Typography>
-                    </Box>
-
-                    <FormControl
-                      fullWidth
-                      className="form-input"
-                      sx={{
-                        minWidth: 110,
-                      }}
-                    >
-                      <InputLabel id="feed-supply-select-label10">
-                        Min
-                      </InputLabel>
-                      <Select
-                        labelId="feed-supply-select-label10"
-                        id="feed-supply-select10"
-                        label="Min"
-                        {...register("nutritionalGuarantee.calcium.value", {
-                          required: true,
-                        })}
-                        value={
-                          watch("nutritionalGuarantee.calcium.value") || ""
-                        }
-                        onChange={(e) =>
-                          setValue(
-                            "nutritionalGuarantee.calcium.value",
-                            e.target.value
-                          )
-                        }
-                      >
-                        {nutritionalGuarantee.map((guarantee, i) => {
-                          return (
-                            <MenuItem value={guarantee} key={i}>
-                              {guarantee}
-                            </MenuItem>
-                          );
-                        })}
-                      </Select>
-                      {errors &&
-                        errors?.nutritionalGuarantee?.calcium?.value &&
-                        errors?.nutritionalGuarantee?.calcium.value.type ===
-                          "required" && (
-                          <Typography
-                            variant="body2"
-                            color="red"
-                            fontSize={13}
-                            mt={0.5}
-                          >
-                            {validationMessage.required}
-                          </Typography>
-                        )}
-                    </FormControl>
+                            <InputLabel id="feed-supply-select-label10">
+                              Min *
+                            </InputLabel>
+                            <Select
+                              labelId="feed-supply-select-label10"
+                              id="feed-supply-select10"
+                              label="Min *"
+                              {...register(
+                                "nutritionalGuarantee.calcium.value",
+                                {
+                                  required: true,
+                                }
+                              )}
+                              value={
+                                watch("nutritionalGuarantee.calcium.value") ||
+                                ""
+                              }
+                              onChange={(e) =>
+                                setValue(
+                                  "nutritionalGuarantee.calcium.value",
+                                  e.target.value
+                                )
+                              }
+                            >
+                              {nutritionalGuarantee.map((guarantee, i) => {
+                                return (
+                                  <MenuItem value={guarantee} key={i}>
+                                    {guarantee}
+                                  </MenuItem>
+                                );
+                              })}
+                            </Select>
+                            {errors &&
+                              errors?.nutritionalGuarantee?.calcium?.value &&
+                              errors?.nutritionalGuarantee?.calcium.value
+                                .type === "required" && (
+                                <Typography
+                                  variant="body2"
+                                  color="red"
+                                  fontSize={13}
+                                  mt={0.5}
+                                >
+                                  {validationMessage.required}
+                                </Typography>
+                              )}
+                          </FormControl>
+                        </Box>
+                      </Grid>
+                    </Grid>
 
                     {(watch("nutritionalGuarantee.calcium.value") ||
                       watch("nutritionalGuarantee.calcium.kg")) && (
@@ -2149,74 +2193,80 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                       6.{" "}
                     </Typography>
 
-                    <Box
-                      // display={"flex"}
-                      // gap={2}
-                      // alignItems={"center"}
-                      position={"relative"}
-                    >
-                      <TextField
-                        label="Phosphorous"
-                        type="text"
-                        className="form-input"
-                        {...register("nutritionalGuarantee.phosphorous.kg", {
-                          required: true,
-                          pattern: validationPattern.onlyNumbersPattern,
-                        })}
-                        sx={{
-                          width: "100%",
-                          minWidth: 190,
-                        }}
-                      />
-                      {errors &&
-                        errors?.nutritionalGuarantee?.phosphorous?.kg &&
-                        errors?.nutritionalGuarantee?.phosphorous.kg.type ===
-                          "required" && (
+                    <Grid container spacing={2}>
+                      <Grid item xs={12} md={6}>
+                        <Box
+                          // display={"flex"}
+                          // gap={2}
+                          // alignItems={"center"}
+                          position={"relative"}
+                        >
+                          <TextField
+                            label="Phosphorous *"
+                            type="text"
+                            className="form-input"
+                            {...register(
+                              "nutritionalGuarantee.phosphorous.kg",
+                              {
+                                required: true,
+                                pattern: validationPattern.onlyNumbersPattern,
+                              }
+                            )}
+                            sx={{
+                              width: "100%",
+                              // minWidth: 190,
+                            }}
+                          />
+                          {errors &&
+                            errors?.nutritionalGuarantee?.phosphorous?.kg &&
+                            errors?.nutritionalGuarantee?.phosphorous.kg
+                              .type === "required" && (
+                              <Typography
+                                variant="body2"
+                                color="red"
+                                fontSize={13}
+                                mt={0.5}
+                              >
+                                {validationMessage.required}
+                              </Typography>
+                            )}
+                          {errors &&
+                            errors?.nutritionalGuarantee?.phosphorous?.kg &&
+                            errors?.nutritionalGuarantee?.phosphorous.kg
+                              .type === "pattern" && (
+                              <Typography
+                                variant="body2"
+                                color="red"
+                                fontSize={13}
+                                mt={0.5}
+                              >
+                                {validationMessage.onlyNumbers}
+                              </Typography>
+                            )}
                           <Typography
                             variant="body2"
-                            color="red"
-                            fontSize={13}
-                            mt={0.5}
+                            color="#555555AC"
+                            sx={{
+                              position: "absolute",
+                              right: 6,
+                              top: errors?.nutritionalGuarantee?.phosphorous?.kg
+                                ? "35%"
+                                : "50%",
+                              transform: "translate(-6px, -50%)",
+                              backgroundColor: "#fff",
+                              height: 30,
+                              display: "grid",
+                              placeItems: "center",
+                              zIndex: 1,
+                              pl: 1,
+                            }}
                           >
-                            {validationMessage.required}
+                            g/kg
                           </Typography>
-                        )}
-                      {errors &&
-                        errors?.nutritionalGuarantee?.phosphorous?.kg &&
-                        errors?.nutritionalGuarantee?.phosphorous.kg.type ===
-                          "pattern" && (
-                          <Typography
-                            variant="body2"
-                            color="red"
-                            fontSize={13}
-                            mt={0.5}
-                          >
-                            {validationMessage.onlyNumbers}
-                          </Typography>
-                        )}
-                      <Typography
-                        variant="body2"
-                        color="#555555AC"
-                        sx={{
-                          position: "absolute",
-                          right: 6,
-                          top: errors?.nutritionalGuarantee?.phosphorous?.kg
-                            ? "35%"
-                            : "50%",
-                          transform: "translate(-6px, -50%)",
-                          backgroundColor: "#fff",
-                          height: 30,
-                          display: "grid",
-                          placeItems: "center",
-                          zIndex: 1,
-                          pl: 1,
-                        }}
-                      >
-                        g/kg
-                      </Typography>
-                    </Box>
+                        </Box>
+                      </Grid>
 
-                    {/* <Button
+                      {/* <Button
                     type="button"
                     variant="contained"
                     sx={{
@@ -2235,55 +2285,66 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                     Calculate
                   </Button> */}
 
-                    <FormControl
-                      fullWidth
-                      className="form-input"
-                      sx={{
-                        minWidth: 110,
-                      }}
-                    >
-                      <InputLabel id="feed-supply-select-label10">
-                        Min
-                      </InputLabel>
-                      <Select
-                        labelId="feed-supply-select-label10"
-                        id="feed-supply-select10"
-                        label="Min"
-                        {...register("nutritionalGuarantee.phosphorous.value", {
-                          required: true,
-                        })}
-                        value={
-                          watch("nutritionalGuarantee.phosphorous.value") || ""
-                        }
-                        onChange={(e) =>
-                          setValue(
-                            "nutritionalGuarantee.phosphorous.value",
-                            e.target.value
-                          )
-                        }
-                      >
-                        {nutritionalGuarantee.map((guarantee, i) => {
-                          return (
-                            <MenuItem value={guarantee} key={i}>
-                              {guarantee}
-                            </MenuItem>
-                          );
-                        })}
-                      </Select>
-                      {errors &&
-                        errors?.nutritionalGuarantee?.phosphorous?.value &&
-                        errors?.nutritionalGuarantee?.phosphorous.value.type ===
-                          "required" && (
-                          <Typography
-                            variant="body2"
-                            color="red"
-                            fontSize={13}
-                            mt={0.5}
+                      <Grid item xs={12} md={6}>
+                        <Box width={"100%"}>
+                          <FormControl
+                            fullWidth
+                            className="form-input"
+                            sx={{
+                              minWidth: 110,
+                            }}
                           >
-                            {validationMessage.required}
-                          </Typography>
-                        )}
-                    </FormControl>
+                            <InputLabel id="feed-supply-select-label10">
+                              Min *
+                            </InputLabel>
+                            <Select
+                              labelId="feed-supply-select-label10"
+                              id="feed-supply-select10"
+                              label="Min *"
+                              {...register(
+                                "nutritionalGuarantee.phosphorous.value",
+                                {
+                                  required: true,
+                                }
+                              )}
+                              value={
+                                watch(
+                                  "nutritionalGuarantee.phosphorous.value"
+                                ) || ""
+                              }
+                              onChange={(e) =>
+                                setValue(
+                                  "nutritionalGuarantee.phosphorous.value",
+                                  e.target.value
+                                )
+                              }
+                            >
+                              {nutritionalGuarantee.map((guarantee, i) => {
+                                return (
+                                  <MenuItem value={guarantee} key={i}>
+                                    {guarantee}
+                                  </MenuItem>
+                                );
+                              })}
+                            </Select>
+                            {errors &&
+                              errors?.nutritionalGuarantee?.phosphorous
+                                ?.value &&
+                              errors?.nutritionalGuarantee?.phosphorous.value
+                                .type === "required" && (
+                                <Typography
+                                  variant="body2"
+                                  color="red"
+                                  fontSize={13}
+                                  mt={0.5}
+                                >
+                                  {validationMessage.required}
+                                </Typography>
+                              )}
+                          </FormControl>
+                        </Box>
+                      </Grid>
+                    </Grid>
 
                     {(watch("nutritionalGuarantee.phosphorous.value") ||
                       watch("nutritionalGuarantee.phosphorous.kg")) && (
@@ -2349,7 +2410,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                       position={"relative"}
                     >
                       <TextField
-                        label="Carbohydrates"
+                        label="Carbohydratesc*"
                         type="text"
                         className="form-input"
                         {...register("nutritionalGuarantee.carbohydrates.kg", {
@@ -2437,12 +2498,12 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                       }}
                     >
                       <InputLabel id="feed-supply-select-label10">
-                        Min
+                        Min *
                       </InputLabel>
                       <Select
                         labelId="feed-supply-select-label10"
                         id="feed-supply-select10"
-                        label="Min"
+                        label="Min *"
                         {...register(
                           "nutritionalGuarantee.carbohydrates.value",
                           {
@@ -2547,7 +2608,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                       position={"relative"}
                     >
                       <TextField
-                        label="Metabolizable Energy"
+                        label="Metabolizable Energy *"
                         type="text"
                         className="form-input"
                         {...register(
@@ -2639,12 +2700,12 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                       }}
                     >
                       <InputLabel id="feed-supply-select-label10">
-                        Min
+                        Min *
                       </InputLabel>
                       <Select
                         labelId="feed-supply-select-label10"
                         id="feed-supply-select10"
-                        label="Min"
+                        label="Min *"
                         {...register(
                           "nutritionalGuarantee.metabolizableEnergy.value",
                           {
