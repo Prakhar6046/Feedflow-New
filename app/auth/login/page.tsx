@@ -8,6 +8,7 @@ import Image from "next/image";
 import { setCookie } from "cookies-next";
 import Link from "next/link";
 import { hashPassword } from "@/app/_lib/hash";
+import toast, { Toaster } from "react-hot-toast";
 
 export default function Page() {
   const [email, setEmail] = useState("abhishek.choudhary@ensuesoft.com");
@@ -23,10 +24,17 @@ export default function Page() {
       },
       body: JSON.stringify({ email, password }),
     });
+
     const data = await response.json();
+
     setCookie("logged-user", data);
     setCookie("role", data?.data?.user?.role);
-    if (data.status) router.push("/dashboard/organisation");
+    if (data.status) {
+      router.push("/dashboard/organisation");
+    }
+    if (data?.error) {
+      toast.error(data?.error);
+    }
   };
   // useEffect(() => {
   //   const d = async () => {
@@ -36,6 +44,11 @@ export default function Page() {
   // }, []);
   return (
     <>
+      <Toaster
+        position="top-center"
+        reverseOrder={false}
+        toastOptions={{ duration: 5000 }}
+      />
       <Stack
         sx={{
           backgroundImage: "url(/static/img/login-bgImg.png)",

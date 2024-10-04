@@ -1,11 +1,12 @@
 import { Box, Button, Stack, Typography } from "@mui/material";
+import { setCookie } from "cookies-next";
 import { NextPage } from "next";
 
 interface Props {
   setActiveStep: (val: number) => void;
 }
 
-const AquaFarmWizard: NextPage<Props> = ({ setActiveStep }) => {
+const AquaFarmWizard: NextPage<Props> = ({ setActiveStep }: Props) => {
   return (
     <Stack>
       <Typography
@@ -191,6 +192,7 @@ const AquaFarmWizard: NextPage<Props> = ({ setActiveStep }) => {
             marginTop: 2,
           }}
           onClick={() => setActiveStep(1)}
+          // onClick={() => setCookie("activeStep", 1)}
         >
           Get Started
         </Button>
