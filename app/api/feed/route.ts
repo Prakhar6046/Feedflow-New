@@ -3,6 +3,8 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
   try {
+    const searchParams = request.nextUrl.searchParams;
+    const role = searchParams.get("role");
     const feedSupplys = await prisma.feedSupply.findMany({});
 
     return new NextResponse(
