@@ -14,3 +14,5 @@ export const AddressMessage =
 export const onlyNumbers = "Input must contain only numbers.";
 export const alphabetswithSpecialCharacter =
   "Input must contain only letters, spaces, and special characters.";
+export const OnlyAlphabetsandNumberMessage2 =
+  "Input must contain only letters, numbers, and spaces.";
