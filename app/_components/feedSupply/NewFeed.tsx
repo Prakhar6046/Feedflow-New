@@ -1025,7 +1025,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                     value={
                       watch("feedingPhase") !== "None"
                         ? watch("feedingPhase")
-                        : "" || ""
+                        : ""
                     }
                     onChange={(e) => setValue("feedingPhase", e.target.value)}
                   >
@@ -1065,9 +1065,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                       required: true,
                     })}
                     value={
-                      watch("lifeStage") !== "None"
-                        ? watch("lifeStage")
-                        : "" || ""
+                      watch("lifeStage") !== "None" ? watch("lifeStage") : ""
                     }
                     onChange={(e) => setValue("lifeStage", e.target.value)}
                   >
