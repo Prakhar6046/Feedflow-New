@@ -1,6 +1,7 @@
 "use client";
 import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
-import AllDone from "@/app/_components/feedSupply/AllDone";
+import AllDone from "@/app/_components/farm/AllDone";
+
 import AquaFarmWizard from "@/app/_components/farm/AquaFarmWizard";
 import FarmInformation from "@/app/_components/farm/FarmInformation";
 import ProductionUnits from "@/app/_components/farm/ProductionUnits";
@@ -10,6 +11,7 @@ import {
 } from "@/lib/features/farm/farmSlice";
 import { useAppSelector } from "@/lib/hooks";
 import { Box, Divider, Grid, Step, StepLabel, Stepper } from "@mui/material";
+import { getCookie, setCookie } from "cookies-next";
 
 import { useEffect, useState } from "react";
 
@@ -29,7 +31,14 @@ const steps = [
 ];
 
 export default function Page() {
-  const [activeStep, setActiveStep] = useState<number>(0);
+  const activeStepIndex = Number(getCookie("activeStep"));
+  const [activeStep, setActiveStep] = useState<number>(
+    activeStepIndex !== 0 ? activeStepIndex : 0
+  );
+
+  useEffect(() => {
+    setCookie("activeStep", activeStep);
+  }, [activeStep]);
 
   return (
     <>
@@ -64,7 +73,7 @@ export default function Page() {
             }}
           >
             <Stepper activeStep={activeStep} orientation="vertical">
-              {steps.map((step, index) => (
+              {steps.map((step) => (
                 <Step
                   key={step.label}
                   sx={{

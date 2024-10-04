@@ -10,7 +10,7 @@ import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-import { getCookie } from "cookies-next";
+import { getCookie, setCookie } from "cookies-next";
 import { useAppDispatch } from "@/lib/hooks";
 import { organisationAction } from "@/lib/features/organisation/organisationSlice";
 import { userAction } from "@/lib/features/user/userSlice";
@@ -85,6 +85,7 @@ export default function BasicBreadcrumbs({
     setSearchQuery("");
   };
   const handleClick = () => {
+    setCookie("activeStep", 0);
     router.push(String(buttonRoute));
   };
   useEffect(() => {

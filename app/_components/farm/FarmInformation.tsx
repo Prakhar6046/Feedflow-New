@@ -8,12 +8,16 @@ import * as validationPattern from "@/app/_lib/utils/validationPatterns/index";
 import * as validationMessage from "@/app/_lib/utils/validationsMessage/index";
 import { useForm, SubmitHandler } from "react-hook-form";
 import MapComponent from "./MapComponent";
+import { setCookie } from "cookies-next";
 interface Props {
-  setActiveStep: (val: number) => void;
   editFarm?: any;
+  setActiveStep: (val: number) => void;
 }
 
-const FarmInformation: NextPage<Props> = ({ setActiveStep, editFarm }) => {
+const FarmInformation: NextPage<Props> = ({
+  setActiveStep,
+  editFarm,
+}: Props) => {
   const dispatch = useAppDispatch();
   const {
     register,
@@ -28,6 +32,7 @@ const FarmInformation: NextPage<Props> = ({ setActiveStep, editFarm }) => {
   const onSubmit: SubmitHandler<Farm> = (data) => {
     dispatch(farmAction.updateFarm(data));
     setActiveStep(2);
+    // setCookie("activeStep", 2);
   };
   useEffect(() => {
     if (editFarm) {
@@ -383,6 +388,7 @@ const FarmInformation: NextPage<Props> = ({ setActiveStep, editFarm }) => {
             <Button
               type="button"
               variant="contained"
+              onClick={() => setActiveStep(0)}
               sx={{
                 background: "#fff",
                 color: "#06A19B",
@@ -393,7 +399,8 @@ const FarmInformation: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                 borderRadius: "8px",
                 border: "1px solid #06A19B",
               }}
-              onClick={() => setActiveStep(0)}
+
+              // onClick={() => setCookie("activeStep", 0)}
             >
               Previous
             </Button>
