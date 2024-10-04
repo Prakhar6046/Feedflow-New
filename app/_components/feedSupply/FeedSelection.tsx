@@ -147,23 +147,58 @@ const FeedSelection: NextPage<Props> = ({ setActiveStep, editFarm }) => {
         {feedSupply?.length ? (
           feedSupply?.map((supply) => {
             return (
-              <Stack key={String(supply.id)}>
-                <Grid
-                  item
-                  xs="auto"
-                  key={Number(supply?.id)}
-                  onClick={() => handleEditFeedSupply(supply)}
+              <Grid
+                item
+                xs="auto"
+                key={Number(supply?.id)}
+                onClick={() => handleEditFeedSupply(supply)}
+              >
+                <Box
+                  position={"relative"}
+                  border={"1px solid #555555AC"}
+                  borderRadius={3}
+                  p={2}
+                  sx={{
+                    width: "ft-content",
+                    maxWidth: "370px",
+                    height: "100%",
+                  }}
                 >
-                  <Box
-                    border={"1px solid #555555AC"}
-                    borderRadius={3}
-                    p={2}
-                    sx={{
-                      width: "ft-content",
-                      maxWidth: "370px",
-                      height: "100%",
-                    }}
-                  >
+                  <Box display={"flex"} justifyContent={"end"} mb={2}>
+                    <Button
+                      type="button"
+                      variant="contained"
+                      sx={{
+                        background: "#06A19B",
+                        fontWeight: 600,
+                        width: "fit-content",
+                        minWidth: "30px !important",
+                        padding: "6px 10px !important",
+                        textTransform: "capitalize",
+                        borderRadius: "4px",
+                      }}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="1.2em"
+                        height="1.2em"
+                        viewBox="0 0 24 24"
+                      >
+                        <g
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                        >
+                          <path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                          <path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z" />
+                        </g>
+                      </svg>
+                    </Button>
+                  </Box>
+
+                  <Box>
                     <Box
                       display={"flex"}
                       gap={1}
@@ -666,24 +701,8 @@ const FeedSelection: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                       Tel: +27 28 313 8581 / info@safeeds.co.za
                     </Typography>
                   </Box>
-                </Grid>
-                <Box display={"flex"} justifyContent={"end"} mt={3}>
-                  <Button
-                    type="button"
-                    variant="contained"
-                    sx={{
-                      background: "#06A19B",
-                      fontWeight: 600,
-                      padding: "6px 16px",
-                      width: "fit-content",
-                      textTransform: "capitalize",
-                      borderRadius: "8px",
-                    }}
-                  >
-                    Edit
-                  </Button>
                 </Box>
-              </Stack>
+              </Grid>
             );
           })
         ) : (
