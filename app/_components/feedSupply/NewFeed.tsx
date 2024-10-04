@@ -28,7 +28,8 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import Loader from "../Loader";
 import { getCookie } from "cookies-next";
 import toast from "react-hot-toast";
-
+import * as validationPattern from "@/app/_lib/utils/validationPatterns/index";
+import * as validationMessage from "@/app/_lib/utils/validationsMessage/index";
 interface Props {
   setActiveStep: (val: number) => void;
   editFarm?: any;
@@ -76,6 +77,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
   const [feedSuppliers, setFeedSuppliers] = useState<any>();
   const {
     register,
+
     handleSubmit,
     reset,
     formState: { errors },
@@ -148,7 +150,9 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                   <Select
                     labelId="feed-supply-select-label1"
                     id="feed-supply-select1"
-                    {...register("feedSupplier")}
+                    {...register("feedSupplier", {
+                      required: true,
+                    })}
                     label="Feed Supplier"
                   >
                     {feedSuppliers?.map((supplier: any) => {
@@ -159,6 +163,18 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                       );
                     })}
                   </Select>
+                  {errors &&
+                    errors.feedSupplier &&
+                    errors.feedSupplier.type === "required" && (
+                      <Typography
+                        variant="body2"
+                        color="red"
+                        fontSize={13}
+                        mt={0.5}
+                      >
+                        {validationMessage.required}
+                      </Typography>
+                    )}
                 </FormControl>
               </Grid>
 
@@ -167,7 +183,9 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                   label="Feed Supplier Code"
                   type="text"
                   className="form-input"
-                  {...register("feedSupplierCode")}
+                  {...register("feedSupplierCode", {
+                    required: true,
+                  })}
                   // {...register("organisationName", {
                   //     required: true,
                   // })}
@@ -177,6 +195,18 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                     width: "100%",
                   }}
                 />
+                {errors &&
+                  errors.feedSupplierCode &&
+                  errors.feedSupplierCode.type === "required" && (
+                    <Typography
+                      variant="body2"
+                      color="red"
+                      fontSize={13}
+                      mt={0.5}
+                    >
+                      {validationMessage.required}
+                    </Typography>
+                  )}
               </Grid>
 
               <Grid item md={6} xs={12}>
@@ -184,7 +214,9 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                   label="Brand Name"
                   type="text"
                   className="form-input"
-                  {...register("brandName")}
+                  {...register("brandName", {
+                    required: true,
+                  })}
                   // {...register("organisationName", {
                   //     required: true,
                   // })}
@@ -194,6 +226,18 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                     width: "100%",
                   }}
                 />
+                {errors &&
+                  errors.brandName &&
+                  errors.brandName.type === "required" && (
+                    <Typography
+                      variant="body2"
+                      color="red"
+                      fontSize={13}
+                      mt={0.5}
+                    >
+                      {validationMessage.required}
+                    </Typography>
+                  )}
               </Grid>
 
               <Grid item md={6} xs={12}>
@@ -201,7 +245,9 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                   label="Brand Code"
                   type="text"
                   className="form-input"
-                  {...register("brandCode")}
+                  {...register("brandCode", {
+                    required: true,
+                  })}
                   // {...register("organisationName", {
                   //     required: true,
                   // })}
@@ -211,6 +257,18 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                     width: "100%",
                   }}
                 />
+                {errors &&
+                  errors.brandCode &&
+                  errors.brandCode.type === "required" && (
+                    <Typography
+                      variant="body2"
+                      color="red"
+                      fontSize={13}
+                      mt={0.5}
+                    >
+                      {validationMessage.required}
+                    </Typography>
+                  )}
               </Grid>
 
               <Grid item md={6} xs={12}>
@@ -218,7 +276,9 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                   label="Product Name"
                   type="text"
                   className="form-input"
-                  {...register("productName")}
+                  {...register("productName", {
+                    required: true,
+                  })}
                   // {...register("organisationName", {
                   //     required: true,
                   // })}
@@ -228,6 +288,18 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                     width: "100%",
                   }}
                 />
+                {errors &&
+                  errors.productName &&
+                  errors.productName.type === "required" && (
+                    <Typography
+                      variant="body2"
+                      color="red"
+                      fontSize={13}
+                      mt={0.5}
+                    >
+                      {validationMessage.required}
+                    </Typography>
+                  )}
               </Grid>
 
               <Grid item md={6} xs={12}>
@@ -235,7 +307,9 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                   label="Product Code"
                   type="text"
                   className="form-input"
-                  {...register("productCode")}
+                  {...register("productCode", {
+                    required: true,
+                  })}
                   // {...register("organisationName", {
                   //     required: true,
                   // })}
@@ -245,6 +319,18 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                     width: "100%",
                   }}
                 />
+                {errors &&
+                  errors.productCode &&
+                  errors.productCode.type === "required" && (
+                    <Typography
+                      variant="body2"
+                      color="red"
+                      fontSize={13}
+                      mt={0.5}
+                    >
+                      {validationMessage.required}
+                    </Typography>
+                  )}
               </Grid>
 
               <Grid item md={6} xs={12}>
@@ -252,7 +338,9 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                   label="Product Name Code"
                   type="text"
                   className="form-input"
-                  {...register("productNameCode")}
+                  {...register("productNameCode", {
+                    required: true,
+                  })}
                   // {...register("organisationName", {
                   //     required: true,
                   // })}
@@ -262,6 +350,18 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                     width: "100%",
                   }}
                 />
+                {errors &&
+                  errors.productNameCode &&
+                  errors.productNameCode.type === "required" && (
+                    <Typography
+                      variant="body2"
+                      color="red"
+                      fontSize={13}
+                      mt={0.5}
+                    >
+                      {validationMessage.required}
+                    </Typography>
+                  )}
               </Grid>
 
               <Grid item md={6} xs={12}>
@@ -273,7 +373,9 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                     labelId="feed-supply-select-label2"
                     id="feed-supply-select2"
                     label="Product Format"
-                    {...register("productFormat")}
+                    {...register("productFormat", {
+                      required: true,
+                    })}
                   >
                     {ProductFormatCode.map((format, i) => {
                       return (
@@ -283,6 +385,18 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                       );
                     })}
                   </Select>
+                  {errors &&
+                    errors.productFormat &&
+                    errors.productFormat.type === "required" && (
+                      <Typography
+                        variant="body2"
+                        color="red"
+                        fontSize={13}
+                        mt={0.5}
+                      >
+                        {validationMessage.required}
+                      </Typography>
+                    )}
                 </FormControl>
               </Grid>
 
@@ -291,7 +405,9 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                   label="Product Format Code"
                   type="text"
                   className="form-input"
-                  {...register("productFormatCode")}
+                  {...register("productFormatCode", {
+                    required: true,
+                  })}
                   // {...register("organisationName", {
                   //     required: true,
                   // })}
@@ -301,6 +417,18 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                     width: "100%",
                   }}
                 />
+                {errors &&
+                  errors.productFormatCode &&
+                  errors.productFormatCode.type === "required" && (
+                    <Typography
+                      variant="body2"
+                      color="red"
+                      fontSize={13}
+                      mt={0.5}
+                    >
+                      {validationMessage.required}
+                    </Typography>
+                  )}
               </Grid>
 
               <Grid item md={6} xs={12}>
@@ -314,7 +442,9 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                     label="Particle Size"
                     type="text"
                     className="form-input"
-                    {...register("particleSize")}
+                    {...register("particleSize", {
+                      required: true,
+                    })}
                     // {...register("organisationName", {
                     //     required: true,
                     // })}
@@ -344,6 +474,18 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                     mm
                   </Typography>
                 </Box>
+                {errors &&
+                  errors.particleSize &&
+                  errors.particleSize.type === "required" && (
+                    <Typography
+                      variant="body2"
+                      color="red"
+                      fontSize={13}
+                      mt={0.5}
+                    >
+                      {validationMessage.required}
+                    </Typography>
+                  )}
               </Grid>
 
               <Grid item md={6} xs={12}>
@@ -355,7 +497,9 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                     labelId="feed-supply-select-label3"
                     id="feed-supply-select3"
                     label="Nutritional Class"
-                    {...register("nutritionalClass")}
+                    {...register("nutritionalClass", {
+                      required: true,
+                    })}
                   >
                     {nutritionalClass.map((nutritional, i) => {
                       return (
@@ -365,6 +509,18 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                       );
                     })}
                   </Select>
+                  {errors &&
+                    errors.nutritionalClass &&
+                    errors.nutritionalClass.type === "required" && (
+                      <Typography
+                        variant="body2"
+                        color="red"
+                        fontSize={13}
+                        mt={0.5}
+                      >
+                        {validationMessage.required}
+                      </Typography>
+                    )}
                 </FormControl>
               </Grid>
 
@@ -377,7 +533,9 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                     labelId="feed-supply-select-label4"
                     id="feed-supply-select4"
                     label="Nutritional Purpose"
-                    {...register("nutritionalPurpose")}
+                    {...register("nutritionalPurpose", {
+                      required: true,
+                    })}
                   >
                     {nutritionalPurpose.map((intensity, i) => {
                       return (
@@ -387,6 +545,18 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                       );
                     })}
                   </Select>
+                  {errors &&
+                    errors.nutritionalPurpose &&
+                    errors.nutritionalPurpose.type === "required" && (
+                      <Typography
+                        variant="body2"
+                        color="red"
+                        fontSize={13}
+                        mt={0.5}
+                      >
+                        {validationMessage.required}
+                      </Typography>
+                    )}
                 </FormControl>
               </Grid>
 
@@ -398,12 +568,16 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
 
               <Grid item md={6} xs={12}>
                 <FormControl fullWidth className="form-input">
-                  <InputLabel id="feed-supply-select-label5">Specie</InputLabel>
+                  <InputLabel id="feed-supply-select-label5">
+                    Species
+                  </InputLabel>
                   <Select
                     labelId="feed-supply-select-label5"
                     id="feed-supply-select5"
                     label="Specie"
-                    {...register("specie")}
+                    {...register("specie", {
+                      required: true,
+                    })}
                   >
                     {species.map((specie, i) => {
                       return (
@@ -413,6 +587,18 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                       );
                     })}
                   </Select>
+                  {errors &&
+                    errors.specie &&
+                    errors.specie.type === "required" && (
+                      <Typography
+                        variant="body2"
+                        color="red"
+                        fontSize={13}
+                        mt={0.5}
+                      >
+                        {validationMessage.required}
+                      </Typography>
+                    )}
                 </FormControl>
               </Grid>
 
@@ -427,7 +613,9 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                     label="Animal Size (Length)"
                     type="text"
                     className="form-input"
-                    {...register("animalSizeInLength")}
+                    {...register("animalSizeInLength", {
+                      required: true,
+                    })}
                     // {...register("organisationName", {
                     //     required: true,
                     // })}
@@ -457,6 +645,18 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                     mm
                   </Typography>
                 </Box>
+                {errors &&
+                  errors.animalSizeInLength &&
+                  errors.animalSizeInLength.type === "required" && (
+                    <Typography
+                      variant="body2"
+                      color="red"
+                      fontSize={13}
+                      mt={0.5}
+                    >
+                      {validationMessage.required}
+                    </Typography>
+                  )}
               </Grid>
 
               <Grid item md={6} xs={12}>
@@ -470,7 +670,9 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                     label="Animal Size (Weight)"
                     type="text"
                     className="form-input"
-                    {...register("animalSizeInWeight")}
+                    {...register("animalSizeInWeight", {
+                      required: true,
+                    })}
                     // {...register("organisationName", {
                     //     required: true,
                     // })}
@@ -500,6 +702,18 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                     g
                   </Typography>
                 </Box>
+                {errors &&
+                  errors.animalSizeInWeight &&
+                  errors.animalSizeInWeight.type === "required" && (
+                    <Typography
+                      variant="body2"
+                      color="red"
+                      fontSize={13}
+                      mt={0.5}
+                    >
+                      {validationMessage.required}
+                    </Typography>
+                  )}
               </Grid>
 
               <Grid item md={6} xs={12}>
@@ -510,7 +724,9 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                   <Select
                     labelId="feed-supply-select-label6"
                     id="feed-supply-select6"
-                    {...register("productionIntensity")}
+                    {...register("productionIntensity", {
+                      required: true,
+                    })}
                     label="Production Intensity"
                   >
                     {productionIntensity.map((intensity, i) => {
@@ -521,6 +737,18 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                       );
                     })}
                   </Select>
+                  {errors &&
+                    errors.animalSizeInWeight &&
+                    errors.animalSizeInWeight.type === "required" && (
+                      <Typography
+                        variant="body2"
+                        color="red"
+                        fontSize={13}
+                        mt={0.5}
+                      >
+                        {validationMessage.required}
+                      </Typography>
+                    )}
                 </FormControl>
               </Grid>
 
@@ -530,7 +758,9 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                   <Select
                     labelId="feed-supply-select-label7"
                     id="feed-supply-select7"
-                    {...register("unit")}
+                    {...register("unit", {
+                      required: true,
+                    })}
                     label="Unit"
                   >
                     {units.map((unit, i) => {
@@ -541,6 +771,16 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                       );
                     })}
                   </Select>
+                  {errors && errors.unit && errors.unit.type === "required" && (
+                    <Typography
+                      variant="body2"
+                      color="red"
+                      fontSize={13}
+                      mt={0.5}
+                    >
+                      {validationMessage.required}
+                    </Typography>
+                  )}
                 </FormControl>
               </Grid>
 
@@ -552,7 +792,9 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                   <Select
                     labelId="feed-supply-select-label8"
                     id="feed-supply-select8"
-                    {...register("feedingPhase")}
+                    {...register("feedingPhase", {
+                      required: true,
+                    })}
                     label="Feeding Phase"
                   >
                     {feedingPhase.map((intensity, i) => {
@@ -563,6 +805,18 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                       );
                     })}
                   </Select>
+                  {errors &&
+                    errors.feedingPhase &&
+                    errors.feedingPhase.type === "required" && (
+                      <Typography
+                        variant="body2"
+                        color="red"
+                        fontSize={13}
+                        mt={0.5}
+                      >
+                        {validationMessage.required}
+                      </Typography>
+                    )}
                 </FormControl>
               </Grid>
 
@@ -575,7 +829,9 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                     labelId="feed-supply-select-label9"
                     id="feed-supply-select9"
                     label="Life Stage"
-                    {...register("lifeStage")}
+                    {...register("lifeStage", {
+                      required: true,
+                    })}
                   >
                     {lifeStage.map((stage, i) => {
                       return (
@@ -585,6 +841,18 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                       );
                     })}
                   </Select>
+                  {errors &&
+                    errors.lifeStage &&
+                    errors.lifeStage.type === "required" && (
+                      <Typography
+                        variant="body2"
+                        color="red"
+                        fontSize={13}
+                        mt={0.5}
+                      >
+                        {validationMessage.required}
+                      </Typography>
+                    )}
                 </FormControl>
               </Grid>
 
@@ -599,7 +867,9 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                     label="Shelf Live (from date of manufacturing)"
                     type="text"
                     className="form-input"
-                    {...register("shelfLife")}
+                    {...register("shelfLife", {
+                      required: true,
+                    })}
                     // {...register("organisationName", {
                     //     required: true,
                     // })}
@@ -629,6 +899,18 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                     months
                   </Typography>
                 </Box>
+                {errors &&
+                  errors.shelfLife &&
+                  errors.shelfLife.type === "required" && (
+                    <Typography
+                      variant="body2"
+                      color="red"
+                      fontSize={13}
+                      mt={0.5}
+                    >
+                      {validationMessage.required}
+                    </Typography>
+                  )}
               </Grid>
 
               <Grid item lg={6} xs={12}>
@@ -638,11 +920,25 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                   multiline
                   rows={5}
                   className="form-input"
-                  {...register("feedIngredients")}
+                  {...register("feedIngredients", {
+                    required: true,
+                  })}
                   sx={{
                     width: "100%",
                   }}
                 />
+                {errors &&
+                  errors.feedIngredients &&
+                  errors.feedIngredients.type === "required" && (
+                    <Typography
+                      variant="body2"
+                      color="red"
+                      fontSize={13}
+                      mt={0.5}
+                    >
+                      {validationMessage.required}
+                    </Typography>
+                  )}
               </Grid>
 
               <Grid item lg={6} xs={12}>
@@ -655,8 +951,22 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                   sx={{
                     width: "100%",
                   }}
-                  {...register("feedingGuide")}
+                  {...register("feedingGuide", {
+                    required: true,
+                  })}
                 />
+                {errors &&
+                  errors.feedingGuide &&
+                  errors.feedingGuide.type === "required" && (
+                    <Typography
+                      variant="body2"
+                      color="red"
+                      fontSize={13}
+                      mt={0.5}
+                    >
+                      {validationMessage.required}
+                    </Typography>
+                  )}
               </Grid>
             </Grid>
 
@@ -708,21 +1018,37 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                     </Typography>
 
                     <Box
-                      display={"flex"}
-                      gap={2}
-                      alignItems={"center"}
+                      // display={"flex"}
+                      // gap={2}
+                      // alignItems={"center"}
                       position={"relative"}
                     >
                       <TextField
                         label="Moisture"
                         type="number"
                         className="form-input"
-                        {...register("nutritionalGuarantee.moisture.kg")}
+                        {...register("nutritionalGuarantee.moisture.kg", {
+                          required: true,
+                        })}
                         sx={{
                           width: "100%",
                           minWidth: 190,
                         }}
                       />
+
+                      {errors &&
+                        errors?.nutritionalGuarantee?.moisture?.kg &&
+                        errors.nutritionalGuarantee.moisture.kg.type ===
+                          "required" && (
+                          <Typography
+                            variant="body2"
+                            color="red"
+                            fontSize={13}
+                            mt={0.5}
+                          >
+                            {validationMessage.required}
+                          </Typography>
+                        )}
 
                       <Typography
                         variant="body2"
@@ -730,7 +1056,9 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                         sx={{
                           position: "absolute",
                           right: 6,
-                          top: "50%",
+                          top: errors?.nutritionalGuarantee?.moisture?.kg
+                            ? "35%"
+                            : "50%",
                           transform: "translate(-6px, -50%)",
                           backgroundColor: "#fff",
                           height: 30,
@@ -744,31 +1072,48 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                       </Typography>
                     </Box>
 
-                    <FormControl
-                      fullWidth
-                      className="form-input"
-                      sx={{
-                        minWidth: 110,
-                      }}
-                    >
-                      <InputLabel id="feed-supply-select-label10">
-                        Min
-                      </InputLabel>
-                      <Select
-                        labelId="feed-supply-select-label10"
-                        id="feed-supply-select10"
-                        {...register("nutritionalGuarantee.moisture.value")}
-                        label="Min"
+                    <Box width={"100%"}>
+                      <FormControl
+                        fullWidth
+                        className="form-input"
+                        sx={{
+                          minWidth: 110,
+                        }}
                       >
-                        {nutritionalGuarantee.map((guarantee, i) => {
-                          return (
-                            <MenuItem value={guarantee} key={i}>
-                              {guarantee}
-                            </MenuItem>
-                          );
-                        })}
-                      </Select>
-                    </FormControl>
+                        <InputLabel id="feed-supply-select-label10">
+                          Min
+                        </InputLabel>
+                        <Select
+                          labelId="feed-supply-select-label10"
+                          id="feed-supply-select10"
+                          {...register("nutritionalGuarantee.moisture.value", {
+                            required: true,
+                          })}
+                          label="Min"
+                        >
+                          {nutritionalGuarantee.map((guarantee, i) => {
+                            return (
+                              <MenuItem value={guarantee} key={i}>
+                                {guarantee}
+                              </MenuItem>
+                            );
+                          })}
+                        </Select>
+                      </FormControl>
+                      {errors &&
+                        errors?.nutritionalGuarantee?.moisture?.value &&
+                        errors?.nutritionalGuarantee?.moisture?.value.type ===
+                          "required" && (
+                          <Typography
+                            variant="body2"
+                            color="red"
+                            fontSize={13}
+                            mt={0.5}
+                          >
+                            {validationMessage.required}
+                          </Typography>
+                        )}
+                    </Box>
 
                     <Box
                       fontSize={14}
@@ -814,29 +1159,45 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                     </Typography>
 
                     <Box
-                      display={"flex"}
-                      gap={2}
-                      alignItems={"center"}
+                      // display={"flex"}
+                      // gap={2}
+                      // alignItems={"center"}
                       position={"relative"}
                     >
                       <TextField
                         label="Crude Protein"
                         type="number"
                         className="form-input"
-                        {...register("nutritionalGuarantee.crudeProtein.kg")}
+                        {...register("nutritionalGuarantee.crudeProtein.kg", {
+                          required: true,
+                        })}
                         sx={{
                           width: "100%",
                           minWidth: 190,
                         }}
                       />
-
+                      {errors &&
+                        errors?.nutritionalGuarantee?.crudeProtein?.kg &&
+                        errors.nutritionalGuarantee.crudeProtein.kg.type ===
+                          "required" && (
+                          <Typography
+                            variant="body2"
+                            color="red"
+                            fontSize={13}
+                            mt={0.5}
+                          >
+                            {validationMessage.required}
+                          </Typography>
+                        )}
                       <Typography
                         variant="body2"
                         color="#555555AC"
                         sx={{
                           position: "absolute",
                           right: 6,
-                          top: "50%",
+                          top: errors?.nutritionalGuarantee?.crudeProtein?.kg
+                            ? "35%"
+                            : "50%",
                           transform: "translate(-6px, -50%)",
                           backgroundColor: "#fff",
                           height: 30,
@@ -864,7 +1225,12 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                         labelId="feed-supply-select-label10"
                         id="feed-supply-select10"
                         label="Min"
-                        {...register("nutritionalGuarantee.crudeProtein.value")}
+                        {...register(
+                          "nutritionalGuarantee.crudeProtein.value",
+                          {
+                            required: true,
+                          }
+                        )}
                       >
                         {nutritionalGuarantee.map((guarantee, i) => {
                           return (
@@ -874,6 +1240,19 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                           );
                         })}
                       </Select>
+                      {errors &&
+                        errors?.nutritionalGuarantee?.crudeProtein?.value &&
+                        errors.nutritionalGuarantee.crudeProtein.value.type ===
+                          "required" && (
+                          <Typography
+                            variant="body2"
+                            color="red"
+                            fontSize={13}
+                            mt={0.5}
+                          >
+                            {validationMessage.required}
+                          </Typography>
+                        )}
                     </FormControl>
 
                     <Box
@@ -918,29 +1297,45 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                     </Typography>
 
                     <Box
-                      display={"flex"}
-                      gap={2}
-                      alignItems={"center"}
+                      // display={"flex"}
+                      // gap={2}
+                      // alignItems={"center"}
                       position={"relative"}
                     >
                       <TextField
                         label="Crude Fat"
                         type="number"
                         className="form-input"
-                        {...register("nutritionalGuarantee.crudeFat.kg")}
+                        {...register("nutritionalGuarantee.crudeFat.kg", {
+                          required: true,
+                        })}
                         sx={{
                           width: "100%",
                           minWidth: 190,
                         }}
                       />
-
+                      {errors &&
+                        errors?.nutritionalGuarantee?.crudeFat?.kg &&
+                        errors?.nutritionalGuarantee?.crudeFat?.kg.type ===
+                          "required" && (
+                          <Typography
+                            variant="body2"
+                            color="red"
+                            fontSize={13}
+                            mt={0.5}
+                          >
+                            {validationMessage.required}
+                          </Typography>
+                        )}
                       <Typography
                         variant="body2"
                         color="#555555AC"
                         sx={{
                           position: "absolute",
                           right: 6,
-                          top: "50%",
+                          top: errors?.nutritionalGuarantee?.crudeFat?.kg
+                            ? "35%"
+                            : "50%",
                           transform: "translate(-6px, -50%)",
                           backgroundColor: "#fff",
                           height: 30,
@@ -968,7 +1363,9 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                         labelId="feed-supply-select-label10"
                         id="feed-supply-select10"
                         label="Min"
-                        {...register("nutritionalGuarantee.crudeFat.value")}
+                        {...register("nutritionalGuarantee.crudeFat.value", {
+                          required: true,
+                        })}
                       >
                         {nutritionalGuarantee.map((guarantee, i) => {
                           return (
@@ -978,6 +1375,19 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                           );
                         })}
                       </Select>
+                      {errors &&
+                        errors?.nutritionalGuarantee?.crudeFat?.value &&
+                        errors?.nutritionalGuarantee?.crudeFat?.value.type ===
+                          "required" && (
+                          <Typography
+                            variant="body2"
+                            color="red"
+                            fontSize={13}
+                            mt={0.5}
+                          >
+                            {validationMessage.required}
+                          </Typography>
+                        )}
                     </FormControl>
 
                     <Box
@@ -1022,29 +1432,45 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                     </Typography>
 
                     <Box
-                      display={"flex"}
-                      gap={2}
-                      alignItems={"center"}
+                      // display={"flex"}
+                      // gap={2}
+                      // alignItems={"center"}
                       position={"relative"}
                     >
                       <TextField
                         label="Crude Ash"
                         type="number"
                         className="form-input"
-                        {...register("nutritionalGuarantee.crudeAsh.kg")}
+                        {...register("nutritionalGuarantee.crudeAsh.kg", {
+                          required: true,
+                        })}
                         sx={{
                           width: "100%",
                           minWidth: 190,
                         }}
                       />
-
+                      {errors &&
+                        errors?.nutritionalGuarantee?.crudeAsh?.kg &&
+                        errors?.nutritionalGuarantee?.crudeAsh.kg.type ===
+                          "required" && (
+                          <Typography
+                            variant="body2"
+                            color="red"
+                            fontSize={13}
+                            mt={0.5}
+                          >
+                            {validationMessage.required}
+                          </Typography>
+                        )}
                       <Typography
                         variant="body2"
                         color="#555555AC"
                         sx={{
                           position: "absolute",
                           right: 6,
-                          top: "50%",
+                          top: errors?.nutritionalGuarantee?.crudeAsh?.kg
+                            ? "35%"
+                            : "50%",
                           transform: "translate(-6px, -50%)",
                           backgroundColor: "#fff",
                           height: 30,
@@ -1071,7 +1497,9 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                       <Select
                         labelId="feed-supply-select-label10"
                         id="feed-supply-select10"
-                        {...register("nutritionalGuarantee.crudeAsh.value")}
+                        {...register("nutritionalGuarantee.crudeAsh.value", {
+                          required: true,
+                        })}
                         label="Min"
                         // onChange={handleChange}
                       >
@@ -1083,6 +1511,19 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                           );
                         })}
                       </Select>
+                      {errors &&
+                        errors?.nutritionalGuarantee?.crudeAsh?.value &&
+                        errors?.nutritionalGuarantee?.crudeAsh.value.type ===
+                          "required" && (
+                          <Typography
+                            variant="body2"
+                            color="red"
+                            fontSize={13}
+                            mt={0.5}
+                          >
+                            {validationMessage.required}
+                          </Typography>
+                        )}
                     </FormControl>
 
                     <Box
@@ -1127,29 +1568,45 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                     </Typography>
 
                     <Box
-                      display={"flex"}
-                      gap={2}
-                      alignItems={"center"}
+                      // display={"flex"}
+                      // gap={2}
+                      // alignItems={"center"}
                       position={"relative"}
                     >
                       <TextField
                         label="Calcium"
                         type="number"
                         className="form-input"
-                        {...register("nutritionalGuarantee.calcium.kg")}
+                        {...register("nutritionalGuarantee.calcium.kg", {
+                          required: true,
+                        })}
                         sx={{
                           width: "100%",
                           minWidth: 190,
                         }}
                       />
-
+                      {errors &&
+                        errors?.nutritionalGuarantee?.calcium?.kg &&
+                        errors?.nutritionalGuarantee?.calcium.kg.type ===
+                          "required" && (
+                          <Typography
+                            variant="body2"
+                            color="red"
+                            fontSize={13}
+                            mt={0.5}
+                          >
+                            {validationMessage.required}
+                          </Typography>
+                        )}
                       <Typography
                         variant="body2"
                         color="#555555AC"
                         sx={{
                           position: "absolute",
                           right: 6,
-                          top: "50%",
+                          top: errors?.nutritionalGuarantee?.calcium?.kg
+                            ? "35%"
+                            : "50%",
                           transform: "translate(-6px, -50%)",
                           backgroundColor: "#fff",
                           height: 30,
@@ -1177,7 +1634,9 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                         labelId="feed-supply-select-label10"
                         id="feed-supply-select10"
                         label="Min"
-                        {...register("nutritionalGuarantee.calcium.value")}
+                        {...register("nutritionalGuarantee.calcium.value", {
+                          required: true,
+                        })}
                       >
                         {nutritionalGuarantee.map((guarantee, i) => {
                           return (
@@ -1187,6 +1646,19 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                           );
                         })}
                       </Select>
+                      {errors &&
+                        errors?.nutritionalGuarantee?.calcium?.value &&
+                        errors?.nutritionalGuarantee?.calcium.value.type ===
+                          "required" && (
+                          <Typography
+                            variant="body2"
+                            color="red"
+                            fontSize={13}
+                            mt={0.5}
+                          >
+                            {validationMessage.required}
+                          </Typography>
+                        )}
                     </FormControl>
 
                     <Box
@@ -1231,29 +1703,45 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                     </Typography>
 
                     <Box
-                      display={"flex"}
-                      gap={2}
-                      alignItems={"center"}
+                      // display={"flex"}
+                      // gap={2}
+                      // alignItems={"center"}
                       position={"relative"}
                     >
                       <TextField
                         label="Phosphorous"
                         type="number"
                         className="form-input"
-                        {...register("nutritionalGuarantee.phosphorous.kg")}
+                        {...register("nutritionalGuarantee.phosphorous.kg", {
+                          required: true,
+                        })}
                         sx={{
                           width: "100%",
                           minWidth: 190,
                         }}
                       />
-
+                      {errors &&
+                        errors?.nutritionalGuarantee?.phosphorous?.kg &&
+                        errors?.nutritionalGuarantee?.phosphorous.kg.type ===
+                          "required" && (
+                          <Typography
+                            variant="body2"
+                            color="red"
+                            fontSize={13}
+                            mt={0.5}
+                          >
+                            {validationMessage.required}
+                          </Typography>
+                        )}
                       <Typography
                         variant="body2"
                         color="#555555AC"
                         sx={{
                           position: "absolute",
                           right: 6,
-                          top: "50%",
+                          top: errors?.nutritionalGuarantee?.phosphorous?.kg
+                            ? "35%"
+                            : "50%",
                           transform: "translate(-6px, -50%)",
                           backgroundColor: "#fff",
                           height: 30,
@@ -1300,7 +1788,9 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                         labelId="feed-supply-select-label10"
                         id="feed-supply-select10"
                         label="Min"
-                        {...register("nutritionalGuarantee.phosphorous.value")}
+                        {...register("nutritionalGuarantee.phosphorous.value", {
+                          required: true,
+                        })}
                       >
                         {nutritionalGuarantee.map((guarantee, i) => {
                           return (
@@ -1310,6 +1800,19 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                           );
                         })}
                       </Select>
+                      {errors &&
+                        errors?.nutritionalGuarantee?.phosphorous?.value &&
+                        errors?.nutritionalGuarantee?.phosphorous.value.type ===
+                          "required" && (
+                          <Typography
+                            variant="body2"
+                            color="red"
+                            fontSize={13}
+                            mt={0.5}
+                          >
+                            {validationMessage.required}
+                          </Typography>
+                        )}
                     </FormControl>
 
                     <Box
@@ -1354,16 +1857,18 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                     </Typography>
 
                     <Box
-                      display={"flex"}
-                      gap={2}
-                      alignItems={"center"}
+                      // display={"flex"}
+                      // gap={2}
+                      // alignItems={"center"}
                       position={"relative"}
                     >
                       <TextField
                         label="Carbohydrates"
                         type="number"
                         className="form-input"
-                        {...register("nutritionalGuarantee.carbohydrates.kg")}
+                        {...register("nutritionalGuarantee.carbohydrates.kg", {
+                          required: true,
+                        })}
                         sx={{
                           width: "100%",
                           minWidth: 190,
@@ -1376,7 +1881,9 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                         sx={{
                           position: "absolute",
                           right: 6,
-                          top: "50%",
+                          top: errors?.nutritionalGuarantee?.carbohydrates?.kg
+                            ? "35%"
+                            : "50%",
                           transform: "translate(-6px, -50%)",
                           backgroundColor: "#fff",
                           height: 30,
@@ -1388,6 +1895,19 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                       >
                         g/kg
                       </Typography>
+                      {errors &&
+                        errors?.nutritionalGuarantee?.carbohydrates?.kg &&
+                        errors?.nutritionalGuarantee?.carbohydrates.kg.type ===
+                          "required" && (
+                          <Typography
+                            variant="body2"
+                            color="red"
+                            fontSize={13}
+                            mt={0.5}
+                          >
+                            {validationMessage.required}
+                          </Typography>
+                        )}
                     </Box>
 
                     <Button
@@ -1424,7 +1944,10 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                         id="feed-supply-select10"
                         label="Min"
                         {...register(
-                          "nutritionalGuarantee.carbohydrates.value"
+                          "nutritionalGuarantee.carbohydrates.value",
+                          {
+                            required: true,
+                          }
                         )}
                       >
                         {nutritionalGuarantee.map((guarantee, i) => {
@@ -1435,6 +1958,19 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                           );
                         })}
                       </Select>
+                      {errors &&
+                        errors?.nutritionalGuarantee?.carbohydrates?.value &&
+                        errors?.nutritionalGuarantee?.carbohydrates.value
+                          .type === "required" && (
+                          <Typography
+                            variant="body2"
+                            color="red"
+                            fontSize={13}
+                            mt={0.5}
+                          >
+                            {validationMessage.required}
+                          </Typography>
+                        )}
                     </FormControl>
 
                     <Box
@@ -1479,9 +2015,9 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                     </Typography>
 
                     <Box
-                      display={"flex"}
-                      gap={2}
-                      alignItems={"center"}
+                      // display={"flex"}
+                      // gap={2}
+                      // alignItems={"center"}
                       position={"relative"}
                     >
                       <TextField
@@ -1489,7 +2025,10 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                         type="number"
                         className="form-input"
                         {...register(
-                          "nutritionalGuarantee.metabolizableEnergy.kg"
+                          "nutritionalGuarantee.metabolizableEnergy.kg",
+                          {
+                            required: true,
+                          }
                         )}
                         sx={{
                           width: "100%",
@@ -1503,7 +2042,10 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                         sx={{
                           position: "absolute",
                           right: 6,
-                          top: "50%",
+                          top: errors?.nutritionalGuarantee?.metabolizableEnergy
+                            ?.kg
+                            ? "35%"
+                            : "50%",
                           transform: "translate(-6px, -50%)",
                           backgroundColor: "#fff",
                           height: 30,
@@ -1515,6 +2057,19 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                       >
                         MJ/kg
                       </Typography>
+                      {errors &&
+                        errors?.nutritionalGuarantee?.metabolizableEnergy?.kg &&
+                        errors?.nutritionalGuarantee?.metabolizableEnergy.kg
+                          .type === "required" && (
+                          <Typography
+                            variant="body2"
+                            color="red"
+                            fontSize={13}
+                            mt={0.5}
+                          >
+                            {validationMessage.required}
+                          </Typography>
+                        )}
                     </Box>
 
                     <Button
@@ -1551,7 +2106,10 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                         id="feed-supply-select10"
                         label="Min"
                         {...register(
-                          "nutritionalGuarantee.metabolizableEnergy.value"
+                          "nutritionalGuarantee.metabolizableEnergy.value",
+                          {
+                            required: true,
+                          }
                         )}
                       >
                         {nutritionalGuarantee.map((guarantee, i) => {
@@ -1562,6 +2120,20 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                           );
                         })}
                       </Select>
+                      {errors &&
+                        errors?.nutritionalGuarantee?.metabolizableEnergy
+                          ?.value &&
+                        errors?.nutritionalGuarantee?.metabolizableEnergy.value
+                          .type === "required" && (
+                          <Typography
+                            variant="body2"
+                            color="red"
+                            fontSize={13}
+                            mt={0.5}
+                          >
+                            {validationMessage.required}
+                          </Typography>
+                        )}
                     </FormControl>
 
                     <Box

@@ -13,7 +13,7 @@ export default async function Page() {
         searchOrganisations={false}
         links={[
           { name: "Dashboard", link: "/dashboard" },
-          { name: "User", link: "/dashboard/user" },
+          { name: "Users", link: "/dashboard/user" },
           { name: "New", link: "/dashboard/user/new" },
         ]}
       />

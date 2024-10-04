@@ -25,7 +25,7 @@ export default async function Page() {
   return (
     <>
       <BasicBreadcrumbs
-        heading={"User"}
+        heading={"Users"}
         buttonName={"Add User"}
         buttonRoute="/dashboard/user/new"
         searchUsers={true}
@@ -34,7 +34,7 @@ export default async function Page() {
         isTable={true}
         links={[
           { name: "Dashboard", link: "/dashboard" },
-          { name: "User", link: "/dashboard/user" },
+          { name: "Users", link: "/dashboard/user" },
         ]}
       />
       <UserTable />
