@@ -319,7 +319,7 @@ export default function Page({ params }: { params: { userId: string } }) {
 
                 <Box mb={3} width={"100%"}>
                   <TextField
-                    label="Name"
+                    label="Name *"
                     type="text"
                     className="form-input"
                     {...register("name", {
@@ -345,7 +345,7 @@ export default function Page({ params }: { params: { userId: string } }) {
                 <Box mb={2} width={"100%"}>
                   <TextField
                     label={
-                      Number(params.userId) === currentUserId ? "" : "Email"
+                      Number(params.userId) === currentUserId ? "" : "Email *"
                     }
                     type="email"
                     className="form-input"
@@ -443,7 +443,7 @@ export default function Page({ params }: { params: { userId: string } }) {
 
                 <Box position={"relative"} mb={2}>
                   <TextField
-                    label="Password"
+                    label="Password *"
                     type={showPassword ? "text" : "password"}
                     className="form-input"
                     {...register("password", {

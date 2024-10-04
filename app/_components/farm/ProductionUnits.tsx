@@ -268,7 +268,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                           render={({ field }) => (
                             <TextField
                               {...field} // Spread field props
-                              label="Production Unit Name"
+                              label="Production Unit Name *"
                               type="text"
                               className="form-input"
                               sx={{
@@ -315,7 +315,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                       >
                         <FormControl className="form-input" fullWidth>
                           <InputLabel id="demo-simple-select-label">
-                            Production Unit Type
+                            Production Unit Type *
                           </InputLabel>
                           <Controller
                             name={`productionUnits.${index}.type`} // Dynamic name for production unit type
@@ -325,7 +325,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                               <Select
                                 labelId={`demo-simple-select-label-${index}`}
                                 id={`demo-simple-select-${index}`}
-                                label="Production Unit Type"
+                                label="Production Unit Type *"
                                 {...field} // Spread the field props for value and onChange
                                 sx={{
                                   minWidth: "190px",
@@ -397,7 +397,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                       >
                         <Box display={"flex"} gap={2} alignItems={"center"}>
                           <TextField
-                            label="Capacity"
+                            label="Capacity *"
                             type="text"
                             className="form-input"
                             // focused
@@ -475,7 +475,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                       >
                         <Box display={"flex"} gap={2} alignItems={"center"}>
                           <TextField
-                            label="Waterflow Rate"
+                            label="Waterflow Rate *"
                             type="text"
                             className="form-input"
                             // focused

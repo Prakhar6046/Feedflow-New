@@ -70,7 +70,7 @@ const FarmInformation: NextPage<Props> = ({ setActiveStep, editFarm }) => {
         <form onSubmit={handleSubmit(onSubmit)}>
           <Box mb={2} width={"100%"}>
             <TextField
-              label="Farm Name"
+              label="Farm Name *"
               type="text"
               className="form-input"
               // focused
@@ -90,7 +90,7 @@ const FarmInformation: NextPage<Props> = ({ setActiveStep, editFarm }) => {
 
           <Box mb={2} width={"100%"}>
             <TextField
-              label="Farm Altitude"
+              label="Farm Altitude *"
               type="text"
               className="form-input"
               // focused
@@ -156,7 +156,7 @@ const FarmInformation: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                 <Grid item md={6} xs={12}>
                   <Box>
                     <TextField
-                      label="Address Line 1"
+                      label="Address Line 1 *"
                       type="text"
                       className="form-input"
                       // focused
@@ -184,7 +184,7 @@ const FarmInformation: NextPage<Props> = ({ setActiveStep, editFarm }) => {
 
                 <Grid item md={6} xs={12}>
                   <TextField
-                    label="Address Line 2"
+                    label="Address Line 2 "
                     type="text"
                     className="form-input"
                     // focused
@@ -198,7 +198,7 @@ const FarmInformation: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                 <Grid item md={6} xs={12}>
                   <Box>
                     <TextField
-                      label="City"
+                      label="City *"
                       type="text"
                       className="form-input"
                       // focused
@@ -241,7 +241,7 @@ const FarmInformation: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                 <Grid item md={6} xs={12}>
                   <Box>
                     <TextField
-                      label="State/Province"
+                      label="State/Province *"
                       type="text"
                       className="form-input"
                       // focused
@@ -284,7 +284,7 @@ const FarmInformation: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                 <Grid item md={6} xs={12}>
                   <Box>
                     <TextField
-                      label="Zip Code"
+                      label="Zip Code *"
                       type="text"
                       className="form-input"
                       // focused
@@ -328,7 +328,7 @@ const FarmInformation: NextPage<Props> = ({ setActiveStep, editFarm }) => {
 
                   <Box>
                     <TextField
-                      label="Country"
+                      label="Country *"
                       type="text"
                       className="form-input"
                       // focused

@@ -383,7 +383,7 @@ export default function Page() {
                   borderRadius: "4px",
                 }}
               >
-                Contact
+                Contact Us
               </Button>
 
               <Typography variant="body1" color="#fff">

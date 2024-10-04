@@ -190,7 +190,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
               <Grid item md={6} xs={12}>
                 <FormControl fullWidth className="form-input">
                   <InputLabel id="feed-supply-select-label1">
-                    Feed Supplier
+                    Feed Supplier *
                   </InputLabel>
                   <Select
                     labelId="feed-supply-select-label1"
@@ -227,7 +227,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
 
               <Grid item md={6} xs={12}>
                 <TextField
-                  label="Feed Supplier Code"
+                  label="Feed Supplier Code *"
                   type="text"
                   className="form-input"
                   {...register("feedSupplierCode", {
@@ -272,7 +272,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
 
               <Grid item md={6} xs={12}>
                 <TextField
-                  label="Brand Name"
+                  label="Brand Name *"
                   type="text"
                   className="form-input"
                   {...register("brandName", {
@@ -316,7 +316,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
 
               <Grid item md={6} xs={12}>
                 <TextField
-                  label="Brand Code"
+                  label="Brand Code *"
                   type="text"
                   className="form-input"
                   {...register("brandCode", {
@@ -361,7 +361,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
 
               <Grid item md={6} xs={12}>
                 <TextField
-                  label="Product Name"
+                  label="Product Name *"
                   type="text"
                   className="form-input"
                   {...register("productName", {
@@ -405,7 +405,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
 
               <Grid item md={6} xs={12}>
                 <TextField
-                  label="Product Code"
+                  label="Product Code *"
                   type="text"
                   className="form-input"
                   {...register("productCode", {
@@ -450,7 +450,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
 
               <Grid item md={6} xs={12}>
                 <TextField
-                  label="Product Name Code"
+                  label="Product Name Code *"
                   type="text"
                   className="form-input"
                   {...register("productNameCode", {
@@ -496,7 +496,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
               <Grid item md={6} xs={12}>
                 <FormControl fullWidth className="form-input">
                   <InputLabel id="feed-supply-select-label2">
-                    Product Format
+                    Product Format *
                   </InputLabel>
                   <Select
                     labelId="feed-supply-select-label2"
@@ -533,7 +533,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
 
               <Grid item md={6} xs={12}>
                 <TextField
-                  label="Product Format Code"
+                  label="Product Format Code *"
                   type="text"
                   className="form-input"
                   {...register("productFormatCode", {
@@ -584,7 +584,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                   position={"relative"}
                 >
                   <TextField
-                    label="Particle Size"
+                    label="Particle Size *"
                     type="text"
                     className="form-input"
                     {...register("particleSize", {
@@ -649,7 +649,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
               <Grid item md={6} xs={12}>
                 <FormControl fullWidth className="form-input">
                   <InputLabel id="feed-supply-select-label3">
-                    Nutritional Class
+                    Nutritional Class *
                   </InputLabel>
                   <Select
                     labelId="feed-supply-select-label3"
@@ -689,7 +689,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
               <Grid item md={6} xs={12}>
                 <FormControl fullWidth className="form-input">
                   <InputLabel id="feed-supply-select-label4">
-                    Nutritional Purpose
+                    Nutritional Purpose *
                   </InputLabel>
                   <Select
                     labelId="feed-supply-select-label4"
@@ -778,7 +778,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                   position={"relative"}
                 >
                   <TextField
-                    label="Animal Size (Length)"
+                    label="Animal Size (Length) *"
                     type="text"
                     className="form-input"
                     {...register("animalSizeInLength", {
@@ -848,7 +848,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                   position={"relative"}
                 >
                   <TextField
-                    label="Animal Size (Weight)"
+                    label="Animal Size (Weight) *"
                     type="text"
                     className="form-input"
                     {...register("animalSizeInWeight", {
@@ -913,7 +913,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
               <Grid item md={6} xs={12}>
                 <FormControl fullWidth className="form-input">
                   <InputLabel id="feed-supply-select-label6">
-                    Production Intensity
+                    Production Intensity *
                   </InputLabel>
                   <Select
                     labelId="feed-supply-select-label6"
@@ -952,7 +952,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
 
               <Grid item md={6} xs={12}>
                 <FormControl fullWidth className="form-input">
-                  <InputLabel id="feed-supply-select-label7">Unit</InputLabel>
+                  <InputLabel id="feed-supply-select-label7">Unit *</InputLabel>
                   <Select
                     labelId="feed-supply-select-label7"
                     id="feed-supply-select7"
@@ -987,7 +987,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
               <Grid item md={6} xs={12}>
                 <FormControl fullWidth className="form-input">
                   <InputLabel id="feed-supply-select-label8">
-                    Feeding Phase
+                    Feeding Phase *
                   </InputLabel>
                   <Select
                     labelId="feed-supply-select-label8"
@@ -1025,7 +1025,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
               <Grid item md={6} xs={12}>
                 <FormControl fullWidth className="form-input">
                   <InputLabel id="feed-supply-select-label9">
-                    Life Stage
+                    Life Stage *
                   </InputLabel>
                   <Select
                     labelId="feed-supply-select-label9"
@@ -1068,7 +1068,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                   position={"relative"}
                 >
                   <TextField
-                    label="Shelf Live (from date of manufacturing)"
+                    label="Shelf Live (from date of manufacturing) *"
                     type="text"
                     className="form-input"
                     {...register("shelfLife", {
@@ -1132,7 +1132,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
 
               <Grid item lg={6} xs={12}>
                 <TextField
-                  label="Feed Ingredients"
+                  label="Feed Ingredients *"
                   type="text"
                   multiline
                   rows={5}
@@ -1174,7 +1174,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
 
               <Grid item lg={6} xs={12}>
                 <TextField
-                  label="Feeding Guide"
+                  label="Feeding Guide *"
                   type="text"
                   multiline
                   rows={5}

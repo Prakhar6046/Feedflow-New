@@ -290,7 +290,7 @@ const AddNewOrganisation = () => {
           <form onSubmit={handleSubmit(onSubmit)}>
             <Box mb={2}>
               <TextField
-                label="Organisation Name"
+                label="Organisation Name *"
                 type="text"
                 className="form-input"
                 focused
@@ -367,7 +367,7 @@ const AddNewOrganisation = () => {
 
               <Box width={"100%"}>
                 <TextField
-                  label="Organisation Code"
+                  label="Organisation Code *"
                   type="text"
                   className="form-input"
                   {...register("organisationCode", {
@@ -408,9 +408,9 @@ const AddNewOrganisation = () => {
                   )}
               </Box>
             </Stack>
-            <FormControl className="form-input" fullWidth>
+            <FormControl className="form-input" focused fullWidth>
               <InputLabel id="demo-simple-select-label">
-                Organisation Type
+                Organisation Type *
               </InputLabel>
               <Select
                 labelId="demo-simple-select-label"
@@ -471,7 +471,7 @@ const AddNewOrganisation = () => {
             >
               <Box width={"100%"}>
                 <TextField
-                  label="Address"
+                  label="Address *"
                   type="text"
                   className="form-input"
                   {...register("address", {
@@ -511,7 +511,7 @@ const AddNewOrganisation = () => {
 
               <Box width={"100%"}>
                 <TextField
-                  label="City"
+                  label="City *"
                   type="text"
                   className="form-input"
                   {...register("city", {
@@ -559,7 +559,7 @@ const AddNewOrganisation = () => {
             >
               <Box width={"100%"}>
                 <TextField
-                  label="Province"
+                  label="Province *"
                   type="text"
                   className="form-input"
                   {...register("province", {
@@ -600,7 +600,7 @@ const AddNewOrganisation = () => {
 
               <Box width={"100%"}>
                 <TextField
-                  label="Post Code"
+                  label="Post Code *"
                   type="text"
                   className="form-input"
                   {...register("postCode", {
@@ -785,7 +785,7 @@ const AddNewOrganisation = () => {
                   }}
                 >
                   <TextField
-                    label="Name"
+                    label="Name *"
                     type="text"
                     className="form-input"
                     {...register(`contacts.${index}.name` as const, {
@@ -838,7 +838,7 @@ const AddNewOrganisation = () => {
                   }}
                 >
                   <TextField
-                    label="Role"
+                    label="Role *"
                     type="text"
                     className="form-input"
                     {...register(`contacts.${index}.role` as const, {
@@ -890,7 +890,7 @@ const AddNewOrganisation = () => {
                   }}
                 >
                   <TextField
-                    label="Email"
+                    label="Email *"
                     type="text"
                     className="form-input"
                     {...register(`contacts.${index}.email` as const, {
@@ -942,7 +942,7 @@ const AddNewOrganisation = () => {
                   }}
                 >
                   <TextField
-                    label="Phone"
+                    label="Phone *"
                     type="text"
                     className="form-input"
                     {...register(`contacts.${index}.phone` as const, {

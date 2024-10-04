@@ -120,7 +120,7 @@ const AddUser: React.FC<Props> = ({ setOpen, open, organisations }) => {
         <form onSubmit={handleSubmit(onSubmit)}>
           <Box padding={3}>
             <TextField
-              label="Name"
+              label="Name *"
               variant="outlined"
               className="form-input"
               fullWidth
@@ -132,7 +132,7 @@ const AddUser: React.FC<Props> = ({ setOpen, open, organisations }) => {
               }}
             />
             <TextField
-              label="Email"
+              label="Email *"
               variant="outlined"
               fullWidth
               className="form-input"
@@ -152,7 +152,7 @@ const AddUser: React.FC<Props> = ({ setOpen, open, organisations }) => {
             <Box sx={{ minWidth: 120 }}>
               <FormControl fullWidth className="form-input">
                 <InputLabel id="demo-simple-select-label">
-                  Organisation
+                  Organisation *
                 </InputLabel>
                 <Select
                   labelId="demo-simple-select-label"

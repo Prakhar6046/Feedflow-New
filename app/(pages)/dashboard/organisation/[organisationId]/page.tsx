@@ -341,7 +341,7 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
             <form onSubmit={handleSubmit(onSubmit)}>
               <Box width={"100%"} mb={2}>
                 <TextField
-                  label="Organisation Name"
+                  label="Organisation Name *"
                   type="text"
                   className="form-input"
                   focused
@@ -354,6 +354,7 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
                     width: "100%",
                   }}
                 />
+
                 {errors &&
                   errors.organisationName &&
                   errors.organisationName.type === "required" && (
@@ -404,7 +405,7 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
 
                 <Box width={"100%"}>
                   <TextField
-                    label="Organisation Code"
+                    label="Organisation Code *"
                     type="text"
                     className="form-input"
                     {...register("organisationCode", {
@@ -434,12 +435,12 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
               </Stack>
               <FormControl className="form-input" fullWidth>
                 <InputLabel id="demo-simple-select-label">
-                  Organisation Type
+                  Organisation Type *
                 </InputLabel>
                 <Select
                   labelId="demo-simple-select-label"
                   id="demo-simple-select"
-                  label="Production Unit Type"
+                  label="Production Unit Type *"
                   {...register("organisationType")}
                   value={selectedOrganisationType || ""}
                   // onChange={(e) => handleChange(e, item)}
@@ -482,7 +483,7 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
               >
                 <Box width={"100%"}>
                   <TextField
-                    label="Address"
+                    label="Address *"
                     type="text"
                     className="form-input"
                     {...register("address", {
@@ -509,7 +510,7 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
 
                 <Box width={"100%"}>
                   <TextField
-                    label="City"
+                    label="City *"
                     type="text"
                     className="form-input"
                     {...register("city", {
@@ -545,7 +546,7 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
               >
                 <Box width={"100%"}>
                   <TextField
-                    label="Province"
+                    label="Province *"
                     type="text"
                     className="form-input"
                     {...register("province", {
@@ -573,7 +574,7 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
 
                 <Box width={"100%"}>
                   <TextField
-                    label="Post Code"
+                    label="Post Code *"
                     type="text"
                     className="form-input"
                     {...register("postCode", {
@@ -738,7 +739,7 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
                 >
                   <Box sx={{ width: "100%" }}>
                     <TextField
-                      label="Name"
+                      label="Name *"
                       type="text"
                       className="form-input"
                       {...register(`contacts.${index}.name` as const, {
@@ -771,7 +772,7 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
 
                   <Box width={"100%"}>
                     <TextField
-                      label="Role"
+                      label="Role *"
                       type="text"
                       className="form-input"
                       {...register(`contacts.${index}.role` as const, {
@@ -804,7 +805,7 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
 
                   <Box width={"100%"}>
                     <TextField
-                      label="Email"
+                      label="Email *"
                       type="email"
                       className="form-input"
                       {...register(`contacts.${index}.email` as const, {
@@ -837,7 +838,7 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
 
                   <Box width={"100%"}>
                     <TextField
-                      label="Phone"
+                      label="Phone *"
                       type="text"
                       className="form-input"
                       {...register(`contacts.${index}.phone` as const, {

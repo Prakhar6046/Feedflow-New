@@ -209,7 +209,7 @@ export default function AddNewUser({ organisations }: Props) {
 
                 <Box mb={2} width={"100%"}>
                   <TextField
-                    label="Name"
+                    label="Name *"
                     type="text"
                     className="form-input"
                     {...register("name", {
@@ -233,7 +233,7 @@ export default function AddNewUser({ organisations }: Props) {
 
                 <Box width={"100%"} mb={2}>
                   <TextField
-                    label={"Email"}
+                    label={"Email *"}
                     type="email"
                     className="form-input"
                     {...register("email", {
@@ -260,13 +260,13 @@ export default function AddNewUser({ organisations }: Props) {
                 <Box width={"100%"}>
                   <FormControl fullWidth className="form-input">
                     <InputLabel id="demo-simple-select-label">
-                      Organisation
+                      Organisation *
                     </InputLabel>
                     <Select
                       labelId="demo-simple-select-label"
                       id="demo-simple-select"
                       value={selectedOrganisation}
-                      label="Organisation"
+                      label="Organisation *"
                       {...register("organisationId", {
                         required: true,
                       })}
