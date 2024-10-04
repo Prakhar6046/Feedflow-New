@@ -960,7 +960,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                       required: true,
                     })}
                     label="Unit"
-                    value={watch("unit") || ""}
+                    value={watch("unit") !== "None" ? watch("unit") : "" || ""}
                     onChange={(e) => setValue("unit", e.target.value)}
                   >
                     {units.map((unit, i) => {
@@ -996,7 +996,11 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                       required: true,
                     })}
                     label="Feeding Phase"
-                    value={watch("feedingPhase") || ""}
+                    value={
+                      watch("feedingPhase") !== "None"
+                        ? watch("feedingPhase")
+                        : "" || ""
+                    }
                     onChange={(e) => setValue("feedingPhase", e.target.value)}
                   >
                     {feedingPhase.map((intensity, i) => {
@@ -1034,7 +1038,11 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                     {...register("lifeStage", {
                       required: true,
                     })}
-                    value={watch("lifeStage") || ""}
+                    value={
+                      watch("lifeStage") !== "None"
+                        ? watch("lifeStage")
+                        : "" || ""
+                    }
                     onChange={(e) => setValue("lifeStage", e.target.value)}
                   >
                     {lifeStage.map((stage, i) => {
@@ -1381,31 +1389,38 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                           </Typography>
                         )}
                     </Box>
-
-                    <Box
-                      fontSize={14}
-                      fontWeight={500}
-                      width="fit-content"
-                      // onClick={handleClear}
-                      style={{ cursor: "pointer" }}
-                      sx={
-                        {
-                          // visibility: "hidden"
+                    {(watch("nutritionalGuarantee.moisture.value") ||
+                      watch("nutritionalGuarantee.moisture.kg")) && (
+                      <Box
+                        fontSize={14}
+                        fontWeight={500}
+                        width="fit-content"
+                        onClick={() => {
+                          {
+                            setValue("nutritionalGuarantee.moisture.value", ""),
+                              setValue("nutritionalGuarantee.moisture.kg", "");
+                          }
+                        }}
+                        style={{ cursor: "pointer" }}
+                        sx={
+                          {
+                            // visibility: "hidden"
+                          }
                         }
-                      }
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="1.5em"
-                        height="1.5em"
-                        viewBox="0 0 24 24"
                       >
-                        <path
-                          fill="red"
-                          d="M12 20c-4.41 0-8-3.59-8-8s3.59-8 8-8s8 3.59 8 8s-3.59 8-8 8m0-18C6.47 2 2 6.47 2 12s4.47 10 10 10s10-4.47 10-10S17.53 2 12 2m2.59 6L12 10.59L9.41 8L8 9.41L10.59 12L8 14.59L9.41 16L12 13.41L14.59 16L16 14.59L13.41 12L16 9.41z"
-                        />
-                      </svg>
-                    </Box>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="1.5em"
+                          height="1.5em"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            fill="red"
+                            d="M12 20c-4.41 0-8-3.59-8-8s3.59-8 8-8s8 3.59 8 8s-3.59 8-8 8m0-18C6.47 2 2 6.47 2 12s4.47 10 10 10s10-4.47 10-10S17.53 2 12 2m2.59 6L12 10.59L9.41 8L8 9.41L10.59 12L8 14.59L9.41 16L12 13.41L14.59 16L16 14.59L13.41 12L16 9.41z"
+                          />
+                        </svg>
+                      </Box>
+                    )}
                   </Grid>
 
                   <Grid
@@ -1545,28 +1560,44 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                         )}
                     </FormControl>
 
-                    <Box
-                      fontSize={14}
-                      fontWeight={500}
-                      width="fit-content"
-                      // onClick={handleClear}
-                      style={{ cursor: "pointer" }}
-                      sx={{
-                        visibility: "hidden",
-                      }}
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="1.5em"
-                        height="1.5em"
-                        viewBox="0 0 24 24"
+                    {(watch("nutritionalGuarantee.crudeProtein.value") ||
+                      watch("nutritionalGuarantee.crudeProtein.kg")) && (
+                      <Box
+                        fontSize={14}
+                        fontWeight={500}
+                        width="fit-content"
+                        onClick={() => {
+                          {
+                            setValue(
+                              "nutritionalGuarantee.crudeProtein.value",
+                              ""
+                            ),
+                              setValue(
+                                "nutritionalGuarantee.crudeProtein.kg",
+                                ""
+                              );
+                          }
+                        }}
+                        style={{ cursor: "pointer" }}
+                        sx={
+                          {
+                            // visibility: "hidden"
+                          }
+                        }
                       >
-                        <path
-                          fill="red"
-                          d="M12 20c-4.41 0-8-3.59-8-8s3.59-8 8-8s8 3.59 8 8s-3.59 8-8 8m0-18C6.47 2 2 6.47 2 12s4.47 10 10 10s10-4.47 10-10S17.53 2 12 2m2.59 6L12 10.59L9.41 8L8 9.41L10.59 12L8 14.59L9.41 16L12 13.41L14.59 16L16 14.59L13.41 12L16 9.41z"
-                        />
-                      </svg>
-                    </Box>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="1.5em"
+                          height="1.5em"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            fill="red"
+                            d="M12 20c-4.41 0-8-3.59-8-8s3.59-8 8-8s8 3.59 8 8s-3.59 8-8 8m0-18C6.47 2 2 6.47 2 12s4.47 10 10 10s10-4.47 10-10S17.53 2 12 2m2.59 6L12 10.59L9.41 8L8 9.41L10.59 12L8 14.59L9.41 16L12 13.41L14.59 16L16 14.59L13.41 12L16 9.41z"
+                          />
+                        </svg>
+                      </Box>
+                    )}
                   </Grid>
 
                   <Grid
@@ -1703,28 +1734,38 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                         )}
                     </FormControl>
 
-                    <Box
-                      fontSize={14}
-                      fontWeight={500}
-                      width="fit-content"
-                      // onClick={handleClear}
-                      style={{ cursor: "pointer" }}
-                      sx={{
-                        visibility: "hidden",
-                      }}
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="1.5em"
-                        height="1.5em"
-                        viewBox="0 0 24 24"
+                    {(watch("nutritionalGuarantee.crudeFat.value") ||
+                      watch("nutritionalGuarantee.crudeFat.kg")) && (
+                      <Box
+                        fontSize={14}
+                        fontWeight={500}
+                        width="fit-content"
+                        onClick={() => {
+                          {
+                            setValue("nutritionalGuarantee.crudeFat.value", ""),
+                              setValue("nutritionalGuarantee.crudeFat.kg", "");
+                          }
+                        }}
+                        style={{ cursor: "pointer" }}
+                        sx={
+                          {
+                            // visibility: "hidden"
+                          }
+                        }
                       >
-                        <path
-                          fill="red"
-                          d="M12 20c-4.41 0-8-3.59-8-8s3.59-8 8-8s8 3.59 8 8s-3.59 8-8 8m0-18C6.47 2 2 6.47 2 12s4.47 10 10 10s10-4.47 10-10S17.53 2 12 2m2.59 6L12 10.59L9.41 8L8 9.41L10.59 12L8 14.59L9.41 16L12 13.41L14.59 16L16 14.59L13.41 12L16 9.41z"
-                        />
-                      </svg>
-                    </Box>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="1.5em"
+                          height="1.5em"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            fill="red"
+                            d="M12 20c-4.41 0-8-3.59-8-8s3.59-8 8-8s8 3.59 8 8s-3.59 8-8 8m0-18C6.47 2 2 6.47 2 12s4.47 10 10 10s10-4.47 10-10S17.53 2 12 2m2.59 6L12 10.59L9.41 8L8 9.41L10.59 12L8 14.59L9.41 16L12 13.41L14.59 16L16 14.59L13.41 12L16 9.41z"
+                          />
+                        </svg>
+                      </Box>
+                    )}
                   </Grid>
 
                   <Grid
@@ -1862,28 +1903,38 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                         )}
                     </FormControl>
 
-                    <Box
-                      fontSize={14}
-                      fontWeight={500}
-                      width="fit-content"
-                      // onClick={handleClear}
-                      style={{ cursor: "pointer" }}
-                      sx={{
-                        visibility: "hidden",
-                      }}
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="1.5em"
-                        height="1.5em"
-                        viewBox="0 0 24 24"
+                    {(watch("nutritionalGuarantee.crudeAsh.value") ||
+                      watch("nutritionalGuarantee.crudeAsh.kg")) && (
+                      <Box
+                        fontSize={14}
+                        fontWeight={500}
+                        width="fit-content"
+                        onClick={() => {
+                          {
+                            setValue("nutritionalGuarantee.crudeAsh.value", ""),
+                              setValue("nutritionalGuarantee.crudeAsh.kg", "");
+                          }
+                        }}
+                        style={{ cursor: "pointer" }}
+                        sx={
+                          {
+                            // visibility: "hidden"
+                          }
+                        }
                       >
-                        <path
-                          fill="red"
-                          d="M12 20c-4.41 0-8-3.59-8-8s3.59-8 8-8s8 3.59 8 8s-3.59 8-8 8m0-18C6.47 2 2 6.47 2 12s4.47 10 10 10s10-4.47 10-10S17.53 2 12 2m2.59 6L12 10.59L9.41 8L8 9.41L10.59 12L8 14.59L9.41 16L12 13.41L14.59 16L16 14.59L13.41 12L16 9.41z"
-                        />
-                      </svg>
-                    </Box>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="1.5em"
+                          height="1.5em"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            fill="red"
+                            d="M12 20c-4.41 0-8-3.59-8-8s3.59-8 8-8s8 3.59 8 8s-3.59 8-8 8m0-18C6.47 2 2 6.47 2 12s4.47 10 10 10s10-4.47 10-10S17.53 2 12 2m2.59 6L12 10.59L9.41 8L8 9.41L10.59 12L8 14.59L9.41 16L12 13.41L14.59 16L16 14.59L13.41 12L16 9.41z"
+                          />
+                        </svg>
+                      </Box>
+                    )}
                   </Grid>
 
                   <Grid
@@ -2020,28 +2071,38 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                         )}
                     </FormControl>
 
-                    <Box
-                      fontSize={14}
-                      fontWeight={500}
-                      width="fit-content"
-                      // onClick={handleClear}
-                      style={{ cursor: "pointer" }}
-                      sx={{
-                        visibility: "hidden",
-                      }}
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="1.5em"
-                        height="1.5em"
-                        viewBox="0 0 24 24"
+                    {(watch("nutritionalGuarantee.calcium.value") ||
+                      watch("nutritionalGuarantee.calcium.kg")) && (
+                      <Box
+                        fontSize={14}
+                        fontWeight={500}
+                        width="fit-content"
+                        onClick={() => {
+                          {
+                            setValue("nutritionalGuarantee.calcium.value", ""),
+                              setValue("nutritionalGuarantee.calcium.kg", "");
+                          }
+                        }}
+                        style={{ cursor: "pointer" }}
+                        sx={
+                          {
+                            // visibility: "hidden"
+                          }
+                        }
                       >
-                        <path
-                          fill="red"
-                          d="M12 20c-4.41 0-8-3.59-8-8s3.59-8 8-8s8 3.59 8 8s-3.59 8-8 8m0-18C6.47 2 2 6.47 2 12s4.47 10 10 10s10-4.47 10-10S17.53 2 12 2m2.59 6L12 10.59L9.41 8L8 9.41L10.59 12L8 14.59L9.41 16L12 13.41L14.59 16L16 14.59L13.41 12L16 9.41z"
-                        />
-                      </svg>
-                    </Box>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="1.5em"
+                          height="1.5em"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            fill="red"
+                            d="M12 20c-4.41 0-8-3.59-8-8s3.59-8 8-8s8 3.59 8 8s-3.59 8-8 8m0-18C6.47 2 2 6.47 2 12s4.47 10 10 10s10-4.47 10-10S17.53 2 12 2m2.59 6L12 10.59L9.41 8L8 9.41L10.59 12L8 14.59L9.41 16L12 13.41L14.59 16L16 14.59L13.41 12L16 9.41z"
+                          />
+                        </svg>
+                      </Box>
+                    )}
                   </Grid>
 
                   <Grid
@@ -2197,28 +2258,44 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                         )}
                     </FormControl>
 
-                    <Box
-                      fontSize={14}
-                      fontWeight={500}
-                      width="fit-content"
-                      // onClick={handleClear}
-                      style={{ cursor: "pointer" }}
-                      sx={{
-                        visibility: "hidden",
-                      }}
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="1.5em"
-                        height="1.5em"
-                        viewBox="0 0 24 24"
+                    {(watch("nutritionalGuarantee.phosphorous.value") ||
+                      watch("nutritionalGuarantee.phosphorous.kg")) && (
+                      <Box
+                        fontSize={14}
+                        fontWeight={500}
+                        width="fit-content"
+                        onClick={() => {
+                          {
+                            setValue(
+                              "nutritionalGuarantee.phosphorous.value",
+                              ""
+                            ),
+                              setValue(
+                                "nutritionalGuarantee.phosphorous.kg",
+                                ""
+                              );
+                          }
+                        }}
+                        style={{ cursor: "pointer" }}
+                        sx={
+                          {
+                            // visibility: "hidden"
+                          }
+                        }
                       >
-                        <path
-                          fill="red"
-                          d="M12 20c-4.41 0-8-3.59-8-8s3.59-8 8-8s8 3.59 8 8s-3.59 8-8 8m0-18C6.47 2 2 6.47 2 12s4.47 10 10 10s10-4.47 10-10S17.53 2 12 2m2.59 6L12 10.59L9.41 8L8 9.41L10.59 12L8 14.59L9.41 16L12 13.41L14.59 16L16 14.59L13.41 12L16 9.41z"
-                        />
-                      </svg>
-                    </Box>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="1.5em"
+                          height="1.5em"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            fill="red"
+                            d="M12 20c-4.41 0-8-3.59-8-8s3.59-8 8-8s8 3.59 8 8s-3.59 8-8 8m0-18C6.47 2 2 6.47 2 12s4.47 10 10 10s10-4.47 10-10S17.53 2 12 2m2.59 6L12 10.59L9.41 8L8 9.41L10.59 12L8 14.59L9.41 16L12 13.41L14.59 16L16 14.59L13.41 12L16 9.41z"
+                          />
+                        </svg>
+                      </Box>
+                    )}
                   </Grid>
 
                   <Grid
@@ -2379,28 +2456,44 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                         )}
                     </FormControl>
 
-                    <Box
-                      fontSize={14}
-                      fontWeight={500}
-                      width="fit-content"
-                      // onClick={handleClear}
-                      style={{ cursor: "pointer" }}
-                      sx={{
-                        visibility: "hidden",
-                      }}
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="1.5em"
-                        height="1.5em"
-                        viewBox="0 0 24 24"
+                    {(watch("nutritionalGuarantee.carbohydrates.value") ||
+                      watch("nutritionalGuarantee.carbohydrates.kg")) && (
+                      <Box
+                        fontSize={14}
+                        fontWeight={500}
+                        width="fit-content"
+                        onClick={() => {
+                          {
+                            setValue(
+                              "nutritionalGuarantee.carbohydrates.value",
+                              ""
+                            ),
+                              setValue(
+                                "nutritionalGuarantee.carbohydrates.kg",
+                                ""
+                              );
+                          }
+                        }}
+                        style={{ cursor: "pointer" }}
+                        sx={
+                          {
+                            // visibility: "hidden"
+                          }
+                        }
                       >
-                        <path
-                          fill="red"
-                          d="M12 20c-4.41 0-8-3.59-8-8s3.59-8 8-8s8 3.59 8 8s-3.59 8-8 8m0-18C6.47 2 2 6.47 2 12s4.47 10 10 10s10-4.47 10-10S17.53 2 12 2m2.59 6L12 10.59L9.41 8L8 9.41L10.59 12L8 14.59L9.41 16L12 13.41L14.59 16L16 14.59L13.41 12L16 9.41z"
-                        />
-                      </svg>
-                    </Box>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="1.5em"
+                          height="1.5em"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            fill="red"
+                            d="M12 20c-4.41 0-8-3.59-8-8s3.59-8 8-8s8 3.59 8 8s-3.59 8-8 8m0-18C6.47 2 2 6.47 2 12s4.47 10 10 10s10-4.47 10-10S17.53 2 12 2m2.59 6L12 10.59L9.41 8L8 9.41L10.59 12L8 14.59L9.41 16L12 13.41L14.59 16L16 14.59L13.41 12L16 9.41z"
+                          />
+                        </svg>
+                      </Box>
+                    )}
                   </Grid>
 
                   <Grid
@@ -2567,28 +2660,44 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                         )}
                     </FormControl>
 
-                    <Box
-                      fontSize={14}
-                      fontWeight={500}
-                      width="fit-content"
-                      // onClick={handleClear}
-                      style={{ cursor: "pointer" }}
-                      sx={{
-                        visibility: "hidden",
-                      }}
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="1.5em"
-                        height="1.5em"
-                        viewBox="0 0 24 24"
+                    {(watch("nutritionalGuarantee.metabolizableEnergy.value") ||
+                      watch("nutritionalGuarantee.metabolizableEnergy.kg")) && (
+                      <Box
+                        fontSize={14}
+                        fontWeight={500}
+                        width="fit-content"
+                        onClick={() => {
+                          {
+                            setValue(
+                              "nutritionalGuarantee.metabolizableEnergy.value",
+                              ""
+                            ),
+                              setValue(
+                                "nutritionalGuarantee.metabolizableEnergy.kg",
+                                ""
+                              );
+                          }
+                        }}
+                        style={{ cursor: "pointer" }}
+                        sx={
+                          {
+                            // visibility: "hidden"
+                          }
+                        }
                       >
-                        <path
-                          fill="red"
-                          d="M12 20c-4.41 0-8-3.59-8-8s3.59-8 8-8s8 3.59 8 8s-3.59 8-8 8m0-18C6.47 2 2 6.47 2 12s4.47 10 10 10s10-4.47 10-10S17.53 2 12 2m2.59 6L12 10.59L9.41 8L8 9.41L10.59 12L8 14.59L9.41 16L12 13.41L14.59 16L16 14.59L13.41 12L16 9.41z"
-                        />
-                      </svg>
-                    </Box>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="1.5em"
+                          height="1.5em"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            fill="red"
+                            d="M12 20c-4.41 0-8-3.59-8-8s3.59-8 8-8s8 3.59 8 8s-3.59 8-8 8m0-18C6.47 2 2 6.47 2 12s4.47 10 10 10s10-4.47 10-10S17.53 2 12 2m2.59 6L12 10.59L9.41 8L8 9.41L10.59 12L8 14.59L9.41 16L12 13.41L14.59 16L16 14.59L13.41 12L16 9.41z"
+                          />
+                        </svg>
+                      </Box>
+                    )}
                   </Grid>
                 </Grid>
               </Box>
