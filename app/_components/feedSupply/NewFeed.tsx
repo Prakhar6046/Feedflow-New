@@ -1292,123 +1292,136 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                     >
                       1.{" "}
                     </Typography>
-                    <Box
-                      // display={"flex"}
-                      // gap={2}
-                      // alignItems={"center"}
-                      position={"relative"}
-                    >
-                      <TextField
-                        label="Moisture"
-                        type="text"
-                        className="form-input"
-                        {...register("nutritionalGuarantee.moisture.kg", {
-                          required: true,
-                          pattern: validationPattern.onlyNumbersPattern,
-                        })}
-                        sx={{
-                          width: "100%",
-                          minWidth: 190,
-                        }}
-                      />
-                      {errors &&
-                        errors?.nutritionalGuarantee?.moisture?.kg &&
-                        errors.nutritionalGuarantee.moisture.kg.type ===
-                          "required" && (
-                          <Typography
-                            variant="body2"
-                            color="red"
-                            fontSize={13}
-                            mt={0.5}
-                          >
-                            {validationMessage.required}
-                          </Typography>
-                        )}
-                      {errors &&
-                        errors?.nutritionalGuarantee?.moisture?.kg &&
-                        errors?.nutritionalGuarantee?.moisture?.kg.type ===
-                          "pattern" && (
-                          <Typography
-                            variant="body2"
-                            color="red"
-                            fontSize={13}
-                            mt={0.5}
-                          >
-                            {validationMessage.onlyNumbers}
-                          </Typography>
-                        )}
-                      <Typography
-                        variant="body2"
-                        color="#555555AC"
-                        sx={{
-                          position: "absolute",
-                          right: 6,
-                          top: errors?.nutritionalGuarantee?.moisture?.kg
-                            ? "35%"
-                            : "50%",
-                          transform: "translate(-6px, -50%)",
-                          backgroundColor: "#fff",
-                          height: 30,
-                          display: "grid",
-                          placeItems: "center",
-                          zIndex: 1,
-                          pl: 1,
-                        }}
-                      >
-                        g/kg
-                      </Typography>
-                    </Box>
-                    <Box width={"100%"}>
-                      <FormControl
-                        fullWidth
-                        className="form-input"
-                        sx={{
-                          minWidth: 110,
-                        }}
-                      >
-                        <InputLabel id="feed-supply-select-label10">
-                          Min
-                        </InputLabel>
-                        <Select
-                          labelId="feed-supply-select-label10"
-                          id="feed-supply-select10"
-                          {...register("nutritionalGuarantee.moisture.value", {
-                            required: true,
-                          })}
-                          label="Min"
-                          value={
-                            watch("nutritionalGuarantee.moisture.value") || ""
-                          }
-                          onChange={(e) =>
-                            setValue(
-                              "nutritionalGuarantee.moisture.value",
-                              e.target.value
-                            )
-                          }
+
+                    <Grid container spacing={2}>
+                      <Grid item xs={12} md={6}>
+                        <Box
+                          // display={"flex"}
+                          // gap={2}
+                          // alignItems={"center"}
+                          position={"relative"}
                         >
-                          {nutritionalGuarantee.map((guarantee, i) => {
-                            return (
-                              <MenuItem value={guarantee} key={i}>
-                                {guarantee}
-                              </MenuItem>
-                            );
-                          })}
-                        </Select>
-                      </FormControl>
-                      {errors &&
-                        errors?.nutritionalGuarantee?.moisture?.value &&
-                        errors?.nutritionalGuarantee?.moisture?.value.type ===
-                          "required" && (
+                          <TextField
+                            label="Moisture *"
+                            type="text"
+                            className="form-input"
+                            {...register("nutritionalGuarantee.moisture.kg", {
+                              required: true,
+                              pattern: validationPattern.onlyNumbersPattern,
+                            })}
+                            sx={{
+                              width: "100%",
+                              // minWidth: 190,
+                            }}
+                          />
+                          {errors &&
+                            errors?.nutritionalGuarantee?.moisture?.kg &&
+                            errors.nutritionalGuarantee.moisture.kg.type ===
+                              "required" && (
+                              <Typography
+                                variant="body2"
+                                color="red"
+                                fontSize={13}
+                                mt={0.5}
+                              >
+                                {validationMessage.required}
+                              </Typography>
+                            )}
+                          {errors &&
+                            errors?.nutritionalGuarantee?.moisture?.kg &&
+                            errors?.nutritionalGuarantee?.moisture?.kg.type ===
+                              "pattern" && (
+                              <Typography
+                                variant="body2"
+                                color="red"
+                                fontSize={13}
+                                mt={0.5}
+                              >
+                                {validationMessage.onlyNumbers}
+                              </Typography>
+                            )}
                           <Typography
                             variant="body2"
-                            color="red"
-                            fontSize={13}
-                            mt={0.5}
+                            color="#555555AC"
+                            sx={{
+                              position: "absolute",
+                              right: 6,
+                              top: errors?.nutritionalGuarantee?.moisture?.kg
+                                ? "35%"
+                                : "50%",
+                              transform: "translate(-6px, -50%)",
+                              backgroundColor: "#fff",
+                              height: 30,
+                              display: "grid",
+                              placeItems: "center",
+                              zIndex: 1,
+                              pl: 1,
+                            }}
                           >
-                            {validationMessage.required}
+                            g/kg
                           </Typography>
-                        )}
-                    </Box>
+                        </Box>
+                      </Grid>
+
+                      <Grid item xs={12} md={6}>
+                        <Box width={"100%"}>
+                          <FormControl
+                            fullWidth
+                            className="form-input"
+                            sx={{
+                              minWidth: 110,
+                            }}
+                          >
+                            <InputLabel id="feed-supply-select-label10">
+                              Min *
+                            </InputLabel>
+                            <Select
+                              labelId="feed-supply-select-label10"
+                              id="feed-supply-select10"
+                              {...register(
+                                "nutritionalGuarantee.moisture.value",
+                                {
+                                  required: true,
+                                }
+                              )}
+                              label="Min *"
+                              value={
+                                watch("nutritionalGuarantee.moisture.value") ||
+                                ""
+                              }
+                              onChange={(e) =>
+                                setValue(
+                                  "nutritionalGuarantee.moisture.value",
+                                  e.target.value
+                                )
+                              }
+                            >
+                              {nutritionalGuarantee.map((guarantee, i) => {
+                                return (
+                                  <MenuItem value={guarantee} key={i}>
+                                    {guarantee}
+                                  </MenuItem>
+                                );
+                              })}
+                            </Select>
+                          </FormControl>
+                          {errors &&
+                            errors?.nutritionalGuarantee?.moisture?.value &&
+                            errors?.nutritionalGuarantee?.moisture?.value
+                              .type === "required" && (
+                              <Typography
+                                variant="body2"
+                                color="red"
+                                fontSize={13}
+                                mt={0.5}
+                              >
+                                {validationMessage.required}
+                              </Typography>
+                            )}
+                        </Box>
+                      </Grid>
+                    </Grid>
+
                     {(watch("nutritionalGuarantee.moisture.value") ||
                       watch("nutritionalGuarantee.moisture.kg")) && (
                       <Box
