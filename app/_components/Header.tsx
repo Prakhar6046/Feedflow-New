@@ -1,8 +1,6 @@
-"use client"; // Ensure this line is at the very top of the file
+"use client";
 
-import { Divider, Stack } from "@mui/material";
-import React from "react";
-import SettingsButton from "./settings/SettingsButton";
+import { Stack } from "@mui/material";
 import AccountPopover from "./AccountPopover";
 
 const Header = () => {
@@ -15,8 +13,6 @@ const Header = () => {
       gap={2}
       spacing={{ xs: 0.5, sm: 1.5 }}
     >
-      {/* <Divider orientation="vertical" variant="middle" flexItem /> */}
-      {/* <SettingsButton /> */}
       <AccountPopover />
     </Stack>
   );
