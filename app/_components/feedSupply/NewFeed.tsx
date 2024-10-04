@@ -30,9 +30,11 @@ import { getCookie } from "cookies-next";
 import toast from "react-hot-toast";
 import * as validationPattern from "@/app/_lib/utils/validationPatterns/index";
 import * as validationMessage from "@/app/_lib/utils/validationsMessage/index";
+import { FeedSupply } from "./FeedSelection";
+
 interface Props {
   setActiveStep: (val: number) => void;
-  editFarm?: any;
+  editFeed?: FeedSupply;
 }
 interface nutritionalGuarantee {
   moisture: { kg: String; value: String };
@@ -69,10 +71,9 @@ interface FormInputs {
   feedSupplier: String;
   nutritionalGuarantee: nutritionalGuarantee;
 }
-const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
+const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
   const dispatch = useAppDispatch();
   const loggedUser: any = getCookie("logged-user");
-
   const [loading, setLoading] = useState<boolean>(false);
   const [feedSuppliers, setFeedSuppliers] = useState<any>();
   const {
@@ -80,6 +81,8 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
 
     handleSubmit,
     reset,
+    setValue,
+    watch,
     formState: { errors },
   } = useForm<FormInputs>();
   const onSubmit: SubmitHandler<FormInputs> = async (data) => {
@@ -118,7 +121,34 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
     };
     feedSupplierGetter();
   }, []);
-
+  useEffect(() => {
+    if (editFeed) {
+      setValue("feedIngredients", editFeed?.feedIngredients);
+      setValue("feedingGuide", editFeed?.feedingGuide);
+      setValue("productionIntensity", editFeed?.productionIntensity);
+      setValue("unit", editFeed?.unit);
+      setValue("feedingPhase", editFeed?.feedingPhase);
+      setValue("lifeStage", editFeed?.lifeStage);
+      setValue("shelfLife", editFeed?.shelfLife);
+      setValue("productCode", editFeed?.productCode);
+      setValue("feedSupplierCode", editFeed?.feedSupplierCode);
+      setValue("brandCode", editFeed?.brandCode);
+      setValue("productNameCode", editFeed?.productNameCode);
+      setValue("productFormatCode", editFeed?.productFormatCode);
+      setValue("animalSizeInLength", editFeed?.animalSizeInLength);
+      setValue("animalSizeInWeight", editFeed?.animalSizeInWeight);
+      setValue("specie", editFeed?.specie);
+      setValue("nutritionalPurpose", editFeed?.nutritionalPurpose);
+      setValue("nutritionalClass", editFeed?.nutritionalClass);
+      setValue("particleSize", editFeed?.particleSize);
+      setValue("productFormat", editFeed?.productFormat);
+      setValue("productName", editFeed?.productName);
+      setValue("brandName", editFeed?.brandName);
+      setValue("feedSupplier", editFeed?.feedSupplier);
+      setValue("nutritionalGuarantee", editFeed?.nutritionalGuarantee);
+    }
+    console.log(watch("feedSupplier"));
+  }, [editFeed]);
   if (loading) {
     return <Loader />;
   }
@@ -154,6 +184,8 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                       required: true,
                     })}
                     label="Feed Supplier"
+                    value={watch("feedSupplier") || ""}
+                    onChange={(e) => setValue("feedSupplier", e.target.value)}
                   >
                     {feedSuppliers?.map((supplier: any) => {
                       return (
@@ -376,6 +408,8 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                     {...register("productFormat", {
                       required: true,
                     })}
+                    value={watch("productFormat") || ""}
+                    onChange={(e) => setValue("productFormat", e.target.value)}
                   >
                     {ProductFormatCode.map((format, i) => {
                       return (
@@ -500,6 +534,10 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                     {...register("nutritionalClass", {
                       required: true,
                     })}
+                    value={watch("nutritionalClass") || ""}
+                    onChange={(e) =>
+                      setValue("nutritionalClass", e.target.value)
+                    }
                   >
                     {nutritionalClass.map((nutritional, i) => {
                       return (
@@ -536,6 +574,10 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                     {...register("nutritionalPurpose", {
                       required: true,
                     })}
+                    value={watch("nutritionalPurpose") || ""}
+                    onChange={(e) =>
+                      setValue("nutritionalPurpose", e.target.value)
+                    }
                   >
                     {nutritionalPurpose.map((intensity, i) => {
                       return (
@@ -578,6 +620,8 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                     {...register("specie", {
                       required: true,
                     })}
+                    value={watch("specie") || ""}
+                    onChange={(e) => setValue("specie", e.target.value)}
                   >
                     {species.map((specie, i) => {
                       return (
@@ -728,6 +772,10 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                       required: true,
                     })}
                     label="Production Intensity"
+                    value={watch("productionIntensity") || ""}
+                    onChange={(e) =>
+                      setValue("productionIntensity", e.target.value)
+                    }
                   >
                     {productionIntensity.map((intensity, i) => {
                       return (
@@ -762,6 +810,8 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                       required: true,
                     })}
                     label="Unit"
+                    value={watch("unit") || ""}
+                    onChange={(e) => setValue("unit", e.target.value)}
                   >
                     {units.map((unit, i) => {
                       return (
@@ -796,6 +846,8 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                       required: true,
                     })}
                     label="Feeding Phase"
+                    value={watch("feedingPhase") || ""}
+                    onChange={(e) => setValue("feedingPhase", e.target.value)}
                   >
                     {feedingPhase.map((intensity, i) => {
                       return (
@@ -832,6 +884,8 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                     {...register("lifeStage", {
                       required: true,
                     })}
+                    value={watch("lifeStage") || ""}
+                    onChange={(e) => setValue("lifeStage", e.target.value)}
                   >
                     {lifeStage.map((stage, i) => {
                       return (
@@ -1090,6 +1144,15 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                             required: true,
                           })}
                           label="Min"
+                          value={
+                            watch("nutritionalGuarantee.moisture.value") || ""
+                          }
+                          onChange={(e) =>
+                            setValue(
+                              "nutritionalGuarantee.moisture.value",
+                              e.target.value
+                            )
+                          }
                         >
                           {nutritionalGuarantee.map((guarantee, i) => {
                             return (
@@ -1231,6 +1294,15 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                             required: true,
                           }
                         )}
+                        value={
+                          watch("nutritionalGuarantee.crudeProtein.value") || ""
+                        }
+                        onChange={(e) =>
+                          setValue(
+                            "nutritionalGuarantee.crudeProtein.value",
+                            e.target.value
+                          )
+                        }
                       >
                         {nutritionalGuarantee.map((guarantee, i) => {
                           return (
@@ -1366,6 +1438,15 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                         {...register("nutritionalGuarantee.crudeFat.value", {
                           required: true,
                         })}
+                        value={
+                          watch("nutritionalGuarantee.crudeFat.value") || ""
+                        }
+                        onChange={(e) =>
+                          setValue(
+                            "nutritionalGuarantee.crudeFat.value",
+                            e.target.value
+                          )
+                        }
                       >
                         {nutritionalGuarantee.map((guarantee, i) => {
                           return (
@@ -1501,6 +1582,15 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                           required: true,
                         })}
                         label="Min"
+                        value={
+                          watch("nutritionalGuarantee.crudeAsh.value") || ""
+                        }
+                        onChange={(e) =>
+                          setValue(
+                            "nutritionalGuarantee.crudeAsh.value",
+                            e.target.value
+                          )
+                        }
                         // onChange={handleChange}
                       >
                         {nutritionalGuarantee.map((guarantee, i) => {
@@ -1637,6 +1727,15 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                         {...register("nutritionalGuarantee.calcium.value", {
                           required: true,
                         })}
+                        value={
+                          watch("nutritionalGuarantee.calcium.value") || ""
+                        }
+                        onChange={(e) =>
+                          setValue(
+                            "nutritionalGuarantee.calcium.value",
+                            e.target.value
+                          )
+                        }
                       >
                         {nutritionalGuarantee.map((guarantee, i) => {
                           return (
@@ -1791,6 +1890,15 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                         {...register("nutritionalGuarantee.phosphorous.value", {
                           required: true,
                         })}
+                        value={
+                          watch("nutritionalGuarantee.phosphorous.value") || ""
+                        }
+                        onChange={(e) =>
+                          setValue(
+                            "nutritionalGuarantee.phosphorous.value",
+                            e.target.value
+                          )
+                        }
                       >
                         {nutritionalGuarantee.map((guarantee, i) => {
                           return (
@@ -1949,6 +2057,16 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                             required: true,
                           }
                         )}
+                        value={
+                          watch("nutritionalGuarantee.carbohydrates.value") ||
+                          ""
+                        }
+                        onChange={(e) =>
+                          setValue(
+                            "nutritionalGuarantee.carbohydrates.value",
+                            e.target.value
+                          )
+                        }
                       >
                         {nutritionalGuarantee.map((guarantee, i) => {
                           return (
@@ -2111,6 +2229,17 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                             required: true,
                           }
                         )}
+                        value={
+                          watch(
+                            "nutritionalGuarantee.metabolizableEnergy.value"
+                          ) || ""
+                        }
+                        onChange={(e) =>
+                          setValue(
+                            "nutritionalGuarantee.metabolizableEnergy.value",
+                            e.target.value
+                          )
+                        }
                       >
                         {nutritionalGuarantee.map((guarantee, i) => {
                           return (

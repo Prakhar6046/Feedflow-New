@@ -3,6 +3,7 @@ import { OrganisationReducer } from "./features/organisation/organisationSlice";
 import { UserReducer } from "./features/user/userSlice";
 import { SidebarReducer } from "./features/sidebar/sidebarSlice";
 import { FarmReducer } from "./features/farm/farmSlice";
+import { FeedReducer } from "./features/feed/feedSlice";
 
 export const makeStore = () => {
   return configureStore({
@@ -11,6 +12,7 @@ export const makeStore = () => {
       user: UserReducer,
       sidebar: SidebarReducer,
       farm: FarmReducer,
+      feed: FeedReducer,
     },
   });
 };
