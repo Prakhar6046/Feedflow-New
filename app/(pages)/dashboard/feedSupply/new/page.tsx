@@ -4,8 +4,9 @@ import FeedSelection from "@/app/_components/feedSupply/FeedSelection";
 import FeedSupplyIntro from "@/app/_components/feedSupply/FeedSupplyIntro";
 import NewFeed from "@/app/_components/feedSupply/NewFeed";
 import { Box, Divider, Grid, Step, StepLabel, Stepper } from "@mui/material";
+import { getCookie, setCookie } from "cookies-next";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const steps = [
   {
@@ -26,8 +27,14 @@ const steps = [
 ];
 
 export default function Page() {
-  const [activeStep, setActiveStep] = useState<number>(0);
+  const activeStepIndex = Number(getCookie("activeStep"));
+  const [activeStep, setActiveStep] = useState<number>(
+    activeStepIndex !== 0 ? activeStepIndex : 0
+  );
 
+  useEffect(() => {
+    setCookie("activeStep", activeStep);
+  }, [activeStep]);
   return (
     <>
       <BasicBreadcrumbs
