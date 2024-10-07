@@ -7,7 +7,12 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
+import {
+  DataGrid,
+  GridColDef,
+  GridRenderCellParams,
+  GridRowsProp,
+} from "@mui/x-data-grid";
 import { Box, Button, Menu, MenuItem, Stack, Typography } from "@mui/material";
 import {
   selectOrganisationLoading,
@@ -85,6 +90,9 @@ export default function BasicTable({ organisations }: Props) {
       setOrganisationData(sortedData);
     }
   };
+  const handleFilterModelChange = (newFilterModel: any) => {
+    console.log(newFilterModel);
+  };
 
   const columns: GridColDef[] = [
     {
@@ -92,6 +100,7 @@ export default function BasicTable({ organisations }: Props) {
       headerName: "Organisations",
       flex: 1,
       sortable: true, // Enable sorting
+      filterable: true,
       renderCell: (params: GridRenderCellParams) => (
         <Box display={"flex"} alignItems={"center"} gap={1.5}>
           {params.row.imageUrl ? (
@@ -507,9 +516,13 @@ export default function BasicTable({ organisations }: Props) {
         <DataGrid
           rows={organisationData}
           columns={columns}
-          pagination={false}
+          pageSize={5} // Show only 5 rows
+          rowsPerPageOptions={[5, 10, 15]} // Limit rows per page to just 5, no other options
+          // pageSizeOptions={[5]} // This will allow user to select 5 per page but no more options will be visible
           getRowId={(row) => row.id}
-          onSortModelChange={handleSortModelChange} // Add this line
+          onSortModelChange={handleSortModelChange} // Handle sorting
+          onFilterModelChange={handleFilterModelChange} // Handle filtering
+          disableColumnFilter={false}
         />
       </Box>
 
