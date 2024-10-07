@@ -73,9 +73,8 @@ export default function FarmTable() {
     data();
   }, []);
   const handleSortModelChange = (sortModel: any) => {
-    console.log(sortModel);
-    if (farms) {
-      const sortedData = [...farms].sort((a: any, b: any) => {
+    if (farmsData) {
+      const sortedData = [...farmsData].sort((a: any, b: any) => {
         const order = sortModel[0].sort === "asc" ? 1 : -1;
         if (sortModel[0].field === "farm") {
           if (a.name < b.name) return -1 * order;
