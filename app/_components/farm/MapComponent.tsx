@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   MapContainer,
   TileLayer,
@@ -54,6 +54,12 @@ const MapComponent = ({ setAddressInformation, setSearchedAddress }: any) => {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [locationData, setLocationData] = useState<any | null>(null);
   const [openDialog, setOpenDialog] = useState<boolean>(false);
+  const [isClient, setIsClient] = useState<boolean>(false);
+
+  // Detect if code is running on the client side
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   // Function to handle location search with Nominatim and fallback to Google Maps
   const handleSearch = async () => {
@@ -159,6 +165,7 @@ const MapComponent = ({ setAddressInformation, setSearchedAddress }: any) => {
     return { address, city, state, postcode, country };
   };
 
+  if (!isClient) return null; // Prevent rendering on the server side
   return (
     <div>
       <Button
