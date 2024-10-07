@@ -9,10 +9,14 @@ import { setCookie } from "cookies-next";
 import Link from "next/link";
 import { hashPassword } from "@/app/_lib/hash";
 import toast, { Toaster } from "react-hot-toast";
-
+import EyeOpened from "@/public/static/img/icons/ic-eye-open.svg";
+import EyeClosed from "@/public/static/img/icons/ic-eye-closed.svg";
 export default function Page() {
   const [email, setEmail] = useState("abhishek.choudhary@ensuesoft.com");
   const [password, setPassword] = useState("12345678");
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  
+
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -209,10 +213,28 @@ export default function Page() {
                         onChange={(e) => setEmail(e.target.value)}
                         required
                       />
-
+                      <Box
+                        bgcolor={"white"}
+                        sx={{
+                          position: "absolute",
+                          top: "53%",
+                          right: "7px",
+                          transform: "translate(-7px,-53%)",
+                          width: 20,
+                          height: 20,
+                        }}
+                      >
+                        <Image
+                          onClick={() => setShowPassword(!showPassword)}
+                          src={showPassword ? EyeOpened : EyeClosed}
+                          width={20}
+                          height={20}
+                          alt="Eye Icon"
+                        />
+                      </Box>
                       <TextField
                         label="Password"
-                        type="password"
+                        type={showPassword ? "text" : "password"}
                         // focused
                         className="form-input"
                         sx={{
