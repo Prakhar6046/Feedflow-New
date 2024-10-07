@@ -92,8 +92,9 @@ export default function BasicTable({ organisations }: Props) {
       headerName: "Organisations",
       flex: 1,
       sortable: true, // Enable sorting
+      headerClassName: "test",
       renderCell: (params: GridRenderCellParams) => (
-        <Box display={"flex"} alignItems={"center"} gap={1.5}>
+        <Box display={"flex"} alignItems={"center"} gap={1.5} className="jaadu">
           {params.row.imageUrl ? (
             <img
               src={params.row.imageUrl}
@@ -141,6 +142,7 @@ export default function BasicTable({ organisations }: Props) {
       field: "contactNumber",
       headerName: "Contact Number",
       flex: 1,
+      headerClassName: "test1",
       sortable: false, // Enable sorting
       renderCell: (params: GridRenderCellParams) => (
         <Typography color="#555555" fontWeight={500}>
@@ -152,6 +154,7 @@ export default function BasicTable({ organisations }: Props) {
       field: "contactPerson",
       headerName: "Contact Person",
       flex: 1,
+      headerClassName: "test1 test5",
       sortable: true, // Enable sorting
       renderCell: (params: GridRenderCellParams) => (
         <Typography color="#555555" fontWeight={500}>
@@ -163,6 +166,7 @@ export default function BasicTable({ organisations }: Props) {
       field: "actions",
       headerName: "Actions",
       flex: 0.5,
+      headerClassName: "test2",
       sortable: false,
       renderCell: (params: GridRenderCellParams) => (
         <Button
@@ -503,11 +507,11 @@ export default function BasicTable({ organisations }: Props) {
         mt: 4,
       }}
     >
-      <Box sx={{ height: "72.5vh", width: "100%" }}>
+      <Box sx={{ height: "52.5vh", width: "100%", }} className="yoyo">
         <DataGrid
           rows={organisationData}
           columns={columns}
-          pagination={false}
+          // pagination={false}
           getRowId={(row) => row.id}
           onSortModelChange={handleSortModelChange} // Add this line
         />
