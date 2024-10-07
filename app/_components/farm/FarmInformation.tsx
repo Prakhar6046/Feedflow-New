@@ -24,6 +24,7 @@ const FarmInformation: NextPage<Props> = ({
     handleSubmit,
     formState: { errors },
     setValue,
+    watch,
     reset,
   } = useForm<Farm>();
   const [selectedSwtich, setSelectedSwtich] = useState<string>("address");
@@ -48,7 +49,7 @@ const FarmInformation: NextPage<Props> = ({
   }, [editFarm]);
   useEffect(() => {
     if (addressInformation) {
-      setValue("addressLine1", searchedAddress);
+      setValue("addressLine1", addressInformation.address);
       setValue("city", addressInformation.city);
       setValue("country", addressInformation.country);
       setValue("zipCode", addressInformation.postcode);
@@ -132,10 +133,10 @@ const FarmInformation: NextPage<Props> = ({
             mt={1}
             mb={2}
           >
-            {/* <MapComponent
+            <MapComponent
               setAddressInformation={setAddressInformation}
               setSearchedAddress={setSearchedAddress}
-            /> */}
+            />
           </Box>
 
           {selectedSwtich === "address" ? (
@@ -165,9 +166,12 @@ const FarmInformation: NextPage<Props> = ({
                       type="text"
                       className="form-input"
                       // focused
-                      {...register("addressLine1", {
-                        required: true,
-                      })}
+                      {...register("addressLine1", { required: true })}
+                      InputLabelProps={{
+                        shrink:
+                          !!watch("addressLine1") ||
+                          !!addressInformation?.address,
+                      }}
                       sx={{
                         width: "100%",
                       }}
@@ -212,6 +216,9 @@ const FarmInformation: NextPage<Props> = ({
                         pattern:
                           validationPattern.alphabetsSpacesAndSpecialCharsPattern,
                       })}
+                      InputLabelProps={{
+                        shrink: !!watch("city") || !!addressInformation?.city,
+                      }}
                       sx={{
                         width: "100%",
                       }}
@@ -255,6 +262,10 @@ const FarmInformation: NextPage<Props> = ({
                         pattern:
                           validationPattern.alphabetsSpacesAndSpecialCharsPattern,
                       })}
+                      InputLabelProps={{
+                        shrink:
+                          !!watch("province") || !!addressInformation?.province,
+                      }}
                       sx={{
                         width: "100%",
                       }}
@@ -293,10 +304,15 @@ const FarmInformation: NextPage<Props> = ({
                       type="text"
                       className="form-input"
                       // focused
+
                       {...register("zipCode", {
                         required: true,
                         pattern: validationPattern.onlyNumbersPattern,
                       })}
+                      InputLabelProps={{
+                        shrink:
+                          !!watch("zipCode") || !!addressInformation?.zipCode,
+                      }}
                       sx={{
                         width: "100%",
                       }}
@@ -337,11 +353,16 @@ const FarmInformation: NextPage<Props> = ({
                       type="text"
                       className="form-input"
                       // focused
+
                       {...register("country", {
                         required: true,
                         pattern:
                           validationPattern.alphabetsSpacesAndSpecialCharsPattern,
                       })}
+                      InputLabelProps={{
+                        shrink:
+                          !!watch("country") || !!addressInformation?.country,
+                      }}
                       sx={{
                         width: "100%",
                       }}
