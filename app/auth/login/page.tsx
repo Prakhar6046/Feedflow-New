@@ -15,7 +15,6 @@ export default function Page() {
   const [email, setEmail] = useState("abhishek.choudhary@ensuesoft.com");
   const [password, setPassword] = useState("12345678");
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  
 
   const router = useRouter();
 
@@ -213,38 +212,41 @@ export default function Page() {
                         onChange={(e) => setEmail(e.target.value)}
                         required
                       />
-                      <Box
-                        bgcolor={"white"}
-                        sx={{
-                          position: "absolute",
-                          top: "53%",
-                          right: "7px",
-                          transform: "translate(-7px,-53%)",
-                          width: 20,
-                          height: 20,
-                        }}
-                      >
-                        <Image
-                          onClick={() => setShowPassword(!showPassword)}
-                          src={showPassword ? EyeOpened : EyeClosed}
-                          width={20}
-                          height={20}
-                          alt="Eye Icon"
+
+                      <Box position={"relative"}>
+                        <TextField
+                          label="Password"
+                          type={showPassword ? "text" : "password"}
+                          className="form-input"
+                          sx={{
+                            width: "100%",
+                            marginBottom: 3,
+                          }}
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          required
                         />
+
+                        <Box
+                          bgcolor={"white"}
+                          sx={{
+                            position: "absolute",
+                            right: "7px",
+                            top: "35%",
+                            transform: "translate(-7px,-50%)",
+                            width: 20,
+                            height: 20,
+                          }}
+                        >
+                          <Image
+                            onClick={() => setShowPassword(!showPassword)}
+                            src={showPassword ? EyeOpened : EyeClosed}
+                            width={20}
+                            height={20}
+                            alt="Eye Icon"
+                          />
+                        </Box>
                       </Box>
-                      <TextField
-                        label="Password"
-                        type={showPassword ? "text" : "password"}
-                        // focused
-                        className="form-input"
-                        sx={{
-                          width: "100%",
-                          marginBottom: 3,
-                        }}
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                      />
 
                       <Button
                         variant="contained"
