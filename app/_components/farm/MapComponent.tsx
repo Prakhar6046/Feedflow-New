@@ -15,8 +15,8 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 
 // Fix Leaflet icon issues
-const iconDefault: any = L.Icon.Default; // Type assertion to any
-delete iconDefault.prototype._getIconUrl; // Remove the private method
+const iconDefault: any = L.Icon.Default;
+delete iconDefault.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl:
     "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon-2x.png",
@@ -39,14 +39,11 @@ function LocationMarker({
   return null;
 }
 
-// Custom hook for centering the map
 const SetMapView = ({ position }: { position: [number, number] | null }) => {
   const map = useMap();
-
   if (position) {
-    map.setView(position); // Center the map on the new position
+    map.setView(position);
   }
-
   return null;
 };
 
@@ -54,15 +51,16 @@ const MapComponent = ({ setAddressInformation, setSearchedAddress }: any) => {
   const [selectedPosition, setSelectedPosition] = useState<
     [number, number] | null
   >(null);
-  const [searchQuery, setSearchQuery] = useState<string>(""); // State for search input
-  const [locationData, setLocationData] = useState<any | null>(null); // State for location data
-  const [openDialog, setOpenDialog] = useState<boolean>(false); // State to control the dialog
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [locationData, setLocationData] = useState<any | null>(null);
+  const [openDialog, setOpenDialog] = useState<boolean>(false);
 
-  // Function to handle location search
+  // Function to handle location search with Nominatim and fallback to Google Maps
   const handleSearch = async () => {
     if (!searchQuery) return;
 
     try {
+      // First attempt: Nominatim API
       const response = await fetch(
         `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(
           searchQuery
@@ -71,41 +69,101 @@ const MapComponent = ({ setAddressInformation, setSearchedAddress }: any) => {
       const data = await response.json();
 
       if (data.length > 0) {
-        const { lat, lon, address } = data[0]; // Get latitude, longitude, and address from the first result
+        // Nominatim found the location
+        const { lat, lon, address } = data[0];
         const newPosition: [number, number] = [
           parseFloat(lat),
           parseFloat(lon),
         ];
-        setSelectedPosition(newPosition); // Set the selected position
+        setSelectedPosition(newPosition);
         setAddressInformation(address);
-        // Set location data
-        const { house_number, road, city, state, postcode, country } = address;
+
         const formattedAddress = {
-          address: house_number ? `${house_number} ${road}` : road || "",
-          city: city || "",
-          state: state || "",
-          postcode: postcode || "",
-          country: country || "",
+          address: address.road || "",
+          city: address.city || address.town || "",
+          state: address.state || "",
+          postcode: address.postcode || "",
+          country: address.country || "",
         };
         setLocationData(formattedAddress);
+      } else {
+        // Fallback to Google Maps Geocoding API
+        await fetchGoogleMapsGeocode(searchQuery);
+      }
+    } catch (error) {
+      console.error("Error fetching location data from Nominatim:", error);
+      // Fallback to Google Maps Geocoding API
+      await fetchGoogleMapsGeocode(searchQuery);
+    }
+  };
 
-        // Log location data to the console
-        console.log("Location Data:", formattedAddress);
+  // Function to fetch data from Google Maps Geocoding API
+  const fetchGoogleMapsGeocode = async (query: string) => {
+    try {
+      const googleMapsResponse = await fetch(
+        `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
+          query
+        )}&key=AIzaSyDKvMKD1DyMdxR7VgqjO428--aBf9wpkxw`
+      );
+      const googleData = await googleMapsResponse.json();
+
+      if (googleData.status === "OK") {
+        const result = googleData.results[0];
+        const { lat, lng } = result.geometry.location;
+        const newPosition: [number, number] = [lat, lng];
+        setSelectedPosition(newPosition);
+        const addressComponents = result.address_components;
+        const formattedAddress = formatGoogleAddress(
+          addressComponents,
+          result.formatted_address
+        );
+
+        setLocationData(formattedAddress);
+        setAddressInformation(formattedAddress);
+
+        console.log("Google Maps Geocode Data:", formattedAddress);
       } else {
         alert("Location not found.");
       }
     } catch (error) {
-      console.error("Error fetching location data:", error);
+      console.error("Error fetching data from Google Maps API:", error);
       alert("An error occurred while fetching location data.");
     }
   };
 
+  // Helper function to format Google Maps address components
+  const formatGoogleAddress = (components: any, completeAddress: any) => {
+    let address = "";
+    let city = "";
+    let state = "";
+    let postcode = "";
+    let country = "";
+
+    components.forEach((component: any) => {
+      if (
+        component.types.includes("street_address") ||
+        component.types.includes("route")
+      ) {
+        address = completeAddress;
+      } else if (component.types.includes("locality")) {
+        city = component.long_name;
+      } else if (component.types.includes("administrative_area_level_1")) {
+        state = component.long_name;
+      } else if (component.types.includes("postal_code")) {
+        postcode = component.long_name;
+      } else if (component.types.includes("country")) {
+        country = component.long_name;
+      }
+    });
+    address = completeAddress;
+    return { address, city, state, postcode, country };
+  };
+
   return (
     <div>
-      {/* Your Existing Button */}
       <Button
         type="button"
-        onClick={() => setOpenDialog(true)} // Open the dialog on button click
+        onClick={() => setOpenDialog(true)}
         variant="contained"
         sx={{
           background: "#fff",
@@ -122,18 +180,16 @@ const MapComponent = ({ setAddressInformation, setSearchedAddress }: any) => {
         Use Coordinates
       </Button>
 
-      {/* Map Popup Dialog */}
       <Dialog open={openDialog} onClose={() => setOpenDialog(false)} fullWidth>
         <DialogTitle>Map</DialogTitle>
         <DialogContent>
-          {/* Search Input */}
           <div style={{ marginBottom: "20px" }}>
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => {
-                setSearchQuery(e.target.value),
-                  setSearchedAddress(e.target.value);
+                setSearchQuery(e.target.value);
+                setSearchedAddress(e.target.value);
               }}
               placeholder="Search for a location"
               style={{
@@ -175,7 +231,6 @@ const MapComponent = ({ setAddressInformation, setSearchedAddress }: any) => {
             </Button>
           </div>
 
-          {/* Map Display */}
           <div style={{ height: "400px" }}>
             <MapContainer
               center={selectedPosition || [51.505, -0.09]}
@@ -187,12 +242,10 @@ const MapComponent = ({ setAddressInformation, setSearchedAddress }: any) => {
                 attribution='&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
               />
               {selectedPosition && (
-                <Marker position={selectedPosition}>
-                  {/* Marker to show where the user clicked or searched */}
-                </Marker>
+                <Marker position={selectedPosition}></Marker>
               )}
               <LocationMarker setSelectedPosition={setSelectedPosition} />
-              <SetMapView position={selectedPosition} />{" "}
+              <SetMapView position={selectedPosition} />
             </MapContainer>
           </div>
         </DialogContent>
