@@ -45,7 +45,7 @@ const Page = ({ params }: { params: { farmId: string } }) => {
         links={[
           { name: "Dashboard", link: "/dashboard" },
           { name: "Farm", link: "/dashboard/farm" },
-          { name: "Edit", link: `/dashboard/edit/${params.farmId}` },
+          { name: "Edit", link: `/dashboard/farm/${params.farmId}` },
         ]}
       />
       <Grid

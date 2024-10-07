@@ -126,7 +126,7 @@ function ClosedSidebar() {
             }}
           />
 
-          <Link href={"/dashboard/batches"} className="nav-links">
+          <Link href={"/dashboard/hatchery"} className="nav-links">
             <ListItem
               sx={{
                 paddingX: 0,
@@ -135,7 +135,7 @@ function ClosedSidebar() {
             >
               <ListItemButton
                 className={
-                  activePage.startsWith("/dashboard/batches") ? "active" : ""
+                  activePage.startsWith("/dashboard/hatchery") ? "active" : ""
                 }
                 sx={{
                   display: "flex",
@@ -176,7 +176,7 @@ function ClosedSidebar() {
                     mt: 0.5,
                   }}
                 >
-                  Batches
+                  Hatchery
                 </ListItemText>
               </ListItemButton>
             </ListItem>
