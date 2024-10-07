@@ -120,7 +120,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
           dispatch(feedAction.resetState());
           reset();
           setActiveStep(2);
-          router.push("/dashboard/feedSupply/new");
+          router.push("/dashboard/feedSupply");
         }
         reset();
       }
