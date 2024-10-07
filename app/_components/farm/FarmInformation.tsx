@@ -7,7 +7,9 @@ import { useEffect, useState } from "react";
 import * as validationPattern from "@/app/_lib/utils/validationPatterns/index";
 import * as validationMessage from "@/app/_lib/utils/validationsMessage/index";
 import { useForm, SubmitHandler } from "react-hook-form";
-import MapComponent from "./MapComponent";
+import dynamic from "next/dynamic";
+// import MapComponent from "./MapComponent";
+const MapComponent = dynamic(() => import("./MapComponent"), { ssr: false });
 import { setCookie } from "cookies-next";
 interface Props {
   editFarm?: any;
