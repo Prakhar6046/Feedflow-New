@@ -1,16 +1,15 @@
+import * as validationPattern from "@/app/_lib/utils/validationPatterns/index";
+import * as validationMessage from "@/app/_lib/utils/validationsMessage/index";
 import { Farm } from "@/app/_typeModels/Farm";
 import { farmAction } from "@/lib/features/farm/farmSlice";
 import { useAppDispatch } from "@/lib/hooks";
 import { Box, Button, Grid, Stack, TextField, Typography } from "@mui/material";
 import { NextPage } from "next";
-import { useEffect, useState } from "react";
-import * as validationPattern from "@/app/_lib/utils/validationPatterns/index";
-import * as validationMessage from "@/app/_lib/utils/validationsMessage/index";
-import { useForm, SubmitHandler } from "react-hook-form";
 import dynamic from "next/dynamic";
+import { useEffect, useState } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
 // import MapComponent from "./MapComponent";
 const MapComponent = dynamic(() => import("./MapComponent"), { ssr: false });
-import { setCookie } from "cookies-next";
 interface Props {
   editFarm?: any;
   setActiveStep: (val: number) => void;
@@ -30,6 +29,7 @@ const FarmInformation: NextPage<Props> = ({
     reset,
   } = useForm<Farm>();
   const [selectedSwtich, setSelectedSwtich] = useState<string>("address");
+  const [altitude, setAltitude] = useState<String>("");
   const [addressInformation, setAddressInformation] = useState<any>();
   const [searchedAddress, setSearchedAddress] = useState<any>();
   const onSubmit: SubmitHandler<Farm> = (data) => {
@@ -58,6 +58,12 @@ const FarmInformation: NextPage<Props> = ({
       setValue("province", addressInformation.state);
     }
   }, [addressInformation]);
+
+  useEffect(() => {
+    if (altitude) {
+      setValue("farmAltitude", altitude);
+    }
+  }, [altitude, setValue]);
   return (
     <Stack>
       <Typography
@@ -138,6 +144,7 @@ const FarmInformation: NextPage<Props> = ({
             <MapComponent
               setAddressInformation={setAddressInformation}
               setSearchedAddress={setSearchedAddress}
+              setAltitude={setAltitude}
             />
           </Box>
 

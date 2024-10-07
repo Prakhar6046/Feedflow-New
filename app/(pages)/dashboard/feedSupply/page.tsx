@@ -1,19 +1,12 @@
 import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
-import { SelectChangeEvent } from "@mui/material";
+import FeedTable from "@/app/_components/table/FeedTable";
+import { getFeedSupplys } from "@/app/_lib/action";
 
-import { useState } from "react";
 
-function createData(
-  name: string,
-  calories: number,
-  fat: number,
-  carbs: number,
-  protein: number
-) {
-  return { name, calories, fat, carbs, protein };
-}
+export default async function Page() {
+const feeds=await getFeedSupplys()
+// console.log(feeds?.data);
 
-export default function Page() {
   return (
     <>
       <BasicBreadcrumbs
@@ -30,6 +23,7 @@ export default function Page() {
           { name: "Feed Supply", link: "/dashboard" },
         ]}
       />
+      <FeedTable feeds={feeds?.data}/>
     </>
   );
 }

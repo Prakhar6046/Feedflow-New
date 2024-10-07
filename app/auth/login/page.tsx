@@ -9,10 +9,13 @@ import { setCookie } from "cookies-next";
 import Link from "next/link";
 import { hashPassword } from "@/app/_lib/hash";
 import toast, { Toaster } from "react-hot-toast";
-
+import EyeOpened from "@/public/static/img/icons/ic-eye-open.svg";
+import EyeClosed from "@/public/static/img/icons/ic-eye-closed.svg";
 export default function Page() {
   const [email, setEmail] = useState("abhishek.choudhary@ensuesoft.com");
   const [password, setPassword] = useState("12345678");
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -210,19 +213,40 @@ export default function Page() {
                         required
                       />
 
-                      <TextField
-                        label="Password"
-                        type="password"
-                        // focused
-                        className="form-input"
-                        sx={{
-                          width: "100%",
-                          marginBottom: 3,
-                        }}
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                      />
+                      <Box position={"relative"}>
+                        <TextField
+                          label="Password"
+                          type={showPassword ? "text" : "password"}
+                          className="form-input"
+                          sx={{
+                            width: "100%",
+                            marginBottom: 3,
+                          }}
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          required
+                        />
+
+                        <Box
+                          bgcolor={"white"}
+                          sx={{
+                            position: "absolute",
+                            right: "7px",
+                            top: "35%",
+                            transform: "translate(-7px,-50%)",
+                            width: 20,
+                            height: 20,
+                          }}
+                        >
+                          <Image
+                            onClick={() => setShowPassword(!showPassword)}
+                            src={showPassword ? EyeOpened : EyeClosed}
+                            width={20}
+                            height={20}
+                            alt="Eye Icon"
+                          />
+                        </Box>
+                      </Box>
 
                       <Button
                         variant="contained"
