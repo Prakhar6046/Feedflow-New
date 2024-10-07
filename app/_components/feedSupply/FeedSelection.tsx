@@ -77,6 +77,7 @@ export interface FeedSupply {
       kg: String;
       value: String;
     };
+    crudeFiber: { kg: String; value: String };
   };
   updatedBy: String;
   createdBy: String;
@@ -522,7 +523,7 @@ const FeedSelection: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                             fontWeight={500}
                             fontSize={14}
                           >
-                            {`Crude Fiber (${supply?.nutritionalGuarantee?.metabolizableEnergy.value})`}
+                            {`Crude Fiber (${supply?.nutritionalGuarantee?.crudeFiber.value})`}
                           </Typography>
                         </Grid>
 
@@ -532,10 +533,7 @@ const FeedSelection: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                             fontWeight={600}
                             fontSize={14}
                           >
-                            {
-                              supply?.nutritionalGuarantee?.metabolizableEnergy
-                                .kg
-                            }
+                            {supply?.nutritionalGuarantee?.crudeFiber.kg}
                           </Typography>
                         </Grid>
 

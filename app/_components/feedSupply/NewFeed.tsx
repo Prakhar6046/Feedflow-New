@@ -47,6 +47,7 @@ interface nutritionalGuarantee {
   phosphorous: { kg: String; value: String };
   carbohydrates: { kg: String; value: String };
   metabolizableEnergy: { kg: String; value: String };
+  crudeFiber: { kg: String; value: String };
 }
 interface FormInputs {
   feedIngredients: String;
@@ -140,18 +141,22 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
       nutritionalGuarantee?.moisture?.kg &&
       nutritionalGuarantee?.crudeProtein?.kg &&
       nutritionalGuarantee?.crudeFat?.kg &&
-      nutritionalGuarantee?.crudeAsh?.kg
+      nutritionalGuarantee?.crudeAsh?.kg &&
+      nutritionalGuarantee?.crudeFiber?.kg
     ) {
       const value =
         100 -
         Number(nutritionalGuarantee?.moisture?.kg) +
         Number(nutritionalGuarantee?.crudeProtein?.kg) +
+        Number(nutritionalGuarantee?.crudeFiber?.kg) +
         Number(nutritionalGuarantee?.crudeFat?.kg) +
         Number(nutritionalGuarantee?.crudeAsh?.kg);
 
       setValue("nutritionalGuarantee.carbohydrates.kg", String(value));
     } else {
-      toast.error("Please fill moisture, crudeProtein, crudeFat and crudeAsh");
+      toast.error(
+        "Please fill moisture, crude Protein, crude Fat, crude fiber and crude Ash"
+      );
     }
   };
   useEffect(() => {
@@ -2007,7 +2012,6 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                       </Box>
                     )}
                   </Grid>
-
                   <Grid
                     item
                     xl={6}
@@ -2023,6 +2027,193 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                   >
                     <Typography variant="subtitle1" fontWeight={600}>
                       5.{" "}
+                    </Typography>
+
+                    <Grid container spacing={2}>
+                      <Grid item xs={12} md={6}>
+                        <Box
+                          // display={"flex"}
+                          // gap={2}
+                          // alignItems={"center"}
+                          position={"relative"}
+                        >
+                          <TextField
+                            label=" Crude Fiber *"
+                            type="text"
+                            className="form-input"
+                            {...register("nutritionalGuarantee.crudeFiber.kg", {
+                              required: true,
+                              pattern: validationPattern.onlyNumbersPattern,
+                            })}
+                            sx={{
+                              width: "100%",
+                              minWidth: 190,
+                            }}
+                          />
+                          {errors &&
+                            errors?.nutritionalGuarantee?.crudeFiber?.kg &&
+                            errors?.nutritionalGuarantee?.crudeFiber.kg.type ===
+                              "required" && (
+                              <Typography
+                                variant="body2"
+                                color="red"
+                                fontSize={13}
+                                mt={0.5}
+                              >
+                                {validationMessage.required}
+                              </Typography>
+                            )}
+                          {errors &&
+                            errors?.nutritionalGuarantee?.crudeFiber?.kg &&
+                            errors?.nutritionalGuarantee?.crudeFiber.kg.type ===
+                              "pattern" && (
+                              <Typography
+                                variant="body2"
+                                color="red"
+                                fontSize={13}
+                                mt={0.5}
+                              >
+                                {validationMessage.onlyNumbers}
+                              </Typography>
+                            )}
+                          <Typography
+                            variant="body2"
+                            color="#555555AC"
+                            sx={{
+                              position: "absolute",
+                              right: 6,
+                              top: errors?.nutritionalGuarantee?.crudeFiber?.kg
+                                ? "35%"
+                                : "50%",
+                              transform: "translate(-6px, -50%)",
+                              backgroundColor: "#fff",
+                              height: 30,
+                              display: "grid",
+                              placeItems: "center",
+                              zIndex: 1,
+                              pl: 1,
+                            }}
+                          >
+                            g/kg
+                          </Typography>
+                        </Box>
+                      </Grid>
+                      <Grid item xs={12} md={6}>
+                        <Box width={"100%"}>
+                          <FormControl
+                            fullWidth
+                            className="form-input"
+                            sx={{
+                              minWidth: 110,
+                            }}
+                          >
+                            <InputLabel id="feed-supply-select-label10">
+                              Min *
+                            </InputLabel>
+                            <Select
+                              labelId="feed-supply-select-label10"
+                              id="feed-supply-select10"
+                              {...register(
+                                "nutritionalGuarantee.crudeFiber.value",
+                                {
+                                  required: true,
+                                }
+                              )}
+                              label="Min *"
+                              value={
+                                watch(
+                                  "nutritionalGuarantee.crudeFiber.value"
+                                ) || ""
+                              }
+                              onChange={(e) =>
+                                setValue(
+                                  "nutritionalGuarantee.crudeFiber.value",
+                                  e.target.value
+                                )
+                              }
+                              // onChange={handleChange}
+                            >
+                              {nutritionalGuarantee.map((guarantee, i) => {
+                                return (
+                                  <MenuItem value={guarantee} key={i}>
+                                    {guarantee}
+                                  </MenuItem>
+                                );
+                              })}
+                            </Select>
+
+                            {errors &&
+                              errors?.nutritionalGuarantee?.crudeFiber?.value &&
+                              errors?.nutritionalGuarantee?.crudeFiber.value
+                                .type === "required" && (
+                                <Typography
+                                  variant="body2"
+                                  color="red"
+                                  fontSize={13}
+                                  mt={0.5}
+                                >
+                                  {validationMessage.required}
+                                </Typography>
+                              )}
+                          </FormControl>
+                        </Box>
+                      </Grid>
+                    </Grid>
+
+                    {(watch("nutritionalGuarantee.crudeFiber.value") ||
+                      watch("nutritionalGuarantee.crudeFiber.kg")) && (
+                      <Box
+                        fontSize={14}
+                        fontWeight={500}
+                        width="fit-content"
+                        onClick={() => {
+                          {
+                            setValue(
+                              "nutritionalGuarantee.crudeFiber.value",
+                              ""
+                            ),
+                              setValue(
+                                "nutritionalGuarantee.crudeFiber.kg",
+                                ""
+                              );
+                          }
+                        }}
+                        style={{ cursor: "pointer" }}
+                        sx={
+                          {
+                            // visibility: "hidden"
+                          }
+                        }
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="1.5em"
+                          height="1.5em"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            fill="red"
+                            d="M12 20c-4.41 0-8-3.59-8-8s3.59-8 8-8s8 3.59 8 8s-3.59 8-8 8m0-18C6.47 2 2 6.47 2 12s4.47 10 10 10s10-4.47 10-10S17.53 2 12 2m2.59 6L12 10.59L9.41 8L8 9.41L10.59 12L8 14.59L9.41 16L12 13.41L14.59 16L16 14.59L13.41 12L16 9.41z"
+                          />
+                        </svg>
+                      </Box>
+                    )}
+                  </Grid>
+                  <Grid
+                    item
+                    xl={6}
+                    xs={12}
+                    sx={{
+                      display: "flex",
+                      gap: 1.5,
+                      alignItems: "center",
+                      minWidth: "200px",
+                      overflowX: "auto",
+                      pb: 1.5,
+                    }}
+                  >
+                    <Typography variant="subtitle1" fontWeight={600}>
+                      6.{" "}
                     </Typography>
 
                     <Grid container spacing={2}>
@@ -2201,7 +2392,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                     }}
                   >
                     <Typography variant="subtitle1" fontWeight={600}>
-                      6.{" "}
+                      7.{" "}
                     </Typography>
 
                     <Grid container spacing={2}>
@@ -2276,25 +2467,6 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                           </Typography>
                         </Box>
                       </Grid>
-
-                      {/* <Button
-                    type="button"
-                    variant="contained"
-                    sx={{
-                      background: "#06a19b",
-                      color: "#fff",
-                      fontWeight: 600,
-                      padding: "6px 16px",
-                      width: "fit-content",
-                      textTransform: "capitalize",
-                      borderRadius: "8px",
-                      border: "1px solid #06A19B",
-                      minWidth: 90,
-                    }}
-                    // onClick={() => handleCalculate(item, index)}
-                  >
-                    Calculate
-                  </Button> */}
 
                       <Grid item xs={12} md={6}>
                         <Box width={"100%"}>
@@ -2411,7 +2583,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                     }}
                   >
                     <Typography variant="subtitle1" fontWeight={600}>
-                      7.{" "}
+                      8.{" "}
                     </Typography>
 
                     <Box
@@ -2609,7 +2781,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                     }}
                   >
                     <Typography variant="subtitle1" fontWeight={600}>
-                      8.{" "}
+                      9.{" "}
                     </Typography>
 
                     <Box
