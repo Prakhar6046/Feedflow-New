@@ -25,6 +25,7 @@ export default async function Page() {
         searchOrganisations={true}
         searchUsers={false}
         isTable={true}
+        refetch={"organisation"}
         links={[
           { name: "Dashboard", link: "/dashboard" },
           { name: "Organisations", link: "/dashboard/organisation" },

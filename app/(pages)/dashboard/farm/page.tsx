@@ -16,6 +16,7 @@ export default async function Page() {
         searchUsers={false}
         searchFarm={true}
         isTable={true}
+        refetch="farm"
         buttonRoute="/dashboard/farm/newFarm"
         links={[
           { name: "Dashboard", link: "/dashboard" },

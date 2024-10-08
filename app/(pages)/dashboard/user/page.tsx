@@ -32,6 +32,7 @@ export default async function Page() {
         organisations={organisations?.data}
         searchOrganisations={false}
         isTable={true}
+        refetch={"user"}
         links={[
           { name: "Dashboard", link: "/dashboard" },
           { name: "Users", link: "/dashboard/user" },

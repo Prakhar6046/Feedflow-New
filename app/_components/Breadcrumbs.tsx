@@ -28,6 +28,7 @@ interface Props {
   isTable?: boolean;
   buttonRoute?: string;
   searchFarm?: boolean;
+  refetch?: string;
 }
 
 export default function BasicBreadcrumbs({
@@ -41,13 +42,14 @@ export default function BasicBreadcrumbs({
   isTable,
   buttonRoute,
   searchFarm,
+  refetch,
 }: Props) {
   const role = getCookie("role");
   const router = useRouter();
   const loggedUser: any = getCookie("logged-user");
   const [open, setOpen] = useState(false);
   const pathName = usePathname();
-  const [status, setStatus] = useState("Updating...");
+  const [status, setStatus] = useState("");
   const [currentRole, setCurrentRole] = useState<string>("");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const debouncedSearchQuery = useDebounce(searchQuery);
@@ -80,7 +82,26 @@ export default function BasicBreadcrumbs({
     let data = await res.json();
     return data;
   }
-
+  const getSearchOrganisations = async (user: any) => {
+    const res = await SeachedOrganisation(
+      debouncedSearchQuery,
+      user?.data?.user?.organisationId,
+      user?.data?.user?.role
+    );
+    dispatch(organisationAction.updateOrganisations(res.data));
+  };
+  const getSearchUsers = async (user: any) => {
+    const res = await SeachedUsers(
+      debouncedSearchQuery,
+      user?.data?.user?.organisationId,
+      user?.data?.user?.role
+    );
+    dispatch(userAction.updateUsers(res.data));
+  };
+  const getSearchFarms = async (user: any) => {
+    const res = await SeachedFarms(debouncedSearchQuery);
+    dispatch(farmAction.updateFarms(res.data));
+  };
   const handleClear = () => {
     setSearchQuery("");
   };
@@ -88,15 +109,29 @@ export default function BasicBreadcrumbs({
     setCookie("activeStep", 0);
     router.push(String(buttonRoute));
   };
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setStatus("Last update less than a minutes ago");
-    }, 2000);
 
-    return () => {
-      () => clearTimeout(timer);
-    };
-  }, [status]);
+  const handleRefetch = async () => {
+    const user = JSON.parse(loggedUser);
+    setStatus("Updating..");
+    if (refetch === "organisation") {
+      getSearchOrganisations(user);
+    } else if (refetch === "user") {
+      getSearchUsers(user);
+    } else if (refetch === "farm") {
+      getSearchFarms(user);
+    }
+    setStatus("Last update less than a minutes ago");
+  };
+
+  // useEffect(() => {
+  //   const timer = setTimeout(() => {
+  //     setStatus("Last update less than a minutes ago");
+  //   }, 2000);
+
+  //   return () => {
+  //     () => clearTimeout(timer);
+  //   };
+  // }, [status]);
   useEffect(() => {
     if (role) {
       setCurrentRole(role);
@@ -105,33 +140,13 @@ export default function BasicBreadcrumbs({
   useEffect(() => {
     const user = JSON.parse(loggedUser);
     if (searchOrganisations) {
-      const getSearchOrganisations = async () => {
-        const res = await SeachedOrganisation(
-          debouncedSearchQuery,
-          user?.data?.user?.organisationId,
-          user?.data?.user?.role
-        );
-        dispatch(organisationAction.updateOrganisations(res.data));
-      };
-      getSearchOrganisations();
+      getSearchOrganisations(user);
     }
     if (searchUsers) {
-      const getSearchUsers = async () => {
-        const res = await SeachedUsers(
-          debouncedSearchQuery,
-          user?.data?.user?.organisationId,
-          user?.data?.user?.role
-        );
-        dispatch(userAction.updateUsers(res.data));
-      };
-      getSearchUsers();
+      getSearchUsers(user);
     }
     if (searchFarm) {
-      const getSearchFarms = async () => {
-        const res = await SeachedFarms(debouncedSearchQuery);
-        dispatch(farmAction.updateFarms(res.data));
-      };
-      getSearchFarms();
+      getSearchFarms(user);
     }
   }, [debouncedSearchQuery, searchOrganisations, searchUsers, searchFarm]);
 
@@ -422,6 +437,7 @@ export default function BasicBreadcrumbs({
                     display="flex"
                     justifyContent="center"
                     alignItems="center"
+                    onClick={handleRefetch}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
