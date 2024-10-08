@@ -167,8 +167,8 @@ export default function FarmTable() {
       const sortedData = [...farmsData].sort((farm1: any, farm2: any) => {
         const orderType = order === "asc" ? 1 : -1;
         if (property !== "productUnits") {
-          if (farm1.property < farm2.property) return -1 * orderType;
-          if (farm1.property > farm2.property) return 1 * orderType;
+          if (farm1.name < farm2.name) return -1 * orderType;
+          if (farm1.name > farm2.name) return 1 * orderType;
           return 0;
         } else {
           if (farm1.productUnits.length < farm2.productUnits.length)

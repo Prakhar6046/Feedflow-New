@@ -169,7 +169,7 @@ const CalculateVolume: React.FC<Props> = ({
               label="Length"
               variant="outlined"
               fullWidth
-              type="number"
+              type="text"
               className="form-input"
               sx={{
                 marginBottom: 2,
