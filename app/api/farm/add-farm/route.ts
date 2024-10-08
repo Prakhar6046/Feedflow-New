@@ -6,6 +6,7 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     console.log(body);
+    
     const newFarmAddress = await prisma.farmAddress.create({
       data: { ...body.farmAddress },
     });
@@ -14,8 +15,10 @@ export async function POST(req: NextRequest) {
         farmAddressId: newFarmAddress.id,
         name: body.name,
         farmAltitude: body.farmAltitude,
+        fishFarmer:body.fishFarmer
       },
     });
+    
     const newProductUnit = await prisma.productionUnit.createMany({
       data: body.productionUnits.map((unit: any) => ({
         name: unit.name,
