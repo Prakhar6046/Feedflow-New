@@ -74,6 +74,7 @@ const AddNewOrganisation = () => {
     defaultValues: {
       contacts: [{ name: "", role: "", email: "", phone: "" }],
     },
+    mode: "onChange",
   });
   const onSubmit: SubmitHandler<AddOrganizationFormInputs> = async (data) => {
     if (data) {
@@ -100,7 +101,7 @@ const AddNewOrganisation = () => {
     const conatcts = watch("contacts");
     if (conatcts) {
       const lastContact = conatcts[conatcts.length - 1];
-      console.log(lastContact);
+
       if (
         lastContact &&
         lastContact.name &&
@@ -417,16 +418,9 @@ const AddNewOrganisation = () => {
                 id="demo-simple-select"
                 label="Production Unit Type"
                 {...register("organisationType", {
-                  required: true,
+                  required: watch("organisationType") ? false : true,
+                  onChange: (e) => setValue("organisationType", e.target.value),
                 })}
-                // onChange={(e) => handleChange(e, item)}
-                // sx={{
-                //   px: {
-                //     xl: 10,
-                //     md: 5,
-                //     xs: 3,
-                //   },
-                // }}
               >
                 {OrganisationType.map((organisation, i) => {
                   return (
@@ -436,18 +430,12 @@ const AddNewOrganisation = () => {
                   );
                 })}
               </Select>
-              {errors &&
-                errors.organisationType &&
-                errors.organisationType.type === "required" && (
-                  <Typography
-                    variant="body2"
-                    color="red"
-                    fontSize={13}
-                    mt={0.5}
-                  >
-                    {validationMessage.required}
-                  </Typography>
-                )}
+
+              {errors && errors.organisationType && (
+                <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                  {validationMessage.required}
+                </Typography>
+              )}
             </FormControl>
             <Typography
               variant="h6"

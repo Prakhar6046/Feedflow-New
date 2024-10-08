@@ -39,7 +39,7 @@ const FarmInformation: NextPage<Props> = ({
     setValue,
     watch,
     reset,
-  } = useForm<Farm>();
+  } = useForm<Farm>({ mode: "onChange" });
   const [selectedSwtich, setSelectedSwtich] = useState<string>("address");
   const [altitude, setAltitude] = useState<String>("");
   const [addressInformation, setAddressInformation] = useState<any>();
@@ -51,7 +51,6 @@ const FarmInformation: NextPage<Props> = ({
     return response.json();
   };
   const onSubmit: SubmitHandler<Farm> = (data) => {
-    
     dispatch(farmAction.updateFarm(data));
     setActiveStep(2);
     // setCookie("activeStep", 2);
@@ -67,7 +66,6 @@ const FarmInformation: NextPage<Props> = ({
       setValue("zipCode", editFarm?.farmAddress?.zipCode);
       setValue("province", editFarm?.farmAddress?.province);
       setValue("fishFarmer", editFarm?.fishFarmer);
-
     }
   }, [editFarm]);
   useEffect(() => {
@@ -175,11 +173,11 @@ const FarmInformation: NextPage<Props> = ({
                 labelId="feed-supply-select-label1"
                 id="feed-supply-select1"
                 {...register("fishFarmer", {
-                  required: true,
+                  required: watch("fishFarmer") ? false : true,
+                  onChange: (e) => setValue("fishFarmer", e.target.value),
                 })}
                 label="Feed Farmer *"
                 value={watch("fishFarmer") || ""}
-                onChange={(e) => setValue("fishFarmer", e.target.value)}
               >
                 {fishFarmers?.map((fish: any) => {
                   return (

@@ -2,10 +2,9 @@ import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
 import FeedTable from "@/app/_components/table/FeedTable";
 import { getFeedSupplys } from "@/app/_lib/action";
 
-
 export default async function Page() {
-const feeds=await getFeedSupplys()
-// console.log(feeds?.data);
+  const feeds = await getFeedSupplys();
+  // console.log(feeds?.data);
 
   return (
     <>
@@ -20,10 +19,10 @@ const feeds=await getFeedSupplys()
         buttonRoute="/dashboard/feedSupply/new"
         links={[
           { name: "Dashboard", link: "/dashboard" },
-          { name: "Feed Supply", link: "/dashboard" },
+          { name: "Feed Supply", link: "/dashboard/feedSupply" },
         ]}
       />
-      <FeedTable feeds={feeds?.data}/>
+      <FeedTable feeds={feeds?.data} />
     </>
   );
 }
