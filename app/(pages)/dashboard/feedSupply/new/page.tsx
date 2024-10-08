@@ -46,7 +46,8 @@ export default function Page() {
         hideSearchInput={true}
         links={[
           { name: "Dashboard", link: "/dashboard" },
-          { name: "Feed Supply", link: "/dashboard" },
+          { name: "Feed Supply", link: "/dashboard/feedSupply" },
+          { name: "New", link: "/dashboard/feedSupply/new" },
         ]}
       />
       <Grid

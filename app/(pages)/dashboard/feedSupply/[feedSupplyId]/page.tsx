@@ -30,7 +30,7 @@ const steps = [
   },
 ];
 
-export default function Page({ params }: { params: { farmId: string } }) {
+export default function Page({ params }: { params: { feedId: string } }) {
   const [activeStep, setActiveStep] = useState<number>(0);
   const isEditFeed = useAppSelector(selectIsEditFeed);
   const editFeed = useAppSelector(selectEditFeed);
@@ -52,6 +52,7 @@ export default function Page({ params }: { params: { farmId: string } }) {
         links={[
           { name: "Dashboard", link: "/dashboard" },
           { name: "Feed Supply", link: "/dashboard" },
+          { name: "Edit", link: `/dashboard/feedSupply/${params.feedId}` },
         ]}
       />
       <Grid

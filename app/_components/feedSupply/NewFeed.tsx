@@ -83,6 +83,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
   const [feedSuppliers, setFeedSuppliers] = useState<any>();
   const isEditFeed = useAppSelector(selectIsEditFeed);
   const [isCarbohydrate, setIsCarbohydrate] = useState<boolean>(false);
+  const [calculateError, setCalculateError] = useState<string>("");
   const {
     register,
     handleSubmit,
@@ -154,7 +155,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
 
       setValue("nutritionalGuarantee.carbohydrates.kg", String(value));
     } else {
-      toast.error(
+      setCalculateError(
         "Please fill moisture, crude Protein, crude Fat, crude fiber and crude Ash"
       );
     }
@@ -2779,7 +2780,31 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                       </Box>
                     )}
                   </Grid>
-
+                  <Grid
+                    item
+                    xl={6}
+                    xs={12}
+                    sx={{
+                      display: "flex",
+                      gap: 1.5,
+                      alignItems: "center",
+                      justifyContent: "center",
+                      minWidth: "100%",
+                      overflowX: "auto",
+                      pb: 1.5,
+                    }}
+                  >
+                    {calculateError && (
+                      <Typography
+                        variant="body2"
+                        color="red"
+                        fontSize={13}
+                        mt={0.5}
+                      >
+                        {calculateError}
+                      </Typography>
+                    )}
+                  </Grid>
                   <Grid
                     item
                     xl={6}
