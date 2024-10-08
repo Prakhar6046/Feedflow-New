@@ -81,6 +81,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [feedSuppliers, setFeedSuppliers] = useState<any>();
   const isEditFeed = useAppSelector(selectIsEditFeed);
+  const [isCarbohydrate, setIsCarbohydrate] = useState<boolean>(false);
   const {
     register,
     handleSubmit,
@@ -126,13 +127,11 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
       }
     }
   };
-
   const getFeedSuppliers = async () => {
     const response = await fetch(`/api/organisation/feedSuppliers`);
     const res = response.json();
     return res;
   };
-  // console.log();
 
   const calCarbohydrate = () => {
     const nutritionalGuarantee = getValues().nutritionalGuarantee;
@@ -195,6 +194,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
       setValue("nutritionalGuarantee", editFeed?.nutritionalGuarantee);
     }
   }, [editFeed]);
+
   if (loading) {
     return <Loader />;
   }
@@ -2593,13 +2593,18 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                       position={"relative"}
                     >
                       <TextField
-                        label="Carbohydratesc*"
+                        label="Carbohydrates*"
                         type="text"
                         className="form-input"
                         {...register("nutritionalGuarantee.carbohydrates.kg", {
                           required: true,
                           pattern: validationPattern.onlyNumbersPattern,
                         })}
+                        focused={
+                          watch("nutritionalGuarantee.carbohydrates.kg")
+                            ? true
+                            : false
+                        }
                         sx={{
                           width: "100%",
                           minWidth: 190,

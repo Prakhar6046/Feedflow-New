@@ -100,7 +100,6 @@ const AddNewOrganisation = () => {
     const conatcts = watch("contacts");
     if (conatcts) {
       const lastContact = conatcts[conatcts.length - 1];
-      console.log(lastContact);
       if (
         lastContact &&
         lastContact.name &&

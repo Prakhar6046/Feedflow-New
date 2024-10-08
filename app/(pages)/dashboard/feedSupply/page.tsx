@@ -5,7 +5,6 @@ import { getFeedSupplys } from "@/app/_lib/action";
 
 export default async function Page() {
 const feeds=await getFeedSupplys()
-// console.log(feeds?.data);
 
   return (
     <>

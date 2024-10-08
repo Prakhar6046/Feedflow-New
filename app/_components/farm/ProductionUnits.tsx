@@ -146,7 +146,6 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
       setCalculatedValue({ output: 0, id: null });
     }
   };
-console.log(isEditFarm);
 
   const onSubmit: SubmitHandler<ProductionUnitsFormTypes> = async (data) => {
     let payload;
@@ -164,7 +163,7 @@ console.log(isEditFarm);
         productionUnits: data.productionUnits,
         name: farm.name,
         farmAltitude: farm.farmAltitude,
-        fishFarmer:farm.fishFarmer,
+        fishFarmer: farm.fishFarmer,
         id: editFarm?.id,
       };
     } else {
@@ -180,10 +179,9 @@ console.log(isEditFarm);
         productionUnits: data.productionUnits,
         name: farm.name,
         farmAltitude: farm.farmAltitude,
-        fishFarmer:farm.fishFarmer
+        fishFarmer: farm.fishFarmer,
       };
     }
-console.log(payload);
 
     if (Object.keys(payload).length && payload.name) {
       const response = await fetch(

@@ -51,7 +51,6 @@ const FarmInformation: NextPage<Props> = ({
     return response.json();
   };
   const onSubmit: SubmitHandler<Farm> = (data) => {
-    
     dispatch(farmAction.updateFarm(data));
     setActiveStep(2);
     // setCookie("activeStep", 2);
@@ -67,7 +66,6 @@ const FarmInformation: NextPage<Props> = ({
       setValue("zipCode", editFarm?.farmAddress?.zipCode);
       setValue("province", editFarm?.farmAddress?.province);
       setValue("fishFarmer", editFarm?.fishFarmer);
-
     }
   }, [editFarm]);
   useEffect(() => {
@@ -141,7 +139,7 @@ const FarmInformation: NextPage<Props> = ({
               label="Farm Altitude *"
               type="text"
               className="form-input"
-              // focused
+              focused={altitude ? true : false}
               {...register("farmAltitude", {
                 required: true,
                 pattern: validationPattern.onlyNumbersPattern,
@@ -246,7 +244,7 @@ const FarmInformation: NextPage<Props> = ({
                       label="Address Line 1 *"
                       type="text"
                       className="form-input"
-                      // focused
+                      // focused={watch("addressLine1") ? true : false}
                       {...register("addressLine1", { required: true })}
                       InputLabelProps={{
                         shrink:
