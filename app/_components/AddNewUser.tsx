@@ -53,7 +53,7 @@ export default function AddNewUser({ organisations }: Props) {
   const [currentUserId, setCurrentUserId] = useState<Number>();
   const [profilePic, setProfilePic] = useState<String>();
   const [imagePath, setImagePath] = useState<FileList>();
-
+  const [addUserError, SetAddUserError] = useState<string>();
   const {
     register,
     setValue,
@@ -87,9 +87,11 @@ export default function AddNewUser({ organisations }: Props) {
           setProfilePic(updatedUser.data.imageUrl);
         }
       } else {
-        toast.error(responseData.message);
+        // toast.error(responseData.message);
+        SetAddUserError(responseData.message);
       }
       if (response.ok) {
+        SetAddUserError("");
         toast.success(responseData.message);
         router.push("/dashboard/user");
         reset();
@@ -241,6 +243,7 @@ export default function AddNewUser({ organisations }: Props) {
                     className="form-input"
                     {...register("email", {
                       required: true,
+                      onChange: () => SetAddUserError(""),
                     })}
                     sx={{
                       width: "100%",
@@ -296,6 +299,16 @@ export default function AddNewUser({ organisations }: Props) {
                         </Typography>
                       )}
                   </FormControl>
+                  {addUserError && (
+                    <Typography
+                      variant="body2"
+                      color="red"
+                      fontSize={13}
+                      mt={0.5}
+                    >
+                      {addUserError}
+                    </Typography>
+                  )}
                 </Box>
 
                 <Button

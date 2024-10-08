@@ -142,7 +142,7 @@ const FarmInformation: NextPage<Props> = ({
               focused={altitude ? true : false}
               {...register("farmAltitude", {
                 required: true,
-                pattern: validationPattern.onlyNumbersPattern,
+                pattern: validationPattern.numbersWithDot,
               })}
               sx={{
                 width: "100%",
@@ -160,7 +160,7 @@ const FarmInformation: NextPage<Props> = ({
               errors.farmAltitude &&
               errors.farmAltitude.type === "pattern" && (
                 <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
-                  {validationMessage.onlyNumbers}
+                  {validationMessage.OnlyNumbersWithDot}
                 </Typography>
               )}
           </Box>

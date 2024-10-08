@@ -154,6 +154,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
         Number(nutritionalGuarantee?.crudeAsh?.kg);
 
       setValue("nutritionalGuarantee.carbohydrates.kg", String(value));
+      setCalculateError("");
     } else {
       setCalculateError(
         "Please fill moisture, crude Protein, crude Fat, crude fiber and crude Ash"
@@ -622,7 +623,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                     className="form-input"
                     {...register("particleSize", {
                       required: true,
-                      pattern: validationPattern.onlyNumbersPattern,
+                      pattern: validationPattern.numbersWithDot,
                     })}
                     // {...register("organisationName", {
                     //     required: true,
@@ -674,7 +675,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                       fontSize={13}
                       mt={0.5}
                     >
-                      {validationMessage.onlyNumbers}
+                      {validationMessage.OnlyNumbersWithDot}
                     </Typography>
                   )}
               </Grid>
@@ -816,7 +817,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                     className="form-input"
                     {...register("animalSizeInLength", {
                       required: true,
-                      pattern: validationPattern.onlyNumbersPattern,
+                      pattern: validationPattern.numbersWithDot,
                     })}
                     // {...register("organisationName", {
                     //     required: true,
@@ -869,7 +870,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                       fontSize={13}
                       mt={0.5}
                     >
-                      {validationMessage.onlyNumbers}
+                      {validationMessage.OnlyNumbersWithDot}
                     </Typography>
                   )}
               </Grid>
@@ -887,7 +888,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                     className="form-input"
                     {...register("animalSizeInWeight", {
                       required: true,
-                      pattern: validationPattern.onlyNumbersPattern,
+                      pattern: validationPattern.numbersWithDot,
                     })}
                     // {...register("organisationName", {
                     //     required: true,
@@ -939,7 +940,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                       fontSize={13}
                       mt={0.5}
                     >
-                      {validationMessage.onlyNumbers}
+                      {validationMessage.OnlyNumbersWithDot}
                     </Typography>
                   )}
               </Grid>
@@ -1113,7 +1114,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                     className="form-input"
                     {...register("shelfLife", {
                       required: true,
-                      pattern: validationPattern.onlyNumbersPattern,
+                      pattern: validationPattern.numbersWithDot,
                     })}
                     // {...register("organisationName", {
                     //     required: true,
@@ -1165,7 +1166,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                       fontSize={13}
                       mt={0.5}
                     >
-                      {validationMessage.onlyNumbers}
+                      {validationMessage.OnlyNumbersWithDot}
                     </Typography>
                   )}
               </Grid>
@@ -1321,7 +1322,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                             className="form-input"
                             {...register("nutritionalGuarantee.moisture.kg", {
                               required: true,
-                              pattern: validationPattern.onlyNumbersPattern,
+                              pattern: validationPattern.numbersWithDot,
                             })}
                             sx={{
                               width: "100%",
@@ -1351,7 +1352,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                                 fontSize={13}
                                 mt={0.5}
                               >
-                                {validationMessage.onlyNumbers}
+                                {validationMessage.OnlyNumbersWithDot}
                               </Typography>
                             )}
                           <Typography
@@ -1503,7 +1504,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                               "nutritionalGuarantee.crudeProtein.kg",
                               {
                                 required: true,
-                                pattern: validationPattern.onlyNumbersPattern,
+                                pattern: validationPattern.numbersWithDot,
                               }
                             )}
                             sx={{
@@ -1534,7 +1535,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                                 fontSize={13}
                                 mt={0.5}
                               >
-                                {validationMessage.onlyNumbers}
+                                {validationMessage.OnlyNumbersWithDot}
                               </Typography>
                             )}
                           <Typography
@@ -1693,7 +1694,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                             className="form-input"
                             {...register("nutritionalGuarantee.crudeFat.kg", {
                               required: true,
-                              pattern: validationPattern.onlyNumbersPattern,
+                              pattern: validationPattern.numbersWithDot,
                             })}
                             sx={{
                               width: "100%",
@@ -1723,7 +1724,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                                 fontSize={13}
                                 mt={0.5}
                               >
-                                {validationMessage.onlyNumbers}
+                                {validationMessage.OnlyNumbersWithDot}
                               </Typography>
                             )}
                           <Typography
@@ -1873,7 +1874,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                             className="form-input"
                             {...register("nutritionalGuarantee.crudeAsh.kg", {
                               required: true,
-                              pattern: validationPattern.onlyNumbersPattern,
+                              pattern: validationPattern.numbersWithDot,
                             })}
                             sx={{
                               width: "100%",
@@ -1903,7 +1904,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                                 fontSize={13}
                                 mt={0.5}
                               >
-                                {validationMessage.onlyNumbers}
+                                {validationMessage.OnlyNumbersWithDot}
                               </Typography>
                             )}
                           <Typography
@@ -2052,7 +2053,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                             className="form-input"
                             {...register("nutritionalGuarantee.crudeFiber.kg", {
                               required: true,
-                              pattern: validationPattern.onlyNumbersPattern,
+                              pattern: validationPattern.numbersWithDot,
                             })}
                             sx={{
                               width: "100%",
@@ -2082,7 +2083,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                                 fontSize={13}
                                 mt={0.5}
                               >
-                                {validationMessage.onlyNumbers}
+                                {validationMessage.OnlyNumbersWithDot}
                               </Typography>
                             )}
                           <Typography
@@ -2239,7 +2240,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                             className="form-input"
                             {...register("nutritionalGuarantee.calcium.kg", {
                               required: true,
-                              pattern: validationPattern.onlyNumbersPattern,
+                              pattern: validationPattern.numbersWithDot,
                             })}
                             sx={{
                               width: "100%",
@@ -2269,7 +2270,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                                 fontSize={13}
                                 mt={0.5}
                               >
-                                {validationMessage.onlyNumbers}
+                                {validationMessage.OnlyNumbersWithDot}
                               </Typography>
                             )}
                           <Typography
@@ -2420,7 +2421,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                               "nutritionalGuarantee.phosphorous.kg",
                               {
                                 required: true,
-                                pattern: validationPattern.onlyNumbersPattern,
+                                pattern: validationPattern.numbersWithDot,
                               }
                             )}
                             sx={{
@@ -2451,7 +2452,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                                 fontSize={13}
                                 mt={0.5}
                               >
-                                {validationMessage.onlyNumbers}
+                                {validationMessage.OnlyNumbersWithDot}
                               </Typography>
                             )}
                           <Typography
@@ -2607,7 +2608,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                         className="form-input"
                         {...register("nutritionalGuarantee.carbohydrates.kg", {
                           required: true,
-                          pattern: validationPattern.onlyNumbersPattern,
+                          pattern: validationPattern.numbersWithDot,
                         })}
                         focused={
                           watch("nutritionalGuarantee.carbohydrates.kg")
@@ -2663,7 +2664,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                             fontSize={13}
                             mt={0.5}
                           >
-                            {validationMessage.onlyNumbers}
+                            {validationMessage.OnlyNumbersWithDot}
                           </Typography>
                         )}
                     </Box>
@@ -2780,31 +2781,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                       </Box>
                     )}
                   </Grid>
-                  <Grid
-                    item
-                    xl={6}
-                    xs={12}
-                    sx={{
-                      display: "flex",
-                      gap: 1.5,
-                      alignItems: "center",
-                      justifyContent: "center",
-                      minWidth: "100%",
-                      overflowX: "auto",
-                      pb: 1.5,
-                    }}
-                  >
-                    {calculateError && (
-                      <Typography
-                        variant="body2"
-                        color="red"
-                        fontSize={13}
-                        mt={0.5}
-                      >
-                        {calculateError}
-                      </Typography>
-                    )}
-                  </Grid>
+
                   <Grid
                     item
                     xl={6}
@@ -2836,7 +2813,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                           "nutritionalGuarantee.metabolizableEnergy.kg",
                           {
                             required: true,
-                            pattern: validationPattern.onlyNumbersPattern,
+                            pattern: validationPattern.numbersWithDot,
                           }
                         )}
                         sx={{
@@ -2889,7 +2866,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                             fontSize={13}
                             mt={0.5}
                           >
-                            {validationMessage.onlyNumbers}
+                            {validationMessage.OnlyNumbersWithDot}
                           </Typography>
                         )}
                     </Box>
@@ -3006,6 +2983,32 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                           />
                         </svg>
                       </Box>
+                    )}
+                  </Grid>
+                  <Grid
+                    item
+                    xl={6}
+                    xs={12}
+                    sx={{
+                      display: "flex",
+                      gap: 1.5,
+                      alignItems: "center",
+                      justifyContent: "left",
+                      minWidth: "200px",
+                      overflowX: "auto",
+                      pb: 1.5,
+                    }}
+                  >
+                    {calculateError && (
+                      <Typography
+                        variant="body2"
+                        color="red"
+                        fontSize={13}
+                        mt={0.5}
+                        ml={3.5}
+                      >
+                        {calculateError}
+                      </Typography>
                     )}
                   </Grid>
                 </Grid>
