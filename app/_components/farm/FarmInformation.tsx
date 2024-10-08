@@ -244,13 +244,13 @@ const FarmInformation: NextPage<Props> = ({
                       label="Address Line 1 *"
                       type="text"
                       className="form-input"
-                      // focused={watch("addressLine1") ? true : false}
                       {...register("addressLine1", { required: true })}
                       InputLabelProps={{
                         shrink:
                           !!watch("addressLine1") ||
                           !!addressInformation?.address,
                       }}
+                      focused
                       sx={{
                         width: "100%",
                       }}
@@ -275,7 +275,6 @@ const FarmInformation: NextPage<Props> = ({
                     label="Address Line 2 "
                     type="text"
                     className="form-input"
-                    // focused
                     {...register("addressLine2")}
                     sx={{
                       width: "100%",
@@ -288,15 +287,19 @@ const FarmInformation: NextPage<Props> = ({
                     <TextField
                       label="City *"
                       type="text"
+                      id="city"
                       className="form-input"
-                      // focused
                       {...register("city", {
                         required: true,
                         pattern:
                           validationPattern.alphabetsSpacesAndSpecialCharsPattern,
                       })}
                       InputLabelProps={{
-                        shrink: !!watch("city") || !!addressInformation?.city,
+                        shrink:
+                          document.activeElement ==
+                            document.getElementById("city") ||
+                          !!watch("city") ||
+                          !!addressInformation?.city,
                       }}
                       sx={{
                         width: "100%",
@@ -334,7 +337,7 @@ const FarmInformation: NextPage<Props> = ({
                     <TextField
                       label="State/Province *"
                       type="text"
-                      className="form-input"
+                      className="form-input focused"
                       // focused
                       {...register("province", {
                         required: true,

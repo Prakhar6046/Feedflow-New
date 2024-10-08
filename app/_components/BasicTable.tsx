@@ -34,7 +34,7 @@ interface Props {
 export default function BasicTable({ organisations }: Props) {
   const router = useRouter();
   const [order, setOrder] = useState("asc");
-  const [orderBy, setOrderBy] =useState("organisation");
+  const [orderBy, setOrderBy] = useState("organisation");
   const searchedOrganisations = useAppSelector(selectOrganisations);
   const loading = useAppSelector(selectOrganisationLoading);
   const [selectedOrganisation, setSelectedOrganisation] =
@@ -176,8 +176,6 @@ export default function BasicTable({ organisations }: Props) {
   if (loading) {
     return <Loader />;
   }
-
-  
 
   const handleRequestSort = (
     _: React.MouseEvent<HTMLButtonElement>,

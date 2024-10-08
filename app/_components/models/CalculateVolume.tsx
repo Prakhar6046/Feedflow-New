@@ -165,266 +165,699 @@ const CalculateVolume: React.FC<Props> = ({
         </Box>
         {selectedUnit?.name === "Rectangular Tank" ? (
           <Box padding={3} display={"flex"} alignItems={"center"} gap={1}>
-            <TextField
-              label="Length"
-              variant="outlined"
-              fullWidth
-              type="text"
-              className="form-input"
+            <Box position={"relative"}>
+              <TextField
+                label="Length"
+                variant="outlined"
+                fullWidth
+                type="text"
+                className="form-input"
+                sx={{
+                  marginBottom: 2,
+                  width: "100%",
+                }}
+                value={length}
+                onChange={(e) => setLength(Number(e.target.value))}
+              />
+
+              <Typography
+                variant="body2"
+                color="#555555AC"
+                sx={{
+                  position: "absolute",
+                  right: 6,
+                  top: "35%",
+                  transform: "translate(-6px, -50%)",
+                  backgroundColor: "#fff",
+                  height: 30,
+                  display: "grid",
+                  placeItems: "center",
+                  zIndex: 1,
+                  pl: 1,
+                }}
+              >
+                m
+              </Typography>
+            </Box>
+
+            <Box position={"relative"}>
+              <TextField
+                label="Width"
+                variant="outlined"
+                fullWidth
+                type="text"
+                className="form-input"
+                sx={{
+                  marginBottom: 2,
+                }}
+                value={width}
+                onChange={(e) => setWidth(Number(e.target.value))}
+              />
+              <Typography
+                variant="body2"
+                color="#555555AC"
+                sx={{
+                  position: "absolute",
+                  right: 6,
+                  top: "35%",
+                  transform: "translate(-6px, -50%)",
+                  backgroundColor: "#fff",
+                  height: 30,
+                  display: "grid",
+                  placeItems: "center",
+                  zIndex: 1,
+                  pl: 1,
+                }}
+              >
+                m
+              </Typography>
+            </Box>
+            {/* <Typography
+              variant="body2"
+              color="#555555AC"
               sx={{
-                marginBottom: 2,
+                position: "absolute",
+                right: 6,
+                // top: errors?.nutritionalGuarantee?.phosphorous?.kg
+                //   ? "35%"
+                //   : "50%",
+                transform: "translate(-6px, -50%)",
+                backgroundColor: "#fff",
+                height: 30,
+                display: "grid",
+                placeItems: "center",
+                zIndex: 1,
+                pl: 1,
               }}
-              value={length}
-              onChange={(e) => setLength(Number(e.target.value))}
-            />
-            <TextField
-              label="Width"
-              variant="outlined"
-              fullWidth
-              type="text"
-              className="form-input"
-              sx={{
-                marginBottom: 2,
-              }}
-              value={width}
-              onChange={(e) => setWidth(Number(e.target.value))}
-            />{" "}
-            <TextField
-              label="Depth"
-              variant="outlined"
-              fullWidth
-              type="text"
-              className="form-input"
-              sx={{
-                marginBottom: 2,
-              }}
-              value={depth}
-              onChange={(e) => setDepth(Number(e.target.value))}
-            />
+            >
+              g/kg
+            </Typography>{" "} */}
+
+            <Box position={"relative"}>
+              <TextField
+                label="Depth"
+                variant="outlined"
+                fullWidth
+                type="text"
+                className="form-input"
+                sx={{
+                  marginBottom: 2,
+                }}
+                value={depth}
+                onChange={(e) => setDepth(Number(e.target.value))}
+              />
+              <Typography
+                variant="body2"
+                color="#555555AC"
+                sx={{
+                  position: "absolute",
+                  right: 6,
+                  top: "35%",
+                  transform: "translate(-6px, -50%)",
+                  backgroundColor: "#fff",
+                  height: 30,
+                  display: "grid",
+                  placeItems: "center",
+                  zIndex: 1,
+                  pl: 1,
+                }}
+              >
+                m
+              </Typography>
+            </Box>
           </Box>
         ) : selectedUnit?.name === "Earthen Pond" ? (
           <Box padding={3} display={"flex"} alignItems={"center"} gap={1}>
-            <TextField
-              label="Surface area"
-              variant="outlined"
-              fullWidth
-              type="text"
-              className="form-input"
-              sx={{
-                marginBottom: 2,
-              }}
-              value={area}
-              onChange={(e) => setArea(Number(e.target.value))}
-            />
+            <Box position={"relative"}>
+              <TextField
+                label="Surface area"
+                variant="outlined"
+                fullWidth
+                type="text"
+                className="form-input"
+                sx={{
+                  marginBottom: 2,
+                }}
+                value={area}
+                onChange={(e) => setArea(Number(e.target.value))}
+              />
+              <Typography
+                variant="body2"
+                color="#555555AC"
+                sx={{
+                  position: "absolute",
+                  right: 6,
+                  top: "35%",
+                  transform: "translate(-6px, -50%)",
+                  backgroundColor: "#fff",
+                  height: 30,
+                  display: "grid",
+                  placeItems: "center",
+                  zIndex: 1,
+                  pl: 1,
+                }}
+              >
+                m
+              </Typography>
+            </Box>
 
-            <TextField
-              label="Depth"
-              variant="outlined"
-              fullWidth
-              type="text"
-              className="form-input"
-              sx={{
-                marginBottom: 2,
-              }}
-              value={depth}
-              onChange={(e) => setDepth(Number(e.target.value))}
-            />
+            <Box position={"relative"}>
+              <TextField
+                label="Depth"
+                variant="outlined"
+                fullWidth
+                type="text"
+                className="form-input"
+                sx={{
+                  marginBottom: 2,
+                }}
+                value={depth}
+                onChange={(e) => setDepth(Number(e.target.value))}
+              />
+              <Typography
+                variant="body2"
+                color="#555555AC"
+                sx={{
+                  position: "absolute",
+                  right: 6,
+                  top: "35%",
+                  transform: "translate(-6px, -50%)",
+                  backgroundColor: "#fff",
+                  height: 30,
+                  display: "grid",
+                  placeItems: "center",
+                  zIndex: 1,
+                  pl: 1,
+                }}
+              >
+                m
+              </Typography>
+            </Box>
           </Box>
         ) : selectedUnit?.name === "Raceway" ? (
           <Box padding={3} display={"flex"} alignItems={"center"} gap={1}>
-            <TextField
-              label="Length"
-              variant="outlined"
-              fullWidth
-              type="text"
-              className="form-input"
-              sx={{
-                marginBottom: 2,
-              }}
-              value={length}
-              onChange={(e) => setLength(Number(e.target.value))}
-            />
-            <TextField
-              label="Width"
-              variant="outlined"
-              fullWidth
-              type="text"
-              className="form-input"
-              sx={{
-                marginBottom: 2,
-              }}
-              value={width}
-              onChange={(e) => setWidth(Number(e.target.value))}
-            />
-            <TextField
-              label="Depth"
-              variant="outlined"
-              fullWidth
-              type="text"
-              className="form-input"
-              sx={{
-                marginBottom: 2,
-              }}
-              value={depth}
-              onChange={(e) => setDepth(Number(e.target.value))}
-            />
+            <Box position={"relative"}>
+              <TextField
+                label="Length"
+                variant="outlined"
+                fullWidth
+                type="text"
+                className="form-input"
+                sx={{
+                  marginBottom: 2,
+                }}
+                value={length}
+                onChange={(e) => setLength(Number(e.target.value))}
+              />
+              <Typography
+                variant="body2"
+                color="#555555AC"
+                sx={{
+                  position: "absolute",
+                  right: 6,
+                  top: "35%",
+                  transform: "translate(-6px, -50%)",
+                  backgroundColor: "#fff",
+                  height: 30,
+                  display: "grid",
+                  placeItems: "center",
+                  zIndex: 1,
+                  pl: 1,
+                }}
+              >
+                m
+              </Typography>
+            </Box>
+
+            <Box position={"relative"}>
+              <TextField
+                label="Width"
+                variant="outlined"
+                fullWidth
+                type="text"
+                className="form-input"
+                sx={{
+                  marginBottom: 2,
+                }}
+                value={width}
+                onChange={(e) => setWidth(Number(e.target.value))}
+              />
+              <Typography
+                variant="body2"
+                color="#555555AC"
+                sx={{
+                  position: "absolute",
+                  right: 6,
+                  top: "35%",
+                  transform: "translate(-6px, -50%)",
+                  backgroundColor: "#fff",
+                  height: 30,
+                  display: "grid",
+                  placeItems: "center",
+                  zIndex: 1,
+                  pl: 1,
+                }}
+              >
+                m
+              </Typography>
+            </Box>
+
+            <Box position={"relative"}>
+              <TextField
+                label="Depth"
+                variant="outlined"
+                fullWidth
+                type="text"
+                className="form-input"
+                sx={{
+                  marginBottom: 2,
+                }}
+                value={depth}
+                onChange={(e) => setDepth(Number(e.target.value))}
+              />
+              <Typography
+                variant="body2"
+                color="#555555AC"
+                sx={{
+                  position: "absolute",
+                  right: 6,
+                  top: "35%",
+                  transform: "translate(-6px, -50%)",
+                  backgroundColor: "#fff",
+                  height: 30,
+                  display: "grid",
+                  placeItems: "center",
+                  zIndex: 1,
+                  pl: 1,
+                }}
+              >
+                m
+              </Typography>
+            </Box>
           </Box>
         ) : selectedUnit?.name === "Cage" ? (
           <Box padding={3} display={"flex"} alignItems={"center"} gap={1}>
-            <TextField
-              label="Length"
-              variant="outlined"
-              fullWidth
-              type="text"
-              className="form-input"
-              sx={{
-                marginBottom: 2,
-              }}
-              value={length}
-              onChange={(e) => setLength(Number(e.target.value))}
-            />
-            <TextField
-              label="Width"
-              variant="outlined"
-              fullWidth
-              type="text"
-              className="form-input"
-              sx={{
-                marginBottom: 2,
-              }}
-              value={width}
-              onChange={(e) => setWidth(Number(e.target.value))}
-            />
-            <TextField
-              label="Height"
-              variant="outlined"
-              fullWidth
-              type="text"
-              className="form-input"
-              sx={{
-                marginBottom: 2,
-              }}
-              value={heigth}
-              onChange={(e) => setHeigth(Number(e.target.value))}
-            />
+            <Box position={"relative"}>
+              <TextField
+                label="Length"
+                variant="outlined"
+                fullWidth
+                type="text"
+                className="form-input"
+                sx={{
+                  marginBottom: 2,
+                }}
+                value={length}
+                onChange={(e) => setLength(Number(e.target.value))}
+              />
+              <Typography
+                variant="body2"
+                color="#555555AC"
+                sx={{
+                  position: "absolute",
+                  right: 6,
+                  top: "35%",
+                  transform: "translate(-6px, -50%)",
+                  backgroundColor: "#fff",
+                  height: 30,
+                  display: "grid",
+                  placeItems: "center",
+                  zIndex: 1,
+                  pl: 1,
+                }}
+              >
+                m
+              </Typography>
+            </Box>
+
+            <Box position={"relative"}>
+              <TextField
+                label="Width"
+                variant="outlined"
+                fullWidth
+                type="text"
+                className="form-input"
+                sx={{
+                  marginBottom: 2,
+                }}
+                value={width}
+                onChange={(e) => setWidth(Number(e.target.value))}
+              />
+
+              <Typography
+                variant="body2"
+                color="#555555AC"
+                sx={{
+                  position: "absolute",
+                  right: 6,
+                  top: "35%",
+                  transform: "translate(-6px, -50%)",
+                  backgroundColor: "#fff",
+                  height: 30,
+                  display: "grid",
+                  placeItems: "center",
+                  zIndex: 1,
+                  pl: 1,
+                }}
+              >
+                m
+              </Typography>
+            </Box>
+
+            <Box position={"relative"}>
+              <TextField
+                label="Height"
+                variant="outlined"
+                fullWidth
+                type="text"
+                className="form-input"
+                sx={{
+                  marginBottom: 2,
+                }}
+                value={heigth}
+                onChange={(e) => setHeigth(Number(e.target.value))}
+              />
+              <Typography
+                variant="body2"
+                color="#555555AC"
+                sx={{
+                  position: "absolute",
+                  right: 6,
+                  top: "35%",
+                  transform: "translate(-6px, -50%)",
+                  backgroundColor: "#fff",
+                  height: 30,
+                  display: "grid",
+                  placeItems: "center",
+                  zIndex: 1,
+                  pl: 1,
+                }}
+              >
+                m
+              </Typography>
+            </Box>
           </Box>
         ) : selectedUnit?.name === "Hapa" ? (
           <Box padding={3} display={"flex"} alignItems={"center"} gap={1}>
-            <TextField
-              label="Length"
-              variant="outlined"
-              fullWidth
-              type="text"
-              className="form-input"
-              sx={{
-                marginBottom: 2,
-              }}
-              value={length}
-              onChange={(e) => setLength(Number(e.target.value))}
-            />
-            <TextField
-              label="Width"
-              variant="outlined"
-              fullWidth
-              type="text"
-              className="form-input"
-              sx={{
-                marginBottom: 2,
-              }}
-              value={width}
-              onChange={(e) => setWidth(Number(e.target.value))}
-            />
-            <TextField
-              label="Height"
-              variant="outlined"
-              fullWidth
-              type="text"
-              className="form-input"
-              sx={{
-                marginBottom: 2,
-              }}
-              value={heigth}
-              onChange={(e) => setHeigth(Number(e.target.value))}
-            />
+            <Box position={"relative"}>
+              <TextField
+                label="Length"
+                variant="outlined"
+                fullWidth
+                type="text"
+                className="form-input"
+                sx={{
+                  marginBottom: 2,
+                }}
+                value={length}
+                onChange={(e) => setLength(Number(e.target.value))}
+              />
+              <Typography
+                variant="body2"
+                color="#555555AC"
+                sx={{
+                  position: "absolute",
+                  right: 6,
+                  top: "35%",
+                  transform: "translate(-6px, -50%)",
+                  backgroundColor: "#fff",
+                  height: 30,
+                  display: "grid",
+                  placeItems: "center",
+                  zIndex: 1,
+                  pl: 1,
+                }}
+              >
+                m
+              </Typography>
+            </Box>
+
+            <Box position={"relative"}>
+              <TextField
+                label="Width"
+                variant="outlined"
+                fullWidth
+                type="text"
+                className="form-input"
+                sx={{
+                  marginBottom: 2,
+                }}
+                value={width}
+                onChange={(e) => setWidth(Number(e.target.value))}
+              />
+              <Typography
+                variant="body2"
+                color="#555555AC"
+                sx={{
+                  position: "absolute",
+                  right: 6,
+                  top: "35%",
+                  transform: "translate(-6px, -50%)",
+                  backgroundColor: "#fff",
+                  height: 30,
+                  display: "grid",
+                  placeItems: "center",
+                  zIndex: 1,
+                  pl: 1,
+                }}
+              >
+                m
+              </Typography>
+            </Box>
+
+            <Box position={"relative"}>
+              <TextField
+                label="Height"
+                variant="outlined"
+                fullWidth
+                type="text"
+                className="form-input"
+                sx={{
+                  marginBottom: 2,
+                }}
+                value={heigth}
+                onChange={(e) => setHeigth(Number(e.target.value))}
+              />
+              <Typography
+                variant="body2"
+                color="#555555AC"
+                sx={{
+                  position: "absolute",
+                  right: 6,
+                  top: "35%",
+                  transform: "translate(-6px, -50%)",
+                  backgroundColor: "#fff",
+                  height: 30,
+                  display: "grid",
+                  placeItems: "center",
+                  zIndex: 1,
+                  pl: 1,
+                }}
+              >
+                m
+              </Typography>
+            </Box>
           </Box>
         ) : selectedUnit?.name === "Circular Tank" ? (
           <Box padding={3} display={"flex"} alignItems={"center"} gap={1}>
-            <TextField
-              label="Radius"
-              variant="outlined"
-              fullWidth
-              type="text"
-              className="form-input"
-              sx={{
-                marginBottom: 2,
-              }}
-              value={radius}
-              onChange={(e) => setRadius(Number(e.target.value))}
-            />
+            <Box position={"relative"}>
+              <TextField
+                label="Radius"
+                variant="outlined"
+                fullWidth
+                type="text"
+                className="form-input"
+                sx={{
+                  marginBottom: 2,
+                }}
+                value={radius}
+                onChange={(e) => setRadius(Number(e.target.value))}
+              />
+              <Typography
+                variant="body2"
+                color="#555555AC"
+                sx={{
+                  position: "absolute",
+                  right: 6,
+                  top: "35%",
+                  transform: "translate(-6px, -50%)",
+                  backgroundColor: "#fff",
+                  height: 30,
+                  display: "grid",
+                  placeItems: "center",
+                  zIndex: 1,
+                  pl: 1,
+                }}
+              >
+                m
+              </Typography>
+            </Box>
 
-            <TextField
-              label="Depth"
-              variant="outlined"
-              fullWidth
-              type="text"
-              className="form-input"
-              sx={{
-                marginBottom: 2,
-              }}
-              value={depth}
-              onChange={(e) => setDepth(Number(e.target.value))}
-            />
+            <Box position={"relative"}>
+              <TextField
+                label="Depth"
+                variant="outlined"
+                fullWidth
+                type="text"
+                className="form-input"
+                sx={{
+                  marginBottom: 2,
+                }}
+                value={depth}
+                onChange={(e) => setDepth(Number(e.target.value))}
+              />
+              <Typography
+                variant="body2"
+                color="#555555AC"
+                sx={{
+                  position: "absolute",
+                  right: 6,
+                  top: "35%",
+                  transform: "translate(-6px, -50%)",
+                  backgroundColor: "#fff",
+                  height: 30,
+                  display: "grid",
+                  placeItems: "center",
+                  zIndex: 1,
+                  pl: 1,
+                }}
+              >
+                m
+              </Typography>
+            </Box>
           </Box>
         ) : (
           <Box padding={3} display={"flex"} alignItems={"center"} gap={1}>
-            <TextField
-              label="Radius"
-              variant="outlined"
-              fullWidth
-              type="text"
-              className="form-input"
-              sx={{
-                marginBottom: 2,
-              }}
-              value={radius}
-              onChange={(e) => setRadius(Number(e.target.value))}
-            />
-            <TextField
-              label="Length"
-              variant="outlined"
-              fullWidth
-              type="text"
-              className="form-input"
-              sx={{
-                marginBottom: 2,
-              }}
-              value={length}
-              onChange={(e) => setLength(Number(e.target.value))}
-            />
-            <TextField
-              label="Width"
-              variant="outlined"
-              fullWidth
-              type="text"
-              className="form-input"
-              sx={{
-                marginBottom: 2,
-              }}
-              value={width}
-              onChange={(e) => setWidth(Number(e.target.value))}
-            />
-            <TextField
-              label="Depth"
-              variant="outlined"
-              fullWidth
-              type="text"
-              className="form-input"
-              sx={{
-                marginBottom: 2,
-              }}
-              value={depth}
-              onChange={(e) => setDepth(Number(e.target.value))}
-            />
+            <Box position={"relative"}>
+              <TextField
+                label="Radius"
+                variant="outlined"
+                fullWidth
+                type="text"
+                className="form-input"
+                sx={{
+                  marginBottom: 2,
+                }}
+                value={radius}
+                onChange={(e) => setRadius(Number(e.target.value))}
+              />
+              <Typography
+                variant="body2"
+                color="#555555AC"
+                sx={{
+                  position: "absolute",
+                  right: 6,
+                  top: "35%",
+                  transform: "translate(-6px, -50%)",
+                  backgroundColor: "#fff",
+                  height: 30,
+                  display: "grid",
+                  placeItems: "center",
+                  zIndex: 1,
+                  pl: 1,
+                }}
+              >
+                m
+              </Typography>
+            </Box>
+            <Box position={"relative"}>
+              <TextField
+                label="Length"
+                variant="outlined"
+                fullWidth
+                type="text"
+                className="form-input"
+                sx={{
+                  marginBottom: 2,
+                }}
+                value={length}
+                onChange={(e) => setLength(Number(e.target.value))}
+              />
+              <Typography
+                variant="body2"
+                color="#555555AC"
+                sx={{
+                  position: "absolute",
+                  right: 6,
+                  top: "35%",
+                  transform: "translate(-6px, -50%)",
+                  backgroundColor: "#fff",
+                  height: 30,
+                  display: "grid",
+                  placeItems: "center",
+                  zIndex: 1,
+                  pl: 1,
+                }}
+              >
+                m
+              </Typography>
+            </Box>
+
+            <Box position={"relative"}>
+              <TextField
+                label="Width"
+                variant="outlined"
+                fullWidth
+                type="text"
+                className="form-input"
+                sx={{
+                  marginBottom: 2,
+                }}
+                value={width}
+                onChange={(e) => setWidth(Number(e.target.value))}
+              />
+              <Typography
+                variant="body2"
+                color="#555555AC"
+                sx={{
+                  position: "absolute",
+                  right: 6,
+                  top: "35%",
+                  transform: "translate(-6px, -50%)",
+                  backgroundColor: "#fff",
+                  height: 30,
+                  display: "grid",
+                  placeItems: "center",
+                  zIndex: 1,
+                  pl: 1,
+                }}
+              >
+                m
+              </Typography>
+            </Box>
+
+            <Box position={"relative"}>
+              <TextField
+                label="Depth"
+                variant="outlined"
+                fullWidth
+                type="text"
+                className="form-input"
+                sx={{
+                  marginBottom: 2,
+                }}
+                value={depth}
+                onChange={(e) => setDepth(Number(e.target.value))}
+              />
+              <Typography
+                variant="body2"
+                color="#555555AC"
+                sx={{
+                  position: "absolute",
+                  right: 6,
+                  top: "35%",
+                  transform: "translate(-6px, -50%)",
+                  backgroundColor: "#fff",
+                  height: 30,
+                  display: "grid",
+                  placeItems: "center",
+                  zIndex: 1,
+                  pl: 1,
+                }}
+              >
+                m
+              </Typography>
+            </Box>
           </Box>
         )}
         {/* <Stack px={3} display={"flex"} justifyContent={"space-between"} direction={"row"} alignItems={"center"} gap={1}>

@@ -308,9 +308,9 @@ export default function Page({ params }: { params: { userId: string } }) {
                 }}
               >
                 <Typography
-                  variant="h6"
-                  color="rgb(99, 115, 129)"
-                  fontSize={14}
+                  variant="subtitle1"
+                  color="black"
+                  fontSize={16}
                   alignSelf={"flex-start"}
                   marginBottom={1}
                 >

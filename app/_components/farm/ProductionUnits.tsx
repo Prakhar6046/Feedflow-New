@@ -332,7 +332,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                                 label="Production Unit Type *"
                                 {...field} // Spread the field props for value and onChange
                                 sx={{
-                                  minWidth: "190px",
+                                  minWidth: "200px",
                                 }}
                                 // sx={{
                                 //   px: {

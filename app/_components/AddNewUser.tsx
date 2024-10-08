@@ -200,9 +200,10 @@ export default function AddNewUser({ organisations }: Props) {
                 }}
               >
                 <Typography
-                  variant="h6"
-                  color="rgb(99, 115, 129)"
-                  fontSize={14}
+                  variant="subtitle1"
+                  fontWeight={500}
+                  color="black"
+                  fontSize={16}
                   alignSelf={"flex-start"}
                   marginBottom={1}
                 >
