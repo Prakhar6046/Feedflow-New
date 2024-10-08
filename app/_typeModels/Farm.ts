@@ -14,7 +14,8 @@ export interface Farm {
   city: String;
   zipCode: String;
   country: String;
-  id?: string;
+  id?: String;
+  fishFarmer:String
 }
 export interface UnitsTypes {
   name: string | undefined;

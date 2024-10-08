@@ -3,11 +3,23 @@ import * as validationMessage from "@/app/_lib/utils/validationsMessage/index";
 import { Farm } from "@/app/_typeModels/Farm";
 import { farmAction } from "@/lib/features/farm/farmSlice";
 import { useAppDispatch } from "@/lib/hooks";
-import { Box, Button, Grid, Stack, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  FormControl,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Select,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { NextPage } from "next";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
+import Loader from "../Loader";
 // import MapComponent from "./MapComponent";
 const MapComponent = dynamic(() => import("./MapComponent"), { ssr: false });
 interface Props {
@@ -32,7 +44,14 @@ const FarmInformation: NextPage<Props> = ({
   const [altitude, setAltitude] = useState<String>("");
   const [addressInformation, setAddressInformation] = useState<any>();
   const [searchedAddress, setSearchedAddress] = useState<any>();
+  const [fishFarmers, setFishFarmers] = useState<Farm[]>();
+  const [loading, setLoading] = useState<boolean>(false);
+  const getFarmers = async () => {
+    const response = await fetch("/api/farm/fish-farmers");
+    return response.json();
+  };
   const onSubmit: SubmitHandler<Farm> = (data) => {
+    
     dispatch(farmAction.updateFarm(data));
     setActiveStep(2);
     // setCookie("activeStep", 2);
@@ -47,6 +66,8 @@ const FarmInformation: NextPage<Props> = ({
       setValue("country", editFarm?.farmAddress?.country);
       setValue("zipCode", editFarm?.farmAddress?.zipCode);
       setValue("province", editFarm?.farmAddress?.province);
+      setValue("fishFarmer", editFarm?.fishFarmer);
+
     }
   }, [editFarm]);
   useEffect(() => {
@@ -64,6 +85,19 @@ const FarmInformation: NextPage<Props> = ({
       setValue("farmAltitude", altitude);
     }
   }, [altitude, setValue]);
+  useEffect(() => {
+    setLoading(true);
+    const getFeedSupplyer = async () => {
+      const res = await getFarmers();
+      setFishFarmers(res.data);
+      setLoading(false);
+    };
+    getFeedSupplyer();
+  }, []);
+
+  if (loading) {
+    return <Loader />;
+  }
   return (
     <Stack>
       <Typography
@@ -132,6 +166,44 @@ const FarmInformation: NextPage<Props> = ({
                 </Typography>
               )}
           </Box>
+          <Box mb={2} width={"100%"}>
+            <FormControl fullWidth className="form-input">
+              <InputLabel id="feed-supply-select-label1">
+                Fish Farmer *
+              </InputLabel>
+              <Select
+                labelId="feed-supply-select-label1"
+                id="feed-supply-select1"
+                {...register("fishFarmer", {
+                  required: true,
+                })}
+                label="Feed Farmer *"
+                value={watch("fishFarmer") || ""}
+                onChange={(e) => setValue("fishFarmer", e.target.value)}
+              >
+                {fishFarmers?.map((fish: any) => {
+                  return (
+                    <MenuItem value={String(fish.id)} key={fish.id}>
+                      {fish.name}
+                    </MenuItem>
+                  );
+                })}
+              </Select>
+              {errors &&
+                errors.fishFarmer &&
+                errors.fishFarmer.type === "required" && (
+                  <Typography
+                    variant="body2"
+                    color="red"
+                    fontSize={13}
+                    mt={0.5}
+                  >
+                    {validationMessage.required}
+                  </Typography>
+                )}
+            </FormControl>
+          </Box>
+
           <Box
             display={"flex"}
             justifyContent={"end"}

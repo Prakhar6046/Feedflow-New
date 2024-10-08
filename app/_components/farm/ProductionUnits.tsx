@@ -146,10 +146,11 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
       setCalculatedValue({ output: 0, id: null });
     }
   };
+console.log(isEditFarm);
 
   const onSubmit: SubmitHandler<ProductionUnitsFormTypes> = async (data) => {
     let payload;
-    if (isEditFarm && editFarm.farmAddress.id) {
+    if (isEditFarm && editFarm?.farmAddress?.id) {
       payload = {
         farmAddress: {
           addressLine1: farm.addressLine1,
@@ -163,6 +164,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
         productionUnits: data.productionUnits,
         name: farm.name,
         farmAltitude: farm.farmAltitude,
+        fishFarmer:farm.fishFarmer,
         id: editFarm?.id,
       };
     } else {
@@ -178,8 +180,10 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
         productionUnits: data.productionUnits,
         name: farm.name,
         farmAltitude: farm.farmAltitude,
+        fishFarmer:farm.fishFarmer
       };
     }
+console.log(payload);
 
     if (Object.keys(payload).length && payload.name) {
       const response = await fetch(
