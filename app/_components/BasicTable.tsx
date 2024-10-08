@@ -91,6 +91,7 @@ export default function BasicTable({ organisations }: Props) {
       field: "organisation",
       headerName: "Organisations",
       flex: 1,
+      headerClassName: "custom-header",
       sortable: true, // Enable sorting
       headerClassName: "test",
       renderCell: (params: GridRenderCellParams) => (
@@ -144,6 +145,7 @@ export default function BasicTable({ organisations }: Props) {
       flex: 1,
       headerClassName: "test1",
       sortable: false, // Enable sorting
+      headerClassName: "custom-header",
       renderCell: (params: GridRenderCellParams) => (
         <Typography color="#555555" fontWeight={500}>
           {params.row.contact?.[0]?.phone || ""}

@@ -33,6 +33,7 @@ import * as validationMessage from "@/app/_lib/utils/validationsMessage/index";
 import { FeedSupply } from "./FeedSelection";
 import { feedAction, selectIsEditFeed } from "@/lib/features/feed/feedSlice";
 import { useRouter } from "next/navigation";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 interface Props {
   setActiveStep: (val: number) => void;
@@ -804,7 +805,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                   position={"relative"}
                 >
                   <TextField
-                    label="Animal Size (Length)"
+                    label="Animal Size (Length) *"
                     type="text"
                     className="form-input"
                     {...register("animalSizeInLength", {
@@ -816,6 +817,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                     // })}
                     // focused={userData?.data.name ? true : false}
                     // value={userData?.data.name}
+
                     sx={{
                       width: "100%",
                     }}
@@ -1101,7 +1103,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                 >
                   <TextField
                     label="Shelf Live (from date of manufacturing) *"
-                    type="text"
+                    type="number"
                     className="form-input"
                     {...register("shelfLife", {
                       required: true,
@@ -1163,8 +1165,10 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
               </Grid>
 
               <Grid item lg={6} xs={12}>
+                <Typography variant="subtitle1" fontWeight={500}>
+                  Feed Ingredients
+                </Typography>
                 <TextField
-                  label="Feed Ingredients *"
                   type="text"
                   multiline
                   rows={5}
@@ -1176,6 +1180,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                   })}
                   sx={{
                     width: "100%",
+                    marginTop: "10px",
                   }}
                 />
                 {errors &&
@@ -1205,14 +1210,17 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
               </Grid>
 
               <Grid item lg={6} xs={12}>
+                <Typography variant="subtitle1" fontWeight={500}>
+                  Feeding Guide
+                </Typography>
                 <TextField
-                  label="Feeding Guide *"
                   type="text"
                   multiline
                   rows={5}
                   className="form-input"
                   sx={{
                     width: "100%",
+                    marginTop: "10px",
                   }}
                   {...register("feedingGuide", {
                     required: true,
@@ -2421,7 +2429,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                       position={"relative"}
                     >
                       <TextField
-                        label="Carbohydratesc*"
+                        label="Carbohydrates *"
                         type="text"
                         className="form-input"
                         {...register("nutritionalGuarantee.carbohydrates.kg", {
@@ -2814,8 +2822,8 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                   type="submit"
                   variant="contained"
                   sx={{
-                    background: "#fff",
-                    color: "#06A19B",
+                    color: "#fff",
+                    background: "#06A19B",
                     fontWeight: 600,
                     padding: "6px 16px",
                     width: "fit-content",

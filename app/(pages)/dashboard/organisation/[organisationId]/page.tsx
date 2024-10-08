@@ -461,9 +461,10 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
                 </Select>
               </FormControl>
               <Typography
-                variant="h6"
-                color="rgb(99, 115, 129)"
-                fontSize={14}
+                variant="subtitle1"
+                fontWeight={500}
+                color="black"
+                fontSize={16}
                 marginTop={3}
                 marginBottom={2}
               >
@@ -600,9 +601,10 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
               </Stack>
 
               <Typography
-                variant="h6"
-                color="rgb(99, 115, 129)"
-                fontSize={14}
+                variant="subtitle1"
+                fontWeight={500}
+                color="black"
+                fontSize={16}
                 marginTop={3}
                 marginBottom={2}
               >

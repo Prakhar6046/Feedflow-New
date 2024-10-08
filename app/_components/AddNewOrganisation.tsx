@@ -450,9 +450,10 @@ const AddNewOrganisation = () => {
                 )}
             </FormControl>
             <Typography
-              variant="h6"
-              color="rgb(99, 115, 129)"
-              fontSize={14}
+              variant="subtitle1"
+              color="black"
+              fontWeight={500}
+              fontSize={16}
               marginTop={3}
               marginBottom={2}
             >
@@ -640,9 +641,9 @@ const AddNewOrganisation = () => {
             </Stack>
 
             <Typography
-              variant="h6"
-              color="rgb(99, 115, 129)"
-              fontSize={14}
+              variant="subtitle1"
+              color="black"
+              fontWeight={500}
               marginTop={3}
               marginBottom={2}
             >
