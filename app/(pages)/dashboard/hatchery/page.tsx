@@ -38,13 +38,13 @@ export default function Page() {
   return (
     <>
       <BasicBreadcrumbs
-        heading={"Batches"}
+        heading={"Hatchery"}
         buttonName={"New Batch"}
         isTable={true}
-        buttonRoute="/dashboard/batches/new"
+        buttonRoute="/dashboard/hatchery/new"
         links={[
           { name: "Dashboard", link: "/dashboard" },
-          { name: "Batches", link: "/dashboard/batches" },
+          { name: "Hatchery", link: "/dashboard/hatchery" },
         ]}
       />
       <CommonTable tableData={tableData} data={batchData} />

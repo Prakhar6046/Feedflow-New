@@ -20,6 +20,7 @@ import {
   Menu,
   MenuItem,
   Stack,
+  TableSortLabel,
   Typography,
 } from "@mui/material";
 import { readableDate } from "../_lib/utils";
@@ -99,6 +100,99 @@ export default function UserTable() {
       }
     }
   };
+
+  const headCells = [
+    {
+      id: "name",
+      numeric: false,
+      disablePadding: true,
+      label: "Name",
+    },
+    {
+      id: "status",
+      numeric: false,
+      disablePadding: true,
+      label: "Status",
+    },
+    {
+      id: "role",
+      numeric: false,
+      disablePadding: true,
+      label: "Role",
+    },
+    {
+      id: "organisation",
+      numeric: false,
+      disablePadding: true,
+      label: "Organisation",
+    },
+    {
+      id: "createdAt",
+      numeric: false,
+      disablePadding: true,
+      label: "Joined",
+    },
+    {
+      id: "action",
+      numeric: false,
+      disablePadding: true,
+      label: "Actions",
+    },
+  ];
+  function EnhancedTableHead(data: any) {
+    const { order, orderBy, onRequestSort } = data;
+    const createSortHandler =
+      (property: string) => (event: React.MouseEvent<HTMLButtonElement>) => {
+        onRequestSort(event, property);
+      };
+
+    return (
+      <TableHead>
+        <TableRow>
+          {headCells.map((headCell, idx) => (
+            <TableCell
+              key={headCell.id}
+              sortDirection={
+                idx === headCells.length - 1
+                  ? false
+                  : orderBy === headCell.id
+                  ? order
+                  : false
+              }
+              sx={{
+                borderBottom: 0,
+                color: "#67737F",
+                background: "#F5F6F8",
+                fontSize: {
+                  md: 16,
+                  xs: 14,
+                },
+                fontWeight: 600,
+                paddingLeft: {
+                  lg: idx === 0 ? 10 : 0,
+                  md: idx === 0 ? 7 : 0,
+                  xs: idx === 0 ? 4 : 0,
+                },
+              }}
+            >
+              {idx === headCells.length - 1 ? (
+                headCell.label
+              ) : (
+                <TableSortLabel
+                  active={orderBy === headCell.id}
+                  direction={orderBy === headCell.id ? order : "asc"}
+                  onClick={createSortHandler(headCell.id)}
+                >
+                  {headCell.label}
+                </TableSortLabel>
+              )}
+            </TableCell>
+          ))}
+        </TableRow>
+      </TableHead>
+    );
+  }
+
   useEffect(() => {
     setLoading(true);
     if (loggedUser) {
@@ -121,10 +215,53 @@ export default function UserTable() {
     }
   }, [searchUsers]);
 
+  const [order, setOrder] = React.useState("asc");
+  const [orderBy, setOrderBy] = React.useState("name");
+
+  const handleRequestSort = (
+    _: React.MouseEvent<HTMLButtonElement>,
+    property: string
+  ) => {
+    const isAsc = orderBy === property && order === "asc";
+    setOrder(isAsc ? "desc" : "asc");
+    setOrderBy(property);
+    if (users) {
+      const sortedData = [...users].sort(
+        (user1: SingleUser, user2: SingleUser) => {
+          const orderType = order === "asc" ? 1 : -1;
+          if (property === "name") {
+            if (user1.name < user2.name) return -1 * orderType;
+            if (user1.name > user2.name) return 1 * orderType;
+            return 0;
+          } else if (property === "status") {
+            if (user1.status < user2.status) return -1 * orderType;
+            if (user1.status > user2.status) return 1 * orderType;
+            return 0;
+          } else if (property === "role") {
+            if (user1.role < user2.role) return -1 * orderType;
+            if (user1.role > user2.role) return 1 * orderType;
+            return 0;
+          } else if (property === "organisation") {
+            if (user1.organisation?.name < user2.organisation?.name)
+              return -1 * orderType;
+            if (user1.organisation?.name > user2.organisation?.name)
+              return 1 * orderType;
+            return 0;
+          } else if (property === "createdAt") {
+            if (user1.createdAt < user2.createdAt) return -1 * orderType;
+            if (user1.createdAt > user2.createdAt) return 1 * orderType;
+            return 0;
+          }
+          return 0;
+        }
+      );
+
+      setUsers(sortedData);
+    }
+  };
   if (loading) {
     return <Loader />;
   }
-
   return (
     <Paper
       sx={{
@@ -141,7 +278,7 @@ export default function UserTable() {
         }}
       >
         <Table stickyHeader aria-label="sticky table">
-          <TableHead>
+          {/* <TableHead>
             <TableRow>
               <TableCell
                 sx={{
@@ -231,7 +368,12 @@ export default function UserTable() {
                 }}
               ></TableCell>
             </TableRow>
-          </TableHead>
+          </TableHead> */}
+          <EnhancedTableHead
+            order={order}
+            orderBy={orderBy}
+            onRequestSort={handleRequestSort}
+          />
           <TableBody>
             {users && users.length > 0 ? (
               users.map((user, i) => {

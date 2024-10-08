@@ -77,6 +77,7 @@ export interface FeedSupply {
       kg: String;
       value: String;
     };
+    crudeFiber: { kg: String; value: String };
   };
   updatedBy: String;
   createdBy: String;
@@ -93,12 +94,21 @@ const FeedSelection: NextPage<Props> = ({ setActiveStep, editFarm }) => {
     const response = await fetch("/api/feed");
     return response.json();
   };
-  const handleEditFeedSupply = (feedSupply: FeedSupply) => {
-    if (feedSupply) {
-      router.push(`/dashboard/feedSupply/${feedSupply.id}`);
-      dispatch(feedAction.editFeed(feedSupply));
+  const getNutritionalValue = (val: String) => {
+    if (val === "Minimum") {
+      return "Min";
+    } else if (val === "Maximum") {
+      return "Max";
+    } else {
+      return "Typ";
     }
   };
+  // const handleEditFeedSupply = (feedSupply: FeedSupply) => {
+  //   if (feedSupply) {
+  //     router.push(`/dashboard/feedSupply/${feedSupply.id}`);
+  //     dispatch(feedAction.editFeed(feedSupply));
+  //   }
+  // };
   useEffect(() => {
     setLoading(true);
     const getFeedSupplyer = async () => {
@@ -159,7 +169,7 @@ const FeedSelection: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                     height: "100%",
                   }}
                 >
-                  <Box
+                  {/* <Box
                     display={"flex"}
                     justifyContent={"end"}
                     mb={2}
@@ -196,7 +206,7 @@ const FeedSelection: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                         </g>
                       </svg>
                     </Button>
-                  </Box>
+                  </Box> */}
 
                   <Box>
                     <Box
@@ -462,7 +472,7 @@ const FeedSelection: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                             fontWeight={500}
                             fontSize={14}
                           >
-                            {`  Moisture (${supply?.nutritionalGuarantee?.moisture.value})`}
+                            {`  Moisture (${getNutritionalValue(supply?.nutritionalGuarantee?.moisture.value)})`}
                           </Typography>
                         </Grid>
 
@@ -482,7 +492,7 @@ const FeedSelection: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                             fontWeight={500}
                             fontSize={14}
                           >
-                            {`Crude Protein (${supply?.nutritionalGuarantee?.crudeProtein.value})`}
+                            {`Crude Protein (${getNutritionalValue(supply?.nutritionalGuarantee?.crudeProtein.value)})`}
                           </Typography>
                         </Grid>
 
@@ -502,7 +512,7 @@ const FeedSelection: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                             fontWeight={500}
                             fontSize={14}
                           >
-                            {`Crude Fat (${supply?.nutritionalGuarantee?.crudeFat.value})`}
+                            {`Crude Fat (${getNutritionalValue(supply?.nutritionalGuarantee?.crudeFat.value)})`}
                           </Typography>
                         </Grid>
 
@@ -522,7 +532,7 @@ const FeedSelection: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                             fontWeight={500}
                             fontSize={14}
                           >
-                            {`Crude Fiber (${supply?.nutritionalGuarantee?.metabolizableEnergy.value})`}
+                            {`Crude Fiber (${getNutritionalValue(supply?.nutritionalGuarantee?.crudeFiber.value)})`}
                           </Typography>
                         </Grid>
 
@@ -532,10 +542,7 @@ const FeedSelection: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                             fontWeight={600}
                             fontSize={14}
                           >
-                            {
-                              supply?.nutritionalGuarantee?.metabolizableEnergy
-                                .kg
-                            }
+                            {supply?.nutritionalGuarantee?.crudeFiber.kg}
                           </Typography>
                         </Grid>
 
@@ -545,7 +552,7 @@ const FeedSelection: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                             fontWeight={500}
                             fontSize={14}
                           >
-                            {`Crude Ash (${supply?.nutritionalGuarantee?.crudeAsh.value})`}
+                            {`Crude Ash (${getNutritionalValue(supply?.nutritionalGuarantee?.crudeAsh.value)})`}
                           </Typography>
                         </Grid>
 
@@ -565,7 +572,7 @@ const FeedSelection: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                             fontWeight={500}
                             fontSize={14}
                           >
-                            {`Calcium (${supply?.nutritionalGuarantee?.calcium.value})`}
+                            {`Calcium (${getNutritionalValue(supply?.nutritionalGuarantee?.calcium.value)})`}
                           </Typography>
                         </Grid>
 
@@ -585,7 +592,7 @@ const FeedSelection: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                             fontWeight={500}
                             fontSize={14}
                           >
-                            {`Phosphorous (${supply?.nutritionalGuarantee?.phosphorous.value})`}
+                            {`Phosphorous (${getNutritionalValue(supply?.nutritionalGuarantee?.phosphorous.value)})`}
                           </Typography>
                         </Grid>
 

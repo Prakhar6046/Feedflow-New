@@ -60,12 +60,12 @@ export default function Page() {
   return (
     <>
       <BasicBreadcrumbs
-        heading={"Batches"}
+        heading={"Hatchery"}
         hideSearchInput={true}
         links={[
           { name: "Dashboard", link: "/dashboard" },
-          { name: "Batches", link: "/dashboard/batches" },
-          { name: "New", link: "/dashboard/batches/new" },
+          { name: "Hatchery", link: "/dashboard/hatchery" },
+          { name: "New", link: "/dashboard/hatchery/new" },
         ]}
       />
 

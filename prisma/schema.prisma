@@ -22,15 +22,16 @@ enum UserRole {
 }
 
 model User {
-  id       Int        @id @default(autoincrement())
-  name     String?
-  email    String     @unique
-  password String?
-  status   UserStatus @default(ACTIVE)
-  role     UserRole   @default(MEMBER)
-  image    String?
-  imageUrl String?
-
+  id             Int          @id @default(autoincrement())
+  name           String?
+  email          String       @unique
+  password       String?
+  status         UserStatus   @default(ACTIVE)
+  role           UserRole     @default(MEMBER)
+  image          String?
+  imageUrl       String?
+  updatedBy      String?
+  createdBy      String?
   organisationId Int
   organisation   Organisation @relation(fields: [organisationId], references: [id], onUpdate: Cascade)
 
@@ -39,17 +40,18 @@ model User {
 }
 
 model Organisation {
-  id               Int     @id @default(autoincrement())
+  id               Int      @id @default(autoincrement())
   image            String?
   imageUrl         String?
   name             String
   // contactNumber    String
   // contactPerson    String
-  organisationCode String  @default("")
+  organisationCode String   @default("")
   organisationType String
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedBy        String?
+  createdBy        String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
 
   users     User[]
   addressId String?  @unique
@@ -102,6 +104,9 @@ model Farm {
   farmAltitude  String
   farmAddressId String?      @unique
   farmAddress   FarmAddress? @relation(fields: [farmAddressId], references: [id], onUpdate: Cascade)
+  fishFarmer    String
+  updatedBy     String?
+  createdBy     String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

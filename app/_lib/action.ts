@@ -109,3 +109,21 @@ export const AddNewFeedSupply = async (formData: any) => {
     return error;
   }
 };
+export const getFeedSupplys = async () => {
+  try {
+    const data = await fetch(`${process.env.BASE_URL}/api/feed`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      cache: "no-store",
+    });
+    const res = await data.json();
+    revalidatePath(`/dashboard/feedSupply`);
+    console.log(res);
+
+    return res;
+  } catch (error) {
+    return error;
+  }
+};

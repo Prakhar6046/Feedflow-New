@@ -19,6 +19,7 @@ const farmSlice = createSlice({
     },
     updateFarm: (state, action: PayloadAction<Farm>) => {
       state.farm = action.payload;
+      // state.isEditFarm=false
     },
     updateFarms: (state, action: PayloadAction<Farm[]>) => {
       state.farms = action.payload;

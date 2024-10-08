@@ -47,7 +47,11 @@ const SetMapView = ({ position }: { position: [number, number] | null }) => {
   return null;
 };
 
-const MapComponent = ({ setAddressInformation, setSearchedAddress }: any) => {
+const MapComponent = ({
+  setAddressInformation,
+  setSearchedAddress,
+  setAltitude,
+}: any) => {
   const [selectedPosition, setSelectedPosition] = useState<
     [number, number] | null
   >(null);
@@ -77,6 +81,7 @@ const MapComponent = ({ setAddressInformation, setSearchedAddress }: any) => {
       if (data.length > 0) {
         // Nominatim found the location
         const { lat, lon, address } = data[0];
+
         const newPosition: [number, number] = [
           parseFloat(lat),
           parseFloat(lon),
@@ -126,7 +131,14 @@ const MapComponent = ({ setAddressInformation, setSearchedAddress }: any) => {
 
         setLocationData(formattedAddress);
         setAddressInformation(formattedAddress);
-
+        if (lat && lng) {
+          const getAltitude = await fetch(
+            `/api/farm/altitude?lat=${lat}&lng=${lng}`
+          );
+          const altitude = await getAltitude.json();
+          setAltitude(altitude?.results[0].resolution);
+          console.log(altitude?.results[0].resolution);
+        }
         console.log("Google Maps Geocode Data:", formattedAddress);
       } else {
         alert("Location not found.");

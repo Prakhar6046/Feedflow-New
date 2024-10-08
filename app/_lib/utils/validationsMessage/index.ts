@@ -10,7 +10,7 @@ export const OnlyAlphabatsMessage = "Input must contain only letters.";
 export const OnlyAlphabetsandNumberMessage =
   "Input must start with a letter and can only contain letters, numbers, and spaces.";
 export const AddressMessage =
-  "Input must  contain only letters, numbers, and spaces.";
+  "Input must  contain only letters, numbers,special chararters and spaces.";
 export const onlyNumbers = "Input must contain only numbers.";
 export const alphabetswithSpecialCharacter =
   "Input must contain only letters, spaces, and special characters.";

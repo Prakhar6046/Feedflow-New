@@ -25,38 +25,41 @@ import TableRow from "@mui/material/TableRow";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import Loader from "../Loader";
+import { FeedSupply } from "../feedSupply/FeedSelection";
+import { feedAction } from "@/lib/features/feed/feedSlice";
 
 interface Props {
-  farms: any;
+  feeds: FeedSupply[];
 }
-const tableData: Array<string> = ["Farm", "Production Unit Count", ""];
-export default function FarmTable() {
+const tableData: Array<string> = [
+  "Product Name",
+  "Product Code",
+  "Production Intensity",
+  "Feeding Phase",
+  "Specie",
+  "",
+];
+export default function FeedTable({ feeds }: Props) {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const farms = useAppSelector(selectFarms);
-  const [farmsData, setFarmsData] = useState<any>();
-  const loading = useAppSelector(selectFarmLoading);
-  // const [farmsData, setFarmsData] = useState<any>();
-  const [selectedFarm, setSelectedFarm] = useState<any>(null);
+  //   const loading = useAppSelector(selectFarmLoading);
+  const [feedsData, setFeedsData] = useState<any>();
+  const [selectedFeed, setSelectedFeed] = useState<any>(null);
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null
   );
-  const getFarms = async () => {
-    const response = await fetch("/api/farm");
-    const res = response.json();
-    return res;
-  };
+
   const handleClick = (
     event: React.MouseEvent<HTMLButtonElement>,
     farm: any
   ) => {
     setAnchorEl(event.currentTarget);
-    setSelectedFarm(farm);
+    setSelectedFeed(farm);
   };
   const handleEdit = () => {
-    if (selectedFarm) {
-      dispatch(farmAction.editFarm(selectedFarm));
-      router.push(`/dashboard/farm/${selectedFarm.id}`);
+    if (selectedFeed) {
+      router.push(`/dashboard/feedSupply/${selectedFeed.id}`);
+      dispatch(feedAction.editFeed(selectedFeed));
     }
   };
   const handleClose = () => {
@@ -64,28 +67,36 @@ export default function FarmTable() {
   };
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
-  useEffect(() => {
-    dispatch(farmAction.handleLoading(true));
-    const data = async () => {
-      const res = await getFarms();
-      dispatch(farmAction.updateFarms(res.data));
-      dispatch(farmAction.handleLoading(false));
-    };
-    data();
-  }, []);
-
   const headCells = [
     {
-      id: "farm",
+      id: "productName",
       numeric: false,
       disablePadding: true,
-      label: "Farm",
+      label: "Product Name",
     },
     {
-      id: "productionUnits",
-      numeric: true,
+      id: "productCode",
+      numeric: false,
       disablePadding: true,
-      label: "Production Unit Count",
+      label: "Product Code",
+    },
+    {
+      id: "productionIntensity",
+      numeric: false,
+      disablePadding: true,
+      label: "Production Intensity",
+    },
+    {
+      id: "feedingPhase",
+      numeric: false,
+      disablePadding: true,
+      label: "Feeding Phase",
+    },
+    {
+      id: "specie",
+      numeric: false,
+      disablePadding: true,
+      label: "Specie",
     },
     {
       id: "action",
@@ -148,13 +159,14 @@ export default function FarmTable() {
       </TableHead>
     );
   }
+
   useEffect(() => {
-    if (farms) {
-      setFarmsData(farms);
+    if (feeds) {
+      setFeedsData(feeds);
     }
-  }, [farms]);
+  }, [feeds]);
   const [order, setOrder] = React.useState("asc");
-  const [orderBy, setOrderBy] = React.useState("organisation");
+  const [orderBy, setOrderBy] = React.useState("name");
 
   const handleRequestSort = (
     _: React.MouseEvent<HTMLButtonElement>,
@@ -163,29 +175,25 @@ export default function FarmTable() {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
     setOrderBy(property);
-    if (farmsData) {
-      const sortedData = [...farmsData].sort((farm1: any, farm2: any) => {
+    if (feedsData) {
+      const sortedData = [...feedsData].sort((feed1: any, feed2: any) => {
         const orderType = order === "asc" ? 1 : -1;
-        if (property !== "productUnits") {
-          if (farm1.name < farm2.name) return -1 * orderType;
-          if (farm1.name > farm2.name) return 1 * orderType;
-          return 0;
-        } else {
-          if (farm1.productUnits.length < farm2.productUnits.length)
-            return -1 * orderType;
-          if (farm1.productUnits.length > farm2.productUnits.length)
-            return 1 * orderType;
-          return 0;
-        }
-        // return 0;
+        if (feed1.property < feed2.property) return -1 * orderType;
+        if (feed1.property > feed2.property) return 1 * orderType;
+        // if (property === "name") {
+        //   if (feed1.name < feed2.name) return -1 * orderType;
+        //   if (feed1.name > feed2.name) return 1 * orderType;
+        //   return 0;
+        // }
+        return 0;
       });
 
-      setFarmsData(sortedData);
+      setFeedsData(sortedData);
     }
   };
-  if (loading) {
-    return <Loader />;
-  }
+  //   if (loading) {
+  //     return <Loader />;
+  //   }
   return (
     <Paper
       sx={{
@@ -237,8 +245,8 @@ export default function FarmTable() {
             onRequestSort={handleRequestSort}
           />
           <TableBody>
-            {farmsData && farmsData.length > 0 ? (
-              farmsData.map((farm: any, i: number) => {
+            {feedsData && feedsData?.length > 0 ? (
+              feedsData.map((feed: FeedSupply, i: number) => {
                 return (
                   <TableRow
                     key={i}
@@ -260,7 +268,7 @@ export default function FarmTable() {
                       component="th"
                       scope="row"
                     >
-                      {farm.name ?? ""}
+                      {feed.productName ?? ""}
                     </TableCell>
 
                     <TableCell
@@ -272,9 +280,41 @@ export default function FarmTable() {
                         fontWeight: 500,
                       }}
                     >
-                      {farm?.productionUnits.length ?? ""}
+                      {feed.productCode ?? ""}
                     </TableCell>
-
+                    <TableCell
+                      align="center"
+                      sx={{
+                        borderBottomColor: "#F5F6F8",
+                        borderBottomWidth: 2,
+                        color: "#555555",
+                        fontWeight: 500,
+                      }}
+                    >
+                      {feed.productionIntensity ?? ""}
+                    </TableCell>
+                    <TableCell
+                      align="center"
+                      sx={{
+                        borderBottomColor: "#F5F6F8",
+                        borderBottomWidth: 2,
+                        color: "#555555",
+                        fontWeight: 500,
+                      }}
+                    >
+                      {feed.feedingPhase ?? ""}
+                    </TableCell>
+                    <TableCell
+                      align="center"
+                      sx={{
+                        borderBottomColor: "#F5F6F8",
+                        borderBottomWidth: 2,
+                        color: "#555555",
+                        fontWeight: 500,
+                      }}
+                    >
+                      {feed.specie ?? ""}
+                    </TableCell>
                     <TableCell
                       align="center"
                       sx={{
@@ -291,7 +331,7 @@ export default function FarmTable() {
                         aria-controls={open ? "basic-menu" : undefined}
                         aria-haspopup="true"
                         aria-expanded={open ? "true" : undefined}
-                        onClick={(e) => handleClick(e, farm)}
+                        onClick={(e) => handleClick(e, feed)}
                         className="table-edit-option"
                         sx={{
                           background: "transparent",
