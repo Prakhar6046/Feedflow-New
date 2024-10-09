@@ -31,6 +31,7 @@ const MapComponent = ({
   setAddressInformation,
   setSearchedAddress,
   setUseAddress,
+  setAltitude,
 }: any) => {
   const [selectedPosition, setSelectedPosition] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -63,6 +64,13 @@ const MapComponent = ({
       const data = await response.json();
 
       if (data.status === "OK" && data.results.length > 0) {
+        if (data.results[0].geometry) {
+          const response = await fetch(
+            `/api/farm/altitude?lat=${data.results[0].geometry.location.lat}&lng=${data.results[0].geometry.location.lng}`
+          );
+          const res = await response.json();
+          setAltitude(res?.results[0]?.resolution);
+        }
         const address = data.results[0].formatted_address;
         // setAddressInformation(address);
         setLocationData(address);
@@ -95,6 +103,13 @@ const MapComponent = ({
       const data = await response.json();
 
       if (data.status === "OK" && data.results.length > 0) {
+        if (data.results[0].geometry) {
+          const response = await fetch(
+            `/api/farm/altitude?lat=${data.results[0].geometry.location.lat}&lng=${data.results[0].geometry.location.lng}`
+          );
+          const res = await response.json();
+          setAltitude(res?.results[0]?.resolution);
+        }
         const { lat, lng } = data.results[0].geometry.location;
         const newPosition: any = { lat, lng };
         setSelectedPosition(newPosition);

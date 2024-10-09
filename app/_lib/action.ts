@@ -85,7 +85,6 @@ export const getFarms = async () => {
     });
     const res = await data.json();
     revalidatePath(`/dashboard/farm`);
-    console.log(res);
 
     return res;
   } catch (error) {
@@ -120,7 +119,6 @@ export const getFeedSupplys = async () => {
     });
     const res = await data.json();
     revalidatePath(`/dashboard/feedSupply`);
-    console.log(res);
 
     return res;
   } catch (error) {
