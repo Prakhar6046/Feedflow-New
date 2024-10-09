@@ -11,12 +11,13 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 import { getCookie, setCookie } from "cookies-next";
-import { useAppDispatch } from "@/lib/hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { organisationAction } from "@/lib/features/organisation/organisationSlice";
 import { userAction } from "@/lib/features/user/userSlice";
 import { useDebounce } from "../hooks/useDebounce";
 import { farmAction } from "@/lib/features/farm/farmSlice";
 import { SingleOrganisation } from "../_typeModels/Organization";
+import { selectSort } from "@/lib/features/breadcrum/breadcrumSlice";
 interface Props {
   heading: string;
   buttonName?: string;
@@ -46,12 +47,14 @@ export default function BasicBreadcrumbs({
 }: Props) {
   const role = getCookie("role");
   const router = useRouter();
+  const sortvalue = useAppSelector(selectSort);
   const loggedUser: any = getCookie("logged-user");
   const [open, setOpen] = useState(false);
   const pathName = usePathname();
   const [status, setStatus] = useState("");
   const [currentRole, setCurrentRole] = useState<string>("");
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const [isSort, setIsSort] = useState<Boolean>(false);
   const debouncedSearchQuery = useDebounce(searchQuery);
   const dispatch = useAppDispatch();
 
@@ -122,16 +125,21 @@ export default function BasicBreadcrumbs({
     }
     setStatus("Last update less than a minutes ago");
   };
+  const handleRememberSort = () => {
+    if (!isSort) {
+      localStorage.setItem(pathName, JSON.stringify(sortvalue));
+    } else {
+      localStorage.removeItem(pathName);
+    }
+  };
+  useEffect(() => {
+    if (sortvalue && localStorage.getItem(pathName)) {
+      setIsSort(true);
+    } else {
+      setIsSort(false);
+    }
+  }, [sortvalue]);
 
-  // useEffect(() => {
-  //   const timer = setTimeout(() => {
-  //     setStatus("Last update less than a minutes ago");
-  //   }, 2000);
-
-  //   return () => {
-  //     () => clearTimeout(timer);
-  //   };
-  // }, [status]);
   useEffect(() => {
     if (role) {
       setCurrentRole(role);
@@ -468,18 +476,35 @@ export default function BasicBreadcrumbs({
                     justifyContent="center"
                     alignItems="center"
                     className="cursor-pointer custom-hover-effect"
+                    onClick={() => {
+                      handleRememberSort(), setIsSort(!isSort);
+                    }}
                   >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="1.1em"
-                      height="1.1em"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        fill="#637382"
-                        d="M17 3H7c-1.1 0-1.99.9-1.99 2L5 21l7-3l7 3V5c0-1.1-.9-2-2-2"
-                      />
-                    </svg>
+                    {isSort ? (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="1em"
+                        height="1em"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          fill="#637382"
+                          d="m19 21l-7-3l-7 3V5c0-1.1.9-2 2-2h7a5.002 5.002 0 0 0 5 7.9zM17.83 9L15 6.17l1.41-1.41l1.41 1.41l3.54-3.54l1.41 1.41z"
+                        />
+                      </svg>
+                    ) : (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="1.1em"
+                        height="1.1em"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          fill="#637382"
+                          d="M17 3H7c-1.1 0-1.99.9-1.99 2L5 21l7-3l7 3V5c0-1.1-.9-2-2-2"
+                        />
+                      </svg>
+                    )}
                   </Box>
                 </Tooltip>
               </Box>

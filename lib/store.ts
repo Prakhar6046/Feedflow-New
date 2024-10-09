@@ -4,6 +4,7 @@ import { UserReducer } from "./features/user/userSlice";
 import { SidebarReducer } from "./features/sidebar/sidebarSlice";
 import { FarmReducer } from "./features/farm/farmSlice";
 import { FeedReducer } from "./features/feed/feedSlice";
+import { BreadcrumReducer } from "./features/breadcrum/breadcrumSlice";
 
 export const makeStore = () => {
   return configureStore({
@@ -13,6 +14,7 @@ export const makeStore = () => {
       sidebar: SidebarReducer,
       farm: FarmReducer,
       feed: FeedReducer,
+      breadcrum: BreadcrumReducer,
     },
   });
 };

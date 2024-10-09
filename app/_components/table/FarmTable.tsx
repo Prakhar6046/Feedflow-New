@@ -22,9 +22,10 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import Loader from "../Loader";
+import { breadcrumsAction } from "@/lib/features/breadcrum/breadcrumSlice";
 
 interface Props {
   farms: any;
@@ -32,8 +33,12 @@ interface Props {
 const tableData: Array<string> = ["Farm", "Production Unit Count", ""];
 export default function FarmTable() {
   const router = useRouter();
+  const pathName = usePathname();
   const dispatch = useAppDispatch();
+  const sortDataFromLocal = localStorage.getItem(pathName);
   const farms = useAppSelector(selectFarms);
+  const [order, setOrder] = React.useState("asc");
+  const [orderBy, setOrderBy] = React.useState("organisation");
   const [farmsData, setFarmsData] = useState<any>();
   const loading = useAppSelector(selectFarmLoading);
   // const [farmsData, setFarmsData] = useState<any>();
@@ -73,7 +78,13 @@ export default function FarmTable() {
     };
     data();
   }, []);
-
+  useEffect(() => {
+    if (sortDataFromLocal) {
+      const data = JSON.parse(sortDataFromLocal);
+      setOrder(data.direction);
+      setOrderBy(data.column);
+    }
+  }, [sortDataFromLocal]);
   const headCells = [
     {
       id: "farm",
@@ -153,8 +164,6 @@ export default function FarmTable() {
       setFarmsData(farms);
     }
   }, [farms]);
-  const [order, setOrder] = React.useState("asc");
-  const [orderBy, setOrderBy] = React.useState("organisation");
 
   const handleRequestSort = (
     _: React.MouseEvent<HTMLButtonElement>,
@@ -163,6 +172,12 @@ export default function FarmTable() {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
     setOrderBy(property);
+    dispatch(
+      breadcrumsAction.handleSort({
+        direction: isAsc ? "desc" : "asc",
+        column: property,
+      })
+    );
     if (farmsData) {
       const sortedData = [...farmsData].sort((farm1: any, farm2: any) => {
         const orderType = order === "asc" ? 1 : -1;

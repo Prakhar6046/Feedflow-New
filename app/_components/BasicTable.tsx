@@ -20,12 +20,13 @@ import {
   selectOrganisationLoading,
   selectOrganisations,
 } from "@/lib/features/organisation/organisationSlice";
-import { useAppSelector } from "@/lib/hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import Loader from "./Loader";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 import toast from "react-hot-toast";
 import { SingleOrganisation } from "../_typeModels/Organization";
+import { breadcrumsAction } from "@/lib/features/breadcrum/breadcrumSlice";
 
 interface Props {
   organisations: SingleOrganisation[];
@@ -33,6 +34,9 @@ interface Props {
 
 export default function BasicTable({ organisations }: Props) {
   const router = useRouter();
+  const pathName = usePathname();
+  const dispatch = useAppDispatch();
+  const sortDataFromLocal = localStorage.getItem(pathName);
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("organisation");
   const searchedOrganisations = useAppSelector(selectOrganisations);
@@ -166,6 +170,13 @@ export default function BasicTable({ organisations }: Props) {
     }
   }, [organisations]);
   useEffect(() => {
+    if (sortDataFromLocal) {
+      const data = JSON.parse(sortDataFromLocal);
+      setOrder(data.direction);
+      setOrderBy(data.column);
+    }
+  }, [sortDataFromLocal]);
+  useEffect(() => {
     if (searchedOrganisations) {
       setOrganisationData(searchedOrganisations);
     } else {
@@ -184,6 +195,12 @@ export default function BasicTable({ organisations }: Props) {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
     setOrderBy(property);
+    dispatch(
+      breadcrumsAction.handleSort({
+        direction: isAsc ? "desc" : "asc",
+        column: property,
+      })
+    );
     if (organisationData) {
       const sortedData = [...organisationData].sort(
         (

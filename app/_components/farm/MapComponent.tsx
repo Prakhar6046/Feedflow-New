@@ -69,7 +69,7 @@ const MapComponent = ({
             `/api/farm/altitude?lat=${data.results[0].geometry.location.lat}&lng=${data.results[0].geometry.location.lng}`
           );
           const res = await response.json();
-          setAltitude(res?.results[0]?.resolution);
+          setAltitude(String(res?.results[0]?.elevation));
         }
         const address = data.results[0].formatted_address;
         // setAddressInformation(address);
@@ -108,7 +108,7 @@ const MapComponent = ({
             `/api/farm/altitude?lat=${data.results[0].geometry.location.lat}&lng=${data.results[0].geometry.location.lng}`
           );
           const res = await response.json();
-          setAltitude(res?.results[0]?.resolution);
+          setAltitude(String(res?.results[0]?.elevation));
         }
         const { lat, lng } = data.results[0].geometry.location;
         const newPosition: any = { lat, lng };

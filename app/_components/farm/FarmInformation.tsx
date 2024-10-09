@@ -163,7 +163,7 @@ const FarmInformation: NextPage<Props> = ({
               errors.farmAltitude &&
               errors.farmAltitude.type === "pattern" && (
                 <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
-                  {validationMessage.OnlyNumbersWithDot}
+                  {validationMessage.onlyNumbers}
                 </Typography>
               )}
           </Box>

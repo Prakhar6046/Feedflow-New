@@ -409,7 +409,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                               `productionUnits.${index}.capacity` as const,
                               {
                                 required: true,
-                                pattern: validationPattern.onlyNumbersPattern,
+                                pattern: validationPattern.numbersWithDot,
                               }
                             )}
                             sx={{
@@ -466,7 +466,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                               fontSize={13}
                               mt={0.5}
                             >
-                              {validationMessage.onlyNumbers}
+                              {validationMessage.OnlyNumbersWithDot}
                             </Typography>
                           )}
                       </TableCell>

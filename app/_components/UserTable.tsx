@@ -8,10 +8,10 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { getCookie } from "cookies-next";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 // import { getUsers } from "../_lib/action";
 import Loader from "./Loader";
-import { useAppSelector } from "@/lib/hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { selectUsers } from "@/lib/features/user/userSlice";
 import {
   Box,
@@ -27,6 +27,7 @@ import { readableDate } from "../_lib/utils";
 import Image from "next/image";
 import toast from "react-hot-toast";
 import { SingleUser } from "../_typeModels/User";
+import { breadcrumsAction } from "@/lib/features/breadcrum/breadcrumSlice";
 
 interface Props {
   users: SingleUser[];
@@ -42,6 +43,8 @@ interface Data {
 
 export default function UserTable() {
   const router = useRouter();
+  const pathName = usePathname();
+  const dispatch = useAppDispatch();
   const searchUsers = useAppSelector(selectUsers);
   const loggedUser = getCookie("logged-user");
   const [users, setUsers] = useState<SingleUser[]>();
@@ -68,6 +71,7 @@ export default function UserTable() {
       return error;
     }
   };
+  const sortDataFromLocal = localStorage.getItem(pathName);
 
   const handleEdit = (user: any) => {
     router.push(`/dashboard/user/${selectedUser?.id}`);
@@ -238,13 +242,27 @@ export default function UserTable() {
     }
   }, [searchUsers]);
 
+  useEffect(() => {
+    if (sortDataFromLocal) {
+      const data = JSON.parse(sortDataFromLocal);
+      setOrder(data.direction);
+      setOrderBy(data.column);
+    }
+  }, [sortDataFromLocal]);
   const handleRequestSort = (
     _: React.MouseEvent<HTMLButtonElement>,
     property: string
   ) => {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
+
     setOrderBy(property);
+    dispatch(
+      breadcrumsAction.handleSort({
+        direction: isAsc ? "desc" : "asc",
+        column: property,
+      })
+    );
     if (users) {
       const sortedData = [...users].sort(
         (user1: SingleUser, user2: SingleUser) => {
@@ -279,6 +297,7 @@ export default function UserTable() {
       setUsers(sortedData);
     }
   };
+
   if (loading) {
     return <Loader />;
   }
