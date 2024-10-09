@@ -50,6 +50,8 @@ export default function UserTable() {
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null
   );
+  const [order, setOrder] = React.useState("asc");
+  const [orderBy, setOrderBy] = React.useState("name");
   const getUsers = async (payload: any) => {
     try {
       const data = await fetch(
@@ -97,6 +99,27 @@ export default function UserTable() {
       if (response.ok) {
         const res = await response.json();
         toast.success(res.message);
+      }
+    }
+  };
+  const handleDeleteUser = async () => {
+    setAnchorEl(null);
+    if (selectedUser) {
+      const response = await fetch("/api/users", {
+        method: "DELETE",
+        body: String(selectedUser.id),
+      });
+      const res = await response.json();
+      if (res.status) {
+        toast.success(res.message);
+        if (loggedUser) {
+          const loggedData = JSON.parse(loggedUser);
+          const data = await getUsers({
+            role: loggedData.data.user.role,
+            organisationId: loggedData.data.user.organisationId,
+          });
+          setUsers(data.data);
+        }
       }
     }
   };
@@ -214,9 +237,6 @@ export default function UserTable() {
       setUsers(searchUsers);
     }
   }, [searchUsers]);
-
-  const [order, setOrder] = React.useState("asc");
-  const [orderBy, setOrderBy] = React.useState("name");
 
   const handleRequestSort = (
     _: React.MouseEvent<HTMLButtonElement>,
@@ -623,13 +643,13 @@ export default function UserTable() {
                           </Stack>
                         </MenuItem>
 
-                        {/* <Divider
+                        <Divider
                           sx={{
                             borderColor: "#9797971A",
                             my: 0.5,
                           }}
-                        /> */}
-                        {/* <MenuItem onClick={handleEdit}>
+                        />
+                        <MenuItem onClick={handleDeleteUser}>
                           <Stack
                             display="flex"
                             gap={1.2}
@@ -655,7 +675,7 @@ export default function UserTable() {
                               Delete
                             </Typography>
                           </Stack>
-                        </MenuItem> */}
+                        </MenuItem>
                       </Menu>
                     </TableCell>
                   </TableRow>
