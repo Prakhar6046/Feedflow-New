@@ -10,7 +10,7 @@ import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-import { getCookie, setCookie } from "cookies-next";
+import { deleteCookie, getCookie, setCookie } from "cookies-next";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { organisationAction } from "@/lib/features/organisation/organisationSlice";
 import { userAction } from "@/lib/features/user/userSlice";
@@ -46,11 +46,12 @@ export default function BasicBreadcrumbs({
   refetch,
 }: Props) {
   const role = getCookie("role");
+  const pathName = usePathname();
   const router = useRouter();
   const sortvalue = useAppSelector(selectSort);
   const loggedUser: any = getCookie("logged-user");
+  const sortCookieData = getCookie(pathName);
   const [open, setOpen] = useState(false);
-  const pathName = usePathname();
   const [status, setStatus] = useState("");
   const [currentRole, setCurrentRole] = useState<string>("");
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -127,13 +128,15 @@ export default function BasicBreadcrumbs({
   };
   const handleRememberSort = () => {
     if (!isSort) {
-      localStorage.setItem(pathName, JSON.stringify(sortvalue));
+      setCookie(pathName, JSON.stringify(sortvalue));
+      // localStorage.setItem(pathName, JSON.stringify(sortvalue));
     } else {
-      localStorage.removeItem(pathName);
+      deleteCookie(pathName);
+      // localStorage.removeItem(pathName);
     }
   };
   useEffect(() => {
-    if (sortvalue && localStorage.getItem(pathName)) {
+    if (sortvalue && sortCookieData) {
       setIsSort(true);
     } else {
       setIsSort(false);

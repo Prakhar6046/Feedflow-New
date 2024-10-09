@@ -27,6 +27,7 @@ import Image from "next/image";
 import toast from "react-hot-toast";
 import { SingleOrganisation } from "../_typeModels/Organization";
 import { breadcrumsAction } from "@/lib/features/breadcrum/breadcrumSlice";
+import { getCookie } from "cookies-next";
 
 interface Props {
   organisations: SingleOrganisation[];
@@ -36,7 +37,7 @@ export default function BasicTable({ organisations }: Props) {
   const router = useRouter();
   const pathName = usePathname();
   const dispatch = useAppDispatch();
-  const sortDataFromLocal = localStorage.getItem(pathName);
+  const sortDataFromLocal = getCookie(pathName);
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("organisation");
   const searchedOrganisations = useAppSelector(selectOrganisations);

@@ -47,13 +47,13 @@ export default function UserTable() {
   const dispatch = useAppDispatch();
   const searchUsers = useAppSelector(selectUsers);
   const loggedUser = getCookie("logged-user");
+  const sortDataFromLocal = getCookie(pathName);
   const [users, setUsers] = useState<SingleUser[]>();
   const [loading, setLoading] = useState<boolean>(false);
   const [selectedUser, setSelectedUser] = useState<SingleUser | null>(null);
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null
   );
-  const [sortDataFromLocal, setSortDataFromLocal] = useState<any>();
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("name");
   const getUsers = async (payload: any) => {
@@ -219,12 +219,6 @@ export default function UserTable() {
       </TableHead>
     );
   }
-  useEffect(() => {
-    const data = localStorage.getItem(pathName);
-    if (data) {
-      setSortDataFromLocal(JSON.parse(sortDataFromLocal));
-    }
-  }, []);
 
   useEffect(() => {
     setLoading(true);
@@ -241,13 +235,6 @@ export default function UserTable() {
       data();
     }
   }, [loggedUser]);
-
-  useEffect(() => {
-    if (searchUsers) {
-      setUsers(searchUsers);
-    }
-  }, [searchUsers]);
-
   useEffect(() => {
     if (sortDataFromLocal) {
       const data = JSON.parse(sortDataFromLocal);
@@ -255,6 +242,12 @@ export default function UserTable() {
       setOrderBy(data.column);
     }
   }, [sortDataFromLocal]);
+  useEffect(() => {
+    if (searchUsers) {
+      setUsers(searchUsers);
+    }
+  }, [searchUsers]);
+
   const handleRequestSort = (
     _: React.MouseEvent<HTMLButtonElement>,
     property: string

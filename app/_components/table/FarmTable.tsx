@@ -26,6 +26,7 @@ import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import Loader from "../Loader";
 import { breadcrumsAction } from "@/lib/features/breadcrum/breadcrumSlice";
+import { getCookie } from "cookies-next";
 
 interface Props {
   farms: any;
@@ -35,7 +36,7 @@ export default function FarmTable() {
   const router = useRouter();
   const pathName = usePathname();
   const dispatch = useAppDispatch();
-  const sortDataFromLocal = localStorage.getItem(pathName);
+  const sortDataFromLocal = getCookie(pathName);
   const farms = useAppSelector(selectFarms);
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("organisation");
