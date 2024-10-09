@@ -1,6 +1,6 @@
 import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
 import UserTable from "@/app/_components/UserTable";
-import { getAllOrganisations, getOrganisations } from "@/app/_lib/action";
+import { getAllOrganisations } from "@/app/_lib/action";
 export default async function Page() {
   let organisations = await getAllOrganisations();
 

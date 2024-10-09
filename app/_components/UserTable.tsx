@@ -53,6 +53,7 @@ export default function UserTable() {
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null
   );
+  const [sortDataFromLocal, setSortDataFromLocal] = useState<any>();
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("name");
   const getUsers = async (payload: any) => {
@@ -71,7 +72,6 @@ export default function UserTable() {
       return error;
     }
   };
-  const sortDataFromLocal = localStorage.getItem(pathName);
 
   const handleEdit = (user: any) => {
     router.push(`/dashboard/user/${selectedUser?.id}`);
@@ -219,6 +219,12 @@ export default function UserTable() {
       </TableHead>
     );
   }
+  useEffect(() => {
+    const data = localStorage.getItem(pathName);
+    if (data) {
+      setSortDataFromLocal(JSON.parse(sortDataFromLocal));
+    }
+  }, []);
 
   useEffect(() => {
     setLoading(true);
