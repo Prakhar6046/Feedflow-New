@@ -134,6 +134,7 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
                   width={20}
                   height={20}
                   alt="Eye Icon"
+                  style={{ cursor: "pointer" }}
                 />
               </Box>
               {errors.password && (
@@ -177,6 +178,7 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
                   width={20}
                   height={20}
                   alt="Eye Icon"
+                  style={{ cursor: "pointer" }}
                 />
               </Box>
               {errors.confirmPassword && (

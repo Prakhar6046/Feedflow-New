@@ -384,18 +384,17 @@ body {
   width: 100%;
 }
 
-.test1 > div > div > div{
+.test1 > div > div > div {
   padding-left: 50px;
 }
 
-.test1 > div > div > div{
+.test1 > div > div > div {
   padding-left: 50px;
 }
 
-.test5 > div > div > div{
+.test5 > div > div > div {
   transform: translateX(50%);
 }
-
 
 .yoyo > div {
   border: 0 !important;
@@ -420,7 +419,7 @@ body {
 
 .yoyo > div > div > div > div:nth-child(2) > div > div > * {
   border-top: none !important;
-  border-bottom: 1px solid #F5F6F8 !important;
+  border-bottom: 1px solid #f5f6f8 !important;
   display: flex !important;
   align-items: center !important;
   font-weight: 400 !important;

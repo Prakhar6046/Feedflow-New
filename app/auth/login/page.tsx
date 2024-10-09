@@ -244,6 +244,7 @@ export default function Page() {
                             width={20}
                             height={20}
                             alt="Eye Icon"
+                            style={{ cursor: "pointer" }}
                           />
                         </Box>
                       </Box>
