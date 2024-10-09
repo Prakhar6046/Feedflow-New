@@ -137,8 +137,6 @@ export default function Page({ params }: { params: { userId: string } }) {
     if (data.password) {
       formData.append("password", data.password);
     }
-    formData.append("image", data.image[0]);
-
     const res = await fetch(`/api/users/${params.userId}`, {
       method: "PUT",
       body: formData,

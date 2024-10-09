@@ -66,12 +66,12 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
   const farm = useAppSelector(selectFarm);
   const isEditFarm = useAppSelector(selectIsEditFarm);
   const [selectedUnit, setSelectedUnit] = React.useState<UnitsTypes>();
-  const [length, setLength] = useState<number>();
-  const [width, setWidth] = useState<number>();
-  const [depth, setDepth] = useState<number>();
-  const [radius, setRadius] = useState<number>();
-  const [area, setArea] = useState<number>();
-  const [heigth, setHeigth] = useState<number>();
+  const [length, setLength] = useState<string>();
+  const [width, setWidth] = useState<string>();
+  const [depth, setDepth] = useState<string>();
+  const [radius, setRadius] = useState<string>();
+  const [area, setArea] = useState<string>();
+  const [heigth, setHeigth] = useState<string>();
   const [open, setopen] = useState<boolean>(false);
   const [calculatedValue, setCalculatedValue] = useState<CalculateType>();
   const [productionUnitError, setProductionUnitError] = useState<string>("");
@@ -129,12 +129,12 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
   const handleCalculate = (item: any, index: any) => {
     if (item) {
       setopen(true);
-      setRadius(0);
-      setArea(0);
-      setDepth(0);
-      setHeigth(0);
-      setLength(0);
-      setWidth(0);
+      setRadius("");
+      setArea("");
+      setDepth("");
+      setHeigth("");
+      setLength("");
+      setWidth("");
       const getFormula = unitsTypes.find(
         (unit) => unit.name === watch(`productionUnits.${index}.type`)
       );

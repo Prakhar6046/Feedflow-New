@@ -69,7 +69,7 @@ export default function AddNewUser({ organisations }: Props) {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify({ ...data, image: profilePic }),
       });
       const responseData = await response.json();
       if (responseData.status) {
@@ -99,10 +99,24 @@ export default function AddNewUser({ organisations }: Props) {
   const handleChange = (event: SelectChangeEvent) => {
     setSelectedOrganisation(event.target.value as string);
   };
-  const handleUpload = async (imagePath: FileList) => {
-    setImagePath(imagePath);
-  };
 
+  const handleUpload = async (imagePath: FileList) => {
+    const formData = new FormData();
+    formData.append("image", imagePath[0]);
+    const oldImageName = profilePic?.split("/").pop()?.split(".")[0];
+
+    formData.append("oldImageName", oldImageName || "");
+
+    const response = await fetch(`/api/profile-pic/upload/new`, {
+      method: "POST",
+      body: formData,
+    });
+
+    if (response.ok) {
+      const profileData = await response.json();
+      setProfilePic(profileData.data.url);
+    }
+  };
   useEffect(() => {
     if (loggedUser) {
       const user = JSON.parse(loggedUser);

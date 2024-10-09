@@ -83,7 +83,7 @@ const AddNewOrganisation = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify({ ...data, imageUrl: profilePic }),
       });
       const responseData = await response.json();
       toast.success(responseData.message);
@@ -93,6 +93,7 @@ const AddNewOrganisation = () => {
       }
     }
   };
+
   const { fields, append, remove } = useFieldArray({
     control,
     name: "contacts",
@@ -123,17 +124,14 @@ const AddNewOrganisation = () => {
 
     formData.append("oldImageName", oldImageName || "");
 
-    const response = await fetch(`/api/profile-pic/upload/organisation`, {
+    const response = await fetch(`/api/profile-pic/upload/new`, {
       method: "POST",
       body: formData,
     });
 
     if (response.ok) {
-      const updatedUser = await response.json();
-      setProfilePic(updatedUser.data.imageUrl);
-      // toast.success(updatedUser.message);
-      // resetField("confirmPassword");
-      // resetField("password");
+      const profileData = await response.json();
+      setProfilePic(profileData.data.url);
     }
   };
   //   useEffect(() => {

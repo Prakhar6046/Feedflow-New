@@ -30,19 +30,19 @@ interface Props {
   open: boolean;
   selectedUnit: UnitsTypes | undefined;
   setCalculatedValue: (val: CalculateType) => void;
-  length: number | undefined;
-  width: number | undefined;
-  depth: number | undefined;
-  radius: number | undefined;
-  area: number | undefined;
-  heigth: number | undefined;
+  length: string | undefined;
+  width: string | undefined;
+  depth: string | undefined;
+  radius: string | undefined;
+  area: string | undefined;
+  heigth: string | undefined;
   calculatedValue: CalculateType | undefined;
-  setLength: (val: number) => void;
-  setWidth: (val: number) => void;
-  setDepth: (val: number) => void;
-  setRadius: (val: number) => void;
-  setArea: (val: number) => void;
-  setHeigth: (val: number) => void;
+  setLength: (val: string) => void;
+  setWidth: (val: string) => void;
+  setDepth: (val: string) => void;
+  setRadius: (val: string) => void;
+  setArea: (val: string) => void;
+  setHeigth: (val: string) => void;
 }
 
 const CalculateVolume: React.FC<Props> = ({
@@ -67,32 +67,63 @@ const CalculateVolume: React.FC<Props> = ({
   const handleClose = () => setOpen(false);
   const handleCalculate = () => {
     let output;
-    if (selectedUnit?.name === "Rectangular Tank" && length && width && depth) {
-      output = length * width * depth;
+    if (
+      selectedUnit?.name === "Rectangular Tank" &&
+      Number(length) &&
+      Number(width) &&
+      Number(depth)
+    ) {
+      output = Number(length) * Number(width) * Number(depth);
       //   console.log(l * w * d);
-    } else if (selectedUnit?.name === "Earthen Pond" && area && depth) {
-      output = area * depth;
+    } else if (
+      selectedUnit?.name === "Earthen Pond" &&
+      Number(area) &&
+      Number(depth)
+    ) {
+      output = Number(area) * Number(depth);
       //   console.log(a * d);
-    } else if (selectedUnit?.name === "Raceway" && length && width && depth) {
-      output = length * width * depth;
+    } else if (
+      selectedUnit?.name === "Raceway" &&
+      Number(length) &&
+      Number(width) &&
+      Number(depth)
+    ) {
+      output = Number(length) * Number(width) * Number(depth);
       //   console.log(l * w * d);
-    } else if (selectedUnit?.name === "Cage" && length && width && heigth) {
-      output = length * width * heigth;
+    } else if (
+      selectedUnit?.name === "Cage" &&
+      Number(length) &&
+      Number(width) &&
+      Number(heigth)
+    ) {
+      output = Number(length) * Number(width) * Number(heigth);
       //   console.log(l * w * h);
-    } else if (selectedUnit?.name === "Hapa" && length && width && heigth) {
-      output = length * width * heigth;
+    } else if (
+      selectedUnit?.name === "Hapa" &&
+      Number(length) &&
+      Number(width) &&
+      Number(heigth)
+    ) {
+      output = Number(length) * Number(width) * Number(heigth);
       // console.log(l * w * h);
-    } else if (selectedUnit?.name === "Circular Tank" && radius && depth) {
-      output = 3.14159 * radius * 2 * depth;
+    } else if (
+      selectedUnit?.name === "Circular Tank" &&
+      Number(radius) &&
+      Number(depth)
+    ) {
+      output = 3.14159 * Number(radius) * 2 * Number(depth);
       //   console.log(3.14159 * r * 2 * d);
     } else if (
       selectedUnit?.name === "D-end Tank" &&
-      radius &&
-      length &&
-      width &&
-      depth
+      Number(radius) &&
+      Number(length) &&
+      Number(width) &&
+      Number(depth)
     ) {
-      output = (2 * 3.14159 * radius * 2 + (length - radius) * width) * depth;
+      output =
+        (2 * 3.14159 * Number(radius) * 2 +
+          (Number(length) - Number(radius)) * Number(Number(width))) *
+        Number(depth);
       //   console.log((2 * 3.14159 * r * 2 + (l - r) * w) * d);
     } else {
     }
@@ -177,9 +208,15 @@ const CalculateVolume: React.FC<Props> = ({
                   width: "100%",
                 }}
                 value={length}
-                onChange={(e) => setLength(Number(e.target.value))}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  // Allow only numbers with decimals
+                  const regex = /^\d*\.?\d*$/;
+                  if (regex.test(value)) {
+                    setLength(value); // Keep it as string to handle the decimal point
+                  }
+                }}
               />
-
               <Typography
                 variant="body2"
                 color="#555555AC"
@@ -211,7 +248,14 @@ const CalculateVolume: React.FC<Props> = ({
                   marginBottom: 2,
                 }}
                 value={width}
-                onChange={(e) => setWidth(Number(e.target.value))}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  // Allow only numbers with decimals
+                  const regex = /^\d*\.?\d*$/;
+                  if (regex.test(value)) {
+                    setWidth(value); // Keep it as string to handle the decimal point
+                  }
+                }}
               />
               <Typography
                 variant="body2"
@@ -232,26 +276,6 @@ const CalculateVolume: React.FC<Props> = ({
                 m
               </Typography>
             </Box>
-            {/* <Typography
-              variant="body2"
-              color="#555555AC"
-              sx={{
-                position: "absolute",
-                right: 6,
-                // top: errors?.nutritionalGuarantee?.phosphorous?.kg
-                //   ? "35%"
-                //   : "50%",
-                transform: "translate(-6px, -50%)",
-                backgroundColor: "#fff",
-                height: 30,
-                display: "grid",
-                placeItems: "center",
-                zIndex: 1,
-                pl: 1,
-              }}
-            >
-              g/kg
-            </Typography>{" "} */}
 
             <Box position={"relative"}>
               <TextField
@@ -264,7 +288,14 @@ const CalculateVolume: React.FC<Props> = ({
                   marginBottom: 2,
                 }}
                 value={depth}
-                onChange={(e) => setDepth(Number(e.target.value))}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  // Allow only numbers with decimals
+                  const regex = /^\d*\.?\d*$/;
+                  if (regex.test(value)) {
+                    setDepth(value); // Keep it as string to handle the decimal point
+                  }
+                }}
               />
               <Typography
                 variant="body2"
@@ -299,7 +330,14 @@ const CalculateVolume: React.FC<Props> = ({
                   marginBottom: 2,
                 }}
                 value={area}
-                onChange={(e) => setArea(Number(e.target.value))}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  // Allow only numbers with decimals
+                  const regex = /^\d*\.?\d*$/;
+                  if (regex.test(value)) {
+                    setArea(value); // Keep it as string to handle the decimal point
+                  }
+                }}
               />
               <Typography
                 variant="body2"
@@ -332,7 +370,14 @@ const CalculateVolume: React.FC<Props> = ({
                   marginBottom: 2,
                 }}
                 value={depth}
-                onChange={(e) => setDepth(Number(e.target.value))}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  // Allow only numbers with decimals
+                  const regex = /^\d*\.?\d*$/;
+                  if (regex.test(value)) {
+                    setDepth(value); // Keep it as string to handle the decimal point
+                  }
+                }}
               />
               <Typography
                 variant="body2"
@@ -367,7 +412,14 @@ const CalculateVolume: React.FC<Props> = ({
                   marginBottom: 2,
                 }}
                 value={length}
-                onChange={(e) => setLength(Number(e.target.value))}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  // Allow only numbers with decimals
+                  const regex = /^\d*\.?\d*$/;
+                  if (regex.test(value)) {
+                    setLength(value); // Keep it as string to handle the decimal point
+                  }
+                }}
               />
               <Typography
                 variant="body2"
@@ -400,7 +452,14 @@ const CalculateVolume: React.FC<Props> = ({
                   marginBottom: 2,
                 }}
                 value={width}
-                onChange={(e) => setWidth(Number(e.target.value))}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  // Allow only numbers with decimals
+                  const regex = /^\d*\.?\d*$/;
+                  if (regex.test(value)) {
+                    setWidth(value); // Keep it as string to handle the decimal point
+                  }
+                }}
               />
               <Typography
                 variant="body2"
@@ -433,7 +492,14 @@ const CalculateVolume: React.FC<Props> = ({
                   marginBottom: 2,
                 }}
                 value={depth}
-                onChange={(e) => setDepth(Number(e.target.value))}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  // Allow only numbers with decimals
+                  const regex = /^\d*\.?\d*$/;
+                  if (regex.test(value)) {
+                    setDepth(value); // Keep it as string to handle the decimal point
+                  }
+                }}
               />
               <Typography
                 variant="body2"
@@ -468,7 +534,14 @@ const CalculateVolume: React.FC<Props> = ({
                   marginBottom: 2,
                 }}
                 value={length}
-                onChange={(e) => setLength(Number(e.target.value))}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  // Allow only numbers with decimals
+                  const regex = /^\d*\.?\d*$/;
+                  if (regex.test(value)) {
+                    setLength(value); // Keep it as string to handle the decimal point
+                  }
+                }}
               />
               <Typography
                 variant="body2"
@@ -501,7 +574,14 @@ const CalculateVolume: React.FC<Props> = ({
                   marginBottom: 2,
                 }}
                 value={width}
-                onChange={(e) => setWidth(Number(e.target.value))}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  // Allow only numbers with decimals
+                  const regex = /^\d*\.?\d*$/;
+                  if (regex.test(value)) {
+                    setWidth(value); // Keep it as string to handle the decimal point
+                  }
+                }}
               />
 
               <Typography
@@ -535,7 +615,14 @@ const CalculateVolume: React.FC<Props> = ({
                   marginBottom: 2,
                 }}
                 value={heigth}
-                onChange={(e) => setHeigth(Number(e.target.value))}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  // Allow only numbers with decimals
+                  const regex = /^\d*\.?\d*$/;
+                  if (regex.test(value)) {
+                    setHeigth(value); // Keep it as string to handle the decimal point
+                  }
+                }}
               />
               <Typography
                 variant="body2"
@@ -570,7 +657,14 @@ const CalculateVolume: React.FC<Props> = ({
                   marginBottom: 2,
                 }}
                 value={length}
-                onChange={(e) => setLength(Number(e.target.value))}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  // Allow only numbers with decimals
+                  const regex = /^\d*\.?\d*$/;
+                  if (regex.test(value)) {
+                    setLength(value); // Keep it as string to handle the decimal point
+                  }
+                }}
               />
               <Typography
                 variant="body2"
@@ -603,7 +697,14 @@ const CalculateVolume: React.FC<Props> = ({
                   marginBottom: 2,
                 }}
                 value={width}
-                onChange={(e) => setWidth(Number(e.target.value))}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  // Allow only numbers with decimals
+                  const regex = /^\d*\.?\d*$/;
+                  if (regex.test(value)) {
+                    setWidth(value); // Keep it as string to handle the decimal point
+                  }
+                }}
               />
               <Typography
                 variant="body2"
@@ -636,7 +737,14 @@ const CalculateVolume: React.FC<Props> = ({
                   marginBottom: 2,
                 }}
                 value={heigth}
-                onChange={(e) => setHeigth(Number(e.target.value))}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  // Allow only numbers with decimals
+                  const regex = /^\d*\.?\d*$/;
+                  if (regex.test(value)) {
+                    setHeigth(value); // Keep it as string to handle the decimal point
+                  }
+                }}
               />
               <Typography
                 variant="body2"
@@ -671,7 +779,14 @@ const CalculateVolume: React.FC<Props> = ({
                   marginBottom: 2,
                 }}
                 value={radius}
-                onChange={(e) => setRadius(Number(e.target.value))}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  // Allow only numbers with decimals
+                  const regex = /^\d*\.?\d*$/;
+                  if (regex.test(value)) {
+                    setRadius(value); // Keep it as string to handle the decimal point
+                  }
+                }}
               />
               <Typography
                 variant="body2"
@@ -704,7 +819,14 @@ const CalculateVolume: React.FC<Props> = ({
                   marginBottom: 2,
                 }}
                 value={depth}
-                onChange={(e) => setDepth(Number(e.target.value))}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  // Allow only numbers with decimals
+                  const regex = /^\d*\.?\d*$/;
+                  if (regex.test(value)) {
+                    setDepth(value); // Keep it as string to handle the decimal point
+                  }
+                }}
               />
               <Typography
                 variant="body2"
@@ -739,7 +861,14 @@ const CalculateVolume: React.FC<Props> = ({
                   marginBottom: 2,
                 }}
                 value={radius}
-                onChange={(e) => setRadius(Number(e.target.value))}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  // Allow only numbers with decimals
+                  const regex = /^\d*\.?\d*$/;
+                  if (regex.test(value)) {
+                    setRadius(value); // Keep it as string to handle the decimal point
+                  }
+                }}
               />
               <Typography
                 variant="body2"
@@ -771,7 +900,14 @@ const CalculateVolume: React.FC<Props> = ({
                   marginBottom: 2,
                 }}
                 value={length}
-                onChange={(e) => setLength(Number(e.target.value))}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  // Allow only numbers with decimals
+                  const regex = /^\d*\.?\d*$/;
+                  if (regex.test(value)) {
+                    setLength(value); // Keep it as string to handle the decimal point
+                  }
+                }}
               />
               <Typography
                 variant="body2"
@@ -804,7 +940,14 @@ const CalculateVolume: React.FC<Props> = ({
                   marginBottom: 2,
                 }}
                 value={width}
-                onChange={(e) => setWidth(Number(e.target.value))}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  // Allow only numbers with decimals
+                  const regex = /^\d*\.?\d*$/;
+                  if (regex.test(value)) {
+                    setWidth(value); // Keep it as string to handle the decimal point
+                  }
+                }}
               />
               <Typography
                 variant="body2"
@@ -837,7 +980,14 @@ const CalculateVolume: React.FC<Props> = ({
                   marginBottom: 2,
                 }}
                 value={depth}
-                onChange={(e) => setDepth(Number(e.target.value))}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  // Allow only numbers with decimals
+                  const regex = /^\d*\.?\d*$/;
+                  if (regex.test(value)) {
+                    setDepth(value); // Keep it as string to handle the decimal point
+                  }
+                }}
               />
               <Typography
                 variant="body2"
