@@ -1172,7 +1172,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
 
               <Grid item lg={6} xs={12}>
                 <Typography variant="subtitle1" fontWeight={500}>
-                  Feed Ingredients
+                  Feed Ingredients *
                 </Typography>
                 <TextField
                   type="text"
@@ -1186,7 +1186,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                   })}
                   sx={{
                     width: "100%",
-                    marginTop: "10px",
+                    marginBlock: "20px",
                   }}
                 />
                 {errors &&
@@ -1217,7 +1217,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
 
               <Grid item lg={6} xs={12}>
                 <Typography variant="subtitle1" fontWeight={500}>
-                  Feeding Guide
+                  Feeding Guide *
                 </Typography>
                 <TextField
                   type="text"
@@ -1226,7 +1226,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                   className="form-input"
                   sx={{
                     width: "100%",
-                    marginTop: "10px",
+                    marginBlock: "20px",
                   }}
                   {...register("feedingGuide", {
                     required: true,
@@ -1841,7 +1841,6 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                       </Box>
                     )}
                   </Grid>
-
                   <Grid
                     item
                     xl={6}
@@ -2021,6 +2020,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                       </Box>
                     )}
                   </Grid>
+
                   <Grid
                     item
                     xl={6}
@@ -2208,6 +2208,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                       </Box>
                     )}
                   </Grid>
+
                   <Grid
                     item
                     xl={6}

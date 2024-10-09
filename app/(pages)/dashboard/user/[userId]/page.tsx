@@ -309,6 +309,7 @@ export default function Page({ params }: { params: { userId: string } }) {
               >
                 <Typography
                   variant="subtitle1"
+                  fontWeight={500}
                   color="black"
                   fontSize={16}
                   alignSelf={"flex-start"}
@@ -420,10 +421,11 @@ export default function Page({ params }: { params: { userId: string } }) {
                 />
 
                 <Typography
-                  variant="h6"
-                  color="rgb(99, 115, 129)"
+                  variant="subtitle1"
+                  color="black"
+                  fontWeight={500}
                   mb={0.3}
-                  fontSize={14}
+                  fontSize={16}
                   marginTop={2}
                 >
                   Set or Change Password
@@ -443,7 +445,7 @@ export default function Page({ params }: { params: { userId: string } }) {
 
                 <Box position={"relative"} mb={2}>
                   <TextField
-                    label="Password *"
+                    label="Password*"
                     type={showPassword ? "text" : "password"}
                     className="form-input"
                     {...register("password", {
@@ -452,6 +454,7 @@ export default function Page({ params }: { params: { userId: string } }) {
                     focused
                     sx={{
                       width: "100%",
+
                       // marginBottom: 2,
                     }}
                   />
@@ -473,6 +476,8 @@ export default function Page({ params }: { params: { userId: string } }) {
                       width={20}
                       height={20}
                       alt="Eye Icon"
+                      style={{ cursor: "pointer" }}
+                      className="cursor-pointer"
                     />
                   </Box>
                   {errors &&
@@ -524,6 +529,7 @@ export default function Page({ params }: { params: { userId: string } }) {
                       width={20}
                       height={20}
                       alt="Eye Icon"
+                      style={{ cursor: "pointer" }}
                     />
                   </Box>
                   {errors && errors.confirmPassword?.type == "required" && (
