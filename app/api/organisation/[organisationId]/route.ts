@@ -58,6 +58,7 @@ export async function PUT(req: NextRequest, context: { params: any }) {
         city: addressData.city,
         province: addressData.province,
         postCode: addressData.postCode,
+        country: addressData.country,
       },
       create: {
         name: addressData.address,
@@ -65,6 +66,7 @@ export async function PUT(req: NextRequest, context: { params: any }) {
         city: addressData.city,
         province: addressData.province,
         postCode: addressData.postCode,
+        country: addressData.country,
         organisation: { connect: { id: organisation.id } },
       },
     });

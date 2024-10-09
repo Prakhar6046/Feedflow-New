@@ -53,7 +53,7 @@ export interface AddOrganizationFormInputs {
   image: FileList;
   organisationCode: String;
   address: String;
-  street: String;
+  country: String;
   province: String;
   city: String;
   postCode: String;

@@ -55,9 +55,9 @@ const steps = [
 const Page = ({ params }: { params: { organisationId: string } }) => {
   const router = useRouter();
   const [organisationData, setOrganisationData] = useState<any>();
-  const [addressInformation, setAddressInformation] = useState<any>();
-  const [useAddress, setUseAddress] = useState<boolean>(false);
-  const [searchedAddress, setSearchedAddress] = useState<any>();
+  // const [addressInformation, setAddressInformation] = useState<any>();
+  // const [useAddress, setUseAddress] = useState<boolean>(false);
+  // const [searchedAddress, setSearchedAddress] = useState<any>();
   const [loading, setLoading] = useState<boolean>(false);
   const [profilePic, setProfilePic] = useState<String>();
   const [contactError, setcontactError] = useState<string>("");
@@ -93,6 +93,7 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
       city: data.city,
       province: data.province,
       postCode: data.postCode,
+      country: data.country,
     };
 
     const formData = new FormData();
@@ -166,26 +167,28 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
     };
     organisation();
   }, []);
-  useEffect(() => {
-    if (addressInformation && useAddress) {
-      setValue("address", addressInformation.address.split(",")[0]);
-      setValue("city", addressInformation.city);
-      setValue("province", addressInformation.country);
-      setValue("postCode", addressInformation.postcode);
-      setUseAddress(false);
-    }
-  }, [addressInformation, useAddress]);
+  // useEffect(() => {
+  //   if (addressInformation && useAddress) {
+  //     setValue("address", addressInformation.address.split(",")[0]);
+  //     setValue("city", addressInformation.city);
+  //     setValue("province", addressInformation.country);
+  //     setValue("postCode", addressInformation.postcode);
+  //     setUseAddress(false);
+  //   }
+  // }, [addressInformation, useAddress]);
   useEffect(() => {
     if (organisationData) {
       setValue("organisationName", organisationData.name);
       setValue("organisationCode", organisationData.organisationCode);
       setValue("address", String(organisationData?.address?.name));
       setValue("city", String(organisationData.address?.city));
-      setValue("street", String(organisationData.address?.street));
+      setValue("country", String(organisationData.address?.country));
       setValue("province", String(organisationData.address?.province));
       setValue("postCode", String(organisationData.address?.postCode));
+      setValue("country", organisationData?.address?.country);
       setValue("contacts", organisationData?.contact);
       setValue("organisationType", organisationData?.organisationType);
+
       // setValue("email", String(organisationData.contact?.email));
       // setValue("phone", String(organisationData.contact?.phone));
       // setValue("role", String(organisationData.contact?.role));
@@ -584,14 +587,51 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
                     )}
                 </Box>
               </Stack>
-              <Box display={"flex"} justifyContent={"end"} width={"100%"}>
+              <Stack
+                display={"flex"}
+                justifyContent={"flex-start"}
+                direction={"row"}
+                sx={{
+                  width: "100%",
+                  marginBottom: 2,
+                  gap: 1.5,
+                }}
+              >
+                <Box width={"50%"}>
+                  <TextField
+                    label="Country *"
+                    type="text"
+                    className="form-input"
+                    {...register("country", {
+                      required: true,
+                    })}
+                    focused
+                    sx={{
+                      width: "100%",
+                    }}
+                  />
+                  {errors &&
+                    errors.country &&
+                    errors.country.type === "required" && (
+                      <Typography
+                        variant="body2"
+                        color="red"
+                        fontSize={13}
+                        mt={0.5}
+                      >
+                        This field is required.
+                      </Typography>
+                    )}
+                </Box>
+              </Stack>
+              {/* <Box display={"flex"} justifyContent={"end"} width={"100%"}>
                 <MapComponent
                   setAddressInformation={setAddressInformation}
                   setSearchedAddress={setSearchedAddress}
                   setUseAddress={setUseAddress}
                   isCalAltitude={false}
                 />
-              </Box>
+              </Box> */}
               <Typography
                 variant="subtitle1"
                 fontWeight={500}

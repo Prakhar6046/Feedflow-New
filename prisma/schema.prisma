@@ -71,6 +71,7 @@ model Address {
   province String?
   city     String?
   postCode String?
+  country  String?
 
   organisation   Organisation?
   createdAt      DateTime      @default(now())

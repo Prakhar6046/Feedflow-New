@@ -13,6 +13,7 @@ export async function POST(req: NextRequest) {
         postCode: body.postCode ?? "",
         province: body.province ?? "",
         name: capitalizeFirstLetter(body.address) ?? "",
+        country: body.country ?? "",
       },
     });
 

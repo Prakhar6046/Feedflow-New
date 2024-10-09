@@ -18,7 +18,7 @@ export const GET = async (request: NextRequest) => {
               },
             }
           : {},
-        include: { contact: true },
+        include: { contact: true, address: true },
         orderBy: {
           createdAt: "desc", // Sort by createdAt in descending order
         },
@@ -34,7 +34,7 @@ export const GET = async (request: NextRequest) => {
               },
             }
           : { id: Number(organisationId) },
-        include: { contact: true },
+        include: { contact: true, address: true },
         orderBy: {
           createdAt: "desc", // Sort by createdAt in descending order
         },

@@ -62,9 +62,9 @@ const AddNewOrganisation = () => {
   const [profilePic, setProfilePic] = useState<String>();
   const router = useRouter();
   const [contactError, setcontactError] = useState<string>("");
-  const [addressInformation, setAddressInformation] = useState<any>();
-  const [useAddress, setUseAddress] = useState<boolean>(false);
-  const [searchedAddress, setSearchedAddress] = useState<any>();
+  // const [addressInformation, setAddressInformation] = useState<any>();
+  // const [useAddress, setUseAddress] = useState<boolean>(false);
+  // const [searchedAddress, setSearchedAddress] = useState<any>();
   const {
     register,
     setValue,
@@ -138,15 +138,15 @@ const AddNewOrganisation = () => {
       setProfilePic(profileData.data.url);
     }
   };
-  useEffect(() => {
-    if (addressInformation && useAddress) {
-      setValue("address", addressInformation.address.split(",")[0]);
-      setValue("city", addressInformation.city);
-      setValue("province", addressInformation.country);
-      setValue("postCode", addressInformation.postcode);
-      setUseAddress(false);
-    }
-  }, [addressInformation, useAddress]);
+  // useEffect(() => {
+  //   if (addressInformation && useAddress) {
+  //     setValue("address", addressInformation.address.split(",")[0]);
+  //     setValue("city", addressInformation.city);
+  //     setValue("province", addressInformation.country);
+  //     setValue("postCode", addressInformation.postcode);
+  //     setUseAddress(false);
+  //   }
+  // }, [addressInformation, useAddress]);
 
   return (
     <Stack
@@ -627,14 +627,65 @@ const AddNewOrganisation = () => {
                   )}
               </Box>
             </Stack>
-            <Box display={"flex"} justifyContent={"end"} width={"100%"}>
+
+            <Stack
+              display={"flex"}
+              justifyContent={"flex-start"}
+              direction={"row"}
+              sx={{
+                width: "100%",
+                marginBottom: 2,
+                gap: 1.5,
+              }}
+            >
+              <Box width={"50%"}>
+                <TextField
+                  label="Country *"
+                  type="text"
+                  className="form-input"
+                  {...register("country", {
+                    required: true,
+                    pattern: validationPattern.alphabetsAndSpacesPattern,
+                  })}
+                  focused
+                  sx={{
+                    width: "100%",
+                  }}
+                />
+                {errors &&
+                  errors.country &&
+                  errors.country.type === "required" && (
+                    <Typography
+                      variant="body2"
+                      color="red"
+                      fontSize={13}
+                      mt={0.5}
+                    >
+                      {validationMessage.required}
+                    </Typography>
+                  )}
+                {errors &&
+                  errors.country &&
+                  errors.country.type === "pattern" && (
+                    <Typography
+                      variant="body2"
+                      color="red"
+                      fontSize={13}
+                      mt={0.5}
+                    >
+                      {validationMessage.alphabetswithSpecialCharacter}
+                    </Typography>
+                  )}
+              </Box>
+            </Stack>
+            {/* <Box display={"flex"} justifyContent={"end"} width={"100%"}>
               <MapComponent
                 setAddressInformation={setAddressInformation}
                 setSearchedAddress={setSearchedAddress}
                 setUseAddress={setUseAddress}
                 isCalAltitude={false}
               />
-            </Box>
+            </Box> */}
             <Typography
               variant="subtitle1"
               color="black"
