@@ -8,8 +8,10 @@ const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key";
 export const POST = async (request: Request) => {
   try {
     const { email, password } = await request.json();
+    // Normalize the email to lowercase
+    const normalizedEmail = email.toLowerCase();
     const user = await prisma.user.findUnique({
-      where: { email },
+      where: { email: normalizedEmail },
       include: { organisation: { select: { id: true } } },
     });
 

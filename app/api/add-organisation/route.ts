@@ -1,3 +1,4 @@
+import { capitalizeFirstLetter } from "@/app/_lib/utils";
 import prisma from "@/prisma/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -11,7 +12,7 @@ export async function POST(req: NextRequest) {
         city: body.city ?? "",
         postCode: body.postCode ?? "",
         province: body.province ?? "",
-        name: body.address ?? "",
+        name: capitalizeFirstLetter(body.address) ?? "",
       },
     });
 
@@ -29,8 +30,8 @@ export async function POST(req: NextRequest) {
     // Create contacts without userId initially
     const contacts = await prisma.contact.createMany({
       data: body.contacts.map((contact: any) => ({
-        name: contact.name,
-        email: contact.email,
+        name: capitalizeFirstLetter(contact.name),
+        email: contact.email.toLowerCase(),
         phone: contact.phone,
         role: contact.role,
         organisationId: organisation.id,
@@ -41,8 +42,8 @@ export async function POST(req: NextRequest) {
     // Create users and capture their IDs
     const createdUsers = await prisma.user.createMany({
       data: body.contacts.map((user: any) => ({
-        email: user.email,
-        name: user.name,
+        email: user.email.toLowerCase(),
+        name: capitalizeFirstLetter(user.name),
         organisationId: organisation.id,
       })),
     });
@@ -51,7 +52,7 @@ export async function POST(req: NextRequest) {
     const users = await prisma.user.findMany({
       where: {
         email: {
-          in: body.contacts.map((contact: any) => contact.email),
+          in: body.contacts.map((contact: any) => contact.email.toLowerCase()),
         },
       },
       select: { id: true, email: true },
@@ -61,7 +62,7 @@ export async function POST(req: NextRequest) {
     await Promise.all(
       users.map(async (user) => {
         await prisma.contact.updateMany({
-          where: { email: user.email },
+          where: { email: user.email.toLowerCase() },
           data: { userId: String(user.id) },
         });
       })

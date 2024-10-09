@@ -45,3 +45,6 @@ export const ProductFormatCode = [
   "Other",
 ];
 export const nutritionalGuarantee = ["Minimum", "Maximum", "Typical"];
+export function capitalizeFirstLetter(val: string) {
+  return val.charAt(0).toUpperCase() + val.slice(1).toLowerCase();
+}
