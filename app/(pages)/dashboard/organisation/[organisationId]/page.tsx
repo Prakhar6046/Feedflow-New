@@ -25,6 +25,7 @@ import toast from "react-hot-toast";
 import { AddOrganizationFormInputs } from "@/app/_typeModels/Organization";
 import { useRouter } from "next/navigation";
 import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
+import MapComponent from "@/app/_components/farm/MapComponent";
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
   clipPath: "inset(50%)",
@@ -54,6 +55,9 @@ const steps = [
 const Page = ({ params }: { params: { organisationId: string } }) => {
   const router = useRouter();
   const [organisationData, setOrganisationData] = useState<any>();
+  const [addressInformation, setAddressInformation] = useState<any>();
+  const [useAddress, setUseAddress] = useState<boolean>(false);
+  const [searchedAddress, setSearchedAddress] = useState<any>();
   const [loading, setLoading] = useState<boolean>(false);
   const [profilePic, setProfilePic] = useState<String>();
   const [contactError, setcontactError] = useState<string>("");
@@ -162,6 +166,15 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
     };
     organisation();
   }, []);
+  useEffect(() => {
+    if (addressInformation && useAddress) {
+      setValue("address", addressInformation.address.split(",")[0]);
+      setValue("city", addressInformation.city);
+      setValue("province", addressInformation.country);
+      setValue("postCode", addressInformation.postcode);
+      setUseAddress(false);
+    }
+  }, [addressInformation, useAddress]);
   useEffect(() => {
     if (organisationData) {
       setValue("organisationName", organisationData.name);
@@ -571,7 +584,14 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
                     )}
                 </Box>
               </Stack>
-
+              <Box display={"flex"} justifyContent={"end"} width={"100%"}>
+                <MapComponent
+                  setAddressInformation={setAddressInformation}
+                  setSearchedAddress={setSearchedAddress}
+                  setUseAddress={setUseAddress}
+                  isCalAltitude={false}
+                />
+              </Box>
               <Typography
                 variant="subtitle1"
                 fontWeight={500}

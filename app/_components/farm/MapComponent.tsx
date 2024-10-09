@@ -32,6 +32,7 @@ const MapComponent = ({
   setSearchedAddress,
   setUseAddress,
   setAltitude,
+  isCalAltitude,
 }: any) => {
   const [selectedPosition, setSelectedPosition] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -64,7 +65,7 @@ const MapComponent = ({
       const data = await response.json();
 
       if (data.status === "OK" && data.results.length > 0) {
-        if (data.results[0].geometry) {
+        if (isCalAltitude && data.results[0].geometry) {
           const response = await fetch(
             `/api/farm/altitude?lat=${data.results[0].geometry.location.lat}&lng=${data.results[0].geometry.location.lng}`
           );
@@ -103,7 +104,7 @@ const MapComponent = ({
       const data = await response.json();
 
       if (data.status === "OK" && data.results.length > 0) {
-        if (data.results[0].geometry) {
+        if (isCalAltitude && data.results[0].geometry) {
           const response = await fetch(
             `/api/farm/altitude?lat=${data.results[0].geometry.location.lat}&lng=${data.results[0].geometry.location.lng}`
           );

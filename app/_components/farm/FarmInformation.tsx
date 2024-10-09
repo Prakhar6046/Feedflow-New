@@ -43,10 +43,10 @@ const FarmInformation: NextPage<Props> = ({
   const [selectedSwtich, setSelectedSwtich] = useState<string>("address");
   const [altitude, setAltitude] = useState<String>("");
   const [addressInformation, setAddressInformation] = useState<any>();
+  const [useAddress, setUseAddress] = useState<boolean>(false);
   const [searchedAddress, setSearchedAddress] = useState<any>();
   const [fishFarmers, setFishFarmers] = useState<Farm[]>();
   const [loading, setLoading] = useState<boolean>(false);
-  const [useAddress, setUseAddress] = useState<boolean>(false);
   const getFarmers = async () => {
     const response = await fetch("/api/farm/fish-farmers");
     return response.json();
@@ -219,6 +219,7 @@ const FarmInformation: NextPage<Props> = ({
               setSearchedAddress={setSearchedAddress}
               setAltitude={setAltitude}
               setUseAddress={setUseAddress}
+              isCalAltitude={true}
             />
           </Box>
 

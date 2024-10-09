@@ -38,6 +38,7 @@ import {
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { AddOrganizationFormInputs } from "../_typeModels/Organization";
+import MapComponent from "./farm/MapComponent";
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
   clipPath: "inset(50%)",
@@ -61,6 +62,9 @@ const AddNewOrganisation = () => {
   const [profilePic, setProfilePic] = useState<String>();
   const router = useRouter();
   const [contactError, setcontactError] = useState<string>("");
+  const [addressInformation, setAddressInformation] = useState<any>();
+  const [useAddress, setUseAddress] = useState<boolean>(false);
+  const [searchedAddress, setSearchedAddress] = useState<any>();
   const {
     register,
     setValue,
@@ -134,17 +138,15 @@ const AddNewOrganisation = () => {
       setProfilePic(profileData.data.url);
     }
   };
-  //   useEffect(() => {
-  //     const organisation = async () => {
-  //       // setLoading(true);
-  //       const data = await getOrganisation();
-
-  //       setOrganisationData(data.data);
-
-  //       // setUserData(data);
-  //     };
-  //     organisation();
-  //   }, []);
+  useEffect(() => {
+    if (addressInformation && useAddress) {
+      setValue("address", addressInformation.address.split(",")[0]);
+      setValue("city", addressInformation.city);
+      setValue("province", addressInformation.country);
+      setValue("postCode", addressInformation.postcode);
+      setUseAddress(false);
+    }
+  }, [addressInformation, useAddress]);
 
   return (
     <Stack
@@ -625,7 +627,14 @@ const AddNewOrganisation = () => {
                   )}
               </Box>
             </Stack>
-
+            <Box display={"flex"} justifyContent={"end"} width={"100%"}>
+              <MapComponent
+                setAddressInformation={setAddressInformation}
+                setSearchedAddress={setSearchedAddress}
+                setUseAddress={setUseAddress}
+                isCalAltitude={false}
+              />
+            </Box>
             <Typography
               variant="subtitle1"
               color="black"
