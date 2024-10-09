@@ -46,6 +46,7 @@ const FarmInformation: NextPage<Props> = ({
   const [searchedAddress, setSearchedAddress] = useState<any>();
   const [fishFarmers, setFishFarmers] = useState<Farm[]>();
   const [loading, setLoading] = useState<boolean>(false);
+  const [useAddress, setUseAddress] = useState<boolean>(false);
   const getFarmers = async () => {
     const response = await fetch("/api/farm/fish-farmers");
     return response.json();
@@ -69,14 +70,16 @@ const FarmInformation: NextPage<Props> = ({
     }
   }, [editFarm]);
   useEffect(() => {
-    if (addressInformation) {
+    if (addressInformation && useAddress) {
       setValue("addressLine1", addressInformation.address);
+      setValue("addressLine2", addressInformation.address2);
       setValue("city", addressInformation.city);
       setValue("country", addressInformation.country);
       setValue("zipCode", addressInformation.postcode);
       setValue("province", addressInformation.state);
+      setUseAddress(false);
     }
-  }, [addressInformation]);
+  }, [addressInformation, useAddress]);
 
   useEffect(() => {
     if (altitude) {
@@ -215,6 +218,7 @@ const FarmInformation: NextPage<Props> = ({
               setAddressInformation={setAddressInformation}
               setSearchedAddress={setSearchedAddress}
               setAltitude={setAltitude}
+              setUseAddress={setUseAddress}
             />
           </Box>
 
@@ -275,7 +279,14 @@ const FarmInformation: NextPage<Props> = ({
                     label="Address Line 2 "
                     type="text"
                     className="form-input"
-                    {...register("addressLine2")}
+                    // focused
+
+                    {...register("addressLine2", { required: true })}
+                    InputLabelProps={{
+                      shrink:
+                        !!watch("addressLine2") ||
+                        !!addressInformation?.address2,
+                    }}
                     sx={{
                       width: "100%",
                     }}
