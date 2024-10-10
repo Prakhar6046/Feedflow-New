@@ -196,12 +196,12 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
       );
       const responseData = await response.json();
       toast.success(responseData.message);
+
       if (responseData.status) {
         if (isEditFarm) {
-          dispatch(farmAction.resetState());
+          setActiveStep(3);
         }
         // setCookie("activeStep", 3);
-        setActiveStep(3);
       }
     } else {
       toast.error("Please fill out the all feilds");

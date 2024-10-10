@@ -1,3 +1,5 @@
+import { farmAction } from "@/lib/features/farm/farmSlice";
+import { useAppDispatch } from "@/lib/hooks";
 import { Box, Button, Stack, Typography } from "@mui/material";
 import { NextPage } from "next";
 import { useRouter } from "next/navigation";
@@ -8,7 +10,10 @@ interface Props {
 
 const AllDone: NextPage<Props> = ({ setActiveStep }) => {
   const router = useRouter();
+  const dispatch = useAppDispatch();
   const handleClick = () => {
+    dispatch(farmAction.resetState());
+
     router.push("/dashboard/farm");
   };
   return (
