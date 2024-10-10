@@ -13,6 +13,7 @@ import Image from "next/image";
 import { useAppDispatch } from "@/lib/hooks";
 import { sidebarAction } from "@/lib/features/sidebar/sidebarSlice";
 import Logo from "@/public/static/img/logo.svg";
+import { feedAction } from "@/lib/features/feed/feedSlice";
 
 function ClosedSidebar() {
   const router = useRouter();
@@ -248,6 +249,7 @@ function ClosedSidebar() {
                   justifyContent: "center",
                   alignItems: "center",
                 }}
+                onClick={() => dispatch(feedAction.resetState())}
               >
                 <ListItemIcon
                   sx={{

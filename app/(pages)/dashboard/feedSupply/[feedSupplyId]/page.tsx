@@ -51,7 +51,7 @@ export default function Page({ params }: { params: { feedId: string } }) {
         hideSearchInput={true}
         links={[
           { name: "Dashboard", link: "/dashboard" },
-          { name: "Feed Supply", link: "/dashboard" },
+          { name: "Feed Supply", link: "/dashboard/feedSupply" },
           { name: "Edit", link: `/dashboard/feedSupply/${params.feedId}` },
         ]}
       />

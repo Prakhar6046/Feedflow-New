@@ -39,6 +39,8 @@ const MapComponent = ({
   const [locationData, setLocationData] = useState<any>(null);
   const [openDialog, setOpenDialog] = useState(false);
   const [infoWindowOpen, setInfoWindowOpen] = useState(false);
+  const [lat, setLat] = useState<string>();
+  const [lng, setLng] = useState<string>();
 
   // Load Google Maps script
   const { isLoaded, loadError } = useLoadScript({

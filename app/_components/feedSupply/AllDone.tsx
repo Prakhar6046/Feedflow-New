@@ -13,7 +13,6 @@ const AllDone: NextPage<Props> = ({ setActiveStep }) => {
   const dispatch = useAppDispatch();
   const handleClick = () => {
     dispatch(farmAction.resetState());
-
     router.push("/dashboard/farm");
   };
   return (
