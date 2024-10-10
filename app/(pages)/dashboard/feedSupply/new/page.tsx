@@ -1,33 +1,19 @@
 "use client";
 import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
 import FeedSelection from "@/app/_components/feedSupply/FeedSelection";
-import FeedSupplyIntro from "@/app/_components/feedSupply/FeedSupplyIntro";
+import FeedStore from "@/app/_components/feedSupply/FeedStore";
 import NewFeed from "@/app/_components/feedSupply/NewFeed";
 import { Box, Divider, Grid, Step, StepLabel, Stepper } from "@mui/material";
 import { getCookie, setCookie } from "cookies-next";
 
 import { useEffect, useState } from "react";
 
-const steps = [
-  {
-    label: "Intro",
-  },
-  {
-    label: "New Feed",
-  },
-  {
-    label: "Feed Selection",
-  },
-  {
-    label: "Feed Store",
-  },
-  {
-    label: "Finished",
-  },
-];
-
 export default function Page() {
   const activeStepIndex = Number(getCookie("activeStep"));
+  const loggedUser: any = getCookie("logged-user");
+  const [steps, setSteps] = useState<{ label: String; id: number }[]>();
+  const [currentUserOrganisationType, setCurrentUserOrganisationType] =
+    useState<string>();
   const [activeStep, setActiveStep] = useState<number>(
     activeStepIndex !== 0 ? activeStepIndex : 0
   );
@@ -35,6 +21,45 @@ export default function Page() {
   useEffect(() => {
     setCookie("activeStep", activeStep);
   }, [activeStep]);
+  useEffect(() => {
+    if (loggedUser) {
+      const userOrganisationType = JSON.parse(loggedUser);
+      if (
+        userOrganisationType?.data?.user?.organisation.organisationType ===
+        "Fish Farmer"
+      ) {
+        const stepsForFishFarmers = [
+          {
+            label: "Feed Selection",
+            id: 1,
+          },
+          {
+            label: "New Feed",
+            id: 2,
+          },
+        ];
+        setSteps(stepsForFishFarmers);
+      } else if (
+        userOrganisationType?.data?.user?.organisation.organisationType ===
+        "Feed Supplier"
+      ) {
+        const stepsForFeedSupplyers = [
+          {
+            label: "Feed Selection",
+            id: 3,
+          },
+
+          {
+            label: "Feed Store",
+            id: 4,
+          },
+        ];
+        setSteps(stepsForFeedSupplyers);
+      }
+    }
+  }, [loggedUser]);
+  console.log(activeStep);
+
   return (
     <>
       <BasicBreadcrumbs
@@ -71,12 +96,13 @@ export default function Page() {
             }}
           >
             <Stepper activeStep={activeStep} orientation="vertical">
-              {steps.map((step, index) => (
+              {steps?.map((step, index) => (
                 <Step
-                  key={step.label}
+                  key={step.id}
                   sx={{
                     fontSize: "30px",
                   }}
+                  onClick={() => setActiveStep(index)}
                 >
                   <StepLabel className="stepper">{step.label}</StepLabel>
                 </Step>
@@ -102,24 +128,14 @@ export default function Page() {
             }}
           />
         </Grid>
-        <Grid
-          item
-          xl={9}
-          md={8}
-          xs={12}
-          my={2}
-          // sx={{
-          //     mt: {
-          //         md: 0,
-          //         xs: 5,
-          //     },
-          // }}
-        >
-          {activeStep === 0 && (
-            <FeedSupplyIntro setActiveStep={setActiveStep} />
+        <Grid item xl={9} md={8} xs={12} my={2}>
+          {activeStep === 0 && <FeedSelection setActiveStep={setActiveStep} />}
+          {steps && steps[1].label === "Feed Store" && activeStep === 1 && (
+            <FeedStore />
           )}
-          {activeStep === 1 && <NewFeed setActiveStep={setActiveStep} />}
-          {activeStep === 2 && <FeedSelection setActiveStep={setActiveStep} />}
+          {steps && steps[1].label === "New Feed" && activeStep === 1 && (
+            <NewFeed setActiveStep={setActiveStep} />
+          )}
         </Grid>
       </Grid>
     </>

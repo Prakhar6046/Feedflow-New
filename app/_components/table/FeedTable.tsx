@@ -27,6 +27,7 @@ import React, { useEffect, useState } from "react";
 import Loader from "../Loader";
 import { FeedSupply } from "../feedSupply/FeedSelection";
 import { feedAction } from "@/lib/features/feed/feedSlice";
+import { getCookie } from "cookies-next";
 
 interface Props {
   feeds: FeedSupply[];
@@ -43,6 +44,7 @@ export default function FeedTable({ feeds }: Props) {
   const router = useRouter();
   const dispatch = useAppDispatch();
   //   const loading = useAppSelector(selectFarmLoading);
+
   const [feedsData, setFeedsData] = useState<any>();
   const [selectedFeed, setSelectedFeed] = useState<any>(null);
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(

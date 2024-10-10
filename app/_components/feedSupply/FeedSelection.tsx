@@ -472,7 +472,9 @@ const FeedSelection: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                             fontWeight={500}
                             fontSize={14}
                           >
-                            {`  Moisture (${getNutritionalValue(supply?.nutritionalGuarantee?.moisture.value)})`}
+                            {`  Moisture (${getNutritionalValue(
+                              supply?.nutritionalGuarantee?.moisture.value
+                            )})`}
                           </Typography>
                         </Grid>
 
@@ -492,7 +494,9 @@ const FeedSelection: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                             fontWeight={500}
                             fontSize={14}
                           >
-                            {`Crude Protein (${getNutritionalValue(supply?.nutritionalGuarantee?.crudeProtein.value)})`}
+                            {`Crude Protein (${getNutritionalValue(
+                              supply?.nutritionalGuarantee?.crudeProtein.value
+                            )})`}
                           </Typography>
                         </Grid>
 
@@ -512,7 +516,9 @@ const FeedSelection: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                             fontWeight={500}
                             fontSize={14}
                           >
-                            {`Crude Fat (${getNutritionalValue(supply?.nutritionalGuarantee?.crudeFat.value)})`}
+                            {`Crude Fat (${getNutritionalValue(
+                              supply?.nutritionalGuarantee?.crudeFat.value
+                            )})`}
                           </Typography>
                         </Grid>
 
@@ -532,7 +538,9 @@ const FeedSelection: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                             fontWeight={500}
                             fontSize={14}
                           >
-                            {`Crude Fiber (${getNutritionalValue(supply?.nutritionalGuarantee?.crudeFiber.value)})`}
+                            {`Crude Fiber (${getNutritionalValue(
+                              supply?.nutritionalGuarantee?.crudeFiber.value
+                            )})`}
                           </Typography>
                         </Grid>
 
@@ -552,7 +560,9 @@ const FeedSelection: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                             fontWeight={500}
                             fontSize={14}
                           >
-                            {`Crude Ash (${getNutritionalValue(supply?.nutritionalGuarantee?.crudeAsh.value)})`}
+                            {`Crude Ash (${getNutritionalValue(
+                              supply?.nutritionalGuarantee?.crudeAsh.value
+                            )})`}
                           </Typography>
                         </Grid>
 
@@ -572,7 +582,9 @@ const FeedSelection: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                             fontWeight={500}
                             fontSize={14}
                           >
-                            {`Calcium (${getNutritionalValue(supply?.nutritionalGuarantee?.calcium.value)})`}
+                            {`Calcium (${getNutritionalValue(
+                              supply?.nutritionalGuarantee?.calcium.value
+                            )})`}
                           </Typography>
                         </Grid>
 
@@ -592,7 +604,9 @@ const FeedSelection: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                             fontWeight={500}
                             fontSize={14}
                           >
-                            {`Phosphorous (${getNutritionalValue(supply?.nutritionalGuarantee?.phosphorous.value)})`}
+                            {`Phosphorous (${getNutritionalValue(
+                              supply?.nutritionalGuarantee?.phosphorous.value
+                            )})`}
                           </Typography>
                         </Grid>
 
@@ -738,24 +752,6 @@ const FeedSelection: NextPage<Props> = ({ setActiveStep, editFarm }) => {
               type="button"
               variant="contained"
               sx={{
-                background: "#fff",
-                color: "#06A19B",
-                fontWeight: 600,
-                padding: "6px 16px",
-                width: "fit-content",
-                textTransform: "capitalize",
-                borderRadius: "8px",
-                border: "1px solid #06A19B",
-              }}
-              onClick={() => setActiveStep(1)}
-            >
-              Previous
-            </Button>
-
-            <Button
-              type="button"
-              variant="contained"
-              sx={{
                 background: "#06A19B",
                 fontWeight: 600,
                 padding: "6px 16px",
@@ -763,9 +759,9 @@ const FeedSelection: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                 textTransform: "capitalize",
                 borderRadius: "8px",
               }}
-              onClick={() => router.push("/dashboard/feedSupply")}
+              onClick={() => setActiveStep(1)}
             >
-              Save
+              Next
             </Button>
           </Box>
         </Box>

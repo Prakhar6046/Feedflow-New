@@ -122,7 +122,6 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
         if (isEditFeed) {
           dispatch(feedAction.resetState());
           reset();
-          setActiveStep(2);
           router.push("/dashboard/feedSupply");
         }
         reset();
@@ -3059,7 +3058,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                     >
                       Previous
                     </Button>
-                    <Button
+                    {/* <Button
                       type="button"
                       variant="contained"
                       sx={{
@@ -3073,7 +3072,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                       onClick={() => setActiveStep(2)}
                     >
                       Next
-                    </Button>
+                    </Button> */}
                   </>
                 )}
               </Box>

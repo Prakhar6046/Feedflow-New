@@ -12,15 +12,17 @@ export const POST = async (request: Request) => {
     const normalizedEmail = email.toLowerCase();
     const user = await prisma.user.findUnique({
       where: { email: normalizedEmail },
-      include: { organisation: { select: { id: true } } },
+      include: { organisation: true },
     });
 
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
     // Check the password
+
     if (user.password) {
       const isPasswordValid = await bcrypt.compare(password, user.password);
+      console.log(isPasswordValid);
 
       if (!isPasswordValid) {
         return NextResponse.json(
@@ -28,6 +30,14 @@ export const POST = async (request: Request) => {
           { status: 401 }
         );
       }
+    } else {
+      return NextResponse.json(
+        {
+          error:
+            "Please check your email and create password to access feedflow",
+        },
+        { status: 404 }
+      );
     }
 
     // Generate a JWT token
