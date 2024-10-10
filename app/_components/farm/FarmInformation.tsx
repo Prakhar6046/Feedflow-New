@@ -282,7 +282,7 @@ const FarmInformation: NextPage<Props> = ({
                     className="form-input"
                     // focused
 
-                    {...register("addressLine2", { required: true })}
+                    {...register("addressLine2")}
                     InputLabelProps={{
                       shrink:
                         !!watch("addressLine2") ||
