@@ -140,9 +140,10 @@ const MapComponent = ({
     let postcode = "";
     let country = "";
 
-    address = completeAddress;
     components.forEach((component: any) => {
-      if (component.types.includes("locality")) {
+      if (component.types.includes("premise")) {
+        address = component.long_name;
+      } else if (component.types.includes("locality")) {
         city = component.long_name;
       } else if (component.types.includes("administrative_area_level_1")) {
         state = component.long_name;
@@ -161,6 +162,7 @@ const MapComponent = ({
         }
       }
     });
+    address2 = address2.trim().replace(/,$/, "");
     return { address, city, state, postcode, country, address2 };
   };
   if (loadError) return <div>Error loading maps</div>;
