@@ -336,7 +336,7 @@ body {
   font-size: 14px;
 }
 
-.test {
+/* .test {
   border-bottom: 0 !important;
   color: #67737f;
   background: #f5f6f8;
@@ -364,72 +364,25 @@ body {
   font-size: 16px;
   font-weight: 700 !important;
   width: 100% !important;
-}
-
-/* .yoyo > div > div:nth-child(2) {
-  display: none;
 } */
 
-.test > div > div > div > div,
-.test1 > div > div > div > div,
-.test2 > div > div > div > div {
-  /* padding-left: 80px; */
-  text-align: center !important;
-  font-weight: 600 !important;
-  width: 100%;
-}
+@media only screen and (max-width: 1600px) {
+  .custom-field > label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 150px;
+    white-space: nowrap;
+  }
 
-.test > div > div > div,
-.test2 > div > div > div {
-  width: 100%;
-}
+  .custom-field > div > legend {
+    max-width: 100px !important;
+  }
 
-.test1 > div > div > div {
-  padding-left: 50px;
-}
-
-.test1 > div > div > div {
-  padding-left: 50px;
-}
-
-.test5 > div > div > div {
-  transform: translateX(50%);
-}
-
-.yoyo > div {
-  border: 0 !important;
-}
-
-.css-dwkzlu-MuiDataGrid-root .MuiDataGrid-columnSeparator {
-  display: none !important;
-}
-
-.yoyo .css-dwkzlu-MuiDataGrid-root .MuiDataGrid-scrollbarFiller {
-  display: none !important;
-}
-
-.yoyo > div > div > div > div:nth-child(2) > div > div {
-  /* display: none !important; */
-  height: auto !important;
-  max-height: unset !important;
-  min-height: auto !important;
-  --height: unset !important;
-  /* padding-block: 10px !important; */
-}
-
-.yoyo > div > div > div > div:nth-child(2) > div > div > * {
-  border-top: none !important;
-  border-bottom: 1px solid #f5f6f8 !important;
-  display: flex !important;
-  align-items: center !important;
-  font-weight: 400 !important;
-  font-size: 14px !important;
-  height: auto !important;
-  /* width: auto !important; */
-  /* margin: 30px !important; */
-  padding-block: 10px !important;
-}
-
-.yoyo > div > div > div > div:nth-child(2) > div > div:hover {
-  background-color: transparent !important;
+  .custom-field > label:focus-visible,
+  .custom-field > div > legend:focus-visible {
+    overflow: visible !important;
+    text-overflow: clip !important;
+    width: 100% !important;
+    white-space: normal !important;
+  }
 }
