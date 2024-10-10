@@ -226,11 +226,11 @@ const FarmInformation: NextPage<Props> = ({
             <>
               <Box>
                 <Typography
-                  variant="h6"
+                  variant="subtitle1"
                   gutterBottom
-                  fontWeight={700}
+                  fontWeight={500}
                   sx={{
-                    fontSize: 18,
+                    fontSize: 16,
                   }}
                 >
                   Address

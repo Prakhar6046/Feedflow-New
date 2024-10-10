@@ -99,7 +99,7 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
           <form onSubmit={handleSubmit(onSubmit)}>
             <Box position={"relative"} mb={3}>
               <TextField
-                label="Password"
+                label="Password *"
                 type={showPassword ? "text" : "password"}
                 // focused
                 className="form-input"
@@ -145,7 +145,7 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
             </Box>
             <Box position={"relative"} mb={5}>
               <TextField
-                label="Confirm Password"
+                label="Confirm Password *"
                 type={showConfirmPassword ? "text" : "password"}
                 className="form-input"
                 // focused
