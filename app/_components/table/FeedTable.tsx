@@ -22,7 +22,7 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import Loader from "../Loader";
 import { FeedSupply } from "../feedSupply/FeedSelection";
@@ -43,6 +43,7 @@ const tableData: Array<string> = [
 export default function FeedTable({ feeds }: Props) {
   const router = useRouter();
   const dispatch = useAppDispatch();
+  const pathName = usePathname();
   //   const loading = useAppSelector(selectFarmLoading);
 
   const [feedsData, setFeedsData] = useState<any>();
@@ -50,7 +51,8 @@ export default function FeedTable({ feeds }: Props) {
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null
   );
-
+  const [order, setOrder] = React.useState("asc");
+  const [orderBy, setOrderBy] = React.useState("name");
   const handleClick = (
     event: React.MouseEvent<HTMLButtonElement>,
     farm: any
@@ -167,8 +169,6 @@ export default function FeedTable({ feeds }: Props) {
       setFeedsData(feeds);
     }
   }, [feeds]);
-  const [order, setOrder] = React.useState("asc");
-  const [orderBy, setOrderBy] = React.useState("name");
 
   const handleRequestSort = (
     _: React.MouseEvent<HTMLButtonElement>,
@@ -193,6 +193,11 @@ export default function FeedTable({ feeds }: Props) {
       setFeedsData(sortedData);
     }
   };
+  useEffect(() => {
+    if (pathName === "/dashboard/feedSupply") {
+      dispatch(feedAction.resetState());
+    }
+  }, [pathName]);
   //   if (loading) {
   //     return <Loader />;
   //   }

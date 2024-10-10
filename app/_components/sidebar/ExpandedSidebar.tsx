@@ -18,7 +18,6 @@ import {
 import { getCookie } from "cookies-next";
 import { LoggedUser } from "../AccountPopover";
 import Logo from "@/public/static/img/logo.svg";
-import { feedAction } from "@/lib/features/feed/feedSlice";
 const ExpandedSidebar = () => {
   const router = useRouter();
   const loggedUser: any = getCookie("logged-user");
@@ -361,7 +360,6 @@ const ExpandedSidebar = () => {
                   alignItems: "center",
                   gap: 1.7,
                 }}
-                onClick={() => dispatch(feedAction.resetState())}
               >
                 <ListItemIcon
                   sx={{

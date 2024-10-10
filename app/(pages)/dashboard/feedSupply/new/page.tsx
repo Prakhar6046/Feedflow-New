@@ -58,7 +58,6 @@ export default function Page() {
       }
     }
   }, [loggedUser]);
-  console.log(activeStep);
 
   return (
     <>
