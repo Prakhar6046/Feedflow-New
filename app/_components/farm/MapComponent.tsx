@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import {
   GoogleMap,
   useLoadScript,
@@ -11,6 +11,10 @@ import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import TextField from "@mui/material/TextField";
+import List from "@mui/material/List"; // For suggestions
+import ListItem from "@mui/material/ListItem"; // For individual suggestion
+import ListItemButton from "@mui/material/ListItemButton"; // For clickable suggestion
+import Paper from "@mui/material/Paper"; // For suggestions container
 
 // Define map container style
 const mapContainerStyle = {
@@ -34,13 +38,18 @@ const MapComponent = ({
   setAltitude,
   isCalAltitude,
 }: any) => {
-  const [selectedPosition, setSelectedPosition] = useState(null);
+  const [selectedPosition, setSelectedPosition] = useState<any>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [locationData, setLocationData] = useState<any>(null);
   const [openDialog, setOpenDialog] = useState(false);
   const [infoWindowOpen, setInfoWindowOpen] = useState(false);
-  const [lat, setLat] = useState<string>();
-  const [lng, setLng] = useState<string>();
+
+  // **Added**: State for autocomplete suggestions
+  const [suggestions, setSuggestions] = useState<any[]>([]);
+
+  // Reference for the autocomplete service
+  const autocompleteServiceRef =
+    useRef<google.maps.places.AutocompleteService | null>(null);
 
   // Load Google Maps script
   const { isLoaded, loadError } = useLoadScript({
@@ -48,15 +57,55 @@ const MapComponent = ({
     libraries,
   });
 
+  // Initialize AutocompleteService once the script is loaded
+  useEffect(() => {
+    if (isLoaded && !autocompleteServiceRef.current) {
+      autocompleteServiceRef.current =
+        new window.google.maps.places.AutocompleteService();
+    }
+  }, [isLoaded]);
+
+  // **Added**: Function to fetch suggestions
+  const fetchSuggestions = (input: string) => {
+    if (!autocompleteServiceRef.current || input.length === 0) {
+      setSuggestions([]);
+      return;
+    }
+
+    const request: google.maps.places.AutocompletionRequest = {
+      input,
+      // **Important:** Removed types to include all suggestions (both geocode and establishments)
+      // types: ["geocode"], // This was restricting suggestions to addresses only
+      // To include establishments (businesses) like "ensuesoft," remove the types parameter
+    };
+
+    autocompleteServiceRef.current.getPlacePredictions(
+      request,
+      (predictions, status) => {
+        if (
+          status === window.google.maps.places.PlacesServiceStatus.OK &&
+          predictions
+        ) {
+          setSuggestions(predictions);
+        } else {
+          setSuggestions([]);
+        }
+      }
+    );
+  };
+
   // Handle map click to place marker and fetch address
-  const onMapClick = useCallback((event: any) => {
-    const lat = event.latLng.lat();
-    const lng = event.latLng.lng();
-    const newPosition: any = { lat, lng };
-    setSelectedPosition(newPosition);
-    setInfoWindowOpen(true);
-    fetchReverseGeocode(lat, lng);
-  }, []);
+  const onMapClick = useCallback(
+    (event: any) => {
+      const lat = event.latLng.lat();
+      const lng = event.latLng.lng();
+      const newPosition: any = { lat, lng };
+      setSelectedPosition(newPosition);
+      setInfoWindowOpen(true);
+      fetchReverseGeocode(lat, lng);
+    },
+    [isCalAltitude]
+  );
 
   // Function to perform reverse geocoding using Google Maps Geocoding API
   const fetchReverseGeocode = async (lat: any, lng: any) => {
@@ -68,10 +117,10 @@ const MapComponent = ({
 
       if (data.status === "OK" && data.results.length > 0) {
         if (isCalAltitude && data.results[0].geometry) {
-          const response = await fetch(
+          const altitudeResponse = await fetch(
             `/api/farm/altitude?lat=${data.results[0].geometry.location.lat}&lng=${data.results[0].geometry.location.lng}`
           );
-          const res = await response.json();
+          const res = await altitudeResponse.json();
           setAltitude(String(res?.results[0]?.elevation));
         }
         const address = data.results[0].formatted_address;
@@ -107,10 +156,10 @@ const MapComponent = ({
 
       if (data.status === "OK" && data.results.length > 0) {
         if (isCalAltitude && data.results[0].geometry) {
-          const response = await fetch(
+          const altitudeResponse = await fetch(
             `/api/farm/altitude?lat=${data.results[0].geometry.location.lat}&lng=${data.results[0].geometry.location.lng}`
           );
-          const res = await response.json();
+          const res = await altitudeResponse.json();
           setAltitude(String(res?.results[0]?.elevation));
         }
         const { lat, lng } = data.results[0].geometry.location;
@@ -134,6 +183,7 @@ const MapComponent = ({
       alert("An error occurred while fetching location data.");
     }
   };
+
   const formatGoogleAddress = (components: any, completeAddress: any) => {
     let address = "";
     let address2 = "";
@@ -167,11 +217,13 @@ const MapComponent = ({
     address2 = address2.trim().replace(/,$/, "");
     return { address, city, state, postcode, country, address2 };
   };
+
   if (loadError) return <div>Error loading maps</div>;
   if (!isLoaded) return <div>Loading Maps</div>;
 
   return (
-    <div>
+    <div style={{ position: "relative" }}>
+      {/* <-- Added relative positioning for suggestions dropdown */}
       <Button
         type="button"
         onClick={() => setOpenDialog(true)}
@@ -190,7 +242,6 @@ const MapComponent = ({
       >
         Use Coordinates
       </Button>
-
       <Dialog open={openDialog} onClose={() => setOpenDialog(false)} fullWidth>
         <DialogTitle>Map</DialogTitle>
         <DialogContent>
@@ -199,6 +250,8 @@ const MapComponent = ({
               marginBottom: "20px",
               display: "flex",
               alignItems: "center",
+              position: "relative", // <-- Added for positioning the dropdown
+              width: "100%",
             }}
           >
             <TextField
@@ -206,6 +259,7 @@ const MapComponent = ({
               onChange={(e) => {
                 setSearchQuery(e.target.value);
                 setSearchedAddress(e.target.value);
+                fetchSuggestions(e.target.value); // **Added**: Fetch suggestions on input change
               }}
               placeholder="Search for a location"
               variant="outlined"
@@ -232,7 +286,8 @@ const MapComponent = ({
               type="button"
               variant="contained"
               onClick={() => {
-                setOpenDialog(false), setUseAddress(true);
+                setOpenDialog(false);
+                setUseAddress(true);
               }}
               sx={{
                 background: "#06A19B",
@@ -248,6 +303,96 @@ const MapComponent = ({
             >
               Use Address
             </Button>
+
+            {/* **Moved** the suggestions dropdown inside the relative parent */}
+            {suggestions.length > 0 && (
+              <Paper
+                style={{
+                  position: "absolute",
+                  top: "100%", // Position right below the input field
+                  left: 0,
+                  right: 0,
+                  zIndex: 1000,
+                  maxHeight: "200px",
+                  overflowY: "auto",
+                  backgroundColor: "#fff", // Ensure background is white
+                  border: "1px solid #ccc", // Add a subtle border
+                  borderTop: "none", // Remove top border to connect with input
+                }}
+              >
+                <List>
+                  {suggestions.map((suggestion) => (
+                    <ListItem key={suggestion.place_id} disablePadding>
+                      <ListItemButton
+                        onClick={async () => {
+                          // **Added**: Handle suggestion selection
+                          setSearchQuery(suggestion.description);
+                          setSearchedAddress(suggestion.description);
+                          setSuggestions([]); // Clear suggestions
+
+                          // Fetch place details to get lat and lng
+                          const geocoder = new window.google.maps.Geocoder();
+                          geocoder.geocode(
+                            { placeId: suggestion.place_id },
+                            (results, status) => {
+                              if (
+                                status === "OK" &&
+                                results &&
+                                results[0].geometry
+                              ) {
+                                const { lat, lng } =
+                                  results[0].geometry.location;
+                                const newPosition: any = {
+                                  lat: lat(),
+                                  lng: lng(),
+                                };
+                                setSelectedPosition(newPosition);
+                                setLocationData(results[0].formatted_address);
+                                setInfoWindowOpen(true);
+                                setAddressInformation(
+                                  formatGoogleAddress(
+                                    results[0].address_components,
+                                    results[0].formatted_address
+                                  )
+                                );
+
+                                // Optionally, fetch altitude if required
+                                if (
+                                  isCalAltitude &&
+                                  results[0].geometry.location
+                                ) {
+                                  fetch(
+                                    `/api/farm/altitude?lat=${results[0].geometry.location.lat()}&lng=${results[0].geometry.location.lng()}`
+                                  )
+                                    .then((altitudeRes) => altitudeRes.json())
+                                    .then((altitudeData) => {
+                                      setAltitude(
+                                        String(
+                                          altitudeData?.results[0]?.elevation
+                                        )
+                                      );
+                                    })
+                                    .catch((error) => {
+                                      console.error(
+                                        "Error fetching altitude:",
+                                        error
+                                      );
+                                    });
+                                }
+                              } else {
+                                alert("Location details not found.");
+                              }
+                            }
+                          );
+                        }}
+                      >
+                        {suggestion.description}
+                      </ListItemButton>
+                    </ListItem>
+                  ))}
+                </List>
+              </Paper>
+            )}
           </div>
 
           <GoogleMap
