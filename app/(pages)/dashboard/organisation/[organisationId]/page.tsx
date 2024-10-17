@@ -1,7 +1,8 @@
 "use client";
 // import UploadFileOutlinedIcon from '@mui/icons-material/UploadFileOutlined';
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-
+import * as validationPattern from "@/app/_lib/utils/validationPatterns/index";
+import * as validationMessage from "@/app/_lib/utils/validationsMessage/index";
 import Select from "@mui/material/Select";
 
 import { OrganisationType } from "@/app/_components/AddNewOrganisation";
@@ -567,6 +568,7 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
                     className="form-input"
                     {...register("postCode", {
                       required: true,
+                      pattern: validationPattern.onlyNumbersPattern,
                     })}
                     focused
                     sx={{
@@ -583,6 +585,19 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
                         mt={0.5}
                       >
                         This field is required.
+                      </Typography>
+                    )}
+
+                  {errors &&
+                    errors.postCode &&
+                    errors.postCode.type === "pattern" && (
+                      <Typography
+                        variant="body2"
+                        color="red"
+                        fontSize={13}
+                        mt={0.5}
+                      >
+                        {validationMessage.onlyNumbers}
                       </Typography>
                     )}
                 </Box>
