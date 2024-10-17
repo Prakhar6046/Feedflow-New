@@ -117,6 +117,7 @@ export default function AddNewUser({ organisations }: Props) {
     if (response.ok) {
       const profileData = await response.json();
       setProfilePic(profileData.data.url);
+      toast.success("Profile photo successfully uploaded");
     }
   };
   useEffect(() => {
