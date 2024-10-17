@@ -198,6 +198,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
       toast.success(responseData.message);
 
       if (responseData.status) {
+        router.push("/dashboard/farm");
         if (isEditFarm) {
           setActiveStep(3);
         }
