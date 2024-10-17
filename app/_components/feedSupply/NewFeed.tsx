@@ -91,6 +91,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
     setValue,
     watch,
     getValues,
+    trigger,
     formState: { errors },
   } = useForm<FormInputs>();
   const onSubmit: SubmitHandler<FormInputs> = async (data) => {
@@ -233,7 +234,10 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                     })}
                     label="Feed Supplier *"
                     value={watch("feedSupplier") || ""}
-                    onChange={(e) => setValue("feedSupplier", e.target.value)}
+                    onChange={(e) => {
+                      setValue("feedSupplier", e.target.value);
+                      trigger("feedSupplier");
+                    }}
                   >
                     {feedSuppliers?.map((supplier: any) => {
                       return (
@@ -539,7 +543,10 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                       required: true,
                     })}
                     value={watch("productFormat") || ""}
-                    onChange={(e) => setValue("productFormat", e.target.value)}
+                    onChange={(e) => {
+                      setValue("productFormat", e.target.value);
+                      trigger("productFormat");
+                    }}
                   >
                     {ProductFormatCode.map((format, i) => {
                       return (
@@ -692,9 +699,10 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                       required: true,
                     })}
                     value={watch("nutritionalClass") || ""}
-                    onChange={(e) =>
-                      setValue("nutritionalClass", e.target.value)
-                    }
+                    onChange={(e) => {
+                      setValue("nutritionalClass", e.target.value);
+                      trigger("nutritionalClass");
+                    }}
                   >
                     {nutritionalClass.map((nutritional, i) => {
                       return (
@@ -732,9 +740,10 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                       required: true,
                     })}
                     value={watch("nutritionalPurpose") || ""}
-                    onChange={(e) =>
-                      setValue("nutritionalPurpose", e.target.value)
-                    }
+                    onChange={(e) => {
+                      setValue("nutritionalPurpose", e.target.value);
+                      trigger("nutritionalPurpose");
+                    }}
                   >
                     {nutritionalPurpose.map((intensity, i) => {
                       return (
@@ -778,7 +787,10 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                       required: true,
                     })}
                     value={watch("specie") || ""}
-                    onChange={(e) => setValue("specie", e.target.value)}
+                    onChange={(e) => {
+                      setValue("specie", e.target.value);
+                      trigger("specie");
+                    }}
                   >
                     {species.map((specie, i) => {
                       return (
@@ -957,9 +969,10 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                     })}
                     label="Production Intensity *"
                     value={watch("productionIntensity") || ""}
-                    onChange={(e) =>
-                      setValue("productionIntensity", e.target.value)
-                    }
+                    onChange={(e) => {
+                      setValue("productionIntensity", e.target.value);
+                      trigger("productionIntensity");
+                    }}
                   >
                     {productionIntensity.map((intensity, i) => {
                       return (
@@ -995,7 +1008,10 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                     })}
                     label="Unit *"
                     value={watch("unit") !== "None" ? watch("unit") : ""}
-                    onChange={(e) => setValue("unit", e.target.value)}
+                    onChange={(e) => {
+                      setValue("unit", e.target.value);
+                      trigger("unit");
+                    }}
                   >
                     {units.map((unit, i) => {
                       return (
@@ -1035,7 +1051,10 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                         ? watch("feedingPhase")
                         : ""
                     }
-                    onChange={(e) => setValue("feedingPhase", e.target.value)}
+                    onChange={(e) => {
+                      setValue("feedingPhase", e.target.value);
+                      trigger("feedingPhase");
+                    }}
                   >
                     {feedingPhase.map((intensity, i) => {
                       return (
@@ -1075,7 +1094,10 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                     value={
                       watch("lifeStage") !== "None" ? watch("lifeStage") : ""
                     }
-                    onChange={(e) => setValue("lifeStage", e.target.value)}
+                    onChange={(e) => {
+                      setValue("lifeStage", e.target.value);
+                      trigger("lifeStage");
+                    }}
                   >
                     {lifeStage.map((stage, i) => {
                       return (
@@ -1398,12 +1420,13 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                                 watch("nutritionalGuarantee.moisture.value") ||
                                 ""
                               }
-                              onChange={(e) =>
+                              onChange={(e) => {
                                 setValue(
                                   "nutritionalGuarantee.moisture.value",
                                   e.target.value
-                                )
-                              }
+                                );
+                                trigger("nutritionalGuarantee.moisture.value");
+                              }}
                             >
                               {nutritionalGuarantee.map((guarantee, i) => {
                                 return (
@@ -1600,12 +1623,15 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                                   "nutritionalGuarantee.crudeProtein.value"
                                 ) || ""
                               }
-                              onChange={(e) =>
+                              onChange={(e) => {
                                 setValue(
                                   "nutritionalGuarantee.crudeProtein.value",
                                   e.target.value
-                                )
-                              }
+                                );
+                                trigger(
+                                  "nutritionalGuarantee.crudeProtein.value"
+                                );
+                              }}
                             >
                               {nutritionalGuarantee.map((guarantee, i) => {
                                 return (
@@ -1804,12 +1830,13 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                                 watch("nutritionalGuarantee.crudeFat.value") ||
                                 ""
                               }
-                              onChange={(e) =>
+                              onChange={(e) => {
                                 setValue(
                                   "nutritionalGuarantee.crudeFat.value",
                                   e.target.value
-                                )
-                              }
+                                );
+                                trigger("nutritionalGuarantee.crudeFat.value");
+                              }}
                             >
                               {nutritionalGuarantee.map((guarantee, i) => {
                                 return (
@@ -1999,12 +2026,13 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                                 watch("nutritionalGuarantee.crudeAsh.value") ||
                                 ""
                               }
-                              onChange={(e) =>
+                              onChange={(e) => {
                                 setValue(
                                   "nutritionalGuarantee.crudeAsh.value",
                                   e.target.value
-                                )
-                              }
+                                );
+                                trigger("nutritionalGuarantee.crudeAsh.value");
+                              }}
                               // onChange={handleChange}
                             >
                               {nutritionalGuarantee.map((guarantee, i) => {
@@ -2197,12 +2225,15 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                                   "nutritionalGuarantee.crudeFiber.value"
                                 ) || ""
                               }
-                              onChange={(e) =>
+                              onChange={(e) => {
                                 setValue(
                                   "nutritionalGuarantee.crudeFiber.value",
                                   e.target.value
-                                )
-                              }
+                                );
+                                trigger(
+                                  "nutritionalGuarantee.crudeFiber.value"
+                                );
+                              }}
                               // onChange={handleChange}
                             >
                               {nutritionalGuarantee.map((guarantee, i) => {
@@ -2401,12 +2432,13 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                                 watch("nutritionalGuarantee.calcium.value") ||
                                 ""
                               }
-                              onChange={(e) =>
+                              onChange={(e) => {
                                 setValue(
                                   "nutritionalGuarantee.calcium.value",
                                   e.target.value
-                                )
-                              }
+                                );
+                                trigger("nutritionalGuarantee.calcium.value");
+                              }}
                             >
                               {nutritionalGuarantee.map((guarantee, i) => {
                                 return (
@@ -2602,12 +2634,15 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                                   "nutritionalGuarantee.phosphorous.value"
                                 ) || ""
                               }
-                              onChange={(e) =>
+                              onChange={(e) => {
                                 setValue(
                                   "nutritionalGuarantee.phosphorous.value",
                                   e.target.value
-                                )
-                              }
+                                );
+                                trigger(
+                                  "nutritionalGuarantee.phosphorous.value"
+                                );
+                              }}
                             >
                               {nutritionalGuarantee.map((guarantee, i) => {
                                 return (
@@ -2826,12 +2861,13 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                           watch("nutritionalGuarantee.carbohydrates.value") ||
                           ""
                         }
-                        onChange={(e) =>
+                        onChange={(e) => {
                           setValue(
                             "nutritionalGuarantee.carbohydrates.value",
                             e.target.value
-                          )
-                        }
+                          );
+                          trigger("nutritionalGuarantee.carbohydrates.value");
+                        }}
                       >
                         {nutritionalGuarantee.map((guarantee, i) => {
                           return (
@@ -3046,12 +3082,15 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
                             "nutritionalGuarantee.metabolizableEnergy.value"
                           ) || ""
                         }
-                        onChange={(e) =>
+                        onChange={(e) => {
                           setValue(
                             "nutritionalGuarantee.metabolizableEnergy.value",
                             e.target.value
-                          )
-                        }
+                          );
+                          trigger(
+                            "nutritionalGuarantee.metabolizableEnergy.value"
+                          );
+                        }}
                       >
                         {nutritionalGuarantee.map((guarantee, i) => {
                           return (
