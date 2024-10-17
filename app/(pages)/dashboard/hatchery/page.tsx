@@ -39,7 +39,7 @@ export default function Page() {
     <>
       <BasicBreadcrumbs
         heading={"Hatchery"}
-        buttonName={"New Batch"}
+        buttonName={"New Fish Supply"}
         isTable={true}
         buttonRoute="/dashboard/hatchery/new"
         links={[

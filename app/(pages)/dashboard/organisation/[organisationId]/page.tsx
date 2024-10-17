@@ -404,8 +404,8 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
                       width: "100%",
                     }}
                     focused
-                    // focused={true}
-                    // value={userData?.data.email ?? "Demo@gmail.com"}
+                  // focused={true}
+                  // value={userData?.data.email ?? "Demo@gmail.com"}
                   />
                   {errors &&
                     errors.organisationCode &&
@@ -431,14 +431,14 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
                   label="Production Unit Type *"
                   {...register("organisationType")}
                   value={selectedOrganisationType || ""}
-                  // onChange={(e) => handleChange(e, item)}
-                  // sx={{
-                  //   px: {
-                  //     xl: 10,
-                  //     md: 5,
-                  //     xs: 3,
-                  //   },
-                  // }}
+                // onChange={(e) => handleChange(e, item)}
+                // sx={{
+                //   px: {
+                //     xl: 10,
+                //     md: 5,
+                //     xs: 3,
+                //   },
+                // }}
                 >
                   {OrganisationType.map((organisation, i) => {
                     return (

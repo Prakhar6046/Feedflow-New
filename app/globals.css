@@ -386,3 +386,10 @@ body {
     white-space: normal !important;
   }
 }
+
+.profile-badge > span {
+  position: relative;
+  background: #0e848e;
+  transform: none;
+  font-size: 11px;
+}
