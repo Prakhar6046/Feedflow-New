@@ -182,11 +182,7 @@ export default function FeedTable({ feeds }: Props) {
         const orderType = order === "asc" ? 1 : -1;
         if (feed1.property < feed2.property) return -1 * orderType;
         if (feed1.property > feed2.property) return 1 * orderType;
-        // if (property === "name") {
-        //   if (feed1.name < feed2.name) return -1 * orderType;
-        //   if (feed1.name > feed2.name) return 1 * orderType;
-        //   return 0;
-        // }
+
         return 0;
       });
 

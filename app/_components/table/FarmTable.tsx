@@ -26,7 +26,7 @@ import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import Loader from "../Loader";
 import { breadcrumsAction } from "@/lib/features/breadcrum/breadcrumSlice";
-import { getCookie } from "cookies-next";
+import { getCookie, setCookie } from "cookies-next";
 
 interface Props {
   farms: any;
@@ -61,8 +61,10 @@ export default function FarmTable() {
   };
   const handleEdit = () => {
     if (selectedFarm) {
-      dispatch(farmAction.editFarm(selectedFarm));
+      dispatch(farmAction.handleIsFarm());
+      // dispatch(farmAction.editFarm(selectedFarm));
       router.push(`/dashboard/farm/${selectedFarm.id}`);
+      setCookie("activeStep", 1);
     }
   };
   const handleClose = () => {
@@ -78,6 +80,7 @@ export default function FarmTable() {
       dispatch(farmAction.handleLoading(false));
     };
     data();
+    dispatch(farmAction.resetState());
   }, []);
   useEffect(() => {
     if (sortDataFromLocal) {

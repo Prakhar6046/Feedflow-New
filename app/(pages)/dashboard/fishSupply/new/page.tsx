@@ -1,22 +1,14 @@
 "use client";
 import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
-import {
-  Box,
-  Divider,
-  Grid,
-  SelectChangeEvent,
-  Step,
-  StepLabel,
-  Stepper,
-} from "@mui/material";
+import { Box, Divider, Grid, Step, StepLabel, Stepper } from "@mui/material";
 
-import React, { useState } from "react";
+import { useState } from "react";
 
-import BatchWizard from "@/app/_components/batch/BatchWizard";
-import BatchReport from "@/app/_components/batch/BatchReport";
-import HarvestingInfo from "@/app/_components/batch/HarvestingInfo";
 import AllDone from "@/app/_components/batch/AllDone";
+import BatchReport from "@/app/_components/batch/BatchReport";
+import BatchWizard from "@/app/_components/batch/BatchWizard";
 import FeedingPlan from "@/app/_components/batch/FeedingPlan";
+import HarvestingInfo from "@/app/_components/batch/HarvestingInfo";
 
 const steps = [
   {
@@ -38,25 +30,6 @@ const steps = [
 
 export default function Page() {
   const [activeStep, setActiveStep] = useState<number>(0);
-
-  const handleNext = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
-  };
-
-  const handleBack = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep - 1);
-  };
-
-  const handleReset = () => {
-    setActiveStep(0);
-  };
-
-  const [age, setAge] = React.useState("");
-
-  const handleChange = (event: SelectChangeEvent) => {
-    setAge(event.target.value as string);
-  };
-
   return (
     <>
       <BasicBreadcrumbs
@@ -64,8 +37,8 @@ export default function Page() {
         hideSearchInput={true}
         links={[
           { name: "Dashboard", link: "/dashboard" },
-          { name: "Hatchery", link: "/dashboard/hatchery" },
-          { name: "New", link: "/dashboard/hatchery/new" },
+          { name: "Fish Supply", link: "/dashboard/fishSupply" },
+          { name: "New", link: "/dashboard/fishSupply/new" },
         ]}
       />
 

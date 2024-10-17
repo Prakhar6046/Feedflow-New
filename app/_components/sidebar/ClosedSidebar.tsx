@@ -13,6 +13,7 @@ import Image from "next/image";
 import { useAppDispatch } from "@/lib/hooks";
 import { sidebarAction } from "@/lib/features/sidebar/sidebarSlice";
 import Logo from "@/public/static/img/logo.svg";
+import { farmAction } from "@/lib/features/farm/farmSlice";
 
 function ClosedSidebar() {
   const router = useRouter();
@@ -126,7 +127,7 @@ function ClosedSidebar() {
             }}
           />
 
-          <Link href={"/dashboard/hatchery"} className="nav-links">
+          <Link href={"/dashboard/fishSupply"} className="nav-links">
             <ListItem
               sx={{
                 paddingX: 0,
@@ -135,7 +136,7 @@ function ClosedSidebar() {
             >
               <ListItemButton
                 className={
-                  activePage.startsWith("/dashboard/hatchery") ? "active" : ""
+                  activePage.startsWith("/dashboard/fishSupply") ? "active" : ""
                 }
                 sx={{
                   display: "flex",
@@ -174,15 +175,20 @@ function ClosedSidebar() {
                   className="closed-nav-links"
                   sx={{
                     mt: 0.5,
+                    textAlign: "center",
                   }}
                 >
-                  Hatchery
+                  Fish Supply
                 </ListItemText>
               </ListItemButton>
             </ListItem>
           </Link>
 
-          <Link href={"/dashboard/farm"} className="nav-links">
+          <Link
+            href={"/dashboard/farm"}
+            className="nav-links"
+            onClick={() => dispatch(farmAction.resetState())}
+          >
             <ListItem
               sx={{
                 paddingX: 0,

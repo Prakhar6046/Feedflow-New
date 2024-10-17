@@ -42,6 +42,9 @@ const FarmInformation: NextPage<Props> = ({
   } = useForm<Farm>({ mode: "onChange" });
   const [selectedSwtich, setSelectedSwtich] = useState<string>("address");
   const [altitude, setAltitude] = useState<String>("");
+  const [lat, setLat] = useState<String>("");
+  const [lng, setLng] = useState<String>("");
+
   const [addressInformation, setAddressInformation] = useState<any>();
   const [useAddress, setUseAddress] = useState<boolean>(false);
   const [searchedAddress, setSearchedAddress] = useState<any>();
@@ -67,6 +70,8 @@ const FarmInformation: NextPage<Props> = ({
       setValue("zipCode", editFarm?.farmAddress?.zipCode);
       setValue("province", editFarm?.farmAddress?.province);
       setValue("fishFarmer", editFarm?.fishFarmer);
+      setValue("lat", editFarm?.lat);
+      setValue("lng", editFarm?.lng);
     }
   }, [editFarm]);
   useEffect(() => {
@@ -82,10 +87,14 @@ const FarmInformation: NextPage<Props> = ({
   }, [addressInformation, useAddress]);
 
   useEffect(() => {
-    if (altitude) {
+    if (altitude && lat && lng) {
       setValue("farmAltitude", altitude);
+      setValue("lat", lat);
+      setValue("lng", lng);
     }
-  }, [altitude, setValue]);
+  }, [altitude, setValue, lat, lng]);
+  console.log(lat, lng, altitude);
+
   useEffect(() => {
     setLoading(true);
     const getFeedSupplyer = async () => {
@@ -136,7 +145,6 @@ const FarmInformation: NextPage<Props> = ({
               </Typography>
             )}
           </Box>
-
           <Box mb={2} width={"100%"}>
             <TextField
               label="Farm Altitude *"
@@ -166,6 +174,58 @@ const FarmInformation: NextPage<Props> = ({
                   {validationMessage.onlyNumbers}
                 </Typography>
               )}
+          </Box>
+          <Box mb={2} width={"100%"}>
+            <TextField
+              label="Farm Lat *"
+              type="text"
+              className="form-input"
+              focused={altitude ? true : false}
+              {...register("lat", {
+                required: true,
+                pattern: validationPattern.negativeNumberWithDot,
+              })}
+              sx={{
+                width: "100%",
+              }}
+            />
+
+            {errors && errors.lat && errors.lat.type === "required" && (
+              <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                {validationMessage.required}
+              </Typography>
+            )}
+            {errors && errors.lat && errors.lat.type === "pattern" && (
+              <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                {validationMessage.NegativeNumberWithDot}
+              </Typography>
+            )}
+          </Box>{" "}
+          <Box mb={2} width={"100%"}>
+            <TextField
+              label="Farm Lng *"
+              type="text"
+              className="form-input"
+              focused={altitude ? true : false}
+              {...register("lng", {
+                required: true,
+                pattern: validationPattern.negativeNumberWithDot,
+              })}
+              sx={{
+                width: "100%",
+              }}
+            />
+
+            {errors && errors.lng && errors.lng.type === "required" && (
+              <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                {validationMessage.required}
+              </Typography>
+            )}
+            {errors && errors.lng && errors.lng.type === "pattern" && (
+              <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                {validationMessage.NegativeNumberWithDot}
+              </Typography>
+            )}
           </Box>
           <Box mb={2} width={"100%"}>
             <FormControl fullWidth className="form-input">
@@ -204,7 +264,6 @@ const FarmInformation: NextPage<Props> = ({
                 )}
             </FormControl>
           </Box>
-
           <Box
             display={"flex"}
             justifyContent={"end"}
@@ -218,11 +277,12 @@ const FarmInformation: NextPage<Props> = ({
               setAddressInformation={setAddressInformation}
               setSearchedAddress={setSearchedAddress}
               setAltitude={setAltitude}
+              setLat={setLat}
+              setLng={setLng}
               setUseAddress={setUseAddress}
               isCalAltitude={true}
             />
           </Box>
-
           {selectedSwtich === "address" ? (
             <>
               <Box>
@@ -492,7 +552,6 @@ const FarmInformation: NextPage<Props> = ({
           ) : (
             <>Coordinates</>
           )}
-
           <Box
             display={"flex"}
             justifyContent={"flex-end"}

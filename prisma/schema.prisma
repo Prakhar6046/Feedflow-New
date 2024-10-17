@@ -104,6 +104,8 @@ model Farm {
   name          String
   farmAltitude  String
   farmAddressId String?      @unique
+  lat           String?
+  lng           String?
   farmAddress   FarmAddress? @relation(fields: [farmAddressId], references: [id], onUpdate: Cascade)
   fishFarmer    String
   updatedBy     String?
