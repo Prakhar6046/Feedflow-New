@@ -69,11 +69,17 @@ export async function POST(req: NextRequest) {
       })
     );
 
-    // Send invitation emails to created users (if needed)
-    // users.map((user) => {
-    //   InvitationEmail(user);
-    // });
-
+    if (body.hatcheryName) {
+      await prisma.hatchery.create({
+        data: {
+          name: body.hatcheryName ?? "",
+          altitude: body.hatcheryAltitude ?? "",
+          code: body.hatcheryCode ?? "",
+          fishSpecie: body.fishSpecie ?? "",
+          createdBy: organisation.id,
+        },
+      });
+    }
     return NextResponse.json({
       message: "Organisation added successfully",
       data: { organisation, contacts, users },

@@ -1,7 +1,6 @@
 import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
 import { Farm } from "@/app/_components/Farm";
 import Loader from "@/app/_components/Loader";
-// import CommonTable from "@/app/_components/table/CommonTable";
 import FarmTable from "@/app/_components/table/FarmTable";
 import { getFarms } from "@/app/_lib/action";
 import { Suspense } from "react";

@@ -44,6 +44,14 @@ export const ProductFormatCode = [
   "Extruded Pellets",
   "Other",
 ];
+export const Status = [
+  "Current",
+  "Harvested",
+  "Not Allowed",
+  "Removed",
+  "Transferred",
+  "Sold",
+];
 export const nutritionalGuarantee = ["Minimum", "Maximum", "Typical"];
 export function capitalizeFirstLetter(val: string) {
   return val.charAt(0).toUpperCase() + val.slice(1).toLowerCase();

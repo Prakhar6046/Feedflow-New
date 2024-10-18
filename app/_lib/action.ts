@@ -125,3 +125,17 @@ export const getFeedSupplys = async () => {
     return error;
   }
 };
+export const getFishSupply = async () => {
+  try {
+    const data = await fetch(`${process.env.BASE_URL}/api/fish`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    revalidatePath("/dashboard/fishSupply");
+    return await data.json();
+  } catch (error) {
+    return error;
+  }
+};

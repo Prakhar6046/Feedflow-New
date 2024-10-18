@@ -1,5 +1,6 @@
 import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
 import CommonTable from "@/app/_components/table/CommonTable";
+import { getAllOrganisations, getFishSupply } from "@/app/_lib/action";
 import { Box } from "@mui/material";
 import React from "react";
 const tableData: Array<string> = [
@@ -22,7 +23,9 @@ const batchData = [
     product: "lorem",
   },
 ];
-export default function Page() {
+export default async function Page() {
+  const fishSupply = await getFishSupply();
+
   return (
     <>
       <BasicBreadcrumbs
@@ -36,7 +39,11 @@ export default function Page() {
         ]}
       />
       <Box className="hatchery-table">
-        <CommonTable tableData={tableData} data={batchData} />
+        <CommonTable
+          tableData={tableData}
+          data={batchData}
+          fishSupply={fishSupply.data}
+        />
       </Box>
     </>
   );

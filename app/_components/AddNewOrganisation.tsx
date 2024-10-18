@@ -76,6 +76,7 @@ const AddNewOrganisation = () => {
     getValues,
     watch,
     reset,
+    trigger,
     formState: { errors },
   } = useForm<AddOrganizationFormInputs>({
     defaultValues: {
@@ -424,7 +425,16 @@ const AddNewOrganisation = () => {
                 </Typography>
               )}
             </FormControl>
-            {isHatcherySelected && <HatcheryForm altitude={altitude} />}
+            {isHatcherySelected && (
+              <HatcheryForm
+                altitude={altitude}
+                register={register}
+                setValue={setValue}
+                watch={watch}
+                trigger={trigger}
+                errors={errors}
+              />
+            )}
             <Typography
               variant="subtitle1"
               color="black"

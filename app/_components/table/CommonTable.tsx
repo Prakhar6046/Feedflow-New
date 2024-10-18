@@ -19,34 +19,10 @@ import {
 interface Props {
   tableData: Array<string>;
   data?: any;
+  fishSupply?: any;
 }
-// const batchData = [
-//   {
-//     id: 1,
-//     batch: "BN:06.03.2024.NC",
-//     manufactured: "06-03-24 00:00 to 00:59",
-//     product: "Feed Ingredient : Fish meal 65%saf ",
-//   },
-//   {
-//     id: 2,
-//     batch: "BN:06.03.2024.NC",
-//     manufactured: "06-03-24 00:00 to 00:59",
-//     product: "Feed Ingredient : Fish meal 65%saf ",
-//   },
-//   {
-//     id: 3,
-//     batch: "BN:06.03.2024.NC",
-//     manufactured: "06-03-24 00:00 to 00:59",
-//     product: "Feed Ingredient : Fish meal 65%saf ",
-//   },
-//   {
-//     id: 4,
-//     batch: "BN:06.03.2024.NC",
-//     manufactured: "06-03-24 00:00 to 00:59",
-//     product: "Feed Ingredient : Fish meal 65%saf ",
-//   },
-// ];
-export default function CommonTable({ tableData, data }: Props) {
+
+export default function CommonTable({ tableData, data, fishSupply }: Props) {
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null
   );
@@ -58,6 +34,8 @@ export default function CommonTable({ tableData, data }: Props) {
   };
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
+  console.log(fishSupply);
+
   return (
     <Paper
       sx={{
@@ -229,7 +207,7 @@ export default function CommonTable({ tableData, data }: Props) {
                         fontWeight: 500,
                       }}
                       className="cursor-pointer"
-                    // onClick={() => handleEdit(user)}
+                      // onClick={() => handleEdit(user)}
                     >
                       <Button
                         id="basic-button"
@@ -331,11 +309,13 @@ export default function CommonTable({ tableData, data }: Props) {
             ) : (
               <TableRow
                 key={"no table"}
-                sx={{ "&:last-child td, &:last-child th": { border: 0 }, }}
+                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
               >
-                <TableCell sx={{
-                  fontWeight: 500,
-                }}>
+                <TableCell
+                  sx={{
+                    fontWeight: 500,
+                  }}
+                >
                   No Data Found
                 </TableCell>
               </TableRow>

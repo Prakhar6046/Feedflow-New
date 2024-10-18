@@ -57,7 +57,9 @@ model Organisation {
   addressId String?  @unique
   address   Address? @relation(fields: [addressId], references: [id], onUpdate: Cascade)
 
-  contact Contact[]
+  contact    Contact[]
+  hatchery   Hatchery[]   @relation("HatcheryCreator")
+  fishSupply FishSupply[] @relation("fishSupplyCreator")
 
   @@index([createdAt])
   @@index([updatedAt])
@@ -182,6 +184,45 @@ model FeedSupply {
   createdBy            String?
   createdAt            DateTime @default(now())
   updatedAt            DateTime @updatedAt
+
+  @@index([createdAt])
+  @@index([updatedAt])
+}
+
+model Hatchery {
+  id             String        @id @default(cuid())
+  name           String
+  code           String
+  altitude       String
+  fishSpecie     String
+  createdBy      Int? // Optional field, nullable foreign key
+  updatedBy      String?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  creator        Organisation? @relation("HatcheryCreator", fields: [createdBy], references: [id]) // Optional relation to User
+  organisationId Int?
+
+  @@index([createdAt])
+  @@index([updatedAt])
+}
+
+model FishSupply {
+  id               Int           @id @default(autoincrement())
+  organisation     Int
+  hatchingDate     String
+  spawningDate     String
+  spawningNumber   Int
+  age              String
+  broodstockMale   String
+  broodstockFemale String
+  fishFarm         String
+  status           String
+  createdBy        Int? // Optional field, nullable foreign key
+  updatedBy        String?
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+  creator          Organisation? @relation("fishSupplyCreator", fields: [createdBy], references: [id])
+  organisationId   Int?
 
   @@index([createdAt])
   @@index([updatedAt])
