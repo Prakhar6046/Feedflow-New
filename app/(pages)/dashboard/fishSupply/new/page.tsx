@@ -109,6 +109,7 @@ export default function Page() {
                   sx={{
                     width: "100%",
                   }}
+                  focused
                 />
 
                 {/* {errors &&
@@ -140,6 +141,7 @@ export default function Page() {
                   sx={{
                     width: "100%",
                   }}
+                  focused
                 />
 
                 {/* {errors &&
@@ -165,6 +167,7 @@ export default function Page() {
                   sx={{
                     width: "100%",
                   }}
+                  focused
                 />
               </LocalizationProvider>
             </Grid>

@@ -36,7 +36,9 @@ function HatcheryForm({ altitude }: Props) {
           // disabled
           sx={{
             width: "100%",
+            mt: 2,
           }}
+          focused
           // focused={true}
           // value={userData?.data.email ?? "Demo@gmail.com"}
         />
@@ -75,7 +77,9 @@ function HatcheryForm({ altitude }: Props) {
           // disabled
           sx={{
             width: "100%",
+            mt: 2,
           }}
+          focused
           // focused={true}
           // value={userData?.data.email ?? "Demo@gmail.com"}
         />
@@ -114,8 +118,10 @@ function HatcheryForm({ altitude }: Props) {
           // disabled
           sx={{
             width: "100%",
+            mt: 2,
           }}
-          focused={watch("hatcheryAltitude") ? true : false}
+          focused
+          // focused={watch("hatcheryAltitude") ? true : false}
           // value={userData?.data.email ?? "Demo@gmail.com"}
         />
         {/* {errors &&
@@ -153,7 +159,9 @@ function HatcheryForm({ altitude }: Props) {
           // disabled
           sx={{
             width: "100%",
+            mt: 2,
           }}
+          focused
           // focused={true}
           // value={userData?.data.email ?? "Demo@gmail.com"}
         />
