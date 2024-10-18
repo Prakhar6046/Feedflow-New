@@ -1,37 +1,25 @@
 import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
 import CommonTable from "@/app/_components/table/CommonTable";
+import { Box } from "@mui/material";
 import React from "react";
 const tableData: Array<string> = [
+  "Specie",
   "Batch#",
-  "Product",
-  "Manufactured",
-  "Production facility",
-  "",
+  "Broodstock",
+  "Spawning Date",
+  "Hatching Date",
+  "Age",
+  "Hatchery",
+  "Fish Farm",
+  "Production Unit",
+  "Status",
 ];
 const batchData = [
   {
     id: 1,
-    batch: "BN:06.03.2024.NC",
-    manufactured: "06-03-24 00:00 to 00:59",
-    product: "Feed Ingredient : Fish meal 65%saf ",
-  },
-  {
-    id: 2,
-    batch: "BN:06.03.2024.NC",
-    manufactured: "06-03-24 00:00 to 00:59",
-    product: "Feed Ingredient : Fish meal 65%saf ",
-  },
-  {
-    id: 3,
-    batch: "BN:06.03.2024.NC",
-    manufactured: "06-03-24 00:00 to 00:59",
-    product: "Feed Ingredient : Fish meal 65%saf ",
-  },
-  {
-    id: 4,
-    batch: "BN:06.03.2024.NC",
-    manufactured: "06-03-24 00:00 to 00:59",
-    product: "Feed Ingredient : Fish meal 65%saf ",
+    batch: "Lorem ipsum",
+    manufactured: "Lorem ipsum dolor sit amet",
+    product: "lorem",
   },
 ];
 export default function Page() {
@@ -47,7 +35,9 @@ export default function Page() {
           { name: "Fish Supply", link: "/dashboard/fishSupply" },
         ]}
       />
-      <CommonTable tableData={tableData} data={batchData} />
+      <Box className="hatchery-table">
+        <CommonTable tableData={tableData} data={batchData} />
+      </Box>
     </>
   );
 }

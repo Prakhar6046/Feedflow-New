@@ -229,7 +229,7 @@ export default function CommonTable({ tableData, data }: Props) {
                         fontWeight: 500,
                       }}
                       className="cursor-pointer"
-                      // onClick={() => handleEdit(user)}
+                    // onClick={() => handleEdit(user)}
                     >
                       <Button
                         id="basic-button"
@@ -331,9 +331,13 @@ export default function CommonTable({ tableData, data }: Props) {
             ) : (
               <TableRow
                 key={"no table"}
-                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                sx={{ "&:last-child td, &:last-child th": { border: 0 }, }}
               >
-                No Data Found
+                <TableCell sx={{
+                  fontWeight: 500,
+                }}>
+                  No Data Found
+                </TableCell>
               </TableRow>
             )}
           </TableBody>

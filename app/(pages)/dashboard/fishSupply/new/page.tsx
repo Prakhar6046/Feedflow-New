@@ -1,6 +1,22 @@
 "use client";
 import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
-import { Box, Divider, Grid, Step, StepLabel, Stepper } from "@mui/material";
+import {
+  Box,
+  Button,
+  Divider,
+  FormControl,
+  Grid,
+  Grid2,
+  InputLabel,
+  Select,
+  SelectChangeEvent,
+  Stack,
+  Step,
+  StepLabel,
+  Stepper,
+  TextField,
+  Typography,
+} from "@mui/material";
 
 import { useState } from "react";
 
@@ -9,6 +25,9 @@ import BatchReport from "@/app/_components/batch/BatchReport";
 import BatchWizard from "@/app/_components/batch/BatchWizard";
 import FeedingPlan from "@/app/_components/batch/FeedingPlan";
 import HarvestingInfo from "@/app/_components/batch/HarvestingInfo";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 const steps = [
   {
@@ -42,84 +61,457 @@ export default function Page() {
         ]}
       />
 
-      <Grid
-        container
+      <Stack
         sx={{
-          width: "100%",
-          overflow: "hidden",
           borderRadius: "14px",
           boxShadow: "0px 0px 16px 5px #0000001A",
-          p: 3,
+          my: 4,
         }}
       >
-        <Grid item xl={2} md={3} xs={12}>
-          <Box
-            className="stepper-container"
+        <Box
+          sx={{
+            p: {
+              md: 3,
+              xs: 2,
+            },
+            fontSize: 20,
+            fontWeight: 600,
+            borderColor: "#0000001A",
+          }}
+        >
+          Information
+        </Box>
+
+        <Divider />
+
+        <form>
+          <Grid
+            container
+            spacing={2}
             sx={{
-              my: {
+              p: {
                 md: 3,
-                xs: 0,
+                xs: 2,
               },
             }}
           >
-            <Stepper activeStep={activeStep} orientation="vertical">
-              {steps.map((step, index) => (
-                <Step
-                  key={step.label}
+            <Grid item sm={6} xs={12}>
+              <Box width={"100%"}>
+                <TextField
+                  label="Hatchery Name *"
+                  type="text"
+                  className="form-input"
+                  // {...register("organisationName", {
+                  //   required: true,
+                  // })}
+                  // focused={userData?.data.name ? true : false}
+                  // value={userData?.data.name}
                   sx={{
-                    fontSize: "30px",
+                    width: "100%",
                   }}
+                />
+
+                {/* {errors &&
+                errors.organisationName &&
+                errors.organisationName.type === "required" && (
+                  <Typography
+                    variant="body2"
+                    color="red"
+                    fontSize={13}
+                    mt={0.5}
+                  >
+                    This field is required.
+                  </Typography>
+                )} */}
+              </Box>
+            </Grid>
+
+            <Grid item sm={6} xs={12}>
+              <Box width={"100%"}>
+                <TextField
+                  label="Hatchery Code *"
+                  type="text"
+                  className="form-input"
+                  // {...register("organisationName", {
+                  //   required: true,
+                  // })}
+                  // focused={userData?.data.name ? true : false}
+                  // value={userData?.data.name}
+                  sx={{
+                    width: "100%",
+                  }}
+                />
+
+                {/* {errors &&
+                errors.organisationName &&
+                errors.organisationName.type === "required" && (
+                  <Typography
+                    variant="body2"
+                    color="red"
+                    fontSize={13}
+                    mt={0.5}
+                  >
+                    This field is required.
+                  </Typography>
+                )} */}
+              </Box>
+            </Grid>
+
+            <Grid item sm={6} xs={12}>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DatePicker
+                  label="Hatching Date *"
+                  className="form-input"
+                  sx={{
+                    width: "100%",
+                  }}
+                />
+              </LocalizationProvider>
+            </Grid>
+
+            <Grid item sm={6} xs={12}>
+              <FormControl className="form-input" fullWidth>
+                <InputLabel id="demo-simple-select-label">Specie *</InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  label="Specie *"
+                  // {...register("organisationType")}
+                  // value={selectedOrganisationType || ""}
+                  // onChange={(e) => handleChange(e, item)}
+                  // sx={{
+                  //   px: {
+                  //     xl: 10,
+                  //     md: 5,
+                  //     xs: 3,
+                  //   },
+                  // }}
                 >
-                  <StepLabel className="stepper">{step.label}</StepLabel>
-                </Step>
-              ))}
-            </Stepper>
-          </Box>
-        </Grid>
+                  {/* {OrganisationType.map((organisation, i) => {
+                    return (
+                      <MenuItem value={organisation} key={i}>
+                        {organisation}
+                      </MenuItem>
+                    );
+                  })} */}
+                </Select>
+              </FormControl>
+            </Grid>
 
-        <Grid
-          item
-          xs={1}
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-          }}
-        >
-          <Divider
-            orientation="vertical"
-            flexItem
+            <Grid item sm={6} xs={12}>
+              <Box width={"100%"}>
+                <TextField
+                  label="Specie Code *"
+                  type="text"
+                  className="form-input"
+                  // {...register("organisationName", {
+                  //   required: true,
+                  // })}
+                  // focused={userData?.data.name ? true : false}
+                  // value={userData?.data.name}
+                  sx={{
+                    width: "100%",
+                  }}
+                />
+
+                {/* {errors &&
+  errors.organisationName &&
+  errors.organisationName.type === "required" && (
+    <Typography
+      variant="body2"
+      color="red"
+      fontSize={13}
+      mt={0.5}
+    >
+      This field is required.
+    </Typography>
+  )} */}
+              </Box>
+            </Grid>
+
+            <Grid item sm={6} xs={12}>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DatePicker
+                  label="Spawning Date *"
+                  className="form-input"
+                  sx={{
+                    width: "100%",
+                  }}
+                />
+              </LocalizationProvider>
+            </Grid>
+
+            <Grid item sm={6} xs={12}>
+              <Box width={"100%"}>
+                <TextField
+                  label="Spawning Number *"
+                  type="number"
+                  className="form-input"
+                  // {...register("organisationName", {
+                  //   required: true,
+                  // })}
+                  // focused={userData?.data.name ? true : false}
+                  // value={userData?.data.name}
+                  sx={{
+                    width: "100%",
+                  }}
+                />
+
+                {/* {errors &&
+errors.organisationName &&
+errors.organisationName.type === "required" && (
+<Typography
+variant="body2"
+color="red"
+fontSize={13}
+mt={0.5}
+>
+This field is required.
+</Typography>
+)} */}
+              </Box>
+            </Grid>
+
+            <Grid item sm={6} xs={12}>
+              <Box width={"100%"}>
+                <TextField
+                  label="Age *"
+                  type="number"
+                  className="form-input"
+                  // {...register("organisationName", {
+                  //   required: true,
+                  // })}
+                  // focused={userData?.data.name ? true : false}
+                  // value={userData?.data.name}
+                  sx={{
+                    width: "100%",
+                  }}
+                />
+
+                {/* {errors &&
+errors.organisationName &&
+errors.organisationName.type === "required" && (
+<Typography
+variant="body2"
+color="red"
+fontSize={13}
+mt={0.5}
+>
+This field is required.
+</Typography>
+)} */}
+              </Box>
+            </Grid>
+
+            <Grid item sm={6} xs={12}>
+              <Box width={"100%"}>
+                <TextField
+                  label="Broodstock (Male) *"
+                  type="text"
+                  className="form-input"
+                  // {...register("organisationName", {
+                  //   required: true,
+                  // })}
+                  // focused={userData?.data.name ? true : false}
+                  // value={userData?.data.name}
+                  sx={{
+                    width: "100%",
+                  }}
+                />
+
+                {/* {errors &&
+errors.organisationName &&
+errors.organisationName.type === "required" && (
+<Typography
+variant="body2"
+color="red"
+fontSize={13}
+mt={0.5}
+>
+This field is required.
+</Typography>
+)} */}
+              </Box>
+            </Grid>
+
+            <Grid item sm={6} xs={12}>
+              <Box width={"100%"}>
+                <TextField
+                  label="Broodstock (Female) *"
+                  type="text"
+                  className="form-input"
+                  // {...register("organisationName", {
+                  //   required: true,
+                  // })}
+                  // focused={userData?.data.name ? true : false}
+                  // value={userData?.data.name}
+                  sx={{
+                    width: "100%",
+                  }}
+                />
+
+                {/* {errors &&
+errors.organisationName &&
+errors.organisationName.type === "required" && (
+<Typography
+variant="body2"
+color="red"
+fontSize={13}
+mt={0.5}
+>
+This field is required.
+</Typography>
+)} */}
+              </Box>
+            </Grid>
+
+            <Grid item sm={6} xs={12}>
+              <FormControl className="form-input" fullWidth>
+                <InputLabel id="demo-simple-select-label">
+                  Hatchery *
+                </InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  label="Hatchery *"
+                  // {...register("organisationType")}
+                  // value={selectedOrganisationType || ""}
+                  // onChange={(e) => handleChange(e, item)}
+                  // sx={{
+                  //   px: {
+                  //     xl: 10,
+                  //     md: 5,
+                  //     xs: 3,
+                  //   },
+                  // }}
+                >
+                  {/* {OrganisationType.map((organisation, i) => {
+      return (
+        <MenuItem value={organisation} key={i}>
+          {organisation}
+        </MenuItem>
+      );
+    })} */}
+                </Select>
+              </FormControl>
+            </Grid>
+
+            <Grid item sm={6} xs={12}>
+              <FormControl className="form-input" fullWidth>
+                <InputLabel id="demo-simple-select-label">
+                  Fish Farm *
+                </InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  label="Fish Farm *"
+                  // {...register("organisationType")}
+                  // value={selectedOrganisationType || ""}
+                  // onChange={(e) => handleChange(e, item)}
+                  // sx={{
+                  //   px: {
+                  //     xl: 10,
+                  //     md: 5,
+                  //     xs: 3,
+                  //   },
+                  // }}
+                >
+                  {/* {OrganisationType.map((organisation, i) => {
+return (
+<MenuItem value={organisation} key={i}>
+{organisation}
+</MenuItem>
+);
+})} */}
+                </Select>
+              </FormControl>
+            </Grid>
+
+            <Grid item sm={6} xs={12}>
+              <Box width={"100%"}>
+                <TextField
+                  label="Production Unit (Current) *"
+                  type="text"
+                  className="form-input"
+                  // {...register("organisationName", {
+                  //   required: true,
+                  // })}
+                  // focused={userData?.data.name ? true : false}
+                  // value={userData?.data.name}
+                  sx={{
+                    width: "100%",
+                  }}
+                />
+
+                {/* {errors &&
+errors.organisationName &&
+errors.organisationName.type === "required" && (
+<Typography
+variant="body2"
+color="red"
+fontSize={13}
+mt={0.5}
+>
+This field is required.
+</Typography>
+)} */}
+              </Box>
+            </Grid>
+
+            <Grid item sm={6} xs={12}>
+              <FormControl className="form-input" fullWidth>
+                <InputLabel id="demo-simple-select-label">Status *</InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  label="Status *"
+                  // {...register("organisationType")}
+                  // value={selectedOrganisationType || ""}
+                  // onChange={(e) => handleChange(e, item)}
+                  // sx={{
+                  //   px: {
+                  //     xl: 10,
+                  //     md: 5,
+                  //     xs: 3,
+                  //   },
+                  // }}
+                >
+                  {/* {OrganisationType.map((organisation, i) => {
+return (
+<MenuItem value={organisation} key={i}>
+{organisation}
+</MenuItem>
+);
+})} */}
+                </Select>
+              </FormControl>
+            </Grid>
+          </Grid>
+
+          <Button
+            type="submit"
+            variant="contained"
             sx={{
-              height: "100%",
-              borderColor: "#E6E7E9",
+              background: "#06A19B",
+              fontWeight: 600,
+              padding: "6px 16px",
+              width: "fit-content",
+              textTransform: "capitalize",
+              borderRadius: "8px",
+              marginLeft: "auto",
+              display: "block",
+              marginTop: 2,
+              mb: 5,
+              mr: {
+                md: 3,
+                xs: 2,
+              },
             }}
-          />
-        </Grid>
-
-        <Grid
-          item
-          xl={9}
-          md={8}
-          xs={12}
-          my={2}
-          // sx={{
-          //     mt: {
-          //         md: 0,
-          //         xs: 5,
-          //     },
-          // }}
-        >
-          {activeStep === 0 && <BatchWizard setActiveStep={setActiveStep} />}
-          {activeStep === 1 && <BatchReport setActiveStep={setActiveStep} />}
-          {activeStep === 2 && <HarvestingInfo setActiveStep={setActiveStep} />}
-          {activeStep === 3 && <FeedingPlan setActiveStep={setActiveStep} />}
-          {(activeStep === 4 || activeStep === 5) && (
-            <AllDone setActiveStep={setActiveStep} activeStep={activeStep} />
-          )}
-
-          {/* <FeedingPlan /> */}
-          {/* <AllDone /> */}
-        </Grid>
-      </Grid>
+          >
+            Add Batch
+          </Button>
+        </form>
+      </Stack>
     </>
   );
 }
