@@ -393,3 +393,13 @@ body {
   transform: none;
   font-size: 11px;
 }
+
+.hatchery-table table thead tr th {
+  padding-inline: 20px !important;
+  text-wrap: nowrap !important;
+}
+
+.hatchery-table table tbody tr th,
+.hatchery-table table tbody tr td {
+  padding-inline: 20px !important;
+}

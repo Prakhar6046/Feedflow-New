@@ -145,12 +145,15 @@ const AccountPopover = () => {
             <Typography variant="subtitle2" fontWeight={600}>
               {loggedUserData ? loggedUserData?.data?.user.name : "Demo"}
             </Typography>
-
             <Badge badgeContent={"Admin"} color="primary" className="profile-badge">
             </Badge>
           </Stack>
           <Typography variant="body2" fontSize={13} fontWeight={400} mt={0.3}>
             {loggedUserData ? loggedUserData?.data?.user.email : "Demo"}
+          </Typography>
+
+          <Typography variant="body2" fontSize={12} color="#06a19b" fontWeight={600} mt={0.5}>
+            Fish Farmer
           </Typography>
 
         </Box>
