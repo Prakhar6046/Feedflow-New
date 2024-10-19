@@ -4,10 +4,32 @@ import { NextRequest, NextResponse } from "next/server";
 export const GET = async (request: NextRequest) => {
   try {
     const searchParams = request.nextUrl.searchParams;
-    const role = searchParams.get("role");
+    const query = searchParams.get("query");
 
     const fishSupply = await prisma.fishSupply.findMany({
       include: { creator: { include: { hatchery: true } } },
+      where: {
+        AND: [
+          query
+            ? {
+                OR: [
+                  {
+                    status: { contains: query, mode: "insensitive" },
+                  },
+                  {
+                    fishFarm: { contains: query, mode: "insensitive" },
+                  },
+                  {
+                    broodstockMale: { contains: query, mode: "insensitive" },
+                  },
+                  {
+                    broodstockFemale: { contains: query, mode: "insensitive" },
+                  },
+                ],
+              }
+            : {},
+        ],
+      },
     });
     return new NextResponse(
       JSON.stringify({

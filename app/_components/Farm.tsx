@@ -1,6 +1,8 @@
 "use server";
 import FarmTable from "./table/FarmTable";
-
-export const Farm = async () => {
-  return <FarmTable />;
+interface Props {
+  farms: any;
+}
+export const Farm = async ({ farms }: Props) => {
+  return <FarmTable farms={farms} />;
 };

@@ -27,17 +27,18 @@ import React, { useEffect, useState } from "react";
 import Loader from "../Loader";
 import { breadcrumsAction } from "@/lib/features/breadcrum/breadcrumSlice";
 import { getCookie, setCookie } from "cookies-next";
+import { Farm } from "@/app/_typeModels/Farm";
 
 interface Props {
-  farms: any;
+  farms: Farm[];
 }
 const tableData: Array<string> = ["Farm", "Production Unit Count", ""];
-export default function FarmTable() {
+export default function FarmTable({ farms }: Props) {
   const router = useRouter();
   const pathName = usePathname();
   const dispatch = useAppDispatch();
   const sortDataFromLocal = getCookie(pathName);
-  const farms = useAppSelector(selectFarms);
+  // const farms = useAppSelector(selectFarms);
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("organisation");
   const [farmsData, setFarmsData] = useState<any>();
@@ -47,11 +48,11 @@ export default function FarmTable() {
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null
   );
-  const getFarms = async () => {
-    const response = await fetch("/api/farm");
-    const res = response.json();
-    return res;
-  };
+  // const getFarms = async () => {
+  //   const response = await fetch("/api/farm");
+  //   const res = response.json();
+  //   return res;
+  // };
   const handleClick = (
     event: React.MouseEvent<HTMLButtonElement>,
     farm: any
@@ -72,16 +73,16 @@ export default function FarmTable() {
   };
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
-  useEffect(() => {
-    dispatch(farmAction.handleLoading(true));
-    const data = async () => {
-      const res = await getFarms();
-      dispatch(farmAction.updateFarms(res.data));
-      dispatch(farmAction.handleLoading(false));
-    };
-    data();
-    dispatch(farmAction.resetState());
-  }, []);
+  // useEffect(() => {
+  //   dispatch(farmAction.handleLoading(true));
+  //   const data = async () => {
+  //     const res = await getFarms();
+  //     dispatch(farmAction.updateFarms(res.data));
+  //     dispatch(farmAction.handleLoading(false));
+  //   };
+  //   data();
+  //   dispatch(farmAction.resetState());
+  // }, []);
   useEffect(() => {
     if (sortDataFromLocal) {
       const data = JSON.parse(sortDataFromLocal);
@@ -256,8 +257,8 @@ export default function FarmTable() {
             onRequestSort={handleRequestSort}
           />
           <TableBody>
-            {farmsData && farmsData.length > 0 ? (
-              farmsData.map((farm: any, i: number) => {
+            {farms && farms.length > 0 ? (
+              farms.map((farm: any, i: number) => {
                 return (
                   <TableRow
                     key={i}

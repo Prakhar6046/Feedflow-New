@@ -17,8 +17,15 @@ const tableData: Array<string> = [
   "",
 ];
 
-export default async function Page() {
-  const fishSupply = await getFishSupply();
+export default async function Page({
+  searchParams,
+}: {
+  searchParams?: {
+    query?: string;
+  };
+}) {
+  const query = searchParams?.query || "";
+  const fishSupply = await getFishSupply(query);
 
   return (
     <>

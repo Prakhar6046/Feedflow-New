@@ -3,7 +3,8 @@ import { NextRequest, NextResponse } from "next/server";
 
 export const GET = async (request: NextRequest) => {
   const searchParams = request.nextUrl.searchParams;
-  const role = searchParams.get("role");
+  const query = searchParams.get("query");
+
   try {
     const farms = await prisma.farm.findMany({
       include: {
@@ -12,6 +13,19 @@ export const GET = async (request: NextRequest) => {
       },
       orderBy: {
         createdAt: "desc", // Sort by createdAt in descending order
+      },
+      where: {
+        AND: [
+          query
+            ? {
+                OR: [
+                  {
+                    name: { contains: query, mode: "insensitive" },
+                  },
+                ],
+              }
+            : {},
+        ],
       },
     });
     return new NextResponse(JSON.stringify({ status: true, data: farms }), {

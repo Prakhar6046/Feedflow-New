@@ -5,7 +5,16 @@ import FarmTable from "@/app/_components/table/FarmTable";
 import { getFarms } from "@/app/_lib/action";
 import { Suspense } from "react";
 export const revalidate = 0;
-export default async function Page() {
+export default async function Page({
+  searchParams,
+}: {
+  searchParams?: {
+    query?: string;
+  };
+}) {
+  const query = searchParams?.query || "";
+  const famrs = await getFarms(query);
+
   return (
     <>
       <BasicBreadcrumbs
@@ -23,7 +32,7 @@ export default async function Page() {
         ]}
       />
       <Suspense fallback={<Loader />}>
-        <Farm />
+        <Farm farms={famrs?.data} />
       </Suspense>
     </>
   );

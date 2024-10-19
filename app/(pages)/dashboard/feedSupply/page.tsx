@@ -3,8 +3,15 @@ import FeedTable from "@/app/_components/table/FeedTable";
 import { getFeedSupplys } from "@/app/_lib/action";
 import { getCookie } from "cookies-next";
 import { cookies } from "next/headers";
-export default async function Page() {
-  const feeds = await getFeedSupplys();
+export default async function Page({
+  searchParams,
+}: {
+  searchParams?: {
+    query?: string;
+  };
+}) {
+  const query = searchParams?.query || "";
+  const feeds = await getFeedSupplys(query);
   const loggedUser: any = getCookie("logged-user", { cookies });
   const userOrganisationType = JSON.parse(loggedUser);
 
@@ -24,7 +31,6 @@ export default async function Page() {
         searchUsers={false}
         searchFarm={false}
         isTable={false}
-        hideSearchInput={true}
         buttonRoute="/dashboard/feedSupply/new"
         links={[
           { name: "Dashboard", link: "/dashboard" },

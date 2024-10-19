@@ -18,6 +18,7 @@ import { useDebounce } from "../hooks/useDebounce";
 import { farmAction } from "@/lib/features/farm/farmSlice";
 import { SingleOrganisation } from "../_typeModels/Organization";
 import { selectSort } from "@/lib/features/breadcrum/breadcrumSlice";
+import SearchBar from "./SearchBar";
 interface Props {
   heading: string;
   buttonName?: string;
@@ -334,45 +335,46 @@ export default function BasicBreadcrumbs({
             }}
           >
             {!hideSearchInput && (
-              <Box
-                position="relative"
-                className="search-filter"
-                sx={{
-                  width: {
-                    md: "fit-content",
-                    xs: "100%",
-                  },
-                }}
-              >
-                <TextField
-                  label="Search"
-                  className="form-input"
-                  focused
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  sx={{
-                    width: {
-                      md: "fit-content",
-                      xs: "100%",
-                    },
-                  }}
-                />
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="1em"
-                  height="1em"
-                  viewBox="0 0 24 24"
-                  className="search-icon"
-                >
-                  <path
-                    fill="none"
-                    stroke="#979797"
-                    strokeLinecap="round"
-                    strokeWidth="2"
-                    d="m21 21l-4.486-4.494M19 10.5a8.5 8.5 0 1 1-17 0a8.5 8.5 0 0 1 17 0Z"
-                  />
-                </svg>
-              </Box>
+              <SearchBar />
+              // <Box
+              //   position="relative"
+              //   className="search-filter"
+              //   sx={{
+              //     width: {
+              //       md: "fit-content",
+              //       xs: "100%",
+              //     },
+              //   }}
+              // >
+              //   <TextField
+              //     label="Search"
+              //     className="form-input"
+              //     focused
+              //     value={searchQuery}
+              //     onChange={(e) => setSearchQuery(e.target.value)}
+              //     sx={{
+              //       width: {
+              //         md: "fit-content",
+              //         xs: "100%",
+              //       },
+              //     }}
+              //   />
+              //   <svg
+              //     xmlns="http://www.w3.org/2000/svg"
+              //     width="1em"
+              //     height="1em"
+              //     viewBox="0 0 24 24"
+              //     className="search-icon"
+              //   >
+              //     <path
+              //       fill="none"
+              //       stroke="#979797"
+              //       strokeLinecap="round"
+              //       strokeWidth="2"
+              //       d="m21 21l-4.486-4.494M19 10.5a8.5 8.5 0 1 1-17 0a8.5 8.5 0 0 1 17 0Z"
+              //     />
+              //   </svg>
+              // </Box>
             )}
 
             {searchQuery && (
