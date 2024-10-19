@@ -25,9 +25,8 @@ export const GET = async (request: NextRequest) => {
 export const POST = async (request: NextRequest) => {
   try {
     const body = await request.json();
-    console.log(body);
 
-    if (!body.organisation || !body.fishFarm) {
+    if (!body.organisation || !body.fishFarmId) {
       return new NextResponse(
         JSON.stringify({
           message: "Fish farm or organisation missing",
@@ -54,7 +53,8 @@ export const POST = async (request: NextRequest) => {
       );
     }
     const isFarmExist = await prisma.farm.findUnique({
-      where: { id: body.fishFarm },
+      where: { id: body.fishFarmId },
+      include: { productionUnits: true },
     });
 
     if (!isFarmExist) {
@@ -68,7 +68,13 @@ export const POST = async (request: NextRequest) => {
         }
       );
     }
-    const fishSupplyData = { ...body, createdBy: isHatcheryExist.id };
+
+    const fishSupplyData = {
+      ...body,
+      createdBy: isHatcheryExist.id,
+      productionUnits: isFarmExist.productionUnits.length,
+      fishFarm: isFarmExist.name,
+    };
     const newFishSupply = await prisma.fishSupply.create({
       data: fishSupplyData,
     });

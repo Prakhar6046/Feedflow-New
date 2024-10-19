@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -16,26 +16,36 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
+import { FishSupply } from "@/app/_typeModels/fishSupply";
+import { useRouter } from "next/navigation";
 interface Props {
   tableData: Array<string>;
-  data?: any;
-  fishSupply?: any;
+  fishSupply?: FishSupply[];
 }
 
-export default function CommonTable({ tableData, data, fishSupply }: Props) {
+export default function CommonTable({ tableData, fishSupply }: Props) {
+  const router = useRouter();
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null
   );
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const [selectedFishSupply, setSelectedFishSupply] = useState<FishSupply>();
+  const handleClick = (
+    event: React.MouseEvent<HTMLButtonElement>,
+    fish: FishSupply
+  ) => {
     setAnchorEl(event.currentTarget);
+    setSelectedFishSupply(fish);
   };
   const handleClose = () => {
     setAnchorEl(null);
   };
+  const handleEdit = () => {
+    if (selectedFishSupply) {
+      router.push(`/dashboard/fishSupply/${selectedFishSupply.id}`);
+    }
+  };
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
-  console.log(fishSupply);
-
   return (
     <Paper
       sx={{
@@ -81,8 +91,8 @@ export default function CommonTable({ tableData, data, fishSupply }: Props) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {data && data.length > 0 ? (
-              data.map((batch: any, i: number) => {
+            {fishSupply && fishSupply.length > 0 ? (
+              fishSupply.map((fish: FishSupply, i: number) => {
                 return (
                   <TableRow
                     key={i}
@@ -103,7 +113,7 @@ export default function CommonTable({ tableData, data, fishSupply }: Props) {
                       component="th"
                       scope="row"
                     >
-                      {batch.batch ?? ""}
+                      {fish?.creator?.hatchery[0]?.fishSpecie ?? ""}
                     </TableCell>
                     <TableCell
                       sx={{
@@ -114,35 +124,14 @@ export default function CommonTable({ tableData, data, fishSupply }: Props) {
                       }}
                     >
                       <Box display={"flex"} alignItems={"center"} gap={1.5}>
-                        <Box
-                          display={"flex"}
-                          justifyContent={"center"}
-                          alignItems={"center"}
-                          bgcolor={"rgba(145, 158, 171, 0.24)"}
-                          sx={{
-                            width: 40,
-                            height: 40,
-                            borderRadius: "8px",
-                          }}
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="1.7em"
-                            height="1.7em"
-                            viewBox="0 0 24 24"
-                          >
-                            <g fill="none">
-                              <path d="m12.593 23.258l-.011.002l-.071.035l-.02.004l-.014-.004l-.071-.035q-.016-.005-.024.005l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.017-.018m.265-.113l-.013.002l-.185.093l-.01.01l-.003.011l.018.43l.005.012l.008.007l.201.093q.019.005.029-.008l.004-.014l-.034-.614q-.005-.018-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.614q.001.018.017.024l.015-.002l.201-.093l.01-.008l.004-.011l.017-.43l-.003-.012l-.01-.01z" />
-                              <path
-                                fill="#637381"
-                                d="M16 14a5 5 0 0 1 4.995 4.783L21 19v1a2 2 0 0 1-1.85 1.995L19 22H5a2 2 0 0 1-1.995-1.85L3 20v-1a5 5 0 0 1 4.783-4.995L8 14zM12 2a5 5 0 1 1 0 10a5 5 0 0 1 0-10"
-                              />
-                            </g>
-                          </svg>
-                        </Box>
-                        {/* )} */}
-
-                        {batch?.product ?? ""}
+                        {`${fish.hatchingDate}-${
+                          fish.creator?.hatchery[0]?.code
+                        }-${
+                          fish.spawningNumber
+                        }-${fish?.creator?.hatchery[0]?.fishSpecie.slice(
+                          0,
+                          1
+                        )}`}
                       </Box>
                     </TableCell>
                     <TableCell
@@ -153,7 +142,9 @@ export default function CommonTable({ tableData, data, fishSupply }: Props) {
                         fontWeight: 500,
                       }}
                     >
-                      {batch?.manufactured ?? ""}
+                      {fish.broodstockMale ?? ""}
+                      <br />
+                      {fish.broodstockFemale ?? ""}
                     </TableCell>
                     <TableCell
                       sx={{
@@ -163,41 +154,68 @@ export default function CommonTable({ tableData, data, fishSupply }: Props) {
                         fontWeight: 500,
                       }}
                     >
-                      <Box
-                        display={"flex"}
-                        justifyContent={"center"}
-                        alignItems={"center"}
-                        gap={"12px"}
-                      >
-                        <Box
-                          display={"flex"}
-                          justifyContent={"center"}
-                          alignItems={"center"}
-                          bgcolor={"rgba(145, 158, 171, 0.24)"}
-                          sx={{
-                            width: 80,
-                            height: 40,
-                            borderRadius: "8px",
-                          }}
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="1.7em"
-                            height="1.7em"
-                            viewBox="0 0 24 24"
-                          >
-                            <g fill="none">
-                              <path d="m12.593 23.258l-.011.002l-.071.035l-.02.004l-.014-.004l-.071-.035q-.016-.005-.024.005l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.017-.018m.265-.113l-.013.002l-.185.093l-.01.01l-.003.011l.018.43l.005.012l.008.007l.201.093q.019.005.029-.008l.004-.014l-.034-.614q-.005-.018-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.614q.001.018.017.024l.015-.002l.201-.093l.01-.008l.004-.011l.017-.43l-.003-.012l-.01-.01z" />
-                              <path
-                                fill="#637381"
-                                d="M16 14a5 5 0 0 1 4.995 4.783L21 19v1a2 2 0 0 1-1.85 1.995L19 22H5a2 2 0 0 1-1.995-1.85L3 20v-1a5 5 0 0 1 4.783-4.995L8 14zM12 2a5 5 0 1 1 0 10a5 5 0 0 1 0-10"
-                              />
-                            </g>
-                          </svg>
-                        </Box>
-                      </Box>
+                      {fish.spawningDate}
                     </TableCell>
-
+                    <TableCell
+                      sx={{
+                        borderBottomColor: "#F5F6F8",
+                        borderBottomWidth: 2,
+                        color: "#555555",
+                        fontWeight: 500,
+                      }}
+                    >
+                      {fish.hatchingDate}
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        borderBottomColor: "#F5F6F8",
+                        borderBottomWidth: 2,
+                        color: "#555555",
+                        fontWeight: 500,
+                      }}
+                    >
+                      {fish.age}
+                    </TableCell>{" "}
+                    <TableCell
+                      sx={{
+                        borderBottomColor: "#F5F6F8",
+                        borderBottomWidth: 2,
+                        color: "#555555",
+                        fontWeight: 500,
+                      }}
+                    >
+                      {fish?.creator?.hatchery[0]?.name}
+                    </TableCell>{" "}
+                    <TableCell
+                      sx={{
+                        borderBottomColor: "#F5F6F8",
+                        borderBottomWidth: 2,
+                        color: "#555555",
+                        fontWeight: 500,
+                      }}
+                    >
+                      {fish.fishFarm}
+                    </TableCell>{" "}
+                    <TableCell
+                      sx={{
+                        borderBottomColor: "#F5F6F8",
+                        borderBottomWidth: 2,
+                        color: "#555555",
+                        fontWeight: 500,
+                      }}
+                    >
+                      {Number(fish.productionUnits)}
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        borderBottomColor: "#F5F6F8",
+                        borderBottomWidth: 2,
+                        color: "#555555",
+                        fontWeight: 500,
+                      }}
+                    >
+                      {fish.status}
+                    </TableCell>
                     <TableCell
                       align="center"
                       sx={{
@@ -207,14 +225,13 @@ export default function CommonTable({ tableData, data, fishSupply }: Props) {
                         fontWeight: 500,
                       }}
                       className="cursor-pointer"
-                      // onClick={() => handleEdit(user)}
                     >
                       <Button
                         id="basic-button"
                         aria-controls={open ? "basic-menu" : undefined}
                         aria-haspopup="true"
                         aria-expanded={open ? "true" : undefined}
-                        onClick={(e) => handleClick(e)}
+                        onClick={(e) => handleClick(e, fish)}
                         className="table-edit-option"
                         sx={{
                           background: "transparent",
@@ -244,7 +261,7 @@ export default function CommonTable({ tableData, data, fishSupply }: Props) {
                           "aria-labelledby": "basic-button",
                         }}
                       >
-                        <MenuItem>
+                        <MenuItem onClick={handleEdit}>
                           <Stack
                             display="flex"
                             gap={1.2}
@@ -267,7 +284,7 @@ export default function CommonTable({ tableData, data, fishSupply }: Props) {
                           </Stack>
                         </MenuItem>
 
-                        <Divider
+                        {/* <Divider
                           sx={{
                             borderColor: "#9797971A",
                             my: 0.5,
@@ -300,7 +317,7 @@ export default function CommonTable({ tableData, data, fishSupply }: Props) {
                               Delete
                             </Typography>
                           </Stack>
-                        </MenuItem>
+                        </MenuItem> */}
                       </Menu>
                     </TableCell>
                   </TableRow>

@@ -112,6 +112,8 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
         fishSpecie: data.fishSpecie,
       };
     }
+    console.log(organisationData);
+
     const formData = new FormData();
     formData.append("name", String(data.organisationName));
     formData.append("organisationCode", String(data.organisationCode));
@@ -121,7 +123,7 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
     if (isHatcherySelected && organisationData) {
       formData.append(
         "hatcheryId",
-        JSON.stringify(organisationData?.hatchery[0]?.id)
+        JSON.stringify(organisationData?.hatchery[0]?.id ?? "")
       );
       formData.append("hatchery", JSON.stringify(hatchery));
     }

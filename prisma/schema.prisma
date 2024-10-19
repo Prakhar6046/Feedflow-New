@@ -216,13 +216,14 @@ model FishSupply {
   broodstockMale   String
   broodstockFemale String
   fishFarm         String
+  fishFarmId       String        @default("")
   status           String
+  productionUnits  Int           @default(0)
   createdBy        Int? // Optional field, nullable foreign key
   updatedBy        String?
   createdAt        DateTime      @default(now())
   updatedAt        DateTime      @updatedAt
   creator          Organisation? @relation("fishSupplyCreator", fields: [createdBy], references: [id])
-  organisationId   Int?
 
   @@index([createdAt])
   @@index([updatedAt])

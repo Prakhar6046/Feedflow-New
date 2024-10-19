@@ -14,15 +14,9 @@ const tableData: Array<string> = [
   "Fish Farm",
   "Production Unit",
   "Status",
+  "",
 ];
-const batchData = [
-  {
-    id: 1,
-    batch: "Lorem ipsum",
-    manufactured: "Lorem ipsum dolor sit amet",
-    product: "lorem",
-  },
-];
+
 export default async function Page() {
   const fishSupply = await getFishSupply();
 
@@ -30,7 +24,7 @@ export default async function Page() {
     <>
       <BasicBreadcrumbs
         heading={"Fish Supply"}
-        buttonName={"New Batch"}
+        buttonName={"New Fish Supply"}
         isTable={true}
         buttonRoute="/dashboard/fishSupply/new"
         links={[
@@ -39,11 +33,7 @@ export default async function Page() {
         ]}
       />
       <Box className="hatchery-table">
-        <CommonTable
-          tableData={tableData}
-          data={batchData}
-          fishSupply={fishSupply.data}
-        />
+        <CommonTable tableData={tableData} fishSupply={fishSupply.data} />
       </Box>
     </>
   );

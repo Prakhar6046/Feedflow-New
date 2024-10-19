@@ -1,20 +1,26 @@
 import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
 import NewFishSupply from "@/app/_components/fishSupply/NewFishSupply";
 
-export default function Page() {
+export default async function Page({
+  params,
+}: {
+  params: { fishSupplyId: string };
+}) {
   return (
     <>
       <BasicBreadcrumbs
-        heading={"New Fish Supply"}
+        heading={"Edit Fish Supply"}
         hideSearchInput={true}
         links={[
           { name: "Dashboard", link: "/dashboard" },
           { name: "Fish Supply", link: "/dashboard/fishSupply" },
-          { name: "New", link: "/dashboard/fishSupply/new" },
+          {
+            name: "Edit",
+            link: `/dashboard/fishSupply/${params.fishSupplyId}`,
+          },
         ]}
       />
-
-      <NewFishSupply />
+      <NewFishSupply isEdit={true} fishSupplyId={params.fishSupplyId} />
     </>
   );
 }

@@ -50,6 +50,7 @@ export async function PUT(req: NextRequest, context: { params: any }) {
     const contactsData = JSON.parse(formData.get("contacts") as string);
     const hatcheryId = JSON.parse(formData.get("hatcheryId") as string);
     const hatchery = JSON.parse(formData.get("hatchery") as string);
+    console.log(formData);
 
     console.log(hatcheryId);
     console.log(hatchery);
@@ -75,7 +76,7 @@ export async function PUT(req: NextRequest, context: { params: any }) {
         organisation: { connect: { id: organisation.id } },
       },
     });
-    if (hatcheryId) {
+    if (hatchery) {
       const updatedHatchery = await prisma.hatchery.upsert({
         where: { id: hatcheryId || "" },
         update: {
