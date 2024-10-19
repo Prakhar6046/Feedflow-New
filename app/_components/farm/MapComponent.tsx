@@ -195,6 +195,12 @@ const MapComponent = ({
     components.forEach((component: any) => {
       if (component.types.includes("premise")) {
         address = component.long_name;
+      } else if (component.types.includes("street_number")) {
+        address = address ? address : component.long_name; // Use street_number if premise is not available
+      } else if (component.types.includes("route")) {
+        address = address
+          ? address + " " + component.long_name
+          : component.long_name; // Combine with existing address or use route
       } else if (component.types.includes("locality")) {
         city = component.long_name;
       } else if (component.types.includes("administrative_area_level_1")) {
@@ -207,14 +213,19 @@ const MapComponent = ({
         component.types.includes("neighborhood") ||
         component.types.includes("sublocality")
       ) {
-        if (address2) {
-          address2 += ", " + component.long_name;
-        } else {
-          address2 = component.long_name;
-        }
+        address2 = address2
+          ? address2 + ", " + component.long_name
+          : component.long_name;
       }
     });
+
+    // Fallback to completeAddress if address is still empty
+    if (!address) {
+      address = completeAddress;
+    }
+
     address2 = address2.trim().replace(/,$/, "");
+
     return { address, city, state, postcode, country, address2 };
   };
 
