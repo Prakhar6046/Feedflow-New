@@ -53,6 +53,7 @@ export default function AddNewUser({ organisations }: Props) {
   const [currentUserId, setCurrentUserId] = useState<Number>();
   const [profilePic, setProfilePic] = useState<String>();
   const [imagePath, setImagePath] = useState<FileList>();
+  const [error, setError] = useState<string | null>(null);
   const [addUserError, SetAddUserError] = useState<string>();
   const {
     register,
@@ -103,6 +104,12 @@ export default function AddNewUser({ organisations }: Props) {
   };
 
   const handleUpload = async (imagePath: FileList) => {
+    const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
+    if (!allowedTypes.includes(imagePath[0].type)) {
+      setError("Only image files are allowed.");
+      return;
+    }
+    setError(null);
     const formData = new FormData();
     formData.append("image", imagePath[0]);
     const oldImageName = profilePic?.split("/").pop()?.split(".")[0];
@@ -117,6 +124,7 @@ export default function AddNewUser({ organisations }: Props) {
     if (response.ok) {
       const profileData = await response.json();
       setProfilePic(profileData.data.url);
+      toast.success("Profile photo successfully uploaded");
     }
   };
   useEffect(() => {
@@ -202,6 +210,11 @@ export default function AddNewUser({ organisations }: Props) {
                     })}
                     multiple
                   />
+                  {error && (
+                    <Typography variant="body2" color="error" mt={1}>
+                      {error}
+                    </Typography>
+                  )}
                 </Button>
               </Grid>
 
