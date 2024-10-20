@@ -489,6 +489,7 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
                   setValue={setValue}
                   watch={watch}
                   trigger={trigger}
+                  errors={errors}
                 />
               )}
               <Typography

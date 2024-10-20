@@ -156,7 +156,7 @@ export default function CommonTable({ tableData, fishSupply }: Props) {
                         fontWeight: 500,
                       }}
                     >
-                      {fish.spawningDate}
+                      {fish?.spawningDate}
                     </TableCell>
                     <TableCell
                       sx={{

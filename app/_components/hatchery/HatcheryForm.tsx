@@ -18,7 +18,7 @@ interface Props {
   setValue: any;
   trigger: any;
   watch: any;
-  errors: any;
+  errors?: any;
 }
 function HatcheryForm({
   altitude,

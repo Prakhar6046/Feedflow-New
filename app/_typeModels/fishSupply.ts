@@ -3,8 +3,8 @@ import { Dayjs } from "dayjs";
 export interface FishSupply {
   id: Number;
   organisation: Number;
-  hatchingDate: Dayjs | null;
-  spawningDate: Dayjs | null;
+  hatchingDate: Dayjs | any;
+  spawningDate: Dayjs | any;
   spawningNumber: Number;
   age: String;
   broodstockMale: String;
