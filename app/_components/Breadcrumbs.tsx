@@ -1,35 +1,25 @@
 "use client";
 
-import Typography from "@mui/material/Typography";
+import { Box, Button, Stack, Tooltip } from "@mui/material";
 import Breadcrumbs from "@mui/material/Breadcrumbs";
-import { Box, Button, Stack, TextField, Tooltip } from "@mui/material";
+import Typography from "@mui/material/Typography";
 
-import AddOrganization from "./models/AddOrganisation";
-import AddUser from "./models/AddUser";
-import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-import { deleteCookie, getCookie, setCookie } from "cookies-next";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import { organisationAction } from "@/lib/features/organisation/organisationSlice";
-import { userAction } from "@/lib/features/user/userSlice";
-import { useDebounce } from "../hooks/useDebounce";
-import { farmAction } from "@/lib/features/farm/farmSlice";
-import { SingleOrganisation } from "../_typeModels/Organization";
 import { selectSort } from "@/lib/features/breadcrum/breadcrumSlice";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import { deleteCookie, getCookie, setCookie } from "cookies-next";
+import { useDebounce } from "../hooks/useDebounce";
 import SearchBar from "./SearchBar";
 interface Props {
   heading: string;
   buttonName?: string;
   links?: { name: string; link: string }[];
-  organisations?: SingleOrganisation[];
-  searchOrganisations?: boolean;
-  searchUsers?: boolean;
   hideSearchInput?: boolean;
   isTable?: boolean;
   buttonRoute?: string;
-  searchFarm?: boolean;
   refetch?: string;
 }
 
@@ -37,13 +27,9 @@ export default function BasicBreadcrumbs({
   heading,
   buttonName,
   links,
-  organisations,
-  searchOrganisations,
-  searchUsers,
   hideSearchInput,
   isTable,
   buttonRoute,
-  searchFarm,
   refetch,
 }: Props) {
   const role = getCookie("role");

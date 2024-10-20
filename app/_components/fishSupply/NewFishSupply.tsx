@@ -31,6 +31,8 @@ import toast from "react-hot-toast";
 interface Props {
   isEdit?: Boolean;
   fishSupplyId?: String;
+  farms?: Farm[];
+  organisations?: SingleOrganisation[];
 }
 interface FormInputs {
   organisation: String;
@@ -43,25 +45,25 @@ interface FormInputs {
   fishFarmId: String;
   status: String;
 }
-function NewFishSupply({ isEdit, fishSupplyId }: Props) {
+function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(false);
   const [allOrganisations, SetAllOrganisations] =
     useState<SingleOrganisation[]>();
   const [allFarms, setAllFarms] = useState<Farm[]>();
   const [fishSupply, setFishSupply] = useState<FishSupply>();
-  const getOrganisation = async () => {
-    const response = await fetch("/api/organisation/hatchery");
-    return response.json();
-  };
+  // const getOrganisation = async () => {
+  //   const response = await fetch("/api/organisation/hatchery");
+  //   return response.json();
+  // };
   const getFishSupply = async () => {
     const response = await fetch(`/api/fish/${fishSupplyId}`);
     return response.json();
   };
-  const getFarms = async () => {
-    const response = await fetch("/api/farm");
-    return response.json();
-  };
+  // const getFarms = async () => {
+  //   const response = await fetch("/api/farm");
+  //   return response.json();
+  // };
   const {
     register,
     handleSubmit,
@@ -107,16 +109,16 @@ function NewFishSupply({ isEdit, fishSupplyId }: Props) {
   };
   useEffect(() => {
     setLoading(true);
-    const organisations = async () => {
-      const res = await getOrganisation();
-      SetAllOrganisations(res.data);
-    };
-    const farms = async () => {
-      const res = await getFarms();
-      setAllFarms(res.data);
-    };
-    organisations();
-    farms();
+    // const organisations = async () => {
+    //   const res = await getOrganisation();
+    //   SetAllOrganisations(res.data);
+    // };
+    // const farms = async () => {
+    //   const res = await getFarms();
+    //   setAllFarms(res.data);
+    // };
+    // organisations();
+    // farms();
     if (isEdit) {
       const fishSupply = async () => {
         const res = await getFishSupply();
@@ -139,7 +141,6 @@ function NewFishSupply({ isEdit, fishSupplyId }: Props) {
       const age = getDayMonthDifference(
         watch("hatchingDate")?.format("MM/DD/YYYY")
       );
-      console.log(age);
 
       setValue("age", age);
     }
@@ -215,7 +216,7 @@ function NewFishSupply({ isEdit, fishSupplyId }: Props) {
                   value={watch("organisation") || ""}
                   label="Organisation *"
                 >
-                  {allOrganisations?.map((organisation, i) => {
+                  {organisations?.map((organisation, i) => {
                     return (
                       <MenuItem value={Number(organisation.id)} key={i}>
                         {organisation.name}
@@ -445,7 +446,7 @@ function NewFishSupply({ isEdit, fishSupplyId }: Props) {
                   },
                 })}
               >
-                {allFarms?.map((farm, i) => {
+                {farms?.map((farm, i) => {
                   return (
                     <MenuItem value={String(farm.id)} key={i}>
                       {farm.name}

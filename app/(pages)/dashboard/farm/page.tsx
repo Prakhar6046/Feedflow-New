@@ -16,9 +16,6 @@ export default async function Page({
       <BasicBreadcrumbs
         heading={"Farm"}
         buttonName={"Add Farm"}
-        searchOrganisations={false}
-        searchUsers={false}
-        searchFarm={true}
         isTable={true}
         refetch="farm"
         buttonRoute="/dashboard/farm/newFarm"

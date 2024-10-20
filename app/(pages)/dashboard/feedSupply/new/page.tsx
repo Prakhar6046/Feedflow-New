@@ -63,9 +63,6 @@ export default function Page() {
     <>
       <BasicBreadcrumbs
         heading={"Feed Supply"}
-        searchOrganisations={false}
-        searchUsers={false}
-        searchFarm={false}
         isTable={false}
         hideSearchInput={true}
         links={[

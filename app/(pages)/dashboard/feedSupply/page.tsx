@@ -29,9 +29,6 @@ export default async function Page({
             ? "Add Feed"
             : ""
         }
-        searchOrganisations={false}
-        searchUsers={false}
-        searchFarm={false}
         isTable={false}
         buttonRoute="/dashboard/feedSupply/new"
         links={[

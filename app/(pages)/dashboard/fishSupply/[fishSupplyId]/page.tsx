@@ -1,11 +1,14 @@
 import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
 import NewFishSupply from "@/app/_components/fishSupply/NewFishSupply";
+import { getFarms, getOrganisationForhatchery } from "@/app/_lib/action";
 
 export default async function Page({
   params,
 }: {
   params: { fishSupplyId: string };
 }) {
+  const organisationForhatchery = await getOrganisationForhatchery();
+  const farms = await getFarms("");
   return (
     <>
       <BasicBreadcrumbs
@@ -20,7 +23,12 @@ export default async function Page({
           },
         ]}
       />
-      <NewFishSupply isEdit={true} fishSupplyId={params.fishSupplyId} />
+      <NewFishSupply
+        isEdit={true}
+        fishSupplyId={params.fishSupplyId}
+        farms={farms.data}
+        organisations={organisationForhatchery.data}
+      />
     </>
   );
 }

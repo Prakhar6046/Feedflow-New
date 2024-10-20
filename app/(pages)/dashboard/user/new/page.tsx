@@ -9,8 +9,6 @@ export default async function Page() {
       <BasicBreadcrumbs
         heading={"Add a new user"}
         hideSearchInput={true}
-        organisations={organisations?.data}
-        searchOrganisations={false}
         links={[
           { name: "Dashboard", link: "/dashboard" },
           { name: "Users", link: "/dashboard/user" },

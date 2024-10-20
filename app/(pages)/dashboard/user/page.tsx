@@ -26,8 +26,6 @@ export default async function Page({
         heading={"Users"}
         buttonName={"Add User"}
         buttonRoute="/dashboard/user/new"
-        searchUsers={true}
-        searchOrganisations={false}
         isTable={true}
         refetch={"user"}
         links={[

@@ -1,7 +1,11 @@
 import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
 import NewFishSupply from "@/app/_components/fishSupply/NewFishSupply";
+import { getFarms, getOrganisationForhatchery } from "@/app/_lib/action";
 
-export default function Page() {
+export default async function Page() {
+  const organisationForhatchery = await getOrganisationForhatchery();
+  const farms = await getFarms("");
+
   return (
     <>
       <BasicBreadcrumbs
@@ -14,7 +18,10 @@ export default function Page() {
         ]}
       />
 
-      <NewFishSupply />
+      <NewFishSupply
+        farms={farms.data}
+        organisations={organisationForhatchery.data}
+      />
     </>
   );
 }

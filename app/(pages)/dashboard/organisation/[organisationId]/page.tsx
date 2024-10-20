@@ -242,8 +242,6 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
     <>
       <BasicBreadcrumbs
         heading={"Edit Organisation"}
-        searchOrganisations={false}
-        searchUsers={false}
         isTable={false}
         hideSearchInput={true}
         links={[

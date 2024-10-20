@@ -150,3 +150,26 @@ export const getFarms = async (query?: string) => {
     return error;
   }
 };
+export const getOrganisationForhatchery = async () => {
+  try {
+    const data = await fetch(
+      `${process.env.BASE_URL}/api/organisation/hatchery`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        cache: "no-store",
+      }
+    );
+    const res = await data.json();
+
+    return res;
+  } catch (error) {
+    return error;
+  }
+};
+// const getFishSupplyById = async (fishSupplyId: string) => {
+//   const response = await fetch(`/api/fish/${fishSupplyId}`);
+//   return response.json();
+// };

@@ -26,10 +26,7 @@ export default async function Page({
       <BasicBreadcrumbs
         heading={"Organisations"}
         buttonName={"Add Organisation"}
-        organisations={organisations?.data}
         buttonRoute={"/dashboard/organisation/new"}
-        searchOrganisations={true}
-        searchUsers={false}
         isTable={true}
         refetch={"organisation"}
         links={[
