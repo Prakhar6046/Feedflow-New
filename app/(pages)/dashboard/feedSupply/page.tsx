@@ -1,8 +1,10 @@
 import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
+import Loader from "@/app/_components/Loader";
 import FeedTable from "@/app/_components/table/FeedTable";
 import { getFeedSupplys } from "@/app/_lib/action";
 import { getCookie } from "cookies-next";
 import { cookies } from "next/headers";
+import { Suspense } from "react";
 export default async function Page({
   searchParams,
 }: {

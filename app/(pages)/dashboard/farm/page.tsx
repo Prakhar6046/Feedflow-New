@@ -1,10 +1,6 @@
 import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
-import { Farm } from "@/app/_components/Farm";
-import Loader from "@/app/_components/Loader";
 import FarmTable from "@/app/_components/table/FarmTable";
 import { getFarms } from "@/app/_lib/action";
-import { Suspense } from "react";
-export const revalidate = 0;
 export default async function Page({
   searchParams,
 }: {
@@ -31,9 +27,7 @@ export default async function Page({
           { name: "Farm", link: "/dashboard/farm" },
         ]}
       />
-      <Suspense fallback={<Loader />}>
-        <Farm farms={famrs?.data} />
-      </Suspense>
+      <FarmTable farms={famrs?.data} />
     </>
   );
 }

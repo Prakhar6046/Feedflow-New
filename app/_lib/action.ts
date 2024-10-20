@@ -21,14 +21,15 @@ export const getAllOrganisations = async () => {
 };
 export const getOrganisations = async (
   organisationId?: number,
-  role?: string
+  role?: string,
+  query?: string
 ) => {
   try {
     const data = await fetch(
       `${process.env.BASE_URL}/api/organisation${
         organisationId && role
-          ? `?organisationId=${organisationId}&role=${role}`
-          : ""
+          ? `?organisationId=${organisationId}&role=${role}&query=${query}`
+          : `?query=${query}`
       }`,
       {
         method: "GET",
@@ -43,23 +44,23 @@ export const getOrganisations = async (
     return error;
   }
 };
-// export const getUsers = async (payload: any) => {
-//   try {
-//     const data = await fetch(
-//       `https://feedflow.vercel.app/api/users?role=${payload.role}&organisationId=${payload.organisationId}`,
-//       {
-//         method: "GET",
-//         headers: {
-//           "Content-Type": "application/json",
-//         },
-//       }
-//     );
-//     return await data.json();
-//   } catch (error) {
-//     console.log(error);
-//     return error;
-//   }
-// };
+export const getUsers = async (payload: any) => {
+  try {
+    const data = await fetch(
+      `${process.env.BASE_URL}/api/users?role=${payload.role}&organisationId=${payload.organisationId}&query=${payload.query}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return await data.json();
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
+};
 export const getUser = async (userId: string) => {
   try {
     const data = await fetch(`${process.env.BASE_URL}/api/user/${userId}`, {

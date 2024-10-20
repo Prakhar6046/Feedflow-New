@@ -60,53 +60,53 @@ export default function BasicBreadcrumbs({
   const debouncedSearchQuery = useDebounce(searchQuery);
   const dispatch = useAppDispatch();
 
-  async function SeachedOrganisation(
-    query: string,
-    organisationId: number,
-    role: string
-  ) {
-    let res = await fetch(
-      `/api/organisation/search?name=${query}&organisationId=${organisationId}&role=${role}`
-    );
-    let data = await res.json();
-    return data;
-  }
-  async function SeachedUsers(
-    query: string,
-    organisationId: number,
-    role: string
-  ) {
-    let res = await fetch(
-      `/api/users/search?name=${query}&organisationId=${organisationId}&role=${role}`
-    );
-    let data = await res.json();
-    return data;
-  }
-  async function SeachedFarms(query: string) {
-    let res = await fetch(`/api/farm/search?name=${query}`);
-    let data = await res.json();
-    return data;
-  }
-  const getSearchOrganisations = async (user: any) => {
-    const res = await SeachedOrganisation(
-      debouncedSearchQuery,
-      user?.data?.user?.organisationId,
-      user?.data?.user?.role
-    );
-    dispatch(organisationAction.updateOrganisations(res.data));
-  };
-  const getSearchUsers = async (user: any) => {
-    const res = await SeachedUsers(
-      debouncedSearchQuery,
-      user?.data?.user?.organisationId,
-      user?.data?.user?.role
-    );
-    dispatch(userAction.updateUsers(res.data));
-  };
-  const getSearchFarms = async (user: any) => {
-    const res = await SeachedFarms(debouncedSearchQuery);
-    dispatch(farmAction.updateFarms(res.data));
-  };
+  // async function SeachedOrganisation(
+  //   query: string,
+  //   organisationId: number,
+  //   role: string
+  // ) {
+  //   let res = await fetch(
+  //     `/api/organisation/search?name=${query}&organisationId=${organisationId}&role=${role}`
+  //   );
+  //   let data = await res.json();
+  //   return data;
+  // }
+  // async function SeachedUsers(
+  //   query: string,
+  //   organisationId: number,
+  //   role: string
+  // ) {
+  //   let res = await fetch(
+  //     `/api/users/search?name=${query}&organisationId=${organisationId}&role=${role}`
+  //   );
+  //   let data = await res.json();
+  //   return data;
+  // }
+  // async function SeachedFarms(query: string) {
+  //   let res = await fetch(`/api/farm/search?name=${query}`);
+  //   let data = await res.json();
+  //   return data;
+  // }
+  // const getSearchOrganisations = async (user: any) => {
+  //   const res = await SeachedOrganisation(
+  //     debouncedSearchQuery,
+  //     user?.data?.user?.organisationId,
+  //     user?.data?.user?.role
+  //   );
+  //   dispatch(organisationAction.updateOrganisations(res.data));
+  // };
+  // const getSearchUsers = async (user: any) => {
+  //   const res = await SeachedUsers(
+  //     debouncedSearchQuery,
+  //     user?.data?.user?.organisationId,
+  //     user?.data?.user?.role
+  //   );
+  //   dispatch(userAction.updateUsers(res.data));
+  // };
+  // const getSearchFarms = async (user: any) => {
+  //   const res = await SeachedFarms(debouncedSearchQuery);
+  //   dispatch(farmAction.updateFarms(res.data));
+  // };
   const handleClear = () => {
     setSearchQuery("");
   };
@@ -115,18 +115,18 @@ export default function BasicBreadcrumbs({
     router.push(String(buttonRoute));
   };
 
-  const handleRefetch = async () => {
-    const user = JSON.parse(loggedUser);
-    setStatus("Updating..");
-    if (refetch === "organisation") {
-      getSearchOrganisations(user);
-    } else if (refetch === "user") {
-      getSearchUsers(user);
-    } else if (refetch === "farm") {
-      getSearchFarms(user);
-    }
-    setStatus("Last update less than a minutes ago");
-  };
+  // const handleRefetch = async () => {
+  //   const user = JSON.parse(loggedUser);
+  //   setStatus("Updating..");
+  //   if (refetch === "organisation") {
+  //     getSearchOrganisations(user);
+  //   } else if (refetch === "user") {
+  //     getSearchUsers(user);
+  //   } else if (refetch === "farm") {
+  //     getSearchFarms(user);
+  //   }
+  //   setStatus("Last update less than a minutes ago");
+  // };
   const handleRememberSort = () => {
     if (!isSort) {
       setCookie(pathName, JSON.stringify(sortvalue));
@@ -149,18 +149,18 @@ export default function BasicBreadcrumbs({
       setCurrentRole(role);
     }
   }, [role]);
-  useEffect(() => {
-    const user = JSON.parse(loggedUser);
-    if (searchOrganisations) {
-      getSearchOrganisations(user);
-    }
-    if (searchUsers) {
-      getSearchUsers(user);
-    }
-    if (searchFarm) {
-      getSearchFarms(user);
-    }
-  }, [debouncedSearchQuery, searchOrganisations, searchUsers, searchFarm]);
+  // useEffect(() => {
+  //   const user = JSON.parse(loggedUser);
+  //   if (searchOrganisations) {
+  //     getSearchOrganisations(user);
+  //   }
+  //   if (searchUsers) {
+  //     getSearchUsers(user);
+  //   }
+  //   if (searchFarm) {
+  //     getSearchFarms(user);
+  //   }
+  // }, [debouncedSearchQuery, searchOrganisations, searchUsers, searchFarm]);
 
   return (
     <>
@@ -334,48 +334,7 @@ export default function BasicBreadcrumbs({
               },
             }}
           >
-            {!hideSearchInput && (
-              <SearchBar />
-              // <Box
-              //   position="relative"
-              //   className="search-filter"
-              //   sx={{
-              //     width: {
-              //       md: "fit-content",
-              //       xs: "100%",
-              //     },
-              //   }}
-              // >
-              //   <TextField
-              //     label="Search"
-              //     className="form-input"
-              //     focused
-              //     value={searchQuery}
-              //     onChange={(e) => setSearchQuery(e.target.value)}
-              //     sx={{
-              //       width: {
-              //         md: "fit-content",
-              //         xs: "100%",
-              //       },
-              //     }}
-              //   />
-              //   <svg
-              //     xmlns="http://www.w3.org/2000/svg"
-              //     width="1em"
-              //     height="1em"
-              //     viewBox="0 0 24 24"
-              //     className="search-icon"
-              //   >
-              //     <path
-              //       fill="none"
-              //       stroke="#979797"
-              //       strokeLinecap="round"
-              //       strokeWidth="2"
-              //       d="m21 21l-4.486-4.494M19 10.5a8.5 8.5 0 1 1-17 0a8.5 8.5 0 0 1 17 0Z"
-              //     />
-              //   </svg>
-              // </Box>
-            )}
+            {!hideSearchInput && <SearchBar />}
 
             {searchQuery && (
               <Box
@@ -450,7 +409,7 @@ export default function BasicBreadcrumbs({
                     display="flex"
                     justifyContent="center"
                     alignItems="center"
-                    onClick={handleRefetch}
+                    // onClick={handleRefetch}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"

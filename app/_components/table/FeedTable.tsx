@@ -1,14 +1,8 @@
 "use client";
+import { feedAction } from "@/lib/features/feed/feedSlice";
+import { useAppDispatch } from "@/lib/hooks";
 import {
-  farmAction,
-  selectFarmLoading,
-  selectFarms,
-} from "@/lib/features/farm/farmSlice";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import {
-  Box,
   Button,
-  Divider,
   Menu,
   MenuItem,
   Stack,
@@ -24,22 +18,12 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import Loader from "../Loader";
 import { FeedSupply } from "../feedSupply/FeedSelection";
-import { feedAction } from "@/lib/features/feed/feedSlice";
-import { getCookie } from "cookies-next";
 
 interface Props {
   feeds: FeedSupply[];
 }
-const tableData: Array<string> = [
-  "Product Name",
-  "Product Code",
-  "Production Intensity",
-  "Feeding Phase",
-  "Specie",
-  "",
-];
+
 export default function FeedTable({ feeds }: Props) {
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -70,7 +54,6 @@ export default function FeedTable({ feeds }: Props) {
     setAnchorEl(null);
   };
   const open = Boolean(anchorEl);
-  const id = open ? "simple-popover" : undefined;
   const headCells = [
     {
       id: "productName",
@@ -109,6 +92,9 @@ export default function FeedTable({ feeds }: Props) {
       label: "Actions",
     },
   ];
+  useEffect(() => {
+    router.refresh();
+  }, [router]);
   function EnhancedTableHead(data: any) {
     const { order, orderBy, onRequestSort } = data;
     const createSortHandler =

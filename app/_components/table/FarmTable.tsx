@@ -1,14 +1,10 @@
 "use client";
-import {
-  farmAction,
-  selectFarmLoading,
-  selectFarms,
-} from "@/lib/features/farm/farmSlice";
+import { Farm } from "@/app/_typeModels/Farm";
+import { breadcrumsAction } from "@/lib/features/breadcrum/breadcrumSlice";
+import { farmAction, selectFarmLoading } from "@/lib/features/farm/farmSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import {
-  Box,
   Button,
-  Divider,
   Menu,
   MenuItem,
   Stack,
@@ -22,17 +18,14 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
+import { getCookie, setCookie } from "cookies-next";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import Loader from "../Loader";
-import { breadcrumsAction } from "@/lib/features/breadcrum/breadcrumSlice";
-import { getCookie, setCookie } from "cookies-next";
-import { Farm } from "@/app/_typeModels/Farm";
 
 interface Props {
   farms: Farm[];
 }
-const tableData: Array<string> = ["Farm", "Production Unit Count", ""];
 export default function FarmTable({ farms }: Props) {
   const router = useRouter();
   const pathName = usePathname();
@@ -48,11 +41,7 @@ export default function FarmTable({ farms }: Props) {
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null
   );
-  // const getFarms = async () => {
-  //   const response = await fetch("/api/farm");
-  //   const res = response.json();
-  //   return res;
-  // };
+
   const handleClick = (
     event: React.MouseEvent<HTMLButtonElement>,
     farm: any
@@ -71,18 +60,11 @@ export default function FarmTable({ farms }: Props) {
   const handleClose = () => {
     setAnchorEl(null);
   };
+  useEffect(() => {
+    router.refresh();
+  }, [router]);
   const open = Boolean(anchorEl);
-  const id = open ? "simple-popover" : undefined;
-  // useEffect(() => {
-  //   dispatch(farmAction.handleLoading(true));
-  //   const data = async () => {
-  //     const res = await getFarms();
-  //     dispatch(farmAction.updateFarms(res.data));
-  //     dispatch(farmAction.handleLoading(false));
-  //   };
-  //   data();
-  //   dispatch(farmAction.resetState());
-  // }, []);
+
   useEffect(() => {
     if (sortDataFromLocal) {
       const data = JSON.parse(sortDataFromLocal);
