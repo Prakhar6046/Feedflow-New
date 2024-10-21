@@ -12,9 +12,9 @@ const tableData: Array<string> = [
   "Age",
   "Hatchery",
   "Fish Farm",
-  "Production Unit",
+  "Current Production Unit",
   "Status",
-  "",
+  "Actions",
 ];
 
 export default async function Page({
