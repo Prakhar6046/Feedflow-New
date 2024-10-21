@@ -62,16 +62,19 @@ const FarmInformation: NextPage<Props> = ({
   useEffect(() => {
     if (editFarm) {
       setValue("name", editFarm?.name);
-      setValue("farmAltitude", editFarm?.farmAltitude);
-      setValue("addressLine1", editFarm?.farmAddress?.addressLine1);
+      setValue(
+        "farmAltitude",
+        String(Number(editFarm?.farmAltitude).toFixed(2))
+      ),
+        setValue("addressLine1", editFarm?.farmAddress?.addressLine1);
       setValue("addressLine2", editFarm?.farmAddress?.addressLine2 || "");
       setValue("city", editFarm?.farmAddress?.city);
       setValue("country", editFarm?.farmAddress?.country);
       setValue("zipCode", editFarm?.farmAddress?.zipCode);
       setValue("province", editFarm?.farmAddress?.province);
       setValue("fishFarmer", editFarm?.fishFarmer);
-      setValue("lat", editFarm?.lat);
-      setValue("lng", editFarm?.lng);
+      setValue("lat", String(Number(editFarm?.lat).toFixed(2)));
+      setValue("lng", String(Number(editFarm?.lng).toFixed(2)));
     }
   }, [editFarm]);
   useEffect(() => {
@@ -88,9 +91,9 @@ const FarmInformation: NextPage<Props> = ({
 
   useEffect(() => {
     if (altitude && lat && lng) {
-      setValue("farmAltitude", altitude);
-      setValue("lat", lat);
-      setValue("lng", lng);
+      setValue("farmAltitude", String(Number(altitude).toFixed(2)));
+      setValue("lat", String(Number(lat).toFixed(2)));
+      setValue("lng", String(Number(lng).toFixed(2)));
     }
   }, [altitude, setValue, lat, lng]);
   console.log(lat, lng, altitude);

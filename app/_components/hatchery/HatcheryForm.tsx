@@ -30,7 +30,7 @@ function HatcheryForm({
 }: Props) {
   useEffect(() => {
     if (altitude) {
-      setValue("hatcheryAltitude", altitude);
+      setValue("hatcheryAltitude", String(Number(altitude).toFixed(2)));
     }
   }, [altitude]);
 
@@ -109,7 +109,7 @@ function HatcheryForm({
         // disabled
         sx={{
           width: "100%",
-          mt: 2,
+          my: 2,
         }}
         focused
         // focused={watch("hatcheryAltitude") ? true : false}
@@ -129,7 +129,7 @@ function HatcheryForm({
             {validationMessage.OnlyNumbersWithDot}
           </Typography>
         )}
-      <FormControl fullWidth className="form-input">
+      <FormControl fullWidth focused className="form-input">
         <InputLabel id="feed-supply-select-label5">Species *</InputLabel>
         <Select
           labelId="feed-supply-select-label5"
