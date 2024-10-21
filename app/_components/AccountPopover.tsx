@@ -30,6 +30,13 @@ export interface LoggedUser {
       role: String;
       createdAt: String;
       imageUrl: String;
+      updatedBy: String;
+      createdBy: String;
+      organisationId: Number;
+      updatedAt: String;
+      organisation: {
+        organisationType: String;
+      };
     };
   };
 }
@@ -141,21 +148,39 @@ const AccountPopover = () => {
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
         <Box paddingInline={1.5}>
-          <Stack display={"flex"} justifyContent={"space-between"} alignItems={"center"} direction={"row"} gap={3}>
+          <Stack
+            display={"flex"}
+            justifyContent={"space-between"}
+            alignItems={"center"}
+            direction={"row"}
+            gap={3}
+          >
             <Typography variant="subtitle2" fontWeight={600}>
               {loggedUserData ? loggedUserData?.data?.user.name : "Demo"}
             </Typography>
-            <Badge badgeContent={"Admin"} color="primary" className="profile-badge">
-            </Badge>
+            <Badge
+              badgeContent={
+                loggedUserData ? loggedUserData?.data?.user.role : ""
+              }
+              color="primary"
+              className="profile-badge"
+            ></Badge>
           </Stack>
           <Typography variant="body2" fontSize={13} fontWeight={400} mt={0.3}>
             {loggedUserData ? loggedUserData?.data?.user.email : "Demo"}
           </Typography>
 
-          <Typography variant="body2" fontSize={12} color="#06a19b" fontWeight={600} mt={0.5}>
-            Fish Farmer
+          <Typography
+            variant="body2"
+            fontSize={12}
+            color="#06a19b"
+            fontWeight={600}
+            mt={0.5}
+          >
+            {loggedUserData
+              ? loggedUserData?.data?.user?.organisation?.organisationType
+              : ""}
           </Typography>
-
         </Box>
 
         <Divider
