@@ -112,10 +112,10 @@ export default function FeedTable({ feeds }: Props) {
                 idx === headCells.length - 1
                   ? false
                   : orderBy === headCell.id
-                  ? order
-                  : false
+                    ? order
+                    : false
               }
-              align="center"
+              // align="center"
               sx={{
                 borderBottom: 0,
                 color: "#67737F",
@@ -242,7 +242,7 @@ export default function FeedTable({ feeds }: Props) {
                     sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                   >
                     <TableCell
-                      align="center"
+                      // align="center"
                       sx={{
                         borderBottomColor: "#F5F6F8",
                         borderBottomWidth: 2,
@@ -261,51 +261,55 @@ export default function FeedTable({ feeds }: Props) {
                     </TableCell>
 
                     <TableCell
-                      align="center"
+                      // align="center"
                       sx={{
                         borderBottomColor: "#F5F6F8",
                         borderBottomWidth: 2,
                         color: "#555555",
                         fontWeight: 500,
+                        pl: 0
                       }}
                     >
                       {feed.productCode ?? ""}
                     </TableCell>
                     <TableCell
-                      align="center"
+                      // align="center"
                       sx={{
                         borderBottomColor: "#F5F6F8",
                         borderBottomWidth: 2,
                         color: "#555555",
                         fontWeight: 500,
+                        pl: 0
                       }}
                     >
                       {feed.productionIntensity ?? ""}
                     </TableCell>
                     <TableCell
-                      align="center"
+                      // align="center"
                       sx={{
                         borderBottomColor: "#F5F6F8",
                         borderBottomWidth: 2,
                         color: "#555555",
                         fontWeight: 500,
+                        pl: 0
                       }}
                     >
                       {feed.feedingPhase ?? ""}
                     </TableCell>
                     <TableCell
-                      align="center"
+                      // align="center"
                       sx={{
                         borderBottomColor: "#F5F6F8",
                         borderBottomWidth: 2,
                         color: "#555555",
                         fontWeight: 500,
+                        pl: 0
                       }}
                     >
                       {feed.specie ?? ""}
                     </TableCell>
                     <TableCell
-                      align="center"
+                      // align="center"
                       sx={{
                         borderBottomColor: "#F5F6F8",
                         borderBottomWidth: 2,
@@ -313,7 +317,7 @@ export default function FeedTable({ feeds }: Props) {
                         fontWeight: 500,
                       }}
                       className="cursor-pointer"
-                      // onClick={() => handleEdit(user)}
+                    // onClick={() => handleEdit(user)}
                     >
                       <Button
                         id="basic-button"

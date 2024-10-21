@@ -403,3 +403,7 @@ body {
 .hatchery-table table tbody tr td {
   padding-inline: 20px !important;
 }
+
+.hatchery-table table tbody tr td:last-child {
+  padding-left: 40px !important;
+}

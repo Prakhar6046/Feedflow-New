@@ -158,8 +158,8 @@ export default function UserTable({ users }: Props) {
                 idx === headCells.length - 1
                   ? false
                   : orderBy === headCell.id
-                  ? order
-                  : false
+                    ? order
+                    : false
               }
               sx={{
                 borderBottom: 0,
@@ -274,7 +274,7 @@ export default function UserTable({ users }: Props) {
           <EnhancedTableHead
             order={order}
             orderBy={orderBy}
-            // onRequestSort={handleRequestSort}
+          // onRequestSort={handleRequestSort}
           />
           <TableBody>
             {users && users.length > 0 ? (
@@ -282,7 +282,9 @@ export default function UserTable({ users }: Props) {
                 return (
                   <TableRow
                     key={i}
-                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                    sx={{
+                      "&:last-child td, &:last-child th": { border: 0 }
+                    }}
                   >
                     <TableCell
                       sx={{
@@ -348,6 +350,7 @@ export default function UserTable({ users }: Props) {
                         borderBottomWidth: 2,
                         color: "#555555",
                         fontWeight: 500,
+                        pl: 0
                       }}
                     >
                       {user?.status ?? ""}
@@ -358,6 +361,7 @@ export default function UserTable({ users }: Props) {
                         borderBottomWidth: 2,
                         color: "#555555",
                         fontWeight: 500,
+                        pl: 0
                       }}
                     >
                       {user?.role ?? ""}
@@ -368,6 +372,7 @@ export default function UserTable({ users }: Props) {
                         borderBottomWidth: 2,
                         color: "#555555",
                         fontWeight: 500,
+                        pl: 0
                       }}
                     >
                       <Box
@@ -424,20 +429,21 @@ export default function UserTable({ users }: Props) {
                         borderBottomWidth: 2,
                         color: "#555555",
                         fontWeight: 500,
+                        pl: 0
                       }}
                     >
                       {readableDate(user?.createdAt) ?? ""}
                     </TableCell>
                     <TableCell
-                      align="center"
+                      // align="center"
                       sx={{
                         borderBottomColor: "#F5F6F8",
                         borderBottomWidth: 2,
                         color: "#555555",
-                        fontWeight: 500,
+                        fontWeight: 500
                       }}
                       className="cursor-pointer"
-                      // onClick={() => handleEdit(user)}
+                    // onClick={() => handleEdit(user)}
                     >
                       <Button
                         id="basic-button"
