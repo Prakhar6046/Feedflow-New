@@ -256,7 +256,8 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
                       }}
                       onChange={(date) => {
                         field.onChange(date);
-                        setValue("hatchingDate", date);
+                        !watch("hatchingDate") &&
+                          setValue("hatchingDate", date);
                       }}
                       value={field.value || null} // To handle the case when field.value is undefined
                     />
@@ -356,14 +357,15 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
             </Box>
           </Grid>
 
-          <Grid item sm={6} xs={12}>
+          {/* <Grid item sm={6} xs={12}>
             <Box width={"100%"}>
               <TextField
                 label="Age *"
                 type="text"
+                disabled
                 className="form-input"
                 {...register("age", { required: true })}
-                focused={watch("hatchingDate") ? true : false}
+                focused
                 sx={{
                   width: "100%",
                 }}
@@ -375,7 +377,7 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
                 </Typography>
               )}
             </Box>
-          </Grid>
+          </Grid> */}
 
           <Grid item sm={6} xs={12}>
             <Box width={"100%"}>
