@@ -12,7 +12,7 @@ export default async function Page() {
         links={[
           { name: "Dashboard", link: "/dashboard" },
           { name: "Users", link: "/dashboard/user" },
-          { name: "New", link: "/dashboard/user/new" },
+          { name: "New User", link: "/dashboard/user/new" },
         ]}
       />
       <AddNewUser organisations={organisations?.data} />

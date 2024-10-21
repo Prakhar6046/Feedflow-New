@@ -28,6 +28,9 @@ export async function GET(request: NextRequest) {
             : {},
         ],
       },
+      orderBy: {
+        createdAt: "desc", // Sort by createdAt in descending order
+      },
     });
 
     return new NextResponse(

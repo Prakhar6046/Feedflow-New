@@ -24,7 +24,7 @@ export default async function Page() {
         links={[
           { name: "Dashboard", link: "/dashboard" },
           { name: "Organisations", link: "/dashboard/organisation" },
-          { name: "New", link: "/dashboard/organisation/new" },
+          { name: "New Organisation", link: "/dashboard/organisation/new" },
         ]}
       />
       <AddNewOrganisation />
