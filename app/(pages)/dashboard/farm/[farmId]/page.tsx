@@ -12,6 +12,9 @@ import { useAppSelector } from "@/lib/hooks";
 import { Box, Divider, Grid, Step, StepLabel, Stepper } from "@mui/material";
 import { NextPage } from "next";
 import { useEffect, useState } from "react";
+import { getCookie, setCookie } from "cookies-next";
+import { Farm } from "@/app/_typeModels/Farm";
+import Loader from "@/app/_components/Loader";
 
 const steps = [
   {
@@ -28,15 +31,40 @@ const steps = [
   },
 ];
 const Page = ({ params }: { params: { farmId: string } }) => {
-  const [activeStep, setActiveStep] = useState<number>(0);
-  const isEditFarm = useAppSelector(selectIsEditFarm);
-  const editFarm = useAppSelector(selectEditFarm);
+  const activeStepIndex = Number(getCookie("activeStep"));
+  const [activeStep, setActiveStep] = useState<number>(
+    activeStepIndex !== 0 ? activeStepIndex : 0
+  );
+  // const isEditFarm = useAppSelector(selectIsEditFarm);
+  const [editFarm, setEditFarm] = useState<Farm>();
+  const [loading, setLoading] = useState<boolean>(false);
 
+  const getFarm = async () => {
+    const response = await fetch(`/api/farm/${params.farmId}`);
+    const res = await response.json();
+    return res;
+  };
+
+  // useEffect(() => {
+  //   if (isEditFarm) {
+  //     setActiveStep(1);
+  //   }
+  // }, [isEditFarm]);
   useEffect(() => {
-    if (isEditFarm) {
-      setActiveStep(1);
-    }
-  }, [isEditFarm]);
+    setCookie("activeStep", activeStep);
+  }, [activeStep]);
+  useEffect(() => {
+    setLoading(true);
+    const getFarmData = async () => {
+      const res = await getFarm();
+      setEditFarm(res.data);
+      setLoading(false);
+    };
+    getFarmData();
+  }, []);
+  if (loading) {
+    return <Loader />;
+  }
   return (
     <>
       <BasicBreadcrumbs

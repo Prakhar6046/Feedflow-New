@@ -64,4 +64,8 @@ export interface AddOrganizationFormInputs {
     email: string;
     phone: string;
   }[];
+  hatcheryName?: String;
+  hatcheryCode?: String;
+  fishSpecie?: String;
+  hatcheryAltitude?: String;
 }

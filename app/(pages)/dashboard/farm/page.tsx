@@ -1,20 +1,21 @@
 import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
-import { Farm } from "@/app/_components/Farm";
-import Loader from "@/app/_components/Loader";
-// import CommonTable from "@/app/_components/table/CommonTable";
 import FarmTable from "@/app/_components/table/FarmTable";
 import { getFarms } from "@/app/_lib/action";
-import { Suspense } from "react";
-export const revalidate = 0;
-export default async function Page() {
+export default async function Page({
+  searchParams,
+}: {
+  searchParams?: {
+    query?: string;
+  };
+}) {
+  const query = searchParams?.query || "";
+  const famrs = await getFarms(query);
+
   return (
     <>
       <BasicBreadcrumbs
         heading={"Farm"}
         buttonName={"Add Farm"}
-        searchOrganisations={false}
-        searchUsers={false}
-        searchFarm={true}
         isTable={true}
         refetch="farm"
         buttonRoute="/dashboard/farm/newFarm"
@@ -23,9 +24,7 @@ export default async function Page() {
           { name: "Farm", link: "/dashboard/farm" },
         ]}
       />
-      <Suspense fallback={<Loader />}>
-        <Farm />
-      </Suspense>
+      <FarmTable farms={famrs?.data} />
     </>
   );
 }

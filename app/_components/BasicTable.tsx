@@ -1,12 +1,7 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
+import { breadcrumsAction } from "@/lib/features/breadcrum/breadcrumSlice";
+import { selectOrganisationLoading } from "@/lib/features/organisation/organisationSlice";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import {
   Box,
   Button,
@@ -16,18 +11,19 @@ import {
   TableSortLabel,
   Typography,
 } from "@mui/material";
-import {
-  selectOrganisationLoading,
-  selectOrganisations,
-} from "@/lib/features/organisation/organisationSlice";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import Loader from "./Loader";
-import { usePathname, useRouter } from "next/navigation";
+import Paper from "@mui/material/Paper";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import { getCookie } from "cookies-next";
 import Image from "next/image";
+import { usePathname, useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { SingleOrganisation } from "../_typeModels/Organization";
-import { breadcrumsAction } from "@/lib/features/breadcrum/breadcrumSlice";
-import { getCookie } from "cookies-next";
 
 interface Props {
   organisations: SingleOrganisation[];
@@ -40,7 +36,7 @@ export default function BasicTable({ organisations }: Props) {
   const sortDataFromLocal = getCookie(pathName);
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("organisation");
-  const searchedOrganisations = useAppSelector(selectOrganisations);
+  // const searchedOrganisations = useAppSelector(selectOrganisations);
   const loading = useAppSelector(selectOrganisationLoading);
   const [selectedOrganisation, setSelectedOrganisation] =
     useState<SingleOrganisation | null>(null);
@@ -164,12 +160,7 @@ export default function BasicTable({ organisations }: Props) {
   }
 
   const open = Boolean(anchorEl);
-  const id = open ? "simple-popover" : undefined;
-  useEffect(() => {
-    if (organisations) {
-      setOrganisationData(organisations);
-    }
-  }, [organisations]);
+
   useEffect(() => {
     if (sortDataFromLocal) {
       const data = JSON.parse(sortDataFromLocal);
@@ -177,17 +168,6 @@ export default function BasicTable({ organisations }: Props) {
       setOrderBy(data.column);
     }
   }, [sortDataFromLocal]);
-  useEffect(() => {
-    if (searchedOrganisations) {
-      setOrganisationData(searchedOrganisations);
-    } else {
-      setOrganisationData(organisations);
-    }
-  }, [searchedOrganisations]);
-
-  if (loading) {
-    return <Loader />;
-  }
 
   const handleRequestSort = (
     _: React.MouseEvent<HTMLButtonElement>,
@@ -231,6 +211,9 @@ export default function BasicTable({ organisations }: Props) {
       setOrganisationData(sortedData);
     }
   };
+  useEffect(() => {
+    router.refresh();
+  }, [router]);
   return (
     <Paper
       sx={{
@@ -247,77 +230,14 @@ export default function BasicTable({ organisations }: Props) {
         }}
       >
         <Table stickyHeader aria-label="sticky table">
-          {/* <TableHead>
-            <TableRow>
-              <TableCell
-                sx={{
-                  borderBottom: 0,
-                  color: "#67737F",
-                  background: "#F5F6F8",
-                  fontSize: {
-                    md: 16,
-                    xs: 14,
-                  },
-                  fontWeight: 600,
-                  paddingLeft: {
-                    lg: 10,
-                    md: 7,
-                    xs: 4,
-                  },
-                }}
-              >
-                Organisations
-              </TableCell>
-              <TableCell
-                sx={{
-                  borderBottom: 0,
-                  background: "#F5F6F8",
-                  color: "#67737F",
-                  fontSize: {
-                    md: 16,
-                    xs: 14,
-                  },
-                  fontWeight: 600,
-                }}
-              >
-                Contact Number
-              </TableCell>
-              <TableCell
-                sx={{
-                  borderBottom: 0,
-                  background: "#F5F6F8",
-                  color: "#67737F",
-                  fontSize: {
-                    md: 16,
-                    xs: 14,
-                  },
-                  fontWeight: 600,
-                }}
-              >
-                Contact Person
-              </TableCell>
-              <TableCell
-                sx={{
-                  borderBottom: 0,
-                  color: "#67737F",
-                  background: "#F5F6F8",
-                  fontSize: {
-                    md: 16,
-                    xs: 14,
-                  },
-                  fontWeight: 600,
-                }}
-              ></TableCell>
-            </TableRow>
-          </TableHead> */}
           <EnhancedTableHead
             order={order}
             orderBy={orderBy}
             onRequestSort={handleRequestSort}
           />
           <TableBody>
-            {organisationData && organisationData.length > 0 ? (
-              organisationData?.map((organisation, i) => {
+            {organisations && organisations.length > 0 ? (
+              organisations?.map((organisation, i) => {
                 return (
                   <TableRow
                     key={i}

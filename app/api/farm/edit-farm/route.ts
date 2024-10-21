@@ -23,6 +23,8 @@ export async function POST(req: NextRequest) {
         farmAddressId: updatedFarmAddress.id,
         name: body.name,
         farmAltitude: body.farmAltitude,
+        lat: body.lat,
+        lng: body.lng,
       },
     });
 

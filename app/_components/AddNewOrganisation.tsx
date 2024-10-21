@@ -39,6 +39,7 @@ import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { AddOrganizationFormInputs } from "../_typeModels/Organization";
 import MapComponent from "./farm/MapComponent";
+import HatcheryForm from "./hatchery/HatcheryForm";
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
   clipPath: "inset(50%)",
@@ -62,9 +63,11 @@ const AddNewOrganisation = () => {
   const [profilePic, setProfilePic] = useState<String>();
   const router = useRouter();
   const [contactError, setcontactError] = useState<string>("");
-  // const [addressInformation, setAddressInformation] = useState<any>();
-  // const [useAddress, setUseAddress] = useState<boolean>(false);
-  // const [searchedAddress, setSearchedAddress] = useState<any>();
+  const [isHatcherySelected, setIsHatcherySelected] = useState<boolean>(false);
+  const [addressInformation, setAddressInformation] = useState<any>();
+  const [useAddress, setUseAddress] = useState<boolean>(false);
+  const [searchedAddress, setSearchedAddress] = useState<any>();
+  const [altitude, setAltitude] = useState<String>("");
   const {
     register,
     setValue,
@@ -73,6 +76,7 @@ const AddNewOrganisation = () => {
     getValues,
     watch,
     reset,
+    trigger,
     formState: { errors },
   } = useForm<AddOrganizationFormInputs>({
     defaultValues: {
@@ -80,6 +84,7 @@ const AddNewOrganisation = () => {
     },
     mode: "onChange",
   });
+
   const onSubmit: SubmitHandler<AddOrganizationFormInputs> = async (data) => {
     if (data) {
       const response = await fetch("/api/add-organisation", {
@@ -138,15 +143,24 @@ const AddNewOrganisation = () => {
       setProfilePic(profileData.data.url);
     }
   };
-  // useEffect(() => {
-  //   if (addressInformation && useAddress) {
-  //     setValue("address", addressInformation.address.split(",")[0]);
-  //     setValue("city", addressInformation.city);
-  //     setValue("province", addressInformation.country);
-  //     setValue("postCode", addressInformation.postcode);
-  //     setUseAddress(false);
-  //   }
-  // }, [addressInformation, useAddress]);
+  useEffect(() => {
+    if (watch("organisationType") === "Hatchery") {
+      setIsHatcherySelected(true);
+    } else {
+      setIsHatcherySelected(false);
+    }
+  }, [watch("organisationType")]);
+  useEffect(() => {
+    if (addressInformation && useAddress && altitude) {
+      setValue("address", addressInformation.address);
+      setValue("city", addressInformation.city);
+      setValue("postCode", addressInformation.postcode);
+      setValue("province", addressInformation.state);
+      setValue("country", addressInformation.country);
+
+      setUseAddress(false);
+    }
+  }, [addressInformation, useAddress]);
 
   return (
     <Stack
@@ -330,7 +344,6 @@ const AddNewOrganisation = () => {
                   </Typography>
                 )}
             </Box>
-
             <Stack
               display={"flex"}
               justifyContent={"flex-start"}
@@ -341,31 +354,6 @@ const AddNewOrganisation = () => {
                 gap: 1.5,
               }}
             >
-              {/* <FormControl
-                className="form-input"
-                focused
-                sx={{
-                  width: {
-                    md: "15%",
-                    xs: "50%",
-                  },
-                }}
-              >
-                <InputLabel id="demo-simple-select-label">
-                  Organisation Type
-                </InputLabel>
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  label="Organisation Type"
-                  //   onChange={handleChange}
-                >
-                  <MenuItem value={10}>Ten</MenuItem>
-                  <MenuItem value={20}>Twenty</MenuItem>
-                  <MenuItem value={30}>Thirty</MenuItem>
-                </Select>
-              </FormControl> */}
-
               <Box width={"100%"}>
                 <TextField
                   label="Organisation Code *"
@@ -437,6 +425,16 @@ const AddNewOrganisation = () => {
                 </Typography>
               )}
             </FormControl>
+            {isHatcherySelected && (
+              <HatcheryForm
+                altitude={altitude}
+                register={register}
+                setValue={setValue}
+                watch={watch}
+                trigger={trigger}
+                errors={errors}
+              />
+            )}
             <Typography
               variant="subtitle1"
               color="black"
@@ -447,7 +445,6 @@ const AddNewOrganisation = () => {
             >
               Address
             </Typography>
-
             <Stack
               display={"flex"}
               justifyContent={"flex-start"}
@@ -535,7 +532,6 @@ const AddNewOrganisation = () => {
                 )}
               </Box>
             </Stack>
-
             <Stack
               display={"flex"}
               justifyContent={"flex-start"}
@@ -627,7 +623,6 @@ const AddNewOrganisation = () => {
                   )}
               </Box>
             </Stack>
-
             <Stack
               display={"flex"}
               justifyContent={"flex-start"}
@@ -678,14 +673,15 @@ const AddNewOrganisation = () => {
                   )}
               </Box>
             </Stack>
-            {/* <Box display={"flex"} justifyContent={"end"} width={"100%"}>
+            <Box display={"flex"} justifyContent={"end"} width={"100%"}>
               <MapComponent
                 setAddressInformation={setAddressInformation}
                 setSearchedAddress={setSearchedAddress}
                 setUseAddress={setUseAddress}
-                isCalAltitude={false}
+                isCalAltitude={true}
+                setAltitude={setAltitude}
               />
-            </Box> */}
+            </Box>
             <Typography
               variant="subtitle1"
               color="black"
@@ -695,7 +691,6 @@ const AddNewOrganisation = () => {
             >
               Contacts
             </Typography>
-
             {/* {organisationData?.contact?.map((contact, i) => {
               return (
                 <Stack
@@ -1068,14 +1063,12 @@ const AddNewOrganisation = () => {
                 {contactError}
               </Typography>
             )}
-
             <Divider
               sx={{
                 borderColor: "#979797",
                 my: 1,
               }}
             />
-
             <Stack
               p={1.5}
               direction={"row"}
@@ -1105,7 +1098,6 @@ const AddNewOrganisation = () => {
               </svg>
               Add Contact
             </Stack>
-
             <Button
               type="submit"
               variant="contained"

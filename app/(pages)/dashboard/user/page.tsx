@@ -1,8 +1,24 @@
 import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
 import UserTable from "@/app/_components/UserTable";
-import { getAllOrganisations } from "@/app/_lib/action";
-export default async function Page() {
-  let organisations = await getAllOrganisations();
+import { getUsers } from "@/app/_lib/action";
+import { getCookie } from "cookies-next";
+import { cookies } from "next/headers";
+
+export default async function Page({
+  searchParams,
+}: {
+  searchParams?: {
+    query?: string;
+  };
+}) {
+  const query = searchParams?.query || "";
+  const loggedUser: any = getCookie("logged-user", { cookies });
+  const user = JSON.parse(loggedUser);
+  const users = await getUsers({
+    role: user.data.user.role,
+    organisationId: user.data.user.organisationId,
+    query,
+  });
 
   return (
     <>
@@ -10,9 +26,6 @@ export default async function Page() {
         heading={"Users"}
         buttonName={"Add User"}
         buttonRoute="/dashboard/user/new"
-        searchUsers={true}
-        organisations={organisations?.data}
-        searchOrganisations={false}
         isTable={true}
         refetch={"user"}
         links={[
@@ -20,7 +33,7 @@ export default async function Page() {
           { name: "Users", link: "/dashboard/user" },
         ]}
       />
-      <UserTable />
+      <UserTable users={users.data} />
     </>
   );
 }

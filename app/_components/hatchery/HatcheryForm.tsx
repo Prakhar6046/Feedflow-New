@@ -1,0 +1,167 @@
+import { species } from "@/app/_lib/utils";
+import {
+  Box,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+  Typography,
+} from "@mui/material";
+import React, { useEffect } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
+import * as validationPattern from "@/app/_lib/utils/validationPatterns/index";
+import * as validationMessage from "@/app/_lib/utils/validationsMessage/index";
+interface Props {
+  altitude: String;
+  register: any;
+  setValue: any;
+  trigger: any;
+  watch: any;
+  errors?: any;
+}
+function HatcheryForm({
+  altitude,
+  register,
+  setValue,
+  trigger,
+  watch,
+  errors,
+}: Props) {
+  useEffect(() => {
+    if (altitude) {
+      setValue("hatcheryAltitude", String(Number(altitude).toFixed(2)));
+    }
+  }, [altitude]);
+
+  return (
+    <Box width={"100%"}>
+      <TextField
+        label="Hatchery Name *"
+        type="text"
+        className="form-input"
+        {...register("hatcheryName", {
+          required: true,
+          pattern: validationPattern.alphabetsAndSpacesPattern,
+        })}
+        // disabled
+        sx={{
+          width: "100%",
+          mt: 2,
+        }}
+        focused
+        // focused={true}
+        // value={userData?.data.email ?? "Demo@gmail.com"}
+      />
+      {errors &&
+        errors.hatcheryName &&
+        errors.hatcheryName.type === "required" && (
+          <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+            {validationMessage.required}
+          </Typography>
+        )}
+      {errors &&
+        errors.hatcheryName &&
+        errors.hatcheryName.type === "pattern" && (
+          <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+            {validationMessage.OnlyAlphabatsMessage}
+          </Typography>
+        )}
+      <TextField
+        label="Hatchery Code *"
+        type="text"
+        className="form-input"
+        {...register("hatcheryCode", {
+          required: true,
+          pattern: validationPattern.alphabetsNumbersAndSpacesPattern,
+        })}
+        // disabled
+        sx={{
+          width: "100%",
+          mt: 2,
+        }}
+        focused
+        // focused={true}
+        // value={userData?.data.email ?? "Demo@gmail.com"}
+      />
+      {errors &&
+        errors.hatcheryCode &&
+        errors.hatcheryCode.type === "required" && (
+          <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+            {validationMessage.required}
+          </Typography>
+        )}
+      {errors &&
+        errors.hatcheryCode &&
+        errors.hatcheryCode.type === "pattern" && (
+          <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+            {validationMessage.OnlyAlphabetsandNumberMessage}
+          </Typography>
+        )}
+      <TextField
+        label="Hatchery Altitude *"
+        type="text"
+        className="form-input"
+        {...register("hatcheryAltitude", {
+          required: true,
+          pattern: validationPattern.numbersWithDot,
+        })}
+        // disabled
+        sx={{
+          width: "100%",
+          my: 2,
+        }}
+        focused
+        // focused={watch("hatcheryAltitude") ? true : false}
+        // value={userData?.data.email ?? "Demo@gmail.com"}
+      />
+      {errors &&
+        errors.hatcheryAltitude &&
+        errors.hatcheryAltitude.type === "required" && (
+          <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+            {validationMessage.required}
+          </Typography>
+        )}
+      {errors &&
+        errors.hatcheryAltitude &&
+        errors.hatcheryAltitude.type === "pattern" && (
+          <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+            {validationMessage.OnlyNumbersWithDot}
+          </Typography>
+        )}
+      <FormControl fullWidth focused className="form-input">
+        <InputLabel id="feed-supply-select-label5">Species *</InputLabel>
+        <Select
+          labelId="feed-supply-select-label5"
+          id="feed-supply-select5"
+          label="Species *"
+          {...register("fishSpecie", {
+            required: true,
+          })}
+          value={watch("fishSpecie") || ""}
+          onChange={(e) => {
+            setValue("fishSpecie", e.target.value);
+            trigger("fishSpecie");
+          }}
+        >
+          {species.map((specie, i) => {
+            return (
+              <MenuItem value={specie} key={i}>
+                {specie}
+              </MenuItem>
+            );
+          })}
+        </Select>
+        {errors &&
+          errors.fishSpecie &&
+          errors.fishSpecie.type === "required" && (
+            <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+              {validationMessage.required}
+            </Typography>
+          )}
+      </FormControl>
+    </Box>
+  );
+}
+
+export default HatcheryForm;

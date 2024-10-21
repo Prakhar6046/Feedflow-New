@@ -1,14 +1,10 @@
 "use client";
-import {
-  farmAction,
-  selectFarmLoading,
-  selectFarms,
-} from "@/lib/features/farm/farmSlice";
+import { Farm } from "@/app/_typeModels/Farm";
+import { breadcrumsAction } from "@/lib/features/breadcrum/breadcrumSlice";
+import { farmAction, selectFarmLoading } from "@/lib/features/farm/farmSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import {
-  Box,
   Button,
-  Divider,
   Menu,
   MenuItem,
   Stack,
@@ -22,22 +18,20 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
+import { getCookie, setCookie } from "cookies-next";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import Loader from "../Loader";
-import { breadcrumsAction } from "@/lib/features/breadcrum/breadcrumSlice";
-import { getCookie } from "cookies-next";
 
 interface Props {
-  farms: any;
+  farms: Farm[];
 }
-const tableData: Array<string> = ["Farm", "Production Unit Count", ""];
-export default function FarmTable() {
+export default function FarmTable({ farms }: Props) {
   const router = useRouter();
   const pathName = usePathname();
   const dispatch = useAppDispatch();
   const sortDataFromLocal = getCookie(pathName);
-  const farms = useAppSelector(selectFarms);
+  // const farms = useAppSelector(selectFarms);
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("organisation");
   const [farmsData, setFarmsData] = useState<any>();
@@ -47,11 +41,7 @@ export default function FarmTable() {
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null
   );
-  const getFarms = async () => {
-    const response = await fetch("/api/farm");
-    const res = response.json();
-    return res;
-  };
+
   const handleClick = (
     event: React.MouseEvent<HTMLButtonElement>,
     farm: any
@@ -61,24 +51,20 @@ export default function FarmTable() {
   };
   const handleEdit = () => {
     if (selectedFarm) {
-      dispatch(farmAction.editFarm(selectedFarm));
+      dispatch(farmAction.handleIsFarm());
+      // dispatch(farmAction.editFarm(selectedFarm));
       router.push(`/dashboard/farm/${selectedFarm.id}`);
+      setCookie("activeStep", 1);
     }
   };
   const handleClose = () => {
     setAnchorEl(null);
   };
-  const open = Boolean(anchorEl);
-  const id = open ? "simple-popover" : undefined;
   useEffect(() => {
-    dispatch(farmAction.handleLoading(true));
-    const data = async () => {
-      const res = await getFarms();
-      dispatch(farmAction.updateFarms(res.data));
-      dispatch(farmAction.handleLoading(false));
-    };
-    data();
-  }, []);
+    router.refresh();
+  }, [router]);
+  const open = Boolean(anchorEl);
+
   useEffect(() => {
     if (sortDataFromLocal) {
       const data = JSON.parse(sortDataFromLocal);
@@ -253,8 +239,8 @@ export default function FarmTable() {
             onRequestSort={handleRequestSort}
           />
           <TableBody>
-            {farmsData && farmsData.length > 0 ? (
-              farmsData.map((farm: any, i: number) => {
+            {farms && farms.length > 0 ? (
+              farms.map((farm: any, i: number) => {
                 return (
                   <TableRow
                     key={i}

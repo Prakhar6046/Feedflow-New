@@ -18,3 +18,4 @@ export const OnlyAlphabetsandNumberMessage2 =
   "Input must contain only letters, numbers, and spaces.";
 export const OnlyNumbersWithDot =
   "Input must contain only numbers and a single decimal point.";
+export const NegativeNumberWithDot = "Input must contain only numbers.";

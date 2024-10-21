@@ -20,7 +20,6 @@ export default async function Page() {
     <>
       <BasicBreadcrumbs
         heading={"Organisations"}
-        organisations={organisations?.data}
         hideSearchInput={true}
         links={[
           { name: "Dashboard", link: "/dashboard" },

@@ -13,7 +13,7 @@ export const GET = async (request: NextRequest, context: { params: any }) => {
   try {
     const data = await prisma.organisation.findUnique({
       where: { id: Number(organisationId) },
-      include: { address: true, contact: true },
+      include: { address: true, contact: true, hatchery: true },
     });
     return new NextResponse(JSON.stringify({ status: true, data }), {
       status: 200,
@@ -48,6 +48,12 @@ export async function PUT(req: NextRequest, context: { params: any }) {
     const organisationType = formData.get("organisationType") as string;
     const addressData = JSON.parse(formData.get("address") as string);
     const contactsData = JSON.parse(formData.get("contacts") as string);
+    const hatcheryId = JSON.parse(formData.get("hatcheryId") as string);
+    const hatchery = JSON.parse(formData.get("hatchery") as string);
+    console.log(formData);
+
+    console.log(hatcheryId);
+    console.log(hatchery);
 
     // Handle address update or create
     const updatedAddress = await prisma.address.upsert({
@@ -70,6 +76,24 @@ export async function PUT(req: NextRequest, context: { params: any }) {
         organisation: { connect: { id: organisation.id } },
       },
     });
+    if (hatchery) {
+      const updatedHatchery = await prisma.hatchery.upsert({
+        where: { id: hatcheryId || "" },
+        update: {
+          name: hatchery.name,
+          altitude: hatchery.altitude,
+          code: hatchery.code,
+          fishSpecie: hatchery.fishSpecie,
+        },
+        create: {
+          name: hatchery.name ?? "",
+          altitude: hatchery.altitude ?? "",
+          code: hatchery.code ?? "",
+          fishSpecie: hatchery.fishSpecie ?? "",
+          createdBy: organisation.id,
+        },
+      });
+    }
 
     // Handle contacts update or create
     for (const contact of contactsData) {

@@ -1,18 +1,15 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
 import { getCookie } from "cookies-next";
 import { usePathname, useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
 // import { getUsers } from "../_lib/action";
-import Loader from "./Loader";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import { selectUsers } from "@/lib/features/user/userSlice";
 import {
   Box,
   Button,
@@ -23,11 +20,10 @@ import {
   TableSortLabel,
   Typography,
 } from "@mui/material";
-import { readableDate } from "../_lib/utils";
 import Image from "next/image";
 import toast from "react-hot-toast";
+import { readableDate } from "../_lib/utils";
 import { SingleUser } from "../_typeModels/User";
-import { breadcrumsAction } from "@/lib/features/breadcrum/breadcrumSlice";
 
 interface Props {
   users: SingleUser[];
@@ -41,37 +37,17 @@ interface Data {
   density: number;
 }
 
-export default function UserTable() {
+export default function UserTable({ users }: Props) {
   const router = useRouter();
   const pathName = usePathname();
-  const dispatch = useAppDispatch();
-  const searchUsers = useAppSelector(selectUsers);
   const loggedUser = getCookie("logged-user");
   const sortDataFromLocal = getCookie(pathName);
-  const [users, setUsers] = useState<SingleUser[]>();
-  const [loading, setLoading] = useState<boolean>(false);
   const [selectedUser, setSelectedUser] = useState<SingleUser | null>(null);
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null
   );
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("name");
-  const getUsers = async (payload: any) => {
-    try {
-      const data = await fetch(
-        `/api/users?role=${payload.role}&organisationId=${payload.organisationId}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      return await data.json();
-    } catch (error) {
-      return error;
-    }
-  };
 
   const handleEdit = (user: any) => {
     router.push(`/dashboard/user/${selectedUser?.id}`);
@@ -88,7 +64,6 @@ export default function UserTable() {
     setSelectedUser(null);
   };
   const open = Boolean(anchorEl);
-  const id = open ? "simple-popover" : undefined;
   const handleInviteUser = async () => {
     setAnchorEl(null);
     if (selectedUser) {
@@ -118,11 +93,11 @@ export default function UserTable() {
         toast.success(res.message);
         if (loggedUser) {
           const loggedData = JSON.parse(loggedUser);
-          const data = await getUsers({
-            role: loggedData.data.user.role,
-            organisationId: loggedData.data.user.organisationId,
-          });
-          setUsers(data.data);
+          // const data = await getUsers({
+          //   role: loggedData.data.user.role,
+          //   organisationId: loggedData.data.user.organisationId,
+          // });
+          // setUsers(data.data);
         }
       }
     }
@@ -221,85 +196,65 @@ export default function UserTable() {
   }
 
   useEffect(() => {
-    setLoading(true);
-    if (loggedUser) {
-      const data = async () => {
-        const loggedData = JSON.parse(loggedUser);
-        const res = await getUsers({
-          role: loggedData.data.user.role,
-          organisationId: loggedData.data.user.organisationId,
-        });
-        setUsers(res.data);
-        setLoading(false);
-      };
-      data();
-    }
-  }, [loggedUser]);
-  useEffect(() => {
     if (sortDataFromLocal) {
       const data = JSON.parse(sortDataFromLocal);
       setOrder(data.direction);
       setOrderBy(data.column);
     }
   }, [sortDataFromLocal]);
+
+  // const handleRequestSort = (
+  //   _: React.MouseEvent<HTMLButtonElement>,
+  //   property: string
+  // ) => {
+  //   const isAsc = orderBy === property && order === "asc";
+  //   setOrder(isAsc ? "desc" : "asc");
+
+  //   setOrderBy(property);
+  //   dispatch(
+  //     breadcrumsAction.handleSort({
+  //       direction: isAsc ? "desc" : "asc",
+  //       column: property,
+  //     })
+  //   );
+  //   if (users) {
+  //     const sortedData = [...users].sort(
+  //       (user1: SingleUser, user2: SingleUser) => {
+  //         const orderType = order === "asc" ? 1 : -1;
+  //         if (property === "name") {
+  //           if (user1.name < user2.name) return -1 * orderType;
+  //           if (user1.name > user2.name) return 1 * orderType;
+  //           return 0;
+  //         } else if (property === "status") {
+  //           if (user1.status < user2.status) return -1 * orderType;
+  //           if (user1.status > user2.status) return 1 * orderType;
+  //           return 0;
+  //         } else if (property === "role") {
+  //           if (user1.role < user2.role) return -1 * orderType;
+  //           if (user1.role > user2.role) return 1 * orderType;
+  //           return 0;
+  //         } else if (property === "organisation") {
+  //           if (user1.organisation?.name < user2.organisation?.name)
+  //             return -1 * orderType;
+  //           if (user1.organisation?.name > user2.organisation?.name)
+  //             return 1 * orderType;
+  //           return 0;
+  //         } else if (property === "createdAt") {
+  //           if (user1.createdAt < user2.createdAt) return -1 * orderType;
+  //           if (user1.createdAt > user2.createdAt) return 1 * orderType;
+  //           return 0;
+  //         }
+  //         return 0;
+  //       }
+  //     );
+
+  //     setUsers(sortedData);
+  //   }
+  // };
+
   useEffect(() => {
-    if (searchUsers) {
-      setUsers(searchUsers);
-    }
-  }, [searchUsers]);
-
-  const handleRequestSort = (
-    _: React.MouseEvent<HTMLButtonElement>,
-    property: string
-  ) => {
-    const isAsc = orderBy === property && order === "asc";
-    setOrder(isAsc ? "desc" : "asc");
-
-    setOrderBy(property);
-    dispatch(
-      breadcrumsAction.handleSort({
-        direction: isAsc ? "desc" : "asc",
-        column: property,
-      })
-    );
-    if (users) {
-      const sortedData = [...users].sort(
-        (user1: SingleUser, user2: SingleUser) => {
-          const orderType = order === "asc" ? 1 : -1;
-          if (property === "name") {
-            if (user1.name < user2.name) return -1 * orderType;
-            if (user1.name > user2.name) return 1 * orderType;
-            return 0;
-          } else if (property === "status") {
-            if (user1.status < user2.status) return -1 * orderType;
-            if (user1.status > user2.status) return 1 * orderType;
-            return 0;
-          } else if (property === "role") {
-            if (user1.role < user2.role) return -1 * orderType;
-            if (user1.role > user2.role) return 1 * orderType;
-            return 0;
-          } else if (property === "organisation") {
-            if (user1.organisation?.name < user2.organisation?.name)
-              return -1 * orderType;
-            if (user1.organisation?.name > user2.organisation?.name)
-              return 1 * orderType;
-            return 0;
-          } else if (property === "createdAt") {
-            if (user1.createdAt < user2.createdAt) return -1 * orderType;
-            if (user1.createdAt > user2.createdAt) return 1 * orderType;
-            return 0;
-          }
-          return 0;
-        }
-      );
-
-      setUsers(sortedData);
-    }
-  };
-
-  if (loading) {
-    return <Loader />;
-  }
+    router.refresh();
+  }, [router]);
   return (
     <Paper
       sx={{
@@ -316,101 +271,10 @@ export default function UserTable() {
         }}
       >
         <Table stickyHeader aria-label="sticky table">
-          {/* <TableHead>
-            <TableRow>
-              <TableCell
-                sx={{
-                  borderBottom: 0,
-                  color: "#67737F",
-                  background: "#F5F6F8",
-                  fontSize: {
-                    md: 16,
-                    xs: 14,
-                  },
-                  fontWeight: 600,
-                  paddingLeft: {
-                    lg: 10,
-                    md: 7,
-                    xs: 4,
-                  },
-                }}
-              >
-                Name
-              </TableCell>
-              <TableCell
-                sx={{
-                  borderBottom: 0,
-                  background: "#F5F6F8",
-                  color: "#67737F",
-                  fontSize: {
-                    md: 16,
-                    xs: 14,
-                  },
-                  fontWeight: 600,
-                }}
-              >
-                Status
-              </TableCell>
-              <TableCell
-                sx={{
-                  borderBottom: 0,
-                  background: "#F5F6F8",
-                  color: "#67737F",
-                  fontSize: {
-                    md: 16,
-                    xs: 14,
-                  },
-                  fontWeight: 600,
-                }}
-              >
-                Role
-              </TableCell>
-              <TableCell
-                sx={{
-                  borderBottom: 0,
-                  color: "#67737F",
-                  background: "#F5F6F8",
-                  fontSize: {
-                    md: 16,
-                    xs: 14,
-                  },
-                  fontWeight: 600,
-                }}
-              >
-                Organisation
-              </TableCell>
-              <TableCell
-                sx={{
-                  borderBottom: 0,
-                  color: "#67737F",
-                  background: "#F5F6F8",
-                  fontSize: {
-                    md: 16,
-                    xs: 14,
-                  },
-                  fontWeight: 600,
-                }}
-              >
-                Joined
-              </TableCell>
-              <TableCell
-                sx={{
-                  borderBottom: 0,
-                  color: "#67737F",
-                  background: "#F5F6F8",
-                  fontSize: {
-                    md: 16,
-                    xs: 14,
-                  },
-                  fontWeight: 600,
-                }}
-              ></TableCell>
-            </TableRow>
-          </TableHead> */}
           <EnhancedTableHead
             order={order}
             orderBy={orderBy}
-            onRequestSort={handleRequestSort}
+            // onRequestSort={handleRequestSort}
           />
           <TableBody>
             {users && users.length > 0 ? (

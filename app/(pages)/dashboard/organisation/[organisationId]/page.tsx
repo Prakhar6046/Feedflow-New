@@ -27,6 +27,7 @@ import { AddOrganizationFormInputs } from "@/app/_typeModels/Organization";
 import { useRouter } from "next/navigation";
 import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
 import MapComponent from "@/app/_components/farm/MapComponent";
+import HatcheryForm from "@/app/_components/hatchery/HatcheryForm";
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
   clipPath: "inset(50%)",
@@ -59,9 +60,14 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
   // const [addressInformation, setAddressInformation] = useState<any>();
   // const [useAddress, setUseAddress] = useState<boolean>(false);
   // const [searchedAddress, setSearchedAddress] = useState<any>();
+  const [isHatcherySelected, setIsHatcherySelected] = useState<boolean>(false);
+  const [altitude, setAltitude] = useState<String>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [profilePic, setProfilePic] = useState<String>();
   const [contactError, setcontactError] = useState<string>("");
+  const [addressInformation, setAddressInformation] = useState<any>();
+  const [useAddress, setUseAddress] = useState<boolean>(false);
+  const [searchedAddress, setSearchedAddress] = useState<any>();
   const getOrganisation = async () => {
     setLoading(true);
     const data = await fetch(`/api/organisation/${params.organisationId}`, {
@@ -81,6 +87,7 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
     getValues,
     resetField,
     watch,
+    trigger,
     formState: { errors },
   } = useForm<AddOrganizationFormInputs>({
     defaultValues: {
@@ -89,6 +96,7 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
   });
   const selectedOrganisationType = watch("organisationType");
   const onSubmit: SubmitHandler<AddOrganizationFormInputs> = async (data) => {
+    let hatchery;
     const address: any = {
       address: data.address,
       city: data.city,
@@ -96,6 +104,15 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
       postCode: data.postCode,
       country: data.country,
     };
+    if (isHatcherySelected) {
+      hatchery = {
+        name: data.hatcheryName,
+        altitude: data.hatcheryAltitude,
+        code: data.hatcheryCode,
+        fishSpecie: data.fishSpecie,
+      };
+    }
+    console.log(organisationData);
 
     const formData = new FormData();
     formData.append("name", String(data.organisationName));
@@ -103,6 +120,13 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
     formData.append("organisationType", String(data.organisationType));
     formData.append("address", JSON.stringify(address));
     formData.append("contacts", JSON.stringify(data.contacts));
+    if (isHatcherySelected && organisationData) {
+      formData.append(
+        "hatcheryId",
+        JSON.stringify(organisationData?.hatchery[0]?.id ?? "")
+      );
+      formData.append("hatchery", JSON.stringify(hatchery));
+    }
 
     const res = await fetch(`/api/organisation/${params.organisationId}`, {
       method: "PUT",
@@ -158,6 +182,24 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
     }
   };
   useEffect(() => {
+    if (watch("organisationType") === "Hatchery") {
+      setIsHatcherySelected(true);
+    } else {
+      setIsHatcherySelected(false);
+    }
+  }, [watch("organisationType")]);
+  useEffect(() => {
+    if (addressInformation && useAddress && altitude) {
+      setValue("address", addressInformation.address);
+      setValue("city", addressInformation.city);
+      setValue("postCode", addressInformation.postcode);
+      setValue("province", addressInformation.state);
+      setValue("country", addressInformation.country);
+
+      setUseAddress(false);
+    }
+  }, [addressInformation, useAddress]);
+  useEffect(() => {
     const organisation = async () => {
       // setLoading(true);
       const data = await getOrganisation();
@@ -168,15 +210,7 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
     };
     organisation();
   }, []);
-  // useEffect(() => {
-  //   if (addressInformation && useAddress) {
-  //     setValue("address", addressInformation.address.split(",")[0]);
-  //     setValue("city", addressInformation.city);
-  //     setValue("province", addressInformation.country);
-  //     setValue("postCode", addressInformation.postcode);
-  //     setUseAddress(false);
-  //   }
-  // }, [addressInformation, useAddress]);
+
   useEffect(() => {
     if (organisationData) {
       setValue("organisationName", organisationData.name);
@@ -189,13 +223,14 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
       setValue("country", organisationData?.address?.country);
       setValue("contacts", organisationData?.contact);
       setValue("organisationType", organisationData?.organisationType);
+      if (isHatcherySelected && organisationData?.hatchery[0]) {
+        setValue("hatcheryAltitude", organisationData?.hatchery[0].altitude);
+        setValue("hatcheryName", organisationData?.hatchery[0].name);
+        setValue("hatcheryCode", organisationData?.hatchery[0].code);
+        setValue("fishSpecie", organisationData?.hatchery[0].fishSpecie);
+      }
 
-      // setValue("email", String(organisationData.contact?.email));
-      // setValue("phone", String(organisationData.contact?.phone));
-      // setValue("role", String(organisationData.contact?.role));
-      // setValue("name", String(organisationData.contact?.name));
       setProfilePic(organisationData.imageUrl);
-      // setValue("email", organisationData.address?.city);
     }
   }, [organisationData]);
 
@@ -207,8 +242,6 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
     <>
       <BasicBreadcrumbs
         heading={"Edit Organisation"}
-        searchOrganisations={false}
-        searchUsers={false}
         isTable={false}
         hideSearchInput={true}
         links={[
@@ -449,6 +482,16 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
                   })}
                 </Select>
               </FormControl>
+              {isHatcherySelected && (
+                <HatcheryForm
+                  altitude={altitude}
+                  register={register}
+                  setValue={setValue}
+                  watch={watch}
+                  trigger={trigger}
+                  errors={errors}
+                />
+              )}
               <Typography
                 variant="subtitle1"
                 fontWeight={500}
@@ -639,14 +682,16 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
                     )}
                 </Box>
               </Stack>
-              {/* <Box display={"flex"} justifyContent={"end"} width={"100%"}>
+              <Box display={"flex"} justifyContent={"end"} width={"100%"}>
                 <MapComponent
                   setAddressInformation={setAddressInformation}
                   setSearchedAddress={setSearchedAddress}
                   setUseAddress={setUseAddress}
-                  isCalAltitude={false}
+                  isCalAltitude={true}
+                  setAltitude={setAltitude}
                 />
-              </Box> */}
+              </Box>
+
               <Typography
                 variant="subtitle1"
                 fontWeight={500}

@@ -37,6 +37,8 @@ const MapComponent = ({
   setUseAddress,
   setAltitude,
   isCalAltitude,
+  setLng,
+  setLat,
 }: any) => {
   const [selectedPosition, setSelectedPosition] = useState<any>(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -122,6 +124,8 @@ const MapComponent = ({
           );
           const res = await altitudeResponse.json();
           setAltitude(String(res?.results[0]?.elevation));
+          setLat(String(res?.results[0]?.location.lat));
+          setLng(String(res?.results[0]?.location.lng));
         }
         const address = data.results[0].formatted_address;
         // setAddressInformation(address);
@@ -161,6 +165,8 @@ const MapComponent = ({
           );
           const res = await altitudeResponse.json();
           setAltitude(String(res?.results[0]?.elevation));
+          setLat(String(res?.results[0]?.location.lat));
+          setLng(String(res?.results[0]?.location.lng));
         }
         const { lat, lng } = data.results[0].geometry.location;
         const newPosition: any = { lat, lng };
@@ -380,6 +386,16 @@ const MapComponent = ({
                                       setAltitude(
                                         String(
                                           altitudeData?.results[0]?.elevation
+                                        )
+                                      );
+                                      setLat(
+                                        String(
+                                          altitudeData?.results[0]?.location.lat
+                                        )
+                                      );
+                                      setLng(
+                                        String(
+                                          altitudeData?.results[0]?.location.lng
                                         )
                                       );
                                     })

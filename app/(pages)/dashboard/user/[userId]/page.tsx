@@ -208,8 +208,6 @@ export default function Page({ params }: { params: { userId: string } }) {
     <>
       <BasicBreadcrumbs
         heading={"Edit User"}
-        searchOrganisations={false}
-        searchUsers={false}
         isTable={false}
         hideSearchInput={true}
         links={[

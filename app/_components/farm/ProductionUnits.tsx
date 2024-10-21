@@ -96,6 +96,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
       ],
     },
   });
+
   const { fields, append, remove } = useFieldArray({
     control,
     name: "productionUnits",
@@ -146,6 +147,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
       setCalculatedValue({ output: 0, id: null });
     }
   };
+  console.log(isEditFarm);
 
   const onSubmit: SubmitHandler<ProductionUnitsFormTypes> = async (data) => {
     let payload;
@@ -164,6 +166,8 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
         name: farm.name,
         farmAltitude: farm.farmAltitude,
         fishFarmer: farm.fishFarmer,
+        lat: farm.lat,
+        lng: farm.lng,
         id: editFarm?.id,
       };
     } else {
@@ -179,6 +183,8 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
         productionUnits: data.productionUnits,
         name: farm.name,
         farmAltitude: farm.farmAltitude,
+        lat: farm.lat,
+        lng: farm.lng,
         fishFarmer: farm.fishFarmer,
       };
     }
@@ -207,7 +213,9 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
     } else {
       toast.error("Please fill out the all feilds");
     }
+    dispatch(farmAction.resetState());
   };
+
   useEffect(() => {
     if (calculatedValue?.id && calculatedValue.output) {
       const updatedFields = productionUnits.map((field) => {
@@ -220,11 +228,13 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
       setValue("productionUnits", updatedFields);
     }
   }, [calculatedValue]);
+
   useEffect(() => {
     if (editFarm) {
       setValue("productionUnits", editFarm?.productionUnits);
     }
   }, [editFarm]);
+
   return (
     <Stack>
       <Typography
@@ -420,7 +430,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                                 `productionUnits.${index}.capacity` as const,
                                 {
                                   required: true,
-                                  pattern: validationPattern.onlyNumbersPattern,
+                                  pattern: validationPattern.numbersWithDot,
                                 }
                               )}
                               sx={{

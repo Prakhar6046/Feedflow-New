@@ -5,13 +5,26 @@ export const GET = async (request: NextRequest) => {
   try {
     const searchParams = request.nextUrl.searchParams;
     const role = searchParams.get("role");
+    const query = searchParams.get("query");
+
     const organisationId = searchParams.get("organisationId");
     let users;
 
     if (role === "SUPERADMIN") {
       users = await prisma.user.findMany({
         where: {
-          id: { not: 1 }, // Exclude the user by ID
+          id: { not: 1 },
+          AND: [
+            query
+              ? {
+                  OR: [
+                    {
+                      name: { contains: query, mode: "insensitive" },
+                    },
+                  ],
+                }
+              : {},
+          ],
         },
         include: {
           organisation: {

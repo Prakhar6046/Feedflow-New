@@ -34,7 +34,7 @@ export default function Page() {
             id: 1,
           },
           {
-            label: "New Feed",
+            label: "Feed Store",
             id: 2,
           },
         ];
@@ -50,7 +50,7 @@ export default function Page() {
           },
 
           {
-            label: "Feed Store",
+            label: "New Feed",
             id: 4,
           },
         ];
@@ -63,9 +63,6 @@ export default function Page() {
     <>
       <BasicBreadcrumbs
         heading={"Feed Supply"}
-        searchOrganisations={false}
-        searchUsers={false}
-        searchFarm={false}
         isTable={false}
         hideSearchInput={true}
         links={[

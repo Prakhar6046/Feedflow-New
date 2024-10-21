@@ -172,6 +172,8 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
   }, []);
   useEffect(() => {
     if (editFeed) {
+      console.log(editFeed);
+
       setValue("feedIngredients", editFeed?.feedIngredients);
       setValue("feedingGuide", editFeed?.feedingGuide);
       setValue("productionIntensity", editFeed?.productionIntensity);

@@ -18,6 +18,7 @@ import {
 import { getCookie } from "cookies-next";
 import { LoggedUser } from "../AccountPopover";
 import Logo from "@/public/static/img/logo.svg";
+import { farmAction } from "@/lib/features/farm/farmSlice";
 const ExpandedSidebar = () => {
   const router = useRouter();
   const loggedUser: any = getCookie("logged-user");
@@ -233,7 +234,7 @@ const ExpandedSidebar = () => {
             DATA
           </Typography>
 
-          <Link href={"/dashboard/hatchery"} className="nav-links">
+          <Link href={"/dashboard/fishSupply"} className="nav-links">
             <ListItem
               sx={{
                 paddingX: 0,
@@ -242,7 +243,7 @@ const ExpandedSidebar = () => {
             >
               <ListItemButton
                 className={
-                  activePage.startsWith("/dashboard/hatchery") ? "active" : ""
+                  activePage.startsWith("/dashboard/fishSupply") ? "active" : ""
                 }
                 sx={{
                   display: "flex",
@@ -285,13 +286,17 @@ const ExpandedSidebar = () => {
                     mt: 0.5,
                   }}
                 >
-                  Hatchery
+                  Fish Supply
                 </ListItemText>
               </ListItemButton>
             </ListItem>
           </Link>
 
-          <Link href={"/dashboard/farm"} className="nav-links">
+          <Link
+            href={"/dashboard/farm"}
+            className="nav-links"
+            onClick={() => dispatch(farmAction.resetState())}
+          >
             <ListItem
               sx={{
                 paddingX: 0,

@@ -134,6 +134,9 @@ export default function AddNewUser({ organisations }: Props) {
     }
   }, [loggedUser]);
 
+  useEffect(() => {
+    router.refresh();
+  }, []);
   if (loading) {
     return <Loader />;
   }

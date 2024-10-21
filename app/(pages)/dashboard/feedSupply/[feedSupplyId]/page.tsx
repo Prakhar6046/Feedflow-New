@@ -44,9 +44,6 @@ export default function Page({ params }: { params: { feedId: string } }) {
     <>
       <BasicBreadcrumbs
         heading={"Feed Supply"}
-        searchOrganisations={false}
-        searchUsers={false}
-        searchFarm={false}
         isTable={false}
         hideSearchInput={true}
         links={[

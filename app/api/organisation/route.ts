@@ -5,6 +5,7 @@ export const GET = async (request: NextRequest) => {
   try {
     const searchParams = request.nextUrl.searchParams;
     const role = searchParams.get("role");
+    const query = searchParams.get("query");
 
     const organisationId = searchParams.get("organisationId");
     let organisations;
@@ -14,10 +15,36 @@ export const GET = async (request: NextRequest) => {
         orderBy: {
           createdAt: "desc", // Sort by createdAt in descending order
         },
+        where: {
+          AND: [
+            query
+              ? {
+                  OR: [
+                    {
+                      name: { contains: query, mode: "insensitive" },
+                    },
+                  ],
+                }
+              : {},
+          ],
+        },
       });
     } else {
       organisations = await prisma.organisation.findMany({
-        where: { id: Number(organisationId) },
+        where: {
+          id: Number(organisationId),
+          AND: [
+            query
+              ? {
+                  OR: [
+                    {
+                      name: { contains: query, mode: "insensitive" },
+                    },
+                  ],
+                }
+              : {},
+          ],
+        },
         include: { contact: true },
         orderBy: {
           createdAt: "desc", // Sort by createdAt in descending order

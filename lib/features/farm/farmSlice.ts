@@ -28,6 +28,9 @@ const farmSlice = createSlice({
       state.editFarm = action.payload;
       state.isEditFarm = true;
     },
+    handleIsFarm: (state) => {
+      state.isEditFarm = true;
+    },
     resetState: (state) => {
       state.isEditFarm = false;
     },
