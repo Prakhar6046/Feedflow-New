@@ -223,6 +223,8 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
       setValue("country", organisationData?.address?.country);
       setValue("contacts", organisationData?.contact);
       setValue("organisationType", organisationData?.organisationType);
+      console.log(isHatcherySelected, organisationData?.hatchery);
+
       if (isHatcherySelected && organisationData?.hatchery[0]) {
         setValue("hatcheryAltitude", organisationData?.hatchery[0].altitude);
         setValue("hatcheryName", organisationData?.hatchery[0].name);
