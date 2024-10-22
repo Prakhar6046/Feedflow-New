@@ -97,7 +97,6 @@ export const POST = async (request: NextRequest) => {
     const fishSupplyData = {
       ...body,
       createdBy: isHatcheryExist.id,
-      productionUnits: isFarmExist.productionUnits.length,
       fishFarm: isFarmExist.name,
     };
     const newFishSupply = await prisma.fishSupply.create({

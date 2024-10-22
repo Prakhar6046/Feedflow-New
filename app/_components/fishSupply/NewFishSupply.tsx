@@ -44,26 +44,18 @@ interface FormInputs {
   broodstockFemale: String;
   fishFarmId: String;
   status: String;
+  productionUnits: Number;
 }
 function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(false);
-  const [allOrganisations, SetAllOrganisations] =
-    useState<SingleOrganisation[]>();
-  const [allFarms, setAllFarms] = useState<Farm[]>();
   const [fishSupply, setFishSupply] = useState<FishSupply>();
-  // const getOrganisation = async () => {
-  //   const response = await fetch("/api/organisation/hatchery");
-  //   return response.json();
-  // };
+
   const getFishSupply = async () => {
     const response = await fetch(`/api/fish/${fishSupplyId}`);
     return response.json();
   };
-  // const getFarms = async () => {
-  //   const response = await fetch("/api/farm");
-  //   return response.json();
-  // };
+
   const {
     register,
     handleSubmit,
@@ -81,6 +73,7 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
       spawningDate,
       spawningNumber,
       organisation,
+      productionUnits,
       ...restData
     } = data;
     const payload = {
@@ -88,6 +81,7 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
       spawningDate: data.spawningDate?.format("MM/DD/YYYY"),
       organisation: Number(data.organisation),
       spawningNumber: Number(data.spawningNumber),
+      productionUnits: Number(data.productionUnits),
       ...restData,
     };
 
@@ -109,16 +103,7 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
   };
   useEffect(() => {
     setLoading(true);
-    // const organisations = async () => {
-    //   const res = await getOrganisation();
-    //   SetAllOrganisations(res.data);
-    // };
-    // const farms = async () => {
-    //   const res = await getFarms();
-    //   setAllFarms(res.data);
-    // };
-    // organisations();
-    // farms();
+
     if (isEdit) {
       const fishSupply = async () => {
         const res = await getFishSupply();
@@ -157,6 +142,7 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
       setValue("spawningNumber", String(fishSupply?.spawningNumber));
       setValue("status", fishSupply?.status);
       setValue("fishFarmId", fishSupply?.fishFarmId);
+      setValue("productionUnits", fishSupply?.productionUnits);
     }
   }, [fishSupply]);
   if (loading) {
@@ -199,10 +185,46 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
           }}
         >
           <Grid item sm={6} xs={12}>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <Controller
+                name="spawningDate"
+                control={control}
+                rules={{ required: "This field is required." }}
+                render={({ field, fieldState: { error } }) => (
+                  <>
+                    <DatePicker
+                      {...field}
+                      label="Spawning Date "
+                      className="form-input"
+                      sx={{
+                        width: "100%",
+                      }}
+                      onChange={(date) => {
+                        field.onChange(date);
+                        setValue("hatchingDate", date);
+                      }}
+                      value={field.value || null} // To handle the case when field.value is undefined
+                    />
+                    {error && (
+                      <Typography
+                        variant="body2"
+                        color="red"
+                        fontSize={13}
+                        mt={0.5}
+                      >
+                        {error.message}
+                      </Typography>
+                    )}
+                  </>
+                )}
+              />
+            </LocalizationProvider>
+          </Grid>
+          <Grid item sm={6} xs={12}>
             <Box width={"100%"}>
               <FormControl fullWidth className="form-input">
                 <InputLabel id="demo-simple-select-label">
-                  Organisation *
+                  Hatchery *
                 </InputLabel>
                 <Select
                   labelId="demo-simple-select-label"
@@ -214,7 +236,7 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
                     },
                   })}
                   value={watch("organisation") || ""}
-                  label="Organisation *"
+                  label="Hatchery *"
                 >
                   {organisations?.map((organisation, i) => {
                     return (
@@ -238,43 +260,6 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
                   )}
               </FormControl>
             </Box>
-          </Grid>
-          <Grid item sm={6} xs={12}>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <Controller
-                name="spawningDate"
-                control={control}
-                rules={{ required: "This field is required." }}
-                render={({ field, fieldState: { error } }) => (
-                  <>
-                    <DatePicker
-                      {...field}
-                      label="Spawning Date "
-                      className="form-input"
-                      sx={{
-                        width: "100%",
-                      }}
-                      onChange={(date) => {
-                        field.onChange(date);
-                        !watch("hatchingDate") &&
-                          setValue("hatchingDate", date);
-                      }}
-                      value={field.value || null} // To handle the case when field.value is undefined
-                    />
-                    {error && (
-                      <Typography
-                        variant="body2"
-                        color="red"
-                        fontSize={13}
-                        mt={0.5}
-                      >
-                        {error.message}
-                      </Typography>
-                    )}
-                  </>
-                )}
-              />
-            </LocalizationProvider>
           </Grid>
           <Grid item sm={6} xs={12}>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -356,28 +341,6 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
                 )}
             </Box>
           </Grid>
-
-          {/* <Grid item sm={6} xs={12}>
-            <Box width={"100%"}>
-              <TextField
-                label="Age *"
-                type="text"
-                disabled
-                className="form-input"
-                {...register("age", { required: true })}
-                focused
-                sx={{
-                  width: "100%",
-                }}
-              />
-
-              {errors && errors.age && errors.age.type === "required" && (
-                <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
-                  This field is required.
-                </Typography>
-              )}
-            </Box>
-          </Grid> */}
 
           <Grid item sm={6} xs={12}>
             <Box width={"100%"}>
@@ -500,6 +463,47 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
                 </Typography>
               )}
             </FormControl>
+          </Grid>
+          <Grid item sm={6} xs={12}>
+            <Box width={"100%"}>
+              <TextField
+                label="Production Unit *"
+                type="number"
+                className="form-input"
+                {...register("productionUnits", {
+                  required: true,
+                  pattern: validationPattern.onlyNumbersPattern,
+                })}
+                sx={{
+                  width: "100%",
+                }}
+              />
+
+              {errors &&
+                errors.productionUnits &&
+                errors.productionUnits.type === "required" && (
+                  <Typography
+                    variant="body2"
+                    color="red"
+                    fontSize={13}
+                    mt={0.5}
+                  >
+                    This field is required.
+                  </Typography>
+                )}
+              {errors &&
+                errors.productionUnits &&
+                errors.productionUnits.type === "pattern" && (
+                  <Typography
+                    variant="body2"
+                    color="red"
+                    fontSize={13}
+                    mt={0.5}
+                  >
+                    {validationMessage.onlyNumbers}
+                  </Typography>
+                )}
+            </Box>
           </Grid>
         </Grid>
 
