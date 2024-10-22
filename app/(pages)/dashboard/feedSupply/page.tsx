@@ -22,6 +22,7 @@ export default async function Page({
       <BasicBreadcrumbs
         heading={"Feed Supply"}
         buttonName={
+          userOrganisationType?.data?.user?.role === "SUPERADMIN" ||
           userOrganisationType?.data?.user?.organisation.organisationType ===
             "Fish Farmer" ||
           userOrganisationType?.data?.user?.organisation.organisationType ===
