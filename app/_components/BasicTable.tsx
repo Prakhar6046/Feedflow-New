@@ -122,8 +122,8 @@ export default function BasicTable({ organisations }: Props) {
                 idx === headCells.length - 1
                   ? false
                   : orderBy === headCell.id
-                    ? order
-                    : false
+                  ? order
+                  : false
               }
               sx={{
                 borderBottom: 0,
@@ -182,8 +182,8 @@ export default function BasicTable({ organisations }: Props) {
         column: property,
       })
     );
-    if (organisationData) {
-      const sortedData = [...organisationData].sort(
+    if (organisations) {
+      const sortedData = [...organisations].sort(
         (
           organisation1: SingleOrganisation,
           organisation2: SingleOrganisation
@@ -212,6 +212,11 @@ export default function BasicTable({ organisations }: Props) {
     }
   };
   useEffect(() => {
+    if (organisations) {
+      setOrganisationData(organisations);
+    }
+  }, [organisations]);
+  useEffect(() => {
     router.refresh();
   }, [router]);
   return (
@@ -236,8 +241,8 @@ export default function BasicTable({ organisations }: Props) {
             onRequestSort={handleRequestSort}
           />
           <TableBody>
-            {organisations && organisations.length > 0 ? (
-              organisations?.map((organisation, i) => {
+            {organisationData && organisationData.length > 0 ? (
+              organisationData?.map((organisation, i) => {
                 return (
                   <TableRow
                     key={i}
@@ -308,7 +313,7 @@ export default function BasicTable({ organisations }: Props) {
                         borderBottomWidth: 2,
                         color: "#555555",
                         fontWeight: 500,
-                        pl: 0
+                        pl: 0,
                       }}
                     >
                       {(organisation &&
@@ -323,7 +328,7 @@ export default function BasicTable({ organisations }: Props) {
                         borderBottomWidth: 2,
                         color: "#555555",
                         fontWeight: 500,
-                        pl: 0
+                        pl: 0,
                       }}
                     >
                       {(organisation &&
@@ -341,7 +346,7 @@ export default function BasicTable({ organisations }: Props) {
                         fontWeight: 500,
                       }}
                       className="cursor-pointer"
-                    // onClick={() => handleEdit(user)}
+                      // onClick={() => handleEdit(user)}
                     >
                       <Button
                         id="basic-button"

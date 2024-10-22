@@ -19,6 +19,8 @@ import TableRow from "@mui/material/TableRow";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { FeedSupply } from "../feedSupply/FeedSelection";
+import { breadcrumsAction } from "@/lib/features/breadcrum/breadcrumSlice";
+import { getCookie } from "cookies-next";
 
 interface Props {
   feeds: FeedSupply[];
@@ -28,15 +30,15 @@ export default function FeedTable({ feeds }: Props) {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const pathName = usePathname();
+  const sortDataFromLocal = getCookie(pathName);
   //   const loading = useAppSelector(selectFarmLoading);
-
   const [feedsData, setFeedsData] = useState<any>();
   const [selectedFeed, setSelectedFeed] = useState<any>(null);
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null
   );
   const [order, setOrder] = React.useState("asc");
-  const [orderBy, setOrderBy] = React.useState("name");
+  const [orderBy, setOrderBy] = React.useState("productName");
   const handleClick = (
     event: React.MouseEvent<HTMLButtonElement>,
     farm: any
@@ -112,8 +114,8 @@ export default function FeedTable({ feeds }: Props) {
                 idx === headCells.length - 1
                   ? false
                   : orderBy === headCell.id
-                    ? order
-                    : false
+                  ? order
+                  : false
               }
               // align="center"
               sx={{
@@ -150,12 +152,6 @@ export default function FeedTable({ feeds }: Props) {
     );
   }
 
-  useEffect(() => {
-    if (feeds) {
-      setFeedsData(feeds);
-    }
-  }, [feeds]);
-
   const handleRequestSort = (
     _: React.MouseEvent<HTMLButtonElement>,
     property: string
@@ -163,15 +159,33 @@ export default function FeedTable({ feeds }: Props) {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
     setOrderBy(property);
-    if (feedsData) {
-      const sortedData = [...feedsData].sort((feed1: any, feed2: any) => {
+    dispatch(
+      breadcrumsAction.handleSort({
+        direction: isAsc ? "desc" : "asc",
+        column: property,
+      })
+    );
+    console.log(property);
+    if (feeds) {
+      const sortedData = [...feeds].sort((feed1: any, feed2: any) => {
         const orderType = order === "asc" ? 1 : -1;
-        if (feed1.property < feed2.property) return -1 * orderType;
-        if (feed1.property > feed2.property) return 1 * orderType;
-
+        if (property === "productName") {
+          if (feed1.productName < feed2.productName) return -1 * orderType;
+          if (feed1.productName > feed2.productName) return 1 * orderType;
+        } else if (property === "productCode") {
+          if (feed1.productCode < feed2.productCode) return -1 * orderType;
+          if (feed1.productCode > feed2.productCode) return 1 * orderType;
+        } else if (property === "productionIntensity") {
+          if (feed1.productionIntensity < feed2.productionIntensity)
+            return -1 * orderType;
+          if (feed1.productionIntensity > feed2.productionIntensity)
+            return 1 * orderType;
+        } else if (property === "feedingPhase") {
+          if (feed1.feedingPhase < feed2.feedingPhase) return -1 * orderType;
+          if (feed1.feedingPhase > feed2.feedingPhase) return 1 * orderType;
+        }
         return 0;
       });
-
       setFeedsData(sortedData);
     }
   };
@@ -180,6 +194,18 @@ export default function FeedTable({ feeds }: Props) {
       dispatch(feedAction.resetState());
     }
   }, [pathName]);
+  useEffect(() => {
+    if (feeds) {
+      setFeedsData(feeds);
+    }
+  }, [feeds]);
+  useEffect(() => {
+    if (sortDataFromLocal && feeds) {
+      const data = JSON.parse(sortDataFromLocal);
+      setOrder(data.direction);
+      setOrderBy(data.column);
+    }
+  }, [sortDataFromLocal, feeds]);
   //   if (loading) {
   //     return <Loader />;
   //   }
@@ -267,7 +293,7 @@ export default function FeedTable({ feeds }: Props) {
                         borderBottomWidth: 2,
                         color: "#555555",
                         fontWeight: 500,
-                        pl: 0
+                        pl: 0,
                       }}
                     >
                       {feed.productCode ?? ""}
@@ -279,7 +305,7 @@ export default function FeedTable({ feeds }: Props) {
                         borderBottomWidth: 2,
                         color: "#555555",
                         fontWeight: 500,
-                        pl: 0
+                        pl: 0,
                       }}
                     >
                       {feed.productionIntensity ?? ""}
@@ -291,7 +317,7 @@ export default function FeedTable({ feeds }: Props) {
                         borderBottomWidth: 2,
                         color: "#555555",
                         fontWeight: 500,
-                        pl: 0
+                        pl: 0,
                       }}
                     >
                       {feed.feedingPhase ?? ""}
@@ -303,7 +329,7 @@ export default function FeedTable({ feeds }: Props) {
                         borderBottomWidth: 2,
                         color: "#555555",
                         fontWeight: 500,
-                        pl: 0
+                        pl: 0,
                       }}
                     >
                       {feed.specie ?? ""}
@@ -317,7 +343,7 @@ export default function FeedTable({ feeds }: Props) {
                         fontWeight: 500,
                       }}
                       className="cursor-pointer"
-                    // onClick={() => handleEdit(user)}
+                      // onClick={() => handleEdit(user)}
                     >
                       <Button
                         id="basic-button"

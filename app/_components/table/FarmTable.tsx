@@ -109,8 +109,8 @@ export default function FarmTable({ farms }: Props) {
                 idx === headCells.length - 1
                   ? false
                   : orderBy === headCell.id
-                    ? order
-                    : false
+                  ? order
+                  : false
               }
               sx={{
                 borderBottom: 0,
@@ -238,8 +238,8 @@ export default function FarmTable({ farms }: Props) {
             onRequestSort={handleRequestSort}
           />
           <TableBody>
-            {farms && farms.length > 0 ? (
-              farms.map((farm: any, i: number) => {
+            {farmsData && farmsData.length > 0 ? (
+              farmsData.map((farm: any, i: number) => {
                 return (
                   <TableRow
                     key={i}
@@ -271,7 +271,7 @@ export default function FarmTable({ farms }: Props) {
                         borderBottomWidth: 2,
                         color: "#555555",
                         fontWeight: 500,
-                        pl: 0
+                        pl: 0,
                       }}
                     >
                       {farm?.productionUnits.length ?? ""}
@@ -286,7 +286,7 @@ export default function FarmTable({ farms }: Props) {
                         fontWeight: 500,
                       }}
                       className="cursor-pointer"
-                    // onClick={() => handleEdit(user)}
+                      // onClick={() => handleEdit(user)}
                     >
                       <Button
                         id="basic-button"
