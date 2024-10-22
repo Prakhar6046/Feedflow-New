@@ -5,6 +5,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 const initialState: UserInitialState = {
   isLoading: false,
   users: [],
+  role: "",
 };
 
 const userSlice = createSlice({
@@ -17,6 +18,9 @@ const userSlice = createSlice({
     updateUsers: (state, action) => {
       state.users = action.payload;
     },
+    handleRole: (state, action) => {
+      state.role = action.payload;
+    },
   },
 });
 
@@ -25,5 +29,6 @@ export const userAction = userSlice.actions;
 //selector
 export const selectUserLoading = (state: RootState) => state.user.isLoading;
 export const selectUsers = (state: RootState) => state.user.users;
+export const selectRole = (state: RootState) => state.user.role;
 
 export const UserReducer = userSlice.reducer;

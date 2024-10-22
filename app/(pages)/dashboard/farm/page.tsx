@@ -1,6 +1,8 @@
 import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
 import FarmTable from "@/app/_components/table/FarmTable";
 import { getFarms } from "@/app/_lib/action";
+import { getCookie } from "cookies-next";
+import { cookies } from "next/headers";
 export default async function Page({
   searchParams,
 }: {
@@ -9,13 +11,15 @@ export default async function Page({
   };
 }) {
   const query = searchParams?.query || "";
+  const loggedUser: any = getCookie("logged-user", { cookies });
+  const user = JSON.parse(loggedUser);
   const famrs = await getFarms(query);
 
   return (
     <>
       <BasicBreadcrumbs
         heading={"Farm"}
-        buttonName={"Add Farm"}
+        buttonName={user.data.user.role !== "MEMBER" ? "Add Farm" : ""}
         isTable={true}
         refetch="farm"
         buttonRoute="/dashboard/farm/newFarm"

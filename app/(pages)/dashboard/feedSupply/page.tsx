@@ -29,7 +29,7 @@ export default async function Page({
             ? "Add Feed"
             : ""
         }
-        isTable={false}
+        isTable={true}
         buttonRoute="/dashboard/feedSupply/new"
         links={[
           { name: "Dashboard", link: "/dashboard" },

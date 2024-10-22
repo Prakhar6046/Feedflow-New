@@ -1,5 +1,6 @@
 "use client";
 import { sidebarAction } from "@/lib/features/sidebar/sidebarSlice";
+import { userAction } from "@/lib/features/user/userSlice";
 import { useAppDispatch } from "@/lib/hooks";
 import {
   Avatar,
@@ -70,6 +71,8 @@ const AccountPopover = () => {
   const loggedUser: any = getCookie("logged-user");
   useEffect(() => {
     if (loggedUser) {
+      const user = JSON.parse(loggedUser);
+      dispatch(userAction.handleRole(user?.data?.user?.role));
       setLoggedUserData(JSON.parse(loggedUser));
     }
   }, [loggedUser]);

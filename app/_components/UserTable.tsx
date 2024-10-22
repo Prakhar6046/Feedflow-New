@@ -24,6 +24,12 @@ import Image from "next/image";
 import toast from "react-hot-toast";
 import { readableDate } from "../_lib/utils";
 import { SingleUser } from "../_typeModels/User";
+import { useAppSelector } from "@/lib/hooks";
+import { selectRole } from "@/lib/features/user/userSlice";
+import {
+  organisationTableHead,
+  organisationTableHeadMember,
+} from "../_lib/utils/tableHeadData";
 
 interface Props {
   users: SingleUser[];
@@ -41,6 +47,7 @@ export default function UserTable({ users }: Props) {
   const router = useRouter();
   const pathName = usePathname();
   const loggedUser = getCookie("logged-user");
+  const role = useAppSelector(selectRole);
   const sortDataFromLocal = getCookie(pathName);
   const [selectedUser, setSelectedUser] = useState<SingleUser | null>(null);
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
@@ -103,44 +110,6 @@ export default function UserTable({ users }: Props) {
     }
   };
 
-  const headCells = [
-    {
-      id: "name",
-      numeric: false,
-      disablePadding: true,
-      label: "Name",
-    },
-    {
-      id: "status",
-      numeric: false,
-      disablePadding: true,
-      label: "Status",
-    },
-    {
-      id: "role",
-      numeric: false,
-      disablePadding: true,
-      label: "Role",
-    },
-    {
-      id: "organisation",
-      numeric: false,
-      disablePadding: true,
-      label: "Organisation",
-    },
-    {
-      id: "createdAt",
-      numeric: false,
-      disablePadding: true,
-      label: "Joined",
-    },
-    {
-      id: "action",
-      numeric: false,
-      disablePadding: true,
-      label: "Actions",
-    },
-  ];
   function EnhancedTableHead(data: any) {
     const { order, orderBy, onRequestSort } = data;
     const createSortHandler =
@@ -151,15 +120,18 @@ export default function UserTable({ users }: Props) {
     return (
       <TableHead>
         <TableRow>
-          {headCells.map((headCell, idx) => (
+          {(role !== "MEMBER"
+            ? organisationTableHead
+            : organisationTableHeadMember
+          ).map((headCell, idx, headCells) => (
             <TableCell
               key={headCell.id}
               sortDirection={
                 idx === headCells.length - 1
                   ? false
                   : orderBy === headCell.id
-                    ? order
-                    : false
+                  ? order
+                  : false
               }
               sx={{
                 borderBottom: 0,
@@ -274,7 +246,7 @@ export default function UserTable({ users }: Props) {
           <EnhancedTableHead
             order={order}
             orderBy={orderBy}
-          // onRequestSort={handleRequestSort}
+            // onRequestSort={handleRequestSort}
           />
           <TableBody>
             {users && users.length > 0 ? (
@@ -283,7 +255,7 @@ export default function UserTable({ users }: Props) {
                   <TableRow
                     key={i}
                     sx={{
-                      "&:last-child td, &:last-child th": { border: 0 }
+                      "&:last-child td, &:last-child th": { border: 0 },
                     }}
                   >
                     <TableCell
@@ -350,7 +322,7 @@ export default function UserTable({ users }: Props) {
                         borderBottomWidth: 2,
                         color: "#555555",
                         fontWeight: 500,
-                        pl: 0
+                        pl: 0,
                       }}
                     >
                       {user?.status ?? ""}
@@ -361,7 +333,7 @@ export default function UserTable({ users }: Props) {
                         borderBottomWidth: 2,
                         color: "#555555",
                         fontWeight: 500,
-                        pl: 0
+                        pl: 0,
                       }}
                     >
                       {user?.role ?? ""}
@@ -372,7 +344,7 @@ export default function UserTable({ users }: Props) {
                         borderBottomWidth: 2,
                         color: "#555555",
                         fontWeight: 500,
-                        pl: 0
+                        pl: 0,
                       }}
                     >
                       <Box
@@ -429,143 +401,147 @@ export default function UserTable({ users }: Props) {
                         borderBottomWidth: 2,
                         color: "#555555",
                         fontWeight: 500,
-                        pl: 0
+                        pl: 0,
                       }}
                     >
                       {readableDate(user?.createdAt) ?? ""}
                     </TableCell>
-                    <TableCell
-                      // align="center"
-                      sx={{
-                        borderBottomColor: "#F5F6F8",
-                        borderBottomWidth: 2,
-                        color: "#555555",
-                        fontWeight: 500
-                      }}
-                      className="cursor-pointer"
-                    // onClick={() => handleEdit(user)}
-                    >
-                      <Button
-                        id="basic-button"
-                        aria-controls={open ? "basic-menu" : undefined}
-                        aria-haspopup="true"
-                        aria-expanded={open ? "true" : undefined}
-                        onClick={(e) => handleClick(e, user)}
-                        className="table-edit-option"
+                    {role !== "MEMBER" && (
+                      <TableCell
+                        // align="center"
                         sx={{
-                          background: "transparent",
+                          borderBottomColor: "#F5F6F8",
+                          borderBottomWidth: 2,
                           color: "#555555",
-                          boxShadow: "none",
+                          fontWeight: 500,
                         }}
+                        className="cursor-pointer"
+                        // onClick={() => handleEdit(user)}
                       >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="1em"
-                          height="1em"
-                          viewBox="0 0 16 16"
+                        <Button
+                          id="basic-button"
+                          aria-controls={open ? "basic-menu" : undefined}
+                          aria-haspopup="true"
+                          aria-expanded={open ? "true" : undefined}
+                          onClick={(e) => handleClick(e, user)}
+                          className="table-edit-option"
+                          sx={{
+                            background: "transparent",
+                            color: "#555555",
+                            boxShadow: "none",
+                          }}
                         >
-                          <path
-                            fill="currentColor"
-                            d="M9.5 13a1.5 1.5 0 1 1-3 0a1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0a1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0a1.5 1.5 0 0 1 3 0"
-                          />
-                        </svg>
-                      </Button>
-                      <Menu
-                        id="basic-menu"
-                        className="table-edit-menu"
-                        anchorEl={anchorEl}
-                        open={open}
-                        onClose={handleClose}
-                        MenuListProps={{
-                          "aria-labelledby": "basic-button",
-                        }}
-                      >
-                        <MenuItem onClick={handleEdit}>
-                          <Stack
-                            display="flex"
-                            gap={1.2}
-                            alignItems="center"
-                            direction="row"
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="1em"
+                            height="1em"
+                            viewBox="0 0 16 16"
                           >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="1em"
-                              height="1em"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                fill="currentColor"
-                                d="M3 21v-4.25L16.2 3.575q.3-.275.663-.425t.762-.15t.775.15t.65.45L20.425 5q.3.275.438.65T21 6.4q0 .4-.137.763t-.438.662L7.25 21zM17.6 7.8L19 6.4L17.6 5l-1.4 1.4z"
-                              />
-                            </svg>
-
-                            <Typography variant="subtitle2">Edit</Typography>
-                          </Stack>
-                        </MenuItem>
-
-                        <Divider
-                          sx={{
-                            borderColor: "#9797971A",
-                            my: 0.5,
+                            <path
+                              fill="currentColor"
+                              d="M9.5 13a1.5 1.5 0 1 1-3 0a1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0a1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0a1.5 1.5 0 0 1 3 0"
+                            />
+                          </svg>
+                        </Button>
+                        <Menu
+                          id="basic-menu"
+                          className="table-edit-menu"
+                          anchorEl={anchorEl}
+                          open={open}
+                          onClose={handleClose}
+                          MenuListProps={{
+                            "aria-labelledby": "basic-button",
                           }}
-                        />
-                        <MenuItem onClick={handleInviteUser}>
-                          <Stack
-                            display="flex"
-                            gap={1.2}
-                            alignItems="center"
-                            direction="row"
-                          >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="1em"
-                              height="1em"
-                              viewBox="0 0 24 24"
+                        >
+                          <MenuItem onClick={handleEdit}>
+                            <Stack
+                              display="flex"
+                              gap={1.2}
+                              alignItems="center"
+                              direction="row"
                             >
-                              <path
-                                fill="currentColor"
-                                d="M19 17v2H7v-2s0-4 6-4s6 4 6 4m-3-9a3 3 0 1 0-3 3a3 3 0 0 0 3-3m3.2 5.06A5.6 5.6 0 0 1 21 17v2h3v-2s0-3.45-4.8-3.94M18 5a2.9 2.9 0 0 0-.89.14a5 5 0 0 1 0 5.72A2.9 2.9 0 0 0 18 11a3 3 0 0 0 0-6M8 10H5V7H3v3H0v2h3v3h2v-3h3Z"
-                              />
-                            </svg>
-                            <Typography variant="subtitle2">Invite</Typography>
-                          </Stack>
-                        </MenuItem>
-
-                        <Divider
-                          sx={{
-                            borderColor: "#9797971A",
-                            my: 0.5,
-                          }}
-                        />
-                        <MenuItem onClick={handleDeleteUser}>
-                          <Stack
-                            display="flex"
-                            gap={1.2}
-                            alignItems="center"
-                            direction="row"
-                          >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="1em"
-                              height="1em"
-                              viewBox="0 0 24 24"
-                            >
-                              <g fill="none">
-                                <path d="m12.593 23.258l-.011.002l-.071.035l-.02.004l-.014-.004l-.071-.035q-.016-.005-.024.005l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.017-.018m.265-.113l-.013.002l-.185.093l-.01.01l-.003.011l.018.43l.005.012l.008.007l.201.093q.019.005.029-.008l.004-.014l-.034-.614q-.005-.018-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.614q.001.018.017.024l.015-.002l.201-.093l.01-.008l.004-.011l.017-.43l-.003-.012l-.01-.01z"></path>
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="1em"
+                                height="1em"
+                                viewBox="0 0 24 24"
+                              >
                                 <path
-                                  fill="#ff0000"
-                                  d="M14.28 2a2 2 0 0 1 1.897 1.368L16.72 5H20a1 1 0 1 1 0 2l-.003.071l-.867 12.143A3 3 0 0 1 16.138 22H7.862a3 3 0 0 1-2.992-2.786L4.003 7.07L4 7a1 1 0 0 1 0-2h3.28l.543-1.632A2 2 0 0 1 9.721 2zm3.717 5H6.003l.862 12.071a1 1 0 0 0 .997.929h8.276a1 1 0 0 0 .997-.929zM10 10a1 1 0 0 1 .993.883L11 11v5a1 1 0 0 1-1.993.117L9 16v-5a1 1 0 0 1 1-1m4 0a1 1 0 0 1 1 1v5a1 1 0 1 1-2 0v-5a1 1 0 0 1 1-1m.28-6H9.72l-.333 1h5.226z"
-                                ></path>
-                              </g>
-                            </svg>
+                                  fill="currentColor"
+                                  d="M3 21v-4.25L16.2 3.575q.3-.275.663-.425t.762-.15t.775.15t.65.45L20.425 5q.3.275.438.65T21 6.4q0 .4-.137.763t-.438.662L7.25 21zM17.6 7.8L19 6.4L17.6 5l-1.4 1.4z"
+                                />
+                              </svg>
 
-                            <Typography variant="subtitle2" color="#ff0000">
-                              Delete
-                            </Typography>
-                          </Stack>
-                        </MenuItem>
-                      </Menu>
-                    </TableCell>
+                              <Typography variant="subtitle2">Edit</Typography>
+                            </Stack>
+                          </MenuItem>
+
+                          <Divider
+                            sx={{
+                              borderColor: "#9797971A",
+                              my: 0.5,
+                            }}
+                          />
+                          <MenuItem onClick={handleInviteUser}>
+                            <Stack
+                              display="flex"
+                              gap={1.2}
+                              alignItems="center"
+                              direction="row"
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="1em"
+                                height="1em"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  fill="currentColor"
+                                  d="M19 17v2H7v-2s0-4 6-4s6 4 6 4m-3-9a3 3 0 1 0-3 3a3 3 0 0 0 3-3m3.2 5.06A5.6 5.6 0 0 1 21 17v2h3v-2s0-3.45-4.8-3.94M18 5a2.9 2.9 0 0 0-.89.14a5 5 0 0 1 0 5.72A2.9 2.9 0 0 0 18 11a3 3 0 0 0 0-6M8 10H5V7H3v3H0v2h3v3h2v-3h3Z"
+                                />
+                              </svg>
+                              <Typography variant="subtitle2">
+                                Invite
+                              </Typography>
+                            </Stack>
+                          </MenuItem>
+
+                          <Divider
+                            sx={{
+                              borderColor: "#9797971A",
+                              my: 0.5,
+                            }}
+                          />
+                          <MenuItem onClick={handleDeleteUser}>
+                            <Stack
+                              display="flex"
+                              gap={1.2}
+                              alignItems="center"
+                              direction="row"
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="1em"
+                                height="1em"
+                                viewBox="0 0 24 24"
+                              >
+                                <g fill="none">
+                                  <path d="m12.593 23.258l-.011.002l-.071.035l-.02.004l-.014-.004l-.071-.035q-.016-.005-.024.005l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.017-.018m.265-.113l-.013.002l-.185.093l-.01.01l-.003.011l.018.43l.005.012l.008.007l.201.093q.019.005.029-.008l.004-.014l-.034-.614q-.005-.018-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.614q.001.018.017.024l.015-.002l.201-.093l.01-.008l.004-.011l.017-.43l-.003-.012l-.01-.01z"></path>
+                                  <path
+                                    fill="#ff0000"
+                                    d="M14.28 2a2 2 0 0 1 1.897 1.368L16.72 5H20a1 1 0 1 1 0 2l-.003.071l-.867 12.143A3 3 0 0 1 16.138 22H7.862a3 3 0 0 1-2.992-2.786L4.003 7.07L4 7a1 1 0 0 1 0-2h3.28l.543-1.632A2 2 0 0 1 9.721 2zm3.717 5H6.003l.862 12.071a1 1 0 0 0 .997.929h8.276a1 1 0 0 0 .997-.929zM10 10a1 1 0 0 1 .993.883L11 11v5a1 1 0 0 1-1.993.117L9 16v-5a1 1 0 0 1 1-1m4 0a1 1 0 0 1 1 1v5a1 1 0 1 1-2 0v-5a1 1 0 0 1 1-1m.28-6H9.72l-.333 1h5.226z"
+                                  ></path>
+                                </g>
+                              </svg>
+
+                              <Typography variant="subtitle2" color="#ff0000">
+                                Delete
+                              </Typography>
+                            </Stack>
+                          </MenuItem>
+                        </Menu>
+                      </TableCell>
+                    )}
                   </TableRow>
                 );
               })

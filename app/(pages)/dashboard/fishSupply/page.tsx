@@ -1,21 +1,14 @@
 import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
 import CommonTable from "@/app/_components/table/CommonTable";
 import { getAllOrganisations, getFishSupply } from "@/app/_lib/action";
+import {
+  fishTableHead,
+  fishTableHeadMember,
+} from "@/app/_lib/utils/tableHeadData";
 import { Box } from "@mui/material";
+import { getCookie } from "cookies-next";
+import { cookies } from "next/headers";
 import React from "react";
-const tableData: Array<string> = [
-  "Specie",
-  "Batch#",
-  "Broodstock",
-  "Spawning Date",
-  "Hatching Date",
-  "Age",
-  "Hatchery",
-  "Fish Farm",
-  "Current Production Unit",
-  "Status",
-  "Actions",
-];
 
 export default async function Page({
   searchParams,
@@ -25,13 +18,15 @@ export default async function Page({
   };
 }) {
   const query = searchParams?.query || "";
+  const loggedUser: any = getCookie("logged-user", { cookies });
+  const user = JSON.parse(loggedUser);
   const fishSupply = await getFishSupply(query);
 
   return (
     <>
       <BasicBreadcrumbs
         heading={"Fish Supply"}
-        buttonName={"New Fish Supply"}
+        buttonName={user.data.user.role !== "MEMBER" ? "New Fish Supply" : ""}
         isTable={true}
         buttonRoute="/dashboard/fishSupply/new"
         links={[
@@ -40,7 +35,14 @@ export default async function Page({
         ]}
       />
       <Box className="hatchery-table">
-        <CommonTable tableData={tableData} fishSupply={fishSupply.data} />
+        <CommonTable
+          tableData={
+            user.data.user.role !== "MEMBER"
+              ? fishTableHead
+              : fishTableHeadMember
+          }
+          fishSupply={fishSupply.data}
+        />
       </Box>
     </>
   );

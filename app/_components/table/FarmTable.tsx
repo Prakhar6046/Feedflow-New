@@ -22,6 +22,11 @@ import { getCookie, setCookie } from "cookies-next";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import Loader from "../Loader";
+import { selectRole } from "@/lib/features/user/userSlice";
+import {
+  farmTableHead,
+  farmTableHeadMember,
+} from "@/app/_lib/utils/tableHeadData";
 
 interface Props {
   farms: Farm[];
@@ -32,6 +37,7 @@ export default function FarmTable({ farms }: Props) {
   const dispatch = useAppDispatch();
   const sortDataFromLocal = getCookie(pathName);
   // const farms = useAppSelector(selectFarms);
+  const role = useAppSelector(selectRole);
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("organisation");
   const [farmsData, setFarmsData] = useState<any>();
@@ -72,26 +78,7 @@ export default function FarmTable({ farms }: Props) {
       setOrderBy(data.column);
     }
   }, [sortDataFromLocal]);
-  const headCells = [
-    {
-      id: "farm",
-      numeric: false,
-      disablePadding: true,
-      label: "Farm",
-    },
-    {
-      id: "productionUnits",
-      numeric: true,
-      disablePadding: true,
-      label: "Production Unit Count",
-    },
-    {
-      id: "action",
-      numeric: false,
-      disablePadding: true,
-      label: "Actions",
-    },
-  ];
+
   function EnhancedTableHead(data: any) {
     const { order, orderBy, onRequestSort } = data;
     const createSortHandler =
@@ -102,45 +89,47 @@ export default function FarmTable({ farms }: Props) {
     return (
       <TableHead>
         <TableRow>
-          {headCells.map((headCell, idx) => (
-            <TableCell
-              key={headCell.id}
-              sortDirection={
-                idx === headCells.length - 1
-                  ? false
-                  : orderBy === headCell.id
+          {(role !== "MEMBER" ? farmTableHead : farmTableHeadMember).map(
+            (headCell, idx, headCells) => (
+              <TableCell
+                key={headCell.id}
+                sortDirection={
+                  idx === headCells.length - 1
+                    ? false
+                    : orderBy === headCell.id
                     ? order
                     : false
-              }
-              sx={{
-                borderBottom: 0,
-                color: "#67737F",
-                background: "#F5F6F8",
-                fontSize: {
-                  md: 16,
-                  xs: 14,
-                },
-                fontWeight: 600,
-                paddingLeft: {
-                  lg: 10,
-                  md: 7,
-                  xs: 4,
-                },
-              }}
-            >
-              {idx === headCells.length - 1 ? (
-                headCell.label
-              ) : (
-                <TableSortLabel
-                  active={orderBy === headCell.id}
-                  direction={orderBy === headCell.id ? order : "asc"}
-                  onClick={createSortHandler(headCell.id)}
-                >
-                  {headCell.label}
-                </TableSortLabel>
-              )}
-            </TableCell>
-          ))}
+                }
+                sx={{
+                  borderBottom: 0,
+                  color: "#67737F",
+                  background: "#F5F6F8",
+                  fontSize: {
+                    md: 16,
+                    xs: 14,
+                  },
+                  fontWeight: 600,
+                  paddingLeft: {
+                    lg: idx === 0 ? 10 : 0,
+                    md: idx === 0 ? 7 : 0,
+                    xs: idx === 0 ? 4 : 0,
+                  },
+                }}
+              >
+                {idx === headCells.length - 1 ? (
+                  headCell.label
+                ) : (
+                  <TableSortLabel
+                    active={orderBy === headCell.id}
+                    direction={orderBy === headCell.id ? order : "asc"}
+                    onClick={createSortHandler(headCell.id)}
+                  >
+                    {headCell.label}
+                  </TableSortLabel>
+                )}
+              </TableCell>
+            )
+          )}
         </TableRow>
       </TableHead>
     );
@@ -203,35 +192,6 @@ export default function FarmTable({ farms }: Props) {
         }}
       >
         <Table stickyHeader aria-label="sticky table">
-          {/* <TableHead>
-            <TableRow>
-              {tableData.map((field, i) => {
-                return (
-                  <TableCell
-                    align="center"
-                    key={i}
-                    sx={{
-                      borderBottom: 0,
-                      color: "#67737F",
-                      background: "#F5F6F8",
-                      fontSize: {
-                        md: 16,
-                        xs: 14,
-                      },
-                      fontWeight: 600,
-                      paddingLeft: {
-                        lg: 10,
-                        md: 7,
-                        xs: 4,
-                      },
-                    }}
-                  >
-                    {field}
-                  </TableCell>
-                );
-              })}
-            </TableRow>
-          </TableHead> */}
           <EnhancedTableHead
             order={order}
             orderBy={orderBy}
@@ -246,7 +206,7 @@ export default function FarmTable({ farms }: Props) {
                     sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                   >
                     <TableCell
-                      align="center"
+                      // align="center"
                       sx={{
                         borderBottomColor: "#F5F6F8",
                         borderBottomWidth: 2,
@@ -265,88 +225,90 @@ export default function FarmTable({ farms }: Props) {
                     </TableCell>
 
                     <TableCell
-                      align="center"
-                      sx={{
-                        borderBottomColor: "#F5F6F8",
-                        borderBottomWidth: 2,
-                        color: "#555555",
-                        fontWeight: 500,
-                        pl: 0
-                      }}
-                    >
-                      {farm?.productionUnits.length ?? ""}
-                    </TableCell>
-
-                    <TableCell
                       // align="center"
                       sx={{
                         borderBottomColor: "#F5F6F8",
                         borderBottomWidth: 2,
                         color: "#555555",
                         fontWeight: 500,
+                        pl: 0,
                       }}
-                      className="cursor-pointer"
-                    // onClick={() => handleEdit(user)}
                     >
-                      <Button
-                        id="basic-button"
-                        aria-controls={open ? "basic-menu" : undefined}
-                        aria-haspopup="true"
-                        aria-expanded={open ? "true" : undefined}
-                        onClick={(e) => handleClick(e, farm)}
-                        className="table-edit-option"
-                        sx={{
-                          background: "transparent",
-                          color: "#555555",
-                          boxShadow: "none",
-                        }}
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="1em"
-                          height="1em"
-                          viewBox="0 0 16 16"
-                        >
-                          <path
-                            fill="currentColor"
-                            d="M9.5 13a1.5 1.5 0 1 1-3 0a1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0a1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0a1.5 1.5 0 0 1 3 0"
-                          />
-                        </svg>
-                      </Button>
-                      <Menu
-                        id="basic-menu"
-                        className="table-edit-menu"
-                        anchorEl={anchorEl}
-                        open={open}
-                        onClose={handleClose}
-                        MenuListProps={{
-                          "aria-labelledby": "basic-button",
-                        }}
-                      >
-                        <MenuItem onClick={handleEdit}>
-                          <Stack
-                            display="flex"
-                            gap={1.2}
-                            alignItems="center"
-                            direction="row"
-                          >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="1em"
-                              height="1em"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                fill="currentColor"
-                                d="M3 21v-4.25L16.2 3.575q.3-.275.663-.425t.762-.15t.775.15t.65.45L20.425 5q.3.275.438.65T21 6.4q0 .4-.137.763t-.438.662L7.25 21zM17.6 7.8L19 6.4L17.6 5l-1.4 1.4z"
-                              />
-                            </svg>
-
-                            <Typography variant="subtitle2">Edit</Typography>
-                          </Stack>
-                        </MenuItem>
-                      </Menu>
+                      {farm?.productionUnits.length ?? ""}
                     </TableCell>
+
+                    {role !== "MEMBER" && (
+                      <TableCell
+                        // align="center"
+                        sx={{
+                          borderBottomColor: "#F5F6F8",
+                          borderBottomWidth: 2,
+                          color: "#555555",
+                          fontWeight: 500,
+                        }}
+                        className="cursor-pointer"
+                        // onClick={() => handleEdit(user)}
+                      >
+                        <Button
+                          id="basic-button"
+                          aria-controls={open ? "basic-menu" : undefined}
+                          aria-haspopup="true"
+                          aria-expanded={open ? "true" : undefined}
+                          onClick={(e) => handleClick(e, farm)}
+                          className="table-edit-option"
+                          sx={{
+                            background: "transparent",
+                            color: "#555555",
+                            boxShadow: "none",
+                          }}
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="1em"
+                            height="1em"
+                            viewBox="0 0 16 16"
+                          >
+                            <path
+                              fill="currentColor"
+                              d="M9.5 13a1.5 1.5 0 1 1-3 0a1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0a1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0a1.5 1.5 0 0 1 3 0"
+                            />
+                          </svg>
+                        </Button>
+                        <Menu
+                          id="basic-menu"
+                          className="table-edit-menu"
+                          anchorEl={anchorEl}
+                          open={open}
+                          onClose={handleClose}
+                          MenuListProps={{
+                            "aria-labelledby": "basic-button",
+                          }}
+                        >
+                          <MenuItem onClick={handleEdit}>
+                            <Stack
+                              display="flex"
+                              gap={1.2}
+                              alignItems="center"
+                              direction="row"
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="1em"
+                                height="1em"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  fill="currentColor"
+                                  d="M3 21v-4.25L16.2 3.575q.3-.275.663-.425t.762-.15t.775.15t.65.45L20.425 5q.3.275.438.65T21 6.4q0 .4-.137.763t-.438.662L7.25 21zM17.6 7.8L19 6.4L17.6 5l-1.4 1.4z"
+                                />
+                              </svg>
+
+                              <Typography variant="subtitle2">Edit</Typography>
+                            </Stack>
+                          </MenuItem>
+                        </Menu>
+                      </TableCell>
+                    )}
                   </TableRow>
                 );
               })
