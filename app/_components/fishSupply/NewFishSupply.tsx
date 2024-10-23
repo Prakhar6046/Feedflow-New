@@ -284,7 +284,7 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
                         !watch("hatchingDate") &&
                           setValue("hatchingDate", date);
                       }}
-                      value={field.value || null} // To handle the case when field.value is undefined
+                      value={field.value || null}
                     />
                     {error && (
                       <Typography
