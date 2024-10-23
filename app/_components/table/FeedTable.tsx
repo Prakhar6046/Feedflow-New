@@ -125,7 +125,7 @@ export default function FeedTable({ feeds }: Props) {
   }
 
   const handleRequestSort = (
-    _: React.MouseEvent<HTMLButtonElement>,
+    _: React.MouseEvent<HTMLButtonElement> | null,
     property: string
   ) => {
     const isAsc = orderBy === property && order === "asc";
@@ -137,7 +137,7 @@ export default function FeedTable({ feeds }: Props) {
         column: property,
       })
     );
-    console.log(property);
+
     if (feeds) {
       const sortedData = [...feeds].sort((feed1: any, feed2: any) => {
         const orderType = order === "asc" ? 1 : -1;
@@ -167,17 +167,18 @@ export default function FeedTable({ feeds }: Props) {
     }
   }, [pathName]);
   useEffect(() => {
-    if (feeds) {
+    if (feeds && !sortDataFromLocal) {
       setFeedsData(feeds);
     }
   }, [feeds]);
   useEffect(() => {
-    if (sortDataFromLocal && feeds) {
+    if (sortDataFromLocal) {
       const data = JSON.parse(sortDataFromLocal);
       setOrder(data.direction);
       setOrderBy(data.column);
+      handleRequestSort(null, data.column);
     }
-  }, [sortDataFromLocal, feeds]);
+  }, [sortDataFromLocal]);
   //   if (loading) {
   //     return <Loader />;
   //   }

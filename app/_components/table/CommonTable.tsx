@@ -19,11 +19,11 @@ import {
 } from "@mui/material";
 import { FishSupply } from "@/app/_typeModels/fishSupply";
 import { useRouter } from "next/navigation";
-import { useAppSelector } from "@/lib/hooks";
-import { selectRole } from "@/lib/features/user/userSlice";
 import { breadcrumsAction } from "@/lib/features/breadcrum/breadcrumSlice";
 import { useAppDispatch } from "@/lib/hooks";
 
+import { useAppSelector } from "@/lib/hooks";
+import { selectRole } from "@/lib/features/user/userSlice";
 interface Props {
   tableData: {
     id: string;
@@ -182,7 +182,7 @@ export default function CommonTable({ tableData, fishSupply }: Props) {
       setSortedFishSupply(fishSupply);
     }
   }, [fishSupply]);
-
+  console.log(fishSupply);
   useEffect(() => {
     router.refresh();
   }, [router]);

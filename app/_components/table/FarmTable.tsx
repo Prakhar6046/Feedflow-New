@@ -134,14 +134,9 @@ export default function FarmTable({ farms }: Props) {
       </TableHead>
     );
   }
-  useEffect(() => {
-    if (farms) {
-      setFarmsData(farms);
-    }
-  }, [farms]);
 
   const handleRequestSort = (
-    _: React.MouseEvent<HTMLButtonElement>,
+    _: React.MouseEvent<HTMLButtonElement> | null,
     property: string
   ) => {
     const isAsc = orderBy === property && order === "asc";
@@ -153,8 +148,8 @@ export default function FarmTable({ farms }: Props) {
         column: property,
       })
     );
-    if (farmsData) {
-      const sortedData = [...farmsData].sort((farm1: any, farm2: any) => {
+    if (farms) {
+      const sortedData = [...farms].sort((farm1: any, farm2: any) => {
         const orderType = order === "asc" ? 1 : -1;
         if (property !== "productUnits") {
           if (farm1.name < farm2.name) return -1 * orderType;
@@ -173,6 +168,19 @@ export default function FarmTable({ farms }: Props) {
       setFarmsData(sortedData);
     }
   };
+  useEffect(() => {
+    if (sortDataFromLocal) {
+      const data = JSON.parse(sortDataFromLocal);
+      setOrder(data.direction);
+      setOrderBy(data.column);
+      handleRequestSort(null, data.column);
+    }
+  }, [sortDataFromLocal]);
+  useEffect(() => {
+    if (farms && !sortDataFromLocal) {
+      setFarmsData(farms);
+    }
+  }, [farms]);
   if (loading) {
     return <Loader />;
   }
@@ -233,21 +241,6 @@ export default function FarmTable({ farms }: Props) {
                         fontWeight: 500,
                         pl: 0,
                       }}
-                    >
-                      {farm?.productionUnits.length ?? ""}
-                    </TableCell>
-
-                    <TableCell
-                      // align="center"
-                      sx={{
-                        borderBottomColor: "#F5F6F8",
-                        borderBottomWidth: 2,
-                        color: "#555555",
-                        fontWeight: 500,
-                        pl: 0,
-                      }}
-                      className="cursor-pointer"
-                      // onClick={() => handleEdit(user)}
                     >
                       {farm?.productionUnits.length ?? ""}
                     </TableCell>

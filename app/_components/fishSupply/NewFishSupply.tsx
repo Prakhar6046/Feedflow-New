@@ -185,42 +185,6 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
           }}
         >
           <Grid item sm={6} xs={12}>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <Controller
-                name="spawningDate"
-                control={control}
-                rules={{ required: "This field is required." }}
-                render={({ field, fieldState: { error } }) => (
-                  <>
-                    <DatePicker
-                      {...field}
-                      label="Spawning Date "
-                      className="form-input"
-                      sx={{
-                        width: "100%",
-                      }}
-                      onChange={(date) => {
-                        field.onChange(date);
-                        setValue("hatchingDate", date);
-                      }}
-                      value={field.value || null} // To handle the case when field.value is undefined
-                    />
-                    {error && (
-                      <Typography
-                        variant="body2"
-                        color="red"
-                        fontSize={13}
-                        mt={0.5}
-                      >
-                        {error.message}
-                      </Typography>
-                    )}
-                  </>
-                )}
-              />
-            </LocalizationProvider>
-          </Grid>
-          <Grid item sm={6} xs={12}>
             <Box width={"100%"}>
               <FormControl fullWidth className="form-input">
                 <InputLabel id="demo-simple-select-label">
@@ -261,6 +225,45 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
               </FormControl>
             </Box>
           </Grid>
+
+          <Grid item sm={6} xs={12}>
+            <FormControl className="form-input" fullWidth>
+              <InputLabel id="demo-simple-select-label">Fish Farm *</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                label="Fish Farm *"
+                value={watch("fishFarmId") || ""}
+                {...register("fishFarmId", {
+                  required: true,
+                  onChange: (e) => {
+                    setValue("fishFarmId", e.target.value);
+                  },
+                })}
+              >
+                {farms?.map((farm, i) => {
+                  return (
+                    <MenuItem value={String(farm.id)} key={i}>
+                      {farm.name}
+                    </MenuItem>
+                  );
+                })}
+              </Select>
+              {errors &&
+                errors.fishFarmId &&
+                errors.fishFarmId.type === "required" && (
+                  <Typography
+                    variant="body2"
+                    color="red"
+                    fontSize={13}
+                    mt={0.5}
+                  >
+                    This field is required.
+                  </Typography>
+                )}
+            </FormControl>
+          </Grid>
+
           <Grid item sm={6} xs={12}>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <Controller
@@ -281,39 +284,6 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
                         !watch("hatchingDate") &&
                           setValue("hatchingDate", date);
                       }}
-                      value={field.value || null} // To handle the case when field.value is undefined
-                    />
-                    {error && (
-                      <Typography
-                        variant="body2"
-                        color="red"
-                        fontSize={13}
-                        mt={0.5}
-                      >
-                        {error.message}
-                      </Typography>
-                    )}
-                  </>
-                )}
-              />
-            </LocalizationProvider>
-          </Grid>
-          <Grid item sm={6} xs={12}>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <Controller
-                name="hatchingDate"
-                control={control}
-                rules={{ required: "This field is required." }}
-                render={({ field, fieldState: { error } }) => (
-                  <>
-                    <DatePicker
-                      {...field}
-                      label="Hatching Date *"
-                      className="form-input"
-                      sx={{
-                        width: "100%",
-                      }}
-                      onChange={(date) => field.onChange(date)}
                       value={field.value || null} // To handle the case when field.value is undefined
                     />
                     {error && (
@@ -408,43 +378,38 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
           </Grid>
 
           <Grid item sm={6} xs={12}>
-            <FormControl className="form-input" fullWidth>
-              <InputLabel id="demo-simple-select-label">Fish Farm *</InputLabel>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                label="Fish Farm *"
-                value={watch("fishFarmId") || ""}
-                {...register("fishFarmId", {
-                  required: true,
-                  onChange: (e) => {
-                    setValue("fishFarmId", e.target.value);
-                  },
-                })}
-              >
-                {farms?.map((farm, i) => {
-                  return (
-                    <MenuItem value={String(farm.id)} key={i}>
-                      {farm.name}
-                    </MenuItem>
-                  );
-                })}
-              </Select>
-              {errors &&
-                errors.fishFarmId &&
-                errors.fishFarmId.type === "required" && (
-                  <Typography
-                    variant="body2"
-                    color="red"
-                    fontSize={13}
-                    mt={0.5}
-                  >
-                    This field is required.
-                  </Typography>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <Controller
+                name="hatchingDate"
+                control={control}
+                rules={{ required: "This field is required." }}
+                render={({ field, fieldState: { error } }) => (
+                  <>
+                    <DatePicker
+                      {...field}
+                      label="Hatching Date *"
+                      className="form-input"
+                      sx={{
+                        width: "100%",
+                      }}
+                      onChange={(date) => field.onChange(date)}
+                      value={field.value || null} // To handle the case when field.value is undefined
+                    />
+                    {error && (
+                      <Typography
+                        variant="body2"
+                        color="red"
+                        fontSize={13}
+                        mt={0.5}
+                      >
+                        {error.message}
+                      </Typography>
+                    )}
+                  </>
                 )}
-            </FormControl>
+              />
+            </LocalizationProvider>
           </Grid>
-
           <Grid item sm={6} xs={12}>
             <FormControl className="form-input" fullWidth>
               <InputLabel id="demo-simple-select-label">Status *</InputLabel>

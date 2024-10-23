@@ -24,14 +24,15 @@ import Image from "next/image";
 import toast from "react-hot-toast";
 import { readableDate } from "../_lib/utils";
 import { SingleUser } from "../_typeModels/User";
-import { useAppSelector } from "@/lib/hooks";
-import { selectRole } from "@/lib/features/user/userSlice";
 import {
   organisationTableHead,
   organisationTableHeadMember,
 } from "../_lib/utils/tableHeadData";
 import { breadcrumsAction } from "@/lib/features/breadcrum/breadcrumSlice";
 import { useAppDispatch } from "@/lib/hooks";
+import { useAppSelector } from "@/lib/hooks";
+import { selectRole } from "@/lib/features/user/userSlice";
+
 
 interface Props {
   users: SingleUser[];
@@ -170,17 +171,8 @@ export default function UserTable({ users }: Props) {
       </TableHead>
     );
   }
-
-  useEffect(() => {
-    if (sortDataFromLocal) {
-      const data = JSON.parse(sortDataFromLocal);
-      setOrder(data.direction);
-      setOrderBy(data.column);
-    }
-  }, [sortDataFromLocal]);
-
   const handleRequestSort = (
-    _: React.MouseEvent<HTMLButtonElement>,
+    _: React.MouseEvent<HTMLButtonElement> | null,
     property: string
   ) => {
     const isAsc = orderBy === property && order === "asc";
@@ -228,10 +220,20 @@ export default function UserTable({ users }: Props) {
     }
   };
   useEffect(() => {
-    if (users) {
+    if (sortDataFromLocal) {
+      const data = JSON.parse(sortDataFromLocal);
+      setOrder(data.direction);
+      setOrderBy(data.column);
+      handleRequestSort(null, data.column);
+    }
+  }, [sortDataFromLocal]);
+
+  useEffect(() => {
+    if (users && !sortDataFromLocal) {
       setSortedUsers(users);
     }
   }, [users]);
+
   useEffect(() => {
     router.refresh();
   }, [router]);

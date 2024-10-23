@@ -21,7 +21,6 @@ export default async function Page({
   const loggedUser: any = getCookie("logged-user", { cookies });
   const user = JSON.parse(loggedUser);
   const fishSupply = await getFishSupply(query);
-
   return (
     <>
       <BasicBreadcrumbs

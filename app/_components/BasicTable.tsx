@@ -141,17 +141,8 @@ export default function BasicTable({ organisations }: Props) {
   }
 
   const open = Boolean(anchorEl);
-
-  useEffect(() => {
-    if (sortDataFromLocal) {
-      const data = JSON.parse(sortDataFromLocal);
-      setOrder(data.direction);
-      setOrderBy(data.column);
-    }
-  }, [sortDataFromLocal]);
-
   const handleRequestSort = (
-    _: React.MouseEvent<HTMLButtonElement>,
+    _: React.MouseEvent<HTMLButtonElement> | null,
     property: string
   ) => {
     const isAsc = orderBy === property && order === "asc";
@@ -193,7 +184,16 @@ export default function BasicTable({ organisations }: Props) {
     }
   };
   useEffect(() => {
-    if (organisations) {
+    if (sortDataFromLocal) {
+      const data = JSON.parse(sortDataFromLocal);
+      setOrder(data.direction);
+      setOrderBy(data.column);
+      handleRequestSort(null, data.column);
+    }
+  }, [sortDataFromLocal]);
+
+  useEffect(() => {
+    if (organisations && !sortDataFromLocal) {
       setOrganisationData(organisations);
     }
   }, [organisations]);
