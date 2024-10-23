@@ -17,7 +17,7 @@ export interface FishSupply {
   createdAt: String;
   updatedAt: String;
   organisationId: String;
-  productionUnits: Number;
+  productionUnits: String;
   creator: {
     hatchery: [
       {

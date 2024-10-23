@@ -172,6 +172,7 @@ export default function CommonTable({ tableData, fishSupply }: Props) {
       setSortedFishSupply(sortedData);
     }
   };
+
   const open = Boolean(anchorEl);
   useEffect(() => {
     if (fishSupply) {
@@ -313,7 +314,9 @@ export default function CommonTable({ tableData, fishSupply }: Props) {
                             />
                           </g>
                         </svg>
-                        {fish.broodstockMale ?? ""}
+                        {fish.broodstockMale
+                          ? fish.broodstockMale
+                          : "Not Provided"}
                       </Box>
 
                       <Box
@@ -342,7 +345,9 @@ export default function CommonTable({ tableData, fishSupply }: Props) {
                             d="M352 800h320q32 0 32 32t-32 32H352q-32 0-32-32t32-32"
                           />
                         </svg>
-                        {fish.broodstockFemale ?? ""}
+                        {fish.broodstockFemale
+                          ? fish.broodstockFemale
+                          : "Not Provided"}
                       </Box>
                     </TableCell>
                     <TableCell
@@ -403,7 +408,7 @@ export default function CommonTable({ tableData, fishSupply }: Props) {
                         fontWeight: 500,
                       }}
                     >
-                      {Number(fish.productionUnits)}
+                      {fish.productionUnits}
                     </TableCell>
                     <TableCell
                       sx={{

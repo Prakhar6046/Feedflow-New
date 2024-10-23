@@ -44,6 +44,7 @@ interface FormInputs {
   broodstockFemale: String;
   fishFarmId: String;
   status: String;
+  productionUnits: String;
 }
 function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
   const router = useRouter();
@@ -157,6 +158,7 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
       setValue("spawningNumber", String(fishSupply?.spawningNumber));
       setValue("status", fishSupply?.status);
       setValue("fishFarmId", fishSupply?.fishFarmId);
+      setValue("productionUnits", String(fishSupply?.productionUnits));
     }
   }, [fishSupply]);
   if (loading) {
@@ -385,24 +387,11 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
                 label="Broodstock (Male) *"
                 type="text"
                 className="form-input"
-                {...register("broodstockMale", { required: true })}
+                {...register("broodstockMale")}
                 sx={{
                   width: "100%",
                 }}
               />
-
-              {errors &&
-                errors.broodstockMale &&
-                errors.broodstockMale.type === "required" && (
-                  <Typography
-                    variant="body2"
-                    color="red"
-                    fontSize={13}
-                    mt={0.5}
-                  >
-                    This field is required.
-                  </Typography>
-                )}
             </Box>
           </Grid>
 
@@ -412,24 +401,11 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
                 label="Broodstock (Female) *"
                 type="text"
                 className="form-input"
-                {...register("broodstockFemale", { required: true })}
+                {...register("broodstockFemale")}
                 sx={{
                   width: "100%",
                 }}
               />
-
-              {errors &&
-                errors.broodstockFemale &&
-                errors.broodstockFemale.type === "required" && (
-                  <Typography
-                    variant="body2"
-                    color="red"
-                    fontSize={13}
-                    mt={0.5}
-                  >
-                    This field is required.
-                  </Typography>
-                )}
             </Box>
           </Grid>
 
@@ -500,6 +476,35 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
                 </Typography>
               )}
             </FormControl>
+          </Grid>
+          <Grid item sm={6} xs={12}>
+            <Box width={"100%"}>
+              <TextField
+                label="Production Unit *"
+                multiline
+                rows={3}
+                className="form-input"
+                {...register("productionUnits", {
+                  required: true,
+                })}
+                sx={{
+                  width: "100%",
+                }}
+              />
+
+              {errors &&
+                errors.productionUnits &&
+                errors.productionUnits.type === "required" && (
+                  <Typography
+                    variant="body2"
+                    color="red"
+                    fontSize={13}
+                    mt={0.5}
+                  >
+                    This field is required.
+                  </Typography>
+                )}
+            </Box>
           </Grid>
         </Grid>
 
