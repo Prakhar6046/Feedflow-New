@@ -249,7 +249,7 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
                   <>
                     <DatePicker
                       {...field}
-                      label="Spawning Date "
+                      label="Spawning Date * "
                       className="form-input"
                       sx={{
                         width: "100%",

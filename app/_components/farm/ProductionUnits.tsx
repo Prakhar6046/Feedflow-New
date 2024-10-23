@@ -425,7 +425,6 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                               label="Capacity *"
                               type="text"
                               className="form-input"
-                              // focused
                               {...register(
                                 `productionUnits.${index}.capacity` as const,
                                 {
@@ -518,7 +517,6 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                               label="Waterflow Rate *"
                               type="text"
                               className="form-input"
-                              // focused
                               {...register(
                                 `productionUnits.${index}.waterflowRate` as const,
                                 {

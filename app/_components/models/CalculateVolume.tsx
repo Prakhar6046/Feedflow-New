@@ -198,7 +198,7 @@ const CalculateVolume: React.FC<Props> = ({
           <Box padding={3} display={"flex"} alignItems={"center"} gap={1}>
             <Box position={"relative"}>
               <TextField
-                label="Length"
+                label="Length *"
                 variant="outlined"
                 fullWidth
                 type="text"
@@ -239,7 +239,7 @@ const CalculateVolume: React.FC<Props> = ({
 
             <Box position={"relative"}>
               <TextField
-                label="Width"
+                label="Width *"
                 variant="outlined"
                 fullWidth
                 type="text"
@@ -279,7 +279,7 @@ const CalculateVolume: React.FC<Props> = ({
 
             <Box position={"relative"}>
               <TextField
-                label="Depth"
+                label="Depth *"
                 variant="outlined"
                 fullWidth
                 type="text"
@@ -321,7 +321,7 @@ const CalculateVolume: React.FC<Props> = ({
           <Box padding={3} display={"flex"} alignItems={"center"} gap={1}>
             <Box position={"relative"}>
               <TextField
-                label="Surface area"
+                label="Surface area *"
                 variant="outlined"
                 fullWidth
                 type="text"
@@ -361,7 +361,7 @@ const CalculateVolume: React.FC<Props> = ({
 
             <Box position={"relative"}>
               <TextField
-                label="Depth"
+                label="Depth *"
                 variant="outlined"
                 fullWidth
                 type="text"
@@ -403,7 +403,7 @@ const CalculateVolume: React.FC<Props> = ({
           <Box padding={3} display={"flex"} alignItems={"center"} gap={1}>
             <Box position={"relative"}>
               <TextField
-                label="Length"
+                label="Length *"
                 variant="outlined"
                 fullWidth
                 type="text"
@@ -443,7 +443,7 @@ const CalculateVolume: React.FC<Props> = ({
 
             <Box position={"relative"}>
               <TextField
-                label="Width"
+                label="Width *"
                 variant="outlined"
                 fullWidth
                 type="text"
@@ -483,7 +483,7 @@ const CalculateVolume: React.FC<Props> = ({
 
             <Box position={"relative"}>
               <TextField
-                label="Depth"
+                label="Depth *"
                 variant="outlined"
                 fullWidth
                 type="text"
@@ -525,7 +525,7 @@ const CalculateVolume: React.FC<Props> = ({
           <Box padding={3} display={"flex"} alignItems={"center"} gap={1}>
             <Box position={"relative"}>
               <TextField
-                label="Length"
+                label="Length *"
                 variant="outlined"
                 fullWidth
                 type="text"
@@ -565,7 +565,7 @@ const CalculateVolume: React.FC<Props> = ({
 
             <Box position={"relative"}>
               <TextField
-                label="Width"
+                label="Width *"
                 variant="outlined"
                 fullWidth
                 type="text"
@@ -606,7 +606,7 @@ const CalculateVolume: React.FC<Props> = ({
 
             <Box position={"relative"}>
               <TextField
-                label="Height"
+                label="Height *"
                 variant="outlined"
                 fullWidth
                 type="text"
@@ -648,7 +648,7 @@ const CalculateVolume: React.FC<Props> = ({
           <Box padding={3} display={"flex"} alignItems={"center"} gap={1}>
             <Box position={"relative"}>
               <TextField
-                label="Length"
+                label="Length *"
                 variant="outlined"
                 fullWidth
                 type="text"
@@ -688,7 +688,7 @@ const CalculateVolume: React.FC<Props> = ({
 
             <Box position={"relative"}>
               <TextField
-                label="Width"
+                label="Width *"
                 variant="outlined"
                 fullWidth
                 type="text"
@@ -728,7 +728,7 @@ const CalculateVolume: React.FC<Props> = ({
 
             <Box position={"relative"}>
               <TextField
-                label="Height"
+                label="Height *"
                 variant="outlined"
                 fullWidth
                 type="text"
@@ -770,7 +770,7 @@ const CalculateVolume: React.FC<Props> = ({
           <Box padding={3} display={"flex"} alignItems={"center"} gap={1}>
             <Box position={"relative"}>
               <TextField
-                label="Radius"
+                label="Radius *"
                 variant="outlined"
                 fullWidth
                 type="text"
@@ -810,7 +810,7 @@ const CalculateVolume: React.FC<Props> = ({
 
             <Box position={"relative"}>
               <TextField
-                label="Depth"
+                label="Depth *"
                 variant="outlined"
                 fullWidth
                 type="text"
@@ -852,7 +852,7 @@ const CalculateVolume: React.FC<Props> = ({
           <Box padding={3} display={"flex"} alignItems={"center"} gap={1}>
             <Box position={"relative"}>
               <TextField
-                label="Radius"
+                label="Radius *"
                 variant="outlined"
                 fullWidth
                 type="text"
@@ -891,7 +891,7 @@ const CalculateVolume: React.FC<Props> = ({
             </Box>
             <Box position={"relative"}>
               <TextField
-                label="Length"
+                label="Length *"
                 variant="outlined"
                 fullWidth
                 type="text"
@@ -931,7 +931,7 @@ const CalculateVolume: React.FC<Props> = ({
 
             <Box position={"relative"}>
               <TextField
-                label="Width"
+                label="Width *"
                 variant="outlined"
                 fullWidth
                 type="text"
@@ -971,7 +971,7 @@ const CalculateVolume: React.FC<Props> = ({
 
             <Box position={"relative"}>
               <TextField
-                label="Depth"
+                label="Depth *"
                 variant="outlined"
                 fullWidth
                 type="text"

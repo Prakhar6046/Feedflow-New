@@ -121,17 +121,19 @@ export default function CommonTable({ tableData, fishSupply }: Props) {
                       sx={{
                         borderBottomColor: "#F5F6F8",
                         borderBottomWidth: 2,
-                        color: "#555555",
+                        color: "#06A198",
                         fontWeight: 500,
                       }}
                     >
                       <Box display={"flex"} alignItems={"center"} gap={1.5}>
-                        {`${fish.hatchingDate}-${fish.creator?.hatchery[0]?.code
-                          }-${fish.spawningNumber
-                          }-${fish?.creator?.hatchery[0]?.fishSpecie.slice(
-                            0,
-                            1
-                          )}`}
+                        {`${fish.hatchingDate}-${
+                          fish.creator?.hatchery[0]?.code
+                        }-${
+                          fish.spawningNumber
+                        }-${fish?.creator?.hatchery[0]?.fishSpecie.slice(
+                          0,
+                          1
+                        )}`}
                       </Box>
                     </TableCell>
                     <TableCell
@@ -142,8 +144,12 @@ export default function CommonTable({ tableData, fishSupply }: Props) {
                         fontWeight: 500,
                       }}
                     >
-                      <Box display={"flex"} gap={0.5} alignItems={"center"} width={"100%"}>
-
+                      <Box
+                        display={"flex"}
+                        gap={0.5}
+                        alignItems={"center"}
+                        width={"100%"}
+                      >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           width="1.2em"
@@ -161,18 +167,40 @@ export default function CommonTable({ tableData, fishSupply }: Props) {
                               d="M41.952 15.048v-9h-9"
                             />
                             <path d="M10.414 38c5.467 5.468 14.331 5.468 19.799 0a13.96 13.96 0 0 0 4.1-9.899a13.96 13.96 0 0 0-4.1-9.9c-5.468-5.467-14.332-5.467-19.8 0c-5.467 5.468-5.467 14.332 0 19.8Z" />
-                            <path stroke-linecap="round" d="m30 18l9.952-9.952" />
+                            <path
+                              stroke-linecap="round"
+                              d="m30 18l9.952-9.952"
+                            />
                           </g>
                         </svg>
                         {fish.broodstockMale ?? ""}
-
                       </Box>
 
-                      <Box display={"flex"} mt={0.3} gap={0.5} alignItems={"center"} width={"100%"}>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="1.2em" height="1.2em" viewBox="0 0 1024 1024">
-                          <path fill="black" d="M512 640a256 256 0 1 0 0-512a256 256 0 0 0 0 512m0 64a320 320 0 1 1 0-640a320 320 0 0 1 0 640" />
-                          <path fill="black" d="M512 640q32 0 32 32v256q0 32-32 32t-32-32V672q0-32 32-32" />
-                          <path fill="black" d="M352 800h320q32 0 32 32t-32 32H352q-32 0-32-32t32-32" />
+                      <Box
+                        display={"flex"}
+                        mt={0.3}
+                        gap={0.5}
+                        alignItems={"center"}
+                        width={"100%"}
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="1.2em"
+                          height="1.2em"
+                          viewBox="0 0 1024 1024"
+                        >
+                          <path
+                            fill="black"
+                            d="M512 640a256 256 0 1 0 0-512a256 256 0 0 0 0 512m0 64a320 320 0 1 1 0-640a320 320 0 0 1 0 640"
+                          />
+                          <path
+                            fill="black"
+                            d="M512 640q32 0 32 32v256q0 32-32 32t-32-32V672q0-32 32-32"
+                          />
+                          <path
+                            fill="black"
+                            d="M352 800h320q32 0 32 32t-32 32H352q-32 0-32-32t32-32"
+                          />
                         </svg>
                         {fish.broodstockFemale ?? ""}
                       </Box>
