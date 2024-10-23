@@ -153,7 +153,7 @@ const FarmInformation: NextPage<Props> = ({
               label="Farm Altitude *"
               type="text"
               className="form-input"
-              focused={altitude ? true : false}
+              // focused={altitude ? true : false}
               {...register("farmAltitude", {
                 required: true,
                 pattern: validationPattern.numbersWithDot,
@@ -183,7 +183,7 @@ const FarmInformation: NextPage<Props> = ({
               label="Farm Lat *"
               type="text"
               className="form-input"
-              focused={altitude ? true : false}
+              // focused={altitude ? true : false}
               {...register("lat", {
                 required: true,
                 pattern: validationPattern.negativeNumberWithDot,
@@ -209,7 +209,7 @@ const FarmInformation: NextPage<Props> = ({
               label="Farm Lng *"
               type="text"
               className="form-input"
-              focused={altitude ? true : false}
+              // focused={altitude ? true : false}
               {...register("lng", {
                 required: true,
                 pattern: validationPattern.negativeNumberWithDot,

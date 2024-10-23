@@ -261,7 +261,7 @@ export default function CommonTable({ tableData, fishSupply }: Props) {
                       sx={{
                         borderBottomColor: "#F5F6F8",
                         borderBottomWidth: 2,
-                        color: "#555555",
+                        color: "#06A198",
                         fontWeight: 500,
                       }}
                     >
