@@ -14,24 +14,37 @@ import {
   Menu,
   MenuItem,
   Stack,
+  TableSortLabel,
   Typography,
 } from "@mui/material";
 import { FishSupply } from "@/app/_typeModels/fishSupply";
 import { useRouter } from "next/navigation";
 import { useAppSelector } from "@/lib/hooks";
 import { selectRole } from "@/lib/features/user/userSlice";
+import { breadcrumsAction } from "@/lib/features/breadcrum/breadcrumSlice";
+import { useAppDispatch } from "@/lib/hooks";
+
 interface Props {
-  tableData: Array<string>;
+  tableData: {
+    id: string;
+    numeric: boolean;
+    disablePadding: boolean;
+    label: string;
+  }[];
   fishSupply?: FishSupply[];
 }
 
 export default function CommonTable({ tableData, fishSupply }: Props) {
   const router = useRouter();
+  const dispatch = useAppDispatch();
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null
   );
+  const [order, setOrder] = useState("asc");
+  const [orderBy, setOrderBy] = useState("spawningDate");
   const [selectedFishSupply, setSelectedFishSupply] = useState<FishSupply>();
   const role = useAppSelector(selectRole);
+  const [sortedFishSupply, setSortedFishSupply] = useState<FishSupply[]>();
   const handleClick = (
     event: React.MouseEvent<HTMLButtonElement>,
     fish: FishSupply
@@ -47,10 +60,133 @@ export default function CommonTable({ tableData, fishSupply }: Props) {
       router.push(`/dashboard/fishSupply/${selectedFishSupply.id}`);
     }
   };
+  function EnhancedTableHead(data: any) {
+    const { order, orderBy, onRequestSort } = data;
+    const createSortHandler =
+      (property: string) => (event: React.MouseEvent<HTMLButtonElement>) => {
+        onRequestSort(event, property);
+      };
+
+    return (
+      <TableHead>
+        <TableRow>
+          {tableData.map((headCell, idx) => (
+            <TableCell
+              key={idx}
+              sortDirection={
+                idx === tableData.length - 1
+                  ? false
+                  : orderBy === headCell.id
+                  ? order
+                  : false
+              }
+              sx={{
+                borderBottom: 0,
+                color: "#67737F",
+                background: "#F5F6F8",
+                fontSize: {
+                  md: 16,
+                  xs: 14,
+                },
+                fontWeight: 600,
+                paddingLeft: {
+                  lg: idx === 0 ? 10 : 0,
+                  md: idx === 0 ? 7 : 0,
+                  xs: idx === 0 ? 4 : 0,
+                },
+              }}
+            >
+              {idx === tableData.length - 1 ||
+              idx === 0 ||
+              idx === 1 ||
+              idx === 2 ||
+              idx === 5 ? (
+                headCell.label
+              ) : (
+                <TableSortLabel
+                  active={orderBy === headCell.id}
+                  direction={orderBy === headCell.id ? order : "asc"}
+                  onClick={createSortHandler(headCell.id)}
+                >
+                  {headCell.label}
+                </TableSortLabel>
+              )}
+            </TableCell>
+          ))}
+        </TableRow>
+      </TableHead>
+    );
+  }
+  const handleRequestSort = (
+    _: React.MouseEvent<HTMLButtonElement>,
+    property: string
+  ) => {
+    const isAsc = orderBy === property && order === "asc";
+    setOrder(isAsc ? "desc" : "asc");
+    setOrderBy(property);
+    dispatch(
+      breadcrumsAction.handleSort({
+        direction: isAsc ? "desc" : "asc",
+        column: property,
+      })
+    );
+    if (fishSupply) {
+      const sortedData = [...fishSupply].sort(
+        (fish1: FishSupply, fish2: FishSupply) => {
+          const orderType = order === "asc" ? 1 : -1;
+          if (property === "spawningDate") {
+            if (fish1.spawningDate < fish2.spawningDate) return -1 * orderType;
+            if (fish1.spawningDate > fish2.spawningDate) return 1 * orderType;
+            return 0;
+          } else if (property === "hatchingDate") {
+            if (fish1.hatchingDate < fish2.hatchingDate) return -1 * orderType;
+            if (fish1.hatchingDate > fish2.hatchingDate) return 1 * orderType;
+            return 0;
+          } else if (property === "name") {
+            if (
+              fish1.creator?.hatchery[0]?.name <
+              fish2.creator?.hatchery[0]?.name
+            )
+              return -1 * orderType;
+            if (
+              fish1.creator?.hatchery[0]?.name >
+              fish2.creator?.hatchery[0]?.name
+            )
+              return 1 * orderType;
+            return 0;
+          } else if (property === "fishFarm") {
+            if (fish1.fishFarm < fish2.fishFarm) return -1 * orderType;
+            if (fish1.fishFarm > fish2.fishFarm) return 1 * orderType;
+            return 0;
+          } else if (property === "productionUnits") {
+            if (fish1.productionUnits < fish2.productionUnits)
+              return -1 * orderType;
+            if (fish1.productionUnits > fish2.productionUnits)
+              return 1 * orderType;
+            return 0;
+          } else if (property === "status") {
+            if (fish1.status < fish2.status) return -1 * orderType;
+            if (fish1.status > fish2.status) return 1 * orderType;
+            return 0;
+          }
+          return 0;
+        }
+      );
+      setSortedFishSupply(sortedData);
+    }
+  };
+
   const open = Boolean(anchorEl);
+  useEffect(() => {
+    if (fishSupply) {
+      setSortedFishSupply(fishSupply);
+    }
+  }, [fishSupply]);
+
   useEffect(() => {
     router.refresh();
   }, [router]);
+
   return (
     <Paper
       sx={{
@@ -67,7 +203,7 @@ export default function CommonTable({ tableData, fishSupply }: Props) {
         }}
       >
         <Table stickyHeader aria-label="sticky table">
-          <TableHead>
+          {/* <TableHead>
             <TableRow>
               {tableData.map((field, i) => {
                 return (
@@ -89,15 +225,20 @@ export default function CommonTable({ tableData, fishSupply }: Props) {
                       },
                     }}
                   >
-                    {field}
+                    {field.label}
                   </TableCell>
                 );
               })}
             </TableRow>
-          </TableHead>
+          </TableHead> */}
+          <EnhancedTableHead
+            order={order}
+            orderBy={orderBy}
+            onRequestSort={handleRequestSort}
+          />
           <TableBody>
-            {fishSupply && fishSupply.length > 0 ? (
-              fishSupply.map((fish: FishSupply, i: number) => {
+            {sortedFishSupply && sortedFishSupply.length > 0 ? (
+              sortedFishSupply.map((fish: FishSupply, i: number) => {
                 return (
                   <TableRow
                     key={i}
@@ -124,7 +265,7 @@ export default function CommonTable({ tableData, fishSupply }: Props) {
                       sx={{
                         borderBottomColor: "#F5F6F8",
                         borderBottomWidth: 2,
-                        color: "#555555",
+                        color: "#06A198",
                         fontWeight: 500,
                       }}
                     >
@@ -176,7 +317,9 @@ export default function CommonTable({ tableData, fishSupply }: Props) {
                             />
                           </g>
                         </svg>
-                        {fish.broodstockMale ?? ""}
+                        {fish.broodstockMale
+                          ? fish.broodstockMale
+                          : "Not Provided"}
                       </Box>
 
                       <Box
@@ -205,7 +348,9 @@ export default function CommonTable({ tableData, fishSupply }: Props) {
                             d="M352 800h320q32 0 32 32t-32 32H352q-32 0-32-32t32-32"
                           />
                         </svg>
-                        {fish.broodstockFemale ?? ""}
+                        {fish.broodstockFemale
+                          ? fish.broodstockFemale
+                          : "Not Provided"}
                       </Box>
                     </TableCell>
                     <TableCell
@@ -266,7 +411,7 @@ export default function CommonTable({ tableData, fishSupply }: Props) {
                         fontWeight: 500,
                       }}
                     >
-                      {Number(fish.productionUnits)}
+                      {fish.productionUnits}
                     </TableCell>
                     <TableCell
                       sx={{

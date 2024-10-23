@@ -44,7 +44,7 @@ interface FormInputs {
   broodstockFemale: String;
   fishFarmId: String;
   status: String;
-  productionUnits: Number;
+  productionUnits: String;
 }
 function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
   const router = useRouter();
@@ -142,7 +142,7 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
       setValue("spawningNumber", String(fishSupply?.spawningNumber));
       setValue("status", fishSupply?.status);
       setValue("fishFarmId", fishSupply?.fishFarmId);
-      setValue("productionUnits", fishSupply?.productionUnits);
+      setValue("productionUnits", String(fishSupply?.productionUnits));
     }
   }, [fishSupply]);
   if (loading) {
@@ -264,6 +264,43 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
           <Grid item sm={6} xs={12}>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <Controller
+                name="spawningDate"
+                control={control}
+                rules={{ required: "This field is required." }}
+                render={({ field, fieldState: { error } }) => (
+                  <>
+                    <DatePicker
+                      {...field}
+                      label="Spawning Date * "
+                      className="form-input"
+                      sx={{
+                        width: "100%",
+                      }}
+                      onChange={(date) => {
+                        field.onChange(date);
+                        !watch("hatchingDate") &&
+                          setValue("hatchingDate", date);
+                      }}
+                      value={field.value || null} // To handle the case when field.value is undefined
+                    />
+                    {error && (
+                      <Typography
+                        variant="body2"
+                        color="red"
+                        fontSize={13}
+                        mt={0.5}
+                      >
+                        {error.message}
+                      </Typography>
+                    )}
+                  </>
+                )}
+              />
+            </LocalizationProvider>
+          </Grid>
+          <Grid item sm={6} xs={12}>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <Controller
                 name="hatchingDate"
                 control={control}
                 rules={{ required: "This field is required." }}
@@ -348,24 +385,11 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
                 label="Broodstock (Male) *"
                 type="text"
                 className="form-input"
-                {...register("broodstockMale", { required: true })}
+                {...register("broodstockMale")}
                 sx={{
                   width: "100%",
                 }}
               />
-
-              {errors &&
-                errors.broodstockMale &&
-                errors.broodstockMale.type === "required" && (
-                  <Typography
-                    variant="body2"
-                    color="red"
-                    fontSize={13}
-                    mt={0.5}
-                  >
-                    This field is required.
-                  </Typography>
-                )}
             </Box>
           </Grid>
 
@@ -375,24 +399,11 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
                 label="Broodstock (Female) *"
                 type="text"
                 className="form-input"
-                {...register("broodstockFemale", { required: true })}
+                {...register("broodstockFemale")}
                 sx={{
                   width: "100%",
                 }}
               />
-
-              {errors &&
-                errors.broodstockFemale &&
-                errors.broodstockFemale.type === "required" && (
-                  <Typography
-                    variant="body2"
-                    color="red"
-                    fontSize={13}
-                    mt={0.5}
-                  >
-                    This field is required.
-                  </Typography>
-                )}
             </Box>
           </Grid>
 
@@ -468,11 +479,11 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
             <Box width={"100%"}>
               <TextField
                 label="Production Unit *"
-                type="number"
+                multiline
+                rows={3}
                 className="form-input"
                 {...register("productionUnits", {
                   required: true,
-                  pattern: validationPattern.onlyNumbersPattern,
                 })}
                 sx={{
                   width: "100%",
@@ -489,18 +500,6 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
                     mt={0.5}
                   >
                     This field is required.
-                  </Typography>
-                )}
-              {errors &&
-                errors.productionUnits &&
-                errors.productionUnits.type === "pattern" && (
-                  <Typography
-                    variant="body2"
-                    color="red"
-                    fontSize={13}
-                    mt={0.5}
-                  >
-                    {validationMessage.onlyNumbers}
                   </Typography>
                 )}
             </Box>

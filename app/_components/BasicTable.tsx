@@ -163,8 +163,8 @@ export default function BasicTable({ organisations }: Props) {
         column: property,
       })
     );
-    if (organisationData) {
-      const sortedData = [...organisationData].sort(
+    if (organisations) {
+      const sortedData = [...organisations].sort(
         (
           organisation1: SingleOrganisation,
           organisation2: SingleOrganisation
@@ -193,6 +193,11 @@ export default function BasicTable({ organisations }: Props) {
     }
   };
   useEffect(() => {
+    if (organisations) {
+      setOrganisationData(organisations);
+    }
+  }, [organisations]);
+  useEffect(() => {
     router.refresh();
   }, [router]);
   return (
@@ -217,8 +222,8 @@ export default function BasicTable({ organisations }: Props) {
             onRequestSort={handleRequestSort}
           />
           <TableBody>
-            {organisations && organisations.length > 0 ? (
-              organisations?.map((organisation, i) => {
+            {organisationData && organisationData.length > 0 ? (
+              organisationData?.map((organisation, i) => {
                 return (
                   <TableRow
                     key={i}

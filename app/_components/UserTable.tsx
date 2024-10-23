@@ -30,6 +30,8 @@ import {
   organisationTableHead,
   organisationTableHeadMember,
 } from "../_lib/utils/tableHeadData";
+import { breadcrumsAction } from "@/lib/features/breadcrum/breadcrumSlice";
+import { useAppDispatch } from "@/lib/hooks";
 
 interface Props {
   users: SingleUser[];
@@ -44,12 +46,14 @@ interface Data {
 }
 
 export default function UserTable({ users }: Props) {
+  const dispatch = useAppDispatch();
   const router = useRouter();
   const pathName = usePathname();
   const loggedUser = getCookie("logged-user");
   const role = useAppSelector(selectRole);
   const sortDataFromLocal = getCookie(pathName);
   const [selectedUser, setSelectedUser] = useState<SingleUser | null>(null);
+  const [sortedUser, setSortedUsers] = useState<SingleUser[] | null>(null);
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null
   );
@@ -175,55 +179,59 @@ export default function UserTable({ users }: Props) {
     }
   }, [sortDataFromLocal]);
 
-  // const handleRequestSort = (
-  //   _: React.MouseEvent<HTMLButtonElement>,
-  //   property: string
-  // ) => {
-  //   const isAsc = orderBy === property && order === "asc";
-  //   setOrder(isAsc ? "desc" : "asc");
+  const handleRequestSort = (
+    _: React.MouseEvent<HTMLButtonElement>,
+    property: string
+  ) => {
+    const isAsc = orderBy === property && order === "asc";
+    setOrder(isAsc ? "desc" : "asc");
 
-  //   setOrderBy(property);
-  //   dispatch(
-  //     breadcrumsAction.handleSort({
-  //       direction: isAsc ? "desc" : "asc",
-  //       column: property,
-  //     })
-  //   );
-  //   if (users) {
-  //     const sortedData = [...users].sort(
-  //       (user1: SingleUser, user2: SingleUser) => {
-  //         const orderType = order === "asc" ? 1 : -1;
-  //         if (property === "name") {
-  //           if (user1.name < user2.name) return -1 * orderType;
-  //           if (user1.name > user2.name) return 1 * orderType;
-  //           return 0;
-  //         } else if (property === "status") {
-  //           if (user1.status < user2.status) return -1 * orderType;
-  //           if (user1.status > user2.status) return 1 * orderType;
-  //           return 0;
-  //         } else if (property === "role") {
-  //           if (user1.role < user2.role) return -1 * orderType;
-  //           if (user1.role > user2.role) return 1 * orderType;
-  //           return 0;
-  //         } else if (property === "organisation") {
-  //           if (user1.organisation?.name < user2.organisation?.name)
-  //             return -1 * orderType;
-  //           if (user1.organisation?.name > user2.organisation?.name)
-  //             return 1 * orderType;
-  //           return 0;
-  //         } else if (property === "createdAt") {
-  //           if (user1.createdAt < user2.createdAt) return -1 * orderType;
-  //           if (user1.createdAt > user2.createdAt) return 1 * orderType;
-  //           return 0;
-  //         }
-  //         return 0;
-  //       }
-  //     );
-
-  //     setUsers(sortedData);
-  //   }
-  // };
-
+    setOrderBy(property);
+    dispatch(
+      breadcrumsAction.handleSort({
+        direction: isAsc ? "desc" : "asc",
+        column: property,
+      })
+    );
+    if (users) {
+      const sortedData = [...users].sort(
+        (user1: SingleUser, user2: SingleUser) => {
+          const orderType = order === "asc" ? 1 : -1;
+          if (property === "name") {
+            if (user1.name < user2.name) return -1 * orderType;
+            if (user1.name > user2.name) return 1 * orderType;
+            return 0;
+          } else if (property === "status") {
+            if (user1.status < user2.status) return -1 * orderType;
+            if (user1.status > user2.status) return 1 * orderType;
+            return 0;
+          } else if (property === "role") {
+            if (user1.role < user2.role) return -1 * orderType;
+            if (user1.role > user2.role) return 1 * orderType;
+            return 0;
+          } else if (property === "organisation") {
+            if (user1.organisation?.name < user2.organisation?.name)
+              return -1 * orderType;
+            if (user1.organisation?.name > user2.organisation?.name)
+              return 1 * orderType;
+            return 0;
+          } else if (property === "createdAt") {
+            if (user1.createdAt < user2.createdAt) return -1 * orderType;
+            if (user1.createdAt > user2.createdAt) return 1 * orderType;
+            return 0;
+          }
+          return 0;
+        }
+      );
+      setSortedUsers(sortedData);
+      // setUsers(sortedData);
+    }
+  };
+  useEffect(() => {
+    if (users) {
+      setSortedUsers(users);
+    }
+  }, [users]);
   useEffect(() => {
     router.refresh();
   }, [router]);
@@ -246,11 +254,11 @@ export default function UserTable({ users }: Props) {
           <EnhancedTableHead
             order={order}
             orderBy={orderBy}
-            // onRequestSort={handleRequestSort}
+            onRequestSort={handleRequestSort}
           />
           <TableBody>
-            {users && users.length > 0 ? (
-              users.map((user, i) => {
+            {sortedUser && sortedUser.length > 0 ? (
+              sortedUser.map((user, i) => {
                 return (
                   <TableRow
                     key={i}
