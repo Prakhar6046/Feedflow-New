@@ -18,12 +18,13 @@ import {
   Typography,
 } from "@mui/material";
 import { FishSupply } from "@/app/_typeModels/fishSupply";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { breadcrumsAction } from "@/lib/features/breadcrum/breadcrumSlice";
 import { useAppDispatch } from "@/lib/hooks";
 
 import { useAppSelector } from "@/lib/hooks";
 import { selectRole } from "@/lib/features/user/userSlice";
+import { getCookie } from "cookies-next";
 interface Props {
   tableData: {
     id: string;
@@ -40,6 +41,8 @@ export default function CommonTable({ tableData, fishSupply }: Props) {
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null
   );
+  const pathName = usePathname();
+  const sortDataFromLocal = getCookie(pathName);
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("spawningDate");
   const [selectedFishSupply, setSelectedFishSupply] = useState<FishSupply>();
@@ -118,7 +121,7 @@ export default function CommonTable({ tableData, fishSupply }: Props) {
     );
   }
   const handleRequestSort = (
-    _: React.MouseEvent<HTMLButtonElement>,
+    _: React.MouseEvent<HTMLButtonElement> | null,
     property: string
   ) => {
     const isAsc = orderBy === property && order === "asc";
@@ -178,7 +181,60 @@ export default function CommonTable({ tableData, fishSupply }: Props) {
 
   const open = Boolean(anchorEl);
   useEffect(() => {
-    if (fishSupply) {
+    if (sortDataFromLocal) {
+      const data = JSON.parse(sortDataFromLocal);
+      setOrder(data.direction);
+      setOrderBy(data.column);
+      if (fishSupply) {
+        const sortedData = [...fishSupply].sort(
+          (fish1: FishSupply, fish2: FishSupply) => {
+            const orderType = data.direction === "asc" ? -1 : 1;
+            if (data.column === "spawningDate") {
+              if (fish1.spawningDate < fish2.spawningDate)
+                return -1 * orderType;
+              if (fish1.spawningDate > fish2.spawningDate) return 1 * orderType;
+              return 0;
+            } else if (data.column === "hatchingDate") {
+              if (fish1.hatchingDate < fish2.hatchingDate)
+                return -1 * orderType;
+              if (fish1.hatchingDate > fish2.hatchingDate) return 1 * orderType;
+              return 0;
+            } else if (data.column === "name") {
+              if (
+                fish1.creator?.hatchery[0]?.name <
+                fish2.creator?.hatchery[0]?.name
+              )
+                return -1 * orderType;
+              if (
+                fish1.creator?.hatchery[0]?.name >
+                fish2.creator?.hatchery[0]?.name
+              )
+                return 1 * orderType;
+              return 0;
+            } else if (data.column === "fishFarm") {
+              if (fish1.fishFarm < fish2.fishFarm) return -1 * orderType;
+              if (fish1.fishFarm > fish2.fishFarm) return 1 * orderType;
+              return 0;
+            } else if (data.column === "productionUnits") {
+              if (fish1.productionUnits < fish2.productionUnits)
+                return -1 * orderType;
+              if (fish1.productionUnits > fish2.productionUnits)
+                return 1 * orderType;
+              return 0;
+            } else if (data.column === "status") {
+              if (fish1.status < fish2.status) return -1 * orderType;
+              if (fish1.status > fish2.status) return 1 * orderType;
+              return 0;
+            }
+            return 0;
+          }
+        );
+        setSortedFishSupply(sortedData);
+      }
+    }
+  }, [sortDataFromLocal]);
+  useEffect(() => {
+    if (fishSupply && !sortDataFromLocal) {
       setSortedFishSupply(fishSupply);
     }
   }, [fishSupply]);

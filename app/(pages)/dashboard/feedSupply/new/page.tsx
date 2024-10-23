@@ -24,9 +24,11 @@ export default function Page() {
   useEffect(() => {
     if (loggedUser) {
       const userOrganisationType = JSON.parse(loggedUser);
+      console.log(userOrganisationType);
       if (
         userOrganisationType?.data?.user?.organisation.organisationType ===
-        "Fish Farmer"
+          "Fish Farmer" ||
+        userOrganisationType?.data?.user?.role === "SUPERADMIN"
       ) {
         const stepsForFishFarmers = [
           {
@@ -41,7 +43,8 @@ export default function Page() {
         setSteps(stepsForFishFarmers);
       } else if (
         userOrganisationType?.data?.user?.organisation.organisationType ===
-        "Feed Supplier"
+          "Feed Supplier" ||
+        userOrganisationType?.data?.user?.role === "SUPERADMIN"
       ) {
         const stepsForFeedSupplyers = [
           {

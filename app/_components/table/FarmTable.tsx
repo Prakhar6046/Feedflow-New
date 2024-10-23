@@ -173,7 +173,26 @@ export default function FarmTable({ farms }: Props) {
       const data = JSON.parse(sortDataFromLocal);
       setOrder(data.direction);
       setOrderBy(data.column);
-      handleRequestSort(null, data.column);
+      // handleRequestSort(null, data.column);
+      if (farms) {
+        const sortedData = [...farms].sort((farm1: any, farm2: any) => {
+          const orderType = data.direction === "asc" ? -1 : 1;
+          if (data.column !== "productUnits") {
+            if (farm1.name < farm2.name) return -1 * orderType;
+            if (farm1.name > farm2.name) return 1 * orderType;
+            return 0;
+          } else {
+            if (farm1.productUnits.length < farm2.productUnits.length)
+              return -1 * orderType;
+            if (farm1.productUnits.length > farm2.productUnits.length)
+              return 1 * orderType;
+            return 0;
+          }
+          // return 0;
+        });
+
+        setFarmsData(sortedData);
+      }
     }
   }, [sortDataFromLocal]);
   useEffect(() => {

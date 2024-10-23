@@ -188,7 +188,36 @@ export default function BasicTable({ organisations }: Props) {
       const data = JSON.parse(sortDataFromLocal);
       setOrder(data.direction);
       setOrderBy(data.column);
-      handleRequestSort(null, data.column);
+      // handleRequestSort(null, data.column);
+      if (organisations) {
+        const sortedData = [...organisations].sort(
+          (
+            organisation1: SingleOrganisation,
+            organisation2: SingleOrganisation
+          ) => {
+            const orderType = data.direction === "asc" ? -1 : 1;
+            if (data.column === "name") {
+              if (organisation1.name < organisation2.name)
+                return -1 * orderType;
+              if (organisation1.name > organisation2.name) return 1 * orderType;
+              return 0;
+            } else if (
+              data.column === "contactPerson" &&
+              organisation1.contact &&
+              organisation2.contact
+            ) {
+              if (organisation1.contact[0].name < organisation2.contact[0].name)
+                return -1 * orderType;
+              if (organisation1.contact[0].name > organisation2.contact[0].name)
+                return 1 * orderType;
+              return 0;
+            }
+            return 0;
+          }
+        );
+
+        setOrganisationData(sortedData);
+      }
     }
   }, [sortDataFromLocal]);
 

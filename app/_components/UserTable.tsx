@@ -33,7 +33,6 @@ import { useAppDispatch } from "@/lib/hooks";
 import { useAppSelector } from "@/lib/hooks";
 import { selectRole } from "@/lib/features/user/userSlice";
 
-
 interface Props {
   users: SingleUser[];
 }
@@ -222,9 +221,43 @@ export default function UserTable({ users }: Props) {
   useEffect(() => {
     if (sortDataFromLocal) {
       const data = JSON.parse(sortDataFromLocal);
+      console.log(data.direction);
       setOrder(data.direction);
       setOrderBy(data.column);
-      handleRequestSort(null, data.column);
+      // handleRequestSort(null, data.column);
+      if (users) {
+        const sortedData = [...users].sort(
+          (user1: SingleUser, user2: SingleUser) => {
+            const orderType = data.direction === "asc" ? -1 : 1;
+            if (data.column === "name") {
+              if (user1.name < user2.name) return -1 * orderType;
+              if (user1.name > user2.name) return 1 * orderType;
+              return 0;
+            } else if (data.column === "status") {
+              if (user1.status < user2.status) return -1 * orderType;
+              if (user1.status > user2.status) return 1 * orderType;
+              return 0;
+            } else if (data.column === "role") {
+              if (user1.role < user2.role) return -1 * orderType;
+              if (user1.role > user2.role) return 1 * orderType;
+              return 0;
+            } else if (data.column === "organisation") {
+              if (user1.organisation?.name < user2.organisation?.name)
+                return -1 * orderType;
+              if (user1.organisation?.name > user2.organisation?.name)
+                return 1 * orderType;
+              return 0;
+            } else if (data.column === "createdAt") {
+              if (user1.createdAt < user2.createdAt) return -1 * orderType;
+              if (user1.createdAt > user2.createdAt) return 1 * orderType;
+              return 0;
+            }
+            return 0;
+          }
+        );
+        setSortedUsers(sortedData);
+        // setUsers(sortedData);
+      }
     }
   }, [sortDataFromLocal]);
 

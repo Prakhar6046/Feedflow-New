@@ -176,7 +176,29 @@ export default function FeedTable({ feeds }: Props) {
       const data = JSON.parse(sortDataFromLocal);
       setOrder(data.direction);
       setOrderBy(data.column);
-      handleRequestSort(null, data.column);
+      // handleRequestSort(null, data.column);
+      if (feeds) {
+        const sortedData = [...feeds].sort((feed1: any, feed2: any) => {
+          const orderType = data.direction === "asc" ? -1 : 1;
+          if (data.column === "productName") {
+            if (feed1.productName < feed2.productName) return -1 * orderType;
+            if (feed1.productName > feed2.productName) return 1 * orderType;
+          } else if (data.column === "productCode") {
+            if (feed1.productCode < feed2.productCode) return -1 * orderType;
+            if (feed1.productCode > feed2.productCode) return 1 * orderType;
+          } else if (data.column === "productionIntensity") {
+            if (feed1.productionIntensity < feed2.productionIntensity)
+              return -1 * orderType;
+            if (feed1.productionIntensity > feed2.productionIntensity)
+              return 1 * orderType;
+          } else if (data.column === "feedingPhase") {
+            if (feed1.feedingPhase < feed2.feedingPhase) return -1 * orderType;
+            if (feed1.feedingPhase > feed2.feedingPhase) return 1 * orderType;
+          }
+          return 0;
+        });
+        setFeedsData(sortedData);
+      }
     }
   }, [sortDataFromLocal]);
   //   if (loading) {
