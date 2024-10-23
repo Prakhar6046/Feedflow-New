@@ -112,7 +112,6 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
         fishSpecie: data.fishSpecie,
       };
     }
-    console.log(organisationData);
 
     const formData = new FormData();
     formData.append("name", String(data.organisationName));

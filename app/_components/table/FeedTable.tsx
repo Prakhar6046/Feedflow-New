@@ -1,6 +1,6 @@
 "use client";
 import { feedAction } from "@/lib/features/feed/feedSlice";
-import { useAppDispatch } from "@/lib/hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import {
   Button,
   Menu,
@@ -21,6 +21,11 @@ import React, { useEffect, useState } from "react";
 import { FeedSupply } from "../feedSupply/FeedSelection";
 import { breadcrumsAction } from "@/lib/features/breadcrum/breadcrumSlice";
 import { getCookie } from "cookies-next";
+import { selectRole } from "@/lib/features/user/userSlice";
+import {
+  feedSupplyTableHead,
+  feedSupplyTableHeadMember,
+} from "@/app/_lib/utils/tableHeadData";
 
 interface Props {
   feeds: FeedSupply[];
@@ -37,6 +42,7 @@ export default function FeedTable({ feeds }: Props) {
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null
   );
+  const role = useAppSelector(selectRole);
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("productName");
   const handleClick = (
@@ -56,44 +62,7 @@ export default function FeedTable({ feeds }: Props) {
     setAnchorEl(null);
   };
   const open = Boolean(anchorEl);
-  const headCells = [
-    {
-      id: "productName",
-      numeric: false,
-      disablePadding: true,
-      label: "Product Name",
-    },
-    {
-      id: "productCode",
-      numeric: false,
-      disablePadding: true,
-      label: "Product Code",
-    },
-    {
-      id: "productionIntensity",
-      numeric: false,
-      disablePadding: true,
-      label: "Production Intensity",
-    },
-    {
-      id: "feedingPhase",
-      numeric: false,
-      disablePadding: true,
-      label: "Feeding Phase",
-    },
-    {
-      id: "specie",
-      numeric: false,
-      disablePadding: true,
-      label: "Specie",
-    },
-    {
-      id: "action",
-      numeric: false,
-      disablePadding: true,
-      label: "Actions",
-    },
-  ];
+
   useEffect(() => {
     router.refresh();
   }, [router]);
@@ -107,7 +76,10 @@ export default function FeedTable({ feeds }: Props) {
     return (
       <TableHead>
         <TableRow>
-          {headCells.map((headCell, idx) => (
+          {(role !== "MEMBER"
+            ? feedSupplyTableHead
+            : feedSupplyTableHeadMember
+          ).map((headCell, idx, headCells) => (
             <TableCell
               key={headCell.id}
               sortDirection={
@@ -128,9 +100,9 @@ export default function FeedTable({ feeds }: Props) {
                 },
                 fontWeight: 600,
                 paddingLeft: {
-                  lg: 10,
-                  md: 7,
-                  xs: 4,
+                  lg: idx === 0 ? 10 : 0,
+                  md: idx === 0 ? 7 : 0,
+                  xs: idx === 0 ? 4 : 0,
                 },
               }}
             >
@@ -153,7 +125,7 @@ export default function FeedTable({ feeds }: Props) {
   }
 
   const handleRequestSort = (
-    _: React.MouseEvent<HTMLButtonElement>,
+    _: React.MouseEvent<HTMLButtonElement> | null,
     property: string
   ) => {
     const isAsc = orderBy === property && order === "asc";
@@ -165,7 +137,7 @@ export default function FeedTable({ feeds }: Props) {
         column: property,
       })
     );
-    console.log(property);
+
     if (feeds) {
       const sortedData = [...feeds].sort((feed1: any, feed2: any) => {
         const orderType = order === "asc" ? 1 : -1;
@@ -195,17 +167,18 @@ export default function FeedTable({ feeds }: Props) {
     }
   }, [pathName]);
   useEffect(() => {
-    if (feeds) {
+    if (feeds && !sortDataFromLocal) {
       setFeedsData(feeds);
     }
   }, [feeds]);
   useEffect(() => {
-    if (sortDataFromLocal && feeds) {
+    if (sortDataFromLocal) {
       const data = JSON.parse(sortDataFromLocal);
       setOrder(data.direction);
       setOrderBy(data.column);
+      handleRequestSort(null, data.column);
     }
-  }, [sortDataFromLocal, feeds]);
+  }, [sortDataFromLocal]);
   //   if (loading) {
   //     return <Loader />;
   //   }
@@ -334,76 +307,78 @@ export default function FeedTable({ feeds }: Props) {
                     >
                       {feed.specie ?? ""}
                     </TableCell>
-                    <TableCell
-                      // align="center"
-                      sx={{
-                        borderBottomColor: "#F5F6F8",
-                        borderBottomWidth: 2,
-                        color: "#555555",
-                        fontWeight: 500,
-                      }}
-                      className="cursor-pointer"
-                      // onClick={() => handleEdit(user)}
-                    >
-                      <Button
-                        id="basic-button"
-                        aria-controls={open ? "basic-menu" : undefined}
-                        aria-haspopup="true"
-                        aria-expanded={open ? "true" : undefined}
-                        onClick={(e) => handleClick(e, feed)}
-                        className="table-edit-option"
+                    {role !== "MEMBER" && (
+                      <TableCell
+                        // align="center"
                         sx={{
-                          background: "transparent",
+                          borderBottomColor: "#F5F6F8",
+                          borderBottomWidth: 2,
                           color: "#555555",
-                          boxShadow: "none",
+                          fontWeight: 500,
                         }}
+                        className="cursor-pointer"
+                        // onClick={() => handleEdit(user)}
                       >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="1em"
-                          height="1em"
-                          viewBox="0 0 16 16"
+                        <Button
+                          id="basic-button"
+                          aria-controls={open ? "basic-menu" : undefined}
+                          aria-haspopup="true"
+                          aria-expanded={open ? "true" : undefined}
+                          onClick={(e) => handleClick(e, feed)}
+                          className="table-edit-option"
+                          sx={{
+                            background: "transparent",
+                            color: "#555555",
+                            boxShadow: "none",
+                          }}
                         >
-                          <path
-                            fill="currentColor"
-                            d="M9.5 13a1.5 1.5 0 1 1-3 0a1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0a1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0a1.5 1.5 0 0 1 3 0"
-                          />
-                        </svg>
-                      </Button>
-                      <Menu
-                        id="basic-menu"
-                        className="table-edit-menu"
-                        anchorEl={anchorEl}
-                        open={open}
-                        onClose={handleClose}
-                        MenuListProps={{
-                          "aria-labelledby": "basic-button",
-                        }}
-                      >
-                        <MenuItem onClick={handleEdit}>
-                          <Stack
-                            display="flex"
-                            gap={1.2}
-                            alignItems="center"
-                            direction="row"
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="1em"
+                            height="1em"
+                            viewBox="0 0 16 16"
                           >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="1em"
-                              height="1em"
-                              viewBox="0 0 24 24"
+                            <path
+                              fill="currentColor"
+                              d="M9.5 13a1.5 1.5 0 1 1-3 0a1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0a1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0a1.5 1.5 0 0 1 3 0"
+                            />
+                          </svg>
+                        </Button>
+                        <Menu
+                          id="basic-menu"
+                          className="table-edit-menu"
+                          anchorEl={anchorEl}
+                          open={open}
+                          onClose={handleClose}
+                          MenuListProps={{
+                            "aria-labelledby": "basic-button",
+                          }}
+                        >
+                          <MenuItem onClick={handleEdit}>
+                            <Stack
+                              display="flex"
+                              gap={1.2}
+                              alignItems="center"
+                              direction="row"
                             >
-                              <path
-                                fill="currentColor"
-                                d="M3 21v-4.25L16.2 3.575q.3-.275.663-.425t.762-.15t.775.15t.65.45L20.425 5q.3.275.438.65T21 6.4q0 .4-.137.763t-.438.662L7.25 21zM17.6 7.8L19 6.4L17.6 5l-1.4 1.4z"
-                              />
-                            </svg>
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="1em"
+                                height="1em"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  fill="currentColor"
+                                  d="M3 21v-4.25L16.2 3.575q.3-.275.663-.425t.762-.15t.775.15t.65.45L20.425 5q.3.275.438.65T21 6.4q0 .4-.137.763t-.438.662L7.25 21zM17.6 7.8L19 6.4L17.6 5l-1.4 1.4z"
+                                />
+                              </svg>
 
-                            <Typography variant="subtitle2">Edit</Typography>
-                          </Stack>
-                        </MenuItem>
-                      </Menu>
-                    </TableCell>
+                              <Typography variant="subtitle2">Edit</Typography>
+                            </Stack>
+                          </MenuItem>
+                        </Menu>
+                      </TableCell>
+                    )}
                   </TableRow>
                 );
               })

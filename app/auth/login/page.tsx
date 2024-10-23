@@ -11,12 +11,14 @@ import { hashPassword } from "@/app/_lib/hash";
 import toast, { Toaster } from "react-hot-toast";
 import EyeOpened from "@/public/static/img/icons/ic-eye-open.svg";
 import EyeClosed from "@/public/static/img/icons/ic-eye-closed.svg";
+import { useAppDispatch } from "@/lib/hooks";
+import { userAction } from "@/lib/features/user/userSlice";
 export default function Page() {
+  const router = useRouter();
+  const dispatch = useAppDispatch();
   const [email, setEmail] = useState("abhishek.choudhary@ensuesoft.com");
   const [password, setPassword] = useState("12345678");
   const [showPassword, setShowPassword] = useState<boolean>(false);
-
-  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,8 +31,9 @@ export default function Page() {
     });
 
     const data = await response.json();
-
+    dispatch(userAction.handleRole(data.data.user.role));
     setCookie("logged-user", data);
+
     setCookie("role", data?.data?.user?.role);
     if (data.status) {
       router.push("/dashboard/organisation");

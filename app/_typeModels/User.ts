@@ -1,6 +1,7 @@
 export interface UserInitialState {
-  isLoading: boolean;
+  isLoading: Boolean;
   users: any;
+  role: String;
 }
 export interface SingleUser {
   id: Number;

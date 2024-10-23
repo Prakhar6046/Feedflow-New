@@ -25,7 +25,7 @@ export default async function Page({
     <>
       <BasicBreadcrumbs
         heading={"Organisations"}
-        buttonName={"Add Organisation"}
+        buttonName={user.data.user.role !== "MEMBER" ? "Add Organisation" : ""}
         buttonRoute={"/dashboard/organisation/new"}
         isTable={true}
         refetch={"organisation"}
