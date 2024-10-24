@@ -50,12 +50,10 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(false);
   const [fishSupply, setFishSupply] = useState<FishSupply>();
-
   const getFishSupply = async () => {
     const response = await fetch(`/api/fish/${fishSupplyId}`);
     return response.json();
   };
-
   const {
     register,
     handleSubmit,
@@ -356,11 +354,25 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
                 label="Broodstock (Male) *"
                 type="text"
                 className="form-input"
-                {...register("broodstockMale")}
+                {...register("broodstockMale", {
+                  required: true,
+                })}
                 sx={{
                   width: "100%",
                 }}
               />
+              {errors &&
+                errors.broodstockMale &&
+                errors.broodstockMale.type === "required" && (
+                  <Typography
+                    variant="body2"
+                    color="red"
+                    fontSize={13}
+                    mt={0.5}
+                  >
+                    {validationMessage.required}
+                  </Typography>
+                )}
             </Box>
           </Grid>
 
@@ -370,11 +382,25 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
                 label="Broodstock (Female) *"
                 type="text"
                 className="form-input"
-                {...register("broodstockFemale")}
+                {...register("broodstockFemale", {
+                  required: true,
+                })}
                 sx={{
                   width: "100%",
                 }}
               />
+              {errors &&
+                errors.broodstockFemale &&
+                errors.broodstockFemale.type === "required" && (
+                  <Typography
+                    variant="body2"
+                    color="red"
+                    fontSize={13}
+                    mt={0.5}
+                  >
+                    {validationMessage.required}
+                  </Typography>
+                )}
             </Box>
           </Grid>
 

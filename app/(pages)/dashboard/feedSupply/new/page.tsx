@@ -26,8 +26,7 @@ export default function Page() {
       const userOrganisationType = JSON.parse(loggedUser);
       if (
         userOrganisationType?.data?.user?.organisation.organisationType ===
-          "Fish Farmer" ||
-        userOrganisationType?.data?.user?.role === "SUPERADMIN"
+        "Fish Farmer"
       ) {
         const stepsForFishFarmers = [
           {
@@ -38,16 +37,11 @@ export default function Page() {
             label: "Feed Store",
             id: 2,
           },
-          {
-            label: "New Feed",
-            id: 5,
-          },
         ];
         setSteps(stepsForFishFarmers);
       } else if (
         userOrganisationType?.data?.user?.organisation.organisationType ===
-          "Feed Supplier" ||
-        userOrganisationType?.data?.user?.role === "SUPERADMIN"
+        "Feed Supplier"
       ) {
         const stepsForFeedSupplyers = [
           {
@@ -61,6 +55,22 @@ export default function Page() {
           },
         ];
         setSteps(stepsForFeedSupplyers);
+      } else if (userOrganisationType?.data?.user?.role === "SUPERADMIN") {
+        const stepsForFishFarmers = [
+          {
+            label: "Feed Selection",
+            id: 5,
+          },
+          {
+            label: "Feed Store",
+            id: 6,
+          },
+          {
+            label: "New Feed",
+            id: 7,
+          },
+        ];
+        setSteps(stepsForFishFarmers);
       }
     }
   }, [loggedUser]);
@@ -132,14 +142,15 @@ export default function Page() {
         <Grid item xl={9} md={8} xs={12} my={2}>
           {activeStep === 0 && <FeedSelection setActiveStep={setActiveStep} />}
           {steps && steps[1].label === "Feed Store" && activeStep === 1 && (
-            <FeedStore />
+            <FeedStore setActiveStep={setActiveStep} steps={steps} />
           )}
           {steps && steps[1].label === "New Feed" && activeStep === 1 && (
             <NewFeed setActiveStep={setActiveStep} />
           )}
-          {steps && steps[2].label === "New Feed" && activeStep === 2 && (
-            <NewFeed setActiveStep={setActiveStep} />
-          )}
+          {steps &&
+            steps[2] &&
+            steps[2].label === "New Feed" &&
+            activeStep === 2 && <NewFeed setActiveStep={setActiveStep} />}
         </Grid>
       </Grid>
     </>
