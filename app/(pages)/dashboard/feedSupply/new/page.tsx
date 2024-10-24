@@ -24,7 +24,6 @@ export default function Page() {
   useEffect(() => {
     if (loggedUser) {
       const userOrganisationType = JSON.parse(loggedUser);
-      console.log(userOrganisationType);
       if (
         userOrganisationType?.data?.user?.organisation.organisationType ===
           "Fish Farmer" ||
