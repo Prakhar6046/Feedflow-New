@@ -1,7 +1,7 @@
 export const required = "This field is required.";
 export const emailPatternMessage = "Email pattern is wrong.";
 export const passwordPatternMessage =
-  "Input must contain speacial characters,number,letters.";
+  "Input must contain at least 8 characters, including special characters, numbers, and letters.";
 export const confirmPasswordMessage =
   "Confirm Password do not match with password.";
 export const phonePatternMessage = "Input must contain only numbers.";
