@@ -81,7 +81,7 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
       spawningDate: data.spawningDate?.format("MM/DD/YYYY"),
       organisation: Number(data.organisation),
       spawningNumber: Number(data.spawningNumber),
-      productionUnits: Number(data.productionUnits),
+      productionUnits: data.productionUnits,
       ...restData,
     };
 
@@ -98,6 +98,7 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
       router.push("/dashboard/fishSupply");
       toast.success(res.message);
     } else {
+      toast.dismiss();
       toast.error("Somethig went wrong!");
     }
   };

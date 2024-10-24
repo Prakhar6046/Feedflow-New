@@ -48,7 +48,7 @@ export default function Page() {
         links={[
           { name: "Dashboard", link: "/dashboard" },
           { name: "Farm", link: "/dashboard/farm" },
-          { name: "New", link: "/dashboard/farm/newFarm" },
+          { name: "New Farm", link: "/dashboard/farm/newFarm" },
         ]}
       />
 

@@ -180,7 +180,7 @@ const FarmInformation: NextPage<Props> = ({
           </Box>
           <Box mb={2} width={"100%"}>
             <TextField
-              label="Farm Lat *"
+              label="Farm Latitude *"
               type="text"
               className="form-input"
               // focused={altitude ? true : false}
@@ -206,7 +206,7 @@ const FarmInformation: NextPage<Props> = ({
           </Box>{" "}
           <Box mb={2} width={"100%"}>
             <TextField
-              label="Farm Lng *"
+              label="Farm Longitude *"
               type="text"
               className="form-input"
               // focused={altitude ? true : false}

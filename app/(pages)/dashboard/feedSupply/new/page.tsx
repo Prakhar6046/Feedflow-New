@@ -39,6 +39,10 @@ export default function Page() {
             label: "Feed Store",
             id: 2,
           },
+          {
+            label: "New Feed",
+            id: 5,
+          },
         ];
         setSteps(stepsForFishFarmers);
       } else if (
@@ -61,7 +65,6 @@ export default function Page() {
       }
     }
   }, [loggedUser]);
-
   return (
     <>
       <BasicBreadcrumbs
@@ -71,7 +74,7 @@ export default function Page() {
         links={[
           { name: "Dashboard", link: "/dashboard" },
           { name: "Feed Supply", link: "/dashboard/feedSupply" },
-          { name: "New", link: "/dashboard/feedSupply/new" },
+          { name: "New Feed Supply", link: "/dashboard/feedSupply/new" },
         ]}
       />
       <Grid
@@ -133,6 +136,9 @@ export default function Page() {
             <FeedStore />
           )}
           {steps && steps[1].label === "New Feed" && activeStep === 1 && (
+            <NewFeed setActiveStep={setActiveStep} />
+          )}
+          {steps && steps[2].label === "New Feed" && activeStep === 2 && (
             <NewFeed setActiveStep={setActiveStep} />
           )}
         </Grid>

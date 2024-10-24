@@ -49,7 +49,10 @@ export default function Page({ params }: { params: { feedId: string } }) {
         links={[
           { name: "Dashboard", link: "/dashboard" },
           { name: "Feed Supply", link: "/dashboard/feedSupply" },
-          { name: "Edit", link: `/dashboard/feedSupply/${params.feedId}` },
+          {
+            name: "Edit Feed Supply",
+            link: `/dashboard/feedSupply/${params.feedId}`,
+          },
         ]}
       />
       <Grid

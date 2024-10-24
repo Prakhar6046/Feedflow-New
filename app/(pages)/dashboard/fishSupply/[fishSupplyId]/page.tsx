@@ -18,7 +18,7 @@ export default async function Page({
           { name: "Dashboard", link: "/dashboard" },
           { name: "Fish Supply", link: "/dashboard/fishSupply" },
           {
-            name: "Edit",
+            name: "Edit Fish Supply",
             link: `/dashboard/fishSupply/${params.fishSupplyId}`,
           },
         ]}

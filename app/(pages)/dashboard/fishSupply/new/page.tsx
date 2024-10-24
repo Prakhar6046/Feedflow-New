@@ -14,7 +14,7 @@ export default async function Page() {
         links={[
           { name: "Dashboard", link: "/dashboard" },
           { name: "Fish Supply", link: "/dashboard/fishSupply" },
-          { name: "New", link: "/dashboard/fishSupply/new" },
+          { name: "New Fish Supply", link: "/dashboard/fishSupply/new" },
         ]}
       />
 
