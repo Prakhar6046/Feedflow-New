@@ -102,8 +102,8 @@ export default function BasicTable({ organisations }: Props) {
                   idx === headCells.length - 1
                     ? false
                     : orderBy === headCell.id
-                    ? order
-                    : false
+                      ? order
+                      : false
                 }
                 sx={{
                   borderBottom: 0,
@@ -356,7 +356,7 @@ export default function BasicTable({ organisations }: Props) {
                           fontWeight: 500,
                         }}
                         className="cursor-pointer"
-                        // onClick={() => handleEdit(user)}
+                      // onClick={() => handleEdit(user)}
                       >
                         <Button
                           id="basic-button"
