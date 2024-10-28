@@ -12,24 +12,6 @@ import { Box, Divider, Grid, Step, StepLabel, Stepper } from "@mui/material";
 
 import { useEffect, useState } from "react";
 
-const steps = [
-  {
-    label: "Intro",
-  },
-  {
-    label: "New Feed",
-  },
-  {
-    label: "Feed Selection",
-  },
-  {
-    label: "Feed Store",
-  },
-  {
-    label: "Finished",
-  },
-];
-
 export default function Page({ params }: { params: { feedId: string } }) {
   const [activeStep, setActiveStep] = useState<number>(0);
   const isEditFeed = useAppSelector(selectIsEditFeed);
@@ -43,7 +25,7 @@ export default function Page({ params }: { params: { feedId: string } }) {
   return (
     <>
       <BasicBreadcrumbs
-        heading={"Feed Supply"}
+        heading={"Edit Feed Supply"}
         isTable={false}
         hideSearchInput={true}
         links={[
@@ -65,31 +47,6 @@ export default function Page({ params }: { params: { feedId: string } }) {
           p: 3,
         }}
       >
-        <Grid item xl={2} md={3} xs={12}>
-          <Box
-            className="stepper-container"
-            sx={{
-              my: {
-                md: 3,
-                xs: 0,
-              },
-            }}
-          >
-            <Stepper activeStep={activeStep} orientation="vertical">
-              {steps.map((step, index) => (
-                <Step
-                  key={step.label}
-                  sx={{
-                    fontSize: "30px",
-                  }}
-                >
-                  <StepLabel className="stepper">{step.label}</StepLabel>
-                </Step>
-              ))}
-            </Stepper>
-          </Box>
-        </Grid>
-
         <Grid
           item
           xs={1}
@@ -97,16 +54,7 @@ export default function Page({ params }: { params: { feedId: string } }) {
             display: "flex",
             justifyContent: "center",
           }}
-        >
-          <Divider
-            orientation="vertical"
-            flexItem
-            sx={{
-              height: "100%",
-              borderColor: "#E6E7E9",
-            }}
-          />
-        </Grid>
+        ></Grid>
         <Grid
           item
           xl={9}
