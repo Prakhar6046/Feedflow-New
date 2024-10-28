@@ -257,34 +257,6 @@ export default function CommonTable({ tableData, fishSupply }: Props) {
         }}
       >
         <Table stickyHeader aria-label="sticky table">
-          {/* <TableHead>
-            <TableRow>
-              {tableData.map((field, i) => {
-                return (
-                  <TableCell
-                    key={i}
-                    sx={{
-                      borderBottom: 0,
-                      color: "#67737F",
-                      background: "#F5F6F8",
-                      fontSize: {
-                        md: 16,
-                        xs: 14,
-                      },
-                      fontWeight: 600,
-                      paddingLeft: {
-                        lg: 10,
-                        md: 7,
-                        xs: 4,
-                      },
-                    }}
-                  >
-                    {field.label}
-                  </TableCell>
-                );
-              })}
-            </TableRow>
-          </TableHead> */}
           <EnhancedTableHead
             order={order}
             orderBy={orderBy}

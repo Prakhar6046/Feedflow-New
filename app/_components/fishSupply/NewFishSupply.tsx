@@ -366,7 +366,7 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
           <Grid item sm={6} xs={12}>
             <Box width={"100%"}>
               <TextField
-                label="Broodstock (Male) *"
+                label="Broodstock (Male)"
                 type="text"
                 className="form-input"
                 {...register("broodstockMale", {})}
@@ -380,7 +380,7 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
           <Grid item sm={6} xs={12}>
             <Box width={"100%"}>
               <TextField
-                label="Broodstock (Female) *"
+                label="Broodstock (Female)"
                 type="text"
                 className="form-input"
                 {...register("broodstockFemale", {})}
