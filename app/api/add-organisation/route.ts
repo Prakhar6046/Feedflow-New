@@ -46,6 +46,7 @@ export async function POST(req: NextRequest) {
         email: user.email.toLowerCase(),
         name: capitalizeFirstLetter(user.name),
         organisationId: organisation.id,
+        role: user.role?.toUpperCase(),
       })),
     });
 
