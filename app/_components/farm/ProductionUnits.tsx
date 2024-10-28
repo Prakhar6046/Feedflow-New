@@ -40,7 +40,7 @@ import {
 import toast from "react-hot-toast";
 import { v4 as uuidv4 } from "uuid";
 import CalculateVolume from "../models/CalculateVolume";
-import { deleteCookie } from "cookies-next";
+import { deleteCookie, getCookie } from "cookies-next";
 interface Props {
   editFarm?: any;
   setActiveStep: (val: number) => void;
@@ -59,6 +59,7 @@ const unitsTypes = [
 const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
   uuidv4();
   const router = useRouter();
+  const userData: any = getCookie("logged-user");
   const dispatch = useAppDispatch();
   const farm = useAppSelector(selectFarm);
   const isEditFarm = useAppSelector(selectIsEditFarm);
@@ -146,6 +147,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
   };
 
   const onSubmit: SubmitHandler<ProductionUnitsFormTypes> = async (data) => {
+    const loggedUserData = JSON.parse(userData);
     let payload;
     if (isEditFarm && editFarm?.farmAddress?.id) {
       payload = {
@@ -165,6 +167,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
         lat: farm.lat,
         lng: farm.lng,
         id: editFarm?.id,
+        organsationId: loggedUserData.data.user.id,
       };
     } else {
       payload = {
@@ -182,6 +185,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
         lat: farm.lat,
         lng: farm.lng,
         fishFarmer: farm.fishFarmer,
+        organsationId: loggedUserData.data.user.id,
       };
     }
 

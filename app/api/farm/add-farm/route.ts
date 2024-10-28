@@ -17,6 +17,7 @@ export async function POST(req: NextRequest) {
         fishFarmer: body.fishFarmer,
         lat: body.lat,
         lng: body.lng,
+        organisationId: body.organisationId,
       },
     });
 

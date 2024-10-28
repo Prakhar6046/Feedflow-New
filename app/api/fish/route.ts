@@ -7,7 +7,7 @@ export const GET = async (request: NextRequest) => {
     const query = searchParams.get("query");
 
     const fishSupply = await prisma.fishSupply.findMany({
-      include: { creator: { include: { hatchery: true } } },
+      include: { creator: { include: { hatchery: true, Farm: true } } },
       where: {
         AND: [
           query
@@ -31,7 +31,7 @@ export const GET = async (request: NextRequest) => {
         ],
       },
       orderBy: {
-        createdAt: "desc", // Sort by createdAt in descending order
+        status: "asc", // Sort by createdAt in descending order
       },
     });
     return new NextResponse(

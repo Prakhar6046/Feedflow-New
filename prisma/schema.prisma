@@ -60,6 +60,7 @@ model Organisation {
   contact    Contact[]
   hatchery   Hatchery[]   @relation("HatcheryCreator")
   fishSupply FishSupply[] @relation("fishSupplyCreator")
+  Farm       Farm[]
 
   @@index([createdAt])
   @@index([updatedAt])
@@ -102,19 +103,20 @@ model Contact {
 }
 
 model Farm {
-  id            String       @id @default(cuid())
-  name          String
-  farmAltitude  String
-  farmAddressId String?      @unique
-  lat           String?
-  lng           String?
-  farmAddress   FarmAddress? @relation(fields: [farmAddressId], references: [id], onUpdate: Cascade)
-  fishFarmer    String
-  updatedBy     String?
-  createdBy     String?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id             String        @id @default(cuid())
+  name           String
+  farmAltitude   String
+  farmAddressId  String?       @unique
+  lat            String?
+  lng            String?
+  farmAddress    FarmAddress?  @relation(fields: [farmAddressId], references: [id], onUpdate: Cascade)
+  fishFarmer     String
+  updatedBy      String?
+  createdBy      String?
+  organisationId Int?
+  organisation   Organisation? @relation(fields: [organisationId], references: [id])
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
 
   productionUnits ProductionUnit[]
 

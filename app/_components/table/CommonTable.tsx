@@ -371,9 +371,7 @@ export default function CommonTable({ tableData, fishSupply }: Props) {
                             />
                           </g>
                         </svg>
-                        {fish.broodstockMale
-                          ? fish.broodstockMale
-                          : "Not Provided"}
+                        {fish.broodstockMale ? fish.broodstockMale : "N/A"}
                       </Box>
 
                       <Box
@@ -402,9 +400,7 @@ export default function CommonTable({ tableData, fishSupply }: Props) {
                             d="M352 800h320q32 0 32 32t-32 32H352q-32 0-32-32t32-32"
                           />
                         </svg>
-                        {fish.broodstockFemale
-                          ? fish.broodstockFemale
-                          : "Not Provided"}
+                        {fish.broodstockFemale ? fish.broodstockFemale : "N/A"}
                       </Box>
                     </TableCell>
                     <TableCell
@@ -435,7 +431,7 @@ export default function CommonTable({ tableData, fishSupply }: Props) {
                         fontWeight: 500,
                       }}
                     >
-                      {fish.age}
+                      {fish.status === "Harvested" ? "N/A" : fish.age}
                     </TableCell>{" "}
                     <TableCell
                       sx={{
@@ -457,16 +453,6 @@ export default function CommonTable({ tableData, fishSupply }: Props) {
                     >
                       {fish.fishFarm}
                     </TableCell>{" "}
-                    <TableCell
-                      sx={{
-                        borderBottomColor: "#F5F6F8",
-                        borderBottomWidth: 2,
-                        color: "#555555",
-                        fontWeight: 500,
-                      }}
-                    >
-                      {fish.productionUnits}
-                    </TableCell>
                     <TableCell
                       sx={{
                         borderBottomColor: "#F5F6F8",

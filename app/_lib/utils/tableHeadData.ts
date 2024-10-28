@@ -284,12 +284,12 @@ export const fishTableHeadMember = [
     disablePadding: true,
     label: "Fish Farm",
   },
-  {
-    id: "productionUnits",
-    numeric: true,
-    disablePadding: true,
-    label: "Current Production Unit",
-  },
+  // {
+  //   id: "productionUnits",
+  //   numeric: true,
+  //   disablePadding: true,
+  //   label: "Current Production Unit",
+  // },
   {
     id: "status",
     numeric: false,
@@ -346,12 +346,12 @@ export const fishTableHead = [
     disablePadding: true,
     label: "Fish Farm",
   },
-  {
-    id: "productionUnits",
-    numeric: true,
-    disablePadding: true,
-    label: "Current Production Unit",
-  },
+  // {
+  //   id: "productionUnits",
+  //   numeric: true,
+  //   disablePadding: true,
+  //   label: "Current Production Unit",
+  // },
   {
     id: "status",
     numeric: false,

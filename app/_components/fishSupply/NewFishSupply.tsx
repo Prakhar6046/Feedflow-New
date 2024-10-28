@@ -28,6 +28,7 @@ import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import * as validationPattern from "@/app/_lib/utils/validationPatterns/index";
 import * as validationMessage from "@/app/_lib/utils/validationsMessage/index";
 import toast from "react-hot-toast";
+import { getCookie } from "cookies-next";
 interface Props {
   isEdit?: Boolean;
   fishSupplyId?: String;
@@ -48,6 +49,7 @@ interface FormInputs {
 }
 function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
   const router = useRouter();
+  const userData = getCookie("logged-user");
   const [loading, setLoading] = useState<boolean>(false);
   const [fishSupply, setFishSupply] = useState<FishSupply>();
   const getFishSupply = async () => {
@@ -126,7 +128,6 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
       const age = getDayMonthDifference(
         watch("hatchingDate")?.format("MM/DD/YYYY")
       );
-
       setValue("age", age);
     }
   }, [watch("hatchingDate")]);
@@ -145,6 +146,20 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
       setValue("productionUnits", String(fishSupply?.productionUnits));
     }
   }, [fishSupply]);
+
+  useEffect(() => {
+    if (userData && !isEdit) {
+      const loggedUserData = JSON.parse(userData);
+
+      setValue("organisation", loggedUserData.data.user.id);
+      if (loggedUserData?.data?.user?.organisation?.Farm[0].id) {
+        setValue(
+          "fishFarmId",
+          loggedUserData.data.user.organisation.Farm[0].id
+        );
+      }
+    }
+  }, [userData]);
   if (loading) {
     return <Loader />;
   }
@@ -281,8 +296,7 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
                       }}
                       onChange={(date) => {
                         field.onChange(date);
-                        !watch("hatchingDate") &&
-                          setValue("hatchingDate", date);
+                        setValue("hatchingDate", date);
                       }}
                       value={field.value || null}
                     />
@@ -355,25 +369,11 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
                 label="Broodstock (Male) *"
                 type="text"
                 className="form-input"
-                {...register("broodstockMale", {
-                  required: true,
-                })}
+                {...register("broodstockMale", {})}
                 sx={{
                   width: "100%",
                 }}
               />
-              {errors &&
-                errors.broodstockMale &&
-                errors.broodstockMale.type === "required" && (
-                  <Typography
-                    variant="body2"
-                    color="red"
-                    fontSize={13}
-                    mt={0.5}
-                  >
-                    {validationMessage.required}
-                  </Typography>
-                )}
             </Box>
           </Grid>
 
@@ -383,25 +383,11 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
                 label="Broodstock (Female) *"
                 type="text"
                 className="form-input"
-                {...register("broodstockFemale", {
-                  required: true,
-                })}
+                {...register("broodstockFemale", {})}
                 sx={{
                   width: "100%",
                 }}
               />
-              {errors &&
-                errors.broodstockFemale &&
-                errors.broodstockFemale.type === "required" && (
-                  <Typography
-                    variant="body2"
-                    color="red"
-                    fontSize={13}
-                    mt={0.5}
-                  >
-                    {validationMessage.required}
-                  </Typography>
-                )}
             </Box>
           </Grid>
 
