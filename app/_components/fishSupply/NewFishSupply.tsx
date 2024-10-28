@@ -94,6 +94,7 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
     if (response.ok) {
       const res = await response.json();
       router.push("/dashboard/fishSupply");
+      toast.dismiss();
       toast.success(res.message);
     } else {
       toast.dismiss();

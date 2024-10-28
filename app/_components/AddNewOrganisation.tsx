@@ -59,6 +59,7 @@ export const OrganisationType = [
   "Testing Facility",
   "Unspecified",
 ];
+export const RoleType = ["Admin", "Member"];
 const AddNewOrganisation = () => {
   const [profilePic, setProfilePic] = useState<String>();
   const router = useRouter();
@@ -361,7 +362,7 @@ const AddNewOrganisation = () => {
                   className="form-input"
                   {...register("organisationCode", {
                     required: true,
-                    pattern: validationPattern.alphabetsNumbersAndSpacesPattern,
+                    // pattern: validationPattern.alphabetsNumbersAndSpacesPattern,
                   })}
                   // disabled
                   sx={{
@@ -381,18 +382,6 @@ const AddNewOrganisation = () => {
                       mt={0.5}
                     >
                       {validationMessage.required}
-                    </Typography>
-                  )}
-                {errors &&
-                  errors.organisationCode &&
-                  errors.organisationCode.type === "pattern" && (
-                    <Typography
-                      variant="body2"
-                      color="red"
-                      fontSize={13}
-                      mt={0.5}
-                    >
-                      {validationMessage.OnlyAlphabetsandNumberMessage}
                     </Typography>
                   )}
               </Box>
@@ -879,19 +868,32 @@ const AddNewOrganisation = () => {
                     },
                   }}
                 >
-                  <TextField
-                    label="Role *"
-                    type="text"
-                    className="form-input"
-                    {...register(`contacts.${index}.role` as const, {
-                      required: true,
-                      pattern: validationPattern.alphabetsAndSpacesPattern,
-                    })}
-                    focused
-                    sx={{
-                      width: "100%",
-                    }}
-                  />
+                  <FormControl className="form-input" focused fullWidth>
+                    <InputLabel id="demo-simple-select-label">
+                      Role *
+                    </InputLabel>
+                    <Select
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                      label="Role *"
+                      {...register(`contacts.${index}.role` as const, {
+                        required: watch(`contacts.${index}.role`)
+                          ? false
+                          : true,
+                        onChange: (e) =>
+                          setValue(`contacts.${index}.role`, e.target.value),
+                        // pattern: validationPattern.alphabetsAndSpacesPattern,
+                      })}
+                    >
+                      {RoleType.map((role, i) => {
+                        return (
+                          <MenuItem value={role} key={i}>
+                            {role}
+                          </MenuItem>
+                        );
+                      })}
+                    </Select>
+                  </FormControl>
                   {errors &&
                     errors?.contacts &&
                     errors?.contacts[index] &&
@@ -904,20 +906,6 @@ const AddNewOrganisation = () => {
                         mt={0.5}
                       >
                         {validationMessage.required}
-                      </Typography>
-                    )}
-                  {errors &&
-                    errors?.contacts &&
-                    errors?.contacts[index] &&
-                    errors?.contacts[index]?.role &&
-                    errors?.contacts[index]?.role.type === "pattern" && (
-                      <Typography
-                        variant="body2"
-                        color="red"
-                        fontSize={13}
-                        mt={0.5}
-                      >
-                        {validationMessage.OnlyAlphabatsMessage}
                       </Typography>
                     )}
                 </Box>

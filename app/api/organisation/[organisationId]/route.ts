@@ -50,10 +50,6 @@ export async function PUT(req: NextRequest, context: { params: any }) {
     const contactsData = JSON.parse(formData.get("contacts") as string);
     const hatcheryId = JSON.parse(formData.get("hatcheryId") as string);
     const hatchery = JSON.parse(formData.get("hatchery") as string);
-    console.log(formData);
-
-    console.log(hatcheryId);
-    console.log(hatchery);
 
     // Handle address update or create
     const updatedAddress = await prisma.address.upsert({

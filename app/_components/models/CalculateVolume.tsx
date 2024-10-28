@@ -74,14 +74,12 @@ const CalculateVolume: React.FC<Props> = ({
       Number(depth)
     ) {
       output = Number(length) * Number(width) * Number(depth);
-      //   console.log(l * w * d);
     } else if (
       selectedUnit?.name === "Earthen Pond" &&
       Number(area) &&
       Number(depth)
     ) {
       output = Number(area) * Number(depth);
-      //   console.log(a * d);
     } else if (
       selectedUnit?.name === "Raceway" &&
       Number(length) &&
@@ -89,7 +87,6 @@ const CalculateVolume: React.FC<Props> = ({
       Number(depth)
     ) {
       output = Number(length) * Number(width) * Number(depth);
-      //   console.log(l * w * d);
     } else if (
       selectedUnit?.name === "Cage" &&
       Number(length) &&
@@ -97,7 +94,6 @@ const CalculateVolume: React.FC<Props> = ({
       Number(heigth)
     ) {
       output = Number(length) * Number(width) * Number(heigth);
-      //   console.log(l * w * h);
     } else if (
       selectedUnit?.name === "Hapa" &&
       Number(length) &&
@@ -105,14 +101,12 @@ const CalculateVolume: React.FC<Props> = ({
       Number(heigth)
     ) {
       output = Number(length) * Number(width) * Number(heigth);
-      // console.log(l * w * h);
     } else if (
       selectedUnit?.name === "Circular Tank" &&
       Number(radius) &&
       Number(depth)
     ) {
       output = 3.14159 * Number(radius) * 2 * Number(depth);
-      //   console.log(3.14159 * r * 2 * d);
     } else if (
       selectedUnit?.name === "D-end Tank" &&
       Number(radius) &&
@@ -124,7 +118,6 @@ const CalculateVolume: React.FC<Props> = ({
         (2 * 3.14159 * Number(radius) * 2 +
           (Number(length) - Number(radius)) * Number(Number(width))) *
         Number(depth);
-      //   console.log((2 * 3.14159 * r * 2 + (l - r) * w) * d);
     } else {
     }
     if (selectedUnit?.id) {

@@ -5,7 +5,10 @@ import * as validationPattern from "@/app/_lib/utils/validationPatterns/index";
 import * as validationMessage from "@/app/_lib/utils/validationsMessage/index";
 import Select from "@mui/material/Select";
 
-import { OrganisationType } from "@/app/_components/AddNewOrganisation";
+import {
+  OrganisationType,
+  RoleType,
+} from "@/app/_components/AddNewOrganisation";
 import Loader from "@/app/_components/Loader";
 import {
   Box,
@@ -28,6 +31,8 @@ import { useRouter } from "next/navigation";
 import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
 import MapComponent from "@/app/_components/farm/MapComponent";
 import HatcheryForm from "@/app/_components/hatchery/HatcheryForm";
+import { useAppSelector } from "@/lib/hooks";
+import { selectRole } from "@/lib/features/user/userSlice";
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
   clipPath: "inset(50%)",
@@ -40,20 +45,6 @@ const VisuallyHiddenInput = styled("input")({
   width: 1,
 });
 
-const steps = [
-  {
-    label: "Intro",
-  },
-  {
-    label: "Farm",
-  },
-  {
-    label: "Production Units",
-  },
-  {
-    label: "Finished",
-  },
-];
 const Page = ({ params }: { params: { organisationId: string } }) => {
   const router = useRouter();
   const [organisationData, setOrganisationData] = useState<any>();
@@ -68,6 +59,8 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
   const [addressInformation, setAddressInformation] = useState<any>();
   const [useAddress, setUseAddress] = useState<boolean>(false);
   const [searchedAddress, setSearchedAddress] = useState<any>();
+  const role = useAppSelector(selectRole);
+
   const getOrganisation = async () => {
     setLoading(true);
     const data = await fetch(`/api/organisation/${params.organisationId}`, {
@@ -222,7 +215,6 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
       setValue("country", organisationData?.address?.country);
       setValue("contacts", organisationData?.contact);
       setValue("organisationType", organisationData?.organisationType);
-
       if (organisationData?.hatchery[0]) {
         setValue("hatcheryAltitude", organisationData?.hatchery[0].altitude);
         setValue("hatcheryName", organisationData?.hatchery[0].name);
@@ -755,38 +747,55 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
                       )}
                   </Box>
 
-                  <Box width={"100%"}>
-                    <TextField
-                      label="Role *"
-                      type="text"
-                      className="form-input"
-                      {...register(`contacts.${index}.role` as const, {
-                        required: true,
-                      })}
-                      focused
-                      sx={{
-                        width: {
-                          lg: "100%",
-                          md: "48.4%",
-                          xs: "100%",
-                        },
-                      }}
-                    />
-                    {errors &&
-                      errors?.contacts &&
-                      errors?.contacts[index] &&
-                      errors?.contacts[index]?.role &&
-                      errors?.contacts[index]?.role.type === "required" && (
-                        <Typography
-                          variant="body2"
-                          color="red"
-                          fontSize={13}
-                          mt={0.5}
+                  {role !== "SUPERADMIN" && (
+                    <Box width={"100%"}>
+                      <FormControl className="form-input" focused fullWidth>
+                        <InputLabel id="demo-simple-select-label">
+                          Role *
+                        </InputLabel>
+                        <Select
+                          labelId="demo-simple-select-label"
+                          id="demo-simple-select"
+                          label="Role *"
+                          {...register(`contacts.${index}.role` as const, {
+                            required: watch(`contacts.${index}.role`)
+                              ? false
+                              : true,
+                            onChange: (e) =>
+                              setValue(
+                                `contacts.${index}.role`,
+                                e.target.value
+                              ),
+                            // pattern: validationPattern.alphabetsAndSpacesPattern,
+                          })}
+                          value={getValues(`contacts.${index}.role`)}
                         >
-                          This field is required.
-                        </Typography>
-                      )}
-                  </Box>
+                          {RoleType.map((role, i) => {
+                            return (
+                              <MenuItem value={role} key={i}>
+                                {role}
+                              </MenuItem>
+                            );
+                          })}
+                        </Select>
+                      </FormControl>
+
+                      {errors &&
+                        errors?.contacts &&
+                        errors?.contacts[index] &&
+                        errors?.contacts[index]?.role &&
+                        errors?.contacts[index]?.role.type === "required" && (
+                          <Typography
+                            variant="body2"
+                            color="red"
+                            fontSize={13}
+                            mt={0.5}
+                          >
+                            This field is required.
+                          </Typography>
+                        )}
+                    </Box>
+                  )}
 
                   <Box width={"100%"}>
                     <TextField

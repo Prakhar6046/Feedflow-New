@@ -221,7 +221,6 @@ export default function UserTable({ users }: Props) {
   useEffect(() => {
     if (sortDataFromLocal) {
       const data = JSON.parse(sortDataFromLocal);
-      console.log(data.direction);
       setOrder(data.direction);
       setOrderBy(data.column);
       // handleRequestSort(null, data.column);

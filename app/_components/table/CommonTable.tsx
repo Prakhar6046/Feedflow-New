@@ -238,7 +238,6 @@ export default function CommonTable({ tableData, fishSupply }: Props) {
       setSortedFishSupply(fishSupply);
     }
   }, [fishSupply]);
-  console.log(fishSupply);
   useEffect(() => {
     router.refresh();
   }, [router]);

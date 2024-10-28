@@ -77,6 +77,12 @@ export const usersTableHead = [
     label: "Organisations",
   },
   {
+    id: "email",
+    numeric: false,
+    disablePadding: true,
+    label: "Email",
+  },
+  {
     id: "contactNumber",
     numeric: true,
     disablePadding: true,
@@ -102,6 +108,12 @@ export const usersTableHeadMember = [
     numeric: false,
     disablePadding: true,
     label: "Organisations",
+  },
+  {
+    id: "email",
+    numeric: false,
+    disablePadding: true,
+    label: "Email",
   },
   {
     id: "contactNumber",

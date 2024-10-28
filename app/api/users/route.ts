@@ -70,7 +70,6 @@ export const DELETE = async (request: NextRequest) => {
     const searchParams = request.nextUrl.searchParams;
     const role = searchParams.get("role");
     const userId = await request.json();
-    console.log(userId);
 
     const deletedUser = await prisma.user.delete({
       where: { role: { not: "SUPERADMIN" }, id: Number(userId) },

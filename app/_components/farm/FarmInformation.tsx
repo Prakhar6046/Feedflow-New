@@ -96,7 +96,6 @@ const FarmInformation: NextPage<Props> = ({
       setValue("lng", String(Number(lng).toFixed(2)));
     }
   }, [altitude, setValue, lat, lng]);
-  console.log(lat, lng, altitude);
 
   useEffect(() => {
     setLoading(true);

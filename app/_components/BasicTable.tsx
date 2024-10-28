@@ -102,8 +102,8 @@ export default function BasicTable({ organisations }: Props) {
                   idx === headCells.length - 1
                     ? false
                     : orderBy === headCell.id
-                      ? order
-                      : false
+                    ? order
+                    : false
                 }
                 sx={{
                   borderBottom: 0,
@@ -329,6 +329,21 @@ export default function BasicTable({ organisations }: Props) {
                       {(organisation &&
                         organisation.contact &&
                         organisation.contact[0] &&
+                        organisation.contact[0].email) ??
+                        ""}
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        borderBottomColor: "#F5F6F8",
+                        borderBottomWidth: 2,
+                        color: "#555555",
+                        fontWeight: 500,
+                        pl: 0,
+                      }}
+                    >
+                      {(organisation &&
+                        organisation.contact &&
+                        organisation.contact[0] &&
                         organisation.contact[0].phone) ??
                         ""}
                     </TableCell>
@@ -356,7 +371,7 @@ export default function BasicTable({ organisations }: Props) {
                           fontWeight: 500,
                         }}
                         className="cursor-pointer"
-                      // onClick={() => handleEdit(user)}
+                        // onClick={() => handleEdit(user)}
                       >
                         <Button
                           id="basic-button"
