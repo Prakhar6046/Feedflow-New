@@ -40,6 +40,7 @@ import {
 import toast from "react-hot-toast";
 import { v4 as uuidv4 } from "uuid";
 import CalculateVolume from "../models/CalculateVolume";
+import { deleteCookie } from "cookies-next";
 interface Props {
   editFarm?: any;
   setActiveStep: (val: number) => void;
@@ -208,6 +209,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
     } else {
       toast.error("Please fill out the all feilds");
     }
+    deleteCookie("new-farm-info");
     dispatch(farmAction.resetState());
   };
 

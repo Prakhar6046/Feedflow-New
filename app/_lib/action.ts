@@ -78,13 +78,16 @@ export const getUser = async (userId: string) => {
 
 export const AddNewFeedSupply = async (formData: any) => {
   try {
-    const data = await fetch(`${process.env.BASE_URL}/api/feed/new-feed`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData),
-    });
+    const data = await fetch(
+      `${process.env.BASE_URL}/api/feedSupply/new-feed`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      }
+    );
     const res = await data.json();
     revalidatePath(`/dashboard/feedSupply`);
 
@@ -96,7 +99,7 @@ export const AddNewFeedSupply = async (formData: any) => {
 export const getFeedSupplys = async (query?: string) => {
   try {
     const data = await fetch(
-      `${process.env.BASE_URL}/api/feed?query=${query}`,
+      `${process.env.BASE_URL}/api/feedSupply?query=${query}`,
       {
         method: "GET",
         headers: {

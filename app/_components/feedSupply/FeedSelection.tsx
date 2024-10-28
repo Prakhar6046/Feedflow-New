@@ -91,7 +91,7 @@ const FeedSelection: NextPage<Props> = ({ setActiveStep, editFarm }) => {
   const [feedSupply, setFeedSupply] = useState<FeedSupply[]>();
   const [loading, setLoading] = useState<boolean>(false);
   const getFeedSupplys = async () => {
-    const response = await fetch("/api/feed");
+    const response = await fetch("/api/feedSupply");
     return response.json();
   };
   const getNutritionalValue = (val: String) => {
@@ -716,8 +716,8 @@ const FeedSelection: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                         fontSize={14}
                         color="#000"
                       >
-                        Specialized Aquatic Feeds(Pty) Ltd. Corner Church and Stil
-                        St, Westcliff, Hermanus 7200, South Africa <br />
+                        Specialized Aquatic Feeds(Pty) Ltd. Corner Church and
+                        Stil St, Westcliff, Hermanus 7200, South Africa <br />
                         Tel: +27 28 313 8581 / info@safeeds.co.za
                       </Typography>
                     </Box>

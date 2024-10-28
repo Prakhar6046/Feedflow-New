@@ -36,8 +36,8 @@ import { useRouter } from "next/navigation";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 interface Props {
-  setActiveStep: (val: number) => void;
-  editFeed?: FeedSupply;
+  setActiveStep?: any;
+  feedSupplyId?: String;
 }
 interface nutritionalGuarantee {
   moisture: { kg: String; value: String };
@@ -75,7 +75,7 @@ interface FormInputs {
   feedSupplier: String;
   nutritionalGuarantee: nutritionalGuarantee;
 }
-const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
+const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const loggedUser: any = getCookie("logged-user");
@@ -84,6 +84,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
   const isEditFeed = useAppSelector(selectIsEditFeed);
   const [isCarbohydrate, setIsCarbohydrate] = useState<boolean>(false);
   const [calculateError, setCalculateError] = useState<string>("");
+  const [editFeedSpecification, setEditFeedSpecification] = useState<any>();
   const {
     register,
     handleSubmit,
@@ -98,7 +99,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
     const loggedUserData = JSON.parse(loggedUser);
     if (data) {
       const response = await fetch(
-        isEditFeed ? "/api/feed/edit-feed" : "/api/feed/new-feed",
+        isEditFeed ? "/api/feedSupply/edit-feed" : "/api/feedSupply/new-feed",
         {
           method: isEditFeed ? "PUT" : "POST",
           headers: {
@@ -107,9 +108,9 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
           body: isEditFeed
             ? JSON.stringify({
                 ...data,
-                createdBy: editFeed?.createdBy,
+                createdBy: editFeedSpecification?.createdBy,
                 updatedBy: String(loggedUserData.data.user.id),
-                id: editFeed?.id,
+                id: editFeedSpecification?.id,
               })
             : JSON.stringify({
                 ...data,
@@ -134,7 +135,14 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
     const res = response.json();
     return res;
   };
-
+  const getFeed = async () => {
+    const data = await fetch(`/api/feedSupply/${feedSupplyId}`, {
+      method: "GET",
+    });
+    if (data) {
+    }
+    return data.json();
+  };
   const calCarbohydrate = () => {
     const nutritionalGuarantee = getValues().nutritionalGuarantee;
     if (
@@ -166,37 +174,48 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, editFeed }) => {
     const feedSupplierGetter = async () => {
       const res = await getFeedSuppliers();
       setFeedSuppliers(res.data);
-      setLoading(false);
     };
     feedSupplierGetter();
+    const feedSupply = async () => {
+      const res = await getFeed();
+      setEditFeedSpecification(res.data);
+      setLoading(false);
+    };
+    feedSupply();
   }, []);
   useEffect(() => {
-    if (editFeed) {
-      setValue("feedIngredients", editFeed?.feedIngredients);
-      setValue("feedingGuide", editFeed?.feedingGuide);
-      setValue("productionIntensity", editFeed?.productionIntensity);
-      setValue("unit", editFeed?.unit);
-      setValue("feedingPhase", editFeed?.feedingPhase);
-      setValue("lifeStage", editFeed?.lifeStage);
-      setValue("shelfLife", editFeed?.shelfLife);
-      setValue("productCode", editFeed?.productCode);
-      setValue("feedSupplierCode", editFeed?.feedSupplierCode);
-      setValue("brandCode", editFeed?.brandCode);
-      setValue("productNameCode", editFeed?.productNameCode);
-      setValue("productFormatCode", editFeed?.productFormatCode);
-      setValue("animalSizeInLength", editFeed?.animalSizeInLength);
-      setValue("animalSizeInWeight", editFeed?.animalSizeInWeight);
-      setValue("specie", editFeed?.specie);
-      setValue("nutritionalPurpose", editFeed?.nutritionalPurpose);
-      setValue("nutritionalClass", editFeed?.nutritionalClass);
-      setValue("particleSize", editFeed?.particleSize);
-      setValue("productFormat", editFeed?.productFormat);
-      setValue("productName", editFeed?.productName);
-      setValue("brandName", editFeed?.brandName);
-      setValue("feedSupplier", editFeed?.feedSupplier);
-      setValue("nutritionalGuarantee", editFeed?.nutritionalGuarantee);
+    if (editFeedSpecification) {
+      setValue("feedIngredients", editFeedSpecification?.feedIngredients);
+      setValue("feedingGuide", editFeedSpecification?.feedingGuide);
+      setValue(
+        "productionIntensity",
+        editFeedSpecification?.productionIntensity
+      );
+      setValue("unit", editFeedSpecification?.unit);
+      setValue("feedingPhase", editFeedSpecification?.feedingPhase);
+      setValue("lifeStage", editFeedSpecification?.lifeStage);
+      setValue("shelfLife", editFeedSpecification?.shelfLife);
+      setValue("productCode", editFeedSpecification?.productCode);
+      setValue("feedSupplierCode", editFeedSpecification?.feedSupplierCode);
+      setValue("brandCode", editFeedSpecification?.brandCode);
+      setValue("productNameCode", editFeedSpecification?.productNameCode);
+      setValue("productFormatCode", editFeedSpecification?.productFormatCode);
+      setValue("animalSizeInLength", editFeedSpecification?.animalSizeInLength);
+      setValue("animalSizeInWeight", editFeedSpecification?.animalSizeInWeight);
+      setValue("specie", editFeedSpecification?.specie);
+      setValue("nutritionalPurpose", editFeedSpecification?.nutritionalPurpose);
+      setValue("nutritionalClass", editFeedSpecification?.nutritionalClass);
+      setValue("particleSize", editFeedSpecification?.particleSize);
+      setValue("productFormat", editFeedSpecification?.productFormat);
+      setValue("productName", editFeedSpecification?.productName);
+      setValue("brandName", editFeedSpecification?.brandName);
+      setValue("feedSupplier", editFeedSpecification?.feedSupplier);
+      setValue(
+        "nutritionalGuarantee",
+        editFeedSpecification?.nutritionalGuarantee
+      );
     }
-  }, [editFeed]);
+  }, [editFeedSpecification]);
 
   if (loading) {
     return <Loader />;

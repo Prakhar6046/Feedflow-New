@@ -12,10 +12,9 @@ import { Box, Divider, Grid, Step, StepLabel, Stepper } from "@mui/material";
 
 import { useEffect, useState } from "react";
 
-export default function Page({ params }: { params: { feedId: string } }) {
+export default function Page({ params }: { params: { feedSupplyId: string } }) {
   const [activeStep, setActiveStep] = useState<number>(0);
   const isEditFeed = useAppSelector(selectIsEditFeed);
-  const editFeed = useAppSelector(selectEditFeed);
 
   useEffect(() => {
     if (isEditFeed) {
@@ -33,7 +32,7 @@ export default function Page({ params }: { params: { feedId: string } }) {
           { name: "Feed Supply", link: "/dashboard/feedSupply" },
           {
             name: "Edit Feed Supply",
-            link: `/dashboard/feedSupply/${params.feedId}`,
+            link: `/dashboard/feedSupply/${params.feedSupplyId}`,
           },
         ]}
       />
@@ -68,13 +67,10 @@ export default function Page({ params }: { params: { feedId: string } }) {
           //     },
           // }}
         >
-          {activeStep === 0 && (
-            <FeedSupplyIntro setActiveStep={setActiveStep} />
-          )}
-          {activeStep === 1 && (
-            <NewFeed setActiveStep={setActiveStep} editFeed={editFeed} />
-          )}
-          {activeStep === 2 && <FeedSelection setActiveStep={setActiveStep} />}
+          <NewFeed
+            setActiveStep={setActiveStep}
+            feedSupplyId={params.feedSupplyId}
+          />
         </Grid>
       </Grid>
     </>

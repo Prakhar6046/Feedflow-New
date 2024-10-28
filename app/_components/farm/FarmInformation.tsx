@@ -20,6 +20,7 @@ import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import Loader from "../Loader";
+import { getCookie, setCookie } from "cookies-next";
 // import MapComponent from "./MapComponent";
 const MapComponent = dynamic(() => import("./MapComponent"), { ssr: false });
 interface Props {
@@ -40,6 +41,7 @@ const FarmInformation: NextPage<Props> = ({
     watch,
     reset,
   } = useForm<Farm>({ mode: "onChange" });
+  const newFarmInfoLocal = getCookie("new-farm-info");
   const [selectedSwtich, setSelectedSwtich] = useState<string>("address");
   const [altitude, setAltitude] = useState<String>("");
   const [lat, setLat] = useState<String>("");
@@ -55,6 +57,7 @@ const FarmInformation: NextPage<Props> = ({
     return response.json();
   };
   const onSubmit: SubmitHandler<Farm> = (data) => {
+    setCookie("new-farm-info", data);
     dispatch(farmAction.updateFarm(data));
     setActiveStep(2);
     // setCookie("activeStep", 2);
@@ -106,6 +109,23 @@ const FarmInformation: NextPage<Props> = ({
     };
     getFeedSupplyer();
   }, []);
+  useEffect(() => {
+    if (!editFarm && newFarmInfoLocal) {
+      const farmInfo = JSON.parse(newFarmInfoLocal);
+      console.log(farmInfo);
+      setValue("name", farmInfo.name);
+      setValue("farmAltitude", farmInfo.farmAltitude);
+      setValue("lat", farmInfo.lat);
+      setValue("lng", farmInfo.lng);
+      setValue("fishFarmer", farmInfo.fishFarmer);
+      setValue("addressLine1", farmInfo.addressLine1);
+      setValue("addressLine2", farmInfo.addressLine2);
+      setValue("city", farmInfo.city);
+      setValue("province", farmInfo.province);
+      setValue("country", farmInfo.country);
+      setValue("zipCode", farmInfo.zipCode);
+    }
+  }, [newFarmInfoLocal, editFarm]);
 
   if (loading) {
     return <Loader />;
