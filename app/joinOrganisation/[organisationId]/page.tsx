@@ -9,6 +9,7 @@ import { setCookie } from "cookies-next";
 import EyeOpened from "@/public/static/img/icons/ic-eye-open.svg";
 import EyeClosed from "@/public/static/img/icons/ic-eye-closed.svg";
 import { useState } from "react";
+import toast from "react-hot-toast";
 interface IFormInput {
   password: string;
   confirmPassword: string;
@@ -39,11 +40,13 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
         }),
       });
       const responseData = await response.json();
-      setCookie("logged-user", responseData);
-      setCookie("role", responseData?.data?.user?.role);
+      toast.success(responseData.message);
 
-      if (responseData.status && responseData.token) {
-        router.push("/dashboard/organisation");
+      // setCookie("logged-user", responseData);
+      // setCookie("role", responseData?.data?.user?.role);
+
+      if (responseData.status) {
+        router.push("/auth/login");
       }
     }
   };

@@ -29,8 +29,8 @@ const Page = ({ params }: { params: { userId: string } }) => {
         }),
       });
       const responseData = await response.json();
-      if (responseData.status && responseData.token) {
-        router.push("/dashboard");
+      if (responseData.status) {
+        router.push("/auth/login");
       }
     }
   };

@@ -17,19 +17,10 @@ export async function POST(req: NextRequest) {
       where: { id: Number(userId) },
       data: { password: encryptedPassword },
     });
-    const token = jwt.sign(
-      {
-        id: user.id,
-        email: user.email,
-      },
-      JWT_SECRET,
-      { expiresIn: "1h" } // Set token expiration time
-    );
-    setCookie("auth-token", token, { cookies });
+
     // Return a success response
     return NextResponse.json({
-      data: { user },
-      token,
+      message: "Password Created Successfully",
       status: true,
     });
   } catch (error) {

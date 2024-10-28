@@ -196,7 +196,12 @@ export default function Page({ params }: { params: { userId: string } }) {
       setValue("image", String(userData?.data?.imageUrl));
       setValue("email", String(userData?.data?.email));
       setValue("organisation", String(userData?.data?.organisation.name));
+      setValue(
+        "organisationType",
+        String(userData?.data?.organisation.organisationType)
+      );
       setValue("organisationId", userData?.data?.organisationId);
+
       setProfilePic(userData.data.imageUrl);
     }
   }, [userData]);
@@ -341,22 +346,30 @@ export default function Page({ params }: { params: { userId: string } }) {
 
                 <Box mb={2} width={"100%"}>
                   <TextField
-                    label={
-                      Number(params.userId) === currentUserId ? "" : "Email *"
-                    }
+                    label={"Email *"}
                     type="email"
                     className="form-input"
-                    focused={
-                      Number(params.userId) === currentUserId ? false : true
-                    }
-                    disabled={
-                      Number(params.userId) === currentUserId ? true : false
-                    }
+                    autoFocus
+                    focused={true}
+                    InputProps={{
+                      readOnly:
+                        Number(params.userId) === currentUserId ? true : false,
+                    }}
                     {...register("email", {
                       required: true,
                     })}
                     sx={{
                       width: "100%",
+                      backgroundColor:
+                        Number(params.userId) === currentUserId
+                          ? "#f0f0f0"
+                          : "",
+                      "& .MuiInputBase-input.Mui-disabled": {
+                        backgroundColor:
+                          Number(params.userId) === currentUserId
+                            ? "#f0f0f0"
+                            : "",
+                      },
                     }}
                   />
                   {errors &&
@@ -374,41 +387,49 @@ export default function Page({ params }: { params: { userId: string } }) {
                 </Box>
 
                 <TextField
-                  // label="Organisation"
+                  label="Organisation"
                   type="text"
                   className="form-input"
-                  disabled
-                  // focused={userData?.data.organisation.name ? true : false}
+                  InputProps={{
+                    readOnly:
+                      Number(params.userId) === currentUserId ? true : false,
+                  }}
+                  focused={true}
                   {...register("organisation")}
                   sx={{
                     width: "100%",
                     marginBottom: 2,
+                    backgroundColor:
+                      Number(params.userId) === currentUserId ? "#f0f0f0" : "",
+                    "& .MuiInputBase-input.Mui-disabled": {
+                      backgroundColor:
+                        Number(params.userId) === currentUserId
+                          ? "#f0f0f0"
+                          : "",
+                    },
                   }}
                 />
-                {/* <FormControl fullWidth className="form-input">
-                  <InputLabel id="demo-simple-select-label">
-                    Organisation
-                  </InputLabel>
-                  <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    // value={selectedOrganisation}
-                    label="Organisation"
-                    {...register("organisationId")}
-                    // onChange={handleChange}
-                  >
-                    {/* {organisations?.map((organisation, i) => {
-                    return (
-                      <MenuItem value={Number(organisation.id)} key={i}>
-                        {organisation.name}
-                      </MenuItem>
-                    );
-                  })} */}
-                {/* <MenuItem value={20}>Twenty</MenuItem>
-                  <MenuItem value={30}>Thirty</MenuItem> */}
-                {/* </Select> */}
-                {/* </FormControl> */}
-
+                {Number(params.userId) === currentUserId && (
+                  <TextField
+                    label="Organisation Type"
+                    type="text"
+                    className="form-input"
+                    InputProps={{
+                      readOnly:
+                        Number(params.userId) === currentUserId ? true : false,
+                    }}
+                    focused={true}
+                    {...register("organisationType")}
+                    sx={{
+                      width: "100%",
+                      marginBottom: 2,
+                      backgroundColor: "#f0f0f0",
+                      "& .MuiInputBase-input.Mui-disabled": {
+                        backgroundColor: "#f0f0f0",
+                      },
+                    }}
+                  />
+                )}
                 <Divider
                   sx={{
                     borderColor: "#979797",

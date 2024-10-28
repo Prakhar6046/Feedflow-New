@@ -15,6 +15,7 @@ export interface SingleUser {
   createdAt: String;
   organisationId: Number;
   organisation: {
+    organisationType(organisationType: any): string;
     name: String;
     imageUrl: String;
   };
@@ -23,6 +24,7 @@ export interface UserEditFormInputs {
   name: string;
   image: string;
   organisation: string;
+  organisationType: string;
   organisationId: Number;
   email: string;
   password: string;
