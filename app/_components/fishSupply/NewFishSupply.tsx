@@ -369,7 +369,7 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
                 label="Broodstock (Male)"
                 type="text"
                 className="form-input"
-                {...register("broodstockMale", {})}
+                {...register("broodstockMale")}
                 sx={{
                   width: "100%",
                 }}
@@ -383,7 +383,7 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
                 label="Broodstock (Female)"
                 type="text"
                 className="form-input"
-                {...register("broodstockFemale", {})}
+                {...register("broodstockFemale")}
                 sx={{
                   width: "100%",
                 }}

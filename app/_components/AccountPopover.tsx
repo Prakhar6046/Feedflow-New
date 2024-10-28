@@ -172,18 +172,19 @@ const AccountPopover = () => {
           <Typography variant="body2" fontSize={13} fontWeight={400} mt={0.3}>
             {loggedUserData ? loggedUserData?.data?.user.email : "Demo"}
           </Typography>
-
-          <Typography
-            variant="body2"
-            fontSize={12}
-            color="#06a19b"
-            fontWeight={600}
-            mt={0.5}
-          >
-            {loggedUserData
-              ? loggedUserData?.data?.user?.organisation?.organisationType
-              : ""}
-          </Typography>
+          {loggedUserData?.data?.user.role !== "SUPERADMIN" && (
+            <Typography
+              variant="body2"
+              fontSize={12}
+              color="#06a19b"
+              fontWeight={600}
+              mt={0.5}
+            >
+              {loggedUserData
+                ? loggedUserData?.data?.user?.organisation?.organisationType
+                : ""}
+            </Typography>
+          )}
         </Box>
 
         <Divider

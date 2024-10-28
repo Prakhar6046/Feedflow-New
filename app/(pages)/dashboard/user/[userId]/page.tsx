@@ -29,6 +29,8 @@ import Image from "next/image";
 import EyeOpened from "@/public/static/img/icons/ic-eye-open.svg";
 import * as validationPattern from "@/app/_lib/utils/validationPatterns/index";
 import * as validationMessage from "@/app/_lib/utils/validationsMessage/index";
+import { selectRole } from "@/lib/features/user/userSlice";
+import { useAppSelector } from "@/lib/hooks";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -105,6 +107,7 @@ const IOSSwitch = styled((props: SwitchProps) => (
 export default function Page({ params }: { params: { userId: string } }) {
   const router = useRouter();
   const loggedUser: any = getCookie("logged-user");
+  const role = useAppSelector(selectRole);
   const [userData, setUserData] = useState<{ data: SingleUser }>();
   const [loading, setLoading] = useState<boolean>(false);
   const [currentUserId, setCurrentUserId] = useState<Number>();
@@ -409,27 +412,31 @@ export default function Page({ params }: { params: { userId: string } }) {
                     },
                   }}
                 />
-                {Number(params.userId) === currentUserId && (
-                  <TextField
-                    label="Organisation Type"
-                    type="text"
-                    className="form-input"
-                    InputProps={{
-                      readOnly:
-                        Number(params.userId) === currentUserId ? true : false,
-                    }}
-                    focused={true}
-                    {...register("organisationType")}
-                    sx={{
-                      width: "100%",
-                      marginBottom: 2,
-                      backgroundColor: "#f0f0f0",
-                      "& .MuiInputBase-input.Mui-disabled": {
+
+                {role !== "SUPERADMIN" &&
+                  Number(params.userId) === currentUserId && (
+                    <TextField
+                      label="Organisation Type"
+                      type="text"
+                      className="form-input"
+                      InputProps={{
+                        readOnly:
+                          Number(params.userId) === currentUserId
+                            ? true
+                            : false,
+                      }}
+                      focused={true}
+                      {...register("organisationType")}
+                      sx={{
+                        width: "100%",
+                        marginBottom: 2,
                         backgroundColor: "#f0f0f0",
-                      },
-                    }}
-                  />
-                )}
+                        "& .MuiInputBase-input.Mui-disabled": {
+                          backgroundColor: "#f0f0f0",
+                        },
+                      }}
+                    />
+                  )}
                 <Divider
                   sx={{
                     borderColor: "#979797",
