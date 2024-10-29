@@ -55,7 +55,6 @@ export const getUser = async (userId: string) => {
     return error;
   }
 };
-
 export const AddNewFeedSupply = async (formData: any) => {
   try {
     const data = await fetch(
