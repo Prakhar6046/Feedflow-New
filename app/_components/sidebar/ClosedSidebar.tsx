@@ -14,6 +14,7 @@ import { useAppDispatch } from "@/lib/hooks";
 import { sidebarAction } from "@/lib/features/sidebar/sidebarSlice";
 import Logo from "@/public/static/img/logo.svg";
 import { farmAction } from "@/lib/features/farm/farmSlice";
+import SampleIcon from "@/public/static/img/ic-sample.svg";
 
 function ClosedSidebar() {
   const router = useRouter();
@@ -127,181 +128,170 @@ function ClosedSidebar() {
             }}
           />
 
-          <Box border="3px solid #06A19B" borderRadius="10px">
-            <h5
-              style={{
-                fontSize: "16px",
-                textAlign: "center",
-                borderBlockEnd: "2px solid #06A19B",
-                marginInline: "12px",
+
+          <Link href={"/dashboard/fishSupply"} className="nav-links">
+            <ListItem
+              sx={{
+                paddingX: 0,
+                mb: 1,
               }}
             >
-              Setup
-            </h5>
-            <Link href={"/dashboard/fishSupply"} className="nav-links">
-              <ListItem
+              <ListItemButton
+                className={
+                  activePage.startsWith("/dashboard/fishSupply")
+                    ? "active"
+                    : ""
+                }
                 sx={{
-                  paddingX: 0,
-                  mb: 1,
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
                 }}
               >
-                <ListItemButton
-                  className={
-                    activePage.startsWith("/dashboard/fishSupply")
-                      ? "active"
-                      : ""
-                  }
+                <ListItemIcon
                   sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                    alignItems: "center",
+                    display: "grid",
+                    placeItems: "center",
+                    marginRight: 0,
                   }}
                 >
-                  <ListItemIcon
-                    sx={{
-                      display: "grid",
-                      placeItems: "center",
-                      marginRight: 0,
-                    }}
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="1.5em"
+                    height="1.5em"
+                    viewBox="0 0 21 21"
                   >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="1.5em"
-                      height="1.5em"
-                      viewBox="0 0 21 21"
+                    <g
+                      fill="none"
+                      fillRule="evenodd"
+                      stroke="#0E848E"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
                     >
-                      <g
-                        fill="none"
-                        fillRule="evenodd"
-                        stroke="#0E848E"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path d="m10.5 15.429l3.548 1.837a1 1 0 0 0 .907.006l2.992-1.496a1 1 0 0 0 .553-.894v-2.764a1 1 0 0 0-.553-.894L14.5 9.5l-3.46 1.792a1 1 0 0 0-.54.888z" />
-                        <path d="m3.04 15.708l3.008 1.558a1 1 0 0 0 .907.006L10.5 15.5v-3.382a1 1 0 0 0-.553-.894L6.5 9.5l-3.46 1.792a1 1 0 0 0-.54.888v2.64a1 1 0 0 0 .54.888M6.5 9.429l3.548 1.837a1 1 0 0 0 .907.006L14.5 9.5V6.118a1 1 0 0 0-.553-.894l-2.992-1.496a1 1 0 0 0-.907.006L7.04 5.292a1 1 0 0 0-.54.888z" />
-                        <path d="m6.846 5.673l3.207 1.603a1 1 0 0 0 .894 0L14.12 5.69h0m-3.274 5.983l3.207 1.603a1 1 0 0 0 .894 0l3.172-1.586h0m-15.273-.017l3.207 1.603a1 1 0 0 0 .894 0l3.172-1.586h0M10.5 7.5v4m4 2V17m-8-3.5V17" />
-                      </g>
-                    </svg>
-                  </ListItemIcon>
-                  <ListItemText
-                    className="closed-nav-links"
-                    sx={{
-                      mt: 0.5,
-                      textAlign: "center",
-                    }}
-                  >
-                    Fish Supply
-                  </ListItemText>
-                </ListItemButton>
-              </ListItem>
-            </Link>
+                      <path d="m10.5 15.429l3.548 1.837a1 1 0 0 0 .907.006l2.992-1.496a1 1 0 0 0 .553-.894v-2.764a1 1 0 0 0-.553-.894L14.5 9.5l-3.46 1.792a1 1 0 0 0-.54.888z" />
+                      <path d="m3.04 15.708l3.008 1.558a1 1 0 0 0 .907.006L10.5 15.5v-3.382a1 1 0 0 0-.553-.894L6.5 9.5l-3.46 1.792a1 1 0 0 0-.54.888v2.64a1 1 0 0 0 .54.888M6.5 9.429l3.548 1.837a1 1 0 0 0 .907.006L14.5 9.5V6.118a1 1 0 0 0-.553-.894l-2.992-1.496a1 1 0 0 0-.907.006L7.04 5.292a1 1 0 0 0-.54.888z" />
+                      <path d="m6.846 5.673l3.207 1.603a1 1 0 0 0 .894 0L14.12 5.69h0m-3.274 5.983l3.207 1.603a1 1 0 0 0 .894 0l3.172-1.586h0m-15.273-.017l3.207 1.603a1 1 0 0 0 .894 0l3.172-1.586h0M10.5 7.5v4m4 2V17m-8-3.5V17" />
+                    </g>
+                  </svg>
+                </ListItemIcon>
+                <ListItemText
+                  className="closed-nav-links"
+                  sx={{
+                    mt: 0.5,
+                    textAlign: "center",
+                  }}
+                >
+                  Fish Supply
+                </ListItemText>
+              </ListItemButton>
+            </ListItem>
+          </Link>
 
-            <Link
-              href={"/dashboard/farm"}
-              className="nav-links"
-              onClick={() => dispatch(farmAction.resetState())}
+          <Link
+            href={"/dashboard/farm"}
+            className="nav-links"
+            onClick={() => dispatch(farmAction.resetState())}
+          >
+            <ListItem
+              sx={{
+                paddingX: 0,
+                mb: 1,
+              }}
             >
-              <ListItem
+              <ListItemButton
+                className={
+                  activePage.startsWith("/dashboard/farm") ? "active" : ""
+                }
                 sx={{
-                  paddingX: 0,
-                  mb: 1,
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
                 }}
               >
-                <ListItemButton
-                  className={
-                    activePage.startsWith("/dashboard/farm") ? "active" : ""
-                  }
+                <ListItemIcon
                   sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                    alignItems: "center",
+                    display: "grid",
+                    placeItems: "center",
+                    marginRight: 0,
                   }}
                 >
-                  <ListItemIcon
-                    sx={{
-                      display: "grid",
-                      placeItems: "center",
-                      marginRight: 0,
-                    }}
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="1.2em"
+                    height="1.2em"
+                    viewBox="0 0 24 24"
                   >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="1.2em"
-                      height="1.2em"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        fill="#0E848E"
-                        d="M20 21h-3v-2h3zm0-4h-3v-2h3zm0-4h-3v-2h3zm4-5.2C23.6 4.5 20.8 2 17.5 2c-1.7 0-3.4.7-4.6 1.9c-.7.7-1.2 1.4-1.5 2.3L15.6 9H22v13h2zM13.3 7c.6-1.8 2.3-3 4.2-3s3.6 1.2 4.2 3zM7.5 6L0 11v11h15V11zM13 20h-3v-6H5v6H2v-8l5.5-3.5L13 12z"
-                      />
-                    </svg>
-                  </ListItemIcon>
-                  <ListItemText
-                    className="closed-nav-links"
-                    sx={{
-                      mt: 0.5,
-                    }}
-                  >
-                    Farm
-                  </ListItemText>
-                </ListItemButton>
-              </ListItem>
-            </Link>
+                    <path
+                      fill="#0E848E"
+                      d="M20 21h-3v-2h3zm0-4h-3v-2h3zm0-4h-3v-2h3zm4-5.2C23.6 4.5 20.8 2 17.5 2c-1.7 0-3.4.7-4.6 1.9c-.7.7-1.2 1.4-1.5 2.3L15.6 9H22v13h2zM13.3 7c.6-1.8 2.3-3 4.2-3s3.6 1.2 4.2 3zM7.5 6L0 11v11h15V11zM13 20h-3v-6H5v6H2v-8l5.5-3.5L13 12z"
+                    />
+                  </svg>
+                </ListItemIcon>
+                <ListItemText
+                  className="closed-nav-links"
+                  sx={{
+                    mt: 0.5,
+                  }}
+                >
+                  Farm
+                </ListItemText>
+              </ListItemButton>
+            </ListItem>
+          </Link>
 
-            <Link href={"/dashboard/feedSupply"} className="nav-links">
-              <ListItem
+          <Link href={"/dashboard/feedSupply"} className="nav-links">
+            <ListItem
+              sx={{
+                paddingX: 0,
+                mb: 1,
+              }}
+            >
+              <ListItemButton
+                className={
+                  activePage.startsWith("/dashboard/feedSupply")
+                    ? "active"
+                    : ""
+                }
                 sx={{
-                  paddingX: 0,
-                  mb: 1,
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
                 }}
               >
-                <ListItemButton
-                  className={
-                    activePage.startsWith("/dashboard/feedSupply")
-                      ? "active"
-                      : ""
-                  }
+                <ListItemIcon
                   sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                    alignItems: "center",
+                    display: "grid",
+                    placeItems: "center",
+                    marginRight: 0,
                   }}
                 >
-                  <ListItemIcon
-                    sx={{
-                      display: "grid",
-                      placeItems: "center",
-                      marginRight: 0,
-                    }}
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="1.5em"
+                    height="1.5em"
+                    viewBox="0 0 256 256"
                   >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="1.5em"
-                      height="1.5em"
-                      viewBox="0 0 256 256"
-                    >
-                      <path
-                        fill="#0E848E"
-                        d="M230.33 141.06a24.43 24.43 0 0 0-21.24-4.23l-41.84 9.62A28 28 0 0 0 140 112H89.94a31.82 31.82 0 0 0-22.63 9.37L44.69 144H16a16 16 0 0 0-16 16v40a16 16 0 0 0 16 16h104a8 8 0 0 0 1.94-.24l64-16a7 7 0 0 0 1.19-.4L226 182.82l.44-.2a24.6 24.6 0 0 0 3.93-41.56ZM16 160h24v40H16Zm203.43 8.21l-38 16.18L119 200H56v-44.69l22.63-22.62A15.86 15.86 0 0 1 89.94 128H140a12 12 0 0 1 0 24h-28a8 8 0 0 0 0 16h32a8.3 8.3 0 0 0 1.79-.2l67-15.41l.31-.08a8.6 8.6 0 0 1 6.3 15.9ZM164 96a36 36 0 0 0 5.9-.48a36 36 0 1 0 28.22-47A36 36 0 1 0 164 96m60-12a20 20 0 1 1-20-20a20 20 0 0 1 20 20m-60-44a20 20 0 0 1 19.25 14.61a36 36 0 0 0-15 24.93A20.4 20.4 0 0 1 164 80a20 20 0 0 1 0-40"
-                      />
-                    </svg>
-                  </ListItemIcon>
-                  <ListItemText
-                    className="closed-nav-links"
-                    sx={{
-                      mt: 0.5,
-                      textAlign: "center",
-                    }}
-                  >
-                    Feed Supply
-                  </ListItemText>
-                </ListItemButton>
-              </ListItem>
-            </Link>
-          </Box>
+                    <path
+                      fill="#0E848E"
+                      d="M230.33 141.06a24.43 24.43 0 0 0-21.24-4.23l-41.84 9.62A28 28 0 0 0 140 112H89.94a31.82 31.82 0 0 0-22.63 9.37L44.69 144H16a16 16 0 0 0-16 16v40a16 16 0 0 0 16 16h104a8 8 0 0 0 1.94-.24l64-16a7 7 0 0 0 1.19-.4L226 182.82l.44-.2a24.6 24.6 0 0 0 3.93-41.56ZM16 160h24v40H16Zm203.43 8.21l-38 16.18L119 200H56v-44.69l22.63-22.62A15.86 15.86 0 0 1 89.94 128H140a12 12 0 0 1 0 24h-28a8 8 0 0 0 0 16h32a8.3 8.3 0 0 0 1.79-.2l67-15.41l.31-.08a8.6 8.6 0 0 1 6.3 15.9ZM164 96a36 36 0 0 0 5.9-.48a36 36 0 1 0 28.22-47A36 36 0 1 0 164 96m60-12a20 20 0 1 1-20-20a20 20 0 0 1 20 20m-60-44a20 20 0 0 1 19.25 14.61a36 36 0 0 0-15 24.93A20.4 20.4 0 0 1 164 80a20 20 0 0 1 0-40"
+                    />
+                  </svg>
+                </ListItemIcon>
+                <ListItemText
+                  className="closed-nav-links"
+                  sx={{
+                    mt: 0.5,
+                    textAlign: "center",
+                  }}
+                >
+                  Feed Supply
+                </ListItemText>
+              </ListItemButton>
+            </ListItem>
+          </Link>
           <Divider
             sx={{
               my: 1.5,
@@ -313,234 +303,205 @@ function ClosedSidebar() {
             }}
           />
 
-          <Box border="3px solid #06A19B" borderRadius="10px">
-            <h5
-              style={{
-                fontSize: "16px",
-                textAlign: "center",
-                borderBlockEnd: "2px solid #06A19B",
-                marginInline: "3px",
+          <Link href={"/dashboard/fishSupply"} className="nav-links">
+            <ListItem
+              sx={{
+                paddingX: 0,
+                mb: 1,
               }}
             >
-              Manage
-            </h5>
-            <Link href={"/dashboard/fishSupply"} className="nav-links">
-              <ListItem
+              <ListItemButton
+                className={
+                  activePage.startsWith("/dashboard/fishSupply")
+                    ? "active"
+                    : ""
+                }
                 sx={{
-                  paddingX: 0,
-                  mb: 1,
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
                 }}
               >
-                <ListItemButton
-                  className={
-                    activePage.startsWith("/dashboard/fishSupply")
-                      ? "active"
-                      : ""
-                  }
+                <ListItemIcon
                   sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                    alignItems: "center",
+                    display: "grid",
+                    placeItems: "center",
+                    marginRight: 0,
                   }}
                 >
-                  <ListItemIcon
-                    sx={{
-                      display: "grid",
-                      placeItems: "center",
-                      marginRight: 0,
-                    }}
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="1.5em"
+                    height="1.5em"
+                    viewBox="0 0 21 21"
                   >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="1.5em"
-                      height="1.5em"
-                      viewBox="0 0 21 21"
+                    <g
+                      fill="none"
+                      fillRule="evenodd"
+                      stroke="#0E848E"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
                     >
-                      <g
-                        fill="none"
-                        fillRule="evenodd"
-                        stroke="#0E848E"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path d="m10.5 15.429l3.548 1.837a1 1 0 0 0 .907.006l2.992-1.496a1 1 0 0 0 .553-.894v-2.764a1 1 0 0 0-.553-.894L14.5 9.5l-3.46 1.792a1 1 0 0 0-.54.888z" />
-                        <path d="m3.04 15.708l3.008 1.558a1 1 0 0 0 .907.006L10.5 15.5v-3.382a1 1 0 0 0-.553-.894L6.5 9.5l-3.46 1.792a1 1 0 0 0-.54.888v2.64a1 1 0 0 0 .54.888M6.5 9.429l3.548 1.837a1 1 0 0 0 .907.006L14.5 9.5V6.118a1 1 0 0 0-.553-.894l-2.992-1.496a1 1 0 0 0-.907.006L7.04 5.292a1 1 0 0 0-.54.888z" />
-                        <path d="m6.846 5.673l3.207 1.603a1 1 0 0 0 .894 0L14.12 5.69h0m-3.274 5.983l3.207 1.603a1 1 0 0 0 .894 0l3.172-1.586h0m-15.273-.017l3.207 1.603a1 1 0 0 0 .894 0l3.172-1.586h0M10.5 7.5v4m4 2V17m-8-3.5V17" />
-                      </g>
-                    </svg>
-                  </ListItemIcon>
-                  <ListItemText
-                    className="closed-nav-links"
-                    sx={{
-                      mt: 0.5,
-                      textAlign: "center",
-                    }}
-                  >
-                    Farm
-                  </ListItemText>
-                </ListItemButton>
-              </ListItem>
-            </Link>
+                      <path d="m10.5 15.429l3.548 1.837a1 1 0 0 0 .907.006l2.992-1.496a1 1 0 0 0 .553-.894v-2.764a1 1 0 0 0-.553-.894L14.5 9.5l-3.46 1.792a1 1 0 0 0-.54.888z" />
+                      <path d="m3.04 15.708l3.008 1.558a1 1 0 0 0 .907.006L10.5 15.5v-3.382a1 1 0 0 0-.553-.894L6.5 9.5l-3.46 1.792a1 1 0 0 0-.54.888v2.64a1 1 0 0 0 .54.888M6.5 9.429l3.548 1.837a1 1 0 0 0 .907.006L14.5 9.5V6.118a1 1 0 0 0-.553-.894l-2.992-1.496a1 1 0 0 0-.907.006L7.04 5.292a1 1 0 0 0-.54.888z" />
+                      <path d="m6.846 5.673l3.207 1.603a1 1 0 0 0 .894 0L14.12 5.69h0m-3.274 5.983l3.207 1.603a1 1 0 0 0 .894 0l3.172-1.586h0m-15.273-.017l3.207 1.603a1 1 0 0 0 .894 0l3.172-1.586h0M10.5 7.5v4m4 2V17m-8-3.5V17" />
+                    </g>
+                  </svg>
+                </ListItemIcon>
+                <ListItemText
+                  className="closed-nav-links"
+                  sx={{
+                    mt: 0.5,
+                    textAlign: "center",
+                  }}
+                >
+                  Farm
+                </ListItemText>
+              </ListItemButton>
+            </ListItem>
+          </Link>
 
-            <Link
-              href={"/dashboard/farm"}
-              className="nav-links"
-              onClick={() => dispatch(farmAction.resetState())}
+          <Link
+            href={"/dashboard/farm"}
+            className="nav-links"
+            onClick={() => dispatch(farmAction.resetState())}
+          >
+            <ListItem
+              sx={{
+                paddingX: 0,
+                mb: 1,
+              }}
             >
-              <ListItem
+              <ListItemButton
+                className={
+                  activePage.startsWith("/dashboard/farm") ? "active" : ""
+                }
                 sx={{
-                  paddingX: 0,
-                  mb: 1,
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
                 }}
               >
-                <ListItemButton
-                  className={
-                    activePage.startsWith("/dashboard/farm") ? "active" : ""
-                  }
+                <ListItemIcon
                   sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                    alignItems: "center",
+                    display: "grid",
+                    placeItems: "center",
+                    marginRight: 0,
                   }}
                 >
-                  <ListItemIcon
-                    sx={{
-                      display: "grid",
-                      placeItems: "center",
-                      marginRight: 0,
-                    }}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="1.2em"
-                      height="1.2em"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        fill="#0E848E"
-                        d="M20 21h-3v-2h3zm0-4h-3v-2h3zm0-4h-3v-2h3zm4-5.2C23.6 4.5 20.8 2 17.5 2c-1.7 0-3.4.7-4.6 1.9c-.7.7-1.2 1.4-1.5 2.3L15.6 9H22v13h2zM13.3 7c.6-1.8 2.3-3 4.2-3s3.6 1.2 4.2 3zM7.5 6L0 11v11h15V11zM13 20h-3v-6H5v6H2v-8l5.5-3.5L13 12z"
-                      />
-                    </svg>
-                  </ListItemIcon>
-                  <ListItemText
-                    className="closed-nav-links"
-                    sx={{
-                      mt: 0.5,
-                      textAlign: "center",
-                    }}
-                  >
-                    Feed Store
-                  </ListItemText>
-                </ListItemButton>
-              </ListItem>
-            </Link>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="1.4em" height="1.4em" viewBox="0 0 256 256">
+                    <path fill="#0E848E" d="M240 208h-8V72a8 8 0 0 0-8-8h-40V40a8 8 0 0 0-8-8H80a8 8 0 0 0-8 8v56H32a8 8 0 0 0-8 8v104h-8a8 8 0 0 0 0 16h224a8 8 0 0 0 0-16M40 112h40a8 8 0 0 0 8-8V48h80v24a8 8 0 0 0 8 8h40v128h-64v-40a8 8 0 0 0-8-8h-32a8 8 0 0 0-8 8v40H40Zm96 96h-16v-32h16ZM112 72a8 8 0 0 1 8-8h16a8 8 0 0 1 0 16h-16a8 8 0 0 1-8-8m0 32a8 8 0 0 1 8-8h16a8 8 0 0 1 0 16h-16a8 8 0 0 1-8-8m56 0a8 8 0 0 1 8-8h16a8 8 0 0 1 0 16h-16a8 8 0 0 1-8-8m-80 32a8 8 0 0 1-8 8H64a8 8 0 0 1 0-16h16a8 8 0 0 1 8 8m0 32a8 8 0 0 1-8 8H64a8 8 0 0 1 0-16h16a8 8 0 0 1 8 8m24-32a8 8 0 0 1 8-8h16a8 8 0 0 1 0 16h-16a8 8 0 0 1-8-8m56 0a8 8 0 0 1 8-8h16a8 8 0 0 1 0 16h-16a8 8 0 0 1-8-8m0 32a8 8 0 0 1 8-8h16a8 8 0 0 1 0 16h-16a8 8 0 0 1-8-8" />
+                  </svg>
+                </ListItemIcon>
+                <ListItemText
+                  className="closed-nav-links"
+                  sx={{
+                    mt: 0.5,
+                    textAlign: "center",
+                  }}
+                >
+                  Feed Store
+                </ListItemText>
+              </ListItemButton>
+            </ListItem>
+          </Link>
 
-            <Link href={"/dashboard/feedSupply"} className="nav-links">
-              <ListItem
+          <Link href={"/dashboard/feedSupply"} className="nav-links">
+            <ListItem
+              sx={{
+                paddingX: 0,
+                mb: 1,
+              }}
+            >
+              <ListItemButton
+                className={
+                  activePage.startsWith("/dashboard/feedSupply")
+                    ? "active"
+                    : ""
+                }
                 sx={{
-                  paddingX: 0,
-                  mb: 1,
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
                 }}
               >
-                <ListItemButton
-                  className={
-                    activePage.startsWith("/dashboard/feedSupply")
-                      ? "active"
-                      : ""
-                  }
+                <ListItemIcon
                   sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                    alignItems: "center",
+                    display: "grid",
+                    placeItems: "center",
+                    marginRight: 0,
                   }}
                 >
-                  <ListItemIcon
-                    sx={{
-                      display: "grid",
-                      placeItems: "center",
-                      marginRight: 0,
-                    }}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="1.5em"
-                      height="1.5em"
-                      viewBox="0 0 256 256"
-                    >
-                      <path
-                        fill="#0E848E"
-                        d="M230.33 141.06a24.43 24.43 0 0 0-21.24-4.23l-41.84 9.62A28 28 0 0 0 140 112H89.94a31.82 31.82 0 0 0-22.63 9.37L44.69 144H16a16 16 0 0 0-16 16v40a16 16 0 0 0 16 16h104a8 8 0 0 0 1.94-.24l64-16a7 7 0 0 0 1.19-.4L226 182.82l.44-.2a24.6 24.6 0 0 0 3.93-41.56ZM16 160h24v40H16Zm203.43 8.21l-38 16.18L119 200H56v-44.69l22.63-22.62A15.86 15.86 0 0 1 89.94 128H140a12 12 0 0 1 0 24h-28a8 8 0 0 0 0 16h32a8.3 8.3 0 0 0 1.79-.2l67-15.41l.31-.08a8.6 8.6 0 0 1 6.3 15.9ZM164 96a36 36 0 0 0 5.9-.48a36 36 0 1 0 28.22-47A36 36 0 1 0 164 96m60-12a20 20 0 1 1-20-20a20 20 0 0 1 20 20m-60-44a20 20 0 0 1 19.25 14.61a36 36 0 0 0-15 24.93A20.4 20.4 0 0 1 164 80a20 20 0 0 1 0-40"
-                      />
-                    </svg>
-                  </ListItemIcon>
-                  <ListItemText
-                    className="closed-nav-links"
-                    sx={{
-                      mt: 0.5,
-                      textAlign: "center",
-                    }}
-                  >
-                    Sample
-                  </ListItemText>
-                </ListItemButton>
-              </ListItem>
-            </Link>
+                  <Image src={SampleIcon}
+                    width={24}
+                    height={24}
+                    unoptimized={true}
+                    alt="Sample Icon" />
 
-            <Link href={"/dashboard/feedSupply"} className="nav-links">
-              <ListItem
-                sx={{
-                  paddingX: 0,
-                  mb: 1,
-                }}
-              >
-                <ListItemButton
-                  className={
-                    activePage.startsWith("/dashboard/feedSupply")
-                      ? "active"
-                      : ""
-                  }
+                </ListItemIcon>
+                <ListItemText
+                  className="closed-nav-links"
                   sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                    alignItems: "center",
+                    mt: 0.5,
+                    textAlign: "center",
                   }}
                 >
-                  <ListItemIcon
-                    sx={{
-                      display: "grid",
-                      placeItems: "center",
-                      marginRight: 0,
-                    }}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="1.5em"
-                      height="1.5em"
-                      viewBox="0 0 256 256"
-                    >
-                      <path
-                        fill="#0E848E"
-                        d="M230.33 141.06a24.43 24.43 0 0 0-21.24-4.23l-41.84 9.62A28 28 0 0 0 140 112H89.94a31.82 31.82 0 0 0-22.63 9.37L44.69 144H16a16 16 0 0 0-16 16v40a16 16 0 0 0 16 16h104a8 8 0 0 0 1.94-.24l64-16a7 7 0 0 0 1.19-.4L226 182.82l.44-.2a24.6 24.6 0 0 0 3.93-41.56ZM16 160h24v40H16Zm203.43 8.21l-38 16.18L119 200H56v-44.69l22.63-22.62A15.86 15.86 0 0 1 89.94 128H140a12 12 0 0 1 0 24h-28a8 8 0 0 0 0 16h32a8.3 8.3 0 0 0 1.79-.2l67-15.41l.31-.08a8.6 8.6 0 0 1 6.3 15.9ZM164 96a36 36 0 0 0 5.9-.48a36 36 0 1 0 28.22-47A36 36 0 1 0 164 96m60-12a20 20 0 1 1-20-20a20 20 0 0 1 20 20m-60-44a20 20 0 0 1 19.25 14.61a36 36 0 0 0-15 24.93A20.4 20.4 0 0 1 164 80a20 20 0 0 1 0-40"
-                      />
-                    </svg>
-                  </ListItemIcon>
-                  <ListItemText
-                    className="closed-nav-links"
-                    sx={{
-                      mt: 0.5,
-                      textAlign: "center",
-                    }}
-                  >
-                    Feed Production
-                  </ListItemText>
-                </ListItemButton>
-              </ListItem>
-            </Link>
-          </Box>
+                  Sample
+                </ListItemText>
+              </ListItemButton>
+            </ListItem>
+          </Link>
+
+          <Link href={"/dashboard/feedSupply"} className="nav-links">
+            <ListItem
+              sx={{
+                paddingX: 0,
+                mb: 1,
+              }}
+            >
+              <ListItemButton
+                className={
+                  activePage.startsWith("/dashboard/feedSupply")
+                    ? "active"
+                    : ""
+                }
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <ListItemIcon
+                  sx={{
+                    display: "grid",
+                    placeItems: "center",
+                    marginRight: 0,
+                  }}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="1.4em" height="1.4em" viewBox="0 0 24 24">
+                    <g fill="none" stroke="#0E848E" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
+                      <path d="M3.5 4v12.5a4 4 0 0 0 4 4H20" />
+                      <path d="m7 14l3.293-3.293a1 1 0 0 1 1.414 0l1.336 1.336a1 1 0 0 0 1.414 0L19 7.5l.648-.649M15 6.5h3.8c.331 0 .631.134.848.351M20 11.5V7.7c0-.331-.134-.631-.352-.849" />
+                    </g>
+                  </svg>
+                </ListItemIcon>
+                <ListItemText
+                  className="closed-nav-links"
+                  sx={{
+                    mt: 0.5,
+                    textAlign: "center",
+                  }}
+                >
+                  Feed Prediction
+                </ListItemText>
+              </ListItemButton>
+            </ListItem>
+          </Link>
+
           <Divider
             sx={{
               my: 1.5,
