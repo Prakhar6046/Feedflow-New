@@ -2,12 +2,15 @@
 import { feedAction } from "@/lib/features/feed/feedSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import {
+  Box,
   Button,
   Divider,
   Menu,
   MenuItem,
+  Modal,
   Stack,
   TableSortLabel,
+  TextField,
   Typography,
 } from "@mui/material";
 import Paper from "@mui/material/Paper";
@@ -29,6 +32,10 @@ import { breadcrumsAction } from "@/lib/features/breadcrum/breadcrumSlice";
 import { getCookie } from "cookies-next";
 import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
 import { FeedSupply } from "@/app/_components/feedSupply/FeedSelection";
+import CalculateVolume from "@/app/_components/models/FarmManager";
+import TransferModal from "@/app/_components/models/FarmManager";
+import HarvestModal from "@/app/_components/models/Harvest";
+import MortalityModal from "@/app/_components/models/Mortality";
 
 interface Props {
   feeds: FeedSupply[];
@@ -96,6 +103,7 @@ export default function FarmManager({ feeds }: Props) {
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null
   );
+  const [openTransferModal, setOpenTransferModal] = useState<boolean>(false);
   const role = useAppSelector(selectRole);
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("productName");
@@ -520,7 +528,7 @@ export default function FarmManager({ feeds }: Props) {
                           "aria-labelledby": "basic-button",
                         }}
                       >
-                        <MenuItem>
+                        <MenuItem onClick={() => setOpenTransferModal(true)}>
                           <Stack
                             display="flex"
                             gap={1.2}
@@ -564,6 +572,10 @@ export default function FarmManager({ feeds }: Props) {
           </Table>
         </TableContainer>
       </Paper>
+      {/* 
+      <TransferModal open={openTransferModal} setOpen={setOpenTransferModal} /> */}
+      {/* <HarvestModal open={openTransferModal} setOpen={setOpenTransferModal} /> */}
+      <MortalityModal open={openTransferModal} setOpen={setOpenTransferModal} />
     </>
   );
 }
