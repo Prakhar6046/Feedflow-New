@@ -251,12 +251,12 @@ export default function AddNewUser({ organisations }: Props) {
                       multiple
                     />
                   </Button>
-                  {error && (
-                    <Typography variant="body2" color="error" mt={1}>
-                      {error}
-                    </Typography>
-                  )}
                 </Button>
+                {error && (
+                  <Typography variant="body2" color="error" mt={1}>
+                    {error}
+                  </Typography>
+                )}
               </Grid>
 
               <Grid
