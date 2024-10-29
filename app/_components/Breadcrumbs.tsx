@@ -97,7 +97,15 @@ export default function BasicBreadcrumbs({
     setSearchQuery("");
   };
   const handleClick = () => {
-    setCookie("activeStep", 0);
+    if (pathName === "/dashboard/feedSupply") {
+      if (currentRole === "SUPERADMIN") {
+        setCookie("activeStep", 2);
+      } else if (currentRole === "Feed Supplier") {
+        setCookie("activeStep", 1);
+      }
+    } else {
+      setCookie("activeStep", 0);
+    }
     router.push(String(buttonRoute));
   };
 

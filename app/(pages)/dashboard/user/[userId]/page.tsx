@@ -288,6 +288,7 @@ export default function Page({ params }: { params: { userId: string } }) {
                     flexDirection: "column",
                     justifyContent: "center",
                     alignItems: "center",
+                    position: "relative",
                   }}
                 >
                   {profilePic ? "" : "Upload photo"}
@@ -298,6 +299,46 @@ export default function Page({ params }: { params: { userId: string } }) {
                     })}
                     multiple
                   />
+
+                  {/* Edit button styled as an input */}
+                  <Button
+                    component="label"
+                    variant="contained"
+                    sx={{
+                      background: "#06A19B",
+                      color: "#fff",
+                      fontWeight: 600,
+                      padding: "4px",
+                      textTransform: "capitalize",
+                      borderRadius: "10px",
+                      border: "1px solid #06A19B",
+                      position: "absolute",
+                      bottom: "5%",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "2px",
+                    }}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="1em"
+                      height="1em"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        fill="currentColor"
+                        d="M3 21v-4.25L16.2 3.575q.3-.275.663-.425t.762-.15t.775.15t.65.45L20.425 5q.3.275.438.65T21 6.4q0 .4-.137.763t-.438.662L7.25 21zM17.6 7.8L19 6.4L17.6 5l-1.4 1.4z"
+                      />
+                    </svg>
+                    Edit
+                    <VisuallyHiddenInput
+                      type="file"
+                      {...register("image", {
+                        onChange: (e) => handleUpload(e.target.files),
+                      })}
+                      multiple
+                    />
+                  </Button>
                 </Button>
               </Grid>
 
