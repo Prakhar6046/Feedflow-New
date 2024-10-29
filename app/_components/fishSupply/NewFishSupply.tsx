@@ -409,8 +409,12 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
                       sx={{
                         width: "100%",
                       }}
-                      onChange={(date) => field.onChange(date)}
-                      value={field.value || null} // To handle the case when field.value is undefined
+                      onChange={(date) => {
+                        if (date) {
+                          field.onChange(date); // Explicitly update field when a date is selected
+                        }
+                      }}
+                      value={field.value || null} // Fallback to null if no value
                     />
                     {error && (
                       <Typography

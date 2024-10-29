@@ -62,7 +62,8 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
   const userData: any = getCookie("logged-user");
 
   const dispatch = useAppDispatch();
-  const farm = useAppSelector(selectFarm);
+  // const farm = useAppSelector(selectFarm);
+  const newFarmInfoLocal = getCookie("new-farm-info");
   const isEditFarm = useAppSelector(selectIsEditFarm);
   const [selectedUnit, setSelectedUnit] = React.useState<UnitsTypes>();
   const [length, setLength] = useState<string>();
@@ -149,7 +150,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
 
   const onSubmit: SubmitHandler<ProductionUnitsFormTypes> = async (data) => {
     const loggedUserData = JSON.parse(userData);
-
+    const farm = newFarmInfoLocal ? JSON.parse(newFarmInfoLocal) : {};
     let payload;
     if (isEditFarm && editFarm?.farmAddress?.id) {
       payload = {
@@ -236,7 +237,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
     if (editFarm) {
       setValue("productionUnits", editFarm?.productionUnits);
     }
-  }, [editFarm]);
+  }, []);
 
   return (
     <Stack>
