@@ -1002,8 +1002,8 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
                     })}
                   </Select>
                   {errors &&
-                    errors.animalSizeInWeight &&
-                    errors.animalSizeInWeight.type === "required" && (
+                    errors.productionIntensity &&
+                    errors.productionIntensity.type === "required" && (
                       <Typography
                         variant="body2"
                         color="red"
