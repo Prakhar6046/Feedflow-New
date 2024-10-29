@@ -104,6 +104,8 @@ export default function FarmManager({ feeds }: Props) {
     null
   );
   const [openTransferModal, setOpenTransferModal] = useState<boolean>(false);
+  const [openHarvestModal, setOpenHarvestModal] = useState<boolean>(false);
+  const [openMoralityModal, setOpenMoralityModal] = useState<boolean>(false);
   const role = useAppSelector(selectRole);
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("productName");
@@ -540,7 +542,7 @@ export default function FarmManager({ feeds }: Props) {
                             </Typography>
                           </Stack>
                         </MenuItem>
-                        <MenuItem>
+                        <MenuItem onClick={() => setOpenHarvestModal(true)}>
                           <Stack
                             display="flex"
                             gap={1.2}
@@ -551,7 +553,7 @@ export default function FarmManager({ feeds }: Props) {
                           </Stack>
                         </MenuItem>
 
-                        <MenuItem>
+                        <MenuItem onClick={() => setOpenMoralityModal(true)}>
                           <Stack
                             display="flex"
                             gap={1.2}
@@ -572,10 +574,10 @@ export default function FarmManager({ feeds }: Props) {
           </Table>
         </TableContainer>
       </Paper>
-      {/* 
-      <TransferModal open={openTransferModal} setOpen={setOpenTransferModal} /> */}
-      {/* <HarvestModal open={openTransferModal} setOpen={setOpenTransferModal} /> */}
-      <MortalityModal open={openTransferModal} setOpen={setOpenTransferModal} />
+
+      <TransferModal open={openTransferModal} setOpen={setOpenTransferModal} />
+      <HarvestModal open={openHarvestModal} setOpen={setOpenHarvestModal} />
+      <MortalityModal open={openMoralityModal} setOpen={setOpenMoralityModal} />
     </>
   );
 }
