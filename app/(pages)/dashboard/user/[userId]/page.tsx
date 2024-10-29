@@ -31,6 +31,7 @@ import * as validationPattern from "@/app/_lib/utils/validationPatterns/index";
 import * as validationMessage from "@/app/_lib/utils/validationsMessage/index";
 import { selectRole } from "@/lib/features/user/userSlice";
 import { useAppSelector } from "@/lib/hooks";
+import { selectIsEditFeed } from "@/lib/features/feed/feedSlice";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -298,7 +299,55 @@ export default function Page({ params }: { params: { userId: string } }) {
                     })}
                     multiple
                   />
+                  <Button
+                    type="button"
+                    variant="contained"
+                    sx={{
+                      background: "#06A19B",
+                      color: "#fff",
+                      fontWeight: 600,
+                      padding: "4px",
+                      textTransform: "capitalize",
+                      borderRadius: "10px",
+                      border: "1px solid #06A19B",
+                      position: "absolute",
+                      bottom: "5%",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "2px",
+                    }}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="1em"
+                      height="1em"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        fill="currentColor"
+                        d="M3 21v-4.25L16.2 3.575q.3-.275.663-.425t.762-.15t.775.15t.65.45L20.425 5q.3.275.438.65T21 6.4q0 .4-.137.763t-.438.662L7.25 21zM17.6 7.8L19 6.4L17.6 5l-1.4 1.4z"
+                      ></path>
+                    </svg>
+                    Edit
+                  </Button>
                 </Button>
+
+                {/* <Button
+                  type="button"
+                  variant="contained"
+                  sx={{
+                    background: "#fff",
+                    color: "#06A19B",
+                    fontWeight: 600,
+                    padding: "6px 16px",
+                    width: "fit-content",
+                    textTransform: "capitalize",
+                    borderRadius: "8px",
+                    border: "1px solid #06A19B",
+                  }}
+                >
+                  Edit
+                </Button> */}
               </Grid>
 
               <Grid
