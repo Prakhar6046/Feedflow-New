@@ -530,7 +530,11 @@ export default function FarmManager({ feeds }: Props) {
                           "aria-labelledby": "basic-button",
                         }}
                       >
-                        <MenuItem onClick={() => setOpenTransferModal(true)}>
+                        <MenuItem
+                          onClick={() => {
+                            setOpenTransferModal(true), handleClose();
+                          }}
+                        >
                           <Stack
                             display="flex"
                             gap={1.2}
@@ -542,7 +546,11 @@ export default function FarmManager({ feeds }: Props) {
                             </Typography>
                           </Stack>
                         </MenuItem>
-                        <MenuItem onClick={() => setOpenHarvestModal(true)}>
+                        <MenuItem
+                          onClick={() => {
+                            setOpenHarvestModal(true), handleClose();
+                          }}
+                        >
                           <Stack
                             display="flex"
                             gap={1.2}
@@ -553,7 +561,11 @@ export default function FarmManager({ feeds }: Props) {
                           </Stack>
                         </MenuItem>
 
-                        <MenuItem onClick={() => setOpenMoralityModal(true)}>
+                        <MenuItem
+                          onClick={() => {
+                            setOpenMoralityModal(true), handleClose();
+                          }}
+                        >
                           <Stack
                             display="flex"
                             gap={1.2}
