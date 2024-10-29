@@ -2773,6 +2773,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
                       <TextField
                         label="Carbohydrates *"
                         type="text"
+                        InputProps={{ readOnly: true }}
                         className="form-input"
                         {...register("nutritionalGuarantee.carbohydrates.kg", {
                           required: true,

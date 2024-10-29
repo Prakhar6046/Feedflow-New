@@ -69,7 +69,6 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
 
   const onSubmit: SubmitHandler<FormInputs> = async (data) => {
     const loggedUserData = JSON.parse(userData);
-
     const {
       hatchingDate,
       spawningDate,
