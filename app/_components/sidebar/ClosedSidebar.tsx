@@ -128,7 +128,6 @@ function ClosedSidebar() {
             }}
           />
 
-
           <Link href={"/dashboard/fishSupply"} className="nav-links">
             <ListItem
               sx={{
@@ -138,9 +137,7 @@ function ClosedSidebar() {
             >
               <ListItemButton
                 className={
-                  activePage.startsWith("/dashboard/fishSupply")
-                    ? "active"
-                    : ""
+                  activePage.startsWith("/dashboard/fishSupply") ? "active" : ""
                 }
                 sx={{
                   display: "flex",
@@ -250,9 +247,7 @@ function ClosedSidebar() {
             >
               <ListItemButton
                 className={
-                  activePage.startsWith("/dashboard/feedSupply")
-                    ? "active"
-                    : ""
+                  activePage.startsWith("/dashboard/feedSupply") ? "active" : ""
                 }
                 sx={{
                   display: "flex",
@@ -303,7 +298,7 @@ function ClosedSidebar() {
             }}
           />
 
-          <Link href={"/dashboard/fishSupply"} className="nav-links">
+          <Link href={"/dashboard/farmManager"} className="nav-links">
             <ListItem
               sx={{
                 paddingX: 0,
@@ -312,7 +307,7 @@ function ClosedSidebar() {
             >
               <ListItemButton
                 className={
-                  activePage.startsWith("/dashboard/fishSupply")
+                  activePage.startsWith("/dashboard/farmManager")
                     ? "active"
                     : ""
                 }
@@ -332,21 +327,14 @@ function ClosedSidebar() {
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    width="1.5em"
-                    height="1.5em"
-                    viewBox="0 0 21 21"
+                    width="1.6em"
+                    height="1.2em"
+                    viewBox="0 0 24 24"
                   >
-                    <g
-                      fill="none"
-                      fillRule="evenodd"
-                      stroke="#0E848E"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path d="m10.5 15.429l3.548 1.837a1 1 0 0 0 .907.006l2.992-1.496a1 1 0 0 0 .553-.894v-2.764a1 1 0 0 0-.553-.894L14.5 9.5l-3.46 1.792a1 1 0 0 0-.54.888z" />
-                      <path d="m3.04 15.708l3.008 1.558a1 1 0 0 0 .907.006L10.5 15.5v-3.382a1 1 0 0 0-.553-.894L6.5 9.5l-3.46 1.792a1 1 0 0 0-.54.888v2.64a1 1 0 0 0 .54.888M6.5 9.429l3.548 1.837a1 1 0 0 0 .907.006L14.5 9.5V6.118a1 1 0 0 0-.553-.894l-2.992-1.496a1 1 0 0 0-.907.006L7.04 5.292a1 1 0 0 0-.54.888z" />
-                      <path d="m6.846 5.673l3.207 1.603a1 1 0 0 0 .894 0L14.12 5.69h0m-3.274 5.983l3.207 1.603a1 1 0 0 0 .894 0l3.172-1.586h0m-15.273-.017l3.207 1.603a1 1 0 0 0 .894 0l3.172-1.586h0M10.5 7.5v4m4 2V17m-8-3.5V17" />
-                    </g>
+                    <path
+                      fill="#0E848E"
+                      d="M20 21h-3v-2h3zm0-4h-3v-2h3zm0-4h-3v-2h3zm4-5.2C23.6 4.5 20.8 2 17.5 2c-1.7 0-3.4.7-4.6 1.9c-.7.7-1.2 1.4-1.5 2.3L15.6 9H22v13h2zM13.3 7c.6-1.8 2.3-3 4.2-3s3.6 1.2 4.2 3zM7.5 6L0 11v11h15V11zM13 20h-3v-6H5v6H2v-8l5.5-3.5L13 12z"
+                    />
                   </svg>
                 </ListItemIcon>
                 <ListItemText
@@ -356,14 +344,14 @@ function ClosedSidebar() {
                     textAlign: "center",
                   }}
                 >
-                  Farm
+                  Farm Manager
                 </ListItemText>
               </ListItemButton>
             </ListItem>
           </Link>
 
           <Link
-            href={"/dashboard/farm"}
+            href={"/dashboard/feedStore"}
             className="nav-links"
             onClick={() => dispatch(farmAction.resetState())}
           >
@@ -375,7 +363,7 @@ function ClosedSidebar() {
             >
               <ListItemButton
                 className={
-                  activePage.startsWith("/dashboard/farm") ? "active" : ""
+                  activePage.startsWith("/dashboard/feedStore") ? "active" : ""
                 }
                 sx={{
                   display: "flex",
@@ -391,8 +379,16 @@ function ClosedSidebar() {
                     marginRight: 0,
                   }}
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="1.4em" height="1.4em" viewBox="0 0 256 256">
-                    <path fill="#0E848E" d="M240 208h-8V72a8 8 0 0 0-8-8h-40V40a8 8 0 0 0-8-8H80a8 8 0 0 0-8 8v56H32a8 8 0 0 0-8 8v104h-8a8 8 0 0 0 0 16h224a8 8 0 0 0 0-16M40 112h40a8 8 0 0 0 8-8V48h80v24a8 8 0 0 0 8 8h40v128h-64v-40a8 8 0 0 0-8-8h-32a8 8 0 0 0-8 8v40H40Zm96 96h-16v-32h16ZM112 72a8 8 0 0 1 8-8h16a8 8 0 0 1 0 16h-16a8 8 0 0 1-8-8m0 32a8 8 0 0 1 8-8h16a8 8 0 0 1 0 16h-16a8 8 0 0 1-8-8m56 0a8 8 0 0 1 8-8h16a8 8 0 0 1 0 16h-16a8 8 0 0 1-8-8m-80 32a8 8 0 0 1-8 8H64a8 8 0 0 1 0-16h16a8 8 0 0 1 8 8m0 32a8 8 0 0 1-8 8H64a8 8 0 0 1 0-16h16a8 8 0 0 1 8 8m24-32a8 8 0 0 1 8-8h16a8 8 0 0 1 0 16h-16a8 8 0 0 1-8-8m56 0a8 8 0 0 1 8-8h16a8 8 0 0 1 0 16h-16a8 8 0 0 1-8-8m0 32a8 8 0 0 1 8-8h16a8 8 0 0 1 0 16h-16a8 8 0 0 1-8-8" />
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="1.4em"
+                    height="1.4em"
+                    viewBox="0 0 256 256"
+                  >
+                    <path
+                      fill="#0E848E"
+                      d="M240 208h-8V72a8 8 0 0 0-8-8h-40V40a8 8 0 0 0-8-8H80a8 8 0 0 0-8 8v56H32a8 8 0 0 0-8 8v104h-8a8 8 0 0 0 0 16h224a8 8 0 0 0 0-16M40 112h40a8 8 0 0 0 8-8V48h80v24a8 8 0 0 0 8 8h40v128h-64v-40a8 8 0 0 0-8-8h-32a8 8 0 0 0-8 8v40H40Zm96 96h-16v-32h16ZM112 72a8 8 0 0 1 8-8h16a8 8 0 0 1 0 16h-16a8 8 0 0 1-8-8m0 32a8 8 0 0 1 8-8h16a8 8 0 0 1 0 16h-16a8 8 0 0 1-8-8m56 0a8 8 0 0 1 8-8h16a8 8 0 0 1 0 16h-16a8 8 0 0 1-8-8m-80 32a8 8 0 0 1-8 8H64a8 8 0 0 1 0-16h16a8 8 0 0 1 8 8m0 32a8 8 0 0 1-8 8H64a8 8 0 0 1 0-16h16a8 8 0 0 1 8 8m24-32a8 8 0 0 1 8-8h16a8 8 0 0 1 0 16h-16a8 8 0 0 1-8-8m56 0a8 8 0 0 1 8-8h16a8 8 0 0 1 0 16h-16a8 8 0 0 1-8-8m0 32a8 8 0 0 1 8-8h16a8 8 0 0 1 0 16h-16a8 8 0 0 1-8-8"
+                    />
                   </svg>
                 </ListItemIcon>
                 <ListItemText
@@ -408,7 +404,7 @@ function ClosedSidebar() {
             </ListItem>
           </Link>
 
-          <Link href={"/dashboard/feedSupply"} className="nav-links">
+          <Link href={"/dashboard/sample"} className="nav-links">
             <ListItem
               sx={{
                 paddingX: 0,
@@ -417,9 +413,7 @@ function ClosedSidebar() {
             >
               <ListItemButton
                 className={
-                  activePage.startsWith("/dashboard/feedSupply")
-                    ? "active"
-                    : ""
+                  activePage.startsWith("/dashboard/sample") ? "active" : ""
                 }
                 sx={{
                   display: "flex",
@@ -435,12 +429,13 @@ function ClosedSidebar() {
                     marginRight: 0,
                   }}
                 >
-                  <Image src={SampleIcon}
+                  <Image
+                    src={SampleIcon}
                     width={24}
                     height={24}
                     unoptimized={true}
-                    alt="Sample Icon" />
-
+                    alt="Sample Icon"
+                  />
                 </ListItemIcon>
                 <ListItemText
                   className="closed-nav-links"
@@ -455,7 +450,7 @@ function ClosedSidebar() {
             </ListItem>
           </Link>
 
-          <Link href={"/dashboard/feedSupply"} className="nav-links">
+          <Link href={"/dashboard/feedPrediction"} className="nav-links">
             <ListItem
               sx={{
                 paddingX: 0,
@@ -464,7 +459,7 @@ function ClosedSidebar() {
             >
               <ListItemButton
                 className={
-                  activePage.startsWith("/dashboard/feedSupply")
+                  activePage.startsWith("/dashboard/feedPrediction")
                     ? "active"
                     : ""
                 }
@@ -482,8 +477,19 @@ function ClosedSidebar() {
                     marginRight: 0,
                   }}
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="1.4em" height="1.4em" viewBox="0 0 24 24">
-                    <g fill="none" stroke="#0E848E" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="1.4em"
+                    height="1.4em"
+                    viewBox="0 0 24 24"
+                  >
+                    <g
+                      fill="none"
+                      stroke="#0E848E"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="1.5"
+                    >
                       <path d="M3.5 4v12.5a4 4 0 0 0 4 4H20" />
                       <path d="m7 14l3.293-3.293a1 1 0 0 1 1.414 0l1.336 1.336a1 1 0 0 0 1.414 0L19 7.5l.648-.649M15 6.5h3.8c.331 0 .631.134.848.351M20 11.5V7.7c0-.331-.134-.631-.352-.849" />
                     </g>
