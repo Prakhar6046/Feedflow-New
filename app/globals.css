@@ -49,6 +49,12 @@ body {
 .table-edit-menu ul {
   padding: 0;
 }
+.table-edit-menu-item div:nth-child(3) {
+  border-radius: 8px;
+  box-shadow: 1px 1px 5px rgba(151, 151, 151, 0.03);
+  width: 150px;
+  transform: translate(64px, -70px) !important;
+}
 
 .table-edit-menu ul li {
   border-radius: 8px;

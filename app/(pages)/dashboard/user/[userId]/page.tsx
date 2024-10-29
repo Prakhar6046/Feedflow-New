@@ -31,6 +31,7 @@ import * as validationPattern from "@/app/_lib/utils/validationPatterns/index";
 import * as validationMessage from "@/app/_lib/utils/validationsMessage/index";
 import { selectRole } from "@/lib/features/user/userSlice";
 import { useAppSelector } from "@/lib/hooks";
+import { selectIsEditFeed } from "@/lib/features/feed/feedSlice";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -340,6 +341,23 @@ export default function Page({ params }: { params: { userId: string } }) {
                     />
                   </Button>
                 </Button>
+
+                {/* <Button
+                  type="button"
+                  variant="contained"
+                  sx={{
+                    background: "#fff",
+                    color: "#06A19B",
+                    fontWeight: 600,
+                    padding: "6px 16px",
+                    width: "fit-content",
+                    textTransform: "capitalize",
+                    borderRadius: "8px",
+                    border: "1px solid #06A19B",
+                  }}
+                >
+                  Edit
+                </Button> */}
               </Grid>
 
               <Grid
