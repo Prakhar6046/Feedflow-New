@@ -64,7 +64,7 @@ export async function POST(req: NextRequest) {
               style="background-color: #f2f2f2; line-height: 1.7rem; font-family: 'Arial', sans-serif; padding: 25px 0px; height: 100vh !important; font-size: 18px;">
               <div class="main" style="margin: 0 auto; max-width: 650px; width: 90%">
                 <div class="main-content" style="background: #fff; padding: 30px 20px; margin-top: 10px; box-shadow: 0 0 10px lightgray; border-radius: 10px;">
-                  <img src="/public/static/img/logo.png" alt="Logo" class="logo-img" style="width: 200px; margin-bottom: 20px" />
+                  <img src="public/static/img/logo.png" alt="Logo" class="logo-img" style="width: 200px; margin-bottom: 20px" />
                   <h3 class="m-0" style="margin: 0">Hi ${user.name}</h3>
                   <p class="m-0" style="margin: 10px 0">You are invited to join Feedflow.</p>
                   <p style="line-height: 1.4; font-size: 16px; color: #505050; margin: 0">

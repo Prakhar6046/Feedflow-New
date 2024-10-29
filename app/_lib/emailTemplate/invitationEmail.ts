@@ -45,7 +45,7 @@ export const InvitationEmail = async (user: any) => {
                 "
               >
                 <img
-                  src="/public/static/img/logo.png"
+                  src="public/static/img/logo.png"
                   alt="Logo"
                   class="logo-img"
                   style="width: 200px; margin-bottom: 20px"
