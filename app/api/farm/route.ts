@@ -20,7 +20,7 @@ export const GET = async (request: NextRequest) => {
       where: {
         ...(filter === "true"
           ? {}
-          : role !== "SUPERADMIN" && !filter && organisationId
+          : role !== "SUPERADMIN" && organisationId
           ? { organisationId: Number(organisationId) }
           : {}),
 
