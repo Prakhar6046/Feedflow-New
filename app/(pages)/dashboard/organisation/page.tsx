@@ -36,7 +36,10 @@ export default async function Page({
           { name: "Organisations", link: "/dashboard/organisation" },
         ]}
       />
-      <BasicTable organisations={organisations?.data} />
+      <BasicTable
+        organisations={organisations?.data}
+        userRole={user?.data?.user?.role}
+      />
     </>
   );
 }

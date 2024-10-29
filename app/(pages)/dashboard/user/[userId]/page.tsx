@@ -132,7 +132,7 @@ export default function Page({ params }: { params: { userId: string } }) {
     resetField,
     watch,
     formState: { errors },
-  } = useForm<UserEditFormInputs>();
+  } = useForm<UserEditFormInputs>({ mode: "onChange" });
   const onSubmit: SubmitHandler<UserEditFormInputs> = async (data) => {
     const formData = new FormData();
     formData.append("name", data.name);
@@ -449,7 +449,7 @@ export default function Page({ params }: { params: { userId: string } }) {
                 </Box>
 
                 <TextField
-                  label="Organisation"
+                  label="Organisation Type"
                   type="text"
                   className="form-input"
                   InputProps={{
@@ -615,16 +615,18 @@ export default function Page({ params }: { params: { userId: string } }) {
                       style={{ cursor: "pointer" }}
                     />
                   </Box>
-                  {errors && errors.confirmPassword?.type == "required" && (
-                    <Typography
-                      variant="body2"
-                      color="red"
-                      fontSize={13}
-                      mt={0.5}
-                    >
-                      Please Re-enter Password.
-                    </Typography>
-                  )}
+                  {errors &&
+                    watch("password") &&
+                    errors.confirmPassword?.type == "required" && (
+                      <Typography
+                        variant="body2"
+                        color="red"
+                        fontSize={13}
+                        mt={0.5}
+                      >
+                        Please Re-enter Password.
+                      </Typography>
+                    )}
                   {errors && errors.confirmPassword?.type == "validate" && (
                     <Typography
                       variant="body2"

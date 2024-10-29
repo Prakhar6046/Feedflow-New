@@ -29,14 +29,15 @@ export default function Page() {
       },
       body: JSON.stringify({ email, password }),
     });
-
     const data = await response.json();
-    dispatch(userAction.handleRole(data.data.user.role));
-    setCookie("logged-user", data);
+    if (response.ok) {
+      dispatch(userAction.handleRole(data.data.user.role));
+      setCookie("logged-user", data);
 
-    setCookie("role", data?.data?.user?.role);
-    if (data.status) {
-      router.push("/dashboard/organisation");
+      setCookie("role", data?.data?.user?.role);
+      if (data.status) {
+        router.push("/dashboard/organisation");
+      }
     }
     if (data?.error) {
       toast.error(data?.error);

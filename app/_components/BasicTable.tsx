@@ -32,9 +32,10 @@ import {
 
 interface Props {
   organisations: SingleOrganisation[];
+  userRole: string;
 }
 
-export default function BasicTable({ organisations }: Props) {
+export default function BasicTable({ organisations, userRole }: Props) {
   const router = useRouter();
   const pathName = usePathname();
   const dispatch = useAppDispatch();
@@ -430,30 +431,32 @@ export default function BasicTable({ organisations }: Props) {
                               <Typography variant="subtitle2">Edit</Typography>
                             </Stack>
                           </MenuItem>
-                          <MenuItem onClick={handleInviteOrganisation}>
-                            <Stack
-                              display="flex"
-                              gap={1.2}
-                              alignItems="center"
-                              direction="row"
-                            >
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="1em"
-                                height="1em"
-                                viewBox="0 0 24 24"
+                          {userRole === "SUPERADMIN" && (
+                            <MenuItem onClick={handleInviteOrganisation}>
+                              <Stack
+                                display="flex"
+                                gap={1.2}
+                                alignItems="center"
+                                direction="row"
                               >
-                                <path
-                                  fill="currentColor"
-                                  d="M19 17v2H7v-2s0-4 6-4s6 4 6 4m-3-9a3 3 0 1 0-3 3a3 3 0 0 0 3-3m3.2 5.06A5.6 5.6 0 0 1 21 17v2h3v-2s0-3.45-4.8-3.94M18 5a2.9 2.9 0 0 0-.89.14a5 5 0 0 1 0 5.72A2.9 2.9 0 0 0 18 11a3 3 0 0 0 0-6M8 10H5V7H3v3H0v2h3v3h2v-3h3Z"
-                                />
-                              </svg>
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  width="1em"
+                                  height="1em"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    fill="currentColor"
+                                    d="M19 17v2H7v-2s0-4 6-4s6 4 6 4m-3-9a3 3 0 1 0-3 3a3 3 0 0 0 3-3m3.2 5.06A5.6 5.6 0 0 1 21 17v2h3v-2s0-3.45-4.8-3.94M18 5a2.9 2.9 0 0 0-.89.14a5 5 0 0 1 0 5.72A2.9 2.9 0 0 0 18 11a3 3 0 0 0 0-6M8 10H5V7H3v3H0v2h3v3h2v-3h3Z"
+                                  />
+                                </svg>
 
-                              <Typography variant="subtitle2">
-                                Invite
-                              </Typography>
-                            </Stack>
-                          </MenuItem>
+                                <Typography variant="subtitle2">
+                                  Invite
+                                </Typography>
+                              </Stack>
+                            </MenuItem>
+                          )}
                         </Menu>
                       </TableCell>
                     )}
