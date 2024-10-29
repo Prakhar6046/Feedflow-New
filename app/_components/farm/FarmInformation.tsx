@@ -110,7 +110,7 @@ const FarmInformation: NextPage<Props> = ({
     getFeedSupplyer();
   }, []);
   useEffect(() => {
-    if (!editFarm && newFarmInfoLocal) {
+    if (newFarmInfoLocal) {
       const farmInfo = JSON.parse(newFarmInfoLocal);
       setValue("name", farmInfo.name);
       setValue("farmAltitude", farmInfo.farmAltitude);
@@ -124,7 +124,7 @@ const FarmInformation: NextPage<Props> = ({
       setValue("country", farmInfo.country);
       setValue("zipCode", farmInfo.zipCode);
     }
-  }, [newFarmInfoLocal, editFarm]);
+  }, [newFarmInfoLocal]);
 
   if (loading) {
     return <Loader />;

@@ -98,37 +98,57 @@ function HatcheryForm({
             {validationMessage.OnlyAlphabetsandNumberMessage}
           </Typography>
         )}
-      <TextField
-        label="Hatchery Altitude *"
-        type="text"
-        className="form-input"
-        {...register("hatcheryAltitude", {
-          required: true,
-          pattern: validationPattern.numbersWithDot,
-        })}
-        // disabled
-        sx={{
-          width: "100%",
-          my: 2,
-        }}
-        focused
-        // focused={watch("hatcheryAltitude") ? true : false}
-        // value={userData?.data.email ?? "Demo@gmail.com"}
-      />
-      {errors &&
-        errors.hatcheryAltitude &&
-        errors.hatcheryAltitude.type === "required" && (
-          <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
-            {validationMessage.required}
-          </Typography>
-        )}
-      {errors &&
-        errors.hatcheryAltitude &&
-        errors.hatcheryAltitude.type === "pattern" && (
-          <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
-            {validationMessage.OnlyNumbersWithDot}
-          </Typography>
-        )}
+      <Box position={"relative"}>
+        <TextField
+          label="Hatchery Altitude *"
+          type="text"
+          className="form-input"
+          {...register("hatcheryAltitude", {
+            required: true,
+            pattern: validationPattern.numbersWithDot,
+          })}
+          // disabled
+          sx={{
+            width: "100%",
+            my: 2,
+          }}
+          focused
+          // focused={watch("hatcheryAltitude") ? true : false}
+          // value={userData?.data.email ?? "Demo@gmail.com"}
+        />
+        <Typography
+          variant="body2"
+          color="#555555AC"
+          sx={{
+            position: "absolute",
+            right: 6,
+            top: errors?.hatcheryAltitude ? "35%" : "50%",
+            transform: "translate(-6px, -50%)",
+            backgroundColor: "#fff",
+            height: 30,
+            display: "grid",
+            placeItems: "center",
+            zIndex: 1,
+            pl: 1,
+          }}
+        >
+          m
+        </Typography>
+        {errors &&
+          errors.hatcheryAltitude &&
+          errors.hatcheryAltitude.type === "required" && (
+            <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+              {validationMessage.required}
+            </Typography>
+          )}
+        {errors &&
+          errors.hatcheryAltitude &&
+          errors.hatcheryAltitude.type === "pattern" && (
+            <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+              {validationMessage.OnlyNumbersWithDot}
+            </Typography>
+          )}
+      </Box>
       <FormControl fullWidth focused className="form-input">
         <InputLabel id="feed-supply-select-label5">Species *</InputLabel>
         <Select
