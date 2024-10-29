@@ -49,7 +49,7 @@ interface FormInputs {
 }
 function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
   const router = useRouter();
-  const userData = getCookie("logged-user");
+  const userData: any = getCookie("logged-user");
   const [loading, setLoading] = useState<boolean>(false);
   const [fishSupply, setFishSupply] = useState<FishSupply>();
   const getFishSupply = async () => {
@@ -68,6 +68,8 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
   });
 
   const onSubmit: SubmitHandler<FormInputs> = async (data) => {
+    const loggedUserData = JSON.parse(userData);
+
     const {
       hatchingDate,
       spawningDate,
@@ -82,6 +84,7 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
       organisation: Number(data.organisation),
       spawningNumber: Number(data.spawningNumber),
       productionUnits: data.productionUnits,
+      organisationId: loggedUserData.data.user.organisationId,
       ...restData,
     };
 
