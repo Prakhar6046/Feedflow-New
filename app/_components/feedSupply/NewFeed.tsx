@@ -83,7 +83,6 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
   const [feedSuppliers, setFeedSuppliers] = useState<any>();
   const isEditFeed = useAppSelector(selectIsEditFeed);
   const [isCarbohydrate, setIsCarbohydrate] = useState<boolean>(false);
-  const [calculateError, setCalculateError] = useState<string>("");
   const [editFeedSpecification, setEditFeedSpecification] = useState<any>();
   const {
     register,
@@ -94,7 +93,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
     getValues,
     trigger,
     formState: { errors },
-  } = useForm<FormInputs>();
+  } = useForm<FormInputs>({ mode: "onChange" });
   const onSubmit: SubmitHandler<FormInputs> = async (data) => {
     const loggedUserData = JSON.parse(loggedUser);
     if (data) {
@@ -163,9 +162,9 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
         Number(nutritionalGuarantee?.crudeAsh?.kg);
 
       setValue("nutritionalGuarantee.carbohydrates.kg", String(value));
-      setCalculateError("");
     } else {
-      setCalculateError(
+      toast.dismiss();
+      toast.error(
         "Please fill moisture, crude Protein, crude Fat, crude fiber and crude Ash"
       );
     }
@@ -3190,32 +3189,6 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
                           />
                         </svg>
                       </Box>
-                    )}
-                  </Grid>
-                  <Grid
-                    item
-                    xl={6}
-                    xs={12}
-                    sx={{
-                      display: "flex",
-                      gap: 1.5,
-                      alignItems: "center",
-                      justifyContent: "left",
-                      minWidth: "200px",
-                      overflowX: "auto",
-                      pb: 1.5,
-                    }}
-                  >
-                    {calculateError && (
-                      <Typography
-                        variant="body2"
-                        color="red"
-                        fontSize={13}
-                        mt={0.5}
-                        ml={3.5}
-                      >
-                        {calculateError}
-                      </Typography>
                     )}
                   </Grid>
                 </Grid>

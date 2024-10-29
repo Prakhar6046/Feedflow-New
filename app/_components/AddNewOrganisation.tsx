@@ -63,7 +63,6 @@ export const RoleType = ["Admin", "Member"];
 const AddNewOrganisation = () => {
   const [profilePic, setProfilePic] = useState<String>();
   const router = useRouter();
-  const [contactError, setcontactError] = useState<string>("");
   const [isHatcherySelected, setIsHatcherySelected] = useState<boolean>(false);
   const [addressInformation, setAddressInformation] = useState<any>();
   const [useAddress, setUseAddress] = useState<boolean>(false);
@@ -120,10 +119,10 @@ const AddNewOrganisation = () => {
         lastContact.email &&
         lastContact.phone
       ) {
-        setcontactError("");
         append({ name: "", role: "", email: "", phone: "" });
       } else {
-        setcontactError("Please fill previous contact details.");
+        toast.dismiss();
+        toast.error("Please fill previous contact details.");
       }
     }
   };
@@ -224,7 +223,7 @@ const AddNewOrganisation = () => {
               backgroundRepeat: "no-repeat",
               margin: "0 !important",
             }}
-            startIcon={<CloudUploadIcon />}
+            startIcon={!profilePic && <CloudUploadIcon />}
             className="upload-file-input"
             sx={{
               textTransform: "unset",
@@ -246,17 +245,7 @@ const AddNewOrganisation = () => {
               alignItems: "center",
             }}
           >
-            <Box>
-              Drag file here or{" "}
-              {/* <Link
-                href="/"
-                style={{
-                  color: "#06a19b",
-                }}
-              > */}
-              Upload from Device
-              {/* </Link> */}
-            </Box>
+            <Box>{!profilePic && "Drag file here or Upload from Device"}</Box>
             <VisuallyHiddenInput
               type="file"
               {...register("image", {
@@ -264,6 +253,44 @@ const AddNewOrganisation = () => {
               })}
               multiple
             />
+            <Button
+              component="label"
+              variant="contained"
+              sx={{
+                background: "#06A19B",
+                color: "#fff",
+                fontWeight: 600,
+                padding: "4px",
+                textTransform: "capitalize",
+                borderRadius: "10px",
+                border: "1px solid #06A19B",
+                position: "absolute",
+                bottom: "1%",
+                display: "flex",
+                alignItems: "center",
+                gap: "2px",
+              }}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="1em"
+                height="1em"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  fill="currentColor"
+                  d="M3 21v-4.25L16.2 3.575q.3-.275.663-.425t.762-.15t.775.15t.65.45L20.425 5q.3.275.438.65T21 6.4q0 .4-.137.763t-.438.662L7.25 21zM17.6 7.8L19 6.4L17.6 5l-1.4 1.4z"
+                />
+              </svg>
+              Edit
+              <VisuallyHiddenInput
+                type="file"
+                {...register("image", {
+                  onChange: (e) => handleUpload(e.target.files),
+                })}
+                multiple
+              />
+            </Button>
           </Button>
 
           <Box
@@ -1046,11 +1073,7 @@ const AddNewOrganisation = () => {
                 )}
               </Stack>
             ))}
-            {contactError && (
-              <Typography variant="body2" color="red" fontSize={13} my={0.5}>
-                {contactError}
-              </Typography>
-            )}
+
             <Divider
               sx={{
                 borderColor: "#979797",
