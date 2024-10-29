@@ -1,33 +1,29 @@
 "use client";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import {
   Box,
-  Divider,
   FormControl,
-  FormControlLabel,
   Grid,
   InputLabel,
   MenuItem,
   Select,
   SelectChangeEvent,
   Stack,
-  Switch,
-  SwitchProps,
   TextField,
   Typography,
 } from "@mui/material";
-import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import { styled } from "@mui/material/styles";
 import { useEffect, useState } from "react";
 
 import Loader from "@/app/_components/Loader";
 import { SubmitHandler, useForm } from "react-hook-form";
 
-import toast from "react-hot-toast";
 import { getCookie } from "cookies-next";
 import { useRouter } from "next/navigation";
-import { AddUserFormInputs, SingleUser } from "../_typeModels/User";
+import toast from "react-hot-toast";
 import { SingleOrganisation } from "../_typeModels/Organization";
+import { AddUserFormInputs, SingleUser } from "../_typeModels/User";
 
 interface Props {
   organisations?: SingleOrganisation[];

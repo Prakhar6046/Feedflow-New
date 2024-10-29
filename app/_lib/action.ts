@@ -1,35 +1,15 @@
 import { revalidatePath } from "next/cache";
-// interface GETUSERS {
-//   role: string |;
-//   organisationId: number;
-// }
-
-export const getAllOrganisations = async () => {
-  try {
-    const data = await fetch(`${process.env.BASE_URL}/api/organisation/all`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    revalidatePath("/dashboard/organisation");
-    revalidatePath("/dashboard/user");
-    return await data.json();
-  } catch (error) {
-    return error;
-  }
-};
-export const getOrganisations = async (
-  organisationId?: number,
-  role?: string,
-  query?: string
-) => {
+export const getOrganisations = async (payload: {
+  role?: string;
+  organisationId?: string;
+  query?: string;
+}) => {
   try {
     const data = await fetch(
       `${process.env.BASE_URL}/api/organisation${
-        organisationId && role
-          ? `?organisationId=${organisationId}&role=${role}&query=${query}`
-          : `?query=${query}`
+        payload.organisationId && payload.role
+          ? `?organisationId=${payload.organisationId}&role=${payload.role}&query=${payload.query}`
+          : `?query=${payload.query}`
       }`,
       {
         method: "GET",
@@ -75,7 +55,6 @@ export const getUser = async (userId: string) => {
     return error;
   }
 };
-
 export const AddNewFeedSupply = async (formData: any) => {
   try {
     const data = await fetch(
@@ -185,7 +164,3 @@ export const getOrganisationForhatchery = async () => {
     return error;
   }
 };
-// const getFishSupplyById = async (fishSupplyId: string) => {
-//   const response = await fetch(`/api/fish/${fishSupplyId}`);
-//   return response.json();
-// };

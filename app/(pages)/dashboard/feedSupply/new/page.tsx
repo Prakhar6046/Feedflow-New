@@ -19,7 +19,12 @@ export default function Page() {
   );
 
   useEffect(() => {
-    setCookie("activeStep", activeStep);
+    const userOrganisationType = JSON.parse(loggedUser);
+    if (userOrganisationType?.data?.user?.role === "SUPERADMIN") {
+      setCookie("activeStep", 0);
+    } else {
+      setCookie("activeStep", activeStep);
+    }
   }, [activeStep]);
   useEffect(() => {
     if (loggedUser) {
