@@ -413,3 +413,7 @@ body {
 .hatchery-table table tbody tr td:last-child {
   padding-left: 40px !important;
 }
+.css-1xomo8h-MuiPaper-root-MuiPopover-paper-MuiMenu-paper {
+  box-shadow: none !important;
+  min-height: 0px !important;
+}

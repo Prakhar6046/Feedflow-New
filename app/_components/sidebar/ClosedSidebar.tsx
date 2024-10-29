@@ -36,13 +36,14 @@ function ClosedSidebar() {
         top: "0",
         left: "0",
         height: "100vh !important",
+        overflowY: "auto",
+        overflowX: "hidden",
       }}
     >
       <Box
         position={"relative"}
         paddingTop={3}
         paddingInline={1}
-        height={"100%"}
         sx={{
           width: 96,
           transition: "width 1s !important",
