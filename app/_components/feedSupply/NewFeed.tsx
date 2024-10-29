@@ -115,6 +115,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
             : JSON.stringify({
                 ...data,
                 createdBy: String(loggedUserData.data.user.id),
+                organisationId: loggedUserData.data.user.organisationId,
               }),
         }
       );

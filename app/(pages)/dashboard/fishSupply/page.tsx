@@ -20,7 +20,12 @@ export default async function Page({
   const query = searchParams?.query || "";
   const loggedUser: any = getCookie("logged-user", { cookies });
   const user = JSON.parse(loggedUser);
-  const fishSupply = await getFishSupply(query);
+
+  const fishSupply = await getFishSupply({
+    organisationId: user.data.user.organisationId,
+    role: user.data.user.role,
+    query,
+  });
   return (
     <>
       <BasicBreadcrumbs

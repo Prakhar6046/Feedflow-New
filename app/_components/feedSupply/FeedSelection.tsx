@@ -15,6 +15,7 @@ import { useEffect, useState } from "react";
 import Loader from "../Loader";
 import { useAppDispatch } from "@/lib/hooks";
 import { feedAction } from "@/lib/features/feed/feedSlice";
+import { getCookie } from "cookies-next";
 
 interface Props {
   setActiveStep: (val: number) => void;
@@ -88,10 +89,15 @@ export interface FeedSupply {
 const FeedSelection: NextPage<Props> = ({ setActiveStep, editFarm }) => {
   const router = useRouter();
   const dispatch = useAppDispatch();
+  const loggedUserDataLocal: any = getCookie("logged-user");
+  const loggedUser = JSON.parse(loggedUserDataLocal);
+
   const [feedSupply, setFeedSupply] = useState<FeedSupply[]>();
   const [loading, setLoading] = useState<boolean>(false);
   const getFeedSupplys = async () => {
-    const response = await fetch("/api/feedSupply");
+    const response = await fetch(
+      `/api/feedSupply?role=${loggedUser.data.user.role}&organisationId=${loggedUser.data.user.organisationId}`
+    );
     return response.json();
   };
   const getNutritionalValue = (val: String) => {

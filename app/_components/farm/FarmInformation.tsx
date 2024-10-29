@@ -112,7 +112,6 @@ const FarmInformation: NextPage<Props> = ({
   useEffect(() => {
     if (!editFarm && newFarmInfoLocal) {
       const farmInfo = JSON.parse(newFarmInfoLocal);
-      console.log(farmInfo);
       setValue("name", farmInfo.name);
       setValue("farmAltitude", farmInfo.farmAltitude);
       setValue("lat", farmInfo.lat);

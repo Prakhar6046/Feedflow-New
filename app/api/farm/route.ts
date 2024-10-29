@@ -3,7 +3,10 @@ import { NextRequest, NextResponse } from "next/server";
 
 export const GET = async (request: NextRequest) => {
   const searchParams = request.nextUrl.searchParams;
+  const role = searchParams.get("role");
+  const organisationId = searchParams.get("organisationId");
   const query = searchParams.get("query");
+  const filter = searchParams.get("filter");
 
   try {
     const farms = await prisma.farm.findMany({
@@ -15,6 +18,12 @@ export const GET = async (request: NextRequest) => {
         createdAt: "desc", // Sort by createdAt in descending order
       },
       where: {
+        ...(filter === "true"
+          ? {}
+          : role !== "SUPERADMIN" && !filter && organisationId
+          ? { organisationId: Number(organisationId) }
+          : {}),
+
         AND: [
           query
             ? {

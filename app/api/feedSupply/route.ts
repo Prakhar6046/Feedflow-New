@@ -4,9 +4,15 @@ import { NextRequest, NextResponse } from "next/server";
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
+    const role = searchParams.get("role");
+    const organisationId = searchParams.get("organisationId");
     const query = searchParams.get("query");
+
     const feedSupplys = await prisma.feedSupply.findMany({
       where: {
+        ...(role !== "SUPERADMIN"
+          ? { organisationId: Number(organisationId) }
+          : {}),
         AND: [
           query
             ? {

@@ -13,7 +13,13 @@ export default async function Page({
   const query = searchParams?.query || "";
   const loggedUser: any = getCookie("logged-user", { cookies });
   const user = JSON.parse(loggedUser);
-  const famrs = await getFarms(query);
+
+  const famrs = await getFarms({
+    role: user.data.user.role,
+    organisationId: user.data.user.organisationId,
+    query,
+    noFilter: false,
+  });
 
   return (
     <>

@@ -3,7 +3,6 @@ import { NextRequest, NextResponse } from "next/server";
 
 export const GET = async (request: NextRequest, context: { params: any }) => {
   const feedId = context.params.feedSupplyId;
-  console.log(feedId);
 
   if (!feedId) {
     return new NextResponse(

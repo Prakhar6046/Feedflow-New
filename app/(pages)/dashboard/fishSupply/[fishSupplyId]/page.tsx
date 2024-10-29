@@ -8,7 +8,12 @@ export default async function Page({
   params: { fishSupplyId: string };
 }) {
   const organisationForhatchery = await getOrganisationForhatchery();
-  const farms = await getFarms("");
+  const farms = await getFarms({
+    noFilter: true,
+    organisationId: "",
+    role: "",
+    query: "",
+  });
   return (
     <>
       <BasicBreadcrumbs

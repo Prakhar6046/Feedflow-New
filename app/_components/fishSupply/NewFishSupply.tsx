@@ -152,7 +152,7 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
       const loggedUserData = JSON.parse(userData);
 
       setValue("organisation", loggedUserData.data.user.id);
-      if (loggedUserData?.data?.user?.organisation?.Farm[0].id) {
+      if (loggedUserData?.data?.user?.organisation?.Farm[0]?.id) {
         setValue(
           "fishFarmId",
           loggedUserData.data.user.organisation.Farm[0].id

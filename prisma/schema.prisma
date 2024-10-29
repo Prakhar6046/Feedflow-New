@@ -61,6 +61,8 @@ model Organisation {
   hatchery   Hatchery[]   @relation("HatcheryCreator")
   fishSupply FishSupply[] @relation("fishSupplyCreator")
   Farm       Farm[]
+  FeedSupply FeedSupply[]
+  FishSupply FishSupply[]
 
   @@index([createdAt])
   @@index([updatedAt])
@@ -158,7 +160,7 @@ model ProductionUnit {
 }
 
 model FeedSupply {
-  id                   String   @id @default(cuid())
+  id                   String        @id @default(cuid())
   feedIngredients      String
   feedingGuide         String
   productionIntensity  String
@@ -184,8 +186,10 @@ model FeedSupply {
   nutritionalGuarantee Json
   updatedBy            String?
   createdBy            String?
-  createdAt            DateTime @default(now())
-  updatedAt            DateTime @updatedAt
+  createdAt            DateTime      @default(now())
+  updatedAt            DateTime      @updatedAt
+  organisationId       Int?
+  organisation         Organisation? @relation(fields: [organisationId], references: [id])
 
   @@index([createdAt])
   @@index([updatedAt])
@@ -226,6 +230,8 @@ model FishSupply {
   createdAt        DateTime      @default(now())
   updatedAt        DateTime      @updatedAt
   creator          Organisation? @relation("fishSupplyCreator", fields: [createdBy], references: [id])
+  organisationId   Int?
+  organisationData Organisation? @relation(fields: [organisationId], references: [id])
 
   @@index([createdAt])
   @@index([updatedAt])

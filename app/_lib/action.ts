@@ -96,10 +96,14 @@ export const AddNewFeedSupply = async (formData: any) => {
     return error;
   }
 };
-export const getFeedSupplys = async (query?: string) => {
+export const getFeedSupplys = async (payload: {
+  role: string;
+  organisationId: string;
+  query: string;
+}) => {
   try {
     const data = await fetch(
-      `${process.env.BASE_URL}/api/feedSupply?query=${query}`,
+      `${process.env.BASE_URL}/api/feedSupply?role=${payload.role}&organisationId=${payload.organisationId}&query=${payload.query}`,
       {
         method: "GET",
         headers: {
@@ -116,10 +120,14 @@ export const getFeedSupplys = async (query?: string) => {
     return error;
   }
 };
-export const getFishSupply = async (query?: string) => {
+export const getFishSupply = async (payload: {
+  role?: string;
+  organisationId?: string;
+  query?: string;
+}) => {
   try {
     const data = await fetch(
-      `${process.env.BASE_URL}/api/fish?query=${query}`,
+      `${process.env.BASE_URL}/api/fish?role=${payload.role}&organisationId=${payload.organisationId}&query=${payload.query}`,
       {
         method: "GET",
         headers: {
@@ -133,10 +141,15 @@ export const getFishSupply = async (query?: string) => {
     return error;
   }
 };
-export const getFarms = async (query?: string) => {
+export const getFarms = async (payload: {
+  role?: string;
+  organisationId?: string;
+  query?: string;
+  noFilter?: boolean;
+}) => {
   try {
     const data = await fetch(
-      `${process.env.BASE_URL}/api/farm?query=${query}`,
+      `${process.env.BASE_URL}/api/farm?role=${payload.role}&organisationId=${payload.organisationId}&query=${payload.query}&filter=${payload.noFilter}`,
       {
         method: "GET",
         headers: {
