@@ -514,9 +514,7 @@ export default function UserTable({ users }: Props) {
                                 />
                               </svg>
 
-                              <Typography variant="subtitle2">
-                                Transfer
-                              </Typography>
+                              <Typography variant="subtitle2">Edit</Typography>
                             </Stack>
                           </MenuItem>
 

@@ -1,5 +1,4 @@
 "use client";
-
 import { Box, Button, Stack, Tooltip } from "@mui/material";
 import Breadcrumbs from "@mui/material/Breadcrumbs";
 import Typography from "@mui/material/Typography";
@@ -46,60 +45,13 @@ export default function BasicBreadcrumbs({
   const debouncedSearchQuery = useDebounce(searchQuery);
   const dispatch = useAppDispatch();
 
-  // async function SeachedOrganisation(
-  //   query: string,
-  //   organisationId: number,
-  //   role: string
-  // ) {
-  //   let res = await fetch(
-  //     `/api/organisation/search?name=${query}&organisationId=${organisationId}&role=${role}`
-  //   );
-  //   let data = await res.json();
-  //   return data;
-  // }
-  // async function SeachedUsers(
-  //   query: string,
-  //   organisationId: number,
-  //   role: string
-  // ) {
-  //   let res = await fetch(
-  //     `/api/users/search?name=${query}&organisationId=${organisationId}&role=${role}`
-  //   );
-  //   let data = await res.json();
-  //   return data;
-  // }
-  // async function SeachedFarms(query: string) {
-  //   let res = await fetch(`/api/farm/search?name=${query}`);
-  //   let data = await res.json();
-  //   return data;
-  // }
-  // const getSearchOrganisations = async (user: any) => {
-  //   const res = await SeachedOrganisation(
-  //     debouncedSearchQuery,
-  //     user?.data?.user?.organisationId,
-  //     user?.data?.user?.role
-  //   );
-  //   dispatch(organisationAction.updateOrganisations(res.data));
-  // };
-  // const getSearchUsers = async (user: any) => {
-  //   const res = await SeachedUsers(
-  //     debouncedSearchQuery,
-  //     user?.data?.user?.organisationId,
-  //     user?.data?.user?.role
-  //   );
-  //   dispatch(userAction.updateUsers(res.data));
-  // };
-  // const getSearchFarms = async (user: any) => {
-  //   const res = await SeachedFarms(debouncedSearchQuery);
-  //   dispatch(farmAction.updateFarms(res.data));
-  // };
   const handleClear = () => {
     setSearchQuery("");
   };
   const handleClick = () => {
     if (pathName === "/dashboard/feedSupply") {
       if (currentRole === "SUPERADMIN") {
-        setCookie("activeStep", 2);
+        setCookie("activeStep", 0);
       } else if (currentRole === "Feed Supplier") {
         setCookie("activeStep", 1);
       }
@@ -143,18 +95,6 @@ export default function BasicBreadcrumbs({
       setCurrentRole(role);
     }
   }, [role]);
-  // useEffect(() => {
-  //   const user = JSON.parse(loggedUser);
-  //   if (searchOrganisations) {
-  //     getSearchOrganisations(user);
-  //   }
-  //   if (searchUsers) {
-  //     getSearchUsers(user);
-  //   }
-  //   if (searchFarm) {
-  //     getSearchFarms(user);
-  //   }
-  // }, [debouncedSearchQuery, searchOrganisations, searchUsers, searchFarm]);
 
   return (
     <>
