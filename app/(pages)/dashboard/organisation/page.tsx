@@ -15,11 +15,11 @@ export default async function Page({
   const loggedUser: any = getCookie("logged-user", { cookies });
   const user = JSON.parse(loggedUser);
 
-  let organisations = await getOrganisations(
-    user?.data?.user?.organisationId,
-    user?.data?.user?.role,
-    query
-  );
+  let organisations = await getOrganisations({
+    organisationId: user?.data?.user?.organisationId,
+    query,
+    role: user?.data?.user?.role,
+  });
 
   return (
     <>

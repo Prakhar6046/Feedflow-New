@@ -1,8 +1,17 @@
 import AddNewUser from "@/app/_components/AddNewUser";
 import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
-import { getAllOrganisations } from "@/app/_lib/action";
+import { getOrganisations } from "@/app/_lib/action";
+import { getCookie } from "cookies-next";
+import { cookies } from "next/headers";
+// import { getAllOrganisations } from "@/app/_lib/action";
 export default async function Page() {
-  let organisations = await getAllOrganisations();
+  const loggedUser: any = getCookie("logged-user", { cookies });
+  const user = JSON.parse(loggedUser);
+  let organisations = await getOrganisations({
+    organisationId: user?.data?.user?.organisationId,
+    role: user?.data?.user?.role,
+    query: "",
+  });
 
   return (
     <>

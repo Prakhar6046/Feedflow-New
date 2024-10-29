@@ -616,9 +616,9 @@ const ExpandedSidebar = () => {
                     <g
                       fill="none"
                       stroke="#0E848E"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="1.5"
                     >
                       <path d="M3.5 4v12.5a4 4 0 0 0 4 4H20" />
                       <path d="m7 14l3.293-3.293a1 1 0 0 1 1.414 0l1.336 1.336a1 1 0 0 0 1.414 0L19 7.5l.648-.649M15 6.5h3.8c.331 0 .631.134.848.351M20 11.5V7.7c0-.331-.134-.631-.352-.849" />
