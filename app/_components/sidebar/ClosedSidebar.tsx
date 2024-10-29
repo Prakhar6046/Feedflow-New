@@ -36,13 +36,14 @@ function ClosedSidebar() {
         top: "0",
         left: "0",
         height: "100vh !important",
+        overflowY: "auto",
+        overflowX: "hidden",
       }}
     >
       <Box
         position={"relative"}
         paddingTop={3}
         paddingInline={1}
-        height={"100%"}
         sx={{
           width: 96,
           transition: "width 1s !important",
@@ -128,7 +129,6 @@ function ClosedSidebar() {
             }}
           />
 
-
           <Link href={"/dashboard/fishSupply"} className="nav-links">
             <ListItem
               sx={{
@@ -138,9 +138,7 @@ function ClosedSidebar() {
             >
               <ListItemButton
                 className={
-                  activePage.startsWith("/dashboard/fishSupply")
-                    ? "active"
-                    : ""
+                  activePage.startsWith("/dashboard/fishSupply") ? "active" : ""
                 }
                 sx={{
                   display: "flex",
@@ -250,9 +248,7 @@ function ClosedSidebar() {
             >
               <ListItemButton
                 className={
-                  activePage.startsWith("/dashboard/feedSupply")
-                    ? "active"
-                    : ""
+                  activePage.startsWith("/dashboard/feedSupply") ? "active" : ""
                 }
                 sx={{
                   display: "flex",
@@ -312,9 +308,7 @@ function ClosedSidebar() {
             >
               <ListItemButton
                 className={
-                  activePage.startsWith("/dashboard/fishSupply")
-                    ? "active"
-                    : ""
+                  activePage.startsWith("/dashboard/fishSupply") ? "active" : ""
                 }
                 sx={{
                   display: "flex",
@@ -391,8 +385,16 @@ function ClosedSidebar() {
                     marginRight: 0,
                   }}
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="1.4em" height="1.4em" viewBox="0 0 256 256">
-                    <path fill="#0E848E" d="M240 208h-8V72a8 8 0 0 0-8-8h-40V40a8 8 0 0 0-8-8H80a8 8 0 0 0-8 8v56H32a8 8 0 0 0-8 8v104h-8a8 8 0 0 0 0 16h224a8 8 0 0 0 0-16M40 112h40a8 8 0 0 0 8-8V48h80v24a8 8 0 0 0 8 8h40v128h-64v-40a8 8 0 0 0-8-8h-32a8 8 0 0 0-8 8v40H40Zm96 96h-16v-32h16ZM112 72a8 8 0 0 1 8-8h16a8 8 0 0 1 0 16h-16a8 8 0 0 1-8-8m0 32a8 8 0 0 1 8-8h16a8 8 0 0 1 0 16h-16a8 8 0 0 1-8-8m56 0a8 8 0 0 1 8-8h16a8 8 0 0 1 0 16h-16a8 8 0 0 1-8-8m-80 32a8 8 0 0 1-8 8H64a8 8 0 0 1 0-16h16a8 8 0 0 1 8 8m0 32a8 8 0 0 1-8 8H64a8 8 0 0 1 0-16h16a8 8 0 0 1 8 8m24-32a8 8 0 0 1 8-8h16a8 8 0 0 1 0 16h-16a8 8 0 0 1-8-8m56 0a8 8 0 0 1 8-8h16a8 8 0 0 1 0 16h-16a8 8 0 0 1-8-8m0 32a8 8 0 0 1 8-8h16a8 8 0 0 1 0 16h-16a8 8 0 0 1-8-8" />
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="1.4em"
+                    height="1.4em"
+                    viewBox="0 0 256 256"
+                  >
+                    <path
+                      fill="#0E848E"
+                      d="M240 208h-8V72a8 8 0 0 0-8-8h-40V40a8 8 0 0 0-8-8H80a8 8 0 0 0-8 8v56H32a8 8 0 0 0-8 8v104h-8a8 8 0 0 0 0 16h224a8 8 0 0 0 0-16M40 112h40a8 8 0 0 0 8-8V48h80v24a8 8 0 0 0 8 8h40v128h-64v-40a8 8 0 0 0-8-8h-32a8 8 0 0 0-8 8v40H40Zm96 96h-16v-32h16ZM112 72a8 8 0 0 1 8-8h16a8 8 0 0 1 0 16h-16a8 8 0 0 1-8-8m0 32a8 8 0 0 1 8-8h16a8 8 0 0 1 0 16h-16a8 8 0 0 1-8-8m56 0a8 8 0 0 1 8-8h16a8 8 0 0 1 0 16h-16a8 8 0 0 1-8-8m-80 32a8 8 0 0 1-8 8H64a8 8 0 0 1 0-16h16a8 8 0 0 1 8 8m0 32a8 8 0 0 1-8 8H64a8 8 0 0 1 0-16h16a8 8 0 0 1 8 8m24-32a8 8 0 0 1 8-8h16a8 8 0 0 1 0 16h-16a8 8 0 0 1-8-8m56 0a8 8 0 0 1 8-8h16a8 8 0 0 1 0 16h-16a8 8 0 0 1-8-8m0 32a8 8 0 0 1 8-8h16a8 8 0 0 1 0 16h-16a8 8 0 0 1-8-8"
+                    />
                   </svg>
                 </ListItemIcon>
                 <ListItemText
@@ -417,9 +419,7 @@ function ClosedSidebar() {
             >
               <ListItemButton
                 className={
-                  activePage.startsWith("/dashboard/feedSupply")
-                    ? "active"
-                    : ""
+                  activePage.startsWith("/dashboard/feedSupply") ? "active" : ""
                 }
                 sx={{
                   display: "flex",
@@ -435,12 +435,13 @@ function ClosedSidebar() {
                     marginRight: 0,
                   }}
                 >
-                  <Image src={SampleIcon}
+                  <Image
+                    src={SampleIcon}
                     width={24}
                     height={24}
                     unoptimized={true}
-                    alt="Sample Icon" />
-
+                    alt="Sample Icon"
+                  />
                 </ListItemIcon>
                 <ListItemText
                   className="closed-nav-links"
@@ -464,9 +465,7 @@ function ClosedSidebar() {
             >
               <ListItemButton
                 className={
-                  activePage.startsWith("/dashboard/feedSupply")
-                    ? "active"
-                    : ""
+                  activePage.startsWith("/dashboard/feedSupply") ? "active" : ""
                 }
                 sx={{
                   display: "flex",
@@ -482,8 +481,19 @@ function ClosedSidebar() {
                     marginRight: 0,
                   }}
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="1.4em" height="1.4em" viewBox="0 0 24 24">
-                    <g fill="none" stroke="#0E848E" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="1.4em"
+                    height="1.4em"
+                    viewBox="0 0 24 24"
+                  >
+                    <g
+                      fill="none"
+                      stroke="#0E848E"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="1.5"
+                    >
                       <path d="M3.5 4v12.5a4 4 0 0 0 4 4H20" />
                       <path d="m7 14l3.293-3.293a1 1 0 0 1 1.414 0l1.336 1.336a1 1 0 0 0 1.414 0L19 7.5l.648-.649M15 6.5h3.8c.331 0 .631.134.848.351M20 11.5V7.7c0-.331-.134-.631-.352-.849" />
                     </g>
