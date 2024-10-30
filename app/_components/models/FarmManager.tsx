@@ -5,6 +5,7 @@ import {
   Grid,
   IconButton,
   InputLabel,
+  MenuItem,
   Modal,
   Stack,
   TextField,
@@ -52,7 +53,7 @@ const TransferModal: React.FC<Props> = ({ setOpen, open }) => {
 
         <Box padding={3}>
           <Grid container spacing={2}>
-            <Grid item md={6} xs={12}>
+            <Grid item lg={2} md={4} xs={12}>
               <FormControl fullWidth className="form-input">
                 <InputLabel id="">Fish Farm *</InputLabel>
                 <Select
@@ -69,7 +70,7 @@ const TransferModal: React.FC<Props> = ({ setOpen, open }) => {
                 ></Typography>
               </FormControl>
             </Grid>
-            <Grid item md={6} xs={12}>
+            <Grid item lg={2} md={4} xs={12}>
               <FormControl fullWidth className="form-input">
                 <InputLabel id="">Production Unit*</InputLabel>
                 <Select
@@ -86,7 +87,7 @@ const TransferModal: React.FC<Props> = ({ setOpen, open }) => {
               </FormControl>
             </Grid>
 
-            <Grid item md={6} xs={12}>
+            <Grid item lg={2} md={4} xs={12}>
               <TextField
                 label="Biomass (kg) *"
                 type="text"
@@ -101,7 +102,7 @@ const TransferModal: React.FC<Props> = ({ setOpen, open }) => {
               ></Typography>
             </Grid>
 
-            <Grid item md={6} xs={12}>
+            <Grid item lg={2} md={4} xs={12}>
               <TextField
                 label="Count *"
                 type="text"
@@ -116,7 +117,7 @@ const TransferModal: React.FC<Props> = ({ setOpen, open }) => {
               ></Typography>
             </Grid>
 
-            <Grid item md={6} xs={12}>
+            <Grid item lg={2} md={4} xs={12}>
               <TextField
                 label="Mean Weight*"
                 type="text"
@@ -131,7 +132,102 @@ const TransferModal: React.FC<Props> = ({ setOpen, open }) => {
               ></Typography>
             </Grid>
 
-            <Grid item md={6} xs={12}>
+            <Grid item lg={2} md={4} xs={12}>
+              <TextField
+                label="Average Length*"
+                type="text"
+                className="form-input"
+                sx={{ width: "100%" }}
+              />
+              <Typography
+                variant="body2"
+                color="red"
+                fontSize={13}
+                mt={0.5}
+              ></Typography>
+            </Grid>
+          </Grid>
+          <Grid container spacing={2} marginTop={2}>
+            <Grid item lg={2} md={4} xs={12}>
+              <FormControl fullWidth className="form-input">
+                <InputLabel id="">Fish Farm *</InputLabel>
+                <Select
+                  labelId="feed-supply-select-label9"
+                  className="fish-manager"
+                  id="feed-supply-select9"
+                  label="Fish Farm*"
+                ></Select>
+                <Typography
+                  variant="body2"
+                  color="red"
+                  fontSize={13}
+                  mt={0.5}
+                ></Typography>
+              </FormControl>
+            </Grid>
+            <Grid item lg={2} md={4} xs={12}>
+              <FormControl fullWidth className="form-input">
+                <InputLabel id="">Production Unit*</InputLabel>
+                <Select
+                  labelId="feed-supply-select-label9"
+                  id="feed-supply-select9"
+                  label="Production Unit*"
+                ></Select>
+                <Typography
+                  variant="body2"
+                  color="red"
+                  fontSize={13}
+                  mt={0.5}
+                ></Typography>
+              </FormControl>
+            </Grid>
+
+            <Grid item lg={2} md={4} xs={12}>
+              <TextField
+                label="Biomass (kg) *"
+                type="text"
+                className="form-input"
+                sx={{ width: "100%" }}
+              />
+              <Typography
+                variant="body2"
+                color="red"
+                fontSize={13}
+                mt={0.5}
+              ></Typography>
+            </Grid>
+
+            <Grid item lg={2} md={4} xs={12}>
+              <TextField
+                label="Count *"
+                type="text"
+                className="form-input"
+                sx={{ width: "100%" }}
+              />
+              <Typography
+                variant="body2"
+                color="red"
+                fontSize={13}
+                mt={0.5}
+              ></Typography>
+            </Grid>
+
+            <Grid item lg={2} md={4} xs={12}>
+              <TextField
+                label="Mean Weight*"
+                type="text"
+                className="form-input"
+                sx={{ width: "100%" }}
+              />
+              <Typography
+                variant="body2"
+                color="red"
+                fontSize={13}
+                mt={0.5}
+              ></Typography>
+            </Grid>
+
+            <Grid item lg={2} md={4} xs={12}>
               <TextField
                 label="Average Length*"
                 type="text"
@@ -148,7 +244,13 @@ const TransferModal: React.FC<Props> = ({ setOpen, open }) => {
           </Grid>
         </Box>
 
-        <Box padding={3} display={"flex"} alignItems={"center"} gap={"2px"}>
+        <Box
+          padding={3}
+          display={"flex"}
+          alignItems={"center"}
+          gap={"20px"}
+          justifyContent={"center"}
+        >
           <Button
             type="button"
             variant="contained"
@@ -159,7 +261,6 @@ const TransferModal: React.FC<Props> = ({ setOpen, open }) => {
               width: "fit-content",
               textTransform: "capitalize",
               borderRadius: "12px",
-              marginLeft: "auto",
             }}
           >
             ADD UNIT
@@ -174,7 +275,6 @@ const TransferModal: React.FC<Props> = ({ setOpen, open }) => {
               width: "fit-content",
               textTransform: "capitalize",
               borderRadius: "12px",
-              marginLeft: "auto",
             }}
           >
             TRANSFER
@@ -189,7 +289,6 @@ const TransferModal: React.FC<Props> = ({ setOpen, open }) => {
               width: "fit-content",
               textTransform: "capitalize",
               borderRadius: "12px",
-              marginLeft: "auto",
             }}
           >
             CANCEL

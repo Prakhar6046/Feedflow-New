@@ -200,26 +200,52 @@ function AddUnitForm({ farms }: Props) {
             )}  */}
           </Box>{" "}
           <Box mb={2} width={"100%"}>
-            <TextField
-              label="Biomass *"
-              type="text"
-              className="form-input"
-              // focused={altitude ? true : false}
-              {...register("biomass", {
-                required: true,
-                pattern: validationPattern.negativeNumberWithDot,
-              })}
-              sx={{
-                width: "100%",
-              }}
-            />
-            {errors && errors.biomass && errors.biomass.type === "required" && (
-              <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
-                {validationMessage.required}
-              </Typography>
-            )}
+            <Box position={"relative"}>
+              <TextField
+                label="Biomass *"
+                type="text"
+                className="form-input"
+                // focused={altitude ? true : false}
+                {...register("biomass", {
+                  required: true,
+                  pattern: validationPattern.negativeNumberWithDot,
+                })}
+                sx={{
+                  width: "100%",
+                }}
+              />
 
-            {/* <Box mb={2} width={"100%"}>
+              <Typography
+                sx={{
+                  position: "absolute",
+                  right: 6,
+                  top: "37%",
+                  transform: "translate(-6px, -50%)",
+                  backgroundColor: "#fff",
+                  height: 30,
+                  display: "grid",
+                  placeItems: "center",
+                  zIndex: 1,
+                  pl: 1,
+                }}
+              >
+                kg
+              </Typography>
+
+              {errors &&
+                errors.biomass &&
+                errors.biomass.type === "required" && (
+                  <Typography
+                    variant="body2"
+                    color="red"
+                    fontSize={13}
+                    mt={0.5}
+                  >
+                    {validationMessage.required}
+                  </Typography>
+                )}
+
+              {/* <Box mb={2} width={"100%"}>
               <FormControl fullWidth className="form-input">
                 <InputLabel id="feed-supply-select-label1">
                   Fish Farmer *
@@ -244,6 +270,7 @@ function AddUnitForm({ farms }: Props) {
                 </Select>
               </FormControl>
             </Box> */}
+            </Box>
           </Box>
           <Box mb={2} width={"100%"}>
             <TextField
@@ -272,58 +299,105 @@ function AddUnitForm({ farms }: Props) {
             )}  */}
           </Box>
           <Box mb={2} width={"100%"}>
-            <TextField
-              label="Mean Weight *"
-              type="text"
-              className="form-input"
-              // focused={altitude ? true : false}
-              {...register("meanWeight", {
-                required: true,
-                pattern: validationPattern.negativeNumberWithDot,
-              })}
-              sx={{
-                width: "100%",
-              }}
-            />
+            <Box position={"relative"}>
+              <TextField
+                label="Mean Weight *"
+                type="text"
+                className="form-input"
+                // focused={altitude ? true : false}
+                {...register("meanWeight", {
+                  required: true,
+                  pattern: validationPattern.negativeNumberWithDot,
+                })}
+                sx={{
+                  width: "100%",
+                }}
+              />
+              <Typography
+                sx={{
+                  position: "absolute",
+                  right: 6,
+                  top: "37%",
+                  transform: "translate(-6px, -50%)",
+                  backgroundColor: "#fff",
+                  height: 30,
+                  display: "grid",
+                  placeItems: "center",
+                  zIndex: 1,
+                  pl: 1,
+                }}
+              >
+                gm
+              </Typography>
 
-            {errors &&
-              errors.meanWeight &&
-              errors.meanWeight.type === "required" && (
-                <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
-                  {validationMessage.required}
-                </Typography>
-              )}
-            {/* {errors && errors.lng && errors.lng.type === "pattern" && (
+              {errors &&
+                errors.meanWeight &&
+                errors.meanWeight.type === "required" && (
+                  <Typography
+                    variant="body2"
+                    color="red"
+                    fontSize={13}
+                    mt={0.5}
+                  >
+                    {validationMessage.required}
+                  </Typography>
+                )}
+              {/* {errors && errors.lng && errors.lng.type === "pattern" && (
               <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
                 {validationMessage.NegativeNumberWithDot}
               </Typography>
             )}  */}
+            </Box>
           </Box>
           <Box mb={2} width={"100%"}>
-            <TextField
-              label="% Stocked *"
-              type="text"
-              className="form-input"
-              // focused={altitude ? true : false}
-              {...register("stocked", {
-                required: true,
-                pattern: validationPattern.negativeNumberWithDot,
-              })}
-              sx={{
-                width: "100%",
-              }}
-            />
-
-            {errors && errors.stocked && errors.stocked.type === "required" && (
-              <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
-                {validationMessage.required}
+            <Box position={"relative"}>
+              <TextField
+                label="% Stocked *"
+                type="text"
+                className="form-input"
+                // focused={altitude ? true : false}
+                {...register("stocked", {
+                  required: true,
+                  pattern: validationPattern.negativeNumberWithDot,
+                })}
+                sx={{
+                  width: "100%",
+                }}
+              />
+              <Typography
+                sx={{
+                  position: "absolute",
+                  right: 6,
+                  top: "37%",
+                  transform: "translate(-6px, -50%)",
+                  backgroundColor: "#fff",
+                  height: 30,
+                  display: "grid",
+                  placeItems: "center",
+                  zIndex: 1,
+                  pl: 1,
+                }}
+              >
+                %
               </Typography>
-            )}
-            {/* {errors && errors.lng && errors.lng.type === "pattern" && (
+              {errors &&
+                errors.stocked &&
+                errors.stocked.type === "required" && (
+                  <Typography
+                    variant="body2"
+                    color="red"
+                    fontSize={13}
+                    mt={0.5}
+                  >
+                    {validationMessage.required}
+                  </Typography>
+                )}
+              {/* {errors && errors.lng && errors.lng.type === "pattern" && (
               <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
                 {validationMessage.NegativeNumberWithDot}
               </Typography>
             )}  */}
+            </Box>
           </Box>
           {/* <Box mb={2} width={"100%"}>
               <FormControl fullWidth className="form-input">
@@ -360,6 +434,7 @@ function AddUnitForm({ farms }: Props) {
               width: "fit-content",
               textTransform: "capitalize",
               borderRadius: "8px",
+              marginleft: "auto",
             }}
           >
             Add
