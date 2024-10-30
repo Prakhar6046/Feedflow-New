@@ -1,6 +1,6 @@
 import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
 import AddUnitForm from "@/app/_components/farmManager/AddUnitForm";
-import { getFarms, getFishSupply } from "@/app/_lib/action";
+import { getFarms } from "@/app/_lib/action";
 import { getCookie } from "cookies-next";
 import { cookies } from "next/headers";
 

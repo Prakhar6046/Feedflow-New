@@ -28,11 +28,17 @@ import { selectRole, userAction } from "@/lib/features/user/userSlice";
 import { getCookie } from "cookies-next";
 import { FarmManager } from "@/app/_typeModels/farmManager";
 import CombineTanks from "../models/CombineTanks";
+import { Farm } from "@/app/_typeModels/Farm";
 interface Props {
   farmManagers: FarmManager[];
   tableData: any;
+  farms: Farm[];
 }
-export default function FarmManagerTable({ farmManagers, tableData }: Props) {
+export default function FarmManagerTable({
+  farmManagers,
+  tableData,
+  farms,
+}: Props) {
   console.log(farmManagers);
 
   const router = useRouter();
@@ -41,7 +47,7 @@ export default function FarmManagerTable({ farmManagers, tableData }: Props) {
   const sortDataFromLocal = getCookie(pathName);
   //   const loading = useAppSelector(selectFarmLoading);
   const [feedsData, setFeedsData] = useState<any>();
-  const [selectedFeed, setSelectedFeed] = useState<any>(null);
+  const [selectedFarmManager, setSelectedFarmManager] = useState<any>(null);
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null
   );
@@ -59,14 +65,14 @@ export default function FarmManagerTable({ farmManagers, tableData }: Props) {
     farm: any
   ) => {
     setAnchorEl(event.currentTarget);
-    setSelectedFeed(farm);
+    setSelectedFarmManager(farm);
   };
-  const handleEdit = () => {
-    if (selectedFeed) {
-      router.push(`/dashboard/feedSupply/${selectedFeed.id}`);
-      dispatch(feedAction.editFeed(selectedFeed));
-    }
-  };
+  // const handleEdit = () => {
+  //   if (selectedFeed) {
+  //     router.push(`/dashboard/feedSupply/${selectedFeed.id}`);
+  //     dispatch(feedAction.editFeed(selectedFeed));
+  //   }
+  // };
   const handleClose = () => {
     setAnchorEl(null);
   };
@@ -486,7 +492,12 @@ export default function FarmManagerTable({ farmManagers, tableData }: Props) {
         </TableContainer>
       </Paper>
 
-      <TransferModal open={openTransferModal} setOpen={setOpenTransferModal} />
+      <TransferModal
+        open={openTransferModal}
+        setOpen={setOpenTransferModal}
+        selectedFarmManager={selectedFarmManager}
+        farms={farms}
+      />
       <HarvestModal open={openHarvestModal} setOpen={setOpenHarvestModal} />
       <MortalityModal open={openMoralityModal} setOpen={setOpenMoralityModal} />
       <CombineTanks

@@ -1,6 +1,6 @@
 import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
 import FarmManagerTable from "@/app/_components/table/FarmManagerTable";
-import { getFarmManagers } from "@/app/_lib/action";
+import { getFarmManagers, getFarms } from "@/app/_lib/action";
 import {
   farmManagerHead,
   farmManagerHeadMember,
@@ -25,6 +25,12 @@ export default async function Page({
     query,
     noFilter: false,
   });
+  const farms = await getFarms({
+    role: user.data.user.role,
+    organisationId: user.data.user.organisationId,
+    query: "",
+    noFilter: false,
+  });
 
   return (
     <>
@@ -45,6 +51,7 @@ export default async function Page({
             : farmManagerHeadMember
         }
         farmManagers={farmManagers.data}
+        farms={farms.data}
       />
     </>
   );

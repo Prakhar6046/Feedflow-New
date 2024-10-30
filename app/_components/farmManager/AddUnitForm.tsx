@@ -389,7 +389,6 @@ function AddUnitForm({ farms }: Props) {
                   backgroundColor: "#fff",
                   height: 30,
                   display: "grid",
-
                   placeItems: "center",
                   zIndex: 1,
                   pl: 1,
