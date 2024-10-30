@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -31,6 +31,7 @@ interface Props {
   farms: Farm[];
 }
 function AddUnitForm({ farms }: Props) {
+  const [selectedFarm, setSelectedFarm] = useState<any>(null);
   const loggedUser: any = getCookie("logged-user");
   const user = JSON.parse(loggedUser);
   const router = useRouter();
@@ -65,10 +66,12 @@ function AddUnitForm({ farms }: Props) {
       router.push("/dashboard/farmManager");
     }
   };
+  // Get selected farm's production units
+  const productionUnits =
+    farms.find((farm) => farm.id === selectedFarm)?.productionUnits || [];
   useEffect(() => {
     router.refresh();
   }, [router]);
-  console.log(errors);
 
   return (
     <>
@@ -100,6 +103,11 @@ function AddUnitForm({ farms }: Props) {
                   required: watch("fishFarm") ? false : true,
                   onChange: (e) => setValue("fishFarm", e.target.value),
                 })}
+                onChange={(e) => {
+                  setSelectedFarm(e.target.value); // Set selected farm
+                  setValue("fishFarm", e.target.value);
+                  setValue("productionUnit", ""); // Reset production unit when fish farm changes
+                }}
                 label="Fish Farmer *"
                 value={watch("fishFarm") || ""}
               >
@@ -140,15 +148,17 @@ function AddUnitForm({ farms }: Props) {
                 label="Unit Name *"
                 value={watch("productionUnit") || ""}
               >
-                {farms?.map((farm: Farm) => {
-                  return (
-                    <MenuItem value={String(farm.id)} key={Number(farm.id)}>
-                      {farm.productionUnits &&
-                        farm.productionUnits[0] &&
-                        farm?.productionUnits[0]?.name}
+                {productionUnits.length > 0 ? (
+                  productionUnits.map((unit) => (
+                    <MenuItem value={String(unit.id)} key={unit.id}>
+                      {unit.name}
                     </MenuItem>
-                  );
-                })}
+                  ))
+                ) : (
+                  <MenuItem value="" disabled>
+                    No units available
+                  </MenuItem>
+                )}
               </Select>
               {errors &&
                 errors.productionUnit &&
@@ -301,7 +311,7 @@ function AddUnitForm({ farms }: Props) {
           </Box>
           <Box mb={2} width={"100%"}>
             <TextField
-              label="% Stocked *"
+              label="Stocked *"
               type="text"
               className="form-input"
               // focused={altitude ? true : false}

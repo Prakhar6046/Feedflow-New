@@ -449,7 +449,7 @@ export default function Page({ params }: { params: { userId: string } }) {
                 </Box>
 
                 <TextField
-                  label="Organisation Type"
+                  label="Organisation Name"
                   type="text"
                   className="form-input"
                   InputProps={{
