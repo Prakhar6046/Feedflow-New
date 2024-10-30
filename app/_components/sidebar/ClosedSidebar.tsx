@@ -35,7 +35,7 @@ function ClosedSidebar() {
         position: "fixed",
         top: "0",
         left: "0",
-        height: "100vh !important",
+        height: "100% !important",
         overflowY: "auto",
         overflowX: "hidden",
       }}
@@ -46,10 +46,15 @@ function ClosedSidebar() {
         paddingInline={1}
         sx={{
           width: 96,
+          height: {
+            xl: "100%",
+          },
+
           transition: "width 1s !important",
           background:
             "linear-gradient(349.33deg, rgba(6, 161, 155, 0.4) -27.15%, rgba(2, 59, 57, 0) 103.57%)",
         }}
+        className="sidebar-scroller"
         role="presentation"
       >
         <Box

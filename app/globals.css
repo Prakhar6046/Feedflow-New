@@ -55,11 +55,11 @@ body {
   width: 150px;
   transform: translate(64px, -70px) !important;
 }
-
-.table-edit-menu ul li {
+.table-edit-sample-item div:nth-child(3) {
   border-radius: 8px;
   padding: 4px 8px;
   margin: 6px;
+  transform: translate(13px, -50px) !important;
 }
 
 .table-edit-menu div:nth-child(3) {
@@ -416,4 +416,23 @@ body {
 .css-1xomo8h-MuiPaper-root-MuiPopover-paper-MuiMenu-paper {
   box-shadow: none !important;
   min-height: 0px !important;
+}
+@media only screen and (min-width: 1200px) {
+  .css-1u2enwk-MuiStack-root {
+    width: 930px !important;
+  }
+}
+@media only screen and (min-width: 1200px) {
+  .css-tifipg-MuiStack-root {
+    width: 1200px !important;
+  }
+}
+.css-1nflkpj {
+  right: 4px;
+}
+
+@media only screen and (max-width: 1900px) {
+  .sidebar-scroller {
+    height: auto;
+  }
 }

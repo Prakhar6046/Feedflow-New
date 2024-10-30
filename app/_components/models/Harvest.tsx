@@ -34,6 +34,7 @@ const HarvestModal: React.FC<Props> = ({ setOpen, open }) => {
       onClose={handleClose}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
+      className="harvest-modal"
     >
       <Stack sx={style} borderRadius="14px">
         {/* Header with close icon */}
@@ -52,8 +53,8 @@ const HarvestModal: React.FC<Props> = ({ setOpen, open }) => {
         </Box>
 
         <Box padding={3}>
-          <Grid container spacing={2}>
-            <Grid item md={6} xs={12}>
+          <Grid container spacing={1}>
+            <Grid item lg={2} md={6} xs={12}>
               <TextField
                 label="Fish Farm *"
                 type="text"
@@ -67,7 +68,7 @@ const HarvestModal: React.FC<Props> = ({ setOpen, open }) => {
                 mt={0.5}
               ></Typography>
             </Grid>
-            <Grid item md={6} xs={12}>
+            <Grid item lg={3} md={6} xs={12}>
               <TextField
                 label="Biomass (kg) *"
                 type="text"
@@ -81,7 +82,7 @@ const HarvestModal: React.FC<Props> = ({ setOpen, open }) => {
                 mt={0.5}
               ></Typography>
             </Grid>
-            <Grid item md={6} xs={12}>
+            <Grid item lg={2} md={6} xs={12}>
               <TextField
                 label="Count *"
                 type="text"
@@ -95,7 +96,7 @@ const HarvestModal: React.FC<Props> = ({ setOpen, open }) => {
                 mt={0.5}
               ></Typography>
             </Grid>
-            <Grid item md={6} xs={12}>
+            <Grid item lg={2} md={6} xs={12}>
               <TextField
                 label="Mean Weight*"
                 type="text"
@@ -109,7 +110,7 @@ const HarvestModal: React.FC<Props> = ({ setOpen, open }) => {
                 mt={0.5}
               ></Typography>
             </Grid>
-            <Grid item md={6} xs={12}>
+            <Grid item lg={2} md={6} xs={12}>
               <TextField
                 label="Mean Length*"
                 type="text"
@@ -131,7 +132,8 @@ const HarvestModal: React.FC<Props> = ({ setOpen, open }) => {
           display={"flex"}
           alignItems={"center"}
           textAlign={"center"}
-          justifyContent={"space-between"}
+          justifyContent={"center"}
+          gap="40px"
         >
           <Button
             type="button"

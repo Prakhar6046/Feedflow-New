@@ -210,26 +210,53 @@ function AddUnitForm({ farms }: Props) {
             )}  */}
           </Box>{" "}
           <Box mb={2} width={"100%"}>
-            <TextField
-              label="Biomass *"
-              type="text"
-              className="form-input"
-              // focused={altitude ? true : false}
-              {...register("biomass", {
-                required: true,
-                pattern: validationPattern.negativeNumberWithDot,
-              })}
-              sx={{
-                width: "100%",
-              }}
-            />
-            {errors && errors.biomass && errors.biomass.type === "required" && (
-              <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
-                {validationMessage.required}
+            <Box position={"relative"}>
+              <TextField
+                label="Biomass *"
+                type="text"
+                className="form-input"
+                // focused={altitude ? true : false}
+                {...register("biomass", {
+                  required: true,
+                  pattern: validationPattern.negativeNumberWithDot,
+                })}
+                sx={{
+                  width: "100%",
+                }}
+              />
+              <Typography
+                variant="body2"
+                color="#555555AC"
+                sx={{
+                  position: "absolute",
+                  right: 6,
+                  top: "50%",
+                  transform: "translate(-6px, -50%)",
+                  backgroundColor: "#fff",
+                  height: 30,
+                  display: "grid",
+                  placeItems: "center",
+                  zIndex: 1,
+                  pl: 1,
+                }}
+              >
+                kg
               </Typography>
-            )}
 
-            {/* <Box mb={2} width={"100%"}>
+              {errors &&
+                errors.biomass &&
+                errors.biomass.type === "required" && (
+                  <Typography
+                    variant="body2"
+                    color="red"
+                    fontSize={13}
+                    mt={0.5}
+                  >
+                    {validationMessage.required}
+                  </Typography>
+                )}
+
+              {/* <Box mb={2} width={"100%"}>
               <FormControl fullWidth className="form-input">
                 <InputLabel id="feed-supply-select-label1">
                   Fish Farmer *
@@ -254,6 +281,7 @@ function AddUnitForm({ farms }: Props) {
                 </Select>
               </FormControl>
             </Box> */}
+            </Box>
           </Box>
           <Box mb={2} width={"100%"}>
             <TextField
@@ -282,58 +310,111 @@ function AddUnitForm({ farms }: Props) {
             )}  */}
           </Box>
           <Box mb={2} width={"100%"}>
-            <TextField
-              label="Mean Weight *"
-              type="text"
-              className="form-input"
-              // focused={altitude ? true : false}
-              {...register("meanWeight", {
-                required: true,
-                pattern: validationPattern.negativeNumberWithDot,
-              })}
-              sx={{
-                width: "100%",
-              }}
-            />
+            <Box position={"relative"}>
+              <TextField
+                label="Mean Weight *"
+                type="text"
+                className="form-input"
+                // focused={altitude ? true : false}
+                {...register("meanWeight", {
+                  required: true,
+                  pattern: validationPattern.negativeNumberWithDot,
+                })}
+                sx={{
+                  width: "100%",
+                }}
+              />
+              <Typography
+                variant="body2"
+                color="#555555AC"
+                sx={{
+                  position: "absolute",
+                  right: 6,
+                  top: "50%",
+                  transform: "translate(-6px, -50%)",
+                  backgroundColor: "#fff",
+                  height: 30,
+                  display: "grid",
 
-            {errors &&
-              errors.meanWeight &&
-              errors.meanWeight.type === "required" && (
-                <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
-                  {validationMessage.required}
-                </Typography>
-              )}
-            {/* {errors && errors.lng && errors.lng.type === "pattern" && (
+                  placeItems: "center",
+                  zIndex: 1,
+                  pl: 1,
+                }}
+              >
+                g
+              </Typography>
+
+              {errors &&
+                errors.meanWeight &&
+                errors.meanWeight.type === "required" && (
+                  <Typography
+                    variant="body2"
+                    color="red"
+                    fontSize={13}
+                    mt={0.5}
+                  >
+                    {validationMessage.required}
+                  </Typography>
+                )}
+              {/* {errors && errors.lng && errors.lng.type === "pattern" && (
               <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
                 {validationMessage.NegativeNumberWithDot}
               </Typography>
             )}  */}
+            </Box>
           </Box>
           <Box mb={2} width={"100%"}>
-            <TextField
-              label="Stocked *"
-              type="text"
-              className="form-input"
-              // focused={altitude ? true : false}
-              {...register("stocked", {
-                required: true,
-                pattern: validationPattern.negativeNumberWithDot,
-              })}
-              sx={{
-                width: "100%",
-              }}
-            />
+            <Box position={"relative"}>
+              <TextField
+                label="% Stocked *"
+                type="text"
+                className="form-input"
+                // focused={altitude ? true : false}
+                {...register("stocked", {
+                  required: true,
+                  pattern: validationPattern.negativeNumberWithDot,
+                })}
+                sx={{
+                  width: "100%",
+                }}
+              />
+              <Typography
+                variant="body2"
+                color="#555555AC"
+                sx={{
+                  position: "absolute",
+                  right: 6,
+                  top: "50%",
+                  transform: "translate(-6px, -50%)",
+                  backgroundColor: "#fff",
+                  height: 30,
+                  display: "grid",
 
-            {errors && errors.stocked && errors.stocked.type === "required" && (
-              <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
-                {validationMessage.required}
+                  placeItems: "center",
+                  zIndex: 1,
+                  pl: 1,
+                }}
+              >
+                %
               </Typography>
-            )}
-            {/* {errors && errors.lng && errors.lng.type === "pattern" && (
+              {errors &&
+                errors.stocked &&
+                errors.stocked.type === "required" && (
+                  <Typography
+                    variant="body2"
+                    color="red"
+                    fontSize={13}
+                    mt={0.5}
+                  >
+                    {validationMessage.required}
+                  </Typography>
+                )}
+              {/* {errors && errors.lng && errors.lng.type === "pattern" && (
               <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
                 {validationMessage.NegativeNumberWithDot}
               </Typography>
             )}  */}
+            </Box>
           </Box>
           {/* <Box mb={2} width={"100%"}>
               <FormControl fullWidth className="form-input">
@@ -360,7 +441,7 @@ function AddUnitForm({ farms }: Props) {
                 </Select>
               </FormControl>
             </Box> */}
-          <Button
+          {/* <Button
             type="submit"
             variant="contained"
             sx={{
@@ -370,10 +451,28 @@ function AddUnitForm({ farms }: Props) {
               width: "fit-content",
               textTransform: "capitalize",
               borderRadius: "8px",
+              textAlign: "end",
             }}
           >
             Add
-          </Button>
+          </Button> */}
+          <Box display={"flex"} justifyContent="flex-end" mt={2}>
+            <Button
+              type="submit"
+              variant="contained"
+              sx={{
+                background: "#06A19B",
+                fontWeight: 600,
+                padding: "6px 16px",
+                width: "fit-content",
+                textTransform: "capitalize",
+                borderRadius: "8px",
+                textAlign: "end",
+              }}
+            >
+              Add
+            </Button>
+          </Box>
         </form>
       </Box>
     </>
