@@ -143,7 +143,9 @@ function AddUnitForm({ farms }: Props) {
                 {farms?.map((farm: Farm) => {
                   return (
                     <MenuItem value={String(farm.id)} key={Number(farm.id)}>
-                      {farm?.productionUnits[0]?.name}
+                      {farm.productionUnits &&
+                        farm.productionUnits[0] &&
+                        farm?.productionUnits[0]?.name}
                     </MenuItem>
                   );
                 })}
