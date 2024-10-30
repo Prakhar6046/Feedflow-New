@@ -785,55 +785,50 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
                       )}
                   </Box>
 
-                  {role !== "SUPERADMIN" && (
-                    <Box width={"100%"}>
-                      <FormControl className="form-input" focused fullWidth>
-                        <InputLabel id="demo-simple-select-label">
-                          Role *
-                        </InputLabel>
-                        <Select
-                          labelId="demo-simple-select-label"
-                          id="demo-simple-select"
-                          label="Role *"
-                          {...register(`contacts.${index}.role` as const, {
-                            required: watch(`contacts.${index}.role`)
-                              ? false
-                              : true,
-                            onChange: (e) =>
-                              setValue(
-                                `contacts.${index}.role`,
-                                e.target.value
-                              ),
-                            // pattern: validationPattern.alphabetsAndSpacesPattern,
-                          })}
-                          value={getValues(`contacts.${index}.role`)}
-                        >
-                          {RoleType.map((role, i) => {
-                            return (
-                              <MenuItem value={role} key={i}>
-                                {role}
-                              </MenuItem>
-                            );
-                          })}
-                        </Select>
-                      </FormControl>
+                  <Box width={"100%"}>
+                    <FormControl className="form-input" focused fullWidth>
+                      <InputLabel id="demo-simple-select-label">
+                        Role *
+                      </InputLabel>
+                      <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select"
+                        label="Role *"
+                        {...register(`contacts.${index}.role` as const, {
+                          required: watch(`contacts.${index}.role`)
+                            ? false
+                            : true,
+                          onChange: (e) =>
+                            setValue(`contacts.${index}.role`, e.target.value),
+                          // pattern: validationPattern.alphabetsAndSpacesPattern,
+                        })}
+                        value={getValues(`contacts.${index}.role`)}
+                      >
+                        {RoleType.map((role, i) => {
+                          return (
+                            <MenuItem value={role} key={i}>
+                              {role}
+                            </MenuItem>
+                          );
+                        })}
+                      </Select>
+                    </FormControl>
 
-                      {errors &&
-                        errors?.contacts &&
-                        errors?.contacts[index] &&
-                        errors?.contacts[index]?.role &&
-                        errors?.contacts[index]?.role.type === "required" && (
-                          <Typography
-                            variant="body2"
-                            color="red"
-                            fontSize={13}
-                            mt={0.5}
-                          >
-                            This field is required.
-                          </Typography>
-                        )}
-                    </Box>
-                  )}
+                    {errors &&
+                      errors?.contacts &&
+                      errors?.contacts[index] &&
+                      errors?.contacts[index]?.role &&
+                      errors?.contacts[index]?.role.type === "required" && (
+                        <Typography
+                          variant="body2"
+                          color="red"
+                          fontSize={13}
+                          mt={0.5}
+                        >
+                          This field is required.
+                        </Typography>
+                      )}
+                  </Box>
 
                   <Box width={"100%"}>
                     <TextField

@@ -365,3 +365,98 @@ export const fishTableHead = [
     label: "Actions",
   },
 ];
+export const farmManagerHead = [
+  {
+    id: "Farm",
+    numeric: false,
+    disablePadding: true,
+    label: "Farm",
+  },
+  {
+    id: "Unit",
+    numeric: false,
+    disablePadding: true,
+    label: "Unit",
+  },
+  {
+    id: "Current Batch",
+    numeric: false,
+    disablePadding: true,
+    label: "Current Batch",
+  },
+  {
+    id: "Biomass",
+    numeric: true,
+    disablePadding: true,
+    label: "Biomass",
+  },
+  {
+    id: "Count",
+    numeric: true,
+    disablePadding: true,
+    label: "Count",
+  },
+  {
+    id: "Mean weight",
+    numeric: false,
+    disablePadding: true,
+    label: "Mean weight",
+  },
+  {
+    id: "% Stocked",
+    numeric: false,
+    disablePadding: true,
+    label: "% Stocked",
+  },
+
+  {
+    id: "action",
+    numeric: false,
+    disablePadding: true,
+    label: "Actions",
+  },
+];
+export const farmManagerHeadMember = [
+  {
+    id: "Farm",
+    numeric: false,
+    disablePadding: true,
+    label: "Farm",
+  },
+  {
+    id: "Unit",
+    numeric: false,
+    disablePadding: true,
+    label: "Unit",
+  },
+  {
+    id: "Current Batch",
+    numeric: false,
+    disablePadding: true,
+    label: "Current Batch",
+  },
+  {
+    id: "Biomass",
+    numeric: true,
+    disablePadding: true,
+    label: "Biomass",
+  },
+  {
+    id: "Count",
+    numeric: true,
+    disablePadding: true,
+    label: "Count",
+  },
+  {
+    id: "Mean weight",
+    numeric: false,
+    disablePadding: true,
+    label: "Mean weight",
+  },
+  {
+    id: "% Stocked",
+    numeric: false,
+    disablePadding: true,
+    label: "% Stocked",
+  },
+];

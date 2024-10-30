@@ -18,6 +18,13 @@ export interface Farm {
   fishFarmer: String;
   lat: String;
   lng: String;
+  productionUnits?: {
+    name: string;
+    type: string;
+    capacity: string;
+    waterflowRate: string;
+    id: any;
+  }[];
 }
 export interface UnitsTypes {
   name: string | undefined;

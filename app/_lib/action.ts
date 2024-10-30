@@ -164,3 +164,28 @@ export const getOrganisationForhatchery = async () => {
     return error;
   }
 };
+export const getFarmManagers = async (payload: {
+  role?: string;
+  organisationId?: string;
+  query?: string;
+  noFilter?: boolean;
+}) => {
+  try {
+    const data = await fetch(
+      `${process.env.BASE_URL}/api/farmManager?role=${payload.role}&organisationId=${payload.organisationId}&query=${payload.query}&filter=${payload.noFilter}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        cache: "no-store",
+      }
+    );
+    const res = await data.json();
+    revalidatePath(`/dashboard/farmManager`);
+
+    return res;
+  } catch (error) {
+    return error;
+  }
+};
