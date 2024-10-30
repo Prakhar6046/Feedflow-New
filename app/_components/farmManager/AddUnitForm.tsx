@@ -331,7 +331,7 @@ function AddUnitForm({ farms }: Props) {
                   pl: 1,
                 }}
               >
-                gm
+                g
               </Typography>
 
               {errors &&

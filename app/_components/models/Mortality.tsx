@@ -54,8 +54,8 @@ const MortalityModal: React.FC<Props> = ({ setOpen, open }) => {
         </Box>
 
         <Box padding={3}>
-          <Grid container spacing={2}>
-            <Grid item md={6} xs={12}>
+          <Grid container spacing={1}>
+            <Grid item lg={2} md={6} xs={12}>
               <TextField
                 label="Fish Farm *"
                 type="text"
@@ -69,7 +69,7 @@ const MortalityModal: React.FC<Props> = ({ setOpen, open }) => {
                 mt={0.5}
               ></Typography>
             </Grid>
-            <Grid item md={6} xs={12}>
+            <Grid item lg={3} md={6} xs={12}>
               <TextField
                 label="Biomass (kg) *"
                 type="text"
@@ -83,7 +83,7 @@ const MortalityModal: React.FC<Props> = ({ setOpen, open }) => {
                 mt={0.5}
               ></Typography>
             </Grid>
-            <Grid item md={6} xs={12}>
+            <Grid item lg={2} md={6} xs={12}>
               <TextField
                 label="Count *"
                 type="text"
@@ -97,7 +97,7 @@ const MortalityModal: React.FC<Props> = ({ setOpen, open }) => {
                 mt={0.5}
               ></Typography>
             </Grid>
-            <Grid item md={6} xs={12}>
+            <Grid item lg={2} md={6} xs={12}>
               <TextField
                 label="Mean Weight*"
                 type="text"
@@ -111,7 +111,7 @@ const MortalityModal: React.FC<Props> = ({ setOpen, open }) => {
                 mt={0.5}
               ></Typography>
             </Grid>
-            <Grid item md={6} xs={12}>
+            <Grid item lg={2} md={6} xs={12}>
               <TextField
                 label="Mean Length*"
                 type="text"
@@ -132,7 +132,8 @@ const MortalityModal: React.FC<Props> = ({ setOpen, open }) => {
           padding={3}
           display="flex"
           alignItems="center"
-          justifyContent="space-between"
+          justifyContent="center"
+          gap="20px"
         >
           <Button
             type="button"
