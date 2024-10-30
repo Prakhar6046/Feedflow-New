@@ -214,12 +214,13 @@ function AddUnitForm({ farms }: Props) {
                   width: "100%",
                 }}
               />
-
               <Typography
+                variant="body2"
+                color="#555555AC"
                 sx={{
                   position: "absolute",
                   right: 6,
-                  top: "37%",
+                  top: "50%",
                   transform: "translate(-6px, -50%)",
                   backgroundColor: "#fff",
                   height: 30,
@@ -314,14 +315,17 @@ function AddUnitForm({ farms }: Props) {
                 }}
               />
               <Typography
+                variant="body2"
+                color="#555555AC"
                 sx={{
                   position: "absolute",
                   right: 6,
-                  top: "37%",
+                  top: "50%",
                   transform: "translate(-6px, -50%)",
                   backgroundColor: "#fff",
                   height: 30,
                   display: "grid",
+
                   placeItems: "center",
                   zIndex: 1,
                   pl: 1,
@@ -365,14 +369,17 @@ function AddUnitForm({ farms }: Props) {
                 }}
               />
               <Typography
+                variant="body2"
+                color="#555555AC"
                 sx={{
                   position: "absolute",
                   right: 6,
-                  top: "37%",
+                  top: "50%",
                   transform: "translate(-6px, -50%)",
                   backgroundColor: "#fff",
                   height: 30,
                   display: "grid",
+
                   placeItems: "center",
                   zIndex: 1,
                   pl: 1,
@@ -424,7 +431,7 @@ function AddUnitForm({ farms }: Props) {
                 </Select>
               </FormControl>
             </Box> */}
-          <Button
+          {/* <Button
             type="submit"
             variant="contained"
             sx={{
@@ -434,11 +441,28 @@ function AddUnitForm({ farms }: Props) {
               width: "fit-content",
               textTransform: "capitalize",
               borderRadius: "8px",
-              marginleft: "auto",
+              textAlign: "end",
             }}
           >
             Add
-          </Button>
+          </Button> */}
+          <Box display={"flex"} justifyContent="flex-end" mt={2}>
+            <Button
+              type="submit"
+              variant="contained"
+              sx={{
+                background: "#06A19B",
+                fontWeight: 600,
+                padding: "6px 16px",
+                width: "fit-content",
+                textTransform: "capitalize",
+                borderRadius: "8px",
+                textAlign: "end",
+              }}
+            >
+              Add
+            </Button>
+          </Box>
         </form>
       </Box>
     </>
