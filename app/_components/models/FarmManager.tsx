@@ -22,6 +22,7 @@ import React, { forwardRef, useContext, useEffect, useState } from "react";
 import { Farm } from "@/app/_typeModels/Farm";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
+import { productionMangeFields } from "@/app/_lib/utils";
 const style = {
   position: "absolute" as "absolute",
   top: "50%",
@@ -46,6 +47,7 @@ interface InputTypes {
     count: String;
     meanWeight: String;
     meanLength: String;
+    field?: String;
   }[];
 }
 const TransferModal: React.FC<Props> = ({
@@ -73,6 +75,7 @@ const TransferModal: React.FC<Props> = ({
           count: "",
           meanWeight: "",
           meanLength: "",
+          field: "",
         },
       ],
     },
@@ -87,16 +90,27 @@ const TransferModal: React.FC<Props> = ({
   const handleClose = () => setOpen(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const openAnchor = Boolean(anchorEl);
-  const handleClick = (event) => {
+  const handleClick = (event: any) => {
     setAnchorEl(event.currentTarget);
   };
-  const handleCloseAnchor = () => {
-    setAnchorEl(null);
+  const handleCloseAnchor = (field: string) => {
+    if (field.length) {
+      append({
+        fishFarm: "",
+        productionUnit: "",
+        biomass: "",
+        count: "",
+        meanWeight: "",
+        meanLength: "",
+        field,
+      });
+      setAnchorEl(null);
+    } else {
+      setAnchorEl(null);
+    }
   };
   useEffect(() => {
     if (selectedProduction) {
-      console.log(selectedProduction);
-
       const data = [
         {
           fishFarm: selectedProduction.fishFarmId,
@@ -111,14 +125,6 @@ const TransferModal: React.FC<Props> = ({
       setSelectedFarm(selectedProduction.fishFarmId); // Set the selected farm when manager is selected
     }
   }, [selectedProduction, setValue]);
-  // useEffect(() => {
-  //   if (fishFarm) {
-  //     const farm = farms.find(
-  //       (farm: any) => farm.id === selectedProduction.fishFarmId
-  //     );
-  //     setSelectedFarm(farm?.productionUnits);
-  //   }
-  // }, [fishFarm]);
 
   return (
     <Modal
@@ -155,7 +161,7 @@ const TransferModal: React.FC<Props> = ({
                 key={item.id}
               >
                 <Grid container spacing={2}>
-                  <Grid item lg={2} md={4} xs={6}>
+                  <Grid item xs>
                     <FormControl fullWidth className="form-input">
                       <InputLabel id="">Fish Farm *</InputLabel>
                       <Select
@@ -205,7 +211,7 @@ const TransferModal: React.FC<Props> = ({
                       ></Typography>
                     </FormControl>
                   </Grid>
-                  <Grid item lg={2} md={4} xs={6}>
+                  <Grid item xs>
                     <FormControl fullWidth className="form-input">
                       <InputLabel id="">Production Unit*</InputLabel>
                       <Select
@@ -262,7 +268,7 @@ const TransferModal: React.FC<Props> = ({
                     </FormControl>
                   </Grid>
 
-                  <Grid item lg={2} md={4} xs={6}>
+                  <Grid item xs>
                     <TextField
                       label="Biomass (kg) *"
                       type="text"
@@ -295,7 +301,7 @@ const TransferModal: React.FC<Props> = ({
                       )}
                   </Grid>
 
-                  <Grid item lg={2} md={4} xs={6}>
+                  <Grid item xs>
                     <TextField
                       label="Count *"
                       type="text"
@@ -328,7 +334,7 @@ const TransferModal: React.FC<Props> = ({
                       )}
                   </Grid>
 
-                  <Grid item lg={2} md={4} xs={6}>
+                  <Grid item xs>
                     <TextField
                       label="Mean Weight*"
                       type="text"
@@ -361,7 +367,7 @@ const TransferModal: React.FC<Props> = ({
                       )}
                   </Grid>
 
-                  <Grid item lg={2} md={4} xs={6}>
+                  <Grid item xs>
                     <TextField
                       label="Mean Length*"
                       type="text"
@@ -392,6 +398,21 @@ const TransferModal: React.FC<Props> = ({
                         </Typography>
                       )}
                   </Grid>
+
+                  {idx !== 0 && (
+                    <Grid item xs>
+                      <TextField
+                        label=""
+                        type="text"
+                        className="form-input"
+                        sx={{ width: "100%" }}
+                        InputProps={{ readOnly: true }}
+                        {...register(`manager.${idx}.field` as const, {
+                          required: true,
+                        })}
+                      />
+                    </Grid>
+                  )}
                 </Grid>
 
                 <Box>
@@ -426,6 +447,31 @@ const TransferModal: React.FC<Props> = ({
                     </svg>
                   </Box>
                 </Box>
+
+                <Box>
+                  <Box
+                    display={"flex"}
+                    justifyContent={"center"}
+                    alignItems={"center"}
+                    width={150}
+                    sx={{
+                      visibility: idx === 0 ? "hidden" : "",
+                      cursor: "pointer",
+                      width: {
+                        // lg: 150,
+                        xs: "auto",
+                      },
+                    }}
+                  >
+                    <Button
+                      id="basic-button"
+                      aria-haspopup="true"
+                      type="submit"
+                    >
+                      {idx !== 0 && "Update"}
+                    </Button>
+                  </Box>
+                </Box>
               </Box>
             );
           })}
@@ -438,20 +484,25 @@ const TransferModal: React.FC<Props> = ({
               aria-expanded={open ? "true" : undefined}
               onClick={handleClick}
             >
-              Dashboard
+              Add row
             </Button>
+
             <Menu
               id="basic-menu"
-              anchor={anchorEl}
+              anchorEl={anchorEl}
               open={openAnchor}
               onClose={handleCloseAnchor}
               MenuListProps={{
                 "aria-labelledby": "basic-button",
               }}
             >
-              <MenuItem onClick={handleCloseAnchor}>Profile</MenuItem>
-              <MenuItem onClick={handleCloseAnchor}>My account</MenuItem>
-              <MenuItem onClick={handleCloseAnchor}>Logout</MenuItem>
+              {productionMangeFields.map((field, i) => {
+                return (
+                  <MenuItem onClick={() => handleCloseAnchor(field)} key={i}>
+                    {field}
+                  </MenuItem>
+                );
+              })}
             </Menu>
           </div>
         </form>

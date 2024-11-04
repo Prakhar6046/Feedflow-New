@@ -81,3 +81,12 @@ export function getDayMonthDifference(targetDate: any) {
 
   return `${totalDays}/${months}`;
 }
+
+export const productionMangeFields = [
+  "Stock",
+  "Re-Stock",
+  "Transfer",
+  "Harvest",
+  "Mortalities",
+  "Sample",
+];
