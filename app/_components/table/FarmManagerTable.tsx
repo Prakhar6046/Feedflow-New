@@ -46,8 +46,7 @@ export default function FarmManagerTable({
   const pathName = usePathname();
   const sortDataFromLocal = getCookie(pathName);
   //   const loading = useAppSelector(selectFarmLoading);
-  const [feedsData, setFeedsData] = useState<any>();
-  const [selectedFarmManager, setSelectedFarmManager] = useState<any>(null);
+  const [selectedProduction, setSelectedProduction] = useState<any>(null);
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null
   );
@@ -65,7 +64,7 @@ export default function FarmManagerTable({
     farm: any
   ) => {
     setAnchorEl(event.currentTarget);
-    setSelectedFarmManager(farm);
+    setSelectedProduction(farm);
   };
   // const handleEdit = () => {
   //   if (selectedFeed) {
@@ -708,7 +707,7 @@ export default function FarmManagerTable({
       <TransferModal
         open={openTransferModal}
         setOpen={setOpenTransferModal}
-        selectedFarmManager={selectedFarmManager}
+        selectedProduction={selectedProduction}
         farms={farms}
       />
       <HarvestModal open={openHarvestModal} setOpen={setOpenHarvestModal} />
