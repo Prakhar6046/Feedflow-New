@@ -436,6 +436,10 @@ body {
     height: auto;
   }
 }
+
 /* .css-1v4wowl-MuiTableCell-root {
-  text-align: center;
+  text-align: center !important;
+}
+.css-1mrjd0s-MuiTableCell-root {
+  text-align: center !important;
 } */

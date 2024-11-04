@@ -388,46 +388,46 @@ export const farmManagerHead = [
     id: "Age (days) (months)",
     numeric: false,
     disablePadding: true,
-    label: "Age",
+    label: "Age (days) (months)",
   },
   {
-    id: "Fish Count (n)",
+    id: "Fish Count",
     numeric: false,
     disablePadding: true,
-    label: "Fish Count",
+    label: "Fish Count (n)",
   },
 
   {
     id: "Biomass",
     numeric: true,
     disablePadding: true,
-    label: "Biomass",
+    label: "Biomass (Kg)",
   },
 
   {
-    id: "Mean weight (g)",
+    id: "Mean weight",
     numeric: false,
     disablePadding: true,
-    label: "Mean weight",
+    label: "Mean weight (g)",
   },
   {
-    id: "Mean length (mm)",
+    id: "Mean length",
     numeric: false,
     disablePadding: true,
-    label: "Mean length",
+    label: "Mean length (mm)",
   },
   {
-    id: "Stocking density (kg/m/3)",
+    id: "Stocking density",
     numeric: false,
     disablePadding: true,
-    label: "Stocking density",
+    label: "Stocking density  (kg/m/3)",
   },
 
   {
-    id: "Stocking density (n/m3)",
+    id: "Stocking density",
     numeric: false,
     disablePadding: true,
-    label: "Stocking density",
+    label: "Stocking density (n/m3)",
   },
   {
     id: "Stocking level",
