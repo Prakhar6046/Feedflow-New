@@ -1,13 +1,14 @@
 import {
   Box,
   Button,
+  Divider,
   FormControl,
   Grid,
   IconButton,
   InputLabel,
-  MenuItem,
   Modal,
   Stack,
+  TableCell,
   TextField,
   Typography,
 } from "@mui/material";
@@ -17,9 +18,10 @@ import * as validationMessage from "@/app/_lib/utils/validationsMessage/index";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import { Production } from "@/app/_typeModels/production";
 import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
-import { useEffect, useState } from "react";
+import React, { forwardRef, useContext, useEffect, useState } from "react";
 import { Farm } from "@/app/_typeModels/Farm";
-
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
 const style = {
   position: "absolute" as "absolute",
   top: "50%",
@@ -43,7 +45,7 @@ interface InputTypes {
     biomass: String;
     count: String;
     meanWeight: String;
-    averageLength: String;
+    meanLength: String;
   }[];
 }
 const TransferModal: React.FC<Props> = ({
@@ -53,7 +55,6 @@ const TransferModal: React.FC<Props> = ({
   farms,
 }) => {
   const [selectedFarm, setSelectedFarm] = useState<any>(null);
-
   const {
     register,
     setValue,
@@ -71,7 +72,7 @@ const TransferModal: React.FC<Props> = ({
           biomass: "",
           count: "",
           meanWeight: "",
-          averageLength: "",
+          meanLength: "",
         },
       ],
     },
@@ -84,17 +85,26 @@ const TransferModal: React.FC<Props> = ({
     console.log(data);
   };
   const handleClose = () => setOpen(false);
-
+  const [anchorEl, setAnchorEl] = useState(null);
+  const openAnchor = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleCloseAnchor = () => {
+    setAnchorEl(null);
+  };
   useEffect(() => {
     if (selectedProduction) {
+      console.log(selectedProduction);
+
       const data = [
         {
           fishFarm: selectedProduction.fishFarmId,
           productionUnit: selectedProduction.productionUnitId,
           biomass: selectedProduction.biomass,
-          count: selectedProduction.count,
+          count: selectedProduction.fishCount,
           meanWeight: selectedProduction.meanWeight,
-          averageLength: "",
+          meanLength: selectedProduction.meanLength,
         },
       ];
       setValue("manager", data);
@@ -353,11 +363,11 @@ const TransferModal: React.FC<Props> = ({
 
                   <Grid item lg={2} md={4} xs={6}>
                     <TextField
-                      label="Average Length*"
+                      label="Mean Length*"
                       type="text"
                       className="form-input"
                       sx={{ width: "100%" }}
-                      {...register(`manager.${idx}.averageLength` as const, {
+                      {...register(`manager.${idx}.meanLength` as const, {
                         required: true,
                       })}
                     />
@@ -370,8 +380,8 @@ const TransferModal: React.FC<Props> = ({
                     {errors &&
                       errors.manager &&
                       errors.manager[idx] &&
-                      errors.manager[idx].averageLength &&
-                      errors.manager[idx].averageLength.type === "required" && (
+                      errors.manager[idx].meanLength &&
+                      errors.manager[idx].meanLength.type === "required" && (
                         <Typography
                           variant="body2"
                           color="red"
@@ -420,69 +430,30 @@ const TransferModal: React.FC<Props> = ({
             );
           })}
 
-          <Box
-            padding={3}
-            display={"flex"}
-            alignItems={"center"}
-            gap={"20px"}
-            justifyContent={"center"}
-          >
+          <div>
             <Button
-              type="button"
-              variant="contained"
-              sx={{
-                background: "#06A19B",
-                fontWeight: "bold",
-                padding: "8px 20px",
-                width: {
-                  xs: "50%",
-                  lg: "fit-content",
-                },
-                textTransform: "capitalize",
-                borderRadius: "12px",
-              }}
-              onClick={() =>
-                append({
-                  fishFarm: "",
-                  productionUnit: "",
-                  biomass: "",
-                  count: "",
-                  meanWeight: "",
-                  averageLength: "",
-                })
-              }
+              id="basic-button"
+              aria-controls={open ? "basic-menu" : undefined}
+              aria-haspopup="true"
+              aria-expanded={open ? "true" : undefined}
+              onClick={handleClick}
             >
-              ADD UNIT
+              Dashboard
             </Button>
-            <Button
-              type="submit"
-              variant="contained"
-              sx={{
-                background: "#06A19B",
-                fontWeight: "bold",
-                padding: "8px 20px",
-                width: "fit-content",
-                textTransform: "capitalize",
-                borderRadius: "12px",
+            <Menu
+              id="basic-menu"
+              anchor={anchorEl}
+              open={openAnchor}
+              onClose={handleCloseAnchor}
+              MenuListProps={{
+                "aria-labelledby": "basic-button",
               }}
             >
-              TRANSFER
-            </Button>
-            <Button
-              type="button"
-              variant="contained"
-              sx={{
-                background: "#06A19B",
-                fontWeight: "bold",
-                padding: "8px 20px",
-                width: "fit-content",
-                textTransform: "capitalize",
-                borderRadius: "12px",
-              }}
-            >
-              CANCEL
-            </Button>
-          </Box>
+              <MenuItem onClick={handleCloseAnchor}>Profile</MenuItem>
+              <MenuItem onClick={handleCloseAnchor}>My account</MenuItem>
+              <MenuItem onClick={handleCloseAnchor}>Logout</MenuItem>
+            </Menu>
+          </div>
         </form>
       </Stack>
     </Modal>
