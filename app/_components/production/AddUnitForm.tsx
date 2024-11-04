@@ -4,6 +4,7 @@ import {
   Box,
   Button,
   FormControl,
+  Grid,
   InputLabel,
   MenuItem,
   Select,
@@ -12,18 +13,23 @@ import {
 } from "@mui/material";
 import * as validationPattern from "@/app/_lib/utils/validationPatterns/index";
 import * as validationMessage from "@/app/_lib/utils/validationsMessage/index";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { Dayjs } from "dayjs";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { useRouter } from "next/navigation";
 import { FishSupply } from "@/app/_typeModels/fishSupply";
 import { Farm } from "@/app/_typeModels/Farm";
 import toast from "react-hot-toast";
 import { getCookie } from "cookies-next";
+import { getDayMonthDifference } from "@/app/_lib/utils";
 interface FormInputs {
   fishFarm: String;
   productionUnit: String;
   batchNumber: String;
   biomass: String;
-  age: String;
+  age: Dayjs | null;
   fishCount: String;
   meanLength: String;
   meanWeight: String;
@@ -35,6 +41,7 @@ interface Props {
   farms: Farm[];
 }
 function AddUnitForm({ farms }: Props) {
+  let mCubed = "m\u00B3";
   const [selectedFarm, setSelectedFarm] = useState<any>(null);
   const loggedUser: any = getCookie("logged-user");
   const user = JSON.parse(loggedUser);
@@ -44,16 +51,17 @@ function AddUnitForm({ farms }: Props) {
     setValue,
     watch,
     handleSubmit,
+    control,
     formState: { errors },
   } = useForm<FormInputs>();
-  console.log(errors);
 
   const onSubmit: SubmitHandler<FormInputs> = async (data) => {
-    const { fishFarm, productionUnit, ...restData } = data;
+    const { fishFarm, productionUnit, age, ...restData } = data;
     const payload = {
       organisationId: user.data.user.organisationId,
       fishFarmId: fishFarm,
       productionUnitId: productionUnit,
+      age: getDayMonthDifference(data.age),
       ...restData,
     };
 
@@ -316,31 +324,41 @@ function AddUnitForm({ farms }: Props) {
               </Typography>
             )}  */}
           </Box>
-          <Box mb={2} width={"100%"}>
-            <TextField
-              label="Age *"
-              type="text"
-              className="form-input"
-              // focused={altitude ? true : false}
-              {...register("age", {
-                required: true,
-              })}
-              sx={{
-                width: "100%",
-              }}
-            />
-
-            {errors && errors.age && (
-              <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
-                This feild is required
-              </Typography>
-            )}
-            {/* {errors && errors.lng && errors.lng.type === "pattern" && (
-              <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
-                {validationMessage.NegativeNumberWithDot}
-              </Typography>
-            )}  */}
-          </Box>
+          <Grid item mb={2} width={"100%"}>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <Controller
+                name="age"
+                control={control}
+                rules={{ required: "This field is required." }}
+                render={({ field, fieldState: { error } }) => (
+                  <>
+                    <DatePicker
+                      {...field}
+                      label="Age *"
+                      className="form-input"
+                      sx={{
+                        width: "100%",
+                      }}
+                      onChange={(date) => {
+                        field.onChange(date);
+                      }}
+                      value={field.value || null}
+                    />
+                    {error && (
+                      <Typography
+                        variant="body2"
+                        color="red"
+                        fontSize={13}
+                        mt={0.5}
+                      >
+                        {error.message}
+                      </Typography>
+                    )}
+                  </>
+                )}
+              />
+            </LocalizationProvider>
+          </Grid>
           <Box mb={2} width={"100%"}>
             <Box position={"relative"}>
               <TextField
@@ -427,7 +445,7 @@ function AddUnitForm({ farms }: Props) {
                   pl: 1,
                 }}
               >
-                g
+                mm
               </Typography>
 
               {errors &&
@@ -452,7 +470,7 @@ function AddUnitForm({ farms }: Props) {
           <Box mb={2} width={"100%"}>
             <Box position={"relative"}>
               <TextField
-                label="% Stocking Density(n/m3)  *"
+                label={`% Stocking Density(n/${mCubed})  *`}
                 type="text"
                 className="form-input"
                 // focused={altitude ? true : false}
@@ -480,7 +498,7 @@ function AddUnitForm({ farms }: Props) {
                   pl: 1,
                 }}
               >
-                %
+                {`n/${mCubed}`}
               </Typography>
               {errors &&
                 errors.stockingDensityNM &&
@@ -504,7 +522,7 @@ function AddUnitForm({ farms }: Props) {
           <Box mb={2} width={"100%"}>
             <Box position={"relative"}>
               <TextField
-                label="% Stocking Density(kg/m3) *"
+                label={`% Stocking Density(kg/${mCubed}) *`}
                 type="text"
                 className="form-input"
                 // focused={altitude ? true : false}
@@ -532,7 +550,7 @@ function AddUnitForm({ farms }: Props) {
                   pl: 1,
                 }}
               >
-                %
+                {`kg/${mCubed}`}
               </Typography>
               {errors &&
                 errors.stockingDensityKG &&

@@ -385,10 +385,10 @@ export const farmManagerHead = [
     label: "Batch number",
   },
   {
-    id: "Age (days) (months)",
+    id: "Age (days|months)",
     numeric: false,
     disablePadding: true,
-    label: "Age (days) (months)",
+    label: "Age (days|months)",
   },
   {
     id: "Fish Count",
@@ -420,14 +420,14 @@ export const farmManagerHead = [
     id: "Stocking density",
     numeric: false,
     disablePadding: true,
-    label: "Stocking density  (kg/m/3)",
+    label: `Stocking density  (kg/${"m\u00B3"})`,
   },
 
   {
     id: "Stocking density",
     numeric: false,
     disablePadding: true,
-    label: "Stocking density (n/m3)",
+    label: `Stocking density (n/${"m\u00B3"})`,
   },
   {
     id: "Stocking level",
@@ -435,7 +435,7 @@ export const farmManagerHead = [
     disablePadding: true,
     label: "Stocking level",
   },
-  
+
   {
     id: "action",
     numeric: false,
@@ -451,39 +451,66 @@ export const farmManagerHeadMember = [
     label: "Farm",
   },
   {
-    id: "Unit",
+    id: "Producton unit",
     numeric: false,
     disablePadding: true,
-    label: "Unit",
+    label: "Production unit",
   },
   {
-    id: "Current Batch",
+    id: "Batch number",
     numeric: false,
     disablePadding: true,
-    label: "Current Batch",
+    label: "Batch number",
   },
+  {
+    id: "Age (days|months)",
+    numeric: false,
+    disablePadding: true,
+    label: "Age (days|months)",
+  },
+  {
+    id: "Fish Count",
+    numeric: false,
+    disablePadding: true,
+    label: "Fish Count (n)",
+  },
+
   {
     id: "Biomass",
     numeric: true,
     disablePadding: true,
-    label: "Biomass",
+    label: "Biomass (Kg)",
   },
-  {
-    id: "Count",
-    numeric: true,
-    disablePadding: true,
-    label: "Count",
-  },
+
   {
     id: "Mean weight",
     numeric: false,
     disablePadding: true,
-    label: "Mean weight",
+    label: "Mean weight (g)",
   },
   {
-    id: "% Stocked",
+    id: "Mean length",
     numeric: false,
     disablePadding: true,
-    label: "% Stocked",
+    label: "Mean length (mm)",
+  },
+  {
+    id: "Stocking density",
+    numeric: false,
+    disablePadding: true,
+    label: `Stocking density  (kg/${"m\u00B3"})`,
+  },
+
+  {
+    id: "Stocking density",
+    numeric: false,
+    disablePadding: true,
+    label: `Stocking density (n/${"m\u00B3"})`,
+  },
+  {
+    id: "Stocking level",
+    numeric: false,
+    disablePadding: true,
+    label: "Stocking level",
   },
 ];
