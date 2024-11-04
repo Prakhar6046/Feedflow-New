@@ -19,6 +19,7 @@ export default function Page() {
   const [email, setEmail] = useState("abhishek.choudhary@ensuesoft.com");
   const [password, setPassword] = useState("12345678");
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [toastId, setToastId] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,9 +39,14 @@ export default function Page() {
       if (data.status) {
         router.push("/dashboard/organisation");
       }
-    }
-    if (data?.error) {
-      toast.error(data?.error);
+    } else if (data?.error) {
+      if (!toastId) {
+        const id = toast.error(data?.error, {
+          duration: 4000,
+        });
+        setToastId(id);
+        setTimeout(() => setToastId(null), 4000);
+      }
     }
   };
   // useEffect(() => {
