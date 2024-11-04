@@ -15,7 +15,7 @@ import { Close as CloseIcon } from "@mui/icons-material"; // Use Material-UI's C
 import * as validationPattern from "@/app/_lib/utils/validationPatterns/index";
 import * as validationMessage from "@/app/_lib/utils/validationsMessage/index";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
-import { FarmManager } from "@/app/_typeModels/production";
+import { Production } from "@/app/_typeModels/production";
 import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { Farm } from "@/app/_typeModels/Farm";
@@ -33,7 +33,7 @@ const style = {
 interface Props {
   setOpen: (open: boolean) => void;
   open: boolean;
-  selectedFarmManager: FarmManager;
+  selectedProduction: Production;
   farms: Farm[];
 }
 interface InputTypes {
@@ -49,7 +49,7 @@ interface InputTypes {
 const TransferModal: React.FC<Props> = ({
   setOpen,
   open,
-  selectedFarmManager,
+  selectedProduction,
   farms,
 }) => {
   const [selectedFarm, setSelectedFarm] = useState<any>(null);
@@ -86,25 +86,25 @@ const TransferModal: React.FC<Props> = ({
   const handleClose = () => setOpen(false);
 
   useEffect(() => {
-    if (selectedFarmManager) {
+    if (selectedProduction) {
       const data = [
         {
-          fishFarm: selectedFarmManager.fishFarmId,
-          productionUnit: selectedFarmManager.productionUnitId,
-          biomass: selectedFarmManager.biomass,
-          count: selectedFarmManager.count,
-          meanWeight: selectedFarmManager.meanWeight,
+          fishFarm: selectedProduction.fishFarmId,
+          productionUnit: selectedProduction.productionUnitId,
+          biomass: selectedProduction.biomass,
+          count: selectedProduction.count,
+          meanWeight: selectedProduction.meanWeight,
           averageLength: "",
         },
       ];
       setValue("manager", data);
-      setSelectedFarm(selectedFarmManager.fishFarmId); // Set the selected farm when manager is selected
+      setSelectedFarm(selectedProduction.fishFarmId); // Set the selected farm when manager is selected
     }
-  }, [selectedFarmManager, setValue]);
+  }, [selectedProduction, setValue]);
   // useEffect(() => {
   //   if (fishFarm) {
   //     const farm = farms.find(
-  //       (farm: any) => farm.id === selectedFarmManager.fishFarmId
+  //       (farm: any) => farm.id === selectedProduction.fishFarmId
   //     );
   //     setSelectedFarm(farm?.productionUnits);
   //   }
