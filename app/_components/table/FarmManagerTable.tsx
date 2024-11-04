@@ -311,6 +311,54 @@ export default function FarmManagerTable({ farmManagers, tableData }: Props) {
                           pl: 0,
                         }}
                       >
+                        {farm.count ?? ""}
+                      </TableCell>
+                      <TableCell
+                        // align="center"
+                        sx={{
+                          borderBottomColor: "#F5F6F8",
+                          borderBottomWidth: 2,
+                          color: "#555555",
+                          fontWeight: 500,
+                          pl: 0,
+                        }}
+                      >
+                        {farm.count ?? ""}
+                      </TableCell>
+                      <TableCell
+                        // align="center"
+                        sx={{
+                          borderBottomColor: "#F5F6F8",
+                          borderBottomWidth: 2,
+                          color: "#555555",
+                          fontWeight: 500,
+                          pl: 0,
+                        }}
+                      >
+                        {farm.count ?? ""}
+                      </TableCell>
+                      <TableCell
+                        // align="center"
+                        sx={{
+                          borderBottomColor: "#F5F6F8",
+                          borderBottomWidth: 2,
+                          color: "#555555",
+                          fontWeight: 500,
+                          pl: 0,
+                        }}
+                      >
+                        {farm.count ?? ""}
+                      </TableCell>
+                      <TableCell
+                        // align="center"
+                        sx={{
+                          borderBottomColor: "#F5F6F8",
+                          borderBottomWidth: 2,
+                          color: "#555555",
+                          fontWeight: 500,
+                          pl: 0,
+                        }}
+                      >
                         {farm.meanWeight ? `${farm.meanWeight}g` : ""}
                       </TableCell>{" "}
                       <TableCell
@@ -337,7 +385,7 @@ export default function FarmManagerTable({ farmManagers, tableData }: Props) {
                           className="cursor-pointer"
                           // onClick={() => handleEdit(user)}
                         >
-                          <Button
+                          {/* <Button
                             id="basic-button"
                             aria-controls={open ? "basic-menu" : undefined}
                             aria-haspopup="true"
@@ -361,6 +409,30 @@ export default function FarmManagerTable({ farmManagers, tableData }: Props) {
                                 d="M9.5 13a1.5 1.5 0 1 1-3 0a1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0a1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0a1.5 1.5 0 0 1 3 0"
                               />
                             </svg>
+                          </Button> */}
+                          <Button
+                            id="basic-button"
+                            aria-controls={open ? "basic-menu" : undefined}
+                            aria-haspopup="true"
+                            aria-expanded={open ? "true" : undefined}
+                            onClick={(e) => handleClick(e, farm)}
+                            className=""
+                            type="button"
+                            variant="contained"
+                            sx={{
+                              background: "#06A19B",
+                              fontWeight: "bold",
+                              padding: "8px 20px",
+                              width: {
+                                xs: "50%",
+                                lg: "fit-content",
+                              },
+                              textTransform: "capitalize",
+                              borderRadius: "12px",
+                              marginRight: "auto",
+                            }}
+                          >
+                            Manage
                           </Button>
                           <Menu
                             id="basic-menu"
