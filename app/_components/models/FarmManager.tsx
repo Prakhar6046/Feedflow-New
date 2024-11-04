@@ -15,7 +15,7 @@ import { Close as CloseIcon } from "@mui/icons-material"; // Use Material-UI's C
 import * as validationPattern from "@/app/_lib/utils/validationPatterns/index";
 import * as validationMessage from "@/app/_lib/utils/validationsMessage/index";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
-import { FarmManager } from "@/app/_typeModels/farmManager";
+import { FarmManager } from "@/app/_typeModels/production";
 import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { Farm } from "@/app/_typeModels/Farm";
@@ -122,7 +122,11 @@ const TransferModal: React.FC<Props> = ({
         <Box display="flex" justifyContent="flex-end" padding={2}>
           <IconButton
             onClick={handleClose}
-            sx={{ color: "inherit", background: "transparent" }}
+            sx={{
+              color: "inherit",
+              background: "transparent",
+              margin: "2",
+            }}
           >
             <CloseIcon />
           </IconButton>

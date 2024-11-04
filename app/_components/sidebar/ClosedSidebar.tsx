@@ -304,7 +304,7 @@ function ClosedSidebar() {
             }}
           />
 
-          <Link href={"/dashboard/farmManager"} className="nav-links">
+          <Link href={"/dashboard/production"} className="nav-links">
             <ListItem
               sx={{
                 paddingX: 0,
@@ -313,9 +313,7 @@ function ClosedSidebar() {
             >
               <ListItemButton
                 className={
-                  activePage.startsWith("/dashboard/farmManager")
-                    ? "active"
-                    : ""
+                  activePage.startsWith("/dashboard/production") ? "active" : ""
                 }
                 sx={{
                   display: "flex",
@@ -350,7 +348,7 @@ function ClosedSidebar() {
                     textAlign: "center",
                   }}
                 >
-                  Farm Manager
+                  Production
                 </ListItemText>
               </ListItemButton>
             </ListItem>

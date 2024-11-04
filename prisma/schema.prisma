@@ -57,13 +57,13 @@ model Organisation {
   addressId String?  @unique
   address   Address? @relation(fields: [addressId], references: [id], onUpdate: Cascade)
 
-  contact     Contact[]
-  hatchery    Hatchery[]    @relation("HatcheryCreator")
-  fishSupply  FishSupply[]  @relation("fishSupplyCreator")
-  Farm        Farm[]
-  FeedSupply  FeedSupply[]
-  FishSupply  FishSupply[]
-  farmManager farmManager[]
+  contact    Contact[]
+  hatchery   Hatchery[]   @relation("HatcheryCreator")
+  fishSupply FishSupply[] @relation("fishSupplyCreator")
+  Farm       Farm[]
+  FeedSupply FeedSupply[]
+  FishSupply FishSupply[]
+  production production[]
 
   @@index([createdAt])
   @@index([updatedAt])
@@ -122,7 +122,7 @@ model Farm {
   updatedAt      DateTime      @updatedAt
 
   productionUnits ProductionUnit[]
-  farmManager     farmManager[]
+  production      production[]
 
   @@index([createdAt])
   @@index([updatedAt])
@@ -239,22 +239,26 @@ model FishSupply {
   @@index([updatedAt])
 }
 
-model farmManager {
-  id               Int           @id @default(autoincrement())
-  fishFarmId       String
-  farm             Farm?         @relation(fields: [fishFarmId], references: [id])
-  productionUnitId String
-  biomass          String
-  count            String
-  currentBatch     String
-  stocked          String
-  meanWeight       String
-  createdBy        Int? // Optional field, nullable foreign key
-  updatedBy        String?
-  createdAt        DateTime      @default(now())
-  updatedAt        DateTime      @updatedAt
-  organisationId   Int?
-  organisation     Organisation? @relation(fields: [organisationId], references: [id], onDelete: SetNull)
+model production {
+  id                Int           @id @default(autoincrement())
+  fishFarmId        String
+  farm              Farm?         @relation(fields: [fishFarmId], references: [id])
+  productionUnitId  String
+  biomass           String
+  fishCount         String
+  batchNumber       String
+  age               String
+  meanLength        String
+  meanWeight        String
+  stockingDensityKG String
+  stockingDensityNM String
+  stockingLevel     String
+  createdBy         Int? // Optional field, nullable foreign key
+  updatedBy         String?
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+  organisationId    Int?
+  organisation      Organisation? @relation(fields: [organisationId], references: [id], onDelete: SetNull)
 
   @@index([createdAt])
   @@index([updatedAt])

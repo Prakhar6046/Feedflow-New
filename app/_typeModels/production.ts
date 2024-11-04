@@ -1,7 +1,7 @@
 import { Farm } from "./Farm";
 import { SingleOrganisation } from "./Organization";
 
-export interface FarmManager {
+export interface Production {
   id: Number;
   fishFarmId: String;
   productionUnitId: String;
@@ -17,4 +17,11 @@ export interface FarmManager {
   organisationId: Number;
   farm: Farm;
   organisation: SingleOrganisation;
+  fishCount: String;
+  batchNumber: String;
+  age: String;
+  meanLength: String;
+  stockingDensityKG: String;
+  stockingDensityNM: String;
+  stockingLevel: String;
 }

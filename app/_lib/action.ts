@@ -164,7 +164,7 @@ export const getOrganisationForhatchery = async () => {
     return error;
   }
 };
-export const getFarmManagers = async (payload: {
+export const getProductions = async (payload: {
   role?: string;
   organisationId?: string;
   query?: string;
@@ -172,7 +172,7 @@ export const getFarmManagers = async (payload: {
 }) => {
   try {
     const data = await fetch(
-      `${process.env.BASE_URL}/api/farmManager?role=${payload.role}&organisationId=${payload.organisationId}&query=${payload.query}&filter=${payload.noFilter}`,
+      `${process.env.BASE_URL}/api/production?role=${payload.role}&organisationId=${payload.organisationId}&query=${payload.query}&filter=${payload.noFilter}`,
       {
         method: "GET",
         headers: {

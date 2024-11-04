@@ -413,7 +413,7 @@ const ExpandedSidebar = () => {
           </Typography>
 
           <Link
-            href={"/dashboard/farmManager"}
+            href={"/dashboard/production"}
             className="nav-links"
             onClick={() => dispatch(farmAction.resetState())}
           >
@@ -425,9 +425,7 @@ const ExpandedSidebar = () => {
             >
               <ListItemButton
                 className={
-                  activePage.startsWith("/dashboard/farmManager")
-                    ? "active"
-                    : ""
+                  activePage.startsWith("/dashboard/production") ? "active" : ""
                 }
                 sx={{
                   display: "flex",
@@ -463,7 +461,7 @@ const ExpandedSidebar = () => {
                     mt: 0.5,
                   }}
                 >
-                  Farm Manager
+                  Production
                 </ListItemText>
               </ListItemButton>
             </ListItem>

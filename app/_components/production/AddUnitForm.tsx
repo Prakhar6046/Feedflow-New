@@ -21,11 +21,15 @@ import { getCookie } from "cookies-next";
 interface FormInputs {
   fishFarm: String;
   productionUnit: String;
-  currentBatch: String;
+  batchNumber: String;
   biomass: String;
-  count: String;
+  age: String;
+  fishCount: String;
+  meanLength: String;
   meanWeight: String;
-  stocked: String;
+  stockingDensityKG: String;
+  stockingDensityNM: String;
+  stockingLevel: String;
 }
 interface Props {
   farms: Farm[];
@@ -42,6 +46,7 @@ function AddUnitForm({ farms }: Props) {
     handleSubmit,
     formState: { errors },
   } = useForm<FormInputs>();
+  console.log(errors);
 
   const onSubmit: SubmitHandler<FormInputs> = async (data) => {
     const { fishFarm, productionUnit, ...restData } = data;
@@ -52,7 +57,7 @@ function AddUnitForm({ farms }: Props) {
       ...restData,
     };
 
-    const response = await fetch(`/api/farmManager`, {
+    const response = await fetch(`/api/production`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -63,7 +68,7 @@ function AddUnitForm({ farms }: Props) {
     toast.success(responseData.message);
 
     if (responseData.status) {
-      router.push("/dashboard/farmManager");
+      router.push("/dashboard/production");
     }
   };
   // Get selected farm's production units
@@ -136,7 +141,7 @@ function AddUnitForm({ farms }: Props) {
           <Box mb={2} width={"100%"}>
             <FormControl fullWidth className="form-input">
               <InputLabel id="feed-supply-select-label2">
-                Unit Name *
+                Production Unit *
               </InputLabel>
               <Select
                 labelId="feed-supply-select-label2"
@@ -145,7 +150,7 @@ function AddUnitForm({ farms }: Props) {
                   required: watch("productionUnit") ? false : true,
                   onChange: (e) => setValue("productionUnit", e.target.value),
                 })}
-                label="Unit Name *"
+                label="Production Unit *"
                 value={watch("productionUnit") || ""}
               >
                 {productionUnits.length > 0 ? (
@@ -183,11 +188,11 @@ function AddUnitForm({ farms }: Props) {
           </Box>
           <Box mb={2} width={"100%"}>
             <TextField
-              label="Current Batch *"
+              label="Batch Number *"
               type="text"
               className="form-input"
               // focused={altitude ? true : false}
-              {...register("currentBatch", {
+              {...register("batchNumber", {
                 required: true,
                 // pattern: validationPattern.negativeNumberWithDot,
               })}
@@ -197,8 +202,8 @@ function AddUnitForm({ farms }: Props) {
             />
 
             {errors &&
-              errors.currentBatch &&
-              errors.currentBatch.type === "required" && (
+              errors.batchNumber &&
+              errors.batchNumber.type === "required" && (
                 <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
                   {validationMessage.required}
                 </Typography>
@@ -285,11 +290,11 @@ function AddUnitForm({ farms }: Props) {
           </Box>
           <Box mb={2} width={"100%"}>
             <TextField
-              label="Count *"
+              label="Fish Count *"
               type="text"
               className="form-input"
               // focused={altitude ? true : false}
-              {...register("count", {
+              {...register("fishCount", {
                 required: true,
                 pattern: validationPattern.negativeNumberWithDot,
               })}
@@ -298,9 +303,36 @@ function AddUnitForm({ farms }: Props) {
               }}
             />
 
-            {errors && errors.count && errors.count.type === "required" && (
+            {errors &&
+              errors.fishCount &&
+              errors.fishCount.type === "required" && (
+                <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                  {validationMessage.required}
+                </Typography>
+              )}
+            {/* {errors && errors.lng && errors.lng.type === "pattern" && (
               <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
-                {validationMessage.required}
+                {validationMessage.NegativeNumberWithDot}
+              </Typography>
+            )}  */}
+          </Box>
+          <Box mb={2} width={"100%"}>
+            <TextField
+              label="Age *"
+              type="text"
+              className="form-input"
+              // focused={altitude ? true : false}
+              {...register("age", {
+                required: true,
+              })}
+              sx={{
+                width: "100%",
+              }}
+            />
+
+            {errors && errors.age && (
+              <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                This feild is required
               </Typography>
             )}
             {/* {errors && errors.lng && errors.lng.type === "pattern" && (
@@ -366,11 +398,65 @@ function AddUnitForm({ farms }: Props) {
           <Box mb={2} width={"100%"}>
             <Box position={"relative"}>
               <TextField
-                label="% Stocked *"
+                label="Mean Length *"
                 type="text"
                 className="form-input"
                 // focused={altitude ? true : false}
-                {...register("stocked", {
+                {...register("meanLength", {
+                  required: true,
+                  pattern: validationPattern.negativeNumberWithDot,
+                })}
+                sx={{
+                  width: "100%",
+                }}
+              />
+              <Typography
+                variant="body2"
+                color="#555555AC"
+                sx={{
+                  position: "absolute",
+                  right: 6,
+                  top: "50%",
+                  transform: "translate(-6px, -50%)",
+                  backgroundColor: "#fff",
+                  height: 30,
+                  display: "grid",
+
+                  placeItems: "center",
+                  zIndex: 1,
+                  pl: 1,
+                }}
+              >
+                g
+              </Typography>
+
+              {errors &&
+                errors.meanLength &&
+                errors.meanLength.type === "required" && (
+                  <Typography
+                    variant="body2"
+                    color="red"
+                    fontSize={13}
+                    mt={0.5}
+                  >
+                    {validationMessage.required}
+                  </Typography>
+                )}
+              {/* {errors && errors.lng && errors.lng.type === "pattern" && (
+              <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                {validationMessage.NegativeNumberWithDot}
+              </Typography>
+            )}  */}
+            </Box>
+          </Box>
+          <Box mb={2} width={"100%"}>
+            <Box position={"relative"}>
+              <TextField
+                label="% Stocking Density(n/m3)  *"
+                type="text"
+                className="form-input"
+                // focused={altitude ? true : false}
+                {...register("stockingDensityNM", {
                   required: true,
                   pattern: validationPattern.negativeNumberWithDot,
                 })}
@@ -397,8 +483,112 @@ function AddUnitForm({ farms }: Props) {
                 %
               </Typography>
               {errors &&
-                errors.stocked &&
-                errors.stocked.type === "required" && (
+                errors.stockingDensityNM &&
+                errors.stockingDensityNM.type === "required" && (
+                  <Typography
+                    variant="body2"
+                    color="red"
+                    fontSize={13}
+                    mt={0.5}
+                  >
+                    {validationMessage.required}
+                  </Typography>
+                )}
+              {/* {errors && errors.lng && errors.lng.type === "pattern" && (
+              <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                {validationMessage.NegativeNumberWithDot}
+              </Typography>
+            )}  */}
+            </Box>
+          </Box>
+          <Box mb={2} width={"100%"}>
+            <Box position={"relative"}>
+              <TextField
+                label="% Stocking Density(kg/m3) *"
+                type="text"
+                className="form-input"
+                // focused={altitude ? true : false}
+                {...register("stockingDensityKG", {
+                  required: true,
+                  pattern: validationPattern.negativeNumberWithDot,
+                })}
+                sx={{
+                  width: "100%",
+                }}
+              />
+              <Typography
+                variant="body2"
+                color="#555555AC"
+                sx={{
+                  position: "absolute",
+                  right: 6,
+                  top: "50%",
+                  transform: "translate(-6px, -50%)",
+                  backgroundColor: "#fff",
+                  height: 30,
+                  display: "grid",
+                  placeItems: "center",
+                  zIndex: 1,
+                  pl: 1,
+                }}
+              >
+                %
+              </Typography>
+              {errors &&
+                errors.stockingDensityKG &&
+                errors.stockingDensityKG.type === "required" && (
+                  <Typography
+                    variant="body2"
+                    color="red"
+                    fontSize={13}
+                    mt={0.5}
+                  >
+                    {validationMessage.required}
+                  </Typography>
+                )}
+              {/* {errors && errors.lng && errors.lng.type === "pattern" && (
+              <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                {validationMessage.NegativeNumberWithDot}
+              </Typography>
+            )}  */}
+            </Box>
+          </Box>
+          <Box mb={2} width={"100%"}>
+            <Box position={"relative"}>
+              <TextField
+                label="% Stocked *"
+                type="text"
+                className="form-input"
+                // focused={altitude ? true : false}
+                {...register("stockingLevel", {
+                  required: true,
+                  pattern: validationPattern.negativeNumberWithDot,
+                })}
+                sx={{
+                  width: "100%",
+                }}
+              />
+              <Typography
+                variant="body2"
+                color="#555555AC"
+                sx={{
+                  position: "absolute",
+                  right: 6,
+                  top: "50%",
+                  transform: "translate(-6px, -50%)",
+                  backgroundColor: "#fff",
+                  height: 30,
+                  display: "grid",
+                  placeItems: "center",
+                  zIndex: 1,
+                  pl: 1,
+                }}
+              >
+                %
+              </Typography>
+              {errors &&
+                errors.stockingLevel &&
+                errors.stockingLevel.type === "required" && (
                   <Typography
                     variant="body2"
                     color="red"

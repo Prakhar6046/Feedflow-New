@@ -1,6 +1,6 @@
 import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
 import FarmManagerTable from "@/app/_components/table/FarmManagerTable";
-import { getFarmManagers, getFarms } from "@/app/_lib/action";
+import { getFarms, getProductions } from "@/app/_lib/action";
 import {
   farmManagerHead,
   farmManagerHeadMember,
@@ -19,7 +19,7 @@ export default async function Page({
   const query = searchParams?.query || "";
   const loggedUser: any = getCookie("logged-user", { cookies });
   const user = JSON.parse(loggedUser);
-  const farmManagers = await getFarmManagers({
+  const productions = await getProductions({
     role: user.data.user.role,
     organisationId: user.data.user.organisationId,
     query,
@@ -35,13 +35,13 @@ export default async function Page({
   return (
     <>
       <BasicBreadcrumbs
-        heading={"Farm Manager"}
+        heading={"Production"}
         isTable={true}
         buttonName="Add Unit"
-        buttonRoute="/dashboard/farmManager/addUnit"
+        buttonRoute="/dashboard/production/addUnit"
         links={[
           { name: "Dashboard", link: "/dashboard" },
-          { name: "Farm Manager", link: "/dashboard/farmManager" },
+          { name: "Production", link: "/dashboard/production" },
         ]}
       />
       <FarmManagerTable
@@ -50,7 +50,7 @@ export default async function Page({
             ? farmManagerHead
             : farmManagerHeadMember
         }
-        farmManagers={farmManagers.data}
+        productions={productions.data}
         farms={farms.data}
       />
     </>

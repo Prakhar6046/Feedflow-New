@@ -9,7 +9,7 @@ export const GET = async (request: NextRequest) => {
   const filter = searchParams.get("filter");
 
   try {
-    const farmManaers = await prisma.farmManager.findMany({
+    const productions = await prisma.production.findMany({
       include: { farm: true, organisation: true },
       orderBy: {
         createdAt: "desc", // Sort by createdAt in descending order
@@ -29,13 +29,19 @@ export const GET = async (request: NextRequest) => {
                     biomass: { contains: query, mode: "insensitive" },
                   },
                   {
-                    count: { contains: query, mode: "insensitive" },
+                    fishCount: { contains: query, mode: "insensitive" },
                   },
                   {
                     meanWeight: { contains: query, mode: "insensitive" },
                   },
                   {
-                    stocked: { contains: query, mode: "insensitive" },
+                    stockingLevel: { contains: query, mode: "insensitive" },
+                  },
+                  {
+                    stockingDensityNM: { contains: query, mode: "insensitive" },
+                  },
+                  {
+                    stockingDensityKG: { contains: query, mode: "insensitive" },
                   },
                 ],
               }
@@ -44,7 +50,7 @@ export const GET = async (request: NextRequest) => {
       },
     });
     return new NextResponse(
-      JSON.stringify({ status: true, data: farmManaers }),
+      JSON.stringify({ status: true, data: productions }),
       {
         status: 200,
       }
@@ -70,21 +76,25 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    const newFarmManager = await prisma.farmManager.create({
+    const newProduction = await prisma.production.create({
       data: {
         fishFarmId: body.fishFarmId,
         productionUnitId: body.productionUnitId,
-        count: body.count,
-        currentBatch: body.currentBatch,
+        fishCount: body.fishCount,
+        batchNumber: body.batchNumber,
         biomass: body.biomass,
+        meanLength: body.meanLength,
         meanWeight: body.meanWeight,
-        stocked: body.stocked,
+        age: body.age,
+        stockingLevel: body.stockingLevel,
+        stockingDensityKG: body.stockingDensityKG,
+        stockingDensityNM: body.stockingDensityNM,
         organisationId: body.organisationId,
       },
     });
     return NextResponse.json({
       message: "Unit created successfully",
-      data: newFarmManager,
+      data: newProduction,
       status: true,
     });
   } catch (error) {

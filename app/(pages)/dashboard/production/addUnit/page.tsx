@@ -1,5 +1,5 @@
 import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
-import AddUnitForm from "@/app/_components/farmManager/AddUnitForm";
+import AddUnitForm from "@/app/_components/production/AddUnitForm";
 import { getFarms } from "@/app/_lib/action";
 import { getCookie } from "cookies-next";
 import { cookies } from "next/headers";
@@ -22,8 +22,8 @@ export default async function Page() {
         hideSearchInput={true}
         links={[
           { name: "Dashboard", link: "/dashboard" },
-          { name: "Farm Manager", link: "/dashboard/farmManager" },
-          { name: "Add Unit", link: "/dashboard/farmManager/addUnit" },
+          { name: "Production", link: "/dashboard/production" },
+          { name: "Add Unit", link: "/dashboard/production/addUnit" },
         ]}
       />
       <AddUnitForm farms={farms.data} />
