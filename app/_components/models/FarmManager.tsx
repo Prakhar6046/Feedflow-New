@@ -23,6 +23,8 @@ import { Farm } from "@/app/_typeModels/Farm";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import { productionMangeFields } from "@/app/_lib/utils";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 const style = {
   position: "absolute" as "absolute",
   top: "50%",
@@ -61,6 +63,7 @@ const TransferModal: React.FC<Props> = ({
   selectedProduction,
   farms,
 }) => {
+  const router = useRouter();
   const [selectedFarm, setSelectedFarm] = useState<any>(null);
   const {
     register,
@@ -96,8 +99,26 @@ const TransferModal: React.FC<Props> = ({
     control,
     name: "manager",
   });
-  const onSubmit: SubmitHandler<InputTypes> = (data) => {
-    console.log(data.manager);
+  const onSubmit: SubmitHandler<InputTypes> = async (data) => {
+    const payload = {
+      organisationId: selectedProduction.organisationId,
+      data: data.manager,
+    };
+    const response = await fetch("/api/production/mange", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    const res = await response.json();
+    if (res.status) {
+      toast.success(res.message);
+      setOpen(false);
+      router.push("/dashboard/production");
+      router.refresh();
+    }
   };
   console.log(errors);
 
@@ -149,11 +170,79 @@ const TransferModal: React.FC<Props> = ({
       setSelectedFarm(selectedProduction.fishFarmId); // Set the selected farm when manager is selected
     }
   }, [selectedProduction, setValue]);
+  const watchedFields = watch("manager");
+  // useEffect(() => {
+  //   if (selectedProduction) {
+  //     const index0Biomass = selectedProduction.biomass;
+  //     const index0Count = selectedProduction.fishCount;
+  //     const index1Biomass = watchedFields[1]?.biomass;
+  //     const index1Count = watchedFields[1]?.count;
+
+  //     // Update index 0 values based on index 1
+  //     if (
+  //       Number(index1Biomass) &&
+  //       Number(index1Biomass) < Number(index0Biomass)
+  //     ) {
+  //       const updatedBiomass = Number(index0Biomass) - Number(index1Biomass);
+  //       setValue(`manager.0.biomass`, updatedBiomass.toString()); // Update biomass for index 0
+  //     } else {
+  //       setValue(`manager.0.biomass`, selectedProduction.biomass);
+  //     }
+
+  //     if (Number(index1Count) && Number(index1Count) < Number(index0Count)) {
+  //       const updatedCount = Number(index0Count) - Number(index1Count);
+  //       setValue(`manager.0.count`, updatedCount.toString());
+  //     } else {
+  //       setValue(`manager.0.count`, selectedProduction.fishCount);
+  //     }
+  //   }
+  // }, [
+  //   watchedFields[1]?.biomass,
+  //   watchedFields[1]?.count,
+  //   setValue,
+  //   watchedFields,
+  //   selectedProduction,
+  // ]);
   useEffect(() => {
-    if (fields) {
-      console.log(fields);
+    if (selectedProduction) {
+      const index0Biomass = Number(selectedProduction.biomass) || 0; // Ensure a number
+      const index0Count = Number(selectedProduction.fishCount) || 0; // Ensure a number
+      const fishFarm = selectedProduction.fishFarmId;
+
+      // Initialize updated values
+      let updatedBiomass = index0Biomass;
+      let updatedCount = index0Count;
+
+      // Iterate through watched fields, skipping index 0
+      watchedFields.forEach((field, index) => {
+        if (index === 0) return; // Skip index 0
+        if (field.fishFarm === fishFarm) {
+          const currentBiomass = Number(field.biomass) || 0; // Convert to number
+          const currentCount = Number(field.count) || 0; // Convert to number
+
+          // Update biomass if current value is valid
+          if (currentBiomass > 0 && updatedBiomass > currentBiomass) {
+            updatedBiomass -= currentBiomass;
+          }
+
+          // Update count if current value is valid
+          if (currentCount > 0 && updatedCount > currentCount) {
+            updatedCount -= currentCount;
+          }
+        }
+      });
+
+      // Set the index 0 values after calculation
+      setValue(`manager.0.biomass`, updatedBiomass.toString());
+      setValue(`manager.0.count`, updatedCount.toString());
     }
-  }, [fields]);
+  }, [
+    watchedFields.map((field) => field.biomass).join(","), // Watch biomass of all fields
+    watchedFields.map((field) => field.count).join(","), // Watch count of all fields
+    setValue,
+    selectedProduction,
+  ]);
+
   return (
     <Modal
       open={open}
