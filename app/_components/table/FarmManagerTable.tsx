@@ -39,8 +39,6 @@ export default function FarmManagerTable({
   tableData,
   farms,
 }: Props) {
-  console.log(productions);
-
   const router = useRouter();
   const dispatch = useAppDispatch();
   const pathName = usePathname();
@@ -269,7 +267,7 @@ export default function FarmManagerTable({
                           pl: 0,
                         }}
                       >
-                        {farm.farm.name ?? ""}
+                        {farm.productionUnit.name ?? ""}
                       </TableCell>
                       <TableCell
                         // align="center"

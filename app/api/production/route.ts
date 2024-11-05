@@ -10,7 +10,7 @@ export const GET = async (request: NextRequest) => {
 
   try {
     const productions = await prisma.production.findMany({
-      include: { farm: true, organisation: true },
+      include: { farm: true, organisation: true, productionUnit: true },
       orderBy: {
         createdAt: "desc", // Sort by createdAt in descending order
       },

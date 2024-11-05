@@ -152,10 +152,11 @@ model ProductionUnit {
   capacity      String
   waterflowRate String
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  Farm      Farm?    @relation(fields: [farmId], references: [id])
-  farmId    String?
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  Farm       Farm?        @relation(fields: [farmId], references: [id])
+  farmId     String?
+  production production[]
 
   @@index([createdAt])
   @@index([updatedAt])
@@ -240,9 +241,9 @@ model FishSupply {
 }
 
 model production {
-  id                Int           @id @default(autoincrement())
+  id                Int             @id @default(autoincrement())
   fishFarmId        String
-  farm              Farm?         @relation(fields: [fishFarmId], references: [id])
+  farm              Farm?           @relation(fields: [fishFarmId], references: [id])
   productionUnitId  String
   biomass           String
   fishCount         String
@@ -255,10 +256,11 @@ model production {
   stockingLevel     String
   createdBy         Int? // Optional field, nullable foreign key
   updatedBy         String?
-  createdAt         DateTime      @default(now())
-  updatedAt         DateTime      @updatedAt
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
   organisationId    Int?
-  organisation      Organisation? @relation(fields: [organisationId], references: [id], onDelete: SetNull)
+  organisation      Organisation?   @relation(fields: [organisationId], references: [id], onDelete: SetNull)
+  productionUnit    ProductionUnit? @relation(fields: [productionUnitId], references: [id])
 
   @@index([createdAt])
   @@index([updatedAt])

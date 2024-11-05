@@ -24,4 +24,12 @@ export interface Production {
   stockingDensityKG: String;
   stockingDensityNM: String;
   stockingLevel: String;
+  productionUnit: {
+    id: String;
+    name: String;
+    type: String;
+    capacity: String;
+    waterflowRate: String;
+    farmId: String;
+  };
 }
