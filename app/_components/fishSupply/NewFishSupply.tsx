@@ -83,7 +83,7 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
       organisation: Number(data.organisation),
       spawningNumber: Number(data.spawningNumber),
       productionUnits: data.productionUnits,
-      organisationId: loggedUserData.data.user.organisationId,
+      organisationId: loggedUserData.organisationId,
       ...restData,
     };
 
@@ -153,12 +153,9 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
     if (userData && !isEdit) {
       const loggedUserData = JSON.parse(userData);
 
-      setValue("organisation", loggedUserData.data.user.id);
-      if (loggedUserData?.data?.user?.organisation?.Farm[0]?.id) {
-        setValue(
-          "fishFarmId",
-          loggedUserData.data.user.organisation.Farm[0].id
-        );
+      setValue("organisation", loggedUserData.id);
+      if (loggedUserData?.organisation?.Farm[0]?.id) {
+        setValue("fishFarmId", loggedUserData.organisation.Farm[0].id);
       }
     }
   }, [userData]);

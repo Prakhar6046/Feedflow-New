@@ -108,13 +108,13 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
             ? JSON.stringify({
                 ...data,
                 createdBy: editFeedSpecification?.createdBy,
-                updatedBy: String(loggedUserData.data.user.id),
+                updatedBy: String(loggedUserData.id),
                 id: editFeedSpecification?.id,
               })
             : JSON.stringify({
                 ...data,
-                createdBy: String(loggedUserData.data.user.id),
-                organisationId: loggedUserData.data.user.organisationId,
+                createdBy: String(loggedUserData.id),
+                organisationId: loggedUserData.organisationId,
               }),
         }
       );

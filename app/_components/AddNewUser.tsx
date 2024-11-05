@@ -126,7 +126,7 @@ export default function AddNewUser({ organisations }: Props) {
   useEffect(() => {
     if (loggedUser) {
       const user = JSON.parse(loggedUser);
-      setCurrentUserId(user.data.user.id);
+      setCurrentUserId(user.id);
     }
   }, [loggedUser]);
 

@@ -21,15 +21,15 @@ export default async function Page({
   const user = JSON.parse(loggedUser);
 
   const fishSupply = await getFishSupply({
-    organisationId: user.data.user.organisationId,
-    role: user.data.user.role,
+    organisationId: user.organisationId,
+    role: user.role,
     query,
   });
   return (
     <>
       <BasicBreadcrumbs
         heading={"Fish Supply"}
-        buttonName={user.data.user.role !== "MEMBER" ? "New Fish Supply" : ""}
+        buttonName={user.role !== "MEMBER" ? "New Fish Supply" : ""}
         isTable={true}
         buttonRoute="/dashboard/fishSupply/new"
         links={[
@@ -40,9 +40,7 @@ export default async function Page({
       <Box className="hatchery-table">
         <CommonTable
           tableData={
-            user.data.user.role !== "MEMBER"
-              ? fishTableHead
-              : fishTableHeadMember
+            user.role !== "MEMBER" ? fishTableHead : fishTableHeadMember
           }
           fishSupply={fishSupply.data}
         />

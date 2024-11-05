@@ -96,7 +96,7 @@ const FeedSelection: NextPage<Props> = ({ setActiveStep, editFarm }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const getFeedSupplys = async () => {
     const response = await fetch(
-      `/api/feedSupply?role=${loggedUser.data.user.role}&organisationId=${loggedUser.data.user.organisationId}`
+      `/api/feedSupply?role=${loggedUser.role}&organisationId=${loggedUser.organisationId}`
     );
     return response.json();
   };

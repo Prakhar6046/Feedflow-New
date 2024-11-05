@@ -8,8 +8,8 @@ export default async function Page() {
   const loggedUser: any = getCookie("logged-user", { cookies });
   const user = JSON.parse(loggedUser);
   let organisations = await getOrganisations({
-    organisationId: user?.data?.user?.organisationId,
-    role: user?.data?.user?.role,
+    organisationId: user?.organisationId,
+    role: user?.role,
     query: "",
   });
 

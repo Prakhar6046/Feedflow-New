@@ -5,7 +5,6 @@ import { Box, Button, Stack, TextField, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import logo from "@/public/static/img/logo-bigone.jpg";
 import Image from "next/image";
-import { setCookie } from "cookies-next";
 import Link from "next/link";
 import { hashPassword } from "@/app/_lib/hash";
 import toast, { Toaster } from "react-hot-toast";
@@ -13,6 +12,7 @@ import EyeOpened from "@/public/static/img/icons/ic-eye-open.svg";
 import EyeClosed from "@/public/static/img/icons/ic-eye-closed.svg";
 import { useAppDispatch } from "@/lib/hooks";
 import { userAction } from "@/lib/features/user/userSlice";
+import { setCookie } from "cookies-next";
 export default function Page() {
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -31,8 +31,9 @@ export default function Page() {
     });
     const data = await response.json();
     if (response.ok) {
+      setCookie("logged-user", data.data.user);
       dispatch(userAction.handleRole(data.data.user.role));
-      setCookie("logged-user", data);
+      console.log(data);
 
       setCookie("role", data?.data?.user?.role);
       if (data.status) {

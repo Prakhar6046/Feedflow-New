@@ -20,7 +20,7 @@ export default function Page() {
 
   useEffect(() => {
     const userOrganisationType = JSON.parse(loggedUser);
-    if (userOrganisationType?.data?.user?.role === "SUPERADMIN") {
+    if (userOrganisationType?.role === "SUPERADMIN") {
       setCookie("activeStep", 0);
     } else {
       setCookie("activeStep", activeStep);
@@ -30,8 +30,7 @@ export default function Page() {
     if (loggedUser) {
       const userOrganisationType = JSON.parse(loggedUser);
       if (
-        userOrganisationType?.data?.user?.organisation.organisationType ===
-        "Fish Farmer"
+        userOrganisationType?.organisation.organisationType === "Fish Farmer"
       ) {
         const stepsForFishFarmers = [
           {
@@ -45,8 +44,7 @@ export default function Page() {
         ];
         setSteps(stepsForFishFarmers);
       } else if (
-        userOrganisationType?.data?.user?.organisation.organisationType ===
-        "Feed Supplier"
+        userOrganisationType?.organisation.organisationType === "Feed Supplier"
       ) {
         const stepsForFeedSupplyers = [
           {
@@ -60,7 +58,7 @@ export default function Page() {
           },
         ];
         setSteps(stepsForFeedSupplyers);
-      } else if (userOrganisationType?.data?.user?.role === "SUPERADMIN") {
+      } else if (userOrganisationType?.role === "SUPERADMIN") {
         const stepsForFishFarmers = [
           {
             label: "Feed Selection",

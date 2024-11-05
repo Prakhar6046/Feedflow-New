@@ -9,8 +9,8 @@ export default async function Page() {
   const user = JSON.parse(loggedUser);
 
   const farms = await getFarms({
-    role: user.data.user.role,
-    organisationId: user.data.user.organisationId,
+    role: user.role,
+    organisationId: user.organisationId,
     query: "",
     noFilter: false,
   });

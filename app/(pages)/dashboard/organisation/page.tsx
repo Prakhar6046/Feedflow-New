@@ -16,18 +16,16 @@ export default async function Page({
   const user = JSON.parse(loggedUser);
 
   let organisations = await getOrganisations({
-    organisationId: user?.data?.user?.organisationId,
+    organisationId: user?.organisationId,
     query,
-    role: user?.data?.user?.role,
+    role: user?.role,
   });
 
   return (
     <>
       <BasicBreadcrumbs
         heading={"Organisations"}
-        buttonName={
-          user.data.user.role === "SUPERADMIN" ? "Add Organisation" : ""
-        }
+        buttonName={user.role === "SUPERADMIN" ? "Add Organisation" : ""}
         buttonRoute={"/dashboard/organisation/new"}
         isTable={true}
         refetch={"organisation"}
@@ -36,10 +34,7 @@ export default async function Page({
           { name: "Organisations", link: "/dashboard/organisation" },
         ]}
       />
-      <BasicTable
-        organisations={organisations?.data}
-        userRole={user?.data?.user?.role}
-      />
+      <BasicTable organisations={organisations?.data} userRole={user?.role} />
     </>
   );
 }

@@ -15,8 +15,8 @@ export default async function Page({
 
   const userOrganisationType = JSON.parse(loggedUser);
   const feeds = await getFeedSupplys({
-    role: userOrganisationType.data.user.role,
-    organisationId: userOrganisationType.data?.user?.organisationId,
+    role: userOrganisationType.role,
+    organisationId: userOrganisationType.organisationId,
     query,
   });
 
@@ -25,10 +25,10 @@ export default async function Page({
       <BasicBreadcrumbs
         heading={"Feed Supply"}
         buttonName={
-          userOrganisationType?.data?.user?.role === "SUPERADMIN" ||
-          userOrganisationType?.data?.user?.organisation.organisationType ===
+          userOrganisationType?.role === "SUPERADMIN" ||
+          userOrganisationType?.organisation.organisationType ===
             "Fish Farmer" ||
-          userOrganisationType?.data?.user?.organisation.organisationType ===
+          userOrganisationType?.organisation.organisationType ===
             "Feed Supplier"
             ? "Add Feed"
             : ""

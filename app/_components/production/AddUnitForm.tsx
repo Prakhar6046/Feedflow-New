@@ -58,7 +58,7 @@ function AddUnitForm({ farms }: Props) {
   const onSubmit: SubmitHandler<FormInputs> = async (data) => {
     const { fishFarm, productionUnit, age, ...restData } = data;
     const payload = {
-      organisationId: user.data.user.organisationId,
+      organisationId: user.organisationId,
       fishFarmId: fishFarm,
       productionUnitId: productionUnit,
       age: getDayMonthDifference(data.age),

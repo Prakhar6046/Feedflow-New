@@ -190,7 +190,7 @@ export default function Page({ params }: { params: { userId: string } }) {
   useEffect(() => {
     if (loggedUser) {
       const user = JSON.parse(loggedUser);
-      setCurrentUserId(user.data.user.id);
+      setCurrentUserId(user.id);
     }
   }, [loggedUser]);
 

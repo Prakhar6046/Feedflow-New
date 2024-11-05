@@ -170,7 +170,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
         lat: farm.lat,
         lng: farm.lng,
         id: editFarm?.id,
-        organsationId: loggedUserData.data.user.organisationId,
+        organsationId: loggedUserData.organisationId,
       };
     } else {
       payload = {
@@ -188,7 +188,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
         lat: farm.lat,
         lng: farm.lng,
         fishFarmer: farm.fishFarmer,
-        organsationId: loggedUserData.data.user.organisationId,
+        organsationId: loggedUserData.organisationId,
       };
     }
 

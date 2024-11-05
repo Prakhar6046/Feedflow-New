@@ -15,8 +15,8 @@ export default async function Page({
   const loggedUser: any = getCookie("logged-user", { cookies });
   const user = JSON.parse(loggedUser);
   const users = await getUsers({
-    role: user.data.user.role,
-    organisationId: user.data.user.organisationId,
+    role: user.role,
+    organisationId: user.organisationId,
     query,
   });
 
@@ -24,7 +24,7 @@ export default async function Page({
     <>
       <BasicBreadcrumbs
         heading={"Users"}
-        buttonName={user.data.user.role !== "MEMBER" ? "Add User" : ""}
+        buttonName={user.role !== "MEMBER" ? "Add User" : ""}
         buttonRoute="/dashboard/user/new"
         isTable={true}
         refetch={"user"}

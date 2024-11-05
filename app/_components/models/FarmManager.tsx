@@ -70,6 +70,8 @@ const TransferModal: React.FC<Props> = ({
     getValues,
     handleSubmit,
     control,
+    setFocus,
+    getFieldState,
   } = useForm<InputTypes>({
     defaultValues: {
       manager: [
@@ -147,7 +149,11 @@ const TransferModal: React.FC<Props> = ({
       setSelectedFarm(selectedProduction.fishFarmId); // Set the selected farm when manager is selected
     }
   }, [selectedProduction, setValue]);
-
+  useEffect(() => {
+    if (fields) {
+      console.log(fields);
+    }
+  }, [fields]);
   return (
     <Modal
       open={open}
@@ -193,7 +199,8 @@ const TransferModal: React.FC<Props> = ({
                         label="Fish Farm*"
                         disabled={
                           item.field === "Harvest" ||
-                          item.field === "Mortalities"
+                          item.field === "Mortalities" ||
+                          idx === 0
                             ? true
                             : false
                         }
@@ -248,7 +255,8 @@ const TransferModal: React.FC<Props> = ({
                         label="Production Unit*"
                         disabled={
                           item.field === "Harvest" ||
-                          item.field === "Mortalities"
+                          item.field === "Mortalities" ||
+                          idx === 0
                             ? true
                             : false
                         }
@@ -308,7 +316,9 @@ const TransferModal: React.FC<Props> = ({
                       className="form-input"
                       sx={{ width: "100%" }}
                       disabled={
-                        item.field === "Harvest" || item.field === "Mortalities"
+                        item.field === "Harvest" ||
+                        item.field === "Mortalities" ||
+                        idx === 0
                           ? true
                           : false
                       }
@@ -341,6 +351,7 @@ const TransferModal: React.FC<Props> = ({
                       label="Biomass (kg) *"
                       type="text"
                       className="form-input"
+                      disabled={idx === 0 ? true : false}
                       sx={{ width: "100%" }}
                       {...register(`manager.${idx}.biomass`, {
                         required: true,
@@ -374,6 +385,7 @@ const TransferModal: React.FC<Props> = ({
                       type="text"
                       className="form-input"
                       sx={{ width: "100%" }}
+                      disabled={idx === 0 ? true : false}
                       {...register(`manager.${idx}.count`, {
                         required: true,
                         pattern: validationPattern.negativeNumberWithDot,
@@ -406,6 +418,7 @@ const TransferModal: React.FC<Props> = ({
                       type="text"
                       className="form-input"
                       sx={{ width: "100%" }}
+                      disabled={idx === 0 ? true : false}
                       {...register(`manager.${idx}.meanWeight`, {
                         required: true,
                         pattern: validationPattern.negativeNumberWithDot,
@@ -438,6 +451,7 @@ const TransferModal: React.FC<Props> = ({
                       type="text"
                       className="form-input"
                       sx={{ width: "100%" }}
+                      disabled={idx === 0 ? true : false}
                       {...register(`manager.${idx}.meanLength` as const, {
                         required: true,
                       })}
@@ -470,11 +484,12 @@ const TransferModal: React.FC<Props> = ({
                         type="text"
                         className="form-input"
                         sx={{ width: "100%" }}
+                        disabled
                         {...register(
-                          `manager.${idx}.stockingDensityKG` as const,
-                          {
-                            required: true,
-                          }
+                          `manager.${idx}.stockingDensityKG` as const
+                          // {
+                          //   required: true,
+                          // }
                         )}
                       />
                       <Typography
@@ -483,7 +498,7 @@ const TransferModal: React.FC<Props> = ({
                         fontSize={13}
                         mt={0.5}
                       ></Typography>
-                      {errors &&
+                      {/* {errors &&
                         errors.manager &&
                         errors.manager[idx] &&
                         errors.manager[idx].stockingDensityKG &&
@@ -497,7 +512,7 @@ const TransferModal: React.FC<Props> = ({
                           >
                             {validationMessage.required}
                           </Typography>
-                        )}
+                        )} */}
                     </Grid>
                   )}
                   {item.field !== "Harvest" && item.field !== "Mortalities" && (
@@ -507,11 +522,12 @@ const TransferModal: React.FC<Props> = ({
                         type="text"
                         className="form-input"
                         sx={{ width: "100%" }}
+                        disabled
                         {...register(
-                          `manager.${idx}.stockingDensityNM` as const,
-                          {
-                            required: true,
-                          }
+                          `manager.${idx}.stockingDensityNM` as const
+                          // {
+                          //   required: true,
+                          // }
                         )}
                       />
                       <Typography
@@ -520,7 +536,7 @@ const TransferModal: React.FC<Props> = ({
                         fontSize={13}
                         mt={0.5}
                       ></Typography>
-                      {errors &&
+                      {/* {errors &&
                         errors.manager &&
                         errors.manager[idx] &&
                         errors.manager[idx].stockingDensityNM &&
@@ -534,7 +550,7 @@ const TransferModal: React.FC<Props> = ({
                           >
                             {validationMessage.required}
                           </Typography>
-                        )}
+                        )} */}
                     </Grid>
                   )}
                   {item.field !== "Harvest" && item.field !== "Mortalities" && (
@@ -544,9 +560,13 @@ const TransferModal: React.FC<Props> = ({
                         type="text"
                         className="form-input"
                         sx={{ width: "100%" }}
-                        {...register(`manager.${idx}.stockingLevel` as const, {
-                          required: true,
-                        })}
+                        disabled
+                        {...register(
+                          `manager.${idx}.stockingLevel` as const
+                          //   {
+                          //   required: true,
+                          // }
+                        )}
                       />
                       <Typography
                         variant="body2"
@@ -554,7 +574,7 @@ const TransferModal: React.FC<Props> = ({
                         fontSize={13}
                         mt={0.5}
                       ></Typography>
-                      {errors &&
+                      {/* {errors &&
                         errors.manager &&
                         errors.manager[idx] &&
                         errors.manager[idx].stockingLevel &&
@@ -568,7 +588,7 @@ const TransferModal: React.FC<Props> = ({
                           >
                             {validationMessage.required}
                           </Typography>
-                        )}
+                        )} */}
                     </Grid>
                   )}
                   {idx !== 0 && (

@@ -20,14 +20,14 @@ export default async function Page({
   const loggedUser: any = getCookie("logged-user", { cookies });
   const user = JSON.parse(loggedUser);
   const productions = await getProductions({
-    role: user.data.user.role,
-    organisationId: user.data.user.organisationId,
+    role: user.role,
+    organisationId: user.organisationId,
     query,
     noFilter: false,
   });
   const farms = await getFarms({
-    role: user.data.user.role,
-    organisationId: user.data.user.organisationId,
+    role: user.role,
+    organisationId: user.organisationId,
     query: "",
     noFilter: false,
   });
@@ -46,9 +46,7 @@ export default async function Page({
       />
       <FarmManagerTable
         tableData={
-          user.data.user.role !== "MEMBER"
-            ? farmManagerHead
-            : farmManagerHeadMember
+          user.role !== "MEMBER" ? farmManagerHead : farmManagerHeadMember
         }
         productions={productions.data}
         farms={farms.data}

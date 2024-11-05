@@ -19,28 +19,23 @@ import { deleteCookie, getCookie } from "cookies-next";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 export interface LoggedUser {
-  status: Boolean;
-  data: {
-    token: String;
-    user: {
-      id: Number;
-      name: String;
-      email: String;
-      password: String;
-      status: String;
-      role: String;
-      createdAt: String;
-      imageUrl: String;
-      updatedBy: String;
-      createdBy: String;
-      organisationId: Number;
-      updatedAt: String;
-      organisation: {
-        organisationType: String;
-      };
-    };
+  id: Number;
+  name: String;
+  email: String;
+  password: String;
+  status: String;
+  role: String;
+  createdAt: String;
+  imageUrl: String;
+  updatedBy: String;
+  createdBy: String;
+  organisationId: Number;
+  updatedAt: String;
+  organisation: {
+    organisationType: String;
   };
 }
+
 const AccountPopover = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -72,7 +67,7 @@ const AccountPopover = () => {
   useEffect(() => {
     if (loggedUser) {
       const user = JSON.parse(loggedUser);
-      dispatch(userAction.handleRole(user?.data?.user?.role));
+      dispatch(userAction.handleRole(user?.role));
       setLoggedUserData(JSON.parse(loggedUser));
     }
   }, [loggedUser]);
@@ -88,13 +83,13 @@ const AccountPopover = () => {
             aria-haspopup="true"
             aria-expanded={open ? "true" : undefined}
           >
-            {loggedUserData?.data?.user?.imageUrl ? (
+            {loggedUserData?.imageUrl ? (
               <Box
                 borderRadius={100}
                 width={40}
                 height={40}
                 style={{
-                  backgroundImage: `url(${loggedUserData?.data?.user?.imageUrl})`,
+                  backgroundImage: `url(${loggedUserData?.imageUrl})`,
                   backgroundSize: "contain",
                   backgroundPosition: "center",
                   backgroundRepeat: "no-repeat",
@@ -159,20 +154,18 @@ const AccountPopover = () => {
             gap={3}
           >
             <Typography variant="subtitle2" fontWeight={600}>
-              {loggedUserData ? loggedUserData?.data?.user.name : "Demo"}
+              {loggedUserData ? loggedUserData?.name : "Demo"}
             </Typography>
             <Badge
-              badgeContent={
-                loggedUserData ? loggedUserData?.data?.user.role : ""
-              }
+              badgeContent={loggedUserData ? loggedUserData?.role : ""}
               color="primary"
               className="profile-badge"
             ></Badge>
           </Stack>
           <Typography variant="body2" fontSize={13} fontWeight={400} mt={0.3}>
-            {loggedUserData ? loggedUserData?.data?.user.email : "Demo"}
+            {loggedUserData ? loggedUserData?.email : "Demo"}
           </Typography>
-          {loggedUserData?.data?.user.role !== "SUPERADMIN" && (
+          {loggedUserData?.role !== "SUPERADMIN" && (
             <Typography
               variant="body2"
               fontSize={12}
@@ -181,7 +174,7 @@ const AccountPopover = () => {
               mt={0.5}
             >
               {loggedUserData
-                ? loggedUserData?.data?.user?.organisation?.organisationType
+                ? loggedUserData?.organisation?.organisationType
                 : ""}
             </Typography>
           )}
@@ -218,7 +211,7 @@ const AccountPopover = () => {
         </MenuItem>
         <MenuItem
           onClick={() =>
-            handleChangePage(`/dashboard/user/${loggedUserData?.data?.user.id}`)
+            handleChangePage(`/dashboard/user/${loggedUserData?.id}`)
           }
           sx={{
             fontSize: 14,

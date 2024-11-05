@@ -84,7 +84,7 @@ const ExpandedSidebar = () => {
           borderRadius={3}
         >
           {loggedUserData ? (
-            loggedUserData?.data?.user.imageUrl ? (
+            loggedUserData?.imageUrl ? (
               <Box
                 display={"flex"}
                 justifyContent={"center"}
@@ -96,7 +96,7 @@ const ExpandedSidebar = () => {
                   borderRadius: "8px",
                 }}
                 style={{
-                  backgroundImage: `url(${loggedUserData?.data?.user.imageUrl})`,
+                  backgroundImage: `url(${loggedUserData?.imageUrl})`,
                   backgroundSize: "contain",
                   backgroundPosition: "center",
                   backgroundRepeat: "no-repeat",
@@ -142,7 +142,7 @@ const ExpandedSidebar = () => {
 
           <Box>
             <Typography variant="subtitle2" fontWeight={600}>
-              {loggedUserData ? loggedUserData?.data?.user.name : "Demo"}
+              {loggedUserData ? loggedUserData?.name : "Demo"}
             </Typography>
             <Typography
               variant="body2"
@@ -155,7 +155,7 @@ const ExpandedSidebar = () => {
                 textOverflow: "ellipsis",
               }}
             >
-              {loggedUserData ? loggedUserData?.data?.user.email : "Demo"}
+              {loggedUserData ? loggedUserData?.email : "Demo"}
             </Typography>
           </Box>
         </Box>
