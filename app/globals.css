@@ -424,7 +424,7 @@ body {
 }
 @media only screen and (min-width: 1200px) {
   .css-tifipg-MuiStack-root {
-    width: 1200px !important;
+    width: 90% !important;
   }
 }
 .css-1nflkpj {

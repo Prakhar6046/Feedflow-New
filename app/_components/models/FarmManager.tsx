@@ -48,6 +48,10 @@ interface InputTypes {
     meanWeight: String;
     meanLength: String;
     field?: String;
+    stockingDensityNM: String;
+    stockingLevel: String;
+    stockingDensityKG: String;
+    batchNumber: String;
   }[];
 }
 const TransferModal: React.FC<Props> = ({
@@ -75,7 +79,11 @@ const TransferModal: React.FC<Props> = ({
           count: "",
           meanWeight: "",
           meanLength: "",
+          stockingDensityNM: "",
+          stockingLevel: "",
+          stockingDensityKG: "",
           field: "",
+          batchNumber: "",
         },
       ],
     },
@@ -102,7 +110,11 @@ const TransferModal: React.FC<Props> = ({
         count: "",
         meanWeight: "",
         meanLength: "",
+        stockingDensityNM: "",
+        stockingLevel: "",
+        stockingDensityKG: "",
         field,
+        batchNumber: "",
       });
       setAnchorEl(null);
     } else {
@@ -119,12 +131,17 @@ const TransferModal: React.FC<Props> = ({
           count: selectedProduction.fishCount,
           meanWeight: selectedProduction.meanWeight,
           meanLength: selectedProduction.meanLength,
+          stockingDensityNM: selectedProduction.stockingDensityNM,
+          stockingLevel: selectedProduction.stockingLevel,
+          stockingDensityKG: selectedProduction.stockingDensityKG,
+          batchNumber: selectedProduction.batchNumber,
         },
       ];
       setValue("manager", data);
       setSelectedFarm(selectedProduction.fishFarmId); // Set the selected farm when manager is selected
     }
   }, [selectedProduction, setValue]);
+  console.log(fields);
 
   return (
     <Modal
@@ -213,7 +230,7 @@ const TransferModal: React.FC<Props> = ({
                   </Grid>
                   <Grid item xs>
                     <FormControl fullWidth className="form-input">
-                      <InputLabel id="">Production Unit*</InputLabel>
+                      <InputLabel id="">Production Unit *</InputLabel>
                       <Select
                         labelId="production-unit-select-label"
                         id="production-unit-select"
@@ -267,7 +284,38 @@ const TransferModal: React.FC<Props> = ({
                       ></Typography>
                     </FormControl>
                   </Grid>
-
+                  <Grid item xs>
+                    <TextField
+                      label="Batch Number *"
+                      type="text"
+                      className="form-input"
+                      sx={{ width: "100%" }}
+                      {...register(`manager.${idx}.batchNumber`, {
+                        required: true,
+                        pattern: validationPattern.negativeNumberWithDot,
+                      })}
+                    />
+                    <Typography
+                      variant="body2"
+                      color="red"
+                      fontSize={13}
+                      mt={0.5}
+                    ></Typography>
+                    {errors &&
+                      errors.manager &&
+                      errors.manager[idx] &&
+                      errors.manager[idx].batchNumber &&
+                      errors.manager[idx].batchNumber.type === "required" && (
+                        <Typography
+                          variant="body2"
+                          color="red"
+                          fontSize={13}
+                          mt={0.5}
+                        >
+                          {validationMessage.required}
+                        </Typography>
+                      )}
+                  </Grid>
                   <Grid item xs>
                     <TextField
                       label="Biomass (kg) *"
@@ -303,7 +351,7 @@ const TransferModal: React.FC<Props> = ({
 
                   <Grid item xs>
                     <TextField
-                      label="Count *"
+                      label="Fish Count *"
                       type="text"
                       className="form-input"
                       sx={{ width: "100%" }}
@@ -336,7 +384,7 @@ const TransferModal: React.FC<Props> = ({
 
                   <Grid item xs>
                     <TextField
-                      label="Mean Weight*"
+                      label="Mean Weight *"
                       type="text"
                       className="form-input"
                       sx={{ width: "100%" }}
@@ -369,7 +417,7 @@ const TransferModal: React.FC<Props> = ({
 
                   <Grid item xs>
                     <TextField
-                      label="Mean Length*"
+                      label="Mean Length *"
                       type="text"
                       className="form-input"
                       sx={{ width: "100%" }}
@@ -398,7 +446,107 @@ const TransferModal: React.FC<Props> = ({
                         </Typography>
                       )}
                   </Grid>
-
+                  <Grid item xs>
+                    <TextField
+                      label={`Stocking Density(kg/${"m\u00B3"}) *`}
+                      type="text"
+                      className="form-input"
+                      sx={{ width: "100%" }}
+                      {...register(
+                        `manager.${idx}.stockingDensityKG` as const,
+                        {
+                          required: true,
+                        }
+                      )}
+                    />
+                    <Typography
+                      variant="body2"
+                      color="red"
+                      fontSize={13}
+                      mt={0.5}
+                    ></Typography>
+                    {errors &&
+                      errors.manager &&
+                      errors.manager[idx] &&
+                      errors.manager[idx].stockingDensityKG &&
+                      errors.manager[idx].stockingDensityKG.type ===
+                        "required" && (
+                        <Typography
+                          variant="body2"
+                          color="red"
+                          fontSize={13}
+                          mt={0.5}
+                        >
+                          {validationMessage.required}
+                        </Typography>
+                      )}
+                  </Grid>
+                  <Grid item xs>
+                    <TextField
+                      label={`Stocking Density(n/${"m\u00B3"}) *`}
+                      type="text"
+                      className="form-input"
+                      sx={{ width: "100%" }}
+                      {...register(
+                        `manager.${idx}.stockingDensityNM` as const,
+                        {
+                          required: true,
+                        }
+                      )}
+                    />
+                    <Typography
+                      variant="body2"
+                      color="red"
+                      fontSize={13}
+                      mt={0.5}
+                    ></Typography>
+                    {errors &&
+                      errors.manager &&
+                      errors.manager[idx] &&
+                      errors.manager[idx].stockingDensityNM &&
+                      errors.manager[idx].stockingDensityNM.type ===
+                        "required" && (
+                        <Typography
+                          variant="body2"
+                          color="red"
+                          fontSize={13}
+                          mt={0.5}
+                        >
+                          {validationMessage.required}
+                        </Typography>
+                      )}
+                  </Grid>
+                  <Grid item xs>
+                    <TextField
+                      label="Stocking Level *"
+                      type="text"
+                      className="form-input"
+                      sx={{ width: "100%" }}
+                      {...register(`manager.${idx}.stockingLevel` as const, {
+                        required: true,
+                      })}
+                    />
+                    <Typography
+                      variant="body2"
+                      color="red"
+                      fontSize={13}
+                      mt={0.5}
+                    ></Typography>
+                    {errors &&
+                      errors.manager &&
+                      errors.manager[idx] &&
+                      errors.manager[idx].stockingLevel &&
+                      errors.manager[idx].stockingLevel.type === "required" && (
+                        <Typography
+                          variant="body2"
+                          color="red"
+                          fontSize={13}
+                          mt={0.5}
+                        >
+                          {validationMessage.required}
+                        </Typography>
+                      )}
+                  </Grid>
                   {idx !== 0 && (
                     <Grid item xs>
                       <TextField
