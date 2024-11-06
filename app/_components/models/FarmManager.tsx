@@ -262,7 +262,7 @@ const TransferModal: React.FC<Props> = ({
                         textTransform: "capitalize",
                         borderRadius: "20px",
                         marginLeft: "12px !important",
-                        marginBlock: "40px",
+                        marginBottom: "15px",
                       }}
                     >
                       {getValues(`manager.${idx}.field`)}
@@ -628,7 +628,7 @@ const TransferModal: React.FC<Props> = ({
                         )}
                       {item.field !== "Harvest" &&
                         item.field !== "Mortalities" && (
-                          <Grid item xs>
+                          <Grid item lg={2} md={6} xs={12}>
                             <TextField
                               label={`Stocking Density(n/${"m\u00B3"}) *`}
                               type="text"
@@ -667,7 +667,7 @@ const TransferModal: React.FC<Props> = ({
                         )}
                       {item.field !== "Harvest" &&
                         item.field !== "Mortalities" && (
-                          <Grid item xs>
+                          <Grid item lg={2} md={6} xs={12}>
                             <TextField
                               label="Stocking Level *"
                               type="text"
@@ -770,7 +770,7 @@ const TransferModal: React.FC<Props> = ({
                       </svg>
                     </Box>
 
-                    <Box
+                    {/* <Box
                       display={"flex"}
                       justifyContent={"center"}
                       alignItems={"center"}
@@ -795,7 +795,7 @@ const TransferModal: React.FC<Props> = ({
                           </clipPath>
                         </defs>
                       </svg>
-                    </Box>
+                    </Box> */}
                   </Box>
                 </Box>
               </Box>
