@@ -249,6 +249,7 @@ const TransferModal: React.FC<Props> = ({
       onClose={handleClose}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
+      className="modal-positioning"
     >
       <Stack sx={style}>
         {/* Header with close icon */}
@@ -269,16 +270,13 @@ const TransferModal: React.FC<Props> = ({
             return (
               <Box
                 padding={3}
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: 3,
-                }}
+                className=""
+                sx={{}}
                 key={item.id}
+                marginInline={"50px"}
               >
                 <Grid container spacing={2}>
-                  <Grid item xs>
+                  {/* <Grid item xs>
                     <FormControl fullWidth className="form-input">
                       <InputLabel id="">Fish Farm *</InputLabel>
                       <Select
@@ -300,11 +298,11 @@ const TransferModal: React.FC<Props> = ({
                         })}
                         onChange={(e) => {
                           const selectedFishFarm = e.target.value;
-                          setSelectedFarm(selectedFishFarm); // Set selected farm for this specific entry
-                          setValue(`manager.${idx}.fishFarm`, selectedFishFarm); // Set the value for this fishFarm
-                          setValue(`manager.${idx}.productionUnit`, ""); // Reset production unit for the current entry
+                          setSelectedFarm(selectedFishFarm);
+                          setValue(`manager.${idx}.fishFarm`, selectedFishFarm);
+                          setValue(`manager.${idx}.productionUnit`, "");
                         }}
-                        value={getValues(`manager.${idx}.fishFarm`) || ""} // Ensure only the current entry is updated
+                        value={getValues(`manager.${idx}.fishFarm`) || ""}
                       >
                         {farms?.map((farm: Farm, i) => (
                           <MenuItem value={String(farm.id)} key={i}>
@@ -565,8 +563,8 @@ const TransferModal: React.FC<Props> = ({
                           {validationMessage.required}
                         </Typography>
                       )}
-                  </Grid>{" "}
-                  {item.field !== "Harvest" && item.field !== "Mortalities" && (
+                  </Grid>{" "} */}
+                  {/* {item.field !== "Harvest" && item.field !== "Mortalities" && (
                     <Grid item xs>
                       <TextField
                         label={`Stocking Density(kg/${"m\u00B3"}) *`}
@@ -587,7 +585,7 @@ const TransferModal: React.FC<Props> = ({
                         fontSize={13}
                         mt={0.5}
                       ></Typography>
-                      {/* {errors &&
+                     {errors &&
                         errors.manager &&
                         errors.manager[idx] &&
                         errors.manager[idx].stockingDensityKG &&
@@ -601,10 +599,10 @@ const TransferModal: React.FC<Props> = ({
                           >
                             {validationMessage.required}
                           </Typography>
-                        )} */}
+                        )}
                     </Grid>
-                  )}
-                  {item.field !== "Harvest" && item.field !== "Mortalities" && (
+                  )} */}
+                  {/* {item.field !== "Harvest" && item.field !== "Mortalities" && (
                     <Grid item xs>
                       <TextField
                         label={`Stocking Density(n/${"m\u00B3"}) *`}
@@ -625,7 +623,7 @@ const TransferModal: React.FC<Props> = ({
                         fontSize={13}
                         mt={0.5}
                       ></Typography>
-                      {/* {errors &&
+                       {errors &&
                         errors.manager &&
                         errors.manager[idx] &&
                         errors.manager[idx].stockingDensityNM &&
@@ -639,10 +637,10 @@ const TransferModal: React.FC<Props> = ({
                           >
                             {validationMessage.required}
                           </Typography>
-                        )} */}
+                        )}
                     </Grid>
-                  )}
-                  {item.field !== "Harvest" && item.field !== "Mortalities" && (
+                  )} */}
+                  {/* {item.field !== "Harvest" && item.field !== "Mortalities" && (
                     <Grid item xs>
                       <TextField
                         label="Stocking Level *"
@@ -663,7 +661,7 @@ const TransferModal: React.FC<Props> = ({
                         fontSize={13}
                         mt={0.5}
                       ></Typography>
-                      {/* {errors &&
+                       {errors &&
                         errors.manager &&
                         errors.manager[idx] &&
                         errors.manager[idx].stockingLevel &&
@@ -677,10 +675,10 @@ const TransferModal: React.FC<Props> = ({
                           >
                             {validationMessage.required}
                           </Typography>
-                        )} */}
+                        )} 
                     </Grid>
-                  )}
-                  {idx !== 0 && (
+                  )} */}
+                  {/* {idx !== 0 && (
                     <Grid item xs>
                       <TextField
                         label=""
@@ -693,7 +691,219 @@ const TransferModal: React.FC<Props> = ({
                         })}
                       />
                     </Grid>
-                  )}
+                  )} */}
+                  <Grid container spacing={2}>
+                    <Grid item lg={2} md={6} xs={12}>
+                      <Box mb={2} width={"100%"}>
+                        <FormControl fullWidth className="form-input">
+                          <InputLabel id="">lorem *</InputLabel>
+                          <Select labelId="" id="" label="lorem"></Select>
+
+                          <Typography
+                            variant="body2"
+                            color="red"
+                            fontSize={13}
+                            mt={0.5}
+                          ></Typography>
+                        </FormControl>
+                      </Box>
+                    </Grid>
+
+                    <Grid item lg={2} md={6} xs={12}>
+                      <TextField
+                        label="lorem *"
+                        type="text"
+                        className="form-input"
+                        sx={{ width: "100%" }}
+                      />
+
+                      <Typography
+                        variant="body2"
+                        color="red"
+                        fontSize={13}
+                        mt={0.5}
+                      >
+                        This field is required
+                      </Typography>
+                    </Grid>
+                    <Grid item lg={2} md={6} xs={12}>
+                      <TextField
+                        label="lorem *"
+                        type="text"
+                        className="form-input"
+                        sx={{ width: "100%" }}
+                      />
+
+                      <Typography
+                        variant="body2"
+                        color="red"
+                        fontSize={13}
+                        mt={0.5}
+                      >
+                        This field is required
+                      </Typography>
+                    </Grid>
+                    <Grid item lg={2} md={6} xs={12}>
+                      <TextField
+                        label="lorem *"
+                        type="text"
+                        className="form-input"
+                        sx={{ width: "100%" }}
+                      />
+
+                      <Typography
+                        variant="body2"
+                        color="red"
+                        fontSize={13}
+                        mt={0.5}
+                      >
+                        This field is required
+                      </Typography>
+                    </Grid>
+
+                    <Grid item lg={2} md={6} xs={12}>
+                      <TextField
+                        label="lorem *"
+                        type="text"
+                        className="form-input"
+                        sx={{ width: "100%" }}
+                      />
+
+                      <Typography
+                        variant="body2"
+                        color="red"
+                        fontSize={13}
+                        mt={0.5}
+                      >
+                        This field is required
+                      </Typography>
+                    </Grid>
+                  </Grid>
+                  <Grid container spacing={2} marginTop={"10px"}>
+                    <Grid item lg={2} md={6} xs={12}>
+                      <TextField
+                        label="lorem *"
+                        type="text"
+                        className="form-input"
+                        sx={{ width: "100%" }}
+                      />
+
+                      <Typography
+                        variant="body2"
+                        color="red"
+                        fontSize={13}
+                        mt={0.5}
+                      >
+                        This field is required
+                      </Typography>
+                    </Grid>
+                    <Grid item lg={2} md={6} xs={12}>
+                      <Box mb={2} width={"100%"}>
+                        <FormControl fullWidth className="form-input">
+                          <InputLabel id="">lorem *</InputLabel>
+                          <Select labelId="" id="" label="lorem"></Select>
+
+                          <Typography
+                            variant="body2"
+                            color="red"
+                            fontSize={13}
+                            mt={0.5}
+                          ></Typography>
+                        </FormControl>
+                      </Box>
+                    </Grid>
+
+                    <Grid item lg={2} md={6} xs={12}>
+                      <TextField
+                        label="lorem *"
+                        type="text"
+                        className="form-input"
+                        sx={{ width: "100%" }}
+                      />
+
+                      <Typography
+                        variant="body2"
+                        color="red"
+                        fontSize={13}
+                        mt={0.5}
+                      >
+                        This field is required
+                      </Typography>
+                    </Grid>
+                    <Grid item lg={2} md={6} xs={12}>
+                      <TextField
+                        label="lorem *"
+                        type="text"
+                        className="form-input"
+                        sx={{ width: "100%" }}
+                      />
+
+                      <Typography
+                        variant="body2"
+                        color="red"
+                        fontSize={13}
+                        mt={0.5}
+                      >
+                        This field is required
+                      </Typography>
+                    </Grid>
+                    <Grid item lg={2} md={6} xs={12}>
+                      <TextField
+                        label="lorem *"
+                        type="text"
+                        className="form-input"
+                        sx={{ width: "100%" }}
+                      />
+
+                      <Typography
+                        variant="body2"
+                        color="red"
+                        fontSize={13}
+                        mt={0.5}
+                      >
+                        This field is required
+                      </Typography>
+                    </Grid>
+                  </Grid>
+
+                  <Divider
+                    orientation="vertical"
+                    sx={{
+                      height: "100%",
+                      borderBottom: "2px solid #E6E7E9 !important",
+                      borderRight: "none !important",
+                      width: "100%",
+                      paddingBlock: "10px",
+                    }}
+                  />
+
+                  <Box>
+                    <Button
+                      id=""
+                      // aria-controls={open ? "basic-menu" : undefined}
+                      // aria-haspopup="true"
+                      // aria-expanded={open ? "true" : undefined}
+                      // onClick={(e) => handleClick(e, farm)}
+                      className=""
+                      type="button"
+                      variant="contained"
+                      sx={{
+                        background: "#06A19B",
+                        fontWeight: "bold",
+                        padding: "8px 20px",
+                        width: {
+                          xs: "50%",
+                          lg: "fit-content",
+                        },
+                        textTransform: "capitalize",
+                        borderRadius: "20px",
+                        marginRight: "auto",
+                        marginBlock: "10px",
+                      }}
+                    >
+                      Stock
+                    </Button>
+                  </Box>
                 </Grid>
 
                 <Box>
@@ -732,8 +942,7 @@ const TransferModal: React.FC<Props> = ({
             );
           })}
 
-          <div>
-            <Button
+          {/* <Button
               id="basic-button"
               aria-controls={open ? "basic-menu" : undefined}
               aria-haspopup="true"
@@ -761,8 +970,68 @@ const TransferModal: React.FC<Props> = ({
                   </MenuItem>
                 );
               })}
-            </Menu>
-          </div>
+            </Menu> */}
+
+          <Box
+            display="flex"
+            justifyContent="flex-end"
+            alignItems={"flex-end"}
+            gap="10px"
+            padding={3}
+            marginInline={"20px"}
+          >
+            <Button
+              // id="basic-button"
+              // aria-controls={open ? "basic-menu" : undefined}
+              // aria-haspopup="true"
+              // aria-expanded={open ? "true" : undefined}
+              // onClick={(e) => handleClick(e, farm)}
+              className=""
+              type="button"
+              variant="contained"
+              sx={{
+                background: "#06A19B",
+                fontWeight: "bold",
+                padding: "8px 20px",
+                width: {
+                  xs: "50%",
+                  lg: "fit-content",
+                },
+                textTransform: "capitalize",
+                borderRadius: "12px",
+
+                marginBlock: "10px",
+              }}
+            >
+              Add Row
+            </Button>
+
+            <Button
+              // id="basic-button"
+              // aria-controls={open ? "basic-menu" : undefined}
+              // aria-haspopup="true"
+              // aria-expanded={open ? "true" : undefined}
+              // onClick={(e) => handleClick(e, farm)}
+              className=""
+              type="button"
+              variant="contained"
+              sx={{
+                background: "#06A19B",
+                fontWeight: "bold",
+                padding: "8px 20px",
+                width: {
+                  xs: "50%",
+                  lg: "fit-content",
+                },
+                textTransform: "capitalize",
+                borderRadius: "12px",
+
+                marginBlock: "10px",
+              }}
+            >
+              Save
+            </Button>
+          </Box>
         </form>
       </Stack>
     </Modal>
