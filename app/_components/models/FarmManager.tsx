@@ -733,7 +733,7 @@ const TransferModal: React.FC<Props> = ({
                     alignItems={"center"}
                     justifyContent={"center"}
                     position={"relative"}
-                    bottom={"19px"}
+                    top="90%"
                   >
                     <Box
                       display={"flex"}
