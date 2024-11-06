@@ -223,6 +223,7 @@ const TransferModal: React.FC<Props> = ({
       onClose={handleClose}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
+      className="modal-positioning"
     >
       <Stack sx={style}>
         {/* Header with close icon */}

@@ -417,29 +417,20 @@ body {
   box-shadow: none !important;
   min-height: 0px !important;
 }
+
 @media only screen and (min-width: 1200px) {
-  .css-1u2enwk-MuiStack-root {
-    width: 930px !important;
+  .modal-positioning > div:nth-child(3) {
+    width: 1200px !important;
   }
 }
-@media only screen and (min-width: 1200px) {
-  .css-tifipg-MuiStack-root {
-    width: 90% !important;
-  }
-}
-.css-1nflkpj {
+.sidebar-icon {
   right: 4px;
 }
-
-@media only screen and (max-width: 1900px) {
+.sidebar-scroller {
+  height: auto;
+}
+@media only screen and (min-width: 1900px) {
   .sidebar-scroller {
-    height: auto;
+    height: 100%;
   }
 }
-
-/* .css-1v4wowl-MuiTableCell-root {
-  text-align: center !important;
-}
-.css-1mrjd0s-MuiTableCell-root {
-  text-align: center !important;
-} */
