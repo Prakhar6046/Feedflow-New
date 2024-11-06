@@ -413,7 +413,7 @@ body {
 .hatchery-table table tbody tr td:last-child {
   padding-left: 40px !important;
 }
-.css-1xomo8h-MuiPaper-root-MuiPopover-paper-MuiMenu-paper {
+/* .css-1xomo8h-MuiPaper-root-MuiPopover-paper-MuiMenu-paper {
   box-shadow: none !important;
   min-height: 0px !important;
 }
@@ -421,8 +421,22 @@ body {
 @media only screen and (min-width: 1200px) {
   .modal-positioning > div:nth-child(3) {
     width: 1200px !important;
+    top: "50%";
+    left: "50%";
+    transform: "translate(-50%, -50%)";
+    margin-bottom: "10px";
+  }
+} */
+
+@media only screen and (min-width: 1200px) {
+  .modal-positioning > div:nth-child(3) {
+    width: 1200px !important;
+    position: relative;
+    top: 50%;
+    margin-block: auto;
   }
 }
+
 .sidebar-icon {
   right: 4px;
 }
@@ -433,4 +447,13 @@ body {
   .sidebar-scroller {
     height: 100%;
   }
+}
+.form-height {
+  max-height: 1000px;
+  overflow-y: auto;
+  margin-top: 0px !important;
+}
+.form-height .grid-margin {
+  margin-top: 0px !important;
+  margin-left: 0px !important;
 }
