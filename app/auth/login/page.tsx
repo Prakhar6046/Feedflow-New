@@ -19,37 +19,46 @@ export default function Page() {
   const [email, setEmail] = useState("abhishek.choudhary@ensuesoft.com");
   const [password, setPassword] = useState("12345678");
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [toastId, setToastId] = useState<string | null>(null);
+
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const response = await fetch("/api/auth/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, password }),
-    });
-    const data = await response.json();
-    if (response.ok) {
-      setCookie("logged-user", data.data.user);
-      dispatch(userAction.handleRole(data.data.user.role));
-      console.log(data);
 
-      setCookie("role", data?.data?.user?.role);
-      if (data.status) {
-        router.push("/dashboard/organisation");
+    // Prevent API call if one is already in progress
+    if (loading) return;
+
+    setLoading(true);
+
+    try {
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setCookie("logged-user", data.data.user);
+        dispatch(userAction.handleRole(data.data.user.role));
+        setCookie("role", data?.data?.user?.role);
+        if (data.status) {
+          router.push("/dashboard/organisation");
+        }
+      } else if (data?.error) {
+        toast.error(data?.error);
       }
-    } else if (data?.error) {
-      if (!toastId) {
-        const id = toast.error(data?.error, {
-          duration: 4000,
-        });
-        setToastId(id);
-        setTimeout(() => setToastId(null), 4000);
-      }
+    } catch (error) {
+      console.error("Login error:", error);
+      toast.error("Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
+
   // useEffect(() => {
   //   const d = async () => {
   //     console.log(await hashPassword("12345678"));
