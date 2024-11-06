@@ -14,6 +14,7 @@ export interface SingleUser {
   role: String;
   createdAt: String;
   organisationId: Number;
+  invite: boolean;
   organisation: {
     organisationType(organisationType: any): string;
     name: String;

@@ -255,7 +255,7 @@ function AddUnitForm({ farms }: Props) {
                 // focused={altitude ? true : false}
                 {...register("biomass", {
                   required: true,
-                  pattern: validationPattern.negativeNumberWithDot,
+                  pattern: validationPattern.numbersWithDot,
                 })}
                 sx={{
                   width: "100%",
@@ -292,7 +292,18 @@ function AddUnitForm({ farms }: Props) {
                     {validationMessage.required}
                   </Typography>
                 )}
-
+              {errors &&
+                errors.biomass &&
+                errors.biomass.type === "pattern" && (
+                  <Typography
+                    variant="body2"
+                    color="red"
+                    fontSize={13}
+                    mt={0.5}
+                  >
+                    {validationMessage.OnlyNumbersWithDot}
+                  </Typography>
+                )}
               {/* <Box mb={2} width={"100%"}>
               <FormControl fullWidth className="form-input">
                 <InputLabel id="feed-supply-select-label1">
@@ -328,7 +339,7 @@ function AddUnitForm({ farms }: Props) {
               // focused={altitude ? true : false}
               {...register("fishCount", {
                 required: true,
-                pattern: validationPattern.negativeNumberWithDot,
+                pattern: validationPattern.numbersWithDot,
               })}
               sx={{
                 width: "100%",
@@ -342,11 +353,13 @@ function AddUnitForm({ farms }: Props) {
                   {validationMessage.required}
                 </Typography>
               )}
-            {/* {errors && errors.lng && errors.lng.type === "pattern" && (
-              <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
-                {validationMessage.NegativeNumberWithDot}
-              </Typography>
-            )}  */}
+            {errors &&
+              errors.fishCount &&
+              errors.fishCount.type === "pattern" && (
+                <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                  {validationMessage.OnlyNumbersWithDot}
+                </Typography>
+              )}
           </Box>
           <Grid item mb={2} width={"100%"}>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -392,7 +405,7 @@ function AddUnitForm({ farms }: Props) {
                 // focused={altitude ? true : false}
                 {...register("meanWeight", {
                   required: true,
-                  pattern: validationPattern.negativeNumberWithDot,
+                  pattern: validationPattern.numbersWithDot,
                 })}
                 sx={{
                   width: "100%",
@@ -430,11 +443,18 @@ function AddUnitForm({ farms }: Props) {
                     {validationMessage.required}
                   </Typography>
                 )}
-              {/* {errors && errors.lng && errors.lng.type === "pattern" && (
-              <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
-                {validationMessage.NegativeNumberWithDot}
-              </Typography>
-            )}  */}
+              {errors &&
+                errors.meanWeight &&
+                errors.meanWeight.type === "pattern" && (
+                  <Typography
+                    variant="body2"
+                    color="red"
+                    fontSize={13}
+                    mt={0.5}
+                  >
+                    {validationMessage.OnlyNumbersWithDot}
+                  </Typography>
+                )}
             </Box>
           </Box>
           <Box mb={2} width={"100%"}>
@@ -446,7 +466,7 @@ function AddUnitForm({ farms }: Props) {
                 // focused={altitude ? true : false}
                 {...register("meanLength", {
                   required: true,
-                  pattern: validationPattern.negativeNumberWithDot,
+                  pattern: validationPattern.numbersWithDot,
                 })}
                 sx={{
                   width: "100%",
@@ -484,11 +504,18 @@ function AddUnitForm({ farms }: Props) {
                     {validationMessage.required}
                   </Typography>
                 )}
-              {/* {errors && errors.lng && errors.lng.type === "pattern" && (
-              <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
-                {validationMessage.NegativeNumberWithDot}
-              </Typography>
-            )}  */}
+              {errors &&
+                errors.meanLength &&
+                errors.meanLength.type === "pattern" && (
+                  <Typography
+                    variant="body2"
+                    color="red"
+                    fontSize={13}
+                    mt={0.5}
+                  >
+                    {validationMessage.OnlyNumbersWithDot}
+                  </Typography>
+                )}
             </Box>
           </Box>
           {/* <Box mb={2} width={"100%"}>
@@ -548,7 +575,7 @@ function AddUnitForm({ farms }: Props) {
                 // focused={altitude ? true : false}
                 {...register("stockingDensityKG", {
                   required: true,
-                  pattern: validationPattern.negativeNumberWithDot,
+                  pattern: validationPattern.numbersWithDot,
                 })}
                 sx={{
                   width: "100%",
@@ -584,11 +611,18 @@ function AddUnitForm({ farms }: Props) {
                     {validationMessage.required}
                   </Typography>
                 )}
-              {/* {errors && errors.lng && errors.lng.type === "pattern" && (
-              <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
-                {validationMessage.NegativeNumberWithDot}
-              </Typography>
-            )}  */}
+              {errors &&
+                errors.stockingDensityKG &&
+                errors.stockingDensityKG.type === "pattern" && (
+                  <Typography
+                    variant="body2"
+                    color="red"
+                    fontSize={13}
+                    mt={0.5}
+                  >
+                    {validationMessage.OnlyNumbersWithDot}
+                  </Typography>
+                )}
             </Box>
           </Box>
           <Box mb={2} width={"100%"}>
@@ -600,7 +634,7 @@ function AddUnitForm({ farms }: Props) {
                 // focused={altitude ? true : false}
                 {...register("stockingLevel", {
                   required: true,
-                  pattern: validationPattern.negativeNumberWithDot,
+                  pattern: validationPattern.numbersWithDot,
                 })}
                 sx={{
                   width: "100%",
@@ -636,11 +670,18 @@ function AddUnitForm({ farms }: Props) {
                     {validationMessage.required}
                   </Typography>
                 )}
-              {/* {errors && errors.lng && errors.lng.type === "pattern" && (
-              <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
-                {validationMessage.NegativeNumberWithDot}
-              </Typography>
-            )}  */}
+              {errors &&
+                errors.stockingLevel &&
+                errors.stockingLevel.type === "pattern" && (
+                  <Typography
+                    variant="body2"
+                    color="red"
+                    fontSize={13}
+                    mt={0.5}
+                  >
+                    {validationMessage.OnlyNumbersWithDot}
+                  </Typography>
+                )}
             </Box>
           </Box>
           {/* <Box mb={2} width={"100%"}>

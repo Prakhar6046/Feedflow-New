@@ -461,7 +461,7 @@ const TransferModal: React.FC<Props> = ({
                           sx={{ width: "100%" }}
                           {...register(`manager.${idx}.biomass`, {
                             required: true,
-                            pattern: validationPattern.negativeNumberWithDot,
+                            pattern: validationPattern.numbersWithDot,
                           })}
                         />
                         <Typography
@@ -484,6 +484,20 @@ const TransferModal: React.FC<Props> = ({
                               {validationMessage.required}
                             </Typography>
                           )}
+                        {errors &&
+                          errors.manager &&
+                          errors.manager[idx] &&
+                          errors.manager[idx].biomass &&
+                          errors.manager[idx].biomass.type === "pattern" && (
+                            <Typography
+                              variant="body2"
+                              color="red"
+                              fontSize={13}
+                              mt={0.5}
+                            >
+                              {validationMessage.OnlyNumbersWithDot}
+                            </Typography>
+                          )}
                       </Grid>
                       <Grid item lg={2} md={6} xs={12}>
                         <TextField
@@ -494,7 +508,7 @@ const TransferModal: React.FC<Props> = ({
                           disabled={idx === 0 ? true : false}
                           {...register(`manager.${idx}.count`, {
                             required: true,
-                            pattern: validationPattern.negativeNumberWithDot,
+                            pattern: validationPattern.numbersWithDot,
                           })}
                         />
                         <Typography
@@ -517,6 +531,20 @@ const TransferModal: React.FC<Props> = ({
                               {validationMessage.required}
                             </Typography>
                           )}
+                        {errors &&
+                          errors.manager &&
+                          errors.manager[idx] &&
+                          errors.manager[idx].count &&
+                          errors.manager[idx].count.type === "pattern" && (
+                            <Typography
+                              variant="body2"
+                              color="red"
+                              fontSize={13}
+                              mt={0.5}
+                            >
+                              {validationMessage.OnlyNumbersWithDot}
+                            </Typography>
+                          )}
                       </Grid>
                     </Grid>
                     <Grid container spacing={2} className="grid-margin">
@@ -529,7 +557,7 @@ const TransferModal: React.FC<Props> = ({
                           disabled={idx === 0 ? true : false}
                           {...register(`manager.${idx}.meanWeight`, {
                             required: true,
-                            pattern: validationPattern.negativeNumberWithDot,
+                            pattern: validationPattern.numbersWithDot,
                           })}
                         />
                         <Typography
@@ -553,6 +581,20 @@ const TransferModal: React.FC<Props> = ({
                               {validationMessage.required}
                             </Typography>
                           )}
+                        {errors &&
+                          errors.manager &&
+                          errors.manager[idx] &&
+                          errors.manager[idx].meanWeight &&
+                          errors.manager[idx].meanWeight.type === "pattern" && (
+                            <Typography
+                              variant="body2"
+                              color="red"
+                              fontSize={13}
+                              mt={0.5}
+                            >
+                              {validationMessage.OnlyNumbersWithDot}
+                            </Typography>
+                          )}
                       </Grid>
                       <Grid item lg={2} md={6} xs={12}>
                         <TextField
@@ -563,6 +605,7 @@ const TransferModal: React.FC<Props> = ({
                           disabled={idx === 0 ? true : false}
                           {...register(`manager.${idx}.meanLength` as const, {
                             required: true,
+                            pattern: validationPattern.numbersWithDot,
                           })}
                         />
                         <Typography
@@ -586,6 +629,20 @@ const TransferModal: React.FC<Props> = ({
                               {validationMessage.required}
                             </Typography>
                           )}
+                        {errors &&
+                          errors.manager &&
+                          errors.manager[idx] &&
+                          errors.manager[idx].meanLength &&
+                          errors.manager[idx].meanLength.type === "pattern" && (
+                            <Typography
+                              variant="body2"
+                              color="red"
+                              fontSize={13}
+                              mt={0.5}
+                            >
+                              {validationMessage.OnlyNumbersWithDot}
+                            </Typography>
+                          )}
                       </Grid>{" "}
                       {item.field !== "Harvest" &&
                         item.field !== "Mortalities" && (
@@ -597,10 +654,11 @@ const TransferModal: React.FC<Props> = ({
                               sx={{ width: "100%" }}
                               disabled
                               {...register(
-                                `manager.${idx}.stockingDensityKG` as const
-                                // {
-                                //   required: true,
-                                // }
+                                `manager.${idx}.stockingDensityKG` as const,
+                                {
+                                  required: true,
+                                  pattern: validationPattern.numbersWithDot,
+                                }
                               )}
                             />
                             <Typography
@@ -609,21 +667,36 @@ const TransferModal: React.FC<Props> = ({
                               fontSize={13}
                               mt={0.5}
                             ></Typography>
-                            {/* {errors &&
-                        errors.manager &&
-                        errors.manager[idx] &&
-                        errors.manager[idx].stockingDensityKG &&
-                        errors.manager[idx].stockingDensityKG.type ===
-                          "required" && (
-                          <Typography
-                            variant="body2"
-                            color="red"
-                            fontSize={13}
-                            mt={0.5}
-                          >
-                            {validationMessage.required}
-                          </Typography>
-                        )} */}
+                            {errors &&
+                              errors.manager &&
+                              errors.manager[idx] &&
+                              errors.manager[idx].stockingDensityKG &&
+                              errors.manager[idx].stockingDensityKG.type ===
+                                "required" && (
+                                <Typography
+                                  variant="body2"
+                                  color="red"
+                                  fontSize={13}
+                                  mt={0.5}
+                                >
+                                  {validationMessage.required}
+                                </Typography>
+                              )}
+                            {errors &&
+                              errors.manager &&
+                              errors.manager[idx] &&
+                              errors.manager[idx].stockingDensityKG &&
+                              errors.manager[idx].stockingDensityKG.type ===
+                                "pattern" && (
+                                <Typography
+                                  variant="body2"
+                                  color="red"
+                                  fontSize={13}
+                                  mt={0.5}
+                                >
+                                  {validationMessage.OnlyNumbersWithDot}
+                                </Typography>
+                              )}
                           </Grid>
                         )}
                       {item.field !== "Harvest" &&
@@ -636,10 +709,11 @@ const TransferModal: React.FC<Props> = ({
                               sx={{ width: "100%" }}
                               disabled
                               {...register(
-                                `manager.${idx}.stockingDensityNM` as const
-                                // {
-                                //   required: true,
-                                // }
+                                `manager.${idx}.stockingDensityNM` as const,
+                                {
+                                  required: true,
+                                  pattern: validationPattern.numbersWithDot,
+                                }
                               )}
                             />
                             <Typography
@@ -648,21 +722,36 @@ const TransferModal: React.FC<Props> = ({
                               fontSize={13}
                               mt={0.5}
                             ></Typography>
-                            {/* {errors &&
-                        errors.manager &&
-                        errors.manager[idx] &&
-                        errors.manager[idx].stockingDensityNM &&
-                        errors.manager[idx].stockingDensityNM.type ===
-                          "required" && (
-                          <Typography
-                            variant="body2"
-                            color="red"
-                            fontSize={13}
-                            mt={0.5}
-                          >
-                            {validationMessage.required}
-                          </Typography>
-                        )} */}
+                            {errors &&
+                              errors.manager &&
+                              errors.manager[idx] &&
+                              errors.manager[idx].stockingDensityNM &&
+                              errors.manager[idx].stockingDensityNM.type ===
+                                "required" && (
+                                <Typography
+                                  variant="body2"
+                                  color="red"
+                                  fontSize={13}
+                                  mt={0.5}
+                                >
+                                  {validationMessage.required}
+                                </Typography>
+                              )}
+                            {errors &&
+                              errors.manager &&
+                              errors.manager[idx] &&
+                              errors.manager[idx].stockingDensityNM &&
+                              errors.manager[idx].stockingDensityNM.type ===
+                                "pattern" && (
+                                <Typography
+                                  variant="body2"
+                                  color="red"
+                                  fontSize={13}
+                                  mt={0.5}
+                                >
+                                  {validationMessage.OnlyNumbersWithDot}
+                                </Typography>
+                              )}
                           </Grid>
                         )}
                       {item.field !== "Harvest" &&
@@ -675,10 +764,11 @@ const TransferModal: React.FC<Props> = ({
                               sx={{ width: "100%" }}
                               disabled
                               {...register(
-                                `manager.${idx}.stockingLevel` as const
-                                //   {
-                                //   required: true,
-                                // }
+                                `manager.${idx}.stockingLevel` as const,
+                                {
+                                  required: true,
+                                  pattern: validationPattern.numbersWithDot,
+                                }
                               )}
                             />
                             <Typography
@@ -687,21 +777,36 @@ const TransferModal: React.FC<Props> = ({
                               fontSize={13}
                               mt={0.5}
                             ></Typography>
-                            {/* {errors &&
-                        errors.manager &&
-                        errors.manager[idx] &&
-                        errors.manager[idx].stockingLevel &&
-                        errors.manager[idx].stockingLevel.type ===
-                          "required" && (
-                          <Typography
-                            variant="body2"
-                            color="red"
-                            fontSize={13}
-                            mt={0.5}
-                          >
-                            {validationMessage.required}
-                          </Typography>
-                        )} */}
+                            {errors &&
+                              errors.manager &&
+                              errors.manager[idx] &&
+                              errors.manager[idx].stockingLevel &&
+                              errors.manager[idx].stockingLevel.type ===
+                                "required" && (
+                                <Typography
+                                  variant="body2"
+                                  color="red"
+                                  fontSize={13}
+                                  mt={0.5}
+                                >
+                                  {validationMessage.required}
+                                </Typography>
+                              )}
+                            {errors &&
+                              errors.manager &&
+                              errors.manager[idx] &&
+                              errors.manager[idx].stockingLevel &&
+                              errors.manager[idx].stockingLevel.type ===
+                                "pattern" && (
+                                <Typography
+                                  variant="body2"
+                                  color="red"
+                                  fontSize={13}
+                                  mt={0.5}
+                                >
+                                  {validationMessage.OnlyNumbersWithDot}
+                                </Typography>
+                              )}
                           </Grid>
                         )}
                       {/* {idx !== 0 && (
