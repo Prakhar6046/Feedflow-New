@@ -11,7 +11,7 @@ export const GET = async (request: NextRequest) => {
     let organisations;
     if (role === "SUPERADMIN") {
       organisations = await prisma.organisation.findMany({
-        include: { contact: true },
+        include: { contact: true, users: true },
         orderBy: {
           createdAt: "desc", // Sort by createdAt in descending order
         },
