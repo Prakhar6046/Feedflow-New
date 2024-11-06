@@ -269,7 +269,7 @@ function AddUnitForm({ farms }: Props) {
                     // focused={altitude ? true : false}
                     {...register("biomass", {
                       required: true,
-                      pattern: validationPattern.negativeNumberWithDot,
+                      pattern: validationPattern.numbersWithDot,
                     })}
                     sx={{
                       width: "100%",
@@ -306,7 +306,18 @@ function AddUnitForm({ farms }: Props) {
                         {validationMessage.required}
                       </Typography>
                     )}
-
+                  {errors &&
+                    errors.biomass &&
+                    errors.biomass.type === "pattern" && (
+                      <Typography
+                        variant="body2"
+                        color="red"
+                        fontSize={13}
+                        mt={0.5}
+                      >
+                        {validationMessage.OnlyNumbersWithDot}
+                      </Typography>
+                    )}
                   {/* <Box mb={2} width={"100%"}>
               <FormControl fullWidth className="form-input">
                 <InputLabel id="feed-supply-select-label1">
@@ -344,7 +355,7 @@ function AddUnitForm({ farms }: Props) {
                   // focused={altitude ? true : false}
                   {...register("fishCount", {
                     required: true,
-                    pattern: validationPattern.negativeNumberWithDot,
+                    pattern: validationPattern.numbersWithDot,
                   })}
                   sx={{
                     width: "100%",
@@ -363,50 +374,54 @@ function AddUnitForm({ farms }: Props) {
                       {validationMessage.required}
                     </Typography>
                   )}
-                {/* {errors && errors.lng && errors.lng.type === "pattern" && (
-              <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
-                {validationMessage.NegativeNumberWithDot}
-              </Typography>
-            )}  */}
+                {errors &&
+                  errors.fishCount &&
+                  errors.fishCount.type === "pattern" && (
+                    <Typography
+                      variant="body2"
+                      color="red"
+                      fontSize={13}
+                      mt={0.5}
+                    >
+                      {validationMessage.OnlyNumbersWithDot}
+                    </Typography>
+                  )}
               </Box>
             </Grid>
-
             <Grid item xs={6}>
-              <Box mb={2} width={"100%"}>
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <Controller
-                    name="age"
-                    control={control}
-                    rules={{ required: "This field is required." }}
-                    render={({ field, fieldState: { error } }) => (
-                      <>
-                        <DatePicker
-                          {...field}
-                          label="Age *"
-                          className="form-input"
-                          sx={{
-                            width: "100%",
-                          }}
-                          onChange={(date) => {
-                            field.onChange(date);
-                          }}
-                          value={field.value || null}
-                        />
-                        {error && (
-                          <Typography
-                            variant="body2"
-                            color="red"
-                            fontSize={13}
-                            mt={0.5}
-                          >
-                            {error.message}
-                          </Typography>
-                        )}
-                      </>
-                    )}
-                  />
-                </LocalizationProvider>
-              </Box>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <Controller
+                  name="age"
+                  control={control}
+                  rules={{ required: "This field is required." }}
+                  render={({ field, fieldState: { error } }) => (
+                    <>
+                      <DatePicker
+                        {...field}
+                        label="Age *"
+                        className="form-input"
+                        sx={{
+                          width: "100%",
+                        }}
+                        onChange={(date) => {
+                          field.onChange(date);
+                        }}
+                        value={field.value || null}
+                      />
+                      {error && (
+                        <Typography
+                          variant="body2"
+                          color="red"
+                          fontSize={13}
+                          mt={0.5}
+                        >
+                          {error.message}
+                        </Typography>
+                      )}
+                    </>
+                  )}
+                />
+              </LocalizationProvider>
             </Grid>
             <Grid item xs={6}>
               <Box mb={2} width={"100%"}>
@@ -418,7 +433,7 @@ function AddUnitForm({ farms }: Props) {
                     // focused={altitude ? true : false}
                     {...register("meanWeight", {
                       required: true,
-                      pattern: validationPattern.negativeNumberWithDot,
+                      pattern: validationPattern.numbersWithDot,
                     })}
                     sx={{
                       width: "100%",
@@ -456,11 +471,18 @@ function AddUnitForm({ farms }: Props) {
                         {validationMessage.required}
                       </Typography>
                     )}
-                  {/* {errors && errors.lng && errors.lng.type === "pattern" && (
-              <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
-                {validationMessage.NegativeNumberWithDot}
-              </Typography>
-            )}  */}
+                  {errors &&
+                    errors.meanWeight &&
+                    errors.meanWeight.type === "pattern" && (
+                      <Typography
+                        variant="body2"
+                        color="red"
+                        fontSize={13}
+                        mt={0.5}
+                      >
+                        {validationMessage.OnlyNumbersWithDot}
+                      </Typography>
+                    )}
                 </Box>
               </Box>
             </Grid>
@@ -474,7 +496,7 @@ function AddUnitForm({ farms }: Props) {
                     // focused={altitude ? true : false}
                     {...register("meanLength", {
                       required: true,
-                      pattern: validationPattern.negativeNumberWithDot,
+                      pattern: validationPattern.numbersWithDot,
                     })}
                     sx={{
                       width: "100%",
@@ -512,11 +534,18 @@ function AddUnitForm({ farms }: Props) {
                         {validationMessage.required}
                       </Typography>
                     )}
-                  {/* {errors && errors.lng && errors.lng.type === "pattern" && (
-              <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
-                {validationMessage.NegativeNumberWithDot}
-              </Typography>
-            )}  */}
+                  {errors &&
+                    errors.meanLength &&
+                    errors.meanLength.type === "pattern" && (
+                      <Typography
+                        variant="body2"
+                        color="red"
+                        fontSize={13}
+                        mt={0.5}
+                      >
+                        {validationMessage.OnlyNumbersWithDot}
+                      </Typography>
+                    )}
                 </Box>
               </Box>
             </Grid>
@@ -578,7 +607,7 @@ function AddUnitForm({ farms }: Props) {
                     // focused={altitude ? true : false}
                     {...register("stockingDensityKG", {
                       required: true,
-                      pattern: validationPattern.negativeNumberWithDot,
+                      pattern: validationPattern.numbersWithDot,
                     })}
                     sx={{
                       width: "100%",
@@ -614,11 +643,18 @@ function AddUnitForm({ farms }: Props) {
                         {validationMessage.required}
                       </Typography>
                     )}
-                  {/* {errors && errors.lng && errors.lng.type === "pattern" && (
-              <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
-                {validationMessage.NegativeNumberWithDot}
-              </Typography>
-            )}  */}
+                  {errors &&
+                    errors.stockingDensityKG &&
+                    errors.stockingDensityKG.type === "pattern" && (
+                      <Typography
+                        variant="body2"
+                        color="red"
+                        fontSize={13}
+                        mt={0.5}
+                      >
+                        {validationMessage.OnlyNumbersWithDot}
+                      </Typography>
+                    )}
                 </Box>
               </Box>
             </Grid>
@@ -632,7 +668,7 @@ function AddUnitForm({ farms }: Props) {
                     // focused={altitude ? true : false}
                     {...register("stockingLevel", {
                       required: true,
-                      pattern: validationPattern.negativeNumberWithDot,
+                      pattern: validationPattern.numbersWithDot,
                     })}
                     sx={{
                       width: "100%",
@@ -668,14 +704,61 @@ function AddUnitForm({ farms }: Props) {
                         {validationMessage.required}
                       </Typography>
                     )}
-                  {/* {errors && errors.lng && errors.lng.type === "pattern" && (
-              <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
-                {validationMessage.NegativeNumberWithDot}
-              </Typography>
-            )}  */}
+                  {errors &&
+                    errors.stockingLevel &&
+                    errors.stockingLevel.type === "pattern" && (
+                      <Typography
+                        variant="body2"
+                        color="red"
+                        fontSize={13}
+                        mt={0.5}
+                      >
+                        {validationMessage.OnlyNumbersWithDot}
+                      </Typography>
+                    )}
                 </Box>
               </Box>
             </Grid>
+            {/* <Box mb={2} width={"100%"}>
+              <FormControl fullWidth className="form-input">
+                <InputLabel id="feed-supply-select-label1">
+                  Fish Farmer *
+                </InputLabel>
+                <Select
+                  labelId="feed-supply-select-label1"
+                  id="feed-supply-select1"
+                  {...register("fishFarmer", {
+                    required: watch("fishFarmer") ? false : true,
+                    onChange: (e) => setValue("fishFarmer", e.target.value),
+                  })}
+                  label="Feed Farmer *"
+                  value={watch("fishFarmer") || ""}
+                >
+                  {fishFarmers?.map((fish: any) => {
+                    return (
+                      <MenuItem value={String(fish.id)} key={fish.id}>
+                        {fish.name}
+                      </MenuItem>
+                    );
+                  })}
+                </Select>
+              </FormControl>
+            </Box> */}
+            {/* <Button
+            type="submit"
+            variant="contained"
+            sx={{
+              background: "#06A19B",
+              fontWeight: 600,
+              padding: "6px 16px",
+              width: "fit-content",
+              textTransform: "capitalize",
+              borderRadius: "8px",
+              textAlign: "end",
+            }}
+          >
+            Add
+          </Button> */}
           </Grid>
 
           <Box display={"flex"} justifyContent="flex-end" mt={2}>
