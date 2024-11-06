@@ -208,10 +208,6 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
 
       if (responseData.status) {
         router.push("/dashboard/farm");
-        if (isEditFarm) {
-          setActiveStep(3);
-        }
-        // setCookie("activeStep", 3);
       }
     } else {
       toast.error("Please fill out the all feilds");
