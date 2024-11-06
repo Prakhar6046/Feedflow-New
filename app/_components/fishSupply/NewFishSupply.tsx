@@ -409,11 +409,13 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
                       onChange={(date) => {
                         if (date) {
                           field.onChange(date); // Explicitly update field when a date is selected
+                        } else {
+                          field.onChange(null); // Set value to null when date is removed
                         }
                       }}
                       value={field.value || null} // Fallback to null if no value
                     />
-                    {error && !watch("hatchingDate") && (
+                    {error && !field.value && (
                       <Typography
                         variant="body2"
                         color="red"
@@ -428,6 +430,7 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
               />
             </LocalizationProvider>
           </Grid>
+
           <Grid item sm={6} xs={12}>
             <FormControl className="form-input" fullWidth>
               <InputLabel id="demo-simple-select-label">Status *</InputLabel>
