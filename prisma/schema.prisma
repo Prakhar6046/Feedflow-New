@@ -34,9 +34,9 @@ model User {
   createdBy      String?
   organisationId Int
   organisation   Organisation @relation(fields: [organisationId], references: [id], onUpdate: Cascade)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  invite         Boolean      @default(false)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
 }
 
 model Organisation {
@@ -52,10 +52,9 @@ model Organisation {
   createdBy        String?
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
-
-  users     User[]
-  addressId String?  @unique
-  address   Address? @relation(fields: [addressId], references: [id], onUpdate: Cascade)
+  users            User[]
+  addressId        String?  @unique
+  address          Address? @relation(fields: [addressId], references: [id], onUpdate: Cascade)
 
   contact    Contact[]
   hatchery   Hatchery[]   @relation("HatcheryCreator")
