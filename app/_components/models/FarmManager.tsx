@@ -224,7 +224,6 @@ const TransferModal: React.FC<Props> = ({
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
       className="modal-positioning"
-      sx={{ overflowY: "auto" }}
     >
       <Stack sx={style}>
         {/* Header with close icon */}
@@ -414,7 +413,6 @@ const TransferModal: React.FC<Props> = ({
                           </FormControl>
                         </Box>
                       </Grid>
-
                       <Grid item lg={2} md={6} xs={12}>
                         <TextField
                           label="Batch Number *"
@@ -518,8 +516,6 @@ const TransferModal: React.FC<Props> = ({
                             </Typography>
                           )}
                       </Grid>
-                    </Grid>
-                    <Grid container spacing={2} className="grid-margin">
                       <Grid item lg={2} md={6} xs={12}>
                         <TextField
                           label="Mean Weight *"
@@ -628,7 +624,7 @@ const TransferModal: React.FC<Props> = ({
                         )}
                       {item.field !== "Harvest" &&
                         item.field !== "Mortalities" && (
-                          <Grid item xs>
+                          <Grid item lg={2} md={6} xs={12}>
                             <TextField
                               label={`Stocking Density(n/${"m\u00B3"}) *`}
                               type="text"
@@ -667,7 +663,7 @@ const TransferModal: React.FC<Props> = ({
                         )}
                       {item.field !== "Harvest" &&
                         item.field !== "Mortalities" && (
-                          <Grid item xs>
+                          <Grid item lg={2} md={6} xs={12}>
                             <TextField
                               label="Stocking Level *"
                               type="text"
@@ -704,7 +700,8 @@ const TransferModal: React.FC<Props> = ({
                         )} */}
                           </Grid>
                         )}
-                      {/* {idx !== 0 && (
+                    </Grid>
+                    {/* {idx !== 0 && (
                       <Grid item xs>
                         <TextField
                           label=""
@@ -718,7 +715,6 @@ const TransferModal: React.FC<Props> = ({
                         />
                       </Grid>
                     )} */}
-                    </Grid>
                     <Divider
                       orientation="vertical"
                       sx={{
