@@ -64,7 +64,21 @@ const CalculateVolume: React.FC<Props> = ({
   width,
   calculatedValue,
 }) => {
-  const handleClose = () => setOpen(false);
+  const handleClose = () => {
+    setOpen(false);
+    setWidthError(false);
+    setLengthError(false);
+    setDepthError(false);
+    setAreaError(false);
+    setHeigthError(false);
+    setRadiusError(false);
+  };
+  const [lengthError, setLengthError] = useState(false);
+  const [widthError, setWidthError] = useState(false);
+  const [depthError, setDepthError] = useState(false);
+  const [areaError, setAreaError] = useState(false);
+  const [heigthError, setHeigthError] = useState(false);
+  const [radiusError, setRadiusError] = useState(false);
   const handleCalculate = () => {
     let output;
     if (
@@ -125,7 +139,9 @@ const CalculateVolume: React.FC<Props> = ({
     }
     setOpen(false);
   };
-
+  const handleBlur = (field: any, setError: any) => {
+    setError(field === "");
+  };
   return (
     <Modal
       open={open}
@@ -209,6 +225,9 @@ const CalculateVolume: React.FC<Props> = ({
                     setLength(value); // Keep it as string to handle the decimal point
                   }
                 }}
+                onBlur={() => handleBlur(length, setLengthError)}
+                error={lengthError}
+                helperText={lengthError ? "This field is required" : ""}
               />
               <Typography
                 variant="body2"
@@ -249,6 +268,9 @@ const CalculateVolume: React.FC<Props> = ({
                     setWidth(value); // Keep it as string to handle the decimal point
                   }
                 }}
+                onBlur={() => handleBlur(width, setWidthError)}
+                error={widthError}
+                helperText={widthError ? "This field is required" : ""}
               />
               <Typography
                 variant="body2"
@@ -289,6 +311,9 @@ const CalculateVolume: React.FC<Props> = ({
                     setDepth(value); // Keep it as string to handle the decimal point
                   }
                 }}
+                onBlur={() => handleBlur(depth, setDepthError)}
+                error={depthError}
+                helperText={depthError ? "This field is required" : ""}
               />
               <Typography
                 variant="body2"
@@ -331,6 +356,9 @@ const CalculateVolume: React.FC<Props> = ({
                     setArea(value); // Keep it as string to handle the decimal point
                   }
                 }}
+                onBlur={() => handleBlur(area, setAreaError)}
+                error={areaError}
+                helperText={areaError ? "This field is required" : ""}
               />
               <Typography
                 variant="body2"
@@ -371,6 +399,9 @@ const CalculateVolume: React.FC<Props> = ({
                     setDepth(value); // Keep it as string to handle the decimal point
                   }
                 }}
+                onBlur={() => handleBlur(depth, setDepthError)}
+                error={depthError}
+                helperText={depthError ? "This field is required" : ""}
               />
               <Typography
                 variant="body2"
@@ -413,6 +444,9 @@ const CalculateVolume: React.FC<Props> = ({
                     setLength(value); // Keep it as string to handle the decimal point
                   }
                 }}
+                onBlur={() => handleBlur(length, setLengthError)}
+                error={lengthError}
+                helperText={lengthError ? "This field is required" : ""}
               />
               <Typography
                 variant="body2"
@@ -453,6 +487,9 @@ const CalculateVolume: React.FC<Props> = ({
                     setWidth(value); // Keep it as string to handle the decimal point
                   }
                 }}
+                onBlur={() => handleBlur(width, setWidthError)}
+                error={widthError}
+                helperText={widthError ? "This field is required" : ""}
               />
               <Typography
                 variant="body2"
@@ -493,6 +530,9 @@ const CalculateVolume: React.FC<Props> = ({
                     setDepth(value); // Keep it as string to handle the decimal point
                   }
                 }}
+                onBlur={() => handleBlur(depth, setDepthError)}
+                error={depthError}
+                helperText={depthError ? "This field is required" : ""}
               />
               <Typography
                 variant="body2"
@@ -535,6 +575,9 @@ const CalculateVolume: React.FC<Props> = ({
                     setLength(value); // Keep it as string to handle the decimal point
                   }
                 }}
+                onBlur={() => handleBlur(length, setLengthError)}
+                error={lengthError}
+                helperText={lengthError ? "This field is required" : ""}
               />
               <Typography
                 variant="body2"
@@ -575,6 +618,9 @@ const CalculateVolume: React.FC<Props> = ({
                     setWidth(value); // Keep it as string to handle the decimal point
                   }
                 }}
+                onBlur={() => handleBlur(width, setWidthError)}
+                error={widthError}
+                helperText={widthError ? "This field is required" : ""}
               />
 
               <Typography
@@ -616,6 +662,9 @@ const CalculateVolume: React.FC<Props> = ({
                     setHeigth(value); // Keep it as string to handle the decimal point
                   }
                 }}
+                onBlur={() => handleBlur(heigth, setHeigthError)}
+                error={heigthError}
+                helperText={heigthError ? "This field is required" : ""}
               />
               <Typography
                 variant="body2"
@@ -658,6 +707,9 @@ const CalculateVolume: React.FC<Props> = ({
                     setLength(value); // Keep it as string to handle the decimal point
                   }
                 }}
+                onBlur={() => handleBlur(length, setLengthError)}
+                error={lengthError}
+                helperText={lengthError ? "This field is required" : ""}
               />
               <Typography
                 variant="body2"
@@ -698,6 +750,9 @@ const CalculateVolume: React.FC<Props> = ({
                     setWidth(value); // Keep it as string to handle the decimal point
                   }
                 }}
+                onBlur={() => handleBlur(width, setWidthError)}
+                error={widthError}
+                helperText={widthError ? "This field is required" : ""}
               />
               <Typography
                 variant="body2"
@@ -738,6 +793,9 @@ const CalculateVolume: React.FC<Props> = ({
                     setHeigth(value); // Keep it as string to handle the decimal point
                   }
                 }}
+                onBlur={() => handleBlur(heigth, setHeigthError)}
+                error={heigthError}
+                helperText={heigthError ? "This field is required" : ""}
               />
               <Typography
                 variant="body2"
@@ -780,6 +838,9 @@ const CalculateVolume: React.FC<Props> = ({
                     setRadius(value); // Keep it as string to handle the decimal point
                   }
                 }}
+                onBlur={() => handleBlur(radius, setRadiusError)}
+                error={radiusError}
+                helperText={radiusError ? "This field is required" : ""}
               />
               <Typography
                 variant="body2"
@@ -820,6 +881,9 @@ const CalculateVolume: React.FC<Props> = ({
                     setDepth(value); // Keep it as string to handle the decimal point
                   }
                 }}
+                onBlur={() => handleBlur(depth, setDepthError)}
+                error={depthError}
+                helperText={depthError ? "This field is required" : ""}
               />
               <Typography
                 variant="body2"
@@ -862,6 +926,9 @@ const CalculateVolume: React.FC<Props> = ({
                     setRadius(value); // Keep it as string to handle the decimal point
                   }
                 }}
+                onBlur={() => handleBlur(radius, setRadiusError)}
+                error={radiusError}
+                helperText={radiusError ? "This field is required" : ""}
               />
               <Typography
                 variant="body2"
@@ -901,6 +968,9 @@ const CalculateVolume: React.FC<Props> = ({
                     setLength(value); // Keep it as string to handle the decimal point
                   }
                 }}
+                onBlur={() => handleBlur(length, setLengthError)}
+                error={lengthError}
+                helperText={lengthError ? "This field is required" : ""}
               />
               <Typography
                 variant="body2"
@@ -941,6 +1011,9 @@ const CalculateVolume: React.FC<Props> = ({
                     setWidth(value); // Keep it as string to handle the decimal point
                   }
                 }}
+                onBlur={() => handleBlur(width, setWidthError)}
+                error={widthError}
+                helperText={widthError ? "This field is required" : ""}
               />
               <Typography
                 variant="body2"
@@ -981,6 +1054,9 @@ const CalculateVolume: React.FC<Props> = ({
                     setDepth(value); // Keep it as string to handle the decimal point
                   }
                 }}
+                onBlur={() => handleBlur(depth, setDepthError)}
+                error={depthError}
+                helperText={depthError ? "This field is required" : ""}
               />
               <Typography
                 variant="body2"
