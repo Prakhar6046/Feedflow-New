@@ -224,6 +224,7 @@ const TransferModal: React.FC<Props> = ({
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
       className="modal-positioning"
+      sx={{ overflowY: "auto" }}
     >
       <Stack sx={style}>
         {/* Header with close icon */}
@@ -243,11 +244,12 @@ const TransferModal: React.FC<Props> = ({
           {fields.map((item, idx) => {
             return (
               <Box
-                paddingInline={4}
+                paddingInline={3}
                 sx={{
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
+                  height: "100%",
                   gap: 3,
                 }}
                 key={item.id}
@@ -271,7 +273,7 @@ const TransferModal: React.FC<Props> = ({
                           textTransform: "capitalize",
                           borderRadius: "20px",
                           marginRight: "auto",
-                          marginBottom: "20px",
+                          marginBlock: "40px",
                         }}
                       >
                         {getValues(`manager.${idx}.field`)}
@@ -724,8 +726,13 @@ const TransferModal: React.FC<Props> = ({
                     }}
                   />
                 </Grid>
-
-                <Box>
+                <Box
+                  display={"flex"}
+                  alignItems={"center"}
+                  gap="2"
+                  margin="auto"
+                  top="60%"
+                >
                   <Box
                     display={"flex"}
                     justifyContent={"center"}
@@ -754,6 +761,26 @@ const TransferModal: React.FC<Props> = ({
                           d="M14.28 2a2 2 0 0 1 1.897 1.368L16.72 5H20a1 1 0 1 1 0 2l-.003.071l-.867 12.143A3 3 0 0 1 16.138 22H7.862a3 3 0 0 1-2.992-2.786L4.003 7.07L4 7a1 1 0 0 1 0-2h3.28l.543-1.632A2 2 0 0 1 9.721 2zm3.717 5H6.003l.862 12.071a1 1 0 0 0 .997.929h8.276a1 1 0 0 0 .997-.929zM10 10a1 1 0 0 1 .993.883L11 11v5a1 1 0 0 1-1.993.117L9 16v-5a1 1 0 0 1 1-1m4 0a1 1 0 0 1 1 1v5a1 1 0 1 1-2 0v-5a1 1 0 0 1 1-1m.28-6H9.72l-.333 1h5.226z"
                         />
                       </g>
+                    </svg>
+                  </Box>
+
+                  <Box
+                    display={"flex"}
+                    justifyContent={"center"}
+                    alignItems={"center"}
+                    width={150}
+                  >
+                    <svg
+                      width="27"
+                      height="24"
+                      viewBox="0 0 27 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M26.6667 14.7429C26.6667 19.8472 22.5254 24 17.4353 24H3.75884C3.19213 24 2.73314 23.5397 2.73314 22.9714C2.73314 22.4031 3.19213 21.9429 3.75884 21.9429H17.4353C21.3944 21.9429 24.6153 18.7132 24.6153 14.7429C24.6153 10.7726 21.3945 7.54294 17.4353 7.54294H3.50119L7.22064 11.2728C7.62196 11.6752 7.62196 12.3258 7.22064 12.7282C7.02062 12.9288 6.75777 13.0303 6.49624 13.0303C6.23341 13.0303 5.97056 12.9301 5.77185 12.7282L0.300991 7.24207C-0.10033 6.83963 -0.10033 6.18908 0.300991 5.78664L5.76922 0.301831C6.17054 -0.10061 6.81928 -0.10061 7.2206 0.301831C7.62192 0.704272 7.62192 1.35482 7.2206 1.75726L3.50115 5.48709H17.4353C22.5254 5.48709 26.6666 9.63986 26.6666 14.7442L26.6667 14.7429Z"
+                        fill="red"
+                      />
                     </svg>
                   </Box>
                 </Box>
