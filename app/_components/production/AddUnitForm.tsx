@@ -34,7 +34,7 @@ interface FormInputs {
   meanLength: String;
   meanWeight: String;
   stockingDensityKG: String;
-  stockingDensityNM: String;
+  // stockingDensityNM: String;
   stockingLevel: String;
 }
 interface Props {
@@ -54,29 +54,53 @@ function AddUnitForm({ farms }: Props) {
     control,
     formState: { errors },
   } = useForm<FormInputs>();
+  console.log(farms);
 
   const onSubmit: SubmitHandler<FormInputs> = async (data) => {
-    const { fishFarm, productionUnit, age, ...restData } = data;
-    const payload = {
-      organisationId: user.organisationId,
-      fishFarmId: fishFarm,
-      productionUnitId: productionUnit,
-      age: getDayMonthDifference(data.age),
-      ...restData,
-    };
+    const {
+      fishFarm,
+      productionUnit,
+      age,
+      stockingDensityKG,
+      // stockingDensityNM,
+      ...restData
+    } = data;
+    const farm = farms.find((f) => f.id === selectedFarm);
+    if (farm && farm.productionUnits && farm?.productionUnits[0].capacity) {
+      console.log(data.fishCount);
+      console.log(farm.productionUnits[0].capacity);
+      console.log(
+        Number(data.fishCount) / Number(farm?.productionUnits[0]?.capacity)
+      );
 
-    const response = await fetch(`/api/production`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    });
-    const responseData = await response.json();
-    toast.success(responseData.message);
+      const payload = {
+        organisationId: user.organisationId,
+        fishFarmId: fishFarm,
+        productionUnitId: productionUnit,
+        age: getDayMonthDifference(data.age),
+        stockingDensityKG: String(
+          Number(data.stockingDensityKG) /
+            Number(farm?.productionUnits[0]?.capacity)
+        ),
+        stockingDensityNM: String(
+          Number(data.fishCount) / Number(farm?.productionUnits[0]?.capacity)
+        ),
+        ...restData,
+      };
 
-    if (responseData.status) {
-      router.push("/dashboard/production");
+      const response = await fetch(`/api/production`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+      const responseData = await response.json();
+      toast.success(responseData.message);
+
+      if (responseData.status) {
+        router.push("/dashboard/production");
+      }
     }
   };
   // Get selected farm's production units
@@ -467,7 +491,7 @@ function AddUnitForm({ farms }: Props) {
             )}  */}
             </Box>
           </Box>
-          <Box mb={2} width={"100%"}>
+          {/* <Box mb={2} width={"100%"}>
             <Box position={"relative"}>
               <TextField
                 label={`% Stocking Density(n/${mCubed})  *`}
@@ -512,13 +536,9 @@ function AddUnitForm({ farms }: Props) {
                     {validationMessage.required}
                   </Typography>
                 )}
-              {/* {errors && errors.lng && errors.lng.type === "pattern" && (
-              <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
-                {validationMessage.NegativeNumberWithDot}
-              </Typography>
-            )}  */}
+              
             </Box>
-          </Box>
+          </Box> */}
           <Box mb={2} width={"100%"}>
             <Box position={"relative"}>
               <TextField
