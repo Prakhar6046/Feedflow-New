@@ -65,6 +65,7 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
     formState: { errors },
   } = useForm<FormInputs>({
     defaultValues: { hatchingDate: null },
+    mode: "onChange",
   });
 
   const onSubmit: SubmitHandler<FormInputs> = async (data) => {
@@ -412,7 +413,7 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
                       }}
                       value={field.value || null} // Fallback to null if no value
                     />
-                    {error && (
+                    {error && !watch("hatchingDate") && (
                       <Typography
                         variant="body2"
                         color="red"
