@@ -67,12 +67,6 @@ function AddUnitForm({ farms }: Props) {
     } = data;
     const farm = farms.find((f) => f.id === selectedFarm);
     if (farm && farm.productionUnits && farm?.productionUnits[0].capacity) {
-      console.log(data.fishCount);
-      console.log(farm.productionUnits[0].capacity);
-      console.log(
-        Number(data.fishCount) / Number(farm?.productionUnits[0]?.capacity)
-      );
-
       const payload = {
         organisationId: user.organisationId,
         fishFarmId: fishFarm,
@@ -719,46 +713,6 @@ function AddUnitForm({ farms }: Props) {
                 </Box>
               </Box>
             </Grid>
-            {/* <Box mb={2} width={"100%"}>
-              <FormControl fullWidth className="form-input">
-                <InputLabel id="feed-supply-select-label1">
-                  Fish Farmer *
-                </InputLabel>
-                <Select
-                  labelId="feed-supply-select-label1"
-                  id="feed-supply-select1"
-                  {...register("fishFarmer", {
-                    required: watch("fishFarmer") ? false : true,
-                    onChange: (e) => setValue("fishFarmer", e.target.value),
-                  })}
-                  label="Feed Farmer *"
-                  value={watch("fishFarmer") || ""}
-                >
-                  {fishFarmers?.map((fish: any) => {
-                    return (
-                      <MenuItem value={String(fish.id)} key={fish.id}>
-                        {fish.name}
-                      </MenuItem>
-                    );
-                  })}
-                </Select>
-              </FormControl>
-            </Box> */}
-            {/* <Button
-            type="submit"
-            variant="contained"
-            sx={{
-              background: "#06A19B",
-              fontWeight: 600,
-              padding: "6px 16px",
-              width: "fit-content",
-              textTransform: "capitalize",
-              borderRadius: "8px",
-              textAlign: "end",
-            }}
-          >
-            Add
-          </Button> */}
           </Grid>
 
           <Box display={"flex"} justifyContent="flex-end" mt={2}>

@@ -54,6 +54,7 @@ interface InputTypes {
     stockingLevel?: String;
     stockingDensityKG?: String;
     batchNumber: String;
+    stockingDensityKGAfterCal?: String;
   }[];
 }
 const TransferModal: React.FC<Props> = ({
@@ -99,25 +100,37 @@ const TransferModal: React.FC<Props> = ({
     name: "manager",
   });
   const onSubmit: SubmitHandler<InputTypes> = async (data) => {
+    const updatedData = data.manager.map((production, i) => {
+      if (i !== 0) {
+        return {
+          ...production,
+          stockingDensityKG: production.stockingDensityKGAfterCal,
+        };
+      } else {
+        return production;
+      }
+    });
+    console.log(updatedData);
+
     const payload = {
       organisationId: selectedProduction.organisationId,
-      data: data.manager,
+      data: updatedData,
     };
-    const response = await fetch("/api/production/mange", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    });
+    // const response = await fetch("/api/production/mange", {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSON.stringify(payload),
+    // });
 
-    const res = await response.json();
-    if (res.status) {
-      toast.success(res.message);
-      setOpen(false);
-      router.push("/dashboard/production");
-      router.refresh();
-    }
+    // const res = await response.json();
+    // if (res.status) {
+    //   toast.success(res.message);
+    //   setOpen(false);
+    //   router.push("/dashboard/production");
+    //   router.refresh();
+    // }
   };
 
   const handleClose = () => setOpen(false);
@@ -204,6 +217,22 @@ const TransferModal: React.FC<Props> = ({
             updatedCount -= currentCount;
           }
         }
+        const farm = farms.find((f) => f.id === field.fishFarm);
+        if (farm && farm.productionUnits && farm?.productionUnits[0].capacity) {
+          setValue(
+            `manager.${index}.stockingDensityNM`,
+            String(
+              Number(field.count) / Number(farm?.productionUnits[0]?.capacity)
+            )
+          );
+          setValue(
+            `manager.${index}.stockingDensityKGAfterCal`,
+            String(
+              Number(field.stockingDensityKG) /
+                Number(farm?.productionUnits[0]?.capacity)
+            )
+          );
+        }
       });
 
       // Set the index 0 values after calculation
@@ -213,6 +242,7 @@ const TransferModal: React.FC<Props> = ({
   }, [
     watchedFields.map((field) => field.biomass).join(","), // Watch biomass of all fields
     watchedFields.map((field) => field.count).join(","), // Watch count of all fields
+    watchedFields.map((field) => field.stockingDensityKG).join(","),
     setValue,
     selectedProduction,
   ]);
@@ -369,13 +399,29 @@ const TransferModal: React.FC<Props> = ({
                               }
                             >
                               {(() => {
-                                const selectedFarm = farms.find(
-                                  (farm) =>
-                                    farm.id === watch(`manager.${idx}.fishFarm`)
-                                );
+                                let selectedFarm;
+                                if (idx === 0) {
+                                  selectedFarm = farms.find(
+                                    (farm) =>
+                                      farm.id ===
+                                      watch(`manager.${idx}.fishFarm`)
+                                  )?.productionUnits;
+                                } else {
+                                  selectedFarm = farms
+                                    .find(
+                                      (farm) =>
+                                        farm.id ===
+                                        watch(`manager.${idx}.fishFarm`)
+                                    )
+                                    ?.productionUnits?.filter(
+                                      (unit) =>
+                                        unit.name !==
+                                        selectedProduction.productionUnit.name
+                                    );
+                                }
 
                                 return selectedFarm ? (
-                                  selectedFarm?.productionUnits?.map((unit) => (
+                                  selectedFarm?.map((unit) => (
                                     <MenuItem
                                       value={String(unit.id)}
                                       key={unit.id}
@@ -652,7 +698,7 @@ const TransferModal: React.FC<Props> = ({
                               type="text"
                               className="form-input"
                               sx={{ width: "100%" }}
-                              disabled
+                              disabled={idx === 0 ? true : false}
                               {...register(
                                 `manager.${idx}.stockingDensityKG` as const,
                                 {
@@ -707,7 +753,7 @@ const TransferModal: React.FC<Props> = ({
                               type="text"
                               className="form-input"
                               sx={{ width: "100%" }}
-                              disabled
+                              disabled={idx === 0 ? true : false}
                               {...register(
                                 `manager.${idx}.stockingDensityNM` as const,
                                 {
@@ -761,8 +807,8 @@ const TransferModal: React.FC<Props> = ({
                               label="Stocking Level *"
                               type="text"
                               className="form-input"
+                              disabled={idx === 0 ? true : false}
                               sx={{ width: "100%" }}
-                              disabled
                               {...register(
                                 `manager.${idx}.stockingLevel` as const,
                                 {
