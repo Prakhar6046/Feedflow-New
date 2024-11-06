@@ -215,16 +215,17 @@ export default function FarmManagerTable({
           overflow: "hidden",
           borderRadius: "14px",
           boxShadow: "0px 0px 16px 5px #0000001A",
+          textAlign: "center",
           mt: 4,
         }}
       >
-        <TableContainer
-          sx={{
-            maxHeight: "72.5vh",
-          }}
-        >
+        <TableContainer>
           <Table stickyHeader aria-label="sticky table">
-            <TableHead>
+            <TableHead
+              sx={{
+                textAlign: "center",
+              }}
+            >
               <TableRow></TableRow>
             </TableHead>
             <EnhancedTableHead

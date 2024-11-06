@@ -240,372 +240,376 @@ const TransferModal: React.FC<Props> = ({
             <CloseIcon />
           </IconButton>
         </Box>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form className="form-height" onSubmit={handleSubmit(onSubmit)}>
           {fields.map((item, idx) => {
             return (
-              <Box
-                paddingInline={3}
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  height: "100%",
-                  gap: 3,
-                }}
-                key={item.id}
-              >
-                <Grid container spacing={2}>
-                  {idx !== 0 && (
-                    <Box>
-                      <Button
-                        id=""
-                        className=""
-                        type="button"
-                        variant="contained"
-                        sx={{
-                          background: "#06A19B",
-                          fontWeight: "bold",
-                          padding: "8px 20px",
-                          width: {
-                            xs: "50%",
-                            lg: "fit-content",
-                          },
-                          textTransform: "capitalize",
-                          borderRadius: "20px",
-                          marginRight: "auto",
-                          marginBlock: "40px",
-                        }}
-                      >
-                        {getValues(`manager.${idx}.field`)}
-                      </Button>
-                    </Box>
-                  )}
-                  <Grid container spacing={2}>
-                    <Grid item lg={2} md={6} xs={12}>
-                      <Box mb={2} width={"100%"}>
-                        <FormControl fullWidth className="form-input">
-                          <InputLabel id="">Fish Farm *</InputLabel>
-                          <Select
-                            labelId="feed-supply-select-label9"
-                            className="fish-manager"
-                            id="feed-supply-select9"
-                            label="Fish Farm*"
-                            disabled={
-                              item.field === "Harvest" ||
-                              item.field === "Mortalities" ||
-                              idx === 0
-                                ? true
-                                : false
-                            }
-                            {...register(`manager.${idx}.fishFarm`, {
-                              required: watch(`manager.${idx}.fishFarm`)
-                                ? false
-                                : true,
-                            })}
-                            onChange={(e) => {
-                              const selectedFishFarm = e.target.value;
-                              setSelectedFarm(selectedFishFarm); // Set selected farm for this specific entry
-                              setValue(
-                                `manager.${idx}.fishFarm`,
-                                selectedFishFarm
-                              ); // Set the value for this fishFarm
-                              setValue(`manager.${idx}.productionUnit`, ""); // Reset production unit for the current entry
-                            }}
-                            value={getValues(`manager.${idx}.fishFarm`) || ""} // Ensure only the current entry is updated
-                          >
-                            {farms?.map((farm: Farm, i) => (
-                              <MenuItem value={String(farm.id)} key={i}>
-                                {farm.name}
-                              </MenuItem>
-                            ))}
-                          </Select>
-
-                          {errors &&
-                            errors?.manager &&
-                            errors?.manager[idx] &&
-                            errors?.manager[idx].fishFarm &&
-                            errors?.manager[idx].fishFarm.type ===
-                              "required" && (
-                              <Typography
-                                variant="body2"
-                                color="red"
-                                fontSize={13}
-                                mt={0.5}
-                              >
-                                {validationMessage.required}
-                              </Typography>
-                            )}
-                          <Typography
-                            variant="body2"
-                            color="red"
-                            fontSize={13}
-                            mt={0.5}
-                          ></Typography>
-                        </FormControl>
-                      </Box>
-                    </Grid>
-                    <Grid item lg={2} md={6} xs={12}>
-                      <Box mb={2} width={"100%"}>
-                        <FormControl fullWidth className="form-input">
-                          <InputLabel id="">Production Unit *</InputLabel>
-                          <Select
-                            labelId="production-unit-select-label"
-                            id="production-unit-select"
-                            label="Production Unit*"
-                            disabled={
-                              item.field === "Harvest" ||
-                              item.field === "Mortalities" ||
-                              idx === 0
-                                ? true
-                                : false
-                            }
-                            {...register(`manager.${idx}.productionUnit`, {
-                              required: watch(`manager.${idx}.productionUnit`)
-                                ? false
-                                : true,
-                            })}
-                            value={watch(`manager.${idx}.productionUnit`) || ""}
-                          >
-                            {(() => {
-                              const selectedFarm = farms.find(
-                                (farm) =>
-                                  farm.id === watch(`manager.${idx}.fishFarm`)
-                              );
-
-                              return selectedFarm ? (
-                                selectedFarm?.productionUnits?.map((unit) => (
-                                  <MenuItem
-                                    value={String(unit.id)}
-                                    key={unit.id}
-                                  >
-                                    {unit.name}
-                                  </MenuItem>
-                                ))
-                              ) : (
-                                <MenuItem value="" disabled>
-                                  No units available
+              <Box paddingInline={4} key={item.id}>
+                {idx !== 0 && (
+                  <Box>
+                    <Button
+                      id=""
+                      className=""
+                      type="button"
+                      variant="contained"
+                      sx={{
+                        background: "#06A19B",
+                        fontWeight: "bold",
+                        padding: "8px 20px",
+                        width: {
+                          xs: "50%",
+                          lg: "fit-content",
+                        },
+                        textTransform: "capitalize",
+                        borderRadius: "20px",
+                        marginLeft: "12px !important",
+                        marginBlock: "40px",
+                      }}
+                    >
+                      {getValues(`manager.${idx}.field`)}
+                    </Button>
+                  </Box>
+                )}
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    height: "100%",
+                    position: "relative",
+                    bottom: "10px",
+                  }}
+                >
+                  <Grid container spacing={2} className="grid-margin">
+                    <Grid container spacing={2} className="grid-margin">
+                      <Grid item lg={2} md={6} xs={12}>
+                        <Box mb={2} width={"100%"}>
+                          <FormControl fullWidth className="form-input">
+                            <InputLabel id="">Fish Farm *</InputLabel>
+                            <Select
+                              labelId="feed-supply-select-label9"
+                              className="fish-manager"
+                              id="feed-supply-select9"
+                              label="Fish Farm*"
+                              disabled={
+                                item.field === "Harvest" ||
+                                item.field === "Mortalities" ||
+                                idx === 0
+                                  ? true
+                                  : false
+                              }
+                              {...register(`manager.${idx}.fishFarm`, {
+                                required: watch(`manager.${idx}.fishFarm`)
+                                  ? false
+                                  : true,
+                              })}
+                              onChange={(e) => {
+                                const selectedFishFarm = e.target.value;
+                                setSelectedFarm(selectedFishFarm); // Set selected farm for this specific entry
+                                setValue(
+                                  `manager.${idx}.fishFarm`,
+                                  selectedFishFarm
+                                ); // Set the value for this fishFarm
+                                setValue(`manager.${idx}.productionUnit`, ""); // Reset production unit for the current entry
+                              }}
+                              value={getValues(`manager.${idx}.fishFarm`) || ""} // Ensure only the current entry is updated
+                            >
+                              {farms?.map((farm: Farm, i) => (
+                                <MenuItem value={String(farm.id)} key={i}>
+                                  {farm.name}
                                 </MenuItem>
-                              );
-                            })()}
-                          </Select>
-                          {errors &&
-                            errors?.manager &&
-                            errors?.manager[idx] &&
-                            errors?.manager[idx].productionUnit &&
-                            errors?.manager[idx].productionUnit.type ===
-                              "required" && (
-                              <Typography
-                                variant="body2"
-                                color="red"
-                                fontSize={13}
-                                mt={0.5}
-                              >
-                                {validationMessage.required}
-                              </Typography>
-                            )}
-                          <Typography
-                            variant="body2"
-                            color="red"
-                            fontSize={13}
-                            mt={0.5}
-                          ></Typography>
-                        </FormControl>
-                      </Box>
-                    </Grid>
+                              ))}
+                            </Select>
 
-                    <Grid item lg={2} md={6} xs={12}>
-                      <TextField
-                        label="Batch Number *"
-                        type="text"
-                        className="form-input"
-                        sx={{ width: "100%" }}
-                        disabled={
-                          item.field === "Harvest" ||
-                          item.field === "Mortalities" ||
-                          idx === 0
-                            ? true
-                            : false
-                        }
-                        {...register(`manager.${idx}.batchNumber`, {
-                          required: true,
-                        })}
-                      />
-                      <Typography
-                        variant="body2"
-                        color="red"
-                        fontSize={13}
-                        mt={0.5}
-                      ></Typography>
-                      {errors &&
-                        errors.manager &&
-                        errors.manager[idx] &&
-                        errors.manager[idx].batchNumber && (
-                          <Typography
-                            variant="body2"
-                            color="red"
-                            fontSize={13}
-                            mt={0.5}
-                          >
-                            This field is required
-                          </Typography>
-                        )}
+                            {errors &&
+                              errors?.manager &&
+                              errors?.manager[idx] &&
+                              errors?.manager[idx].fishFarm &&
+                              errors?.manager[idx].fishFarm.type ===
+                                "required" && (
+                                <Typography
+                                  variant="body2"
+                                  color="red"
+                                  fontSize={13}
+                                  mt={0.5}
+                                >
+                                  {validationMessage.required}
+                                </Typography>
+                              )}
+                            <Typography
+                              variant="body2"
+                              color="red"
+                              fontSize={13}
+                              mt={0.5}
+                            ></Typography>
+                          </FormControl>
+                        </Box>
+                      </Grid>
+                      <Grid item lg={2} md={6} xs={12}>
+                        <Box mb={2} width={"100%"}>
+                          <FormControl fullWidth className="form-input">
+                            <InputLabel id="">Production Unit *</InputLabel>
+                            <Select
+                              labelId="production-unit-select-label"
+                              id="production-unit-select"
+                              label="Production Unit*"
+                              disabled={
+                                item.field === "Harvest" ||
+                                item.field === "Mortalities" ||
+                                idx === 0
+                                  ? true
+                                  : false
+                              }
+                              {...register(`manager.${idx}.productionUnit`, {
+                                required: watch(`manager.${idx}.productionUnit`)
+                                  ? false
+                                  : true,
+                              })}
+                              value={
+                                watch(`manager.${idx}.productionUnit`) || ""
+                              }
+                            >
+                              {(() => {
+                                const selectedFarm = farms.find(
+                                  (farm) =>
+                                    farm.id === watch(`manager.${idx}.fishFarm`)
+                                );
+
+                                return selectedFarm ? (
+                                  selectedFarm?.productionUnits?.map((unit) => (
+                                    <MenuItem
+                                      value={String(unit.id)}
+                                      key={unit.id}
+                                    >
+                                      {unit.name}
+                                    </MenuItem>
+                                  ))
+                                ) : (
+                                  <MenuItem value="" disabled>
+                                    No units available
+                                  </MenuItem>
+                                );
+                              })()}
+                            </Select>
+                            {errors &&
+                              errors?.manager &&
+                              errors?.manager[idx] &&
+                              errors?.manager[idx].productionUnit &&
+                              errors?.manager[idx].productionUnit.type ===
+                                "required" && (
+                                <Typography
+                                  variant="body2"
+                                  color="red"
+                                  fontSize={13}
+                                  mt={0.5}
+                                >
+                                  {validationMessage.required}
+                                </Typography>
+                              )}
+                            <Typography
+                              variant="body2"
+                              color="red"
+                              fontSize={13}
+                              mt={0.5}
+                            ></Typography>
+                          </FormControl>
+                        </Box>
+                      </Grid>
+
+                      <Grid item lg={2} md={6} xs={12}>
+                        <TextField
+                          label="Batch Number *"
+                          type="text"
+                          className="form-input"
+                          sx={{ width: "100%" }}
+                          disabled={
+                            item.field === "Harvest" ||
+                            item.field === "Mortalities" ||
+                            idx === 0
+                              ? true
+                              : false
+                          }
+                          {...register(`manager.${idx}.batchNumber`, {
+                            required: true,
+                          })}
+                        />
+                        <Typography
+                          variant="body2"
+                          color="red"
+                          fontSize={13}
+                          mt={0.5}
+                        ></Typography>
+                        {errors &&
+                          errors.manager &&
+                          errors.manager[idx] &&
+                          errors.manager[idx].batchNumber && (
+                            <Typography
+                              variant="body2"
+                              color="red"
+                              fontSize={13}
+                              mt={0.5}
+                            >
+                              This field is required
+                            </Typography>
+                          )}
+                      </Grid>
+                      <Grid item lg={2} md={6} xs={12}>
+                        <TextField
+                          label="Biomass (kg) *"
+                          type="text"
+                          className="form-input"
+                          disabled={idx === 0 ? true : false}
+                          sx={{ width: "100%" }}
+                          {...register(`manager.${idx}.biomass`, {
+                            required: true,
+                            pattern: validationPattern.negativeNumberWithDot,
+                          })}
+                        />
+                        <Typography
+                          variant="body2"
+                          color="red"
+                          fontSize={13}
+                          mt={0.5}
+                        ></Typography>
+                        {errors &&
+                          errors.manager &&
+                          errors.manager[idx] &&
+                          errors.manager[idx].biomass &&
+                          errors.manager[idx].biomass.type === "required" && (
+                            <Typography
+                              variant="body2"
+                              color="red"
+                              fontSize={13}
+                              mt={0.5}
+                            >
+                              {validationMessage.required}
+                            </Typography>
+                          )}
+                      </Grid>
+                      <Grid item lg={2} md={6} xs={12}>
+                        <TextField
+                          label="Fish Count *"
+                          type="text"
+                          className="form-input"
+                          sx={{ width: "100%" }}
+                          disabled={idx === 0 ? true : false}
+                          {...register(`manager.${idx}.count`, {
+                            required: true,
+                            pattern: validationPattern.negativeNumberWithDot,
+                          })}
+                        />
+                        <Typography
+                          variant="body2"
+                          color="red"
+                          fontSize={13}
+                          mt={0.5}
+                        ></Typography>
+                        {errors &&
+                          errors.manager &&
+                          errors.manager[idx] &&
+                          errors.manager[idx].count &&
+                          errors.manager[idx].count.type === "required" && (
+                            <Typography
+                              variant="body2"
+                              color="red"
+                              fontSize={13}
+                              mt={0.5}
+                            >
+                              {validationMessage.required}
+                            </Typography>
+                          )}
+                      </Grid>
                     </Grid>
-                    <Grid item lg={2} md={6} xs={12}>
-                      <TextField
-                        label="Biomass (kg) *"
-                        type="text"
-                        className="form-input"
-                        disabled={idx === 0 ? true : false}
-                        sx={{ width: "100%" }}
-                        {...register(`manager.${idx}.biomass`, {
-                          required: true,
-                          pattern: validationPattern.negativeNumberWithDot,
-                        })}
-                      />
-                      <Typography
-                        variant="body2"
-                        color="red"
-                        fontSize={13}
-                        mt={0.5}
-                      ></Typography>
-                      {errors &&
-                        errors.manager &&
-                        errors.manager[idx] &&
-                        errors.manager[idx].biomass &&
-                        errors.manager[idx].biomass.type === "required" && (
-                          <Typography
-                            variant="body2"
-                            color="red"
-                            fontSize={13}
-                            mt={0.5}
-                          >
-                            {validationMessage.required}
-                          </Typography>
-                        )}
-                    </Grid>
-                    <Grid item lg={2} md={6} xs={12}>
-                      <TextField
-                        label="Fish Count *"
-                        type="text"
-                        className="form-input"
-                        sx={{ width: "100%" }}
-                        disabled={idx === 0 ? true : false}
-                        {...register(`manager.${idx}.count`, {
-                          required: true,
-                          pattern: validationPattern.negativeNumberWithDot,
-                        })}
-                      />
-                      <Typography
-                        variant="body2"
-                        color="red"
-                        fontSize={13}
-                        mt={0.5}
-                      ></Typography>
-                      {errors &&
-                        errors.manager &&
-                        errors.manager[idx] &&
-                        errors.manager[idx].count &&
-                        errors.manager[idx].count.type === "required" && (
-                          <Typography
-                            variant="body2"
-                            color="red"
-                            fontSize={13}
-                            mt={0.5}
-                          >
-                            {validationMessage.required}
-                          </Typography>
-                        )}
-                    </Grid>
-                  </Grid>
-                  <Grid container spacing={2} marginTop={"10px"}>
-                    <Grid item lg={2} md={6} xs={12}>
-                      <TextField
-                        label="Mean Weight *"
-                        type="text"
-                        className="form-input"
-                        sx={{ width: "100%" }}
-                        disabled={idx === 0 ? true : false}
-                        {...register(`manager.${idx}.meanWeight`, {
-                          required: true,
-                          pattern: validationPattern.negativeNumberWithDot,
-                        })}
-                      />
-                      <Typography
-                        variant="body2"
-                        color="red"
-                        fontSize={13}
-                        mt={0.5}
-                      ></Typography>
-                      {errors &&
-                        errors.manager &&
-                        errors.manager[idx] &&
-                        errors.manager[idx].meanWeight &&
-                        errors.manager[idx].meanWeight.type === "required" && (
-                          <Typography
-                            variant="body2"
-                            color="red"
-                            fontSize={13}
-                            mt={0.5}
-                          >
-                            {validationMessage.required}
-                          </Typography>
-                        )}
-                    </Grid>
-                    <Grid item lg={2} md={6} xs={12}>
-                      <TextField
-                        label="Mean Length *"
-                        type="text"
-                        className="form-input"
-                        sx={{ width: "100%" }}
-                        disabled={idx === 0 ? true : false}
-                        {...register(`manager.${idx}.meanLength` as const, {
-                          required: true,
-                        })}
-                      />
-                      <Typography
-                        variant="body2"
-                        color="red"
-                        fontSize={13}
-                        mt={0.5}
-                      ></Typography>
-                      {errors &&
-                        errors.manager &&
-                        errors.manager[idx] &&
-                        errors.manager[idx].meanLength &&
-                        errors.manager[idx].meanLength.type === "required" && (
-                          <Typography
-                            variant="body2"
-                            color="red"
-                            fontSize={13}
-                            mt={0.5}
-                          >
-                            {validationMessage.required}
-                          </Typography>
-                        )}
-                    </Grid>{" "}
-                    {item.field !== "Harvest" &&
-                      item.field !== "Mortalities" && (
-                        <Grid item lg={2} md={6} xs={12}>
-                          <TextField
-                            label={`Stocking Density(kg/${"m\u00B3"}) *`}
-                            type="text"
-                            className="form-input"
-                            sx={{ width: "100%" }}
-                            disabled
-                            {...register(
-                              `manager.${idx}.stockingDensityKG` as const
-                              // {
-                              //   required: true,
-                              // }
-                            )}
-                          />
-                          <Typography
-                            variant="body2"
-                            color="red"
-                            fontSize={13}
-                            mt={0.5}
-                          ></Typography>
-                          {/* {errors &&
+                    <Grid container spacing={2} className="grid-margin">
+                      <Grid item lg={2} md={6} xs={12}>
+                        <TextField
+                          label="Mean Weight *"
+                          type="text"
+                          className="form-input"
+                          sx={{ width: "100%" }}
+                          disabled={idx === 0 ? true : false}
+                          {...register(`manager.${idx}.meanWeight`, {
+                            required: true,
+                            pattern: validationPattern.negativeNumberWithDot,
+                          })}
+                        />
+                        <Typography
+                          variant="body2"
+                          color="red"
+                          fontSize={13}
+                          mt={0.5}
+                        ></Typography>
+                        {errors &&
+                          errors.manager &&
+                          errors.manager[idx] &&
+                          errors.manager[idx].meanWeight &&
+                          errors.manager[idx].meanWeight.type ===
+                            "required" && (
+                            <Typography
+                              variant="body2"
+                              color="red"
+                              fontSize={13}
+                              mt={0.5}
+                            >
+                              {validationMessage.required}
+                            </Typography>
+                          )}
+                      </Grid>
+                      <Grid item lg={2} md={6} xs={12}>
+                        <TextField
+                          label="Mean Length *"
+                          type="text"
+                          className="form-input"
+                          sx={{ width: "100%" }}
+                          disabled={idx === 0 ? true : false}
+                          {...register(`manager.${idx}.meanLength` as const, {
+                            required: true,
+                          })}
+                        />
+                        <Typography
+                          variant="body2"
+                          color="red"
+                          fontSize={13}
+                          mt={0.5}
+                        ></Typography>
+                        {errors &&
+                          errors.manager &&
+                          errors.manager[idx] &&
+                          errors.manager[idx].meanLength &&
+                          errors.manager[idx].meanLength.type ===
+                            "required" && (
+                            <Typography
+                              variant="body2"
+                              color="red"
+                              fontSize={13}
+                              mt={0.5}
+                            >
+                              {validationMessage.required}
+                            </Typography>
+                          )}
+                      </Grid>{" "}
+                      {item.field !== "Harvest" &&
+                        item.field !== "Mortalities" && (
+                          <Grid item lg={2} md={6} xs={12}>
+                            <TextField
+                              label={`Stocking Density(kg/${"m\u00B3"}) *`}
+                              type="text"
+                              className="form-input"
+                              sx={{ width: "100%" }}
+                              disabled
+                              {...register(
+                                `manager.${idx}.stockingDensityKG` as const
+                                // {
+                                //   required: true,
+                                // }
+                              )}
+                            />
+                            <Typography
+                              variant="body2"
+                              color="red"
+                              fontSize={13}
+                              mt={0.5}
+                            ></Typography>
+                            {/* {errors &&
                         errors.manager &&
                         errors.manager[idx] &&
                         errors.manager[idx].stockingDensityKG &&
@@ -620,31 +624,31 @@ const TransferModal: React.FC<Props> = ({
                             {validationMessage.required}
                           </Typography>
                         )} */}
-                        </Grid>
-                      )}
-                    {item.field !== "Harvest" &&
-                      item.field !== "Mortalities" && (
-                        <Grid item xs>
-                          <TextField
-                            label={`Stocking Density(n/${"m\u00B3"}) *`}
-                            type="text"
-                            className="form-input"
-                            sx={{ width: "100%" }}
-                            disabled
-                            {...register(
-                              `manager.${idx}.stockingDensityNM` as const
-                              // {
-                              //   required: true,
-                              // }
-                            )}
-                          />
-                          <Typography
-                            variant="body2"
-                            color="red"
-                            fontSize={13}
-                            mt={0.5}
-                          ></Typography>
-                          {/* {errors &&
+                          </Grid>
+                        )}
+                      {item.field !== "Harvest" &&
+                        item.field !== "Mortalities" && (
+                          <Grid item xs>
+                            <TextField
+                              label={`Stocking Density(n/${"m\u00B3"}) *`}
+                              type="text"
+                              className="form-input"
+                              sx={{ width: "100%" }}
+                              disabled
+                              {...register(
+                                `manager.${idx}.stockingDensityNM` as const
+                                // {
+                                //   required: true,
+                                // }
+                              )}
+                            />
+                            <Typography
+                              variant="body2"
+                              color="red"
+                              fontSize={13}
+                              mt={0.5}
+                            ></Typography>
+                            {/* {errors &&
                         errors.manager &&
                         errors.manager[idx] &&
                         errors.manager[idx].stockingDensityNM &&
@@ -659,31 +663,31 @@ const TransferModal: React.FC<Props> = ({
                             {validationMessage.required}
                           </Typography>
                         )} */}
-                        </Grid>
-                      )}
-                    {item.field !== "Harvest" &&
-                      item.field !== "Mortalities" && (
-                        <Grid item xs>
-                          <TextField
-                            label="Stocking Level *"
-                            type="text"
-                            className="form-input"
-                            sx={{ width: "100%" }}
-                            disabled
-                            {...register(
-                              `manager.${idx}.stockingLevel` as const
-                              //   {
-                              //   required: true,
-                              // }
-                            )}
-                          />
-                          <Typography
-                            variant="body2"
-                            color="red"
-                            fontSize={13}
-                            mt={0.5}
-                          ></Typography>
-                          {/* {errors &&
+                          </Grid>
+                        )}
+                      {item.field !== "Harvest" &&
+                        item.field !== "Mortalities" && (
+                          <Grid item xs>
+                            <TextField
+                              label="Stocking Level *"
+                              type="text"
+                              className="form-input"
+                              sx={{ width: "100%" }}
+                              disabled
+                              {...register(
+                                `manager.${idx}.stockingLevel` as const
+                                //   {
+                                //   required: true,
+                                // }
+                              )}
+                            />
+                            <Typography
+                              variant="body2"
+                              color="red"
+                              fontSize={13}
+                              mt={0.5}
+                            ></Typography>
+                            {/* {errors &&
                         errors.manager &&
                         errors.manager[idx] &&
                         errors.manager[idx].stockingLevel &&
@@ -698,9 +702,9 @@ const TransferModal: React.FC<Props> = ({
                             {validationMessage.required}
                           </Typography>
                         )} */}
-                        </Grid>
-                      )}
-                    {/* {idx !== 0 && (
+                          </Grid>
+                        )}
+                      {/* {idx !== 0 && (
                       <Grid item xs>
                         <TextField
                           label=""
@@ -714,74 +718,84 @@ const TransferModal: React.FC<Props> = ({
                         />
                       </Grid>
                     )} */}
+                    </Grid>
+                    <Divider
+                      orientation="vertical"
+                      sx={{
+                        height: "100%",
+                        borderBottom: "2px solid #E6E7E9 !important",
+                        borderRight: "none !important",
+                        width: "100%",
+                        marginLeft: "12px",
+                        paddingBlock: "10px",
+                      }}
+                    />
                   </Grid>
-                  <Divider
-                    orientation="vertical"
-                    sx={{
-                      height: "100%",
-                      borderBottom: "2px solid #E6E7E9 !important",
-                      borderRight: "none !important",
-                      width: "100%",
-                      paddingBlock: "10px",
-                    }}
-                  />
-                </Grid>
-                <Box
-                  display={"flex"}
-                  alignItems={"center"}
-                  gap="2"
-                  margin="auto"
-                  top="60%"
-                >
-                  <Box
-                    display={"flex"}
-                    justifyContent={"center"}
-                    alignItems={"center"}
-                    width={150}
-                    sx={{
-                      visibility: idx === 0 ? "hidden" : "",
-                      cursor: "pointer",
-                      width: {
-                        // lg: 150,
-                        xs: "auto",
-                      },
-                    }}
-                    onClick={() => remove(idx)}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="1.4em"
-                      height="1.4em"
-                      viewBox="0 0 24 24"
-                    >
-                      <g fill="none">
-                        <path d="m12.593 23.258l-.011.002l-.071.035l-.02.004l-.014-.004l-.071-.035q-.016-.005-.024.005l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.017-.018m.265-.113l-.013.002l-.185.093l-.01.01l-.003.011l.018.43l.005.012l.008.007l.201.093q.019.005.029-.008l.004-.014l-.034-.614q-.005-.018-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.614q.001.018.017.024l.015-.002l.201-.093l.01-.008l.004-.011l.017-.43l-.003-.012l-.01-.01z" />
-                        <path
-                          fill="#ff0000"
-                          d="M14.28 2a2 2 0 0 1 1.897 1.368L16.72 5H20a1 1 0 1 1 0 2l-.003.071l-.867 12.143A3 3 0 0 1 16.138 22H7.862a3 3 0 0 1-2.992-2.786L4.003 7.07L4 7a1 1 0 0 1 0-2h3.28l.543-1.632A2 2 0 0 1 9.721 2zm3.717 5H6.003l.862 12.071a1 1 0 0 0 .997.929h8.276a1 1 0 0 0 .997-.929zM10 10a1 1 0 0 1 .993.883L11 11v5a1 1 0 0 1-1.993.117L9 16v-5a1 1 0 0 1 1-1m4 0a1 1 0 0 1 1 1v5a1 1 0 1 1-2 0v-5a1 1 0 0 1 1-1m.28-6H9.72l-.333 1h5.226z"
-                        />
-                      </g>
-                    </svg>
-                  </Box>
 
                   <Box
                     display={"flex"}
-                    justifyContent={"center"}
                     alignItems={"center"}
-                    width={150}
+                    justifyContent={"center"}
+                    position={"relative"}
+                    bottom={"19px"}
                   >
-                    <svg
-                      width="27"
-                      height="24"
-                      viewBox="0 0 27 24"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
+                    <Box
+                      display={"flex"}
+                      justifyContent={"center"}
+                      alignItems={"center"}
+                      width={50}
+                      sx={{
+                        visibility: idx === 0 ? "hidden" : "",
+                        cursor: "pointer",
+                        width: {
+                          // lg: 150,
+                          xs: "auto",
+                        },
+                      }}
+                      onClick={() => remove(idx)}
                     >
-                      <path
-                        d="M26.6667 14.7429C26.6667 19.8472 22.5254 24 17.4353 24H3.75884C3.19213 24 2.73314 23.5397 2.73314 22.9714C2.73314 22.4031 3.19213 21.9429 3.75884 21.9429H17.4353C21.3944 21.9429 24.6153 18.7132 24.6153 14.7429C24.6153 10.7726 21.3945 7.54294 17.4353 7.54294H3.50119L7.22064 11.2728C7.62196 11.6752 7.62196 12.3258 7.22064 12.7282C7.02062 12.9288 6.75777 13.0303 6.49624 13.0303C6.23341 13.0303 5.97056 12.9301 5.77185 12.7282L0.300991 7.24207C-0.10033 6.83963 -0.10033 6.18908 0.300991 5.78664L5.76922 0.301831C6.17054 -0.10061 6.81928 -0.10061 7.2206 0.301831C7.62192 0.704272 7.62192 1.35482 7.2206 1.75726L3.50115 5.48709H17.4353C22.5254 5.48709 26.6666 9.63986 26.6666 14.7442L26.6667 14.7429Z"
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="1.4em"
+                        height="1.4em"
+                        viewBox="0 0 24 24"
+                      >
+                        <g fill="none">
+                          <path d="m12.593 23.258l-.011.002l-.071.035l-.02.004l-.014-.004l-.071-.035q-.016-.005-.024.005l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.017-.018m.265-.113l-.013.002l-.185.093l-.01.01l-.003.011l.018.43l.005.012l.008.007l.201.093q.019.005.029-.008l.004-.014l-.034-.614q-.005-.018-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.614q.001.018.017.024l.015-.002l.201-.093l.01-.008l.004-.011l.017-.43l-.003-.012l-.01-.01z" />
+                          <path
+                            fill="#ff0000"
+                            d="M14.28 2a2 2 0 0 1 1.897 1.368L16.72 5H20a1 1 0 1 1 0 2l-.003.071l-.867 12.143A3 3 0 0 1 16.138 22H7.862a3 3 0 0 1-2.992-2.786L4.003 7.07L4 7a1 1 0 0 1 0-2h3.28l.543-1.632A2 2 0 0 1 9.721 2zm3.717 5H6.003l.862 12.071a1 1 0 0 0 .997.929h8.276a1 1 0 0 0 .997-.929zM10 10a1 1 0 0 1 .993.883L11 11v5a1 1 0 0 1-1.993.117L9 16v-5a1 1 0 0 1 1-1m4 0a1 1 0 0 1 1 1v5a1 1 0 1 1-2 0v-5a1 1 0 0 1 1-1m.28-6H9.72l-.333 1h5.226z"
+                          />
+                        </g>
+                      </svg>
+                    </Box>
+
+                    <Box
+                      display={"flex"}
+                      justifyContent={"center"}
+                      alignItems={"center"}
+                      width={50}
+                    >
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 20 20"
                         fill="red"
-                      />
-                    </svg>
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <g clip-path="url(#clip0_294_115)">
+                          <path
+                            d="M19.7531 12.2857C19.7531 16.5393 16.6855 20 12.915 20H2.78433C2.36454 20 2.02455 19.6164 2.02455 19.1428C2.02455 18.6692 2.36454 18.2857 2.78433 18.2857H12.915C15.8477 18.2857 18.2336 15.5943 18.2336 12.2857C18.2336 8.97717 15.8478 6.28578 12.915 6.28578H2.59347L5.34862 9.394C5.6459 9.72933 5.6459 10.2715 5.34862 10.6068C5.20046 10.774 5.00576 10.8586 4.81203 10.8586C4.61734 10.8586 4.42264 10.7751 4.27544 10.6068L0.222956 6.03506C-0.0743187 5.69969 -0.0743187 5.15757 0.222956 4.8222L4.2735 0.251526C4.57077 -0.0838419 5.05132 -0.0838419 5.34859 0.251526C5.64587 0.586893 5.64587 1.12902 5.34859 1.46438L2.59344 4.57257H12.915C16.6855 4.57257 19.753 8.03322 19.753 12.2868L19.7531 12.2857Z"
+                            fill="red"
+                          />
+                        </g>
+                        <defs>
+                          <clipPath id="clip0_294_115">
+                            <rect width="20" height="20" fill="white" />
+                          </clipPath>
+                        </defs>
+                      </svg>
+                    </Box>
                   </Box>
                 </Box>
               </Box>
@@ -794,7 +808,7 @@ const TransferModal: React.FC<Props> = ({
             alignItems={"flex-end"}
             gap="10px"
             padding={3}
-            marginInline={"20px"}
+            margin={"40px"}
           >
             <Button
               className=""

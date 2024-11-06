@@ -377,6 +377,7 @@ export const farmManagerHead = [
     numeric: false,
     disablePadding: true,
     label: "Production unit",
+   
   },
   {
     id: "Batch number",
