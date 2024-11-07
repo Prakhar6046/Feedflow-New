@@ -31,7 +31,7 @@ export const POST = async (request: NextRequest) => {
       folder: "user_images",
     });
 
-    const organisation = await prisma.user.findUnique({
+    const organisation = await prisma.organisation.findUnique({
       where: { id: Number(organisationId) },
     });
 
