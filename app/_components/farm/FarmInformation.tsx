@@ -91,7 +91,6 @@ const FarmInformation: NextPage<Props> = ({
       setUseAddress(false);
     }
   }, [addressInformation, useAddress]);
-  console.log(addressInformation);
   useEffect(() => {
     if (altitude && lat && lng) {
       setValue("farmAltitude", String(Number(altitude).toFixed(2)));

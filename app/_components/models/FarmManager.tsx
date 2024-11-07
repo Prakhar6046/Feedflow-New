@@ -255,7 +255,6 @@ const TransferModal: React.FC<Props> = ({
     setValue,
     selectedProduction,
   ]);
-  console.log(isEnteredBiomassGreater, isEnteredFishCountGreater);
 
   return (
     <Modal
@@ -399,9 +398,11 @@ const TransferModal: React.FC<Props> = ({
                                   : false
                               }
                               {...register(`manager.${idx}.productionUnit`, {
-                                required: watch(`manager.${idx}.productionUnit`)
-                                  ? false
-                                  : true,
+                                required:
+                                  item.field === "Harvest" ||
+                                  item.field === "Mortalities"
+                                    ? false
+                                    : true,
                               })}
                               value={
                                 watch(`manager.${idx}.productionUnit`) || ""
