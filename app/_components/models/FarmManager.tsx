@@ -64,6 +64,11 @@ const TransferModal: React.FC<Props> = ({
 }) => {
   const router = useRouter();
   const [selectedFarm, setSelectedFarm] = useState<any>(null);
+  const [isEnteredBiomassGreater, setIsEnteredBiomassGreater] =
+    useState<Boolean>(false);
+  const [isEnteredFishCountGreater, setIsEnteredFishCountGreater] =
+    useState<Boolean>(false);
+
   const {
     register,
     setValue,
@@ -100,25 +105,32 @@ const TransferModal: React.FC<Props> = ({
     name: "manager",
   });
   const onSubmit: SubmitHandler<InputTypes> = async (data) => {
-    const payload = {
-      organisationId: selectedProduction.organisationId,
-      data: data.manager,
-    };
+    if (!isEnteredBiomassGreater && !isEnteredFishCountGreater) {
+      const payload = {
+        organisationId: selectedProduction.organisationId,
+        data: data.manager,
+      };
 
-    const response = await fetch("/api/production/mange", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    });
+      const response = await fetch("/api/production/mange", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
 
-    const res = await response.json();
-    if (res.status) {
-      toast.success(res.message);
-      setOpen(false);
-      router.push("/dashboard/production");
-      router.refresh();
+      const res = await response.json();
+      if (res.status) {
+        toast.success(res.message);
+        setOpen(false);
+        router.push("/dashboard/production");
+        router.refresh();
+      }
+    } else {
+      toast.dismiss();
+      toast.error(
+        "Please enter biomass and fish count value less than selected production"
+      );
     }
   };
 
@@ -198,19 +210,23 @@ const TransferModal: React.FC<Props> = ({
           if (currentBiomass > updatedBiomass) {
             toast.dismiss();
             toast.error(`Please enter a value lower than ${updatedBiomass}`);
+            setIsEnteredBiomassGreater(true);
           }
           if (currentCount > updatedCount) {
             toast.dismiss();
             toast.error(`Please enter a value lower than ${updatedCount}`);
+            setIsEnteredFishCountGreater(true);
           }
           // Update biomass if current value is valid
           if (currentBiomass > 0 && updatedBiomass > currentBiomass) {
             updatedBiomass -= currentBiomass;
+            setIsEnteredBiomassGreater(false);
           }
 
           // Update count if current value is valid
           if (currentCount > 0 && updatedCount > currentCount) {
             updatedCount -= currentCount;
+            setIsEnteredFishCountGreater(false);
           }
         }
         const farm = farms
@@ -239,6 +255,7 @@ const TransferModal: React.FC<Props> = ({
     setValue,
     selectedProduction,
   ]);
+  console.log(isEnteredBiomassGreater, isEnteredFishCountGreater);
 
   return (
     <Modal

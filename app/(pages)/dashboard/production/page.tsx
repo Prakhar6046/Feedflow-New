@@ -1,5 +1,5 @@
 import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
-import FarmManagerTable from "@/app/_components/table/FarmManagerTable";
+import ProductionTable from "@/app/_components/table/ProductionTable";
 import { getFarms, getProductions } from "@/app/_lib/action";
 import {
   farmManagerHead,
@@ -44,7 +44,7 @@ export default async function Page({
           { name: "Production", link: "/dashboard/production" },
         ]}
       />
-      <FarmManagerTable
+      <ProductionTable
         tableData={
           user.role !== "MEMBER" ? farmManagerHead : farmManagerHeadMember
         }
