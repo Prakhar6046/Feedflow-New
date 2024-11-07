@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
     const encryptedPassword = bcrypt.hashSync(password, 8);
     const user = await prisma.user.update({
       where: { id: Number(userId) },
-      data: { password: encryptedPassword },
+      data: { password: encryptedPassword, invite: true },
     });
 
     // Return a success response

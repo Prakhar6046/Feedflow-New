@@ -56,7 +56,7 @@ export async function POST(req: NextRequest) {
                   "
                 >
                   <img
-                   src="public/static/img/logo.png"
+                   src="https://i.ibb.co/dKTVMh7/logo.png"
                     alt="Logo"
                     class="logo-img"
                     style="width: 200px; margin-bottom: 20px"

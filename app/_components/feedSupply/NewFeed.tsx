@@ -3204,22 +3204,6 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
                 gap={3}
                 mt={3}
               >
-                <Button
-                  type="submit"
-                  variant="contained"
-                  sx={{
-                    color: "#fff",
-                    background: "#06A19B",
-                    fontWeight: 600,
-                    padding: "6px 16px",
-                    width: "fit-content",
-                    textTransform: "capitalize",
-                    borderRadius: "8px",
-                    border: "1px solid #06A19B",
-                  }}
-                >
-                  {isEditFeed ? "Edit feed" : "Add feed"}
-                </Button>
                 {!isEditFeed && (
                   <>
                     <Button
@@ -3256,6 +3240,22 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
                     </Button> */}
                   </>
                 )}
+                <Button
+                  type="submit"
+                  variant="contained"
+                  sx={{
+                    color: "#fff",
+                    background: "#06A19B",
+                    fontWeight: 600,
+                    padding: "6px 16px",
+                    width: "fit-content",
+                    textTransform: "capitalize",
+                    borderRadius: "8px",
+                    border: "1px solid #06A19B",
+                  }}
+                >
+                  {isEditFeed ? "Edit feed" : "Add feed"}
+                </Button>
               </Box>
             </Box>
           </form>
