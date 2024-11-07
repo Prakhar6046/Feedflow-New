@@ -54,7 +54,6 @@ interface InputTypes {
     stockingLevel?: String;
     stockingDensityKG?: String;
     batchNumber: String;
-    stockingDensityKGAfterCal?: String;
   }[];
 }
 const TransferModal: React.FC<Props> = ({
@@ -100,37 +99,26 @@ const TransferModal: React.FC<Props> = ({
     name: "manager",
   });
   const onSubmit: SubmitHandler<InputTypes> = async (data) => {
-    const updatedData = data.manager.map((production, i) => {
-      if (i !== 0) {
-        return {
-          ...production,
-          stockingDensityKG: production.stockingDensityKGAfterCal,
-        };
-      } else {
-        return production;
-      }
-    });
-    console.log(updatedData);
-
     const payload = {
       organisationId: selectedProduction.organisationId,
-      data: updatedData,
+      data: data.manager,
     };
-    // const response = await fetch("/api/production/mange", {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify(payload),
-    // });
 
-    // const res = await response.json();
-    // if (res.status) {
-    //   toast.success(res.message);
-    //   setOpen(false);
-    //   router.push("/dashboard/production");
-    //   router.refresh();
-    // }
+    const response = await fetch("/api/production/mange", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    const res = await response.json();
+    if (res.status) {
+      toast.success(res.message);
+      setOpen(false);
+      router.push("/dashboard/production");
+      router.refresh();
+    }
   };
 
   const handleClose = () => setOpen(false);
@@ -217,20 +205,17 @@ const TransferModal: React.FC<Props> = ({
             updatedCount -= currentCount;
           }
         }
-        const farm = farms.find((f) => f.id === field.fishFarm);
-        if (farm && farm.productionUnits && farm?.productionUnits[0].capacity) {
+        const farm = farms
+          .find((f) => f.id === selectedFarm)
+          ?.productionUnits?.find((unit) => unit.id === field.productionUnit);
+        if (farm && farm.capacity) {
           setValue(
             `manager.${index}.stockingDensityNM`,
-            String(
-              Number(field.count) / Number(farm?.productionUnits[0]?.capacity)
-            )
+            String(Number(field.count) / Number(farm?.capacity))
           );
           setValue(
-            `manager.${index}.stockingDensityKGAfterCal`,
-            String(
-              Number(field.stockingDensityKG) /
-                Number(farm?.productionUnits[0]?.capacity)
-            )
+            `manager.${index}.stockingDensityKG`,
+            String(Number(field.biomass) / Number(farm?.capacity))
           );
         }
       });

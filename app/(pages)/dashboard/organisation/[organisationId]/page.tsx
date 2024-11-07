@@ -794,6 +794,13 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
                         label="Role *"
+                        sx={{
+                          width: {
+                            lg: "100%",
+                            md: "48.4%",
+                            xs: "100%",
+                          },
+                        }}
                         {...register(`contacts.${index}.role` as const, {
                           required: watch(`contacts.${index}.role`)
                             ? false
