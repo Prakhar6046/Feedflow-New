@@ -69,6 +69,7 @@ const TransferModal: React.FC<Props> = ({
     setValue,
     formState: { errors },
     watch,
+    reset,
     getValues,
     handleSubmit,
     control,
@@ -121,7 +122,14 @@ const TransferModal: React.FC<Props> = ({
     }
   };
 
-  const handleClose = () => setOpen(false);
+  const handleClose = () => {
+    const firstObject = getValues("manager")[0];
+    // Reset the form and keep the first object intact
+    reset({
+      manager: [firstObject], // Keep only the first object
+    });
+    setOpen(false);
+  };
   const [anchorEl, setAnchorEl] = useState(null);
   const openAnchor = Boolean(anchorEl);
   const handleClick = (event: any) => {
@@ -132,7 +140,7 @@ const TransferModal: React.FC<Props> = ({
       append({
         id: 0,
         fishFarm: selectedProduction.fishFarmId,
-        productionUnit: selectedProduction.productionUnitId,
+        productionUnit: "",
         biomass: "",
         count: "",
         meanWeight: "",
@@ -678,8 +686,24 @@ const TransferModal: React.FC<Props> = ({
                               label={`Stocking Density(kg/${"m\u00B3"}) *`}
                               type="text"
                               className="form-input"
-                              sx={{ width: "100%" }}
                               disabled={idx === 0 ? true : false}
+                              InputLabelProps={{
+                                shrink: !!watch(
+                                  `manager.${idx}.stockingDensityKG`
+                                ),
+                              }}
+                              sx={{
+                                width: "100%",
+                                "& .MuiInputLabel-root": {
+                                  transition: "all 0.2s ease",
+                                },
+                                "&:focus-within .MuiInputLabel-root": {
+                                  transform: "translate(10px, -9px)", // Moves the label up when focused
+                                  fontSize: "0.75rem",
+                                  color: "primary.main",
+                                  backgroundColor: "#fff",
+                                },
+                              }}
                               {...register(
                                 `manager.${idx}.stockingDensityKG` as const,
                                 {
@@ -733,7 +757,6 @@ const TransferModal: React.FC<Props> = ({
                               label={`Stocking Density(n/${"m\u00B3"}) *`}
                               type="text"
                               className="form-input"
-                              sx={{ width: "100%" }}
                               disabled={idx === 0 ? true : false}
                               {...register(
                                 `manager.${idx}.stockingDensityNM` as const,
@@ -742,6 +765,23 @@ const TransferModal: React.FC<Props> = ({
                                   pattern: validationPattern.numbersWithDot,
                                 }
                               )}
+                              InputLabelProps={{
+                                shrink: !!watch(
+                                  `manager.${idx}.stockingDensityNM`
+                                ),
+                              }}
+                              sx={{
+                                width: "100%",
+                                "& .MuiInputLabel-root": {
+                                  transition: "all 0.2s ease",
+                                },
+                                "&:focus-within .MuiInputLabel-root": {
+                                  transform: "translate(10px, -9px)", // Moves the label up when focused
+                                  fontSize: "0.75rem",
+                                  color: "primary.main",
+                                  backgroundColor: "#fff",
+                                },
+                              }}
                             />
                             <Typography
                               variant="body2"
@@ -788,14 +828,14 @@ const TransferModal: React.FC<Props> = ({
                               label="Stocking Level *"
                               type="text"
                               className="form-input"
-                              disabled={idx === 0 ? true : false}
+                              disabled
                               sx={{ width: "100%" }}
                               {...register(
-                                `manager.${idx}.stockingLevel` as const,
-                                {
-                                  required: true,
-                                  pattern: validationPattern.numbersWithDot,
-                                }
+                                `manager.${idx}.stockingLevel` as const
+                                // {
+                                //   required: true,
+                                //   pattern: validationPattern.numbersWithDot,
+                                // }
                               )}
                             />
                             <Typography
@@ -804,7 +844,7 @@ const TransferModal: React.FC<Props> = ({
                               fontSize={13}
                               mt={0.5}
                             ></Typography>
-                            {errors &&
+                            {/* {errors &&
                               errors.manager &&
                               errors.manager[idx] &&
                               errors.manager[idx].stockingLevel &&
@@ -833,7 +873,7 @@ const TransferModal: React.FC<Props> = ({
                                 >
                                   {validationMessage.OnlyNumbersWithDot}
                                 </Typography>
-                              )}
+                              )} */}
                           </Grid>
                         )}
                     </Grid>

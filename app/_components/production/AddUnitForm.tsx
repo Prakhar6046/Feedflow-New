@@ -60,6 +60,7 @@ function AddUnitForm({ farms }: Props) {
       fishFarm,
       productionUnit,
       age,
+      stockingLevel,
       // stockingDensityKG,
       // stockingDensityNM,
       ...restData
@@ -74,6 +75,7 @@ function AddUnitForm({ farms }: Props) {
         fishFarmId: fishFarm,
         productionUnitId: productionUnit,
         age: getDayMonthDifference(data.age),
+        stockingLevel: "",
         stockingDensityKG: String(
           Number(data.biomass) / Number(farm?.capacity)
         ),
@@ -600,10 +602,11 @@ function AddUnitForm({ farms }: Props) {
                     label="% Stocked *"
                     type="text"
                     className="form-input"
+                    disabled
                     // focused={altitude ? true : false}
                     {...register("stockingLevel", {
-                      required: true,
-                      pattern: validationPattern.numbersWithDot,
+                      // required: true,
+                      // pattern: validationPattern.numbersWithDot,
                     })}
                     sx={{
                       width: "100%",
@@ -627,7 +630,7 @@ function AddUnitForm({ farms }: Props) {
                   >
                     %
                   </Typography>
-                  {errors &&
+                  {/* {errors &&
                     errors.stockingLevel &&
                     errors.stockingLevel.type === "required" && (
                       <Typography
@@ -650,7 +653,7 @@ function AddUnitForm({ farms }: Props) {
                       >
                         {validationMessage.OnlyNumbersWithDot}
                       </Typography>
-                    )}
+                    )} */}
                 </Box>
               </Box>
             </Grid>
