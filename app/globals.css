@@ -428,13 +428,12 @@ body {
   }
 } */
 
-@media only screen and (min-width: 1200px) {
-  .modal-positioning > div:nth-child(3) {
-    width: 1200px !important;
-    position: relative;
-    top: 50%;
-    margin-block: auto;
-  }
+.modal-positioning > div:nth-child(3) {
+  width: 90% !important;
+  position: relative;
+  top: 50%;
+  margin-block: auto;
+  height: 90%;
 }
 
 .sidebar-icon {
