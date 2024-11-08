@@ -333,7 +333,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                       >
                         <FormControl className="form-input" fullWidth>
                           <InputLabel id="demo-simple-select-label">
-                            Production Unit Type *
+                            Production Unit Type
                           </InputLabel>
                           <Controller
                             name={`productionUnits.${index}.type`} // Dynamic name for production unit type
@@ -343,7 +343,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                               <Select
                                 labelId={`demo-simple-select-label-${index}`}
                                 id={`demo-simple-select-${index}`}
-                                label="Production Unit Type *"
+                                label="Production Unit Type"
                                 {...field} // Spread the field props for value and onChange
                                 sx={{
                                   minWidth: "200px",

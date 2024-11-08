@@ -11,17 +11,17 @@ function FeedStore({ setActiveStep, steps }: Iprops) {
         <Box>
           <Box
             display={"flex"}
-            alignItems={"center"}
+            alignItems={"flex-end"}
             mt={3}
             gap={2}
             flexWrap={"wrap"}
-            justifyContent={"end"}
+            justifyContent={"flex-end"}
             width={"100%"}
           >
             <Box
               display={"flex"}
               justifyContent={"flex-end"}
-              alignItems={"center"}
+              alignItems={"flex-end"}
               gap={3}
             >
               <Button

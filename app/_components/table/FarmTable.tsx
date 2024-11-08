@@ -252,14 +252,17 @@ export default function FarmTable({ farms }: Props) {
                     </TableCell>
 
                     <TableCell
-                      align="center"
                       sx={{
                         borderBottomColor: "#F5F6F8",
                         borderBottomWidth: 2,
                         color: "#555555",
                         fontWeight: 500,
-                        pl: 0,
+                        justifyContent: "start",
+                        display: "flex",
+                        alignItems: "center",
+                        paddingRight: "auto",
                       }}
+                      className="cursor-pointer"
                     >
                       {farm?.productionUnits.length ?? ""}
                     </TableCell>

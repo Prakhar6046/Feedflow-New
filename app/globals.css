@@ -269,6 +269,16 @@ body {
 
 .form-input > label {
   color: #979797 !important;
+  min-width: 1200px !important;
+  width: 1000px !important;
+}
+
+.user-info .form-input > label {
+  min-width: 1200px !important;
+  width: 1000px !important;
+}
+
+.css-1q964xs-MuiFormLabel-root-MuiInputLabel-root {
 }
 
 .cursor-pointer {
