@@ -296,14 +296,15 @@ export default function FishSupplyTable({ tableData, fishSupply }: Props) {
                       }}
                     >
                       <Box display={"flex"} alignItems={"center"} gap={1.5}>
-                        {`${fish.hatchingDate}-${
+                        {fish?.batchNumber ?? ""}
+                        {/* {`${fish.hatchingDate}-${
                           fish.creator?.hatchery[0]?.code
                         }-${
                           fish.spawningNumber
                         }-${fish?.creator?.hatchery[0]?.fishSpecie.slice(
                           0,
                           1
-                        )}`}
+                        )}`} */}
                       </Box>
                     </TableCell>
                     <TableCell

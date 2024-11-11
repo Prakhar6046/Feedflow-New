@@ -216,6 +216,7 @@ model Hatchery {
 
 model FishSupply {
   id               Int           @id @default(autoincrement())
+  batchNumber      String        @default("BB1")
   organisation     Int
   hatchingDate     String
   spawningDate     String
@@ -244,15 +245,15 @@ model production {
   fishFarmId        String
   farm              Farm?           @relation(fields: [fishFarmId], references: [id])
   productionUnitId  String
-  biomass           String
-  fishCount         String
-  batchNumber       String
-  age               String
-  meanLength        String
-  meanWeight        String
-  stockingDensityKG String
-  stockingDensityNM String
-  stockingLevel     String
+  biomass           String?
+  fishCount         String?
+  batchNumber       String?
+  age               String?
+  meanLength        String?
+  meanWeight        String?
+  stockingDensityKG String?
+  stockingDensityNM String?
+  stockingLevel     String?
   createdBy         Int? // Optional field, nullable foreign key
   updatedBy         String?
   createdAt         DateTime        @default(now())

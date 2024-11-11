@@ -55,7 +55,14 @@ export const GET = async (request: NextRequest) => {
 export const POST = async (request: NextRequest) => {
   try {
     const body = await request.json();
-
+    // batchNumber: `${data.hatchingDate}-${
+    //   data.creator?.hatchery[0]?.code
+    // }-${
+    //   data.spawningNumber
+    // }-${fish?.creator?.hatchery[0]?.fishSpecie.slice(
+    //   0,
+    //   1
+    // )}`,
     if (!body.organisation || !body.fishFarmId) {
       return new NextResponse(
         JSON.stringify({
@@ -70,6 +77,7 @@ export const POST = async (request: NextRequest) => {
 
     const isHatcheryExist = await prisma.organisation.findUnique({
       where: { id: body.organisation },
+      include: { hatchery: true },
     });
     if (!isHatcheryExist) {
       return new NextResponse(
@@ -104,6 +112,9 @@ export const POST = async (request: NextRequest) => {
       createdBy: isHatcheryExist.id,
       organisationId: Number(body.organisationId),
       fishFarm: isFarmExist.name,
+      batchNumber: `${body.hatchingDate}-${isHatcheryExist.hatchery[0].code}-${
+        body.spawningNumber
+      }-${isHatcheryExist.hatchery[0]?.fishSpecie.slice(0, 1)}`,
     };
     const newFishSupply = await prisma.fishSupply.create({
       data: fishSupplyData,

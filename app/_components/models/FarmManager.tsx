@@ -168,6 +168,7 @@ const TransferModal: React.FC<Props> = ({
       setAnchorEl(null);
     }
   };
+
   useEffect(() => {
     if (selectedProduction) {
       const data = [
@@ -189,6 +190,7 @@ const TransferModal: React.FC<Props> = ({
       setSelectedFarm(selectedProduction.fishFarmId); // Set the selected farm when manager is selected
     }
   }, [selectedProduction, setValue]);
+
   const watchedFields = watch("manager");
 
   useEffect(() => {
@@ -318,8 +320,22 @@ const TransferModal: React.FC<Props> = ({
                   }}
                 >
                   <Grid container spacing={2} className="grid-margin">
-                    <Grid container spacing={2} className="grid-margin">
-                      <Grid item lg={2} md={6} xs={12}>
+                    <Grid
+                      container
+                      spacing={2}
+                      className="grid-margin"
+                      sx={{
+                        flexWrap: "nowrap",
+                      }}
+                    >
+                      <Grid
+                        item
+                        // xs
+                        sx={{
+                          minWidth: 120,
+                          width: "100%",
+                        }}
+                      >
                         <Box mb={2} width={"100%"}>
                           <FormControl fullWidth className="form-input">
                             <InputLabel id="">Fish Farm *</InputLabel>
@@ -382,7 +398,14 @@ const TransferModal: React.FC<Props> = ({
                           </FormControl>
                         </Box>
                       </Grid>
-                      <Grid item lg={2} md={6} xs={12}>
+                      <Grid
+                        item
+                        // xs
+                        sx={{
+                          minWidth: 120,
+                          width: "100%",
+                        }}
+                      >
                         <Box mb={2} width={"100%"}>
                           <FormControl fullWidth className="form-input">
                             <InputLabel id="">Production Unit *</InputLabel>
@@ -470,7 +493,14 @@ const TransferModal: React.FC<Props> = ({
                           </FormControl>
                         </Box>
                       </Grid>
-                      <Grid item lg={2} md={6} xs={12}>
+                      <Grid
+                        item
+                        // xs
+                        sx={{
+                          minWidth: 120,
+                          width: "100%",
+                        }}
+                      >
                         <TextField
                           label="Batch Number *"
                           type="text"
@@ -507,7 +537,14 @@ const TransferModal: React.FC<Props> = ({
                             </Typography>
                           )}
                       </Grid>
-                      <Grid item lg={2} md={6} xs={12}>
+                      <Grid
+                        item
+                        // xs
+                        sx={{
+                          minWidth: 120,
+                          width: "100%",
+                        }}
+                      >
                         <TextField
                           label="Biomass (kg) *"
                           type="text"
@@ -554,7 +591,14 @@ const TransferModal: React.FC<Props> = ({
                             </Typography>
                           )}
                       </Grid>
-                      <Grid item lg={2} md={6} xs={12}>
+                      <Grid
+                        item
+                        // xs
+                        sx={{
+                          minWidth: 120,
+                          width: "100%",
+                        }}
+                      >
                         <TextField
                           label="Fish Count *"
                           type="text"
@@ -601,7 +645,14 @@ const TransferModal: React.FC<Props> = ({
                             </Typography>
                           )}
                       </Grid>
-                      <Grid item lg={2} md={6} xs={12}>
+                      <Grid
+                        item
+                        // xs
+                        sx={{
+                          minWidth: 120,
+                          width: "100%",
+                        }}
+                      >
                         <TextField
                           label="Mean Weight *"
                           type="text"
@@ -649,7 +700,14 @@ const TransferModal: React.FC<Props> = ({
                             </Typography>
                           )}
                       </Grid>
-                      <Grid item lg={2} md={6} xs={12}>
+                      <Grid
+                        item
+                        // xs
+                        sx={{
+                          minWidth: 120,
+                          width: "100%",
+                        }}
+                      >
                         <TextField
                           label="Mean Length *"
                           type="text"
@@ -699,7 +757,14 @@ const TransferModal: React.FC<Props> = ({
                       </Grid>{" "}
                       {item.field !== "Harvest" &&
                         item.field !== "Mortalities" && (
-                          <Grid item lg={2} md={6} xs={12}>
+                          <Grid
+                            item
+                            // xs
+                            sx={{
+                              minWidth: 120,
+                              width: "100%",
+                            }}
+                          >
                             <TextField
                               label={`Stocking Density(kg/${"m\u00B3"}) *`}
                               type="text"
@@ -770,7 +835,14 @@ const TransferModal: React.FC<Props> = ({
                         )}
                       {item.field !== "Harvest" &&
                         item.field !== "Mortalities" && (
-                          <Grid item lg={2} md={6} xs={12}>
+                          <Grid
+                            item
+                            // xs
+                            sx={{
+                              minWidth: 120,
+                              width: "100%",
+                            }}
+                          >
                             <TextField
                               label={`Stocking Density(n/${"m\u00B3"}) *`}
                               type="text"
@@ -841,7 +913,14 @@ const TransferModal: React.FC<Props> = ({
                         )}
                       {item.field !== "Harvest" &&
                         item.field !== "Mortalities" && (
-                          <Grid item lg={2} md={6} xs={12}>
+                          <Grid
+                            item
+                            // xs
+                            sx={{
+                              minWidth: 120,
+                              width: "100%",
+                            }}
+                          >
                             <TextField
                               label="Stocking Level *"
                               type="text"
@@ -862,53 +941,10 @@ const TransferModal: React.FC<Props> = ({
                               fontSize={13}
                               mt={0.5}
                             ></Typography>
-                            {/* {errors &&
-                              errors.manager &&
-                              errors.manager[idx] &&
-                              errors.manager[idx].stockingLevel &&
-                              errors.manager[idx].stockingLevel.type ===
-                                "required" && (
-                                <Typography
-                                  variant="body2"
-                                  color="red"
-                                  fontSize={13}
-                                  mt={0.5}
-                                >
-                                  {validationMessage.required}
-                                </Typography>
-                              )}
-                            {errors &&
-                              errors.manager &&
-                              errors.manager[idx] &&
-                              errors.manager[idx].stockingLevel &&
-                              errors.manager[idx].stockingLevel.type ===
-                                "pattern" && (
-                                <Typography
-                                  variant="body2"
-                                  color="red"
-                                  fontSize={13}
-                                  mt={0.5}
-                                >
-                                  {validationMessage.OnlyNumbersWithDot}
-                                </Typography>
-                              )} */}
                           </Grid>
                         )}
                     </Grid>
-                    {/* {idx !== 0 && (
-                      <Grid item xs>
-                        <TextField
-                          label=""
-                          type="text"
-                          className="form-input"
-                          sx={{ width: "100%" }}
-                          InputProps={{ readOnly: true }}
-                          {...register(`manager.${idx}.field` as const, {
-                            required: true,
-                          })}
-                        />
-                      </Grid>
-                    )} */}
+
                     <Divider
                       orientation="vertical"
                       sx={{
@@ -959,33 +995,6 @@ const TransferModal: React.FC<Props> = ({
                         </g>
                       </svg>
                     </Box>
-
-                    {/* <Box
-                      display={"flex"}
-                      justifyContent={"center"}
-                      alignItems={"center"}
-                      width={50}
-                    >
-                      <svg
-                        width="20"
-                        height="20"
-                        viewBox="0 0 20 20"
-                        fill="red"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <g clip-path="url(#clip0_294_115)">
-                          <path
-                            d="M19.7531 12.2857C19.7531 16.5393 16.6855 20 12.915 20H2.78433C2.36454 20 2.02455 19.6164 2.02455 19.1428C2.02455 18.6692 2.36454 18.2857 2.78433 18.2857H12.915C15.8477 18.2857 18.2336 15.5943 18.2336 12.2857C18.2336 8.97717 15.8478 6.28578 12.915 6.28578H2.59347L5.34862 9.394C5.6459 9.72933 5.6459 10.2715 5.34862 10.6068C5.20046 10.774 5.00576 10.8586 4.81203 10.8586C4.61734 10.8586 4.42264 10.7751 4.27544 10.6068L0.222956 6.03506C-0.0743187 5.69969 -0.0743187 5.15757 0.222956 4.8222L4.2735 0.251526C4.57077 -0.0838419 5.05132 -0.0838419 5.34859 0.251526C5.64587 0.586893 5.64587 1.12902 5.34859 1.46438L2.59344 4.57257H12.915C16.6855 4.57257 19.753 8.03322 19.753 12.2868L19.7531 12.2857Z"
-                            fill="red"
-                          />
-                        </g>
-                        <defs>
-                          <clipPath id="clip0_294_115">
-                            <rect width="20" height="20" fill="white" />
-                          </clipPath>
-                        </defs>
-                      </svg>
-                    </Box> */}
                   </Box>
                 </Box>
               </Box>

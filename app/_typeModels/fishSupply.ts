@@ -3,6 +3,7 @@ import { Dayjs } from "dayjs";
 export interface FishSupply {
   id: Number;
   organisation: Number;
+  batchNumber: String;
   hatchingDate: Dayjs | any;
   spawningDate: Dayjs | any;
   spawningNumber: Number;
