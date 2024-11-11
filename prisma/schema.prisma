@@ -235,6 +235,7 @@ model FishSupply {
   creator          Organisation? @relation("fishSupplyCreator", fields: [createdBy], references: [id])
   organisationId   Int?
   organisationData Organisation? @relation(fields: [organisationId], references: [id])
+  production       production[]
 
   @@index([createdAt])
   @@index([updatedAt])
@@ -247,7 +248,7 @@ model production {
   productionUnitId  String
   biomass           String?
   fishCount         String?
-  batchNumber       String?
+  batchNumberId     Int?
   age               String?
   meanLength        String?
   meanWeight        String?
@@ -261,6 +262,7 @@ model production {
   organisationId    Int?
   organisation      Organisation?   @relation(fields: [organisationId], references: [id], onDelete: SetNull)
   productionUnit    ProductionUnit? @relation(fields: [productionUnitId], references: [id])
+  fishSupply        FishSupply?     @relation(fields: [batchNumberId], references: [id])
 
   @@index([createdAt])
   @@index([updatedAt])

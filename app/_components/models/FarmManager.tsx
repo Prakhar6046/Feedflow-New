@@ -64,6 +64,7 @@ const TransferModal: React.FC<Props> = ({
 }) => {
   const router = useRouter();
   const [selectedFarm, setSelectedFarm] = useState<any>(null);
+  const [isStockAdded, setIsStockAdded] = useState<boolean>(false);
   const [isEnteredBiomassGreater, setIsEnteredBiomassGreater] =
     useState<Boolean>(false);
   const [isEnteredFishCountGreater, setIsEnteredFishCountGreater] =
@@ -100,10 +101,12 @@ const TransferModal: React.FC<Props> = ({
       ],
     },
   });
+
   const { fields, append, remove } = useFieldArray({
     control,
     name: "manager",
   });
+
   const onSubmit: SubmitHandler<InputTypes> = async (data) => {
     if (!isEnteredBiomassGreater && !isEnteredFishCountGreater) {
       const payload = {
@@ -141,6 +144,7 @@ const TransferModal: React.FC<Props> = ({
       manager: [firstObject], // Keep only the first object
     });
     setOpen(false);
+    setIsStockAdded(false);
   };
   const [anchorEl, setAnchorEl] = useState(null);
   const openAnchor = Boolean(anchorEl);
@@ -168,6 +172,19 @@ const TransferModal: React.FC<Props> = ({
       setAnchorEl(null);
     }
   };
+  const handleStock = () => {
+    setIsStockAdded(true);
+
+    setValue(`manager.0.biomass`, "");
+    setValue(`manager.0.count`, "");
+    setValue(`manager.0.meanWeight`, "");
+    setValue(`manager.0.meanLength`, "");
+    setValue(`manager.0.field`, "");
+    setValue(`manager.0.stockingDensityNM`, "");
+    setValue(`manager.0.stockingLevel`, "");
+    setValue(`manager.0.stockingDensityKG`, "");
+    setValue(`manager.0.batchNumber`, "");
+  };
 
   useEffect(() => {
     if (selectedProduction) {
@@ -192,6 +209,8 @@ const TransferModal: React.FC<Props> = ({
   }, [selectedProduction, setValue]);
 
   const watchedFields = watch("manager");
+  console.log(watchedFields);
+  console.log(isStockAdded);
 
   useEffect(() => {
     if (selectedProduction) {
@@ -434,14 +453,14 @@ const TransferModal: React.FC<Props> = ({
                               {(() => {
                                 let selectedFarm;
                                 if (idx === 0) {
-                                  selectedFarm = farms.find(
+                                  selectedFarm = farms?.find(
                                     (farm) =>
                                       farm.id ===
                                       watch(`manager.${idx}.fishFarm`)
                                   )?.productionUnits;
                                 } else {
                                   selectedFarm = farms
-                                    .find(
+                                    ?.find(
                                       (farm) =>
                                         farm.id ===
                                         watch(`manager.${idx}.fishFarm`)
@@ -507,10 +526,12 @@ const TransferModal: React.FC<Props> = ({
                           className="form-input"
                           sx={{ width: "100%" }}
                           disabled={
-                            item.field === "Harvest" ||
-                            item.field === "Mortalities" ||
-                            idx === 0
-                              ? true
+                            !isStockAdded
+                              ? item.field === "Harvest" ||
+                                item.field === "Mortalities" ||
+                                idx === 0
+                                ? true
+                                : false
                               : false
                           }
                           {...register(`manager.${idx}.batchNumber`, {
@@ -549,7 +570,9 @@ const TransferModal: React.FC<Props> = ({
                           label="Biomass (kg) *"
                           type="text"
                           className="form-input"
-                          disabled={idx === 0 ? true : false}
+                          disabled={
+                            !isStockAdded ? (idx === 0 ? true : false) : false
+                          }
                           sx={{ width: "100%" }}
                           {...register(`manager.${idx}.biomass`, {
                             required: true,
@@ -604,7 +627,9 @@ const TransferModal: React.FC<Props> = ({
                           type="text"
                           className="form-input"
                           sx={{ width: "100%" }}
-                          disabled={idx === 0 ? true : false}
+                          disabled={
+                            !isStockAdded ? (idx === 0 ? true : false) : false
+                          }
                           {...register(`manager.${idx}.count`, {
                             required: true,
                             pattern: validationPattern.numbersWithDot,
@@ -658,7 +683,9 @@ const TransferModal: React.FC<Props> = ({
                           type="text"
                           className="form-input"
                           sx={{ width: "100%" }}
-                          disabled={idx === 0 ? true : false}
+                          disabled={
+                            !isStockAdded ? (idx === 0 ? true : false) : false
+                          }
                           {...register(`manager.${idx}.meanWeight`, {
                             required: true,
                             pattern: validationPattern.numbersWithDot,
@@ -713,7 +740,9 @@ const TransferModal: React.FC<Props> = ({
                           type="text"
                           className="form-input"
                           sx={{ width: "100%" }}
-                          disabled={idx === 0 ? true : false}
+                          disabled={
+                            !isStockAdded ? (idx === 0 ? true : false) : false
+                          }
                           {...register(`manager.${idx}.meanLength` as const, {
                             required: true,
                             pattern: validationPattern.numbersWithDot,
@@ -769,7 +798,13 @@ const TransferModal: React.FC<Props> = ({
                               label={`Stocking Density(kg/${"m\u00B3"}) *`}
                               type="text"
                               className="form-input"
-                              disabled={idx === 0 ? true : false}
+                              disabled={
+                                !isStockAdded
+                                  ? idx === 0
+                                    ? true
+                                    : false
+                                  : false
+                              }
                               InputLabelProps={{
                                 shrink: !!watch(
                                   `manager.${idx}.stockingDensityKG`
@@ -847,7 +882,13 @@ const TransferModal: React.FC<Props> = ({
                               label={`Stocking Density(n/${"m\u00B3"}) *`}
                               type="text"
                               className="form-input"
-                              disabled={idx === 0 ? true : false}
+                              disabled={
+                                !isStockAdded
+                                  ? idx === 0
+                                    ? true
+                                    : false
+                                  : false
+                              }
                               {...register(
                                 `manager.${idx}.stockingDensityNM` as const,
                                 {
@@ -1009,6 +1050,26 @@ const TransferModal: React.FC<Props> = ({
             padding={3}
             margin={"40px"}
           >
+            <Button
+              className=""
+              variant="contained"
+              sx={{
+                background: "#06A19B",
+                fontWeight: "bold",
+                padding: "8px 20px",
+                width: {
+                  xs: "50%",
+                  lg: "fit-content",
+                },
+                textTransform: "capitalize",
+                borderRadius: "12px",
+
+                marginBlock: "10px",
+              }}
+              onClick={handleStock}
+            >
+              Add Stock
+            </Button>
             <Button
               className=""
               type="button"

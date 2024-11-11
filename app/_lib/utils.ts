@@ -83,7 +83,7 @@ export function getDayMonthDifference(targetDate: any) {
 }
 
 export const productionMangeFields = [
-  "Stock",
+  // "Stock",
   "Re-Stock",
   "Transfer",
   "Harvest",
