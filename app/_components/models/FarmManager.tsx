@@ -286,57 +286,54 @@ const TransferModal: React.FC<Props> = ({
               <Box paddingInline={4} key={item.id}>
                 {idx !== 0 && (
                   <Box>
-                    <Button
-                      id=""
-                      className=""
-                      type="button"
-                      variant="contained"
-                      sx={{
-                        background: "#06A19B",
-                        fontWeight: "bold",
-                        padding: "8px 20px",
-                        width: {
-                          xs: "50%",
-                          lg: "fit-content",
-                        },
-                        textTransform: "capitalize",
-                        borderRadius: "20px",
-                        marginLeft: "12px !important",
-                        marginBottom: "15px",
-                      }}
+                    <Typography
+                      variant="body1"
+                      fontWeight={600}
+                      my={2}
+                      mx={1.5}
                     >
                       {getValues(`manager.${idx}.field`)}
-                    </Button>
+                    </Typography>
                   </Box>
                 )}
+
+
                 <Box
                   sx={{
                     display: "flex",
                     alignItems: "center",
-                    justifyContent: "center",
+                    justifyContent: "space-between",
                     height: "100%",
                     position: "relative",
                     bottom: "10px",
+                    gap: 1.5
                   }}
                 >
-                  <Grid container spacing={2} className="grid-margin">
+                  <Stack sx={{
+                    overflowY: {
+                      lg: "visible",
+                      xs: "auto",
+                    },
+                    width: "97%",
+                  }}>
                     <Grid
                       container
                       spacing={2}
                       className="grid-margin"
+                      // bgcolor={"red"}
                       sx={{
                         flexWrap: "nowrap",
                       }}
                     >
                       <Grid
                         item
-                        // xs
+                        xs
                         sx={{
-                          minWidth: 120,
-                          width: "100%",
+
+                          width: "fit-content", minWidth: 130
                         }}
                       >
-                        <Box mb={2} width={"100%"}>
+                        <Box width={"100%"}>
                           <FormControl fullWidth className="form-input">
                             <InputLabel id="">Fish Farm *</InputLabel>
                             <Select
@@ -346,8 +343,8 @@ const TransferModal: React.FC<Props> = ({
                               label="Fish Farm*"
                               disabled={
                                 item.field === "Harvest" ||
-                                item.field === "Mortalities" ||
-                                idx === 0
+                                  item.field === "Mortalities" ||
+                                  idx === 0
                                   ? true
                                   : false
                               }
@@ -379,7 +376,7 @@ const TransferModal: React.FC<Props> = ({
                               errors?.manager[idx] &&
                               errors?.manager[idx].fishFarm &&
                               errors?.manager[idx].fishFarm.type ===
-                                "required" && (
+                              "required" && (
                                 <Typography
                                   variant="body2"
                                   color="red"
@@ -399,14 +396,14 @@ const TransferModal: React.FC<Props> = ({
                         </Box>
                       </Grid>
                       <Grid
+                        xs
                         item
-                        // xs
                         sx={{
-                          minWidth: 120,
-                          width: "100%",
+
+                          width: "fit-content", minWidth: 130
                         }}
                       >
-                        <Box mb={2} width={"100%"}>
+                        <Box width={"100%"}>
                           <FormControl fullWidth className="form-input">
                             <InputLabel id="">Production Unit *</InputLabel>
                             <Select
@@ -415,15 +412,15 @@ const TransferModal: React.FC<Props> = ({
                               label="Production Unit*"
                               disabled={
                                 item.field === "Harvest" ||
-                                item.field === "Mortalities" ||
-                                idx === 0
+                                  item.field === "Mortalities" ||
+                                  idx === 0
                                   ? true
                                   : false
                               }
                               {...register(`manager.${idx}.productionUnit`, {
                                 required:
                                   item.field === "Harvest" ||
-                                  item.field === "Mortalities"
+                                    item.field === "Mortalities"
                                     ? false
                                     : true,
                               })}
@@ -434,7 +431,7 @@ const TransferModal: React.FC<Props> = ({
                               {(() => {
                                 let selectedFarm;
                                 if (idx === 0) {
-                                  selectedFarm = farms.find(
+                                  selectedFarm = farms?.find(
                                     (farm) =>
                                       farm.id ===
                                       watch(`manager.${idx}.fishFarm`)
@@ -474,7 +471,7 @@ const TransferModal: React.FC<Props> = ({
                               errors?.manager[idx] &&
                               errors?.manager[idx].productionUnit &&
                               errors?.manager[idx].productionUnit.type ===
-                                "required" && (
+                              "required" && (
                                 <Typography
                                   variant="body2"
                                   color="red"
@@ -494,11 +491,11 @@ const TransferModal: React.FC<Props> = ({
                         </Box>
                       </Grid>
                       <Grid
+                        xs
                         item
-                        // xs
                         sx={{
-                          minWidth: 120,
-                          width: "100%",
+
+                          width: "fit-content", minWidth: 130
                         }}
                       >
                         <TextField
@@ -508,8 +505,8 @@ const TransferModal: React.FC<Props> = ({
                           sx={{ width: "100%" }}
                           disabled={
                             item.field === "Harvest" ||
-                            item.field === "Mortalities" ||
-                            idx === 0
+                              item.field === "Mortalities" ||
+                              idx === 0
                               ? true
                               : false
                           }
@@ -538,15 +535,15 @@ const TransferModal: React.FC<Props> = ({
                           )}
                       </Grid>
                       <Grid
+                        xs
                         item
-                        // xs
                         sx={{
-                          minWidth: 120,
-                          width: "100%",
+
+                          width: "fit-content", minWidth: 130
                         }}
                       >
                         <TextField
-                          label="Biomass (kg) *"
+                          label="Biomass"
                           type="text"
                           className="form-input"
                           disabled={idx === 0 ? true : false}
@@ -592,11 +589,11 @@ const TransferModal: React.FC<Props> = ({
                           )}
                       </Grid>
                       <Grid
+                        xs
                         item
-                        // xs
                         sx={{
-                          minWidth: 120,
-                          width: "100%",
+
+                          width: "fit-content", minWidth: 130
                         }}
                       >
                         <TextField
@@ -646,11 +643,11 @@ const TransferModal: React.FC<Props> = ({
                           )}
                       </Grid>
                       <Grid
+                        xs
                         item
-                        // xs
                         sx={{
-                          minWidth: 120,
-                          width: "100%",
+
+                          width: "fit-content", minWidth: 130
                         }}
                       >
                         <TextField
@@ -675,7 +672,7 @@ const TransferModal: React.FC<Props> = ({
                           errors.manager[idx] &&
                           errors.manager[idx].meanWeight &&
                           errors.manager[idx].meanWeight.type ===
-                            "required" && (
+                          "required" && (
                             <Typography
                               variant="body2"
                               color="red"
@@ -701,11 +698,11 @@ const TransferModal: React.FC<Props> = ({
                           )}
                       </Grid>
                       <Grid
+                        xs
                         item
-                        // xs
                         sx={{
-                          minWidth: 120,
-                          width: "100%",
+
+                          width: "fit-content", minWidth: 130
                         }}
                       >
                         <TextField
@@ -730,7 +727,7 @@ const TransferModal: React.FC<Props> = ({
                           errors.manager[idx] &&
                           errors.manager[idx].meanLength &&
                           errors.manager[idx].meanLength.type ===
-                            "required" && (
+                          "required" && (
                             <Typography
                               variant="body2"
                               color="red"
@@ -759,10 +756,10 @@ const TransferModal: React.FC<Props> = ({
                         item.field !== "Mortalities" && (
                           <Grid
                             item
-                            // xs
+                            xs
                             sx={{
-                              minWidth: 120,
-                              width: "100%",
+
+                              width: "fit-content", minWidth: 130
                             }}
                           >
                             <TextField
@@ -806,7 +803,7 @@ const TransferModal: React.FC<Props> = ({
                               errors.manager[idx] &&
                               errors.manager[idx].stockingDensityKG &&
                               errors.manager[idx].stockingDensityKG.type ===
-                                "required" && (
+                              "required" && (
                                 <Typography
                                   variant="body2"
                                   color="red"
@@ -821,7 +818,7 @@ const TransferModal: React.FC<Props> = ({
                               errors.manager[idx] &&
                               errors.manager[idx].stockingDensityKG &&
                               errors.manager[idx].stockingDensityKG.type ===
-                                "pattern" && (
+                              "pattern" && (
                                 <Typography
                                   variant="body2"
                                   color="red"
@@ -836,11 +833,11 @@ const TransferModal: React.FC<Props> = ({
                       {item.field !== "Harvest" &&
                         item.field !== "Mortalities" && (
                           <Grid
+                            xs
                             item
-                            // xs
                             sx={{
-                              minWidth: 120,
-                              width: "100%",
+
+                              width: "fit-content", minWidth: 130
                             }}
                           >
                             <TextField
@@ -884,7 +881,7 @@ const TransferModal: React.FC<Props> = ({
                               errors.manager[idx] &&
                               errors.manager[idx].stockingDensityNM &&
                               errors.manager[idx].stockingDensityNM.type ===
-                                "required" && (
+                              "required" && (
                                 <Typography
                                   variant="body2"
                                   color="red"
@@ -899,7 +896,7 @@ const TransferModal: React.FC<Props> = ({
                               errors.manager[idx] &&
                               errors.manager[idx].stockingDensityNM &&
                               errors.manager[idx].stockingDensityNM.type ===
-                                "pattern" && (
+                              "pattern" && (
                                 <Typography
                                   variant="body2"
                                   color="red"
@@ -915,10 +912,10 @@ const TransferModal: React.FC<Props> = ({
                         item.field !== "Mortalities" && (
                           <Grid
                             item
-                            // xs
+                            xs
                             sx={{
-                              minWidth: 120,
-                              width: "100%",
+
+                              width: "fit-content", minWidth: 130
                             }}
                           >
                             <TextField
@@ -944,19 +941,7 @@ const TransferModal: React.FC<Props> = ({
                           </Grid>
                         )}
                     </Grid>
-
-                    <Divider
-                      orientation="vertical"
-                      sx={{
-                        height: "100%",
-                        borderBottom: "2px solid #E6E7E9 !important",
-                        borderRight: "none !important",
-                        width: "100%",
-                        marginLeft: "12px",
-                        paddingBlock: "10px",
-                      }}
-                    />
-                  </Grid>
+                  </Stack>
 
                   <Box
                     display={"flex"}
@@ -997,6 +982,19 @@ const TransferModal: React.FC<Props> = ({
                     </Box>
                   </Box>
                 </Box>
+
+                <Divider
+                  orientation="vertical"
+                  sx={{
+                    height: "100%",
+                    borderBottom: "2px solid #E6E7E9 !important",
+                    borderRight: "none !important",
+                    width: "100%",
+                    marginLeft: "12px",
+                    paddingBlock: "10px",
+                  }}
+                />
+
               </Box>
             );
           })}

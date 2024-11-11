@@ -269,17 +269,14 @@ body {
 
 .form-input > label {
   color: #979797 !important;
-  min-width: 1200px !important;
-  width: 1000px !important;
+  /* min-width: 1200px !important;
+  width: 1000px !important; */
 }
 
-.user-info .form-input > label {
+/* .user-info .form-input > label {
   min-width: 1200px !important;
   width: 1000px !important;
-}
-
-.css-1q964xs-MuiFormLabel-root-MuiInputLabel-root {
-}
+} */
 
 .cursor-pointer {
   cursor: pointer;
@@ -449,19 +446,26 @@ body {
 .sidebar-icon {
   right: 4px;
 }
+
 .sidebar-scroller {
-  height: auto;
+  height: 100% !important;
 }
+
 @media only screen and (min-width: 1900px) {
   .sidebar-scroller {
     height: 100%;
   }
 }
-.form-height {
+
+/* .form-height {
   max-height: 1000px;
   overflow-y: auto;
   margin-top: 0px !important;
+} */
+label {
+  width: fit-content !important;
 }
+
 .form-height .grid-margin {
   margin-top: 0px !important;
   margin-left: 0px !important;
