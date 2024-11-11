@@ -81,7 +81,7 @@ export async function POST(req: NextRequest) {
         fishFarmId: body.fishFarmId,
         productionUnitId: body.productionUnitId,
         fishCount: body.fishCount,
-        batchNumber: body.batchNumber,
+        batchNumberId: Number(body.batchNumber),
         biomass: body.biomass,
         meanLength: body.meanLength,
         meanWeight: body.meanWeight,

@@ -80,7 +80,7 @@ export async function POST(req: NextRequest) {
             organisationId: body.organisationId,
             biomass: correspondingProduction.biomass,
             fishCount: correspondingProduction.fishCount,
-            batchNumber: correspondingProduction.batchNumber,
+            batchNumberId: Number(correspondingProduction.batchNumber),
             age: correspondingProduction.age,
             meanLength: correspondingProduction.meanLength,
             meanWeight: correspondingProduction.meanWeight,
@@ -102,7 +102,7 @@ export async function POST(req: NextRequest) {
             // Add default fields for production (optional or null values from payload)
             biomass: null,
             fishCount: null,
-            batchNumber: null,
+            batchNumberId: null,
             age: null,
             meanLength: null,
             meanWeight: null,
