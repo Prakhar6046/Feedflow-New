@@ -126,7 +126,7 @@ function AddUnitForm({ farms }: Props) {
       <Box>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Grid container spacing={2}>
-            <Grid item xs={6}>
+            <Grid item lg={6} xs={12}>
               <Box mb={2} width={"100%"}>
                 <FormControl fullWidth className="form-input">
                   <InputLabel id="feed-supply-select-label1">
@@ -170,7 +170,7 @@ function AddUnitForm({ farms }: Props) {
                 </FormControl>
               </Box>
             </Grid>
-            <Grid item xs={6}>
+            <Grid item lg={6} xs={12}>
               <Box mb={2} width={"100%"}>
                 <FormControl fullWidth className="form-input">
                   <InputLabel id="feed-supply-select-label2">
@@ -221,7 +221,7 @@ function AddUnitForm({ farms }: Props) {
                 </FormControl>
               </Box>
             </Grid>
-            <Grid item xs={6}>
+            <Grid item lg={6} xs={12}>
               <Box mb={2} width={"100%"}>
                 <TextField
                   label="Batch Number *"
@@ -256,7 +256,7 @@ function AddUnitForm({ farms }: Props) {
             )}  */}
               </Box>{" "}
             </Grid>
-            <Grid item xs={6}>
+            <Grid item lg={6} xs={12}>
               <Box mb={2} width={"100%"}>
                 <Box position={"relative"}>
                   <TextField
@@ -343,7 +343,7 @@ function AddUnitForm({ farms }: Props) {
                 </Box>
               </Box>
             </Grid>
-            <Grid item xs={6}>
+            <Grid item lg={6} xs={12}>
               <Box mb={2} width={"100%"}>
                 <TextField
                   label="Fish Count *"
@@ -385,7 +385,7 @@ function AddUnitForm({ farms }: Props) {
                   )}
               </Box>
             </Grid>
-            <Grid item xs={6}>
+            <Grid item lg={6} xs={12}>
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <Controller
                   name="age"
@@ -420,7 +420,7 @@ function AddUnitForm({ farms }: Props) {
                 />
               </LocalizationProvider>
             </Grid>
-            <Grid item xs={6}>
+            <Grid item lg={6} xs={12}>
               <Box mb={2} width={"100%"}>
                 <Box position={"relative"}>
                   <TextField
@@ -483,7 +483,7 @@ function AddUnitForm({ farms }: Props) {
                 </Box>
               </Box>
             </Grid>
-            <Grid item xs={6}>
+            <Grid item lg={6} xs={12}>
               <Box mb={2} width={"100%"}>
                 <Box position={"relative"}>
                   <TextField

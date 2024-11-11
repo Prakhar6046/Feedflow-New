@@ -155,6 +155,10 @@ function HatcheryForm({
           labelId="feed-supply-select-label5"
           id="feed-supply-select5"
           label="Species *"
+          sx={{
+            width: "100%",
+            my: 2,
+          }}
           {...register("fishSpecie", {
             required: true,
           })}

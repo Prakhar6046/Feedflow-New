@@ -33,11 +33,13 @@ interface Props {
   productions: Production[];
   tableData: any;
   farms: Farm[];
+  batches: { batchNumber: String; id: Number }[];
 }
 export default function ProductionTable({
   productions,
   tableData,
   farms,
+  batches,
 }: Props) {
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -459,6 +461,7 @@ export default function ProductionTable({
         setOpen={setOpenTransferModal}
         selectedProduction={selectedProduction}
         farms={farms}
+        batches={batches}
       />
       <HarvestModal open={openHarvestModal} setOpen={setOpenHarvestModal} />
       <MortalityModal open={openMoralityModal} setOpen={setOpenMoralityModal} />

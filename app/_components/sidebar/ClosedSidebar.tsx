@@ -38,6 +38,8 @@ function ClosedSidebar() {
             height: "100% !important",
             overflowY: "auto",
             overflowX: "hidden",
+            background:
+               "linear-gradient(349.33deg, rgba(6, 161, 155, 0.4) -27.15%, rgba(2, 59, 57, 0) 103.57%)",
          }}
       >
          <Box
@@ -51,8 +53,6 @@ function ClosedSidebar() {
                },
 
                transition: "width 1s !important",
-               background:
-                  "linear-gradient(349.33deg, rgba(6, 161, 155, 0.4) -27.15%, rgba(2, 59, 57, 0) 103.57%)",
             }}
             className="sidebar-scroller"
             role="presentation"
@@ -350,8 +350,8 @@ function ClosedSidebar() {
                   </svg> */}
                            <svg
                               xmlns="http://www.w3.org/2000/svg"
-                              width="20"
-                              height="20"
+                              width="24"
+                              height="24"
                               viewBox="0 0 20 20"
                               fill="#0E848E"
                            >

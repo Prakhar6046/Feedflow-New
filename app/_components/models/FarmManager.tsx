@@ -39,6 +39,7 @@ interface Props {
   open: boolean;
   selectedProduction: Production;
   farms: Farm[];
+  batches: { batchNumber: String; id: Number }[];
 }
 interface InputTypes {
   manager: {
@@ -61,10 +62,10 @@ const TransferModal: React.FC<Props> = ({
   open,
   selectedProduction,
   farms,
+  batches,
 }) => {
   const router = useRouter();
   const [selectedFarm, setSelectedFarm] = useState<any>(null);
-  const [isStockAdded, setIsStockAdded] = useState<boolean>(false);
   const [isEnteredBiomassGreater, setIsEnteredBiomassGreater] =
     useState<Boolean>(false);
   const [isEnteredFishCountGreater, setIsEnteredFishCountGreater] =
@@ -108,33 +109,35 @@ const TransferModal: React.FC<Props> = ({
   });
 
   const onSubmit: SubmitHandler<InputTypes> = async (data) => {
-    if (!isEnteredBiomassGreater && !isEnteredFishCountGreater) {
-      const payload = {
-        organisationId: selectedProduction.organisationId,
-        data: data.manager,
-      };
+    console.log(data);
 
-      const response = await fetch("/api/production/mange", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
+    // if (!isEnteredBiomassGreater && !isEnteredFishCountGreater) {
+    //   const payload = {
+    //     organisationId: selectedProduction.organisationId,
+    //     data: data.manager,
+    //   };
 
-      const res = await response.json();
-      if (res.status) {
-        toast.success(res.message);
-        setOpen(false);
-        router.push("/dashboard/production");
-        router.refresh();
-      }
-    } else {
-      toast.dismiss();
-      toast.error(
-        "Please enter biomass and fish count value less than selected production"
-      );
-    }
+    //   const response = await fetch("/api/production/mange", {
+    //     method: "POST",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //     body: JSON.stringify(payload),
+    //   });
+
+    //   const res = await response.json();
+    //   if (res.status) {
+    //     toast.success(res.message);
+    //     setOpen(false);
+    //     router.push("/dashboard/production");
+    //     router.refresh();
+    //   }
+    // } else {
+    //   toast.dismiss();
+    //   toast.error(
+    //     "Please enter biomass and fish count value less than selected production"
+    //   );
+    // }
   };
 
   const handleClose = () => {
@@ -144,7 +147,6 @@ const TransferModal: React.FC<Props> = ({
       manager: [firstObject], // Keep only the first object
     });
     setOpen(false);
-    setIsStockAdded(false);
   };
   const [anchorEl, setAnchorEl] = useState(null);
   const openAnchor = Boolean(anchorEl);
@@ -156,7 +158,7 @@ const TransferModal: React.FC<Props> = ({
       append({
         id: 0,
         fishFarm: selectedProduction.fishFarmId,
-        productionUnit: "",
+        productionUnit: selectedProduction.productionUnitId,
         biomass: "",
         count: "",
         meanWeight: "",
@@ -171,19 +173,6 @@ const TransferModal: React.FC<Props> = ({
     } else {
       setAnchorEl(null);
     }
-  };
-  const handleStock = () => {
-    setIsStockAdded(true);
-
-    setValue(`manager.0.biomass`, "");
-    setValue(`manager.0.count`, "");
-    setValue(`manager.0.meanWeight`, "");
-    setValue(`manager.0.meanLength`, "");
-    setValue(`manager.0.field`, "");
-    setValue(`manager.0.stockingDensityNM`, "");
-    setValue(`manager.0.stockingLevel`, "");
-    setValue(`manager.0.stockingDensityKG`, "");
-    setValue(`manager.0.batchNumber`, "");
   };
 
   useEffect(() => {
@@ -210,9 +199,33 @@ const TransferModal: React.FC<Props> = ({
 
   const watchedFields = watch("manager");
   console.log(watchedFields);
-  console.log(isStockAdded);
 
   useEffect(() => {
+    let isStockSelected = false;
+
+    // Check if "Stock" field is selected
+    watchedFields.forEach((field) => {
+      if (field.field === "Stock") {
+        isStockSelected = true;
+      }
+    });
+
+    if (isStockSelected) {
+      // Aggregate all biomass and count from watchedFields and set them to index 0
+      let totalBiomass = 0;
+      let totalCount = 0;
+
+      watchedFields.forEach((field) => {
+        totalBiomass += Number(field.biomass) || 0;
+        totalCount += Number(field.count) || 0;
+      });
+
+      // Set total biomass and count to the 0th index
+      setValue("manager.0.biomass", totalBiomass.toString());
+      setValue("manager.0.count", totalCount.toString());
+    }
+
+    // Continue with the original logic
     if (selectedProduction) {
       const index0Biomass = Number(selectedProduction.biomass) || 0; // Ensure a number
       const index0Count = Number(selectedProduction.fishCount) || 0; // Ensure a number
@@ -228,6 +241,7 @@ const TransferModal: React.FC<Props> = ({
         if (field.fishFarm === fishFarm) {
           const currentBiomass = Number(field.biomass) || 0; // Convert to number
           const currentCount = Number(field.count) || 0; // Convert to number
+
           if (currentBiomass > updatedBiomass) {
             toast.dismiss();
             toast.error(`Please enter a value lower than ${updatedBiomass}`);
@@ -238,6 +252,7 @@ const TransferModal: React.FC<Props> = ({
             toast.error(`Please enter a value lower than ${updatedCount}`);
             setIsEnteredFishCountGreater(true);
           }
+
           // Update biomass if current value is valid
           if (currentBiomass > 0 && updatedBiomass > currentBiomass) {
             updatedBiomass -= currentBiomass;
@@ -250,9 +265,11 @@ const TransferModal: React.FC<Props> = ({
             setIsEnteredFishCountGreater(false);
           }
         }
+
         const farm = farms
           .find((f) => f.id === selectedFarm)
           ?.productionUnits?.find((unit) => unit.id === field.productionUnit);
+
         if (farm && farm.capacity) {
           setValue(
             `manager.${index}.stockingDensityNM`,
@@ -305,57 +322,55 @@ const TransferModal: React.FC<Props> = ({
               <Box paddingInline={4} key={item.id}>
                 {idx !== 0 && (
                   <Box>
-                    <Button
-                      id=""
-                      className=""
-                      type="button"
-                      variant="contained"
-                      sx={{
-                        background: "#06A19B",
-                        fontWeight: "bold",
-                        padding: "8px 20px",
-                        width: {
-                          xs: "50%",
-                          lg: "fit-content",
-                        },
-                        textTransform: "capitalize",
-                        borderRadius: "20px",
-                        marginLeft: "12px !important",
-                        marginBottom: "15px",
-                      }}
+                    <Typography
+                      variant="body1"
+                      fontWeight={600}
+                      my={2}
+                      mx={1.5}
                     >
                       {getValues(`manager.${idx}.field`)}
-                    </Button>
+                    </Typography>
                   </Box>
                 )}
+
                 <Box
                   sx={{
                     display: "flex",
                     alignItems: "center",
-                    justifyContent: "center",
+                    justifyContent: "space-between",
                     height: "100%",
                     position: "relative",
                     bottom: "10px",
+                    gap: 1.5,
                   }}
                 >
-                  <Grid container spacing={2} className="grid-margin">
+                  <Stack
+                    sx={{
+                      overflowY: {
+                        xl: "visible",
+                        xs: "auto",
+                      },
+                      width: "97%",
+                    }}
+                  >
                     <Grid
                       container
                       spacing={2}
                       className="grid-margin"
+                      // bgcolor={"red"}
                       sx={{
                         flexWrap: "nowrap",
                       }}
                     >
                       <Grid
                         item
-                        // xs
+                        xs
                         sx={{
-                          minWidth: 120,
-                          width: "100%",
+                          width: "fit-content",
+                          minWidth: 130,
                         }}
                       >
-                        <Box mb={2} width={"100%"}>
+                        <Box width={"100%"}>
                           <FormControl fullWidth className="form-input">
                             <InputLabel id="">Fish Farm *</InputLabel>
                             <Select
@@ -418,14 +433,14 @@ const TransferModal: React.FC<Props> = ({
                         </Box>
                       </Grid>
                       <Grid
+                        xs
                         item
-                        // xs
                         sx={{
-                          minWidth: 120,
-                          width: "100%",
+                          width: "fit-content",
+                          minWidth: 130,
                         }}
                       >
-                        <Box mb={2} width={"100%"}>
+                        <Box width={"100%"}>
                           <FormControl fullWidth className="form-input">
                             <InputLabel id="">Production Unit *</InputLabel>
                             <Select
@@ -451,29 +466,13 @@ const TransferModal: React.FC<Props> = ({
                               }
                             >
                               {(() => {
-                                let selectedFarm;
-                                if (idx === 0) {
-                                  selectedFarm = farms?.find(
-                                    (farm) =>
-                                      farm.id ===
-                                      watch(`manager.${idx}.fishFarm`)
-                                  )?.productionUnits;
-                                } else {
-                                  selectedFarm = farms
-                                    ?.find(
-                                      (farm) =>
-                                        farm.id ===
-                                        watch(`manager.${idx}.fishFarm`)
-                                    )
-                                    ?.productionUnits?.filter(
-                                      (unit) =>
-                                        unit.name !==
-                                        selectedProduction.productionUnit.name
-                                    );
-                                }
+                                let selectedFarm = farms?.find(
+                                  (farm) =>
+                                    farm.id === watch(`manager.${idx}.fishFarm`)
+                                );
 
                                 return selectedFarm ? (
-                                  selectedFarm?.map((unit) => (
+                                  selectedFarm?.productionUnits?.map((unit) => (
                                     <MenuItem
                                       value={String(unit.id)}
                                       key={unit.id}
@@ -513,31 +512,88 @@ const TransferModal: React.FC<Props> = ({
                         </Box>
                       </Grid>
                       <Grid
+                        xs
                         item
-                        // xs
                         sx={{
-                          minWidth: 120,
-                          width: "100%",
+                          width: "fit-content",
+                          minWidth: 130,
                         }}
                       >
-                        <TextField
+                        <Box mb={2} width={"100%"}>
+                          <FormControl fullWidth className="form-input">
+                            <InputLabel id="">Batch No. *</InputLabel>
+                            <Select
+                              labelId="feed-supply-select-label9"
+                              className="fish-manager"
+                              id="feed-supply-select9"
+                              label="Batch Number *"
+                              disabled={
+                                item.field === "Harvest" ||
+                                item.field === "Mortalities" ||
+                                idx === 0
+                                  ? true
+                                  : false
+                              }
+                              {...register(`manager.${idx}.batchNumber`, {
+                                required: watch(`manager.${idx}.batchNumber`)
+                                  ? false
+                                  : true,
+                              })}
+                              value={
+                                getValues(`manager.${idx}.batchNumber`) || ""
+                              } // Ensure only the current entry is updated
+                            >
+                              {batches?.map(
+                                (
+                                  batch: { batchNumber: String; id: Number },
+                                  i
+                                ) => (
+                                  <MenuItem value={String(batch.id)} key={i}>
+                                    {batch.batchNumber}
+                                  </MenuItem>
+                                )
+                              )}
+                            </Select>
+
+                            {errors &&
+                              errors?.manager &&
+                              errors?.manager[idx] &&
+                              errors?.manager[idx].fishFarm &&
+                              errors?.manager[idx].fishFarm.type ===
+                                "required" && (
+                                <Typography
+                                  variant="body2"
+                                  color="red"
+                                  fontSize={13}
+                                  mt={0.5}
+                                >
+                                  {validationMessage.required}
+                                </Typography>
+                              )}
+                            <Typography
+                              variant="body2"
+                              color="red"
+                              fontSize={13}
+                              mt={0.5}
+                            ></Typography>
+                          </FormControl>
+                        </Box>
+                        {/* <TextField
                           label="Batch Number *"
                           type="text"
                           className="form-input"
                           sx={{ width: "100%" }}
                           disabled={
-                            !isStockAdded
-                              ? item.field === "Harvest" ||
-                                item.field === "Mortalities" ||
-                                idx === 0
-                                ? true
-                                : false
+                            item.field === "Harvest" ||
+                            item.field === "Mortalities" ||
+                            idx === 0
+                              ? true
                               : false
                           }
                           {...register(`manager.${idx}.batchNumber`, {
                             required: true,
                           })}
-                        />
+                        /> */}
                         <Typography
                           variant="body2"
                           color="red"
@@ -559,26 +615,50 @@ const TransferModal: React.FC<Props> = ({
                           )}
                       </Grid>
                       <Grid
+                        xs
                         item
-                        // xs
                         sx={{
-                          minWidth: 120,
-                          width: "100%",
+                          width: "fit-content",
+                          minWidth: 130,
                         }}
                       >
-                        <TextField
-                          label="Biomass (kg) *"
-                          type="text"
-                          className="form-input"
-                          disabled={
-                            !isStockAdded ? (idx === 0 ? true : false) : false
-                          }
-                          sx={{ width: "100%" }}
-                          {...register(`manager.${idx}.biomass`, {
-                            required: true,
-                            pattern: validationPattern.numbersWithDot,
-                          })}
-                        />
+                        <Box
+                          display={"flex"}
+                          gap={2}
+                          alignItems={"center"}
+                          position={"relative"}
+                        >
+                          <TextField
+                            label="Biomass *"
+                            type="text"
+                            className="form-input"
+                            disabled={idx === 0 ? true : false}
+                            sx={{ width: "100%" }}
+                            {...register(`manager.${idx}.biomass`, {
+                              required: true,
+                              pattern: validationPattern.numbersWithDot,
+                            })}
+                          />
+
+                          <Typography
+                            variant="body2"
+                            color="#555555AC"
+                            sx={{
+                              position: "absolute",
+                              right: 6,
+                              top: "50%",
+                              transform: "translate(-6px, -50%)",
+                              backgroundColor: "#fff",
+                              height: 30,
+                              display: "grid",
+                              placeItems: "center",
+                              zIndex: 1,
+                              pl: 1,
+                            }}
+                          >
+                            kg
+                          </Typography>
+                        </Box>
                         <Typography
                           variant="body2"
                           color="red"
@@ -615,11 +695,11 @@ const TransferModal: React.FC<Props> = ({
                           )}
                       </Grid>
                       <Grid
+                        xs
                         item
-                        // xs
                         sx={{
-                          minWidth: 120,
-                          width: "100%",
+                          width: "fit-content",
+                          minWidth: 130,
                         }}
                       >
                         <TextField
@@ -627,9 +707,7 @@ const TransferModal: React.FC<Props> = ({
                           type="text"
                           className="form-input"
                           sx={{ width: "100%" }}
-                          disabled={
-                            !isStockAdded ? (idx === 0 ? true : false) : false
-                          }
+                          disabled={idx === 0 ? true : false}
                           {...register(`manager.${idx}.count`, {
                             required: true,
                             pattern: validationPattern.numbersWithDot,
@@ -671,11 +749,11 @@ const TransferModal: React.FC<Props> = ({
                           )}
                       </Grid>
                       <Grid
+                        xs
                         item
-                        // xs
                         sx={{
-                          minWidth: 120,
-                          width: "100%",
+                          width: "fit-content",
+                          minWidth: 130,
                         }}
                       >
                         <TextField
@@ -683,9 +761,7 @@ const TransferModal: React.FC<Props> = ({
                           type="text"
                           className="form-input"
                           sx={{ width: "100%" }}
-                          disabled={
-                            !isStockAdded ? (idx === 0 ? true : false) : false
-                          }
+                          disabled={idx === 0 ? true : false}
                           {...register(`manager.${idx}.meanWeight`, {
                             required: true,
                             pattern: validationPattern.numbersWithDot,
@@ -728,11 +804,11 @@ const TransferModal: React.FC<Props> = ({
                           )}
                       </Grid>
                       <Grid
+                        xs
                         item
-                        // xs
                         sx={{
-                          minWidth: 120,
-                          width: "100%",
+                          width: "fit-content",
+                          minWidth: 130,
                         }}
                       >
                         <TextField
@@ -740,9 +816,7 @@ const TransferModal: React.FC<Props> = ({
                           type="text"
                           className="form-input"
                           sx={{ width: "100%" }}
-                          disabled={
-                            !isStockAdded ? (idx === 0 ? true : false) : false
-                          }
+                          disabled={idx === 0 ? true : false}
                           {...register(`manager.${idx}.meanLength` as const, {
                             required: true,
                             pattern: validationPattern.numbersWithDot,
@@ -788,48 +862,69 @@ const TransferModal: React.FC<Props> = ({
                         item.field !== "Mortalities" && (
                           <Grid
                             item
-                            // xs
+                            xs
                             sx={{
-                              minWidth: 120,
-                              width: "100%",
+                              width: "fit-content",
+                              minWidth: 130,
                             }}
                           >
-                            <TextField
-                              label={`Stocking Density(kg/${"m\u00B3"}) *`}
-                              type="text"
-                              className="form-input"
-                              disabled={
-                                !isStockAdded
-                                  ? idx === 0
-                                    ? true
-                                    : false
-                                  : false
-                              }
-                              InputLabelProps={{
-                                shrink: !!watch(
-                                  `manager.${idx}.stockingDensityKG`
-                                ),
-                              }}
-                              sx={{
-                                width: "100%",
-                                "& .MuiInputLabel-root": {
-                                  transition: "all 0.2s ease",
-                                },
-                                "&:focus-within .MuiInputLabel-root": {
-                                  transform: "translate(10px, -9px)", // Moves the label up when focused
-                                  fontSize: "0.75rem",
-                                  color: "primary.main",
+                            <Box
+                              display={"flex"}
+                              gap={2}
+                              alignItems={"center"}
+                              position={"relative"}
+                            >
+                              <TextField
+                                label={`Stocking Density *`}
+                                type="text"
+                                className="form-input"
+                                disabled={idx === 0 ? true : false}
+                                InputLabelProps={{
+                                  shrink: !!watch(
+                                    `manager.${idx}.stockingDensityKG`
+                                  ),
+                                }}
+                                sx={{
+                                  width: "100%",
+                                  "& .MuiInputLabel-root": {
+                                    transition: "all 0.2s ease",
+                                  },
+                                  "&:focus-within .MuiInputLabel-root": {
+                                    transform: "translate(10px, -9px)", // Moves the label up when focused
+                                    fontSize: "0.75rem",
+                                    color: "primary.main",
+                                    backgroundColor: "#fff",
+                                  },
+                                }}
+                                {...register(
+                                  `manager.${idx}.stockingDensityKG` as const,
+                                  {
+                                    required: true,
+                                    pattern: validationPattern.numbersWithDot,
+                                  }
+                                )}
+                              />
+
+                              <Typography
+                                variant="body2"
+                                color="#555555AC"
+                                sx={{
+                                  position: "absolute",
+                                  right: 6,
+                                  top: "50%",
+                                  transform: "translate(-6px, -50%)",
                                   backgroundColor: "#fff",
-                                },
-                              }}
-                              {...register(
-                                `manager.${idx}.stockingDensityKG` as const,
-                                {
-                                  required: true,
-                                  pattern: validationPattern.numbersWithDot,
-                                }
-                              )}
-                            />
+                                  height: 30,
+                                  display: "grid",
+                                  placeItems: "center",
+                                  zIndex: 1,
+                                  pl: 1,
+                                }}
+                              >
+                                {`(kg/${"m\u00B3"})`}
+                              </Typography>
+                            </Box>
+
                             <Typography
                               variant="body2"
                               color="red"
@@ -871,49 +966,70 @@ const TransferModal: React.FC<Props> = ({
                       {item.field !== "Harvest" &&
                         item.field !== "Mortalities" && (
                           <Grid
+                            xs
                             item
-                            // xs
                             sx={{
-                              minWidth: 120,
-                              width: "100%",
+                              width: "fit-content",
+                              minWidth: 130,
                             }}
                           >
-                            <TextField
-                              label={`Stocking Density(n/${"m\u00B3"}) *`}
-                              type="text"
-                              className="form-input"
-                              disabled={
-                                !isStockAdded
-                                  ? idx === 0
-                                    ? true
-                                    : false
-                                  : false
-                              }
-                              {...register(
-                                `manager.${idx}.stockingDensityNM` as const,
-                                {
-                                  required: true,
-                                  pattern: validationPattern.numbersWithDot,
-                                }
-                              )}
-                              InputLabelProps={{
-                                shrink: !!watch(
-                                  `manager.${idx}.stockingDensityNM`
-                                ),
-                              }}
-                              sx={{
-                                width: "100%",
-                                "& .MuiInputLabel-root": {
-                                  transition: "all 0.2s ease",
-                                },
-                                "&:focus-within .MuiInputLabel-root": {
-                                  transform: "translate(10px, -9px)", // Moves the label up when focused
-                                  fontSize: "0.75rem",
-                                  color: "primary.main",
+                            <Box
+                              display={"flex"}
+                              gap={2}
+                              alignItems={"center"}
+                              position={"relative"}
+                            >
+                              <TextField
+                                label={`Stocking Density *`}
+                                type="text"
+                                className="form-input"
+                                disabled={idx === 0 ? true : false}
+                                {...register(
+                                  `manager.${idx}.stockingDensityNM` as const,
+                                  {
+                                    required: true,
+                                    pattern: validationPattern.numbersWithDot,
+                                  }
+                                )}
+                                InputLabelProps={{
+                                  shrink: !!watch(
+                                    `manager.${idx}.stockingDensityNM`
+                                  ),
+                                }}
+                                sx={{
+                                  width: "100%",
+                                  "& .MuiInputLabel-root": {
+                                    transition: "all 0.2s ease",
+                                  },
+                                  "&:focus-within .MuiInputLabel-root": {
+                                    transform: "translate(10px, -9px)", // Moves the label up when focused
+                                    fontSize: "0.75rem",
+                                    color: "primary.main",
+                                    backgroundColor: "#fff",
+                                  },
+                                }}
+                              />
+
+                              <Typography
+                                variant="body2"
+                                color="#555555AC"
+                                sx={{
+                                  position: "absolute",
+                                  right: 6,
+                                  top: "50%",
+                                  transform: "translate(-6px, -50%)",
                                   backgroundColor: "#fff",
-                                },
-                              }}
-                            />
+                                  height: 30,
+                                  display: "grid",
+                                  placeItems: "center",
+                                  zIndex: 1,
+                                  pl: 1,
+                                }}
+                              >
+                                {`(n/${"m\u00B3"})`}
+                              </Typography>
+                            </Box>
+
                             <Typography
                               variant="body2"
                               color="red"
@@ -956,10 +1072,10 @@ const TransferModal: React.FC<Props> = ({
                         item.field !== "Mortalities" && (
                           <Grid
                             item
-                            // xs
+                            xs
                             sx={{
-                              minWidth: 120,
-                              width: "100%",
+                              width: "fit-content",
+                              minWidth: 130,
                             }}
                           >
                             <TextField
@@ -985,19 +1101,7 @@ const TransferModal: React.FC<Props> = ({
                           </Grid>
                         )}
                     </Grid>
-
-                    <Divider
-                      orientation="vertical"
-                      sx={{
-                        height: "100%",
-                        borderBottom: "2px solid #E6E7E9 !important",
-                        borderRight: "none !important",
-                        width: "100%",
-                        marginLeft: "12px",
-                        paddingBlock: "10px",
-                      }}
-                    />
-                  </Grid>
+                  </Stack>
 
                   <Box
                     display={"flex"}
@@ -1038,6 +1142,18 @@ const TransferModal: React.FC<Props> = ({
                     </Box>
                   </Box>
                 </Box>
+
+                <Divider
+                  orientation="vertical"
+                  sx={{
+                    height: "100%",
+                    borderBottom: "2px solid #E6E7E9 !important",
+                    borderRight: "none !important",
+                    width: "100%",
+                    marginLeft: "12px",
+                    paddingBlock: "10px",
+                  }}
+                />
               </Box>
             );
           })}
@@ -1050,26 +1166,6 @@ const TransferModal: React.FC<Props> = ({
             padding={3}
             margin={"40px"}
           >
-            <Button
-              className=""
-              variant="contained"
-              sx={{
-                background: "#06A19B",
-                fontWeight: "bold",
-                padding: "8px 20px",
-                width: {
-                  xs: "50%",
-                  lg: "fit-content",
-                },
-                textTransform: "capitalize",
-                borderRadius: "12px",
-
-                marginBlock: "10px",
-              }}
-              onClick={handleStock}
-            >
-              Add Stock
-            </Button>
             <Button
               className=""
               type="button"

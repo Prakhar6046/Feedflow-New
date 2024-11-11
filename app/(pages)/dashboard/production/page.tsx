@@ -1,6 +1,6 @@
 import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
 import ProductionTable from "@/app/_components/table/ProductionTable";
-import { getFarms, getProductions } from "@/app/_lib/action";
+import { getBatches, getFarms, getProductions } from "@/app/_lib/action";
 import {
   farmManagerHead,
   farmManagerHeadMember,
@@ -31,14 +31,13 @@ export default async function Page({
     query: "",
     noFilter: false,
   });
+  const batches = await getBatches({});
 
   return (
     <>
       <BasicBreadcrumbs
         heading={"Production"}
         isTable={true}
-        buttonName="Add Unit"
-        buttonRoute="/dashboard/production/addUnit"
         links={[
           { name: "Dashboard", link: "/dashboard" },
           { name: "Production", link: "/dashboard/production" },
@@ -50,6 +49,7 @@ export default async function Page({
         }
         productions={productions.data}
         farms={farms.data}
+        batches={batches.data}
       />
     </>
   );
