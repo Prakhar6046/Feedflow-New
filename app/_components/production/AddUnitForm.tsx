@@ -33,7 +33,7 @@ interface FormInputs {
   fishCount: String;
   meanLength: String;
   meanWeight: String;
-  stockingDensityKG: String;
+  // stockingDensityKG: String;
   // stockingDensityNM: String;
   stockingLevel: String;
 }
@@ -54,30 +54,33 @@ function AddUnitForm({ farms }: Props) {
     control,
     formState: { errors },
   } = useForm<FormInputs>();
-  console.log(farms);
 
   const onSubmit: SubmitHandler<FormInputs> = async (data) => {
     const {
       fishFarm,
       productionUnit,
       age,
-      stockingDensityKG,
+      stockingLevel,
+      // stockingDensityKG,
       // stockingDensityNM,
       ...restData
     } = data;
-    const farm = farms.find((f) => f.id === selectedFarm);
-    if (farm && farm.productionUnits && farm?.productionUnits[0].capacity) {
+    const farm = farms
+      .find((f) => f.id === selectedFarm)
+      ?.productionUnits?.find((unit) => unit.id === data.productionUnit);
+
+    if (farm && farm?.capacity) {
       const payload = {
         organisationId: user.organisationId,
         fishFarmId: fishFarm,
         productionUnitId: productionUnit,
         age: getDayMonthDifference(data.age),
+        stockingLevel: "",
         stockingDensityKG: String(
-          Number(data.stockingDensityKG) /
-            Number(farm?.productionUnits[0]?.capacity)
+          Number(data.biomass) / Number(farm?.capacity)
         ),
         stockingDensityNM: String(
-          Number(data.fishCount) / Number(farm?.productionUnits[0]?.capacity)
+          Number(data.fishCount) / Number(farm?.capacity)
         ),
         ...restData,
       };
@@ -591,78 +594,19 @@ function AddUnitForm({ farms }: Props) {
               
             </Box>
           </Box> */}
-            <Grid item lg={6} xs={12}>
-              <Box mb={2} width={"100%"}>
-                <Box position={"relative"}>
-                  <TextField
-                    label={`% Stocking Density(kg/${mCubed}) *`}
-                    type="text"
-                    className="form-input"
-                    // focused={altitude ? true : false}
-                    {...register("stockingDensityKG", {
-                      required: true,
-                      pattern: validationPattern.numbersWithDot,
-                    })}
-                    sx={{
-                      width: "100%",
-                    }}
-                  />
-                  <Typography
-                    variant="body2"
-                    color="#555555AC"
-                    sx={{
-                      position: "absolute",
-                      right: 6,
-                      top: "50%",
-                      transform: "translate(-6px, -50%)",
-                      backgroundColor: "#fff",
-                      height: 30,
-                      display: "grid",
-                      placeItems: "center",
-                      zIndex: 1,
-                      pl: 1,
-                    }}
-                  >
-                    {`kg/${mCubed}`}
-                  </Typography>
-                  {errors &&
-                    errors.stockingDensityKG &&
-                    errors.stockingDensityKG.type === "required" && (
-                      <Typography
-                        variant="body2"
-                        color="red"
-                        fontSize={13}
-                        mt={0.5}
-                      >
-                        {validationMessage.required}
-                      </Typography>
-                    )}
-                  {errors &&
-                    errors.stockingDensityKG &&
-                    errors.stockingDensityKG.type === "pattern" && (
-                      <Typography
-                        variant="body2"
-                        color="red"
-                        fontSize={13}
-                        mt={0.5}
-                      >
-                        {validationMessage.OnlyNumbersWithDot}
-                      </Typography>
-                    )}
-                </Box>
-              </Box>
-            </Grid>
-            <Grid item lg={6} xs={12}>
+
+            <Grid item xs={6}>
               <Box mb={2} width={"100%"}>
                 <Box position={"relative"}>
                   <TextField
                     label="% Stocked *"
                     type="text"
                     className="form-input"
+                    disabled
                     // focused={altitude ? true : false}
                     {...register("stockingLevel", {
-                      required: true,
-                      pattern: validationPattern.numbersWithDot,
+                      // required: true,
+                      // pattern: validationPattern.numbersWithDot,
                     })}
                     sx={{
                       width: "100%",
@@ -686,7 +630,7 @@ function AddUnitForm({ farms }: Props) {
                   >
                     %
                   </Typography>
-                  {errors &&
+                  {/* {errors &&
                     errors.stockingLevel &&
                     errors.stockingLevel.type === "required" && (
                       <Typography
@@ -709,7 +653,7 @@ function AddUnitForm({ farms }: Props) {
                       >
                         {validationMessage.OnlyNumbersWithDot}
                       </Typography>
-                    )}
+                    )} */}
                 </Box>
               </Box>
             </Grid>

@@ -54,7 +54,6 @@ interface InputTypes {
     stockingLevel?: String;
     stockingDensityKG?: String;
     batchNumber: String;
-    stockingDensityKGAfterCal?: String;
   }[];
 }
 const TransferModal: React.FC<Props> = ({
@@ -65,11 +64,17 @@ const TransferModal: React.FC<Props> = ({
 }) => {
   const router = useRouter();
   const [selectedFarm, setSelectedFarm] = useState<any>(null);
+  const [isEnteredBiomassGreater, setIsEnteredBiomassGreater] =
+    useState<Boolean>(false);
+  const [isEnteredFishCountGreater, setIsEnteredFishCountGreater] =
+    useState<Boolean>(false);
+
   const {
     register,
     setValue,
     formState: { errors },
     watch,
+    reset,
     getValues,
     handleSubmit,
     control,
@@ -100,40 +105,43 @@ const TransferModal: React.FC<Props> = ({
     name: "manager",
   });
   const onSubmit: SubmitHandler<InputTypes> = async (data) => {
-    const updatedData = data.manager.map((production, i) => {
-      if (i !== 0) {
-        return {
-          ...production,
-          stockingDensityKG: production.stockingDensityKGAfterCal,
-        };
-      } else {
-        return production;
+    if (!isEnteredBiomassGreater && !isEnteredFishCountGreater) {
+      const payload = {
+        organisationId: selectedProduction.organisationId,
+        data: data.manager,
+      };
+
+      const response = await fetch("/api/production/mange", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const res = await response.json();
+      if (res.status) {
+        toast.success(res.message);
+        setOpen(false);
+        router.push("/dashboard/production");
+        router.refresh();
       }
-    });
-    console.log(updatedData);
-
-    const payload = {
-      organisationId: selectedProduction.organisationId,
-      data: updatedData,
-    };
-    // const response = await fetch("/api/production/mange", {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify(payload),
-    // });
-
-    // const res = await response.json();
-    // if (res.status) {
-    //   toast.success(res.message);
-    //   setOpen(false);
-    //   router.push("/dashboard/production");
-    //   router.refresh();
-    // }
+    } else {
+      toast.dismiss();
+      toast.error(
+        "Please enter biomass and fish count value less than selected production"
+      );
+    }
   };
 
-  const handleClose = () => setOpen(false);
+  const handleClose = () => {
+    const firstObject = getValues("manager")[0];
+    // Reset the form and keep the first object intact
+    reset({
+      manager: [firstObject], // Keep only the first object
+    });
+    setOpen(false);
+  };
   const [anchorEl, setAnchorEl] = useState(null);
   const openAnchor = Boolean(anchorEl);
   const handleClick = (event: any) => {
@@ -144,7 +152,7 @@ const TransferModal: React.FC<Props> = ({
       append({
         id: 0,
         fishFarm: selectedProduction.fishFarmId,
-        productionUnit: selectedProduction.productionUnitId,
+        productionUnit: "",
         biomass: "",
         count: "",
         meanWeight: "",
@@ -202,35 +210,36 @@ const TransferModal: React.FC<Props> = ({
           if (currentBiomass > updatedBiomass) {
             toast.dismiss();
             toast.error(`Please enter a value lower than ${updatedBiomass}`);
+            setIsEnteredBiomassGreater(true);
           }
           if (currentCount > updatedCount) {
             toast.dismiss();
             toast.error(`Please enter a value lower than ${updatedCount}`);
+            setIsEnteredFishCountGreater(true);
           }
           // Update biomass if current value is valid
           if (currentBiomass > 0 && updatedBiomass > currentBiomass) {
             updatedBiomass -= currentBiomass;
+            setIsEnteredBiomassGreater(false);
           }
 
           // Update count if current value is valid
           if (currentCount > 0 && updatedCount > currentCount) {
             updatedCount -= currentCount;
+            setIsEnteredFishCountGreater(false);
           }
         }
-        const farm = farms.find((f) => f.id === field.fishFarm);
-        if (farm && farm.productionUnits && farm?.productionUnits[0].capacity) {
+        const farm = farms
+          .find((f) => f.id === selectedFarm)
+          ?.productionUnits?.find((unit) => unit.id === field.productionUnit);
+        if (farm && farm.capacity) {
           setValue(
             `manager.${index}.stockingDensityNM`,
-            String(
-              Number(field.count) / Number(farm?.productionUnits[0]?.capacity)
-            )
+            String(Number(field.count) / Number(farm?.capacity))
           );
           setValue(
-            `manager.${index}.stockingDensityKGAfterCal`,
-            String(
-              Number(field.stockingDensityKG) /
-                Number(farm?.productionUnits[0]?.capacity)
-            )
+            `manager.${index}.stockingDensityKG`,
+            String(Number(field.biomass) / Number(farm?.capacity))
           );
         }
       });
@@ -389,9 +398,11 @@ const TransferModal: React.FC<Props> = ({
                                   : false
                               }
                               {...register(`manager.${idx}.productionUnit`, {
-                                required: watch(`manager.${idx}.productionUnit`)
-                                  ? false
-                                  : true,
+                                required:
+                                  item.field === "Harvest" ||
+                                  item.field === "Mortalities"
+                                    ? false
+                                    : true,
                               })}
                               value={
                                 watch(`manager.${idx}.productionUnit`) || ""
@@ -693,8 +704,24 @@ const TransferModal: React.FC<Props> = ({
                               label={`Stocking Density(kg/${"m\u00B3"}) *`}
                               type="text"
                               className="form-input"
-                              sx={{ width: "100%" }}
                               disabled={idx === 0 ? true : false}
+                              InputLabelProps={{
+                                shrink: !!watch(
+                                  `manager.${idx}.stockingDensityKG`
+                                ),
+                              }}
+                              sx={{
+                                width: "100%",
+                                "& .MuiInputLabel-root": {
+                                  transition: "all 0.2s ease",
+                                },
+                                "&:focus-within .MuiInputLabel-root": {
+                                  transform: "translate(10px, -9px)", // Moves the label up when focused
+                                  fontSize: "0.75rem",
+                                  color: "primary.main",
+                                  backgroundColor: "#fff",
+                                },
+                              }}
                               {...register(
                                 `manager.${idx}.stockingDensityKG` as const,
                                 {
@@ -748,7 +775,6 @@ const TransferModal: React.FC<Props> = ({
                               label={`Stocking Density(n/${"m\u00B3"}) *`}
                               type="text"
                               className="form-input"
-                              sx={{ width: "100%" }}
                               disabled={idx === 0 ? true : false}
                               {...register(
                                 `manager.${idx}.stockingDensityNM` as const,
@@ -757,6 +783,23 @@ const TransferModal: React.FC<Props> = ({
                                   pattern: validationPattern.numbersWithDot,
                                 }
                               )}
+                              InputLabelProps={{
+                                shrink: !!watch(
+                                  `manager.${idx}.stockingDensityNM`
+                                ),
+                              }}
+                              sx={{
+                                width: "100%",
+                                "& .MuiInputLabel-root": {
+                                  transition: "all 0.2s ease",
+                                },
+                                "&:focus-within .MuiInputLabel-root": {
+                                  transform: "translate(10px, -9px)", // Moves the label up when focused
+                                  fontSize: "0.75rem",
+                                  color: "primary.main",
+                                  backgroundColor: "#fff",
+                                },
+                              }}
                             />
                             <Typography
                               variant="body2"
@@ -803,14 +846,14 @@ const TransferModal: React.FC<Props> = ({
                               label="Stocking Level *"
                               type="text"
                               className="form-input"
-                              disabled={idx === 0 ? true : false}
+                              disabled
                               sx={{ width: "100%" }}
                               {...register(
-                                `manager.${idx}.stockingLevel` as const,
-                                {
-                                  required: true,
-                                  pattern: validationPattern.numbersWithDot,
-                                }
+                                `manager.${idx}.stockingLevel` as const
+                                // {
+                                //   required: true,
+                                //   pattern: validationPattern.numbersWithDot,
+                                // }
                               )}
                             />
                             <Typography
@@ -819,7 +862,7 @@ const TransferModal: React.FC<Props> = ({
                               fontSize={13}
                               mt={0.5}
                             ></Typography>
-                            {errors &&
+                            {/* {errors &&
                               errors.manager &&
                               errors.manager[idx] &&
                               errors.manager[idx].stockingLevel &&
@@ -848,7 +891,7 @@ const TransferModal: React.FC<Props> = ({
                                 >
                                   {validationMessage.OnlyNumbersWithDot}
                                 </Typography>
-                              )}
+                              )} */}
                           </Grid>
                         )}
                     </Grid>

@@ -34,7 +34,7 @@ interface Props {
   tableData: any;
   farms: Farm[];
 }
-export default function FarmManagerTable({
+export default function ProductionTable({
   productions,
   tableData,
   farms,

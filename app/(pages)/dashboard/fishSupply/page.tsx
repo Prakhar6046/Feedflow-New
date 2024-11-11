@@ -1,5 +1,5 @@
 import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
-import CommonTable from "@/app/_components/table/CommonTable";
+import FishSupplyTable from "@/app/_components/table/FishSupplyTable";
 import { getFishSupply } from "@/app/_lib/action";
 import {
   fishTableHead,
@@ -38,7 +38,7 @@ export default async function Page({
         ]}
       />
       <Box className="hatchery-table">
-        <CommonTable
+        <FishSupplyTable
           tableData={
             user.role !== "MEMBER" ? fishTableHead : fishTableHeadMember
           }

@@ -34,7 +34,7 @@ interface Props {
   fishSupply?: FishSupply[];
 }
 
-export default function CommonTable({ tableData, fishSupply }: Props) {
+export default function FishSupplyTable({ tableData, fishSupply }: Props) {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
