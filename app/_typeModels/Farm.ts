@@ -1,3 +1,5 @@
+import { Production } from "./production";
+
 export interface FarmInitialState {
   isLoading: boolean;
   farm: Farm;
@@ -25,6 +27,7 @@ export interface Farm {
     waterflowRate: string;
     id: any;
   }[];
+  production: Production[];
 }
 export interface UnitsTypes {
   name: string | undefined;

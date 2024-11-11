@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
 
     // Update the existing farm address
     const updatedFarmAddress = await prisma.farmAddress.update({
-      where: { id: body.farmAddress.id }, // Ensure that farmAddress contains an id
+      where: { id: body.farmAddress.id },
       data: { ...body.farmAddress },
     });
 
@@ -28,16 +28,25 @@ export async function POST(req: NextRequest) {
       },
     });
 
+    // Fetch existing production units and productions from the database
     const existingUnits = await prisma.productionUnit.findMany({
       where: { farmId: updatedFarm.id },
     });
 
-    // Create or update the units present in the body
+    const existingProductions = await prisma.production.findMany({
+      where: { fishFarmId: updatedFarm.id },
+    });
+
+    // Prepare a list of unit ids from the request body for comparison
     const unitIds = body.productionUnits.map((unit: any) => unit.id);
 
+    const newUnits = [];
+    const newProductions = [];
+
+    // Upsert (create or update) production units and corresponding production entries
     for (const unit of body.productionUnits) {
-      await prisma.productionUnit.upsert({
-        where: { id: unit.id || "" },
+      const updatedUnit = await prisma.productionUnit.upsert({
+        where: { id: unit.id || "" }, // If no id, create a new entry
         update: {
           name: unit.name,
           type: unit.type,
@@ -53,25 +62,92 @@ export async function POST(req: NextRequest) {
           farmId: updatedFarm.id,
         },
       });
+      newUnits.push(updatedUnit); // Store the updated or created production unit
+
+      // Handle production entries corresponding to the production unit
+      const correspondingProduction = body.productions.find(
+        (p: any) => p.productionUnitId === unit.id
+      );
+
+      // Create or update production based on whether it's found or not
+      if (correspondingProduction) {
+        // Update existing production
+        const updatedProduction = await prisma.production.update({
+          where: { id: correspondingProduction.id },
+          data: {
+            fishFarmId: updatedFarm.id,
+            productionUnitId: updatedUnit.id, // Link to the newly updated production unit ID
+            organisationId: body.organisationId,
+            biomass: correspondingProduction.biomass,
+            fishCount: correspondingProduction.fishCount,
+            batchNumber: correspondingProduction.batchNumber,
+            age: correspondingProduction.age,
+            meanLength: correspondingProduction.meanLength,
+            meanWeight: correspondingProduction.meanWeight,
+            stockingDensityKG: correspondingProduction.stockingDensityKG,
+            stockingDensityNM: correspondingProduction.stockingDensityNM,
+            stockingLevel: correspondingProduction.stockingLevel,
+            createdBy: correspondingProduction.createdBy,
+            updatedBy: correspondingProduction.updatedBy,
+          },
+        });
+        newProductions.push(updatedProduction); // Store the updated production entry
+      } else {
+        // Create new production if none exists for this unit
+        const newProduction = await prisma.production.create({
+          data: {
+            fishFarmId: updatedFarm.id,
+            productionUnitId: updatedUnit.id,
+            organisationId: body.organisationId,
+            // Add default fields for production (optional or null values from payload)
+            biomass: null,
+            fishCount: null,
+            batchNumber: null,
+            age: null,
+            meanLength: null,
+            meanWeight: null,
+            stockingDensityKG: null,
+            stockingDensityNM: null,
+            stockingLevel: null,
+            createdBy: null,
+            updatedBy: null,
+          },
+        });
+        newProductions.push(newProduction); // Store the newly created production
+      }
     }
 
-    // Delete units that are not in the updated list
+    // === Handle Deletion Logic for Both Production Units and Productions ===
+
+    // Delete units that are no longer present in the updated list
     const unitsToDelete = existingUnits.filter(
       (existingUnit) => !unitIds.includes(existingUnit.id)
     );
-
     for (const unit of unitsToDelete) {
       await prisma.productionUnit.delete({
         where: { id: unit.id },
       });
     }
+
+    // Delete productions that no longer match any production unit
+    const productionUnitIds = newUnits.map((unit: any) => unit.id);
+    const productionsToDelete = existingProductions.filter(
+      (prod) => !productionUnitIds.includes(prod.productionUnitId)
+    );
+
+    for (const production of productionsToDelete) {
+      await prisma.production.delete({
+        where: { id: production.id },
+      });
+    }
+
     return NextResponse.json({
       message: "Farm updated successfully",
       data: updatedFarm,
       status: true,
     });
   } catch (error: any) {
-    console.error("Error updating farm:", error);
+    console.error("Error updating farm and production managers:", error);
     return NextResponse.json(
       { error: error.message || "Internal Server Error" },
       { status: 500 }

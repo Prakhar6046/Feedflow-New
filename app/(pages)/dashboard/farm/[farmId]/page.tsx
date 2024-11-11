@@ -65,6 +65,7 @@ const Page = ({ params }: { params: { farmId: string } }) => {
   if (loading) {
     return <Loader />;
   }
+
   return (
     <>
       <BasicBreadcrumbs

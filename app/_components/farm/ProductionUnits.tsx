@@ -151,6 +151,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
   const onSubmit: SubmitHandler<ProductionUnitsFormTypes> = async (data) => {
     const loggedUserData = JSON.parse(userData);
     const farm = newFarmInfoLocal ? JSON.parse(newFarmInfoLocal) : {};
+
     let payload;
     if (isEditFarm && editFarm?.farmAddress?.id) {
       payload = {
@@ -171,6 +172,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
         lng: farm.lng,
         id: editFarm?.id,
         organsationId: loggedUserData.organisationId,
+        productions: editFarm.production,
       };
     } else {
       payload = {
