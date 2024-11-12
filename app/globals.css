@@ -249,6 +249,11 @@ body {
   width: 100% !important ;
 }
 
+.upload-file-input1 {
+  width: 140px !important;
+  height: 140px !important;
+}
+
 .upload-file-input > span {
   margin-right: 0;
 }

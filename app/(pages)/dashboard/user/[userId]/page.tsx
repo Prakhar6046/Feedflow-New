@@ -273,7 +273,7 @@ export default function Page({ params }: { params: { userId: string } }) {
                   variant="contained"
                   tabIndex={-1}
                   startIcon={profilePic ? null : <CloudUploadIcon />}
-                  className="upload-file-input"
+                  className="upload-file-input1"
                   sx={{
                     textTransform: "unset",
                     fontSize: 12,
@@ -527,8 +527,6 @@ export default function Page({ params }: { params: { userId: string } }) {
                     focused
                     sx={{
                       width: "100%",
-
-                      // marginBottom: 2,
                     }}
                   />
 

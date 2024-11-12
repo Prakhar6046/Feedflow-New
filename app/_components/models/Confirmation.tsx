@@ -7,7 +7,9 @@ import {
   Typography,
 } from "@mui/material";
 import React from "react";
-import { CloseIcon } from "../theme/overrides/CustomIcons";
+import { Close as CloseIcon } from "@mui/icons-material"; // Use Material-UI's Close icon directly
+
+// import { CloseIcon } from "../theme/overrides/CustomIcons";
 interface InputTypes {
   id: Number;
   fishFarm: String;
@@ -57,14 +59,18 @@ const Confirmation = ({
       <Stack
         bgcolor={"white"}
         borderRadius={2}
-        width={"50%"}
         mx={"auto"}
-        height={"30%"}
+        height={"fit-content"}
         sx={{
           position: "absolute",
           top: "50%",
           left: "50%",
           transform: "translate(-50%,-50%)",
+          width: {
+            md: "fit-content",
+            sm: "70%",
+            xs: "90%"
+          },
         }}
       >
         <Box
@@ -86,9 +92,20 @@ const Confirmation = ({
                 <CloseIcon />
               </IconButton>
             </Box>
-            <Box p={4}>
-              <Typography variant="h5" fontWeight={600} textAlign={"center"}>
-                Are you sure you want to delete the stock? The related field
+            <Box sx={{
+              p: {
+                sm: 4,
+                xs: 2
+              }
+            }}>
+              <Typography variant="h6" fontWeight={600} textAlign={"center"} sx={{
+                fontSize: {
+                  md: "20px",
+                  sm: "18px",
+                  xs: "16px"
+                }
+              }}>
+                Are you sure you want to delete the stock? <br /> The related field
                 with stock will also be deleted.
               </Typography>
 
