@@ -8,12 +8,43 @@ import {
 } from "@mui/material";
 import React from "react";
 import { CloseIcon } from "../theme/overrides/CustomIcons";
+interface InputTypes {
+  id: Number;
+  fishFarm: String;
+  productionUnit: String;
+  biomass: String;
+  count: String;
+  meanWeight: String;
+  meanLength: String;
+  field?: String;
+  stockingDensityNM?: String;
+  stockingLevel?: String;
+  stockingDensityKG?: String;
+  batchNumber: String;
+}
 interface Props {
   setOpen: (open: boolean) => void;
   open: boolean;
+  remove: any;
+  watchedFields: InputTypes[];
+  selectedProductionFishaFarmId: String;
 }
-const Confirmation = ({ open, setOpen }: Props) => {
+const Confirmation = ({
+  open,
+  setOpen,
+  remove,
+  watchedFields,
+  selectedProductionFishaFarmId,
+}: Props) => {
   const handleClose = () => {
+    setOpen(false);
+  };
+  const handleDelete = () => {
+    watchedFields.map((field, i) => {
+      if (i !== 0 && field.fishFarm === selectedProductionFishaFarmId) {
+        remove(field.fishFarm);
+      }
+    });
     setOpen(false);
   };
   return (
@@ -57,8 +88,8 @@ const Confirmation = ({ open, setOpen }: Props) => {
             </Box>
             <Box p={4}>
               <Typography variant="h5" fontWeight={600} textAlign={"center"}>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Debitis, reprehenderit?
+                Are you sure you want to delete the stock? The related field
+                with stock will also be deleted.
               </Typography>
 
               <Box display={"flex"} gap={2} justifyContent={"end"} mt={5}>
@@ -83,7 +114,7 @@ const Confirmation = ({ open, setOpen }: Props) => {
 
                 <Button
                   type="button"
-                  // onClick={() => setOpenDialog(true)}
+                  onClick={handleDelete}
                   variant="contained"
                   sx={{
                     background: "#fff",

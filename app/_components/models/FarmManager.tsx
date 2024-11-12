@@ -1253,6 +1253,9 @@ const TransferModal: React.FC<Props> = ({
         <Confirmation
           open={openConfirmationModal}
           setOpen={setOpenConfirmationModal}
+          remove={remove}
+          watchedFields={watchedFields}
+          selectedProductionFishaFarmId={selectedProduction?.fishFarmId}
         />
       </Stack>
     </Modal>
