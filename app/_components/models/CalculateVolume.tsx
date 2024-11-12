@@ -64,6 +64,12 @@ const CalculateVolume: React.FC<Props> = ({
   width,
   calculatedValue,
 }) => {
+  const [lengthError, setLengthError] = useState(false);
+  const [widthError, setWidthError] = useState(false);
+  const [depthError, setDepthError] = useState(false);
+  const [areaError, setAreaError] = useState(false);
+  const [heigthError, setHeigthError] = useState(false);
+  const [radiusError, setRadiusError] = useState(false);
   const handleClose = () => {
     setOpen(false);
     setWidthError(false);
@@ -73,12 +79,6 @@ const CalculateVolume: React.FC<Props> = ({
     setHeigthError(false);
     setRadiusError(false);
   };
-  const [lengthError, setLengthError] = useState(false);
-  const [widthError, setWidthError] = useState(false);
-  const [depthError, setDepthError] = useState(false);
-  const [areaError, setAreaError] = useState(false);
-  const [heigthError, setHeigthError] = useState(false);
-  const [radiusError, setRadiusError] = useState(false);
   const handleCalculate = () => {
     let output;
     if (

@@ -32,4 +32,7 @@ export interface Production {
     waterflowRate: String;
     farmId: String;
   };
+  fishSupply: {
+    batchNumber: String;
+  };
 }

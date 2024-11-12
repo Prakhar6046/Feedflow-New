@@ -24,6 +24,7 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
+import Confirmation from "./Confirmation";
 const style = {
   position: "absolute" as "absolute",
   top: "50%",
@@ -40,6 +41,7 @@ interface Props {
   selectedProduction: Production;
   farms: Farm[];
   batches: { batchNumber: String; id: Number }[];
+  productions: Production[];
 }
 interface InputTypes {
   manager: {
@@ -63,6 +65,7 @@ const TransferModal: React.FC<Props> = ({
   selectedProduction,
   farms,
   batches,
+  productions,
 }) => {
   const router = useRouter();
   const [selectedFarm, setSelectedFarm] = useState<any>(null);
@@ -70,6 +73,8 @@ const TransferModal: React.FC<Props> = ({
     useState<Boolean>(false);
   const [isEnteredFishCountGreater, setIsEnteredFishCountGreater] =
     useState<Boolean>(false);
+  const [openConfirmationModal, setOpenConfirmationModal] =
+    useState<boolean>(false);
 
   const {
     register,
@@ -109,37 +114,63 @@ const TransferModal: React.FC<Props> = ({
   });
 
   const onSubmit: SubmitHandler<InputTypes> = async (data) => {
-    console.log(data);
+    const addIdToData = data.manager.map((field) => {
+      const fishFarm = productions.find(
+        (OldField) =>
+          OldField.fishFarmId === field.fishFarm &&
+          OldField.productionUnitId === field.productionUnit
+      );
 
-    // if (!isEnteredBiomassGreater && !isEnteredFishCountGreater) {
-    //   const payload = {
-    //     organisationId: selectedProduction.organisationId,
-    //     data: data.manager,
-    //   };
+      if (
+        field.fishFarm === fishFarm?.fishFarmId &&
+        field.productionUnit === fishFarm.productionUnitId
+      ) {
+        return { ...field, id: fishFarm.id };
+      } else {
+        return field;
+      }
+    });
 
-    //   const response = await fetch("/api/production/mange", {
-    //     method: "POST",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-    //     body: JSON.stringify(payload),
-    //   });
+    const filteredData = addIdToData.filter((field) => field.field !== "Stock");
 
-    //   const res = await response.json();
-    //   if (res.status) {
-    //     toast.success(res.message);
-    //     setOpen(false);
-    //     router.push("/dashboard/production");
-    //     router.refresh();
-    //   }
-    // } else {
-    //   toast.dismiss();
-    //   toast.error(
-    //     "Please enter biomass and fish count value less than selected production"
-    //   );
-    // }
+    if (!isEnteredBiomassGreater && !isEnteredFishCountGreater) {
+      const payload = {
+        organisationId: selectedProduction.organisationId,
+        data: filteredData,
+      };
+
+      const response = await fetch("/api/production/mange", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const res = await response.json();
+      if (res.status) {
+        toast.success(res.message);
+        setOpen(false);
+        router.push("/dashboard/production");
+        router.refresh();
+      }
+    } else {
+      toast.dismiss();
+      toast.error(
+        "Please enter biomass and fish count value less than selected production"
+      );
+    }
   };
 
+  const handleDelete = (item: any) => {
+    if (item.field !== "Stock") {
+      remove(item.id);
+      return;
+    } else {
+      console.log(watchedFields);
+      setOpenConfirmationModal(true);
+    }
+  };
   const handleClose = () => {
     const firstObject = getValues("manager")[0];
     // Reset the form and keep the first object intact
@@ -222,6 +253,7 @@ const TransferModal: React.FC<Props> = ({
             setValue(`manager.0.meanWeight`, field.meanWeight);
             setValue(`manager.0.stockingDensityKG`, field.stockingDensityKG);
             setValue(`manager.0.stockingDensityNM`, field.stockingDensityNM);
+            setValue(`manager.0.batchNumber`, field.batchNumber);
           }
 
           const currentBiomass = Number(field.biomass) || 0; // Convert to number
@@ -283,8 +315,8 @@ const TransferModal: React.FC<Props> = ({
     <Modal
       open={open}
       onClose={handleClose}
-      aria-labelledby="modal-modal-title"
-      aria-describedby="modal-modal-description"
+      aria-labelledby="parent-modal-title"
+      aria-describedby="parent-modal-description"
       className="modal-positioning"
     >
       <Stack sx={style}>
@@ -363,8 +395,8 @@ const TransferModal: React.FC<Props> = ({
                               label="Fish Farm*"
                               disabled={
                                 item.field === "Harvest" ||
-                                  item.field === "Mortalities" ||
-                                  idx === 0
+                                item.field === "Mortalities" ||
+                                idx === 0
                                   ? true
                                   : false
                               }
@@ -396,7 +428,7 @@ const TransferModal: React.FC<Props> = ({
                               errors?.manager[idx] &&
                               errors?.manager[idx].fishFarm &&
                               errors?.manager[idx].fishFarm.type ===
-                              "required" && (
+                                "required" && (
                                 <Typography
                                   variant="body2"
                                   color="red"
@@ -432,15 +464,15 @@ const TransferModal: React.FC<Props> = ({
                               label="Production Unit*"
                               disabled={
                                 item.field === "Harvest" ||
-                                  item.field === "Mortalities" ||
-                                  idx === 0
+                                item.field === "Mortalities" ||
+                                idx === 0
                                   ? true
                                   : false
                               }
                               {...register(`manager.${idx}.productionUnit`, {
                                 required:
                                   item.field === "Harvest" ||
-                                    item.field === "Mortalities"
+                                  item.field === "Mortalities"
                                     ? false
                                     : true,
                               })}
@@ -475,7 +507,7 @@ const TransferModal: React.FC<Props> = ({
                               errors?.manager[idx] &&
                               errors?.manager[idx].productionUnit &&
                               errors?.manager[idx].productionUnit.type ===
-                              "required" && (
+                                "required" && (
                                 <Typography
                                   variant="body2"
                                   color="red"
@@ -512,8 +544,8 @@ const TransferModal: React.FC<Props> = ({
                               label="Batch Number *"
                               disabled={
                                 item.field === "Harvest" ||
-                                  item.field === "Mortalities" ||
-                                  idx === 0
+                                item.field === "Mortalities" ||
+                                idx === 0
                                   ? true
                                   : false
                               }
@@ -522,6 +554,9 @@ const TransferModal: React.FC<Props> = ({
                                   ? false
                                   : true,
                               })}
+                              inputProps={{
+                                shrink: !!watch(`manager.${idx}.batchNumber`),
+                              }}
                               value={
                                 getValues(`manager.${idx}.batchNumber`) || ""
                               } // Ensure only the current entry is updated
@@ -543,7 +578,7 @@ const TransferModal: React.FC<Props> = ({
                               errors?.manager[idx] &&
                               errors?.manager[idx].fishFarm &&
                               errors?.manager[idx].fishFarm.type ===
-                              "required" && (
+                                "required" && (
                                 <Typography
                                   variant="body2"
                                   color="red"
@@ -748,7 +783,7 @@ const TransferModal: React.FC<Props> = ({
                           errors.manager[idx] &&
                           errors.manager[idx].meanWeight &&
                           errors.manager[idx].meanWeight.type ===
-                          "required" && (
+                            "required" && (
                             <Typography
                               variant="body2"
                               color="red"
@@ -806,7 +841,7 @@ const TransferModal: React.FC<Props> = ({
                           errors.manager[idx] &&
                           errors.manager[idx].meanLength &&
                           errors.manager[idx].meanLength.type ===
-                          "required" && (
+                            "required" && (
                             <Typography
                               variant="body2"
                               color="red"
@@ -909,7 +944,7 @@ const TransferModal: React.FC<Props> = ({
                               errors.manager[idx] &&
                               errors.manager[idx].stockingDensityKG &&
                               errors.manager[idx].stockingDensityKG.type ===
-                              "required" && (
+                                "required" && (
                                 <Typography
                                   variant="body2"
                                   color="red"
@@ -924,7 +959,7 @@ const TransferModal: React.FC<Props> = ({
                               errors.manager[idx] &&
                               errors.manager[idx].stockingDensityKG &&
                               errors.manager[idx].stockingDensityKG.type ===
-                              "pattern" && (
+                                "pattern" && (
                                 <Typography
                                   variant="body2"
                                   color="red"
@@ -1014,7 +1049,7 @@ const TransferModal: React.FC<Props> = ({
                               errors.manager[idx] &&
                               errors.manager[idx].stockingDensityNM &&
                               errors.manager[idx].stockingDensityNM.type ===
-                              "required" && (
+                                "required" && (
                                 <Typography
                                   variant="body2"
                                   color="red"
@@ -1029,7 +1064,7 @@ const TransferModal: React.FC<Props> = ({
                               errors.manager[idx] &&
                               errors.manager[idx].stockingDensityNM &&
                               errors.manager[idx].stockingDensityNM.type ===
-                              "pattern" && (
+                                "pattern" && (
                                 <Typography
                                   variant="body2"
                                   color="red"
@@ -1096,7 +1131,7 @@ const TransferModal: React.FC<Props> = ({
                           xs: "auto",
                         },
                       }}
-                      onClick={() => remove(idx)}
+                      onClick={() => handleDelete(item)}
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -1171,7 +1206,23 @@ const TransferModal: React.FC<Props> = ({
             >
               {productionMangeFields.map((field, i) => {
                 return (
-                  <MenuItem onClick={() => handleCloseAnchor(field)} key={i}>
+                  <MenuItem
+                    onClick={() => handleCloseAnchor(field)}
+                    key={i}
+                    disabled={
+                      selectedProduction?.batchNumber &&
+                      selectedProduction?.biomass &&
+                      selectedProduction?.fishCount &&
+                      selectedProduction?.meanLength &&
+                      selectedProduction?.meanWeight
+                        ? false
+                        : watchedFields.find(
+                            (field) => field.field === "Stock"
+                          ) && field === "Stock"
+                        ? true
+                        : false
+                    }
+                  >
                     {field}
                   </MenuItem>
                 );
@@ -1199,6 +1250,10 @@ const TransferModal: React.FC<Props> = ({
             </Button>
           </Box>
         </form>
+        <Confirmation
+          open={openConfirmationModal}
+          setOpen={setOpenConfirmationModal}
+        />
       </Stack>
     </Modal>
   );
