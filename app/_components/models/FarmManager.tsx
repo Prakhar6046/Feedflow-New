@@ -165,7 +165,6 @@ const TransferModal: React.FC<Props> = ({
   const handleDelete = (item: any) => {
     if (item.field !== "Stock") {
       remove(item.id);
-      return;
     } else {
       console.log(watchedFields);
       setOpenConfirmationModal(true);
@@ -198,7 +197,7 @@ const TransferModal: React.FC<Props> = ({
         stockingLevel: "",
         stockingDensityKG: "",
         field,
-        batchNumber: selectedProduction.batchNumber,
+        batchNumber: selectedProduction.batchNumberId,
       });
       setAnchorEl(null);
     } else {
@@ -208,6 +207,8 @@ const TransferModal: React.FC<Props> = ({
 
   useEffect(() => {
     if (selectedProduction) {
+      console.log(selectedProduction);
+      debugger;
       const data = [
         {
           id: selectedProduction.id,
@@ -220,7 +221,7 @@ const TransferModal: React.FC<Props> = ({
           stockingDensityNM: selectedProduction.stockingDensityNM,
           stockingLevel: selectedProduction.stockingLevel,
           stockingDensityKG: selectedProduction.stockingDensityKG,
-          batchNumber: selectedProduction.batchNumber,
+          batchNumber: selectedProduction.batchNumberId,
         },
       ];
       setValue("manager", data);
@@ -557,9 +558,7 @@ const TransferModal: React.FC<Props> = ({
                               inputProps={{
                                 shrink: !!watch(`manager.${idx}.batchNumber`),
                               }}
-                              value={
-                                getValues(`manager.${idx}.batchNumber`) || ""
-                              } // Ensure only the current entry is updated
+                              value={watch(`manager.${idx}.batchNumber`) || ""} // Ensure only the current entry is updated
                             >
                               {batches?.map(
                                 (
@@ -1210,7 +1209,7 @@ const TransferModal: React.FC<Props> = ({
                     onClick={() => handleCloseAnchor(field)}
                     key={i}
                     disabled={
-                      selectedProduction?.batchNumber &&
+                      selectedProduction?.batchNumberId &&
                       selectedProduction?.biomass &&
                       selectedProduction?.fishCount &&
                       selectedProduction?.meanLength &&

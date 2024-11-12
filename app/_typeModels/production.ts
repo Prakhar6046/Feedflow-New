@@ -18,7 +18,7 @@ export interface Production {
   farm: Farm;
   organisation: SingleOrganisation;
   fishCount: String;
-  batchNumber: String;
+  batchNumberId: String;
   age: String;
   meanLength: String;
   stockingDensityKG: String;
