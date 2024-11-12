@@ -288,7 +288,6 @@ const TransferModal: React.FC<Props> = ({
       className="modal-positioning"
     >
       <Stack sx={style}>
-        {/* Header with close icon */}
         <Box display="flex" justifyContent="flex-end" padding={2}>
           <IconButton
             onClick={handleClose}
@@ -342,7 +341,6 @@ const TransferModal: React.FC<Props> = ({
                       container
                       spacing={2}
                       className="grid-margin"
-                      // bgcolor={"red"}
                       sx={{
                         flexWrap: "nowrap",
                       }}
@@ -365,8 +363,8 @@ const TransferModal: React.FC<Props> = ({
                               label="Fish Farm*"
                               disabled={
                                 item.field === "Harvest" ||
-                                item.field === "Mortalities" ||
-                                idx === 0
+                                  item.field === "Mortalities" ||
+                                  idx === 0
                                   ? true
                                   : false
                               }
@@ -398,7 +396,7 @@ const TransferModal: React.FC<Props> = ({
                               errors?.manager[idx] &&
                               errors?.manager[idx].fishFarm &&
                               errors?.manager[idx].fishFarm.type ===
-                                "required" && (
+                              "required" && (
                                 <Typography
                                   variant="body2"
                                   color="red"
@@ -434,15 +432,15 @@ const TransferModal: React.FC<Props> = ({
                               label="Production Unit*"
                               disabled={
                                 item.field === "Harvest" ||
-                                item.field === "Mortalities" ||
-                                idx === 0
+                                  item.field === "Mortalities" ||
+                                  idx === 0
                                   ? true
                                   : false
                               }
                               {...register(`manager.${idx}.productionUnit`, {
                                 required:
                                   item.field === "Harvest" ||
-                                  item.field === "Mortalities"
+                                    item.field === "Mortalities"
                                     ? false
                                     : true,
                               })}
@@ -477,7 +475,7 @@ const TransferModal: React.FC<Props> = ({
                               errors?.manager[idx] &&
                               errors?.manager[idx].productionUnit &&
                               errors?.manager[idx].productionUnit.type ===
-                                "required" && (
+                              "required" && (
                                 <Typography
                                   variant="body2"
                                   color="red"
@@ -514,8 +512,8 @@ const TransferModal: React.FC<Props> = ({
                               label="Batch Number *"
                               disabled={
                                 item.field === "Harvest" ||
-                                item.field === "Mortalities" ||
-                                idx === 0
+                                  item.field === "Mortalities" ||
+                                  idx === 0
                                   ? true
                                   : false
                               }
@@ -545,7 +543,7 @@ const TransferModal: React.FC<Props> = ({
                               errors?.manager[idx] &&
                               errors?.manager[idx].fishFarm &&
                               errors?.manager[idx].fishFarm.type ===
-                                "required" && (
+                              "required" && (
                                 <Typography
                                   variant="body2"
                                   color="red"
@@ -563,22 +561,6 @@ const TransferModal: React.FC<Props> = ({
                             ></Typography>
                           </FormControl>
                         </Box>
-                        {/* <TextField
-                          label="Batch Number *"
-                          type="text"
-                          className="form-input"
-                          sx={{ width: "100%" }}
-                          disabled={
-                            item.field === "Harvest" ||
-                            item.field === "Mortalities" ||
-                            idx === 0
-                              ? true
-                              : false
-                          }
-                          {...register(`manager.${idx}.batchNumber`, {
-                            required: true,
-                          })}
-                        /> */}
                         <Typography
                           variant="body2"
                           color="red"
@@ -766,7 +748,7 @@ const TransferModal: React.FC<Props> = ({
                           errors.manager[idx] &&
                           errors.manager[idx].meanWeight &&
                           errors.manager[idx].meanWeight.type ===
-                            "required" && (
+                          "required" && (
                             <Typography
                               variant="body2"
                               color="red"
@@ -824,7 +806,7 @@ const TransferModal: React.FC<Props> = ({
                           errors.manager[idx] &&
                           errors.manager[idx].meanLength &&
                           errors.manager[idx].meanLength.type ===
-                            "required" && (
+                          "required" && (
                             <Typography
                               variant="body2"
                               color="red"
@@ -927,7 +909,7 @@ const TransferModal: React.FC<Props> = ({
                               errors.manager[idx] &&
                               errors.manager[idx].stockingDensityKG &&
                               errors.manager[idx].stockingDensityKG.type ===
-                                "required" && (
+                              "required" && (
                                 <Typography
                                   variant="body2"
                                   color="red"
@@ -942,7 +924,7 @@ const TransferModal: React.FC<Props> = ({
                               errors.manager[idx] &&
                               errors.manager[idx].stockingDensityKG &&
                               errors.manager[idx].stockingDensityKG.type ===
-                                "pattern" && (
+                              "pattern" && (
                                 <Typography
                                   variant="body2"
                                   color="red"
@@ -1032,7 +1014,7 @@ const TransferModal: React.FC<Props> = ({
                               errors.manager[idx] &&
                               errors.manager[idx].stockingDensityNM &&
                               errors.manager[idx].stockingDensityNM.type ===
-                                "required" && (
+                              "required" && (
                                 <Typography
                                   variant="body2"
                                   color="red"
@@ -1047,7 +1029,7 @@ const TransferModal: React.FC<Props> = ({
                               errors.manager[idx] &&
                               errors.manager[idx].stockingDensityNM &&
                               errors.manager[idx].stockingDensityNM.type ===
-                                "pattern" && (
+                              "pattern" && (
                                 <Typography
                                   variant="body2"
                                   color="red"

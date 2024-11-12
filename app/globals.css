@@ -446,6 +446,9 @@ body {
   margin-block: auto;
   height: 90%;
 }
+.modal-positioning {
+  border-radius: 4px !important;
+}
 
 .sidebar-icon {
   right: 4px;
