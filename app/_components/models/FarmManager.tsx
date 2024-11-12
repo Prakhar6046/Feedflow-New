@@ -201,31 +201,6 @@ const TransferModal: React.FC<Props> = ({
   console.log(watchedFields);
 
   useEffect(() => {
-    let isStockSelected = false;
-
-    // Check if "Stock" field is selected
-    watchedFields.forEach((field) => {
-      if (field.field === "Stock") {
-        isStockSelected = true;
-      }
-    });
-
-    if (isStockSelected) {
-      // Aggregate all biomass and count from watchedFields and set them to index 0
-      let totalBiomass = 0;
-      let totalCount = 0;
-
-      watchedFields.forEach((field) => {
-        totalBiomass += Number(field.biomass) || 0;
-        totalCount += Number(field.count) || 0;
-      });
-
-      // Set total biomass and count to the 0th index
-      setValue("manager.0.biomass", totalBiomass.toString());
-      setValue("manager.0.count", totalCount.toString());
-    }
-
-    // Continue with the original logic
     if (selectedProduction) {
       const index0Biomass = Number(selectedProduction.biomass) || 0; // Ensure a number
       const index0Count = Number(selectedProduction.fishCount) || 0; // Ensure a number
@@ -239,20 +214,28 @@ const TransferModal: React.FC<Props> = ({
       watchedFields.forEach((field, index) => {
         if (index === 0) return; // Skip index 0
         if (field.fishFarm === fishFarm) {
+          if (field.field === "Stock") {
+            updatedBiomass = Number(field.biomass);
+            updatedCount = Number(field.count);
+            console.log(field);
+            setValue(`manager.0.meanLength`, field.meanLength);
+            setValue(`manager.0.meanWeight`, field.meanWeight);
+            setValue(`manager.0.stockingDensityKG`, field.stockingDensityKG);
+            setValue(`manager.0.stockingDensityNM`, field.stockingDensityNM);
+          }
+
           const currentBiomass = Number(field.biomass) || 0; // Convert to number
           const currentCount = Number(field.count) || 0; // Convert to number
-
-          if (currentBiomass > updatedBiomass) {
+          if (field.field !== "Stock" && currentBiomass > updatedBiomass) {
             toast.dismiss();
             toast.error(`Please enter a value lower than ${updatedBiomass}`);
             setIsEnteredBiomassGreater(true);
           }
-          if (currentCount > updatedCount) {
+          if (field.field !== "Stock" && currentCount > updatedCount) {
             toast.dismiss();
             toast.error(`Please enter a value lower than ${updatedCount}`);
             setIsEnteredFishCountGreater(true);
           }
-
           // Update biomass if current value is valid
           if (currentBiomass > 0 && updatedBiomass > currentBiomass) {
             updatedBiomass -= currentBiomass;
@@ -265,11 +248,9 @@ const TransferModal: React.FC<Props> = ({
             setIsEnteredFishCountGreater(false);
           }
         }
-
         const farm = farms
           .find((f) => f.id === selectedFarm)
           ?.productionUnits?.find((unit) => unit.id === field.productionUnit);
-
         if (farm && farm.capacity) {
           setValue(
             `manager.${index}.stockingDensityNM`,
@@ -281,6 +262,7 @@ const TransferModal: React.FC<Props> = ({
           );
         }
       });
+      console.log(updatedBiomass);
 
       // Set the index 0 values after calculation
       setValue(`manager.0.biomass`, updatedBiomass.toString());
@@ -288,7 +270,10 @@ const TransferModal: React.FC<Props> = ({
     }
   }, [
     watchedFields.map((field) => field.biomass).join(","), // Watch biomass of all fields
-    watchedFields.map((field) => field.count).join(","), // Watch count of all fields
+    watchedFields.map((field) => field.count).join(","),
+    watchedFields.map((field) => field.meanLength).join(","),
+    watchedFields.map((field) => field.meanWeight).join(","),
+
     watchedFields.map((field) => field.stockingDensityKG).join(","),
     setValue,
     selectedProduction,
@@ -766,6 +751,9 @@ const TransferModal: React.FC<Props> = ({
                             required: true,
                             pattern: validationPattern.numbersWithDot,
                           })}
+                          InputLabelProps={{
+                            shrink: !!watch(`manager.${idx}.meanWeight`),
+                          }}
                         />
                         <Typography
                           variant="body2"
@@ -821,6 +809,9 @@ const TransferModal: React.FC<Props> = ({
                             required: true,
                             pattern: validationPattern.numbersWithDot,
                           })}
+                          InputLabelProps={{
+                            shrink: !!watch(`manager.${idx}.meanLength`),
+                          }}
                         />
                         <Typography
                           variant="body2"

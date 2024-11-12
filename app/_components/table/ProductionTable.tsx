@@ -103,6 +103,7 @@ export default function ProductionTable({
                 borderBottom: 0,
                 color: "#67737F",
                 background: "#F5F6F8",
+                textAlign: "center",
                 fontSize: {
                   md: 16,
                   xs: 14,

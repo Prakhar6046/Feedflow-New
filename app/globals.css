@@ -457,11 +457,10 @@ body {
   }
 }
 
-/* .form-height {
-  max-height: 1000px;
+.form-height {
+  height: 100%;
   overflow-y: auto;
-  margin-top: 0px !important;
-} */
+}
 label {
   width: fit-content !important;
 }
