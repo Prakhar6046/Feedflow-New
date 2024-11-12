@@ -245,6 +245,10 @@ body {
 
 /* CSS For Edit Profile */
 
+.upload-file-input {
+  width: 100% !important ;
+}
+
 .upload-file-input > span {
   margin-right: 0;
 }
