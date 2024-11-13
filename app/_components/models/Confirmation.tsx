@@ -30,6 +30,7 @@ interface Props {
   remove: any;
   watchedFields: InputTypes[];
   selectedProductionFishaFarmId: String;
+  setIsStockDeleted: (val: boolean) => void;
 }
 const Confirmation = ({
   open,
@@ -37,6 +38,7 @@ const Confirmation = ({
   remove,
   watchedFields,
   selectedProductionFishaFarmId,
+  setIsStockDeleted,
 }: Props) => {
   const handleClose = () => {
     setOpen(false);
@@ -48,6 +50,7 @@ const Confirmation = ({
       }
     });
     setOpen(false);
+    setIsStockDeleted(true);
   };
   return (
     <Modal
@@ -69,7 +72,7 @@ const Confirmation = ({
           width: {
             md: "fit-content",
             sm: "70%",
-            xs: "90%"
+            xs: "90%",
           },
         }}
       >
@@ -92,21 +95,28 @@ const Confirmation = ({
                 <CloseIcon />
               </IconButton>
             </Box>
-            <Box sx={{
-              p: {
-                sm: 4,
-                xs: 2
-              }
-            }}>
-              <Typography variant="h6" fontWeight={600} textAlign={"center"} sx={{
-                fontSize: {
-                  md: "20px",
-                  sm: "18px",
-                  xs: "16px"
-                }
-              }}>
-                Are you sure you want to delete the stock? <br /> The related field
-                with stock will also be deleted.
+            <Box
+              sx={{
+                p: {
+                  sm: 4,
+                  xs: 2,
+                },
+              }}
+            >
+              <Typography
+                variant="h6"
+                fontWeight={600}
+                textAlign={"center"}
+                sx={{
+                  fontSize: {
+                    md: "20px",
+                    sm: "18px",
+                    xs: "16px",
+                  },
+                }}
+              >
+                Are you sure you want to delete the stock? <br /> The related
+                field with stock will also be deleted.
               </Typography>
 
               <Box display={"flex"} gap={2} justifyContent={"end"} mt={5}>

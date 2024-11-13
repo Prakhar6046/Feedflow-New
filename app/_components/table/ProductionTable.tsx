@@ -41,8 +41,6 @@ export default function ProductionTable({
   farms,
   batches,
 }: Props) {
-  console.log(productions);
-
   const router = useRouter();
   const dispatch = useAppDispatch();
   const pathName = usePathname();
@@ -467,12 +465,6 @@ export default function ProductionTable({
         batches={batches}
         productions={productions}
       />
-      {/* <HarvestModal open={openHarvestModal} setOpen={setOpenHarvestModal} />
-      <MortalityModal open={openMoralityModal} setOpen={setOpenMoralityModal} />
-      <CombineTanks
-        open={openCombineTankModal}
-        setOpen={setOpenCombineTankModal}
-      /> */}
     </>
   );
 }

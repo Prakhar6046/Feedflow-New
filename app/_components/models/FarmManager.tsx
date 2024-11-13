@@ -75,7 +75,8 @@ const TransferModal: React.FC<Props> = ({
     useState<Boolean>(false);
   const [openConfirmationModal, setOpenConfirmationModal] =
     useState<boolean>(false);
-
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [isStockDeleted, setIsStockDeleted] = useState<boolean>(false);
   const {
     register,
     setValue,
@@ -178,7 +179,6 @@ const TransferModal: React.FC<Props> = ({
     });
     setOpen(false);
   };
-  const [anchorEl, setAnchorEl] = useState(null);
   const openAnchor = Boolean(anchorEl);
   const handleClick = (event: any) => {
     setAnchorEl(event.currentTarget);
@@ -206,7 +206,8 @@ const TransferModal: React.FC<Props> = ({
   };
 
   useEffect(() => {
-    if (selectedProduction) {
+    if (isStockDeleted || selectedProduction) {
+      debugger;
       const data = [
         {
           id: selectedProduction.id,
@@ -225,7 +226,7 @@ const TransferModal: React.FC<Props> = ({
       setValue("manager", data);
       setSelectedFarm(selectedProduction.fishFarmId); // Set the selected farm when manager is selected
     }
-  }, [selectedProduction, setValue]);
+  }, [selectedProduction, setValue, isStockDeleted]);
 
   const watchedFields = watch("manager");
 
@@ -1272,6 +1273,7 @@ const TransferModal: React.FC<Props> = ({
           remove={remove}
           watchedFields={watchedFields}
           selectedProductionFishaFarmId={selectedProduction?.fishFarmId}
+          setIsStockDeleted={setIsStockDeleted}
         />
       </Stack>
     </Modal>

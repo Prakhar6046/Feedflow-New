@@ -34,7 +34,6 @@ export default function Page() {
     if (response.ok) {
       setCookie("logged-user", data.data.user);
       dispatch(userAction.handleRole(data.data.user.role));
-      console.log(data);
 
       setCookie("role", data?.data?.user?.role);
       if (data.status) {
