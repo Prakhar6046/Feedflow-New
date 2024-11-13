@@ -473,6 +473,7 @@ body {
   height: 100%;
   overflow-y: auto;
 }
+
 label {
   width: fit-content !important;
 }
