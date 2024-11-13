@@ -164,9 +164,9 @@ const TransferModal: React.FC<Props> = ({
 
   const handleDelete = (item: any) => {
     if (item.field !== "Stock") {
-      remove(item.id);
+      const currentIndex = fields.findIndex((field) => field.id === item.id);
+      remove(currentIndex);
     } else {
-      console.log(watchedFields);
       setOpenConfirmationModal(true);
     }
   };
@@ -207,8 +207,6 @@ const TransferModal: React.FC<Props> = ({
 
   useEffect(() => {
     if (selectedProduction) {
-      console.log(selectedProduction);
-      debugger;
       const data = [
         {
           id: selectedProduction.id,
@@ -230,7 +228,6 @@ const TransferModal: React.FC<Props> = ({
   }, [selectedProduction, setValue]);
 
   const watchedFields = watch("manager");
-  console.log(watchedFields);
 
   useEffect(() => {
     if (selectedProduction) {
@@ -246,7 +243,13 @@ const TransferModal: React.FC<Props> = ({
       watchedFields.forEach((field, index) => {
         if (index === 0) return; // Skip index 0
         if (field.fishFarm === fishFarm) {
-          if (field.field === "Stock") {
+          if (
+            !selectedProduction.biomass &&
+            !selectedProduction.fishCount &&
+            !selectedProduction.meanLength &&
+            !selectedProduction.meanWeight &&
+            field.field === "Stock"
+          ) {
             updatedBiomass = Number(field.biomass);
             updatedCount = Number(field.count);
             console.log(field);
@@ -273,12 +276,26 @@ const TransferModal: React.FC<Props> = ({
           if (currentBiomass > 0 && updatedBiomass > currentBiomass) {
             updatedBiomass -= currentBiomass;
             setIsEnteredBiomassGreater(false);
+          } else if (field.field === "Stock") {
+            updatedBiomass = currentBiomass;
+            setValue(`manager.0.meanLength`, field.meanLength);
+            setValue(`manager.0.meanWeight`, field.meanWeight);
+            setValue(`manager.0.stockingDensityKG`, field.stockingDensityKG);
+            setValue(`manager.0.stockingDensityNM`, field.stockingDensityNM);
+            setValue(`manager.0.batchNumber`, field.batchNumber);
           }
 
           // Update count if current value is valid
           if (currentCount > 0 && updatedCount > currentCount) {
             updatedCount -= currentCount;
             setIsEnteredFishCountGreater(false);
+          } else if (field.field === "Stock") {
+            updatedCount = currentCount;
+            setValue(`manager.0.meanLength`, field.meanLength);
+            setValue(`manager.0.meanWeight`, field.meanWeight);
+            setValue(`manager.0.stockingDensityKG`, field.stockingDensityKG);
+            setValue(`manager.0.stockingDensityNM`, field.stockingDensityNM);
+            setValue(`manager.0.batchNumber`, field.batchNumber);
           }
         }
         const farm = farms

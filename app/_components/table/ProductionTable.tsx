@@ -358,7 +358,7 @@ export default function ProductionTable({
                           pl: 0,
                         }}
                       >
-                        {farm.stockingDensityKG ?? ""}
+                        {Number(farm.stockingDensityKG).toFixed(2) ?? ""}
                       </TableCell>
                       <TableCell
                         // align="center"
@@ -370,7 +370,7 @@ export default function ProductionTable({
                           pl: 0,
                         }}
                       >
-                        {farm.stockingDensityNM ?? ""}
+                        {Number(farm.stockingDensityNM).toFixed(2) ?? ""}
                         {/* {farm.meanWeight ? `${farm.meanWeight}g` : ""} */}
                       </TableCell>{" "}
                       <TableCell

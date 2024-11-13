@@ -123,23 +123,30 @@ export async function POST(req: NextRequest) {
     const unitsToDelete = existingUnits.filter(
       (existingUnit) => !unitIds.includes(existingUnit.id)
     );
+    console.log(unitsToDelete);
+
     for (const unit of unitsToDelete) {
+      // Delete related production records first
+      await prisma.production.deleteMany({
+        where: { productionUnitId: unit.id },
+      });
       await prisma.productionUnit.delete({
         where: { id: unit.id },
       });
     }
 
-    // Delete productions that no longer match any production unit
-    const productionUnitIds = newUnits.map((unit: any) => unit.id);
-    const productionsToDelete = existingProductions.filter(
-      (prod) => !productionUnitIds.includes(prod.productionUnitId)
-    );
+    // // Delete productions that no longer match any production unit
+    // const productionUnitIds = newUnits.map((unit: any) => unit.id);
+    // const productionsToDelete = existingProductions.filter(
+    //   (prod) => !productionUnitIds.includes(prod.productionUnitId)
+    // );
+    // console.log(productionsToDelete);
 
-    for (const production of productionsToDelete) {
-      await prisma.production.delete({
-        where: { id: production.id },
-      });
-    }
+    // for (const production of productionsToDelete) {
+    //   await prisma.production.delete({
+    //     where: { id: production.id },
+    //   });
+    // }
 
     return NextResponse.json({
       message: "Farm updated successfully",

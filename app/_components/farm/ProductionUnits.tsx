@@ -193,7 +193,6 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
         organsationId: loggedUserData.organisationId,
       };
     }
-
     if (Object.keys(payload).length && payload.name) {
       const response = await fetch(
         `${isEditFarm ? "/api/farm/edit-farm" : "/api/farm/add-farm"}`,
