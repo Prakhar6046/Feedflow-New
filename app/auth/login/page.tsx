@@ -16,12 +16,8 @@ import { setCookie } from "cookies-next";
 export default function Page() {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const [email, setEmail] = useState("");
-  // const [email, setEmail] = useState("abhishek.choudhary@ensuesoft.com");
-
-  // const [password, setPassword] = useState("12345678");
-  const [password, setPassword] = useState("");
-
+  const [email, setEmail] = useState("abhishek.choudhary@ensuesoft.com");
+  const [password, setPassword] = useState("12345678");
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [toastId, setToastId] = useState<string | null>(null);
 
