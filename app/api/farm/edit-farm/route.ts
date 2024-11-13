@@ -4,7 +4,6 @@ import { NextRequest, NextResponse } from "next/server";
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-
     // Ensure that the farmAddress contains an id for updating
     if (!body.farmAddress.id) {
       throw new Error("Farm address ID is required for updating.");
@@ -70,6 +69,8 @@ export async function POST(req: NextRequest) {
       );
 
       // Create or update production based on whether it's found or not
+      console.log(correspondingProduction);
+
       if (correspondingProduction) {
         // Update existing production
         const updatedProduction = await prisma.production.update({
@@ -80,7 +81,7 @@ export async function POST(req: NextRequest) {
             organisationId: body.organisationId,
             biomass: correspondingProduction.biomass,
             fishCount: correspondingProduction.fishCount,
-            batchNumberId: Number(correspondingProduction.batchNumber),
+            batchNumberId: correspondingProduction.batchNumberId,
             age: correspondingProduction.age,
             meanLength: correspondingProduction.meanLength,
             meanWeight: correspondingProduction.meanWeight,
@@ -123,7 +124,6 @@ export async function POST(req: NextRequest) {
     const unitsToDelete = existingUnits.filter(
       (existingUnit) => !unitIds.includes(existingUnit.id)
     );
-    console.log(unitsToDelete);
 
     for (const unit of unitsToDelete) {
       // Delete related production records first
@@ -134,19 +134,6 @@ export async function POST(req: NextRequest) {
         where: { id: unit.id },
       });
     }
-
-    // // Delete productions that no longer match any production unit
-    // const productionUnitIds = newUnits.map((unit: any) => unit.id);
-    // const productionsToDelete = existingProductions.filter(
-    //   (prod) => !productionUnitIds.includes(prod.productionUnitId)
-    // );
-    // console.log(productionsToDelete);
-
-    // for (const production of productionsToDelete) {
-    //   await prisma.production.delete({
-    //     where: { id: production.id },
-    //   });
-    // }
 
     return NextResponse.json({
       message: "Farm updated successfully",
