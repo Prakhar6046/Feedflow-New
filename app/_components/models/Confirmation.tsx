@@ -115,8 +115,21 @@ const Confirmation = ({
                   },
                 }}
               >
-                Are you sure you want to delete the stock? <br /> The related
-                field with stock will also be deleted.
+                Are you sure you want to delete the stock?
+              </Typography>
+
+              <Typography
+                variant="body1"
+                fontWeight={600}
+                textAlign={"center"}
+                sx={{
+                  fontSize: {
+                    md: "16px",
+                    xs: "14px",
+                  },
+                }}
+              >
+                The related field with stock will also be deleted.
               </Typography>
 
               <Box display={"flex"} gap={2} justifyContent={"end"} mt={5}>

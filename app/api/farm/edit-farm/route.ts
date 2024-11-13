@@ -69,7 +69,6 @@ export async function POST(req: NextRequest) {
       );
 
       // Create or update production based on whether it's found or not
-      console.log(correspondingProduction);
 
       if (correspondingProduction) {
         // Update existing production

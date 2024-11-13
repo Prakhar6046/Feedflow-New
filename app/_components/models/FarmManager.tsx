@@ -225,6 +225,10 @@ const TransferModal: React.FC<Props> = ({
       setValue("manager", data);
       setSelectedFarm(selectedProduction.fishFarmId); // Set the selected farm when manager is selected
     }
+
+    return () => {
+      setIsStockDeleted(false);
+    };
   }, [selectedProduction, setValue, isStockDeleted]);
 
   const watchedFields = watch("manager");
@@ -1224,11 +1228,23 @@ const TransferModal: React.FC<Props> = ({
                     onClick={() => handleCloseAnchor(field)}
                     key={i}
                     disabled={
+<<<<<<< Updated upstream
                       selectedProduction?.batchNumberId &&
                         selectedProduction?.biomass &&
                         selectedProduction?.fishCount &&
                         selectedProduction?.meanLength &&
                         selectedProduction?.meanWeight
+=======
+                      field === "Harvest" || field === "Mortalities"
+                        ? watchedFields[0].batchNumber
+                          ? false
+                          : true
+                        : selectedProduction?.batchNumberId &&
+                          selectedProduction?.biomass &&
+                          selectedProduction?.fishCount &&
+                          selectedProduction?.meanLength &&
+                          selectedProduction?.meanWeight
+>>>>>>> Stashed changes
                         ? false
                         : watchedFields.find(
                           (field) => field.field === "Stock"
