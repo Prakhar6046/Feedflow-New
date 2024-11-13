@@ -97,8 +97,8 @@ export default function FarmTable({ farms }: Props) {
                   idx === headCells.length - 1
                     ? false
                     : orderBy === headCell.id
-                    ? order
-                    : false
+                      ? order
+                      : false
                 }
                 sx={{
                   borderBottom: 0,
@@ -257,9 +257,9 @@ export default function FarmTable({ farms }: Props) {
                         borderBottomWidth: 2,
                         color: "#555555",
                         fontWeight: 500,
-                        justifyContent: "start",
-                        display: "flex",
-                        alignItems: "center",
+                        // justifyContent: "start",
+                        // display: "flex",
+                        // alignItems: "center",
                         paddingRight: "auto",
                       }}
                       className="cursor-pointer"
@@ -277,7 +277,7 @@ export default function FarmTable({ farms }: Props) {
                           fontWeight: 500,
                         }}
                         className="cursor-pointer"
-                        // onClick={() => handleEdit(user)}
+                      // onClick={() => handleEdit(user)}
                       >
                         <Button
                           id="basic-button"
