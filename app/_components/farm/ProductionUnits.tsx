@@ -332,7 +332,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                           pr: 1,
                         }}
                       >
-                        <FormControl className="form-input" fullWidth>
+                        <FormControl className="form-input prod-unit" fullWidth>
                           <InputLabel id="demo-simple-select-label">
                             Production Unit Type
                           </InputLabel>
@@ -349,13 +349,13 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                                 sx={{
                                   minWidth: "200px",
                                 }}
-                                // sx={{
-                                //   px: {
-                                //     xl: 10,
-                                //     md: 5,
-                                //     xs: 3,
-                                //   },
-                                // }}
+                              // sx={{
+                              //   px: {
+                              //     xl: 10,
+                              //     md: 5,
+                              //     xs: 3,
+                              //   },
+                              // }}
                               >
                                 {unitsTypes.map((unit, i) => (
                                   <MenuItem value={unit.name} key={i}>
@@ -476,7 +476,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                           errors.productionUnits &&
                           errors.productionUnits[index]?.capacity &&
                           errors.productionUnits[index]?.capacity.type ===
-                            "required" && (
+                          "required" && (
                             <Typography
                               variant="body2"
                               color="red"
@@ -490,7 +490,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                           errors.productionUnits &&
                           errors.productionUnits[index]?.capacity &&
                           errors.productionUnits[index]?.capacity.type ===
-                            "pattern" && (
+                          "pattern" && (
                             <Typography
                               variant="body2"
                               color="red"
@@ -547,7 +547,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                         {errors &&
                           errors.productionUnits &&
                           errors.productionUnits[index]?.waterflowRate?.type ===
-                            "required" && (
+                          "required" && (
                             <Typography
                               variant="body2"
                               color="red"
@@ -560,7 +560,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                         {errors &&
                           errors.productionUnits &&
                           errors.productionUnits[index]?.waterflowRate?.type ===
-                            "pattern" && (
+                          "pattern" && (
                             <Typography
                               variant="body2"
                               color="red"
@@ -586,6 +586,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                               cursor: "pointer",
                               width: "fit-content",
                               px: 1,
+                              mt: "16px"
                               // transform: "translateY(-10px)"
                             }}
                           >
@@ -621,7 +622,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                               cursor: "pointer",
                               width: "fit-content",
                               px: 1,
-                              // transform: "translateY(-10px)"
+                              mt: "16px"
                             }}
                           >
                             <svg
