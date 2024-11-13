@@ -1,12 +1,11 @@
-import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
 import { NextPage } from "next";
 
-interface Props { }
+interface Props {}
 
-const Page: NextPage<Props> = ({ }) => {
+const Page: NextPage<Props> = ({}) => {
   return (
-    <BasicBreadcrumbs heading={"Dashboard"} />
-    // <div>Feed Prediction Coming Soon...</div>
+    // <BasicBreadcrumbs heading={"Dashboard"} />
+    <div>Feed Prediction Coming Soon...</div>
   );
 };
 
