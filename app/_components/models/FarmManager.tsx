@@ -90,6 +90,7 @@ const TransferModal: React.FC<Props> = ({
     setFocus,
     getFieldState,
   } = useForm<InputTypes>({
+    mode: "onChange",
     defaultValues: {
       manager: [
         {
@@ -109,7 +110,6 @@ const TransferModal: React.FC<Props> = ({
       ],
     },
   });
-  console.log(errors);
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -335,11 +335,7 @@ const TransferModal: React.FC<Props> = ({
     setValue,
     selectedProduction,
   ]);
-  console.log(fields);
-  console.log(watchedFields);
-  // useEffect(() => {
-  //   trigger(`manager.${0}`); // Trigger validation for index 0
-  // }, []);
+
   return (
     <Modal
       open={open}
@@ -436,7 +432,12 @@ const TransferModal: React.FC<Props> = ({
                               })}
                               onChange={(e) => {
                                 const selectedFishFarm = e.target.value;
-                                setSelectedFarm(selectedFishFarm); // Set selected farm for this specific entry
+                                item.field === "Stock" &&
+                                  setValue(
+                                    `manager.0.fishFarm`,
+                                    e.target.value
+                                  ),
+                                  setSelectedFarm(selectedFishFarm); // Set selected farm for this specific entry
                                 setValue(
                                   `manager.${idx}.fishFarm`,
                                   selectedFishFarm
@@ -504,6 +505,12 @@ const TransferModal: React.FC<Props> = ({
                                   item.field === "Mortalities"
                                     ? false
                                     : true,
+                                onChange: (e) =>
+                                  item.field === "Stock" &&
+                                  setValue(
+                                    `manager.0.productionUnit`,
+                                    e.target.value
+                                  ),
                               })}
                               value={
                                 watch(`manager.${idx}.productionUnit`) || ""
@@ -579,13 +586,18 @@ const TransferModal: React.FC<Props> = ({
                                   : false
                               }
                               {...register(`manager.${idx}.batchNumber`, {
-                                required: true,
-                                // onChange: () => {
-                                //   trigger(`manager.${0}.batchNumber`);
-                                // },
+                                required: watch(`manager.${idx}.batchNumber`)
+                                  ? false
+                                  : true,
+                                onChange: (e) =>
+                                  item.field === "Stock" &&
+                                  setValue(
+                                    `manager.0.batchNumber`,
+                                    e.target.value
+                                  ),
                               })}
                               inputProps={{
-                                shrink: !!watch(`manager.${idx}.batchNumber`),
+                                shrink: watch(`manager.${idx}.batchNumber`),
                               }}
                               value={watch(`manager.${idx}.batchNumber`) || ""} // Ensure only the current entry is updated
                             >
@@ -608,6 +620,7 @@ const TransferModal: React.FC<Props> = ({
                               mt={0.5}
                             ></Typography>
                             {errors &&
+                              !watch(`manager.${idx}.batchNumber`) &&
                               errors.manager &&
                               errors.manager[idx] &&
                               errors.manager[idx].batchNumber && (
@@ -769,10 +782,23 @@ const TransferModal: React.FC<Props> = ({
                           label="Mean Weight *"
                           type="text"
                           className="form-input"
-                          sx={{ width: "100%" }}
+                          sx={{
+                            width: "100%",
+                            "& .MuiInputLabel-root": {
+                              transition: "all 0.2s ease",
+                            },
+                            "&:focus-within .MuiInputLabel-root": {
+                              transform: "translate(10px, -9px)", // Moves the label up when focused
+                              fontSize: "0.75rem",
+                              color: "primary.main",
+                              backgroundColor: "#fff",
+                            },
+                          }}
                           disabled={idx === 0 ? true : false}
                           {...register(`manager.${idx}.meanWeight`, {
-                            required: true,
+                            required: watch(`manager.${idx}.meanWeight`)
+                              ? false
+                              : true,
                             pattern: validationPattern.numbersWithDot,
                           })}
                           InputLabelProps={{
@@ -786,6 +812,7 @@ const TransferModal: React.FC<Props> = ({
                           mt={0.5}
                         ></Typography>
                         {errors &&
+                          !watch(`manager.${idx}.meanWeight`) &&
                           errors.manager &&
                           errors.manager[idx] &&
                           errors.manager[idx].meanWeight &&
@@ -827,10 +854,23 @@ const TransferModal: React.FC<Props> = ({
                           label="Mean Length *"
                           type="text"
                           className="form-input"
-                          sx={{ width: "100%" }}
+                          sx={{
+                            width: "100%",
+                            "& .MuiInputLabel-root": {
+                              transition: "all 0.2s ease",
+                            },
+                            "&:focus-within .MuiInputLabel-root": {
+                              transform: "translate(10px, -9px)", // Moves the label up when focused
+                              fontSize: "0.75rem",
+                              color: "primary.main",
+                              backgroundColor: "#fff",
+                            },
+                          }}
                           disabled={idx === 0 ? true : false}
                           {...register(`manager.${idx}.meanLength` as const, {
-                            required: true,
+                            required: watch(`manager.${idx}.meanLength`)
+                              ? false
+                              : true,
                             pattern: validationPattern.numbersWithDot,
                           })}
                           InputLabelProps={{
@@ -844,6 +884,7 @@ const TransferModal: React.FC<Props> = ({
                           mt={0.5}
                         ></Typography>
                         {errors &&
+                          !watch(`manager.${idx}.meanLength`) &&
                           errors.manager &&
                           errors.manager[idx] &&
                           errors.manager[idx].meanLength &&

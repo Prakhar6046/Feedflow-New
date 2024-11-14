@@ -62,8 +62,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
   const userData: any = getCookie("logged-user");
 
   const dispatch = useAppDispatch();
-  // const farm = useAppSelector(selectFarm);
-  const newFarmInfoLocal = getCookie("new-farm-info");
+  const farm = useAppSelector(selectFarm);
   const isEditFarm = useAppSelector(selectIsEditFarm);
   const [selectedUnit, setSelectedUnit] = React.useState<UnitsTypes>();
   const [length, setLength] = useState<string>();
@@ -150,7 +149,6 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
 
   const onSubmit: SubmitHandler<ProductionUnitsFormTypes> = async (data) => {
     const loggedUserData = JSON.parse(userData);
-    const farm = newFarmInfoLocal ? JSON.parse(newFarmInfoLocal) : {};
 
     let payload;
     if (isEditFarm && editFarm?.farmAddress?.id) {
@@ -213,7 +211,6 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
     } else {
       toast.error("Please fill out the all feilds");
     }
-    deleteCookie("new-farm-info");
     dispatch(farmAction.resetState());
   };
 
@@ -349,13 +346,13 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                                 sx={{
                                   minWidth: "200px",
                                 }}
-                              // sx={{
-                              //   px: {
-                              //     xl: 10,
-                              //     md: 5,
-                              //     xs: 3,
-                              //   },
-                              // }}
+                                // sx={{
+                                //   px: {
+                                //     xl: 10,
+                                //     md: 5,
+                                //     xs: 3,
+                                //   },
+                                // }}
                               >
                                 {unitsTypes.map((unit, i) => (
                                   <MenuItem value={unit.name} key={i}>
@@ -476,7 +473,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                           errors.productionUnits &&
                           errors.productionUnits[index]?.capacity &&
                           errors.productionUnits[index]?.capacity.type ===
-                          "required" && (
+                            "required" && (
                             <Typography
                               variant="body2"
                               color="red"
@@ -490,7 +487,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                           errors.productionUnits &&
                           errors.productionUnits[index]?.capacity &&
                           errors.productionUnits[index]?.capacity.type ===
-                          "pattern" && (
+                            "pattern" && (
                             <Typography
                               variant="body2"
                               color="red"
@@ -547,7 +544,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                         {errors &&
                           errors.productionUnits &&
                           errors.productionUnits[index]?.waterflowRate?.type ===
-                          "required" && (
+                            "required" && (
                             <Typography
                               variant="body2"
                               color="red"
@@ -560,7 +557,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                         {errors &&
                           errors.productionUnits &&
                           errors.productionUnits[index]?.waterflowRate?.type ===
-                          "pattern" && (
+                            "pattern" && (
                             <Typography
                               variant="body2"
                               color="red"
@@ -586,7 +583,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                               cursor: "pointer",
                               width: "fit-content",
                               px: 1,
-                              mt: "16px"
+                              mt: "16px",
                               // transform: "translateY(-10px)"
                             }}
                           >
@@ -622,7 +619,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                               cursor: "pointer",
                               width: "fit-content",
                               px: 1,
-                              mt: "16px"
+                              mt: "16px",
                             }}
                           >
                             <svg
