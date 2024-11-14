@@ -152,6 +152,7 @@ const TransferModal: React.FC<Props> = ({
 
       const res = await response.json();
       if (res.status) {
+        toast.dismiss();
         toast.success(res.message);
         setOpen(false);
         router.push("/dashboard/production");
