@@ -1,15 +1,11 @@
 "use client";
-import { feedAction } from "@/lib/features/feed/feedSlice";
+import TransferModal from "@/app/_components/models/FarmManager";
+import { Farm } from "@/app/_typeModels/Farm";
+import { Production } from "@/app/_typeModels/production";
+import { breadcrumsAction } from "@/lib/features/breadcrum/breadcrumSlice";
+import { selectRole } from "@/lib/features/user/userSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import {
-  Button,
-  Divider,
-  Menu,
-  MenuItem,
-  Stack,
-  TableSortLabel,
-  Typography,
-} from "@mui/material";
+import { Button, TableSortLabel } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -17,18 +13,9 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
+import { getCookie } from "cookies-next";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-
-import TransferModal from "@/app/_components/models/FarmManager";
-import HarvestModal from "@/app/_components/models/Harvest";
-import MortalityModal from "@/app/_components/models/Mortality";
-import { breadcrumsAction } from "@/lib/features/breadcrum/breadcrumSlice";
-import { selectRole, userAction } from "@/lib/features/user/userSlice";
-import { getCookie } from "cookies-next";
-import { Production } from "@/app/_typeModels/production";
-import CombineTanks from "../models/CombineTanks";
-import { Farm } from "@/app/_typeModels/Farm";
 interface Props {
   productions: Production[];
   tableData: any;
@@ -51,10 +38,6 @@ export default function ProductionTable({
     null
   );
   const [openTransferModal, setOpenTransferModal] = useState<boolean>(false);
-  const [openHarvestModal, setOpenHarvestModal] = useState<boolean>(false);
-  const [openMoralityModal, setOpenMoralityModal] = useState<boolean>(false);
-  const [openCombineTankModal, setOpenCombineTankModal] =
-    useState<boolean>(false);
 
   const role = useAppSelector(selectRole);
   const [order, setOrder] = React.useState("asc");
