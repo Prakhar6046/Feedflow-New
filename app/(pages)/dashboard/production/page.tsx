@@ -36,11 +36,11 @@ export default async function Page({
   return (
     <>
       <BasicBreadcrumbs
-        heading={"Production"}
+        heading={"Production Manager"}
         isTable={true}
         links={[
           { name: "Dashboard", link: "/dashboard" },
-          { name: "Production", link: "/dashboard/production" },
+          { name: "Production Manager", link: "/dashboard/production" },
         ]}
       />
       <ProductionTable
