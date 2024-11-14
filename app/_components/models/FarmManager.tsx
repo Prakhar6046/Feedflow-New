@@ -82,6 +82,7 @@ const TransferModal: React.FC<Props> = ({
     setValue,
     formState: { errors },
     watch,
+    trigger,
     reset,
     getValues,
     handleSubmit,
@@ -108,6 +109,7 @@ const TransferModal: React.FC<Props> = ({
       ],
     },
   });
+  console.log(errors);
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -153,6 +155,7 @@ const TransferModal: React.FC<Props> = ({
         toast.success(res.message);
         setOpen(false);
         router.push("/dashboard/production");
+        reset();
         router.refresh();
       }
     } else {
@@ -280,6 +283,8 @@ const TransferModal: React.FC<Props> = ({
             updatedBiomass -= currentBiomass;
             setIsEnteredBiomassGreater(false);
           } else if (field.field === "Stock") {
+            // trigger(`manager.${0}`);
+
             updatedBiomass = currentBiomass;
             setValue(`manager.0.meanLength`, field.meanLength);
             setValue(`manager.0.meanWeight`, field.meanWeight);
@@ -330,7 +335,11 @@ const TransferModal: React.FC<Props> = ({
     setValue,
     selectedProduction,
   ]);
-
+  console.log(fields);
+  console.log(watchedFields);
+  // useEffect(() => {
+  //   trigger(`manager.${0}`); // Trigger validation for index 0
+  // }, []);
   return (
     <Modal
       open={open}
@@ -570,9 +579,10 @@ const TransferModal: React.FC<Props> = ({
                                   : false
                               }
                               {...register(`manager.${idx}.batchNumber`, {
-                                required: watch(`manager.${idx}.batchNumber`)
-                                  ? false
-                                  : true,
+                                required: true,
+                                // onChange: () => {
+                                //   trigger(`manager.${0}.batchNumber`);
+                                // },
                               })}
                               inputProps={{
                                 shrink: !!watch(`manager.${idx}.batchNumber`),
@@ -591,48 +601,27 @@ const TransferModal: React.FC<Props> = ({
                               )}
                             </Select>
 
-                            {errors &&
-                              errors?.manager &&
-                              errors?.manager[idx] &&
-                              errors?.manager[idx].fishFarm &&
-                              errors?.manager[idx].fishFarm.type ===
-                                "required" && (
-                                <Typography
-                                  variant="body2"
-                                  color="red"
-                                  fontSize={13}
-                                  mt={0.5}
-                                >
-                                  {validationMessage.required}
-                                </Typography>
-                              )}
                             <Typography
                               variant="body2"
                               color="red"
                               fontSize={13}
                               mt={0.5}
                             ></Typography>
+                            {errors &&
+                              errors.manager &&
+                              errors.manager[idx] &&
+                              errors.manager[idx].batchNumber && (
+                                <Typography
+                                  variant="body2"
+                                  color="red"
+                                  fontSize={13}
+                                  mt={0.5}
+                                >
+                                  This field is required
+                                </Typography>
+                              )}
                           </FormControl>
                         </Box>
-                        <Typography
-                          variant="body2"
-                          color="red"
-                          fontSize={13}
-                          mt={0.5}
-                        ></Typography>
-                        {errors &&
-                          errors.manager &&
-                          errors.manager[idx] &&
-                          errors.manager[idx].batchNumber && (
-                            <Typography
-                              variant="body2"
-                              color="red"
-                              fontSize={13}
-                              mt={0.5}
-                            >
-                              This field is required
-                            </Typography>
-                          )}
                       </Grid>
                       <Grid
                         xs
