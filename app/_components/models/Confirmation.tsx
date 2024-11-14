@@ -31,6 +31,7 @@ interface Props {
   watchedFields: InputTypes[];
   selectedProductionFishaFarmId: String;
   setIsStockDeleted: (val: boolean) => void;
+  clearErrors: any;
 }
 const Confirmation = ({
   open,
@@ -39,6 +40,7 @@ const Confirmation = ({
   watchedFields,
   selectedProductionFishaFarmId,
   setIsStockDeleted,
+  clearErrors,
 }: Props) => {
   const handleClose = () => {
     setOpen(false);
@@ -51,6 +53,7 @@ const Confirmation = ({
     });
     setOpen(false);
     setIsStockDeleted(true);
+    clearErrors();
   };
   return (
     <Modal

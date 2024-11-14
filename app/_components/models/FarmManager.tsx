@@ -83,6 +83,7 @@ const TransferModal: React.FC<Props> = ({
     formState: { errors },
     watch,
     trigger,
+    clearErrors,
     reset,
     getValues,
     handleSubmit,
@@ -1310,6 +1311,7 @@ const TransferModal: React.FC<Props> = ({
           watchedFields={watchedFields}
           selectedProductionFishaFarmId={selectedProduction?.fishFarmId}
           setIsStockDeleted={setIsStockDeleted}
+          clearErrors={clearErrors}
         />
       </Stack>
     </Modal>

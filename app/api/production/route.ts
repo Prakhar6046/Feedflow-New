@@ -17,7 +17,7 @@ export const GET = async (request: NextRequest) => {
         fishSupply: true,
       },
       orderBy: {
-        updatedAt: "desc", // Sort by createdAt in descending order
+        createdAt: "desc", // Sort by createdAt in descending order
       },
       where: {
         ...(filter === "true"
