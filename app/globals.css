@@ -205,25 +205,6 @@ body {
   border-radius: 8px;
 }
 
-/* CSS For Sidebar Menu  */
-/* .login-inputs .css-18pjc51-MuiFormLabel-root-MuiInputLabel-root.Mui-focused {
-  color: #979797;
-} */
-
-/* .select-input {
-  display: none;
-} */
-
-/* .select-input
-  .css-15k6ek6-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input {
-  padding: 10px;
-}
-
-.select-input .css-1q964xs-MuiFormLabel-root-MuiInputLabel-root {
-  top: -5px;
-  border-color: #979797 !important;
-} */
-
 /* CSS For Breadcrumb  */
 .breadcrumb-links {
   font-size: 14px;
@@ -278,14 +259,7 @@ body {
 
 .form-input > label {
   color: #979797 !important;
-  /* min-width: 1200px !important;
-  width: 1000px !important; */
 }
-
-/* .user-info .form-input > label {
-  min-width: 1200px !important;
-  width: 1000px !important;
-} */
 
 .cursor-pointer {
   cursor: pointer;
@@ -319,16 +293,13 @@ body {
 
 .stepper-container > div > div:nth-child(even) {
   visibility: hidden;
-  /* margin: 12px 0; */
 }
 
 @media only screen and (max-width: 900px) {
   .stepper-container > div {
     flex-direction: row !important;
-    /* flex-wrap: wrap; */
     gap: 16px;
     overflow-x: scroll;
-    /* justify-content: flex-start !important; */
   }
 
   .stepper svg {
@@ -357,36 +328,6 @@ body {
 .form-radio > span:nth-child(2) {
   font-size: 14px;
 }
-
-/* .test {
-  border-bottom: 0 !important;
-  color: #67737f;
-  background: #f5f6f8;
-  border-top-left-radius: 10px !important;
-  font-size: 16px;
-  font-weight: 700 !important;
-  width: 100% !important;
-}
-
-.test1 {
-  border-bottom: 0 !important;
-  color: #67737f;
-  background: #f5f6f8;
-  border: 0 !important;
-  font-size: 16px;
-  font-weight: 700 !important;
-  width: 100% !important;
-}
-
-.test2 {
-  border-bottom: 0 !important;
-  color: #67737f;
-  background: #f5f6f8;
-  border-top-right-radius: 10px !important;
-  font-size: 16px;
-  font-weight: 700 !important;
-  width: 100% !important;
-} */
 
 @media only screen and (max-width: 1600px) {
   .custom-field > label {
@@ -429,20 +370,6 @@ body {
 .hatchery-table table tbody tr td:last-child {
   padding-left: 40px !important;
 }
-/* .css-1xomo8h-MuiPaper-root-MuiPopover-paper-MuiMenu-paper {
-  box-shadow: none !important;
-  min-height: 0px !important;
-}
-
-@media only screen and (min-width: 1200px) {
-  .modal-positioning > div:nth-child(3) {
-    width: 1200px !important;
-    top: "50%";
-    left: "50%";
-    transform: "translate(-50%, -50%)";
-    margin-bottom: "10px";
-  }
-} */
 
 .modal-positioning > div:nth-child(3) {
   width: 90% !important;

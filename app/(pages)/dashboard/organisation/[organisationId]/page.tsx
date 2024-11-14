@@ -496,13 +496,6 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
                   {...register("organisationType")}
                   value={selectedOrganisationType || ""}
                 // onChange={(e) => handleChange(e, item)}
-                // sx={{
-                //   px: {
-                //     xl: 10,
-                //     md: 5,
-                //     xs: 3,
-                //   },
-                // }}
                 >
                   {OrganisationType.map((organisation, i) => {
                     return (

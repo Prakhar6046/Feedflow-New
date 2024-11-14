@@ -136,12 +136,6 @@ const Page = ({ params }: { params: { farmId: string } }) => {
           md={8}
           xs={12}
           my={2}
-          // sx={{
-          //     mt: {
-          //         md: 0,
-          //         xs: 5,
-          //     },
-          // }}
         >
           {activeStep === 0 && <AquaFarmWizard setActiveStep={setActiveStep} />}
           {activeStep === 1 && (

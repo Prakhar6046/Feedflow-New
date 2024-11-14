@@ -375,7 +375,6 @@ const TransferModal: React.FC<Props> = ({
                     </Typography>
                   </Box>
                 )}
-
                 <Box
                   sx={{
                     display: "flex",
@@ -422,8 +421,8 @@ const TransferModal: React.FC<Props> = ({
                               label="Fish Farm*"
                               disabled={
                                 item.field === "Harvest" ||
-                                item.field === "Mortalities" ||
-                                idx === 0
+                                  item.field === "Mortalities" ||
+                                  idx === 0
                                   ? true
                                   : false
                               }
@@ -454,13 +453,12 @@ const TransferModal: React.FC<Props> = ({
                                 </MenuItem>
                               ))}
                             </Select>
-
                             {errors &&
                               errors?.manager &&
                               errors?.manager[idx] &&
                               errors?.manager[idx].fishFarm &&
                               errors?.manager[idx].fishFarm.type ===
-                                "required" && (
+                              "required" && (
                                 <Typography
                                   variant="body2"
                                   color="red"
@@ -496,15 +494,15 @@ const TransferModal: React.FC<Props> = ({
                               label="Production Unit*"
                               disabled={
                                 item.field === "Harvest" ||
-                                item.field === "Mortalities" ||
-                                idx === 0
+                                  item.field === "Mortalities" ||
+                                  idx === 0
                                   ? true
                                   : false
                               }
                               {...register(`manager.${idx}.productionUnit`, {
                                 required:
                                   item.field === "Harvest" ||
-                                  item.field === "Mortalities"
+                                    item.field === "Mortalities"
                                     ? false
                                     : true,
                                 onChange: (e) =>
@@ -523,7 +521,6 @@ const TransferModal: React.FC<Props> = ({
                                   (farm) =>
                                     farm.id === watch(`manager.${idx}.fishFarm`)
                                 );
-
                                 return selectedFarm ? (
                                   selectedFarm?.productionUnits?.map((unit) => (
                                     <MenuItem
@@ -545,7 +542,7 @@ const TransferModal: React.FC<Props> = ({
                               errors?.manager[idx] &&
                               errors?.manager[idx].productionUnit &&
                               errors?.manager[idx].productionUnit.type ===
-                                "required" && (
+                              "required" && (
                                 <Typography
                                   variant="body2"
                                   color="red"
@@ -582,8 +579,8 @@ const TransferModal: React.FC<Props> = ({
                               label="Batch No. *"
                               disabled={
                                 item.field === "Harvest" ||
-                                item.field === "Mortalities" ||
-                                idx === 0
+                                  item.field === "Mortalities" ||
+                                  idx === 0
                                   ? true
                                   : false
                               }
@@ -601,7 +598,7 @@ const TransferModal: React.FC<Props> = ({
                               inputProps={{
                                 shrink: watch(`manager.${idx}.batchNumber`),
                               }}
-                              value={watch(`manager.${idx}.batchNumber`) || ""} // Ensure only the current entry is updated
+                              value={watch(`manager.${idx}.batchNumber`) || ""}
                             >
                               {batches?.map(
                                 (
@@ -614,7 +611,6 @@ const TransferModal: React.FC<Props> = ({
                                 )
                               )}
                             </Select>
-
                             <Typography
                               variant="body2"
                               color="red"
@@ -663,7 +659,6 @@ const TransferModal: React.FC<Props> = ({
                               pattern: validationPattern.numbersWithDot,
                             })}
                           />
-
                           <Typography
                             variant="body2"
                             color="#555555AC"
@@ -790,7 +785,7 @@ const TransferModal: React.FC<Props> = ({
                               transition: "all 0.2s ease",
                             },
                             "&:focus-within .MuiInputLabel-root": {
-                              transform: "translate(10px, -9px)", // Moves the label up when focused
+                              transform: "translate(10px, -9px)",
                               fontSize: "0.75rem",
                               color: "primary.main",
                               backgroundColor: "#fff",
@@ -819,7 +814,7 @@ const TransferModal: React.FC<Props> = ({
                           errors.manager[idx] &&
                           errors.manager[idx].meanWeight &&
                           errors.manager[idx].meanWeight.type ===
-                            "required" && (
+                          "required" && (
                             <Typography
                               variant="body2"
                               color="red"
@@ -862,7 +857,7 @@ const TransferModal: React.FC<Props> = ({
                               transition: "all 0.2s ease",
                             },
                             "&:focus-within .MuiInputLabel-root": {
-                              transform: "translate(10px, -9px)", // Moves the label up when focused
+                              transform: "translate(10px, -9px)",
                               fontSize: "0.75rem",
                               color: "primary.main",
                               backgroundColor: "#fff",
@@ -891,7 +886,7 @@ const TransferModal: React.FC<Props> = ({
                           errors.manager[idx] &&
                           errors.manager[idx].meanLength &&
                           errors.manager[idx].meanLength.type ===
-                            "required" && (
+                          "required" && (
                             <Typography
                               variant="body2"
                               color="red"
@@ -948,7 +943,7 @@ const TransferModal: React.FC<Props> = ({
                                     transition: "all 0.2s ease",
                                   },
                                   "&:focus-within .MuiInputLabel-root": {
-                                    transform: "translate(10px, -9px)", // Moves the label up when focused
+                                    transform: "translate(10px, -9px)",
                                     fontSize: "0.75rem",
                                     color: "primary.main",
                                     backgroundColor: "#fff",
@@ -962,7 +957,6 @@ const TransferModal: React.FC<Props> = ({
                                   }
                                 )}
                               />
-
                               <Typography
                                 variant="body2"
                                 color="#555555AC"
@@ -982,7 +976,6 @@ const TransferModal: React.FC<Props> = ({
                                 {`(kg/${"m\u00B3"})`}
                               </Typography>
                             </Box>
-
                             <Typography
                               variant="body2"
                               color="red"
@@ -994,7 +987,7 @@ const TransferModal: React.FC<Props> = ({
                               errors.manager[idx] &&
                               errors.manager[idx].stockingDensityKG &&
                               errors.manager[idx].stockingDensityKG.type ===
-                                "required" && (
+                              "required" && (
                                 <Typography
                                   variant="body2"
                                   color="red"
@@ -1009,7 +1002,7 @@ const TransferModal: React.FC<Props> = ({
                               errors.manager[idx] &&
                               errors.manager[idx].stockingDensityKG &&
                               errors.manager[idx].stockingDensityKG.type ===
-                                "pattern" && (
+                              "pattern" && (
                                 <Typography
                                   variant="body2"
                                   color="red"
@@ -1060,14 +1053,13 @@ const TransferModal: React.FC<Props> = ({
                                     transition: "all 0.2s ease",
                                   },
                                   "&:focus-within .MuiInputLabel-root": {
-                                    transform: "translate(10px, -9px)", // Moves the label up when focused
+                                    transform: "translate(10px, -9px)",
                                     fontSize: "0.75rem",
                                     color: "primary.main",
                                     backgroundColor: "#fff",
                                   },
                                 }}
                               />
-
                               <Typography
                                 variant="body2"
                                 color="#555555AC"
@@ -1087,7 +1079,6 @@ const TransferModal: React.FC<Props> = ({
                                 {`(n/${"m\u00B3"})`}
                               </Typography>
                             </Box>
-
                             <Typography
                               variant="body2"
                               color="red"
@@ -1099,7 +1090,7 @@ const TransferModal: React.FC<Props> = ({
                               errors.manager[idx] &&
                               errors.manager[idx].stockingDensityNM &&
                               errors.manager[idx].stockingDensityNM.type ===
-                                "required" && (
+                              "required" && (
                                 <Typography
                                   variant="body2"
                                   color="red"
@@ -1114,7 +1105,7 @@ const TransferModal: React.FC<Props> = ({
                               errors.manager[idx] &&
                               errors.manager[idx].stockingDensityNM &&
                               errors.manager[idx].stockingDensityNM.type ===
-                                "pattern" && (
+                              "pattern" && (
                                 <Typography
                                   variant="body2"
                                   color="red"
@@ -1160,7 +1151,6 @@ const TransferModal: React.FC<Props> = ({
                         )}
                     </Grid>
                   </Stack>
-
                   <Box
                     display={"flex"}
                     alignItems={"center"}
@@ -1177,7 +1167,6 @@ const TransferModal: React.FC<Props> = ({
                         visibility: idx === 0 ? "hidden" : "",
                         cursor: "pointer",
                         width: {
-                          // lg: 150,
                           xs: "auto",
                         },
                       }}
@@ -1200,7 +1189,6 @@ const TransferModal: React.FC<Props> = ({
                     </Box>
                   </Box>
                 </Box>
-
                 <Divider
                   orientation="vertical"
                   sx={{
@@ -1215,7 +1203,6 @@ const TransferModal: React.FC<Props> = ({
               </Box>
             );
           })}
-
           <Box
             display="flex"
             justifyContent="flex-end"
@@ -1225,7 +1212,6 @@ const TransferModal: React.FC<Props> = ({
             margin={"40px"}
           >
             <Button
-              className=""
               type="button"
               variant="contained"
               onClick={handleClick}
@@ -1239,7 +1225,6 @@ const TransferModal: React.FC<Props> = ({
                 },
                 textTransform: "capitalize",
                 borderRadius: "12px",
-
                 marginBlock: "10px",
               }}
             >
@@ -1269,12 +1254,12 @@ const TransferModal: React.FC<Props> = ({
                           selectedProduction?.fishCount &&
                           selectedProduction?.meanLength &&
                           selectedProduction?.meanWeight
-                        ? false
-                        : watchedFields.find(
+                          ? false
+                          : watchedFields.find(
                             (field) => field.field === "Stock"
                           ) && field === "Stock"
-                        ? true
-                        : false
+                            ? true
+                            : false
                     }
                   >
                     {field}
@@ -1283,7 +1268,6 @@ const TransferModal: React.FC<Props> = ({
               })}
             </Menu>
             <Button
-              className=""
               type="submit"
               variant="contained"
               sx={{
@@ -1296,7 +1280,6 @@ const TransferModal: React.FC<Props> = ({
                 },
                 textTransform: "capitalize",
                 borderRadius: "12px",
-
                 marginBlock: "10px",
               }}
             >

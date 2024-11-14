@@ -257,10 +257,7 @@ export default function FarmTable({ farms }: Props) {
                         borderBottomWidth: 2,
                         color: "#555555",
                         fontWeight: 500,
-                        // justifyContent: "start",
-                        // display: "flex",
-                        // alignItems: "center",
-                        paddingRight: "auto",
+                        p: 0
                       }}
                       className="cursor-pointer"
                     >

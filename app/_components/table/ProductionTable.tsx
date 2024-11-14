@@ -78,8 +78,8 @@ export default function ProductionTable({
                 idx === headCells.length - 1
                   ? false
                   : orderBy === headCell.id
-                  ? order
-                  : false
+                    ? order
+                    : false
               }
               // align="center"
               sx={{
@@ -376,7 +376,7 @@ export default function ProductionTable({
                             fontWeight: 500,
                           }}
                           className="cursor-pointer"
-                          // onClick={() => handleEdit(user)}
+                        // onClick={() => handleEdit(user)}
                         >
                           {/* <Button
                             id="basic-button"
