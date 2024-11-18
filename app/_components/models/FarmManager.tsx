@@ -25,6 +25,8 @@ import React, { useEffect, useState } from "react";
 import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import Confirmation from "./Confirmation";
+import CalculateMeanWeigth from "./CalculateMeanWeigth";
+import CalculateMeanLength from "./CalculateMeanLength";
 const style = {
   position: "absolute" as "absolute",
   top: "50%",
@@ -77,6 +79,9 @@ const TransferModal: React.FC<Props> = ({
     useState<boolean>(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const [isStockDeleted, setIsStockDeleted] = useState<boolean>(false);
+  const [isMeanWeigthCal, setIsMeanWeigthCal] = useState<boolean>(false);
+  const [isMeanLengthCal, setIsMeanLengthCal] = useState<boolean>(false);
+
   const {
     register,
     setValue,
@@ -193,7 +198,7 @@ const TransferModal: React.FC<Props> = ({
       append({
         id: 0,
         fishFarm: selectedProduction.fishFarmId,
-        productionUnit: selectedProduction.productionUnitId,
+        productionUnit: "",
         biomass: "",
         count: "",
         meanWeight: "",
@@ -202,7 +207,7 @@ const TransferModal: React.FC<Props> = ({
         stockingLevel: "",
         stockingDensityKG: "",
         field,
-        batchNumber: selectedProduction.batchNumberId,
+        batchNumber: "",
       });
       setAnchorEl(null);
     } else {
@@ -338,6 +343,8 @@ const TransferModal: React.FC<Props> = ({
     selectedProduction,
   ]);
 
+  console.log(watchedFields);
+
   return (
     <Modal
       open={open}
@@ -421,8 +428,8 @@ const TransferModal: React.FC<Props> = ({
                               label="Fish Farm*"
                               disabled={
                                 item.field === "Harvest" ||
-                                  item.field === "Mortalities" ||
-                                  idx === 0
+                                item.field === "Mortalities" ||
+                                idx === 0
                                   ? true
                                   : false
                               }
@@ -458,7 +465,7 @@ const TransferModal: React.FC<Props> = ({
                               errors?.manager[idx] &&
                               errors?.manager[idx].fishFarm &&
                               errors?.manager[idx].fishFarm.type ===
-                              "required" && (
+                                "required" && (
                                 <Typography
                                   variant="body2"
                                   color="red"
@@ -494,15 +501,15 @@ const TransferModal: React.FC<Props> = ({
                               label="Production Unit*"
                               disabled={
                                 item.field === "Harvest" ||
-                                  item.field === "Mortalities" ||
-                                  idx === 0
+                                item.field === "Mortalities" ||
+                                idx === 0
                                   ? true
                                   : false
                               }
                               {...register(`manager.${idx}.productionUnit`, {
                                 required:
                                   item.field === "Harvest" ||
-                                    item.field === "Mortalities"
+                                  item.field === "Mortalities"
                                     ? false
                                     : true,
                                 onChange: (e) =>
@@ -542,7 +549,7 @@ const TransferModal: React.FC<Props> = ({
                               errors?.manager[idx] &&
                               errors?.manager[idx].productionUnit &&
                               errors?.manager[idx].productionUnit.type ===
-                              "required" && (
+                                "required" && (
                                 <Typography
                                   variant="body2"
                                   color="red"
@@ -579,8 +586,8 @@ const TransferModal: React.FC<Props> = ({
                               label="Batch No. *"
                               disabled={
                                 item.field === "Harvest" ||
-                                  item.field === "Mortalities" ||
-                                  idx === 0
+                                item.field === "Mortalities" ||
+                                idx === 0
                                   ? true
                                   : false
                               }
@@ -776,25 +783,36 @@ const TransferModal: React.FC<Props> = ({
                         }}
                       >
                         <Box position={"relative"}>
-                          <Box bgcolor={"red"}>
+                          <Box onClick={() => setIsMeanWeigthCal(true)}>
                             <Typography
                               variant="body2"
                               color="#555555AC"
                               sx={{
                                 position: "absolute",
-                                right: 6,
+                                // right: 6,
+                                right: 0,
                                 top: "50%",
                                 transform: "translate(-6px, -50%)",
-                                backgroundColor: "red",
+                                backgroundColor: "#06A19B",
                                 height: 30,
                                 display: "grid",
                                 placeItems: "center",
                                 zIndex: 1,
-                                pl: 1,
+                                px: 0.75,
+                                borderRadius: 1,
+                                cursor: "pointer",
                               }}
                             >
-                              <svg xmlns="http://www.w3.org/2000/svg" width="1.4em" height="1.4em" viewBox="0 0 24 24">
-                                <path fill="#555555AC" d="M8 18h1.5v-2h2v-1.5h-2v-2H8v2H6V16h2zm5-.75h5v-1.5h-5zm0-2.5h5v-1.5h-5zm1.1-3.8l1.4-1.4l1.4 1.4l1.05-1.05l-1.4-1.45l1.4-1.4L16.9 6l-1.4 1.4L14.1 6l-1.05 1.05l1.4 1.4l-1.4 1.45zM6.25 9.2h5V7.7h-5zM5 21q-.825 0-1.413-.587T3 19V5q0-.825.588-1.412T5 3h14q.825 0 1.413.588T21 5v14q0 .825-.587 1.413T19 21zm0-2h14V5H5zM5 5v14z" />
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="1.4em"
+                                height="1.4em"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  fill="#fff"
+                                  d="M8 18h1.5v-2h2v-1.5h-2v-2H8v2H6V16h2zm5-.75h5v-1.5h-5zm0-2.5h5v-1.5h-5zm1.1-3.8l1.4-1.4l1.4 1.4l1.05-1.05l-1.4-1.45l1.4-1.4L16.9 6l-1.4 1.4L14.1 6l-1.05 1.05l1.4 1.4l-1.4 1.45zM6.25 9.2h5V7.7h-5zM5 21q-.825 0-1.413-.587T3 19V5q0-.825.588-1.412T5 3h14q.825 0 1.413.588T21 5v14q0 .825-.587 1.413T19 21zm0-2h14V5H5zM5 5v14z"
+                                />
                               </svg>
                             </Typography>
                           </Box>
@@ -827,6 +845,7 @@ const TransferModal: React.FC<Props> = ({
                             }}
                           />
                         </Box>
+
                         <Typography
                           variant="body2"
                           color="red"
@@ -839,7 +858,7 @@ const TransferModal: React.FC<Props> = ({
                           errors.manager[idx] &&
                           errors.manager[idx].meanWeight &&
                           errors.manager[idx].meanWeight.type ===
-                          "required" && (
+                            "required" && (
                             <Typography
                               variant="body2"
                               color="red"
@@ -872,69 +891,105 @@ const TransferModal: React.FC<Props> = ({
                           minWidth: 130,
                         }}
                       >
-                        <TextField
-                          label="Mean Length *"
-                          type="text"
-                          className="form-input"
-                          sx={{
-                            width: "100%",
-                            "& .MuiInputLabel-root": {
-                              transition: "all 0.2s ease",
-                            },
-                            "&:focus-within .MuiInputLabel-root": {
-                              transform: "translate(10px, -9px)",
-                              fontSize: "0.75rem",
-                              color: "primary.main",
-                              backgroundColor: "#fff",
-                            },
-                          }}
-                          disabled={idx === 0 ? true : false}
-                          {...register(`manager.${idx}.meanLength` as const, {
-                            required: watch(`manager.${idx}.meanLength`)
-                              ? false
-                              : true,
-                            pattern: validationPattern.numbersWithDot,
-                          })}
-                          InputLabelProps={{
-                            shrink: !!watch(`manager.${idx}.meanLength`),
-                          }}
-                        />
-                        <Typography
-                          variant="body2"
-                          color="red"
-                          fontSize={13}
-                          mt={0.5}
-                        ></Typography>
-                        {errors &&
-                          !watch(`manager.${idx}.meanLength`) &&
-                          errors.manager &&
-                          errors.manager[idx] &&
-                          errors.manager[idx].meanLength &&
-                          errors.manager[idx].meanLength.type ===
-                          "required" && (
+                        <Box position={"relative"}>
+                          <Box onClick={() => setIsMeanLengthCal(true)}>
                             <Typography
                               variant="body2"
-                              color="red"
-                              fontSize={13}
-                              mt={0.5}
+                              color="#555555AC"
+                              sx={{
+                                position: "absolute",
+                                // right: 6,
+                                right: 0,
+                                top: "50%",
+                                transform: "translate(-6px, -50%)",
+                                backgroundColor: "#06A19B",
+                                height: 30,
+                                display: "grid",
+                                placeItems: "center",
+                                zIndex: 1,
+                                px: 0.75,
+                                borderRadius: 1,
+                                cursor: "pointer",
+                              }}
                             >
-                              {validationMessage.required}
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="1.4em"
+                                height="1.4em"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  fill="#fff"
+                                  d="M8 18h1.5v-2h2v-1.5h-2v-2H8v2H6V16h2zm5-.75h5v-1.5h-5zm0-2.5h5v-1.5h-5zm1.1-3.8l1.4-1.4l1.4 1.4l1.05-1.05l-1.4-1.45l1.4-1.4L16.9 6l-1.4 1.4L14.1 6l-1.05 1.05l1.4 1.4l-1.4 1.45zM6.25 9.2h5V7.7h-5zM5 21q-.825 0-1.413-.587T3 19V5q0-.825.588-1.412T5 3h14q.825 0 1.413.588T21 5v14q0 .825-.587 1.413T19 21zm0-2h14V5H5zM5 5v14z"
+                                />
+                              </svg>
                             </Typography>
-                          )}
-                        {errors &&
-                          errors.manager &&
-                          errors.manager[idx] &&
-                          errors.manager[idx].meanLength &&
-                          errors.manager[idx].meanLength.type === "pattern" && (
-                            <Typography
-                              variant="body2"
-                              color="red"
-                              fontSize={13}
-                              mt={0.5}
-                            >
-                              {validationMessage.OnlyNumbersWithDot}
-                            </Typography>
-                          )}
+                          </Box>
+                          <TextField
+                            label="Mean Length *"
+                            type="text"
+                            className="form-input"
+                            sx={{
+                              width: "100%",
+                              "& .MuiInputLabel-root": {
+                                transition: "all 0.2s ease",
+                              },
+                              "&:focus-within .MuiInputLabel-root": {
+                                transform: "translate(10px, -9px)",
+                                fontSize: "0.75rem",
+                                color: "primary.main",
+                                backgroundColor: "#fff",
+                              },
+                            }}
+                            disabled={idx === 0 ? true : false}
+                            {...register(`manager.${idx}.meanLength` as const, {
+                              required: watch(`manager.${idx}.meanLength`)
+                                ? false
+                                : true,
+                              pattern: validationPattern.numbersWithDot,
+                            })}
+                            InputLabelProps={{
+                              shrink: !!watch(`manager.${idx}.meanLength`),
+                            }}
+                          />
+                          <Typography
+                            variant="body2"
+                            color="red"
+                            fontSize={13}
+                            mt={0.5}
+                          ></Typography>
+                          {errors &&
+                            !watch(`manager.${idx}.meanLength`) &&
+                            errors.manager &&
+                            errors.manager[idx] &&
+                            errors.manager[idx].meanLength &&
+                            errors.manager[idx].meanLength.type ===
+                              "required" && (
+                              <Typography
+                                variant="body2"
+                                color="red"
+                                fontSize={13}
+                                mt={0.5}
+                              >
+                                {validationMessage.required}
+                              </Typography>
+                            )}
+                          {errors &&
+                            errors.manager &&
+                            errors.manager[idx] &&
+                            errors.manager[idx].meanLength &&
+                            errors.manager[idx].meanLength.type ===
+                              "pattern" && (
+                              <Typography
+                                variant="body2"
+                                color="red"
+                                fontSize={13}
+                                mt={0.5}
+                              >
+                                {validationMessage.OnlyNumbersWithDot}
+                              </Typography>
+                            )}
+                        </Box>
                       </Grid>{" "}
                       {item.field !== "Harvest" &&
                         item.field !== "Mortalities" && (
@@ -1012,7 +1067,7 @@ const TransferModal: React.FC<Props> = ({
                               errors.manager[idx] &&
                               errors.manager[idx].stockingDensityKG &&
                               errors.manager[idx].stockingDensityKG.type ===
-                              "required" && (
+                                "required" && (
                                 <Typography
                                   variant="body2"
                                   color="red"
@@ -1027,7 +1082,7 @@ const TransferModal: React.FC<Props> = ({
                               errors.manager[idx] &&
                               errors.manager[idx].stockingDensityKG &&
                               errors.manager[idx].stockingDensityKG.type ===
-                              "pattern" && (
+                                "pattern" && (
                                 <Typography
                                   variant="body2"
                                   color="red"
@@ -1115,7 +1170,7 @@ const TransferModal: React.FC<Props> = ({
                               errors.manager[idx] &&
                               errors.manager[idx].stockingDensityNM &&
                               errors.manager[idx].stockingDensityNM.type ===
-                              "required" && (
+                                "required" && (
                                 <Typography
                                   variant="body2"
                                   color="red"
@@ -1130,7 +1185,7 @@ const TransferModal: React.FC<Props> = ({
                               errors.manager[idx] &&
                               errors.manager[idx].stockingDensityNM &&
                               errors.manager[idx].stockingDensityNM.type ===
-                              "pattern" && (
+                                "pattern" && (
                                 <Typography
                                   variant="body2"
                                   color="red"
@@ -1175,131 +1230,6 @@ const TransferModal: React.FC<Props> = ({
                           </Grid>
                         )}
                     </Grid>
-
-                    {/* <Grid container marginTop={2} spacing={2}>
-                      <Grid
-                        item
-                        xs
-                        sx={{
-                          width: "fit-content",
-                          minWidth: 130,
-                        }}
-                      >
-                        <TextField
-                          label="Number of fish *"
-                          type="text"
-                          className="form-input"
-                          sx={{ width: "100%" }}
-                        />
-                      </Grid>
-
-                      <Grid
-                        item
-                        xs
-                        sx={{
-                          width: "fit-content",
-                          minWidth: 130,
-                        }}
-                      >
-                        <Box position={"relative"}>
-                          <TextField
-                            label="Total weight *"
-                            type="text"
-                            className="form-input"
-                            sx={{ width: "100%" }}
-                          />
-                          <Typography
-                            variant="body2"
-                            color="#555555AC"
-                            sx={{
-                              position: "absolute",
-                              right: 6,
-                              top: "50%",
-                              transform: "translate(-6px, -50%)",
-                              backgroundColor: "#fff",
-                              height: 30,
-                              display: "grid",
-                              placeItems: "center",
-                              zIndex: 1,
-                              pl: 1,
-                            }}
-                          >
-                            g
-                          </Typography>
-                        </Box>
-                      </Grid>
-
-                      <Grid
-                        item
-                        xs
-                        sx={{
-                          width: "fit-content",
-                          minWidth: 130,
-                        }}
-                      >
-                        <Box position={"relative"}>
-                          <TextField
-                            label="Mean weight *"
-                            type="text"
-                            className="form-input"
-                            sx={{ width: "100%" }}
-                          />
-                          <Typography
-                            variant="body2"
-                            color="#555555AC"
-                            sx={{
-                              position: "absolute",
-                              right: 6,
-                              top: "50%",
-                              transform: "translate(-6px, -50%)",
-                              backgroundColor: "#fff",
-                              height: 30,
-                              display: "grid",
-                              placeItems: "center",
-                              zIndex: 1,
-                              pl: 1,
-                            }}
-                          >
-                            g
-                          </Typography>
-                        </Box>
-                      </Grid>
-
-                      <Grid
-                        item
-                        xs="auto"
-                        sx={{
-                          width: 50,
-                        }}
-                      >
-                        <Box display={"flex"} justifyContent={"center"} alignItems={"center"} mt={1.5} px={1}>
-                          <Typography
-                            fontSize={24}
-                            variant="body2"
-                            color="#555555AC"
-                          >
-                            =
-                          </Typography>
-                        </Box>
-                      </Grid>
-
-                      <Grid
-                        item
-                        xs
-                        sx={{
-                          width: "fit-content",
-                          minWidth: 130,
-                        }}
-                      >
-                        <TextField
-                          label="Mean weight"
-                          type="text"
-                          className="form-input"
-                          sx={{ width: "100%" }}
-                        />
-                      </Grid>
-
-                    </Grid> */}
                   </Stack>
                   <Box
                     display={"flex"}
@@ -1395,8 +1325,15 @@ const TransferModal: React.FC<Props> = ({
                     onClick={() => handleCloseAnchor(field)}
                     key={i}
                     disabled={
-                      field === "Harvest" || field === "Mortalities"
-                        ? watchedFields[0].batchNumber
+                      field === "Stock" &&
+                      selectedProduction?.batchNumberId &&
+                      selectedProduction?.fishCount
+                        ? true
+                        : field === "Harvest" ||
+                          field === "Mortalities" ||
+                          field === "Re-Stock" ||
+                          field === "Transfer"
+                        ? watchedFields[0].count && watchedFields[0].batchNumber
                           ? false
                           : true
                         : selectedProduction?.batchNumberId &&
@@ -1404,12 +1341,12 @@ const TransferModal: React.FC<Props> = ({
                           selectedProduction?.fishCount &&
                           selectedProduction?.meanLength &&
                           selectedProduction?.meanWeight
-                          ? false
-                          : watchedFields.find(
+                        ? false
+                        : watchedFields.find(
                             (field) => field.field === "Stock"
                           ) && field === "Stock"
-                            ? true
-                            : false
+                        ? true
+                        : false
                     }
                   >
                     {field}
@@ -1445,6 +1382,14 @@ const TransferModal: React.FC<Props> = ({
           selectedProductionFishaFarmId={selectedProduction?.fishFarmId}
           setIsStockDeleted={setIsStockDeleted}
           clearErrors={clearErrors}
+        />
+        <CalculateMeanWeigth
+          open={isMeanWeigthCal}
+          setOpen={setIsMeanWeigthCal}
+        />
+        <CalculateMeanLength
+          open={isMeanLengthCal}
+          setOpen={setIsMeanLengthCal}
         />
       </Stack>
     </Modal>

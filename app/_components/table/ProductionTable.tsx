@@ -278,7 +278,7 @@ export default function ProductionTable({
                           pl: 0,
                         }}
                       >
-                        {farm.age ?? ""}
+                        {farm?.fishSupply?.age ?? ""}
                         {/* {farm.biomass ? `${farm.biomass}Kg` : ""} */}
                       </TableCell>
                       <TableCell
