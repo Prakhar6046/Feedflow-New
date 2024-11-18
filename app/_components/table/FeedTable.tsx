@@ -35,7 +35,7 @@ export default function FeedTable({ feeds }: Props) {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const pathName = usePathname();
-  const sortDataFromLocal = getCookie(pathName);
+  const sortDataFromLocal = localStorage.getItem(pathName);
   //   const loading = useAppSelector(selectFarmLoading);
   const [feedsData, setFeedsData] = useState<any>();
   const [selectedFeed, setSelectedFeed] = useState<any>(null);

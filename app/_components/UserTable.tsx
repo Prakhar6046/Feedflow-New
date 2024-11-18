@@ -51,7 +51,7 @@ export default function UserTable({ users }: Props) {
   const pathName = usePathname();
   const loggedUser = getCookie("logged-user");
   const role = useAppSelector(selectRole);
-  const sortDataFromLocal = getCookie(pathName);
+  const sortDataFromLocal = localStorage.getItem(pathName);
   const [selectedUser, setSelectedUser] = useState<SingleUser | null>(null);
   const [sortedUser, setSortedUsers] = useState<SingleUser[] | null>(null);
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
@@ -134,8 +134,8 @@ export default function UserTable({ users }: Props) {
                 idx === headCells.length - 1
                   ? false
                   : orderBy === headCell.id
-                    ? order
-                    : false
+                  ? order
+                  : false
               }
               sx={{
                 borderBottom: 0,
@@ -457,7 +457,7 @@ export default function UserTable({ users }: Props) {
                           fontWeight: 500,
                         }}
                         className="cursor-pointer"
-                      // onClick={() => handleEdit(user)}
+                        // onClick={() => handleEdit(user)}
                       >
                         <Button
                           id="basic-button"

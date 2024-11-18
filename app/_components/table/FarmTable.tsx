@@ -35,7 +35,7 @@ export default function FarmTable({ farms }: Props) {
   const router = useRouter();
   const pathName = usePathname();
   const dispatch = useAppDispatch();
-  const sortDataFromLocal = getCookie(pathName);
+  const sortDataFromLocal = localStorage.getItem(pathName);
   // const farms = useAppSelector(selectFarms);
   const role = useAppSelector(selectRole);
   const [order, setOrder] = React.useState("asc");
@@ -258,7 +258,7 @@ export default function FarmTable({ farms }: Props) {
                         borderBottomWidth: 2,
                         color: "#555555",
                         fontWeight: 500,
-                        p: 0
+                        p: 0,
                       }}
                       className="cursor-pointer"
                     >

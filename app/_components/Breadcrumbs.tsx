@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 
 import { selectSort } from "@/lib/features/breadcrum/breadcrumSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import { deleteCookie, getCookie, setCookie } from "cookies-next";
+import { getCookie, setCookie } from "cookies-next";
 import { useDebounce } from "../hooks/useDebounce";
 import SearchBar from "./SearchBar";
 interface Props {
@@ -36,7 +36,7 @@ export default function BasicBreadcrumbs({
   const router = useRouter();
   const sortvalue = useAppSelector(selectSort);
   const loggedUser: any = getCookie("logged-user");
-  const sortCookieData = getCookie(pathName);
+  const sortData = localStorage.getItem(pathName);
   const [open, setOpen] = useState(false);
   const [status, setStatus] = useState("");
   const [currentRole, setCurrentRole] = useState<string>("");
@@ -75,15 +75,16 @@ export default function BasicBreadcrumbs({
   // };
   const handleRememberSort = () => {
     if (!isSort) {
-      setCookie(pathName, JSON.stringify(sortvalue));
-      // localStorage.setItem(pathName, JSON.stringify(sortvalue));
+      // setCookie("sort", JSON.stringify(sortvalue));
+      localStorage.setItem(pathName, JSON.stringify(sortvalue));
     } else {
-      deleteCookie(pathName);
-      // localStorage.removeItem(pathName);
+      // deleteCookie(pathName);
+      localStorage.removeItem(pathName);
     }
   };
+
   useEffect(() => {
-    if (sortvalue && sortCookieData) {
+    if (sortvalue && sortData) {
       setIsSort(true);
     } else {
       setIsSort(false);
