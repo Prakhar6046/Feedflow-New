@@ -775,33 +775,58 @@ const TransferModal: React.FC<Props> = ({
                           minWidth: 130,
                         }}
                       >
-                        <TextField
-                          label="Mean Weight *"
-                          type="text"
-                          className="form-input"
-                          sx={{
-                            width: "100%",
-                            "& .MuiInputLabel-root": {
-                              transition: "all 0.2s ease",
-                            },
-                            "&:focus-within .MuiInputLabel-root": {
-                              transform: "translate(10px, -9px)",
-                              fontSize: "0.75rem",
-                              color: "primary.main",
-                              backgroundColor: "#fff",
-                            },
-                          }}
-                          disabled={idx === 0 ? true : false}
-                          {...register(`manager.${idx}.meanWeight`, {
-                            required: watch(`manager.${idx}.meanWeight`)
-                              ? false
-                              : true,
-                            pattern: validationPattern.numbersWithDot,
-                          })}
-                          InputLabelProps={{
-                            shrink: !!watch(`manager.${idx}.meanWeight`),
-                          }}
-                        />
+                        <Box position={"relative"}>
+                          <Box bgcolor={"red"}>
+                            <Typography
+                              variant="body2"
+                              color="#555555AC"
+                              sx={{
+                                position: "absolute",
+                                right: 6,
+                                top: "50%",
+                                transform: "translate(-6px, -50%)",
+                                backgroundColor: "red",
+                                height: 30,
+                                display: "grid",
+                                placeItems: "center",
+                                zIndex: 1,
+                                pl: 1,
+                              }}
+                            >
+                              <svg xmlns="http://www.w3.org/2000/svg" width="1.4em" height="1.4em" viewBox="0 0 24 24">
+                                <path fill="#555555AC" d="M8 18h1.5v-2h2v-1.5h-2v-2H8v2H6V16h2zm5-.75h5v-1.5h-5zm0-2.5h5v-1.5h-5zm1.1-3.8l1.4-1.4l1.4 1.4l1.05-1.05l-1.4-1.45l1.4-1.4L16.9 6l-1.4 1.4L14.1 6l-1.05 1.05l1.4 1.4l-1.4 1.45zM6.25 9.2h5V7.7h-5zM5 21q-.825 0-1.413-.587T3 19V5q0-.825.588-1.412T5 3h14q.825 0 1.413.588T21 5v14q0 .825-.587 1.413T19 21zm0-2h14V5H5zM5 5v14z" />
+                              </svg>
+                            </Typography>
+                          </Box>
+
+                          <TextField
+                            label="Mean Weight *"
+                            type="text"
+                            className="form-input"
+                            sx={{
+                              width: "100%",
+                              "& .MuiInputLabel-root": {
+                                transition: "all 0.2s ease",
+                              },
+                              "&:focus-within .MuiInputLabel-root": {
+                                transform: "translate(10px, -9px)",
+                                fontSize: "0.75rem",
+                                color: "primary.main",
+                                backgroundColor: "#fff",
+                              },
+                            }}
+                            disabled={idx === 0 ? true : false}
+                            {...register(`manager.${idx}.meanWeight`, {
+                              required: watch(`manager.${idx}.meanWeight`)
+                                ? false
+                                : true,
+                              pattern: validationPattern.numbersWithDot,
+                            })}
+                            InputLabelProps={{
+                              shrink: !!watch(`manager.${idx}.meanWeight`),
+                            }}
+                          />
+                        </Box>
                         <Typography
                           variant="body2"
                           color="red"
@@ -1150,6 +1175,131 @@ const TransferModal: React.FC<Props> = ({
                           </Grid>
                         )}
                     </Grid>
+
+                    {/* <Grid container marginTop={2} spacing={2}>
+                      <Grid
+                        item
+                        xs
+                        sx={{
+                          width: "fit-content",
+                          minWidth: 130,
+                        }}
+                      >
+                        <TextField
+                          label="Number of fish *"
+                          type="text"
+                          className="form-input"
+                          sx={{ width: "100%" }}
+                        />
+                      </Grid>
+
+                      <Grid
+                        item
+                        xs
+                        sx={{
+                          width: "fit-content",
+                          minWidth: 130,
+                        }}
+                      >
+                        <Box position={"relative"}>
+                          <TextField
+                            label="Total weight *"
+                            type="text"
+                            className="form-input"
+                            sx={{ width: "100%" }}
+                          />
+                          <Typography
+                            variant="body2"
+                            color="#555555AC"
+                            sx={{
+                              position: "absolute",
+                              right: 6,
+                              top: "50%",
+                              transform: "translate(-6px, -50%)",
+                              backgroundColor: "#fff",
+                              height: 30,
+                              display: "grid",
+                              placeItems: "center",
+                              zIndex: 1,
+                              pl: 1,
+                            }}
+                          >
+                            g
+                          </Typography>
+                        </Box>
+                      </Grid>
+
+                      <Grid
+                        item
+                        xs
+                        sx={{
+                          width: "fit-content",
+                          minWidth: 130,
+                        }}
+                      >
+                        <Box position={"relative"}>
+                          <TextField
+                            label="Mean weight *"
+                            type="text"
+                            className="form-input"
+                            sx={{ width: "100%" }}
+                          />
+                          <Typography
+                            variant="body2"
+                            color="#555555AC"
+                            sx={{
+                              position: "absolute",
+                              right: 6,
+                              top: "50%",
+                              transform: "translate(-6px, -50%)",
+                              backgroundColor: "#fff",
+                              height: 30,
+                              display: "grid",
+                              placeItems: "center",
+                              zIndex: 1,
+                              pl: 1,
+                            }}
+                          >
+                            g
+                          </Typography>
+                        </Box>
+                      </Grid>
+
+                      <Grid
+                        item
+                        xs="auto"
+                        sx={{
+                          width: 50,
+                        }}
+                      >
+                        <Box display={"flex"} justifyContent={"center"} alignItems={"center"} mt={1.5} px={1}>
+                          <Typography
+                            fontSize={24}
+                            variant="body2"
+                            color="#555555AC"
+                          >
+                            =
+                          </Typography>
+                        </Box>
+                      </Grid>
+
+                      <Grid
+                        item
+                        xs
+                        sx={{
+                          width: "fit-content",
+                          minWidth: 130,
+                        }}
+                      >
+                        <TextField
+                          label="Mean weight"
+                          type="text"
+                          className="form-input"
+                          sx={{ width: "100%" }}
+                        />
+                      </Grid>
+
+                    </Grid> */}
                   </Stack>
                   <Box
                     display={"flex"}
