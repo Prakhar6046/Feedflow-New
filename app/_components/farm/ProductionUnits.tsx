@@ -60,7 +60,6 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
   uuidv4();
   const router = useRouter();
   const userData: any = getCookie("logged-user");
-
   const dispatch = useAppDispatch();
   const farm = useAppSelector(selectFarm);
   const isEditFarm = useAppSelector(selectIsEditFarm);
@@ -73,7 +72,6 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
   const [heigth, setHeigth] = useState<string>();
   const [open, setopen] = useState<boolean>(false);
   const [calculatedValue, setCalculatedValue] = useState<CalculateType>();
-  const [productionUnitError, setProductionUnitError] = useState<string>("");
   const {
     register,
     handleSubmit,
@@ -112,7 +110,6 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
         lastProductionUnit.capacity &&
         lastProductionUnit.waterflowRate
       ) {
-        setProductionUnitError("");
         append({
           name: "",
           capacity: "",
@@ -121,7 +118,8 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
           id: uuidv4(),
         });
       } else {
-        setProductionUnitError("Please fill previous production unit details.");
+        toast.dismiss();
+        toast.error("Please fill previous field.");
       }
     }
   };
@@ -202,6 +200,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
           body: JSON.stringify(payload),
         }
       );
+      deleteCookie("addFarm");
       const responseData = await response.json();
       toast.success(responseData.message);
 
@@ -646,11 +645,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
               </TableContainer>
             );
           })}
-          {productionUnitError && (
-            <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
-              {productionUnitError}
-            </Typography>
-          )}
+
           <Box
             display={"flex"}
             alignItems={"center"}

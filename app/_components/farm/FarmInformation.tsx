@@ -41,11 +41,11 @@ const FarmInformation: NextPage<Props> = ({
     watch,
     reset,
   } = useForm<Farm>({ mode: "onChange" });
+  const AddFarmData = getCookie("addFarm");
   const [selectedSwtich, setSelectedSwtich] = useState<string>("address");
   const [altitude, setAltitude] = useState<String>("");
   const [lat, setLat] = useState<String>("");
   const [lng, setLng] = useState<String>("");
-
   const [addressInformation, setAddressInformation] = useState<any>();
   const [useAddress, setUseAddress] = useState<boolean>(false);
   const [searchedAddress, setSearchedAddress] = useState<any>();
@@ -57,6 +57,15 @@ const FarmInformation: NextPage<Props> = ({
   };
   const onSubmit: SubmitHandler<Farm> = (data) => {
     dispatch(farmAction.updateFarm(data));
+    const farmData = {
+      farmInfo: data,
+      producationUnits: AddFarmData
+        ? JSON.parse(AddFarmData)?.producationUnits
+        : null,
+    };
+    if (!editFarm) {
+      setCookie("addFarm", farmData);
+    }
     setActiveStep(2);
     // setCookie("activeStep", 2);
   };
@@ -96,7 +105,22 @@ const FarmInformation: NextPage<Props> = ({
       setValue("lng", String(Number(lng).toFixed(2)));
     }
   }, [altitude, setValue, lat, lng]);
-
+  useEffect(() => {
+    if (AddFarmData) {
+      const data = JSON.parse(AddFarmData).farmInfo;
+      setValue("name", data.name);
+      setValue("farmAltitude", data.farmAltitude);
+      setValue("lat", data.lat);
+      setValue("lng", data.lng);
+      setValue("fishFarmer", data.fishFarmer);
+      setValue("addressLine1", data.addressLine1);
+      setValue("addressLine2", data.addressLine2);
+      setValue("city", data.city);
+      setValue("province", data.province);
+      setValue("zipCode", data.zipCode);
+      setValue("country", data.country);
+    }
+  }, [AddFarmData]);
   useEffect(() => {
     setLoading(true);
     const getFeedSupplyer = async () => {
