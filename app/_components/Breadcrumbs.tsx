@@ -36,7 +36,7 @@ export default function BasicBreadcrumbs({
   const router = useRouter();
   const sortvalue = useAppSelector(selectSort);
   const loggedUser: any = getCookie("logged-user");
-  const sortData = localStorage.getItem(pathName);
+  const sortData = "";
   const [open, setOpen] = useState(false);
   const [status, setStatus] = useState("");
   const [currentRole, setCurrentRole] = useState<string>("");

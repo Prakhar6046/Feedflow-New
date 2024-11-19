@@ -35,7 +35,7 @@ export default function FarmTable({ farms }: Props) {
   const router = useRouter();
   const pathName = usePathname();
   const dispatch = useAppDispatch();
-  const sortDataFromLocal = localStorage.getItem(pathName);
+  const sortDataFromLocal = "";
   // const farms = useAppSelector(selectFarms);
   const role = useAppSelector(selectRole);
   const [order, setOrder] = React.useState("asc");

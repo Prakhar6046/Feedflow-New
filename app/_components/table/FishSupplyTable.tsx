@@ -41,7 +41,7 @@ export default function FishSupplyTable({ tableData, fishSupply }: Props) {
     null
   );
   const pathName = usePathname();
-  const sortDataFromLocal = localStorage.getItem(pathName);
+  const sortDataFromLocal = "";
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("spawningDate");
   const [selectedFishSupply, setSelectedFishSupply] = useState<FishSupply>();

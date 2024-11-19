@@ -224,8 +224,6 @@ const TransferModal: React.FC<Props> = ({
     setIsMeanWeigthCal(true);
   };
   const handleMeanLength = (item: any) => {
-    console.log(item);
-
     setSelectedMeanLengthId(String(item.id));
     setIsMeanLengthCal(true);
   };

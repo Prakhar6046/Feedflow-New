@@ -35,7 +35,7 @@ export default function FeedTable({ feeds }: Props) {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const pathName = usePathname();
-  const sortDataFromLocal = localStorage.getItem(pathName);
+  // const sortDataFromLocal = window.localStorage.getItem(pathName);
   //   const loading = useAppSelector(selectFarmLoading);
   const [feedsData, setFeedsData] = useState<any>();
   const [selectedFeed, setSelectedFeed] = useState<any>(null);
@@ -45,6 +45,14 @@ export default function FeedTable({ feeds }: Props) {
   const role = useAppSelector(selectRole);
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("productName");
+  const [sortDataFromLocal, setSortDataFromLocal] = React.useState<any>("");
+
+  useEffect(() => {
+    if (pathName && window) {
+      setSortDataFromLocal(window.localStorage.getItem(pathName));
+    }
+  }, [pathName, window]);
+
   const handleClick = (
     event: React.MouseEvent<HTMLButtonElement>,
     farm: any

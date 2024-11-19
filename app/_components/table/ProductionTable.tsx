@@ -31,7 +31,7 @@ export default function ProductionTable({
   const router = useRouter();
   const dispatch = useAppDispatch();
   const pathName = usePathname();
-  const sortDataFromLocal = localStorage.getItem(pathName);
+  const sortDataFromLocal = "";
   //   const loading = useAppSelector(selectFarmLoading);
   const [selectedProduction, setSelectedProduction] = useState<any>(null);
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
