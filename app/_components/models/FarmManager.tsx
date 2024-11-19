@@ -25,6 +25,8 @@ import React, { useEffect, useState } from "react";
 import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import Confirmation from "./Confirmation";
+import CalculateMeanWeigth from "./CalculateMeanWeigth";
+import CalculateMeanLength from "./CalculateMeanLength";
 const style = {
   position: "absolute" as "absolute",
   top: "50%",
@@ -77,6 +79,13 @@ const TransferModal: React.FC<Props> = ({
     useState<boolean>(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const [isStockDeleted, setIsStockDeleted] = useState<boolean>(false);
+  const [isMeanWeigthCal, setIsMeanWeigthCal] = useState<boolean>(false);
+  const [isMeanLengthCal, setIsMeanLengthCal] = useState<boolean>(false);
+  const [avgOfMeanWeight, setAvgOfMeanWeight] = useState<Number>();
+  const [avgOfMeanLength, setAvgOfMeanLength] = useState<Number>();
+  const [selectedMeanWeightId, setSelectedMeanWeightId] = useState<String>("");
+  const [selectedMeanLengthId, setSelectedMeanLengthId] = useState<String>("");
+
   const {
     register,
     setValue,
@@ -210,6 +219,16 @@ const TransferModal: React.FC<Props> = ({
     }
   };
 
+  const handleMeanWeight = (item: any) => {
+    setSelectedMeanWeightId(String(item.id));
+    setIsMeanWeigthCal(true);
+  };
+  const handleMeanLength = (item: any) => {
+    console.log(item);
+
+    setSelectedMeanLengthId(String(item.id));
+    setIsMeanLengthCal(true);
+  };
   useEffect(() => {
     if (isStockDeleted || selectedProduction) {
       const data = [
@@ -338,6 +357,32 @@ const TransferModal: React.FC<Props> = ({
     selectedProduction,
   ]);
 
+  useEffect(() => {
+    if (avgOfMeanWeight && selectedMeanWeightId) {
+      const updatedFields = fields.map((field) => {
+        if (field.id === selectedMeanWeightId) {
+          return { ...field, meanWeight: String(avgOfMeanWeight) };
+        } else {
+          return field;
+        }
+      });
+
+      setValue("manager", updatedFields);
+    }
+  }, [avgOfMeanWeight]);
+  useEffect(() => {
+    if (avgOfMeanLength && selectedMeanLengthId) {
+      const updatedFields = fields.map((field) => {
+        if (field.id === selectedMeanLengthId) {
+          return { ...field, meanLength: String(avgOfMeanLength) };
+        } else {
+          return field;
+        }
+      });
+
+      setValue("manager", updatedFields);
+    }
+  }, [avgOfMeanLength]);
   return (
     <Modal
       open={open}
@@ -780,33 +825,72 @@ const TransferModal: React.FC<Props> = ({
                           minWidth: 130,
                         }}
                       >
-                        <TextField
-                          label="Mean Weight *"
-                          type="text"
-                          className="form-input"
-                          sx={{
-                            width: "100%",
-                            "& .MuiInputLabel-root": {
-                              transition: "all 0.2s ease",
-                            },
-                            "&:focus-within .MuiInputLabel-root": {
-                              transform: "translate(10px, -9px)", // Moves the label up when focused
-                              fontSize: "0.75rem",
-                              color: "primary.main",
-                              backgroundColor: "#fff",
-                            },
-                          }}
-                          disabled={idx === 0 ? true : false}
-                          {...register(`manager.${idx}.meanWeight`, {
-                            required: watch(`manager.${idx}.meanWeight`)
-                              ? false
-                              : true,
-                            pattern: validationPattern.numbersWithDot,
-                          })}
-                          InputLabelProps={{
-                            shrink: !!watch(`manager.${idx}.meanWeight`),
-                          }}
-                        />
+                        <Box position={"relative"}>
+                          {idx !== 0 && (
+                            <Box onClick={() => handleMeanWeight(item)}>
+                              <Typography
+                                variant="body2"
+                                color="#555555AC"
+                                sx={{
+                                  position: "absolute",
+                                  // right: 6,
+                                  right: 0,
+                                  top: "50%",
+                                  transform: "translate(-6px, -50%)",
+                                  backgroundColor: "#06A19B",
+                                  height: 30,
+                                  display: "grid",
+                                  placeItems: "center",
+                                  zIndex: 1,
+                                  px: 0.75,
+                                  borderRadius: 1,
+                                  cursor: "pointer",
+                                }}
+                              >
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  width="1.4em"
+                                  height="1.4em"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    fill="#fff"
+                                    d="M8 18h1.5v-2h2v-1.5h-2v-2H8v2H6V16h2zm5-.75h5v-1.5h-5zm0-2.5h5v-1.5h-5zm1.1-3.8l1.4-1.4l1.4 1.4l1.05-1.05l-1.4-1.45l1.4-1.4L16.9 6l-1.4 1.4L14.1 6l-1.05 1.05l1.4 1.4l-1.4 1.45zM6.25 9.2h5V7.7h-5zM5 21q-.825 0-1.413-.587T3 19V5q0-.825.588-1.412T5 3h14q.825 0 1.413.588T21 5v14q0 .825-.587 1.413T19 21zm0-2h14V5H5zM5 5v14z"
+                                  />
+                                </svg>
+                              </Typography>
+                            </Box>
+                          )}
+
+                          <TextField
+                            label="Mean Weight *"
+                            type="text"
+                            className="form-input"
+                            sx={{
+                              width: "100%",
+                              "& .MuiInputLabel-root": {
+                                transition: "all 0.2s ease",
+                              },
+                              "&:focus-within .MuiInputLabel-root": {
+                                transform: "translate(10px, -9px)",
+                                fontSize: "0.75rem",
+                                color: "primary.main",
+                                backgroundColor: "#fff",
+                              },
+                            }}
+                            disabled={idx === 0 ? true : false}
+                            {...register(`manager.${idx}.meanWeight`, {
+                              required: watch(`manager.${idx}.meanWeight`)
+                                ? false
+                                : true,
+                              pattern: validationPattern.numbersWithDot,
+                            })}
+                            InputLabelProps={{
+                              shrink: !!watch(`manager.${idx}.meanWeight`),
+                            }}
+                          />
+                        </Box>
+
                         <Typography
                           variant="body2"
                           color="red"
@@ -852,33 +936,177 @@ const TransferModal: React.FC<Props> = ({
                           minWidth: 130,
                         }}
                       >
-                        <TextField
-                          label="Mean Length *"
-                          type="text"
-                          className="form-input"
-                          sx={{
-                            width: "100%",
-                            "& .MuiInputLabel-root": {
-                              transition: "all 0.2s ease",
-                            },
-                            "&:focus-within .MuiInputLabel-root": {
-                              transform: "translate(10px, -9px)", // Moves the label up when focused
-                              fontSize: "0.75rem",
-                              color: "primary.main",
+                        <Box position={"relative"}>
+                          {idx !== 0 && (
+                            <Box onClick={() => handleMeanLength(item)}>
+                              <Typography
+                                variant="body2"
+                                color="#555555AC"
+                                sx={{
+                                  position: "absolute",
+                                  // right: 6,
+                                  right: 0,
+                                  top: "50%",
+                                  transform: "translate(-6px, -50%)",
+                                  backgroundColor: "#06A19B",
+                                  height: 30,
+                                  display: "grid",
+                                  placeItems: "center",
+                                  zIndex: 1,
+                                  px: 0.75,
+                                  borderRadius: 1,
+                                  cursor: "pointer",
+                                }}
+                              >
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  width="1.4em"
+                                  height="1.4em"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    fill="#fff"
+                                    d="M8 18h1.5v-2h2v-1.5h-2v-2H8v2H6V16h2zm5-.75h5v-1.5h-5zm0-2.5h5v-1.5h-5zm1.1-3.8l1.4-1.4l1.4 1.4l1.05-1.05l-1.4-1.45l1.4-1.4L16.9 6l-1.4 1.4L14.1 6l-1.05 1.05l1.4 1.4l-1.4 1.45zM6.25 9.2h5V7.7h-5zM5 21q-.825 0-1.413-.587T3 19V5q0-.825.588-1.412T5 3h14q.825 0 1.413.588T21 5v14q0 .825-.587 1.413T19 21zm0-2h14V5H5zM5 5v14z"
+                                  />
+                                </svg>
+                              </Typography>
+                            </Box>
+                          )}
+                          <TextField
+                            label="Mean Length *"
+                            type="text"
+                            className="form-input"
+                            sx={{
+                              width: "100%",
+                              "& .MuiInputLabel-root": {
+                                transition: "all 0.2s ease",
+                              },
+                              "&:focus-within .MuiInputLabel-root": {
+                                transform: "translate(10px, -9px)",
+                                fontSize: "0.75rem",
+                                color: "primary.main",
+                                backgroundColor: "#fff",
+                              },
+                            }}
+                            disabled={idx === 0 ? true : false}
+                            {...register(`manager.${idx}.meanLength` as const, {
+                              required: watch(`manager.${idx}.meanLength`)
+                                ? false
+                                : true,
+                              pattern: validationPattern.numbersWithDot,
+                            })}
+                            InputLabelProps={{
+                              shrink: !!watch(`manager.${idx}.meanLength`),
+                            }}
+                          />
+                          <Typography
+                            variant="body2"
+                            color="red"
+                            fontSize={13}
+                            mt={0.5}
+                          ></Typography>
+                          {errors &&
+                            !watch(`manager.${idx}.meanLength`) &&
+                            errors.manager &&
+                            errors.manager[idx] &&
+                            errors.manager[idx].meanLength &&
+                            errors.manager[idx].meanLength.type ===
+                              "required" && (
+                              <Typography
+                                variant="body2"
+                                color="red"
+                                fontSize={13}
+                                mt={0.5}
+                              >
+                                {validationMessage.required}
+                              </Typography>
+                            )}
+                          {errors &&
+                            errors.manager &&
+                            errors.manager[idx] &&
+                            errors.manager[idx].meanLength &&
+                            errors.manager[idx].meanLength.type ===
+                              "pattern" && (
+                              <Typography
+                                variant="body2"
+                                color="red"
+                                fontSize={13}
+                                mt={0.5}
+                              >
+                                {validationMessage.OnlyNumbersWithDot}
+                              </Typography>
+                            )}
+                        </Box>
+                      </Grid>{" "}
+                      <Grid
+                        item
+                        xs
+                        sx={{
+                          width: "fit-content",
+                          minWidth: 130,
+                        }}
+                      >
+                        <Box
+                          display={"flex"}
+                          gap={2}
+                          alignItems={"center"}
+                          position={"relative"}
+                        >
+                          <TextField
+                            label={`Stocking Density *`}
+                            type="text"
+                            className="form-input"
+                            disabled={
+                              idx === 0 ||
+                              item.field !== "Harvest" ||
+                              item.field !== "Mortalities"
+                                ? true
+                                : false
+                            }
+                            InputLabelProps={{
+                              shrink: !!watch(
+                                `manager.${idx}.stockingDensityKG`
+                              ),
+                            }}
+                            sx={{
+                              width: "100%",
+                              "& .MuiInputLabel-root": {
+                                transition: "all 0.2s ease",
+                              },
+                              "&:focus-within .MuiInputLabel-root": {
+                                transform: "translate(10px, -9px)",
+                                fontSize: "0.75rem",
+                                color: "primary.main",
+                                backgroundColor: "#fff",
+                              },
+                            }}
+                            {...register(
+                              `manager.${idx}.stockingDensityKG` as const,
+                              {
+                                required: true,
+                                pattern: validationPattern.numbersWithDot,
+                              }
+                            )}
+                          />
+                          <Typography
+                            variant="body2"
+                            color="#555555AC"
+                            sx={{
+                              position: "absolute",
+                              right: 6,
+                              top: "50%",
+                              transform: "translate(-6px, -50%)",
                               backgroundColor: "#fff",
-                            },
-                          }}
-                          disabled={idx === 0 ? true : false}
-                          {...register(`manager.${idx}.meanLength` as const, {
-                            required: watch(`manager.${idx}.meanLength`)
-                              ? false
-                              : true,
-                            pattern: validationPattern.numbersWithDot,
-                          })}
-                          InputLabelProps={{
-                            shrink: !!watch(`manager.${idx}.meanLength`),
-                          }}
-                        />
+                              height: 30,
+                              display: "grid",
+                              placeItems: "center",
+                              zIndex: 1,
+                              pl: 1,
+                            }}
+                          >
+                            {`(kg/${"m\u00B3"})`}
+                          </Typography>
+                        </Box>
                         <Typography
                           variant="body2"
                           color="red"
@@ -886,11 +1114,10 @@ const TransferModal: React.FC<Props> = ({
                           mt={0.5}
                         ></Typography>
                         {errors &&
-                          !watch(`manager.${idx}.meanLength`) &&
                           errors.manager &&
                           errors.manager[idx] &&
-                          errors.manager[idx].meanLength &&
-                          errors.manager[idx].meanLength.type ===
+                          errors.manager[idx].stockingDensityKG &&
+                          errors.manager[idx].stockingDensityKG.type ===
                             "required" && (
                             <Typography
                               variant="body2"
@@ -904,8 +1131,9 @@ const TransferModal: React.FC<Props> = ({
                         {errors &&
                           errors.manager &&
                           errors.manager[idx] &&
-                          errors.manager[idx].meanLength &&
-                          errors.manager[idx].meanLength.type === "pattern" && (
+                          errors.manager[idx].stockingDensityKG &&
+                          errors.manager[idx].stockingDensityKG.type ===
+                            "pattern" && (
                             <Typography
                               variant="body2"
                               color="red"
@@ -915,249 +1143,142 @@ const TransferModal: React.FC<Props> = ({
                               {validationMessage.OnlyNumbersWithDot}
                             </Typography>
                           )}
-                      </Grid>{" "}
-                      {item.field !== "Harvest" &&
-                        item.field !== "Mortalities" && (
-                          <Grid
-                            item
-                            xs
+                      </Grid>
+                      <Grid
+                        xs
+                        item
+                        sx={{
+                          width: "fit-content",
+                          minWidth: 130,
+                        }}
+                      >
+                        <Box
+                          display={"flex"}
+                          gap={2}
+                          alignItems={"center"}
+                          position={"relative"}
+                        >
+                          <TextField
+                            label={`Stocking Density *`}
+                            type="text"
+                            className="form-input"
+                            disabled={
+                              idx === 0 ||
+                              item.field !== "Harvest" ||
+                              item.field !== "Mortalities"
+                                ? true
+                                : false
+                            }
+                            {...register(
+                              `manager.${idx}.stockingDensityNM` as const,
+                              {
+                                required: true,
+                                pattern: validationPattern.numbersWithDot,
+                              }
+                            )}
+                            InputLabelProps={{
+                              shrink: !!watch(
+                                `manager.${idx}.stockingDensityNM`
+                              ),
+                            }}
                             sx={{
-                              width: "fit-content",
-                              minWidth: 130,
+                              width: "100%",
+                              "& .MuiInputLabel-root": {
+                                transition: "all 0.2s ease",
+                              },
+                              "&:focus-within .MuiInputLabel-root": {
+                                transform: "translate(10px, -9px)",
+                                fontSize: "0.75rem",
+                                color: "primary.main",
+                                backgroundColor: "#fff",
+                              },
+                            }}
+                          />
+                          <Typography
+                            variant="body2"
+                            color="#555555AC"
+                            sx={{
+                              position: "absolute",
+                              right: 6,
+                              top: "50%",
+                              transform: "translate(-6px, -50%)",
+                              backgroundColor: "#fff",
+                              height: 30,
+                              display: "grid",
+                              placeItems: "center",
+                              zIndex: 1,
+                              pl: 1,
                             }}
                           >
-                            <Box
-                              display={"flex"}
-                              gap={2}
-                              alignItems={"center"}
-                              position={"relative"}
+                            {`(n/${"m\u00B3"})`}
+                          </Typography>
+                        </Box>
+                        <Typography
+                          variant="body2"
+                          color="red"
+                          fontSize={13}
+                          mt={0.5}
+                        ></Typography>
+                        {errors &&
+                          errors.manager &&
+                          errors.manager[idx] &&
+                          errors.manager[idx].stockingDensityNM &&
+                          errors.manager[idx].stockingDensityNM.type ===
+                            "required" && (
+                            <Typography
+                              variant="body2"
+                              color="red"
+                              fontSize={13}
+                              mt={0.5}
                             >
-                              <TextField
-                                label={`Stocking Density *`}
-                                type="text"
-                                className="form-input"
-                                disabled={idx === 0 ? true : false}
-                                InputLabelProps={{
-                                  shrink: !!watch(
-                                    `manager.${idx}.stockingDensityKG`
-                                  ),
-                                }}
-                                sx={{
-                                  width: "100%",
-                                  "& .MuiInputLabel-root": {
-                                    transition: "all 0.2s ease",
-                                  },
-                                  "&:focus-within .MuiInputLabel-root": {
-                                    transform: "translate(10px, -9px)", // Moves the label up when focused
-                                    fontSize: "0.75rem",
-                                    color: "primary.main",
-                                    backgroundColor: "#fff",
-                                  },
-                                }}
-                                {...register(
-                                  `manager.${idx}.stockingDensityKG` as const,
-                                  {
-                                    required: true,
-                                    pattern: validationPattern.numbersWithDot,
-                                  }
-                                )}
-                              />
-
-                              <Typography
-                                variant="body2"
-                                color="#555555AC"
-                                sx={{
-                                  position: "absolute",
-                                  right: 6,
-                                  top: "50%",
-                                  transform: "translate(-6px, -50%)",
-                                  backgroundColor: "#fff",
-                                  height: 30,
-                                  display: "grid",
-                                  placeItems: "center",
-                                  zIndex: 1,
-                                  pl: 1,
-                                }}
-                              >
-                                {`(kg/${"m\u00B3"})`}
-                              </Typography>
-                            </Box>
-
+                              {validationMessage.required}
+                            </Typography>
+                          )}
+                        {errors &&
+                          errors.manager &&
+                          errors.manager[idx] &&
+                          errors.manager[idx].stockingDensityNM &&
+                          errors.manager[idx].stockingDensityNM.type ===
+                            "pattern" && (
                             <Typography
                               variant="body2"
                               color="red"
                               fontSize={13}
                               mt={0.5}
-                            ></Typography>
-                            {errors &&
-                              errors.manager &&
-                              errors.manager[idx] &&
-                              errors.manager[idx].stockingDensityKG &&
-                              errors.manager[idx].stockingDensityKG.type ===
-                                "required" && (
-                                <Typography
-                                  variant="body2"
-                                  color="red"
-                                  fontSize={13}
-                                  mt={0.5}
-                                >
-                                  {validationMessage.required}
-                                </Typography>
-                              )}
-                            {errors &&
-                              errors.manager &&
-                              errors.manager[idx] &&
-                              errors.manager[idx].stockingDensityKG &&
-                              errors.manager[idx].stockingDensityKG.type ===
-                                "pattern" && (
-                                <Typography
-                                  variant="body2"
-                                  color="red"
-                                  fontSize={13}
-                                  mt={0.5}
-                                >
-                                  {validationMessage.OnlyNumbersWithDot}
-                                </Typography>
-                              )}
-                          </Grid>
-                        )}
-                      {item.field !== "Harvest" &&
-                        item.field !== "Mortalities" && (
-                          <Grid
-                            xs
-                            item
-                            sx={{
-                              width: "fit-content",
-                              minWidth: 130,
-                            }}
-                          >
-                            <Box
-                              display={"flex"}
-                              gap={2}
-                              alignItems={"center"}
-                              position={"relative"}
                             >
-                              <TextField
-                                label={`Stocking Density *`}
-                                type="text"
-                                className="form-input"
-                                disabled={idx === 0 ? true : false}
-                                {...register(
-                                  `manager.${idx}.stockingDensityNM` as const,
-                                  {
-                                    required: true,
-                                    pattern: validationPattern.numbersWithDot,
-                                  }
-                                )}
-                                InputLabelProps={{
-                                  shrink: !!watch(
-                                    `manager.${idx}.stockingDensityNM`
-                                  ),
-                                }}
-                                sx={{
-                                  width: "100%",
-                                  "& .MuiInputLabel-root": {
-                                    transition: "all 0.2s ease",
-                                  },
-                                  "&:focus-within .MuiInputLabel-root": {
-                                    transform: "translate(10px, -9px)", // Moves the label up when focused
-                                    fontSize: "0.75rem",
-                                    color: "primary.main",
-                                    backgroundColor: "#fff",
-                                  },
-                                }}
-                              />
-
-                              <Typography
-                                variant="body2"
-                                color="#555555AC"
-                                sx={{
-                                  position: "absolute",
-                                  right: 6,
-                                  top: "50%",
-                                  transform: "translate(-6px, -50%)",
-                                  backgroundColor: "#fff",
-                                  height: 30,
-                                  display: "grid",
-                                  placeItems: "center",
-                                  zIndex: 1,
-                                  pl: 1,
-                                }}
-                              >
-                                {`(n/${"m\u00B3"})`}
-                              </Typography>
-                            </Box>
-
-                            <Typography
-                              variant="body2"
-                              color="red"
-                              fontSize={13}
-                              mt={0.5}
-                            ></Typography>
-                            {errors &&
-                              errors.manager &&
-                              errors.manager[idx] &&
-                              errors.manager[idx].stockingDensityNM &&
-                              errors.manager[idx].stockingDensityNM.type ===
-                                "required" && (
-                                <Typography
-                                  variant="body2"
-                                  color="red"
-                                  fontSize={13}
-                                  mt={0.5}
-                                >
-                                  {validationMessage.required}
-                                </Typography>
-                              )}
-                            {errors &&
-                              errors.manager &&
-                              errors.manager[idx] &&
-                              errors.manager[idx].stockingDensityNM &&
-                              errors.manager[idx].stockingDensityNM.type ===
-                                "pattern" && (
-                                <Typography
-                                  variant="body2"
-                                  color="red"
-                                  fontSize={13}
-                                  mt={0.5}
-                                >
-                                  {validationMessage.OnlyNumbersWithDot}
-                                </Typography>
-                              )}
-                          </Grid>
-                        )}
-                      {item.field !== "Harvest" &&
-                        item.field !== "Mortalities" && (
-                          <Grid
-                            item
-                            xs
-                            sx={{
-                              width: "fit-content",
-                              minWidth: 130,
-                            }}
-                          >
-                            <TextField
-                              label="Stocking Level *"
-                              type="text"
-                              className="form-input"
-                              disabled
-                              sx={{ width: "100%" }}
-                              {...register(
-                                `manager.${idx}.stockingLevel` as const
-                                // {
-                                //   required: true,
-                                //   pattern: validationPattern.numbersWithDot,
-                                // }
-                              )}
-                            />
-                            <Typography
-                              variant="body2"
-                              color="red"
-                              fontSize={13}
-                              mt={0.5}
-                            ></Typography>
-                          </Grid>
-                        )}
+                              {validationMessage.OnlyNumbersWithDot}
+                            </Typography>
+                          )}
+                      </Grid>
+                      <Grid
+                        item
+                        xs
+                        sx={{
+                          width: "fit-content",
+                          minWidth: 130,
+                        }}
+                      >
+                        <TextField
+                          label="Stocking Level *"
+                          type="text"
+                          className="form-input"
+                          disabled
+                          sx={{ width: "100%" }}
+                          {...register(
+                            `manager.${idx}.stockingLevel` as const
+                            // {
+                            //   required: true,
+                            //   pattern: validationPattern.numbersWithDot,
+                            // }
+                          )}
+                        />
+                        <Typography
+                          variant="body2"
+                          color="red"
+                          fontSize={13}
+                          mt={0.5}
+                        ></Typography>
+                      </Grid>
                     </Grid>
                   </Stack>
 
@@ -1312,6 +1433,16 @@ const TransferModal: React.FC<Props> = ({
           selectedProductionFishaFarmId={selectedProduction?.fishFarmId}
           setIsStockDeleted={setIsStockDeleted}
           clearErrors={clearErrors}
+        />
+        <CalculateMeanWeigth
+          open={isMeanWeigthCal}
+          setOpen={setIsMeanWeigthCal}
+          setAvgOfMeanWeight={setAvgOfMeanWeight}
+        />
+        <CalculateMeanLength
+          open={isMeanLengthCal}
+          setOpen={setIsMeanLengthCal}
+          setAvgOfMeanLength={setAvgOfMeanLength}
         />
       </Stack>
     </Modal>
