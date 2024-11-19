@@ -18,7 +18,7 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import { getCookie, setCookie } from "cookies-next";
+import { getCookie, setCookie, deleteCookie } from "cookies-next";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import Loader from "../Loader";
@@ -35,7 +35,7 @@ export default function FarmTable({ farms }: Props) {
   const router = useRouter();
   const pathName = usePathname();
   const dispatch = useAppDispatch();
-  const sortDataFromLocal = getCookie(pathName);
+  const sortDataFromLocal = localStorage.getItem(pathName);
   // const farms = useAppSelector(selectFarms);
   const role = useAppSelector(selectRole);
   const [order, setOrder] = React.useState("asc");
@@ -57,10 +57,11 @@ export default function FarmTable({ farms }: Props) {
   };
   const handleEdit = () => {
     if (selectedFarm) {
-      dispatch(farmAction.handleIsFarm());
-      // dispatch(farmAction.editFarm(selectedFarm));
-      router.push(`/dashboard/farm/${selectedFarm.id}`);
-      setCookie("activeStep", 1);
+      Promise.all([deleteCookie("addFarm")]).then(() => {
+        dispatch(farmAction.handleIsFarm());
+        router.push(`/dashboard/farm/${selectedFarm.id}`);
+        setCookie("activeStep", 1);
+      });
     }
   };
   const handleClose = () => {
@@ -97,8 +98,8 @@ export default function FarmTable({ farms }: Props) {
                   idx === headCells.length - 1
                     ? false
                     : orderBy === headCell.id
-                      ? order
-                      : false
+                    ? order
+                    : false
                 }
                 sx={{
                   borderBottom: 0,
@@ -257,10 +258,7 @@ export default function FarmTable({ farms }: Props) {
                         borderBottomWidth: 2,
                         color: "#555555",
                         fontWeight: 500,
-                        // justifyContent: "start",
-                        // display: "flex",
-                        // alignItems: "center",
-                        paddingRight: "auto",
+                        p: 0,
                       }}
                       className="cursor-pointer"
                     >
@@ -277,7 +275,7 @@ export default function FarmTable({ farms }: Props) {
                           fontWeight: 500,
                         }}
                         className="cursor-pointer"
-                      // onClick={() => handleEdit(user)}
+                        // onClick={() => handleEdit(user)}
                       >
                         <Button
                           id="basic-button"

@@ -202,7 +202,7 @@ const TransferModal: React.FC<Props> = ({
       append({
         id: 0,
         fishFarm: selectedProduction.fishFarmId,
-        productionUnit: selectedProduction.productionUnitId,
+        productionUnit: "",
         biomass: "",
         count: "",
         meanWeight: "",
@@ -211,7 +211,7 @@ const TransferModal: React.FC<Props> = ({
         stockingLevel: "",
         stockingDensityKG: "",
         field,
-        batchNumber: selectedProduction.batchNumberId,
+        batchNumber: "",
       });
       setAnchorEl(null);
     } else {

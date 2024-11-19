@@ -34,5 +34,6 @@ export interface Production {
   };
   fishSupply: {
     batchNumber: String;
+    age: String;
   };
 }

@@ -60,12 +60,6 @@ export default function Page({ params }: { params: { feedSupplyId: string } }) {
           md={8}
           xs={12}
           my={2}
-          // sx={{
-          //     mt: {
-          //         md: 0,
-          //         xs: 5,
-          //     },
-          // }}
         >
           <NewFeed
             setActiveStep={setActiveStep}
