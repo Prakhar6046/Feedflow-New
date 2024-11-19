@@ -78,7 +78,7 @@ function HatcheryForm({
         // disabled
         sx={{
           width: "100%",
-          mt: 2,
+          my: 2,
         }}
         focused
         // focused={true}
@@ -110,7 +110,7 @@ function HatcheryForm({
           // disabled
           sx={{
             width: "100%",
-            my: 2,
+            mt: 2,
           }}
           focused
           // focused={watch("hatcheryAltitude") ? true : false}
@@ -137,14 +137,14 @@ function HatcheryForm({
         {errors &&
           errors.hatcheryAltitude &&
           errors.hatcheryAltitude.type === "required" && (
-            <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+            <Typography variant="body2" color="red" fontSize={13} my={2}>
               {validationMessage.required}
             </Typography>
           )}
         {errors &&
           errors.hatcheryAltitude &&
           errors.hatcheryAltitude.type === "pattern" && (
-            <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+            <Typography variant="body2" color="red" fontSize={13} my={2}>
               {validationMessage.OnlyNumbersWithDot}
             </Typography>
           )}
@@ -157,7 +157,7 @@ function HatcheryForm({
           label="Species *"
           sx={{
             width: "100%",
-            my: 2,
+            mt: 2,
           }}
           {...register("fishSpecie", {
             required: true,

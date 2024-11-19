@@ -414,3 +414,7 @@ label {
   background-color: white;
   z-index: 1;
 }
+
+.prod-action tr th:last-child {
+  text-align: center !important;
+}

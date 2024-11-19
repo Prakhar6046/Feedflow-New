@@ -69,7 +69,7 @@ export default function ProductionTable({
       };
 
     return (
-      <TableHead>
+      <TableHead className="prod-action">
         <TableRow>
           {tableData.map((headCell: any, idx: number, headCells: any) => (
             <TableCell
@@ -86,7 +86,7 @@ export default function ProductionTable({
                 borderBottom: 0,
                 color: "#67737F",
                 background: "#F5F6F8",
-                textAlign: "center",
+
                 fontSize: {
                   md: 16,
                   xs: 14,
@@ -346,6 +346,7 @@ export default function ProductionTable({
                         // align="center"
                         sx={{
                           borderBottomColor: "#F5F6F8",
+
                           borderBottomWidth: 2,
                           color: "#555555",
                           fontWeight: 500,

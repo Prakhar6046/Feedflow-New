@@ -329,11 +329,10 @@ const FarmInformation: NextPage<Props> = ({
           <Box
             display={"flex"}
             justifyContent={"end"}
-            alignItems={"center"}
-            gap={2}
-            flexWrap={"wrap"}
-            mt={1}
-            mb={2}
+            // alignItems={"center"}
+            // gap={2}
+            // flexWrap={"wrap"}
+            width={"100%"}
           >
             <MapComponent
               setAddressInformation={setAddressInformation}
@@ -350,11 +349,10 @@ const FarmInformation: NextPage<Props> = ({
               <Box>
                 <Typography
                   variant="subtitle1"
-                  gutterBottom
+                  color="black"
                   fontWeight={500}
-                  sx={{
-                    fontSize: 16,
-                  }}
+                  marginTop={3}
+                  marginBottom={2}
                 >
                   Address
                 </Typography>
@@ -446,7 +444,7 @@ const FarmInformation: NextPage<Props> = ({
                       InputLabelProps={{
                         shrink:
                           document.activeElement ==
-                          document.getElementById("city") ||
+                            document.getElementById("city") ||
                           !!watch("city") ||
                           !!addressInformation?.city,
                       }}
@@ -682,7 +680,7 @@ const FarmInformation: NextPage<Props> = ({
                 border: "1px solid #06A19B",
               }}
 
-            // onClick={() => setCookie("activeStep", 0)}
+              // onClick={() => setCookie("activeStep", 0)}
             >
               Previous
             </Button>

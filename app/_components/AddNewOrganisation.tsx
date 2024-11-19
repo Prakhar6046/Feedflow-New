@@ -396,8 +396,8 @@ const AddNewOrganisation = () => {
                     width: "100%",
                   }}
                   focused
-                // focused={true}
-                // value={userData?.data.email ?? "Demo@gmail.com"}
+                  // focused={true}
+                  // value={userData?.data.email ?? "Demo@gmail.com"}
                 />
                 {errors &&
                   errors.organisationCode &&
