@@ -1381,8 +1381,15 @@ const TransferModal: React.FC<Props> = ({
                     onClick={() => handleCloseAnchor(field)}
                     key={i}
                     disabled={
-                      field === "Harvest" || field === "Mortalities"
-                        ? watchedFields[0].batchNumber
+                      field === "Stock" &&
+                      selectedProduction?.batchNumberId &&
+                      selectedProduction?.fishCount
+                        ? true
+                        : field === "Harvest" ||
+                          field === "Mortalities" ||
+                          field === "Re-Stock" ||
+                          field === "Transfer"
+                        ? watchedFields[0].count && watchedFields[0].batchNumber
                           ? false
                           : true
                         : selectedProduction?.batchNumberId &&
