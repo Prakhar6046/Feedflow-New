@@ -39,7 +39,7 @@ export default function BasicTable({ organisations, userRole }: Props) {
   const router = useRouter();
   const pathName = usePathname();
   const dispatch = useAppDispatch();
-  const sortDataFromLocal = "";
+  // const sortDataFromLocal = "";
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("organisation");
   const role = useAppSelector(selectRole);
@@ -52,7 +52,13 @@ export default function BasicTable({ organisations, userRole }: Props) {
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null
   );
+  const [sortDataFromLocal, setSortDataFromLocal] = React.useState<any>("");
 
+  useEffect(() => {
+    if (pathName && window) {
+      setSortDataFromLocal(window.localStorage.getItem(pathName));
+    }
+  }, [pathName, window]);
   const handleClick = (
     event: React.MouseEvent<HTMLButtonElement>,
     organisation: SingleOrganisation

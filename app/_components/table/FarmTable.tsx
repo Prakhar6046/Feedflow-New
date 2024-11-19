@@ -35,7 +35,7 @@ export default function FarmTable({ farms }: Props) {
   const router = useRouter();
   const pathName = usePathname();
   const dispatch = useAppDispatch();
-  const sortDataFromLocal = "";
+  // const sortDataFromLocal = "";
   // const farms = useAppSelector(selectFarms);
   const role = useAppSelector(selectRole);
   const [order, setOrder] = React.useState("asc");
@@ -47,7 +47,13 @@ export default function FarmTable({ farms }: Props) {
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null
   );
+  const [sortDataFromLocal, setSortDataFromLocal] = React.useState<any>("");
 
+  useEffect(() => {
+    if (pathName && window) {
+      setSortDataFromLocal(window.localStorage.getItem(pathName));
+    }
+  }, [pathName, window]);
   const handleClick = (
     event: React.MouseEvent<HTMLButtonElement>,
     farm: any

@@ -51,7 +51,7 @@ export default function UserTable({ users }: Props) {
   const pathName = usePathname();
   const loggedUser = getCookie("logged-user");
   const role = useAppSelector(selectRole);
-  const sortDataFromLocal = localStorage?.getItem(pathName);
+  // const sortDataFromLocal = localStorage?.getItem(pathName);
   const [selectedUser, setSelectedUser] = useState<SingleUser | null>(null);
   const [sortedUser, setSortedUsers] = useState<SingleUser[] | null>(null);
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
@@ -59,6 +59,7 @@ export default function UserTable({ users }: Props) {
   );
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("name");
+  const [sortDataFromLocal, setSortDataFromLocal] = React.useState<any>("");
 
   const handleEdit = (user: any) => {
     router.push(`/dashboard/user/${selectedUser?.id}`);
@@ -265,6 +266,12 @@ export default function UserTable({ users }: Props) {
       setSortedUsers(users);
     }
   }, [users]);
+
+  useEffect(() => {
+    if (pathName && window) {
+      setSortDataFromLocal(window.localStorage.getItem(pathName));
+    }
+  }, [pathName, window]);
 
   useEffect(() => {
     router.refresh();

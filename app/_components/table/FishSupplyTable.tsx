@@ -41,12 +41,19 @@ export default function FishSupplyTable({ tableData, fishSupply }: Props) {
     null
   );
   const pathName = usePathname();
-  const sortDataFromLocal = "";
+  // const sortDataFromLocal = "";
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("spawningDate");
   const [selectedFishSupply, setSelectedFishSupply] = useState<FishSupply>();
   const role = useAppSelector(selectRole);
   const [sortedFishSupply, setSortedFishSupply] = useState<FishSupply[]>();
+  const [sortDataFromLocal, setSortDataFromLocal] = React.useState<any>("");
+
+  useEffect(() => {
+    if (pathName && window) {
+      setSortDataFromLocal(window.localStorage.getItem(pathName));
+    }
+  }, [pathName, window]);
   const handleClick = (
     event: React.MouseEvent<HTMLButtonElement>,
     fish: FishSupply

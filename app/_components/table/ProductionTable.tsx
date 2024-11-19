@@ -31,7 +31,7 @@ export default function ProductionTable({
   const router = useRouter();
   const dispatch = useAppDispatch();
   const pathName = usePathname();
-  const sortDataFromLocal = "";
+  // const sortDataFromLocal = "";
   //   const loading = useAppSelector(selectFarmLoading);
   const [selectedProduction, setSelectedProduction] = useState<any>(null);
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
@@ -42,6 +42,13 @@ export default function ProductionTable({
   const role = useAppSelector(selectRole);
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("Farm");
+  const [sortDataFromLocal, setSortDataFromLocal] = React.useState<any>("");
+
+  useEffect(() => {
+    if (pathName && window) {
+      setSortDataFromLocal(window.localStorage.getItem(pathName));
+    }
+  }, [pathName, window]);
   const handleClick = (
     event: React.MouseEvent<HTMLButtonElement>,
     farm: any
