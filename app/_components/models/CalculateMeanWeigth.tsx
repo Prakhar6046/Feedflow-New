@@ -18,8 +18,8 @@ interface InputTypes {
   avgOfMeanWeight?: Number;
 
   meanWeight: {
-    noOfFish: Number;
-    totalWeight: Number;
+    noOfFish: Number | undefined;
+    totalWeight: Number | undefined;
     meanWeight: Number;
   }[];
 }
@@ -40,7 +40,9 @@ const CalculateMeanWeigth = ({ open, setOpen, setAvgOfMeanWeight }: Props) => {
     formState: { errors },
   } = useForm<InputTypes>({
     defaultValues: {
-      meanWeight: [{ meanWeight: 0, noOfFish: 0, totalWeight: 0 }],
+      meanWeight: [
+        { meanWeight: 0, noOfFish: undefined, totalWeight: undefined },
+      ],
     },
   });
   const watchFields = watch(`meanWeight`);
@@ -327,7 +329,11 @@ const CalculateMeanWeigth = ({ open, setOpen, setAvgOfMeanWeight }: Props) => {
                   type="button"
                   variant="contained"
                   onClick={() =>
-                    append({ meanWeight: 0, noOfFish: 0, totalWeight: 0 })
+                    append({
+                      meanWeight: 0,
+                      noOfFish: undefined,
+                      totalWeight: undefined,
+                    })
                   }
                   sx={{
                     background: "#06A19B",

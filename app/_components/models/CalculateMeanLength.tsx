@@ -17,8 +17,8 @@ import toast from "react-hot-toast";
 interface InputTypes {
   avgOfMeanLength?: Number;
   meanlength: {
-    measurement: Number;
-    length: Number;
+    measurement: Number | undefined;
+    length: Number | undefined;
   }[];
 }
 interface Props {
@@ -38,7 +38,7 @@ const CalculateMeanLength = ({ open, setOpen, setAvgOfMeanLength }: Props) => {
     formState: { errors },
   } = useForm<InputTypes>({
     defaultValues: {
-      meanlength: [{ measurement: 0, length: 0 }],
+      meanlength: [{ measurement: undefined, length: undefined }],
     },
   });
   const watchFields = watch(`meanlength`);
@@ -71,13 +71,10 @@ const CalculateMeanLength = ({ open, setOpen, setAvgOfMeanLength }: Props) => {
       }
     });
 
-    const totalMeasurement = totalMeasurementArr.reduce((acc, val) => {
-      return (acc += val);
-    }, 0);
     const totalLengths = totalLengthsArr.reduce((acc, val) => {
       return (acc += val);
     }, 0);
-    const avgOfMeanLength = totalLengths / totalMeasurement;
+    const avgOfMeanLength = totalLengths / totalMeasurementArr.length;
     setValue("avgOfMeanLength", avgOfMeanLength);
   }, [
     watchFields.map((field) => field.measurement).join(","),
@@ -276,7 +273,9 @@ const CalculateMeanLength = ({ open, setOpen, setAvgOfMeanLength }: Props) => {
                 <Button
                   type="button"
                   variant="contained"
-                  onClick={() => append({ measurement: 0, length: 0 })}
+                  onClick={() =>
+                    append({ measurement: undefined, length: undefined })
+                  }
                   sx={{
                     background: "#06A19B",
                     fontWeight: "bold",
