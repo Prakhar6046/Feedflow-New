@@ -364,6 +364,7 @@ export default function ProductionTable({
                             md: 7,
                             xs: 4,
                           },
+                          textWrap: "nowrap",
                         }}
                         component="th"
                         scope="row"
