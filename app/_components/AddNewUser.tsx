@@ -50,6 +50,8 @@ export default function AddNewUser({ organisations }: Props) {
   const [profilePic, setProfilePic] = useState<String>();
   const [imagePath, setImagePath] = useState<FileList>();
   const [error, setError] = useState<string | null>(null);
+  const [isApiCallInProgress, setIsApiCallInProgress] =
+    useState<boolean>(false);
 
   const {
     register,
@@ -60,39 +62,49 @@ export default function AddNewUser({ organisations }: Props) {
     formState: { errors },
   } = useForm<AddUserFormInputs>();
   const onSubmit: SubmitHandler<AddUserFormInputs> = async (data) => {
-    if (data.email && data.name && data.organisationId) {
-      const response = await fetch("/api/add-new-user", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ ...data, image: profilePic }),
-      });
-      const responseData = await response.json();
-      if (responseData.status) {
-        if (imagePath) {
-          const formData = new FormData();
-          formData.append("image", imagePath[0]);
-          const oldImageName = profilePic?.split("/").pop()?.split(".")[0];
-          formData.append("oldImageName", oldImageName || "");
-          formData.append("userId", responseData.data.id);
-          const response = await fetch(`/api/profile-pic/upload`, {
-            method: "POST",
-            body: formData,
-          });
-          const updatedUser = await response.json();
-          setProfilePic(updatedUser.data.imageUrl);
+    // Prevent API call if one is already in progress
+    if (isApiCallInProgress) return;
+    setIsApiCallInProgress(true);
+
+    try {
+      if (data.email && data.name && data.organisationId) {
+        const response = await fetch("/api/add-new-user", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ ...data, image: profilePic }),
+        });
+        const responseData = await response.json();
+        if (responseData.status) {
+          if (imagePath) {
+            const formData = new FormData();
+            formData.append("image", imagePath[0]);
+            const oldImageName = profilePic?.split("/").pop()?.split(".")[0];
+            formData.append("oldImageName", oldImageName || "");
+            formData.append("userId", responseData.data.id);
+            const response = await fetch(`/api/profile-pic/upload`, {
+              method: "POST",
+              body: formData,
+            });
+            const updatedUser = await response.json();
+            setProfilePic(updatedUser.data.imageUrl);
+          }
+        } else {
+          toast.dismiss();
+          toast.error(responseData.message);
         }
-      } else {
-        toast.dismiss();
-        toast.error(responseData.message);
+        if (response.ok) {
+          toast.dismiss();
+          toast.success(responseData.message);
+          router.push("/dashboard/user");
+          reset();
+        }
       }
-      if (response.ok) {
-        toast.dismiss();
-        toast.success(responseData.message);
-        router.push("/dashboard/user");
-        reset();
-      }
+    } catch (error) {
+      toast.error("Something went wrong. Please try again.");
+    } finally {
+      setIsApiCallInProgress(false);
     }
   };
   const handleChange = (event: SelectChangeEvent) => {

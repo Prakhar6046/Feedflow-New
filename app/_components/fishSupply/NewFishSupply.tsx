@@ -51,6 +51,7 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
   const router = useRouter();
   const userData: any = getCookie("logged-user");
   const [loading, setLoading] = useState<boolean>(false);
+  const [isApiCallInProgress, setIsApiCallInProgress] = useState(false);
   const [fishSupply, setFishSupply] = useState<FishSupply>();
   const getFishSupply = async () => {
     const response = await fetch(`/api/fish/${fishSupplyId}`);
@@ -69,41 +70,51 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
   });
 
   const onSubmit: SubmitHandler<FormInputs> = async (data) => {
-    const loggedUserData = JSON.parse(userData);
-    const {
-      hatchingDate,
-      spawningDate,
-      spawningNumber,
-      organisation,
-      productionUnits,
-      ...restData
-    } = data;
-    const payload = {
-      hatchingDate: data.hatchingDate?.format("MM/DD/YYYY"),
-      spawningDate: data.spawningDate?.format("MM/DD/YYYY"),
-      organisation: Number(data.organisation),
-      spawningNumber: Number(data.spawningNumber),
-      productionUnits: data.productionUnits,
-      organisationId: loggedUserData.organisationId,
-      ...restData,
-    };
+    // Prevent API call if one is already in progress
+    if (isApiCallInProgress) return;
+    setIsApiCallInProgress(true);
+    try {
+      const loggedUserData = JSON.parse(userData);
+      const {
+        hatchingDate,
+        spawningDate,
+        spawningNumber,
+        organisation,
+        productionUnits,
+        ...restData
+      } = data;
+      const payload = {
+        hatchingDate: data.hatchingDate?.format("MM/DD/YYYY"),
+        spawningDate: data.spawningDate?.format("MM/DD/YYYY"),
+        organisation: Number(data.organisation),
+        spawningNumber: Number(data.spawningNumber),
+        productionUnits: data.productionUnits,
+        organisationId: loggedUserData.organisationId,
+        ...restData,
+      };
 
-    const response = await fetch(
-      `${isEdit ? `/api/fish/${fishSupplyId}` : "/api/fish"} `,
-      {
-        method: isEdit ? "PUT" : "POST",
-        body: JSON.stringify(payload),
+      const response = await fetch(
+        `${isEdit ? `/api/fish/${fishSupplyId}` : "/api/fish"} `,
+        {
+          method: isEdit ? "PUT" : "POST",
+          body: JSON.stringify(payload),
+        }
+      );
+
+      if (response.ok) {
+        const res = await response.json();
+        router.push("/dashboard/fishSupply");
+        toast.dismiss();
+        toast.success(res.message);
+      } else {
+        toast.dismiss();
+        toast.error("Somethig went wrong!");
       }
-    );
-
-    if (response.ok) {
-      const res = await response.json();
-      router.push("/dashboard/fishSupply");
-      toast.dismiss();
-      toast.success(res.message);
-    } else {
-      toast.dismiss();
-      toast.error("Somethig went wrong!");
+    } catch (error) {
+      // console.error("Fish supply error:", error);
+      toast.error("Something went wrong. Please try again.");
+    } finally {
+      setIsApiCallInProgress(false);
     }
   };
   useEffect(() => {

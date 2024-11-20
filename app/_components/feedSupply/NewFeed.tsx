@@ -84,6 +84,8 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
   const isEditFeed = useAppSelector(selectIsEditFeed);
   const [isCarbohydrate, setIsCarbohydrate] = useState<boolean>(false);
   const [editFeedSpecification, setEditFeedSpecification] = useState<any>();
+  const [isApiCallInProgress, setIsApiCallInProgress] =
+    useState<boolean>(false);
   const {
     register,
     handleSubmit,
@@ -95,39 +97,50 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
     formState: { errors },
   } = useForm<FormInputs>({ mode: "onChange" });
   const onSubmit: SubmitHandler<FormInputs> = async (data) => {
-    const loggedUserData = JSON.parse(loggedUser);
-    if (data) {
-      const response = await fetch(
-        isEditFeed ? "/api/feedSupply/edit-feed" : "/api/feedSupply/new-feed",
-        {
-          method: isEditFeed ? "PUT" : "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: isEditFeed
-            ? JSON.stringify({
-                ...data,
-                createdBy: editFeedSpecification?.createdBy,
-                updatedBy: String(loggedUserData.id),
-                id: editFeedSpecification?.id,
-              })
-            : JSON.stringify({
-                ...data,
-                createdBy: String(loggedUserData.id),
-                organisationId: loggedUserData.organisationId,
-              }),
-        }
-      );
-      const res = await response.json();
-      if (res.status) {
-        toast.success(res.message);
-        if (isEditFeed) {
-          dispatch(feedAction.resetState());
+    // Prevent API call if one is already in progress
+    if (isApiCallInProgress) return;
+
+    setIsApiCallInProgress(true);
+
+    try {
+      const loggedUserData = JSON.parse(loggedUser);
+      if (data) {
+        const response = await fetch(
+          isEditFeed ? "/api/feedSupply/edit-feed" : "/api/feedSupply/new-feed",
+          {
+            method: isEditFeed ? "PUT" : "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: isEditFeed
+              ? JSON.stringify({
+                  ...data,
+                  createdBy: editFeedSpecification?.createdBy,
+                  updatedBy: String(loggedUserData.id),
+                  id: editFeedSpecification?.id,
+                })
+              : JSON.stringify({
+                  ...data,
+                  createdBy: String(loggedUserData.id),
+                  organisationId: loggedUserData.organisationId,
+                }),
+          }
+        );
+        const res = await response.json();
+        if (res.status) {
+          toast.success(res.message);
+          if (isEditFeed) {
+            dispatch(feedAction.resetState());
+            reset();
+            router.push("/dashboard/feedSupply");
+          }
           reset();
-          router.push("/dashboard/feedSupply");
         }
-        reset();
       }
+    } catch (error) {
+      toast.error("Something went wrong. Please try again.");
+    } finally {
+      setIsApiCallInProgress(false);
     }
   };
   const getFeedSuppliers = async () => {

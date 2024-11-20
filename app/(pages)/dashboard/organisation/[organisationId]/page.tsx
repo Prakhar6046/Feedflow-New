@@ -57,6 +57,8 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
   const [profilePic, setProfilePic] = useState<String>();
   const [contactError, setcontactError] = useState<string>("");
   const [addressInformation, setAddressInformation] = useState<any>();
+  const [isApiCallInProgress, setIsApiCallInProgress] =
+    useState<boolean>(false);
   const [useAddress, setUseAddress] = useState<boolean>(false);
   const [searchedAddress, setSearchedAddress] = useState<any>();
   const role = useAppSelector(selectRole);
@@ -89,48 +91,57 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
   });
   const selectedOrganisationType = watch("organisationType");
   const onSubmit: SubmitHandler<AddOrganizationFormInputs> = async (data) => {
-    let hatchery;
-    const address: any = {
-      address: data.address,
-      city: data.city,
-      province: data.province,
-      postCode: data.postCode,
-      country: data.country,
-    };
-    if (isHatcherySelected) {
-      hatchery = {
-        name: data.hatcheryName,
-        altitude: data.hatcheryAltitude,
-        code: data.hatcheryCode,
-        fishSpecie: data.fishSpecie,
+    // Prevent API call if one is already in progress
+    if (isApiCallInProgress) return;
+    setIsApiCallInProgress(true);
+    try {
+      let hatchery;
+      const address: any = {
+        address: data.address,
+        city: data.city,
+        province: data.province,
+        postCode: data.postCode,
+        country: data.country,
       };
-    }
+      if (isHatcherySelected) {
+        hatchery = {
+          name: data.hatcheryName,
+          altitude: data.hatcheryAltitude,
+          code: data.hatcheryCode,
+          fishSpecie: data.fishSpecie,
+        };
+      }
 
-    const formData = new FormData();
-    formData.append("name", String(data.organisationName));
-    formData.append("organisationCode", String(data.organisationCode));
-    formData.append("organisationType", String(data.organisationType));
-    formData.append("address", JSON.stringify(address));
-    formData.append("contacts", JSON.stringify(data.contacts));
-    if (isHatcherySelected && organisationData) {
-      formData.append(
-        "hatcheryId",
-        JSON.stringify(organisationData?.hatchery[0]?.id ?? "")
-      );
-      formData.append("hatchery", JSON.stringify(hatchery));
-    }
+      const formData = new FormData();
+      formData.append("name", String(data.organisationName));
+      formData.append("organisationCode", String(data.organisationCode));
+      formData.append("organisationType", String(data.organisationType));
+      formData.append("address", JSON.stringify(address));
+      formData.append("contacts", JSON.stringify(data.contacts));
+      if (isHatcherySelected && organisationData) {
+        formData.append(
+          "hatcheryId",
+          JSON.stringify(organisationData?.hatchery[0]?.id ?? "")
+        );
+        formData.append("hatchery", JSON.stringify(hatchery));
+      }
 
-    const res = await fetch(`/api/organisation/${params.organisationId}`, {
-      method: "PUT",
-      body: formData,
-    });
-    if (res.ok) {
-      const updatedOrganisation = await res.json();
+      const res = await fetch(`/api/organisation/${params.organisationId}`, {
+        method: "PUT",
+        body: formData,
+      });
+      if (res.ok) {
+        const updatedOrganisation = await res.json();
 
-      toast.success(updatedOrganisation.message);
-      router.push("/dashboard/organisation");
-      // resetField("confirmPassword");
-      // resetField("password");
+        toast.success(updatedOrganisation.message);
+        router.push("/dashboard/organisation");
+        // resetField("confirmPassword");
+        // resetField("password");
+      }
+    } catch (error) {
+      toast.error("Something went wrong. Please try again.");
+    } finally {
+      setIsApiCallInProgress(false);
     }
   };
   const { fields, append, remove } = useFieldArray({
@@ -468,8 +479,8 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
                       width: "100%",
                     }}
                     focused
-                  // focused={true}
-                  // value={userData?.data.email ?? "Demo@gmail.com"}
+                    // focused={true}
+                    // value={userData?.data.email ?? "Demo@gmail.com"}
                   />
                   {errors &&
                     errors.organisationCode &&
@@ -495,7 +506,7 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
                   label="Production Unit Type"
                   {...register("organisationType")}
                   value={selectedOrganisationType || ""}
-                // onChange={(e) => handleChange(e, item)}
+                  // onChange={(e) => handleChange(e, item)}
                 >
                   {OrganisationType.map((organisation, i) => {
                     return (

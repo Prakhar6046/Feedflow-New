@@ -72,6 +72,9 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
   const [heigth, setHeigth] = useState<string>();
   const [open, setopen] = useState<boolean>(false);
   const [calculatedValue, setCalculatedValue] = useState<CalculateType>();
+  const [isApiCallInProgress, setIsApiCallInProgress] =
+    useState<boolean>(false);
+
   const {
     register,
     handleSubmit,
@@ -146,71 +149,81 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
   };
 
   const onSubmit: SubmitHandler<ProductionUnitsFormTypes> = async (data) => {
-    const loggedUserData = JSON.parse(userData);
+    // Prevent API call if one is already in progress
+    if (isApiCallInProgress) return;
+    setIsApiCallInProgress(true);
 
-    let payload;
-    if (isEditFarm && editFarm?.farmAddress?.id) {
-      payload = {
-        farmAddress: {
-          addressLine1: farm.addressLine1,
-          addressLine2: farm.addressLine2,
-          city: farm.city,
-          province: farm.province,
-          zipCode: farm.zipCode,
-          country: farm.country,
-          id: editFarm.farmAddress?.id,
-        },
-        productionUnits: data.productionUnits,
-        name: farm.name,
-        farmAltitude: farm.farmAltitude,
-        fishFarmer: farm.fishFarmer,
-        lat: farm.lat,
-        lng: farm.lng,
-        id: editFarm?.id,
-        organsationId: loggedUserData.organisationId,
-        productions: editFarm.production,
-      };
-    } else {
-      payload = {
-        farmAddress: {
-          addressLine1: farm.addressLine1,
-          addressLine2: farm.addressLine2,
-          city: farm.city,
-          province: farm.province,
-          zipCode: farm.zipCode,
-          country: farm.country,
-        },
-        productionUnits: data.productionUnits,
-        name: farm.name,
-        farmAltitude: farm.farmAltitude,
-        lat: farm.lat,
-        lng: farm.lng,
-        fishFarmer: farm.fishFarmer,
-        organsationId: loggedUserData.organisationId,
-      };
-    }
-    if (Object.keys(payload).length && payload.name) {
-      const response = await fetch(
-        `${isEditFarm ? "/api/farm/edit-farm" : "/api/farm/add-farm"}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
+    try {
+      const loggedUserData = JSON.parse(userData);
+
+      let payload;
+      if (isEditFarm && editFarm?.farmAddress?.id) {
+        payload = {
+          farmAddress: {
+            addressLine1: farm.addressLine1,
+            addressLine2: farm.addressLine2,
+            city: farm.city,
+            province: farm.province,
+            zipCode: farm.zipCode,
+            country: farm.country,
+            id: editFarm.farmAddress?.id,
           },
-          body: JSON.stringify(payload),
-        }
-      );
-      deleteCookie("addFarm");
-      const responseData = await response.json();
-      toast.success(responseData.message);
-
-      if (responseData.status) {
-        router.push("/dashboard/farm");
+          productionUnits: data.productionUnits,
+          name: farm.name,
+          farmAltitude: farm.farmAltitude,
+          fishFarmer: farm.fishFarmer,
+          lat: farm.lat,
+          lng: farm.lng,
+          id: editFarm?.id,
+          organsationId: loggedUserData.organisationId,
+          productions: editFarm.production,
+        };
+      } else {
+        payload = {
+          farmAddress: {
+            addressLine1: farm.addressLine1,
+            addressLine2: farm.addressLine2,
+            city: farm.city,
+            province: farm.province,
+            zipCode: farm.zipCode,
+            country: farm.country,
+          },
+          productionUnits: data.productionUnits,
+          name: farm.name,
+          farmAltitude: farm.farmAltitude,
+          lat: farm.lat,
+          lng: farm.lng,
+          fishFarmer: farm.fishFarmer,
+          organsationId: loggedUserData.organisationId,
+        };
       }
-    } else {
-      toast.error("Please fill out the all feilds");
+      if (Object.keys(payload).length && payload.name) {
+        const response = await fetch(
+          `${isEditFarm ? "/api/farm/edit-farm" : "/api/farm/add-farm"}`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(payload),
+          }
+        );
+        deleteCookie("addFarm");
+        const responseData = await response.json();
+        toast.success(responseData.message);
+
+        if (responseData.status) {
+          router.push("/dashboard/farm");
+        }
+      } else {
+        toast.error("Please fill out the all feilds");
+      }
+      dispatch(farmAction.resetState());
+    } catch (error) {
+      toast.error("Something went wrong. Please try again.");
+    } finally {
+      setIsApiCallInProgress(false);
     }
-    dispatch(farmAction.resetState());
   };
 
   useEffect(() => {

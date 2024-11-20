@@ -64,6 +64,8 @@ const AddNewOrganisation = () => {
   const [profilePic, setProfilePic] = useState<String>();
   const router = useRouter();
   const [isHatcherySelected, setIsHatcherySelected] = useState<boolean>(false);
+  const [isApiCallInProgress, setIsApiCallInProgress] =
+    useState<boolean>(false);
   const [addressInformation, setAddressInformation] = useState<any>();
   const [useAddress, setUseAddress] = useState<boolean>(false);
   const [searchedAddress, setSearchedAddress] = useState<any>();
@@ -86,20 +88,29 @@ const AddNewOrganisation = () => {
   });
 
   const onSubmit: SubmitHandler<AddOrganizationFormInputs> = async (data) => {
-    if (data) {
-      const response = await fetch("/api/add-organisation", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ ...data, imageUrl: profilePic }),
-      });
-      const responseData = await response.json();
-      toast.success(responseData.message);
-      if (responseData.status) {
-        router.push("/dashboard/organisation");
-        reset();
+    // Prevent API call if one is already in progress
+    if (isApiCallInProgress) return;
+    setIsApiCallInProgress(true);
+    try {
+      if (data) {
+        const response = await fetch("/api/add-organisation", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ ...data, imageUrl: profilePic }),
+        });
+        const responseData = await response.json();
+        toast.success(responseData.message);
+        if (responseData.status) {
+          router.push("/dashboard/organisation");
+          reset();
+        }
       }
+    } catch (error) {
+      toast.error("Something went wrong. Please try again.");
+    } finally {
+      setIsApiCallInProgress(false);
     }
   };
 

@@ -85,6 +85,8 @@ const TransferModal: React.FC<Props> = ({
   const [avgOfMeanLength, setAvgOfMeanLength] = useState<Number>();
   const [selectedMeanWeightId, setSelectedMeanWeightId] = useState<String>("");
   const [selectedMeanLengthId, setSelectedMeanLengthId] = useState<String>("");
+  const [isApiCallInProgress, setIsApiCallInProgress] =
+    useState<boolean>(false);
 
   const {
     register,
@@ -127,53 +129,65 @@ const TransferModal: React.FC<Props> = ({
   });
 
   const onSubmit: SubmitHandler<InputTypes> = async (data) => {
-    const addIdToData = data.manager.map((field) => {
-      const fishFarm = productions.find(
-        (OldField) =>
-          OldField.fishFarmId === field.fishFarm &&
-          OldField.productionUnitId === field.productionUnit
-      );
+    // Prevent API call if one is already in progress
+    if (isApiCallInProgress) return;
+    setIsApiCallInProgress(true);
 
-      if (
-        field.fishFarm === fishFarm?.fishFarmId &&
-        field.productionUnit === fishFarm.productionUnitId
-      ) {
-        return { ...field, id: fishFarm.id };
-      } else {
-        return field;
-      }
-    });
+    try {
+      const addIdToData = data.manager.map((field) => {
+        const fishFarm = productions.find(
+          (OldField) =>
+            OldField.fishFarmId === field.fishFarm &&
+            OldField.productionUnitId === field.productionUnit
+        );
 
-    const filteredData = addIdToData.filter((field) => field.field !== "Stock");
-
-    if (!isEnteredBiomassGreater && !isEnteredFishCountGreater) {
-      const payload = {
-        organisationId: selectedProduction.organisationId,
-        data: filteredData,
-      };
-
-      const response = await fetch("/api/production/mange", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
+        if (
+          field.fishFarm === fishFarm?.fishFarmId &&
+          field.productionUnit === fishFarm.productionUnitId
+        ) {
+          return { ...field, id: fishFarm.id };
+        } else {
+          return field;
+        }
       });
 
-      const res = await response.json();
-      if (res.status) {
-        toast.dismiss();
-        toast.success(res.message);
-        setOpen(false);
-        router.push("/dashboard/production");
-        reset();
-        router.refresh();
-      }
-    } else {
-      toast.dismiss();
-      toast.error(
-        "Please enter biomass and fish count value less than selected production"
+      const filteredData = addIdToData.filter(
+        (field) => field.field !== "Stock"
       );
+
+      if (!isEnteredBiomassGreater && !isEnteredFishCountGreater) {
+        const payload = {
+          organisationId: selectedProduction.organisationId,
+          data: filteredData,
+        };
+
+        const response = await fetch("/api/production/mange", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        });
+
+        const res = await response.json();
+        if (res.status) {
+          toast.dismiss();
+          toast.success(res.message);
+          setOpen(false);
+          router.push("/dashboard/production");
+          reset();
+          router.refresh();
+        }
+      } else {
+        toast.dismiss();
+        toast.error(
+          "Please enter biomass and fish count value less than selected production"
+        );
+      }
+    } catch (error) {
+      toast.error("Something went wrong. Please try again.");
+    } finally {
+      setIsApiCallInProgress(false);
     }
   };
 
@@ -202,7 +216,10 @@ const TransferModal: React.FC<Props> = ({
       append({
         id: 0,
         fishFarm: selectedProduction.fishFarmId,
-        productionUnit: "",
+        productionUnit:
+          field === "Harvest" || field === "Mortalities"
+            ? selectedProduction.productionUnitId
+            : "",
         biomass: "",
         count: "",
         meanWeight: "",
@@ -211,7 +228,10 @@ const TransferModal: React.FC<Props> = ({
         stockingLevel: "",
         stockingDensityKG: "",
         field,
-        batchNumber: "",
+        batchNumber:
+          field === "Harvest" || field === "Mortalities"
+            ? selectedProduction.batchNumberId
+            : "",
       });
       setAnchorEl(null);
     } else {
@@ -388,6 +408,7 @@ const TransferModal: React.FC<Props> = ({
       aria-labelledby="parent-modal-title"
       aria-describedby="parent-modal-description"
       className="modal-positioning"
+      onBackdropClick={() => reset()}
     >
       <Stack sx={style}>
         <Box display="flex" justifyContent="flex-end" padding={2}>
