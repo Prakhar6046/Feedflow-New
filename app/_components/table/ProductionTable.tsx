@@ -215,11 +215,6 @@ export default function ProductionTable({
     }
   };
 
-  const handlekeyPress = (key: string) => {
-    if (key === "Enter") {
-      setOpenTransferModal(false);
-    }
-  };
   useEffect(() => {
     if (sortDataFromLocal) {
       const data = JSON.parse(sortDataFromLocal);
@@ -321,7 +316,7 @@ export default function ProductionTable({
     router.refresh();
   }, [router]);
   return (
-    <div onKeyUp={(e) => handlekeyPress(e.key)}>
+    <>
       <Paper
         sx={{
           width: "100%",
@@ -352,7 +347,9 @@ export default function ProductionTable({
                   return (
                     <TableRow
                       key={i}
-                      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                      sx={{
+                        "&:last-child td, &:last-child th": { border: 0 },
+                      }}
                     >
                       <TableCell
                         // align="center"
@@ -367,7 +364,6 @@ export default function ProductionTable({
                             md: 7,
                             xs: 4,
                           },
-                          textWrap: "nowrap",
                         }}
                         component="th"
                         scope="row"
@@ -578,6 +574,6 @@ export default function ProductionTable({
         batches={batches}
         productions={productions}
       />
-    </div>
+    </>
   );
 }

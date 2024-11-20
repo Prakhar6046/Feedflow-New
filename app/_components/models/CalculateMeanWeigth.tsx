@@ -323,8 +323,8 @@ const CalculateMeanWeigth = ({ open, setOpen, setAvgOfMeanWeight }: Props) => {
                   </Typography>
 
                   <Typography variant="body1">
-                    {getValues("avgOfMeanWeight")
-                      ? Number(getValues("avgOfMeanWeight")).toFixed(2)
+                    {watch("avgOfMeanWeight")
+                      ? Number(watch("avgOfMeanWeight")).toFixed(2)
                       : 0}
                   </Typography>
                 </Box>
@@ -341,7 +341,11 @@ const CalculateMeanWeigth = ({ open, setOpen, setAvgOfMeanWeight }: Props) => {
                     type="button"
                     variant="contained"
                     onClick={() =>
-                      append({ meanWeight: 0, noOfFish: 0, totalWeight: 0 })
+                      append({
+                        meanWeight: 0,
+                        noOfFish: undefined,
+                        totalWeight: undefined,
+                      })
                     }
                     sx={{
                       background: "#06A19B",
@@ -360,7 +364,6 @@ const CalculateMeanWeigth = ({ open, setOpen, setAvgOfMeanWeight }: Props) => {
                   </Button>
 
                   <Button
-                    type="submit"
                     variant="contained"
                     sx={{
                       background: "#06A19B",
@@ -374,83 +377,12 @@ const CalculateMeanWeigth = ({ open, setOpen, setAvgOfMeanWeight }: Props) => {
                       borderRadius: "12px",
                       marginBlock: "10px",
                     }}
+                    onClick={handleSubmit(onSubmit)}
                   >
                     Save
                   </Button>
                 </Box>
               </Stack>
-
-              <Box
-                px={2}
-                mt={3}
-                display={"flex"}
-                alignItems={"center"}
-                gap={1.5}
-              >
-                <Typography variant="body1" fontWeight={600}>
-                  Mean Weight :
-                </Typography>
-
-                <Typography variant="body1">
-                  {watch("avgOfMeanWeight")
-                    ? Number(watch("avgOfMeanWeight")).toFixed(2)
-                    : 0}
-                </Typography>
-              </Box>
-
-              <Box
-                display="flex"
-                justifyContent="flex-end"
-                alignItems={"flex-end"}
-                gap="10px"
-                padding={3}
-                // marginX={"40px"}
-              >
-                <Button
-                  type="button"
-                  variant="contained"
-                  onClick={() =>
-                    append({
-                      meanWeight: 0,
-                      noOfFish: undefined,
-                      totalWeight: undefined,
-                    })
-                  }
-                  sx={{
-                    background: "#06A19B",
-                    fontWeight: "bold",
-                    padding: "8px 20px",
-                    width: {
-                      xs: "50%",
-                      lg: "fit-content",
-                    },
-                    textTransform: "capitalize",
-                    borderRadius: "12px",
-                    marginBlock: "10px",
-                  }}
-                >
-                  Add Row
-                </Button>
-
-                <Button
-                  variant="contained"
-                  sx={{
-                    background: "#06A19B",
-                    fontWeight: "bold",
-                    padding: "8px 20px",
-                    width: {
-                      xs: "50%",
-                      lg: "fit-content",
-                    },
-                    textTransform: "capitalize",
-                    borderRadius: "12px",
-                    marginBlock: "10px",
-                  }}
-                  onClick={handleSubmit(onSubmit)}
-                >
-                  Save
-                </Button>
-              </Box>
             </Box>
           </Box>
         </form>
