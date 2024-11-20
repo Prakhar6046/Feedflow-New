@@ -48,6 +48,7 @@ const CalculateMeanLength = ({ open, setOpen, setAvgOfMeanLength }: Props) => {
       setOpen(false);
       reset();
     } else {
+      toast.dismiss();
       toast.error("Please fill the number of fish and total weight");
     }
   };

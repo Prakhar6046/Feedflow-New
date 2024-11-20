@@ -52,6 +52,7 @@ const CalculateMeanWeigth = ({ open, setOpen, setAvgOfMeanWeight }: Props) => {
       setOpen(false);
       reset();
     } else {
+      toast.dismiss();
       toast.error("Please fill the number of fish and total weight");
     }
   };
