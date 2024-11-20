@@ -59,6 +59,11 @@ const CalculateMeanLength = ({ open, setOpen, setAvgOfMeanLength }: Props) => {
   const handleClose = () => {
     setOpen(false);
   };
+  const handleKeyPress = (key: string) => {
+    if (key === "Enter") {
+      append({ measurement: undefined, length: undefined });
+    }
+  };
   useEffect(() => {
     let totalMeasurementArr: Array<number> = [];
     let totalLengthsArr: Array<number> = [];
@@ -88,6 +93,7 @@ const CalculateMeanLength = ({ open, setOpen, setAvgOfMeanLength }: Props) => {
       onClose={handleClose}
       aria-labelledby="child-modal-title"
       aria-describedby="child-modal-description"
+      onKeyUp={(e) => handleKeyPress(e.key)}
     >
       <Stack
         bgcolor={"white"}
@@ -106,7 +112,7 @@ const CalculateMeanLength = ({ open, setOpen, setAvgOfMeanLength }: Props) => {
           },
         }}
       >
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form>
           <Box
             display={"flex"}
             justifyContent={"center"}
@@ -295,7 +301,6 @@ const CalculateMeanLength = ({ open, setOpen, setAvgOfMeanLength }: Props) => {
                 </Button>
 
                 <Button
-                  type="submit"
                   variant="contained"
                   sx={{
                     background: "#06A19B",
@@ -309,6 +314,7 @@ const CalculateMeanLength = ({ open, setOpen, setAvgOfMeanLength }: Props) => {
                     borderRadius: "12px",
                     marginBlock: "10px",
                   }}
+                  onClick={handleSubmit(onSubmit)}
                 >
                   Save
                 </Button>

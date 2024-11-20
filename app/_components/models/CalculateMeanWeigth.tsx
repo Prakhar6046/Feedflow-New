@@ -64,6 +64,11 @@ const CalculateMeanWeigth = ({ open, setOpen, setAvgOfMeanWeight }: Props) => {
     setOpen(false);
   };
 
+  const handleKeyPress = (key: string) => {
+    if (key === "Enter") {
+      append({ noOfFish: undefined, totalWeight: undefined, meanWeight: 0 });
+    }
+  };
   useEffect(() => {
     watchFields.map((feild, i) => {
       if (feild.noOfFish && feild.totalWeight) {
@@ -98,12 +103,14 @@ const CalculateMeanWeigth = ({ open, setOpen, setAvgOfMeanWeight }: Props) => {
     watchFields.map((field) => field.noOfFish).join(","),
     watchFields.map((field) => field.totalWeight).join(","),
   ]);
+
   return (
     <Modal
       open={open}
       onClose={handleClose}
       aria-labelledby="child-modal-title"
       aria-describedby="child-modal-description"
+      onKeyUp={(e) => handleKeyPress(e.key)}
     >
       <Stack
         bgcolor={"white"}
@@ -122,7 +129,7 @@ const CalculateMeanWeigth = ({ open, setOpen, setAvgOfMeanWeight }: Props) => {
           },
         }}
       >
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form>
           <Box
             display={"flex"}
             justifyContent={"center"}
@@ -353,7 +360,6 @@ const CalculateMeanWeigth = ({ open, setOpen, setAvgOfMeanWeight }: Props) => {
                 </Button>
 
                 <Button
-                  type="submit"
                   variant="contained"
                   sx={{
                     background: "#06A19B",
@@ -367,6 +373,7 @@ const CalculateMeanWeigth = ({ open, setOpen, setAvgOfMeanWeight }: Props) => {
                     borderRadius: "12px",
                     marginBlock: "10px",
                   }}
+                  onClick={handleSubmit(onSubmit)}
                 >
                   Save
                 </Button>
