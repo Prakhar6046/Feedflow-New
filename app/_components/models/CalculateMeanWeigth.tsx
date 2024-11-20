@@ -111,6 +111,7 @@ const CalculateMeanWeigth = ({ open, setOpen, setAvgOfMeanWeight }: Props) => {
       aria-labelledby="child-modal-title"
       aria-describedby="child-modal-description"
       onKeyUp={(e) => handleKeyPress(e.key)}
+      className="modal-positioning"
     >
       <Stack
         bgcolor={"white"}
@@ -150,12 +151,7 @@ const CalculateMeanWeigth = ({ open, setOpen, setAvgOfMeanWeight }: Props) => {
                   <CloseIcon />
                 </IconButton>
               </Box>
-              <Stack
-                sx={{
-                  overflowX: "auto",
-                  height: "700px",
-                }}
-              >
+              <Stack>
                 {fields?.map((field, idx) => {
                   return (
                     <Box
