@@ -132,7 +132,7 @@ export default function Page({ params }: { params: { userId: string } }) {
     resetField,
     watch,
     formState: { errors },
-  } = useForm<UserEditFormInputs>({ mode: "onChange" });
+  } = useForm<UserEditFormInputs>({ mode: "onTouched" });
   const onSubmit: SubmitHandler<UserEditFormInputs> = async (data) => {
     const formData = new FormData();
     formData.append("name", data.name);
@@ -273,7 +273,7 @@ export default function Page({ params }: { params: { userId: string } }) {
                   variant="contained"
                   tabIndex={-1}
                   startIcon={profilePic ? null : <CloudUploadIcon />}
-                  className="upload-file-input"
+                  className="upload-file-input1"
                   sx={{
                     textTransform: "unset",
                     fontSize: 12,
@@ -380,7 +380,6 @@ export default function Page({ params }: { params: { userId: string } }) {
                 >
                   Information
                 </Typography>
-
                 <Box mb={3} width={"100%"}>
                   <TextField
                     label="Name *"
@@ -405,7 +404,6 @@ export default function Page({ params }: { params: { userId: string } }) {
                     </Typography>
                   )}
                 </Box>
-
                 <Box mb={2} width={"100%"}>
                   <TextField
                     label={"Email *"}
@@ -447,7 +445,6 @@ export default function Page({ params }: { params: { userId: string } }) {
                       </Typography>
                     )}
                 </Box>
-
                 <TextField
                   label="Organisation Name"
                   type="text"
@@ -471,38 +468,33 @@ export default function Page({ params }: { params: { userId: string } }) {
                     },
                   }}
                 />
-
-                {role !== "SUPERADMIN" &&
-                  Number(params.userId) === currentUserId && (
-                    <TextField
-                      label="Organisation Type"
-                      type="text"
-                      className="form-input"
-                      InputProps={{
-                        readOnly:
-                          Number(params.userId) === currentUserId
-                            ? true
-                            : false,
-                      }}
-                      focused={true}
-                      {...register("organisationType")}
-                      sx={{
-                        width: "100%",
-                        marginBottom: 2,
-                        backgroundColor: "#f0f0f0",
-                        "& .MuiInputBase-input.Mui-disabled": {
-                          backgroundColor: "#f0f0f0",
-                        },
-                      }}
-                    />
-                  )}
+                {/* {Number(params.userId) === currentUserId && ( */}
+                <TextField
+                  label="Organisation Type"
+                  type="text"
+                  className="form-input"
+                  InputProps={{
+                    readOnly:
+                      Number(params.userId) === currentUserId ? true : false,
+                  }}
+                  focused={true}
+                  {...register("organisationType")}
+                  sx={{
+                    width: "100%",
+                    marginBottom: 2,
+                    backgroundColor: "#f0f0f0",
+                    "& .MuiInputBase-input.Mui-disabled": {
+                      backgroundColor: "#f0f0f0",
+                    },
+                  }}
+                />
+                {/* )} */}
                 <Divider
                   sx={{
                     borderColor: "#979797",
                     my: 1,
                   }}
                 />
-
                 <Typography
                   variant="subtitle1"
                   color="black"
@@ -513,7 +505,6 @@ export default function Page({ params }: { params: { userId: string } }) {
                 >
                   Set or Change Password
                 </Typography>
-
                 <Typography
                   variant="h6"
                   color="rgb(99, 115, 129)"
@@ -525,7 +516,6 @@ export default function Page({ params }: { params: { userId: string } }) {
                   password here. If you already have a password set, you can
                   change it here.
                 </Typography>
-
                 <Box position={"relative"} mb={2}>
                   <TextField
                     label="Password*"
@@ -537,8 +527,6 @@ export default function Page({ params }: { params: { userId: string } }) {
                     focused
                     sx={{
                       width: "100%",
-
-                      // marginBottom: 2,
                     }}
                   />
 
@@ -638,7 +626,6 @@ export default function Page({ params }: { params: { userId: string } }) {
                     </Typography>
                   )}
                 </Box>
-
                 <Button
                   type="submit"
                   variant="contained"

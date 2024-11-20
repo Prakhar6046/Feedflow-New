@@ -1,15 +1,11 @@
 "use client";
-import { feedAction } from "@/lib/features/feed/feedSlice";
+import TransferModal from "@/app/_components/models/FarmManager";
+import { Farm } from "@/app/_typeModels/Farm";
+import { Production } from "@/app/_typeModels/production";
+import { breadcrumsAction } from "@/lib/features/breadcrum/breadcrumSlice";
+import { selectRole } from "@/lib/features/user/userSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import {
-  Button,
-  Divider,
-  Menu,
-  MenuItem,
-  Stack,
-  TableSortLabel,
-  Typography,
-} from "@mui/material";
+import { Button, TableSortLabel } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -17,46 +13,42 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
+import { getCookie } from "cookies-next";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-
-import TransferModal from "@/app/_components/models/FarmManager";
-import HarvestModal from "@/app/_components/models/Harvest";
-import MortalityModal from "@/app/_components/models/Mortality";
-import { breadcrumsAction } from "@/lib/features/breadcrum/breadcrumSlice";
-import { selectRole, userAction } from "@/lib/features/user/userSlice";
-import { getCookie } from "cookies-next";
-import { Production } from "@/app/_typeModels/production";
-import CombineTanks from "../models/CombineTanks";
-import { Farm } from "@/app/_typeModels/Farm";
 interface Props {
   productions: Production[];
   tableData: any;
   farms: Farm[];
+  batches: { batchNumber: String; id: Number }[];
 }
-export default function FarmManagerTable({
+export default function ProductionTable({
   productions,
   tableData,
   farms,
+  batches,
 }: Props) {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const pathName = usePathname();
-  const sortDataFromLocal = getCookie(pathName);
+  // const sortDataFromLocal = "";
   //   const loading = useAppSelector(selectFarmLoading);
   const [selectedProduction, setSelectedProduction] = useState<any>(null);
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null
   );
   const [openTransferModal, setOpenTransferModal] = useState<boolean>(false);
-  const [openHarvestModal, setOpenHarvestModal] = useState<boolean>(false);
-  const [openMoralityModal, setOpenMoralityModal] = useState<boolean>(false);
-  const [openCombineTankModal, setOpenCombineTankModal] =
-    useState<boolean>(false);
-
+  const [productionData, setProductionData] = useState<Production[]>();
   const role = useAppSelector(selectRole);
   const [order, setOrder] = React.useState("asc");
-  const [orderBy, setOrderBy] = React.useState("productName");
+  const [orderBy, setOrderBy] = React.useState("Farm");
+  const [sortDataFromLocal, setSortDataFromLocal] = React.useState<any>("");
+
+  useEffect(() => {
+    if (pathName && window) {
+      setSortDataFromLocal(window.localStorage.getItem(pathName));
+    }
+  }, [pathName, window]);
   const handleClick = (
     event: React.MouseEvent<HTMLButtonElement>,
     farm: any
@@ -84,7 +76,7 @@ export default function FarmManagerTable({
       };
 
     return (
-      <TableHead>
+      <TableHead className="prod-action">
         <TableRow>
           {tableData.map((headCell: any, idx: number, headCells: any) => (
             <TableCell
@@ -101,6 +93,7 @@ export default function FarmManagerTable({
                 borderBottom: 0,
                 color: "#67737F",
                 background: "#F5F6F8",
+
                 fontSize: {
                   md: 16,
                   xs: 14,
@@ -136,6 +129,7 @@ export default function FarmManagerTable({
     property: string
   ) => {
     const isAsc = orderBy === property && order === "asc";
+    console.log(property);
     setOrder(isAsc ? "desc" : "asc");
     setOrderBy(property);
     dispatch(
@@ -145,65 +139,179 @@ export default function FarmManagerTable({
       })
     );
 
-    // if (feeds) {
-    //   const sortedData = [...feeds].sort((feed1: any, feed2: any) => {
-    //     const orderType = order === "asc" ? 1 : -1;
-    //     if (property === "productName") {
-    //       if (feed1.productName < feed2.productName) return -1 * orderType;
-    //       if (feed1.productName > feed2.productName) return 1 * orderType;
-    //     } else if (property === "productCode") {
-    //       if (feed1.productCode < feed2.productCode) return -1 * orderType;
-    //       if (feed1.productCode > feed2.productCode) return 1 * orderType;
-    //     } else if (property === "productionIntensity") {
-    //       if (feed1.productionIntensity < feed2.productionIntensity)
-    //         return -1 * orderType;
-    //       if (feed1.productionIntensity > feed2.productionIntensity)
-    //         return 1 * orderType;
-    //     } else if (property === "feedingPhase") {
-    //       if (feed1.feedingPhase < feed2.feedingPhase) return -1 * orderType;
-    //       if (feed1.feedingPhase > feed2.feedingPhase) return 1 * orderType;
-    //     }
-    //     return 0;
-    //   });
-    //   setFeedsData(sortedData);
-    // }
+    if (productions) {
+      const sortedData = [...productions].sort(
+        (production1: Production, production2: Production) => {
+          const orderType = order === "asc" ? 1 : -1;
+          if (property === "Farm") {
+            if (production1.farm.name < production2.farm.name)
+              return -1 * orderType;
+            if (production1.farm.name > production2.farm.name)
+              return 1 * orderType;
+          } else if (property === "Producton unit") {
+            if (
+              production1.productionUnit.name < production2.productionUnit.name
+            )
+              return -1 * orderType;
+            if (
+              production1.productionUnit.name > production2.productionUnit.name
+            )
+              return 1 * orderType;
+          } else if (property === "Batch number") {
+            if (
+              production1.fishSupply?.batchNumber <
+              production2.fishSupply?.batchNumber
+            )
+              return -1 * orderType;
+            if (
+              production1.fishSupply?.batchNumber >
+              production2.fishSupply?.batchNumber
+            )
+              return 1 * orderType;
+          } else if (property === "Age (days|months)") {
+            if (production1.fishSupply?.age < production2.fishSupply?.age)
+              return -1 * orderType;
+            if (production1.fishSupply?.age > production2.fishSupply?.age)
+              return 1 * orderType;
+          } else if (property === "Fish Count") {
+            if (production1.fishCount < production2.fishCount)
+              return -1 * orderType;
+            if (production1.fishCount > production2.fishCount)
+              return 1 * orderType;
+          } else if (property === "Biomass") {
+            if (production1.biomass < production2.biomass)
+              return -1 * orderType;
+            if (production1.biomass > production2.biomass) return 1 * orderType;
+          } else if (property === "Mean weight") {
+            if (production1.meanWeight < production2.meanWeight)
+              return -1 * orderType;
+            if (production1.meanWeight > production2.meanWeight)
+              return 1 * orderType;
+          } else if (property === "Mean length") {
+            if (production1.meanLength < production2.meanLength)
+              return -1 * orderType;
+            if (production1.meanLength > production2.meanLength)
+              return 1 * orderType;
+          } else if (property === "Stocking Density") {
+            if (production1.stockingDensityKG < production2.stockingDensityKG)
+              return -1 * orderType;
+            if (production1.stockingDensityKG > production2.stockingDensityKG)
+              return 1 * orderType;
+          } else if (property === "Stocking density") {
+            if (production1.stockingDensityNM < production2.stockingDensityNM)
+              return -1 * orderType;
+            if (production1.stockingDensityNM > production2.stockingDensityNM)
+              return 1 * orderType;
+          } else if (property === "Stocking level") {
+            if (production1.stockingLevel < production2.stockingLevel)
+              return -1 * orderType;
+            if (production1.stockingLevel > production2.stockingLevel)
+              return 1 * orderType;
+          }
+          return 0;
+        }
+      );
+      setProductionData(sortedData);
+    }
   };
 
-  // useEffect(() => {
-  //   if (feeds && !sortDataFromLocal) {
-  //     setFeedsData(feeds);
-  //   }
-  // }, [feeds]);
-  // useEffect(() => {
-  //   if (sortDataFromLocal) {
-  //     const data = JSON.parse(sortDataFromLocal);
-  //     setOrder(data.direction);
-  //     setOrderBy(data.column);
-  //     // handleRequestSort(null, data.column);
-  //     if (feeds) {
-  //       const sortedData = [...feeds].sort((feed1: any, feed2: any) => {
-  //         const orderType = data.direction === "asc" ? -1 : 1;
-  //         if (data.column === "productName") {
-  //           if (feed1.productName < feed2.productName) return -1 * orderType;
-  //           if (feed1.productName > feed2.productName) return 1 * orderType;
-  //         } else if (data.column === "productCode") {
-  //           if (feed1.productCode < feed2.productCode) return -1 * orderType;
-  //           if (feed1.productCode > feed2.productCode) return 1 * orderType;
-  //         } else if (data.column === "productionIntensity") {
-  //           if (feed1.productionIntensity < feed2.productionIntensity)
-  //             return -1 * orderType;
-  //           if (feed1.productionIntensity > feed2.productionIntensity)
-  //             return 1 * orderType;
-  //         } else if (data.column === "feedingPhase") {
-  //           if (feed1.feedingPhase < feed2.feedingPhase) return -1 * orderType;
-  //           if (feed1.feedingPhase > feed2.feedingPhase) return 1 * orderType;
-  //         }
-  //         return 0;
-  //       });
-  //       setFeedsData(sortedData);
-  //     }
-  //   }
-  // }, [sortDataFromLocal]);
+  useEffect(() => {
+    if (sortDataFromLocal) {
+      const data = JSON.parse(sortDataFromLocal);
+      setOrder(data.direction);
+      setOrderBy(data.column);
+      // handleRequestSort(null, data.column);
+      if (productions) {
+        const sortedData = [...productions].sort(
+          (production1: any, production2: any) => {
+            const orderType = data.direction === "asc" ? -1 : 1;
+            if (data.column === "Farm") {
+              if (production1.farm.name < production2.farm.name)
+                return -1 * orderType;
+              if (production1.farm.name > production2.farm.name)
+                return 1 * orderType;
+            } else if (data.column === "Producton unit") {
+              if (
+                production1.productionUnit.name <
+                production2.productionUnit.name
+              )
+                return -1 * orderType;
+              if (
+                production1.productionUnit.name >
+                production2.productionUnit.name
+              )
+                return 1 * orderType;
+            } else if (data.column === "Batch number") {
+              if (
+                production1.fishSupply?.batchNumber <
+                production2.fishSupply?.batchNumber
+              )
+                return -1 * orderType;
+              if (
+                production1.fishSupply?.batchNumber >
+                production2.fishSupply?.batchNumber
+              )
+                return 1 * orderType;
+            } else if (data.column === "Age (days|months)") {
+              if (production1.fishSupply?.age < production2.fishSupply?.age)
+                return -1 * orderType;
+              if (production1.fishSupply?.age > production2.fishSupply?.age)
+                return 1 * orderType;
+            } else if (data.column === "Fish Count") {
+              if (production1.fishCount < production2.fishCount)
+                return -1 * orderType;
+              if (production1.fishCount > production2.fishCount)
+                return 1 * orderType;
+            } else if (data.column === "Biomass") {
+              if (production1.biomass < production2.biomass)
+                return -1 * orderType;
+              if (production1.biomass > production2.biomass)
+                return 1 * orderType;
+            } else if (data.column === "Mean weight") {
+              if (production1.meanWeight < production2.meanWeight)
+                return -1 * orderType;
+              if (production1.meanWeight > production2.meanWeight)
+                return 1 * orderType;
+            } else if (data.column === "Mean length") {
+              if (production1.meanLength < production2.meanLength)
+                return -1 * orderType;
+              if (production1.meanLength > production2.meanLength)
+                return 1 * orderType;
+            } else if (data.column === "Stocking Density") {
+              if (production1.stockingDensityKG < production2.stockingDensityKG)
+                return -1 * orderType;
+              if (production1.stockingDensityKG > production2.stockingDensityKG)
+                return 1 * orderType;
+            } else if (data.column === "Stocking density") {
+              if (production1.stockingDensityNM < production2.stockingDensityNM)
+                return -1 * orderType;
+              if (production1.stockingDensityNM > production2.stockingDensityNM)
+                return 1 * orderType;
+            } else if (data.column === "Stocking level") {
+              if (production1.stockingLevel < production2.stockingLevel)
+                return -1 * orderType;
+              if (production1.stockingLevel > production2.stockingLevel)
+                return 1 * orderType;
+            }
+            return 0;
+          }
+        );
+        setProductionData(sortedData);
+      }
+    }
+  }, [sortDataFromLocal]);
+  useEffect(() => {
+    if (sortDataFromLocal) {
+      const data = JSON.parse(sortDataFromLocal);
+      setOrder(data.direction);
+      setOrderBy(data.column);
+    }
+  }, [sortDataFromLocal]);
+  useEffect(() => {
+    if (productions && !sortDataFromLocal) {
+      setProductionData(productions);
+    }
+  }, [productions]);
   useEffect(() => {
     router.refresh();
   }, [router]);
@@ -229,12 +337,13 @@ export default function FarmManagerTable({
               <TableRow></TableRow>
             </TableHead>
             <EnhancedTableHead
+              order={order}
               orderBy={orderBy}
               onRequestSort={handleRequestSort}
             />
             <TableBody>
-              {productions && productions?.length > 0 ? (
-                productions.map((farm: Production, i: number) => {
+              {productionData && productionData?.length > 0 ? (
+                productionData.map((farm: Production, i: number) => {
                   return (
                     <TableRow
                       key={i}
@@ -244,6 +353,7 @@ export default function FarmManagerTable({
                         // align="center"
                         sx={{
                           borderBottomColor: "#F5F6F8",
+
                           borderBottomWidth: 2,
                           color: "#555555",
                           fontWeight: 500,
@@ -280,7 +390,7 @@ export default function FarmManagerTable({
                           pl: 0,
                         }}
                       >
-                        {farm.batchNumber ?? ""}
+                        {farm?.fishSupply?.batchNumber ?? ""}
                       </TableCell>
                       <TableCell
                         // align="center"
@@ -292,7 +402,7 @@ export default function FarmManagerTable({
                           pl: 0,
                         }}
                       >
-                        {farm.age ?? ""}
+                        {farm?.fishSupply?.age ?? ""}
                         {/* {farm.biomass ? `${farm.biomass}Kg` : ""} */}
                       </TableCell>
                       <TableCell
@@ -353,7 +463,7 @@ export default function FarmManagerTable({
                           pl: 0,
                         }}
                       >
-                        {farm.stockingDensityKG ?? ""}
+                        {Number(farm.stockingDensityKG).toFixed(2) ?? ""}
                       </TableCell>
                       <TableCell
                         // align="center"
@@ -365,7 +475,7 @@ export default function FarmManagerTable({
                           pl: 0,
                         }}
                       >
-                        {farm.stockingDensityNM ?? ""}
+                        {Number(farm.stockingDensityNM).toFixed(2) ?? ""}
                         {/* {farm.meanWeight ? `${farm.meanWeight}g` : ""} */}
                       </TableCell>{" "}
                       <TableCell
@@ -459,12 +569,8 @@ export default function FarmManagerTable({
         setOpen={setOpenTransferModal}
         selectedProduction={selectedProduction}
         farms={farms}
-      />
-      <HarvestModal open={openHarvestModal} setOpen={setOpenHarvestModal} />
-      <MortalityModal open={openMoralityModal} setOpen={setOpenMoralityModal} />
-      <CombineTanks
-        open={openCombineTankModal}
-        setOpen={setOpenCombineTankModal}
+        batches={batches}
+        productions={productions}
       />
     </>
   );

@@ -276,6 +276,7 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
               xs: 2,
             },
           }}
+          columnSpacing={5}
         >
           <Grid
             item
@@ -467,8 +468,8 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
                       width: "100%",
                     }}
                     focused
-                    // focused={true}
-                    // value={userData?.data.email ?? "Demo@gmail.com"}
+                  // focused={true}
+                  // value={userData?.data.email ?? "Demo@gmail.com"}
                   />
                   {errors &&
                     errors.organisationCode &&
@@ -491,17 +492,10 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
                 <Select
                   labelId="demo-simple-select-label"
                   id="demo-simple-select"
-                  label="Production Unit Type *"
+                  label="Production Unit Type"
                   {...register("organisationType")}
                   value={selectedOrganisationType || ""}
-                  // onChange={(e) => handleChange(e, item)}
-                  // sx={{
-                  //   px: {
-                  //     xl: 10,
-                  //     md: 5,
-                  //     xs: 3,
-                  //   },
-                  // }}
+                // onChange={(e) => handleChange(e, item)}
                 >
                   {OrganisationType.map((organisation, i) => {
                     return (
@@ -764,7 +758,7 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
                       sx={{
                         width: {
                           lg: "100%",
-                          md: "48.4%",
+
                           xs: "100%",
                         },
                       }}
@@ -794,6 +788,13 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
                         label="Role *"
+                        sx={{
+                          width: {
+                            lg: "100%",
+
+                            xs: "100%",
+                          },
+                        }}
                         {...register(`contacts.${index}.role` as const, {
                           required: watch(`contacts.${index}.role`)
                             ? false
@@ -842,7 +843,7 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
                       sx={{
                         width: {
                           lg: "100%",
-                          md: "48.4%",
+
                           xs: "100%",
                         },
                       }}
@@ -875,7 +876,7 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
                       sx={{
                         width: {
                           lg: "100%",
-                          md: "48.4%",
+
                           xs: "100%",
                         },
                       }}

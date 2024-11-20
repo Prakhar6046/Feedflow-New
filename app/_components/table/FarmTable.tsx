@@ -18,7 +18,7 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import { getCookie, setCookie } from "cookies-next";
+import { getCookie, setCookie, deleteCookie } from "cookies-next";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import Loader from "../Loader";
@@ -35,7 +35,7 @@ export default function FarmTable({ farms }: Props) {
   const router = useRouter();
   const pathName = usePathname();
   const dispatch = useAppDispatch();
-  const sortDataFromLocal = getCookie(pathName);
+  // const sortDataFromLocal = "";
   // const farms = useAppSelector(selectFarms);
   const role = useAppSelector(selectRole);
   const [order, setOrder] = React.useState("asc");
@@ -47,7 +47,13 @@ export default function FarmTable({ farms }: Props) {
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null
   );
+  const [sortDataFromLocal, setSortDataFromLocal] = React.useState<any>("");
 
+  useEffect(() => {
+    if (pathName && window) {
+      setSortDataFromLocal(window.localStorage.getItem(pathName));
+    }
+  }, [pathName, window]);
   const handleClick = (
     event: React.MouseEvent<HTMLButtonElement>,
     farm: any
@@ -57,10 +63,11 @@ export default function FarmTable({ farms }: Props) {
   };
   const handleEdit = () => {
     if (selectedFarm) {
-      dispatch(farmAction.handleIsFarm());
-      // dispatch(farmAction.editFarm(selectedFarm));
-      router.push(`/dashboard/farm/${selectedFarm.id}`);
-      setCookie("activeStep", 1);
+      Promise.all([deleteCookie("addFarm")]).then(() => {
+        dispatch(farmAction.handleIsFarm());
+        router.push(`/dashboard/farm/${selectedFarm.id}`);
+        setCookie("activeStep", 1);
+      });
     }
   };
   const handleClose = () => {
@@ -252,14 +259,14 @@ export default function FarmTable({ farms }: Props) {
                     </TableCell>
 
                     <TableCell
-                      align="center"
                       sx={{
                         borderBottomColor: "#F5F6F8",
                         borderBottomWidth: 2,
                         color: "#555555",
                         fontWeight: 500,
-                        pl: 0,
+                        p: 0,
                       }}
+                      className="cursor-pointer"
                     >
                       {farm?.productionUnits.length ?? ""}
                     </TableCell>

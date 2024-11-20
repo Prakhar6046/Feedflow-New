@@ -34,19 +34,26 @@ interface Props {
   fishSupply?: FishSupply[];
 }
 
-export default function CommonTable({ tableData, fishSupply }: Props) {
+export default function FishSupplyTable({ tableData, fishSupply }: Props) {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null
   );
   const pathName = usePathname();
-  const sortDataFromLocal = getCookie(pathName);
+  // const sortDataFromLocal = "";
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("spawningDate");
   const [selectedFishSupply, setSelectedFishSupply] = useState<FishSupply>();
   const role = useAppSelector(selectRole);
   const [sortedFishSupply, setSortedFishSupply] = useState<FishSupply[]>();
+  const [sortDataFromLocal, setSortDataFromLocal] = React.useState<any>("");
+
+  useEffect(() => {
+    if (pathName && window) {
+      setSortDataFromLocal(window.localStorage.getItem(pathName));
+    }
+  }, [pathName, window]);
   const handleClick = (
     event: React.MouseEvent<HTMLButtonElement>,
     fish: FishSupply
@@ -296,14 +303,15 @@ export default function CommonTable({ tableData, fishSupply }: Props) {
                       }}
                     >
                       <Box display={"flex"} alignItems={"center"} gap={1.5}>
-                        {`${fish.hatchingDate}-${
+                        {fish?.batchNumber ?? ""}
+                        {/* {`${fish.hatchingDate}-${
                           fish.creator?.hatchery[0]?.code
                         }-${
                           fish.spawningNumber
                         }-${fish?.creator?.hatchery[0]?.fishSpecie.slice(
                           0,
                           1
-                        )}`}
+                        )}`} */}
                       </Box>
                     </TableCell>
                     <TableCell

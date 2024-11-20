@@ -189,3 +189,25 @@ export const getProductions = async (payload: {
     return error;
   }
 };
+export const getBatches = async (payload: {
+  role?: string;
+  organisationId?: string;
+  query?: string;
+  noFilter?: boolean;
+}) => {
+  try {
+    const data = await fetch(`${process.env.BASE_URL}/api/production/batches`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      cache: "no-store",
+    });
+    const res = await data.json();
+    revalidatePath(`/dashboard/production`);
+
+    return res;
+  } catch (error) {
+    return error;
+  }
+};

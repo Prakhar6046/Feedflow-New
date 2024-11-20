@@ -216,6 +216,7 @@ model Hatchery {
 
 model FishSupply {
   id               Int           @id @default(autoincrement())
+  batchNumber      String        @default("BB1")
   organisation     Int
   hatchingDate     String
   spawningDate     String
@@ -234,6 +235,7 @@ model FishSupply {
   creator          Organisation? @relation("fishSupplyCreator", fields: [createdBy], references: [id])
   organisationId   Int?
   organisationData Organisation? @relation(fields: [organisationId], references: [id])
+  production       production[]
 
   @@index([createdAt])
   @@index([updatedAt])
@@ -244,15 +246,15 @@ model production {
   fishFarmId        String
   farm              Farm?           @relation(fields: [fishFarmId], references: [id])
   productionUnitId  String
-  biomass           String
-  fishCount         String
-  batchNumber       String
-  age               String
-  meanLength        String
-  meanWeight        String
-  stockingDensityKG String
-  stockingDensityNM String
-  stockingLevel     String
+  biomass           String?
+  fishCount         String?
+  batchNumberId     Int?
+  age               String?
+  meanLength        String?
+  meanWeight        String?
+  stockingDensityKG String?
+  stockingDensityNM String?
+  stockingLevel     String?
   createdBy         Int? // Optional field, nullable foreign key
   updatedBy         String?
   createdAt         DateTime        @default(now())
@@ -260,6 +262,7 @@ model production {
   organisationId    Int?
   organisation      Organisation?   @relation(fields: [organisationId], references: [id], onDelete: SetNull)
   productionUnit    ProductionUnit? @relation(fields: [productionUnitId], references: [id])
+  fishSupply        FishSupply?     @relation(fields: [batchNumberId], references: [id])
 
   @@index([createdAt])
   @@index([updatedAt])

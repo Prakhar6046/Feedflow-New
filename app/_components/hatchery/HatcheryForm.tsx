@@ -110,7 +110,7 @@ function HatcheryForm({
           // disabled
           sx={{
             width: "100%",
-            my: 2,
+            mt: 2,
           }}
           focused
           // focused={watch("hatcheryAltitude") ? true : false}
@@ -149,12 +149,22 @@ function HatcheryForm({
             </Typography>
           )}
       </Box>
-      <FormControl fullWidth focused className="form-input">
+      <FormControl
+        fullWidth
+        focused
+        className="form-input"
+        sx={{
+          mt: 2,
+        }}
+      >
         <InputLabel id="feed-supply-select-label5">Species *</InputLabel>
         <Select
           labelId="feed-supply-select-label5"
           id="feed-supply-select5"
           label="Species *"
+          sx={{
+            width: "100%",
+          }}
           {...register("fishSpecie", {
             required: true,
           })}

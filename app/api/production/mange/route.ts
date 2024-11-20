@@ -4,7 +4,6 @@ import { NextRequest, NextResponse } from "next/server";
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    console.log(body);
 
     for (const data of body.data) {
       if (data.id) {
@@ -14,7 +13,7 @@ export async function POST(req: NextRequest) {
             fishFarmId: data.fishFarm,
             productionUnitId: data.productionUnit,
             fishCount: data.count,
-            batchNumber: data.batchNumber,
+            batchNumberId: Number(data.batchNumber),
             biomass: data.biomass,
             meanLength: data.meanLength,
             meanWeight: data.meanWeight,
@@ -29,7 +28,7 @@ export async function POST(req: NextRequest) {
             fishFarmId: data.fishFarm,
             productionUnitId: data.productionUnit,
             fishCount: data.count,
-            batchNumber: data.batchNumber,
+            batchNumberId: Number(data.batchNumber),
             biomass: data.biomass,
             meanLength: data.meanLength,
             meanWeight: data.meanWeight,

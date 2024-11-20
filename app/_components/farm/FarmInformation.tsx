@@ -41,12 +41,11 @@ const FarmInformation: NextPage<Props> = ({
     watch,
     reset,
   } = useForm<Farm>({ mode: "onChange" });
-  const newFarmInfoLocal = getCookie("new-farm-info");
+  const AddFarmData = getCookie("addFarm");
   const [selectedSwtich, setSelectedSwtich] = useState<string>("address");
   const [altitude, setAltitude] = useState<String>("");
   const [lat, setLat] = useState<String>("");
   const [lng, setLng] = useState<String>("");
-
   const [addressInformation, setAddressInformation] = useState<any>();
   const [useAddress, setUseAddress] = useState<boolean>(false);
   const [searchedAddress, setSearchedAddress] = useState<any>();
@@ -57,8 +56,16 @@ const FarmInformation: NextPage<Props> = ({
     return response.json();
   };
   const onSubmit: SubmitHandler<Farm> = (data) => {
-    setCookie("new-farm-info", data);
     dispatch(farmAction.updateFarm(data));
+    const farmData = {
+      farmInfo: data,
+      producationUnits: AddFarmData
+        ? JSON.parse(AddFarmData)?.producationUnits
+        : null,
+    };
+    if (!editFarm) {
+      setCookie("addFarm", farmData);
+    }
     setActiveStep(2);
     // setCookie("activeStep", 2);
   };
@@ -91,7 +98,6 @@ const FarmInformation: NextPage<Props> = ({
       setUseAddress(false);
     }
   }, [addressInformation, useAddress]);
-  console.log(addressInformation);
   useEffect(() => {
     if (altitude && lat && lng) {
       setValue("farmAltitude", String(Number(altitude).toFixed(2)));
@@ -99,7 +105,22 @@ const FarmInformation: NextPage<Props> = ({
       setValue("lng", String(Number(lng).toFixed(2)));
     }
   }, [altitude, setValue, lat, lng]);
-
+  useEffect(() => {
+    if (AddFarmData) {
+      const data = JSON.parse(AddFarmData).farmInfo;
+      setValue("name", data.name);
+      setValue("farmAltitude", data.farmAltitude);
+      setValue("lat", data.lat);
+      setValue("lng", data.lng);
+      setValue("fishFarmer", data.fishFarmer);
+      setValue("addressLine1", data.addressLine1);
+      setValue("addressLine2", data.addressLine2);
+      setValue("city", data.city);
+      setValue("province", data.province);
+      setValue("zipCode", data.zipCode);
+      setValue("country", data.country);
+    }
+  }, [AddFarmData]);
   useEffect(() => {
     setLoading(true);
     const getFeedSupplyer = async () => {
@@ -109,22 +130,6 @@ const FarmInformation: NextPage<Props> = ({
     };
     getFeedSupplyer();
   }, []);
-  useEffect(() => {
-    if (newFarmInfoLocal) {
-      const farmInfo = JSON.parse(newFarmInfoLocal);
-      setValue("name", farmInfo.name);
-      setValue("farmAltitude", farmInfo.farmAltitude);
-      setValue("lat", farmInfo.lat);
-      setValue("lng", farmInfo.lng);
-      setValue("fishFarmer", farmInfo.fishFarmer);
-      setValue("addressLine1", farmInfo.addressLine1);
-      setValue("addressLine2", farmInfo.addressLine2);
-      setValue("city", farmInfo.city);
-      setValue("province", farmInfo.province);
-      setValue("country", farmInfo.country);
-      setValue("zipCode", farmInfo.zipCode);
-    }
-  }, [newFarmInfoLocal]);
 
   if (loading) {
     return <Loader />;
@@ -152,7 +157,6 @@ const FarmInformation: NextPage<Props> = ({
               label="Farm Name *"
               type="text"
               className="form-input"
-              // focused
               {...register("name", {
                 required: true,
               })}
@@ -185,15 +189,12 @@ const FarmInformation: NextPage<Props> = ({
                   transition: "all 0.2s ease",
                 },
                 "&:focus-within .MuiInputLabel-root": {
-                  transform: "translate(10px, -9px)", // Moves the label up when focused
+                  transform: "translate(10px, -9px)",
                   fontSize: "0.75rem",
                   color: "primary.main",
                   backgroundColor: "#fff",
                 },
               }}
-              // sx={{
-              //   width: "100%",
-              // }}
             />
 
             {errors &&
@@ -230,15 +231,12 @@ const FarmInformation: NextPage<Props> = ({
                   transition: "all 0.2s ease",
                 },
                 "&:focus-within .MuiInputLabel-root": {
-                  transform: "translate(10px, -9px)", // Moves the label up when focused
+                  transform: "translate(10px, -9px)",
                   fontSize: "0.75rem",
                   color: "primary.main",
                   backgroundColor: "#fff",
                 },
               }}
-              // sx={{
-              //   width: "100%",
-              // }}
             />
 
             {errors && errors.lat && errors.lat.type === "required" && (
@@ -272,15 +270,12 @@ const FarmInformation: NextPage<Props> = ({
                   transition: "all 0.2s ease",
                 },
                 "&:focus-within .MuiInputLabel-root": {
-                  transform: "translate(10px, -9px)", // Moves the label up when focused
+                  transform: "translate(10px, -9px)",
                   fontSize: "0.75rem",
                   color: "primary.main",
                   backgroundColor: "#fff",
                 },
               }}
-              // sx={{
-              //   width: "100%",
-              // }}
             />
 
             {errors && errors.lng && errors.lng.type === "required" && (
@@ -334,11 +329,10 @@ const FarmInformation: NextPage<Props> = ({
           <Box
             display={"flex"}
             justifyContent={"end"}
-            alignItems={"center"}
-            gap={2}
-            flexWrap={"wrap"}
-            mt={1}
-            mb={2}
+            // alignItems={"center"}
+            // gap={2}
+            // flexWrap={"wrap"}
+            width={"100%"}
           >
             <MapComponent
               setAddressInformation={setAddressInformation}
@@ -355,11 +349,10 @@ const FarmInformation: NextPage<Props> = ({
               <Box>
                 <Typography
                   variant="subtitle1"
-                  gutterBottom
+                  color="black"
                   fontWeight={500}
-                  sx={{
-                    fontSize: 16,
-                  }}
+                  marginTop={3}
+                  marginBottom={2}
                 >
                   Address
                 </Typography>
@@ -382,22 +375,18 @@ const FarmInformation: NextPage<Props> = ({
                           !!watch("addressLine1") ||
                           !!addressInformation?.address,
                       }}
-                      // focused
                       sx={{
                         width: "100%",
                         "& .MuiInputLabel-root": {
                           transition: "all 0.2s ease",
                         },
                         "&:focus-within .MuiInputLabel-root": {
-                          transform: "translate(10px, -9px)", // Moves the label up when focused
+                          transform: "translate(10px, -9px)",
                           fontSize: "0.75rem",
                           color: "primary.main",
                           backgroundColor: "#fff",
                         },
                       }}
-                      // sx={{
-                      //   width: "100%",
-                      // }}
                     />
                     {errors &&
                       errors.addressLine1 &&
@@ -419,24 +408,19 @@ const FarmInformation: NextPage<Props> = ({
                     label="Address Line 2 "
                     type="text"
                     className="form-input"
-                    // focused
-
                     {...register("addressLine2")}
                     InputLabelProps={{
                       shrink:
                         !!watch("addressLine2") ||
                         !!addressInformation?.address2,
                     }}
-                    // sx={{
-                    //   width: "100%",
-                    // }}
                     sx={{
                       width: "100%",
                       "& .MuiInputLabel-root": {
                         transition: "all 0.2s ease",
                       },
                       "&:focus-within .MuiInputLabel-root": {
-                        transform: "translate(10px, -9px)", // Moves the label up when focused
+                        transform: "translate(10px, -9px)",
                         fontSize: "0.75rem",
                         color: "primary.main",
                         backgroundColor: "#fff",
@@ -464,16 +448,13 @@ const FarmInformation: NextPage<Props> = ({
                           !!watch("city") ||
                           !!addressInformation?.city,
                       }}
-                      // sx={{
-                      //   width: "100%",
-                      // }}
                       sx={{
                         width: "100%",
                         "& .MuiInputLabel-root": {
                           transition: "all 0.2s ease",
                         },
                         "&:focus-within .MuiInputLabel-root": {
-                          transform: "translate(10px, -9px)", // Moves the label up when focused
+                          transform: "translate(10px, -9px)",
                           fontSize: "0.75rem",
                           color: "primary.main",
                           backgroundColor: "#fff",
@@ -513,7 +494,6 @@ const FarmInformation: NextPage<Props> = ({
                       label="State/Province *"
                       type="text"
                       className="form-input focused"
-                      // focused
                       {...register("province", {
                         required: true,
                         pattern:
@@ -523,16 +503,13 @@ const FarmInformation: NextPage<Props> = ({
                         shrink:
                           !!watch("province") || !!addressInformation?.province,
                       }}
-                      // sx={{
-                      //   width: "100%",
-                      // }}
                       sx={{
                         width: "100%",
                         "& .MuiInputLabel-root": {
                           transition: "all 0.2s ease",
                         },
                         "&:focus-within .MuiInputLabel-root": {
-                          transform: "translate(10px, -9px)", // Moves the label up when focused
+                          transform: "translate(10px, -9px)",
                           fontSize: "0.75rem",
                           color: "primary.main",
                           backgroundColor: "#fff",
@@ -572,8 +549,6 @@ const FarmInformation: NextPage<Props> = ({
                       label="Zip Code *"
                       type="text"
                       className="form-input"
-                      // focused
-
                       {...register("zipCode", {
                         required: true,
                         pattern: validationPattern.onlyNumbersPattern,
@@ -582,16 +557,13 @@ const FarmInformation: NextPage<Props> = ({
                         shrink:
                           !!watch("zipCode") || !!addressInformation?.zipCode,
                       }}
-                      // sx={{
-                      //   width: "100%",
-                      // }}
                       sx={{
                         width: "100%",
                         "& .MuiInputLabel-root": {
                           transition: "all 0.2s ease",
                         },
                         "&:focus-within .MuiInputLabel-root": {
-                          transform: "translate(10px, -9px)", // Moves the label up when focused
+                          transform: "translate(10px, -9px)",
                           fontSize: "0.75rem",
                           color: "primary.main",
                           backgroundColor: "#fff",
@@ -633,8 +605,6 @@ const FarmInformation: NextPage<Props> = ({
                       label="Country *"
                       type="text"
                       className="form-input"
-                      // focused
-
                       {...register("country", {
                         required: true,
                         pattern:
@@ -644,16 +614,13 @@ const FarmInformation: NextPage<Props> = ({
                         shrink:
                           !!watch("country") || !!addressInformation?.country,
                       }}
-                      // sx={{
-                      //   width: "100%",
-                      // }}
                       sx={{
                         width: "100%",
                         "& .MuiInputLabel-root": {
                           transition: "all 0.2s ease",
                         },
                         "&:focus-within .MuiInputLabel-root": {
-                          transform: "translate(10px, -9px)", // Moves the label up when focused
+                          transform: "translate(10px, -9px)",
                           fontSize: "0.75rem",
                           color: "primary.main",
                           backgroundColor: "#fff",

@@ -326,16 +326,22 @@ export default function AddNewUser({ organisations }: Props) {
                     )}
                 </Box>
 
-                <Box width={"100%"}>
+                <Box mb={2} width={"100%"}>
                   <FormControl fullWidth className="form-input">
-                    <InputLabel id="demo-simple-select-label">
-                      Organisation Name*
+                    <InputLabel
+                      id="demo-simple-select-label"
+                      className="user-info"
+                    >
+                      Organisation *
                     </InputLabel>
                     <Select
                       labelId="demo-simple-select-label"
                       id="demo-simple-select"
                       value={selectedOrganisation}
                       label="Organisation *"
+                      sx={{
+                        width: "100%",
+                      }}
                       {...register("organisationId", {
                         required: true,
                       })}

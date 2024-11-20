@@ -10,9 +10,14 @@ export const GET = async (request: NextRequest) => {
 
   try {
     const productions = await prisma.production.findMany({
-      include: { farm: true, organisation: true, productionUnit: true },
+      include: {
+        farm: true,
+        organisation: true,
+        productionUnit: true,
+        fishSupply: true,
+      },
       orderBy: {
-        createdAt: "desc", // Sort by createdAt in descending order
+        id: "asc",
       },
       where: {
         ...(filter === "true"
@@ -81,7 +86,7 @@ export async function POST(req: NextRequest) {
         fishFarmId: body.fishFarmId,
         productionUnitId: body.productionUnitId,
         fishCount: body.fishCount,
-        batchNumber: body.batchNumber,
+        batchNumberId: Number(body.batchNumber),
         biomass: body.biomass,
         meanLength: body.meanLength,
         meanWeight: body.meanWeight,

@@ -377,7 +377,6 @@ export const farmManagerHead = [
     numeric: false,
     disablePadding: true,
     label: "Production unit",
-   
   },
   {
     id: "Batch number",
@@ -418,10 +417,10 @@ export const farmManagerHead = [
     label: "Mean length (mm)",
   },
   {
-    id: "Stocking density",
+    id: "Stocking Density",
     numeric: false,
     disablePadding: true,
-    label: `Stocking density  (kg/${"m\u00B3"})`,
+    label: `Stocking density (kg/${"m\u00B3"})`,
   },
 
   {

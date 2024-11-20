@@ -88,5 +88,4 @@ export const productionMangeFields = [
   "Transfer",
   "Harvest",
   "Mortalities",
-  "Sample",
 ];

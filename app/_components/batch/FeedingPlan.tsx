@@ -53,7 +53,6 @@ const FeedingPlan: NextPage<Props> = ({ setActiveStep }) => {
                 label="Feed Plan Name"
                 type="text"
                 className="form-input"
-                // focused
                 sx={{
                   width: "100%",
                   marginBottom: 2,
@@ -211,7 +210,6 @@ const FeedingPlan: NextPage<Props> = ({ setActiveStep }) => {
                   label="Feed Price"
                   type="text"
                   className="form-input"
-                  // focused
                   sx={{
                     width: "100%",
                     marginBottom: 2,
@@ -224,7 +222,6 @@ const FeedingPlan: NextPage<Props> = ({ setActiveStep }) => {
                   label="Feed Bag Size"
                   type="text"
                   className="form-input"
-                  // focused
                   sx={{
                     width: "100%",
                     marginBottom: 2,

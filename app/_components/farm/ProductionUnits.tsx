@@ -60,10 +60,8 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
   uuidv4();
   const router = useRouter();
   const userData: any = getCookie("logged-user");
-
   const dispatch = useAppDispatch();
-  // const farm = useAppSelector(selectFarm);
-  const newFarmInfoLocal = getCookie("new-farm-info");
+  const farm = useAppSelector(selectFarm);
   const isEditFarm = useAppSelector(selectIsEditFarm);
   const [selectedUnit, setSelectedUnit] = React.useState<UnitsTypes>();
   const [length, setLength] = useState<string>();
@@ -74,7 +72,6 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
   const [heigth, setHeigth] = useState<string>();
   const [open, setopen] = useState<boolean>(false);
   const [calculatedValue, setCalculatedValue] = useState<CalculateType>();
-  const [productionUnitError, setProductionUnitError] = useState<string>("");
   const {
     register,
     handleSubmit,
@@ -113,7 +110,6 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
         lastProductionUnit.capacity &&
         lastProductionUnit.waterflowRate
       ) {
-        setProductionUnitError("");
         append({
           name: "",
           capacity: "",
@@ -122,7 +118,8 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
           id: uuidv4(),
         });
       } else {
-        setProductionUnitError("Please fill previous production unit details.");
+        toast.dismiss();
+        toast.error("Please fill previous field.");
       }
     }
   };
@@ -150,7 +147,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
 
   const onSubmit: SubmitHandler<ProductionUnitsFormTypes> = async (data) => {
     const loggedUserData = JSON.parse(userData);
-    const farm = newFarmInfoLocal ? JSON.parse(newFarmInfoLocal) : {};
+
     let payload;
     if (isEditFarm && editFarm?.farmAddress?.id) {
       payload = {
@@ -171,6 +168,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
         lng: farm.lng,
         id: editFarm?.id,
         organsationId: loggedUserData.organisationId,
+        productions: editFarm.production,
       };
     } else {
       payload = {
@@ -191,7 +189,6 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
         organsationId: loggedUserData.organisationId,
       };
     }
-
     if (Object.keys(payload).length && payload.name) {
       const response = await fetch(
         `${isEditFarm ? "/api/farm/edit-farm" : "/api/farm/add-farm"}`,
@@ -203,6 +200,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
           body: JSON.stringify(payload),
         }
       );
+      deleteCookie("addFarm");
       const responseData = await response.json();
       toast.success(responseData.message);
 
@@ -212,7 +210,6 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
     } else {
       toast.error("Please fill out the all feilds");
     }
-    deleteCookie("new-farm-info");
     dispatch(farmAction.resetState());
   };
 
@@ -331,9 +328,9 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                           pr: 1,
                         }}
                       >
-                        <FormControl className="form-input" fullWidth>
+                        <FormControl className="form-input prod-unit" fullWidth>
                           <InputLabel id="demo-simple-select-label">
-                            Production Unit Type *
+                            Production Unit Type
                           </InputLabel>
                           <Controller
                             name={`productionUnits.${index}.type`} // Dynamic name for production unit type
@@ -343,7 +340,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                               <Select
                                 labelId={`demo-simple-select-label-${index}`}
                                 id={`demo-simple-select-${index}`}
-                                label="Production Unit Type *"
+                                label="Production Unit Type"
                                 {...field} // Spread the field props for value and onChange
                                 sx={{
                                   minWidth: "200px",
@@ -585,6 +582,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                               cursor: "pointer",
                               width: "fit-content",
                               px: 1,
+                              mt: "16px",
                               // transform: "translateY(-10px)"
                             }}
                           >
@@ -620,7 +618,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                               cursor: "pointer",
                               width: "fit-content",
                               px: 1,
-                              // transform: "translateY(-10px)"
+                              mt: "16px",
                             }}
                           >
                             <svg
@@ -647,11 +645,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
               </TableContainer>
             );
           })}
-          {productionUnitError && (
-            <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
-              {productionUnitError}
-            </Typography>
-          )}
+
           <Box
             display={"flex"}
             alignItems={"center"}
