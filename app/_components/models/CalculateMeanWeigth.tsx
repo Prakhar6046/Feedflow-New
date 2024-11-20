@@ -119,7 +119,7 @@ const CalculateMeanWeigth = ({ open, setOpen, setAvgOfMeanWeight }: Props) => {
           },
         }}
       >
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form className="form-height" onSubmit={handleSubmit(onSubmit)}>
           <Box
             display={"flex"}
             justifyContent={"center"}
@@ -140,7 +140,12 @@ const CalculateMeanWeigth = ({ open, setOpen, setAvgOfMeanWeight }: Props) => {
                   <CloseIcon />
                 </IconButton>
               </Box>
-              <Stack>
+              <Stack
+                sx={{
+                  overflowX: "auto",
+                  height: "700px",
+                }}
+              >
                 {fields?.map((field, idx) => {
                   return (
                     <Box
@@ -150,7 +155,7 @@ const CalculateMeanWeigth = ({ open, setOpen, setAvgOfMeanWeight }: Props) => {
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "space-between",
-                        height: "100%",
+
                         position: "relative",
                         bottom: "10px",
                         gap: 1.5,
@@ -295,75 +300,75 @@ const CalculateMeanWeigth = ({ open, setOpen, setAvgOfMeanWeight }: Props) => {
                     </Box>
                   );
                 })}
+
+                <Box
+                  px={2}
+                  mt={3}
+                  display={"flex"}
+                  alignItems={"center"}
+                  gap={1.5}
+                >
+                  <Typography variant="body1" fontWeight={600}>
+                    Mean Weight :
+                  </Typography>
+
+                  <Typography variant="body1">
+                    {getValues("avgOfMeanWeight")
+                      ? Number(getValues("avgOfMeanWeight")).toFixed(2)
+                      : 0}
+                  </Typography>
+                </Box>
+
+                <Box
+                  display="flex"
+                  justifyContent="flex-end"
+                  alignItems={"flex-end"}
+                  gap="10px"
+                  padding={3}
+                  // marginX={"40px"}
+                >
+                  <Button
+                    type="button"
+                    variant="contained"
+                    onClick={() =>
+                      append({ meanWeight: 0, noOfFish: 0, totalWeight: 0 })
+                    }
+                    sx={{
+                      background: "#06A19B",
+                      fontWeight: "bold",
+                      padding: "8px 20px",
+                      width: {
+                        xs: "50%",
+                        lg: "fit-content",
+                      },
+                      textTransform: "capitalize",
+                      borderRadius: "12px",
+                      marginBlock: "10px",
+                    }}
+                  >
+                    Add Row
+                  </Button>
+
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    sx={{
+                      background: "#06A19B",
+                      fontWeight: "bold",
+                      padding: "8px 20px",
+                      width: {
+                        xs: "50%",
+                        lg: "fit-content",
+                      },
+                      textTransform: "capitalize",
+                      borderRadius: "12px",
+                      marginBlock: "10px",
+                    }}
+                  >
+                    Save
+                  </Button>
+                </Box>
               </Stack>
-
-              <Box
-                px={2}
-                mt={3}
-                display={"flex"}
-                alignItems={"center"}
-                gap={1.5}
-              >
-                <Typography variant="body1" fontWeight={600}>
-                  Mean Weight :
-                </Typography>
-
-                <Typography variant="body1">
-                  {getValues("avgOfMeanWeight")
-                    ? Number(getValues("avgOfMeanWeight")).toFixed(2)
-                    : 0}
-                </Typography>
-              </Box>
-
-              <Box
-                display="flex"
-                justifyContent="flex-end"
-                alignItems={"flex-end"}
-                gap="10px"
-                padding={3}
-                // marginX={"40px"}
-              >
-                <Button
-                  type="button"
-                  variant="contained"
-                  onClick={() =>
-                    append({ meanWeight: 0, noOfFish: 0, totalWeight: 0 })
-                  }
-                  sx={{
-                    background: "#06A19B",
-                    fontWeight: "bold",
-                    padding: "8px 20px",
-                    width: {
-                      xs: "50%",
-                      lg: "fit-content",
-                    },
-                    textTransform: "capitalize",
-                    borderRadius: "12px",
-                    marginBlock: "10px",
-                  }}
-                >
-                  Add Row
-                </Button>
-
-                <Button
-                  type="submit"
-                  variant="contained"
-                  sx={{
-                    background: "#06A19B",
-                    fontWeight: "bold",
-                    padding: "8px 20px",
-                    width: {
-                      xs: "50%",
-                      lg: "fit-content",
-                    },
-                    textTransform: "capitalize",
-                    borderRadius: "12px",
-                    marginBlock: "10px",
-                  }}
-                >
-                  Save
-                </Button>
-              </Box>
             </Box>
           </Box>
         </form>
