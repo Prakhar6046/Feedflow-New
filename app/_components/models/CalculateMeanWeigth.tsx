@@ -312,8 +312,8 @@ const CalculateMeanWeigth = ({ open, setOpen, setAvgOfMeanWeight }: Props) => {
                 </Typography>
 
                 <Typography variant="body1">
-                  {getValues("avgOfMeanWeight")
-                    ? Number(getValues("avgOfMeanWeight")).toFixed(2)
+                  {watch("avgOfMeanWeight")
+                    ? Number(watch("avgOfMeanWeight")).toFixed(2)
                     : 0}
                 </Typography>
               </Box>

@@ -76,6 +76,7 @@ const CalculateMeanLength = ({ open, setOpen, setAvgOfMeanLength }: Props) => {
       return (acc += val);
     }, 0);
     const avgOfMeanLength = totalLengths / totalMeasurementArr.length;
+
     setValue("avgOfMeanLength", avgOfMeanLength);
   }, [
     watchFields.map((field) => field.measurement).join(","),
@@ -257,8 +258,8 @@ const CalculateMeanLength = ({ open, setOpen, setAvgOfMeanLength }: Props) => {
                 </Typography>
 
                 <Typography variant="body1">
-                  {getValues("avgOfMeanLength")
-                    ? Number(getValues("avgOfMeanLength")).toFixed(2)
+                  {watch("avgOfMeanLength")
+                    ? Number(watch("avgOfMeanLength")).toFixed(2)
                     : 0}
                 </Typography>
               </Box>
