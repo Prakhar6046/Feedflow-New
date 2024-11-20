@@ -49,7 +49,7 @@ const CalculateMeanLength = ({ open, setOpen, setAvgOfMeanLength }: Props) => {
       reset();
     } else {
       toast.dismiss();
-      toast.error("Please fill the number of fish and total weight");
+      toast.error("Please fill the measurements and length");
     }
   };
   const { fields, append, remove } = useFieldArray({

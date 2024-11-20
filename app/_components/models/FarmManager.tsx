@@ -566,11 +566,9 @@ const TransferModal: React.FC<Props> = ({
                                   : false
                               }
                               {...register(`manager.${idx}.productionUnit`, {
-                                required:
-                                  item.field === "Harvest" ||
-                                  item.field === "Mortalities"
-                                    ? false
-                                    : true,
+                                required: watch(`manager.${idx}.productionUnit`)
+                                  ? false
+                                  : true,
                                 onChange: (e) =>
                                   item.field === "Stock" &&
                                   setValue(
@@ -578,6 +576,9 @@ const TransferModal: React.FC<Props> = ({
                                     e.target.value
                                   ),
                               })}
+                              inputProps={{
+                                shrink: watch(`manager.${idx}.productionUnit`),
+                              }}
                               value={
                                 watch(`manager.${idx}.productionUnit`) || ""
                               }
@@ -605,18 +606,17 @@ const TransferModal: React.FC<Props> = ({
                               })()}
                             </Select>
                             {errors &&
+                              !watch(`manager.${idx}.productionUnit`) &&
                               errors?.manager &&
                               errors?.manager[idx] &&
-                              errors?.manager[idx].productionUnit &&
-                              errors?.manager[idx].productionUnit.type ===
-                                "required" && (
+                              errors?.manager[idx].productionUnit && (
                                 <Typography
                                   variant="body2"
                                   color="red"
                                   fontSize={13}
                                   mt={0.5}
                                 >
-                                  {validationMessage.required}
+                                  This field is required
                                 </Typography>
                               )}
                             <Typography
@@ -1102,7 +1102,11 @@ const TransferModal: React.FC<Props> = ({
                             {...register(
                               `manager.${idx}.stockingDensityKG` as const,
                               {
-                                required: true,
+                                required: watch(
+                                  `manager.${idx}.stockingDensityKG`
+                                )
+                                  ? false
+                                  : true,
                                 pattern: validationPattern.numbersWithDot,
                               }
                             )}
@@ -1133,6 +1137,7 @@ const TransferModal: React.FC<Props> = ({
                           mt={0.5}
                         ></Typography>
                         {errors &&
+                          !watch(`manager.${idx}.stockingDensityKG`) &&
                           errors.manager &&
                           errors.manager[idx] &&
                           errors.manager[idx].stockingDensityKG &&
@@ -1191,7 +1196,11 @@ const TransferModal: React.FC<Props> = ({
                             {...register(
                               `manager.${idx}.stockingDensityNM` as const,
                               {
-                                required: true,
+                                required: watch(
+                                  `manager.${idx}.stockingDensityNM`
+                                )
+                                  ? false
+                                  : true,
                                 pattern: validationPattern.numbersWithDot,
                               }
                             )}
@@ -1239,6 +1248,7 @@ const TransferModal: React.FC<Props> = ({
                           mt={0.5}
                         ></Typography>
                         {errors &&
+                          !watch(`manager.${idx}.stockingDensityNM`) &&
                           errors.manager &&
                           errors.manager[idx] &&
                           errors.manager[idx].stockingDensityNM &&
