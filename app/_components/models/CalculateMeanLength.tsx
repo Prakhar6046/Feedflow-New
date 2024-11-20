@@ -94,6 +94,7 @@ const CalculateMeanLength = ({ open, setOpen, setAvgOfMeanLength }: Props) => {
       aria-labelledby="child-modal-title"
       aria-describedby="child-modal-description"
       onKeyUp={(e) => handleKeyPress(e.key)}
+      className="custom-modal-positioning"
     >
       <Stack
         bgcolor={"white"}
@@ -112,7 +113,7 @@ const CalculateMeanLength = ({ open, setOpen, setAvgOfMeanLength }: Props) => {
           },
         }}
       >
-        <form>
+        <form className="form-height">
           <Box
             display={"flex"}
             justifyContent={"center"}

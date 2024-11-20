@@ -120,6 +120,7 @@ body {
   }
 }
 
+
 .search-filter .css-18pjc51-MuiFormLabel-root-MuiInputLabel-root.Mui-focused {
   color: #979797;
 }
@@ -422,4 +423,11 @@ label {
 }
 .tab-selected.Mui-selected {
   color: white;
+}
+
+.custom-modal-positioning > div:nth-child(3) {
+  top: 50%;
+  margin-inline: auto;
+  height: fit-content !important;
+  max-height: 90%;
 }
