@@ -195,7 +195,7 @@ export default function AddNewUser({ organisations }: Props) {
                   variant="contained"
                   tabIndex={-1}
                   startIcon={!profilePic && <CloudUploadIcon />}
-                  className="upload-file-input"
+                  className="upload-file-input1"
                   sx={{
                     textTransform: "unset",
                     fontSize: 12,
@@ -211,6 +211,7 @@ export default function AddNewUser({ organisations }: Props) {
                     flexDirection: "column",
                     justifyContent: "center",
                     alignItems: "center",
+                    position: "relative",
                   }}
                 >
                   {!profilePic && "Upload photo"}

@@ -232,10 +232,10 @@ const AddNewOrganisation = () => {
               backgroundSize: "contain",
               backgroundPosition: "center",
               backgroundRepeat: "no-repeat",
-              margin: "0 !important",
+              marginInline: "0 !important",
             }}
             startIcon={!profilePic && <CloudUploadIcon />}
-            className="upload-file-input"
+            className="upload-file-input custom-margin"
             sx={{
               textTransform: "unset",
               fontSize: 12,
@@ -254,6 +254,7 @@ const AddNewOrganisation = () => {
               flexDirection: "column",
               justifyContent: "center",
               alignItems: "center",
+              position: "relative",
             }}
           >
             <Box>{!profilePic && "Drag file here or Upload from Device"}</Box>

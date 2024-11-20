@@ -238,7 +238,9 @@ body {
 .upload-file-input > span {
   margin-right: 0;
 }
-
+.custom-margin {
+  margin-inline: -12px !important;
+}
 .switch-input
   .css-1x2e00o-MuiSwitch-root
   .MuiSwitch-switchBase.Mui-checked
@@ -396,10 +398,10 @@ body {
   }
 }
 
-.form-height {
-  height: 100%;
-  overflow-y: auto;
-}
+/* .form-height {
+  height: 600px;
+  overflow-x: auto;
+} */
 
 label {
   width: fit-content !important;
@@ -417,4 +419,7 @@ label {
 
 .prod-action tr th:last-child {
   text-align: center !important;
+}
+.tab-selected.Mui-selected {
+  color: white;
 }

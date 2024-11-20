@@ -261,7 +261,7 @@ export default function Page({ params }: { params: { userId: string } }) {
                   fontSize={14}
                   alignSelf={"flex-start"}
                 >
-                  Profile Picture
+                  Profile Pictures
                 </Typography>
                 <Button
                   component="label"
