@@ -127,6 +127,7 @@ const TransferModal: React.FC<Props> = ({
     control,
     name: "manager",
   });
+  const watchedFields = watch("manager");
 
   const onSubmit: SubmitHandler<InputTypes> = async (data) => {
     // Prevent API call if one is already in progress
@@ -247,6 +248,7 @@ const TransferModal: React.FC<Props> = ({
     setSelectedMeanLengthId(String(item.id));
     setIsMeanLengthCal(true);
   };
+
   useEffect(() => {
     if (isStockDeleted || selectedProduction) {
       const data = [
@@ -272,8 +274,6 @@ const TransferModal: React.FC<Props> = ({
       setIsStockDeleted(false);
     };
   }, [selectedProduction, setValue, isStockDeleted]);
-
-  const watchedFields = watch("manager");
 
   useEffect(() => {
     if (selectedProduction) {
@@ -377,9 +377,16 @@ const TransferModal: React.FC<Props> = ({
 
   useEffect(() => {
     if (avgOfMeanWeight && selectedMeanWeightId) {
-      const updatedFields = fields.map((field) => {
+      const updatedFields = fields.map((field, idx) => {
         if (field.id === selectedMeanWeightId) {
-          return { ...field, meanWeight: String(avgOfMeanWeight) };
+          return {
+            ...field,
+            meanWeight: String(avgOfMeanWeight),
+            batchNumber: watchedFields[idx].batchNumber,
+            count: watchedFields[idx].count,
+            productionUnit: watchedFields[idx].productionUnit,
+            biomass: watchedFields[idx].biomass,
+          };
         } else {
           return field;
         }
@@ -390,9 +397,16 @@ const TransferModal: React.FC<Props> = ({
   }, [avgOfMeanWeight]);
   useEffect(() => {
     if (avgOfMeanLength && selectedMeanLengthId) {
-      const updatedFields = fields.map((field) => {
+      const updatedFields = fields.map((field, idx) => {
         if (field.id === selectedMeanLengthId) {
-          return { ...field, meanLength: String(avgOfMeanLength) };
+          return {
+            ...field,
+            meanLength: String(avgOfMeanLength),
+            batchNumber: watchedFields[idx].batchNumber,
+            count: watchedFields[idx].count,
+            productionUnit: watchedFields[idx].productionUnit,
+            biomass: watchedFields[idx].biomass,
+          };
         } else {
           return field;
         }
@@ -408,7 +422,7 @@ const TransferModal: React.FC<Props> = ({
       aria-labelledby="parent-modal-title"
       aria-describedby="parent-modal-description"
       className="modal-positioning"
-      onBackdropClick={() => reset()}
+      // onBackdropClick={() => reset()}
     >
       <Stack sx={style}>
         <Box display="flex" justifyContent="flex-end" padding={2}>

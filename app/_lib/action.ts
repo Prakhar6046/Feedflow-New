@@ -145,6 +145,25 @@ export const getFarms = async (payload: {
     return error;
   }
 };
+export const getFarmMembers = async (organisationId?: string) => {
+  try {
+    const data = await fetch(
+      `${process.env.BASE_URL}/api/farm/members?organisationId=${organisationId}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        cache: "no-store",
+      }
+    );
+    const res = await data.json();
+
+    return res;
+  } catch (error) {
+    return error;
+  }
+};
 export const getOrganisationForhatchery = async () => {
   try {
     const data = await fetch(

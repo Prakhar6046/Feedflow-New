@@ -1,6 +1,6 @@
 import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
 import FarmTable from "@/app/_components/table/FarmTable";
-import { getFarms } from "@/app/_lib/action";
+import { getFarmMembers, getFarms } from "@/app/_lib/action";
 import { getCookie } from "cookies-next";
 import { cookies } from "next/headers";
 export default async function Page({
@@ -20,6 +20,8 @@ export default async function Page({
     query,
     noFilter: false,
   });
+  const farmMembers = await getFarmMembers(user.organisationId);
+  console.log(farmMembers);
 
   return (
     <>
