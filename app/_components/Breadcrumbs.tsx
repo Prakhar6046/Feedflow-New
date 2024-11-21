@@ -75,10 +75,8 @@ export default function BasicBreadcrumbs({
   // };
   const handleRememberSort = () => {
     if (!isSort) {
-      // setCookie("sort", JSON.stringify(sortvalue));
       localStorage.setItem(pathName, JSON.stringify(sortvalue));
     } else {
-      // deleteCookie(pathName);
       localStorage.removeItem(pathName);
     }
   };
