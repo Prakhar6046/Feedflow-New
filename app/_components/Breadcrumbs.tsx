@@ -36,12 +36,12 @@ export default function BasicBreadcrumbs({
   const router = useRouter();
   const sortvalue = useAppSelector(selectSort);
   const loggedUser: any = getCookie("logged-user");
-  const sortData = localStorage.getItem(pathName);
   const [open, setOpen] = useState(false);
   const [status, setStatus] = useState("");
   const [currentRole, setCurrentRole] = useState<string>("");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [isSort, setIsSort] = useState<Boolean>(false);
+  const [sortDataFromLocal, setSortDataFromLocal] = useState<any>("");
   const debouncedSearchQuery = useDebounce(searchQuery);
   const dispatch = useAppDispatch();
 
@@ -84,7 +84,7 @@ export default function BasicBreadcrumbs({
   };
 
   useEffect(() => {
-    if (sortvalue && sortData) {
+    if (sortvalue && sortDataFromLocal) {
       setIsSort(true);
     } else {
       setIsSort(false);
@@ -96,6 +96,11 @@ export default function BasicBreadcrumbs({
       setCurrentRole(role);
     }
   }, [role]);
+  useEffect(() => {
+    if (pathName && window) {
+      setSortDataFromLocal(window.localStorage.getItem(pathName));
+    }
+  }, [pathName, window]);
 
   return (
     <>
