@@ -864,6 +864,10 @@ const TransferModal: React.FC<Props> = ({
                                   px: 0.75,
                                   borderRadius: 1,
                                   cursor: "pointer",
+                                  // textOverflow: "ellipsis",
+                                  // whiteSpace: "nowrap",
+                                  // minHeight: "1.4375em",
+                                  // overflow: "hidden",
                                 }}
                               >
                                 <svg
@@ -884,17 +888,25 @@ const TransferModal: React.FC<Props> = ({
                           <TextField
                             label="Mean Weight *"
                             type="text"
-                            className="form-input"
+                            className="form-input custom-wrap"
                             sx={{
                               width: "100%",
                               "& .MuiInputLabel-root": {
                                 transition: "all 0.2s ease",
+                                maxWidth: "60%",
+                                overflow: "hidden",
+                                whiteSpace: "nowrap",
+                                textOverflow: "ellipsis",
+                                height: "auto",
                               },
                               "&:focus-within .MuiInputLabel-root": {
                                 transform: "translate(10px, -9px)",
                                 fontSize: "0.75rem",
                                 color: "primary.main",
                                 backgroundColor: "#fff",
+                                maxWidth: "100%",
+                                overflow: "visible",
+                                textOverflow: "unset",
                               },
                             }}
                             disabled={idx === 0 ? true : false}
@@ -999,12 +1011,20 @@ const TransferModal: React.FC<Props> = ({
                               width: "100%",
                               "& .MuiInputLabel-root": {
                                 transition: "all 0.2s ease",
+                                maxWidth: "60%",
+                                overflow: "hidden",
+                                whiteSpace: "nowrap",
+                                textOverflow: "ellipsis",
+                                height: "auto",
                               },
                               "&:focus-within .MuiInputLabel-root": {
                                 transform: "translate(10px, -9px)",
                                 fontSize: "0.75rem",
                                 color: "primary.main",
                                 backgroundColor: "#fff",
+                                maxWidth: "100%",
+                                overflow: "visible",
+                                textOverflow: "unset",
                               },
                             }}
                             disabled={idx === 0 ? true : false}
