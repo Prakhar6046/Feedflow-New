@@ -89,7 +89,7 @@ export default function BasicBreadcrumbs({
     } else {
       setIsSort(false);
     }
-  }, [sortvalue]);
+  }, [sortvalue, sortDataFromLocal]);
 
   useEffect(() => {
     if (role) {
