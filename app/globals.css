@@ -336,7 +336,7 @@ body {
   font-size: 14px;
 }
 
-@media only screen and (max-width: 1600px) {
+/* @media only screen and (max-width: 1600px) {
   .custom-field > label {
     overflow: hidden;
     text-overflow: ellipsis;
@@ -354,6 +354,11 @@ body {
     text-overflow: clip !important;
     width: 100% !important;
     white-space: normal !important;
+  }
+} */
+@media only screen and (min-width: 899px) and (max-width: 1024px) {
+  .custom-field > label {
+    width: 185px !important;
   }
 }
 
