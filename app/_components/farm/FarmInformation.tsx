@@ -6,19 +6,21 @@ import { useAppDispatch } from "@/lib/hooks";
 import {
   Box,
   Button,
+  Checkbox,
   FormControl,
   Grid,
   InputLabel,
   MenuItem,
-  Select,
+  // Select,
   Stack,
   TextField,
   Typography,
 } from "@mui/material";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
 import { NextPage } from "next";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import Loader from "../Loader";
 import { getCookie, setCookie } from "cookies-next";
 import { SingleUser } from "@/app/_typeModels/User";
@@ -42,6 +44,7 @@ const FarmInformation: NextPage<Props> = ({
     formState: { errors },
     setValue,
     watch,
+    control,
     reset,
   } = useForm<Farm>({ mode: "onChange" });
   const loggedUser: any = getCookie("logged-user");
@@ -56,6 +59,14 @@ const FarmInformation: NextPage<Props> = ({
   const [searchedAddress, setSearchedAddress] = useState<any>();
   const [fishFarmers, setFishFarmers] = useState<Farm[]>();
   const [loading, setLoading] = useState<boolean>(false);
+  const selectedManagerIds = watch("mangerId") || [];
+
+  const handleChange = (event: any) => {
+    const {
+      target: { value },
+    } = event;
+    setValue("mangerId", value);
+  };
   const getFarmers = async () => {
     const response = await fetch("/api/farm/fish-farmers");
     return response.json();
@@ -91,7 +102,7 @@ const FarmInformation: NextPage<Props> = ({
       setValue("zipCode", editFarm?.farmAddress?.zipCode);
       setValue("province", editFarm?.farmAddress?.province);
       setValue("fishFarmer", editFarm?.fishFarmer);
-      setValue("mangerId", String(editFarm?.manger?.id));
+      // setValue("mangerId", String(editFarm?.manger?.id));
       setValue("lat", String(Number(editFarm?.lat).toFixed(2)));
       setValue("lng", String(Number(editFarm?.lng).toFixed(2)));
     }
@@ -338,9 +349,10 @@ const FarmInformation: NextPage<Props> = ({
           <Box mb={2} width={"100%"}>
             <FormControl fullWidth className="form-input" sx={{}}>
               <InputLabel id="feed-supply-select-label1">Manager</InputLabel>
-              <Select
-                labelId="feed-supply-select-label1"
-                id="feed-supply-select1"
+              {/* <Select
+                labelId="demo-multiple-name-label1"
+                id="demo-multiple-name"
+                multiple
                 {...register("mangerId", {
                   onChange: (e) => setValue("mangerId", e.target.value),
                 })}
@@ -363,7 +375,50 @@ const FarmInformation: NextPage<Props> = ({
                 ) : (
                   <MenuItem>No member found</MenuItem>
                 )}
-              </Select>
+              </Select> */}
+              <Controller
+                name="mangerId"
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    multiple
+                    labelId="demo-multiple-name-label1"
+                    id="demo-multiple-name"
+                    value={selectedManagerIds}
+                    onChange={handleChange}
+                    renderValue={(selected) =>
+                      selected &&
+                      selected.length &&
+                      selected
+                        .map((id) => {
+                          const member = farmMembers.find(
+                            (mem) => String(mem.id) === id
+                          );
+                          return member?.name || "";
+                        })
+                        .join(", ")
+                    } // Displays selected items as comma-separated values
+                  >
+                    {farmMembers?.filter((mem) => mem.id !== user.id).length ? (
+                      farmMembers
+                        .filter((mem) => mem.id !== user.id)
+                        .map((member) => {
+                          return (
+                            <MenuItem
+                              value={String(member.id)}
+                              key={String(member.id)}
+                            >
+                              {member.name}
+                            </MenuItem>
+                          );
+                        })
+                    ) : (
+                      <MenuItem disabled>No member found</MenuItem>
+                    )}
+                  </Select>
+                )}
+              />
             </FormControl>
 
             <Typography variant="body2" color="#555555;" marginBlock={2}>
@@ -386,6 +441,7 @@ const FarmInformation: NextPage<Props> = ({
               setLng={setLng}
               setUseAddress={setUseAddress}
               isCalAltitude={true}
+              i
             />
           </Box>
           {selectedSwtich === "address" ? (
