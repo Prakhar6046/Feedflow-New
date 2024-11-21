@@ -326,6 +326,47 @@ const FarmInformation: NextPage<Props> = ({
                 )}
             </FormControl>
           </Box>
+          <Box mb={2} width={"100%"}>
+            <FormControl fullWidth className="form-input" sx={{}}>
+              <InputLabel id="feed-supply-select-label1">
+                Fish Farmer *
+              </InputLabel>
+              <Select
+                labelId="feed-supply-select-label1"
+                id="feed-supply-select1"
+                {...register("fishFarmer", {
+                  required: watch("fishFarmer") ? false : true,
+                  onChange: (e) => setValue("fishFarmer", e.target.value),
+                })}
+                label="Feed Farmer *"
+                value={watch("fishFarmer") || ""}
+              >
+                {fishFarmers?.map((fish: any) => {
+                  return (
+                    <MenuItem value={String(fish.id)} key={fish.id}>
+                      {fish.name}
+                    </MenuItem>
+                  );
+                })}
+              </Select>
+              {errors &&
+                errors.fishFarmer &&
+                errors.fishFarmer.type === "required" && (
+                  <Typography
+                    variant="body2"
+                    color="red"
+                    fontSize={13}
+                    mt={0.5}
+                  >
+                    {validationMessage.required}
+                  </Typography>
+                )}
+            </FormControl>
+
+            <Typography variant="body2" color="#555555;" marginBlock={2}>
+              Add your Content here
+            </Typography>
+          </Box>
           <Box
             display={"flex"}
             justifyContent={"end"}
