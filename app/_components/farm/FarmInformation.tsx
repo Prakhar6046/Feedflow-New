@@ -337,14 +337,14 @@ const FarmInformation: NextPage<Props> = ({
           </Box>
           <Box mb={2} width={"100%"}>
             <FormControl fullWidth className="form-input" sx={{}}>
-              <InputLabel id="feed-supply-select-label1">Manger</InputLabel>
+              <InputLabel id="feed-supply-select-label1">Manager</InputLabel>
               <Select
                 labelId="feed-supply-select-label1"
                 id="feed-supply-select1"
                 {...register("mangerId", {
                   onChange: (e) => setValue("mangerId", e.target.value),
                 })}
-                label="Manger"
+                label="Manager"
                 value={watch("mangerId") || ""}
               >
                 {farmMembers?.filter((mem) => mem.id !== user.id).length ? (
