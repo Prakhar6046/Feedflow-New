@@ -284,7 +284,7 @@ export default function BasicTable({ organisations, userRole }: Props) {
                         {organisation?.imageUrl ? (
                           <Image
                             src={String(organisation.imageUrl)}
-                            width={80}
+                            width={40}
                             height={40}
                             style={{
                               borderRadius: "8px",
@@ -299,7 +299,7 @@ export default function BasicTable({ organisations, userRole }: Props) {
                             alignItems={"center"}
                             bgcolor={"rgba(145, 158, 171, 0.24)"}
                             sx={{
-                              width: 80,
+                              width: 40,
                               height: 40,
                               borderRadius: "8px",
                             }}

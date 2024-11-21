@@ -405,7 +405,7 @@ export default function UserTable({ users }: Props) {
                         {user?.organisation.imageUrl ? (
                           <Image
                             src={String(user.organisation.imageUrl)}
-                            width={80}
+                            width={40}
                             height={40}
                             style={{
                               borderRadius: "8px",
@@ -420,7 +420,7 @@ export default function UserTable({ users }: Props) {
                             alignItems={"center"}
                             bgcolor={"rgba(145, 158, 171, 0.24)"}
                             sx={{
-                              width: 80,
+                              width: 40,
                               height: 40,
                               borderRadius: "8px",
                             }}

@@ -35,9 +35,9 @@ body {
 
 /* CSS For Table Edit option  */
 .table-edit-option {
-  border-radius: 50%;
-  min-width: 30px;
-  min-height: 30px;
+  border-radius: 50% !important;
+  min-width: 30px !important;
+  min-height: 30px !important;
   padding: 0 !important;
 }
 
@@ -119,7 +119,6 @@ body {
     transform: translate(-25px, -50%) !important;
   }
 }
-
 
 .search-filter .css-18pjc51-MuiFormLabel-root-MuiInputLabel-root.Mui-focused {
   color: #979797;
@@ -263,7 +262,12 @@ body {
 .form-input > label {
   color: #979797 !important;
 }
-
+.form-input-farm > label {
+  color: #06a19b;
+}
+.form-input-farm > div > fieldset {
+  border: 1px solid #06a19b !important;
+}
 .cursor-pointer {
   cursor: pointer;
 }
@@ -382,6 +386,12 @@ body {
   height: fit-content !important;
   max-height: 90%;
 }
+.custom-modal-positioning > div:nth-child(3) {
+  top: 50%;
+  margin-inline: auto;
+  height: fit-content !important;
+  max-height: 90%;
+}
 .modal-positioning {
   border-radius: 4px !important;
 }
@@ -423,11 +433,4 @@ label {
 }
 .tab-selected.Mui-selected {
   color: white;
-}
-
-.custom-modal-positioning > div:nth-child(3) {
-  top: 50%;
-  margin-inline: auto;
-  height: fit-content !important;
-  max-height: 90%;
 }
