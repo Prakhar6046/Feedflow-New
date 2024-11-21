@@ -24,6 +24,7 @@ export async function POST(req: NextRequest) {
         farmAltitude: body.farmAltitude,
         lat: body.lat,
         lng: body.lng,
+        mangerId: Number(body.mangerId) ?? null,
       },
     });
 

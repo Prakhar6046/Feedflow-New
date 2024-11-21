@@ -18,6 +18,7 @@ export async function POST(req: NextRequest) {
         lat: body.lat,
         lng: body.lng,
         organisationId: body.organsationId,
+        mangerId: Number(body.mangerId) ?? null,
       },
     });
 

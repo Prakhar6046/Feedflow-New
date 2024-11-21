@@ -21,16 +21,19 @@ import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import Loader from "../Loader";
 import { getCookie, setCookie } from "cookies-next";
+import { SingleUser } from "@/app/_typeModels/User";
 // import MapComponent from "./MapComponent";
 const MapComponent = dynamic(() => import("./MapComponent"), { ssr: false });
 interface Props {
   editFarm?: any;
   setActiveStep: (val: number) => void;
+  farmMembers: SingleUser[];
 }
 
 const FarmInformation: NextPage<Props> = ({
   setActiveStep,
   editFarm,
+  farmMembers,
 }: Props) => {
   const dispatch = useAppDispatch();
   const {
@@ -41,6 +44,8 @@ const FarmInformation: NextPage<Props> = ({
     watch,
     reset,
   } = useForm<Farm>({ mode: "onChange" });
+  const loggedUser: any = getCookie("logged-user");
+  const user = JSON.parse(loggedUser);
   const AddFarmData = getCookie("addFarm");
   const [selectedSwtich, setSelectedSwtich] = useState<string>("address");
   const [altitude, setAltitude] = useState<String>("");
@@ -71,6 +76,9 @@ const FarmInformation: NextPage<Props> = ({
   };
   useEffect(() => {
     if (editFarm) {
+      console.log(editFarm);
+      console.log(farmMembers);
+
       setValue("name", editFarm?.name);
       setValue(
         "farmAltitude",
@@ -83,6 +91,7 @@ const FarmInformation: NextPage<Props> = ({
       setValue("zipCode", editFarm?.farmAddress?.zipCode);
       setValue("province", editFarm?.farmAddress?.province);
       setValue("fishFarmer", editFarm?.fishFarmer);
+      setValue("mangerId", String(editFarm?.manger?.id));
       setValue("lat", String(Number(editFarm?.lat).toFixed(2)));
       setValue("lng", String(Number(editFarm?.lng).toFixed(2)));
     }
@@ -328,43 +337,37 @@ const FarmInformation: NextPage<Props> = ({
           </Box>
           <Box mb={2} width={"100%"}>
             <FormControl fullWidth className="form-input" sx={{}}>
-              <InputLabel id="feed-supply-select-label1">
-                Fish Farmer *
-              </InputLabel>
+              <InputLabel id="feed-supply-select-label1">Manger</InputLabel>
               <Select
                 labelId="feed-supply-select-label1"
                 id="feed-supply-select1"
-                {...register("fishFarmer", {
-                  required: watch("fishFarmer") ? false : true,
-                  onChange: (e) => setValue("fishFarmer", e.target.value),
+                {...register("mangerId", {
+                  onChange: (e) => setValue("mangerId", e.target.value),
                 })}
-                label="Feed Farmer *"
-                value={watch("fishFarmer") || ""}
+                label="Manger"
+                value={watch("mangerId") || ""}
               >
-                {fishFarmers?.map((fish: any) => {
-                  return (
-                    <MenuItem value={String(fish.id)} key={fish.id}>
-                      {fish.name}
-                    </MenuItem>
-                  );
-                })}
-              </Select>
-              {errors &&
-                errors.fishFarmer &&
-                errors.fishFarmer.type === "required" && (
-                  <Typography
-                    variant="body2"
-                    color="red"
-                    fontSize={13}
-                    mt={0.5}
-                  >
-                    {validationMessage.required}
-                  </Typography>
+                {farmMembers?.filter((mem) => mem.id !== user.id).length ? (
+                  farmMembers
+                    .filter((mem) => mem.id !== user.id)
+                    .map((member: SingleUser) => {
+                      return (
+                        <MenuItem
+                          value={String(member.id)}
+                          key={String(member.id)}
+                        >
+                          {member.name}
+                        </MenuItem>
+                      );
+                    })
+                ) : (
+                  <MenuItem>No member found</MenuItem>
                 )}
+              </Select>
             </FormControl>
 
             <Typography variant="body2" color="#555555;" marginBlock={2}>
-              Add your Content here
+              Choose your farm manager
             </Typography>
           </Box>
           <Box

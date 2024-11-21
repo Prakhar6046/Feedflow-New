@@ -13,7 +13,12 @@ export const GET = async (request: NextRequest, context: { params: any }) => {
   try {
     const data = await prisma.farm.findUnique({
       where: { id: farmId },
-      include: { farmAddress: true, productionUnits: true, production: true },
+      include: {
+        farmAddress: true,
+        productionUnits: true,
+        production: true,
+        manger: true,
+      },
     });
     return new NextResponse(JSON.stringify({ status: true, data }), {
       status: 200,

@@ -37,6 +37,7 @@ model User {
   invite         Boolean      @default(false)
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
+  Farm           Farm[]
 }
 
 model Organisation {
@@ -117,6 +118,8 @@ model Farm {
   createdBy      String?
   organisationId Int?
   organisation   Organisation? @relation(fields: [organisationId], references: [id])
+  mangerId       Int?
+  manger         User?         @relation(fields: [mangerId], references: [id])
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
 
