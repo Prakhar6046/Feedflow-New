@@ -36,7 +36,7 @@ export default function BasicBreadcrumbs({
   const router = useRouter();
   const sortvalue = useAppSelector(selectSort);
   const loggedUser: any = getCookie("logged-user");
-  const sortData = "";
+  const sortData = localStorage.getItem(pathName);
   const [open, setOpen] = useState(false);
   const [status, setStatus] = useState("");
   const [currentRole, setCurrentRole] = useState<string>("");
@@ -361,7 +361,7 @@ export default function BasicBreadcrumbs({
                   </Box>
                 </Tooltip>
                 <Tooltip
-                  title="This will remember any sorting, filter and which page you were on even if you navigate away form the page."
+                  title="This will remember any sorting, filter and which page you were on even if you navigate away from the page."
                   placement="top"
                   style={{ color: "red" }}
                 >
