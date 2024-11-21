@@ -422,7 +422,7 @@ const TransferModal: React.FC<Props> = ({
       aria-labelledby="parent-modal-title"
       aria-describedby="parent-modal-description"
       className="modal-positioning"
-      // onBackdropClick={() => reset()}
+      onBackdropClick={() => reset()}
     >
       <Stack sx={style}>
         <Box display="flex" justifyContent="flex-end" padding={2}>

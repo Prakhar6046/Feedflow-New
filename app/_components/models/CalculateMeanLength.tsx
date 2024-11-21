@@ -163,10 +163,25 @@ const CalculateMeanLength = ({ open, setOpen, setAvgOfMeanLength }: Props) => {
                             <TextField
                               label="Measurement *"
                               type="text"
-                              {...register(`meanlength.${idx}.measurement`)}
+                              {...register(`meanlength.${idx}.measurement`, {
+                                required: true,
+                              })}
                               className="form-input"
                               sx={{ width: "100%" }}
                             />
+                            {errors &&
+                              errors.meanlength &&
+                              errors.meanlength[idx] &&
+                              errors.meanlength[idx].measurement && (
+                                <Typography
+                                  variant="body2"
+                                  color="red"
+                                  fontSize={13}
+                                  mt={0.5}
+                                >
+                                  This field is required
+                                </Typography>
+                              )}
                           </Grid>
 
                           <Grid
@@ -181,7 +196,9 @@ const CalculateMeanLength = ({ open, setOpen, setAvgOfMeanLength }: Props) => {
                               <TextField
                                 label="Length *"
                                 type="text"
-                                {...register(`meanlength.${idx}.length`)}
+                                {...register(`meanlength.${idx}.length`, {
+                                  required: true,
+                                })}
                                 className="form-input"
                                 sx={{ width: "100%" }}
                               />
@@ -203,6 +220,19 @@ const CalculateMeanLength = ({ open, setOpen, setAvgOfMeanLength }: Props) => {
                               >
                                 g
                               </Typography>
+                              {errors &&
+                                errors.meanlength &&
+                                errors.meanlength[idx] &&
+                                errors.meanlength[idx].length && (
+                                  <Typography
+                                    variant="body2"
+                                    color="red"
+                                    fontSize={13}
+                                    mt={0.5}
+                                  >
+                                    This field is required
+                                  </Typography>
+                                )}
                             </Box>
                           </Grid>
                         </Grid>

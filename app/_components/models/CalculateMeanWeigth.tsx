@@ -180,10 +180,26 @@ const CalculateMeanWeigth = ({ open, setOpen, setAvgOfMeanWeight }: Props) => {
                             <TextField
                               label="Number of fish *"
                               type="number"
-                              {...register(`meanWeight.${idx}.noOfFish`)}
+                              {...register(`meanWeight.${idx}.noOfFish`, {
+                                required: true,
+                              })}
                               className="form-input"
                               sx={{ width: "100%" }}
                             />
+
+                            {errors &&
+                              errors.meanWeight &&
+                              errors.meanWeight[idx] &&
+                              errors.meanWeight[idx].noOfFish && (
+                                <Typography
+                                  variant="body2"
+                                  color="red"
+                                  fontSize={13}
+                                  mt={0.5}
+                                >
+                                  This field is required
+                                </Typography>
+                              )}
                           </Grid>
 
                           <Grid
@@ -198,7 +214,9 @@ const CalculateMeanWeigth = ({ open, setOpen, setAvgOfMeanWeight }: Props) => {
                               <TextField
                                 label="Total weight *"
                                 type="number"
-                                {...register(`meanWeight.${idx}.totalWeight`)}
+                                {...register(`meanWeight.${idx}.totalWeight`, {
+                                  required: true,
+                                })}
                                 className="form-input"
                                 sx={{ width: "100%" }}
                               />
@@ -220,6 +238,19 @@ const CalculateMeanWeigth = ({ open, setOpen, setAvgOfMeanWeight }: Props) => {
                               >
                                 g
                               </Typography>
+                              {errors &&
+                                errors.meanWeight &&
+                                errors.meanWeight[idx] &&
+                                errors.meanWeight[idx].totalWeight && (
+                                  <Typography
+                                    variant="body2"
+                                    color="red"
+                                    fontSize={13}
+                                    mt={0.5}
+                                  >
+                                    This field is required
+                                  </Typography>
+                                )}
                             </Box>
                           </Grid>
 
