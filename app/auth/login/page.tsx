@@ -41,8 +41,9 @@ export default function Page() {
 
       const data = await response.json();
 
-      if (response.ok) {
-        setCookie("logged-user", data.data.user);
+      if (response.ok && data.data.user) {
+        const { organisation, ...rest } = data.data.user;
+        setCookie("logged-user", JSON.stringify(rest));
         dispatch(userAction.handleRole(data.data.user.role));
         setCookie("role", data?.data?.user?.role);
         if (data.status) {
