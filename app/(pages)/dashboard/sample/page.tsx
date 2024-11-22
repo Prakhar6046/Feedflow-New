@@ -3,7 +3,7 @@ import ToggleSamplingView from "@/app/_components/sampling/ToggleSamplingView";
 import SampleTable from "@/app/_components/table/SampleTable";
 import { sampleHead } from "@/app/_lib/utils/tableHeadData";
 
-const Page = ({}) => {
+const Page = () => {
   return (
     <>
       <BasicBreadcrumbs
