@@ -310,7 +310,7 @@ export default function FarmTable({ farms }: Props) {
                         </Button>
                         <Menu
                           id="basic-menu"
-                          className="table-edit-menu"
+                          className="table-edit-farm-menu"
                           anchorEl={anchorEl}
                           open={open}
                           onClose={handleClose}

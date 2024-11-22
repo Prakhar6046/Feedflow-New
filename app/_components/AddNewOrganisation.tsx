@@ -348,7 +348,6 @@ const AddNewOrganisation = () => {
                 label="Organisation Name *"
                 type="text"
                 className="form-input"
-                focused
                 {...register("organisationName", {
                   required: true,
                   pattern: validationPattern.alphabetsNumbersAndSpacesPattern,
@@ -407,7 +406,7 @@ const AddNewOrganisation = () => {
                   sx={{
                     width: "100%",
                   }}
-                  focused
+
                   // focused={true}
                   // value={userData?.data.email ?? "Demo@gmail.com"}
                 />
@@ -425,7 +424,7 @@ const AddNewOrganisation = () => {
                   )}
               </Box>
             </Stack>
-            <FormControl className="form-input" focused fullWidth>
+            <FormControl className="form-input" fullWidth>
               <InputLabel id="demo-simple-select-label">
                 Organisation Type *
               </InputLabel>
@@ -492,7 +491,6 @@ const AddNewOrganisation = () => {
                     required: true,
                     pattern: validationPattern.addressPattern,
                   })}
-                  focused
                   sx={{
                     width: "100%",
                   }}
@@ -533,7 +531,6 @@ const AddNewOrganisation = () => {
                     pattern:
                       validationPattern.alphabetsSpacesAndSpecialCharsPattern,
                   })}
-                  focused
                   sx={{
                     width: "100%",
                   }}
@@ -580,7 +577,6 @@ const AddNewOrganisation = () => {
                     pattern:
                       validationPattern.alphabetsSpacesAndSpecialCharsPattern,
                   })}
-                  focused
                   sx={{
                     width: "100%",
                   }}
@@ -620,7 +616,6 @@ const AddNewOrganisation = () => {
                     required: true,
                     pattern: validationPattern.onlyNumbersPattern,
                   })}
-                  focused
                   sx={{
                     width: "100%",
                   }}
@@ -670,7 +665,6 @@ const AddNewOrganisation = () => {
                     required: true,
                     pattern: validationPattern.alphabetsAndSpacesPattern,
                   })}
-                  focused
                   sx={{
                     width: "100%",
                   }}
@@ -754,7 +748,6 @@ const AddNewOrganisation = () => {
                       required: true,
                       pattern: validationPattern.alphabetsAndSpacesPattern,
                     })}
-                    focused
                     sx={{
                       width: "100%",
                     }}
@@ -799,7 +792,7 @@ const AddNewOrganisation = () => {
                     },
                   }}
                 >
-                  <FormControl className="form-input" focused fullWidth>
+                  <FormControl className="form-input" fullWidth>
                     <InputLabel id="demo-simple-select-label">
                       Role *
                     </InputLabel>
@@ -858,7 +851,6 @@ const AddNewOrganisation = () => {
                       required: true,
                       pattern: validationPattern.emailPattern,
                     })}
-                    focused
                     sx={{
                       width: "100%",
                     }}
@@ -910,7 +902,6 @@ const AddNewOrganisation = () => {
                       required: true,
                       pattern: validationPattern.phonePattern,
                     })}
-                    focused
                     sx={{
                       width: "100%",
                     }}

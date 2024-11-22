@@ -514,3 +514,44 @@ export const farmManagerHeadMember = [
     label: "Stocking level",
   },
 ];
+export const sampleHead = [
+  {
+    id: "Form",
+    numeric: false,
+    disablePadding: true,
+    label: "Form",
+  },
+  {
+    id: "unit",
+    numeric: false,
+    disablePadding: true,
+    label: "unit",
+  },
+  {
+    id: "Do",
+    numeric: false,
+    disablePadding: true,
+    label: "Do",
+  },
+  {
+    id: "Ammonia",
+    numeric: false,
+    disablePadding: true,
+    label: "Ammonia",
+  },
+  {
+    id: "TSS",
+    numeric: false,
+    disablePadding: true,
+    label: "TSS",
+  },
+
+ 
+
+  {
+    id: "action",
+    numeric: false,
+    disablePadding: true,
+    label: "Actions",
+  },
+];

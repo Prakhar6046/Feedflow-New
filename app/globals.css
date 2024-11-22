@@ -68,7 +68,12 @@ body {
   width: 150px;
   transform: translate(-130px, -35px) !important;
 }
-
+.table-edit-farm-menu div:nth-child(3) {
+  border-radius: 8px;
+  box-shadow: 1px 1px 5px rgba(151, 151, 151, 0.03);
+  width: 150px;
+  transform: translate(-153px, -35px) !important;
+}
 /* CSS For User Profile Dropdown  */
 .profile-dropdown
   .css-g0cb43-MuiButtonBase-root-MuiMenuItem-root
@@ -437,5 +442,23 @@ label {
   text-align: center !important;
 }
 .tab-selected.Mui-selected {
-  color: white;
+  color: white !important;
+  background-color: #06a19b;
+  border: 0px !important;
 }
+.custom-border {
+  border-bottom: none !important;
+  border-color: none !important;
+}
+.custom-gap {
+  display: flex;
+  gap: 20px !important;
+}
+.custom-gap > div > div {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+/* .tab-selected.Mui-selected svg {
+  color: red;
+} */
