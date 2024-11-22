@@ -212,15 +212,6 @@ const FarmInformation: NextPage<Props> = ({
               }}
               sx={{
                 width: "100%",
-                "& .MuiInputLabel-root": {
-                  transition: "all 0.2s ease",
-                },
-                "&:focus-within .MuiInputLabel-root": {
-                  transform: "translate(10px, -9px)",
-                  fontSize: "0.75rem",
-                  color: "primary.main",
-                  backgroundColor: "#fff",
-                },
               }}
             />
 
@@ -254,15 +245,6 @@ const FarmInformation: NextPage<Props> = ({
               }}
               sx={{
                 width: "100%",
-                "& .MuiInputLabel-root": {
-                  transition: "all 0.2s ease",
-                },
-                "&:focus-within .MuiInputLabel-root": {
-                  transform: "translate(10px, -9px)",
-                  fontSize: "0.75rem",
-                  color: "primary.main",
-                  backgroundColor: "#fff",
-                },
               }}
             />
 
@@ -293,15 +275,6 @@ const FarmInformation: NextPage<Props> = ({
               }}
               sx={{
                 width: "100%",
-                "& .MuiInputLabel-root": {
-                  transition: "all 0.2s ease",
-                },
-                "&:focus-within .MuiInputLabel-root": {
-                  transform: "translate(10px, -9px)",
-                  fontSize: "0.75rem",
-                  color: "primary.main",
-                  backgroundColor: "#fff",
-                },
               }}
             />
 
@@ -459,15 +432,6 @@ const FarmInformation: NextPage<Props> = ({
                       }}
                       sx={{
                         width: "100%",
-                        "& .MuiInputLabel-root": {
-                          transition: "all 0.2s ease",
-                        },
-                        "&:focus-within .MuiInputLabel-root": {
-                          transform: "translate(10px, -9px)",
-                          fontSize: "0.75rem",
-                          color: "primary.main",
-                          backgroundColor: "#fff",
-                        },
                       }}
                     />
                     {errors &&
@@ -498,15 +462,6 @@ const FarmInformation: NextPage<Props> = ({
                     }}
                     sx={{
                       width: "100%",
-                      "& .MuiInputLabel-root": {
-                        transition: "all 0.2s ease",
-                      },
-                      "&:focus-within .MuiInputLabel-root": {
-                        transform: "translate(10px, -9px)",
-                        fontSize: "0.75rem",
-                        color: "primary.main",
-                        backgroundColor: "#fff",
-                      },
                     }}
                   />
                 </Grid>
@@ -532,15 +487,6 @@ const FarmInformation: NextPage<Props> = ({
                       }}
                       sx={{
                         width: "100%",
-                        "& .MuiInputLabel-root": {
-                          transition: "all 0.2s ease",
-                        },
-                        "&:focus-within .MuiInputLabel-root": {
-                          transform: "translate(10px, -9px)",
-                          fontSize: "0.75rem",
-                          color: "primary.main",
-                          backgroundColor: "#fff",
-                        },
                       }}
                     />
                     {errors &&
@@ -587,15 +533,6 @@ const FarmInformation: NextPage<Props> = ({
                       }}
                       sx={{
                         width: "100%",
-                        "& .MuiInputLabel-root": {
-                          transition: "all 0.2s ease",
-                        },
-                        "&:focus-within .MuiInputLabel-root": {
-                          transform: "translate(10px, -9px)",
-                          fontSize: "0.75rem",
-                          color: "primary.main",
-                          backgroundColor: "#fff",
-                        },
                       }}
                     />
                     {errors &&
@@ -641,15 +578,6 @@ const FarmInformation: NextPage<Props> = ({
                       }}
                       sx={{
                         width: "100%",
-                        "& .MuiInputLabel-root": {
-                          transition: "all 0.2s ease",
-                        },
-                        "&:focus-within .MuiInputLabel-root": {
-                          transform: "translate(10px, -9px)",
-                          fontSize: "0.75rem",
-                          color: "primary.main",
-                          backgroundColor: "#fff",
-                        },
                       }}
                     />
                     {errors &&
@@ -698,15 +626,6 @@ const FarmInformation: NextPage<Props> = ({
                       }}
                       sx={{
                         width: "100%",
-                        "& .MuiInputLabel-root": {
-                          transition: "all 0.2s ease",
-                        },
-                        "&:focus-within .MuiInputLabel-root": {
-                          transform: "translate(10px, -9px)",
-                          fontSize: "0.75rem",
-                          color: "primary.main",
-                          backgroundColor: "#fff",
-                        },
                       }}
                     />
                     {errors &&
