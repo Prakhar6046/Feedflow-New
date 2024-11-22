@@ -37,6 +37,7 @@ const FarmInformation: NextPage<Props> = ({
   editFarm,
   farmMembers,
 }: Props) => {
+  console.log(editFarm);
   const dispatch = useAppDispatch();
   const {
     register,

@@ -17,7 +17,7 @@ export const GET = async (request: NextRequest, context: { params: any }) => {
         farmAddress: true,
         productionUnits: true,
         production: true,
-        manger: true,
+        FarmManager: true,
       },
     });
     return new NextResponse(JSON.stringify({ status: true, data }), {

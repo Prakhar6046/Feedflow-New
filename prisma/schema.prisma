@@ -19,25 +19,27 @@ enum UserRole {
   SUPERADMIN
   ADMIN
   MEMBER
+  FARMMANAGER
 }
 
 model User {
-  id             Int          @id @default(autoincrement())
+  id             Int           @id @default(autoincrement())
   name           String?
-  email          String       @unique
+  email          String        @unique
   password       String?
-  status         UserStatus   @default(ACTIVE)
-  role           UserRole     @default(MEMBER)
+  status         UserStatus    @default(ACTIVE)
+  role           UserRole      @default(MEMBER)
   image          String?
   imageUrl       String?
   updatedBy      String?
   createdBy      String?
   organisationId Int
-  organisation   Organisation @relation(fields: [organisationId], references: [id], onUpdate: Cascade)
-  invite         Boolean      @default(false)
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
+  organisation   Organisation  @relation(fields: [organisationId], references: [id], onUpdate: Cascade)
+  invite         Boolean       @default(false)
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
   Farm           Farm[]
+  FarmManager    FarmManager[]
 }
 
 model Organisation {
@@ -118,13 +120,15 @@ model Farm {
   createdBy      String?
   organisationId Int?
   organisation   Organisation? @relation(fields: [organisationId], references: [id])
-  mangerId       Int?
-  manger         User?         @relation(fields: [mangerId], references: [id])
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime      @updatedAt
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   productionUnits ProductionUnit[]
   production      production[]
+  User            User?            @relation(fields: [userId], references: [id])
+  userId          Int?
+  FarmManager     FarmManager[]
 
   @@index([createdAt])
   @@index([updatedAt])
@@ -266,6 +270,21 @@ model production {
   organisation      Organisation?   @relation(fields: [organisationId], references: [id], onDelete: SetNull)
   productionUnit    ProductionUnit? @relation(fields: [productionUnitId], references: [id])
   fishSupply        FishSupply?     @relation(fields: [batchNumberId], references: [id])
+
+  @@index([createdAt])
+  @@index([updatedAt])
+}
+
+model FarmManager {
+  id        Int      @id @default(autoincrement())
+  userId    Int?
+  user      User?    @relation(fields: [userId], references: [id])
+  farmId    String?
+  farm      Farm?    @relation(fields: [farmId], references: [id])
+  createdBy Int? // Optional field, nullable foreign key
+  updatedBy String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([createdAt])
   @@index([updatedAt])

@@ -9,34 +9,40 @@ export async function POST(req: NextRequest) {
     const newFarmAddress = await prisma.farmAddress.create({
       data: { ...body.farmAddress },
     });
-    let payload;
-    if (Number(body.mangerId)) {
-      payload = {
-        farmAddressId: newFarmAddress.id,
-        name: body.name,
-        farmAltitude: body.farmAltitude,
-        fishFarmer: body.fishFarmer,
-        lat: body.lat,
-        lng: body.lng,
-        organisationId: body.organsationId,
-        mangerId: Number(body.mangerId) ?? null,
-      };
-    } else {
-      payload = {
-        farmAddressId: newFarmAddress.id,
-        name: body.name,
-        farmAltitude: body.farmAltitude,
-        fishFarmer: body.fishFarmer,
-        lat: body.lat,
-        lng: body.lng,
-        organisationId: body.organsationId,
-      };
-    }
+
     const farm = await prisma.farm.create({
       data: {
-        ...payload,
+        farmAddressId: newFarmAddress.id,
+        name: body.name,
+        farmAltitude: body.farmAltitude,
+        fishFarmer: body.fishFarmer,
+        lat: body.lat,
+        lng: body.lng,
+        organisationId: body.organsationId,
       },
     });
+    //Creating farm manager
+    if (body?.mangerId?.length) {
+      await prisma.farmManager.createMany({
+        data: body.mangerId.map((userId: string) => ({
+          farmId: farm.id,
+          userId: Number(userId),
+        })),
+      });
+
+      //Find the user and make them Farm Manager
+      const updateManagerRoles = async (managerIds: string[]) => {
+        await Promise.all(
+          managerIds.map(async (userId) => {
+            await prisma.user.update({
+              where: { id: Number(userId) },
+              data: { role: "FARMMANAGER" },
+            });
+          })
+        );
+      };
+      await updateManagerRoles(body.mangerId);
+    }
 
     // Create production units one by one to retrieve their ids
     const newProductUnits = [];
@@ -65,7 +71,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({
       message: "Farm created successfully",
-      data: farm,
+      data: "farm",
       status: true,
     });
   } catch (error) {

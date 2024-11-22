@@ -24,9 +24,10 @@ export async function POST(req: NextRequest) {
         farmAltitude: body.farmAltitude,
         lat: body.lat,
         lng: body.lng,
-        mangerId: Number(body.mangerId) ?? null,
       },
     });
+
+    //updating existing farm manager
 
     // Fetch existing production units and productions from the database
     const existingUnits = await prisma.productionUnit.findMany({
