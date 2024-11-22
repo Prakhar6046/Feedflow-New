@@ -218,7 +218,7 @@ const CalculateMeanLength = ({ open, setOpen, setAvgOfMeanLength }: Props) => {
                                   pl: 1,
                                 }}
                               >
-                                g
+                                mm
                               </Typography>
                               {errors &&
                                 errors.meanlength &&

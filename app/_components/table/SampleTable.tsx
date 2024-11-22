@@ -24,17 +24,12 @@ import { getCookie } from "cookies-next";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 interface Props {
-  productions: Production[];
+  productions?: Production[];
   tableData: any;
-  farms: Farm[];
-  batches: { batchNumber: String; id: Number }[];
+  farms?: Farm[];
+  batches?: { batchNumber: String; id: Number }[];
 }
-export default function SampleTable({
-  productions,
-  tableData,
-  farms,
-  batches,
-}: Props) {
+export default function SampleTable({ productions, tableData }: Props) {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const pathName = usePathname();
