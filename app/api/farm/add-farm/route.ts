@@ -9,8 +9,9 @@ export async function POST(req: NextRequest) {
     const newFarmAddress = await prisma.farmAddress.create({
       data: { ...body.farmAddress },
     });
-    const farm = await prisma.farm.create({
-      data: {
+    let payload;
+    if (Number(body.mangerId)) {
+      payload = {
         farmAddressId: newFarmAddress.id,
         name: body.name,
         farmAltitude: body.farmAltitude,
@@ -19,6 +20,21 @@ export async function POST(req: NextRequest) {
         lng: body.lng,
         organisationId: body.organsationId,
         mangerId: Number(body.mangerId) ?? null,
+      };
+    } else {
+      payload = {
+        farmAddressId: newFarmAddress.id,
+        name: body.name,
+        farmAltitude: body.farmAltitude,
+        fishFarmer: body.fishFarmer,
+        lat: body.lat,
+        lng: body.lng,
+        organisationId: body.organsationId,
+      };
+    }
+    const farm = await prisma.farm.create({
+      data: {
+        ...payload,
       },
     });
 

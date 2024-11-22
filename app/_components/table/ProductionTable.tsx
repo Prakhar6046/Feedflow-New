@@ -129,7 +129,6 @@ export default function ProductionTable({
     property: string
   ) => {
     const isAsc = orderBy === property && order === "asc";
-    console.log(property);
     setOrder(isAsc ? "desc" : "asc");
     setOrderBy(property);
     dispatch(

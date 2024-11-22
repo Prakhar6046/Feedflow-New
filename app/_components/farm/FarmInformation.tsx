@@ -87,9 +87,6 @@ const FarmInformation: NextPage<Props> = ({
   };
   useEffect(() => {
     if (editFarm) {
-      console.log(editFarm);
-      console.log(farmMembers);
-
       setValue("name", editFarm?.name);
       setValue(
         "farmAltitude",
