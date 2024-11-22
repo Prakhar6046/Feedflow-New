@@ -1,8 +1,8 @@
 import * as validationPattern from "@/app/_lib/utils/validationPatterns/index";
 import * as validationMessage from "@/app/_lib/utils/validationsMessage/index";
 import { Farm } from "@/app/_typeModels/Farm";
-import { farmAction } from "@/lib/features/farm/farmSlice";
-import { useAppDispatch } from "@/lib/hooks";
+import { farmAction, selectIsEditFarm } from "@/lib/features/farm/farmSlice";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import {
   Box,
   Button,
@@ -18,6 +18,7 @@ import {
 } from "@mui/material";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import { NextPage } from "next";
+
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
@@ -37,7 +38,6 @@ const FarmInformation: NextPage<Props> = ({
   editFarm,
   farmMembers,
 }: Props) => {
-  console.log(editFarm);
   const dispatch = useAppDispatch();
   const {
     register,
@@ -61,6 +61,7 @@ const FarmInformation: NextPage<Props> = ({
   const [fishFarmers, setFishFarmers] = useState<Farm[]>();
   const [loading, setLoading] = useState<boolean>(false);
   const selectedManagerIds = watch("mangerId") || [];
+  const isEditFarm = useAppSelector(selectIsEditFarm);
 
   const handleChange = (event: any) => {
     const {
@@ -100,9 +101,17 @@ const FarmInformation: NextPage<Props> = ({
       setValue("zipCode", editFarm?.farmAddress?.zipCode);
       setValue("province", editFarm?.farmAddress?.province);
       setValue("fishFarmer", editFarm?.fishFarmer);
-      // setValue("mangerId", String(editFarm?.manger?.id));
       setValue("lat", String(Number(editFarm?.lat).toFixed(2)));
       setValue("lng", String(Number(editFarm?.lng).toFixed(2)));
+      if (editFarm.FarmManager) {
+        let managerIds: String[] = [];
+        editFarm.FarmManager.map((user: any) => {
+          if (user.userId) {
+            managerIds.push(String(user.userId));
+          }
+        });
+        setValue("mangerId", managerIds);
+      }
     }
   }, [editFarm]);
   useEffect(() => {
@@ -347,33 +356,7 @@ const FarmInformation: NextPage<Props> = ({
           <Box mb={2} width={"100%"}>
             <FormControl fullWidth className="form-input" sx={{}}>
               <InputLabel id="feed-supply-select-label1">Manager</InputLabel>
-              {/* <Select
-                labelId="demo-multiple-name-label1"
-                id="demo-multiple-name"
-                multiple
-                {...register("mangerId", {
-                  onChange: (e) => setValue("mangerId", e.target.value),
-                })}
-                label="Manager"
-                value={watch("mangerId") || ""}
-              >
-                {farmMembers?.filter((mem) => mem.id !== user.id).length ? (
-                  farmMembers
-                    .filter((mem) => mem.id !== user.id)
-                    .map((member: SingleUser) => {
-                      return (
-                        <MenuItem
-                          value={String(member.id)}
-                          key={String(member.id)}
-                        >
-                          {member.name}
-                        </MenuItem>
-                      );
-                    })
-                ) : (
-                  <MenuItem>No member found</MenuItem>
-                )}
-              </Select> */}
+
               <Controller
                 name="mangerId"
                 control={control}
@@ -383,6 +366,7 @@ const FarmInformation: NextPage<Props> = ({
                     multiple
                     labelId="demo-multiple-name-label1"
                     id="demo-multiple-name"
+                    disabled={isEditFarm ? true : false}
                     value={selectedManagerIds}
                     onChange={handleChange}
                     renderValue={(selected) =>

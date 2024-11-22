@@ -10,9 +10,8 @@ export interface FarmInitialState {
 export interface Farm {
   name: String;
   mangerId?: String[];
-  FarmManager: {
+  FarmManager?: {
     userId: Number;
-    farmId: String;
   }[];
   addressLine1: String;
   farmAltitude: String;
