@@ -1,10 +1,12 @@
 "use client";
-import * as React from "react";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
 import { EnvironmentIcon } from "@/app/_components/customIcons/Environment";
 import { StockIcon } from "@/app/_components/customIcons/stock";
+import { useEffect, useState } from "react";
+import { setCookie } from "cookies-next";
+import { useRouter } from "next/navigation";
 interface TabPanelProps {
   children?: React.ReactNode;
   index: number;
@@ -33,11 +35,17 @@ function a11yProps(index: number) {
   };
 }
 export default function ToggleSamplingView() {
-  const [value, setValue] = React.useState(0);
+  const router = useRouter();
+  const [value, setValue] = useState(0);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
+
+  useEffect(() => {
+    setCookie("sampling-active-table", value);
+    router.refresh();
+  }, [value]);
   return (
     <Box sx={{ width: "100%" }}>
       <Box

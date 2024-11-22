@@ -364,6 +364,11 @@ const FarmInformation: NextPage<Props> = ({
                               value={String(member.id)}
                               key={String(member.id)}
                             >
+                              <Checkbox
+                                checked={selectedManagerIds.includes(
+                                  String(member.id)
+                                )}
+                              />
                               {member.name}
                             </MenuItem>
                           );

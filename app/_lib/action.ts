@@ -230,3 +230,53 @@ export const getBatches = async (payload: {
     return error;
   }
 };
+export const getSampleEnvironment = async (payload: {
+  role?: string;
+  organisationId?: string;
+  query?: string;
+  noFilter?: boolean;
+}) => {
+  try {
+    const data = await fetch(
+      `${process.env.BASE_URL}/api/sample/sampleEnvironment?role=${payload.role}&organisationId=${payload.organisationId}&query=${payload.query}&filter=${payload.noFilter}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        cache: "no-store",
+      }
+    );
+    const res = await data.json();
+    revalidatePath(`/dashboard/sample`);
+
+    return res;
+  } catch (error) {
+    return error;
+  }
+};
+export const getSampleStock = async (payload: {
+  role?: string;
+  organisationId?: string;
+  query?: string;
+  noFilter?: boolean;
+}) => {
+  try {
+    const data = await fetch(
+      `${process.env.BASE_URL}/api/sample/sampleStock?role=${payload.role}&organisationId=${payload.organisationId}&query=${payload.query}&filter=${payload.noFilter}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        cache: "no-store",
+      }
+    );
+    const res = await data.json();
+    revalidatePath(`/dashboard/sample`);
+
+    return res;
+  } catch (error) {
+    return error;
+  }
+};

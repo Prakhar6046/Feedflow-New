@@ -2,6 +2,7 @@
 import TransferModal from "@/app/_components/models/FarmManager";
 import { Farm } from "@/app/_typeModels/Farm";
 import { Production } from "@/app/_typeModels/production";
+import { SampleEnvironment, SampleStock } from "@/app/_typeModels/sample";
 import { breadcrumsAction } from "@/lib/features/breadcrum/breadcrumSlice";
 import { selectRole } from "@/lib/features/user/userSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
@@ -24,12 +25,11 @@ import { getCookie } from "cookies-next";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 interface Props {
-  productions?: Production[];
   tableData: any;
   farms?: Farm[];
-  batches?: { batchNumber: String; id: Number }[];
+  sampleStock: SampleStock[];
 }
-export default function SampleTable({ productions, tableData }: Props) {
+export default function SampleStockTable({ tableData }: Props) {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const pathName = usePathname();
