@@ -514,18 +514,24 @@ export const farmManagerHeadMember = [
     label: "Stocking level",
   },
 ];
-export const sampleHead = [
+export const sampleEnvironmentHead = [
   {
-    id: "Form",
+    id: "Farm",
     numeric: false,
     disablePadding: true,
-    label: "Form",
+    label: "Farm",
   },
   {
     id: "unit",
     numeric: false,
     disablePadding: true,
     label: "unit",
+  },
+  {
+    id: "Date",
+    numeric: false,
+    disablePadding: true,
+    label: "Date",
   },
   {
     id: "Do",
@@ -546,12 +552,131 @@ export const sampleHead = [
     label: "TSS",
   },
 
- 
+  {
+    id: "action",
+    numeric: false,
+    disablePadding: true,
+    label: "Actions",
+  },
+];
+export const sampleEnvironmentHeadMember = [
+  {
+    id: "Farm",
+    numeric: false,
+    disablePadding: true,
+    label: "Farm",
+  },
+  {
+    id: "unit",
+    numeric: false,
+    disablePadding: true,
+    label: "unit",
+  },
+  {
+    id: "Date",
+    numeric: false,
+    disablePadding: true,
+    label: "Date",
+  },
+  {
+    id: "Do",
+    numeric: false,
+    disablePadding: true,
+    label: "Do",
+  },
+  {
+    id: "Ammonia",
+    numeric: false,
+    disablePadding: true,
+    label: "Ammonia",
+  },
+  {
+    id: "TSS",
+    numeric: false,
+    disablePadding: true,
+    label: "TSS",
+  },
+];
+export const sampleStockHead = [
+  {
+    id: "Farm",
+    numeric: false,
+    disablePadding: true,
+    label: "Farm",
+  },
+  {
+    id: "unit",
+    numeric: false,
+    disablePadding: true,
+    label: "unit",
+  },
+  {
+    id: "Biomass",
+    numeric: true,
+    disablePadding: true,
+    label: "Biomass (Kg)",
+  },
+  {
+    id: "count",
+    numeric: true,
+    disablePadding: true,
+    label: "Count",
+  },
+  {
+    id: "Mean weight",
+    numeric: false,
+    disablePadding: true,
+    label: "Mean weight (g)",
+  },
+  {
+    id: "Mean length",
+    numeric: false,
+    disablePadding: true,
+    label: "Mean length (mm)",
+  },
 
   {
     id: "action",
     numeric: false,
     disablePadding: true,
     label: "Actions",
+  },
+];
+export const sampleStockHeadMember = [
+  {
+    id: "Farm",
+    numeric: false,
+    disablePadding: true,
+    label: "Farm",
+  },
+  {
+    id: "unit",
+    numeric: false,
+    disablePadding: true,
+    label: "unit",
+  },
+  {
+    id: "Biomass",
+    numeric: true,
+    disablePadding: true,
+    label: "Biomass (Kg)",
+  },
+  {
+    id: "count",
+    numeric: true,
+    disablePadding: true,
+    label: "Count",
+  },
+  {
+    id: "Mean weight",
+    numeric: false,
+    disablePadding: true,
+    label: "Mean weight (g)",
+  },
+  {
+    id: "Mean length",
+    numeric: false,
+    disablePadding: true,
+    label: "Mean length (mm)",
   },
 ];

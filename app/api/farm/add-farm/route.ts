@@ -29,23 +29,12 @@ export async function POST(req: NextRequest) {
           userId: Number(userId),
         })),
       });
-
-      //Find the user and make them Farm Manager
-      const updateManagerRoles = async (managerIds: string[]) => {
-        await Promise.all(
-          managerIds.map(async (userId) => {
-            await prisma.user.update({
-              where: { id: Number(userId) },
-              data: { role: "FARMMANAGER" },
-            });
-          })
-        );
-      };
-      await updateManagerRoles(body.mangerId);
     }
 
     // Create production units one by one to retrieve their ids
     const newProductUnits = [];
+    const newSamplingEnvironment = [];
+    const newSamplingStock = [];
 
     for (const unit of body.productionUnits) {
       const newUnit = await prisma.productionUnit.create({
@@ -58,11 +47,32 @@ export async function POST(req: NextRequest) {
         },
       });
       newProductUnits.push(newUnit); // Store each created production unit
+      newSamplingEnvironment.push(newUnit);
+      newSamplingStock.push(newUnit);
     }
 
     // Create production managers using the ids of the created production units
     const newProductionManage = await prisma.production.createMany({
       data: newProductUnits.map((unit: any) => ({
+        fishFarmId: farm.id,
+        productionUnitId: unit.id, // Use the production unit id
+        organisationId: body.organsationId,
+      })),
+    });
+
+    // Create samplingEnvironment using the ids of the created production units
+    const newSamplingEnvironmentData =
+      await prisma.samplingEnvironment.createMany({
+        data: newSamplingEnvironment.map((unit: any) => ({
+          fishFarmId: farm.id,
+          productionUnitId: unit.id, // Use the production unit id
+          organisationId: body.organsationId,
+        })),
+      });
+
+    // Create samplingStock using the ids of the created production units
+    const newSamplingStockData = await prisma.samplingStock.createMany({
+      data: newSamplingEnvironment.map((unit: any) => ({
         fishFarmId: farm.id,
         productionUnitId: unit.id, // Use the production unit id
         organisationId: body.organsationId,
