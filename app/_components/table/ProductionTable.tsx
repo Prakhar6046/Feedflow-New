@@ -535,6 +535,7 @@ export default function ProductionTable({
                             aria-haspopup="true"
                             aria-expanded={open ? "true" : undefined}
                             onClick={(e) => handleClick(e, farm)}
+                            disabled={farm.isManager ? true : false}
                             className=""
                             type="button"
                             variant="contained"

@@ -179,6 +179,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
           organsationId: loggedUserData.organisationId,
           productions: editFarm.production,
           mangerId: farm.mangerId ? farm.mangerId : null,
+          userId: loggedUserData.id,
         };
       } else {
         payload = {
@@ -198,6 +199,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
           fishFarmer: farm.fishFarmer,
           organsationId: loggedUserData.organisationId,
           mangerId: farm.mangerId ? farm.mangerId : null,
+          userId: loggedUserData.id,
         };
       }
       if (Object.keys(payload).length && payload.name) {

@@ -24,6 +24,7 @@ export default async function Page({
     organisationId: user.organisationId,
     query,
     noFilter: false,
+    userId: user.id,
   });
   const farms = await getFarms({
     role: user.role,

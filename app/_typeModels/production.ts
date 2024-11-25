@@ -15,6 +15,7 @@ export interface Production {
   createdAt: String;
   updatedAt: String;
   organisationId: Number;
+  isManager?: Boolean;
   farm: Farm;
   organisation: SingleOrganisation;
   fishCount: String;

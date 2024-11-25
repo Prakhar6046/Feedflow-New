@@ -5,6 +5,8 @@ export const GET = async (request: NextRequest) => {
   const searchParams = request.nextUrl.searchParams;
   const role = searchParams.get("role");
   const organisationId = searchParams.get("organisationId");
+  const userId = searchParams.get("userId");
+
   const query = searchParams.get("query");
   const filter = searchParams.get("filter");
 
@@ -54,8 +56,28 @@ export const GET = async (request: NextRequest) => {
         ],
       },
     });
+
+    // currentUserFarms = get farms for current user here
+    const currentUserFarms = await prisma.farmManager.findMany({
+      where: { userId: Number(userId) },
+    });
+
+    // foreach on product
+    // assign IsManger currentUserFarms exist  production.farmId == currentUserFarms.farmId
+    const dataWithIsManager = productions.map((production) => {
+      const farmId = currentUserFarms.find(
+        (manager) => manager.farmId === production.fishFarmId
+      );
+
+      if (production.fishFarmId === String(farmId?.farmId)) {
+        return { ...production, isManager: true };
+      } else {
+        return production;
+      }
+    });
+
     return new NextResponse(
-      JSON.stringify({ status: true, data: productions }),
+      JSON.stringify({ status: true, data: dataWithIsManager }),
       {
         status: 200,
       }

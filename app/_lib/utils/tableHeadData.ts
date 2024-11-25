@@ -373,28 +373,28 @@ export const farmManagerHead = [
     label: "Farm",
   },
   {
-    id: "Producton unit",
+    id: "unit",
     numeric: false,
     disablePadding: true,
-    label: "Production unit",
+    label: "Unit",
   },
   {
-    id: "Batch number",
+    id: "Batch #",
     numeric: false,
     disablePadding: true,
-    label: "Batch number",
+    label: "Batch #",
   },
   {
-    id: "Age (days|months)",
+    id: "Age",
     numeric: false,
     disablePadding: true,
-    label: "Age (days|months)",
+    label: "Age",
   },
   {
-    id: "Fish Count",
+    id: "Fish",
     numeric: false,
     disablePadding: true,
-    label: "Fish Count (n)",
+    label: "Fish (n)",
   },
 
   {
@@ -437,10 +437,10 @@ export const farmManagerHead = [
   },
 
   {
-    id: "action",
+    id: "manage",
     numeric: false,
     disablePadding: true,
-    label: "Actions",
+    label: "Manage",
   },
 ];
 export const farmManagerHeadMember = [
@@ -451,28 +451,28 @@ export const farmManagerHeadMember = [
     label: "Farm",
   },
   {
-    id: "Producton unit",
+    id: "unit",
     numeric: false,
     disablePadding: true,
-    label: "Production unit",
+    label: "Unit",
   },
   {
-    id: "Batch number",
+    id: "Batch #",
     numeric: false,
     disablePadding: true,
-    label: "Batch number",
+    label: "Batch #",
   },
   {
-    id: "Age (days|months)",
+    id: "Age",
     numeric: false,
     disablePadding: true,
-    label: "Age (days|months)",
+    label: "Age",
   },
   {
-    id: "Fish Count",
+    id: "Fish",
     numeric: false,
     disablePadding: true,
-    label: "Fish Count (n)",
+    label: "Fish (n)",
   },
 
   {
@@ -495,10 +495,10 @@ export const farmManagerHeadMember = [
     label: "Mean length (mm)",
   },
   {
-    id: "Stocking density",
+    id: "Stocking Density",
     numeric: false,
     disablePadding: true,
-    label: `Stocking density  (kg/${"m\u00B3"})`,
+    label: `Stocking density (kg/${"m\u00B3"})`,
   },
 
   {

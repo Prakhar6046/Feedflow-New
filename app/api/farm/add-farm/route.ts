@@ -19,6 +19,7 @@ export async function POST(req: NextRequest) {
         lat: body.lat,
         lng: body.lng,
         organisationId: body.organsationId,
+        userId: body.userId,
       },
     });
     //Creating farm manager
@@ -61,23 +62,23 @@ export async function POST(req: NextRequest) {
     });
 
     // Create samplingEnvironment using the ids of the created production units
-    const newSamplingEnvironmentData =
-      await prisma.samplingEnvironment.createMany({
-        data: newSamplingEnvironment.map((unit: any) => ({
-          fishFarmId: farm.id,
-          productionUnitId: unit.id, // Use the production unit id
-          organisationId: body.organsationId,
-        })),
-      });
+    // const newSamplingEnvironmentData =
+    //   await prisma.samplingEnvironment.createMany({
+    //     data: newSamplingEnvironment.map((unit: any) => ({
+    //       fishFarmId: farm.id,
+    //       productionUnitId: unit.id, // Use the production unit id
+    //       organisationId: body.organsationId,
+    //     })),
+    //   });
 
     // Create samplingStock using the ids of the created production units
-    const newSamplingStockData = await prisma.samplingStock.createMany({
-      data: newSamplingEnvironment.map((unit: any) => ({
-        fishFarmId: farm.id,
-        productionUnitId: unit.id, // Use the production unit id
-        organisationId: body.organsationId,
-      })),
-    });
+    // const newSamplingStockData = await prisma.samplingStock.createMany({
+    //   data: newSamplingEnvironment.map((unit: any) => ({
+    //     fishFarmId: farm.id,
+    //     productionUnitId: unit.id, // Use the production unit id
+    //     organisationId: body.organsationId,
+    //   })),
+    // });
 
     return NextResponse.json({
       message: "Farm created successfully",

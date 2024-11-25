@@ -188,10 +188,11 @@ export const getProductions = async (payload: {
   organisationId?: string;
   query?: string;
   noFilter?: boolean;
+  userId?: string;
 }) => {
   try {
     const data = await fetch(
-      `${process.env.BASE_URL}/api/production?role=${payload.role}&organisationId=${payload.organisationId}&query=${payload.query}&filter=${payload.noFilter}`,
+      `${process.env.BASE_URL}/api/production?role=${payload.role}&organisationId=${payload.organisationId}&query=${payload.query}&filter=${payload.noFilter}&userId=${payload.userId}`,
       {
         method: "GET",
         headers: {
