@@ -29,19 +29,6 @@ export async function POST(req: NextRequest) {
           userId: Number(userId),
         })),
       });
-
-      //Find the user and make them Farm Manager
-      const updateManagerRoles = async (managerIds: string[]) => {
-        await Promise.all(
-          managerIds.map(async (userId) => {
-            await prisma.user.update({
-              where: { id: Number(userId) },
-              data: { role: "FARMMANAGER" },
-            });
-          })
-        );
-      };
-      await updateManagerRoles(body.mangerId);
     }
 
     // Create production units one by one to retrieve their ids

@@ -31,6 +31,7 @@ export default function ProductionTable({
   const router = useRouter();
   const dispatch = useAppDispatch();
   const pathName = usePathname();
+  const role = useAppSelector(selectRole);
   // const sortDataFromLocal = "";
   //   const loading = useAppSelector(selectFarmLoading);
   const [selectedProduction, setSelectedProduction] = useState<any>(null);
@@ -39,7 +40,6 @@ export default function ProductionTable({
   );
   const [openTransferModal, setOpenTransferModal] = useState<boolean>(false);
   const [productionData, setProductionData] = useState<Production[]>();
-  const role = useAppSelector(selectRole);
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("Farm");
   const [sortDataFromLocal, setSortDataFromLocal] = React.useState<any>("");

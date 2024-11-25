@@ -7,6 +7,16 @@ import { StockIcon } from "@/app/_components/customIcons/stock";
 import { useEffect, useState } from "react";
 import { setCookie } from "cookies-next";
 import { useRouter } from "next/navigation";
+import SampleEnvironmentTable from "../table/SampleEnvironmentTable";
+import SampleStockTable from "../table/SampleStockTable";
+import {
+  sampleEnvironmentHead,
+  sampleEnvironmentHeadMember,
+  sampleStockHead,
+  sampleStockHeadMember,
+} from "@/app/_lib/utils/tableHeadData";
+import { SampleEnvironment, SampleStock } from "@/app/_typeModels/sample";
+import { Farm } from "@/app/_typeModels/Farm";
 interface TabPanelProps {
   children?: React.ReactNode;
   index: number;
@@ -34,7 +44,18 @@ function a11yProps(index: number) {
     "aria-controls": `simple-tabpanel-${index}`,
   };
 }
-export default function ToggleSamplingView() {
+interface Props {
+  user: any;
+  sampleStock: SampleStock[];
+  sampleEnvironment: SampleEnvironment[];
+  farms: Farm[];
+}
+export default function ToggleSamplingView({
+  user,
+  sampleEnvironment,
+  sampleStock,
+  farms,
+}: Props) {
   const router = useRouter();
   const [value, setValue] = useState(0);
 
@@ -47,62 +68,74 @@ export default function ToggleSamplingView() {
     router.refresh();
   }, [value]);
   return (
-    <Box sx={{ width: "100%" }}>
-      <Box
-        sx={{ borderBottom: 1, borderColor: "divider" }}
-        className="custom-border"
-      >
-        <Tabs
-          value={value}
-          onChange={handleChange}
-          aria-label="basic tabs example"
-          indicatorColor="primary"
-          className="custom-gap"
+    <>
+      <Box sx={{ width: "100%" }}>
+        <Box
+          sx={{ borderBottom: 1, borderColor: "divider" }}
+          className="custom-border"
         >
-          <Tab
-            label="Environment"
-            icon={<EnvironmentIcon />}
-            className="tab-selected"
-            aria-label="environment"
-            {...a11yProps(0)}
-            sx={{
-              backgroundColor: "rgba(6, 161, 155, 0.1)",
-              borderRadius: "6px",
-              width: "200px",
-              display: "flex",
-              gap: "5px",
-              fontWeight: "bold",
-              fontSize: "16px",
-            }}
+          <Tabs
+            value={value}
+            onChange={handleChange}
+            aria-label="basic tabs example"
+            indicatorColor="primary"
+            className="custom-gap"
+          >
+            <Tab
+              label="Environment"
+              icon={<EnvironmentIcon />}
+              className="tab-selected"
+              aria-label="environment"
+              {...a11yProps(0)}
+              sx={{
+                backgroundColor: "rgba(6, 161, 155, 0.1)",
+                borderRadius: "6px",
+                width: "200px",
+                display: "flex",
+                gap: "5px",
+                fontWeight: "bold",
+                fontSize: "16px",
+              }}
+            />
+            <Tab
+              label="Stock"
+              icon={<StockIcon />}
+              className="tab-selected"
+              aria-label="stock"
+              {...a11yProps(1)}
+              sx={{
+                // backgroundColor: "rgba(6, 161, 155, 0.4)",
+                borderRadius: "6px",
+                backgroundColor: "rgba(6, 161, 155, 0.1)",
+                width: "200px",
+                display: "flex",
+                gap: "5px",
+                fontWeight: "bold",
+                fontSize: "16px",
+              }}
+            />
+          </Tabs>
+        </Box>
+        {Number(value) !== 1 ? (
+          <SampleEnvironmentTable
+            tableData={
+              user.role !== "MEMBER"
+                ? sampleEnvironmentHead
+                : sampleEnvironmentHeadMember
+            }
+            farms={farms}
+            sampleEnvironment={sampleEnvironment}
           />
-          <Tab
-            label="Stock"
-            icon={<StockIcon />}
-            className="tab-selected"
-            aria-label="stock"
-            {...a11yProps(1)}
-            sx={{
-              // backgroundColor: "rgba(6, 161, 155, 0.4)",
-              borderRadius: "6px",
-              backgroundColor: "rgba(6, 161, 155, 0.1)",
-              width: "200px",
-              display: "flex",
-              gap: "5px",
-              fontWeight: "bold",
-              fontSize: "16px",
-            }}
+        ) : (
+          <SampleStockTable
+            farms={farms}
+            tableData={
+              user.role !== "MEMBER" ? sampleStockHead : sampleStockHeadMember
+            }
+            sampleStock={sampleStock}
           />
-        </Tabs>
+        )}
       </Box>
-      {/* <CustomTabPanel value={value} index={0}>
-    Item One
-  </CustomTabPanel>
-  <CustomTabPanel value={value} index={1}>
-    Item Two
-  </CustomTabPanel>
-  <CustomTabPanel value={value} index={2}>
-    Item Three
-  </CustomTabPanel> */}
-    </Box>
+    </>
   );
 }

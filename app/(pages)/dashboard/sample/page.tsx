@@ -57,33 +57,12 @@ const Page = async ({
           { name: "Sampling", link: "/dashboard/sample" },
         ]}
       />
-      <ToggleSamplingView />
-      <SampleEnvironmentTable
-        tableData={
-          user.role !== "MEMBER" ? sampleStockHead : sampleStockHeadMember
-        }
-        farms={farms.data}
+      <ToggleSamplingView
+        user={user}
         sampleEnvironment={sampleEnvironment?.data}
+        sampleStock={sampleStock?.data}
+        farms={farms?.data}
       />
-      {/* {Number(samplingActiveTable) === 1 ? (
-        <SampleEnvironmentTable
-          tableData={
-            user.role !== "MEMBER" ? sampleStockHead : sampleStockHeadMember
-          }
-          farms={farms.data}
-          sampleEnvironment={sampleEnvironment?.data}
-        />
-      ) : (
-        <SampleStockTable
-          farms={farms.data}
-          tableData={
-            user.role !== "MEMBER"
-              ? sampleEnvironmentHead
-              : sampleEnvironmentHeadMember
-          }
-          sampleStock={sampleStock?.data}
-        />
-      )} */}
     </>
   );
 };

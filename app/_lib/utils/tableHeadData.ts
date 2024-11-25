@@ -616,7 +616,12 @@ export const sampleStockHead = [
     disablePadding: true,
     label: "Biomass (Kg)",
   },
-
+  {
+    id: "count",
+    numeric: true,
+    disablePadding: true,
+    label: "Count",
+  },
   {
     id: "Mean weight",
     numeric: false,
@@ -656,7 +661,12 @@ export const sampleStockHeadMember = [
     disablePadding: true,
     label: "Biomass (Kg)",
   },
-
+  {
+    id: "count",
+    numeric: true,
+    disablePadding: true,
+    label: "Count",
+  },
   {
     id: "Mean weight",
     numeric: false,
