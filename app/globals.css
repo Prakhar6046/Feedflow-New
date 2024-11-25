@@ -459,6 +459,10 @@ label {
   gap: 20px;
   align-items: center;
 }
+
+/* .validvate-message > .css-dzffjw-MuiTypography-root {
+  width: 55% !important;
+} */
 /* .tab-selected.Mui-selected svg {
   color: red;
 } */

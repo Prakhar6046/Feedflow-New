@@ -41,6 +41,7 @@ import toast from "react-hot-toast";
 import { v4 as uuidv4 } from "uuid";
 import CalculateVolume from "../models/CalculateVolume";
 import { deleteCookie, getCookie } from "cookies-next";
+import { px } from "framer-motion";
 interface Props {
   editFarm?: any;
   setActiveStep: (val: number) => void;
@@ -345,7 +346,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                       >
                         <FormControl className="form-input prod-unit" fullWidth>
                           <InputLabel id="demo-simple-select-label">
-                            Production Unit Type
+                            Production Unit Type *
                           </InputLabel>
                           <Controller
                             name={`productionUnits.${index}.type`} // Dynamic name for production unit type
@@ -355,7 +356,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                               <Select
                                 labelId={`demo-simple-select-label-${index}`}
                                 id={`demo-simple-select-${index}`}
-                                label="Production Unit Type"
+                                label="Production Unit Type *"
                                 {...field} // Spread the field props for value and onChange
                                 sx={{
                                   minWidth: "200px",
@@ -426,12 +427,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                           pr: 0,
                         }}
                       >
-                        <Box
-                          display={"flex"}
-                          gap={4}
-                          alignItems={"center"}
-                          justifyContent={"center"}
-                        >
+                        <Box display={"flex"} gap={2} alignItems={"center"}>
                           <Box position={"relative"}>
                             <TextField
                               label="Capacity *"
@@ -475,7 +471,6 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                               textTransform: "capitalize",
                               borderRadius: "8px",
                               border: "1px solid #06A19B",
-
                               minWidth: 90,
                             }}
                             onClick={() => handleCalculate(item, index)}
@@ -507,6 +502,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                               color="red"
                               fontSize={13}
                               mt={0.5}
+                              width="50%"
                             >
                               {validationMessage.OnlyNumbersWithDot}
                             </Typography>

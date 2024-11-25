@@ -327,8 +327,8 @@ const FarmInformation: NextPage<Props> = ({
             </FormControl>
           </Box>
           <Box mb={2} width={"100%"}>
-            <FormControl fullWidth className="form-input" sx={{}}>
-              <InputLabel id="feed-supply-select-label1">Manager</InputLabel>
+            <FormControl fullWidth className="form-input">
+              <InputLabel id="feed-supply-select-label1">Manager *</InputLabel>
 
               <Controller
                 name="mangerId"
@@ -340,6 +340,7 @@ const FarmInformation: NextPage<Props> = ({
                     labelId="demo-multiple-name-label1"
                     id="demo-multiple-name"
                     disabled={isEditFarm ? true : false}
+                    label="Manager *"
                     value={selectedManagerIds}
                     onChange={handleChange}
                     renderValue={(selected) =>
@@ -526,7 +527,7 @@ const FarmInformation: NextPage<Props> = ({
                     <TextField
                       label="State/Province *"
                       type="text"
-                      className="form-input focused"
+                      className="form-input"
                       {...register("province", {
                         required: true,
                         pattern:
