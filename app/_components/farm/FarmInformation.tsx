@@ -174,7 +174,7 @@ const FarmInformation: NextPage<Props> = ({
           marginBottom: 2,
         }}
       >
-        Farm Information
+        Farm Informations
       </Typography>
 
       <Box>
@@ -212,6 +212,15 @@ const FarmInformation: NextPage<Props> = ({
               }}
               sx={{
                 width: "100%",
+                "& .MuiInputLabel-root": {
+                  transition: "all 0.2s ease",
+                },
+                "&:focus-within .MuiInputLabel-root": {
+                  transform: "translate(10px, -9px)",
+                  fontSize: "0.75rem",
+                  color: "primary.main",
+                  backgroundColor: "transparent",
+                },
               }}
             />
 
@@ -245,6 +254,15 @@ const FarmInformation: NextPage<Props> = ({
               }}
               sx={{
                 width: "100%",
+                "& .MuiInputLabel-root": {
+                  transition: "all 0.2s ease",
+                },
+                "&:focus-within .MuiInputLabel-root": {
+                  transform: "translate(10px, -9px)",
+                  fontSize: "0.75rem",
+                  color: "primary.main",
+                  backgroundColor: "transparent",
+                },
               }}
             />
 
@@ -275,6 +293,15 @@ const FarmInformation: NextPage<Props> = ({
               }}
               sx={{
                 width: "100%",
+                "& .MuiInputLabel-root": {
+                  transition: "all 0.2s ease",
+                },
+                "&:focus-within .MuiInputLabel-root": {
+                  transform: "translate(10px, -9px)",
+                  fontSize: "0.75rem",
+                  color: "primary.main",
+                  backgroundColor: "transparent",
+                },
               }}
             />
 
@@ -328,7 +355,7 @@ const FarmInformation: NextPage<Props> = ({
           </Box>
           <Box mb={2} width={"100%"}>
             <FormControl fullWidth className="form-input">
-              <InputLabel id="feed-supply-select-label1">Manager *</InputLabel>
+              <InputLabel id="feed-supply-select-label1">Manager </InputLabel>
 
               <Controller
                 name="mangerId"
@@ -433,6 +460,15 @@ const FarmInformation: NextPage<Props> = ({
                       }}
                       sx={{
                         width: "100%",
+                        "& .MuiInputLabel-root": {
+                          transition: "all 0.2s ease",
+                        },
+                        "&:focus-within .MuiInputLabel-root": {
+                          transform: "translate(10px, -9px)",
+                          fontSize: "0.75rem",
+                          color: "primary.main",
+                          backgroundColor: "transparent",
+                        },
                       }}
                     />
                     {errors &&
@@ -463,6 +499,15 @@ const FarmInformation: NextPage<Props> = ({
                     }}
                     sx={{
                       width: "100%",
+                      "& .MuiInputLabel-root": {
+                        transition: "all 0.2s ease",
+                      },
+                      "&:focus-within .MuiInputLabel-root": {
+                        transform: "translate(10px, -9px)",
+                        fontSize: "0.75rem",
+                        color: "primary.main",
+                        backgroundColor: "transparent",
+                      },
                     }}
                   />
                 </Grid>
@@ -488,6 +533,15 @@ const FarmInformation: NextPage<Props> = ({
                       }}
                       sx={{
                         width: "100%",
+                        "& .MuiInputLabel-root": {
+                          transition: "all 0.2s ease",
+                        },
+                        "&:focus-within .MuiInputLabel-root": {
+                          transform: "translate(10px, -9px)",
+                          fontSize: "0.75rem",
+                          color: "primary.main",
+                          backgroundColor: "transparent",
+                        },
                       }}
                     />
                     {errors &&
@@ -534,6 +588,15 @@ const FarmInformation: NextPage<Props> = ({
                       }}
                       sx={{
                         width: "100%",
+                        "& .MuiInputLabel-root": {
+                          transition: "all 0.2s ease",
+                        },
+                        "&:focus-within .MuiInputLabel-root": {
+                          transform: "translate(10px, -9px)",
+                          fontSize: "0.75rem",
+                          color: "primary.main",
+                          backgroundColor: "transparent",
+                        },
                       }}
                     />
                     {errors &&
@@ -579,6 +642,15 @@ const FarmInformation: NextPage<Props> = ({
                       }}
                       sx={{
                         width: "100%",
+                        "& .MuiInputLabel-root": {
+                          transition: "all 0.2s ease",
+                        },
+                        "&:focus-within .MuiInputLabel-root": {
+                          transform: "translate(10px, -9px)",
+                          fontSize: "0.75rem",
+                          color: "primary.main",
+                          backgroundColor: "transparent",
+                        },
                       }}
                     />
                     {errors &&
@@ -627,6 +699,15 @@ const FarmInformation: NextPage<Props> = ({
                       }}
                       sx={{
                         width: "100%",
+                        "& .MuiInputLabel-root": {
+                          transition: "all 0.2s ease",
+                        },
+                        "&:focus-within .MuiInputLabel-root": {
+                          transform: "translate(10px, -9px)",
+                          fontSize: "0.75rem",
+                          color: "primary.main",
+                          backgroundColor: "transparent",
+                        },
                       }}
                     />
                     {errors &&

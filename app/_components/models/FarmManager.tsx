@@ -572,6 +572,27 @@ const TransferModal: React.FC<Props> = ({
                               labelId="production-unit-select-label"
                               id="production-unit-select"
                               label="Production Unit*"
+                              sx={{
+                                width: "100%",
+                                zIndex: 999,
+                                "& .MuiInputLabel-root": {
+                                  transition: "all 0.2s ease",
+                                  maxWidth: "60%",
+                                  overflow: "hidden",
+                                  whiteSpace: "nowrap",
+                                  textOverflow: "ellipsis",
+                                  height: "auto",
+                                },
+                                "&:focus-within .MuiInputLabel-root": {
+                                  transform: "translate(10px, -9px)",
+                                  fontSize: "0.75rem",
+                                  color: "primary.main",
+                                  backgroundColor: "#fff",
+                                  maxWidth: "100%",
+                                  overflow: "visible",
+                                  textOverflow: "unset",
+                                },
+                              }}
                               disabled={
                                 item.field === "Harvest" ||
                                 item.field === "Mortalities" ||

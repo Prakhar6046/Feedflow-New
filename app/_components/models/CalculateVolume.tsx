@@ -204,7 +204,7 @@ const CalculateVolume: React.FC<Props> = ({
           </Typography>
         </Box>
         {selectedUnit?.name === "Rectangular Tank" ? (
-          <Box padding={3} display={"flex"} alignItems={"center"} gap={1}>
+          <Box padding={3} display={"flex"} alignItems={"start"} gap={1}>
             <Box position={"relative"}>
               <TextField
                 label="Length *"
@@ -235,7 +235,7 @@ const CalculateVolume: React.FC<Props> = ({
                 sx={{
                   position: "absolute",
                   right: 6,
-                  top: "37%",
+                  top: "28px",
                   transform: "translate(-6px, -50%)",
                   backgroundColor: "#fff",
                   height: 30,
@@ -278,7 +278,7 @@ const CalculateVolume: React.FC<Props> = ({
                 sx={{
                   position: "absolute",
                   right: 6,
-                  top: "37%",
+                  top: "28px",
                   transform: "translate(-6px, -50%)",
                   backgroundColor: "#fff",
                   height: 30,
@@ -321,7 +321,7 @@ const CalculateVolume: React.FC<Props> = ({
                 sx={{
                   position: "absolute",
                   right: 6,
-                  top: "37%",
+                  top: "28px",
                   transform: "translate(-6px, -50%)",
                   backgroundColor: "#fff",
                   height: 30,
@@ -336,7 +336,7 @@ const CalculateVolume: React.FC<Props> = ({
             </Box>
           </Box>
         ) : selectedUnit?.name === "Earthen Pond" ? (
-          <Box padding={3} display={"flex"} alignItems={"center"} gap={1}>
+          <Box padding={3} display={"flex"} alignItems={"start"} gap={1}>
             <Box position={"relative"}>
               <TextField
                 label="Surface area *"
@@ -366,7 +366,7 @@ const CalculateVolume: React.FC<Props> = ({
                 sx={{
                   position: "absolute",
                   right: 6,
-                  top: "37%",
+                  top: "28px",
                   transform: "translate(-6px, -50%)",
                   backgroundColor: "#fff",
                   height: 30,
@@ -409,7 +409,7 @@ const CalculateVolume: React.FC<Props> = ({
                 sx={{
                   position: "absolute",
                   right: 6,
-                  top: "37%",
+                  top: "28px",
                   transform: "translate(-6px, -50%)",
                   backgroundColor: "#fff",
                   height: 30,
@@ -424,7 +424,7 @@ const CalculateVolume: React.FC<Props> = ({
             </Box>
           </Box>
         ) : selectedUnit?.name === "Raceway" ? (
-          <Box padding={3} display={"flex"} alignItems={"center"} gap={1}>
+          <Box padding={3} display={"flex"} alignItems={"start"} gap={1}>
             <Box position={"relative"}>
               <TextField
                 label="Length *"
@@ -454,7 +454,7 @@ const CalculateVolume: React.FC<Props> = ({
                 sx={{
                   position: "absolute",
                   right: 6,
-                  top: "37%",
+                  top: "28px",
                   transform: "translate(-6px, -50%)",
                   backgroundColor: "#fff",
                   height: 30,
@@ -497,7 +497,7 @@ const CalculateVolume: React.FC<Props> = ({
                 sx={{
                   position: "absolute",
                   right: 6,
-                  top: "37%",
+                  top: "28px",
                   transform: "translate(-6px, -50%)",
                   backgroundColor: "#fff",
                   height: 30,
@@ -540,7 +540,7 @@ const CalculateVolume: React.FC<Props> = ({
                 sx={{
                   position: "absolute",
                   right: 6,
-                  top: "37%",
+                  top: "28px",
                   transform: "translate(-6px, -50%)",
                   backgroundColor: "#fff",
                   height: 30,
@@ -555,7 +555,7 @@ const CalculateVolume: React.FC<Props> = ({
             </Box>
           </Box>
         ) : selectedUnit?.name === "Cage" ? (
-          <Box padding={3} display={"flex"} alignItems={"center"} gap={1}>
+          <Box padding={3} display={"flex"} alignItems={"start"} gap={1}>
             <Box position={"relative"}>
               <TextField
                 label="Length *"
@@ -585,7 +585,7 @@ const CalculateVolume: React.FC<Props> = ({
                 sx={{
                   position: "absolute",
                   right: 6,
-                  top: "37%",
+                  top: "28px",
                   transform: "translate(-6px, -50%)",
                   backgroundColor: "#fff",
                   height: 30,
@@ -629,7 +629,7 @@ const CalculateVolume: React.FC<Props> = ({
                 sx={{
                   position: "absolute",
                   right: 6,
-                  top: "37%",
+                  top: "28px",
                   transform: "translate(-6px, -50%)",
                   backgroundColor: "#fff",
                   height: 30,
@@ -672,7 +672,7 @@ const CalculateVolume: React.FC<Props> = ({
                 sx={{
                   position: "absolute",
                   right: 6,
-                  top: "35%",
+                  top: "28px",
                   transform: "translate(-6px, -50%)",
                   backgroundColor: "#fff",
                   height: 30,
@@ -687,7 +687,7 @@ const CalculateVolume: React.FC<Props> = ({
             </Box>
           </Box>
         ) : selectedUnit?.name === "Hapa" ? (
-          <Box padding={3} display={"flex"} alignItems={"center"} gap={1}>
+          <Box padding={3} display={"flex"} alignItems={"start"} gap={1}>
             <Box position={"relative"}>
               <TextField
                 label="Length *"
@@ -717,7 +717,7 @@ const CalculateVolume: React.FC<Props> = ({
                 sx={{
                   position: "absolute",
                   right: 6,
-                  top: "37%",
+                  top: "28px",
                   transform: "translate(-6px, -50%)",
                   backgroundColor: "#fff",
                   height: 30,
@@ -760,7 +760,7 @@ const CalculateVolume: React.FC<Props> = ({
                 sx={{
                   position: "absolute",
                   right: 6,
-                  top: "37%",
+                  top: "28px",
                   transform: "translate(-6px, -50%)",
                   backgroundColor: "#fff",
                   height: 30,
@@ -803,7 +803,7 @@ const CalculateVolume: React.FC<Props> = ({
                 sx={{
                   position: "absolute",
                   right: 6,
-                  top: "37%",
+                  top: "28px",
                   transform: "translate(-6px, -50%)",
                   backgroundColor: "#fff",
                   height: 30,
@@ -818,7 +818,7 @@ const CalculateVolume: React.FC<Props> = ({
             </Box>
           </Box>
         ) : selectedUnit?.name === "Circular Tank" ? (
-          <Box padding={3} display={"flex"} alignItems={"center"} gap={1}>
+          <Box padding={3} display={"flex"} alignItems={"start"} gap={1}>
             <Box position={"relative"}>
               <TextField
                 label="Radius *"
@@ -848,7 +848,7 @@ const CalculateVolume: React.FC<Props> = ({
                 sx={{
                   position: "absolute",
                   right: 6,
-                  top: "37%",
+                  top: "28px",
                   transform: "translate(-6px, -50%)",
                   backgroundColor: "#fff",
                   height: 30,
@@ -891,7 +891,7 @@ const CalculateVolume: React.FC<Props> = ({
                 sx={{
                   position: "absolute",
                   right: 6,
-                  top: "37%",
+                  top: "28px",
                   transform: "translate(-6px, -50%)",
                   backgroundColor: "#fff",
                   height: 30,
@@ -906,7 +906,7 @@ const CalculateVolume: React.FC<Props> = ({
             </Box>
           </Box>
         ) : (
-          <Box padding={3} display={"flex"} alignItems={"center"} gap={1}>
+          <Box padding={3} display={"flex"} alignItems={"start"} gap={1}>
             <Box position={"relative"}>
               <TextField
                 label="Radius *"
@@ -936,7 +936,7 @@ const CalculateVolume: React.FC<Props> = ({
                 sx={{
                   position: "absolute",
                   right: 6,
-                  top: "37%",
+                  top: "28px",
                   transform: "translate(-6px, -50%)",
                   backgroundColor: "#fff",
                   height: 30,
@@ -978,7 +978,7 @@ const CalculateVolume: React.FC<Props> = ({
                 sx={{
                   position: "absolute",
                   right: 6,
-                  top: "37%",
+                  top: "28px",
                   transform: "translate(-6px, -50%)",
                   backgroundColor: "#fff",
                   height: 30,
@@ -1021,7 +1021,7 @@ const CalculateVolume: React.FC<Props> = ({
                 sx={{
                   position: "absolute",
                   right: 6,
-                  top: "37%",
+                  top: "28px",
                   transform: "translate(-6px, -50%)",
                   backgroundColor: "#fff",
                   height: 30,
@@ -1064,7 +1064,7 @@ const CalculateVolume: React.FC<Props> = ({
                 sx={{
                   position: "absolute",
                   right: 6,
-                  top: "37%",
+                  top: "28px",
                   transform: "translate(-6px, -50%)",
                   backgroundColor: "#fff",
                   height: 30,

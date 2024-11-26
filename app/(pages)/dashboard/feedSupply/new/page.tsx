@@ -30,7 +30,7 @@ export default function Page() {
     if (loggedUser) {
       const userOrganisationType = JSON.parse(loggedUser);
       if (
-        userOrganisationType?.organisation.organisationType === "Fish Farmer"
+        userOrganisationType?.organisation?.organisationType === "Fish Farmer"
       ) {
         const stepsForFishFarmers = [
           {
@@ -44,7 +44,7 @@ export default function Page() {
         ];
         setSteps(stepsForFishFarmers);
       } else if (
-        userOrganisationType?.organisation.organisationType === "Feed Supplier"
+        userOrganisationType?.organisation?.organisationType === "Feed Supplier"
       ) {
         const stepsForFeedSupplyers = [
           {

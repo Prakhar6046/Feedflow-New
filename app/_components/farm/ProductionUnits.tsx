@@ -432,7 +432,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                             <TextField
                               label="Capacity *"
                               type="text"
-                              className="form-input"
+                              className="form-input capacity-input"
                               {...register(
                                 `productionUnits.${index}.capacity` as const,
                                 {
@@ -440,10 +440,6 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                                   pattern: validationPattern.numbersWithDot,
                                 }
                               )}
-                              sx={{
-                                width: "100%",
-                                minWidth: 150,
-                              }}
                             />
 
                             <Typography
@@ -503,6 +499,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                               fontSize={13}
                               mt={0.5}
                               width="50%"
+                              maxWidth={"230px"}
                             >
                               {validationMessage.OnlyNumbersWithDot}
                             </Typography>
@@ -516,11 +513,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                         }}
                       >
                         <Box display={"flex"} gap={2} alignItems={"center"}>
-                          <Box
-                            position={"relative"}
-                            display="flex"
-                            alignItems={"center"}
-                          >
+                          <Box position={"relative"}>
                             <TextField
                               label="Waterflow Rate *"
                               type="text"
@@ -532,10 +525,6 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                                   pattern: validationPattern.onlyNumbersPattern,
                                 }
                               )}
-                              sx={{
-                                width: "100%",
-                                minWidth: 150,
-                              }}
                             />
                             <Typography
                               variant="body1"
