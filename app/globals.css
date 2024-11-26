@@ -273,12 +273,6 @@ body {
 .form-input-farm > div > fieldset {
   border: 1px solid #06a19b !important;
 }
-/* .capacity-input > div > input {
-  max-width: 120px !important;
-  text-overflow: ellipsis !important;
-  overflow: hidden !important;
-  width: 50px !important;
-} */
 .cursor-pointer {
   cursor: pointer;
 }
