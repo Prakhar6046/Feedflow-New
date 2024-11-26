@@ -26,10 +26,8 @@ export default async function Page({
         heading={"Feed Supply"}
         buttonName={
           userOrganisationType?.role === "SUPERADMIN" ||
-          userOrganisationType?.organisation.organisationType ===
-            "Fish Farmer" ||
-          userOrganisationType?.organisation.organisationType ===
-            "Feed Supplier"
+          userOrganisationType?.organisationType === "Fish Farmer" ||
+          userOrganisationType?.organisationType === "Feed Supplier"
             ? "Add Feed"
             : ""
         }
