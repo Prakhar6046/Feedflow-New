@@ -34,6 +34,7 @@ export default function ProductionTable({
   const dispatch = useAppDispatch();
   const pathName = usePathname();
   const role = useAppSelector(selectRole);
+  console.log(productions);
 
   // const sortDataFromLocal = "";
   //   const loading = useAppSelector(selectFarmLoading);
@@ -347,10 +348,12 @@ export default function ProductionTable({
       updatedBy: item.updatedBy,
       createdAt: item.createdAt,
       updatedAt: item.updatedAt,
+      isManager: item.isManager,
     });
 
     return result;
   }, []);
+  console.log(groupedData);
 
   useEffect(() => {
     router.refresh();
@@ -692,6 +695,7 @@ export default function ProductionTable({
                                   aria-haspopup="true"
                                   aria-expanded={open ? "true" : undefined}
                                   onClick={(e) => handleClick(e, unit, true)}
+                                  disabled={unit.isManager ? false : true}
                                   className=""
                                   type="button"
                                   variant="contained"
@@ -731,6 +735,7 @@ export default function ProductionTable({
                                   aria-haspopup="true"
                                   aria-expanded={open ? "true" : undefined}
                                   onClick={(e) => handleClick(e, unit, false)}
+                                  disabled={unit.isManager ? false : true}
                                   className=""
                                   type="button"
                                   variant="contained"

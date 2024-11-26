@@ -61,6 +61,7 @@ export interface FarmGroup {
     stockingDensityKG: String;
     stockingDensityNM: String;
     stockingLevel: String;
+    isManager: Boolean;
     fishSupply: {
       batchNumber: String;
       age: String;
