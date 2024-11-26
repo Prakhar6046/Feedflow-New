@@ -13,6 +13,8 @@ import { Close as CloseIcon } from "@mui/icons-material";
 import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { Production } from "@/app/_typeModels/production";
+import * as validationPattern from "@/app/_lib/utils/validationPatterns/index";
+import * as validationMessage from "@/app/_lib/utils/validationsMessage/index";
 
 interface InputTypes {
   avgOfMeanWeight?: Number;
@@ -190,14 +192,15 @@ const CalculateMeanWeigth = ({ open, setOpen, setAvgOfMeanWeight }: Props) => {
                             {errors &&
                               errors.meanWeight &&
                               errors.meanWeight[idx] &&
-                              errors.meanWeight[idx].noOfFish && (
+                              errors.meanWeight[idx].noOfFish?.type ===
+                                "required" && (
                                 <Typography
                                   variant="body2"
                                   color="red"
                                   fontSize={13}
                                   mt={0.5}
                                 >
-                                  This field is required
+                                  {validationMessage.required}
                                 </Typography>
                               )}
                           </Grid>
@@ -248,7 +251,7 @@ const CalculateMeanWeigth = ({ open, setOpen, setAvgOfMeanWeight }: Props) => {
                                     fontSize={13}
                                     mt={0.5}
                                   >
-                                    This field is required
+                                    {validationMessage.required}
                                   </Typography>
                                 )}
                             </Box>

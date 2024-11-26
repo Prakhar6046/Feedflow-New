@@ -46,8 +46,9 @@ const FarmInformation: NextPage<Props> = ({
     setValue,
     watch,
     control,
+    trigger,
     reset,
-  } = useForm<Farm>({ mode: "onChange" });
+  } = useForm<Farm>();
   const loggedUser: any = getCookie("logged-user");
   const user = JSON.parse(loggedUser);
   const AddFarmData = getCookie("addFarm");
@@ -62,7 +63,8 @@ const FarmInformation: NextPage<Props> = ({
   const [loading, setLoading] = useState<boolean>(false);
   const selectedManagerIds = watch("mangerId") || [];
   const isEditFarm = useAppSelector(selectIsEditFarm);
-
+  console.log(watch("farmAltitude"));
+  console.log(errors);
   const handleChange = (event: any) => {
     const {
       target: { value },
@@ -204,7 +206,7 @@ const FarmInformation: NextPage<Props> = ({
               className="form-input"
               // focused={altitude ? true : false}
               {...register("farmAltitude", {
-                required: true,
+                required: watch("farmAltitude") ? false : true,
                 pattern: validationPattern.numbersWithDot,
               })}
               InputLabelProps={{
@@ -226,6 +228,7 @@ const FarmInformation: NextPage<Props> = ({
 
             {errors &&
               errors.farmAltitude &&
+              !watch("farmAltitude") &&
               errors.farmAltitude.type === "required" && (
                 <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
                   {validationMessage.required}
@@ -246,7 +249,7 @@ const FarmInformation: NextPage<Props> = ({
               className="form-input"
               // focused={altitude ? true : false}
               {...register("lat", {
-                required: true,
+                required: watch("lat") ? false : true,
                 pattern: validationPattern.negativeNumberWithDot,
               })}
               InputLabelProps={{
@@ -266,16 +269,22 @@ const FarmInformation: NextPage<Props> = ({
               }}
             />
 
-            {errors && errors.lat && errors.lat.type === "required" && (
-              <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
-                {validationMessage.required}
-              </Typography>
-            )}
-            {errors && errors.lat && errors.lat.type === "pattern" && (
-              <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
-                {validationMessage.NegativeNumberWithDot}
-              </Typography>
-            )}
+            {errors &&
+              errors.lat &&
+              !watch("lat") &&
+              errors.lat.type === "required" && (
+                <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                  {validationMessage.required}
+                </Typography>
+              )}
+            {errors &&
+              errors.lat &&
+              !watch("lat") &&
+              errors.lat.type === "pattern" && (
+                <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                  {validationMessage.NegativeNumberWithDot}
+                </Typography>
+              )}
           </Box>{" "}
           <Box mb={2} width={"100%"}>
             <TextField
@@ -284,7 +293,7 @@ const FarmInformation: NextPage<Props> = ({
               className="form-input"
               // focused={altitude ? true : false}
               {...register("lng", {
-                required: true,
+                required: watch("lng") ? false : true,
                 pattern: validationPattern.negativeNumberWithDot,
               })}
               focused
@@ -305,16 +314,22 @@ const FarmInformation: NextPage<Props> = ({
               }}
             />
 
-            {errors && errors.lng && errors.lng.type === "required" && (
-              <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
-                {validationMessage.required}
-              </Typography>
-            )}
-            {errors && errors.lng && errors.lng.type === "pattern" && (
-              <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
-                {validationMessage.NegativeNumberWithDot}
-              </Typography>
-            )}
+            {errors &&
+              errors.lng &&
+              !watch("lng") &&
+              errors.lng.type === "required" && (
+                <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                  {validationMessage.required}
+                </Typography>
+              )}
+            {errors &&
+              errors.lng &&
+              !watch("lng") &&
+              errors.lng.type === "pattern" && (
+                <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                  {validationMessage.NegativeNumberWithDot}
+                </Typography>
+              )}
           </Box>
           <Box mb={2} width={"100%"}>
             <FormControl fullWidth className="form-input">
@@ -457,7 +472,12 @@ const FarmInformation: NextPage<Props> = ({
                       label="Address Line 1 *"
                       type="text"
                       className="form-input"
-                      {...register("addressLine1", { required: true })}
+                      {...register("addressLine1", {
+                        required:
+                          watch("addressLine1") || addressInformation?.address
+                            ? false
+                            : true,
+                      })}
                       InputLabelProps={{
                         shrink:
                           !!watch("addressLine1") ||
@@ -478,7 +498,9 @@ const FarmInformation: NextPage<Props> = ({
                     />
                     {errors &&
                       errors.addressLine1 &&
-                      errors.addressLine1.type === "required" && (
+                      errors.addressLine1.type === "required" &&
+                      (!watch("addressLine1") ||
+                        !addressInformation?.address) && (
                         <Typography
                           variant="body2"
                           color="red"
@@ -525,7 +547,7 @@ const FarmInformation: NextPage<Props> = ({
                       id="city"
                       className="form-input"
                       {...register("city", {
-                        required: true,
+                        required: watch("city") ? false : true,
                         pattern:
                           validationPattern.alphabetsSpacesAndSpecialCharsPattern,
                       })}
@@ -551,6 +573,7 @@ const FarmInformation: NextPage<Props> = ({
                     />
                     {errors &&
                       errors.city &&
+                      !watch("city") &&
                       errors.city.type === "required" && (
                         <Typography
                           variant="body2"
@@ -563,6 +586,7 @@ const FarmInformation: NextPage<Props> = ({
                       )}
                     {errors &&
                       errors.city &&
+                      !watch("city") &&
                       errors.city.type === "pattern" && (
                         <Typography
                           variant="body2"
@@ -583,7 +607,7 @@ const FarmInformation: NextPage<Props> = ({
                       type="text"
                       className="form-input"
                       {...register("province", {
-                        required: true,
+                        required: watch("province") ? false : true,
                         pattern:
                           validationPattern.alphabetsSpacesAndSpecialCharsPattern,
                       })}
@@ -606,6 +630,7 @@ const FarmInformation: NextPage<Props> = ({
                     />
                     {errors &&
                       errors.province &&
+                      !watch("province") &&
                       errors.province.type === "required" && (
                         <Typography
                           variant="body2"
@@ -618,6 +643,7 @@ const FarmInformation: NextPage<Props> = ({
                       )}
                     {errors &&
                       errors.province &&
+                      !watch("province") &&
                       errors.province.type === "pattern" && (
                         <Typography
                           variant="body2"
@@ -638,7 +664,7 @@ const FarmInformation: NextPage<Props> = ({
                       type="text"
                       className="form-input"
                       {...register("zipCode", {
-                        required: true,
+                        required: watch("zipCode") ? false : true,
                         pattern: validationPattern.onlyNumbersPattern,
                       })}
                       InputLabelProps={{
@@ -660,6 +686,7 @@ const FarmInformation: NextPage<Props> = ({
                     />
                     {errors &&
                       errors.zipCode &&
+                      !watch("zipCode") &&
                       errors.zipCode.type === "required" && (
                         <Typography
                           variant="body2"
@@ -672,6 +699,7 @@ const FarmInformation: NextPage<Props> = ({
                       )}
                     {errors &&
                       errors.zipCode &&
+                      !watch("zipCode") &&
                       errors.zipCode.type === "pattern" && (
                         <Typography
                           variant="body2"
@@ -694,7 +722,7 @@ const FarmInformation: NextPage<Props> = ({
                       type="text"
                       className="form-input"
                       {...register("country", {
-                        required: true,
+                        required: watch("country") ? false : true,
                         pattern:
                           validationPattern.alphabetsSpacesAndSpecialCharsPattern,
                       })}
@@ -717,6 +745,7 @@ const FarmInformation: NextPage<Props> = ({
                     />
                     {errors &&
                       errors.country &&
+                      !watch("country") &&
                       errors.country.type === "required" && (
                         <Typography
                           variant="body2"
@@ -729,6 +758,7 @@ const FarmInformation: NextPage<Props> = ({
                       )}
                     {errors &&
                       errors.country &&
+                      !watch("country") &&
                       errors.country.type === "pattern" && (
                         <Typography
                           variant="body2"

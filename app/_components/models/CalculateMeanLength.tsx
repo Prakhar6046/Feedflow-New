@@ -12,6 +12,8 @@ import React, { useEffect } from "react";
 import { Close as CloseIcon } from "@mui/icons-material"; // Use Material-UI's Close icon directly
 import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
+import * as validationPattern from "@/app/_lib/utils/validationPatterns/index";
+import * as validationMessage from "@/app/_lib/utils/validationsMessage/index";
 
 // import { CloseIcon } from "../theme/overrides/CustomIcons";
 interface InputTypes {
@@ -165,6 +167,7 @@ const CalculateMeanLength = ({ open, setOpen, setAvgOfMeanLength }: Props) => {
                               type="text"
                               {...register(`meanlength.${idx}.measurement`, {
                                 required: true,
+                                pattern: validationPattern.numbersWithDot,
                               })}
                               className="form-input"
                               sx={{ width: "100%" }}
@@ -172,14 +175,29 @@ const CalculateMeanLength = ({ open, setOpen, setAvgOfMeanLength }: Props) => {
                             {errors &&
                               errors.meanlength &&
                               errors.meanlength[idx] &&
-                              errors.meanlength[idx].measurement && (
+                              errors.meanlength[idx].measurement?.type ===
+                                "required" && (
                                 <Typography
                                   variant="body2"
                                   color="red"
                                   fontSize={13}
                                   mt={0.5}
                                 >
-                                  This field is required
+                                  {validationMessage.required}
+                                </Typography>
+                              )}
+                            {errors &&
+                              errors.meanlength &&
+                              errors.meanlength[idx] &&
+                              errors.meanlength[idx].measurement?.type ===
+                                "pattern" && (
+                                <Typography
+                                  variant="body2"
+                                  color="red"
+                                  fontSize={13}
+                                  mt={0.5}
+                                >
+                                  {validationMessage.OnlyNumbersWithDot}
                                 </Typography>
                               )}
                           </Grid>
@@ -198,6 +216,7 @@ const CalculateMeanLength = ({ open, setOpen, setAvgOfMeanLength }: Props) => {
                                 type="text"
                                 {...register(`meanlength.${idx}.length`, {
                                   required: true,
+                                  pattern: validationPattern.numbersWithDot,
                                 })}
                                 className="form-input"
                                 sx={{ width: "100%" }}
@@ -223,14 +242,29 @@ const CalculateMeanLength = ({ open, setOpen, setAvgOfMeanLength }: Props) => {
                               {errors &&
                                 errors.meanlength &&
                                 errors.meanlength[idx] &&
-                                errors.meanlength[idx].length && (
+                                errors.meanlength[idx].length?.type ==
+                                  "required" && (
                                   <Typography
                                     variant="body2"
                                     color="red"
                                     fontSize={13}
                                     mt={0.5}
                                   >
-                                    This field is required
+                                    {validationMessage.required}
+                                  </Typography>
+                                )}
+                              {errors &&
+                                errors.meanlength &&
+                                errors.meanlength[idx] &&
+                                errors.meanlength[idx].length?.type ==
+                                  "pattern" && (
+                                  <Typography
+                                    variant="body2"
+                                    color="red"
+                                    fontSize={13}
+                                    mt={0.5}
+                                  >
+                                    {validationMessage.OnlyNumbersWithDot}
                                   </Typography>
                                 )}
                             </Box>

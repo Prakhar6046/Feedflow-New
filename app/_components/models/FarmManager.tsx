@@ -248,7 +248,15 @@ const TransferModal: React.FC<Props> = ({
     setSelectedMeanLengthId(String(item.id));
     setIsMeanLengthCal(true);
   };
-
+  const handleKeyDown = (event: KeyboardEvent) => {
+    if (event.key === "Enter" && !open) {
+      event.preventDefault();
+    }
+  };
+  useEffect(() => {
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [open]);
   useEffect(() => {
     if (isStockDeleted || selectedProduction) {
       const data = [
@@ -416,165 +424,537 @@ const TransferModal: React.FC<Props> = ({
     }
   }, [avgOfMeanLength]);
   return (
-    <Modal
-      open={open}
-      onClose={handleClose}
-      aria-labelledby="parent-modal-title"
-      aria-describedby="parent-modal-description"
-      className="modal-positioning"
-      onBackdropClick={() => reset()}
-    >
-      <Stack sx={style}>
-        <Box display="flex" justifyContent="flex-end" padding={2}>
-          <IconButton
-            onClick={handleClose}
-            sx={{
-              color: "inherit",
-              background: "transparent",
-              margin: "2",
-            }}
-          >
-            <CloseIcon />
-          </IconButton>
-        </Box>
-        <form className="form-height" onSubmit={handleSubmit(onSubmit)}>
-          {fields.map((item, idx) => {
-            return (
-              <Box paddingInline={4} key={item.id}>
-                {idx !== 0 && (
-                  <Box>
-                    <Typography
-                      variant="body1"
-                      fontWeight={600}
-                      my={2}
-                      mx={1.5}
-                    >
-                      {getValues(`manager.${idx}.field`)}
-                    </Typography>
-                  </Box>
-                )}
+    <div>
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="parent-modal-title"
+        aria-describedby="parent-modal-description"
+        className="modal-positioning"
+        data-bs-backdrop="static"
+        // onBackdropClick={() => reset()}
+      >
+        <Stack sx={style}>
+          <Box display="flex" justifyContent="flex-end" padding={2}>
+            <IconButton
+              onClick={handleClose}
+              sx={{
+                color: "inherit",
+                background: "transparent",
+                margin: "2",
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
+          </Box>
+          <form className="form-height" onSubmit={handleSubmit(onSubmit)}>
+            {fields.map((item, idx) => {
+              return (
+                <Box paddingInline={4} key={item.id}>
+                  {idx !== 0 && (
+                    <Box>
+                      <Typography
+                        variant="body1"
+                        fontWeight={600}
+                        my={2}
+                        mx={1.5}
+                      >
+                        {getValues(`manager.${idx}.field`)}
+                      </Typography>
+                    </Box>
+                  )}
 
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    height: "100%",
-                    position: "relative",
-                    bottom: "10px",
-                    gap: 1.5,
-                  }}
-                >
-                  <Stack
+                  <Box
                     sx={{
-                      overflowY: {
-                        xl: "visible",
-                        xs: "auto",
-                      },
-                      width: "97%",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      height: "100%",
+                      position: "relative",
+                      bottom: "10px",
+                      gap: 1.5,
                     }}
                   >
-                    <Grid
-                      container
-                      spacing={2}
-                      className="grid-margin"
+                    <Stack
                       sx={{
-                        flexWrap: "nowrap",
+                        overflowY: {
+                          xl: "visible",
+                          xs: "auto",
+                        },
+                        width: "97%",
                       }}
                     >
                       <Grid
-                        item
-                        xs
+                        container
+                        spacing={2}
+                        className="grid-margin"
                         sx={{
-                          width: "fit-content",
-                          minWidth: 130,
+                          flexWrap: "nowrap",
                         }}
                       >
-                        <Box width={"100%"}>
-                          <FormControl fullWidth className="form-input">
-                            <InputLabel id="">Fish Farm *</InputLabel>
-                            <Select
-                              labelId="feed-supply-select-label9"
-                              className="fish-manager"
-                              id="feed-supply-select9"
-                              label="Fish Farm*"
-                              disabled={
-                                item.field === "Harvest" ||
-                                item.field === "Mortalities" ||
-                                idx === 0
-                                  ? true
-                                  : false
-                              }
-                              {...register(`manager.${idx}.fishFarm`, {
-                                required: watch(`manager.${idx}.fishFarm`)
-                                  ? false
-                                  : true,
-                              })}
-                              onChange={(e) => {
-                                const selectedFishFarm = e.target.value;
-                                item.field === "Stock" &&
+                        <Grid
+                          item
+                          xs
+                          sx={{
+                            width: "fit-content",
+                            minWidth: 130,
+                          }}
+                        >
+                          <Box width={"100%"}>
+                            <FormControl fullWidth className="form-input">
+                              <InputLabel id="">Fish Farm *</InputLabel>
+                              <Select
+                                labelId="feed-supply-select-label9"
+                                className="fish-manager"
+                                id="feed-supply-select9"
+                                label="Fish Farm*"
+                                disabled={
+                                  item.field === "Harvest" ||
+                                  item.field === "Mortalities" ||
+                                  idx === 0
+                                    ? true
+                                    : false
+                                }
+                                {...register(`manager.${idx}.fishFarm`, {
+                                  required: watch(`manager.${idx}.fishFarm`)
+                                    ? false
+                                    : true,
+                                })}
+                                onChange={(e) => {
+                                  const selectedFishFarm = e.target.value;
+                                  item.field === "Stock" &&
+                                    setValue(
+                                      `manager.0.fishFarm`,
+                                      e.target.value
+                                    ),
+                                    setSelectedFarm(selectedFishFarm); // Set selected farm for this specific entry
                                   setValue(
-                                    `manager.0.fishFarm`,
-                                    e.target.value
-                                  ),
-                                  setSelectedFarm(selectedFishFarm); // Set selected farm for this specific entry
-                                setValue(
-                                  `manager.${idx}.fishFarm`,
-                                  selectedFishFarm
-                                ); // Set the value for this fishFarm
-                                setValue(`manager.${idx}.productionUnit`, ""); // Reset production unit for the current entry
-                              }}
-                              value={getValues(`manager.${idx}.fishFarm`) || ""} // Ensure only the current entry is updated
-                            >
-                              {farms?.map((farm: Farm, i) => (
-                                <MenuItem value={String(farm.id)} key={i}>
-                                  {farm.name}
-                                </MenuItem>
-                              ))}
-                            </Select>
+                                    `manager.${idx}.fishFarm`,
+                                    selectedFishFarm
+                                  ); // Set the value for this fishFarm
+                                  setValue(`manager.${idx}.productionUnit`, ""); // Reset production unit for the current entry
+                                }}
+                                value={
+                                  getValues(`manager.${idx}.fishFarm`) || ""
+                                } // Ensure only the current entry is updated
+                              >
+                                {farms?.map((farm: Farm, i) => (
+                                  <MenuItem value={String(farm.id)} key={i}>
+                                    {farm.name}
+                                  </MenuItem>
+                                ))}
+                              </Select>
 
-                            {errors &&
-                              errors?.manager &&
-                              errors?.manager[idx] &&
-                              errors?.manager[idx].fishFarm &&
-                              errors?.manager[idx].fishFarm.type ===
-                                "required" && (
-                                <Typography
-                                  variant="body2"
-                                  color="red"
-                                  fontSize={13}
-                                  mt={0.5}
-                                >
-                                  {validationMessage.required}
-                                </Typography>
-                              )}
+                              {errors &&
+                                errors?.manager &&
+                                errors?.manager[idx] &&
+                                errors?.manager[idx].fishFarm &&
+                                errors?.manager[idx].fishFarm.type ===
+                                  "required" && (
+                                  <Typography
+                                    variant="body2"
+                                    color="red"
+                                    fontSize={13}
+                                    mt={0.5}
+                                  >
+                                    {validationMessage.required}
+                                  </Typography>
+                                )}
+                              <Typography
+                                variant="body2"
+                                color="red"
+                                fontSize={13}
+                                mt={0.5}
+                              ></Typography>
+                            </FormControl>
+                          </Box>
+                        </Grid>
+                        <Grid
+                          xs
+                          item
+                          sx={{
+                            width: "fit-content",
+                            minWidth: 130,
+                          }}
+                        >
+                          <Box width={"100%"}>
+                            <FormControl fullWidth className="form-input">
+                              <InputLabel id="">Production Unit *</InputLabel>
+                              <Select
+                                labelId="production-unit-select-label"
+                                id="production-unit-select"
+                                label="Production Unit*"
+                                sx={{
+                                  width: "100%",
+                                  zIndex: 999,
+                                  "& .MuiInputLabel-root": {
+                                    transition: "all 0.2s ease",
+                                    maxWidth: "60%",
+                                    overflow: "hidden",
+                                    whiteSpace: "nowrap",
+                                    textOverflow: "ellipsis",
+                                    height: "auto",
+                                  },
+                                  "&:focus-within .MuiInputLabel-root": {
+                                    transform: "translate(10px, -9px)",
+                                    fontSize: "0.75rem",
+                                    color: "primary.main",
+                                    backgroundColor: "#fff",
+                                    maxWidth: "100%",
+                                    overflow: "visible",
+                                    textOverflow: "unset",
+                                  },
+                                }}
+                                disabled={
+                                  item.field === "Harvest" ||
+                                  item.field === "Mortalities" ||
+                                  idx === 0
+                                    ? true
+                                    : false
+                                }
+                                {...register(`manager.${idx}.productionUnit`, {
+                                  required: watch(
+                                    `manager.${idx}.productionUnit`
+                                  )
+                                    ? false
+                                    : true,
+                                  onChange: (e) =>
+                                    item.field === "Stock" &&
+                                    setValue(
+                                      `manager.0.productionUnit`,
+                                      e.target.value
+                                    ),
+                                })}
+                                inputProps={{
+                                  shrink: watch(
+                                    `manager.${idx}.productionUnit`
+                                  ),
+                                }}
+                                value={
+                                  watch(`manager.${idx}.productionUnit`) || ""
+                                }
+                              >
+                                {(() => {
+                                  let selectedFarm = farms?.find(
+                                    (farm) =>
+                                      farm.id ===
+                                      watch(`manager.${idx}.fishFarm`)
+                                  );
+
+                                  return selectedFarm ? (
+                                    selectedFarm?.productionUnits?.map(
+                                      (unit) => (
+                                        <MenuItem
+                                          value={String(unit.id)}
+                                          key={unit.id}
+                                        >
+                                          {unit.name}
+                                        </MenuItem>
+                                      )
+                                    )
+                                  ) : (
+                                    <MenuItem value="" disabled>
+                                      No units available
+                                    </MenuItem>
+                                  );
+                                })()}
+                              </Select>
+                              {errors &&
+                                !watch(`manager.${idx}.productionUnit`) &&
+                                errors?.manager &&
+                                errors?.manager[idx] &&
+                                errors?.manager[idx].productionUnit && (
+                                  <Typography
+                                    variant="body2"
+                                    color="red"
+                                    fontSize={13}
+                                    mt={0.5}
+                                  >
+                                    This field is required
+                                  </Typography>
+                                )}
+                              <Typography
+                                variant="body2"
+                                color="red"
+                                fontSize={13}
+                                mt={0.5}
+                              ></Typography>
+                            </FormControl>
+                          </Box>
+                        </Grid>
+                        <Grid
+                          xs
+                          item
+                          sx={{
+                            width: "fit-content",
+                            minWidth: 130,
+                          }}
+                        >
+                          <Box mb={2} width={"100%"}>
+                            <FormControl fullWidth className="form-input">
+                              <InputLabel id="">Batch No. *</InputLabel>
+                              <Select
+                                labelId="feed-supply-select-label9"
+                                className="fish-manager"
+                                id="feed-supply-select9"
+                                label="Batch No. *"
+                                disabled={
+                                  item.field === "Harvest" ||
+                                  item.field === "Mortalities" ||
+                                  idx === 0
+                                    ? true
+                                    : false
+                                }
+                                {...register(`manager.${idx}.batchNumber`, {
+                                  required: watch(`manager.${idx}.batchNumber`)
+                                    ? false
+                                    : true,
+                                  onChange: (e) =>
+                                    item.field === "Stock" &&
+                                    setValue(
+                                      `manager.0.batchNumber`,
+                                      e.target.value
+                                    ),
+                                })}
+                                inputProps={{
+                                  shrink: watch(`manager.${idx}.batchNumber`),
+                                }}
+                                value={
+                                  watch(`manager.${idx}.batchNumber`) || ""
+                                } // Ensure only the current entry is updated
+                              >
+                                {batches?.map(
+                                  (
+                                    batch: { batchNumber: String; id: Number },
+                                    i
+                                  ) => (
+                                    <MenuItem value={String(batch.id)} key={i}>
+                                      {batch.batchNumber}
+                                    </MenuItem>
+                                  )
+                                )}
+                              </Select>
+
+                              {errors &&
+                                !watch(`manager.${idx}.batchNumber`) &&
+                                errors.manager &&
+                                errors.manager[idx] &&
+                                errors.manager[idx].batchNumber && (
+                                  <Typography
+                                    variant="body2"
+                                    color="red"
+                                    fontSize={13}
+                                    mt={0.5}
+                                  >
+                                    This field is required
+                                  </Typography>
+                                )}
+                            </FormControl>
+                          </Box>
+                        </Grid>
+                        <Grid
+                          xs
+                          item
+                          sx={{
+                            width: "fit-content",
+                            minWidth: 130,
+                          }}
+                        >
+                          <Box
+                            display={"flex"}
+                            gap={2}
+                            alignItems={"center"}
+                            position={"relative"}
+                          >
+                            <TextField
+                              label="Biomass *"
+                              type="text"
+                              className="form-input"
+                              disabled={idx === 0 ? true : false}
+                              sx={{ width: "100%" }}
+                              {...register(`manager.${idx}.biomass`, {
+                                required: true,
+                                pattern: validationPattern.numbersWithDot,
+                              })}
+                            />
+
                             <Typography
                               variant="body2"
-                              color="red"
-                              fontSize={13}
-                              mt={0.5}
-                            ></Typography>
-                          </FormControl>
-                        </Box>
-                      </Grid>
-                      <Grid
-                        xs
-                        item
-                        sx={{
-                          width: "fit-content",
-                          minWidth: 130,
-                        }}
-                      >
-                        <Box width={"100%"}>
-                          <FormControl fullWidth className="form-input">
-                            <InputLabel id="">Production Unit *</InputLabel>
-                            <Select
-                              labelId="production-unit-select-label"
-                              id="production-unit-select"
-                              label="Production Unit*"
+                              color="#555555AC"
+                              sx={{
+                                position: "absolute",
+                                right: 6,
+                                top: "50%",
+                                transform: "translate(-6px, -50%)",
+                                backgroundColor: "#fff",
+                                height: 30,
+                                display: "grid",
+                                placeItems: "center",
+                                zIndex: 1,
+                                pl: 1,
+                              }}
+                            >
+                              kg
+                            </Typography>
+                          </Box>
+                          <Typography
+                            variant="body2"
+                            color="red"
+                            fontSize={13}
+                            mt={0.5}
+                          ></Typography>
+                          {errors &&
+                            errors.manager &&
+                            errors.manager[idx] &&
+                            errors.manager[idx].biomass &&
+                            errors.manager[idx].biomass.type === "required" && (
+                              <Typography
+                                variant="body2"
+                                color="red"
+                                fontSize={13}
+                                mt={0.5}
+                              >
+                                {validationMessage.required}
+                              </Typography>
+                            )}
+                          {errors &&
+                            errors.manager &&
+                            errors.manager[idx] &&
+                            errors.manager[idx].biomass &&
+                            errors.manager[idx].biomass.type === "pattern" && (
+                              <Typography
+                                variant="body2"
+                                color="red"
+                                fontSize={13}
+                                mt={0.5}
+                              >
+                                {validationMessage.OnlyNumbersWithDot}
+                              </Typography>
+                            )}
+                        </Grid>
+                        <Grid
+                          xs
+                          item
+                          sx={{
+                            width: "fit-content",
+                            minWidth: 130,
+                            position: "relative",
+                          }}
+                        >
+                          <TextField
+                            label="Fish Count *"
+                            type="text"
+                            className="form-input"
+                            sx={{ width: "100%" }}
+                            disabled={idx === 0 ? true : false}
+                            {...register(`manager.${idx}.count`, {
+                              required: true,
+                              pattern: validationPattern.numbersWithDot,
+                            })}
+                          />
+                          <Typography
+                            variant="body2"
+                            color="#555555AC"
+                            sx={{
+                              position: "absolute",
+                              right: 6,
+                              top: "50%",
+                              transform: "translate(-6px, -50%)",
+                              backgroundColor: "#fff",
+                              height: 30,
+                              display: "grid",
+                              placeItems: "center",
+                              zIndex: 1,
+                              pl: 1,
+                            }}
+                          >
+                            n
+                          </Typography>
+                          {errors &&
+                            errors.manager &&
+                            errors.manager[idx] &&
+                            errors.manager[idx].count &&
+                            errors.manager[idx].count.type === "required" && (
+                              <Typography
+                                variant="body2"
+                                color="red"
+                                fontSize={13}
+                                mt={0.5}
+                              >
+                                {validationMessage.required}
+                              </Typography>
+                            )}
+                          {errors &&
+                            errors.manager &&
+                            errors.manager[idx] &&
+                            errors.manager[idx].count &&
+                            errors.manager[idx].count.type === "pattern" && (
+                              <Typography
+                                variant="body2"
+                                color="red"
+                                fontSize={13}
+                                mt={0.5}
+                              >
+                                {validationMessage.OnlyNumbersWithDot}
+                              </Typography>
+                            )}
+                        </Grid>
+                        <Grid
+                          xs
+                          item
+                          sx={{
+                            width: "fit-content",
+                            minWidth: 130,
+                            position: "relative",
+                          }}
+                        >
+                          <Box position={"relative"}>
+                            {idx !== 0 && (
+                              <Box onClick={() => handleMeanWeight(item)}>
+                                <Typography
+                                  variant="body2"
+                                  color="#555555AC"
+                                  sx={{
+                                    position: "absolute",
+                                    // right: 6,
+                                    right: 0,
+                                    top: "53px",
+                                    transform: "translate(-6px, -40px)",
+                                    backgroundColor: "#06A19B",
+                                    height: 30,
+                                    display: "grid",
+                                    placeItems: "center",
+                                    zIndex: 999,
+                                    px: 0.75,
+                                    borderRadius: 1,
+                                    cursor: "pointer",
+                                    // textOverflow: "ellipsis",
+                                    // whiteSpace: "nowrap",
+                                    // minHeight: "1.4375em",
+                                    // overflow: "hidden",
+                                  }}
+                                >
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="1.4em"
+                                    height="1.4em"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      fill="#fff"
+                                      d="M8 18h1.5v-2h2v-1.5h-2v-2H8v2H6V16h2zm5-.75h5v-1.5h-5zm0-2.5h5v-1.5h-5zm1.1-3.8l1.4-1.4l1.4 1.4l1.05-1.05l-1.4-1.45l1.4-1.4L16.9 6l-1.4 1.4L14.1 6l-1.05 1.05l1.4 1.4l-1.4 1.45zM6.25 9.2h5V7.7h-5zM5 21q-.825 0-1.413-.587T3 19V5q0-.825.588-1.412T5 3h14q.825 0 1.413.588T21 5v14q0 .825-.587 1.413T19 21zm0-2h14V5H5zM5 5v14z"
+                                    />
+                                  </svg>
+                                </Typography>
+                              </Box>
+                            )}
+
+                            <TextField
+                              label="Mean Weight *"
+                              type="text"
+                              className="form-input custom-wrap"
                               sx={{
                                 width: "100%",
-                                zIndex: 999,
                                 "& .MuiInputLabel-root": {
                                   transition: "all 0.2s ease",
                                   maxWidth: "60%",
@@ -593,170 +973,18 @@ const TransferModal: React.FC<Props> = ({
                                   textOverflow: "unset",
                                 },
                               }}
-                              disabled={
-                                item.field === "Harvest" ||
-                                item.field === "Mortalities" ||
-                                idx === 0
-                                  ? true
-                                  : false
-                              }
-                              {...register(`manager.${idx}.productionUnit`, {
-                                required: watch(`manager.${idx}.productionUnit`)
+                              disabled={idx === 0 ? true : false}
+                              {...register(`manager.${idx}.meanWeight`, {
+                                required: watch(`manager.${idx}.meanWeight`)
                                   ? false
                                   : true,
-                                onChange: (e) =>
-                                  item.field === "Stock" &&
-                                  setValue(
-                                    `manager.0.productionUnit`,
-                                    e.target.value
-                                  ),
+                                pattern: validationPattern.numbersWithDot,
                               })}
-                              inputProps={{
-                                shrink: watch(`manager.${idx}.productionUnit`),
+                              InputLabelProps={{
+                                shrink: !!watch(`manager.${idx}.meanWeight`),
                               }}
-                              value={
-                                watch(`manager.${idx}.productionUnit`) || ""
-                              }
-                            >
-                              {(() => {
-                                let selectedFarm = farms?.find(
-                                  (farm) =>
-                                    farm.id === watch(`manager.${idx}.fishFarm`)
-                                );
-
-                                return selectedFarm ? (
-                                  selectedFarm?.productionUnits?.map((unit) => (
-                                    <MenuItem
-                                      value={String(unit.id)}
-                                      key={unit.id}
-                                    >
-                                      {unit.name}
-                                    </MenuItem>
-                                  ))
-                                ) : (
-                                  <MenuItem value="" disabled>
-                                    No units available
-                                  </MenuItem>
-                                );
-                              })()}
-                            </Select>
-                            {errors &&
-                              !watch(`manager.${idx}.productionUnit`) &&
-                              errors?.manager &&
-                              errors?.manager[idx] &&
-                              errors?.manager[idx].productionUnit && (
-                                <Typography
-                                  variant="body2"
-                                  color="red"
-                                  fontSize={13}
-                                  mt={0.5}
-                                >
-                                  This field is required
-                                </Typography>
-                              )}
-                            <Typography
-                              variant="body2"
-                              color="red"
-                              fontSize={13}
-                              mt={0.5}
-                            ></Typography>
-                          </FormControl>
-                        </Box>
-                      </Grid>
-                      <Grid
-                        xs
-                        item
-                        sx={{
-                          width: "fit-content",
-                          minWidth: 130,
-                        }}
-                      >
-                        <Box mb={2} width={"100%"}>
-                          <FormControl fullWidth className="form-input">
-                            <InputLabel id="">Batch No. *</InputLabel>
-                            <Select
-                              labelId="feed-supply-select-label9"
-                              className="fish-manager"
-                              id="feed-supply-select9"
-                              label="Batch No. *"
-                              disabled={
-                                item.field === "Harvest" ||
-                                item.field === "Mortalities" ||
-                                idx === 0
-                                  ? true
-                                  : false
-                              }
-                              {...register(`manager.${idx}.batchNumber`, {
-                                required: watch(`manager.${idx}.batchNumber`)
-                                  ? false
-                                  : true,
-                                onChange: (e) =>
-                                  item.field === "Stock" &&
-                                  setValue(
-                                    `manager.0.batchNumber`,
-                                    e.target.value
-                                  ),
-                              })}
-                              inputProps={{
-                                shrink: watch(`manager.${idx}.batchNumber`),
-                              }}
-                              value={watch(`manager.${idx}.batchNumber`) || ""} // Ensure only the current entry is updated
-                            >
-                              {batches?.map(
-                                (
-                                  batch: { batchNumber: String; id: Number },
-                                  i
-                                ) => (
-                                  <MenuItem value={String(batch.id)} key={i}>
-                                    {batch.batchNumber}
-                                  </MenuItem>
-                                )
-                              )}
-                            </Select>
-
-                            {errors &&
-                              !watch(`manager.${idx}.batchNumber`) &&
-                              errors.manager &&
-                              errors.manager[idx] &&
-                              errors.manager[idx].batchNumber && (
-                                <Typography
-                                  variant="body2"
-                                  color="red"
-                                  fontSize={13}
-                                  mt={0.5}
-                                >
-                                  This field is required
-                                </Typography>
-                              )}
-                          </FormControl>
-                        </Box>
-                      </Grid>
-                      <Grid
-                        xs
-                        item
-                        sx={{
-                          width: "fit-content",
-                          minWidth: 130,
-                        }}
-                      >
-                        <Box
-                          display={"flex"}
-                          gap={2}
-                          alignItems={"center"}
-                          position={"relative"}
-                        >
-                          <TextField
-                            label="Biomass *"
-                            type="text"
-                            className="form-input"
-                            disabled={idx === 0 ? true : false}
-                            sx={{ width: "100%" }}
-                            {...register(`manager.${idx}.biomass`, {
-                              required: true,
-                              pattern: validationPattern.numbersWithDot,
-                            })}
-                          />
-
+                            />
+                          </Box>
                           <Typography
                             variant="body2"
                             color="#555555AC"
@@ -773,350 +1001,14 @@ const TransferModal: React.FC<Props> = ({
                               pl: 1,
                             }}
                           >
-                            kg
-                          </Typography>
-                        </Box>
-                        <Typography
-                          variant="body2"
-                          color="red"
-                          fontSize={13}
-                          mt={0.5}
-                        ></Typography>
-                        {errors &&
-                          errors.manager &&
-                          errors.manager[idx] &&
-                          errors.manager[idx].biomass &&
-                          errors.manager[idx].biomass.type === "required" && (
-                            <Typography
-                              variant="body2"
-                              color="red"
-                              fontSize={13}
-                              mt={0.5}
-                            >
-                              {validationMessage.required}
-                            </Typography>
-                          )}
-                        {errors &&
-                          errors.manager &&
-                          errors.manager[idx] &&
-                          errors.manager[idx].biomass &&
-                          errors.manager[idx].biomass.type === "pattern" && (
-                            <Typography
-                              variant="body2"
-                              color="red"
-                              fontSize={13}
-                              mt={0.5}
-                            >
-                              {validationMessage.OnlyNumbersWithDot}
-                            </Typography>
-                          )}
-                      </Grid>
-                      <Grid
-                        xs
-                        item
-                        sx={{
-                          width: "fit-content",
-                          minWidth: 130,
-                          position: "relative",
-                        }}
-                      >
-                        <TextField
-                          label="Fish Count *"
-                          type="text"
-                          className="form-input"
-                          sx={{ width: "100%" }}
-                          disabled={idx === 0 ? true : false}
-                          {...register(`manager.${idx}.count`, {
-                            required: true,
-                            pattern: validationPattern.numbersWithDot,
-                          })}
-                        />
-                        <Typography
-                          variant="body2"
-                          color="#555555AC"
-                          sx={{
-                            position: "absolute",
-                            right: 6,
-                            top: "50%",
-                            transform: "translate(-6px, -50%)",
-                            backgroundColor: "#fff",
-                            height: 30,
-                            display: "grid",
-                            placeItems: "center",
-                            zIndex: 1,
-                            pl: 1,
-                          }}
-                        >
-                          n
-                        </Typography>
-                        {errors &&
-                          errors.manager &&
-                          errors.manager[idx] &&
-                          errors.manager[idx].count &&
-                          errors.manager[idx].count.type === "required" && (
-                            <Typography
-                              variant="body2"
-                              color="red"
-                              fontSize={13}
-                              mt={0.5}
-                            >
-                              {validationMessage.required}
-                            </Typography>
-                          )}
-                        {errors &&
-                          errors.manager &&
-                          errors.manager[idx] &&
-                          errors.manager[idx].count &&
-                          errors.manager[idx].count.type === "pattern" && (
-                            <Typography
-                              variant="body2"
-                              color="red"
-                              fontSize={13}
-                              mt={0.5}
-                            >
-                              {validationMessage.OnlyNumbersWithDot}
-                            </Typography>
-                          )}
-                      </Grid>
-                      <Grid
-                        xs
-                        item
-                        sx={{
-                          width: "fit-content",
-                          minWidth: 130,
-                          position: "relative",
-                        }}
-                      >
-                        <Box position={"relative"}>
-                          {idx !== 0 && (
-                            <Box onClick={() => handleMeanWeight(item)}>
-                              <Typography
-                                variant="body2"
-                                color="#555555AC"
-                                sx={{
-                                  position: "absolute",
-                                  // right: 6,
-                                  right: 0,
-                                  top: "53px",
-                                  transform: "translate(-6px, -40px)",
-                                  backgroundColor: "#06A19B",
-                                  height: 30,
-                                  display: "grid",
-                                  placeItems: "center",
-                                  zIndex: 999,
-                                  px: 0.75,
-                                  borderRadius: 1,
-                                  cursor: "pointer",
-                                  // textOverflow: "ellipsis",
-                                  // whiteSpace: "nowrap",
-                                  // minHeight: "1.4375em",
-                                  // overflow: "hidden",
-                                }}
-                              >
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width="1.4em"
-                                  height="1.4em"
-                                  viewBox="0 0 24 24"
-                                >
-                                  <path
-                                    fill="#fff"
-                                    d="M8 18h1.5v-2h2v-1.5h-2v-2H8v2H6V16h2zm5-.75h5v-1.5h-5zm0-2.5h5v-1.5h-5zm1.1-3.8l1.4-1.4l1.4 1.4l1.05-1.05l-1.4-1.45l1.4-1.4L16.9 6l-1.4 1.4L14.1 6l-1.05 1.05l1.4 1.4l-1.4 1.45zM6.25 9.2h5V7.7h-5zM5 21q-.825 0-1.413-.587T3 19V5q0-.825.588-1.412T5 3h14q.825 0 1.413.588T21 5v14q0 .825-.587 1.413T19 21zm0-2h14V5H5zM5 5v14z"
-                                  />
-                                </svg>
-                              </Typography>
-                            </Box>
-                          )}
-
-                          <TextField
-                            label="Mean Weight *"
-                            type="text"
-                            className="form-input custom-wrap"
-                            sx={{
-                              width: "100%",
-                              "& .MuiInputLabel-root": {
-                                transition: "all 0.2s ease",
-                                maxWidth: "60%",
-                                overflow: "hidden",
-                                whiteSpace: "nowrap",
-                                textOverflow: "ellipsis",
-                                height: "auto",
-                              },
-                              "&:focus-within .MuiInputLabel-root": {
-                                transform: "translate(10px, -9px)",
-                                fontSize: "0.75rem",
-                                color: "primary.main",
-                                backgroundColor: "#fff",
-                                maxWidth: "100%",
-                                overflow: "visible",
-                                textOverflow: "unset",
-                              },
-                            }}
-                            disabled={idx === 0 ? true : false}
-                            {...register(`manager.${idx}.meanWeight`, {
-                              required: watch(`manager.${idx}.meanWeight`)
-                                ? false
-                                : true,
-                              pattern: validationPattern.numbersWithDot,
-                            })}
-                            InputLabelProps={{
-                              shrink: !!watch(`manager.${idx}.meanWeight`),
-                            }}
-                          />
-                        </Box>
-                        <Typography
-                          variant="body2"
-                          color="#555555AC"
-                          sx={{
-                            position: "absolute",
-                            right: 6,
-                            top: "50%",
-                            transform: "translate(-6px, -50%)",
-                            backgroundColor: "#fff",
-                            height: 30,
-                            display: "grid",
-                            placeItems: "center",
-                            zIndex: 1,
-                            pl: 1,
-                          }}
-                        >
-                          g
-                        </Typography>
-                        {errors &&
-                          !watch(`manager.${idx}.meanWeight`) &&
-                          errors.manager &&
-                          errors.manager[idx] &&
-                          errors.manager[idx].meanWeight &&
-                          errors.manager[idx].meanWeight.type ===
-                            "required" && (
-                            <Typography
-                              variant="body2"
-                              color="red"
-                              fontSize={13}
-                              mt={0.5}
-                            >
-                              {validationMessage.required}
-                            </Typography>
-                          )}
-                        {errors &&
-                          errors.manager &&
-                          errors.manager[idx] &&
-                          errors.manager[idx].meanWeight &&
-                          errors.manager[idx].meanWeight.type === "pattern" && (
-                            <Typography
-                              variant="body2"
-                              color="red"
-                              fontSize={13}
-                              mt={0.5}
-                            >
-                              {validationMessage.OnlyNumbersWithDot}
-                            </Typography>
-                          )}
-                      </Grid>
-                      <Grid
-                        xs
-                        item
-                        sx={{
-                          width: "fit-content",
-                          minWidth: 130,
-                          position: "relative",
-                        }}
-                      >
-                        <Box position={"relative"}>
-                          {idx !== 0 && (
-                            <Box onClick={() => handleMeanLength(item)}>
-                              <Typography
-                                variant="body2"
-                                color="#555555AC"
-                                sx={{
-                                  position: "absolute",
-                                  // right: 6,
-                                  right: 0,
-                                  top: "53px",
-                                  transform: "translate(-6px, -40px)",
-                                  backgroundColor: "#06A19B",
-                                  height: 30,
-                                  display: "grid",
-                                  placeItems: "center",
-                                  zIndex: 999,
-                                  px: 0.75,
-                                  borderRadius: 1,
-                                  cursor: "pointer",
-                                }}
-                              >
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width="1.4em"
-                                  height="1.4em"
-                                  viewBox="0 0 24 24"
-                                >
-                                  <path
-                                    fill="#fff"
-                                    d="M8 18h1.5v-2h2v-1.5h-2v-2H8v2H6V16h2zm5-.75h5v-1.5h-5zm0-2.5h5v-1.5h-5zm1.1-3.8l1.4-1.4l1.4 1.4l1.05-1.05l-1.4-1.45l1.4-1.4L16.9 6l-1.4 1.4L14.1 6l-1.05 1.05l1.4 1.4l-1.4 1.45zM6.25 9.2h5V7.7h-5zM5 21q-.825 0-1.413-.587T3 19V5q0-.825.588-1.412T5 3h14q.825 0 1.413.588T21 5v14q0 .825-.587 1.413T19 21zm0-2h14V5H5zM5 5v14z"
-                                  />
-                                </svg>
-                              </Typography>
-                            </Box>
-                          )}
-                          <TextField
-                            label="Mean Length *"
-                            type="text"
-                            className="form-input"
-                            sx={{
-                              width: "100%",
-                              "& .MuiInputLabel-root": {
-                                transition: "all 0.2s ease",
-                                maxWidth: "60%",
-                                overflow: "hidden",
-                                whiteSpace: "nowrap",
-                                textOverflow: "ellipsis",
-                                height: "auto",
-                              },
-                              "&:focus-within .MuiInputLabel-root": {
-                                transform: "translate(10px, -9px)",
-                                fontSize: "0.75rem",
-                                color: "primary.main",
-                                backgroundColor: "#fff",
-                                maxWidth: "100%",
-                                overflow: "visible",
-                                textOverflow: "unset",
-                              },
-                            }}
-                            disabled={idx === 0 ? true : false}
-                            {...register(`manager.${idx}.meanLength` as const, {
-                              required: watch(`manager.${idx}.meanLength`)
-                                ? false
-                                : true,
-                              pattern: validationPattern.numbersWithDot,
-                            })}
-                            InputLabelProps={{
-                              shrink: !!watch(`manager.${idx}.meanLength`),
-                            }}
-                          />
-                          <Typography
-                            variant="body2"
-                            color="#555555AC"
-                            sx={{
-                              position: "absolute",
-                              right: 6,
-                              top: "50%",
-                              transform: "translate(-6px, -50%)",
-                              backgroundColor: "#fff",
-                              height: 30,
-                              display: "grid",
-                              placeItems: "center",
-                              zIndex: 1,
-                              pl: 1,
-                            }}
-                          >
-                            mm
+                            g
                           </Typography>
                           {errors &&
-                            !watch(`manager.${idx}.meanLength`) &&
+                            !watch(`manager.${idx}.meanWeight`) &&
                             errors.manager &&
                             errors.manager[idx] &&
-                            errors.manager[idx].meanLength &&
-                            errors.manager[idx].meanLength.type ===
+                            errors.manager[idx].meanWeight &&
+                            errors.manager[idx].meanWeight.type ===
                               "required" && (
                               <Typography
                                 variant="body2"
@@ -1130,8 +1022,8 @@ const TransferModal: React.FC<Props> = ({
                           {errors &&
                             errors.manager &&
                             errors.manager[idx] &&
-                            errors.manager[idx].meanLength &&
-                            errors.manager[idx].meanLength.type ===
+                            errors.manager[idx].meanWeight &&
+                            errors.manager[idx].meanWeight.type ===
                               "pattern" && (
                               <Typography
                                 variant="body2"
@@ -1142,433 +1034,568 @@ const TransferModal: React.FC<Props> = ({
                                 {validationMessage.OnlyNumbersWithDot}
                               </Typography>
                             )}
-                        </Box>
-                      </Grid>{" "}
-                      <Grid
-                        item
-                        xs
-                        sx={{
-                          width: "fit-content",
-                          minWidth: 130,
-                        }}
-                      >
-                        <Box
-                          display={"flex"}
-                          gap={2}
-                          alignItems={"center"}
-                          position={"relative"}
+                        </Grid>
+                        <Grid
+                          xs
+                          item
+                          sx={{
+                            width: "fit-content",
+                            minWidth: 130,
+                            position: "relative",
+                          }}
                         >
-                          <TextField
-                            label={`Stocking Density *`}
-                            type="text"
-                            className="form-input"
-                            disabled={
-                              idx === 0 ||
-                              item.field !== "Harvest" ||
-                              item.field !== "Mortalities"
-                                ? true
-                                : false
-                            }
-                            InputLabelProps={{
-                              shrink: !!watch(
-                                `manager.${idx}.stockingDensityKG`
-                              ),
-                            }}
-                            sx={{
-                              width: "100%",
-                              "& .MuiInputLabel-root": {
-                                transition: "all 0.2s ease",
-                              },
-                              "&:focus-within .MuiInputLabel-root": {
-                                transform: "translate(10px, -9px)",
-                                fontSize: "0.75rem",
-                                color: "primary.main",
+                          <Box position={"relative"}>
+                            {idx !== 0 && (
+                              <Box onClick={() => handleMeanLength(item)}>
+                                <Typography
+                                  variant="body2"
+                                  color="#555555AC"
+                                  sx={{
+                                    position: "absolute",
+                                    // right: 6,
+                                    right: 0,
+                                    top: "53px",
+                                    transform: "translate(-6px, -40px)",
+                                    backgroundColor: "#06A19B",
+                                    height: 30,
+                                    display: "grid",
+                                    placeItems: "center",
+                                    zIndex: 999,
+                                    px: 0.75,
+                                    borderRadius: 1,
+                                    cursor: "pointer",
+                                  }}
+                                >
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="1.4em"
+                                    height="1.4em"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      fill="#fff"
+                                      d="M8 18h1.5v-2h2v-1.5h-2v-2H8v2H6V16h2zm5-.75h5v-1.5h-5zm0-2.5h5v-1.5h-5zm1.1-3.8l1.4-1.4l1.4 1.4l1.05-1.05l-1.4-1.45l1.4-1.4L16.9 6l-1.4 1.4L14.1 6l-1.05 1.05l1.4 1.4l-1.4 1.45zM6.25 9.2h5V7.7h-5zM5 21q-.825 0-1.413-.587T3 19V5q0-.825.588-1.412T5 3h14q.825 0 1.413.588T21 5v14q0 .825-.587 1.413T19 21zm0-2h14V5H5zM5 5v14z"
+                                    />
+                                  </svg>
+                                </Typography>
+                              </Box>
+                            )}
+                            <TextField
+                              label="Mean Length *"
+                              type="text"
+                              className="form-input"
+                              sx={{
+                                width: "100%",
+                                "& .MuiInputLabel-root": {
+                                  transition: "all 0.2s ease",
+                                  maxWidth: "60%",
+                                  overflow: "hidden",
+                                  whiteSpace: "nowrap",
+                                  textOverflow: "ellipsis",
+                                  height: "auto",
+                                },
+                                "&:focus-within .MuiInputLabel-root": {
+                                  transform: "translate(10px, -9px)",
+                                  fontSize: "0.75rem",
+                                  color: "primary.main",
+                                  backgroundColor: "#fff",
+                                  maxWidth: "100%",
+                                  overflow: "visible",
+                                  textOverflow: "unset",
+                                },
+                              }}
+                              disabled={idx === 0 ? true : false}
+                              {...register(
+                                `manager.${idx}.meanLength` as const,
+                                {
+                                  required: watch(`manager.${idx}.meanLength`)
+                                    ? false
+                                    : true,
+                                  pattern: validationPattern.numbersWithDot,
+                                }
+                              )}
+                              InputLabelProps={{
+                                shrink: !!watch(`manager.${idx}.meanLength`),
+                              }}
+                            />
+                            <Typography
+                              variant="body2"
+                              color="#555555AC"
+                              sx={{
+                                position: "absolute",
+                                right: 6,
+                                top: "50%",
+                                transform: "translate(-6px, -50%)",
                                 backgroundColor: "#fff",
-                              },
-                            }}
-                            {...register(
-                              `manager.${idx}.stockingDensityKG` as const,
-                              {
-                                required: watch(
+                                height: 30,
+                                display: "grid",
+                                placeItems: "center",
+                                zIndex: 1,
+                                pl: 1,
+                              }}
+                            >
+                              mm
+                            </Typography>
+                            {errors &&
+                              !watch(`manager.${idx}.meanLength`) &&
+                              errors.manager &&
+                              errors.manager[idx] &&
+                              errors.manager[idx].meanLength &&
+                              errors.manager[idx].meanLength.type ===
+                                "required" && (
+                                <Typography
+                                  variant="body2"
+                                  color="red"
+                                  fontSize={13}
+                                  mt={0.5}
+                                >
+                                  {validationMessage.required}
+                                </Typography>
+                              )}
+                            {errors &&
+                              errors.manager &&
+                              errors.manager[idx] &&
+                              errors.manager[idx].meanLength &&
+                              errors.manager[idx].meanLength.type ===
+                                "pattern" && (
+                                <Typography
+                                  variant="body2"
+                                  color="red"
+                                  fontSize={13}
+                                  mt={0.5}
+                                >
+                                  {validationMessage.OnlyNumbersWithDot}
+                                </Typography>
+                              )}
+                          </Box>
+                        </Grid>{" "}
+                        <Grid
+                          item
+                          xs
+                          sx={{
+                            width: "fit-content",
+                            minWidth: 130,
+                          }}
+                        >
+                          <Box
+                            display={"flex"}
+                            gap={2}
+                            alignItems={"center"}
+                            position={"relative"}
+                          >
+                            <TextField
+                              label={`Stocking Density *`}
+                              type="text"
+                              className="form-input"
+                              disabled={
+                                idx === 0 ||
+                                item.field !== "Harvest" ||
+                                item.field !== "Mortalities"
+                                  ? true
+                                  : false
+                              }
+                              InputLabelProps={{
+                                shrink: !!watch(
                                   `manager.${idx}.stockingDensityKG`
-                                )
-                                  ? false
-                                  : true,
-                                pattern: validationPattern.numbersWithDot,
-                              }
-                            )}
-                          />
+                                ),
+                              }}
+                              sx={{
+                                width: "100%",
+                                "& .MuiInputLabel-root": {
+                                  transition: "all 0.2s ease",
+                                },
+                                "&:focus-within .MuiInputLabel-root": {
+                                  transform: "translate(10px, -9px)",
+                                  fontSize: "0.75rem",
+                                  color: "primary.main",
+                                  backgroundColor: "#fff",
+                                },
+                              }}
+                              {...register(
+                                `manager.${idx}.stockingDensityKG` as const,
+                                {
+                                  required: watch(
+                                    `manager.${idx}.stockingDensityKG`
+                                  )
+                                    ? false
+                                    : true,
+                                  pattern: validationPattern.numbersWithDot,
+                                }
+                              )}
+                            />
+                            <Typography
+                              variant="body2"
+                              color="#555555AC"
+                              sx={{
+                                position: "absolute",
+                                right: 6,
+                                top: "50%",
+                                transform: "translate(-6px, -50%)",
+                                backgroundColor: "#fff",
+                                height: 30,
+                                display: "grid",
+                                placeItems: "center",
+                                zIndex: 1,
+                                pl: 1,
+                              }}
+                            >
+                              {`(kg/${"m\u00B3"})`}
+                            </Typography>
+                          </Box>
                           <Typography
                             variant="body2"
-                            color="#555555AC"
-                            sx={{
-                              position: "absolute",
-                              right: 6,
-                              top: "50%",
-                              transform: "translate(-6px, -50%)",
-                              backgroundColor: "#fff",
-                              height: 30,
-                              display: "grid",
-                              placeItems: "center",
-                              zIndex: 1,
-                              pl: 1,
-                            }}
+                            color="red"
+                            fontSize={13}
+                            mt={0.5}
+                          ></Typography>
+                          {errors &&
+                            !watch(`manager.${idx}.stockingDensityKG`) &&
+                            errors.manager &&
+                            errors.manager[idx] &&
+                            errors.manager[idx].stockingDensityKG &&
+                            errors.manager[idx].stockingDensityKG.type ===
+                              "required" && (
+                              <Typography
+                                variant="body2"
+                                color="red"
+                                fontSize={13}
+                                mt={0.5}
+                              >
+                                {validationMessage.required}
+                              </Typography>
+                            )}
+                          {errors &&
+                            errors.manager &&
+                            errors.manager[idx] &&
+                            errors.manager[idx].stockingDensityKG &&
+                            errors.manager[idx].stockingDensityKG.type ===
+                              "pattern" && (
+                              <Typography
+                                variant="body2"
+                                color="red"
+                                fontSize={13}
+                                mt={0.5}
+                              >
+                                {validationMessage.OnlyNumbersWithDot}
+                              </Typography>
+                            )}
+                        </Grid>
+                        <Grid
+                          xs
+                          item
+                          sx={{
+                            width: "fit-content",
+                            minWidth: 130,
+                          }}
+                        >
+                          <Box
+                            display={"flex"}
+                            gap={2}
+                            alignItems={"center"}
+                            position={"relative"}
                           >
-                            {`(kg/${"m\u00B3"})`}
-                          </Typography>
-                        </Box>
-                        <Typography
-                          variant="body2"
-                          color="red"
-                          fontSize={13}
-                          mt={0.5}
-                        ></Typography>
-                        {errors &&
-                          !watch(`manager.${idx}.stockingDensityKG`) &&
-                          errors.manager &&
-                          errors.manager[idx] &&
-                          errors.manager[idx].stockingDensityKG &&
-                          errors.manager[idx].stockingDensityKG.type ===
-                            "required" && (
+                            <TextField
+                              label={`Stocking Density *`}
+                              type="text"
+                              className="form-input"
+                              disabled={
+                                idx === 0 ||
+                                item.field !== "Harvest" ||
+                                item.field !== "Mortalities"
+                                  ? true
+                                  : false
+                              }
+                              {...register(
+                                `manager.${idx}.stockingDensityNM` as const,
+                                {
+                                  required: watch(
+                                    `manager.${idx}.stockingDensityNM`
+                                  )
+                                    ? false
+                                    : true,
+                                  pattern: validationPattern.numbersWithDot,
+                                }
+                              )}
+                              InputLabelProps={{
+                                shrink: !!watch(
+                                  `manager.${idx}.stockingDensityNM`
+                                ),
+                              }}
+                              sx={{
+                                width: "100%",
+                                "& .MuiInputLabel-root": {
+                                  transition: "all 0.2s ease",
+                                },
+                                "&:focus-within .MuiInputLabel-root": {
+                                  transform: "translate(10px, -9px)",
+                                  fontSize: "0.75rem",
+                                  color: "primary.main",
+                                  backgroundColor: "#fff",
+                                },
+                              }}
+                            />
                             <Typography
                               variant="body2"
-                              color="red"
-                              fontSize={13}
-                              mt={0.5}
+                              color="#555555AC"
+                              sx={{
+                                position: "absolute",
+                                right: 6,
+                                top: "50%",
+                                transform: "translate(-6px, -50%)",
+                                backgroundColor: "#fff",
+                                height: 30,
+                                display: "grid",
+                                placeItems: "center",
+                                zIndex: 1,
+                                pl: 1,
+                              }}
                             >
-                              {validationMessage.required}
+                              {`(n/${"m\u00B3"})`}
                             </Typography>
-                          )}
-                        {errors &&
-                          errors.manager &&
-                          errors.manager[idx] &&
-                          errors.manager[idx].stockingDensityKG &&
-                          errors.manager[idx].stockingDensityKG.type ===
-                            "pattern" && (
-                            <Typography
-                              variant="body2"
-                              color="red"
-                              fontSize={13}
-                              mt={0.5}
-                            >
-                              {validationMessage.OnlyNumbersWithDot}
-                            </Typography>
-                          )}
-                      </Grid>
-                      <Grid
-                        xs
-                        item
-                        sx={{
-                          width: "fit-content",
-                          minWidth: 130,
-                        }}
-                      >
-                        <Box
-                          display={"flex"}
-                          gap={2}
-                          alignItems={"center"}
-                          position={"relative"}
+                          </Box>
+                          <Typography
+                            variant="body2"
+                            color="red"
+                            fontSize={13}
+                            mt={0.5}
+                          ></Typography>
+                          {errors &&
+                            !watch(`manager.${idx}.stockingDensityNM`) &&
+                            errors.manager &&
+                            errors.manager[idx] &&
+                            errors.manager[idx].stockingDensityNM &&
+                            errors.manager[idx].stockingDensityNM.type ===
+                              "required" && (
+                              <Typography
+                                variant="body2"
+                                color="red"
+                                fontSize={13}
+                                mt={0.5}
+                              >
+                                {validationMessage.required}
+                              </Typography>
+                            )}
+                          {errors &&
+                            errors.manager &&
+                            errors.manager[idx] &&
+                            errors.manager[idx].stockingDensityNM &&
+                            errors.manager[idx].stockingDensityNM.type ===
+                              "pattern" && (
+                              <Typography
+                                variant="body2"
+                                color="red"
+                                fontSize={13}
+                                mt={0.5}
+                              >
+                                {validationMessage.OnlyNumbersWithDot}
+                              </Typography>
+                            )}
+                        </Grid>
+                        <Grid
+                          item
+                          xs
+                          sx={{
+                            width: "fit-content",
+                            minWidth: 130,
+                          }}
                         >
                           <TextField
-                            label={`Stocking Density *`}
+                            label="Stocking Level *"
                             type="text"
                             className="form-input"
-                            disabled={
-                              idx === 0 ||
-                              item.field !== "Harvest" ||
-                              item.field !== "Mortalities"
-                                ? true
-                                : false
-                            }
+                            disabled
+                            sx={{ width: "100%" }}
                             {...register(
-                              `manager.${idx}.stockingDensityNM` as const,
-                              {
-                                required: watch(
-                                  `manager.${idx}.stockingDensityNM`
-                                )
-                                  ? false
-                                  : true,
-                                pattern: validationPattern.numbersWithDot,
-                              }
+                              `manager.${idx}.stockingLevel` as const
+                              // {
+                              //   required: true,
+                              //   pattern: validationPattern.numbersWithDot,
+                              // }
                             )}
-                            InputLabelProps={{
-                              shrink: !!watch(
-                                `manager.${idx}.stockingDensityNM`
-                              ),
-                            }}
-                            sx={{
-                              width: "100%",
-                              "& .MuiInputLabel-root": {
-                                transition: "all 0.2s ease",
-                              },
-                              "&:focus-within .MuiInputLabel-root": {
-                                transform: "translate(10px, -9px)",
-                                fontSize: "0.75rem",
-                                color: "primary.main",
-                                backgroundColor: "#fff",
-                              },
-                            }}
                           />
                           <Typography
                             variant="body2"
-                            color="#555555AC"
-                            sx={{
-                              position: "absolute",
-                              right: 6,
-                              top: "50%",
-                              transform: "translate(-6px, -50%)",
-                              backgroundColor: "#fff",
-                              height: 30,
-                              display: "grid",
-                              placeItems: "center",
-                              zIndex: 1,
-                              pl: 1,
-                            }}
-                          >
-                            {`(n/${"m\u00B3"})`}
-                          </Typography>
-                        </Box>
-                        <Typography
-                          variant="body2"
-                          color="red"
-                          fontSize={13}
-                          mt={0.5}
-                        ></Typography>
-                        {errors &&
-                          !watch(`manager.${idx}.stockingDensityNM`) &&
-                          errors.manager &&
-                          errors.manager[idx] &&
-                          errors.manager[idx].stockingDensityNM &&
-                          errors.manager[idx].stockingDensityNM.type ===
-                            "required" && (
-                            <Typography
-                              variant="body2"
-                              color="red"
-                              fontSize={13}
-                              mt={0.5}
-                            >
-                              {validationMessage.required}
-                            </Typography>
-                          )}
-                        {errors &&
-                          errors.manager &&
-                          errors.manager[idx] &&
-                          errors.manager[idx].stockingDensityNM &&
-                          errors.manager[idx].stockingDensityNM.type ===
-                            "pattern" && (
-                            <Typography
-                              variant="body2"
-                              color="red"
-                              fontSize={13}
-                              mt={0.5}
-                            >
-                              {validationMessage.OnlyNumbersWithDot}
-                            </Typography>
-                          )}
+                            color="red"
+                            fontSize={13}
+                            mt={0.5}
+                          ></Typography>
+                        </Grid>
                       </Grid>
-                      <Grid
-                        item
-                        xs
-                        sx={{
-                          width: "fit-content",
-                          minWidth: 130,
-                        }}
-                      >
-                        <TextField
-                          label="Stocking Level *"
-                          type="text"
-                          className="form-input"
-                          disabled
-                          sx={{ width: "100%" }}
-                          {...register(
-                            `manager.${idx}.stockingLevel` as const
-                            // {
-                            //   required: true,
-                            //   pattern: validationPattern.numbersWithDot,
-                            // }
-                          )}
-                        />
-                        <Typography
-                          variant="body2"
-                          color="red"
-                          fontSize={13}
-                          mt={0.5}
-                        ></Typography>
-                      </Grid>
-                    </Grid>
-                  </Stack>
+                    </Stack>
 
-                  <Box
-                    display={"flex"}
-                    alignItems={"center"}
-                    justifyContent={"center"}
-                    position={"relative"}
-                    top="90%"
-                  >
                     <Box
                       display={"flex"}
-                      justifyContent={"center"}
                       alignItems={"center"}
-                      width={50}
-                      sx={{
-                        visibility: idx === 0 ? "hidden" : "",
-                        cursor: "pointer",
-                        width: {
-                          // lg: 150,
-                          xs: "auto",
-                        },
-                      }}
-                      onClick={() => handleDelete(item)}
+                      justifyContent={"center"}
+                      position={"relative"}
+                      top="90%"
                     >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="1.4em"
-                        height="1.4em"
-                        viewBox="0 0 24 24"
+                      <Box
+                        display={"flex"}
+                        justifyContent={"center"}
+                        alignItems={"center"}
+                        width={50}
+                        sx={{
+                          visibility: idx === 0 ? "hidden" : "",
+                          cursor: "pointer",
+                          width: {
+                            // lg: 150,
+                            xs: "auto",
+                          },
+                        }}
+                        onClick={() => handleDelete(item)}
                       >
-                        <g fill="none">
-                          <path d="m12.593 23.258l-.011.002l-.071.035l-.02.004l-.014-.004l-.071-.035q-.016-.005-.024.005l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.017-.018m.265-.113l-.013.002l-.185.093l-.01.01l-.003.011l.018.43l.005.012l.008.007l.201.093q.019.005.029-.008l.004-.014l-.034-.614q-.005-.018-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.614q.001.018.017.024l.015-.002l.201-.093l.01-.008l.004-.011l.017-.43l-.003-.012l-.01-.01z" />
-                          <path
-                            fill="#ff0000"
-                            d="M14.28 2a2 2 0 0 1 1.897 1.368L16.72 5H20a1 1 0 1 1 0 2l-.003.071l-.867 12.143A3 3 0 0 1 16.138 22H7.862a3 3 0 0 1-2.992-2.786L4.003 7.07L4 7a1 1 0 0 1 0-2h3.28l.543-1.632A2 2 0 0 1 9.721 2zm3.717 5H6.003l.862 12.071a1 1 0 0 0 .997.929h8.276a1 1 0 0 0 .997-.929zM10 10a1 1 0 0 1 .993.883L11 11v5a1 1 0 0 1-1.993.117L9 16v-5a1 1 0 0 1 1-1m4 0a1 1 0 0 1 1 1v5a1 1 0 1 1-2 0v-5a1 1 0 0 1 1-1m.28-6H9.72l-.333 1h5.226z"
-                          />
-                        </g>
-                      </svg>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="1.4em"
+                          height="1.4em"
+                          viewBox="0 0 24 24"
+                        >
+                          <g fill="none">
+                            <path d="m12.593 23.258l-.011.002l-.071.035l-.02.004l-.014-.004l-.071-.035q-.016-.005-.024.005l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.017-.018m.265-.113l-.013.002l-.185.093l-.01.01l-.003.011l.018.43l.005.012l.008.007l.201.093q.019.005.029-.008l.004-.014l-.034-.614q-.005-.018-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.614q.001.018.017.024l.015-.002l.201-.093l.01-.008l.004-.011l.017-.43l-.003-.012l-.01-.01z" />
+                            <path
+                              fill="#ff0000"
+                              d="M14.28 2a2 2 0 0 1 1.897 1.368L16.72 5H20a1 1 0 1 1 0 2l-.003.071l-.867 12.143A3 3 0 0 1 16.138 22H7.862a3 3 0 0 1-2.992-2.786L4.003 7.07L4 7a1 1 0 0 1 0-2h3.28l.543-1.632A2 2 0 0 1 9.721 2zm3.717 5H6.003l.862 12.071a1 1 0 0 0 .997.929h8.276a1 1 0 0 0 .997-.929zM10 10a1 1 0 0 1 .993.883L11 11v5a1 1 0 0 1-1.993.117L9 16v-5a1 1 0 0 1 1-1m4 0a1 1 0 0 1 1 1v5a1 1 0 1 1-2 0v-5a1 1 0 0 1 1-1m.28-6H9.72l-.333 1h5.226z"
+                            />
+                          </g>
+                        </svg>
+                      </Box>
                     </Box>
                   </Box>
+
+                  <Divider
+                    orientation="vertical"
+                    sx={{
+                      height: "100%",
+                      borderBottom: "2px solid #E6E7E9 !important",
+                      borderRight: "none !important",
+                      width: "100%",
+                      marginLeft: "12px",
+                      paddingBlock: "10px",
+                    }}
+                  />
                 </Box>
+              );
+            })}
 
-                <Divider
-                  orientation="vertical"
-                  sx={{
-                    height: "100%",
-                    borderBottom: "2px solid #E6E7E9 !important",
-                    borderRight: "none !important",
-                    width: "100%",
-                    marginLeft: "12px",
-                    paddingBlock: "10px",
-                  }}
-                />
-              </Box>
-            );
-          })}
-
-          <Box
-            display="flex"
-            justifyContent="flex-end"
-            alignItems={"flex-end"}
-            gap="10px"
-            padding={3}
-            margin={"40px"}
-          >
-            <Button
-              className=""
-              type="button"
-              variant="contained"
-              onClick={handleClick}
-              sx={{
-                background: "#06A19B",
-                fontWeight: "bold",
-                padding: "8px 20px",
-                width: {
-                  xs: "50%",
-                  lg: "fit-content",
-                },
-                textTransform: "capitalize",
-                borderRadius: "12px",
-
-                marginBlock: "10px",
-              }}
+            <Box
+              display="flex"
+              justifyContent="flex-end"
+              alignItems={"flex-end"}
+              gap="10px"
+              padding={3}
+              margin={"40px"}
             >
-              Add Row
-            </Button>
-            <Menu
-              id="basic-menu"
-              anchorEl={anchorEl}
-              open={openAnchor}
-              onClose={handleCloseAnchor}
-              MenuListProps={{
-                "aria-labelledby": "basic-button",
-              }}
-            >
-              {productionMangeFields.map((field, i) => {
-                return (
-                  <MenuItem
-                    onClick={() => handleCloseAnchor(field)}
-                    key={i}
-                    disabled={
-                      field === "Stock" &&
-                      selectedProduction?.batchNumberId &&
-                      selectedProduction?.fishCount
-                        ? true
-                        : field === "Harvest" ||
-                          field === "Mortalities" ||
-                          field === "Re-Stock" ||
-                          field === "Transfer"
-                        ? watchedFields[0].count && watchedFields[0].batchNumber
+              <Button
+                className=""
+                type="button"
+                variant="contained"
+                onClick={handleClick}
+                sx={{
+                  background: "#06A19B",
+                  fontWeight: "bold",
+                  padding: "8px 20px",
+                  width: {
+                    xs: "50%",
+                    lg: "fit-content",
+                  },
+                  textTransform: "capitalize",
+                  borderRadius: "12px",
+
+                  marginBlock: "10px",
+                }}
+              >
+                Add Row
+              </Button>
+              <Menu
+                id="basic-menu"
+                anchorEl={anchorEl}
+                open={openAnchor}
+                onClose={handleCloseAnchor}
+                MenuListProps={{
+                  "aria-labelledby": "basic-button",
+                }}
+              >
+                {productionMangeFields.map((field, i) => {
+                  return (
+                    <MenuItem
+                      onClick={() => handleCloseAnchor(field)}
+                      key={i}
+                      disabled={
+                        field === "Stock" &&
+                        selectedProduction?.batchNumberId &&
+                        selectedProduction?.fishCount
+                          ? true
+                          : field === "Harvest" ||
+                            field === "Mortalities" ||
+                            field === "Re-Stock" ||
+                            field === "Transfer"
+                          ? watchedFields[0].count &&
+                            watchedFields[0].batchNumber
+                            ? false
+                            : true
+                          : selectedProduction?.batchNumberId &&
+                            selectedProduction?.biomass &&
+                            selectedProduction?.fishCount &&
+                            selectedProduction?.meanLength &&
+                            selectedProduction?.meanWeight
                           ? false
-                          : true
-                        : selectedProduction?.batchNumberId &&
-                          selectedProduction?.biomass &&
-                          selectedProduction?.fishCount &&
-                          selectedProduction?.meanLength &&
-                          selectedProduction?.meanWeight
-                        ? false
-                        : watchedFields.find(
-                            (field) => field.field === "Stock"
-                          ) && field === "Stock"
-                        ? true
-                        : false
-                    }
-                  >
-                    {field}
-                  </MenuItem>
-                );
-              })}
-            </Menu>
-            <Button
-              className=""
-              type="submit"
-              variant="contained"
-              sx={{
-                background: "#06A19B",
-                fontWeight: "bold",
-                padding: "8px 20px",
-                width: {
-                  xs: "50%",
-                  lg: "fit-content",
-                },
-                textTransform: "capitalize",
-                borderRadius: "12px",
+                          : watchedFields.find(
+                              (field) => field.field === "Stock"
+                            ) && field === "Stock"
+                          ? true
+                          : false
+                      }
+                    >
+                      {field}
+                    </MenuItem>
+                  );
+                })}
+              </Menu>
+              <Button
+                className=""
+                type="submit"
+                variant="contained"
+                sx={{
+                  background: "#06A19B",
+                  fontWeight: "bold",
+                  padding: "8px 20px",
+                  width: {
+                    xs: "50%",
+                    lg: "fit-content",
+                  },
+                  textTransform: "capitalize",
+                  borderRadius: "12px",
 
-                marginBlock: "10px",
-              }}
-            >
-              Save
-            </Button>
-          </Box>
-        </form>
-        <Confirmation
-          open={openConfirmationModal}
-          setOpen={setOpenConfirmationModal}
-          remove={remove}
-          watchedFields={watchedFields}
-          selectedProductionFishaFarmId={selectedProduction?.fishFarmId}
-          setIsStockDeleted={setIsStockDeleted}
-          clearErrors={clearErrors}
-        />
-        <CalculateMeanWeigth
-          open={isMeanWeigthCal}
-          setOpen={setIsMeanWeigthCal}
-          setAvgOfMeanWeight={setAvgOfMeanWeight}
-        />
-        <CalculateMeanLength
-          open={isMeanLengthCal}
-          setOpen={setIsMeanLengthCal}
-          setAvgOfMeanLength={setAvgOfMeanLength}
-        />
-      </Stack>
-    </Modal>
+                  marginBlock: "10px",
+                }}
+              >
+                Save
+              </Button>
+            </Box>
+          </form>
+          <Confirmation
+            open={openConfirmationModal}
+            setOpen={setOpenConfirmationModal}
+            remove={remove}
+            watchedFields={watchedFields}
+            selectedProductionFishaFarmId={selectedProduction?.fishFarmId}
+            setIsStockDeleted={setIsStockDeleted}
+            clearErrors={clearErrors}
+          />
+          <CalculateMeanWeigth
+            open={isMeanWeigthCal}
+            setOpen={setIsMeanWeigthCal}
+            setAvgOfMeanWeight={setAvgOfMeanWeight}
+          />
+          <CalculateMeanLength
+            open={isMeanLengthCal}
+            setOpen={setIsMeanLengthCal}
+            setAvgOfMeanLength={setAvgOfMeanLength}
+          />
+        </Stack>
+      </Modal>
+    </div>
   );
 };
 
