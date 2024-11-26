@@ -88,4 +88,6 @@ export const productionMangeFields = [
   "Transfer",
   "Harvest",
   "Mortalities",
+  "Sample",
 ];
+export const waterQualityFields = ["Sample"];

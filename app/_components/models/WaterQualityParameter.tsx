@@ -1,4 +1,4 @@
-import { productionMangeFields } from "@/app/_lib/utils";
+import { productionMangeFields, waterQualityFields } from "@/app/_lib/utils";
 import * as validationPattern from "@/app/_lib/utils/validationPatterns/index";
 import * as validationMessage from "@/app/_lib/utils/validationsMessage/index";
 import { Farm } from "@/app/_typeModels/Farm";
@@ -12,21 +12,17 @@ import {
   Grid,
   IconButton,
   InputLabel,
+  Menu,
   Modal,
   Stack,
   TextField,
   Typography,
 } from "@mui/material";
-import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
-import toast from "react-hot-toast";
-import Confirmation from "./Confirmation";
-import CalculateMeanWeigth from "./CalculateMeanWeigth";
-import CalculateMeanLength from "./CalculateMeanLength";
 const style = {
   position: "absolute" as "absolute",
   top: "50%",
@@ -42,23 +38,22 @@ interface Props {
   open: boolean;
   selectedProduction: Production;
   farms: Farm[];
-  batches: { batchNumber: String; id: Number }[];
   productions: Production[];
 }
 interface InputTypes {
-  manager: {
+  water: {
     id: Number;
     fishFarm: String;
     productionUnit: String;
-    biomass: String;
-    count: String;
-    meanWeight: String;
-    meanLength: String;
-    field?: String;
-    stockingDensityNM?: String;
-    stockingLevel?: String;
-    stockingDensityKG?: String;
-    batchNumber: String;
+    waterTemp?: String;
+    DO?: String;
+    TSS?: String;
+    NH4?: String;
+    NO3?: String;
+    NO2?: String;
+    ph?: String;
+    visibility?: String;
+    showDate?: Boolean;
   }[];
 }
 const WaterQualityParameter: React.FC<Props> = ({
@@ -66,25 +61,14 @@ const WaterQualityParameter: React.FC<Props> = ({
   open,
   selectedProduction,
   farms,
-  batches,
   productions,
 }) => {
   const router = useRouter();
   const [selectedFarm, setSelectedFarm] = useState<any>(null);
-  const [isEnteredBiomassGreater, setIsEnteredBiomassGreater] =
-    useState<Boolean>(false);
-  const [isEnteredFishCountGreater, setIsEnteredFishCountGreater] =
-    useState<Boolean>(false);
-  const [openConfirmationModal, setOpenConfirmationModal] =
-    useState<boolean>(false);
+
   const [anchorEl, setAnchorEl] = useState(null);
   const [isStockDeleted, setIsStockDeleted] = useState<boolean>(false);
-  const [isMeanWeigthCal, setIsMeanWeigthCal] = useState<boolean>(false);
-  const [isMeanLengthCal, setIsMeanLengthCal] = useState<boolean>(false);
-  const [avgOfMeanWeight, setAvgOfMeanWeight] = useState<Number>();
-  const [avgOfMeanLength, setAvgOfMeanLength] = useState<Number>();
-  const [selectedMeanWeightId, setSelectedMeanWeightId] = useState<String>("");
-  const [selectedMeanLengthId, setSelectedMeanLengthId] = useState<String>("");
+
   const [isApiCallInProgress, setIsApiCallInProgress] =
     useState<boolean>(false);
 
@@ -102,22 +86,21 @@ const WaterQualityParameter: React.FC<Props> = ({
     setFocus,
     getFieldState,
   } = useForm<InputTypes>({
-    mode: "onChange",
     defaultValues: {
-      manager: [
+      water: [
         {
           id: 0,
           fishFarm: "",
           productionUnit: "",
-          biomass: "",
-          count: "",
-          meanWeight: "",
-          meanLength: "",
-          stockingDensityNM: "",
-          stockingLevel: "",
-          stockingDensityKG: "",
-          field: "",
-          batchNumber: "",
+          DO: "",
+          NH4: "",
+          NO2: "",
+          NO3: "",
+          ph: "",
+          TSS: "",
+          visibility: "",
+          waterTemp: "",
+          showDate: false,
         },
       ],
     },
@@ -125,86 +108,78 @@ const WaterQualityParameter: React.FC<Props> = ({
 
   const { fields, append, remove } = useFieldArray({
     control,
-    name: "manager",
+    name: "water",
   });
-  const watchedFields = watch("manager");
+  const watchedFields = watch("water");
 
   const onSubmit: SubmitHandler<InputTypes> = async (data) => {
     // Prevent API call if one is already in progress
     if (isApiCallInProgress) return;
     setIsApiCallInProgress(true);
 
-    try {
-      const addIdToData = data.manager.map((field) => {
-        const fishFarm = productions.find(
-          (OldField) =>
-            OldField.fishFarmId === field.fishFarm &&
-            OldField.productionUnitId === field.productionUnit
-        );
+    // try {
+    //   const addIdToData = data.manager.map((field) => {
+    //     const fishFarm = productions.find(
+    //       (OldField) =>
+    //         OldField.fishFarmId === field.fishFarm &&
+    //         OldField.productionUnitId === field.productionUnit
+    //     );
 
-        if (
-          field.fishFarm === fishFarm?.fishFarmId &&
-          field.productionUnit === fishFarm.productionUnitId
-        ) {
-          return { ...field, id: fishFarm.id };
-        } else {
-          return field;
-        }
-      });
+    //     if (
+    //       field.fishFarm === fishFarm?.fishFarmId &&
+    //       field.productionUnit === fishFarm.productionUnitId
+    //     ) {
+    //       return { ...field, id: fishFarm.id };
+    //     } else {
+    //       return field;
+    //     }
+    //   });
 
-      const filteredData = addIdToData.filter(
-        (field) => field.field !== "Stock"
-      );
+    //   const filteredData = addIdToData.filter(
+    //     (field) => field.field !== "Stock"
+    //   );
 
-      if (!isEnteredBiomassGreater && !isEnteredFishCountGreater) {
-        const payload = {
-          organisationId: selectedProduction.organisationId,
-          data: filteredData,
-        };
+    //   if (!isEnteredBiomassGreater && !isEnteredFishCountGreater) {
+    //     const payload = {
+    //       organisationId: selectedProduction.organisationId,
+    //       data: filteredData,
+    //     };
 
-        const response = await fetch("/api/production/mange", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(payload),
-        });
+    //     const response = await fetch("/api/production/mange", {
+    //       method: "POST",
+    //       headers: {
+    //         "Content-Type": "application/json",
+    //       },
+    //       body: JSON.stringify(payload),
+    //     });
 
-        const res = await response.json();
-        if (res.status) {
-          toast.dismiss();
-          toast.success(res.message);
-          setOpen(false);
-          router.push("/dashboard/production");
-          reset();
-          router.refresh();
-        }
-      } else {
-        toast.dismiss();
-        toast.error(
-          "Please enter biomass and fish count value less than selected production"
-        );
-      }
-    } catch (error) {
-      toast.error("Something went wrong. Please try again.");
-    } finally {
-      setIsApiCallInProgress(false);
-    }
+    //     const res = await response.json();
+    //     if (res.status) {
+    //       toast.dismiss();
+    //       toast.success(res.message);
+    //       setOpen(false);
+    //       router.push("/dashboard/production");
+    //       reset();
+    //       router.refresh();
+    //     }
+    //   } else {
+    //     toast.dismiss();
+    //     toast.error(
+    //       "Please enter biomass and fish count value less than selected production"
+    //     );
+    //   }
+    // } catch (error) {
+    //   toast.error("Something went wrong. Please try again.");
+    // } finally {
+    //   setIsApiCallInProgress(false);
+    // }
   };
 
-  const handleDelete = (item: any) => {
-    if (item.field !== "Stock") {
-      const currentIndex = fields.findIndex((field) => field.id === item.id);
-      remove(currentIndex);
-    } else {
-      setOpenConfirmationModal(true);
-    }
-  };
   const handleClose = () => {
-    const firstObject = getValues("manager")[0];
+    const firstObject = getValues("water")[0];
     // Reset the form and keep the first object intact
     reset({
-      manager: [firstObject], // Keep only the first object
+      water: [firstObject], // Keep only the first object
     });
     setOpen(false);
   };
@@ -216,37 +191,22 @@ const WaterQualityParameter: React.FC<Props> = ({
     if (field.length) {
       append({
         id: 0,
-        fishFarm: selectedProduction.fishFarmId,
-        productionUnit:
-          field === "Harvest" || field === "Mortalities"
-            ? selectedProduction.productionUnitId
-            : "",
-        biomass: "",
-        count: "",
-        meanWeight: "",
-        meanLength: "",
-        stockingDensityNM: "",
-        stockingLevel: "",
-        stockingDensityKG: "",
-        field,
-        batchNumber:
-          field === "Harvest" || field === "Mortalities"
-            ? selectedProduction.batchNumberId
-            : "",
+        fishFarm: "",
+        productionUnit: "",
+        DO: "",
+        NH4: "",
+        NO2: "",
+        NO3: "",
+        ph: "",
+        TSS: "",
+        visibility: "",
+        waterTemp: "",
+        showDate: true,
       });
       setAnchorEl(null);
     } else {
       setAnchorEl(null);
     }
-  };
-
-  const handleMeanWeight = (item: any) => {
-    setSelectedMeanWeightId(String(item.id));
-    setIsMeanWeigthCal(true);
-  };
-  const handleMeanLength = (item: any) => {
-    setSelectedMeanLengthId(String(item.id));
-    setIsMeanLengthCal(true);
   };
 
   useEffect(() => {
@@ -256,17 +216,9 @@ const WaterQualityParameter: React.FC<Props> = ({
           id: selectedProduction.id,
           fishFarm: selectedProduction.fishFarmId,
           productionUnit: selectedProduction.productionUnitId,
-          biomass: selectedProduction.biomass,
-          count: selectedProduction.fishCount,
-          meanWeight: selectedProduction.meanWeight,
-          meanLength: selectedProduction.meanLength,
-          stockingDensityNM: selectedProduction.stockingDensityNM,
-          stockingLevel: selectedProduction.stockingLevel,
-          stockingDensityKG: selectedProduction.stockingDensityKG,
-          batchNumber: selectedProduction.batchNumberId,
         },
       ];
-      setValue("manager", data);
+      setValue("water", data);
       setSelectedFarm(selectedProduction.fishFarmId); // Set the selected farm when manager is selected
     }
 
@@ -275,146 +227,106 @@ const WaterQualityParameter: React.FC<Props> = ({
     };
   }, [selectedProduction, setValue, isStockDeleted]);
 
-  useEffect(() => {
-    if (selectedProduction) {
-      const index0Biomass = Number(selectedProduction.biomass) || 0; // Ensure a number
-      const index0Count = Number(selectedProduction.fishCount) || 0; // Ensure a number
-      const fishFarm = selectedProduction.fishFarmId;
+  // useEffect(() => {
+  //   if (selectedProduction) {
+  //     const index0Biomass = Number(selectedProduction.biomass) || 0; // Ensure a number
+  //     const index0Count = Number(selectedProduction.fishCount) || 0; // Ensure a number
+  //     const fishFarm = selectedProduction.fishFarmId;
 
-      // Initialize updated values
-      let updatedBiomass = index0Biomass;
-      let updatedCount = index0Count;
+  //     // Initialize updated values
+  //     let updatedBiomass = index0Biomass;
+  //     let updatedCount = index0Count;
 
-      // Iterate through watched fields, skipping index 0
-      watchedFields.forEach((field, index) => {
-        if (index === 0) return; // Skip index 0
-        if (field.fishFarm === fishFarm) {
-          if (
-            !selectedProduction.biomass &&
-            !selectedProduction.fishCount &&
-            !selectedProduction.meanLength &&
-            !selectedProduction.meanWeight &&
-            field.field === "Stock"
-          ) {
-            updatedBiomass = Number(field.biomass);
-            updatedCount = Number(field.count);
-            setValue(`manager.0.meanLength`, field.meanLength);
-            setValue(`manager.0.meanWeight`, field.meanWeight);
-            setValue(`manager.0.stockingDensityKG`, field.stockingDensityKG);
-            setValue(`manager.0.stockingDensityNM`, field.stockingDensityNM);
-            setValue(`manager.0.batchNumber`, field.batchNumber);
-          }
+  //     // Iterate through watched fields, skipping index 0
+  //     watchedFields.forEach((field, index) => {
+  //       if (index === 0) return; // Skip index 0
+  //       if (field.fishFarm === fishFarm) {
+  //         if (
+  //           !selectedProduction.biomass &&
+  //           !selectedProduction.fishCount &&
+  //           !selectedProduction.meanLength &&
+  //           !selectedProduction.meanWeight &&
+  //           field.field === "Stock"
+  //         ) {
+  //           updatedBiomass = Number(field.biomass);
+  //           updatedCount = Number(field.count);
+  //           setValue(`manager.0.meanLength`, field.meanLength);
+  //           setValue(`manager.0.meanWeight`, field.meanWeight);
+  //           setValue(`manager.0.stockingDensityKG`, field.stockingDensityKG);
+  //           setValue(`manager.0.stockingDensityNM`, field.stockingDensityNM);
+  //           setValue(`manager.0.batchNumber`, field.batchNumber);
+  //         }
 
-          const currentBiomass = Number(field.biomass) || 0; // Convert to number
-          const currentCount = Number(field.count) || 0; // Convert to number
-          if (field.field !== "Stock" && currentBiomass > updatedBiomass) {
-            toast.dismiss();
-            toast.error(`Please enter a value lower than ${updatedBiomass}`);
-            setIsEnteredBiomassGreater(true);
-          }
-          if (field.field !== "Stock" && currentCount > updatedCount) {
-            toast.dismiss();
-            toast.error(`Please enter a value lower than ${updatedCount}`);
-            setIsEnteredFishCountGreater(true);
-          }
-          // Update biomass if current value is valid
-          if (currentBiomass > 0 && updatedBiomass > currentBiomass) {
-            updatedBiomass -= currentBiomass;
-            setIsEnteredBiomassGreater(false);
-          } else if (field.field === "Stock") {
-            // trigger(`manager.${0}`);
+  //         const currentBiomass = Number(field.biomass) || 0; // Convert to number
+  //         const currentCount = Number(field.count) || 0; // Convert to number
+  //         if (field.field !== "Stock" && currentBiomass > updatedBiomass) {
+  //           toast.dismiss();
+  //           toast.error(`Please enter a value lower than ${updatedBiomass}`);
+  //           setIsEnteredBiomassGreater(true);
+  //         }
+  //         if (field.field !== "Stock" && currentCount > updatedCount) {
+  //           toast.dismiss();
+  //           toast.error(`Please enter a value lower than ${updatedCount}`);
+  //           setIsEnteredFishCountGreater(true);
+  //         }
+  //         // Update biomass if current value is valid
+  //         if (currentBiomass > 0 && updatedBiomass > currentBiomass) {
+  //           updatedBiomass -= currentBiomass;
+  //           setIsEnteredBiomassGreater(false);
+  //         } else if (field.field === "Stock") {
+  //           // trigger(`manager.${0}`);
 
-            updatedBiomass = currentBiomass;
-            setValue(`manager.0.meanLength`, field.meanLength);
-            setValue(`manager.0.meanWeight`, field.meanWeight);
-            setValue(`manager.0.stockingDensityKG`, field.stockingDensityKG);
-            setValue(`manager.0.stockingDensityNM`, field.stockingDensityNM);
-            setValue(`manager.0.batchNumber`, field.batchNumber);
-          }
+  //           updatedBiomass = currentBiomass;
+  //           setValue(`manager.0.meanLength`, field.meanLength);
+  //           setValue(`manager.0.meanWeight`, field.meanWeight);
+  //           setValue(`manager.0.stockingDensityKG`, field.stockingDensityKG);
+  //           setValue(`manager.0.stockingDensityNM`, field.stockingDensityNM);
+  //           setValue(`manager.0.batchNumber`, field.batchNumber);
+  //         }
 
-          // Update count if current value is valid
-          if (currentCount > 0 && updatedCount > currentCount) {
-            updatedCount -= currentCount;
-            setIsEnteredFishCountGreater(false);
-          } else if (field.field === "Stock") {
-            updatedCount = currentCount;
-            setValue(`manager.0.meanLength`, field.meanLength);
-            setValue(`manager.0.meanWeight`, field.meanWeight);
-            setValue(`manager.0.stockingDensityKG`, field.stockingDensityKG);
-            setValue(`manager.0.stockingDensityNM`, field.stockingDensityNM);
-            setValue(`manager.0.batchNumber`, field.batchNumber);
-          }
-        }
-        const farm = farms
-          .find((f) => f.id === selectedFarm)
-          ?.productionUnits?.find((unit) => unit.id === field.productionUnit);
-        if (farm && farm.capacity) {
-          setValue(
-            `manager.${index}.stockingDensityNM`,
-            String(Number(field.count) / Number(farm?.capacity))
-          );
-          setValue(
-            `manager.${index}.stockingDensityKG`,
-            String(Number(field.biomass) / Number(farm?.capacity))
-          );
-        }
-      });
+  //         // Update count if current value is valid
+  //         if (currentCount > 0 && updatedCount > currentCount) {
+  //           updatedCount -= currentCount;
+  //           setIsEnteredFishCountGreater(false);
+  //         } else if (field.field === "Stock") {
+  //           updatedCount = currentCount;
+  //           setValue(`manager.0.meanLength`, field.meanLength);
+  //           setValue(`manager.0.meanWeight`, field.meanWeight);
+  //           setValue(`manager.0.stockingDensityKG`, field.stockingDensityKG);
+  //           setValue(`manager.0.stockingDensityNM`, field.stockingDensityNM);
+  //           setValue(`manager.0.batchNumber`, field.batchNumber);
+  //         }
+  //       }
+  //       const farm = farms
+  //         .find((f) => f.id === selectedFarm)
+  //         ?.productionUnits?.find((unit) => unit.id === field.productionUnit);
+  //       if (farm && farm.capacity) {
+  //         setValue(
+  //           `manager.${index}.stockingDensityNM`,
+  //           String(Number(field.count) / Number(farm?.capacity))
+  //         );
+  //         setValue(
+  //           `manager.${index}.stockingDensityKG`,
+  //           String(Number(field.biomass) / Number(farm?.capacity))
+  //         );
+  //       }
+  //     });
 
-      // Set the index 0 values after calculation
-      setValue(`manager.0.biomass`, updatedBiomass.toString());
-      setValue(`manager.0.count`, updatedCount.toString());
-    }
-  }, [
-    watchedFields.map((field) => field.biomass).join(","), // Watch biomass of all fields
-    watchedFields.map((field) => field.count).join(","),
-    watchedFields.map((field) => field.meanLength).join(","),
-    watchedFields.map((field) => field.meanWeight).join(","),
+  //     // Set the index 0 values after calculation
+  //     setValue(`manager.0.biomass`, updatedBiomass.toString());
+  //     setValue(`manager.0.count`, updatedCount.toString());
+  //   }
+  // }, [
+  //   watchedFields.map((field) => field.biomass).join(","), // Watch biomass of all fields
+  //   watchedFields.map((field) => field.count).join(","),
+  //   watchedFields.map((field) => field.meanLength).join(","),
+  //   watchedFields.map((field) => field.meanWeight).join(","),
 
-    watchedFields.map((field) => field.stockingDensityKG).join(","),
-    setValue,
-    selectedProduction,
-  ]);
+  //   watchedFields.map((field) => field.stockingDensityKG).join(","),
+  //   setValue,
+  //   selectedProduction,
+  // ]);
 
-  useEffect(() => {
-    if (avgOfMeanWeight && selectedMeanWeightId) {
-      const updatedFields = fields.map((field, idx) => {
-        if (field.id === selectedMeanWeightId) {
-          return {
-            ...field,
-            meanWeight: String(avgOfMeanWeight),
-            batchNumber: watchedFields[idx].batchNumber,
-            count: watchedFields[idx].count,
-            productionUnit: watchedFields[idx].productionUnit,
-            biomass: watchedFields[idx].biomass,
-          };
-        } else {
-          return field;
-        }
-      });
-
-      setValue("manager", updatedFields);
-    }
-  }, [avgOfMeanWeight]);
-  useEffect(() => {
-    if (avgOfMeanLength && selectedMeanLengthId) {
-      const updatedFields = fields.map((field, idx) => {
-        if (field.id === selectedMeanLengthId) {
-          return {
-            ...field,
-            meanLength: String(avgOfMeanLength),
-            batchNumber: watchedFields[idx].batchNumber,
-            count: watchedFields[idx].count,
-            productionUnit: watchedFields[idx].productionUnit,
-            biomass: watchedFields[idx].biomass,
-          };
-        } else {
-          return field;
-        }
-      });
-
-      setValue("manager", updatedFields);
-    }
-  }, [avgOfMeanLength]);
   return (
     <Modal
       open={open}
@@ -441,19 +353,6 @@ const WaterQualityParameter: React.FC<Props> = ({
           {fields.map((item, idx) => {
             return (
               <Box paddingInline={4} key={item.id}>
-                {idx !== 0 && (
-                  <Box>
-                    <Typography
-                      variant="body1"
-                      fontWeight={600}
-                      my={2}
-                      mx={1.5}
-                    >
-                      {getValues(`manager.${idx}.field`)}
-                    </Typography>
-                  </Box>
-                )}
-
                 <Box
                   sx={{
                     display: "flex",
@@ -482,187 +381,258 @@ const WaterQualityParameter: React.FC<Props> = ({
                         flexWrap: "nowrap",
                       }}
                     >
-                      <Grid
-                        item
-                        xs
-                        sx={{
-                          width: "fit-content",
-                          minWidth: 130,
-                        }}
-                      >
-                        <Box width={"100%"}>
-                          <FormControl fullWidth className="form-input">
-                            <InputLabel id="">Fish Farm *</InputLabel>
-                            <Select
-                              labelId="feed-supply-select-label9"
-                              className="fish-manager"
-                              id="feed-supply-select9"
-                              label="Fish Farm*"
-                              disabled={
-                                item.field === "Harvest" ||
-                                item.field === "Mortalities" ||
-                                idx === 0
-                                  ? true
-                                  : false
-                              }
-                              {...register(`manager.${idx}.fishFarm`, {
-                                required: watch(`manager.${idx}.fishFarm`)
-                                  ? false
-                                  : true,
-                              })}
-                              onChange={(e) => {
-                                const selectedFishFarm = e.target.value;
-                                item.field === "Stock" &&
-                                  setValue(
-                                    `manager.0.fishFarm`,
-                                    e.target.value
-                                  ),
+                      {!item.showDate && (
+                        <Grid
+                          item
+                          xs
+                          sx={{
+                            width: "fit-content",
+                            minWidth: 130,
+                          }}
+                        >
+                          <Box width={"100%"}>
+                            <FormControl fullWidth className="form-input">
+                              <InputLabel id="">Fish Farm *</InputLabel>
+                              <Select
+                                labelId="feed-supply-select-label9"
+                                className="fish-manager"
+                                id="feed-supply-select9"
+                                label="Fish Farm*"
+                                {...register(`water.${idx}.fishFarm`, {
+                                  required: watch(`water.${idx}.fishFarm`)
+                                    ? false
+                                    : true,
+                                })}
+                                onChange={(e) => {
+                                  const selectedFishFarm = e.target.value;
+
                                   setSelectedFarm(selectedFishFarm); // Set selected farm for this specific entry
-                                setValue(
-                                  `manager.${idx}.fishFarm`,
-                                  selectedFishFarm
-                                ); // Set the value for this fishFarm
-                                setValue(`manager.${idx}.productionUnit`, ""); // Reset production unit for the current entry
-                              }}
-                              value={getValues(`manager.${idx}.fishFarm`) || ""} // Ensure only the current entry is updated
-                            >
-                              {farms?.map((farm: Farm, i) => (
-                                <MenuItem value={String(farm.id)} key={i}>
-                                  {farm.name}
-                                </MenuItem>
-                              ))}
-                            </Select>
-
-                            {errors &&
-                              errors?.manager &&
-                              errors?.manager[idx] &&
-                              errors?.manager[idx].fishFarm &&
-                              errors?.manager[idx].fishFarm.type ===
-                                "required" && (
-                                <Typography
-                                  variant="body2"
-                                  color="red"
-                                  fontSize={13}
-                                  mt={0.5}
-                                >
-                                  {validationMessage.required}
-                                </Typography>
-                              )}
-                            <Typography
-                              variant="body2"
-                              color="red"
-                              fontSize={13}
-                              mt={0.5}
-                            ></Typography>
-                          </FormControl>
-                        </Box>
-                      </Grid>
-                      <Grid
-                        xs
-                        item
-                        sx={{
-                          width: "fit-content",
-                          minWidth: 130,
-                        }}
-                      >
-                        <Box width={"100%"}>
-                          <FormControl focused fullWidth className="form-input">
-                            <InputLabel id="">Production Unit *</InputLabel>
-                            <Select
-                              labelId="production-unit-select-label"
-                              id="production-unit-select"
-                              label="Production Unit*"
-                              sx={{
-                                width: "100%",
-                                zIndex: 999,
-                                "& .MuiInputLabel-root": {
-                                  transition: "all 0.2s ease",
-                                  maxWidth: "60%",
-                                  overflow: "hidden",
-                                  whiteSpace: "nowrap",
-                                  textOverflow: "ellipsis",
-                                  height: "auto",
-                                },
-                                "&:focus-within .MuiInputLabel-root": {
-                                  transform: "translate(10px, -9px)",
-                                  fontSize: "0.75rem",
-                                  color: "primary.main",
-                                  backgroundColor: "#fff",
-                                  maxWidth: "100%",
-                                  overflow: "visible",
-                                  textOverflow: "unset",
-                                },
-                              }}
-                              disabled={
-                                item.field === "Harvest" ||
-                                item.field === "Mortalities" ||
-                                idx === 0
-                                  ? true
-                                  : false
-                              }
-                              {...register(`manager.${idx}.productionUnit`, {
-                                required: watch(`manager.${idx}.productionUnit`)
-                                  ? false
-                                  : true,
-                                onChange: (e) =>
-                                  item.field === "Stock" &&
                                   setValue(
-                                    `manager.0.productionUnit`,
-                                    e.target.value
-                                  ),
-                              })}
-                              inputProps={{
-                                shrink: watch(`manager.${idx}.productionUnit`),
-                              }}
-                              value={
-                                watch(`manager.${idx}.productionUnit`) || ""
-                              }
-                            >
-                              {(() => {
-                                let selectedFarm = farms?.find(
-                                  (farm) =>
-                                    farm.id === watch(`manager.${idx}.fishFarm`)
-                                );
-
-                                return selectedFarm ? (
-                                  selectedFarm?.productionUnits?.map((unit) => (
-                                    <MenuItem
-                                      value={String(unit.id)}
-                                      key={unit.id}
-                                    >
-                                      {unit.name}
-                                    </MenuItem>
-                                  ))
-                                ) : (
-                                  <MenuItem value="" disabled>
-                                    No units available
+                                    `water.${idx}.fishFarm`,
+                                    selectedFishFarm
+                                  ); // Set the value for this fishFarm
+                                  setValue(`water.${idx}.productionUnit`, ""); // Reset production unit for the current entry
+                                }}
+                                value={getValues(`water.${idx}.fishFarm`) || ""} // Ensure only the current entry is updated
+                              >
+                                {farms?.map((farm: Farm, i) => (
+                                  <MenuItem value={String(farm.id)} key={i}>
+                                    {farm.name}
                                   </MenuItem>
-                                );
-                              })()}
-                            </Select>
-                            {errors &&
-                              !watch(`manager.${idx}.productionUnit`) &&
-                              errors?.manager &&
-                              errors?.manager[idx] &&
-                              errors?.manager[idx].productionUnit && (
-                                <Typography
-                                  variant="body2"
-                                  color="red"
-                                  fontSize={13}
-                                  mt={0.5}
-                                >
-                                  This field is required
-                                </Typography>
-                              )}
+                                ))}
+                              </Select>
+
+                              {errors &&
+                                errors?.water &&
+                                errors?.water[idx] &&
+                                errors?.water[idx].fishFarm &&
+                                errors?.water[idx].fishFarm.type ===
+                                  "required" && (
+                                  <Typography
+                                    variant="body2"
+                                    color="red"
+                                    fontSize={13}
+                                    mt={0.5}
+                                  >
+                                    {validationMessage.required}
+                                  </Typography>
+                                )}
+                              <Typography
+                                variant="body2"
+                                color="red"
+                                fontSize={13}
+                                mt={0.5}
+                              ></Typography>
+                            </FormControl>
+                          </Box>
+                        </Grid>
+                      )}
+                      {!item.showDate && (
+                        <Grid
+                          xs
+                          item
+                          sx={{
+                            width: "fit-content",
+                            minWidth: 130,
+                          }}
+                        >
+                          <Box width={"100%"}>
+                            <FormControl
+                              focused
+                              fullWidth
+                              className="form-input"
+                            >
+                              <InputLabel id="">Production Unit *</InputLabel>
+                              <Select
+                                labelId="production-unit-select-label"
+                                id="production-unit-select"
+                                label="Production Unit*"
+                                sx={{
+                                  width: "100%",
+                                  zIndex: 999,
+                                  "& .MuiInputLabel-root": {
+                                    transition: "all 0.2s ease",
+                                    maxWidth: "60%",
+                                    overflow: "hidden",
+                                    whiteSpace: "nowrap",
+                                    textOverflow: "ellipsis",
+                                    height: "auto",
+                                  },
+                                  "&:focus-within .MuiInputLabel-root": {
+                                    transform: "translate(10px, -9px)",
+                                    fontSize: "0.75rem",
+                                    color: "primary.main",
+                                    backgroundColor: "#fff",
+                                    maxWidth: "100%",
+                                    overflow: "visible",
+                                    textOverflow: "unset",
+                                  },
+                                }}
+                                // disabled={
+                                //   item.field === "Harvest" ||
+                                //   item.field === "Mortalities" ||
+                                //   idx === 0
+                                //     ? true
+                                //     : false
+                                // }
+                                {...register(`water.${idx}.productionUnit`, {
+                                  required: watch(`water.${idx}.productionUnit`)
+                                    ? false
+                                    : true,
+                                  // onChange: (e) =>
+                                  //   item.field === "Stock" &&
+                                  //   setValue(
+                                  //     `water.0.productionUnit`,
+                                  //     e.target.value
+                                  //   ),
+                                })}
+                                inputProps={{
+                                  shrink: watch(`water.${idx}.productionUnit`),
+                                }}
+                                value={
+                                  watch(`water.${idx}.productionUnit`) || ""
+                                }
+                              >
+                                {(() => {
+                                  let selectedFarm = farms?.find(
+                                    (farm) =>
+                                      farm.id === watch(`water.${idx}.fishFarm`)
+                                  );
+
+                                  return selectedFarm ? (
+                                    selectedFarm?.productionUnits?.map(
+                                      (unit) => (
+                                        <MenuItem
+                                          value={String(unit.id)}
+                                          key={unit.id}
+                                        >
+                                          {unit.name}
+                                        </MenuItem>
+                                      )
+                                    )
+                                  ) : (
+                                    <MenuItem value="" disabled>
+                                      No units available
+                                    </MenuItem>
+                                  );
+                                })()}
+                              </Select>
+                              {errors &&
+                                !watch(`water.${idx}.productionUnit`) &&
+                                errors?.water &&
+                                errors?.water[idx] &&
+                                errors?.water[idx].productionUnit && (
+                                  <Typography
+                                    variant="body2"
+                                    color="red"
+                                    fontSize={13}
+                                    mt={0.5}
+                                  >
+                                    This field is required
+                                  </Typography>
+                                )}
+                            </FormControl>
+                          </Box>
+                        </Grid>
+                      )}
+                      {item.showDate && (
+                        <Grid
+                          xs
+                          item
+                          sx={{
+                            width: "fit-content",
+                            minWidth: 130,
+                          }}
+                        >
+                          <Box
+                            display={"flex"}
+                            gap={2}
+                            alignItems={"center"}
+                            position={"relative"}
+                          >
+                            <TextField
+                              focused
+                              label="Water Temperature *"
+                              type="text"
+                              className="form-input"
+                              // disabled={idx === 0 ? true : false}
+                              sx={{ width: "100%" }}
+                              {...register(`water.${idx}.waterTemp`, {
+                                required: true,
+                                pattern: validationPattern.numbersWithDot,
+                              })}
+                            />
+
                             <Typography
                               variant="body2"
-                              color="red"
-                              fontSize={13}
-                              mt={0.5}
-                            ></Typography>
-                          </FormControl>
-                        </Box>
-                      </Grid>
+                              color="#555555AC"
+                              sx={{
+                                position: "absolute",
+                                right: 6,
+                                top: "50%",
+                                transform: "translate(-6px, -50%)",
+                                backgroundColor: "#fff",
+                                height: 30,
+                                display: "grid",
+                                placeItems: "center",
+                                zIndex: 1,
+                                pl: 1,
+                              }}
+                            >
+                              °C
+                            </Typography>
+                          </Box>
+
+                          {errors &&
+                            errors.water &&
+                            errors.water[idx] &&
+                            errors.water[idx].waterTemp &&
+                            errors.water[idx].waterTemp.type === "required" && (
+                              <Typography
+                                variant="body2"
+                                color="red"
+                                fontSize={13}
+                                mt={0.5}
+                              >
+                                {validationMessage.required}
+                              </Typography>
+                            )}
+                          {errors &&
+                            errors.water &&
+                            errors.water[idx] &&
+                            errors.water[idx].waterTemp &&
+                            errors.water[idx].waterTemp.type === "pattern" && (
+                              <Typography
+                                variant="body2"
+                                color="red"
+                                fontSize={13}
+                                mt={0.5}
+                              >
+                                {validationMessage.OnlyNumbersWithDot}
+                              </Typography>
+                            )}
+                        </Grid>
+                      )}
                       <Grid
                         xs
                         item
@@ -682,8 +652,12 @@ const WaterQualityParameter: React.FC<Props> = ({
                             label="Water Temperature *"
                             type="text"
                             className="form-input"
-                            disabled={idx === 0 ? true : false}
+                            // disabled={idx === 0 ? true : false}
                             sx={{ width: "100%" }}
+                            {...register(`water.${idx}.waterTemp`, {
+                              required: true,
+                              pattern: validationPattern.numbersWithDot,
+                            })}
                           />
 
                           <Typography
@@ -705,17 +679,12 @@ const WaterQualityParameter: React.FC<Props> = ({
                             °C
                           </Typography>
                         </Box>
-                        <Typography
-                          variant="body2"
-                          color="red"
-                          fontSize={13}
-                          mt={0.5}
-                        ></Typography>
+
                         {errors &&
-                          errors.manager &&
-                          errors.manager[idx] &&
-                          errors.manager[idx].biomass &&
-                          errors.manager[idx].biomass.type === "required" && (
+                          errors.water &&
+                          errors.water[idx] &&
+                          errors.water[idx].waterTemp &&
+                          errors.water[idx].waterTemp.type === "required" && (
                             <Typography
                               variant="body2"
                               color="red"
@@ -726,10 +695,10 @@ const WaterQualityParameter: React.FC<Props> = ({
                             </Typography>
                           )}
                         {errors &&
-                          errors.manager &&
-                          errors.manager[idx] &&
-                          errors.manager[idx].biomass &&
-                          errors.manager[idx].biomass.type === "pattern" && (
+                          errors.water &&
+                          errors.water[idx] &&
+                          errors.water[idx].waterTemp &&
+                          errors.water[idx].waterTemp.type === "pattern" && (
                             <Typography
                               variant="body2"
                               color="red"
@@ -759,7 +728,11 @@ const WaterQualityParameter: React.FC<Props> = ({
                             label="Dissolved Oxygen{DO} *"
                             type="text"
                             className="form-input"
-                            disabled={idx === 0 ? true : false}
+                            // disabled={idx === 0 ? true : false}
+                            {...register(`water.${idx}.DO`, {
+                              required: true,
+                              pattern: validationPattern.numbersWithDot,
+                            })}
                             sx={{ width: "100%" }}
                           />
 
@@ -782,17 +755,12 @@ const WaterQualityParameter: React.FC<Props> = ({
                             %mg/L
                           </Typography>
                         </Box>
-                        <Typography
-                          variant="body2"
-                          color="red"
-                          fontSize={13}
-                          mt={0.5}
-                        ></Typography>
+
                         {errors &&
-                          errors.manager &&
-                          errors.manager[idx] &&
-                          errors.manager[idx].biomass &&
-                          errors.manager[idx].biomass.type === "required" && (
+                          errors.water &&
+                          errors.water[idx] &&
+                          errors.water[idx].DO &&
+                          errors.water[idx].DO.type === "required" && (
                             <Typography
                               variant="body2"
                               color="red"
@@ -803,10 +771,10 @@ const WaterQualityParameter: React.FC<Props> = ({
                             </Typography>
                           )}
                         {errors &&
-                          errors.manager &&
-                          errors.manager[idx] &&
-                          errors.manager[idx].biomass &&
-                          errors.manager[idx].biomass.type === "pattern" && (
+                          errors.water &&
+                          errors.water[idx] &&
+                          errors.water[idx].DO &&
+                          errors.water[idx].DO.type === "pattern" && (
                             <Typography
                               variant="body2"
                               color="red"
@@ -836,9 +804,9 @@ const WaterQualityParameter: React.FC<Props> = ({
                             label="Total Suspended Solids {TSS} *"
                             type="text"
                             className="form-input"
-                            disabled={idx === 0 ? true : false}
+                            // disabled={idx === 0 ? true : false}
                             sx={{ width: "100%" }}
-                            {...register(`manager.${idx}.biomass`, {
+                            {...register(`water.${idx}.TSS`, {
                               required: true,
                               pattern: validationPattern.numbersWithDot,
                             })}
@@ -863,17 +831,12 @@ const WaterQualityParameter: React.FC<Props> = ({
                             mg/L
                           </Typography>
                         </Box>
-                        <Typography
-                          variant="body2"
-                          color="red"
-                          fontSize={13}
-                          mt={0.5}
-                        ></Typography>
+
                         {errors &&
-                          errors.manager &&
-                          errors.manager[idx] &&
-                          errors.manager[idx].biomass &&
-                          errors.manager[idx].biomass.type === "required" && (
+                          errors.water &&
+                          errors.water[idx] &&
+                          errors.water[idx].TSS &&
+                          errors.water[idx].TSS.type === "required" && (
                             <Typography
                               variant="body2"
                               color="red"
@@ -884,10 +847,10 @@ const WaterQualityParameter: React.FC<Props> = ({
                             </Typography>
                           )}
                         {errors &&
-                          errors.manager &&
-                          errors.manager[idx] &&
-                          errors.manager[idx].biomass &&
-                          errors.manager[idx].biomass.type === "pattern" && (
+                          errors.water &&
+                          errors.water[idx] &&
+                          errors.water[idx].TSS &&
+                          errors.water[idx].TSS.type === "pattern" && (
                             <Typography
                               variant="body2"
                               color="red"
@@ -898,498 +861,7 @@ const WaterQualityParameter: React.FC<Props> = ({
                             </Typography>
                           )}
                       </Grid>
-                      {/* <Grid
-                        xs
-                        item
-                        sx={{
-                          width: "fit-content",
-                          minWidth: 130,
-                        }}
-                      >
-                        <Box position={"relative"}>
-                          {idx !== 0 && (
-                            <Box onClick={() => handleMeanWeight(item)}>
-                              <Typography
-                                variant="body2"
-                                color="#555555AC"
-                                sx={{
-                                  position: "absolute",
-                                  // right: 6,
-                                  right: 0,
-                                  top: "53px",
-                                  transform: "translate(-6px, -40px)",
-                                  backgroundColor: "#06A19B",
-                                  height: 30,
-                                  display: "grid",
-                                  placeItems: "center",
-                                  zIndex: 999,
-                                  px: 0.75,
-                                  borderRadius: 1,
-                                  cursor: "pointer",
-                                  // textOverflow: "ellipsis",
-                                  // whiteSpace: "nowrap",
-                                  // minHeight: "1.4375em",
-                                  // overflow: "hidden",
-                                }}
-                              >
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width="1.4em"
-                                  height="1.4em"
-                                  viewBox="0 0 24 24"
-                                >
-                                  <path
-                                    fill="#fff"
-                                    d="M8 18h1.5v-2h2v-1.5h-2v-2H8v2H6V16h2zm5-.75h5v-1.5h-5zm0-2.5h5v-1.5h-5zm1.1-3.8l1.4-1.4l1.4 1.4l1.05-1.05l-1.4-1.45l1.4-1.4L16.9 6l-1.4 1.4L14.1 6l-1.05 1.05l1.4 1.4l-1.4 1.45zM6.25 9.2h5V7.7h-5zM5 21q-.825 0-1.413-.587T3 19V5q0-.825.588-1.412T5 3h14q.825 0 1.413.588T21 5v14q0 .825-.587 1.413T19 21zm0-2h14V5H5zM5 5v14z"
-                                  />
-                                </svg>
-                              </Typography>
-                            </Box>
-                          )}
 
-                          <TextField
-                            label="Mean Weight *"
-                            type="text"
-                            className="form-input custom-wrap"
-                            sx={{
-                              width: "100%",
-                              "& .MuiInputLabel-root": {
-                                transition: "all 0.2s ease",
-                                maxWidth: "60%",
-                                overflow: "hidden",
-                                whiteSpace: "nowrap",
-                                textOverflow: "ellipsis",
-                                height: "auto",
-                              },
-                              "&:focus-within .MuiInputLabel-root": {
-                                transform: "translate(10px, -9px)",
-                                fontSize: "0.75rem",
-                                color: "primary.main",
-                                backgroundColor: "#fff",
-                                maxWidth: "100%",
-                                overflow: "visible",
-                                textOverflow: "unset",
-                              },
-                            }}
-                            disabled={idx === 0 ? true : false}
-                            {...register(`manager.${idx}.meanWeight`, {
-                              required: watch(`manager.${idx}.meanWeight`)
-                                ? false
-                                : true,
-                              pattern: validationPattern.numbersWithDot,
-                            })}
-                            InputLabelProps={{
-                              shrink: !!watch(`manager.${idx}.meanWeight`),
-                            }}
-                          />
-                        </Box>
-
-                        <Typography
-                          variant="body2"
-                          color="red"
-                          fontSize={13}
-                          mt={0.5}
-                        ></Typography>
-                        {errors &&
-                          !watch(`manager.${idx}.meanWeight`) &&
-                          errors.manager &&
-                          errors.manager[idx] &&
-                          errors.manager[idx].meanWeight &&
-                          errors.manager[idx].meanWeight.type ===
-                            "required" && (
-                            <Typography
-                              variant="body2"
-                              color="red"
-                              fontSize={13}
-                              mt={0.5}
-                            >
-                              {validationMessage.required}
-                            </Typography>
-                          )}
-                        {errors &&
-                          errors.manager &&
-                          errors.manager[idx] &&
-                          errors.manager[idx].meanWeight &&
-                          errors.manager[idx].meanWeight.type === "pattern" && (
-                            <Typography
-                              variant="body2"
-                              color="red"
-                              fontSize={13}
-                              mt={0.5}
-                            >
-                              {validationMessage.OnlyNumbersWithDot}
-                            </Typography>
-                          )}
-                      </Grid>
-                      <Grid
-                        xs
-                        item
-                        sx={{
-                          width: "fit-content",
-                          minWidth: 130,
-                        }}
-                      >
-                        <Box position={"relative"}>
-                          {idx !== 0 && (
-                            <Box onClick={() => handleMeanLength(item)}>
-                              <Typography
-                                variant="body2"
-                                color="#555555AC"
-                                sx={{
-                                  position: "absolute",
-                                  // right: 6,
-                                  right: 0,
-                                  top: "53px",
-                                  transform: "translate(-6px, -40px)",
-                                  backgroundColor: "#06A19B",
-                                  height: 30,
-                                  display: "grid",
-                                  placeItems: "center",
-                                  zIndex: 999,
-                                  px: 0.75,
-                                  borderRadius: 1,
-                                  cursor: "pointer",
-                                }}
-                              >
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width="1.4em"
-                                  height="1.4em"
-                                  viewBox="0 0 24 24"
-                                >
-                                  <path
-                                    fill="#fff"
-                                    d="M8 18h1.5v-2h2v-1.5h-2v-2H8v2H6V16h2zm5-.75h5v-1.5h-5zm0-2.5h5v-1.5h-5zm1.1-3.8l1.4-1.4l1.4 1.4l1.05-1.05l-1.4-1.45l1.4-1.4L16.9 6l-1.4 1.4L14.1 6l-1.05 1.05l1.4 1.4l-1.4 1.45zM6.25 9.2h5V7.7h-5zM5 21q-.825 0-1.413-.587T3 19V5q0-.825.588-1.412T5 3h14q.825 0 1.413.588T21 5v14q0 .825-.587 1.413T19 21zm0-2h14V5H5zM5 5v14z"
-                                  />
-                                </svg>
-                              </Typography>
-                            </Box>
-                          )}
-                          <TextField
-                            label="Mean Length *"
-                            type="text"
-                            className="form-input"
-                            sx={{
-                              width: "100%",
-                              "& .MuiInputLabel-root": {
-                                transition: "all 0.2s ease",
-                                maxWidth: "60%",
-                                overflow: "hidden",
-                                whiteSpace: "nowrap",
-                                textOverflow: "ellipsis",
-                                height: "auto",
-                              },
-                              "&:focus-within .MuiInputLabel-root": {
-                                transform: "translate(10px, -9px)",
-                                fontSize: "0.75rem",
-                                color: "primary.main",
-                                backgroundColor: "#fff",
-                                maxWidth: "100%",
-                                overflow: "visible",
-                                textOverflow: "unset",
-                              },
-                            }}
-                            disabled={idx === 0 ? true : false}
-                            {...register(`manager.${idx}.meanLength` as const, {
-                              required: watch(`manager.${idx}.meanLength`)
-                                ? false
-                                : true,
-                              pattern: validationPattern.numbersWithDot,
-                            })}
-                            InputLabelProps={{
-                              shrink: !!watch(`manager.${idx}.meanLength`),
-                            }}
-                          />
-                          <Typography
-                            variant="body2"
-                            color="red"
-                            fontSize={13}
-                            mt={0.5}
-                          ></Typography>
-                          {errors &&
-                            !watch(`manager.${idx}.meanLength`) &&
-                            errors.manager &&
-                            errors.manager[idx] &&
-                            errors.manager[idx].meanLength &&
-                            errors.manager[idx].meanLength.type ===
-                              "required" && (
-                              <Typography
-                                variant="body2"
-                                color="red"
-                                fontSize={13}
-                                mt={0.5}
-                              >
-                                {validationMessage.required}
-                              </Typography>
-                            )}
-                          {errors &&
-                            errors.manager &&
-                            errors.manager[idx] &&
-                            errors.manager[idx].meanLength &&
-                            errors.manager[idx].meanLength.type ===
-                              "pattern" && (
-                              <Typography
-                                variant="body2"
-                                color="red"
-                                fontSize={13}
-                                mt={0.5}
-                              >
-                                {validationMessage.OnlyNumbersWithDot}
-                              </Typography>
-                            )}
-                        </Box>
-                      </Grid>{" "} */}
-                      {/* <Grid
-                        item
-                        xs
-                        sx={{
-                          width: "fit-content",
-                          minWidth: 130,
-                        }}
-                      >
-                        <Box
-                          display={"flex"}
-                          gap={2}
-                          alignItems={"center"}
-                          position={"relative"}
-                        >
-                          <TextField
-                            label={`Stocking Density *`}
-                            type="text"
-                            className="form-input"
-                            disabled={
-                              idx === 0 ||
-                              item.field !== "Harvest" ||
-                              item.field !== "Mortalities"
-                                ? true
-                                : false
-                            }
-                            InputLabelProps={{
-                              shrink: !!watch(
-                                `manager.${idx}.stockingDensityKG`
-                              ),
-                            }}
-                            sx={{
-                              width: "100%",
-                              "& .MuiInputLabel-root": {
-                                transition: "all 0.2s ease",
-                              },
-                              "&:focus-within .MuiInputLabel-root": {
-                                transform: "translate(10px, -9px)",
-                                fontSize: "0.75rem",
-                                color: "primary.main",
-                                backgroundColor: "#fff",
-                              },
-                            }}
-                            {...register(
-                              `manager.${idx}.stockingDensityKG` as const,
-                              {
-                                required: watch(
-                                  `manager.${idx}.stockingDensityKG`
-                                )
-                                  ? false
-                                  : true,
-                                pattern: validationPattern.numbersWithDot,
-                              }
-                            )}
-                          />
-                          <Typography
-                            variant="body2"
-                            color="#555555AC"
-                            sx={{
-                              position: "absolute",
-                              right: 6,
-                              top: "50%",
-                              transform: "translate(-6px, -50%)",
-                              backgroundColor: "#fff",
-                              height: 30,
-                              display: "grid",
-                              placeItems: "center",
-                              zIndex: 1,
-                              pl: 1,
-                            }}
-                          >
-                            {`(kg/${"m\u00B3"})`}
-                          </Typography>
-                        </Box>
-                        <Typography
-                          variant="body2"
-                          color="red"
-                          fontSize={13}
-                          mt={0.5}
-                        ></Typography>
-                        {errors &&
-                          !watch(`manager.${idx}.stockingDensityKG`) &&
-                          errors.manager &&
-                          errors.manager[idx] &&
-                          errors.manager[idx].stockingDensityKG &&
-                          errors.manager[idx].stockingDensityKG.type ===
-                            "required" && (
-                            <Typography
-                              variant="body2"
-                              color="red"
-                              fontSize={13}
-                              mt={0.5}
-                            >
-                              {validationMessage.required}
-                            </Typography>
-                          )}
-                        {errors &&
-                          errors.manager &&
-                          errors.manager[idx] &&
-                          errors.manager[idx].stockingDensityKG &&
-                          errors.manager[idx].stockingDensityKG.type ===
-                            "pattern" && (
-                            <Typography
-                              variant="body2"
-                              color="red"
-                              fontSize={13}
-                              mt={0.5}
-                            >
-                              {validationMessage.OnlyNumbersWithDot}
-                            </Typography>
-                          )}
-                      </Grid> */}
-                      {/* <Grid
-                        xs
-                        item
-                        sx={{
-                          width: "fit-content",
-                          minWidth: 130,
-                        }}
-                      >
-                        <Box
-                          display={"flex"}
-                          gap={2}
-                          alignItems={"center"}
-                          position={"relative"}
-                        >
-                          <TextField
-                            label={`Stocking Density *`}
-                            type="text"
-                            className="form-input"
-                            disabled={
-                              idx === 0 ||
-                              item.field !== "Harvest" ||
-                              item.field !== "Mortalities"
-                                ? true
-                                : false
-                            }
-                            {...register(
-                              `manager.${idx}.stockingDensityNM` as const,
-                              {
-                                required: watch(
-                                  `manager.${idx}.stockingDensityNM`
-                                )
-                                  ? false
-                                  : true,
-                                pattern: validationPattern.numbersWithDot,
-                              }
-                            )}
-                            InputLabelProps={{
-                              shrink: !!watch(
-                                `manager.${idx}.stockingDensityNM`
-                              ),
-                            }}
-                            sx={{
-                              width: "100%",
-                              "& .MuiInputLabel-root": {
-                                transition: "all 0.2s ease",
-                              },
-                              "&:focus-within .MuiInputLabel-root": {
-                                transform: "translate(10px, -9px)",
-                                fontSize: "0.75rem",
-                                color: "primary.main",
-                                backgroundColor: "#fff",
-                              },
-                            }}
-                          />
-                          <Typography
-                            variant="body2"
-                            color="#555555AC"
-                            sx={{
-                              position: "absolute",
-                              right: 6,
-                              top: "50%",
-                              transform: "translate(-6px, -50%)",
-                              backgroundColor: "#fff",
-                              height: 30,
-                              display: "grid",
-                              placeItems: "center",
-                              zIndex: 1,
-                              pl: 1,
-                            }}
-                          >
-                            {`(n/${"m\u00B3"})`}
-                          </Typography>
-                        </Box>
-                        <Typography
-                          variant="body2"
-                          color="red"
-                          fontSize={13}
-                          mt={0.5}
-                        ></Typography>
-                        {errors &&
-                          !watch(`manager.${idx}.stockingDensityNM`) &&
-                          errors.manager &&
-                          errors.manager[idx] &&
-                          errors.manager[idx].stockingDensityNM &&
-                          errors.manager[idx].stockingDensityNM.type ===
-                            "required" && (
-                            <Typography
-                              variant="body2"
-                              color="red"
-                              fontSize={13}
-                              mt={0.5}
-                            >
-                              {validationMessage.required}
-                            </Typography>
-                          )}
-                        {errors &&
-                          errors.manager &&
-                          errors.manager[idx] &&
-                          errors.manager[idx].stockingDensityNM &&
-                          errors.manager[idx].stockingDensityNM.type ===
-                            "pattern" && (
-                            <Typography
-                              variant="body2"
-                              color="red"
-                              fontSize={13}
-                              mt={0.5}
-                            >
-                              {validationMessage.OnlyNumbersWithDot}
-                            </Typography>
-                          )}
-                      </Grid> */}
-                      {/* <Grid
-                        item
-                        xs
-                        sx={{
-                          width: "fit-content",
-                          minWidth: 130,
-                        }}
-                      >
-                        <TextField
-                          label="Stocking Level *"
-                          type="text"
-                          className="form-input"
-                          disabled
-                          sx={{ width: "100%" }}
-                          {...register(
-                            `manager.${idx}.stockingLevel` as const
-                            // {
-                            //   required: true,
-                            //   pattern: validationPattern.numbersWithDot,
-                            // }
-                          )}
-                        />
-                        <Typography
-                          variant="body2"
-                          color="red"
-                          fontSize={13}
-                          mt={0.5}
-                        ></Typography>
-                      </Grid> */}
                       <Grid
                         xs
                         item
@@ -1409,9 +881,9 @@ const WaterQualityParameter: React.FC<Props> = ({
                             label="Ammonia {NH₄} *"
                             type="text"
                             className="form-input"
-                            disabled={idx === 0 ? true : false}
+                            // disabled={idx === 0 ? true : false}
                             sx={{ width: "100%" }}
-                            {...register(`manager.${idx}.biomass`, {
+                            {...register(`water.${idx}.NH4`, {
                               required: true,
                               pattern: validationPattern.numbersWithDot,
                             })}
@@ -1436,17 +908,12 @@ const WaterQualityParameter: React.FC<Props> = ({
                             mg/L
                           </Typography>
                         </Box>
-                        <Typography
-                          variant="body2"
-                          color="red"
-                          fontSize={13}
-                          mt={0.5}
-                        ></Typography>
+
                         {errors &&
-                          errors.manager &&
-                          errors.manager[idx] &&
-                          errors.manager[idx].biomass &&
-                          errors.manager[idx].biomass.type === "required" && (
+                          errors.water &&
+                          errors.water[idx] &&
+                          errors.water[idx].NH4 &&
+                          errors.water[idx].NH4.type === "required" && (
                             <Typography
                               variant="body2"
                               color="red"
@@ -1457,10 +924,10 @@ const WaterQualityParameter: React.FC<Props> = ({
                             </Typography>
                           )}
                         {errors &&
-                          errors.manager &&
-                          errors.manager[idx] &&
-                          errors.manager[idx].biomass &&
-                          errors.manager[idx].biomass.type === "pattern" && (
+                          errors.water &&
+                          errors.water[idx] &&
+                          errors.water[idx].NH4 &&
+                          errors.water[idx].NH4.type === "pattern" && (
                             <Typography
                               variant="body2"
                               color="red"
@@ -1490,9 +957,9 @@ const WaterQualityParameter: React.FC<Props> = ({
                             label="Nitrate {NO₃⁻} *"
                             type="text"
                             className="form-input"
-                            disabled={idx === 0 ? true : false}
+                            // disabled={idx === 0 ? true : false}
                             sx={{ width: "100%" }}
-                            {...register(`manager.${idx}.biomass`, {
+                            {...register(`water.${idx}.NO3`, {
                               required: true,
                               pattern: validationPattern.numbersWithDot,
                             })}
@@ -1517,17 +984,12 @@ const WaterQualityParameter: React.FC<Props> = ({
                             mg/L
                           </Typography>
                         </Box>
-                        <Typography
-                          variant="body2"
-                          color="red"
-                          fontSize={13}
-                          mt={0.5}
-                        ></Typography>
+
                         {errors &&
-                          errors.manager &&
-                          errors.manager[idx] &&
-                          errors.manager[idx].biomass &&
-                          errors.manager[idx].biomass.type === "required" && (
+                          errors.water &&
+                          errors.water[idx] &&
+                          errors.water[idx].NO3 &&
+                          errors.water[idx].NO3.type === "required" && (
                             <Typography
                               variant="body2"
                               color="red"
@@ -1538,10 +1000,86 @@ const WaterQualityParameter: React.FC<Props> = ({
                             </Typography>
                           )}
                         {errors &&
-                          errors.manager &&
-                          errors.manager[idx] &&
-                          errors.manager[idx].biomass &&
-                          errors.manager[idx].biomass.type === "pattern" && (
+                          errors.water &&
+                          errors.water[idx] &&
+                          errors.water[idx].NO3 &&
+                          errors.water[idx].NO3.type === "pattern" && (
+                            <Typography
+                              variant="body2"
+                              color="red"
+                              fontSize={13}
+                              mt={0.5}
+                            >
+                              {validationMessage.OnlyNumbersWithDot}
+                            </Typography>
+                          )}
+                      </Grid>
+                      <Grid
+                        xs
+                        item
+                        sx={{
+                          width: "fit-content",
+                          minWidth: 130,
+                        }}
+                      >
+                        <Box
+                          display={"flex"}
+                          gap={2}
+                          alignItems={"center"}
+                          position={"relative"}
+                        >
+                          <TextField
+                            focused
+                            label="Nitrate {NO₂⁻} *"
+                            type="text"
+                            className="form-input"
+                            // disabled={idx === 0 ? true : false}
+                            sx={{ width: "100%" }}
+                            {...register(`water.${idx}.NO2`, {
+                              required: true,
+                              pattern: validationPattern.numbersWithDot,
+                            })}
+                          />
+
+                          <Typography
+                            variant="body2"
+                            color="#555555AC"
+                            sx={{
+                              position: "absolute",
+                              right: 6,
+                              top: "50%",
+                              transform: "translate(-6px, -50%)",
+                              backgroundColor: "#fff",
+                              height: 30,
+                              display: "grid",
+                              placeItems: "center",
+                              zIndex: 1,
+                              pl: 1,
+                            }}
+                          >
+                            mg/L
+                          </Typography>
+                        </Box>
+
+                        {errors &&
+                          errors.water &&
+                          errors.water[idx] &&
+                          errors.water[idx].NO2 &&
+                          errors.water[idx].NO2.type === "required" && (
+                            <Typography
+                              variant="body2"
+                              color="red"
+                              fontSize={13}
+                              mt={0.5}
+                            >
+                              {validationMessage.required}
+                            </Typography>
+                          )}
+                        {errors &&
+                          errors.water &&
+                          errors.water[idx] &&
+                          errors.water[idx].NO2 &&
+                          errors.water[idx].NO2.type === "pattern" && (
                             <Typography
                               variant="body2"
                               color="red"
@@ -1571,44 +1109,20 @@ const WaterQualityParameter: React.FC<Props> = ({
                             label="pH *"
                             type="text"
                             className="form-input"
-                            disabled={idx === 0 ? true : false}
+                            // disabled={idx === 0 ? true : false}
                             sx={{ width: "100%" }}
-                            {...register(`manager.${idx}.biomass`, {
+                            {...register(`water.${idx}.ph`, {
                               required: true,
                               pattern: validationPattern.numbersWithDot,
                             })}
                           />
-                          {/* 
-                          <Typography
-                            variant="body2"
-                            color="#555555AC"
-                            sx={{
-                              position: "absolute",
-                              right: 6,
-                              top: "50%",
-                              transform: "translate(-6px, -50%)",
-                              backgroundColor: "#fff",
-                              height: 30,
-                              display: "grid",
-                              placeItems: "center",
-                              zIndex: 1,
-                              pl: 1,
-                            }}
-                          >
-                            
-                          </Typography> */}
                         </Box>
-                        <Typography
-                          variant="body2"
-                          color="red"
-                          fontSize={13}
-                          mt={0.5}
-                        ></Typography>
+
                         {errors &&
-                          errors.manager &&
-                          errors.manager[idx] &&
-                          errors.manager[idx].biomass &&
-                          errors.manager[idx].biomass.type === "required" && (
+                          errors.water &&
+                          errors.water[idx] &&
+                          errors.water[idx].ph &&
+                          errors.water[idx].ph.type === "required" && (
                             <Typography
                               variant="body2"
                               color="red"
@@ -1619,10 +1133,10 @@ const WaterQualityParameter: React.FC<Props> = ({
                             </Typography>
                           )}
                         {errors &&
-                          errors.manager &&
-                          errors.manager[idx] &&
-                          errors.manager[idx].biomass &&
-                          errors.manager[idx].biomass.type === "pattern" && (
+                          errors.water &&
+                          errors.water[idx] &&
+                          errors.water[idx].ph &&
+                          errors.water[idx].ph.type === "pattern" && (
                             <Typography
                               variant="body2"
                               color="red"
@@ -1652,9 +1166,9 @@ const WaterQualityParameter: React.FC<Props> = ({
                             label="Visibility *"
                             type="text"
                             className="form-input"
-                            disabled={idx === 0 ? true : false}
+                            // disabled={idx === 0 ? true : false}
                             sx={{ width: "100%" }}
-                            {...register(`manager.${idx}.biomass`, {
+                            {...register(`water.${idx}.visibility`, {
                               required: true,
                               pattern: validationPattern.numbersWithDot,
                             })}
@@ -1679,17 +1193,12 @@ const WaterQualityParameter: React.FC<Props> = ({
                             cm
                           </Typography>
                         </Box>
-                        <Typography
-                          variant="body2"
-                          color="red"
-                          fontSize={13}
-                          mt={0.5}
-                        ></Typography>
+
                         {errors &&
-                          errors.manager &&
-                          errors.manager[idx] &&
-                          errors.manager[idx].biomass &&
-                          errors.manager[idx].biomass.type === "required" && (
+                          errors.water &&
+                          errors.water[idx] &&
+                          errors.water[idx].visibility &&
+                          errors.water[idx].visibility.type === "required" && (
                             <Typography
                               variant="body2"
                               color="red"
@@ -1700,10 +1209,10 @@ const WaterQualityParameter: React.FC<Props> = ({
                             </Typography>
                           )}
                         {errors &&
-                          errors.manager &&
-                          errors.manager[idx] &&
-                          errors.manager[idx].biomass &&
-                          errors.manager[idx].biomass.type === "pattern" && (
+                          errors.water &&
+                          errors.water[idx] &&
+                          errors.water[idx].visibility &&
+                          errors.water[idx].visibility.type === "pattern" && (
                             <Typography
                               variant="body2"
                               color="red"
@@ -1717,7 +1226,7 @@ const WaterQualityParameter: React.FC<Props> = ({
                     </Grid>
                   </Stack>
 
-                  {/* <Box
+                  <Box
                     display={"flex"}
                     alignItems={"center"}
                     justifyContent={"center"}
@@ -1737,7 +1246,7 @@ const WaterQualityParameter: React.FC<Props> = ({
                           xs: "auto",
                         },
                       }}
-                      onClick={() => handleDelete(item)}
+                      onClick={() => remove(idx)}
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -1754,7 +1263,7 @@ const WaterQualityParameter: React.FC<Props> = ({
                         </g>
                       </svg>
                     </Box>
-                  </Box> */}
+                  </Box>
                 </Box>
 
                 <Divider
@@ -1831,36 +1340,9 @@ const WaterQualityParameter: React.FC<Props> = ({
                 "aria-labelledby": "basic-button",
               }}
             >
-              {productionMangeFields.map((field, i) => {
+              {waterQualityFields.map((field, i) => {
                 return (
-                  <MenuItem
-                    onClick={() => handleCloseAnchor(field)}
-                    key={i}
-                    disabled={
-                      field === "Stock" &&
-                      selectedProduction?.batchNumberId &&
-                      selectedProduction?.fishCount
-                        ? true
-                        : field === "Harvest" ||
-                          field === "Mortalities" ||
-                          field === "Re-Stock" ||
-                          field === "Transfer"
-                        ? watchedFields[0].count && watchedFields[0].batchNumber
-                          ? false
-                          : true
-                        : selectedProduction?.batchNumberId &&
-                          selectedProduction?.biomass &&
-                          selectedProduction?.fishCount &&
-                          selectedProduction?.meanLength &&
-                          selectedProduction?.meanWeight
-                        ? false
-                        : watchedFields.find(
-                            (field) => field.field === "Stock"
-                          ) && field === "Stock"
-                        ? true
-                        : false
-                    }
-                  >
+                  <MenuItem onClick={() => handleCloseAnchor(field)} key={i}>
                     {field}
                   </MenuItem>
                 );
@@ -1888,25 +1370,6 @@ const WaterQualityParameter: React.FC<Props> = ({
             </Button>
           </Box>
         </form>
-        <Confirmation
-          open={openConfirmationModal}
-          setOpen={setOpenConfirmationModal}
-          remove={remove}
-          watchedFields={watchedFields}
-          selectedProductionFishaFarmId={selectedProduction?.fishFarmId}
-          setIsStockDeleted={setIsStockDeleted}
-          clearErrors={clearErrors}
-        />
-        <CalculateMeanWeigth
-          open={isMeanWeigthCal}
-          setOpen={setIsMeanWeigthCal}
-          setAvgOfMeanWeight={setAvgOfMeanWeight}
-        />
-        <CalculateMeanLength
-          open={isMeanLengthCal}
-          setOpen={setIsMeanLengthCal}
-          setAvgOfMeanLength={setAvgOfMeanLength}
-        />
       </Stack>
     </Modal>
   );

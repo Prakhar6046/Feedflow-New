@@ -31,9 +31,8 @@ export interface LoggedUser {
   createdBy: String;
   organisationId: Number;
   updatedAt: String;
-  organisation: {
-    organisationType: String;
-  };
+
+  organisationType: String;
 }
 
 const AccountPopover = () => {
@@ -173,9 +172,7 @@ const AccountPopover = () => {
               fontWeight={600}
               mt={0.5}
             >
-              {loggedUserData
-                ? loggedUserData?.organisation?.organisationType
-                : ""}
+              {loggedUserData ? loggedUserData?.organisationType : ""}
             </Typography>
           )}
         </Box>

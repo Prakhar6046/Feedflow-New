@@ -34,7 +34,6 @@ export default function ProductionTable({
   const dispatch = useAppDispatch();
   const pathName = usePathname();
   const role = useAppSelector(selectRole);
-  console.log(productions);
 
   // const sortDataFromLocal = "";
   //   const loading = useAppSelector(selectFarmLoading);
@@ -353,7 +352,6 @@ export default function ProductionTable({
 
     return result;
   }, []);
-  console.log(groupedData);
 
   useEffect(() => {
     router.refresh();
@@ -790,7 +788,6 @@ export default function ProductionTable({
         setOpen={setOpenWaterQualityModal}
         selectedProduction={selectedProduction}
         farms={farms}
-        batches={batches}
         productions={productions}
       />
     </>
