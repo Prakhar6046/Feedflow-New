@@ -16,6 +16,7 @@ import TableRow from "@mui/material/TableRow";
 import { getCookie } from "cookies-next";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import WaterQualityParameter from "../models/WaterQualityParameter";
 interface Props {
   productions: Production[];
   tableData: any;
@@ -67,6 +68,9 @@ export default function ProductionTable({
     null
   );
   const [openTransferModal, setOpenTransferModal] = useState<boolean>(false);
+  const [openWaterQualityParameterModal, setOpenWaterQualityParameterModal] =
+    useState<boolean>(false);
+
   const [productionData, setProductionData] = useState<Production[]>();
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("Farm");
@@ -82,7 +86,8 @@ export default function ProductionTable({
     farm: any
   ) => {
     // setAnchorEl(event.currentTarget);
-    setOpenTransferModal(true);
+    // setOpenTransferModal(true);
+    setOpenWaterQualityParameterModal(true);
     setSelectedProduction(farm);
   };
   // const handleEdit = () => {
@@ -996,6 +1001,14 @@ export default function ProductionTable({
       <TransferModal
         open={openTransferModal}
         setOpen={setOpenTransferModal}
+        selectedProduction={selectedProduction}
+        farms={farms}
+        batches={batches}
+        productions={productions}
+      />
+      <WaterQualityParameter
+        open={openWaterQualityParameterModal}
+        setOpen={setOpenWaterQualityParameterModal}
         selectedProduction={selectedProduction}
         farms={farms}
         batches={batches}
