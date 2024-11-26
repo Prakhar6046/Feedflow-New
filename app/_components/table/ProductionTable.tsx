@@ -1,7 +1,7 @@
 "use client";
 import TransferModal from "@/app/_components/models/FarmManager";
 import { Farm } from "@/app/_typeModels/Farm";
-import { Production } from "@/app/_typeModels/production";
+import { FarmGroup, Production } from "@/app/_typeModels/production";
 import { breadcrumsAction } from "@/lib/features/breadcrum/breadcrumSlice";
 import { selectRole } from "@/lib/features/user/userSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
@@ -23,32 +23,7 @@ interface Props {
   farms: Farm[];
   batches: { batchNumber: String; id: Number }[];
 }
-interface FarmGroup {
-  farm: String;
-  units: {
-    id: Number;
-    productionUnit: {
-      id: String;
-      name: String;
-      type: String;
-      capacity: String;
-      waterflowRate: String;
-      createdAt: String;
-      updatedAt: String;
-      farmId: String;
-    };
-    biomass: String;
-    fishCount: String;
-    batchNumberId: Number;
-    age: String;
-    meanLength: String;
-    meanWeight: String;
-    stockingDensityKG: String;
-    stockingDensityNM: String;
-    stockingLevel: String;
-  }[];
-}
-[];
+
 export default function ProductionTable({
   productions,
   tableData,
@@ -59,7 +34,6 @@ export default function ProductionTable({
   const dispatch = useAppDispatch();
   const pathName = usePathname();
   const role = useAppSelector(selectRole);
-  console.log(productions);
 
   // const sortDataFromLocal = "";
   //   const loading = useAppSelector(selectFarmLoading);
@@ -68,7 +42,7 @@ export default function ProductionTable({
     null
   );
   const [openTransferModal, setOpenTransferModal] = useState<boolean>(false);
-  const [openWaterQualityParameterModal, setOpenWaterQualityParameterModal] =
+  const [openWaterQualityModal, setOpenWaterQualityModal] =
     useState<boolean>(false);
 
   const [productionData, setProductionData] = useState<Production[]>();
@@ -83,22 +57,20 @@ export default function ProductionTable({
   }, [pathName, window]);
   const handleClick = (
     event: React.MouseEvent<HTMLButtonElement>,
-    farm: any
+    unit: any,
+    isManage: boolean
   ) => {
-    // setAnchorEl(event.currentTarget);
-    // setOpenTransferModal(true);
-    setOpenWaterQualityParameterModal(true);
-    setSelectedProduction(farm);
+    const selectedProd = productions.find((pro) => pro.id === unit.id);
+
+    setAnchorEl(event.currentTarget);
+    if (isManage) {
+      setOpenTransferModal(true);
+    } else {
+      setOpenWaterQualityModal(true);
+    }
+    setSelectedProduction(selectedProd);
   };
-  // const handleEdit = () => {
-  //   if (selectedFeed) {
-  //     router.push(`/dashboard/feedSupply/${selectedFeed.id}`);
-  //     dispatch(feedAction.editFeed(selectedFeed));
-  //   }
-  // };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
+
   const open = Boolean(anchorEl);
 
   function EnhancedTableHead(data: any) {
@@ -118,8 +90,8 @@ export default function ProductionTable({
                 idx === headCells.length - 1
                   ? false
                   : orderBy === headCell.id
-                    ? order
-                    : false
+                  ? order
+                  : false
               }
               // align="center"
               sx={{
@@ -345,18 +317,23 @@ export default function ProductionTable({
     }
   }, [productions]);
 
-  const groupedData: FarmGroup = productions?.reduce((result, item) => {
+  const groupedData: any = productions.reduce((result: any, item) => {
     // Find or create a farm group
-    let farmGroup = result.find((group: any) => group?.farm === item.farm.name);
+    let farmGroup: any = result.find(
+      (group: any) => group.farm === item.farm.name
+    );
     if (!farmGroup) {
       farmGroup = { farm: item.farm.name, units: [] };
       result.push(farmGroup);
     }
 
-    // Add the current production unit to the group
-    farmGroup?.units.push({
+    // Add the current production unit and all related data to the group
+    farmGroup.units.push({
       id: item.id,
       productionUnit: item.productionUnit,
+      fishSupply: item.fishSupply,
+      organisation: item.organisation,
+      farm: item.farm,
       biomass: item.biomass,
       fishCount: item.fishCount,
       batchNumberId: item.batchNumberId,
@@ -366,12 +343,14 @@ export default function ProductionTable({
       stockingDensityKG: item.stockingDensityKG,
       stockingDensityNM: item.stockingDensityNM,
       stockingLevel: item.stockingLevel,
+      createdBy: item.createdBy,
+      updatedBy: item.updatedBy,
+      createdAt: item.createdAt,
+      updatedAt: item.updatedAt,
     });
 
     return result;
   }, []);
-
-  console.log(groupedData);
 
   useEffect(() => {
     router.refresh();
@@ -403,8 +382,8 @@ export default function ProductionTable({
               onRequestSort={handleRequestSort}
             />
             <TableBody>
-              {productionData && productionData?.length > 0 ? (
-                productionData.map((farm: Production, i: number) => {
+              {groupedData && groupedData?.length > 0 ? (
+                groupedData?.map((farm: FarmGroup, i: number) => {
                   return (
                     <TableRow
                       key={i}
@@ -427,155 +406,113 @@ export default function ProductionTable({
                         component="th"
                         scope="row"
                       >
-                        {farm.farm.name ?? ""}
+                        {farm.farm ?? ""}
                       </TableCell>
-                      <TableCell sx={{
-                        borderBottomWidth: 1,
-                        color: "#555555",
-                        fontWeight: 500,
-                        pl: 0,
-                      }}>
-                        <Typography variant="h6" sx={{
+                      <TableCell
+                        sx={{
+                          borderBottomWidth: 1,
+                          color: "#555555",
                           fontWeight: 500,
-                          fontSize: 14,
-                          display: "flex",
-                          alignItems: "center",
-                          gap: 1
-                        }}>
-                          handleClose
-                          <Typography variant="body2" sx={{
-                            fontWeight: 600,
-                            color: "#06a19b",
-                            textWrap: "nowrap",
-                            pr: 3
-                          }}>
-                            (Re-Stock)
-                          </Typography>
-                        </Typography>
-
-                        <Typography variant="h6" sx={{
-                          fontWeight: 500,
-                          fontSize: 14,
-                          display: "flex",
-                          alignItems: "center",
-                          gap: 1
-                        }}>
-                          handleClose
-                          <Typography variant="body2" sx={{
-                            fontWeight: 600,
-                            color: "#06a19b",
-                            textWrap: "nowrap",
-                            pr: 3
-                          }}>
-                            (Re-Stock)
-                          </Typography>
-                        </Typography>
-
-                        <Typography variant="h6" sx={{
-                          fontWeight: 500,
-                          fontSize: 14,
-                          display: "flex",
-                          alignItems: "center",
-                          gap: 1
-                        }}>
-                          handleClose
-                          <Typography variant="body2" sx={{
-                            fontWeight: 600,
-                            color: "#06a19b",
-                            textWrap: "nowrap",
-                            pr: 3
-                          }}>
-                            (Re-Stock)
-                          </Typography>
-                        </Typography>
-
-
+                          pl: 0,
+                        }}
+                      >
+                        {farm.units.map((unit, i) => {
+                          return (
+                            <Typography
+                              key={i}
+                              variant="h6"
+                              sx={{
+                                fontWeight: 500,
+                                fontSize: 14,
+                                display: "flex",
+                                alignItems: "center",
+                                gap: 1,
+                              }}
+                            >
+                              {unit.productionUnit.name}
+                              {/* <Typography
+                                variant="body2"
+                                sx={{
+                                  fontWeight: 600,
+                                  color: "#06a19b",
+                                  textWrap: "nowrap",
+                                  pr: 3,
+                                }}
+                              >
+                                (Re-Stock)
+                              </Typography> */}
+                            </Typography>
+                          );
+                        })}
                       </TableCell>
-
-                      <TableCell sx={{
-                        borderBottomWidth: 1,
-                        color: "#555555",
-                        fontWeight: 500,
-                        pl: 0,
-                      }}>
-                        <Typography variant="h6" sx={{
+                      <TableCell
+                        sx={{
+                          borderBottomWidth: 1,
+                          color: "#555555",
                           fontWeight: 500,
-                          fontSize: 14
-                        }}>
-                          1458795522888844
-                        </Typography>
-
-                        <Typography variant="h6" sx={{
-                          fontWeight: 500,
-                          fontSize: 14
-                        }}>
-                          1458795522888844
-                        </Typography>
-
-                        <Typography variant="h6" sx={{
-                          fontWeight: 500,
-                          fontSize: 14
-                        }}>
-                          1458795522888844
-                        </Typography>
-
+                          pl: 0,
+                        }}
+                      >
+                        {farm.units.map((unit, i) => {
+                          return (
+                            <Typography
+                              key={i}
+                              variant="h6"
+                              sx={{
+                                fontWeight: 500,
+                                fontSize: 14,
+                              }}
+                            >
+                              {unit?.fishSupply?.batchNumber ?? ""}
+                            </Typography>
+                          );
+                        })}
                       </TableCell>
-
-                      <TableCell sx={{
-                        borderBottomWidth: 1,
-                        color: "#555555",
-                        fontWeight: 500,
-                        pl: 0,
-                      }}>
-                        <Typography variant="h6" sx={{
+                      <TableCell
+                        sx={{
+                          borderBottomWidth: 1,
+                          color: "#555555",
                           fontWeight: 500,
-                          fontSize: 14
-                        }}>
-                          Yoooooooooo
-                        </Typography>
-
-                        <Typography variant="h6" sx={{
-                          fontWeight: 500,
-                          fontSize: 14
-                        }}>
-                          Yoooooooooo
-                        </Typography>
-
-                        <Typography variant="h6" sx={{
-                          fontWeight: 500,
-                          fontSize: 14
-                        }}>
-                          Yoooooooooo
-                        </Typography>
-
+                          pl: 0,
+                        }}
+                      >
+                        {farm.units.map((unit, i) => {
+                          return (
+                            <Typography
+                              key={i}
+                              variant="h6"
+                              sx={{
+                                fontWeight: 500,
+                                fontSize: 14,
+                              }}
+                            >
+                              {unit?.age ?? ""}
+                            </Typography>
+                          );
+                        })}
                       </TableCell>
-                      <TableCell sx={{
-                        borderBottomWidth: 1,
-                        color: "#555555",
-                        fontWeight: 500,
-                        pl: 0,
-                      }}>
-                        <Typography variant="h6" sx={{
+                      <TableCell
+                        sx={{
+                          borderBottomWidth: 1,
+                          color: "#555555",
                           fontWeight: 500,
-                          fontSize: 14
-                        }}>
-                          Save
-                        </Typography>
-
-                        <Typography variant="h6" sx={{
-                          fontWeight: 500,
-                          fontSize: 14
-                        }}>
-                          Save
-                        </Typography>
-
-                        <Typography variant="h6" sx={{
-                          fontWeight: 500,
-                          fontSize: 14
-                        }}>
-                          Save
-                        </Typography>
-
+                          pl: 0,
+                        }}
+                      >
+                        {farm.units.map((unit, i) => {
+                          return (
+                            <Typography
+                              key={i}
+                              variant="h6"
+                              sx={{
+                                fontWeight: 500,
+                                fontSize: 14,
+                              }}
+                            >
+                              {unit?.fishCount ?? ""}
+                            </Typography>
+                          );
+                        })}
                       </TableCell>
                       <TableCell
                         // align="center"
@@ -587,25 +524,20 @@ export default function ProductionTable({
                           pl: 0,
                         }}
                       >
-
-                        <Typography variant="h6" sx={{
-                          fontWeight: 500,
-                          fontSize: 14
-                        }}>
-                          {farm.biomass ? `${farm.biomass} kg` : ""}
-                        </Typography>
-                        <Typography variant="h6" sx={{
-                          fontWeight: 500,
-                          fontSize: 14
-                        }}>
-                          {farm.biomass ? `${farm.biomass} kg` : ""}
-                        </Typography>
-                        <Typography variant="h6" sx={{
-                          fontWeight: 500,
-                          fontSize: 14
-                        }}>
-                          {farm.biomass ? `${farm.biomass} kg` : ""}
-                        </Typography>
+                        {farm.units.map((unit, i) => {
+                          return (
+                            <Typography
+                              key={i}
+                              variant="h6"
+                              sx={{
+                                fontWeight: 500,
+                                fontSize: 14,
+                              }}
+                            >
+                              {unit.biomass ? `${unit.biomass} kg` : ""}
+                            </Typography>
+                          );
+                        })}
                       </TableCell>
                       <TableCell
                         // align="center"
@@ -617,28 +549,20 @@ export default function ProductionTable({
                           pl: 0,
                         }}
                       >
-
-                        <Typography variant="h6" sx={{
-                          fontWeight: 500,
-                          fontSize: 14
-                        }}>
-                          {farm.meanWeight ? `${farm.meanWeight} g` : ""}
-                        </Typography>
-
-                        <Typography variant="h6" sx={{
-                          fontWeight: 500,
-                          fontSize: 14
-                        }}>
-                          {farm.meanWeight ? `${farm.meanWeight} g` : ""}
-                        </Typography>
-
-                        <Typography variant="h6" sx={{
-                          fontWeight: 500,
-                          fontSize: 14
-                        }}>
-                          {farm.meanWeight ? `${farm.meanWeight} g` : ""}
-                        </Typography>
-
+                        {farm.units.map((unit, i) => {
+                          return (
+                            <Typography
+                              key={i}
+                              variant="h6"
+                              sx={{
+                                fontWeight: 500,
+                                fontSize: 14,
+                              }}
+                            >
+                              {unit.meanWeight ? `${unit.meanWeight} g` : ""}
+                            </Typography>
+                          );
+                        })}
                       </TableCell>
                       <TableCell
                         // align="center"
@@ -650,27 +574,20 @@ export default function ProductionTable({
                           pl: 0,
                         }}
                       >
-                        <Typography variant="h6" sx={{
-                          fontWeight: 500,
-                          fontSize: 14
-                        }}>
-                          {farm.meanLength ?? ""}
-                        </Typography>
-
-                        <Typography variant="h6" sx={{
-                          fontWeight: 500,
-                          fontSize: 14
-                        }}>
-                          {farm.meanLength ?? ""}
-                        </Typography>
-
-                        <Typography variant="h6" sx={{
-                          fontWeight: 500,
-                          fontSize: 14
-                        }}>
-                          {farm.meanLength ?? ""}
-                        </Typography>
-
+                        {farm.units.map((unit, i) => {
+                          return (
+                            <Typography
+                              key={i}
+                              variant="h6"
+                              sx={{
+                                fontWeight: 500,
+                                fontSize: 14,
+                              }}
+                            >
+                              {unit.meanLength ? `${unit.meanLength} mm` : ""}
+                            </Typography>
+                          );
+                        })}
                       </TableCell>
                       <TableCell
                         // align="center"
@@ -682,23 +599,20 @@ export default function ProductionTable({
                           pl: 0,
                         }}
                       >
-                        <Typography variant="h6" sx={{
-                          fontWeight: 500,
-                          fontSize: 14
-                        }}>
-                          {Number(farm.stockingDensityKG).toFixed(2) ?? ""}
-                        </Typography>
-                        <Typography variant="h6" sx={{
-                          fontWeight: 500,
-                          fontSize: 14
-                        }}>
-                          {Number(farm.stockingDensityKG).toFixed(2) ?? ""}
-                        </Typography><Typography variant="h6" sx={{
-                          fontWeight: 500,
-                          fontSize: 14
-                        }}>
-                          {Number(farm.stockingDensityKG).toFixed(2) ?? ""}
-                        </Typography>
+                        {farm.units.map((unit, i) => {
+                          return (
+                            <Typography
+                              key={i}
+                              variant="h6"
+                              sx={{
+                                fontWeight: 500,
+                                fontSize: 14,
+                              }}
+                            >
+                              {Number(unit.stockingDensityKG).toFixed(2) ?? ""}
+                            </Typography>
+                          );
+                        })}
                       </TableCell>
                       <TableCell
                         // align="center"
@@ -710,24 +624,21 @@ export default function ProductionTable({
                           pl: 0,
                         }}
                       >
-                        <Typography variant="h6" sx={{
-                          fontWeight: 500,
-                          fontSize: 14
-                        }}>
-                          {Number(farm.stockingDensityNM).toFixed(2) ?? ""}
-                        </Typography>
-                        <Typography variant="h6" sx={{
-                          fontWeight: 500,
-                          fontSize: 14
-                        }}>
-                          {Number(farm.stockingDensityNM).toFixed(2) ?? ""}
-                        </Typography>
-                        <Typography variant="h6" sx={{
-                          fontWeight: 500,
-                          fontSize: 14
-                        }}>
-                          {Number(farm.stockingDensityNM).toFixed(2) ?? ""}
-                        </Typography>
+                        {farm.units.map((unit, i) => {
+                          return (
+                            <Typography
+                              key={i}
+                              variant="h6"
+                              sx={{
+                                fontWeight: 500,
+                                fontSize: 14,
+                              }}
+                            >
+                              {Number(unit.stockingDensityNM).toFixed(2) ?? ""}
+                            </Typography>
+                          );
+                        })}
+
                         {/* {farm.meanWeight ? `${farm.meanWeight}g` : ""} */}
                       </TableCell>{" "}
                       <TableCell
@@ -739,26 +650,20 @@ export default function ProductionTable({
                           pl: 0,
                         }}
                       >
-                        <Typography variant="h6" sx={{
-                          fontWeight: 500,
-                          fontSize: 14
-                        }}>
-                          {farm.stockingLevel ? `${farm.stockingLevel}%` : ""}
-                        </Typography>
-
-                        <Typography variant="h6" sx={{
-                          fontWeight: 500,
-                          fontSize: 14
-                        }}>
-                          {farm.stockingLevel ? `${farm.stockingLevel}%` : ""}
-                        </Typography>
-
-                        <Typography variant="h6" sx={{
-                          fontWeight: 500,
-                          fontSize: 14
-                        }}>
-                          {farm.stockingLevel ? `${farm.stockingLevel}%` : ""}
-                        </Typography>
+                        {farm.units.map((unit, i) => {
+                          return (
+                            <Typography
+                              key={i}
+                              variant="h6"
+                              sx={{
+                                fontWeight: 500,
+                                fontSize: 14,
+                              }}
+                            >
+                              {Number(unit.stockingLevel) ?? ""}
+                            </Typography>
+                          );
+                        })}
                       </TableCell>
                       {role !== "MEMBER" && (
                         <TableCell
@@ -771,220 +676,89 @@ export default function ProductionTable({
                           }}
                           className="cursor-pointer"
                         >
-                          <Box display={"flex"} gap={1} mb={1}>
-                            <Button
-                              id="basic-button"
-                              aria-controls={open ? "basic-menu" : undefined}
-                              aria-haspopup="true"
-                              aria-expanded={open ? "true" : undefined}
-                              onClick={(e) => handleClick(e, farm)}
-                              className=""
-                              type="button"
-                              variant="contained"
-                              sx={{
-                                background: "#06A19B",
-                                fontWeight: "bold",
-                                paddingX: 1,
-                                paddingY: 0.5,
-                                borderRadius: "8px",
-                                alignItems: "center",
-                                minWidth: "fit-content",
-                              }}
-                            >
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="26px"
-                                height="26px"
-                                viewBox="0 0 24 24"
+                          {farm.units.map((unit) => {
+                            return (
+                              <Box
+                                display={"flex"}
+                                gap={1}
+                                mb={1}
+                                key={Number(unit.id)}
                               >
-                                <path
-                                  fill="none"
-                                  stroke="currentColor"
-                                  stroke-linecap="round"
-                                  stroke-linejoin="round"
-                                  stroke-width="1"
-                                  d="M6.008 12h-.01M11 16.042c.463.153.908.329 1.31.61m0 0A3.95 3.95 0 0 1 14 19.885a.117.117 0 0 1-.118.116c-2.917-.013-4.224-.507-4.773-1.322L8 16.857c-2.492-.503-4.782-2.094-6-4.774c3-6.597 12.5-6.597 15.5 0m-5.19 4.57c2.17-.66 4.105-2.184 5.19-4.57m-5.19-4.569A3.95 3.95 0 0 0 14 4.282c0-.826-4.308.342-4.89 1.206L8 7.31m9.5 4.773c.333-.66 2.1-2.969 4.5-2.969c-.833.825-2.2 3.959-1 5.938c-1.2 0-3-2.309-3.5-2.969"
-                                  color="currentColor"
-                                />
-                              </svg>
-                            </Button>
+                                <Button
+                                  id="basic-button"
+                                  aria-controls={
+                                    open ? "basic-menu" : undefined
+                                  }
+                                  aria-haspopup="true"
+                                  aria-expanded={open ? "true" : undefined}
+                                  onClick={(e) => handleClick(e, unit, true)}
+                                  className=""
+                                  type="button"
+                                  variant="contained"
+                                  sx={{
+                                    background: "#06A19B",
+                                    fontWeight: "bold",
+                                    paddingX: 1,
+                                    paddingY: 0.5,
+                                    borderRadius: "8px",
+                                    alignItems: "center",
+                                    minWidth: "fit-content",
+                                  }}
+                                >
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="26px"
+                                    height="26px"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      fill="none"
+                                      stroke="currentColor"
+                                      stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                      stroke-width="1"
+                                      d="M6.008 12h-.01M11 16.042c.463.153.908.329 1.31.61m0 0A3.95 3.95 0 0 1 14 19.885a.117.117 0 0 1-.118.116c-2.917-.013-4.224-.507-4.773-1.322L8 16.857c-2.492-.503-4.782-2.094-6-4.774c3-6.597 12.5-6.597 15.5 0m-5.19 4.57c2.17-.66 4.105-2.184 5.19-4.57m-5.19-4.569A3.95 3.95 0 0 0 14 4.282c0-.826-4.308.342-4.89 1.206L8 7.31m9.5 4.773c.333-.66 2.1-2.969 4.5-2.969c-.833.825-2.2 3.959-1 5.938c-1.2 0-3-2.309-3.5-2.969"
+                                      color="currentColor"
+                                    />
+                                  </svg>
+                                </Button>
 
-                            <Button
-                              id="basic-button"
-                              aria-controls={open ? "basic-menu" : undefined}
-                              aria-haspopup="true"
-                              aria-expanded={open ? "true" : undefined}
-                              onClick={(e) => handleClick(e, farm)}
-                              className=""
-                              type="button"
-                              variant="contained"
-                              sx={{
-                                background: "#06A19B",
-                                fontWeight: "bold",
-                                paddingX: 1,
-                                paddingY: 0.5,
-                                borderRadius: "8px",
-                                alignItems: "center",
-                                minWidth: "fit-content",
-                              }}
-                            >
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="22px"
-                                height="22px"
-                                viewBox="0 0 24 24"
-                              >
-                                <path
-                                  fill="currentColor"
-                                  d="M12.275 19q.3-.025.513-.238T13 18.25q0-.35-.225-.562T12.2 17.5q-1.025.075-2.175-.562t-1.45-2.313q-.05-.275-.262-.45T7.825 14q-.35 0-.575.263t-.15.612q.425 2.275 2 3.25t3.175.875M12 22q-3.425 0-5.712-2.35T4 13.8q0-2.5 1.988-5.437T12 2q4.025 3.425 6.013 6.363T20 13.8q0 3.5-2.287 5.85T12 22m0-2q2.6 0 4.3-1.763T18 13.8q0-1.825-1.513-4.125T12 4.65Q9.025 7.375 7.513 9.675T6 13.8q0 2.675 1.7 4.438T12 20m0-8"
-                                />
-                              </svg>
-                            </Button>
-                          </Box>
-
-                          <Box display={"flex"} gap={1} mb={1}>
-                            <Button
-                              id="basic-button"
-                              aria-controls={open ? "basic-menu" : undefined}
-                              aria-haspopup="true"
-                              aria-expanded={open ? "true" : undefined}
-                              onClick={(e) => handleClick(e, farm)}
-                              className=""
-                              type="button"
-                              variant="contained"
-                              sx={{
-                                background: "#06A19B",
-                                fontWeight: "bold",
-                                paddingX: 1,
-                                paddingY: 0.5,
-                                borderRadius: "8px",
-                                alignItems: "center",
-                                minWidth: "fit-content",
-                              }}
-                            >
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="26px"
-                                height="26px"
-                                viewBox="0 0 24 24"
-                              >
-                                <path
-                                  fill="none"
-                                  stroke="currentColor"
-                                  stroke-linecap="round"
-                                  stroke-linejoin="round"
-                                  stroke-width="1"
-                                  d="M6.008 12h-.01M11 16.042c.463.153.908.329 1.31.61m0 0A3.95 3.95 0 0 1 14 19.885a.117.117 0 0 1-.118.116c-2.917-.013-4.224-.507-4.773-1.322L8 16.857c-2.492-.503-4.782-2.094-6-4.774c3-6.597 12.5-6.597 15.5 0m-5.19 4.57c2.17-.66 4.105-2.184 5.19-4.57m-5.19-4.569A3.95 3.95 0 0 0 14 4.282c0-.826-4.308.342-4.89 1.206L8 7.31m9.5 4.773c.333-.66 2.1-2.969 4.5-2.969c-.833.825-2.2 3.959-1 5.938c-1.2 0-3-2.309-3.5-2.969"
-                                  color="currentColor"
-                                />
-                              </svg>
-                            </Button>
-
-                            <Button
-                              id="basic-button"
-                              aria-controls={open ? "basic-menu" : undefined}
-                              aria-haspopup="true"
-                              aria-expanded={open ? "true" : undefined}
-                              onClick={(e) => handleClick(e, farm)}
-                              className=""
-                              type="button"
-                              variant="contained"
-                              sx={{
-                                background: "#06A19B",
-                                fontWeight: "bold",
-                                paddingX: 1,
-                                paddingY: 0.5,
-                                borderRadius: "8px",
-                                alignItems: "center",
-                                minWidth: "fit-content",
-                              }}
-                            >
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="22px"
-                                height="22px"
-                                viewBox="0 0 24 24"
-                              >
-                                <path
-                                  fill="currentColor"
-                                  d="M12.275 19q.3-.025.513-.238T13 18.25q0-.35-.225-.562T12.2 17.5q-1.025.075-2.175-.562t-1.45-2.313q-.05-.275-.262-.45T7.825 14q-.35 0-.575.263t-.15.612q.425 2.275 2 3.25t3.175.875M12 22q-3.425 0-5.712-2.35T4 13.8q0-2.5 1.988-5.437T12 2q4.025 3.425 6.013 6.363T20 13.8q0 3.5-2.287 5.85T12 22m0-2q2.6 0 4.3-1.763T18 13.8q0-1.825-1.513-4.125T12 4.65Q9.025 7.375 7.513 9.675T6 13.8q0 2.675 1.7 4.438T12 20m0-8"
-                                />
-                              </svg>
-                            </Button>
-                          </Box>
-
-
-                          <Box display={"flex"} gap={1} mb={1}>
-                            <Button
-                              id="basic-button"
-                              aria-controls={open ? "basic-menu" : undefined}
-                              aria-haspopup="true"
-                              aria-expanded={open ? "true" : undefined}
-                              onClick={(e) => handleClick(e, farm)}
-                              className=""
-                              type="button"
-                              variant="contained"
-                              sx={{
-                                background: "#06A19B",
-                                fontWeight: "bold",
-                                paddingX: 1,
-                                paddingY: 0.5,
-                                borderRadius: "8px",
-                                alignItems: "center",
-                                minWidth: "fit-content",
-                              }}
-                            >
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="26px"
-                                height="26px"
-                                viewBox="0 0 24 24"
-                              >
-                                <path
-                                  fill="none"
-                                  stroke="currentColor"
-                                  stroke-linecap="round"
-                                  stroke-linejoin="round"
-                                  stroke-width="1"
-                                  d="M6.008 12h-.01M11 16.042c.463.153.908.329 1.31.61m0 0A3.95 3.95 0 0 1 14 19.885a.117.117 0 0 1-.118.116c-2.917-.013-4.224-.507-4.773-1.322L8 16.857c-2.492-.503-4.782-2.094-6-4.774c3-6.597 12.5-6.597 15.5 0m-5.19 4.57c2.17-.66 4.105-2.184 5.19-4.57m-5.19-4.569A3.95 3.95 0 0 0 14 4.282c0-.826-4.308.342-4.89 1.206L8 7.31m9.5 4.773c.333-.66 2.1-2.969 4.5-2.969c-.833.825-2.2 3.959-1 5.938c-1.2 0-3-2.309-3.5-2.969"
-                                  color="currentColor"
-                                />
-                              </svg>
-                            </Button>
-
-                            <Button
-                              id="basic-button"
-                              aria-controls={open ? "basic-menu" : undefined}
-                              aria-haspopup="true"
-                              aria-expanded={open ? "true" : undefined}
-                              onClick={(e) => handleClick(e, farm)}
-                              className=""
-                              type="button"
-                              variant="contained"
-                              sx={{
-                                background: "#06A19B",
-                                fontWeight: "bold",
-                                paddingX: 1,
-                                paddingY: 0.5,
-                                borderRadius: "8px",
-                                alignItems: "center",
-                                minWidth: "fit-content",
-                              }}
-                            >
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="22px"
-                                height="22px"
-                                viewBox="0 0 24 24"
-                              >
-                                <path
-                                  fill="currentColor"
-                                  d="M12.275 19q.3-.025.513-.238T13 18.25q0-.35-.225-.562T12.2 17.5q-1.025.075-2.175-.562t-1.45-2.313q-.05-.275-.262-.45T7.825 14q-.35 0-.575.263t-.15.612q.425 2.275 2 3.25t3.175.875M12 22q-3.425 0-5.712-2.35T4 13.8q0-2.5 1.988-5.437T12 2q4.025 3.425 6.013 6.363T20 13.8q0 3.5-2.287 5.85T12 22m0-2q2.6 0 4.3-1.763T18 13.8q0-1.825-1.513-4.125T12 4.65Q9.025 7.375 7.513 9.675T6 13.8q0 2.675 1.7 4.438T12 20m0-8"
-                                />
-                              </svg>
-                            </Button>
-                          </Box>
-
+                                <Button
+                                  id="basic-button"
+                                  aria-controls={
+                                    open ? "basic-menu" : undefined
+                                  }
+                                  aria-haspopup="true"
+                                  aria-expanded={open ? "true" : undefined}
+                                  onClick={(e) => handleClick(e, unit, false)}
+                                  className=""
+                                  type="button"
+                                  variant="contained"
+                                  sx={{
+                                    background: "#06A19B",
+                                    fontWeight: "bold",
+                                    paddingX: 1,
+                                    paddingY: 0.5,
+                                    borderRadius: "8px",
+                                    alignItems: "center",
+                                    minWidth: "fit-content",
+                                  }}
+                                >
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="22px"
+                                    height="22px"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      fill="currentColor"
+                                      d="M12.275 19q.3-.025.513-.238T13 18.25q0-.35-.225-.562T12.2 17.5q-1.025.075-2.175-.562t-1.45-2.313q-.05-.275-.262-.45T7.825 14q-.35 0-.575.263t-.15.612q.425 2.275 2 3.25t3.175.875M12 22q-3.425 0-5.712-2.35T4 13.8q0-2.5 1.988-5.437T12 2q4.025 3.425 6.013 6.363T20 13.8q0 3.5-2.287 5.85T12 22m0-2q2.6 0 4.3-1.763T18 13.8q0-1.825-1.513-4.125T12 4.65Q9.025 7.375 7.513 9.675T6 13.8q0 2.675 1.7 4.438T12 20m0-8"
+                                    />
+                                  </svg>
+                                </Button>
+                              </Box>
+                            );
+                          })}
                         </TableCell>
                       )}
                     </TableRow>
@@ -1007,8 +781,8 @@ export default function ProductionTable({
         productions={productions}
       />
       <WaterQualityParameter
-        open={openWaterQualityParameterModal}
-        setOpen={setOpenWaterQualityParameterModal}
+        open={openWaterQualityModal}
+        setOpen={setOpenWaterQualityModal}
         selectedProduction={selectedProduction}
         farms={farms}
         batches={batches}

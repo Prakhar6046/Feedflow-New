@@ -38,3 +38,33 @@ export interface Production {
     age: String;
   };
 }
+export interface FarmGroup {
+  farm: String;
+  units: {
+    id: Number;
+    productionUnit: {
+      id: String;
+      name: String;
+      type: String;
+      capacity: String;
+      waterflowRate: String;
+      createdAt: String;
+      updatedAt: String;
+      farmId: String;
+    };
+    biomass: String;
+    fishCount: String;
+    batchNumberId: Number;
+    age: String;
+    meanLength: String;
+    meanWeight: String;
+    stockingDensityKG: String;
+    stockingDensityNM: String;
+    stockingLevel: String;
+    fishSupply: {
+      batchNumber: String;
+      age: String;
+    };
+  }[];
+}
+[];
