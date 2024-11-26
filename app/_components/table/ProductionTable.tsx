@@ -5,7 +5,7 @@ import { Production } from "@/app/_typeModels/production";
 import { breadcrumsAction } from "@/lib/features/breadcrum/breadcrumSlice";
 import { selectRole } from "@/lib/features/user/userSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import { Box, Button, TableSortLabel } from "@mui/material";
+import { Box, Button, TableSortLabel, Typography } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -113,8 +113,8 @@ export default function ProductionTable({
                 idx === headCells.length - 1
                   ? false
                   : orderBy === headCell.id
-                  ? order
-                  : false
+                    ? order
+                    : false
               }
               // align="center"
               sx={{
@@ -340,7 +340,7 @@ export default function ProductionTable({
     }
   }, [productions]);
 
-  const groupedData: FarmGroup = productions.reduce((result, item) => {
+  const groupedData: FarmGroup = productions?.reduce((result, item) => {
     // Find or create a farm group
     let farmGroup = result.find((group: any) => group?.farm === item.farm.name);
     if (!farmGroup) {
@@ -424,160 +424,153 @@ export default function ProductionTable({
                       >
                         {farm.farm.name ?? ""}
                       </TableCell>
-                      <TableCell>
-                        <TableRow>
-                          <TableCell
-                            sx={{
-                              borderBottom: "transparent",
-                              color: "#555555",
-                              fontWeight: 500,
-                              pl: 0,
-                            }}
-                          >
-                            fff
-                          </TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell
-                            sx={{
-                              borderBottom: "transparent",
-                              color: "#555555",
-                              fontWeight: 500,
-                              pl: 0,
-                            }}
-                          >
-                            Rows
-                          </TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell
-                            sx={{
-                              borderBottom: "transparent",
-                              color: "#555555",
-                              fontWeight: 500,
-                              pl: 0,
-                            }}
-                          >
-                            fff
-                          </TableCell>
-                        </TableRow>
+                      <TableCell sx={{
+                        borderBottomWidth: 1,
+                        color: "#555555",
+                        fontWeight: 500,
+                        pl: 0,
+                      }}>
+                        <Typography variant="h6" sx={{
+                          fontWeight: 500,
+                          fontSize: 14,
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 1
+                        }}>
+                          handleClose
+                          <Typography variant="body2" sx={{
+                            fontWeight: 600,
+                            color: "#06a19b",
+                            textWrap: "nowrap",
+                            pr: 3
+                          }}>
+                            (Re-Stock)
+                          </Typography>
+                        </Typography>
+
+                        <Typography variant="h6" sx={{
+                          fontWeight: 500,
+                          fontSize: 14,
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 1
+                        }}>
+                          handleClose
+                          <Typography variant="body2" sx={{
+                            fontWeight: 600,
+                            color: "#06a19b",
+                            textWrap: "nowrap",
+                            pr: 3
+                          }}>
+                            (Re-Stock)
+                          </Typography>
+                        </Typography>
+
+                        <Typography variant="h6" sx={{
+                          fontWeight: 500,
+                          fontSize: 14,
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 1
+                        }}>
+                          handleClose
+                          <Typography variant="body2" sx={{
+                            fontWeight: 600,
+                            color: "#06a19b",
+                            textWrap: "nowrap",
+                            pr: 3
+                          }}>
+                            (Re-Stock)
+                          </Typography>
+                        </Typography>
+
+
                       </TableCell>
-                      <TableCell>
-                        <TableRow>
-                          <TableCell
-                            sx={{
-                              borderBottom: "transparent",
-                              color: "#555555",
-                              fontWeight: 500,
-                              pl: 0,
-                            }}
-                          >
-                            {farm?.fishSupply?.batchNumber ?? ""}
-                          </TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell
-                            sx={{
-                              borderBottom: "transparent",
-                              color: "#555555",
-                              fontWeight: 500,
-                              pl: 0,
-                            }}
-                          >
-                            {farm?.fishSupply?.batchNumber ?? ""}
-                          </TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell
-                            sx={{
-                              borderBottom: "transparent",
-                              color: "#555555",
-                              fontWeight: 500,
-                              pl: 0,
-                            }}
-                          >
-                            {farm?.fishSupply?.batchNumber ?? ""}
-                          </TableCell>
-                        </TableRow>
+
+                      <TableCell sx={{
+                        borderBottomWidth: 1,
+                        color: "#555555",
+                        fontWeight: 500,
+                        pl: 0,
+                      }}>
+                        <Typography variant="h6" sx={{
+                          fontWeight: 500,
+                          fontSize: 14
+                        }}>
+                          1458795522888844
+                        </Typography>
+
+                        <Typography variant="h6" sx={{
+                          fontWeight: 500,
+                          fontSize: 14
+                        }}>
+                          1458795522888844
+                        </Typography>
+
+                        <Typography variant="h6" sx={{
+                          fontWeight: 500,
+                          fontSize: 14
+                        }}>
+                          1458795522888844
+                        </Typography>
+
                       </TableCell>
-                      <TableCell>
-                        <TableRow>
-                          <TableCell
-                            sx={{
-                              borderBottom: "transparent",
-                              color: "#555555",
-                              fontWeight: 500,
-                              pl: 0,
-                            }}
-                          >
-                            {farm?.fishSupply?.age ?? ""}
-                          </TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell
-                            sx={{
-                              borderBottom: "transparent",
-                              color: "#555555",
-                              fontWeight: 500,
-                              pl: 0,
-                            }}
-                          >
-                            {farm?.fishSupply?.age ?? ""}
-                          </TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell
-                            sx={{
-                              borderBottom: "transparent",
-                              color: "#555555",
-                              fontWeight: 500,
-                              pl: 0,
-                            }}
-                          >
-                            {farm?.fishSupply?.age ?? ""}
-                          </TableCell>
-                        </TableRow>
+
+                      <TableCell sx={{
+                        borderBottomWidth: 1,
+                        color: "#555555",
+                        fontWeight: 500,
+                        pl: 0,
+                      }}>
+                        <Typography variant="h6" sx={{
+                          fontWeight: 500,
+                          fontSize: 14
+                        }}>
+                          Yoooooooooo
+                        </Typography>
+
+                        <Typography variant="h6" sx={{
+                          fontWeight: 500,
+                          fontSize: 14
+                        }}>
+                          Yoooooooooo
+                        </Typography>
+
+                        <Typography variant="h6" sx={{
+                          fontWeight: 500,
+                          fontSize: 14
+                        }}>
+                          Yoooooooooo
+                        </Typography>
+
                       </TableCell>
-                      <TableCell>
-                        <TableRow>
-                          <TableCell
-                            // align="center"
-                            sx={{
-                              borderBottom: "transparent",
-                              color: "#555555",
-                              fontWeight: 500,
-                              pl: 0,
-                            }}
-                          >
-                            {farm.fishCount ?? ""}
-                          </TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell
-                            // align="center"
-                            sx={{
-                              borderBottom: "transparent",
-                              color: "#555555",
-                              fontWeight: 500,
-                              pl: 0,
-                            }}
-                          >
-                            {farm.fishCount ?? ""}
-                          </TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell
-                            // align="center"
-                            sx={{
-                              borderBottom: "transparent",
-                              color: "#555555",
-                              fontWeight: 500,
-                              pl: 0,
-                            }}
-                          >
-                            {farm.fishCount ?? ""}
-                          </TableCell>
-                        </TableRow>
+                      <TableCell sx={{
+                        borderBottomWidth: 1,
+                        color: "#555555",
+                        fontWeight: 500,
+                        pl: 0,
+                      }}>
+                        <Typography variant="h6" sx={{
+                          fontWeight: 500,
+                          fontSize: 14
+                        }}>
+                          Save
+                        </Typography>
+
+                        <Typography variant="h6" sx={{
+                          fontWeight: 500,
+                          fontSize: 14
+                        }}>
+                          Save
+                        </Typography>
+
+                        <Typography variant="h6" sx={{
+                          fontWeight: 500,
+                          fontSize: 14
+                        }}>
+                          Save
+                        </Typography>
+
                       </TableCell>
                       <TableCell
                         // align="center"
@@ -589,7 +582,25 @@ export default function ProductionTable({
                           pl: 0,
                         }}
                       >
-                        {farm.biomass ? `${farm.biomass} kg` : ""}
+
+                        <Typography variant="h6" sx={{
+                          fontWeight: 500,
+                          fontSize: 14
+                        }}>
+                          {farm.biomass ? `${farm.biomass} kg` : ""}
+                        </Typography>
+                        <Typography variant="h6" sx={{
+                          fontWeight: 500,
+                          fontSize: 14
+                        }}>
+                          {farm.biomass ? `${farm.biomass} kg` : ""}
+                        </Typography>
+                        <Typography variant="h6" sx={{
+                          fontWeight: 500,
+                          fontSize: 14
+                        }}>
+                          {farm.biomass ? `${farm.biomass} kg` : ""}
+                        </Typography>
                       </TableCell>
                       <TableCell
                         // align="center"
@@ -601,7 +612,28 @@ export default function ProductionTable({
                           pl: 0,
                         }}
                       >
-                        {farm.meanWeight ? `${farm.meanWeight} g` : ""}
+
+                        <Typography variant="h6" sx={{
+                          fontWeight: 500,
+                          fontSize: 14
+                        }}>
+                          {farm.meanWeight ? `${farm.meanWeight} g` : ""}
+                        </Typography>
+
+                        <Typography variant="h6" sx={{
+                          fontWeight: 500,
+                          fontSize: 14
+                        }}>
+                          {farm.meanWeight ? `${farm.meanWeight} g` : ""}
+                        </Typography>
+
+                        <Typography variant="h6" sx={{
+                          fontWeight: 500,
+                          fontSize: 14
+                        }}>
+                          {farm.meanWeight ? `${farm.meanWeight} g` : ""}
+                        </Typography>
+
                       </TableCell>
                       <TableCell
                         // align="center"
@@ -613,7 +645,27 @@ export default function ProductionTable({
                           pl: 0,
                         }}
                       >
-                        {farm.meanLength ?? ""}
+                        <Typography variant="h6" sx={{
+                          fontWeight: 500,
+                          fontSize: 14
+                        }}>
+                          {farm.meanLength ?? ""}
+                        </Typography>
+
+                        <Typography variant="h6" sx={{
+                          fontWeight: 500,
+                          fontSize: 14
+                        }}>
+                          {farm.meanLength ?? ""}
+                        </Typography>
+
+                        <Typography variant="h6" sx={{
+                          fontWeight: 500,
+                          fontSize: 14
+                        }}>
+                          {farm.meanLength ?? ""}
+                        </Typography>
+
                       </TableCell>
                       <TableCell
                         // align="center"
@@ -625,7 +677,23 @@ export default function ProductionTable({
                           pl: 0,
                         }}
                       >
-                        {Number(farm.stockingDensityKG).toFixed(2) ?? ""}
+                        <Typography variant="h6" sx={{
+                          fontWeight: 500,
+                          fontSize: 14
+                        }}>
+                          {Number(farm.stockingDensityKG).toFixed(2) ?? ""}
+                        </Typography>
+                        <Typography variant="h6" sx={{
+                          fontWeight: 500,
+                          fontSize: 14
+                        }}>
+                          {Number(farm.stockingDensityKG).toFixed(2) ?? ""}
+                        </Typography><Typography variant="h6" sx={{
+                          fontWeight: 500,
+                          fontSize: 14
+                        }}>
+                          {Number(farm.stockingDensityKG).toFixed(2) ?? ""}
+                        </Typography>
                       </TableCell>
                       <TableCell
                         // align="center"
@@ -637,7 +705,24 @@ export default function ProductionTable({
                           pl: 0,
                         }}
                       >
-                        {Number(farm.stockingDensityNM).toFixed(2) ?? ""}
+                        <Typography variant="h6" sx={{
+                          fontWeight: 500,
+                          fontSize: 14
+                        }}>
+                          {Number(farm.stockingDensityNM).toFixed(2) ?? ""}
+                        </Typography>
+                        <Typography variant="h6" sx={{
+                          fontWeight: 500,
+                          fontSize: 14
+                        }}>
+                          {Number(farm.stockingDensityNM).toFixed(2) ?? ""}
+                        </Typography>
+                        <Typography variant="h6" sx={{
+                          fontWeight: 500,
+                          fontSize: 14
+                        }}>
+                          {Number(farm.stockingDensityNM).toFixed(2) ?? ""}
+                        </Typography>
                         {/* {farm.meanWeight ? `${farm.meanWeight}g` : ""} */}
                       </TableCell>{" "}
                       <TableCell
@@ -649,7 +734,26 @@ export default function ProductionTable({
                           pl: 0,
                         }}
                       >
-                        {farm.stockingLevel ? `${farm.stockingLevel}%` : ""}
+                        <Typography variant="h6" sx={{
+                          fontWeight: 500,
+                          fontSize: 14
+                        }}>
+                          {farm.stockingLevel ? `${farm.stockingLevel}%` : ""}
+                        </Typography>
+
+                        <Typography variant="h6" sx={{
+                          fontWeight: 500,
+                          fontSize: 14
+                        }}>
+                          {farm.stockingLevel ? `${farm.stockingLevel}%` : ""}
+                        </Typography>
+
+                        <Typography variant="h6" sx={{
+                          fontWeight: 500,
+                          fontSize: 14
+                        }}>
+                          {farm.stockingLevel ? `${farm.stockingLevel}%` : ""}
+                        </Typography>
                       </TableCell>
                       {role !== "MEMBER" && (
                         <TableCell
@@ -662,7 +766,7 @@ export default function ProductionTable({
                           }}
                           className="cursor-pointer"
                         >
-                          <Box display={"flex"} gap="5px">
+                          <Box display={"flex"} gap={1} mb={1}>
                             <Button
                               id="basic-button"
                               aria-controls={open ? "basic-menu" : undefined}
@@ -675,20 +779,17 @@ export default function ProductionTable({
                               sx={{
                                 background: "#06A19B",
                                 fontWeight: "bold",
-                                height: "35px",
-                                width: {
-                                  xs: "50%",
-                                  lg: "fit-content",
-                                },
-                                paddingBlock: "10px",
-                                borderRadius: "12px",
+                                paddingX: 1,
+                                paddingY: 0.5,
+                                borderRadius: "8px",
                                 alignItems: "center",
+                                minWidth: "fit-content",
                               }}
                             >
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
-                                width="40px"
-                                height="40px"
+                                width="26px"
+                                height="26px"
                                 viewBox="0 0 24 24"
                               >
                                 <path
@@ -715,20 +816,17 @@ export default function ProductionTable({
                               sx={{
                                 background: "#06A19B",
                                 fontWeight: "bold",
-                                height: "35px",
-
-                                width: {
-                                  xs: "50%",
-                                  lg: "fit-content",
-                                },
-                                paddingBlock: "10px",
-                                borderRadius: "12px",
+                                paddingX: 1,
+                                paddingY: 0.5,
+                                borderRadius: "8px",
+                                alignItems: "center",
+                                minWidth: "fit-content",
                               }}
                             >
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
-                                width="30px"
-                                height="30px"
+                                width="22px"
+                                height="22px"
                                 viewBox="0 0 24 24"
                               >
                                 <path
@@ -738,6 +836,150 @@ export default function ProductionTable({
                               </svg>
                             </Button>
                           </Box>
+
+                          <Box display={"flex"} gap={1} mb={1}>
+                            <Button
+                              id="basic-button"
+                              aria-controls={open ? "basic-menu" : undefined}
+                              aria-haspopup="true"
+                              aria-expanded={open ? "true" : undefined}
+                              onClick={(e) => handleClick(e, farm)}
+                              className=""
+                              type="button"
+                              variant="contained"
+                              sx={{
+                                background: "#06A19B",
+                                fontWeight: "bold",
+                                paddingX: 1,
+                                paddingY: 0.5,
+                                borderRadius: "8px",
+                                alignItems: "center",
+                                minWidth: "fit-content",
+                              }}
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="26px"
+                                height="26px"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  fill="none"
+                                  stroke="currentColor"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  stroke-width="1"
+                                  d="M6.008 12h-.01M11 16.042c.463.153.908.329 1.31.61m0 0A3.95 3.95 0 0 1 14 19.885a.117.117 0 0 1-.118.116c-2.917-.013-4.224-.507-4.773-1.322L8 16.857c-2.492-.503-4.782-2.094-6-4.774c3-6.597 12.5-6.597 15.5 0m-5.19 4.57c2.17-.66 4.105-2.184 5.19-4.57m-5.19-4.569A3.95 3.95 0 0 0 14 4.282c0-.826-4.308.342-4.89 1.206L8 7.31m9.5 4.773c.333-.66 2.1-2.969 4.5-2.969c-.833.825-2.2 3.959-1 5.938c-1.2 0-3-2.309-3.5-2.969"
+                                  color="currentColor"
+                                />
+                              </svg>
+                            </Button>
+
+                            <Button
+                              id="basic-button"
+                              aria-controls={open ? "basic-menu" : undefined}
+                              aria-haspopup="true"
+                              aria-expanded={open ? "true" : undefined}
+                              onClick={(e) => handleClick(e, farm)}
+                              className=""
+                              type="button"
+                              variant="contained"
+                              sx={{
+                                background: "#06A19B",
+                                fontWeight: "bold",
+                                paddingX: 1,
+                                paddingY: 0.5,
+                                borderRadius: "8px",
+                                alignItems: "center",
+                                minWidth: "fit-content",
+                              }}
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="22px"
+                                height="22px"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  fill="currentColor"
+                                  d="M12.275 19q.3-.025.513-.238T13 18.25q0-.35-.225-.562T12.2 17.5q-1.025.075-2.175-.562t-1.45-2.313q-.05-.275-.262-.45T7.825 14q-.35 0-.575.263t-.15.612q.425 2.275 2 3.25t3.175.875M12 22q-3.425 0-5.712-2.35T4 13.8q0-2.5 1.988-5.437T12 2q4.025 3.425 6.013 6.363T20 13.8q0 3.5-2.287 5.85T12 22m0-2q2.6 0 4.3-1.763T18 13.8q0-1.825-1.513-4.125T12 4.65Q9.025 7.375 7.513 9.675T6 13.8q0 2.675 1.7 4.438T12 20m0-8"
+                                />
+                              </svg>
+                            </Button>
+                          </Box>
+
+
+                          <Box display={"flex"} gap={1} mb={1}>
+                            <Button
+                              id="basic-button"
+                              aria-controls={open ? "basic-menu" : undefined}
+                              aria-haspopup="true"
+                              aria-expanded={open ? "true" : undefined}
+                              onClick={(e) => handleClick(e, farm)}
+                              className=""
+                              type="button"
+                              variant="contained"
+                              sx={{
+                                background: "#06A19B",
+                                fontWeight: "bold",
+                                paddingX: 1,
+                                paddingY: 0.5,
+                                borderRadius: "8px",
+                                alignItems: "center",
+                                minWidth: "fit-content",
+                              }}
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="26px"
+                                height="26px"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  fill="none"
+                                  stroke="currentColor"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  stroke-width="1"
+                                  d="M6.008 12h-.01M11 16.042c.463.153.908.329 1.31.61m0 0A3.95 3.95 0 0 1 14 19.885a.117.117 0 0 1-.118.116c-2.917-.013-4.224-.507-4.773-1.322L8 16.857c-2.492-.503-4.782-2.094-6-4.774c3-6.597 12.5-6.597 15.5 0m-5.19 4.57c2.17-.66 4.105-2.184 5.19-4.57m-5.19-4.569A3.95 3.95 0 0 0 14 4.282c0-.826-4.308.342-4.89 1.206L8 7.31m9.5 4.773c.333-.66 2.1-2.969 4.5-2.969c-.833.825-2.2 3.959-1 5.938c-1.2 0-3-2.309-3.5-2.969"
+                                  color="currentColor"
+                                />
+                              </svg>
+                            </Button>
+
+                            <Button
+                              id="basic-button"
+                              aria-controls={open ? "basic-menu" : undefined}
+                              aria-haspopup="true"
+                              aria-expanded={open ? "true" : undefined}
+                              onClick={(e) => handleClick(e, farm)}
+                              className=""
+                              type="button"
+                              variant="contained"
+                              sx={{
+                                background: "#06A19B",
+                                fontWeight: "bold",
+                                paddingX: 1,
+                                paddingY: 0.5,
+                                borderRadius: "8px",
+                                alignItems: "center",
+                                minWidth: "fit-content",
+                              }}
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="22px"
+                                height="22px"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  fill="currentColor"
+                                  d="M12.275 19q.3-.025.513-.238T13 18.25q0-.35-.225-.562T12.2 17.5q-1.025.075-2.175-.562t-1.45-2.313q-.05-.275-.262-.45T7.825 14q-.35 0-.575.263t-.15.612q.425 2.275 2 3.25t3.175.875M12 22q-3.425 0-5.712-2.35T4 13.8q0-2.5 1.988-5.437T12 2q4.025 3.425 6.013 6.363T20 13.8q0 3.5-2.287 5.85T12 22m0-2q2.6 0 4.3-1.763T18 13.8q0-1.825-1.513-4.125T12 4.65Q9.025 7.375 7.513 9.675T6 13.8q0 2.675 1.7 4.438T12 20m0-8"
+                                />
+                              </svg>
+                            </Button>
+                          </Box>
+
                         </TableCell>
                       )}
                     </TableRow>
