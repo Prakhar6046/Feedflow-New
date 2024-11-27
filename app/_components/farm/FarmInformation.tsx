@@ -202,30 +202,19 @@ const FarmInformation: NextPage<Props> = ({
             )}
           </Box>
           <Box mb={2} width={"100%"}>
-            <Controller
-              name="farmAltitude"
-              control={control}
-              rules={{
-                required: "Farm altitude is required",
-                pattern: {
-                  value: /^[0-9]+(\.[0-9]+)?$/,
-                  message: "Invalid format, use numbers with dots only",
-                },
+            <TextField
+              label="Farm Altitude *"
+              type="text"
+              className="form-input"
+              // focused={altitude ? true : false}
+              {...register("farmAltitude", {
+                required: true,
+                pattern: validationPattern.numbersWithDot,
+              })}
+              focused
+              sx={{
+                width: "100%",
               }}
-              render={({ field, fieldState: { error } }) => (
-                <TextField
-                  {...field}
-                  label="Farm Altitude *"
-                  type="text"
-                  className="form-input"
-                  focused
-                  error={!!error}
-                  helperText={error?.message}
-                  sx={{
-                    width: "100%",
-                  }}
-                />
-              )}
             />
 
             {errors &&
