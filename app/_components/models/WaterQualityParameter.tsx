@@ -396,7 +396,11 @@ const WaterQualityParameter: React.FC<Props> = ({
                           }}
                         >
                           <Box width={"100%"}>
-                            <FormControl fullWidth className="form-input">
+                            <FormControl
+                              fullWidth
+                              className="form-input"
+                              focused
+                            >
                               <InputLabel id="">Fish Farm *</InputLabel>
                               <Select
                                 labelId="feed-supply-select-label9"
@@ -587,6 +591,9 @@ const WaterQualityParameter: React.FC<Props> = ({
                                       field.onChange(date);
                                       setValue(`water.${idx}.date`, date);
                                     }}
+                                    slotProps={{
+                                      textField: { focused: true },
+                                    }}
                                     value={field.value || null}
                                   />
                                   {error && (
@@ -620,7 +627,6 @@ const WaterQualityParameter: React.FC<Props> = ({
                           position={"relative"}
                         >
                           <TextField
-                            focused
                             label="Water Temperature *"
                             type="text"
                             className="form-input"
@@ -630,6 +636,7 @@ const WaterQualityParameter: React.FC<Props> = ({
                               required: true,
                               pattern: validationPattern.numbersWithDot,
                             })}
+                            focused
                           />
 
                           <Typography
@@ -1247,6 +1254,7 @@ const WaterQualityParameter: React.FC<Props> = ({
                     width: "100%",
                     marginLeft: "12px",
                     paddingBlock: "10px",
+                    marginBottom: "10px",
                   }}
                 />
               </Box>

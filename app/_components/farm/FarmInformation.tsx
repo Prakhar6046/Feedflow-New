@@ -318,8 +318,8 @@ const FarmInformation: NextPage<Props> = ({
                   required: true,
                   onChange: (e) => setValue("fishFarmer", e.target.value),
                 })}
-                label="Feed Farmer *"
-                value={getValues("fishFarmer") || ""}
+                label="Fish Farmer *"
+                value={watch("fishFarmer") || ""}
               >
                 {fishFarmers?.map((fish: any) => {
                   return (
@@ -587,10 +587,6 @@ const FarmInformation: NextPage<Props> = ({
                         pattern: validationPattern.onlyNumbersPattern,
                       })}
                       focused
-                      InputLabelProps={{
-                        shrink:
-                          !!watch("zipCode") || !!addressInformation?.zipCode,
-                      }}
                       sx={{
                         width: "100%",
                       }}

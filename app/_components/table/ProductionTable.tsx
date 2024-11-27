@@ -30,6 +30,7 @@ export default function ProductionTable({
   farms,
   batches,
 }: Props) {
+
   const router = useRouter();
   const dispatch = useAppDispatch();
   const pathName = usePathname();
@@ -506,7 +507,7 @@ export default function ProductionTable({
                                 fontWeight: 500,
                                 fontSize: 14,
                                 padding: `${
-                                  unit?.age
+                                  unit?.fishSupply?.age
                                     ? "8px 12px 8px 0"
                                     : "19px 12px 19px 0"
                                 }`,
@@ -516,7 +517,7 @@ export default function ProductionTable({
                                 textWrap: "nowrap",
                               }}
                             >
-                              {unit?.age ?? ""}
+                              {unit?.fishSupply?.age ?? ""}
                             </Typography>
                           );
                         })}
