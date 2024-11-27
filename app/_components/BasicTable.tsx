@@ -56,7 +56,7 @@ export default function BasicTable({ organisations, userRole }: Props) {
 
   useEffect(() => {
     if (pathName && window) {
-      setSortDataFromLocal(window.localStorage.getItem(pathName));
+      setSortDataFromLocal(localStorage.getItem(pathName));
     }
   }, [pathName, window]);
   const handleClick = (

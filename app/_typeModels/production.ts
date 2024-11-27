@@ -37,6 +37,19 @@ export interface Production {
     batchNumber: String;
     age: String;
   };
+  WaterQuality?: {
+    id: Number;
+    currentDate: String;
+    waterTemp: String;
+    DO: String;
+    TSS: String;
+    NH4: String;
+    NO3: String;
+    NO2: String;
+    ph: String;
+    visibility: String;
+    productionId: Number;
+  }[];
 }
 export interface FarmGroup {
   farm: String;

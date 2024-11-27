@@ -63,8 +63,6 @@ const FarmInformation: NextPage<Props> = ({
   const [loading, setLoading] = useState<boolean>(false);
   const selectedManagerIds = watch("mangerId") || [];
   const isEditFarm = useAppSelector(selectIsEditFarm);
-  console.log(watch("farmAltitude"));
-  console.log(errors);
   const handleChange = (event: any) => {
     const {
       target: { value },
@@ -389,7 +387,7 @@ const FarmInformation: NextPage<Props> = ({
                       selected &&
                       selected.length &&
                       selected
-                        .map((id) => {
+                        .map((id: any) => {
                           const member = farmMembers.find(
                             (mem) => String(mem.id) === id
                           );

@@ -22,11 +22,20 @@ import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
+import {
+  Controller,
+  SubmitHandler,
+  useFieldArray,
+  useForm,
+} from "react-hook-form";
 import toast from "react-hot-toast";
 import Confirmation from "./Confirmation";
 import CalculateMeanWeigth from "./CalculateMeanWeigth";
 import CalculateMeanLength from "./CalculateMeanLength";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { Dayjs } from "dayjs";
 const style = {
   position: "absolute" as "absolute",
   top: "50%",
@@ -59,6 +68,7 @@ interface InputTypes {
     stockingLevel?: String;
     stockingDensityKG?: String;
     batchNumber: String;
+    currentDate?: Dayjs | null;
   }[];
 }
 const TransferModal: React.FC<Props> = ({
@@ -118,6 +128,7 @@ const TransferModal: React.FC<Props> = ({
           stockingDensityKG: "",
           field: "",
           batchNumber: "",
+          currentDate: "",
         },
       ],
     },
@@ -492,266 +503,334 @@ const TransferModal: React.FC<Props> = ({
                           flexWrap: "nowrap",
                         }}
                       >
-                        <Grid
-                          item
-                          xs
-                          sx={{
-                            width: "fit-content",
-                            minWidth: 130,
-                          }}
-                        >
-                          <Box width={"100%"}>
-                            <FormControl fullWidth className="form-input">
-                              <InputLabel id="">Fish Farm *</InputLabel>
-                              <Select
-                                labelId="feed-supply-select-label9"
-                                className="fish-manager"
-                                id="feed-supply-select9"
-                                label="Fish Farm*"
-                                disabled={
-                                  item.field === "Harvest" ||
-                                  item.field === "Mortalities" ||
-                                  idx === 0
-                                    ? true
-                                    : false
-                                }
-                                {...register(`manager.${idx}.fishFarm`, {
-                                  required: watch(`manager.${idx}.fishFarm`)
-                                    ? false
-                                    : true,
-                                })}
-                                onChange={(e) => {
-                                  const selectedFishFarm = e.target.value;
-                                  item.field === "Stock" &&
-                                    setValue(
-                                      `manager.0.fishFarm`,
-                                      e.target.value
-                                    ),
-                                    setSelectedFarm(selectedFishFarm); // Set selected farm for this specific entry
-                                  setValue(
-                                    `manager.${idx}.fishFarm`,
-                                    selectedFishFarm
-                                  ); // Set the value for this fishFarm
-                                  setValue(`manager.${idx}.productionUnit`, ""); // Reset production unit for the current entry
-                                }}
-                                value={
-                                  getValues(`manager.${idx}.fishFarm`) || ""
-                                } // Ensure only the current entry is updated
-                              >
-                                {farms?.map((farm: Farm, i) => (
-                                  <MenuItem value={String(farm.id)} key={i}>
-                                    {farm.name}
-                                  </MenuItem>
-                                ))}
-                              </Select>
-
-                              {errors &&
-                                errors?.manager &&
-                                errors?.manager[idx] &&
-                                errors?.manager[idx].fishFarm &&
-                                errors?.manager[idx].fishFarm.type ===
-                                  "required" && (
-                                  <Typography
-                                    variant="body2"
-                                    color="red"
-                                    fontSize={13}
-                                    mt={0.5}
-                                  >
-                                    {validationMessage.required}
-                                  </Typography>
-                                )}
-                              <Typography
-                                variant="body2"
-                                color="red"
-                                fontSize={13}
-                                mt={0.5}
-                              ></Typography>
-                            </FormControl>
-                          </Box>
-                        </Grid>
-                        <Grid
-                          xs
-                          item
-                          sx={{
-                            width: "fit-content",
-                            minWidth: 130,
-                          }}
-                        >
-                          <Box width={"100%"}>
-                            <FormControl fullWidth className="form-input">
-                              <InputLabel id="">Production Unit *</InputLabel>
-                              <Select
-                                labelId="production-unit-select-label"
-                                id="production-unit-select"
-                                label="Production Unit*"
-                                sx={{
-                                  width: "100%",
-                                  zIndex: 999,
-                                  "& .MuiInputLabel-root": {
-                                    transition: "all 0.2s ease",
-                                    maxWidth: "60%",
-                                    overflow: "hidden",
-                                    whiteSpace: "nowrap",
-                                    textOverflow: "ellipsis",
-                                    height: "auto",
-                                  },
-                                  "&:focus-within .MuiInputLabel-root": {
-                                    transform: "translate(10px, -9px)",
-                                    fontSize: "0.75rem",
-                                    color: "primary.main",
-                                    backgroundColor: "#fff",
-                                    maxWidth: "100%",
-                                    overflow: "visible",
-                                    textOverflow: "unset",
-                                  },
-                                }}
-                                disabled={
-                                  item.field === "Harvest" ||
-                                  item.field === "Mortalities" ||
-                                  idx === 0
-                                    ? true
-                                    : false
-                                }
-                                {...register(`manager.${idx}.productionUnit`, {
-                                  required: watch(
-                                    `manager.${idx}.productionUnit`
-                                  )
-                                    ? false
-                                    : true,
-                                  onChange: (e) =>
+                        {item.field !== "Sample" && (
+                          <Grid
+                            item
+                            xs
+                            sx={{
+                              width: "fit-content",
+                              minWidth: 130,
+                            }}
+                          >
+                            <Box width={"100%"}>
+                              <FormControl fullWidth className="form-input">
+                                <InputLabel id="">Fish Farm *</InputLabel>
+                                <Select
+                                  labelId="feed-supply-select-label9"
+                                  className="fish-manager"
+                                  id="feed-supply-select9"
+                                  label="Fish Farm*"
+                                  disabled={
+                                    item.field === "Harvest" ||
+                                    item.field === "Mortalities" ||
+                                    idx === 0
+                                      ? true
+                                      : false
+                                  }
+                                  {...register(`manager.${idx}.fishFarm`, {
+                                    required: watch(`manager.${idx}.fishFarm`)
+                                      ? false
+                                      : true,
+                                  })}
+                                  onChange={(e) => {
+                                    const selectedFishFarm = e.target.value;
                                     item.field === "Stock" &&
+                                      setValue(
+                                        `manager.0.fishFarm`,
+                                        e.target.value
+                                      ),
+                                      setSelectedFarm(selectedFishFarm); // Set selected farm for this specific entry
                                     setValue(
-                                      `manager.0.productionUnit`,
-                                      e.target.value
-                                    ),
-                                })}
-                                inputProps={{
-                                  shrink: watch(
-                                    `manager.${idx}.productionUnit`
-                                  ),
-                                }}
-                                value={
-                                  watch(`manager.${idx}.productionUnit`) || ""
-                                }
-                              >
-                                {(() => {
-                                  let selectedFarm = farms?.find(
-                                    (farm) =>
-                                      farm.id ===
-                                      watch(`manager.${idx}.fishFarm`)
-                                  );
+                                      `manager.${idx}.fishFarm`,
+                                      selectedFishFarm
+                                    ); // Set the value for this fishFarm
+                                    setValue(
+                                      `manager.${idx}.productionUnit`,
+                                      ""
+                                    ); // Reset production unit for the current entry
+                                  }}
+                                  value={
+                                    getValues(`manager.${idx}.fishFarm`) || ""
+                                  } // Ensure only the current entry is updated
+                                >
+                                  {farms?.map((farm: Farm, i) => (
+                                    <MenuItem value={String(farm.id)} key={i}>
+                                      {farm.name}
+                                    </MenuItem>
+                                  ))}
+                                </Select>
 
-                                  return selectedFarm ? (
-                                    selectedFarm?.productionUnits?.map(
-                                      (unit) => (
-                                        <MenuItem
-                                          value={String(unit.id)}
-                                          key={unit.id}
-                                        >
-                                          {unit.name}
-                                        </MenuItem>
+                                {errors &&
+                                  errors?.manager &&
+                                  errors?.manager[idx] &&
+                                  errors?.manager[idx].fishFarm &&
+                                  errors?.manager[idx].fishFarm.type ===
+                                    "required" && (
+                                    <Typography
+                                      variant="body2"
+                                      color="red"
+                                      fontSize={13}
+                                      mt={0.5}
+                                    >
+                                      {validationMessage.required}
+                                    </Typography>
+                                  )}
+                                <Typography
+                                  variant="body2"
+                                  color="red"
+                                  fontSize={13}
+                                  mt={0.5}
+                                ></Typography>
+                              </FormControl>
+                            </Box>
+                          </Grid>
+                        )}
+                        {item.field !== "Sample" && (
+                          <Grid
+                            xs
+                            item
+                            sx={{
+                              width: "fit-content",
+                              minWidth: 130,
+                            }}
+                          >
+                            <Box width={"100%"}>
+                              <FormControl fullWidth className="form-input">
+                                <InputLabel id="">Production Unit *</InputLabel>
+                                <Select
+                                  labelId="production-unit-select-label"
+                                  id="production-unit-select"
+                                  label="Production Unit*"
+                                  sx={{
+                                    width: "100%",
+                                    zIndex: 999,
+                                    "& .MuiInputLabel-root": {
+                                      transition: "all 0.2s ease",
+                                      maxWidth: "60%",
+                                      overflow: "hidden",
+                                      whiteSpace: "nowrap",
+                                      textOverflow: "ellipsis",
+                                      height: "auto",
+                                    },
+                                    "&:focus-within .MuiInputLabel-root": {
+                                      transform: "translate(10px, -9px)",
+                                      fontSize: "0.75rem",
+                                      color: "primary.main",
+                                      backgroundColor: "#fff",
+                                      maxWidth: "100%",
+                                      overflow: "visible",
+                                      textOverflow: "unset",
+                                    },
+                                  }}
+                                  disabled={
+                                    item.field === "Harvest" ||
+                                    item.field === "Mortalities" ||
+                                    idx === 0
+                                      ? true
+                                      : false
+                                  }
+                                  {...register(
+                                    `manager.${idx}.productionUnit`,
+                                    {
+                                      required: watch(
+                                        `manager.${idx}.productionUnit`
                                       )
-                                    )
-                                  ) : (
-                                    <MenuItem value="" disabled>
-                                      No units available
-                                    </MenuItem>
-                                  );
-                                })()}
-                              </Select>
-                              {errors &&
-                                !watch(`manager.${idx}.productionUnit`) &&
-                                errors?.manager &&
-                                errors?.manager[idx] &&
-                                errors?.manager[idx].productionUnit && (
-                                  <Typography
-                                    variant="body2"
-                                    color="red"
-                                    fontSize={13}
-                                    mt={0.5}
-                                  >
-                                    This field is required
-                                  </Typography>
-                                )}
-                              <Typography
-                                variant="body2"
-                                color="red"
-                                fontSize={13}
-                                mt={0.5}
-                              ></Typography>
-                            </FormControl>
-                          </Box>
-                        </Grid>
-                        <Grid
-                          xs
-                          item
-                          sx={{
-                            width: "fit-content",
-                            minWidth: 130,
-                          }}
-                        >
-                          <Box mb={2} width={"100%"}>
-                            <FormControl fullWidth className="form-input">
-                              <InputLabel id="">Batch No. *</InputLabel>
-                              <Select
-                                labelId="feed-supply-select-label9"
-                                className="fish-manager"
-                                id="feed-supply-select9"
-                                label="Batch No. *"
-                                disabled={
-                                  item.field === "Harvest" ||
-                                  item.field === "Mortalities" ||
-                                  idx === 0
-                                    ? true
-                                    : false
-                                }
-                                {...register(`manager.${idx}.batchNumber`, {
-                                  required: watch(`manager.${idx}.batchNumber`)
-                                    ? false
-                                    : true,
-                                  onChange: (e) =>
-                                    item.field === "Stock" &&
-                                    setValue(
-                                      `manager.0.batchNumber`,
-                                      e.target.value
+                                        ? false
+                                        : true,
+                                      onChange: (e) =>
+                                        item.field === "Stock" &&
+                                        setValue(
+                                          `manager.0.productionUnit`,
+                                          e.target.value
+                                        ),
+                                    }
+                                  )}
+                                  inputProps={{
+                                    shrink: watch(
+                                      `manager.${idx}.productionUnit`
                                     ),
-                                })}
-                                inputProps={{
-                                  shrink: watch(`manager.${idx}.batchNumber`),
-                                }}
-                                value={
-                                  watch(`manager.${idx}.batchNumber`) || ""
-                                } // Ensure only the current entry is updated
-                              >
-                                {batches?.map(
-                                  (
-                                    batch: { batchNumber: String; id: Number },
-                                    i
-                                  ) => (
-                                    <MenuItem value={String(batch.id)} key={i}>
-                                      {batch.batchNumber}
-                                    </MenuItem>
-                                  )
-                                )}
-                              </Select>
+                                  }}
+                                  value={
+                                    watch(`manager.${idx}.productionUnit`) || ""
+                                  }
+                                >
+                                  {(() => {
+                                    let selectedFarm = farms?.find(
+                                      (farm) =>
+                                        farm.id ===
+                                        watch(`manager.${idx}.fishFarm`)
+                                    );
 
-                              {errors &&
-                                !watch(`manager.${idx}.batchNumber`) &&
-                                errors.manager &&
-                                errors.manager[idx] &&
-                                errors.manager[idx].batchNumber && (
-                                  <Typography
-                                    variant="body2"
-                                    color="red"
-                                    fontSize={13}
-                                    mt={0.5}
-                                  >
-                                    This field is required
-                                  </Typography>
+                                    return selectedFarm ? (
+                                      selectedFarm?.productionUnits?.map(
+                                        (unit) => (
+                                          <MenuItem
+                                            value={String(unit.id)}
+                                            key={unit.id}
+                                          >
+                                            {unit.name}
+                                          </MenuItem>
+                                        )
+                                      )
+                                    ) : (
+                                      <MenuItem value="" disabled>
+                                        No units available
+                                      </MenuItem>
+                                    );
+                                  })()}
+                                </Select>
+                                {errors &&
+                                  !watch(`manager.${idx}.productionUnit`) &&
+                                  errors?.manager &&
+                                  errors?.manager[idx] &&
+                                  errors?.manager[idx].productionUnit && (
+                                    <Typography
+                                      variant="body2"
+                                      color="red"
+                                      fontSize={13}
+                                      mt={0.5}
+                                    >
+                                      This field is required
+                                    </Typography>
+                                  )}
+                                <Typography
+                                  variant="body2"
+                                  color="red"
+                                  fontSize={13}
+                                  mt={0.5}
+                                ></Typography>
+                              </FormControl>
+                            </Box>
+                          </Grid>
+                        )}
+                        {item.field !== "Sample" && (
+                          <Grid
+                            xs
+                            item
+                            sx={{
+                              width: "fit-content",
+                              minWidth: 130,
+                            }}
+                          >
+                            <Box mb={2} width={"100%"}>
+                              <FormControl fullWidth className="form-input">
+                                <InputLabel id="">Batch No. *</InputLabel>
+                                <Select
+                                  labelId="feed-supply-select-label9"
+                                  className="fish-manager"
+                                  id="feed-supply-select9"
+                                  label="Batch No. *"
+                                  disabled={
+                                    item.field === "Harvest" ||
+                                    item.field === "Mortalities" ||
+                                    idx === 0
+                                      ? true
+                                      : false
+                                  }
+                                  {...register(`manager.${idx}.batchNumber`, {
+                                    required: watch(
+                                      `manager.${idx}.batchNumber`
+                                    )
+                                      ? false
+                                      : true,
+                                    onChange: (e) =>
+                                      item.field === "Stock" &&
+                                      setValue(
+                                        `manager.0.batchNumber`,
+                                        e.target.value
+                                      ),
+                                  })}
+                                  inputProps={{
+                                    shrink: watch(`manager.${idx}.batchNumber`),
+                                  }}
+                                  value={
+                                    watch(`manager.${idx}.batchNumber`) || ""
+                                  } // Ensure only the current entry is updated
+                                >
+                                  {batches?.map(
+                                    (
+                                      batch: {
+                                        batchNumber: String;
+                                        id: Number;
+                                      },
+                                      i
+                                    ) => (
+                                      <MenuItem
+                                        value={String(batch.id)}
+                                        key={i}
+                                      >
+                                        {batch.batchNumber}
+                                      </MenuItem>
+                                    )
+                                  )}
+                                </Select>
+
+                                {errors &&
+                                  !watch(`manager.${idx}.batchNumber`) &&
+                                  errors.manager &&
+                                  errors.manager[idx] &&
+                                  errors.manager[idx].batchNumber && (
+                                    <Typography
+                                      variant="body2"
+                                      color="red"
+                                      fontSize={13}
+                                      mt={0.5}
+                                    >
+                                      This field is required
+                                    </Typography>
+                                  )}
+                              </FormControl>
+                            </Box>
+                          </Grid>
+                        )}
+                        {item.field === "Sample" && (
+                          <Grid
+                            xs
+                            item
+                            sx={{
+                              width: "fit-content",
+                              minWidth: 130,
+                            }}
+                          >
+                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                              <Controller
+                                name={`manager.${idx}.currentDate`}
+                                control={control}
+                                rules={{ required: "This field is required." }}
+                                render={({ field, fieldState: { error } }) => (
+                                  <>
+                                    <DatePicker
+                                      {...field}
+                                      label="Current Date * "
+                                      className="form-input"
+                                      sx={{
+                                        width: "100%",
+                                      }}
+                                      onChange={(date) => {
+                                        field.onChange(date);
+                                        setValue(
+                                          `manager.${idx}.currentDate`,
+                                          date
+                                        );
+                                      }}
+                                      value={field.value || null}
+                                    />
+                                    {error && (
+                                      <Typography
+                                        variant="body2"
+                                        color="red"
+                                        fontSize={13}
+                                        mt={0.5}
+                                      >
+                                        {error.message}
+                                      </Typography>
+                                    )}
+                                  </>
                                 )}
-                            </FormControl>
-                          </Box>
-                        </Grid>
+                              />
+                            </LocalizationProvider>
+                          </Grid>
+                        )}
                         <Grid
                           xs
                           item
@@ -1168,258 +1247,264 @@ const TransferModal: React.FC<Props> = ({
                                 </Typography>
                               )}
                           </Box>
-                        </Grid>{" "}
-                        <Grid
-                          item
-                          xs
-                          sx={{
-                            width: "fit-content",
-                            minWidth: 130,
-                          }}
-                        >
-                          <Box
-                            display={"flex"}
-                            gap={2}
-                            alignItems={"center"}
-                            position={"relative"}
+                        </Grid>
+                        {item.field !== "Sample" && (
+                          <Grid
+                            item
+                            xs
+                            sx={{
+                              width: "fit-content",
+                              minWidth: 130,
+                            }}
                           >
-                            <TextField
-                              label={`Stocking Density *`}
-                              type="text"
-                              className="form-input"
-                              disabled={
-                                idx === 0 ||
-                                item.field !== "Harvest" ||
-                                item.field !== "Mortalities"
-                                  ? true
-                                  : false
-                              }
-                              InputLabelProps={{
-                                shrink: !!watch(
-                                  `manager.${idx}.stockingDensityKG`
-                                ),
-                              }}
-                              sx={{
-                                width: "100%",
-                                "& .MuiInputLabel-root": {
-                                  transition: "all 0.2s ease",
-                                },
-                                "&:focus-within .MuiInputLabel-root": {
-                                  transform: "translate(10px, -9px)",
-                                  fontSize: "0.75rem",
-                                  color: "primary.main",
-                                  backgroundColor: "#fff",
-                                },
-                              }}
-                              {...register(
-                                `manager.${idx}.stockingDensityKG` as const,
-                                {
-                                  required: watch(
+                            <Box
+                              display={"flex"}
+                              gap={2}
+                              alignItems={"center"}
+                              position={"relative"}
+                            >
+                              <TextField
+                                label={`Stocking Density *`}
+                                type="text"
+                                className="form-input"
+                                disabled={
+                                  idx === 0 ||
+                                  item.field !== "Harvest" ||
+                                  item.field !== "Mortalities"
+                                    ? true
+                                    : false
+                                }
+                                InputLabelProps={{
+                                  shrink: !!watch(
                                     `manager.${idx}.stockingDensityKG`
-                                  )
-                                    ? false
-                                    : true,
-                                  pattern: validationPattern.numbersWithDot,
-                                }
-                              )}
-                            />
+                                  ),
+                                }}
+                                sx={{
+                                  width: "100%",
+                                  "& .MuiInputLabel-root": {
+                                    transition: "all 0.2s ease",
+                                  },
+                                  "&:focus-within .MuiInputLabel-root": {
+                                    transform: "translate(10px, -9px)",
+                                    fontSize: "0.75rem",
+                                    color: "primary.main",
+                                    backgroundColor: "#fff",
+                                  },
+                                }}
+                                {...register(
+                                  `manager.${idx}.stockingDensityKG` as const,
+                                  {
+                                    required: watch(
+                                      `manager.${idx}.stockingDensityKG`
+                                    )
+                                      ? false
+                                      : true,
+                                    pattern: validationPattern.numbersWithDot,
+                                  }
+                                )}
+                              />
+                              <Typography
+                                variant="body2"
+                                color="#555555AC"
+                                sx={{
+                                  position: "absolute",
+                                  right: 6,
+                                  top: "50%",
+                                  transform: "translate(-6px, -50%)",
+                                  backgroundColor: "#fff",
+                                  height: 30,
+                                  display: "grid",
+                                  placeItems: "center",
+                                  zIndex: 1,
+                                  pl: 1,
+                                }}
+                              >
+                                {`(kg/${"m\u00B3"})`}
+                              </Typography>
+                            </Box>
                             <Typography
                               variant="body2"
-                              color="#555555AC"
-                              sx={{
-                                position: "absolute",
-                                right: 6,
-                                top: "50%",
-                                transform: "translate(-6px, -50%)",
-                                backgroundColor: "#fff",
-                                height: 30,
-                                display: "grid",
-                                placeItems: "center",
-                                zIndex: 1,
-                                pl: 1,
-                              }}
+                              color="red"
+                              fontSize={13}
+                              mt={0.5}
+                            ></Typography>
+                            {errors &&
+                              !watch(`manager.${idx}.stockingDensityKG`) &&
+                              errors.manager &&
+                              errors.manager[idx] &&
+                              errors.manager[idx].stockingDensityKG &&
+                              errors.manager[idx].stockingDensityKG.type ===
+                                "required" && (
+                                <Typography
+                                  variant="body2"
+                                  color="red"
+                                  fontSize={13}
+                                  mt={0.5}
+                                >
+                                  {validationMessage.required}
+                                </Typography>
+                              )}
+                            {errors &&
+                              errors.manager &&
+                              errors.manager[idx] &&
+                              errors.manager[idx].stockingDensityKG &&
+                              errors.manager[idx].stockingDensityKG.type ===
+                                "pattern" && (
+                                <Typography
+                                  variant="body2"
+                                  color="red"
+                                  fontSize={13}
+                                  mt={0.5}
+                                >
+                                  {validationMessage.OnlyNumbersWithDot}
+                                </Typography>
+                              )}
+                          </Grid>
+                        )}
+                        {item.field !== "Sample" && (
+                          <Grid
+                            xs
+                            item
+                            sx={{
+                              width: "fit-content",
+                              minWidth: 130,
+                            }}
+                          >
+                            <Box
+                              display={"flex"}
+                              gap={2}
+                              alignItems={"center"}
+                              position={"relative"}
                             >
-                              {`(kg/${"m\u00B3"})`}
-                            </Typography>
-                          </Box>
-                          <Typography
-                            variant="body2"
-                            color="red"
-                            fontSize={13}
-                            mt={0.5}
-                          ></Typography>
-                          {errors &&
-                            !watch(`manager.${idx}.stockingDensityKG`) &&
-                            errors.manager &&
-                            errors.manager[idx] &&
-                            errors.manager[idx].stockingDensityKG &&
-                            errors.manager[idx].stockingDensityKG.type ===
-                              "required" && (
+                              <TextField
+                                label={`Stocking Density *`}
+                                type="text"
+                                className="form-input"
+                                disabled={
+                                  idx === 0 ||
+                                  item.field !== "Harvest" ||
+                                  item.field !== "Mortalities"
+                                    ? true
+                                    : false
+                                }
+                                {...register(
+                                  `manager.${idx}.stockingDensityNM` as const,
+                                  {
+                                    required: watch(
+                                      `manager.${idx}.stockingDensityNM`
+                                    )
+                                      ? false
+                                      : true,
+                                    pattern: validationPattern.numbersWithDot,
+                                  }
+                                )}
+                                InputLabelProps={{
+                                  shrink: !!watch(
+                                    `manager.${idx}.stockingDensityNM`
+                                  ),
+                                }}
+                                sx={{
+                                  width: "100%",
+                                  "& .MuiInputLabel-root": {
+                                    transition: "all 0.2s ease",
+                                  },
+                                  "&:focus-within .MuiInputLabel-root": {
+                                    transform: "translate(10px, -9px)",
+                                    fontSize: "0.75rem",
+                                    color: "primary.main",
+                                    backgroundColor: "#fff",
+                                  },
+                                }}
+                              />
                               <Typography
                                 variant="body2"
-                                color="red"
-                                fontSize={13}
-                                mt={0.5}
+                                color="#555555AC"
+                                sx={{
+                                  position: "absolute",
+                                  right: 6,
+                                  top: "50%",
+                                  transform: "translate(-6px, -50%)",
+                                  backgroundColor: "#fff",
+                                  height: 30,
+                                  display: "grid",
+                                  placeItems: "center",
+                                  zIndex: 1,
+                                  pl: 1,
+                                }}
                               >
-                                {validationMessage.required}
+                                {`(n/${"m\u00B3"})`}
                               </Typography>
-                            )}
-                          {errors &&
-                            errors.manager &&
-                            errors.manager[idx] &&
-                            errors.manager[idx].stockingDensityKG &&
-                            errors.manager[idx].stockingDensityKG.type ===
-                              "pattern" && (
-                              <Typography
-                                variant="body2"
-                                color="red"
-                                fontSize={13}
-                                mt={0.5}
-                              >
-                                {validationMessage.OnlyNumbersWithDot}
-                              </Typography>
-                            )}
-                        </Grid>
-                        <Grid
-                          xs
-                          item
-                          sx={{
-                            width: "fit-content",
-                            minWidth: 130,
-                          }}
-                        >
-                          <Box
-                            display={"flex"}
-                            gap={2}
-                            alignItems={"center"}
-                            position={"relative"}
+                            </Box>
+                            <Typography
+                              variant="body2"
+                              color="red"
+                              fontSize={13}
+                              mt={0.5}
+                            ></Typography>
+                            {errors &&
+                              !watch(`manager.${idx}.stockingDensityNM`) &&
+                              errors.manager &&
+                              errors.manager[idx] &&
+                              errors.manager[idx].stockingDensityNM &&
+                              errors.manager[idx].stockingDensityNM.type ===
+                                "required" && (
+                                <Typography
+                                  variant="body2"
+                                  color="red"
+                                  fontSize={13}
+                                  mt={0.5}
+                                >
+                                  {validationMessage.required}
+                                </Typography>
+                              )}
+                            {errors &&
+                              errors.manager &&
+                              errors.manager[idx] &&
+                              errors.manager[idx].stockingDensityNM &&
+                              errors.manager[idx].stockingDensityNM.type ===
+                                "pattern" && (
+                                <Typography
+                                  variant="body2"
+                                  color="red"
+                                  fontSize={13}
+                                  mt={0.5}
+                                >
+                                  {validationMessage.OnlyNumbersWithDot}
+                                </Typography>
+                              )}
+                          </Grid>
+                        )}
+                        {item.field !== "Sample" && (
+                          <Grid
+                            item
+                            xs
+                            sx={{
+                              width: "fit-content",
+                              minWidth: 130,
+                            }}
                           >
                             <TextField
-                              label={`Stocking Density *`}
+                              label="Stocking Level *"
                               type="text"
                               className="form-input"
-                              disabled={
-                                idx === 0 ||
-                                item.field !== "Harvest" ||
-                                item.field !== "Mortalities"
-                                  ? true
-                                  : false
-                              }
+                              disabled
+                              sx={{ width: "100%" }}
                               {...register(
-                                `manager.${idx}.stockingDensityNM` as const,
-                                {
-                                  required: watch(
-                                    `manager.${idx}.stockingDensityNM`
-                                  )
-                                    ? false
-                                    : true,
-                                  pattern: validationPattern.numbersWithDot,
-                                }
+                                `manager.${idx}.stockingLevel` as const
+                                // {
+                                //   required: true,
+                                //   pattern: validationPattern.numbersWithDot,
+                                // }
                               )}
-                              InputLabelProps={{
-                                shrink: !!watch(
-                                  `manager.${idx}.stockingDensityNM`
-                                ),
-                              }}
-                              sx={{
-                                width: "100%",
-                                "& .MuiInputLabel-root": {
-                                  transition: "all 0.2s ease",
-                                },
-                                "&:focus-within .MuiInputLabel-root": {
-                                  transform: "translate(10px, -9px)",
-                                  fontSize: "0.75rem",
-                                  color: "primary.main",
-                                  backgroundColor: "#fff",
-                                },
-                              }}
                             />
                             <Typography
                               variant="body2"
-                              color="#555555AC"
-                              sx={{
-                                position: "absolute",
-                                right: 6,
-                                top: "50%",
-                                transform: "translate(-6px, -50%)",
-                                backgroundColor: "#fff",
-                                height: 30,
-                                display: "grid",
-                                placeItems: "center",
-                                zIndex: 1,
-                                pl: 1,
-                              }}
-                            >
-                              {`(n/${"m\u00B3"})`}
-                            </Typography>
-                          </Box>
-                          <Typography
-                            variant="body2"
-                            color="red"
-                            fontSize={13}
-                            mt={0.5}
-                          ></Typography>
-                          {errors &&
-                            !watch(`manager.${idx}.stockingDensityNM`) &&
-                            errors.manager &&
-                            errors.manager[idx] &&
-                            errors.manager[idx].stockingDensityNM &&
-                            errors.manager[idx].stockingDensityNM.type ===
-                              "required" && (
-                              <Typography
-                                variant="body2"
-                                color="red"
-                                fontSize={13}
-                                mt={0.5}
-                              >
-                                {validationMessage.required}
-                              </Typography>
-                            )}
-                          {errors &&
-                            errors.manager &&
-                            errors.manager[idx] &&
-                            errors.manager[idx].stockingDensityNM &&
-                            errors.manager[idx].stockingDensityNM.type ===
-                              "pattern" && (
-                              <Typography
-                                variant="body2"
-                                color="red"
-                                fontSize={13}
-                                mt={0.5}
-                              >
-                                {validationMessage.OnlyNumbersWithDot}
-                              </Typography>
-                            )}
-                        </Grid>
-                        <Grid
-                          item
-                          xs
-                          sx={{
-                            width: "fit-content",
-                            minWidth: 130,
-                          }}
-                        >
-                          <TextField
-                            label="Stocking Level *"
-                            type="text"
-                            className="form-input"
-                            disabled
-                            sx={{ width: "100%" }}
-                            {...register(
-                              `manager.${idx}.stockingLevel` as const
-                              // {
-                              //   required: true,
-                              //   pattern: validationPattern.numbersWithDot,
-                              // }
-                            )}
-                          />
-                          <Typography
-                            variant="body2"
-                            color="red"
-                            fontSize={13}
-                            mt={0.5}
-                          ></Typography>
-                        </Grid>
+                              color="red"
+                              fontSize={13}
+                              mt={0.5}
+                            ></Typography>
+                          </Grid>
+                        )}
                       </Grid>
                     </Stack>
 
@@ -1529,7 +1614,8 @@ const TransferModal: React.FC<Props> = ({
                           : field === "Harvest" ||
                             field === "Mortalities" ||
                             field === "Re-Stock" ||
-                            field === "Transfer"
+                            field === "Transfer" ||
+                            field === "Sample"
                           ? watchedFields[0].count &&
                             watchedFields[0].batchNumber
                             ? false

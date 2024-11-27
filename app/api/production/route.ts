@@ -17,6 +17,7 @@ export const GET = async (request: NextRequest) => {
         organisation: true,
         productionUnit: true,
         fishSupply: true,
+        WaterQuality: true,
       },
       orderBy: {
         id: "asc",

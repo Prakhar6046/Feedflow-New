@@ -256,6 +256,32 @@ model FishSupply {
   @@index([updatedAt])
 }
 
+model WaterQuality {
+  id           Int         @id @default(autoincrement())
+  currentDate  String?
+  waterTemp    String?
+  DO           String?
+  TSS          String?
+  NH4          String?
+  NO3          String?
+  NO2          String?
+  ph           String?
+  visibility   String?
+  productionId Int?
+  production   production? @relation(fields: [productionId], references: [id])
+}
+
+model FishSample {
+  id           Int         @id @default(autoincrement())
+  currentDate  String?
+  biomass      String?
+  fishCount    String?
+  meanLength   String?
+  meanWeight   String?
+  productionId Int?
+  production   production? @relation(fields: [productionId], references: [id])
+}
+
 model production {
   id                Int             @id @default(autoincrement())
   fishFarmId        String
@@ -278,6 +304,8 @@ model production {
   organisation      Organisation?   @relation(fields: [organisationId], references: [id], onDelete: SetNull)
   productionUnit    ProductionUnit? @relation(fields: [productionUnitId], references: [id])
   fishSupply        FishSupply?     @relation(fields: [batchNumberId], references: [id])
+  WaterQuality      WaterQuality[]
+  FishSample        FishSample[]
 
   @@index([createdAt])
   @@index([updatedAt])

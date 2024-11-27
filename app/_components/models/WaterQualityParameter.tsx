@@ -20,9 +20,19 @@ import {
 } from "@mui/material";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { Dayjs } from "dayjs";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
+import {
+  Controller,
+  SubmitHandler,
+  useFieldArray,
+  useForm,
+} from "react-hook-form";
+import toast from "react-hot-toast";
 const style = {
   position: "absolute" as "absolute",
   top: "50%",
@@ -40,6 +50,7 @@ interface Props {
   farms: Farm[];
   productions: Production[];
 }
+
 interface InputTypes {
   water: {
     id: Number;
@@ -54,6 +65,7 @@ interface InputTypes {
     ph?: String;
     visibility?: String;
     showDate?: Boolean;
+    date?: Dayjs | null;
   }[];
 }
 const WaterQualityParameter: React.FC<Props> = ({
@@ -89,7 +101,7 @@ const WaterQualityParameter: React.FC<Props> = ({
     defaultValues: {
       water: [
         {
-          id: 0,
+          id: "",
           fishFarm: "",
           productionUnit: "",
           DO: "",
@@ -100,6 +112,7 @@ const WaterQualityParameter: React.FC<Props> = ({
           TSS: "",
           visibility: "",
           waterTemp: "",
+          date: "",
           showDate: false,
         },
       ],
@@ -117,62 +130,53 @@ const WaterQualityParameter: React.FC<Props> = ({
     if (isApiCallInProgress) return;
     setIsApiCallInProgress(true);
 
-    // try {
-    //   const addIdToData = data.manager.map((field) => {
-    //     const fishFarm = productions.find(
-    //       (OldField) =>
-    //         OldField.fishFarmId === field.fishFarm &&
-    //         OldField.productionUnitId === field.productionUnit
-    //     );
+    try {
+      let updatedData = data.water.map((data) => {
+        if (data.date) {
+          return { ...data, date: data.date?.format("MM/DD/YYYY") };
+        } else {
+          return data;
+        }
+      });
 
-    //     if (
-    //       field.fishFarm === fishFarm?.fishFarmId &&
-    //       field.productionUnit === fishFarm.productionUnitId
-    //     ) {
-    //       return { ...field, id: fishFarm.id };
-    //     } else {
-    //       return field;
-    //     }
-    //   });
+      if (
+        selectedProduction &&
+        selectedProduction.WaterQuality &&
+        selectedProduction.WaterQuality[0] &&
+        selectedProduction?.WaterQuality[0].id
+      ) {
+        updatedData = updatedData.map((data) => {
+          return {
+            ...data,
+            waterQualityId:
+              selectedProduction &&
+              selectedProduction.WaterQuality &&
+              selectedProduction.WaterQuality[0]?.id,
+          };
+        });
+      }
+      const response = await fetch("/api/production/waterQuality", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedData),
+      });
 
-    //   const filteredData = addIdToData.filter(
-    //     (field) => field.field !== "Stock"
-    //   );
-
-    //   if (!isEnteredBiomassGreater && !isEnteredFishCountGreater) {
-    //     const payload = {
-    //       organisationId: selectedProduction.organisationId,
-    //       data: filteredData,
-    //     };
-
-    //     const response = await fetch("/api/production/mange", {
-    //       method: "POST",
-    //       headers: {
-    //         "Content-Type": "application/json",
-    //       },
-    //       body: JSON.stringify(payload),
-    //     });
-
-    //     const res = await response.json();
-    //     if (res.status) {
-    //       toast.dismiss();
-    //       toast.success(res.message);
-    //       setOpen(false);
-    //       router.push("/dashboard/production");
-    //       reset();
-    //       router.refresh();
-    //     }
-    //   } else {
-    //     toast.dismiss();
-    //     toast.error(
-    //       "Please enter biomass and fish count value less than selected production"
-    //     );
-    //   }
-    // } catch (error) {
-    //   toast.error("Something went wrong. Please try again.");
-    // } finally {
-    //   setIsApiCallInProgress(false);
-    // }
+      const res = await response.json();
+      if (res.status) {
+        toast.dismiss();
+        toast.success(res.message);
+        setOpen(false);
+        router.push("/dashboard/production");
+        reset();
+        router.refresh();
+      }
+    } catch (error) {
+      toast.error("Something went wrong. Please try again.");
+    } finally {
+      setIsApiCallInProgress(false);
+    }
   };
 
   const handleClose = () => {
@@ -190,9 +194,9 @@ const WaterQualityParameter: React.FC<Props> = ({
   const handleCloseAnchor = (field: string) => {
     if (field.length) {
       append({
-        id: 0,
-        fishFarm: "",
-        productionUnit: "",
+        id: selectedProduction?.id,
+        fishFarm: selectedProduction?.fishFarmId,
+        productionUnit: selectedProduction?.productionUnitId,
         DO: "",
         NH4: "",
         NO2: "",
@@ -201,6 +205,7 @@ const WaterQualityParameter: React.FC<Props> = ({
         TSS: "",
         visibility: "",
         waterTemp: "",
+        date: null,
         showDate: true,
       });
       setAnchorEl(null);
@@ -564,73 +569,40 @@ const WaterQualityParameter: React.FC<Props> = ({
                             minWidth: 130,
                           }}
                         >
-                          <Box
-                            display={"flex"}
-                            gap={2}
-                            alignItems={"center"}
-                            position={"relative"}
-                          >
-                            <TextField
-                              focused
-                              label="Water Temperature *"
-                              type="text"
-                              className="form-input"
-                              // disabled={idx === 0 ? true : false}
-                              sx={{ width: "100%" }}
-                              {...register(`water.${idx}.waterTemp`, {
-                                required: true,
-                                pattern: validationPattern.numbersWithDot,
-                              })}
+                          <LocalizationProvider dateAdapter={AdapterDayjs}>
+                            <Controller
+                              name={`water.${idx}.date`}
+                              control={control}
+                              rules={{ required: "This field is required." }}
+                              render={({ field, fieldState: { error } }) => (
+                                <>
+                                  <DatePicker
+                                    {...field}
+                                    label="Date * "
+                                    className="form-input"
+                                    sx={{
+                                      width: "100%",
+                                    }}
+                                    onChange={(date) => {
+                                      field.onChange(date);
+                                      setValue(`water.${idx}.date`, date);
+                                    }}
+                                    value={field.value || null}
+                                  />
+                                  {error && (
+                                    <Typography
+                                      variant="body2"
+                                      color="red"
+                                      fontSize={13}
+                                      mt={0.5}
+                                    >
+                                      {error.message}
+                                    </Typography>
+                                  )}
+                                </>
+                              )}
                             />
-
-                            <Typography
-                              variant="body2"
-                              color="#555555AC"
-                              sx={{
-                                position: "absolute",
-                                right: 6,
-                                top: "50%",
-                                transform: "translate(-6px, -50%)",
-                                backgroundColor: "#fff",
-                                height: 30,
-                                display: "grid",
-                                placeItems: "center",
-                                zIndex: 1,
-                                pl: 1,
-                              }}
-                            >
-                              °C
-                            </Typography>
-                          </Box>
-
-                          {errors &&
-                            errors.water &&
-                            errors.water[idx] &&
-                            errors.water[idx].waterTemp &&
-                            errors.water[idx].waterTemp.type === "required" && (
-                              <Typography
-                                variant="body2"
-                                color="red"
-                                fontSize={13}
-                                mt={0.5}
-                              >
-                                {validationMessage.required}
-                              </Typography>
-                            )}
-                          {errors &&
-                            errors.water &&
-                            errors.water[idx] &&
-                            errors.water[idx].waterTemp &&
-                            errors.water[idx].waterTemp.type === "pattern" && (
-                              <Typography
-                                variant="body2"
-                                color="red"
-                                fontSize={13}
-                                mt={0.5}
-                              >
-                                {validationMessage.OnlyNumbersWithDot}
-                              </Typography>
-                            )}
+                          </LocalizationProvider>
                         </Grid>
                       )}
                       <Grid
@@ -725,7 +697,7 @@ const WaterQualityParameter: React.FC<Props> = ({
                         >
                           <TextField
                             focused
-                            label="Dissolved Oxygen{DO} *"
+                            label="Dissolved Oxygen(DO) *"
                             type="text"
                             className="form-input"
                             // disabled={idx === 0 ? true : false}
@@ -801,7 +773,7 @@ const WaterQualityParameter: React.FC<Props> = ({
                         >
                           <TextField
                             focused
-                            label="Total Suspended Solids {TSS} *"
+                            label="Total Suspended Solids (TSS) *"
                             type="text"
                             className="form-input"
                             // disabled={idx === 0 ? true : false}
@@ -878,7 +850,7 @@ const WaterQualityParameter: React.FC<Props> = ({
                         >
                           <TextField
                             focused
-                            label="Ammonia {NH₄} *"
+                            label="Ammonia (NH₄) *"
                             type="text"
                             className="form-input"
                             // disabled={idx === 0 ? true : false}
@@ -954,7 +926,7 @@ const WaterQualityParameter: React.FC<Props> = ({
                         >
                           <TextField
                             focused
-                            label="Nitrate {NO₃⁻} *"
+                            label="Nitrate (NO₃⁻) *"
                             type="text"
                             className="form-input"
                             // disabled={idx === 0 ? true : false}
@@ -1030,7 +1002,7 @@ const WaterQualityParameter: React.FC<Props> = ({
                         >
                           <TextField
                             focused
-                            label="Nitrate {NO₂⁻} *"
+                            label="Nitrate (NO₂⁻) *"
                             type="text"
                             className="form-input"
                             // disabled={idx === 0 ? true : false}
@@ -1289,27 +1261,6 @@ const WaterQualityParameter: React.FC<Props> = ({
             padding={3}
             margin={"40px"}
           >
-            <Button
-              className=""
-              type="button"
-              variant="contained"
-              onClick={handleClick}
-              sx={{
-                background: "#06A19B",
-                fontWeight: "bold",
-                padding: "8px 20px",
-                width: {
-                  xs: "50%",
-                  lg: "fit-content",
-                },
-                textTransform: "capitalize",
-                borderRadius: "12px",
-
-                marginBlock: "10px",
-              }}
-            >
-              Sample
-            </Button>
             <Button
               className=""
               type="button"
