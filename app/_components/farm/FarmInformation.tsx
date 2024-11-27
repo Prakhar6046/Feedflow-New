@@ -63,7 +63,9 @@ const FarmInformation: NextPage<Props> = ({
   const [fishFarmers, setFishFarmers] = useState<Farm[]>();
   const [loading, setLoading] = useState<boolean>(false);
   const selectedManagerIds = watch("mangerId") || [];
+  const watchFishFarmer = watch("fishFarmer");
   const isEditFarm = useAppSelector(selectIsEditFarm);
+
   const handleChange = (event: any) => {
     const {
       target: { value },
@@ -319,7 +321,7 @@ const FarmInformation: NextPage<Props> = ({
                   onChange: (e) => setValue("fishFarmer", e.target.value),
                 })}
                 label="Fish Farmer *"
-                value={watch("fishFarmer") || ""}
+                value={watchFishFarmer || ""}
               >
                 {fishFarmers?.map((fish: any) => {
                   return (
