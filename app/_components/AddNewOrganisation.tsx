@@ -352,8 +352,7 @@ const AddNewOrganisation = () => {
                   required: true,
                   pattern: validationPattern.alphabetsNumbersAndSpacesPattern,
                 })}
-                // focused={userData?.data.name ? true : false}
-                // value={userData?.data.name}
+                focused
                 sx={{
                   width: "100%",
                 }}
@@ -402,13 +401,10 @@ const AddNewOrganisation = () => {
                     required: true,
                     // pattern: validationPattern.alphabetsNumbersAndSpacesPattern,
                   })}
-                  // disabled
+                  focused
                   sx={{
                     width: "100%",
                   }}
-
-                  // focused={true}
-                  // value={userData?.data.email ?? "Demo@gmail.com"}
                 />
                 {errors &&
                   errors.organisationCode &&
@@ -424,7 +420,7 @@ const AddNewOrganisation = () => {
                   )}
               </Box>
             </Stack>
-            <FormControl className="form-input" fullWidth>
+            <FormControl className="form-input" fullWidth focused>
               <InputLabel id="demo-simple-select-label">
                 Organisation Type *
               </InputLabel>
@@ -491,6 +487,7 @@ const AddNewOrganisation = () => {
                     required: true,
                     pattern: validationPattern.addressPattern,
                   })}
+                  focused
                   sx={{
                     width: "100%",
                   }}
@@ -531,6 +528,7 @@ const AddNewOrganisation = () => {
                     pattern:
                       validationPattern.alphabetsSpacesAndSpecialCharsPattern,
                   })}
+                  focused
                   sx={{
                     width: "100%",
                   }}
@@ -577,6 +575,7 @@ const AddNewOrganisation = () => {
                     pattern:
                       validationPattern.alphabetsSpacesAndSpecialCharsPattern,
                   })}
+                  focused
                   sx={{
                     width: "100%",
                   }}
@@ -616,6 +615,7 @@ const AddNewOrganisation = () => {
                     required: true,
                     pattern: validationPattern.onlyNumbersPattern,
                   })}
+                  focused
                   sx={{
                     width: "100%",
                   }}
@@ -665,6 +665,7 @@ const AddNewOrganisation = () => {
                     required: true,
                     pattern: validationPattern.alphabetsAndSpacesPattern,
                   })}
+                  focused
                   sx={{
                     width: "100%",
                   }}
@@ -748,6 +749,7 @@ const AddNewOrganisation = () => {
                       required: true,
                       pattern: validationPattern.alphabetsAndSpacesPattern,
                     })}
+                    focused
                     sx={{
                       width: "100%",
                     }}
@@ -792,7 +794,7 @@ const AddNewOrganisation = () => {
                     },
                   }}
                 >
-                  <FormControl className="form-input" fullWidth>
+                  <FormControl className="form-input" fullWidth focused>
                     <InputLabel id="demo-simple-select-label">
                       Role *
                     </InputLabel>
@@ -851,6 +853,7 @@ const AddNewOrganisation = () => {
                       required: true,
                       pattern: validationPattern.emailPattern,
                     })}
+                    focused
                     sx={{
                       width: "100%",
                     }}
@@ -902,6 +905,7 @@ const AddNewOrganisation = () => {
                       required: true,
                       pattern: validationPattern.phonePattern,
                     })}
+                    focused
                     sx={{
                       width: "100%",
                     }}

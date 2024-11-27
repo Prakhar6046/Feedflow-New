@@ -471,6 +471,9 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                               border: "1px solid #06A19B",
                               minWidth: 90,
                             }}
+                            disabled={
+                              productionUnits[index].type ? false : true
+                            }
                             onClick={() => handleCalculate(item, index)}
                           >
                             Calculate

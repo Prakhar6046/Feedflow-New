@@ -80,64 +80,110 @@ const CalculateVolume: React.FC<Props> = ({
     setRadiusError(false);
   };
   const handleCalculate = () => {
-    let output;
     if (
-      selectedUnit?.name === "Rectangular Tank" &&
-      Number(length) &&
-      Number(width) &&
-      Number(depth)
+      lengthError ||
+      widthError ||
+      depthError ||
+      areaError ||
+      heigthError ||
+      radiusError
+    )
+      return;
+    if (
+      Number(length) ||
+      Number(width) ||
+      Number(depth) ||
+      Number(area) ||
+      Number(radius)
     ) {
-      output = Number(length) * Number(width) * Number(depth);
-    } else if (
-      selectedUnit?.name === "Earthen Pond" &&
-      Number(area) &&
-      Number(depth)
-    ) {
-      output = Number(area) * Number(depth);
-    } else if (
-      selectedUnit?.name === "Raceway" &&
-      Number(length) &&
-      Number(width) &&
-      Number(depth)
-    ) {
-      output = Number(length) * Number(width) * Number(depth);
-    } else if (
-      selectedUnit?.name === "Cage" &&
-      Number(length) &&
-      Number(width) &&
-      Number(heigth)
-    ) {
-      output = Number(length) * Number(width) * Number(heigth);
-    } else if (
-      selectedUnit?.name === "Hapa" &&
-      Number(length) &&
-      Number(width) &&
-      Number(heigth)
-    ) {
-      output = Number(length) * Number(width) * Number(heigth);
-    } else if (
-      selectedUnit?.name === "Circular Tank" &&
-      Number(radius) &&
-      Number(depth)
-    ) {
-      output = 3.14159 * Number(radius) * 2 * Number(depth);
-    } else if (
-      selectedUnit?.name === "D-end Tank" &&
-      Number(radius) &&
-      Number(length) &&
-      Number(width) &&
-      Number(depth)
-    ) {
-      output =
-        (2 * 3.14159 * Number(radius) * 2 +
-          (Number(length) - Number(radius)) * Number(Number(width))) *
-        Number(depth);
+      let output;
+      if (
+        selectedUnit?.name === "Rectangular Tank" &&
+        Number(length) &&
+        Number(width) &&
+        Number(depth)
+      ) {
+        output = Number(length) * Number(width) * Number(depth);
+      } else if (
+        selectedUnit?.name === "Earthen Pond" &&
+        Number(area) &&
+        Number(depth)
+      ) {
+        output = Number(area) * Number(depth);
+      } else if (
+        selectedUnit?.name === "Raceway" &&
+        Number(length) &&
+        Number(width) &&
+        Number(depth)
+      ) {
+        output = Number(length) * Number(width) * Number(depth);
+      } else if (
+        selectedUnit?.name === "Cage" &&
+        Number(length) &&
+        Number(width) &&
+        Number(heigth)
+      ) {
+        output = Number(length) * Number(width) * Number(heigth);
+      } else if (
+        selectedUnit?.name === "Hapa" &&
+        Number(length) &&
+        Number(width) &&
+        Number(heigth)
+      ) {
+        output = Number(length) * Number(width) * Number(heigth);
+      } else if (
+        selectedUnit?.name === "Circular Tank" &&
+        Number(radius) &&
+        Number(depth)
+      ) {
+        output = 3.14159 * Number(radius) * 2 * Number(depth);
+      } else if (
+        selectedUnit?.name === "D-end Tank" &&
+        Number(radius) &&
+        Number(length) &&
+        Number(width) &&
+        Number(depth)
+      ) {
+        output =
+          (2 * 3.14159 * Number(radius) * 2 +
+            (Number(length) - Number(radius)) * Number(Number(width))) *
+          Number(depth);
+      } else {
+      }
+      if (selectedUnit?.id) {
+        setCalculatedValue({ output: Number(output), id: selectedUnit.id });
+      }
+      setOpen(false);
     } else {
+      if (selectedUnit?.name === "Rectangular Tank") {
+        setLengthError(true);
+        setWidthError(true);
+        setDepthError(true);
+      } else if (selectedUnit?.name === "Earthen Pond") {
+        setAreaError(true);
+        setDepthError(true);
+      } else if (selectedUnit?.name === "Raceway") {
+        setLengthError(true);
+        setWidthError(true);
+        setDepthError(true);
+      } else if (selectedUnit?.name === "Cage") {
+        setLengthError(true);
+        setWidthError(true);
+        setHeigthError(true);
+      } else if (selectedUnit?.name === "Hapa") {
+        setLengthError(true);
+        setWidthError(true);
+        setHeigthError(true);
+      } else if (selectedUnit?.name === "Circular Tank") {
+        setDepthError(true);
+        setRadiusError(true);
+      } else {
+        setLengthError(true);
+        setWidthError(true);
+        setDepthError(true);
+        setRadiusError(true);
+      }
     }
-    if (selectedUnit?.id) {
-      setCalculatedValue({ output: Number(output), id: selectedUnit.id });
-    }
-    setOpen(false);
   };
   const handleBlur = (field: any, setError: any) => {
     setError(field === "");

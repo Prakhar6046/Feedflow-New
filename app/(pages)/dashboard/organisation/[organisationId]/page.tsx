@@ -479,8 +479,6 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
                       width: "100%",
                     }}
                     focused
-                    // focused={true}
-                    // value={userData?.data.email ?? "Demo@gmail.com"}
                   />
                   {errors &&
                     errors.organisationCode &&
@@ -496,7 +494,7 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
                     )}
                 </Box>
               </Stack>
-              <FormControl className="form-input" fullWidth>
+              <FormControl className="form-input" fullWidth focused>
                 <InputLabel id="demo-simple-select-label">
                   Organisation Type *
                 </InputLabel>

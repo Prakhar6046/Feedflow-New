@@ -1002,7 +1002,7 @@ const WaterQualityParameter: React.FC<Props> = ({
                         >
                           <TextField
                             focused
-                            label="Nitrate (NO₂⁻) *"
+                            label="Nitrite (NO₂⁻) *"
                             type="text"
                             className="form-input"
                             // disabled={idx === 0 ? true : false}

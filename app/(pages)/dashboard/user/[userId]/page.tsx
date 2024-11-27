@@ -388,7 +388,7 @@ export default function Page({ params }: { params: { userId: string } }) {
                     {...register("name", {
                       required: true,
                     })}
-                    focused={userData?.data.name ? true : false}
+                    focused
                     sx={{
                       width: "100%",
                     }}
@@ -410,7 +410,7 @@ export default function Page({ params }: { params: { userId: string } }) {
                     type="email"
                     className="form-input"
                     autoFocus
-                    focused={true}
+                    focused
                     InputProps={{
                       readOnly:
                         Number(params.userId) === currentUserId ? true : false,
@@ -453,7 +453,7 @@ export default function Page({ params }: { params: { userId: string } }) {
                     readOnly:
                       Number(params.userId) === currentUserId ? true : false,
                   }}
-                  focused={true}
+                  focused
                   {...register("organisation")}
                   sx={{
                     width: "100%",
@@ -477,7 +477,7 @@ export default function Page({ params }: { params: { userId: string } }) {
                     readOnly:
                       Number(params.userId) === currentUserId ? true : false,
                   }}
-                  focused={true}
+                  focused
                   {...register("organisationType")}
                   sx={{
                     width: "100%",

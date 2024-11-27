@@ -294,6 +294,7 @@ export default function AddNewUser({ organisations }: Props) {
                     label="Name *"
                     type="text"
                     className="form-input"
+                    focused
                     {...register("name", {
                       required: true,
                     })}
@@ -321,6 +322,7 @@ export default function AddNewUser({ organisations }: Props) {
                     {...register("email", {
                       required: true,
                     })}
+                    focused
                     sx={{
                       width: "100%",
                     }}
