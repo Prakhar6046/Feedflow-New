@@ -582,7 +582,7 @@ const WaterQualityParameter: React.FC<Props> = ({
                                 <>
                                   <DatePicker
                                     {...field}
-                                    label="Date * "
+                                    label="Current Date * "
                                     className="form-input"
                                     sx={{
                                       width: "100%",
