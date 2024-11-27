@@ -397,8 +397,7 @@ export default function ProductionTable({
                       <TableCell
                         sx={{
                           color: "#555555",
-
-                          fontWeight: 500,
+                          fontWeight: 700,
                           paddingLeft: {
                             lg: 10,
                             md: 7,
@@ -412,6 +411,7 @@ export default function ProductionTable({
                         {farm.farm ?? ""}
                       </TableCell>
                       <TableCell
+                        className="table-padding"
                         sx={{
                           borderBottomWidth: 1,
                           color: "#555555",
@@ -430,10 +430,14 @@ export default function ProductionTable({
                                 display: "flex",
                                 alignItems: "center",
                                 gap: 1,
+                                backgroundColor: "#ECECEC",
+                                padding: "10px",
+                                marginBottom: "10px",
+                                textWrap: "nowrap",
                               }}
                             >
                               {unit.productionUnit.name}
-                              {/* <Typography
+                              <Typography
                                 variant="body2"
                                 sx={{
                                   fontWeight: 600,
@@ -443,12 +447,13 @@ export default function ProductionTable({
                                 }}
                               >
                                 (Re-Stock)
-                              </Typography> */}
+                              </Typography>
                             </Typography>
                           );
                         })}
                       </TableCell>
                       <TableCell
+                        className="table-padding"
                         sx={{
                           borderBottomWidth: 1,
                           color: "#555555",
@@ -464,6 +469,10 @@ export default function ProductionTable({
                               sx={{
                                 fontWeight: 500,
                                 fontSize: 14,
+                                backgroundColor: "#ECECEC",
+                                padding: "10px",
+                                marginBottom: "10px",
+                                textWrap: "nowrap",
                               }}
                             >
                               {unit?.fishSupply?.batchNumber ?? ""}
@@ -472,11 +481,13 @@ export default function ProductionTable({
                         })}
                       </TableCell>
                       <TableCell
+                        className="table-padding"
                         sx={{
                           borderBottomWidth: 1,
                           color: "#555555",
                           fontWeight: 500,
                           pl: 0,
+                          p: 0,
                         }}
                       >
                         {farm.units.map((unit, i) => {
@@ -487,6 +498,10 @@ export default function ProductionTable({
                               sx={{
                                 fontWeight: 500,
                                 fontSize: 14,
+                                backgroundColor: "#ECECEC",
+                                padding: "10px",
+                                marginBottom: "10px",
+                                textWrap: "nowrap",
                               }}
                             >
                               {unit?.age ?? ""}
@@ -495,6 +510,7 @@ export default function ProductionTable({
                         })}
                       </TableCell>
                       <TableCell
+                        className="table-padding"
                         sx={{
                           borderBottomWidth: 1,
                           color: "#555555",
@@ -510,6 +526,12 @@ export default function ProductionTable({
                               sx={{
                                 fontWeight: 500,
                                 fontSize: 14,
+                                backgroundColor: "#ECECEC",
+                                padding: "0px",
+                                marginBottom: "10px",
+                                // padding: "21px",
+                                // marginBottom: "10px",
+                                textWrap: "nowrap",
                               }}
                             >
                               {unit?.fishCount ?? ""}
@@ -518,6 +540,7 @@ export default function ProductionTable({
                         })}
                       </TableCell>
                       <TableCell
+                        className="table-padding"
                         // align="center"
                         sx={{
                           borderBottomColor: "#F5F6F8",
@@ -535,6 +558,10 @@ export default function ProductionTable({
                               sx={{
                                 fontWeight: 500,
                                 fontSize: 14,
+                                backgroundColor: "#ECECEC",
+                                padding: "10px",
+                                marginBottom: "10px",
+                                textWrap: "nowrap",
                               }}
                             >
                               {unit.biomass ? `${unit.biomass} kg` : ""}
@@ -543,6 +570,7 @@ export default function ProductionTable({
                         })}
                       </TableCell>
                       <TableCell
+                        className="table-padding"
                         // align="center"
                         sx={{
                           borderBottomColor: "#F5F6F8",
@@ -560,6 +588,10 @@ export default function ProductionTable({
                               sx={{
                                 fontWeight: 500,
                                 fontSize: 14,
+                                backgroundColor: "#ECECEC",
+                                padding: "10px",
+                                marginBottom: "10px",
+                                textWrap: "nowrap",
                               }}
                             >
                               {unit.meanWeight ? `${unit.meanWeight} g` : ""}
@@ -568,6 +600,7 @@ export default function ProductionTable({
                         })}
                       </TableCell>
                       <TableCell
+                        className="table-padding"
                         // align="center"
                         sx={{
                           borderBottomColor: "#F5F6F8",
@@ -585,6 +618,10 @@ export default function ProductionTable({
                               sx={{
                                 fontWeight: 500,
                                 fontSize: 14,
+                                backgroundColor: "#ECECEC",
+                                padding: "10px",
+                                marginBottom: "10px",
+                                textWrap: "nowrap",
                               }}
                             >
                               {unit.meanLength ? `${unit.meanLength} mm` : ""}
@@ -593,6 +630,7 @@ export default function ProductionTable({
                         })}
                       </TableCell>
                       <TableCell
+                        className="table-padding"
                         // align="center"
                         sx={{
                           borderBottomColor: "#F5F6F8",
@@ -610,6 +648,10 @@ export default function ProductionTable({
                               sx={{
                                 fontWeight: 500,
                                 fontSize: 14,
+                                backgroundColor: "#ECECEC",
+                                padding: "10px",
+                                marginBottom: "10px",
+                                textWrap: "nowrap",
                               }}
                             >
                               {Number(unit.stockingDensityKG).toFixed(2) ?? ""}
@@ -618,6 +660,7 @@ export default function ProductionTable({
                         })}
                       </TableCell>
                       <TableCell
+                        className="table-padding"
                         // align="center"
                         sx={{
                           borderBottomColor: "#F5F6F8",
@@ -635,6 +678,10 @@ export default function ProductionTable({
                               sx={{
                                 fontWeight: 500,
                                 fontSize: 14,
+                                backgroundColor: "#ECECEC",
+                                padding: "10px",
+                                marginBottom: "10px",
+                                textWrap: "nowrap",
                               }}
                             >
                               {Number(unit.stockingDensityNM).toFixed(2) ?? ""}
@@ -645,6 +692,7 @@ export default function ProductionTable({
                         {/* {farm.meanWeight ? `${farm.meanWeight}g` : ""} */}
                       </TableCell>{" "}
                       <TableCell
+                        className="table-padding"
                         sx={{
                           borderBottomColor: "#F5F6F8",
                           borderBottomWidth: 2,
@@ -661,6 +709,10 @@ export default function ProductionTable({
                               sx={{
                                 fontWeight: 500,
                                 fontSize: 14,
+                                backgroundColor: "#ECECEC",
+                                padding: "10px",
+                                marginBottom: "10px",
+                                textWrap: "nowrap",
                               }}
                             >
                               {Number(unit.stockingLevel) ?? ""}
@@ -677,11 +729,17 @@ export default function ProductionTable({
                             color: "#555555",
                             fontWeight: 500,
                           }}
-                          className="cursor-pointer"
+                          className="cursor-pointer table-padding"
                         >
                           {farm.units.map((unit) => {
                             return (
                               <Box
+                                sx={{
+                                  backgroundColor: "#ECECEC",
+                                  padding: "4px",
+                                  marginBottom: "11px",
+                                  textWrap: "nowrap",
+                                }}
                                 display={"flex"}
                                 gap={1}
                                 mb={1}

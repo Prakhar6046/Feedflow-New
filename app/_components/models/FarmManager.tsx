@@ -931,7 +931,7 @@ const TransferModal: React.FC<Props> = ({
                           <TextField
                             label="Mean Weight *"
                             type="text"
-                            className="form-input custom-wrap"
+                            className="form-input"
                             sx={{
                               width: "100%",
                               "& .MuiInputLabel-root": {
@@ -1013,7 +1013,8 @@ const TransferModal: React.FC<Props> = ({
                             </Typography>
                           )}
                       </Grid>
-                      <Grid
+                      {/* Mean-weight */}
+                      {/* <Grid
                         xs
                         item
                         sx={{
@@ -1023,6 +1024,145 @@ const TransferModal: React.FC<Props> = ({
                         }}
                       >
                         <Box position={"relative"}>
+                          {idx !== 0 && (
+                            <Box onClick={() => handleMeanLength(item)}>
+                              <Typography
+                                variant="body2"
+                                color="#555555AC"
+                                sx={{
+                                  position: "absolute",
+                                  // right: 6,
+                                  right: 0,
+                                  top: "53px",
+                                  transform: "translate(-6px, -40px)",
+                                  backgroundColor: "#06A19B",
+                                  height: 30,
+                                  display: "grid",
+                                  placeItems: "center",
+                                  zIndex: 999,
+                                  px: 0.75,
+                                  borderRadius: 1,
+                                  cursor: "pointer",
+                                  // textOverflow: "ellipsis",
+                                  // whiteSpace: "nowrap",
+                                  // minHeight: "1.4375em",
+                                  // overflow: "hidden",
+                                }}
+                              >
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  width="1.4em"
+                                  height="1.4em"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    fill="#fff"
+                                    d="M8 18h1.5v-2h2v-1.5h-2v-2H8v2H6V16h2zm5-.75h5v-1.5h-5zm0-2.5h5v-1.5h-5zm1.1-3.8l1.4-1.4l1.4 1.4l1.05-1.05l-1.4-1.45l1.4-1.4L16.9 6l-1.4 1.4L14.1 6l-1.05 1.05l1.4 1.4l-1.4 1.45zM6.25 9.2h5V7.7h-5zM5 21q-.825 0-1.413-.587T3 19V5q0-.825.588-1.412T5 3h14q.825 0 1.413.588T21 5v14q0 .825-.587 1.413T19 21zm0-2h14V5H5zM5 5v14z"
+                                  />
+                                </svg>
+                              </Typography>
+                            </Box>
+                          )}
+
+                          <TextField
+                            label="Mean Length *"
+                            type="text"
+                            className="form-input"
+                            sx={{
+                              width: "100%",
+                              "& .MuiInputLabel-root": {
+                                transition: "all 0.2s ease",
+                                maxWidth: "60%",
+                                overflow: "hidden",
+                                whiteSpace: "nowrap",
+                                textOverflow: "ellipsis",
+                                height: "auto",
+                              },
+                              "&:focus-within .MuiInputLabel-root": {
+                                transform: "translate(10px, -9px)",
+                                fontSize: "0.75rem",
+                                color: "primary.main",
+                                backgroundColor: "#fff",
+                                maxWidth: "100%",
+                                overflow: "visible",
+                                textOverflow: "unset",
+                              },
+                            }}
+                            disabled={idx === 0 ? true : false}
+                            {...register(`manager.${idx}.meanLength` as const, {
+                              required: watch(`manager.${idx}.meanLength`)
+                                ? false
+                                : true,
+                              pattern: validationPattern.numbersWithDot,
+                            })}
+                            InputLabelProps={{
+                              shrink: !!watch(`manager.${idx}.meanLength`),
+                            }}
+                          />
+                        </Box>
+                        <Typography
+                          variant="body2"
+                          color="#555555AC"
+                          sx={{
+                            position: "absolute",
+                            right: 6,
+                            top: "50%",
+                            transform: "translate(-6px, -50%)",
+                            backgroundColor: "#fff",
+                            height: 30,
+                            display: "grid",
+                            placeItems: "center",
+                            zIndex: 0,
+                            pl: 1,
+                          }}
+                        >
+                          mm
+                        </Typography>
+                        {errors &&
+                          !watch(`manager.${idx}.meanLength`) &&
+                          errors.manager &&
+                          errors.manager[idx] &&
+                          errors.manager[idx].meanLength &&
+                          errors.manager[idx].meanLength.type ===
+                            "required" && (
+                            <Typography
+                              variant="body2"
+                              color="red"
+                              fontSize={13}
+                              mt={0.5}
+                            >
+                              {validationMessage.required}
+                            </Typography>
+                          )}
+                        {errors &&
+                          errors.manager &&
+                          errors.manager[idx] &&
+                          errors.manager[idx].meanLength &&
+                          errors.manager[idx].meanLength.type === "pattern" && (
+                            <Typography
+                              variant="body2"
+                              color="red"
+                              fontSize={13}
+                              mt={0.5}
+                            >
+                              {validationMessage.OnlyNumbersWithDot}
+                            </Typography>
+                          )}
+                      </Grid> */}
+                      {/* Mean-weight */}
+                      <Grid
+                        xs
+                        item
+                        sx={{
+                          width: "fit-content",
+                          minWidth: 130,
+                          position: "relative",
+                        }}
+                      >
+                        <Box
+                          position={"relative"}
+                          className="disabled-production"
+                        >
                           {idx !== 0 && (
                             <Box onClick={() => handleMeanLength(item)}>
                               <Typography
@@ -1098,14 +1238,14 @@ const TransferModal: React.FC<Props> = ({
                             color="#555555AC"
                             sx={{
                               position: "absolute",
-                              right: 6,
+                              right: 3,
                               top: "50%",
                               transform: "translate(-6px, -50%)",
                               backgroundColor: "#fff",
                               height: 30,
                               display: "grid",
                               placeItems: "center",
-                              zIndex: 1,
+                              zIndex: 0.5,
                               pl: 1,
                             }}
                           >

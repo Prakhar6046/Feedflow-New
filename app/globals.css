@@ -467,7 +467,11 @@ label {
   color: red;
 } */
 
-.testy:focus-within label {
-  background-color: unset !important;
-  transform: "translate(10%, 0%)" !important;
+.table-padding {
+  padding: 0px !important;
+}
+
+.disabled-production {
+  pointer-events: none;
+  opacity: 0.5;
 }
