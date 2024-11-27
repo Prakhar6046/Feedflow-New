@@ -47,6 +47,7 @@ const FarmInformation: NextPage<Props> = ({
     watch,
     control,
     trigger,
+    getValues,
     reset,
   } = useForm<Farm>();
   const loggedUser: any = getCookie("logged-user");
@@ -198,30 +199,41 @@ const FarmInformation: NextPage<Props> = ({
             )}
           </Box>
           <Box mb={2} width={"100%"}>
-            <TextField
-              label="Farm Altitude *"
-              type="text"
-              className="form-input"
-              // focused={altitude ? true : false}
-              {...register("farmAltitude", {
-                required: watch("farmAltitude") ? false : true,
-                pattern: validationPattern.numbersWithDot,
-              })}
-              InputLabelProps={{
-                shrink: !!watch("farmAltitude"),
-              }}
-              sx={{
-                width: "100%",
-                "& .MuiInputLabel-root": {
-                  transition: "all 0.2s ease",
-                },
-                "&:focus-within .MuiInputLabel-root": {
-                  transform: "translate(10px, -9px)",
-                  fontSize: "0.75rem",
-                  color: "primary.main",
-                  backgroundColor: "transparent",
+            <Controller
+              name="farmAltitude"
+              control={control}
+              rules={{
+                required: "Farm altitude is required",
+                pattern: {
+                  value: /^[0-9]+(\.[0-9]+)?$/,
+                  message: "Invalid format, use numbers with dots only",
                 },
               }}
+              render={({ field, fieldState: { error } }) => (
+                <TextField
+                  {...field}
+                  label="Farm Altitude *"
+                  type="text"
+                  className="form-input"
+                  InputLabelProps={{
+                    shrink: !!field.value,
+                  }}
+                  error={!!error}
+                  helperText={error?.message}
+                  sx={{
+                    width: "100%",
+                    "& .MuiInputLabel-root": {
+                      transition: "all 0.2s ease",
+                    },
+                    "&:focus-within .MuiInputLabel-root": {
+                      transform: "translate(10px, -9px)",
+                      fontSize: "0.75rem",
+                      color: "primary.main",
+                      backgroundColor: "transparent",
+                    },
+                  }}
+                />
+              )}
             />
 
             {errors &&
@@ -247,7 +259,7 @@ const FarmInformation: NextPage<Props> = ({
               className="form-input"
               // focused={altitude ? true : false}
               {...register("lat", {
-                required: watch("lat") ? false : true,
+                required: true,
                 pattern: validationPattern.negativeNumberWithDot,
               })}
               InputLabelProps={{
@@ -291,7 +303,7 @@ const FarmInformation: NextPage<Props> = ({
               className="form-input"
               // focused={altitude ? true : false}
               {...register("lng", {
-                required: watch("lng") ? false : true,
+                required: true,
                 pattern: validationPattern.negativeNumberWithDot,
               })}
               focused
@@ -338,11 +350,11 @@ const FarmInformation: NextPage<Props> = ({
                 labelId="feed-supply-select-label1"
                 id="feed-supply-select1"
                 {...register("fishFarmer", {
-                  required: watch("fishFarmer") ? false : true,
+                  required: true,
                   onChange: (e) => setValue("fishFarmer", e.target.value),
                 })}
                 label="Feed Farmer *"
-                value={watch("fishFarmer") || ""}
+                value={getValues("fishFarmer") || ""}
               >
                 {fishFarmers?.map((fish: any) => {
                   return (
@@ -471,10 +483,7 @@ const FarmInformation: NextPage<Props> = ({
                       type="text"
                       className="form-input"
                       {...register("addressLine1", {
-                        required:
-                          watch("addressLine1") || addressInformation?.address
-                            ? false
-                            : true,
+                        required: addressInformation?.address ? false : true,
                       })}
                       InputLabelProps={{
                         shrink:
@@ -545,7 +554,7 @@ const FarmInformation: NextPage<Props> = ({
                       id="city"
                       className="form-input"
                       {...register("city", {
-                        required: watch("city") ? false : true,
+                        required: true,
                         pattern:
                           validationPattern.alphabetsSpacesAndSpecialCharsPattern,
                       })}
@@ -605,7 +614,7 @@ const FarmInformation: NextPage<Props> = ({
                       type="text"
                       className="form-input"
                       {...register("province", {
-                        required: watch("province") ? false : true,
+                        required: true,
                         pattern:
                           validationPattern.alphabetsSpacesAndSpecialCharsPattern,
                       })}
@@ -662,7 +671,7 @@ const FarmInformation: NextPage<Props> = ({
                       type="text"
                       className="form-input"
                       {...register("zipCode", {
-                        required: watch("zipCode") ? false : true,
+                        required: true,
                         pattern: validationPattern.onlyNumbersPattern,
                       })}
                       InputLabelProps={{
@@ -720,7 +729,7 @@ const FarmInformation: NextPage<Props> = ({
                       type="text"
                       className="form-input"
                       {...register("country", {
-                        required: watch("country") ? false : true,
+                        required: true,
                         pattern:
                           validationPattern.alphabetsSpacesAndSpecialCharsPattern,
                       })}
