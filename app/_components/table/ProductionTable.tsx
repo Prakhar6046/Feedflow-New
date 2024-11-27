@@ -438,7 +438,7 @@ export default function ProductionTable({
                               }}
                             >
                               {unit.productionUnit.name}
-                              <Typography
+                              {/* <Typography
                                 variant="body2"
                                 sx={{
                                   fontWeight: 600,
@@ -448,7 +448,7 @@ export default function ProductionTable({
                                 }}
                               >
                                 (Re-Stock)
-                              </Typography>
+                              </Typography> */}
                             </Typography>
                           );
                         })}
