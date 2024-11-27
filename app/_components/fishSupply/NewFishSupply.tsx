@@ -75,6 +75,7 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
     setIsApiCallInProgress(true);
     try {
       const loggedUserData = JSON.parse(userData);
+
       const {
         hatchingDate,
         spawningDate,
@@ -83,9 +84,21 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
         productionUnits,
         ...restData
       } = data;
+      const validHatchingDate = hatchingDate?.isValid()
+        ? hatchingDate.format("MM/DD/YYYY")
+        : null;
+
+      const validSpawningDate = spawningDate?.isValid()
+        ? spawningDate.format("MM/DD/YYYY")
+        : null;
+
+      if (!validHatchingDate || !validSpawningDate) {
+        toast.error("Invalid date selected. Please choose a valid date.");
+        return;
+      }
       const payload = {
-        hatchingDate: data.hatchingDate?.format("MM/DD/YYYY"),
-        spawningDate: data.spawningDate?.format("MM/DD/YYYY"),
+        hatchingDate: validHatchingDate,
+        spawningDate: validSpawningDate,
         organisation: Number(data.organisation),
         spawningNumber: Number(data.spawningNumber),
         productionUnits: data.productionUnits,
@@ -306,8 +319,12 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
                         width: "100%",
                       }}
                       onChange={(date) => {
-                        field.onChange(date);
-                        setValue("hatchingDate", date);
+                        if (date && date.isValid()) {
+                          field.onChange(date); // Set a valid Dayjs date
+                          setValue("hatchingDate", date);
+                        } else {
+                          field.onChange(null); // Clear the field if date is invalid
+                        }
                       }}
                       slotProps={{
                         textField: { focused: true },
@@ -422,7 +439,7 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
                         textField: { focused: true },
                       }}
                       onChange={(date) => {
-                        if (date) {
+                        if (date && date.isValid()) {
                           field.onChange(date); // Explicitly update field when a date is selected
                         } else {
                           field.onChange(null); // Set value to null when date is removed
