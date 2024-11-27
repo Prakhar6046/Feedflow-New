@@ -513,7 +513,11 @@ const TransferModal: React.FC<Props> = ({
                             }}
                           >
                             <Box width={"100%"}>
-                              <FormControl fullWidth className="form-input">
+                              <FormControl
+                                fullWidth
+                                className="form-input"
+                                focused
+                              >
                                 <InputLabel id="">Fish Farm *</InputLabel>
                                 <Select
                                   labelId="feed-supply-select-label9"
@@ -595,7 +599,11 @@ const TransferModal: React.FC<Props> = ({
                             }}
                           >
                             <Box width={"100%"}>
-                              <FormControl fullWidth className="form-input">
+                              <FormControl
+                                fullWidth
+                                className="form-input"
+                                focused
+                              >
                                 <InputLabel id="">Production Unit *</InputLabel>
                                 <Select
                                   labelId="production-unit-select-label"
@@ -713,7 +721,11 @@ const TransferModal: React.FC<Props> = ({
                             }}
                           >
                             <Box mb={2} width={"100%"}>
-                              <FormControl fullWidth className="form-input">
+                              <FormControl
+                                fullWidth
+                                className="form-input"
+                                focused
+                              >
                                 <InputLabel id="">Batch No. *</InputLabel>
                                 <Select
                                   labelId="feed-supply-select-label9"
@@ -813,6 +825,9 @@ const TransferModal: React.FC<Props> = ({
                                           date
                                         );
                                       }}
+                                      slotProps={{
+                                        textField: { focused: true },
+                                      }}
                                       value={field.value || null}
                                     />
                                     {error && (
@@ -855,6 +870,7 @@ const TransferModal: React.FC<Props> = ({
                                 required: true,
                                 pattern: validationPattern.numbersWithDot,
                               })}
+                              focused
                             />
 
                             <Typography
@@ -930,6 +946,7 @@ const TransferModal: React.FC<Props> = ({
                               required: true,
                               pattern: validationPattern.numbersWithDot,
                             })}
+                            focused
                           />
                           <Typography
                             variant="body2"
@@ -1034,23 +1051,6 @@ const TransferModal: React.FC<Props> = ({
                               className="form-input custom-wrap"
                               sx={{
                                 width: "100%",
-                                "& .MuiInputLabel-root": {
-                                  transition: "all 0.2s ease",
-                                  maxWidth: "60%",
-                                  overflow: "hidden",
-                                  whiteSpace: "nowrap",
-                                  textOverflow: "ellipsis",
-                                  height: "auto",
-                                },
-                                "&:focus-within .MuiInputLabel-root": {
-                                  transform: "translate(10px, -9px)",
-                                  fontSize: "0.75rem",
-                                  color: "primary.main",
-                                  backgroundColor: "#fff",
-                                  maxWidth: "100%",
-                                  overflow: "visible",
-                                  textOverflow: "unset",
-                                },
                               }}
                               disabled={idx === 0 ? true : false}
                               {...register(`manager.${idx}.meanWeight`, {
@@ -1059,9 +1059,7 @@ const TransferModal: React.FC<Props> = ({
                                   : true,
                                 pattern: validationPattern.numbersWithDot,
                               })}
-                              InputLabelProps={{
-                                shrink: !!watch(`manager.${idx}.meanWeight`),
-                              }}
+                              focused
                             />
                           </Box>
                           <Typography
@@ -1165,23 +1163,6 @@ const TransferModal: React.FC<Props> = ({
                               className="form-input"
                               sx={{
                                 width: "100%",
-                                "& .MuiInputLabel-root": {
-                                  transition: "all 0.2s ease",
-                                  maxWidth: "60%",
-                                  overflow: "hidden",
-                                  whiteSpace: "nowrap",
-                                  textOverflow: "ellipsis",
-                                  height: "auto",
-                                },
-                                "&:focus-within .MuiInputLabel-root": {
-                                  transform: "translate(10px, -9px)",
-                                  fontSize: "0.75rem",
-                                  color: "primary.main",
-                                  backgroundColor: "#fff",
-                                  maxWidth: "100%",
-                                  overflow: "visible",
-                                  textOverflow: "unset",
-                                },
                               }}
                               disabled={idx === 0 ? true : false}
                               {...register(
@@ -1193,9 +1174,7 @@ const TransferModal: React.FC<Props> = ({
                                   pattern: validationPattern.numbersWithDot,
                                 }
                               )}
-                              InputLabelProps={{
-                                shrink: !!watch(`manager.${idx}.meanLength`),
-                              }}
+                              focused
                             />
                             <Typography
                               variant="body2"
@@ -1491,10 +1470,6 @@ const TransferModal: React.FC<Props> = ({
                               sx={{ width: "100%" }}
                               {...register(
                                 `manager.${idx}.stockingLevel` as const
-                                // {
-                                //   required: true,
-                                //   pattern: validationPattern.numbersWithDot,
-                                // }
                               )}
                             />
                             <Typography

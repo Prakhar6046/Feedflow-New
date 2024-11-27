@@ -212,7 +212,7 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
         >
           <Grid item sm={6} xs={12}>
             <Box width={"100%"}>
-              <FormControl fullWidth className="form-input">
+              <FormControl fullWidth className="form-input" focused>
                 <InputLabel id="demo-simple-select-label">
                   Hatchery *
                 </InputLabel>
@@ -253,7 +253,7 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
           </Grid>
 
           <Grid item sm={6} xs={12}>
-            <FormControl className="form-input" fullWidth>
+            <FormControl className="form-input" fullWidth focused>
               <InputLabel id="demo-simple-select-label">Fish Farm *</InputLabel>
               <Select
                 labelId="demo-simple-select-label"
@@ -309,6 +309,9 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
                         field.onChange(date);
                         setValue("hatchingDate", date);
                       }}
+                      slotProps={{
+                        textField: { focused: true },
+                      }}
                       value={field.value || null}
                     />
                     {error && (
@@ -335,13 +338,9 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
                   required: true,
                   pattern: validationPattern.numbersWithDot,
                 })}
+                focused
                 type="number"
                 className="form-input"
-                // {...register("organisationName", {
-                //   required: true,
-                // })}
-                // focused={userData?.data.name ? true : false}
-                // value={userData?.data.name}
                 sx={{
                   width: "100%",
                 }}
@@ -381,6 +380,7 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
                 type="text"
                 className="form-input"
                 {...register("broodstockMale")}
+                focused
                 sx={{
                   width: "100%",
                 }}
@@ -395,6 +395,7 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
                 type="text"
                 className="form-input"
                 {...register("broodstockFemale")}
+                focused
                 sx={{
                   width: "100%",
                 }}
@@ -416,6 +417,9 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
                       className="form-input"
                       sx={{
                         width: "100%",
+                      }}
+                      slotProps={{
+                        textField: { focused: true },
                       }}
                       onChange={(date) => {
                         if (date) {
@@ -443,7 +447,7 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
           </Grid>
 
           <Grid item sm={6} xs={12}>
-            <FormControl className="form-input" fullWidth>
+            <FormControl className="form-input" fullWidth focused>
               <InputLabel id="demo-simple-select-label">Status *</InputLabel>
               <Select
                 labelId="demo-simple-select-label"
@@ -482,6 +486,7 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
                 {...register("productionUnits", {
                   required: true,
                 })}
+                focused
                 sx={{
                   width: "100%",
                 }}

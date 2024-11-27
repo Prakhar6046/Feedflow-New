@@ -254,7 +254,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
           <form onSubmit={handleSubmit(onSubmit)}>
             <Grid container spacing={2}>
               <Grid item md={6} xs={12}>
-                <FormControl fullWidth className="form-input">
+                <FormControl fullWidth className="form-input" focused>
                   <InputLabel id="feed-supply-select-label1">
                     Feed Supplier *
                   </InputLabel>
@@ -304,11 +304,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
                     pattern:
                       validationPattern.alphabetsNumbersAndSpacesPattern2,
                   })}
-                  // {...register("organisationName", {
-                  //     required: true,
-                  // })}
-                  // focused={userData?.data.name ? true : false}
-                  // value={userData?.data.name}
+                  focused
                   sx={{
                     width: "100%",
                   }}
@@ -348,11 +344,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
                     required: true,
                     pattern: validationPattern.alphabetsAndSpacesPattern,
                   })}
-                  // {...register("organisationName", {
-                  //     required: true,
-                  // })}
-                  // focused={userData?.data.name ? true : false}
-                  // value={userData?.data.name}
+                  focused
                   sx={{
                     width: "100%",
                   }}
@@ -393,11 +385,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
                     pattern:
                       validationPattern.alphabetsNumbersAndSpacesPattern2,
                   })}
-                  // {...register("organisationName", {
-                  //     required: true,
-                  // })}
-                  // focused={userData?.data.name ? true : false}
-                  // value={userData?.data.name}
+                  focused
                   sx={{
                     width: "100%",
                   }}
@@ -437,11 +425,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
                     required: true,
                     pattern: validationPattern.alphabetsAndSpacesPattern,
                   })}
-                  // {...register("organisationName", {
-                  //     required: true,
-                  // })}
-                  // focused={userData?.data.name ? true : false}
-                  // value={userData?.data.name}
+                  focused
                   sx={{
                     width: "100%",
                   }}
@@ -482,11 +466,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
                     pattern:
                       validationPattern.alphabetsNumbersAndSpacesPattern2,
                   })}
-                  // {...register("organisationName", {
-                  //     required: true,
-                  // })}
-                  // focused={userData?.data.name ? true : false}
-                  // value={userData?.data.name}
+                  focused
                   sx={{
                     width: "100%",
                   }}
@@ -527,11 +507,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
                     pattern:
                       validationPattern.alphabetsNumbersAndSpacesPattern2,
                   })}
-                  // {...register("organisationName", {
-                  //     required: true,
-                  // })}
-                  // focused={userData?.data.name ? true : false}
-                  // value={userData?.data.name}
+                  focused
                   sx={{
                     width: "100%",
                   }}
@@ -563,7 +539,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
               </Grid>
 
               <Grid item md={6} xs={12}>
-                <FormControl fullWidth className="form-input">
+                <FormControl fullWidth className="form-input" focused>
                   <InputLabel id="feed-supply-select-label2">
                     Product Format *
                   </InputLabel>
@@ -613,11 +589,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
                     pattern:
                       validationPattern.alphabetsNumbersAndSpacesPattern2,
                   })}
-                  // {...register("organisationName", {
-                  //     required: true,
-                  // })}
-                  // focused={userData?.data.name ? true : false}
-                  // value={userData?.data.name}
+                  focused
                   sx={{
                     width: "100%",
                   }}
@@ -663,11 +635,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
                       required: true,
                       pattern: validationPattern.numbersWithDot,
                     })}
-                    // {...register("organisationName", {
-                    //     required: true,
-                    // })}
-                    // focused={userData?.data.name ? true : false}
-                    // value={userData?.data.name}
+                    focused
                     sx={{
                       width: "100%",
                     }}
@@ -719,7 +687,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
               </Grid>
 
               <Grid item md={6} xs={12}>
-                <FormControl fullWidth className="form-input">
+                <FormControl fullWidth className="form-input" focused>
                   <InputLabel id="feed-supply-select-label3">
                     Nutritional Class *
                   </InputLabel>
@@ -760,7 +728,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
               </Grid>
 
               <Grid item md={6} xs={12}>
-                <FormControl fullWidth className="form-input">
+                <FormControl fullWidth className="form-input" focused>
                   <InputLabel id="feed-supply-select-label4">
                     Nutritional Purpose *
                   </InputLabel>
@@ -807,7 +775,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
               </Grid>
 
               <Grid item md={6} xs={12}>
-                <FormControl fullWidth className="form-input">
+                <FormControl fullWidth className="form-input" focused>
                   <InputLabel id="feed-supply-select-label5">
                     Species *
                   </InputLabel>
@@ -862,12 +830,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
                       required: true,
                       pattern: validationPattern.numbersWithDot,
                     })}
-                    // {...register("organisationName", {
-                    //     required: true,
-                    // })}
-                    // focused={userData?.data.name ? true : false}
-                    // value={userData?.data.name}
-
+                    focused
                     sx={{
                       width: "100%",
                     }}
@@ -933,11 +896,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
                       required: true,
                       pattern: validationPattern.numbersWithDot,
                     })}
-                    // {...register("organisationName", {
-                    //     required: true,
-                    // })}
-                    // focused={userData?.data.name ? true : false}
-                    // value={userData?.data.name}
+                    focused
                     sx={{
                       width: "100%",
                     }}
@@ -989,7 +948,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
               </Grid>
 
               <Grid item md={6} xs={12}>
-                <FormControl fullWidth className="form-input">
+                <FormControl fullWidth className="form-input" focused>
                   <InputLabel id="feed-supply-select-label6">
                     Production Intensity *
                   </InputLabel>
@@ -1030,7 +989,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
               </Grid>
 
               <Grid item md={6} xs={12}>
-                <FormControl fullWidth className="form-input">
+                <FormControl fullWidth className="form-input" focused>
                   <InputLabel id="feed-supply-select-label7">Unit *</InputLabel>
                   <Select
                     labelId="feed-supply-select-label7"
@@ -1067,7 +1026,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
               </Grid>
 
               <Grid item md={6} xs={12}>
-                <FormControl fullWidth className="form-input">
+                <FormControl fullWidth className="form-input" focused>
                   <InputLabel id="feed-supply-select-label8">
                     Feeding Phase *
                   </InputLabel>
@@ -1112,7 +1071,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
               </Grid>
 
               <Grid item md={6} xs={12}>
-                <FormControl fullWidth className="form-input">
+                <FormControl fullWidth className="form-input" focused>
                   <InputLabel id="feed-supply-select-label9">
                     Life Stage *
                   </InputLabel>
@@ -1169,6 +1128,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
                       required: true,
                       pattern: validationPattern.numbersWithDot,
                     })}
+                    focused
                     sx={{
                       width: "100%",
                       "& .MuiInputLabel-root": {
@@ -1394,6 +1354,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
                               required: true,
                               pattern: validationPattern.numbersWithDot,
                             })}
+                            focused
                             sx={{
                               width: "100%",
                               // minWidth: 190,
@@ -1456,6 +1417,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
                             sx={{
                               minWidth: 110,
                             }}
+                            focused
                           >
                             <InputLabel id="feed-supply-select-label10">
                               Min *
@@ -1595,6 +1557,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
                                 pattern: validationPattern.numbersWithDot,
                               }
                             )}
+                            focused
                             sx={{
                               width: "100%",
                               // minWidth: 190,
@@ -1658,6 +1621,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
                             sx={{
                               minWidth: 110,
                             }}
+                            focused
                           >
                             <InputLabel id="feed-supply-select-label10">
                               Min *
@@ -1804,6 +1768,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
                               required: true,
                               pattern: validationPattern.numbersWithDot,
                             })}
+                            focused
                             sx={{
                               width: "100%",
                               // minWidth: 190,
@@ -1866,6 +1831,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
                             sx={{
                               minWidth: 110,
                             }}
+                            focused
                           >
                             <InputLabel id="feed-supply-select-label10">
                               Min *
@@ -2001,6 +1967,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
                               required: true,
                               pattern: validationPattern.numbersWithDot,
                             })}
+                            focused
                             sx={{
                               width: "100%",
                               minWidth: 190,
@@ -2062,6 +2029,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
                             sx={{
                               minWidth: 110,
                             }}
+                            focused
                           >
                             <InputLabel id="feed-supply-select-label10">
                               Min *
@@ -2199,6 +2167,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
                               required: true,
                               pattern: validationPattern.numbersWithDot,
                             })}
+                            focused
                             sx={{
                               width: "100%",
                               minWidth: 190,
@@ -2260,6 +2229,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
                             sx={{
                               minWidth: 110,
                             }}
+                            focused
                           >
                             <InputLabel id="feed-supply-select-label10">
                               Min *
@@ -2407,6 +2377,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
                               required: true,
                               pattern: validationPattern.numbersWithDot,
                             })}
+                            focused
                             sx={{
                               width: "100%",
                               // minWidth: 190,
@@ -2468,6 +2439,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
                             sx={{
                               minWidth: 110,
                             }}
+                            focused
                           >
                             <InputLabel id="feed-supply-select-label10">
                               Min *
@@ -2607,6 +2579,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
                                 pattern: validationPattern.numbersWithDot,
                               }
                             )}
+                            focused
                             sx={{
                               width: "100%",
                               // minWidth: 190,
@@ -2669,6 +2642,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
                             sx={{
                               minWidth: 110,
                             }}
+                            focused
                           >
                             <InputLabel id="feed-supply-select-label10">
                               Min *
@@ -2814,11 +2788,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
                           required: true,
                           pattern: validationPattern.numbersWithDot,
                         })}
-                        focused={
-                          watch("nutritionalGuarantee.carbohydrates.kg")
-                            ? true
-                            : false
-                        }
+                        focused
                         sx={{
                           width: "100%",
                           minWidth: 190,
@@ -2898,6 +2868,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
                       sx={{
                         minWidth: 110,
                       }}
+                      focused
                     >
                       <InputLabel id="feed-supply-select-label10">
                         Min *
@@ -3038,6 +3009,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
                             pattern: validationPattern.numbersWithDot,
                           }
                         )}
+                        focused
                         sx={{
                           width: "100%",
                           minWidth: 190,
@@ -3118,6 +3090,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
                       sx={{
                         minWidth: 110,
                       }}
+                      focused
                     >
                       <InputLabel id="feed-supply-select-label10">
                         Min *
