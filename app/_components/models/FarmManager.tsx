@@ -891,7 +891,16 @@ const TransferModal: React.FC<Props> = ({
                               label="Biomass *"
                               type="text"
                               className="form-input"
-                              disabled={idx === 0 ? true : false}
+                              // disabled={idx === 0 ? true : false}
+                              slotProps={{
+                                input: {
+                                  readOnly:
+                                    !watchedFields[idx].productionUnit ||
+                                    idx === 0
+                                      ? true
+                                      : false,
+                                },
+                              }}
                               sx={{ width: "100%" }}
                               {...register(`manager.${idx}.biomass`, {
                                 required: true,
@@ -968,7 +977,16 @@ const TransferModal: React.FC<Props> = ({
                             type="text"
                             className="form-input"
                             sx={{ width: "100%" }}
-                            disabled={idx === 0 ? true : false}
+                            // disabled={idx === 0 ? true : false}
+                            slotProps={{
+                              input: {
+                                readOnly:
+                                  !watchedFields[idx].productionUnit ||
+                                  idx === 0
+                                    ? true
+                                    : false,
+                              },
+                            }}
                             {...register(`manager.${idx}.count`, {
                               required: true,
                               pattern: validationPattern.numbersWithDot,
