@@ -925,7 +925,8 @@ const TransferModal: React.FC<Props> = ({
                               slotProps={{
                                 input: {
                                   readOnly:
-                                    !watchedFields[idx].productionUnit ||
+                                    (watchedFields[idx].field !== "Sample" &&
+                                      !watchedFields[idx].productionUnit) ||
                                     idx === 0
                                       ? true
                                       : false,
@@ -1008,10 +1009,12 @@ const TransferModal: React.FC<Props> = ({
                             className="form-input"
                             sx={{ width: "100%" }}
                             // disabled={idx === 0 ? true : false}
+
                             slotProps={{
                               input: {
                                 readOnly:
-                                  !watchedFields[idx].productionUnit ||
+                                  (watchedFields[idx].field !== "Sample" &&
+                                    !watchedFields[idx].productionUnit) ||
                                   idx === 0
                                     ? true
                                     : false,
