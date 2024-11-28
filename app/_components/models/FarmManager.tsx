@@ -1068,24 +1068,26 @@ const TransferModal: React.FC<Props> = ({
                               focused
                             />
                           </Box>
-                          <Typography
-                            variant="body2"
-                            color="#555555AC"
-                            sx={{
-                              position: "absolute",
-                              right: 6,
-                              top: "50%",
-                              transform: "translate(-6px, -50%)",
-                              backgroundColor: "#fff",
-                              height: 30,
-                              display: "grid",
-                              placeItems: "center",
-                              zIndex: 1,
-                              pl: 1,
-                            }}
-                          >
-                            g
-                          </Typography>
+                          {idx === 0 && (
+                            <Typography
+                              variant="body2"
+                              color="#555555AC"
+                              sx={{
+                                position: "absolute",
+                                right: 6,
+                                top: "50%",
+                                transform: "translate(-6px, -50%)",
+                                backgroundColor: "#fff",
+                                height: 30,
+                                display: "grid",
+                                placeItems: "center",
+                                zIndex: 1,
+                                pl: 1,
+                              }}
+                            >
+                              g
+                            </Typography>
+                          )}
                           {errors &&
                             !watch(`manager.${idx}.meanWeight`) &&
                             errors.manager &&
@@ -1184,24 +1186,27 @@ const TransferModal: React.FC<Props> = ({
                               )}
                               focused
                             />
-                            <Typography
-                              variant="body2"
-                              color="#555555AC"
-                              sx={{
-                                position: "absolute",
-                                right: 3,
-                                top: "50%",
-                                transform: "translate(-6px, -50%)",
-                                backgroundColor: "#fff",
-                                height: 30,
-                                display: "grid",
-                                placeItems: "center",
-                                zIndex: 1,
-                                pl: 1,
-                              }}
-                            >
-                              mm
-                            </Typography>
+                            {idx === 0 && (
+                              <Typography
+                                variant="body2"
+                                color="#555555AC"
+                                sx={{
+                                  position: "absolute",
+                                  right: 3,
+                                  top: "50%",
+                                  transform: "translate(-6px, -50%)",
+                                  backgroundColor: "#fff",
+                                  height: 30,
+                                  display: "grid",
+                                  placeItems: "center",
+                                  zIndex: 1,
+                                  pl: 1,
+                                }}
+                              >
+                                mm
+                              </Typography>
+                            )}
+
                             {errors &&
                               !watch(`manager.${idx}.meanLength`) &&
                               errors.manager &&
