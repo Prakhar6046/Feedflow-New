@@ -1056,7 +1056,9 @@ const TransferModal: React.FC<Props> = ({
                               sx={{
                                 width: "100%",
                               }}
-                              disabled={idx === 0 ? true : false}
+                              slotProps={{
+                                input: { readOnly: idx === 0 ? true : false },
+                              }}
                               {...register(`manager.${idx}.meanWeight`, {
                                 required: watch(`manager.${idx}.meanWeight`)
                                   ? false
@@ -1168,7 +1170,9 @@ const TransferModal: React.FC<Props> = ({
                               sx={{
                                 width: "100%",
                               }}
-                              disabled={idx === 0 ? true : false}
+                              slotProps={{
+                                input: { readOnly: idx === 0 ? true : false },
+                              }}
                               {...register(
                                 `manager.${idx}.meanLength` as const,
                                 {
@@ -1185,7 +1189,7 @@ const TransferModal: React.FC<Props> = ({
                               color="#555555AC"
                               sx={{
                                 position: "absolute",
-                                right: 6,
+                                right: 3,
                                 top: "50%",
                                 transform: "translate(-6px, -50%)",
                                 backgroundColor: "#fff",
