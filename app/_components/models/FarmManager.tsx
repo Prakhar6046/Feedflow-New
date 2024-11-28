@@ -547,13 +547,23 @@ const TransferModal: React.FC<Props> = ({
                                   className="fish-manager"
                                   id="feed-supply-select9"
                                   label="Fish Farm*"
-                                  disabled={
-                                    item.field === "Harvest" ||
-                                    item.field === "Mortalities" ||
-                                    idx === 0
-                                      ? true
-                                      : false
-                                  }
+                                  // disabled={
+                                  //   item.field === "Harvest" ||
+                                  //   item.field === "Mortalities" ||
+                                  //   idx === 0
+                                  //     ? true
+                                  //     : false
+                                  // }
+                                  slotProps={{
+                                    input: {
+                                      readOnly:
+                                        item.field === "Harvest" ||
+                                        item.field === "Mortalities" ||
+                                        idx === 0
+                                          ? true
+                                          : false,
+                                    },
+                                  }}
                                   {...register(`manager.${idx}.fishFarm`, {
                                     required: watch(`manager.${idx}.fishFarm`)
                                       ? false
@@ -653,13 +663,23 @@ const TransferModal: React.FC<Props> = ({
                                       textOverflow: "unset",
                                     },
                                   }}
-                                  disabled={
-                                    item.field === "Harvest" ||
-                                    item.field === "Mortalities" ||
-                                    idx === 0
-                                      ? true
-                                      : false
-                                  }
+                                  // disabled={
+                                  //   item.field === "Harvest" ||
+                                  //   item.field === "Mortalities" ||
+                                  //   idx === 0
+                                  //     ? true
+                                  //     : false
+                                  // }
+                                  slotProps={{
+                                    input: {
+                                      readOnly:
+                                        item.field === "Harvest" ||
+                                        item.field === "Mortalities" ||
+                                        idx === 0
+                                          ? true
+                                          : false,
+                                    },
+                                  }}
                                   {...register(
                                     `manager.${idx}.productionUnit`,
                                     {
@@ -755,13 +775,23 @@ const TransferModal: React.FC<Props> = ({
                                   className="fish-manager"
                                   id="feed-supply-select9"
                                   label="Batch No. *"
-                                  disabled={
-                                    item.field === "Harvest" ||
-                                    item.field === "Mortalities" ||
-                                    idx === 0
-                                      ? true
-                                      : false
-                                  }
+                                  // disabled={
+                                  //   item.field === "Harvest" ||
+                                  //   item.field === "Mortalities" ||
+                                  //   idx === 0
+                                  //     ? true
+                                  //     : false
+                                  // }
+                                  slotProps={{
+                                    input: {
+                                      readOnly:
+                                        item.field === "Harvest" ||
+                                        item.field === "Mortalities" ||
+                                        idx === 0
+                                          ? true
+                                          : false,
+                                    },
+                                  }}
                                   {...register(`manager.${idx}.batchNumber`, {
                                     required: watch(
                                       `manager.${idx}.batchNumber`
