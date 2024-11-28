@@ -319,8 +319,14 @@ const TransferModal: React.FC<Props> = ({
             updatedCount = Number(field.count);
             setValue(`manager.0.meanLength`, field.meanLength);
             setValue(`manager.0.meanWeight`, field.meanWeight);
-            setValue(`manager.0.stockingDensityKG`, field.stockingDensityKG);
-            setValue(`manager.0.stockingDensityNM`, field.stockingDensityNM);
+            setValue(
+              `manager.0.stockingDensityKG`,
+              Number(field.stockingDensityKG).toFixed(2)
+            );
+            setValue(
+              `manager.0.stockingDensityNM`,
+              Number(field.stockingDensityNM).toFixed(2)
+            );
             setValue(`manager.0.batchNumber`, field.batchNumber);
           }
 
@@ -346,8 +352,15 @@ const TransferModal: React.FC<Props> = ({
             updatedBiomass = currentBiomass;
             setValue(`manager.0.meanLength`, field.meanLength);
             setValue(`manager.0.meanWeight`, field.meanWeight);
-            setValue(`manager.0.stockingDensityKG`, field.stockingDensityKG);
-            setValue(`manager.0.stockingDensityNM`, field.stockingDensityNM);
+            setValue(
+              `manager.0.stockingDensityNM`,
+              Number(field.stockingDensityNM).toFixed(2)
+            );
+            setValue(
+              `manager.0.stockingDensityKG`,
+              Number(field.stockingDensityKG).toFixed(2)
+            );
+
             setValue(`manager.0.batchNumber`, field.batchNumber);
           }
 
@@ -359,8 +372,14 @@ const TransferModal: React.FC<Props> = ({
             updatedCount = currentCount;
             setValue(`manager.0.meanLength`, field.meanLength);
             setValue(`manager.0.meanWeight`, field.meanWeight);
-            setValue(`manager.0.stockingDensityKG`, field.stockingDensityKG);
-            setValue(`manager.0.stockingDensityNM`, field.stockingDensityNM);
+            setValue(
+              `manager.0.stockingDensityNM`,
+              Number(field.stockingDensityNM).toFixed(2)
+            );
+            setValue(
+              `manager.0.stockingDensityKG`,
+              Number(field.stockingDensityKG).toFixed(2)
+            );
             setValue(`manager.0.batchNumber`, field.batchNumber);
           }
         }
@@ -370,11 +389,15 @@ const TransferModal: React.FC<Props> = ({
         if (farm && farm.capacity) {
           setValue(
             `manager.${index}.stockingDensityNM`,
-            String(Number(field.count) / Number(farm?.capacity))
+            String(
+              Number(Number(field.count) / Number(farm?.capacity)).toFixed(2)
+            )
           );
           setValue(
             `manager.${index}.stockingDensityKG`,
-            String(Number(field.biomass) / Number(farm?.capacity))
+            String(
+              Number(Number(field.biomass) / Number(farm?.capacity)).toFixed(2)
+            )
           );
         }
       });
