@@ -423,7 +423,7 @@ const TransferModal: React.FC<Props> = ({
         if (field.id === selectedMeanWeightId) {
           return {
             ...field,
-            meanWeight: String(avgOfMeanWeight),
+            meanWeight: String(Number(avgOfMeanWeight).toFixed(2)),
             batchNumber: watchedFields[idx].batchNumber,
             count: watchedFields[idx].count,
             productionUnit: watchedFields[idx].productionUnit,
@@ -443,7 +443,7 @@ const TransferModal: React.FC<Props> = ({
         if (field.id === selectedMeanLengthId) {
           return {
             ...field,
-            meanLength: String(avgOfMeanLength),
+            meanLength: String(Number(avgOfMeanLength).toFixed(2)),
             batchNumber: watchedFields[idx].batchNumber,
             count: watchedFields[idx].count,
             productionUnit: watchedFields[idx].productionUnit,
