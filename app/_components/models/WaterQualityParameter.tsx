@@ -588,8 +588,12 @@ const WaterQualityParameter: React.FC<Props> = ({
                                       width: "100%",
                                     }}
                                     onChange={(date) => {
-                                      field.onChange(date);
-                                      setValue(`water.${idx}.date`, date);
+                                      if (date && date.isValid()) {
+                                        field.onChange(date); // Set a valid Dayjs date
+                                        setValue(`water.${idx}.date`, date);
+                                      } else {
+                                        field.onChange(null); // Clear the field if date is invalid
+                                      }
                                     }}
                                     slotProps={{
                                       textField: { focused: true },

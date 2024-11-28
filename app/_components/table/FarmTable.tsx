@@ -63,11 +63,9 @@ export default function FarmTable({ farms }: Props) {
   };
   const handleEdit = () => {
     if (selectedFarm) {
-      Promise.all([deleteCookie("addFarm")]).then(() => {
-        dispatch(farmAction.handleIsFarm());
-        router.push(`/dashboard/farm/${selectedFarm.id}`);
-        setCookie("activeStep", 1);
-      });
+      dispatch(farmAction.handleIsFarm());
+      router.push(`/dashboard/farm/${selectedFarm.id}`);
+      setCookie("activeStep", 1);
     }
   };
   const handleClose = () => {

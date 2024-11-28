@@ -262,6 +262,7 @@ const CalculateVolume: React.FC<Props> = ({
                   marginBottom: 2,
                   width: "100%",
                 }}
+                focused
                 value={length}
                 onChange={(e) => {
                   const value = e.target.value;
@@ -305,6 +306,7 @@ const CalculateVolume: React.FC<Props> = ({
                 sx={{
                   marginBottom: 2,
                 }}
+                focused
                 value={width}
                 onChange={(e) => {
                   const value = e.target.value;
@@ -348,6 +350,7 @@ const CalculateVolume: React.FC<Props> = ({
                 sx={{
                   marginBottom: 2,
                 }}
+                focused
                 value={depth}
                 onChange={(e) => {
                   const value = e.target.value;
@@ -393,6 +396,7 @@ const CalculateVolume: React.FC<Props> = ({
                 sx={{
                   marginBottom: 2,
                 }}
+                focused
                 value={area}
                 onChange={(e) => {
                   const value = e.target.value;
@@ -436,6 +440,7 @@ const CalculateVolume: React.FC<Props> = ({
                 sx={{
                   marginBottom: 2,
                 }}
+                focused
                 value={depth}
                 onChange={(e) => {
                   const value = e.target.value;
@@ -481,6 +486,7 @@ const CalculateVolume: React.FC<Props> = ({
                 sx={{
                   marginBottom: 2,
                 }}
+                focused
                 value={length}
                 onChange={(e) => {
                   const value = e.target.value;
@@ -567,6 +573,7 @@ const CalculateVolume: React.FC<Props> = ({
                 sx={{
                   marginBottom: 2,
                 }}
+                focused
                 value={depth}
                 onChange={(e) => {
                   const value = e.target.value;
@@ -612,6 +619,7 @@ const CalculateVolume: React.FC<Props> = ({
                 sx={{
                   marginBottom: 2,
                 }}
+                focused
                 value={length}
                 onChange={(e) => {
                   const value = e.target.value;
@@ -655,6 +663,7 @@ const CalculateVolume: React.FC<Props> = ({
                 sx={{
                   marginBottom: 2,
                 }}
+                focused
                 value={width}
                 onChange={(e) => {
                   const value = e.target.value;
@@ -699,6 +708,7 @@ const CalculateVolume: React.FC<Props> = ({
                 sx={{
                   marginBottom: 2,
                 }}
+                focused
                 value={heigth}
                 onChange={(e) => {
                   const value = e.target.value;
@@ -744,6 +754,7 @@ const CalculateVolume: React.FC<Props> = ({
                 sx={{
                   marginBottom: 2,
                 }}
+                focused
                 value={length}
                 onChange={(e) => {
                   const value = e.target.value;
@@ -787,6 +798,7 @@ const CalculateVolume: React.FC<Props> = ({
                 sx={{
                   marginBottom: 2,
                 }}
+                focused
                 value={width}
                 onChange={(e) => {
                   const value = e.target.value;
@@ -830,6 +842,7 @@ const CalculateVolume: React.FC<Props> = ({
                 sx={{
                   marginBottom: 2,
                 }}
+                focused
                 value={heigth}
                 onChange={(e) => {
                   const value = e.target.value;
@@ -875,6 +888,7 @@ const CalculateVolume: React.FC<Props> = ({
                 sx={{
                   marginBottom: 2,
                 }}
+                focused
                 value={radius}
                 onChange={(e) => {
                   const value = e.target.value;
@@ -918,6 +932,7 @@ const CalculateVolume: React.FC<Props> = ({
                 sx={{
                   marginBottom: 2,
                 }}
+                focused
                 value={depth}
                 onChange={(e) => {
                   const value = e.target.value;
@@ -963,6 +978,7 @@ const CalculateVolume: React.FC<Props> = ({
                 sx={{
                   marginBottom: 2,
                 }}
+                focused
                 value={radius}
                 onChange={(e) => {
                   const value = e.target.value;
@@ -1005,6 +1021,7 @@ const CalculateVolume: React.FC<Props> = ({
                 sx={{
                   marginBottom: 2,
                 }}
+                focused
                 value={length}
                 onChange={(e) => {
                   const value = e.target.value;
@@ -1048,6 +1065,7 @@ const CalculateVolume: React.FC<Props> = ({
                 sx={{
                   marginBottom: 2,
                 }}
+                focused
                 value={width}
                 onChange={(e) => {
                   const value = e.target.value;
@@ -1091,6 +1109,7 @@ const CalculateVolume: React.FC<Props> = ({
                 sx={{
                   marginBottom: 2,
                 }}
+                focused
                 value={depth}
                 onChange={(e) => {
                   const value = e.target.value;

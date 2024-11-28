@@ -47,7 +47,6 @@ export default function SampleStockTable({
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("Farm");
   const [sortDataFromLocal, setSortDataFromLocal] = React.useState<any>("");
-  console.log(sampleStock);
 
   useEffect(() => {
     if (pathName && window) {

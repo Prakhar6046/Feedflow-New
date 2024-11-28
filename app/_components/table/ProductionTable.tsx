@@ -30,7 +30,6 @@ export default function ProductionTable({
   farms,
   batches,
 }: Props) {
-
   const router = useRouter();
   const dispatch = useAppDispatch();
   const pathName = usePathname();
@@ -349,6 +348,7 @@ export default function ProductionTable({
       createdAt: item.createdAt,
       updatedAt: item.updatedAt,
       isManager: item.isManager,
+      field: item.field,
     });
 
     return result;
@@ -357,6 +357,7 @@ export default function ProductionTable({
   useEffect(() => {
     router.refresh();
   }, [router]);
+
   return (
     <>
       <Paper
@@ -439,17 +440,19 @@ export default function ProductionTable({
                               }}
                             >
                               {unit.productionUnit.name}
-                              {/* <Typography
-                                variant="body2"
-                                sx={{
-                                  fontWeight: 600,
-                                  color: "#06a19b",
-                                  textWrap: "nowrap",
-                                  pr: 3,
-                                }}
-                              >
-                                (Re-Stock)
-                              </Typography> */}
+                              {unit.field && (
+                                <Typography
+                                  variant="body2"
+                                  sx={{
+                                    fontWeight: 600,
+                                    color: "#06a19b",
+                                    textWrap: "nowrap",
+                                    pr: 3,
+                                  }}
+                                >
+                                  ({`${unit.field ?? ""}`})
+                                </Typography>
+                              )}
                             </Typography>
                           );
                         })}

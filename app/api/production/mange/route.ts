@@ -4,8 +4,28 @@ import { NextRequest, NextResponse } from "next/server";
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
+    let filteredDataWithoutSample = body.data.filter(
+      (data: any) => data.field !== "Sample"
+    );
+    const filteredSampleData = body.data.filter(
+      (data: any) => data.field === "Sample"
+    );
+    if (filteredSampleData?.length) {
+      for (const data of filteredSampleData) {
+        await prisma.fishSample.create({
+          data: {
+            biomass: data.biomass,
+            currentDate: data.currentDate,
+            fishCount: data.count,
+            meanLength: data.meanLength,
+            meanWeight: data.meanWeight,
+            productionId: filteredDataWithoutSample[0].id,
+          },
+        });
+      }
+    }
 
-    for (const data of body.data) {
+    for (const data of filteredDataWithoutSample) {
       if (data.id) {
         await prisma.production.update({
           where: { id: data.id },
@@ -20,6 +40,7 @@ export async function POST(req: NextRequest) {
             stockingLevel: data.stockingLevel,
             stockingDensityKG: data.stockingDensityKG,
             stockingDensityNM: data.stockingDensityNM,
+            field: data.field ?? "",
           },
         });
       } else {
@@ -37,6 +58,7 @@ export async function POST(req: NextRequest) {
             stockingDensityNM: data.stockingDensityNM,
             organisationId: body.organisationId,
             age: "",
+            field: data.field ?? "",
           },
         });
       }

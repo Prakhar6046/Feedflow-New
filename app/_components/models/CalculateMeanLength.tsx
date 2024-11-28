@@ -169,6 +169,7 @@ const CalculateMeanLength = ({ open, setOpen, setAvgOfMeanLength }: Props) => {
                                 required: true,
                                 pattern: validationPattern.numbersWithDot,
                               })}
+                              focused
                               className="form-input"
                               sx={{ width: "100%" }}
                             />
@@ -218,6 +219,7 @@ const CalculateMeanLength = ({ open, setOpen, setAvgOfMeanLength }: Props) => {
                                   required: true,
                                   pattern: validationPattern.numbersWithDot,
                                 })}
+                                focused
                                 className="form-input"
                                 sx={{ width: "100%" }}
                               />

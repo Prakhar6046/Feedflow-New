@@ -17,6 +17,7 @@ export interface Production {
   organisationId: Number;
   isManager?: Boolean;
   farm: Farm;
+  field?: String;
   organisation: SingleOrganisation;
   fishCount: String;
   batchNumberId: String;
@@ -69,6 +70,7 @@ export interface FarmGroup {
     fishCount: String;
     batchNumberId: Number;
     age: String;
+    field?: String;
     meanLength: String;
     meanWeight: String;
     stockingDensityKG: String;

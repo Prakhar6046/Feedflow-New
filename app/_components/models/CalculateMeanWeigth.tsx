@@ -185,6 +185,7 @@ const CalculateMeanWeigth = ({ open, setOpen, setAvgOfMeanWeight }: Props) => {
                               {...register(`meanWeight.${idx}.noOfFish`, {
                                 required: true,
                               })}
+                              focused
                               className="form-input"
                               sx={{ width: "100%" }}
                             />
@@ -220,6 +221,7 @@ const CalculateMeanWeigth = ({ open, setOpen, setAvgOfMeanWeight }: Props) => {
                                 {...register(`meanWeight.${idx}.totalWeight`, {
                                   required: true,
                                 })}
+                                focused
                                 className="form-input"
                                 sx={{ width: "100%" }}
                               />
@@ -270,6 +272,7 @@ const CalculateMeanWeigth = ({ open, setOpen, setAvgOfMeanWeight }: Props) => {
                                 label="Mean weight *"
                                 type="number"
                                 disabled
+                                focused
                                 {...register(`meanWeight.${idx}.meanWeight`)}
                                 className="form-input"
                                 sx={{ width: "100%" }}

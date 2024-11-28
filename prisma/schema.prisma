@@ -301,6 +301,7 @@ model production {
   createdAt         DateTime        @default(now())
   updatedAt         DateTime        @updatedAt
   organisationId    Int?
+  field             String?
   organisation      Organisation?   @relation(fields: [organisationId], references: [id], onDelete: SetNull)
   productionUnit    ProductionUnit? @relation(fields: [productionUnitId], references: [id])
   fishSupply        FishSupply?     @relation(fields: [batchNumberId], references: [id])

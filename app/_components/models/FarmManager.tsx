@@ -819,11 +819,15 @@ const TransferModal: React.FC<Props> = ({
                                         width: "100%",
                                       }}
                                       onChange={(date) => {
-                                        field.onChange(date);
-                                        setValue(
-                                          `manager.${idx}.currentDate`,
-                                          date
-                                        );
+                                        if (date && date.isValid()) {
+                                          field.onChange(date); // Set a valid Dayjs date
+                                          setValue(
+                                            `manager.${idx}.currentDate`,
+                                            date
+                                          );
+                                        } else {
+                                          field.onChange(null); // Clear the field if date is invalid
+                                        }
                                       }}
                                       slotProps={{
                                         textField: { focused: true },
@@ -1246,30 +1250,20 @@ const TransferModal: React.FC<Props> = ({
                                 label={`Stocking Density *`}
                                 type="text"
                                 className="form-input"
-                                disabled={
-                                  idx === 0 ||
-                                  item.field !== "Harvest" ||
-                                  item.field !== "Mortalities"
-                                    ? true
-                                    : false
-                                }
-                                InputLabelProps={{
-                                  shrink: !!watch(
-                                    `manager.${idx}.stockingDensityKG`
-                                  ),
+                                // disabled={
+                                //   idx === 0 ||
+                                //   item.field !== "Harvest" ||
+                                //   item.field !== "Mortalities"
+                                //     ? true
+                                //     : false
+                                // }
+                                slotProps={{
+                                  input: { readOnly: true },
                                 }}
                                 sx={{
                                   width: "100%",
-                                  "& .MuiInputLabel-root": {
-                                    transition: "all 0.2s ease",
-                                  },
-                                  "&:focus-within .MuiInputLabel-root": {
-                                    transform: "translate(10px, -9px)",
-                                    fontSize: "0.75rem",
-                                    color: "primary.main",
-                                    backgroundColor: "#fff",
-                                  },
                                 }}
+                                focused
                                 {...register(
                                   `manager.${idx}.stockingDensityKG` as const,
                                   {
@@ -1359,13 +1353,16 @@ const TransferModal: React.FC<Props> = ({
                                 label={`Stocking Density *`}
                                 type="text"
                                 className="form-input"
-                                disabled={
-                                  idx === 0 ||
-                                  item.field !== "Harvest" ||
-                                  item.field !== "Mortalities"
-                                    ? true
-                                    : false
-                                }
+                                // disabled={
+                                //   idx === 0 ||
+                                //   item.field !== "Harvest" ||
+                                //   item.field !== "Mortalities"
+                                //     ? true
+                                //     : false
+                                // }
+                                slotProps={{
+                                  input: { readOnly: true },
+                                }}
                                 {...register(
                                   `manager.${idx}.stockingDensityNM` as const,
                                   {
@@ -1377,22 +1374,9 @@ const TransferModal: React.FC<Props> = ({
                                     pattern: validationPattern.numbersWithDot,
                                   }
                                 )}
-                                InputLabelProps={{
-                                  shrink: !!watch(
-                                    `manager.${idx}.stockingDensityNM`
-                                  ),
-                                }}
+                                focused
                                 sx={{
                                   width: "100%",
-                                  "& .MuiInputLabel-root": {
-                                    transition: "all 0.2s ease",
-                                  },
-                                  "&:focus-within .MuiInputLabel-root": {
-                                    transform: "translate(10px, -9px)",
-                                    fontSize: "0.75rem",
-                                    color: "primary.main",
-                                    backgroundColor: "#fff",
-                                  },
                                 }}
                               />
                               <Typography
@@ -1466,7 +1450,10 @@ const TransferModal: React.FC<Props> = ({
                               label="Stocking Level *"
                               type="text"
                               className="form-input"
-                              disabled
+                              slotProps={{
+                                input: { readOnly: true },
+                              }}
+                              focused
                               sx={{ width: "100%" }}
                               {...register(
                                 `manager.${idx}.stockingLevel` as const

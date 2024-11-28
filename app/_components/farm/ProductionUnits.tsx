@@ -213,7 +213,6 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
             body: JSON.stringify(payload),
           }
         );
-        deleteCookie("addFarm");
         const responseData = await response.json();
         toast.success(responseData.message);
 
@@ -302,6 +301,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                               {...field} // Spread field props
                               label="Production Unit Name *"
                               type="text"
+                              focused
                               className="form-input"
                               sx={{
                                 width: "100%",
@@ -346,7 +346,11 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                           pr: 1,
                         }}
                       >
-                        <FormControl className="form-input prod-unit" fullWidth>
+                        <FormControl
+                          className="form-input prod-unit"
+                          fullWidth
+                          focused
+                        >
                           <InputLabel id="demo-simple-select-label">
                             Production Unit Type *
                           </InputLabel>
@@ -442,6 +446,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                                   pattern: validationPattern.numbersWithDot,
                                 }
                               )}
+                              focused
                             />
 
                             <Typography
@@ -530,6 +535,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                                   pattern: validationPattern.onlyNumbersPattern,
                                 }
                               )}
+                              focused
                             />
                             <Typography
                               variant="body1"
