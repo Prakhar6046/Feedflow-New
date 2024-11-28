@@ -501,7 +501,7 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
                 <Select
                   labelId="demo-simple-select-label"
                   id="demo-simple-select"
-                  label="Production Unit Type *"
+                  label="nit Type *"
                   {...register("organisationType")}
                   value={selectedOrganisationType || ""}
                   // onChange={(e) => handleChange(e, item)}
