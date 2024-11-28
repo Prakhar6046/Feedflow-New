@@ -454,8 +454,10 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                               color="#555555AC"
                               sx={{
                                 position: "absolute",
-                                right: 15,
+                                right: 13,
                                 top: "30%",
+                                backgroundColor: "white",
+                                paddingInline: "5px",
                               }}
                             >
                               L
@@ -542,8 +544,10 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                               color="#555555AC"
                               sx={{
                                 position: "absolute",
-                                right: 15,
+                                right: 13,
                                 top: "30%",
+                                backgroundColor: "white",
+                                paddingInline: "5px",
                               }}
                             >
                               L/H

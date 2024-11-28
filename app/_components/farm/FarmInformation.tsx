@@ -371,6 +371,10 @@ const FarmInformation: NextPage<Props> = ({
             </Typography>
           </Box>
           <Box
+            sx={{
+              position: "relative",
+              top: "66px",
+            }}
             display={"flex"}
             justifyContent={"end"}
             // alignItems={"center"}
