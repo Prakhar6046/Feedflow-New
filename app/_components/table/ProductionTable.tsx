@@ -382,6 +382,7 @@ export default function ProductionTable({
       updatedAt: item.updatedAt,
       isManager: item.isManager,
       field: item.field,
+      fishManageHistory: item.FishManageHistory,
     });
 
     return result;

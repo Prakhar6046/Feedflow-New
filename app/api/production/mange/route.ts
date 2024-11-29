@@ -4,7 +4,6 @@ import { NextRequest, NextResponse } from "next/server";
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    console.log(body.data);
 
     for (const data of body.data) {
       await prisma.fishManageHistory.create({
@@ -20,6 +19,7 @@ export async function POST(req: NextRequest) {
           stockingDensityKG: data.stockingDensityKG,
           stockingDensityNM: data.stockingDensityNM,
           organisationId: body.organisationId,
+          currentDate: body.date,
           age: "",
           field: data.field ?? "",
           productionId: Number(data.id),

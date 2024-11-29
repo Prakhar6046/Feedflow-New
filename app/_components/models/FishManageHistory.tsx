@@ -1,4 +1,8 @@
-import { FarmGroup, Production } from "@/app/_typeModels/production";
+import {
+  FarmGroup,
+  FishManageHistoryGroup,
+  Production,
+} from "@/app/_typeModels/production";
 import { Close as CloseIcon } from "@mui/icons-material"; // Use Material-UI's Close icon directly
 import {
   Box,
@@ -105,7 +109,7 @@ const FishManageHistoryModal: React.FC<Props> = ({
       (group: any) => group.farm === item.farm.name
     );
     if (!farmGroup) {
-      farmGroup = { farm: item.farm.name, units: [] };
+      farmGroup = { unit: item.productionUnit.name, units: [] };
       result.push(farmGroup);
     }
 
@@ -131,10 +135,12 @@ const FishManageHistoryModal: React.FC<Props> = ({
       updatedAt: item.updatedAt,
       isManager: item.isManager,
       field: item.field,
+      fishManageHistory: item.FishManageHistory,
     });
 
     return result;
   }, []);
+
   return (
     <Modal
       open={open}
@@ -145,6 +151,7 @@ const FishManageHistoryModal: React.FC<Props> = ({
       data-bs-backdrop="static"
       sx={{
         px: 5,
+        overflowY: "auto",
       }}
     >
       <Stack sx={style}>
@@ -190,434 +197,468 @@ const FishManageHistoryModal: React.FC<Props> = ({
               />
               <TableBody>
                 {groupedData && groupedData?.length > 0 ? (
-                  groupedData?.map((farm: FarmGroup, i: number) => {
-                    return (
-                      <TableRow
-                        key={i}
-                        sx={{
-                          "&:last-child td, &:last-child th": { border: 0 },
-                        }}
-                      >
-                        <TableCell
+                  groupedData?.map(
+                    (farm: FishManageHistoryGroup, i: number) => {
+                      return (
+                        <TableRow
+                          key={i}
                           sx={{
-                            color: "#555555",
-                            borderBottomColor: "#ececec",
-                            borderBottomWidth: 2,
-                            fontWeight: 700,
-                            paddingLeft: {
-                              lg: 10,
-                              md: 7,
-                              xs: 4,
-                            },
-                            textWrap: "nowrap",
+                            "&:last-child td, &:last-child th": { border: 0 },
                           }}
-                          component="th"
-                          scope="row"
                         >
-                          {farm.units.map((unit, i) => {
-                            return (
-                              <Typography
-                                key={i}
-                                variant="h6"
-                                sx={{
-                                  fontWeight: 500,
-                                  fontSize: 14,
-                                  display: "flex",
-                                  alignItems: "center",
-                                  gap: 1,
-                                  padding: "8px 12px",
-                                  margin: "8px 0",
-                                  textWrap: "nowrap",
-                                }}
-                              >
-                                {" "}
-                                {unit.productionUnit.name}
-                                <Box
+                          <TableCell
+                            sx={{
+                              color: "#555555",
+                              borderBottomColor: "#ececec",
+                              borderBottomWidth: 2,
+                              fontWeight: 700,
+                              paddingLeft: {
+                                lg: 10,
+                                md: 7,
+                                xs: 4,
+                              },
+                              textWrap: "nowrap",
+                            }}
+                            component="th"
+                            scope="row"
+                          >
+                            {farm.units.map((unit, i) => {
+                              return (
+                                <Typography
+                                  key={i}
+                                  variant="h6"
                                   sx={{
-                                    pr: 3,
+                                    fontWeight: 500,
+                                    fontSize: 14,
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: 1,
+                                    padding: "8px 12px",
+                                    margin: "8px 0",
+                                    textWrap: "nowrap",
                                   }}
-                                ></Box>
-                              </Typography>
-                            );
-                          })}
-                        </TableCell>{" "}
-                        <TableCell
-                          className="table-padding"
-                          sx={{
-                            borderBottomWidth: 2,
-                            borderBottomColor: "#ececec",
-                            color: "#555555",
-                            fontWeight: 500,
-                            pl: 0,
-                          }}
-                        >
-                          {farm.units.map((unit, i) => {
-                            return (
-                              <Typography
-                                key={i}
-                                variant="h6"
-                                sx={{
-                                  fontWeight: 500,
-                                  fontSize: 14,
-                                  backgroundColor: "#F5F6F8",
-                                  padding: `${
-                                    unit?.fishCount
-                                      ? "8px 12px 8px 0"
-                                      : "19px 12px 19px 0"
-                                  }`,
-                                  margin: "8px 0",
-                                  // marginBottom: "10px",
-                                  // padding: "21px",
-                                  textWrap: "nowrap",
-                                }}
-                              >
-                                {"25/12/2024"}
-                              </Typography>
-                            );
-                          })}
-                        </TableCell>{" "}
-                        <TableCell
-                          className="table-padding"
-                          sx={{
-                            borderBottomWidth: 2,
-                            borderBottomColor: "#ececec",
-                            color: "#555555",
-                            fontWeight: 500,
-                            pl: 0,
-                          }}
-                        >
-                          {farm.units.map((unit, i) => {
-                            return (
-                              <Typography
-                                key={i}
-                                variant="h6"
-                                sx={{
-                                  fontWeight: 500,
-                                  fontSize: 14,
-                                  backgroundColor: "#F5F6F8",
-                                  padding: `${
-                                    unit?.fishCount
-                                      ? "8px 12px 8px 0"
-                                      : "19px 12px 19px 0"
-                                  }`,
-                                  margin: "8px 0",
-                                  // marginBottom: "10px",
-                                  // padding: "21px",
-                                  textWrap: "nowrap",
-                                }}
-                              >
-                                {"Stock"}
-                              </Typography>
-                            );
-                          })}
-                        </TableCell>
-                        <TableCell
-                          className="table-padding"
-                          sx={{
-                            borderBottomWidth: 2,
-                            borderBottomColor: "#ececec",
-                            color: "#555555",
-                            fontWeight: 500,
-                            pl: 0,
-                          }}
-                        >
-                          {farm.units.map((unit, i) => {
-                            return (
-                              <Typography
-                                key={i}
-                                variant="h6"
-                                sx={{
-                                  fontWeight: 500,
-                                  fontSize: 14,
-                                  backgroundColor: "#F5F6F8",
-                                  padding: `${
-                                    unit?.fishSupply?.batchNumber
-                                      ? "8px 12px 8px 0"
-                                      : "19px 12px 19px 0"
-                                  }`,
-                                  margin: "8px 0",
-                                  textWrap: "nowrap",
-                                }}
-                              >
-                                {unit?.fishSupply?.batchNumber ?? ""}
-                              </Typography>
-                            );
-                          })}
-                        </TableCell>
-                        <TableCell
-                          className="table-padding"
-                          sx={{
-                            borderBottomWidth: 2,
-                            borderBottomColor: "#ececec",
-                            color: "#555555",
-                            fontWeight: 500,
-                            pl: 0,
-                            p: 0,
-                          }}
-                        >
-                          {farm.units.map((unit, i) => {
-                            return (
-                              <Typography
-                                key={i}
-                                variant="h6"
-                                sx={{
-                                  fontWeight: 500,
-                                  fontSize: 14,
-                                  padding: `${
-                                    unit?.fishSupply?.age
-                                      ? "8px 12px 8px 0"
-                                      : "19px 12px 19px 0"
-                                  }`,
-                                  backgroundColor: "#F5F6F8",
-                                  margin: "8px 0",
+                                >
+                                  {unit.productionUnit.name}
+                                  <Box
+                                    sx={{
+                                      pr: 3,
+                                    }}
+                                  ></Box>
+                                </Typography>
+                              );
+                            })}
+                          </TableCell>{" "}
+                          <TableCell
+                            className="table-padding"
+                            sx={{
+                              borderBottomWidth: 2,
+                              borderBottomColor: "#ececec",
+                              color: "#555555",
+                              fontWeight: 500,
+                              pl: 0,
+                            }}
+                          >
+                            {farm &&
+                              farm.units[0].fishManageHistory &&
+                              farm.units[0].fishManageHistory.map((unit, i) => {
+                                return (
+                                  <Typography
+                                    key={i}
+                                    variant="h6"
+                                    sx={{
+                                      fontWeight: 500,
+                                      fontSize: 14,
+                                      backgroundColor: "#F5F6F8",
+                                      padding: `${
+                                        unit?.fishCount
+                                          ? "8px 12px 8px 0"
+                                          : "19px 12px 19px 0"
+                                      }`,
+                                      margin: "8px 0",
+                                      // marginBottom: "10px",
+                                      // padding: "21px",
+                                      textWrap: "nowrap",
+                                    }}
+                                  >
+                                    {unit.currentDate
+                                      ? unit.currentDate
+                                      : new Date(
+                                          String(unit?.updatedAt)
+                                        ).toLocaleDateString()}
+                                  </Typography>
+                                );
+                              })}
+                          </TableCell>{" "}
+                          <TableCell
+                            className="table-padding"
+                            sx={{
+                              borderBottomWidth: 2,
+                              borderBottomColor: "#ececec",
+                              color: "#555555",
+                              fontWeight: 500,
+                              pl: 0,
+                            }}
+                          >
+                            {farm &&
+                              farm.units[0].fishManageHistory &&
+                              farm.units[0].fishManageHistory.map((unit, i) => {
+                                return (
+                                  <Typography
+                                    key={i}
+                                    variant="h6"
+                                    sx={{
+                                      fontWeight: 500,
+                                      fontSize: 14,
+                                      backgroundColor: "#F5F6F8",
+                                      padding: `${
+                                        unit?.fishCount
+                                          ? "8px 12px 8px 0"
+                                          : "19px 12px 19px 0"
+                                      }`,
+                                      margin: "8px 0",
+                                      // marginBottom: "10px",
+                                      // padding: "21px",
+                                      textWrap: "nowrap",
+                                    }}
+                                  >
+                                    {unit.field ? unit.field : "Stock"}
+                                  </Typography>
+                                );
+                              })}
+                          </TableCell>
+                          <TableCell
+                            className="table-padding"
+                            sx={{
+                              borderBottomWidth: 2,
+                              borderBottomColor: "#ececec",
+                              color: "#555555",
+                              fontWeight: 500,
+                              pl: 0,
+                            }}
+                          >
+                            {farm &&
+                              farm.units[0].fishManageHistory &&
+                              farm.units[0].fishManageHistory.map((unit, i) => {
+                                return (
+                                  <Typography
+                                    key={i}
+                                    variant="h6"
+                                    sx={{
+                                      fontWeight: 500,
+                                      fontSize: 14,
+                                      backgroundColor: "#F5F6F8",
+                                      padding: `${
+                                        farm.units[0].fishSupply?.batchNumber
+                                          ? "8px 12px 8px 0"
+                                          : "19px 12px 19px 0"
+                                      }`,
+                                      margin: "8px 0",
+                                      textWrap: "nowrap",
+                                    }}
+                                  >
+                                    {farm.units[0].fishSupply?.batchNumber ??
+                                      ""}
+                                  </Typography>
+                                );
+                              })}
+                          </TableCell>
+                          <TableCell
+                            className="table-padding"
+                            sx={{
+                              borderBottomWidth: 2,
+                              borderBottomColor: "#ececec",
+                              color: "#555555",
+                              fontWeight: 500,
+                              pl: 0,
+                              p: 0,
+                            }}
+                          >
+                            {farm &&
+                              farm.units[0].fishManageHistory &&
+                              farm.units[0].fishManageHistory.map((unit, i) => {
+                                return (
+                                  <Typography
+                                    key={i}
+                                    variant="h6"
+                                    sx={{
+                                      fontWeight: 500,
+                                      fontSize: 14,
+                                      padding: `${
+                                        farm.units[0].fishSupply?.age
+                                          ? "8px 12px 8px 0"
+                                          : "19px 12px 19px 0"
+                                      }`,
+                                      backgroundColor: "#F5F6F8",
+                                      margin: "8px 0",
 
-                                  textWrap: "nowrap",
-                                }}
-                              >
-                                {unit?.fishSupply?.age ?? ""}
-                              </Typography>
-                            );
-                          })}
-                        </TableCell>
-                        <TableCell
-                          className="table-padding"
-                          sx={{
-                            borderBottomWidth: 2,
-                            borderBottomColor: "#ececec",
-                            color: "#555555",
-                            fontWeight: 500,
-                            pl: 0,
-                          }}
-                        >
-                          {farm.units.map((unit, i) => {
-                            return (
-                              <Typography
-                                key={i}
-                                variant="h6"
-                                sx={{
-                                  fontWeight: 500,
-                                  fontSize: 14,
-                                  backgroundColor: "#F5F6F8",
-                                  padding: `${
-                                    unit?.fishCount
-                                      ? "8px 12px 8px 0"
-                                      : "19px 12px 19px 0"
-                                  }`,
-                                  margin: "8px 0",
-                                  // marginBottom: "10px",
-                                  // padding: "21px",
-                                  textWrap: "nowrap",
-                                }}
-                              >
-                                {unit?.fishCount ?? ""}
-                              </Typography>
-                            );
-                          })}
-                        </TableCell>
-                        <TableCell
-                          className="table-padding"
-                          // align="center"
-                          sx={{
-                            borderBottomColor: "#ececec",
-                            borderBottomWidth: 2,
-                            color: "#555555",
-                            fontWeight: 500,
-                            pl: 0,
-                          }}
-                        >
-                          {farm.units.map((unit, i) => {
-                            return (
-                              <Typography
-                                key={i}
-                                variant="h6"
-                                sx={{
-                                  fontWeight: 500,
-                                  fontSize: 14,
-                                  backgroundColor: "#F5F6F8",
-                                  padding: `${
-                                    unit?.biomass
-                                      ? "8px 12px 8px 0"
-                                      : "19px 12px 19px 0"
-                                  }`,
-                                  margin: "8px 0",
-                                  // marginBottom: "10px",
-                                  textWrap: "nowrap",
-                                }}
-                              >
-                                {unit.biomass ? `${unit.biomass} kg` : ""}
-                              </Typography>
-                            );
-                          })}
-                        </TableCell>
-                        <TableCell
-                          className="table-padding"
-                          // align="center"
-                          sx={{
-                            borderBottomColor: "#ececec",
-                            borderBottomWidth: 2,
-                            color: "#555555",
-                            fontWeight: 500,
-                            pl: 0,
-                          }}
-                        >
-                          {farm.units.map((unit, i) => {
-                            return (
-                              <Typography
-                                key={i}
-                                variant="h6"
-                                sx={{
-                                  fontWeight: 500,
-                                  fontSize: 14,
-                                  backgroundColor: "#F5F6F8",
-                                  padding: `${
-                                    unit?.meanWeight
-                                      ? "8px 12px 8px 0"
-                                      : "19px 12px 19px 0"
-                                  }`,
-                                  margin: "8px 0",
-                                  // marginBottom: "10px",
-                                  textWrap: "nowrap",
-                                }}
-                              >
-                                {unit.meanWeight ? `${unit.meanWeight} g` : ""}
-                              </Typography>
-                            );
-                          })}
-                        </TableCell>
-                        <TableCell
-                          className="table-padding"
-                          // align="center"
-                          sx={{
-                            borderBottomColor: "#ececec",
-                            borderBottomWidth: 2,
-                            color: "#555555",
-                            fontWeight: 500,
-                            pl: 0,
-                          }}
-                        >
-                          {farm.units.map((unit, i) => {
-                            return (
-                              <Typography
-                                key={i}
-                                variant="h6"
-                                sx={{
-                                  fontWeight: 500,
-                                  fontSize: 14,
-                                  backgroundColor: "#F5F6F8",
-                                  padding: `${
-                                    unit?.meanLength
-                                      ? "8px 12px 8px 0"
-                                      : "19px 12px 19px 0"
-                                  }`,
-                                  margin: "8px 0",
-                                  // marginBottom: "10px",
-                                  textWrap: "nowrap",
-                                }}
-                              >
-                                {unit.meanLength ? `${unit.meanLength} mm` : ""}
-                              </Typography>
-                            );
-                          })}
-                        </TableCell>
-                        <TableCell
-                          className="table-padding"
-                          // align="center"
-                          sx={{
-                            borderBottomColor: "#ececec",
-                            borderBottomWidth: 2,
-                            color: "#555555",
-                            fontWeight: 500,
-                            pl: 0,
-                          }}
-                        >
-                          {farm.units.map((unit, i) => {
-                            return (
-                              <Typography
-                                key={i}
-                                variant="h6"
-                                sx={{
-                                  fontWeight: 500,
-                                  fontSize: 14,
-                                  backgroundColor: "#F5F6F8",
-                                  padding: "8px 12px 8px 0",
-                                  margin: "8px 0",
-                                  // marginBottom: "10px",
-                                  textWrap: "nowrap",
-                                }}
-                              >
-                                {Number(unit.stockingDensityKG).toFixed(2) ??
-                                  ""}
-                              </Typography>
-                            );
-                          })}
-                        </TableCell>
-                        <TableCell
-                          className="table-padding"
-                          // align="center"
-                          sx={{
-                            borderBottomColor: "#ececec",
-                            borderBottomWidth: 2,
-                            color: "#555555",
-                            fontWeight: 500,
-                            pl: 0,
-                          }}
-                        >
-                          {farm.units.map((unit, i) => {
-                            return (
-                              <Typography
-                                key={i}
-                                variant="h6"
-                                sx={{
-                                  fontWeight: 500,
-                                  fontSize: 14,
-                                  backgroundColor: "#F5F6F8",
-                                  padding: "8px 12px 8px 0",
-                                  margin: "8px 0",
-                                  // marginBottom: "10px",
-                                  textWrap: "nowrap",
-                                }}
-                              >
-                                {Number(unit.stockingDensityNM).toFixed(2) ??
-                                  ""}
-                              </Typography>
-                            );
-                          })}
+                                      textWrap: "nowrap",
+                                    }}
+                                  >
+                                    {farm.units[0].fishSupply?.age ?? ""}
+                                  </Typography>
+                                );
+                              })}
+                          </TableCell>
+                          <TableCell
+                            className="table-padding"
+                            sx={{
+                              borderBottomWidth: 2,
+                              borderBottomColor: "#ececec",
+                              color: "#555555",
+                              fontWeight: 500,
+                              pl: 0,
+                            }}
+                          >
+                            {farm &&
+                              farm.units[0].fishManageHistory &&
+                              farm.units[0].fishManageHistory.map((unit, i) => {
+                                return (
+                                  <Typography
+                                    key={i}
+                                    variant="h6"
+                                    sx={{
+                                      fontWeight: 500,
+                                      fontSize: 14,
+                                      backgroundColor: "#F5F6F8",
+                                      padding: `${
+                                        unit?.fishCount
+                                          ? "8px 12px 8px 0"
+                                          : "19px 12px 19px 0"
+                                      }`,
+                                      margin: "8px 0",
+                                      // marginBottom: "10px",
+                                      // padding: "21px",
+                                      textWrap: "nowrap",
+                                    }}
+                                  >
+                                    {unit?.fishCount ?? ""}
+                                  </Typography>
+                                );
+                              })}
+                          </TableCell>
+                          <TableCell
+                            className="table-padding"
+                            // align="center"
+                            sx={{
+                              borderBottomColor: "#ececec",
+                              borderBottomWidth: 2,
+                              color: "#555555",
+                              fontWeight: 500,
+                              pl: 0,
+                            }}
+                          >
+                            {farm &&
+                              farm.units[0].fishManageHistory &&
+                              farm.units[0].fishManageHistory.map((unit, i) => {
+                                return (
+                                  <Typography
+                                    key={i}
+                                    variant="h6"
+                                    sx={{
+                                      fontWeight: 500,
+                                      fontSize: 14,
+                                      backgroundColor: "#F5F6F8",
+                                      padding: `${
+                                        unit?.biomass
+                                          ? "8px 12px 8px 0"
+                                          : "19px 12px 19px 0"
+                                      }`,
+                                      margin: "8px 0",
+                                      // marginBottom: "10px",
+                                      textWrap: "nowrap",
+                                    }}
+                                  >
+                                    {unit.biomass ? `${unit.biomass} kg` : ""}
+                                  </Typography>
+                                );
+                              })}
+                          </TableCell>
+                          <TableCell
+                            className="table-padding"
+                            // align="center"
+                            sx={{
+                              borderBottomColor: "#ececec",
+                              borderBottomWidth: 2,
+                              color: "#555555",
+                              fontWeight: 500,
+                              pl: 0,
+                            }}
+                          >
+                            {farm &&
+                              farm.units[0].fishManageHistory &&
+                              farm.units[0].fishManageHistory.map((unit, i) => {
+                                return (
+                                  <Typography
+                                    key={i}
+                                    variant="h6"
+                                    sx={{
+                                      fontWeight: 500,
+                                      fontSize: 14,
+                                      backgroundColor: "#F5F6F8",
+                                      padding: `${
+                                        unit?.meanWeight
+                                          ? "8px 12px 8px 0"
+                                          : "19px 12px 19px 0"
+                                      }`,
+                                      margin: "8px 0",
+                                      // marginBottom: "10px",
+                                      textWrap: "nowrap",
+                                    }}
+                                  >
+                                    {unit.meanWeight
+                                      ? `${unit.meanWeight} g`
+                                      : ""}
+                                  </Typography>
+                                );
+                              })}
+                          </TableCell>
+                          <TableCell
+                            className="table-padding"
+                            // align="center"
+                            sx={{
+                              borderBottomColor: "#ececec",
+                              borderBottomWidth: 2,
+                              color: "#555555",
+                              fontWeight: 500,
+                              pl: 0,
+                            }}
+                          >
+                            {farm &&
+                              farm.units[0].fishManageHistory &&
+                              farm.units[0].fishManageHistory.map((unit, i) => {
+                                return (
+                                  <Typography
+                                    key={i}
+                                    variant="h6"
+                                    sx={{
+                                      fontWeight: 500,
+                                      fontSize: 14,
+                                      backgroundColor: "#F5F6F8",
+                                      padding: `${
+                                        unit?.meanLength
+                                          ? "8px 12px 8px 0"
+                                          : "19px 12px 19px 0"
+                                      }`,
+                                      margin: "8px 0",
+                                      // marginBottom: "10px",
+                                      textWrap: "nowrap",
+                                    }}
+                                  >
+                                    {unit.meanLength
+                                      ? `${unit.meanLength} mm`
+                                      : ""}
+                                  </Typography>
+                                );
+                              })}
+                          </TableCell>
+                          <TableCell
+                            className="table-padding"
+                            // align="center"
+                            sx={{
+                              borderBottomColor: "#ececec",
+                              borderBottomWidth: 2,
+                              color: "#555555",
+                              fontWeight: 500,
+                              pl: 0,
+                            }}
+                          >
+                            {farm &&
+                              farm.units[0].fishManageHistory &&
+                              farm.units[0].fishManageHistory.map((unit, i) => {
+                                return (
+                                  <Typography
+                                    key={i}
+                                    variant="h6"
+                                    sx={{
+                                      fontWeight: 500,
+                                      fontSize: 14,
+                                      backgroundColor: "#F5F6F8",
+                                      padding: "8px 12px 8px 0",
+                                      margin: "8px 0",
+                                      // marginBottom: "10px",
+                                      textWrap: "nowrap",
+                                    }}
+                                  >
+                                    {Number(unit.stockingDensityKG).toFixed(
+                                      2
+                                    ) ?? ""}
+                                  </Typography>
+                                );
+                              })}
+                          </TableCell>
+                          <TableCell
+                            className="table-padding"
+                            // align="center"
+                            sx={{
+                              borderBottomColor: "#ececec",
+                              borderBottomWidth: 2,
+                              color: "#555555",
+                              fontWeight: 500,
+                              pl: 0,
+                            }}
+                          >
+                            {farm &&
+                              farm.units[0].fishManageHistory &&
+                              farm.units[0].fishManageHistory.map((unit, i) => {
+                                return (
+                                  <Typography
+                                    key={i}
+                                    variant="h6"
+                                    sx={{
+                                      fontWeight: 500,
+                                      fontSize: 14,
+                                      backgroundColor: "#F5F6F8",
+                                      padding: "8px 12px 8px 0",
+                                      margin: "8px 0",
+                                      // marginBottom: "10px",
+                                      textWrap: "nowrap",
+                                    }}
+                                  >
+                                    {Number(unit.stockingDensityNM).toFixed(
+                                      2
+                                    ) ?? ""}
+                                  </Typography>
+                                );
+                              })}
 
-                          {/* {farm.meanWeight ? `${farm.meanWeight}g` : ""} */}
-                        </TableCell>{" "}
-                        <TableCell
-                          className="table-padding"
-                          sx={{
-                            borderBottomColor: "#ececec",
-                            borderBottomWidth: 2,
-                            color: "#555555",
-                            fontWeight: 500,
-                            pl: 0,
-                          }}
-                        >
-                          {farm.units.map((unit, i) => {
-                            return (
-                              <Typography
-                                key={i}
-                                variant="h6"
-                                sx={{
-                                  fontWeight: 500,
-                                  fontSize: 14,
-                                  backgroundColor: "#F5F6F8",
-                                  padding: "8px 12px 8px 0",
-                                  margin: "8px 0",
-                                  // marginBottom: "10px",
-                                  textWrap: "nowrap",
-                                }}
-                              >
-                                {Number(unit.stockingLevel) ?? ""}
-                              </Typography>
-                            );
-                          })}
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })
+                            {/* {farm.meanWeight ? `${farm.meanWeight}g` : ""} */}
+                          </TableCell>{" "}
+                          <TableCell
+                            className="table-padding"
+                            sx={{
+                              borderBottomColor: "#ececec",
+                              borderBottomWidth: 2,
+                              color: "#555555",
+                              fontWeight: 500,
+                              pl: 0,
+                            }}
+                          >
+                            {farm &&
+                              farm.units[0].fishManageHistory &&
+                              farm.units[0].fishManageHistory.map((unit, i) => {
+                                return (
+                                  <Typography
+                                    key={i}
+                                    variant="h6"
+                                    sx={{
+                                      fontWeight: 500,
+                                      fontSize: 14,
+                                      backgroundColor: "#F5F6F8",
+                                      padding: "8px 12px 8px 0",
+                                      margin: "8px 0",
+                                      // marginBottom: "10px",
+                                      textWrap: "nowrap",
+                                    }}
+                                  >
+                                    {Number(unit.stockingLevel) ?? ""}
+                                  </Typography>
+                                );
+                              })}
+                          </TableCell>
+                        </TableRow>
+                      );
+                    }
+                  )
                 ) : (
                   <TableRow>No Data Found</TableRow>
                 )}

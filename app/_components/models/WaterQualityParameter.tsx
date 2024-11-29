@@ -159,26 +159,25 @@ const WaterQualityParameter: React.FC<Props> = ({
         waterAvg: updatedData[0],
         listData: updatedData.filter((data, idx) => idx !== 0),
       };
-      console.log(payload);
-      const response = await fetch("/api/production/waterQuality", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
+      // const response = await fetch("/api/production/waterQuality", {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
+      //   body: JSON.stringify(payload),
+      // });
 
-      const res = await response.json();
-      if (res.status) {
-        toast.dismiss();
-        toast.success(res.message);
-        setOpen(false);
-        router.push("/dashboard/production");
-        localStorage.removeItem("productionData");
-        localStorage.removeItem("formData");
-        reset();
-        router.refresh();
-      }
+      // const res = await response.json();
+      // if (res.status) {
+      //   toast.dismiss();
+      //   toast.success(res.message);
+      //   setOpen(false);
+      //   router.push("/dashboard/production");
+      //   localStorage.removeItem("productionData");
+      //   localStorage.removeItem("formData");
+      //   reset();
+      //   router.refresh();
+      // }
     } catch (error) {
       toast.error("Something went wrong. Please try again.");
     } finally {
