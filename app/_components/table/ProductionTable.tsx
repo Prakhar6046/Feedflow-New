@@ -413,15 +413,15 @@ export default function ProductionTable({
             }}
           >
             <FormControlLabel
-              value="stock"
+              value="fish"
               control={<Radio />}
-              label="Stock"
+              label="Fish"
               className="input-btn"
             />
             <FormControlLabel
-              value="environment"
+              value="water"
               control={<Radio />}
-              label="Environment"
+              label="Water"
               className="input-btn"
             />
           </RadioGroup>

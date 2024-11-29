@@ -442,6 +442,8 @@ const TransferModal: React.FC<Props> = ({
     }
     if (isFish && watchedFields[0]?.id) {
       localStorage.setItem("formData", JSON.stringify(watchedFields));
+    } else {
+      localStorage.removeItem("formData");
     }
   }, [
     watchedFields.map((field) => field.biomass).join(","), // Watch biomass of all fields
@@ -450,6 +452,7 @@ const TransferModal: React.FC<Props> = ({
     watchedFields.map((field) => field.meanWeight).join(","),
     watchedFields.map((field) => field.stockingDensityKG).join(","),
     setValue,
+    isFish,
     selectedProduction,
   ]);
   useEffect(() => {
