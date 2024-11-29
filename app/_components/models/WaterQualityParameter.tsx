@@ -196,7 +196,7 @@ const WaterQualityParameter: React.FC<Props> = ({
     params.delete("isWater");
     localStorage.removeItem("productionData");
     localStorage.removeItem("formData");
-    router.replace(`${pathName}?${params.toString()}`);
+    router.replace(`/dashboard/production`);
   };
   const openAnchor = Boolean(anchorEl);
   const handleClick = (event: any) => {
@@ -303,6 +303,8 @@ const WaterQualityParameter: React.FC<Props> = ({
     }
     if (isWater && watchedFields[0]?.id) {
       localStorage.setItem("formData", JSON.stringify(watchedFields));
+    } else {
+      localStorage.removeItem("formData");
     }
   }, [
     watchedFields.map((field) => field.waterTemp).join(","),
@@ -314,6 +316,7 @@ const WaterQualityParameter: React.FC<Props> = ({
     watchedFields.map((field) => field.ph).join(","),
     watchedFields.map((field) => field.visibility).join(","),
     setValue,
+    isWater,
     selectedProduction,
   ]);
 

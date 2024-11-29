@@ -288,7 +288,7 @@ const TransferModal: React.FC<Props> = ({
       event.preventDefault();
       const params = new URLSearchParams(searchParams);
       params.delete("isFish");
-      router.replace(`${pathName}?${params.toString()}`);
+      router.replace(`/dashboard/production`);
       localStorage.removeItem("productionData");
       localStorage.removeItem("formData");
     }
@@ -454,6 +454,7 @@ const TransferModal: React.FC<Props> = ({
     setValue,
     isFish,
     selectedProduction,
+    isFish,
   ]);
   useEffect(() => {
     if (avgOfMeanWeight && selectedMeanWeightId) {
