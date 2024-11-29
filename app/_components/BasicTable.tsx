@@ -55,10 +55,10 @@ export default function BasicTable({ organisations, userRole }: Props) {
   const [sortDataFromLocal, setSortDataFromLocal] = React.useState<any>("");
 
   useEffect(() => {
-    if (pathName && window) {
+    if (pathName) {
       setSortDataFromLocal(localStorage.getItem(pathName));
     }
-  }, [pathName, window]);
+  }, [pathName]);
   const handleClick = (
     event: React.MouseEvent<HTMLButtonElement>,
     organisation: SingleOrganisation

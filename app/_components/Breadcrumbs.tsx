@@ -95,10 +95,10 @@ export default function BasicBreadcrumbs({
     }
   }, [role]);
   useEffect(() => {
-    if (pathName && window) {
-      setSortDataFromLocal(window.localStorage.getItem(pathName));
+    if (pathName) {
+      setSortDataFromLocal(localStorage.getItem(pathName));
     }
-  }, [pathName, window]);
+  }, [pathName]);
 
   return (
     <>

@@ -50,10 +50,10 @@ export default function FarmTable({ farms }: Props) {
   const [sortDataFromLocal, setSortDataFromLocal] = React.useState<any>("");
 
   useEffect(() => {
-    if (pathName && window) {
-      setSortDataFromLocal(window.localStorage.getItem(pathName));
+    if (pathName) {
+      setSortDataFromLocal(localStorage.getItem(pathName));
     }
-  }, [pathName, window]);
+  }, [pathName]);
   const handleClick = (
     event: React.MouseEvent<HTMLButtonElement>,
     farm: any

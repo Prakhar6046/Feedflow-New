@@ -268,10 +268,10 @@ export default function UserTable({ users }: Props) {
   }, [users]);
 
   useEffect(() => {
-    if (pathName && window) {
-      setSortDataFromLocal(window.localStorage.getItem(pathName));
+    if (pathName) {
+      setSortDataFromLocal(localStorage.getItem(pathName));
     }
-  }, [pathName, window]);
+  }, [pathName]);
 
   useEffect(() => {
     router.refresh();

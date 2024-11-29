@@ -73,10 +73,10 @@ export default function ProductionTable({
   const [isFishManageHistory, setIsFishManageHistory] =
     useState<boolean>(false);
   useEffect(() => {
-    if (pathName && window) {
-      setSortDataFromLocal(window.localStorage.getItem(pathName));
+    if (pathName) {
+      setSortDataFromLocal(localStorage.getItem(pathName));
     }
-  }, [pathName, window]);
+  }, [pathName]);
   const handleClick = (
     event: React.MouseEvent<HTMLButtonElement>,
     unit: any,
