@@ -1,4 +1,4 @@
-import { productionMangeFields, waterQualityFields } from "@/app/_lib/utils";
+import { waterQualityFields } from "@/app/_lib/utils";
 import * as validationPattern from "@/app/_lib/utils/validationPatterns/index";
 import * as validationMessage from "@/app/_lib/utils/validationsMessage/index";
 import { Farm } from "@/app/_typeModels/Farm";

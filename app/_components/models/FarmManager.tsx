@@ -446,7 +446,7 @@ const TransferModal: React.FC<Props> = ({
       localStorage.removeItem("formData");
     }
   }, [
-    watchedFields.map((field) => field.biomass).join(","), // Watch biomass of all fields
+    watchedFields.map((field) => field.biomass).join(","),
     watchedFields.map((field) => field.count).join(","),
     watchedFields.map((field) => field.meanLength).join(","),
     watchedFields.map((field) => field.meanWeight).join(","),
