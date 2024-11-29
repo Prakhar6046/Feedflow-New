@@ -179,6 +179,10 @@ const FishManageHistoryModal: React.FC<Props> = ({
             textAlign: "center",
             mt: 4,
             mx: "auto",
+            overflowY: {
+              xl: "visible",
+              xs: "auto",
+            },
           }}
         >
           <TableContainer>
