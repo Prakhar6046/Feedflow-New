@@ -72,6 +72,11 @@ export default function ProductionTable({
   const [sortDataFromLocal, setSortDataFromLocal] = React.useState<any>("");
   const [isFishManageHistory, setIsFishManageHistory] =
     useState<boolean>(false);
+  const [selectedUnitId, setSelectedUnitId] = useState<String>();
+  const handleFishManageHistory = (unit: any) => {
+    setSelectedUnitId(unit.productionUnit.id);
+    setIsFishManageHistory(true);
+  };
   useEffect(() => {
     if (pathName) {
       setSortDataFromLocal(localStorage.getItem(pathName));
@@ -515,15 +520,7 @@ export default function ProductionTable({
                                 }}
                               >
                                 <Button
-                                  // id="basic-button"
-                                  // aria-controls={
-                                  //   open ? "basic-menu" : undefined
-                                  // }
-                                  // aria-haspopup="true"
-                                  // aria-expanded={open ? "true" : undefined}
-                                  // onClick={(e) => handleClick(e, unit, true)}
-                                  onClick={() => setIsFishManageHistory(true)}
-                                  // disabled={unit.isManager ? false : true}
+                                  onClick={() => handleFishManageHistory(unit)}
                                   className=""
                                   type="button"
                                   variant="contained"
@@ -998,7 +995,9 @@ export default function ProductionTable({
         open={isFishManageHistory}
         setOpen={setIsFishManageHistory}
         tableData={fishManageHistoryHead}
-        productions={productions}
+        productions={productions.filter(
+          (data) => data.productionUnitId === selectedUnitId
+        )}
       />
     </>
   );
