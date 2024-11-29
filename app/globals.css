@@ -475,3 +475,24 @@ label {
   pointer-events: none;
   opacity: 0.5;
 }
+/* .ic-radio {
+  color: #555555 !important;
+  font-weight: 500;
+}
+
+.input-btn > span:nth-child(1) {
+  color: #06a19b;
+} */
+.ic-radio .Mui-checked {
+  color: #06a19b !important;
+}
+
+.input-btn .MuiFormControlLabel-label {
+  color: #555555;
+}
+
+.input-btn
+  .MuiFormControlLabel-root:not(.Mui-checked)
+  .MuiFormControlLabel-label {
+  color: #555555 !important;
+}

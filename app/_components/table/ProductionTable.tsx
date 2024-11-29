@@ -8,6 +8,11 @@ import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import {
   Box,
   Button,
+  FormControl,
+  FormControlLabel,
+  FormLabel,
+  Radio,
+  RadioGroup,
   TableSortLabel,
   Tooltip,
   Typography,
@@ -23,6 +28,7 @@ import { getCookie } from "cookies-next";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import WaterQualityParameter from "../models/WaterQualityParameter";
+import FishManageHistoryModal from "../models/FishManageHistory";
 interface Props {
   productions: Production[];
   tableData: any;
@@ -55,7 +61,8 @@ export default function ProductionTable({
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("Farm");
   const [sortDataFromLocal, setSortDataFromLocal] = React.useState<any>("");
-
+  const [isFishManageHistory, setIsFishManageHistory] =
+    useState<boolean>(false);
   useEffect(() => {
     if (pathName && window) {
       setSortDataFromLocal(window.localStorage.getItem(pathName));
@@ -323,7 +330,7 @@ export default function ProductionTable({
     }
   }, [productions]);
 
-  const groupedData: any = productions.reduce((result: any, item) => {
+  const groupedData: any = productions?.reduce((result: any, item) => {
     // Find or create a farm group
     let farmGroup: any = result.find(
       (group: any) => group.farm === item.farm.name
@@ -366,6 +373,39 @@ export default function ProductionTable({
 
   return (
     <>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "flex-end",
+        }}
+      >
+        <FormControl>
+          <RadioGroup
+            aria-labelledby="demo-radio-buttons-group-label"
+            defaultValue="Stock"
+            name="radio-buttons-group"
+            className="ic-radio"
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            <FormControlLabel
+              value="stock"
+              control={<Radio />}
+              label="Stock"
+              className="input-btn"
+            />
+            <FormControlLabel
+              value="environment"
+              control={<Radio />}
+              label="Environment"
+              className="input-btn"
+            />
+          </RadioGroup>
+        </FormControl>
+      </Box>
       <Paper
         sx={{
           width: "100%",
@@ -445,20 +485,54 @@ export default function ProductionTable({
                                 textWrap: "nowrap",
                               }}
                             >
+                              {" "}
                               {unit.productionUnit.name}
-                              {unit.field && (
-                                <Typography
-                                  variant="body2"
+                              {/* {unit.field && ( */}
+                              <Box
+                                sx={{
+                                  pr: 3,
+                                }}
+                              >
+                                <Button
+                                  // id="basic-button"
+                                  // aria-controls={
+                                  //   open ? "basic-menu" : undefined
+                                  // }
+                                  // aria-haspopup="true"
+                                  // aria-expanded={open ? "true" : undefined}
+                                  // onClick={(e) => handleClick(e, unit, true)}
+                                  onClick={() => setIsFishManageHistory(true)}
+                                  // disabled={unit.isManager ? false : true}
+                                  className=""
+                                  type="button"
+                                  variant="contained"
+                                  style={{
+                                    border: "1px solid #06A19B",
+                                  }}
                                   sx={{
-                                    fontWeight: 600,
-                                    color: "#06a19b",
-                                    textWrap: "nowrap",
-                                    pr: 3,
+                                    background: "transparent",
+                                    fontWeight: "bold",
+                                    padding: 0.25,
+
+                                    borderRadius: "4px",
+                                    alignItems: "center",
+                                    minWidth: "fit-content",
                                   }}
                                 >
-                                  ({`${unit.field ?? ""}`})
-                                </Typography>
-                              )}
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="1em"
+                                    height="1em"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      fill="#06A19B"
+                                      d="M21 11.11V5a2 2 0 0 0-2-2h-4.18C14.4 1.84 13.3 1 12 1s-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14a2 2 0 0 0 2 2h6.11c1.26 1.24 2.98 2 4.89 2c3.87 0 7-3.13 7-7c0-1.91-.76-3.63-2-4.89M12 3c.55 0 1 .45 1 1s-.45 1-1 1s-1-.45-1-1s.45-1 1-1M5 19V5h2v2h10V5h2v4.68c-.91-.43-1.92-.68-3-.68H7v2h4.1c-.6.57-1.06 1.25-1.42 2H7v2h2.08c-.05.33-.08.66-.08 1c0 1.08.25 2.09.68 3zm11 2c-2.76 0-5-2.24-5-5s2.24-5 5-5s5 2.24 5 5s-2.24 5-5 5m.5-4.75l2.86 1.69l-.75 1.22L15 17v-5h1.5z"
+                                    />
+                                  </svg>
+                                </Button>
+                              </Box>
+                              {/* )} */}
                             </Typography>
                           );
                         })}
@@ -897,6 +971,14 @@ export default function ProductionTable({
         setOpen={setOpenWaterQualityModal}
         selectedProduction={selectedProduction}
         farms={farms}
+        productions={productions}
+      />
+      <FishManageHistoryModal
+        open={isFishManageHistory}
+        setOpen={setIsFishManageHistory}
+        selectedProduction={selectedProduction}
+        farms={farms}
+        batches={batches}
         productions={productions}
       />
     </>
