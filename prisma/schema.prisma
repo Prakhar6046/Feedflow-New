@@ -68,6 +68,7 @@ model Organisation {
   production          production[]
   SamplingEnvironment SamplingEnvironment[]
   SamplingStock       SamplingStock[]
+  FishManageHistory   FishManageHistory[]
 
   @@index([createdAt])
   @@index([updatedAt])
@@ -133,6 +134,7 @@ model Farm {
   FarmManager         FarmManager[]
   SamplingEnvironment SamplingEnvironment[]
   SamplingStock       SamplingStock[]
+  FishManageHistory   FishManageHistory[]
 
   @@index([createdAt])
   @@index([updatedAt])
@@ -169,6 +171,7 @@ model ProductionUnit {
   production          production[]
   SamplingEnvironment SamplingEnvironment[]
   SamplingStock       SamplingStock[]
+  FishManageHistory   FishManageHistory[]
 
   @@index([createdAt])
   @@index([updatedAt])
@@ -228,29 +231,30 @@ model Hatchery {
 }
 
 model FishSupply {
-  id               Int           @id @default(autoincrement())
-  batchNumber      String        @default("BB1")
-  organisation     Int
-  hatchingDate     String
-  spawningDate     String
-  spawningNumber   Int
-  age              String
-  broodstockMale   String?
-  broodstockFemale String?
-  fishFarm         String
-  fishFarmId       String        @default("")
-  status           String
-  productionUnits  String        @default("")
-  createdBy        Int? // Optional field, nullable foreign key
-  updatedBy        String?
-  createdAt        DateTime      @default(now())
-  updatedAt        DateTime      @updatedAt
-  creator          Organisation? @relation("fishSupplyCreator", fields: [createdBy], references: [id])
-  organisationId   Int?
-  organisationData Organisation? @relation(fields: [organisationId], references: [id])
-  production       production[]
-  farmMangerId     Int?
-  farmManger       FarmManager?  @relation(fields: [farmMangerId], references: [id])
+  id                Int                 @id @default(autoincrement())
+  batchNumber       String              @default("BB1")
+  organisation      Int
+  hatchingDate      String
+  spawningDate      String
+  spawningNumber    Int
+  age               String
+  broodstockMale    String?
+  broodstockFemale  String?
+  fishFarm          String
+  fishFarmId        String              @default("")
+  status            String
+  productionUnits   String              @default("")
+  createdBy         Int? // Optional field, nullable foreign key
+  updatedBy         String?
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  creator           Organisation?       @relation("fishSupplyCreator", fields: [createdBy], references: [id])
+  organisationId    Int?
+  organisationData  Organisation?       @relation(fields: [organisationId], references: [id])
+  production        production[]
+  farmMangerId      Int?
+  farmManger        FarmManager?        @relation(fields: [farmMangerId], references: [id])
+  FishManageHistory FishManageHistory[]
 
   @@index([createdAt])
   @@index([updatedAt])
@@ -271,21 +275,42 @@ model WaterQuality {
   production   production? @relation(fields: [productionId], references: [id])
 }
 
-model FishSample {
-  id           Int         @id @default(autoincrement())
-  currentDate  String?
-  biomass      String?
-  fishCount    String?
-  meanLength   String?
-  meanWeight   String?
-  productionId Int?
-  production   production? @relation(fields: [productionId], references: [id])
-}
-
-model production {
+model FishManageHistory {
   id                Int             @id @default(autoincrement())
   fishFarmId        String
   farm              Farm?           @relation(fields: [fishFarmId], references: [id])
+  productionUnitId  String
+  biomass           String?
+  fishCount         String?
+  batchNumberId     Int?
+  currentDate       String?
+  age               String?
+  meanLength        String?
+  meanWeight        String?
+  stockingDensityKG String?
+  stockingDensityNM String?
+  stockingLevel     String?
+  createdBy         Int?
+  updatedBy         String?
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  organisationId    Int?
+  field             String?
+  organisation      Organisation?   @relation(fields: [organisationId], references: [id], onDelete: SetNull)
+  productionUnit    ProductionUnit? @relation(fields: [productionUnitId], references: [id])
+  production        production?     @relation(fields: [productionId], references: [id])
+  productionId      Int?
+  FishSupply        FishSupply?     @relation(fields: [fishSupplyId], references: [id])
+  fishSupplyId      Int?
+
+  @@index([createdAt])
+  @@index([updatedAt])
+}
+
+model production {
+  id                Int                 @id @default(autoincrement())
+  fishFarmId        String
+  farm              Farm?               @relation(fields: [fishFarmId], references: [id])
   productionUnitId  String
   biomass           String?
   fishCount         String?
@@ -298,15 +323,15 @@ model production {
   stockingLevel     String?
   createdBy         Int? // Optional field, nullable foreign key
   updatedBy         String?
-  createdAt         DateTime        @default(now())
-  updatedAt         DateTime        @updatedAt
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
   organisationId    Int?
   field             String?
-  organisation      Organisation?   @relation(fields: [organisationId], references: [id], onDelete: SetNull)
-  productionUnit    ProductionUnit? @relation(fields: [productionUnitId], references: [id])
-  fishSupply        FishSupply?     @relation(fields: [batchNumberId], references: [id])
+  organisation      Organisation?       @relation(fields: [organisationId], references: [id], onDelete: SetNull)
+  productionUnit    ProductionUnit?     @relation(fields: [productionUnitId], references: [id])
+  fishSupply        FishSupply?         @relation(fields: [batchNumberId], references: [id])
   WaterQuality      WaterQuality[]
-  FishSample        FishSample[]
+  FishManageHistory FishManageHistory[]
 
   @@index([createdAt])
   @@index([updatedAt])

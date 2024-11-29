@@ -29,6 +29,7 @@ import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import WaterQualityParameter from "../models/WaterQualityParameter";
 import FishManageHistoryModal from "../models/FishManageHistory";
+import { fishManageHistoryHead } from "@/app/_lib/utils/tableHeadData";
 interface Props {
   productions: Production[];
   tableData: any;
@@ -865,7 +866,7 @@ export default function ProductionTable({
                                 mb={1}
                                 key={Number(unit.id)}
                               >
-                                <Tooltip title="Stock" placement="top">
+                                <Tooltip title="Fish" placement="top">
                                   <Button
                                     id="basic-button"
                                     aria-controls={
@@ -906,7 +907,7 @@ export default function ProductionTable({
                                     </svg>
                                   </Button>
                                 </Tooltip>
-                                <Tooltip title="Environment" placement="top">
+                                <Tooltip title="Water" placement="top">
                                   <Button
                                     id="basic-button"
                                     aria-controls={
@@ -976,9 +977,7 @@ export default function ProductionTable({
       <FishManageHistoryModal
         open={isFishManageHistory}
         setOpen={setIsFishManageHistory}
-        selectedProduction={selectedProduction}
-        farms={farms}
-        batches={batches}
+        tableData={fishManageHistoryHead}
         productions={productions}
       />
     </>

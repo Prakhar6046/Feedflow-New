@@ -682,3 +682,81 @@ export const sampleStockHeadMember = [
     label: "Mean length (mm)",
   },
 ];
+
+export const fishManageHistoryHead = [
+  {
+    id: "unit",
+    numeric: false,
+    disablePadding: true,
+    label: "Unit",
+  },
+  {
+    id: "date",
+    numeric: false,
+    disablePadding: true,
+    label: "Date",
+  },
+  {
+    id: "status",
+    numeric: false,
+    disablePadding: true,
+    label: "Status",
+  },
+  {
+    id: "Batch #",
+    numeric: false,
+    disablePadding: true,
+    label: "Batch #",
+  },
+  {
+    id: "Age",
+    numeric: false,
+    disablePadding: true,
+    label: "Age",
+  },
+  {
+    id: "Fish",
+    numeric: false,
+    disablePadding: true,
+    label: "Fish (n)",
+  },
+
+  {
+    id: "Biomass",
+    numeric: true,
+    disablePadding: true,
+    label: "Biomass (Kg)",
+  },
+
+  {
+    id: "Mean weight",
+    numeric: false,
+    disablePadding: true,
+    label: "Mean weight (g)",
+  },
+  {
+    id: "Mean length",
+    numeric: false,
+    disablePadding: true,
+    label: "Mean length (mm)",
+  },
+  {
+    id: "Stocking Density",
+    numeric: false,
+    disablePadding: true,
+    label: `Stocking density (kg/${"m\u00B3"})`,
+  },
+
+  {
+    id: "Stocking density",
+    numeric: false,
+    disablePadding: true,
+    label: `Stocking density (n/${"m\u00B3"})`,
+  },
+  {
+    id: "Stocking level",
+    numeric: false,
+    disablePadding: true,
+    label: "Stocking level",
+  },
+];

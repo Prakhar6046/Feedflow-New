@@ -79,7 +79,6 @@ const WaterQualityParameter: React.FC<Props> = ({
   const [selectedFarm, setSelectedFarm] = useState<any>(null);
 
   const [anchorEl, setAnchorEl] = useState(null);
-  const [isStockDeleted, setIsStockDeleted] = useState<boolean>(false);
 
   const [isApiCallInProgress, setIsApiCallInProgress] =
     useState<boolean>(false);
@@ -139,39 +138,44 @@ const WaterQualityParameter: React.FC<Props> = ({
         }
       });
 
-      if (
-        selectedProduction &&
-        selectedProduction.WaterQuality &&
-        selectedProduction.WaterQuality[0] &&
-        selectedProduction?.WaterQuality[0].id
-      ) {
-        updatedData = updatedData.map((data) => {
-          return {
-            ...data,
-            waterQualityId:
-              selectedProduction &&
-              selectedProduction.WaterQuality &&
-              selectedProduction.WaterQuality[0]?.id,
-          };
-        });
-      }
+      // if (
+      //   selectedProduction &&
+      //   selectedProduction.WaterQuality &&
+      //   selectedProduction.WaterQuality[0] &&
+      //   selectedProduction?.WaterQuality[0].id
+      // ) {
+      //   updatedData = updatedData.map((data) => {
+      //     return {
+      //       ...data,
+      //       waterQualityId:
+      //         selectedProduction &&
+      //         selectedProduction.WaterQuality &&
+      //         selectedProduction.WaterQuality[0]?.id,
+      //     };
+      //   });
+      // }
+      const payload = {
+        waterAvg: updatedData[0],
+        listData: updatedData.filter((data, idx) => idx !== 0),
+      };
+      console.log(payload);
       const response = await fetch("/api/production/waterQuality", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(updatedData),
+        body: JSON.stringify(payload),
       });
 
-      const res = await response.json();
-      if (res.status) {
-        toast.dismiss();
-        toast.success(res.message);
-        setOpen(false);
-        router.push("/dashboard/production");
-        reset();
-        router.refresh();
-      }
+      // const res = await response.json();
+      // if (res.status) {
+      //   toast.dismiss();
+      //   toast.success(res.message);
+      //   setOpen(false);
+      //   router.push("/dashboard/production");
+      //   reset();
+      //   router.refresh();
+      // }
     } catch (error) {
       toast.error("Something went wrong. Please try again.");
     } finally {
@@ -215,7 +219,7 @@ const WaterQualityParameter: React.FC<Props> = ({
   };
 
   useEffect(() => {
-    if (isStockDeleted || selectedProduction) {
+    if (selectedProduction) {
       const data = [
         {
           id: selectedProduction.id,
@@ -226,111 +230,79 @@ const WaterQualityParameter: React.FC<Props> = ({
       setValue("water", data);
       setSelectedFarm(selectedProduction.fishFarmId); // Set the selected farm when manager is selected
     }
+  }, [selectedProduction, setValue]);
 
-    return () => {
-      setIsStockDeleted(false);
-    };
-  }, [selectedProduction, setValue, isStockDeleted]);
+  useEffect(() => {
+    if (selectedProduction) {
+      const index0WaterTemp = 0;
+      const index0DO = 0;
+      const index0TSS = 0;
+      const index0NH4 = 0;
+      const index0NO3 = 0;
+      const index0NO2 = 0;
+      const index0Ph = 0;
+      const index0visibility = 0;
+      // Initialize updated values
+      let updatedWaterTemp = index0WaterTemp;
+      let updatedDo = index0DO;
+      let updatedTSS = index0TSS;
+      let updatedNH4 = index0NH4;
+      let updatedNO3 = index0NO3;
+      let updatedNO2 = index0NO2;
+      let updatedPH = index0Ph;
+      let updatedVisibility = index0visibility;
 
-  // useEffect(() => {
-  //   if (selectedProduction) {
-  //     const index0Biomass = Number(selectedProduction.biomass) || 0; // Ensure a number
-  //     const index0Count = Number(selectedProduction.fishCount) || 0; // Ensure a number
-  //     const fishFarm = selectedProduction.fishFarmId;
+      // Iterate through watched fields, skipping index 0
+      watchedFields.forEach((field, index) => {
+        if (index === 0) return; // Skip index 0
+        updatedWaterTemp += Number(field.waterTemp);
+        updatedDo += Number(field.DO);
+        updatedTSS += Number(field.TSS);
+        updatedNH4 += Number(field.NH4);
+        updatedNO3 += Number(field.NO3);
+        updatedNO2 += Number(field.NO2);
+        updatedPH += Number(field.ph);
+        updatedVisibility += Number(field.visibility);
+      });
+      const totalFields = watchedFields.length - 1;
+      const totalWaterTempAvg = updatedWaterTemp / totalFields;
+      const totalDo = updatedDo / totalFields;
+      const totalTSS = updatedTSS / totalFields;
+      const totalNH4 = updatedNH4 / totalFields;
+      const totalNO3 = updatedNO3 / totalFields;
+      const totalNO2 = updatedNO2 / totalFields;
+      const totalPH = updatedPH / totalFields;
+      const totalVisibility = updatedVisibility / totalFields;
 
-  //     // Initialize updated values
-  //     let updatedBiomass = index0Biomass;
-  //     let updatedCount = index0Count;
+      // Set the index 0 values after calculation
 
-  //     // Iterate through watched fields, skipping index 0
-  //     watchedFields.forEach((field, index) => {
-  //       if (index === 0) return; // Skip index 0
-  //       if (field.fishFarm === fishFarm) {
-  //         if (
-  //           !selectedProduction.biomass &&
-  //           !selectedProduction.fishCount &&
-  //           !selectedProduction.meanLength &&
-  //           !selectedProduction.meanWeight &&
-  //           field.field === "Stock"
-  //         ) {
-  //           updatedBiomass = Number(field.biomass);
-  //           updatedCount = Number(field.count);
-  //           setValue(`manager.0.meanLength`, field.meanLength);
-  //           setValue(`manager.0.meanWeight`, field.meanWeight);
-  //           setValue(`manager.0.stockingDensityKG`, field.stockingDensityKG);
-  //           setValue(`manager.0.stockingDensityNM`, field.stockingDensityNM);
-  //           setValue(`manager.0.batchNumber`, field.batchNumber);
-  //         }
-
-  //         const currentBiomass = Number(field.biomass) || 0; // Convert to number
-  //         const currentCount = Number(field.count) || 0; // Convert to number
-  //         if (field.field !== "Stock" && currentBiomass > updatedBiomass) {
-  //           toast.dismiss();
-  //           toast.error(`Please enter a value lower than ${updatedBiomass}`);
-  //           setIsEnteredBiomassGreater(true);
-  //         }
-  //         if (field.field !== "Stock" && currentCount > updatedCount) {
-  //           toast.dismiss();
-  //           toast.error(`Please enter a value lower than ${updatedCount}`);
-  //           setIsEnteredFishCountGreater(true);
-  //         }
-  //         // Update biomass if current value is valid
-  //         if (currentBiomass > 0 && updatedBiomass > currentBiomass) {
-  //           updatedBiomass -= currentBiomass;
-  //           setIsEnteredBiomassGreater(false);
-  //         } else if (field.field === "Stock") {
-  //           // trigger(`manager.${0}`);
-
-  //           updatedBiomass = currentBiomass;
-  //           setValue(`manager.0.meanLength`, field.meanLength);
-  //           setValue(`manager.0.meanWeight`, field.meanWeight);
-  //           setValue(`manager.0.stockingDensityKG`, field.stockingDensityKG);
-  //           setValue(`manager.0.stockingDensityNM`, field.stockingDensityNM);
-  //           setValue(`manager.0.batchNumber`, field.batchNumber);
-  //         }
-
-  //         // Update count if current value is valid
-  //         if (currentCount > 0 && updatedCount > currentCount) {
-  //           updatedCount -= currentCount;
-  //           setIsEnteredFishCountGreater(false);
-  //         } else if (field.field === "Stock") {
-  //           updatedCount = currentCount;
-  //           setValue(`manager.0.meanLength`, field.meanLength);
-  //           setValue(`manager.0.meanWeight`, field.meanWeight);
-  //           setValue(`manager.0.stockingDensityKG`, field.stockingDensityKG);
-  //           setValue(`manager.0.stockingDensityNM`, field.stockingDensityNM);
-  //           setValue(`manager.0.batchNumber`, field.batchNumber);
-  //         }
-  //       }
-  //       const farm = farms
-  //         .find((f) => f.id === selectedFarm)
-  //         ?.productionUnits?.find((unit) => unit.id === field.productionUnit);
-  //       if (farm && farm.capacity) {
-  //         setValue(
-  //           `manager.${index}.stockingDensityNM`,
-  //           String(Number(field.count) / Number(farm?.capacity))
-  //         );
-  //         setValue(
-  //           `manager.${index}.stockingDensityKG`,
-  //           String(Number(field.biomass) / Number(farm?.capacity))
-  //         );
-  //       }
-  //     });
-
-  //     // Set the index 0 values after calculation
-  //     setValue(`manager.0.biomass`, updatedBiomass.toString());
-  //     setValue(`manager.0.count`, updatedCount.toString());
-  //   }
-  // }, [
-  //   watchedFields.map((field) => field.biomass).join(","), // Watch biomass of all fields
-  //   watchedFields.map((field) => field.count).join(","),
-  //   watchedFields.map((field) => field.meanLength).join(","),
-  //   watchedFields.map((field) => field.meanWeight).join(","),
-
-  //   watchedFields.map((field) => field.stockingDensityKG).join(","),
-  //   setValue,
-  //   selectedProduction,
-  // ]);
+      setValue(
+        `water.0.waterTemp`,
+        totalWaterTempAvg ? totalWaterTempAvg.toFixed(2).toString() : ""
+      );
+      setValue(`water.0.DO`, totalDo ? totalDo.toFixed(2).toString() : "");
+      setValue(`water.0.TSS`, totalTSS ? totalTSS.toFixed(2).toString() : "");
+      setValue(`water.0.NH4`, totalNH4 ? totalNH4.toFixed(2).toString() : "");
+      setValue(`water.0.NO3`, totalNO3 ? totalNO3.toFixed(2).toString() : "");
+      setValue(`water.0.NO2`, totalNO2 ? totalNO2.toFixed(2).toString() : "");
+      setValue(`water.0.ph`, totalPH ? totalPH.toFixed(2).toString() : "");
+      setValue(
+        `water.0.visibility`,
+        totalVisibility ? totalVisibility.toFixed(2).toString() : ""
+      );
+    }
+  }, [
+    watchedFields.map((field) => field.waterTemp).join(","),
+    watchedFields.map((field) => field.DO).join(","),
+    watchedFields.map((field) => field.TSS).join(","),
+    watchedFields.map((field) => field.NH4).join(","),
+    watchedFields.map((field) => field.NO3).join(","),
+    watchedFields.map((field) => field.NO2).join(","),
+    watchedFields.map((field) => field.ph).join(","),
+    watchedFields.map((field) => field.visibility).join(","),
+    setValue,
+    selectedProduction,
+  ]);
 
   return (
     <Modal

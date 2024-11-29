@@ -166,11 +166,25 @@ const TransferModal: React.FC<Props> = ({
       const filteredData = addIdToData.filter(
         (field) => field.field !== "Stock"
       );
-
+      const addDataInSample = filteredData.map((data) => {
+        if (data.field === "Sample") {
+          return {
+            ...data,
+            batchNumber: filteredData[0].batchNumber,
+            productionUnit: filteredData[0].productionUnit,
+            id: filteredData[0].id,
+            currentDate: data?.currentDate?.format("MM/DD/YYYY"),
+            stockingDensityKG: filteredData[0].stockingDensityKG,
+            stockingDensityNM: filteredData[0].stockingDensityNM,
+          };
+        } else {
+          return data;
+        }
+      });
       if (!isEnteredBiomassGreater && !isEnteredFishCountGreater) {
         const payload = {
           organisationId: selectedProduction.organisationId,
-          data: filteredData,
+          data: addDataInSample,
         };
 
         const response = await fetch("/api/production/mange", {
@@ -182,14 +196,14 @@ const TransferModal: React.FC<Props> = ({
         });
 
         const res = await response.json();
-        if (res.status) {
-          toast.dismiss();
-          toast.success(res.message);
-          setOpen(false);
-          router.push("/dashboard/production");
-          reset();
-          router.refresh();
-        }
+        // if (res.status) {
+        //   toast.dismiss();
+        //   toast.success(res.message);
+        //   setOpen(false);
+        //   router.push("/dashboard/production");
+        //   reset();
+        //   router.refresh();
+        // }
       } else {
         toast.dismiss();
         toast.error(

@@ -51,6 +51,28 @@ export interface Production {
     visibility: String;
     productionId: Number;
   }[];
+  FishManageHistory: {
+    id: Number;
+    fishFarmId: String;
+    productionUnitId: String;
+    biomass: String;
+    fishCount: String;
+    batchNumberId: Number;
+    currentDate: String;
+    age: String;
+    meanLength: String;
+    meanWeight: String;
+    stockingDensityKG: String;
+    stockingDensityNM: String;
+    stockingLevel: String;
+    createdBy: String;
+    updatedBy: String;
+    createdAt: String;
+    updatedAt: String;
+    organisationId: Number;
+    field: String;
+    productionId: Number;
+  }[];
 }
 export interface FarmGroup {
   farm: String;
