@@ -20,7 +20,7 @@ import {
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import {
   Controller,
@@ -79,7 +79,11 @@ const TransferModal: React.FC<Props> = ({
   batches,
   productions,
 }) => {
+  const formData = localStorage.getItem("formData");
+  const searchParams = useSearchParams();
+  const isFish = searchParams.get("isFish");
   const router = useRouter();
+  const pathName = usePathname();
   const [selectedFarm, setSelectedFarm] = useState<any>(null);
   const [isEnteredBiomassGreater, setIsEnteredBiomassGreater] =
     useState<Boolean>(false);
@@ -139,7 +143,6 @@ const TransferModal: React.FC<Props> = ({
     name: "manager",
   });
   const watchedFields = watch("manager");
-
   const onSubmit: SubmitHandler<InputTypes> = async (data) => {
     // Prevent API call if one is already in progress
     if (isApiCallInProgress) return;
@@ -196,14 +199,16 @@ const TransferModal: React.FC<Props> = ({
         });
 
         const res = await response.json();
-        // if (res.status) {
-        //   toast.dismiss();
-        //   toast.success(res.message);
-        //   setOpen(false);
-        //   router.push("/dashboard/production");
-        //   reset();
-        //   router.refresh();
-        // }
+        if (res.status) {
+          toast.dismiss();
+          toast.success(res.message);
+          setOpen(false);
+          localStorage.removeItem("productionData");
+          localStorage.removeItem("formData");
+          router.push("/dashboard/production");
+          reset();
+          router.refresh();
+        }
       } else {
         toast.dismiss();
         toast.error(
@@ -232,6 +237,11 @@ const TransferModal: React.FC<Props> = ({
       manager: [firstObject], // Keep only the first object
     });
     setOpen(false);
+    const params = new URLSearchParams(searchParams);
+    params.delete("isFish");
+    localStorage.removeItem("productionData");
+    localStorage.removeItem("formData");
+    router.replace(`${pathName}?${params.toString()}`);
   };
   const openAnchor = Boolean(anchorEl);
   const handleClick = (event: any) => {
@@ -276,6 +286,11 @@ const TransferModal: React.FC<Props> = ({
   const handleKeyDown = (event: KeyboardEvent) => {
     if (event.key === "Enter" && !open) {
       event.preventDefault();
+      const params = new URLSearchParams(searchParams);
+      params.delete("isFish");
+      router.replace(`${pathName}?${params.toString()}`);
+      localStorage.removeItem("productionData");
+      localStorage.removeItem("formData");
     }
   };
   useEffect(() => {
@@ -283,7 +298,7 @@ const TransferModal: React.FC<Props> = ({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [open]);
   useEffect(() => {
-    if (isStockDeleted || selectedProduction) {
+    if ((isStockDeleted || selectedProduction) && !formData) {
       const data = [
         {
           id: selectedProduction.id,
@@ -300,14 +315,19 @@ const TransferModal: React.FC<Props> = ({
         },
       ];
       setValue("manager", data);
-      setSelectedFarm(selectedProduction.fishFarmId); // Set the selected farm when manager is selected
     }
-
+    if (formData) {
+      setValue("manager", JSON.parse(formData));
+    }
+    setSelectedFarm(
+      formData
+        ? JSON.parse(formData)[0]?.fishFarm
+        : selectedProduction?.fishFarmId
+    ); // Set the selected farm when manager is selected
     return () => {
       setIsStockDeleted(false);
     };
-  }, [selectedProduction, setValue, isStockDeleted]);
-
+  }, [selectedProduction, isStockDeleted]);
   useEffect(() => {
     if (selectedProduction) {
       const index0Biomass = Number(selectedProduction.biomass) || 0; // Ensure a number
@@ -420,17 +440,18 @@ const TransferModal: React.FC<Props> = ({
       setValue(`manager.0.biomass`, updatedBiomass.toString());
       setValue(`manager.0.count`, updatedCount.toString());
     }
+    if (isFish && watchedFields[0]?.id) {
+      localStorage.setItem("formData", JSON.stringify(watchedFields));
+    }
   }, [
     watchedFields.map((field) => field.biomass).join(","), // Watch biomass of all fields
     watchedFields.map((field) => field.count).join(","),
     watchedFields.map((field) => field.meanLength).join(","),
     watchedFields.map((field) => field.meanWeight).join(","),
-
     watchedFields.map((field) => field.stockingDensityKG).join(","),
     setValue,
     selectedProduction,
   ]);
-
   useEffect(() => {
     if (avgOfMeanWeight && selectedMeanWeightId) {
       const updatedFields = fields.map((field, idx) => {

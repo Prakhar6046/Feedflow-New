@@ -24,7 +24,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { Dayjs } from "dayjs";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import {
   Controller,
@@ -75,11 +75,13 @@ const WaterQualityParameter: React.FC<Props> = ({
   farms,
   productions,
 }) => {
+  const formData = localStorage.getItem("formData");
+  const searchParams = useSearchParams();
   const router = useRouter();
+  const pathName = usePathname();
+  const isWater = searchParams.get("isWater");
   const [selectedFarm, setSelectedFarm] = useState<any>(null);
-
   const [anchorEl, setAnchorEl] = useState(null);
-
   const [isApiCallInProgress, setIsApiCallInProgress] =
     useState<boolean>(false);
 
@@ -123,7 +125,6 @@ const WaterQualityParameter: React.FC<Props> = ({
     name: "water",
   });
   const watchedFields = watch("water");
-
   const onSubmit: SubmitHandler<InputTypes> = async (data) => {
     // Prevent API call if one is already in progress
     if (isApiCallInProgress) return;
@@ -167,15 +168,17 @@ const WaterQualityParameter: React.FC<Props> = ({
         body: JSON.stringify(payload),
       });
 
-      // const res = await response.json();
-      // if (res.status) {
-      //   toast.dismiss();
-      //   toast.success(res.message);
-      //   setOpen(false);
-      //   router.push("/dashboard/production");
-      //   reset();
-      //   router.refresh();
-      // }
+      const res = await response.json();
+      if (res.status) {
+        toast.dismiss();
+        toast.success(res.message);
+        setOpen(false);
+        router.push("/dashboard/production");
+        localStorage.removeItem("productionData");
+        localStorage.removeItem("formData");
+        reset();
+        router.refresh();
+      }
     } catch (error) {
       toast.error("Something went wrong. Please try again.");
     } finally {
@@ -190,6 +193,11 @@ const WaterQualityParameter: React.FC<Props> = ({
       water: [firstObject], // Keep only the first object
     });
     setOpen(false);
+    const params = new URLSearchParams(searchParams);
+    params.delete("isWater");
+    localStorage.removeItem("productionData");
+    localStorage.removeItem("formData");
+    router.replace(`${pathName}?${params.toString()}`);
   };
   const openAnchor = Boolean(anchorEl);
   const handleClick = (event: any) => {
@@ -219,7 +227,7 @@ const WaterQualityParameter: React.FC<Props> = ({
   };
 
   useEffect(() => {
-    if (selectedProduction) {
+    if (selectedProduction && !formData) {
       const data = [
         {
           id: selectedProduction.id,
@@ -228,10 +236,16 @@ const WaterQualityParameter: React.FC<Props> = ({
         },
       ];
       setValue("water", data);
-      setSelectedFarm(selectedProduction.fishFarmId); // Set the selected farm when manager is selected
     }
-  }, [selectedProduction, setValue]);
-
+    if (formData) {
+      setValue("water", JSON.parse(formData));
+    }
+    setSelectedFarm(
+      formData
+        ? JSON.parse(formData)[0]?.fishFarm
+        : selectedProduction?.fishFarmId
+    ); // Set the selected farm when manager is selected
+  }, [selectedProduction]);
   useEffect(() => {
     if (selectedProduction) {
       const index0WaterTemp = 0;
@@ -251,7 +265,6 @@ const WaterQualityParameter: React.FC<Props> = ({
       let updatedNO2 = index0NO2;
       let updatedPH = index0Ph;
       let updatedVisibility = index0visibility;
-
       // Iterate through watched fields, skipping index 0
       watchedFields.forEach((field, index) => {
         if (index === 0) return; // Skip index 0
@@ -273,9 +286,7 @@ const WaterQualityParameter: React.FC<Props> = ({
       const totalNO2 = updatedNO2 / totalFields;
       const totalPH = updatedPH / totalFields;
       const totalVisibility = updatedVisibility / totalFields;
-
       // Set the index 0 values after calculation
-
       setValue(
         `water.0.waterTemp`,
         totalWaterTempAvg ? totalWaterTempAvg.toFixed(2).toString() : ""
@@ -290,6 +301,9 @@ const WaterQualityParameter: React.FC<Props> = ({
         `water.0.visibility`,
         totalVisibility ? totalVisibility.toFixed(2).toString() : ""
       );
+    }
+    if (isWater && watchedFields[0]?.id) {
+      localStorage.setItem("formData", JSON.stringify(watchedFields));
     }
   }, [
     watchedFields.map((field) => field.waterTemp).join(","),

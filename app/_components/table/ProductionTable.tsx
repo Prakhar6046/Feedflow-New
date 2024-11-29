@@ -25,7 +25,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import { getCookie } from "cookies-next";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import WaterQualityParameter from "../models/WaterQualityParameter";
 import FishManageHistoryModal from "../models/FishManageHistory";
@@ -44,19 +44,27 @@ export default function ProductionTable({
   batches,
 }: Props) {
   const router = useRouter();
+  const production = localStorage.getItem("productionData");
   const dispatch = useAppDispatch();
   const pathName = usePathname();
   const role = useAppSelector(selectRole);
-
+  const searchParams = useSearchParams();
+  const isFish = searchParams.get("isFish");
+  const isWater = searchParams.get("isWater");
   // const sortDataFromLocal = "";
   //   const loading = useAppSelector(selectFarmLoading);
-  const [selectedProduction, setSelectedProduction] = useState<any>(null);
+  const [selectedProduction, setSelectedProduction] = useState<any>(
+    production ? JSON.parse(production) : null
+  );
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null
   );
-  const [openTransferModal, setOpenTransferModal] = useState<boolean>(false);
-  const [openWaterQualityModal, setOpenWaterQualityModal] =
-    useState<boolean>(false);
+  const [openTransferModal, setOpenTransferModal] = useState<boolean>(
+    isFish ? true : false
+  );
+  const [openWaterQualityModal, setOpenWaterQualityModal] = useState<boolean>(
+    isWater ? true : false
+  );
 
   const [productionData, setProductionData] = useState<Production[]>();
   const [order, setOrder] = React.useState("asc");
@@ -75,13 +83,24 @@ export default function ProductionTable({
     isManage: boolean
   ) => {
     const selectedProd = productions.find((pro) => pro.id === unit.id);
-
+    const currentParams = new URLSearchParams(searchParams);
     setAnchorEl(event.currentTarget);
+    if (currentParams.size) {
+      currentParams.delete("isFish");
+      currentParams.delete("isWater");
+    }
     if (isManage) {
+      currentParams.set("isFish", "true");
+      const newPath = `${window.location.pathname}?${currentParams.toString()}`;
+      router.replace(newPath);
       setOpenTransferModal(true);
     } else {
+      currentParams.set("isWater", "true");
+      const newPath = `${window.location.pathname}?${currentParams.toString()}`;
+      router.replace(newPath);
       setOpenWaterQualityModal(true);
     }
+    localStorage.setItem("productionData", JSON.stringify(selectedProd));
     setSelectedProduction(selectedProd);
   };
 
