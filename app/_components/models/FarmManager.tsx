@@ -241,7 +241,7 @@ const TransferModal: React.FC<Props> = ({
     params.delete("isFish");
     localStorage.removeItem("productionData");
     localStorage.removeItem("formData");
-    router.replace(`${pathName}?${params.toString()}`);
+    router.replace(`/dashboard/production`);
   };
   const openAnchor = Boolean(anchorEl);
   const handleClick = (event: any) => {
