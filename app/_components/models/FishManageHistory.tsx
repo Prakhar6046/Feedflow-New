@@ -147,11 +147,10 @@ const FishManageHistoryModal: React.FC<Props> = ({
       onClose={handleClose}
       aria-labelledby="parent-modal-titles"
       aria-describedby="parent-modal-descriptions"
-      className="modal-positioning"
+      className="modal-positioning custom-padding"
       data-bs-backdrop="static"
       sx={{
         px: 5,
-        overflowY: "auto",
       }}
     >
       <Stack sx={style}>
@@ -163,6 +162,7 @@ const FishManageHistoryModal: React.FC<Props> = ({
                 color: "inherit",
                 background: "transparent",
                 margin: "2",
+                padding: "2",
               }}
             >
               <CloseIcon />
