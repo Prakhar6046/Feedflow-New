@@ -1111,7 +1111,7 @@ export default function ProductionTable({
         open={isFishManageHistory}
         setOpen={setIsFishManageHistory}
         tableData={fishManageHistoryHead}
-        productions={productions.filter(
+        productions={productions?.filter(
           (data) => data.productionUnitId === selectedUnitId
         )}
       />
@@ -1119,7 +1119,7 @@ export default function ProductionTable({
         open={isWaterManageHistory}
         setOpen={setIsWaterManageHistory}
         tableData={waterManageHistoryHead}
-        productions={productions.filter(
+        productions={productions?.filter(
           (data) => data.productionUnitId === selectedUnitId
         )}
       />
