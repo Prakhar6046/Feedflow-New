@@ -26,6 +26,14 @@ export interface Production {
   stockingDensityKG: String;
   stockingDensityNM: String;
   stockingLevel: String;
+  waterTemp: String;
+  DO: String;
+  TSS: String;
+  NH4: String;
+  NO3: String;
+  NO2: String;
+  ph: String;
+  visibility: String;
   productionUnit: {
     id: String;
     name: String;
@@ -38,7 +46,7 @@ export interface Production {
     batchNumber: String;
     age: String;
   };
-  WaterQuality?: {
+  WaterManageHistory?: {
     id: Number;
     currentDate: String;
     waterTemp: String;
@@ -78,6 +86,14 @@ export interface FarmGroup {
   farm: String;
   units: {
     id: Number;
+    waterTemp: String;
+    DO: String;
+    TSS: String;
+    NH4: String;
+    NO3: String;
+    NO2: String;
+    ph: String;
+    visibility: String;
     productionUnit: {
       id: String;
       name: String;
@@ -155,6 +171,50 @@ export interface FishManageHistoryGroup {
       updatedAt: String;
       organisationId: Number;
       field: String;
+      productionId: Number;
+    }[];
+  }[];
+}
+export interface WaterManageHistoryGroup {
+  farm: String;
+  units: {
+    id: Number;
+    productionUnit: {
+      id: String;
+      name: String;
+      type: String;
+      capacity: String;
+      waterflowRate: String;
+      createdAt: String;
+      updatedAt: String;
+      farmId: String;
+    };
+    biomass: String;
+    fishCount: String;
+    batchNumberId: Number;
+    age: String;
+    field?: String;
+    meanLength: String;
+    meanWeight: String;
+    stockingDensityKG: String;
+    stockingDensityNM: String;
+    stockingLevel: String;
+    isManager: Boolean;
+    fishSupply: {
+      batchNumber: String;
+      age: String;
+    };
+    waterManageHistory?: {
+      id: Number;
+      currentDate: String;
+      waterTemp: String;
+      DO: String;
+      TSS: String;
+      NH4: String;
+      NO3: String;
+      NO2: String;
+      ph: String;
+      visibility: String;
       productionId: Number;
     }[];
   }[];

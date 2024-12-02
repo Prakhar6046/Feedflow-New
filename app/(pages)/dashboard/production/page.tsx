@@ -2,9 +2,10 @@ import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
 import ProductionTable from "@/app/_components/table/ProductionTable";
 import { getBatches, getFarms, getProductions } from "@/app/_lib/action";
 import {
-  farmManagerHead,
-  farmManagerHeadMember,
-  farmTableHead,
+  farmManagerFishHead,
+  farmManagerFishHeadMember,
+  farmManagerWaterHead,
+  farmManagerWaterHeadMember,
 } from "@/app/_lib/utils/tableHeadData";
 import { getCookie } from "cookies-next";
 import { cookies } from "next/headers";
@@ -18,6 +19,7 @@ export default async function Page({
 }) {
   const query = searchParams?.query || "";
   const loggedUser: any = getCookie("logged-user", { cookies });
+  const productionCurrentView = getCookie("productionCurrentView", { cookies });
   const user = JSON.parse(loggedUser);
   const productions = await getProductions({
     role: user.role,
@@ -46,7 +48,13 @@ export default async function Page({
       />
       <ProductionTable
         tableData={
-          user.role !== "MEMBER" ? farmManagerHead : farmManagerHeadMember
+          user.role !== "MEMBER"
+            ? productionCurrentView === "fish"
+              ? farmManagerFishHead
+              : farmManagerWaterHead
+            : productionCurrentView === "fish"
+            ? farmManagerFishHeadMember
+            : farmManagerWaterHeadMember
         }
         productions={productions.data}
         farms={farms.data}

@@ -260,7 +260,7 @@ model FishSupply {
   @@index([updatedAt])
 }
 
-model WaterQuality {
+model WaterManageHistory {
   id           Int         @id @default(autoincrement())
   currentDate  String?
   waterTemp    String?
@@ -308,30 +308,38 @@ model FishManageHistory {
 }
 
 model production {
-  id                Int                 @id @default(autoincrement())
-  fishFarmId        String
-  farm              Farm?               @relation(fields: [fishFarmId], references: [id])
-  productionUnitId  String
-  biomass           String?
-  fishCount         String?
-  batchNumberId     Int?
-  age               String?
-  meanLength        String?
-  meanWeight        String?
-  stockingDensityKG String?
-  stockingDensityNM String?
-  stockingLevel     String?
-  createdBy         Int? // Optional field, nullable foreign key
-  updatedBy         String?
-  createdAt         DateTime            @default(now())
-  updatedAt         DateTime            @updatedAt
-  organisationId    Int?
-  field             String?
-  organisation      Organisation?       @relation(fields: [organisationId], references: [id], onDelete: SetNull)
-  productionUnit    ProductionUnit?     @relation(fields: [productionUnitId], references: [id])
-  fishSupply        FishSupply?         @relation(fields: [batchNumberId], references: [id])
-  WaterQuality      WaterQuality[]
-  FishManageHistory FishManageHistory[]
+  id                 Int                  @id @default(autoincrement())
+  fishFarmId         String
+  farm               Farm?                @relation(fields: [fishFarmId], references: [id])
+  productionUnitId   String
+  biomass            String?
+  fishCount          String?
+  batchNumberId      Int?
+  age                String?
+  meanLength         String?
+  meanWeight         String?
+  stockingDensityKG  String?
+  stockingDensityNM  String?
+  stockingLevel      String?
+  createdBy          Int? // Optional field, nullable foreign key
+  updatedBy          String?
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+  organisationId     Int?
+  field              String?
+  waterTemp          String?
+  DO                 String?
+  TSS                String?
+  NH4                String?
+  NO3                String?
+  NO2                String?
+  ph                 String?
+  visibility         String?
+  organisation       Organisation?        @relation(fields: [organisationId], references: [id], onDelete: SetNull)
+  productionUnit     ProductionUnit?      @relation(fields: [productionUnitId], references: [id])
+  fishSupply         FishSupply?          @relation(fields: [batchNumberId], references: [id])
+  WaterManageHistory WaterManageHistory[]
+  FishManageHistory  FishManageHistory[]
 
   @@index([createdAt])
   @@index([updatedAt])

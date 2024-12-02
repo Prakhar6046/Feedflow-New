@@ -24,12 +24,16 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import { getCookie } from "cookies-next";
+import { getCookie, setCookie } from "cookies-next";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import WaterQualityParameter from "../models/WaterQualityParameter";
 import FishManageHistoryModal from "../models/FishManageHistory";
-import { fishManageHistoryHead } from "@/app/_lib/utils/tableHeadData";
+import {
+  fishManageHistoryHead,
+  waterManageHistoryHead,
+} from "@/app/_lib/utils/tableHeadData";
+import WaterManageHistoryModal from "../models/WaterManageHistory";
 interface Props {
   productions: Production[];
   tableData: any;
@@ -51,8 +55,10 @@ export default function ProductionTable({
   const searchParams = useSearchParams();
   const isFish = searchParams.get("isFish");
   const isWater = searchParams.get("isWater");
-  // const sortDataFromLocal = "";
-  //   const loading = useAppSelector(selectFarmLoading);
+
+  const [selectedView, setSelectedView] = useState(
+    getCookie("productionCurrentView") ?? "fish"
+  );
   const [selectedProduction, setSelectedProduction] = useState<any>(
     production ? JSON.parse(production) : null
   );
@@ -72,16 +78,20 @@ export default function ProductionTable({
   const [sortDataFromLocal, setSortDataFromLocal] = React.useState<any>("");
   const [isFishManageHistory, setIsFishManageHistory] =
     useState<boolean>(false);
+  const [isWaterManageHistory, setIsWaterManageHistory] =
+    useState<boolean>(false);
   const [selectedUnitId, setSelectedUnitId] = useState<String>();
   const handleFishManageHistory = (unit: any) => {
     setSelectedUnitId(unit.productionUnit.id);
-    setIsFishManageHistory(true);
-  };
-  useEffect(() => {
-    if (pathName) {
-      setSortDataFromLocal(localStorage.getItem(pathName));
+    if (selectedView == "fish") {
+      setIsWaterManageHistory(false);
+      setIsFishManageHistory(true);
+    } else {
+      setIsFishManageHistory(false);
+      setIsWaterManageHistory(true);
     }
-  }, [pathName]);
+  };
+
   const handleClick = (
     event: React.MouseEvent<HTMLButtonElement>,
     unit: any,
@@ -257,6 +267,57 @@ export default function ProductionTable({
     }
   };
 
+  const groupedData: any = productions?.reduce((result: any, item) => {
+    // Find or create a farm group
+    let farmGroup: any = result.find(
+      (group: any) => group.farm === item.farm.name
+    );
+    if (!farmGroup) {
+      farmGroup = { farm: item.farm.name, units: [] };
+      result.push(farmGroup);
+    }
+
+    // Add the current production unit and all related data to the group
+    farmGroup.units.push({
+      id: item.id,
+      productionUnit: item.productionUnit,
+      fishSupply: item.fishSupply,
+      organisation: item.organisation,
+      farm: item.farm,
+      biomass: item.biomass,
+      fishCount: item.fishCount,
+      batchNumberId: item.batchNumberId,
+      age: item.age,
+      meanLength: item.meanLength,
+      meanWeight: item.meanWeight,
+      stockingDensityKG: item.stockingDensityKG,
+      stockingDensityNM: item.stockingDensityNM,
+      stockingLevel: item.stockingLevel,
+      createdBy: item.createdBy,
+      updatedBy: item.updatedBy,
+      createdAt: item.createdAt,
+      updatedAt: item.updatedAt,
+      isManager: item.isManager,
+      field: item.field,
+      fishManageHistory: item.FishManageHistory,
+      waterTemp: item.waterTemp,
+      DO: item.DO,
+      TSS: item.TSS,
+      NH4: item.NH4,
+      NO3: item.NO3,
+      NO2: item.NO2,
+      ph: item.ph,
+      visibility: item.visibility,
+    });
+
+    return result;
+  }, []);
+
+  useEffect(() => {
+    if (pathName) {
+      setSortDataFromLocal(localStorage.getItem(pathName));
+    }
+  }, [pathName]);
   useEffect(() => {
     if (sortDataFromLocal) {
       const data = JSON.parse(sortDataFromLocal);
@@ -355,44 +416,6 @@ export default function ProductionTable({
     }
   }, [productions]);
 
-  const groupedData: any = productions?.reduce((result: any, item) => {
-    // Find or create a farm group
-    let farmGroup: any = result.find(
-      (group: any) => group.farm === item.farm.name
-    );
-    if (!farmGroup) {
-      farmGroup = { farm: item.farm.name, units: [] };
-      result.push(farmGroup);
-    }
-
-    // Add the current production unit and all related data to the group
-    farmGroup.units.push({
-      id: item.id,
-      productionUnit: item.productionUnit,
-      fishSupply: item.fishSupply,
-      organisation: item.organisation,
-      farm: item.farm,
-      biomass: item.biomass,
-      fishCount: item.fishCount,
-      batchNumberId: item.batchNumberId,
-      age: item.age,
-      meanLength: item.meanLength,
-      meanWeight: item.meanWeight,
-      stockingDensityKG: item.stockingDensityKG,
-      stockingDensityNM: item.stockingDensityNM,
-      stockingLevel: item.stockingLevel,
-      createdBy: item.createdBy,
-      updatedBy: item.updatedBy,
-      createdAt: item.createdAt,
-      updatedAt: item.updatedAt,
-      isManager: item.isManager,
-      field: item.field,
-      fishManageHistory: item.FishManageHistory,
-    });
-
-    return result;
-  }, []);
-
   useEffect(() => {
     router.refresh();
   }, [router]);
@@ -408,8 +431,13 @@ export default function ProductionTable({
         <FormControl>
           <RadioGroup
             aria-labelledby="demo-radio-buttons-group-label"
-            defaultValue="Stock"
+            defaultValue={selectedView}
             name="radio-buttons-group"
+            onChange={(e) => {
+              setSelectedView(e.target.value),
+                setCookie("productionCurrentView", e.target.value);
+              router.refresh();
+            }}
             className="ic-radio"
             sx={{
               display: "flex",
@@ -577,7 +605,11 @@ export default function ProductionTable({
                                 fontSize: 14,
                                 backgroundColor: "#F5F6F8",
                                 padding: `${
-                                  unit?.fishSupply?.batchNumber
+                                  selectedView === "water"
+                                    ? unit.waterTemp
+                                      ? "8px 12px 8px 0"
+                                      : "19px 12px 19px 0"
+                                    : unit?.fishSupply?.batchNumber
                                     ? "8px 12px 8px 0"
                                     : "19px 12px 19px 0"
                                 }`,
@@ -585,7 +617,9 @@ export default function ProductionTable({
                                 textWrap: "nowrap",
                               }}
                             >
-                              {unit?.fishSupply?.batchNumber ?? ""}
+                              {selectedView === "water"
+                                ? unit.waterTemp ?? ""
+                                : unit?.fishSupply?.batchNumber ?? ""}
                             </Typography>
                           );
                         })}
@@ -610,7 +644,11 @@ export default function ProductionTable({
                                 fontWeight: 500,
                                 fontSize: 14,
                                 padding: `${
-                                  unit?.fishSupply?.age
+                                  selectedView === "water"
+                                    ? unit.DO
+                                      ? "8px 12px 8px 0"
+                                      : "19px 12px 19px 0"
+                                    : unit?.fishSupply?.age
                                     ? "8px 12px 8px 0"
                                     : "19px 12px 19px 0"
                                 }`,
@@ -620,7 +658,9 @@ export default function ProductionTable({
                                 textWrap: "nowrap",
                               }}
                             >
-                              {unit?.fishSupply?.age ?? ""}
+                              {selectedView === "water"
+                                ? unit.DO ?? ""
+                                : unit?.fishSupply?.age ?? ""}
                             </Typography>
                           );
                         })}
@@ -645,7 +685,11 @@ export default function ProductionTable({
                                 fontSize: 14,
                                 backgroundColor: "#F5F6F8",
                                 padding: `${
-                                  unit?.fishCount
+                                  selectedView === "water"
+                                    ? unit.TSS
+                                      ? "8px 12px 8px 0"
+                                      : "19px 12px 19px 0"
+                                    : unit?.fishCount
                                     ? "8px 12px 8px 0"
                                     : "19px 12px 19px 0"
                                 }`,
@@ -655,7 +699,9 @@ export default function ProductionTable({
                                 textWrap: "nowrap",
                               }}
                             >
-                              {unit?.fishCount ?? ""}
+                              {selectedView === "water"
+                                ? unit.TSS ?? ""
+                                : unit?.fishCount ?? ""}
                             </Typography>
                           );
                         })}
@@ -681,7 +727,11 @@ export default function ProductionTable({
                                 fontSize: 14,
                                 backgroundColor: "#F5F6F8",
                                 padding: `${
-                                  unit?.biomass
+                                  selectedView === "water"
+                                    ? unit.NH4
+                                      ? "8px 12px 8px 0"
+                                      : "19px 12px 19px 0"
+                                    : unit?.biomass
                                     ? "8px 12px 8px 0"
                                     : "19px 12px 19px 0"
                                 }`,
@@ -690,7 +740,11 @@ export default function ProductionTable({
                                 textWrap: "nowrap",
                               }}
                             >
-                              {unit.biomass ? `${unit.biomass} kg` : ""}
+                              {selectedView === "water"
+                                ? unit.NH4 ?? ""
+                                : unit.biomass
+                                ? `${unit.biomass} kg`
+                                : ""}
                             </Typography>
                           );
                         })}
@@ -716,7 +770,11 @@ export default function ProductionTable({
                                 fontSize: 14,
                                 backgroundColor: "#F5F6F8",
                                 padding: `${
-                                  unit?.meanWeight
+                                  selectedView === "water"
+                                    ? unit.NO3
+                                      ? "8px 12px 8px 0"
+                                      : "19px 12px 19px 0"
+                                    : unit?.meanWeight
                                     ? "8px 12px 8px 0"
                                     : "19px 12px 19px 0"
                                 }`,
@@ -725,7 +783,11 @@ export default function ProductionTable({
                                 textWrap: "nowrap",
                               }}
                             >
-                              {unit.meanWeight ? `${unit.meanWeight} g` : ""}
+                              {selectedView === "water"
+                                ? unit.NO3 ?? ""
+                                : unit.meanWeight
+                                ? `${unit.meanWeight} g`
+                                : ""}
                             </Typography>
                           );
                         })}
@@ -751,7 +813,11 @@ export default function ProductionTable({
                                 fontSize: 14,
                                 backgroundColor: "#F5F6F8",
                                 padding: `${
-                                  unit?.meanLength
+                                  selectedView === "water"
+                                    ? unit.NO2
+                                      ? "8px 12px 8px 0"
+                                      : "19px 12px 19px 0"
+                                    : unit?.meanLength
                                     ? "8px 12px 8px 0"
                                     : "19px 12px 19px 0"
                                 }`,
@@ -760,7 +826,11 @@ export default function ProductionTable({
                                 textWrap: "nowrap",
                               }}
                             >
-                              {unit.meanLength ? `${unit.meanLength} mm` : ""}
+                              {selectedView === "water"
+                                ? unit.NO2
+                                : unit.meanLength
+                                ? `${unit.meanLength} mm`
+                                : ""}
                             </Typography>
                           );
                         })}
@@ -785,13 +855,24 @@ export default function ProductionTable({
                                 fontWeight: 500,
                                 fontSize: 14,
                                 backgroundColor: "#F5F6F8",
-                                padding: "8px 12px 8px 0",
+                                padding: `${
+                                  selectedView === "water"
+                                    ? unit.ph
+                                      ? "8px 12px 8px 0"
+                                      : "19px 12px 19px 0"
+                                    : Number(unit.stockingDensityKG).toFixed(2)
+                                    ? "8px 12px 8px 0"
+                                    : "19px 12px 19px 0"
+                                }`,
                                 margin: "8px 0",
                                 // marginBottom: "10px",
                                 textWrap: "nowrap",
                               }}
                             >
-                              {Number(unit.stockingDensityKG).toFixed(2) ?? ""}
+                              {selectedView === "water"
+                                ? unit.ph ?? ""
+                                : Number(unit.stockingDensityKG).toFixed(2) ??
+                                  ""}
                             </Typography>
                           );
                         })}
@@ -816,49 +897,62 @@ export default function ProductionTable({
                                 fontWeight: 500,
                                 fontSize: 14,
                                 backgroundColor: "#F5F6F8",
-                                padding: "8px 12px 8px 0",
+                                padding: `${
+                                  selectedView === "water"
+                                    ? unit.visibility
+                                      ? "8px 12px 8px 0"
+                                      : "19px 12px 19px 0"
+                                    : Number(unit.stockingDensityNM).toFixed(2)
+                                    ? "8px 12px 8px 0"
+                                    : "19px 12px 19px 0"
+                                }`,
                                 margin: "8px 0",
                                 // marginBottom: "10px",
                                 textWrap: "nowrap",
                               }}
                             >
-                              {Number(unit.stockingDensityNM).toFixed(2) ?? ""}
+                              {selectedView === "water"
+                                ? unit.visibility ?? ""
+                                : Number(unit.stockingDensityNM).toFixed(2) ??
+                                  ""}
                             </Typography>
                           );
                         })}
 
                         {/* {farm.meanWeight ? `${farm.meanWeight}g` : ""} */}
                       </TableCell>{" "}
-                      <TableCell
-                        className="table-padding"
-                        sx={{
-                          borderBottomColor: "#ececec",
-                          borderBottomWidth: 2,
-                          color: "#555555",
-                          fontWeight: 500,
-                          pl: 0,
-                        }}
-                      >
-                        {farm.units.map((unit, i) => {
-                          return (
-                            <Typography
-                              key={i}
-                              variant="h6"
-                              sx={{
-                                fontWeight: 500,
-                                fontSize: 14,
-                                backgroundColor: "#F5F6F8",
-                                padding: "8px 12px 8px 0",
-                                margin: "8px 0",
-                                // marginBottom: "10px",
-                                textWrap: "nowrap",
-                              }}
-                            >
-                              {Number(unit.stockingLevel) ?? ""}
-                            </Typography>
-                          );
-                        })}
-                      </TableCell>
+                      {selectedView !== "water" && (
+                        <TableCell
+                          className="table-padding"
+                          sx={{
+                            borderBottomColor: "#ececec",
+                            borderBottomWidth: 2,
+                            color: "#555555",
+                            fontWeight: 500,
+                            pl: 0,
+                          }}
+                        >
+                          {farm.units.map((unit, i) => {
+                            return (
+                              <Typography
+                                key={i}
+                                variant="h6"
+                                sx={{
+                                  fontWeight: 500,
+                                  fontSize: 14,
+                                  backgroundColor: "#F5F6F8",
+                                  padding: "8px 12px 8px 0",
+                                  margin: "8px 0",
+                                  // marginBottom: "10px",
+                                  textWrap: "nowrap",
+                                }}
+                              >
+                                {Number(unit.stockingLevel) ?? ""}
+                              </Typography>
+                            );
+                          })}
+                        </TableCell>
+                      )}
                       {role !== "MEMBER" && (
                         <TableCell
                           // align="center"
@@ -997,6 +1091,14 @@ export default function ProductionTable({
         open={isFishManageHistory}
         setOpen={setIsFishManageHistory}
         tableData={fishManageHistoryHead}
+        productions={productions.filter(
+          (data) => data.productionUnitId === selectedUnitId
+        )}
+      />
+      <WaterManageHistoryModal
+        open={isWaterManageHistory}
+        setOpen={setIsWaterManageHistory}
+        tableData={waterManageHistoryHead}
         productions={productions.filter(
           (data) => data.productionUnitId === selectedUnitId
         )}

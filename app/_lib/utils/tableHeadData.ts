@@ -365,7 +365,7 @@ export const fishTableHead = [
     label: "Actions",
   },
 ];
-export const farmManagerHead = [
+export const farmManagerFishHead = [
   {
     id: "Farm",
     numeric: false,
@@ -444,7 +444,7 @@ export const farmManagerHead = [
     label: "Manage",
   },
 ];
-export const farmManagerHeadMember = [
+export const farmManagerFishHeadMember = [
   {
     id: "Farm",
     numeric: false,
@@ -514,6 +514,145 @@ export const farmManagerHeadMember = [
     numeric: false,
     disablePadding: true,
     label: "Stocking level",
+  },
+];
+export const farmManagerWaterHead = [
+  {
+    id: "Farm",
+    numeric: false,
+    disablePadding: true,
+    label: "Farm",
+  },
+  {
+    id: "unit",
+    numeric: false,
+    disablePadding: true,
+    label: "Unit",
+  },
+
+  {
+    id: "water temp",
+    numeric: false,
+    disablePadding: true,
+    label: "Water Temp",
+  },
+  {
+    id: "Dissolved oxygen",
+    numeric: false,
+    disablePadding: true,
+    label: "Dissolved oxygen",
+  },
+  {
+    id: "tss",
+    numeric: false,
+    disablePadding: true,
+    label: "Total Suspened Solids(TSS)",
+  },
+
+  {
+    id: "nh4",
+    numeric: true,
+    disablePadding: true,
+    label: "Ammonia (NH₄)",
+  },
+
+  {
+    id: "no3",
+    numeric: false,
+    disablePadding: true,
+    label: "Nitrate (NO₃⁻)",
+  },
+  {
+    id: "no2",
+    numeric: false,
+    disablePadding: true,
+    label: "Nitrite (NO₂⁻)",
+  },
+  {
+    id: "ph",
+    numeric: false,
+    disablePadding: true,
+    label: "pH",
+  },
+
+  {
+    id: "visibility",
+    numeric: false,
+    disablePadding: true,
+    label: "Visibility",
+  },
+
+  {
+    id: "manage",
+    numeric: false,
+    disablePadding: true,
+    label: "Manage",
+  },
+];
+export const farmManagerWaterHeadMember = [
+  {
+    id: "Farm",
+    numeric: false,
+    disablePadding: true,
+    label: "Farm",
+  },
+  {
+    id: "unit",
+    numeric: false,
+    disablePadding: true,
+    label: "Unit",
+  },
+
+  {
+    id: "water temp",
+    numeric: false,
+    disablePadding: true,
+    label: "Water Temp",
+  },
+  {
+    id: "Dissolved oxygen",
+    numeric: false,
+    disablePadding: true,
+    label: "Dissolved oxygen",
+  },
+  {
+    id: "tss",
+    numeric: false,
+    disablePadding: true,
+    label: "Total Suspened Solids(TSS)",
+  },
+
+  {
+    id: "nh4",
+    numeric: true,
+    disablePadding: true,
+    label: "Ammonia (NH₄)",
+  },
+
+  {
+    id: "no3",
+    numeric: false,
+    disablePadding: true,
+    label: "Nitrate (NO₃⁻)",
+  },
+  {
+    id: "no2",
+    numeric: false,
+    disablePadding: true,
+    label: "Nitrite (NO₂⁻)",
+  },
+  {
+    id: "ph",
+    numeric: false,
+    disablePadding: true,
+    label: "pH",
+  },
+
+  {
+    id: "visibility",
+    numeric: false,
+    disablePadding: true,
+    label: "Visibility",
   },
 ];
 export const sampleEnvironmentHead = [
@@ -758,5 +897,72 @@ export const fishManageHistoryHead = [
     numeric: false,
     disablePadding: true,
     label: "Stocking level",
+  },
+];
+
+export const waterManageHistoryHead = [
+  {
+    id: "unit",
+    numeric: false,
+    disablePadding: true,
+    label: "unit",
+  },
+  {
+    id: "Date",
+    numeric: false,
+    disablePadding: true,
+    label: "Date",
+  },
+
+  {
+    id: "water temp",
+    numeric: false,
+    disablePadding: true,
+    label: "Water Temp",
+  },
+  {
+    id: "Dissolved oxygen",
+    numeric: false,
+    disablePadding: true,
+    label: "Dissolved oxygen",
+  },
+  {
+    id: "tss",
+    numeric: false,
+    disablePadding: true,
+    label: "Total Suspened Solids(TSS)",
+  },
+
+  {
+    id: "nh4",
+    numeric: true,
+    disablePadding: true,
+    label: "Ammonia (NH₄)",
+  },
+
+  {
+    id: "no3",
+    numeric: false,
+    disablePadding: true,
+    label: "Nitrate (NO₃⁻)",
+  },
+  {
+    id: "no2",
+    numeric: false,
+    disablePadding: true,
+    label: "Nitrite (NO₂⁻)",
+  },
+  {
+    id: "ph",
+    numeric: false,
+    disablePadding: true,
+    label: "pH",
+  },
+
+  {
+    id: "visibility",
+    numeric: false,
+    disablePadding: true,
+    label: "Visibility",
   },
 ];

@@ -139,45 +139,30 @@ const WaterQualityParameter: React.FC<Props> = ({
         }
       });
 
-      // if (
-      //   selectedProduction &&
-      //   selectedProduction.WaterQuality &&
-      //   selectedProduction.WaterQuality[0] &&
-      //   selectedProduction?.WaterQuality[0].id
-      // ) {
-      //   updatedData = updatedData.map((data) => {
-      //     return {
-      //       ...data,
-      //       waterQualityId:
-      //         selectedProduction &&
-      //         selectedProduction.WaterQuality &&
-      //         selectedProduction.WaterQuality[0]?.id,
-      //     };
-      //   });
-      // }
       const payload = {
         waterAvg: updatedData[0],
         listData: updatedData.filter((data, idx) => idx !== 0),
       };
-      // const response = await fetch("/api/production/waterQuality", {
-      //   method: "POST",
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //   },
-      //   body: JSON.stringify(payload),
-      // });
 
-      // const res = await response.json();
-      // if (res.status) {
-      //   toast.dismiss();
-      //   toast.success(res.message);
-      //   setOpen(false);
-      //   router.push("/dashboard/production");
-      //   localStorage.removeItem("productionData");
-      //   localStorage.removeItem("formData");
-      //   reset();
-      //   router.refresh();
-      // }
+      const response = await fetch("/api/production/mange/waterQuality", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const res = await response.json();
+      if (res.status) {
+        toast.dismiss();
+        toast.success(res.message);
+        setOpen(false);
+        router.push("/dashboard/production");
+        localStorage.removeItem("productionData");
+        localStorage.removeItem("formData");
+        reset();
+        router.refresh();
+      }
     } catch (error) {
       toast.error("Something went wrong. Please try again.");
     } finally {
