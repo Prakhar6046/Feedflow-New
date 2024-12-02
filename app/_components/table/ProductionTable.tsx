@@ -34,6 +34,7 @@ import {
   waterManageHistoryHead,
 } from "@/app/_lib/utils/tableHeadData";
 import WaterManageHistoryModal from "../models/WaterManageHistory";
+import Loader from "../Loader";
 interface Props {
   productions: Production[];
   tableData: any;
@@ -71,7 +72,7 @@ export default function ProductionTable({
   const [openWaterQualityModal, setOpenWaterQualityModal] = useState<boolean>(
     isWater ? true : false
   );
-
+  const [loading, setLoading] = useState<boolean>(false);
   const [productionData, setProductionData] = useState<Production[]>();
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("Farm");
@@ -420,6 +421,9 @@ export default function ProductionTable({
     router.refresh();
   }, [router]);
 
+  if (loading) {
+    return <Loader />;
+  }
   return (
     <>
       <Box
@@ -437,6 +441,10 @@ export default function ProductionTable({
               setSelectedView(e.target.value),
                 setCookie("productionCurrentView", e.target.value);
               router.refresh();
+              setLoading(true);
+              setTimeout(() => {
+                setLoading(false);
+              }, 2000);
             }}
             className="ic-radio"
             sx={{

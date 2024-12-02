@@ -1,4 +1,5 @@
 import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
+import Loader from "@/app/_components/Loader";
 import ProductionTable from "@/app/_components/table/ProductionTable";
 import { getBatches, getFarms, getProductions } from "@/app/_lib/action";
 import {
@@ -9,6 +10,7 @@ import {
 } from "@/app/_lib/utils/tableHeadData";
 import { getCookie } from "cookies-next";
 import { cookies } from "next/headers";
+import { Suspense } from "react";
 
 export default async function Page({
   searchParams,
