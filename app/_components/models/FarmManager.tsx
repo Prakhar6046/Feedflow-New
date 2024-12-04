@@ -185,9 +185,16 @@ const TransferModal: React.FC<Props> = ({
         }
       });
       if (!isEnteredBiomassGreater && !isEnteredFishCountGreater) {
+        const addStockField = addDataInSample.map((data) => {
+          if (!data.field) {
+            return { ...data, field: "Stock" };
+          } else {
+            return data;
+          }
+        });
         const payload = {
           organisationId: selectedProduction.organisationId,
-          data: addDataInSample,
+          data: addStockField,
         };
 
         const response = await fetch("/api/production/mange", {
