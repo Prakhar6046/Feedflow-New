@@ -69,6 +69,8 @@ interface InputTypes {
     stockingDensityKG?: String;
     batchNumber: String;
     currentDate?: Dayjs | null;
+    totalWeight?: String;
+    noOfFish?: String;
   }[];
 }
 const TransferModal: React.FC<Props> = ({
@@ -310,6 +312,41 @@ const TransferModal: React.FC<Props> = ({
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [open]);
+
+  useEffect(() => {
+    watchedFields.map((feild, i) => {
+      if (feild.field === "Sample" && feild.noOfFish && feild.totalWeight) {
+        let totalWeightArr: Array<number> = [];
+        let totalFishsArr: Array<number> = [];
+
+        watchedFields.map((feild) => {
+          if (feild.totalWeight) {
+            totalWeightArr.push(Number(feild.totalWeight));
+          }
+          if (feild.noOfFish) {
+            totalFishsArr.push(Number(feild.noOfFish));
+          }
+        });
+
+        const totalWeight = totalWeightArr.reduce((acc, val) => {
+          return (acc += val);
+        }, 0);
+        const totalFish = totalFishsArr.reduce((acc, val) => {
+          return (acc += val);
+        }, 0);
+        const avgOfMeanWeight = totalWeight / totalFish;
+        setValue(
+          `manager.${i}.meanWeight`,
+          String(Number(avgOfMeanWeight).toFixed(2))
+        );
+        // setValue("avgOfMeanWeight", avgOfMeanWeight);
+      }
+    });
+  }, [
+    watchedFields.map((field) => field.noOfFish).join(","),
+    watchedFields.map((field) => field.totalWeight).join(","),
+  ]);
+
   useEffect(() => {
     if ((isStockDeleted || selectedProduction) && !formData) {
       const data = [
@@ -955,25 +992,212 @@ const TransferModal: React.FC<Props> = ({
                             </LocalizationProvider>
                           </Grid>
                         )}
-                        <Grid
-                          xs
-                          item
-                          sx={{
-                            width: "fit-content",
-                            minWidth: 130,
-                          }}
-                        >
-                          <Box
-                            display={"flex"}
-                            gap={2}
-                            alignItems={"center"}
-                            position={"relative"}
+
+                        {watchedFields[idx].field === "Sample" && (
+                          <Grid
+                            item
+                            xs
+                            sx={{
+                              width: "fit-content",
+                              minWidth: 130,
+                            }}
                           >
                             <TextField
-                              label="Biomass *"
+                              label="Number of fish *"
+                              type="number"
+                              {...register(`manager.${idx}.noOfFish`, {
+                                required: true,
+                              })}
+                              focused
+                              className="form-input"
+                              sx={{ width: "100%" }}
+                            />
+
+                            {errors &&
+                              errors.manager &&
+                              errors.manager[idx] &&
+                              errors.manager[idx].noOfFish?.type ===
+                                "required" && (
+                                <Typography
+                                  variant="body2"
+                                  color="red"
+                                  fontSize={13}
+                                  mt={0.5}
+                                >
+                                  {validationMessage.required}
+                                </Typography>
+                              )}
+                          </Grid>
+                        )}
+
+                        {watchedFields[idx].field === "Sample" && (
+                          <Grid
+                            item
+                            xs
+                            sx={{
+                              width: "fit-content",
+                              minWidth: 130,
+                            }}
+                          >
+                            <Box position={"relative"}>
+                              <TextField
+                                label="Total weight *"
+                                type="number"
+                                {...register(`manager.${idx}.totalWeight`, {
+                                  required: true,
+                                })}
+                                focused
+                                className="form-input"
+                                sx={{ width: "100%" }}
+                              />
+                              <Typography
+                                variant="body2"
+                                color="#555555AC"
+                                sx={{
+                                  position: "absolute",
+                                  right: 6,
+                                  top: "50%",
+                                  transform: "translate(-6px, -50%)",
+                                  backgroundColor: "#fff",
+                                  height: 30,
+                                  display: "grid",
+                                  placeItems: "center",
+                                  zIndex: 1,
+                                  pl: 1,
+                                }}
+                              >
+                                g
+                              </Typography>
+                              {errors &&
+                                errors.manager &&
+                                errors.manager[idx] &&
+                                errors.manager[idx].totalWeight && (
+                                  <Typography
+                                    variant="body2"
+                                    color="red"
+                                    fontSize={13}
+                                    mt={0.5}
+                                  >
+                                    {validationMessage.required}
+                                  </Typography>
+                                )}
+                            </Box>
+                          </Grid>
+                        )}
+
+                        {watchedFields[idx].field !== "Sample" && (
+                          <Grid
+                            xs
+                            item
+                            sx={{
+                              width: "fit-content",
+                              minWidth: 130,
+                            }}
+                          >
+                            <Box
+                              display={"flex"}
+                              gap={2}
+                              alignItems={"center"}
+                              position={"relative"}
+                            >
+                              <TextField
+                                label="Biomass *"
+                                type="text"
+                                className="form-input"
+                                // disabled={idx === 0 ? true : false}
+                                slotProps={{
+                                  input: {
+                                    readOnly:
+                                      (watchedFields[idx].field !== "Sample" &&
+                                        !watchedFields[idx].productionUnit) ||
+                                      idx === 0
+                                        ? true
+                                        : false,
+                                  },
+                                }}
+                                sx={{ width: "100%" }}
+                                {...register(`manager.${idx}.biomass`, {
+                                  required: true,
+                                  pattern: validationPattern.numbersWithDot,
+                                })}
+                                onClick={() => handleCheckUnitSelected(idx)}
+                                focused
+                              />
+
+                              <Typography
+                                variant="body2"
+                                color="#555555AC"
+                                sx={{
+                                  position: "absolute",
+                                  right: 6,
+                                  top: "50%",
+                                  transform: "translate(-6px, -50%)",
+                                  backgroundColor: "#fff",
+                                  height: 30,
+                                  display: "grid",
+                                  placeItems: "center",
+                                  zIndex: 1,
+                                  pl: 1,
+                                }}
+                              >
+                                kg
+                              </Typography>
+                            </Box>
+                            <Typography
+                              variant="body2"
+                              color="red"
+                              fontSize={13}
+                              mt={0.5}
+                            ></Typography>
+                            {errors &&
+                              errors.manager &&
+                              errors.manager[idx] &&
+                              errors.manager[idx].biomass &&
+                              errors.manager[idx].biomass.type ===
+                                "required" && (
+                                <Typography
+                                  variant="body2"
+                                  color="red"
+                                  fontSize={13}
+                                  mt={0.5}
+                                >
+                                  {validationMessage.required}
+                                </Typography>
+                              )}
+                            {errors &&
+                              errors.manager &&
+                              errors.manager[idx] &&
+                              errors.manager[idx].biomass &&
+                              errors.manager[idx].biomass.type ===
+                                "pattern" && (
+                                <Typography
+                                  variant="body2"
+                                  color="red"
+                                  fontSize={13}
+                                  mt={0.5}
+                                >
+                                  {validationMessage.OnlyNumbersWithDot}
+                                </Typography>
+                              )}
+                          </Grid>
+                        )}
+                        {watchedFields[idx].field !== "Sample" && (
+                          <Grid
+                            xs
+                            item
+                            sx={{
+                              width: "fit-content",
+                              minWidth: 130,
+                              position: "relative",
+                            }}
+                          >
+                            <TextField
+                              label="Fish Count *"
                               type="text"
                               className="form-input"
+                              sx={{ width: "100%" }}
                               // disabled={idx === 0 ? true : false}
+
                               slotProps={{
                                 input: {
                                   readOnly:
@@ -984,15 +1208,13 @@ const TransferModal: React.FC<Props> = ({
                                       : false,
                                 },
                               }}
-                              sx={{ width: "100%" }}
-                              {...register(`manager.${idx}.biomass`, {
+                              {...register(`manager.${idx}.count`, {
                                 required: true,
                                 pattern: validationPattern.numbersWithDot,
                               })}
                               onClick={() => handleCheckUnitSelected(idx)}
                               focused
                             />
-
                             <Typography
                               variant="body2"
                               color="#555555AC"
@@ -1009,124 +1231,38 @@ const TransferModal: React.FC<Props> = ({
                                 pl: 1,
                               }}
                             >
-                              kg
+                              n
                             </Typography>
-                          </Box>
-                          <Typography
-                            variant="body2"
-                            color="red"
-                            fontSize={13}
-                            mt={0.5}
-                          ></Typography>
-                          {errors &&
-                            errors.manager &&
-                            errors.manager[idx] &&
-                            errors.manager[idx].biomass &&
-                            errors.manager[idx].biomass.type === "required" && (
-                              <Typography
-                                variant="body2"
-                                color="red"
-                                fontSize={13}
-                                mt={0.5}
-                              >
-                                {validationMessage.required}
-                              </Typography>
-                            )}
-                          {errors &&
-                            errors.manager &&
-                            errors.manager[idx] &&
-                            errors.manager[idx].biomass &&
-                            errors.manager[idx].biomass.type === "pattern" && (
-                              <Typography
-                                variant="body2"
-                                color="red"
-                                fontSize={13}
-                                mt={0.5}
-                              >
-                                {validationMessage.OnlyNumbersWithDot}
-                              </Typography>
-                            )}
-                        </Grid>
-                        <Grid
-                          xs
-                          item
-                          sx={{
-                            width: "fit-content",
-                            minWidth: 130,
-                            position: "relative",
-                          }}
-                        >
-                          <TextField
-                            label="Fish Count *"
-                            type="text"
-                            className="form-input"
-                            sx={{ width: "100%" }}
-                            // disabled={idx === 0 ? true : false}
-
-                            slotProps={{
-                              input: {
-                                readOnly:
-                                  (watchedFields[idx].field !== "Sample" &&
-                                    !watchedFields[idx].productionUnit) ||
-                                  idx === 0
-                                    ? true
-                                    : false,
-                              },
-                            }}
-                            {...register(`manager.${idx}.count`, {
-                              required: true,
-                              pattern: validationPattern.numbersWithDot,
-                            })}
-                            onClick={() => handleCheckUnitSelected(idx)}
-                            focused
-                          />
-                          <Typography
-                            variant="body2"
-                            color="#555555AC"
-                            sx={{
-                              position: "absolute",
-                              right: 6,
-                              top: "50%",
-                              transform: "translate(-6px, -50%)",
-                              backgroundColor: "#fff",
-                              height: 30,
-                              display: "grid",
-                              placeItems: "center",
-                              zIndex: 1,
-                              pl: 1,
-                            }}
-                          >
-                            n
-                          </Typography>
-                          {errors &&
-                            errors.manager &&
-                            errors.manager[idx] &&
-                            errors.manager[idx].count &&
-                            errors.manager[idx].count.type === "required" && (
-                              <Typography
-                                variant="body2"
-                                color="red"
-                                fontSize={13}
-                                mt={0.5}
-                              >
-                                {validationMessage.required}
-                              </Typography>
-                            )}
-                          {errors &&
-                            errors.manager &&
-                            errors.manager[idx] &&
-                            errors.manager[idx].count &&
-                            errors.manager[idx].count.type === "pattern" && (
-                              <Typography
-                                variant="body2"
-                                color="red"
-                                fontSize={13}
-                                mt={0.5}
-                              >
-                                {validationMessage.OnlyNumbersWithDot}
-                              </Typography>
-                            )}
-                        </Grid>
+                            {errors &&
+                              errors.manager &&
+                              errors.manager[idx] &&
+                              errors.manager[idx].count &&
+                              errors.manager[idx].count.type === "required" && (
+                                <Typography
+                                  variant="body2"
+                                  color="red"
+                                  fontSize={13}
+                                  mt={0.5}
+                                >
+                                  {validationMessage.required}
+                                </Typography>
+                              )}
+                            {errors &&
+                              errors.manager &&
+                              errors.manager[idx] &&
+                              errors.manager[idx].count &&
+                              errors.manager[idx].count.type === "pattern" && (
+                                <Typography
+                                  variant="body2"
+                                  color="red"
+                                  fontSize={13}
+                                  mt={0.5}
+                                >
+                                  {validationMessage.OnlyNumbersWithDot}
+                                </Typography>
+                              )}
+                          </Grid>
+                        )}
                         <Grid
                           xs
                           item
@@ -1137,45 +1273,46 @@ const TransferModal: React.FC<Props> = ({
                           }}
                         >
                           <Box position={"relative"}>
-                            {idx !== 0 && (
-                              <Box onClick={() => handleMeanWeight(item)}>
-                                <Typography
-                                  variant="body2"
-                                  color="#555555AC"
-                                  sx={{
-                                    position: "absolute",
-                                    // right: 6,
-                                    right: 0,
-                                    top: "53px",
-                                    transform: "translate(-6px, -40px)",
-                                    backgroundColor: "#06A19B",
-                                    height: 30,
-                                    display: "grid",
-                                    placeItems: "center",
-                                    zIndex: 999,
-                                    px: 0.75,
-                                    borderRadius: 1,
-                                    cursor: "pointer",
-                                    // textOverflow: "ellipsis",
-                                    // whiteSpace: "nowrap",
-                                    // minHeight: "1.4375em",
-                                    // overflow: "hidden",
-                                  }}
-                                >
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    width="1.4em"
-                                    height="1.4em"
-                                    viewBox="0 0 24 24"
+                            {idx !== 0 &&
+                              watchedFields[idx].field !== "Sample" && (
+                                <Box onClick={() => handleMeanWeight(item)}>
+                                  <Typography
+                                    variant="body2"
+                                    color="#555555AC"
+                                    sx={{
+                                      position: "absolute",
+                                      // right: 6,
+                                      right: 0,
+                                      top: "53px",
+                                      transform: "translate(-6px, -40px)",
+                                      backgroundColor: "#06A19B",
+                                      height: 30,
+                                      display: "grid",
+                                      placeItems: "center",
+                                      zIndex: 999,
+                                      px: 0.75,
+                                      borderRadius: 1,
+                                      cursor: "pointer",
+                                      // textOverflow: "ellipsis",
+                                      // whiteSpace: "nowrap",
+                                      // minHeight: "1.4375em",
+                                      // overflow: "hidden",
+                                    }}
                                   >
-                                    <path
-                                      fill="#fff"
-                                      d="M8 18h1.5v-2h2v-1.5h-2v-2H8v2H6V16h2zm5-.75h5v-1.5h-5zm0-2.5h5v-1.5h-5zm1.1-3.8l1.4-1.4l1.4 1.4l1.05-1.05l-1.4-1.45l1.4-1.4L16.9 6l-1.4 1.4L14.1 6l-1.05 1.05l1.4 1.4l-1.4 1.45zM6.25 9.2h5V7.7h-5zM5 21q-.825 0-1.413-.587T3 19V5q0-.825.588-1.412T5 3h14q.825 0 1.413.588T21 5v14q0 .825-.587 1.413T19 21zm0-2h14V5H5zM5 5v14z"
-                                    />
-                                  </svg>
-                                </Typography>
-                              </Box>
-                            )}
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      width="1.4em"
+                                      height="1.4em"
+                                      viewBox="0 0 24 24"
+                                    >
+                                      <path
+                                        fill="#fff"
+                                        d="M8 18h1.5v-2h2v-1.5h-2v-2H8v2H6V16h2zm5-.75h5v-1.5h-5zm0-2.5h5v-1.5h-5zm1.1-3.8l1.4-1.4l1.4 1.4l1.05-1.05l-1.4-1.45l1.4-1.4L16.9 6l-1.4 1.4L14.1 6l-1.05 1.05l1.4 1.4l-1.4 1.45zM6.25 9.2h5V7.7h-5zM5 21q-.825 0-1.413-.587T3 19V5q0-.825.588-1.412T5 3h14q.825 0 1.413.588T21 5v14q0 .825-.587 1.413T19 21zm0-2h14V5H5zM5 5v14z"
+                                      />
+                                    </svg>
+                                  </Typography>
+                                </Box>
+                              )}
 
                             <TextField
                               label="Mean Weight *"
@@ -1706,7 +1843,7 @@ const TransferModal: React.FC<Props> = ({
                       onClick={() => handleCloseAnchor(field)}
                       key={i}
                       disabled={
-                        watchedFields[1]?.field
+                        watchedFields[1]?.field === "Stock"
                           ? true
                           : field === "Stock" &&
                             selectedProduction?.batchNumberId &&
