@@ -300,6 +300,12 @@ const TransferModal: React.FC<Props> = ({
       localStorage.removeItem("formData");
     }
   };
+  const handleCheckUnitSelected = (idx: number) => {
+    if (!watchedFields[idx].productionUnit) {
+      toast.dismiss();
+      toast.error("Please select production unit first");
+    }
+  };
   useEffect(() => {
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
@@ -983,6 +989,7 @@ const TransferModal: React.FC<Props> = ({
                                 required: true,
                                 pattern: validationPattern.numbersWithDot,
                               })}
+                              onClick={() => handleCheckUnitSelected(idx)}
                               focused
                             />
 
@@ -1070,6 +1077,7 @@ const TransferModal: React.FC<Props> = ({
                               required: true,
                               pattern: validationPattern.numbersWithDot,
                             })}
+                            onClick={() => handleCheckUnitSelected(idx)}
                             focused
                           />
                           <Typography
@@ -1698,9 +1706,11 @@ const TransferModal: React.FC<Props> = ({
                       onClick={() => handleCloseAnchor(field)}
                       key={i}
                       disabled={
-                        field === "Stock" &&
-                        selectedProduction?.batchNumberId &&
-                        selectedProduction?.fishCount
+                        watchedFields[1]?.field
+                          ? true
+                          : field === "Stock" &&
+                            selectedProduction?.batchNumberId &&
+                            selectedProduction?.fishCount
                           ? true
                           : field === "Harvest" ||
                             field === "Mortalities" ||
