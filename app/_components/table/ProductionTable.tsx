@@ -57,7 +57,7 @@ export default function ProductionTable({
   const isFish = searchParams.get("isFish");
   const isWater = searchParams.get("isWater");
 
-  const [selectedView, setSelectedView] = useState<string>("fish");
+  const [selectedView, setSelectedView] = useState<string>();
   const [selectedProduction, setSelectedProduction] = useState<any>(
     production ? JSON.parse(production) : null
   );
@@ -329,6 +329,8 @@ export default function ProductionTable({
     const selectView = getCookie("productionCurrentView");
     if (selectView) {
       setSelectedView(selectView);
+    } else {
+      setCookie("productionCurrentView", "fish");
     }
   }, [getCookie("productionCurrentView")]);
   useEffect(() => {
@@ -428,7 +430,6 @@ export default function ProductionTable({
       setProductionData(productions);
     }
   }, [productions]);
-  console.log(selectedView);
 
   useEffect(() => {
     router.refresh();
@@ -445,7 +446,7 @@ export default function ProductionTable({
         <FormControl>
           <RadioGroup
             aria-labelledby="demo-radio-buttons-group-label"
-            value={selectedView}
+            value={selectedView ? selectedView : "fish"}
             name="radio-buttons-group"
             onChange={(e) => {
               handleTableView(e.target.value);

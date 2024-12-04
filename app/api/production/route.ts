@@ -100,7 +100,6 @@ export const GET = async (request: NextRequest) => {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    console.log(body);
     const farm = await prisma.farm.findUnique({
       where: { id: body.fishFarmId },
     });
