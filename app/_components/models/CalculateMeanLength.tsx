@@ -113,6 +113,8 @@ const CalculateMeanLength = ({ open, setOpen, setAvgOfMeanLength }: Props) => {
             sm: "70%",
             xs: "90%",
           },
+          maxWidth: "500px",
+          maxHeight: "500px",
         }}
       >
         <form className="form-height">
