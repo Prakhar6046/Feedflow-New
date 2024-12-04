@@ -1249,7 +1249,7 @@ const WaterQualityParameter: React.FC<Props> = ({
                     width: "100%",
                     marginLeft: "12px",
                     paddingBlock: "10px",
-                    marginBottom: "10px",
+                    marginBottom: "20px",
                   }}
                 />
               </Box>

@@ -555,6 +555,9 @@ const TransferModal: React.FC<Props> = ({
         aria-describedby="parent-modal-description"
         className="modal-positioning"
         data-bs-backdrop="static"
+        sx={{
+          px: 5,
+        }}
         // onBackdropClick={() => reset()}
       >
         <Stack sx={style}>

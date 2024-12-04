@@ -530,6 +530,7 @@ const CalculateVolume: React.FC<Props> = ({
                 sx={{
                   marginBottom: 2,
                 }}
+                focused
                 value={width}
                 onChange={(e) => {
                   const value = e.target.value;
