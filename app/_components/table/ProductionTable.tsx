@@ -137,15 +137,14 @@ export default function ProductionTable({
                 idx === headCells.length - 1
                   ? false
                   : orderBy === headCell.id
-                  ? order
-                  : false
+                    ? order
+                    : false
               }
               // align="center"
               sx={{
                 borderBottom: 0,
                 color: "#67737F",
                 background: "#F5F6F8",
-
                 fontSize: {
                   md: 16,
                   xs: 14,
@@ -511,6 +510,7 @@ export default function ProductionTable({
                         <TableCell
                           sx={{
                             color: "#555555",
+                            maxWidth: 250,
                             borderBottomColor: "#ececec",
                             borderBottomWidth: 2,
                             fontWeight: 700,
@@ -519,7 +519,7 @@ export default function ProductionTable({
                               md: 7,
                               xs: 4,
                             },
-                            textWrap: "nowrap",
+                            pr: 2
                           }}
                           component="th"
                           scope="row"
@@ -546,6 +546,7 @@ export default function ProductionTable({
                                   fontSize: 14,
                                   display: "flex",
                                   alignItems: "center",
+                                  justifyContent: "space-between",
                                   gap: 1,
                                   backgroundColor: "#F5F6F8",
                                   padding: "8px 12px",
@@ -618,15 +619,14 @@ export default function ProductionTable({
                                   fontWeight: 500,
                                   fontSize: 14,
                                   backgroundColor: "#F5F6F8",
-                                  padding: `${
-                                    selectedView === "water"
-                                      ? unit.waterTemp
-                                        ? "8px 12px 8px 0"
-                                        : "19px 12px 19px 0"
-                                      : unit?.fishSupply?.batchNumber
+                                  padding: `${selectedView === "water"
+                                    ? unit.waterTemp
                                       ? "8px 12px 8px 0"
                                       : "19px 12px 19px 0"
-                                  }`,
+                                    : unit?.fishSupply?.batchNumber
+                                      ? "8px 12px 8px 0"
+                                      : "19px 12px 19px 0"
+                                    }`,
                                   margin: "8px 0",
                                   textWrap: "nowrap",
                                 }}
@@ -657,18 +657,16 @@ export default function ProductionTable({
                                 sx={{
                                   fontWeight: 500,
                                   fontSize: 14,
-                                  padding: `${
-                                    selectedView === "water"
-                                      ? unit.DO
-                                        ? "8px 12px 8px 0"
-                                        : "19px 12px 19px 0"
-                                      : unit?.fishSupply?.age
+                                  padding: `${selectedView === "water"
+                                    ? unit.DO
                                       ? "8px 12px 8px 0"
                                       : "19px 12px 19px 0"
-                                  }`,
+                                    : unit?.fishSupply?.age
+                                      ? "8px 12px 8px 0"
+                                      : "19px 12px 19px 0"
+                                    }`,
                                   backgroundColor: "#F5F6F8",
                                   margin: "8px 0",
-
                                   textWrap: "nowrap",
                                 }}
                               >
@@ -698,15 +696,14 @@ export default function ProductionTable({
                                   fontWeight: 500,
                                   fontSize: 14,
                                   backgroundColor: "#F5F6F8",
-                                  padding: `${
-                                    selectedView === "water"
-                                      ? unit.TSS
-                                        ? "8px 12px 8px 0"
-                                        : "19px 12px 19px 0"
-                                      : unit?.fishCount
+                                  padding: `${selectedView === "water"
+                                    ? unit.TSS
                                       ? "8px 12px 8px 0"
                                       : "19px 12px 19px 0"
-                                  }`,
+                                    : unit?.fishCount
+                                      ? "8px 12px 8px 0"
+                                      : "19px 12px 19px 0"
+                                    }`,
                                   margin: "8px 0",
                                   // marginBottom: "10px",
                                   // padding: "21px",
@@ -740,15 +737,14 @@ export default function ProductionTable({
                                   fontWeight: 500,
                                   fontSize: 14,
                                   backgroundColor: "#F5F6F8",
-                                  padding: `${
-                                    selectedView === "water"
-                                      ? unit.NH4
-                                        ? "8px 12px 8px 0"
-                                        : "19px 12px 19px 0"
-                                      : unit?.biomass
+                                  padding: `${selectedView === "water"
+                                    ? unit.NH4
                                       ? "8px 12px 8px 0"
                                       : "19px 12px 19px 0"
-                                  }`,
+                                    : unit?.biomass
+                                      ? "8px 12px 8px 0"
+                                      : "19px 12px 19px 0"
+                                    }`,
                                   margin: "8px 0",
                                   // marginBottom: "10px",
                                   textWrap: "nowrap",
@@ -757,8 +753,8 @@ export default function ProductionTable({
                                 {selectedView === "water"
                                   ? unit.NH4 ?? ""
                                   : unit.biomass
-                                  ? `${unit.biomass} kg`
-                                  : ""}
+                                    ? `${unit.biomass} kg`
+                                    : ""}
                               </Typography>
                             );
                           })}
@@ -783,15 +779,14 @@ export default function ProductionTable({
                                   fontWeight: 500,
                                   fontSize: 14,
                                   backgroundColor: "#F5F6F8",
-                                  padding: `${
-                                    selectedView === "water"
-                                      ? unit.NO3
-                                        ? "8px 12px 8px 0"
-                                        : "19px 12px 19px 0"
-                                      : unit?.meanWeight
+                                  padding: `${selectedView === "water"
+                                    ? unit.NO3
                                       ? "8px 12px 8px 0"
                                       : "19px 12px 19px 0"
-                                  }`,
+                                    : unit?.meanWeight
+                                      ? "8px 12px 8px 0"
+                                      : "19px 12px 19px 0"
+                                    }`,
                                   margin: "8px 0",
                                   // marginBottom: "10px",
                                   textWrap: "nowrap",
@@ -800,8 +795,8 @@ export default function ProductionTable({
                                 {selectedView === "water"
                                   ? unit.NO3 ?? ""
                                   : unit.meanWeight
-                                  ? `${unit.meanWeight} g`
-                                  : ""}
+                                    ? `${unit.meanWeight} g`
+                                    : ""}
                               </Typography>
                             );
                           })}
@@ -826,15 +821,14 @@ export default function ProductionTable({
                                   fontWeight: 500,
                                   fontSize: 14,
                                   backgroundColor: "#F5F6F8",
-                                  padding: `${
-                                    selectedView === "water"
-                                      ? unit.NO2
-                                        ? "8px 12px 8px 0"
-                                        : "19px 12px 19px 0"
-                                      : unit?.meanLength
+                                  padding: `${selectedView === "water"
+                                    ? unit.NO2
                                       ? "8px 12px 8px 0"
                                       : "19px 12px 19px 0"
-                                  }`,
+                                    : unit?.meanLength
+                                      ? "8px 12px 8px 0"
+                                      : "19px 12px 19px 0"
+                                    }`,
                                   margin: "8px 0",
                                   // marginBottom: "10px",
                                   textWrap: "nowrap",
@@ -843,8 +837,8 @@ export default function ProductionTable({
                                 {selectedView === "water"
                                   ? unit.NO2
                                   : unit.meanLength
-                                  ? `${unit.meanLength} mm`
-                                  : ""}
+                                    ? `${unit.meanLength} mm`
+                                    : ""}
                               </Typography>
                             );
                           })}
@@ -869,17 +863,16 @@ export default function ProductionTable({
                                   fontWeight: 500,
                                   fontSize: 14,
                                   backgroundColor: "#F5F6F8",
-                                  padding: `${
-                                    selectedView === "water"
-                                      ? unit.ph
-                                        ? "8px 12px 8px 0"
-                                        : "19px 12px 19px 0"
-                                      : Number(unit.stockingDensityKG).toFixed(
-                                          2
-                                        )
+                                  padding: `${selectedView === "water"
+                                    ? unit.ph
                                       ? "8px 12px 8px 0"
                                       : "19px 12px 19px 0"
-                                  }`,
+                                    : Number(unit.stockingDensityKG).toFixed(
+                                      2
+                                    )
+                                      ? "8px 12px 8px 0"
+                                      : "19px 12px 19px 0"
+                                    }`,
                                   margin: "8px 0",
                                   // marginBottom: "10px",
                                   textWrap: "nowrap",
@@ -888,7 +881,7 @@ export default function ProductionTable({
                                 {selectedView === "water"
                                   ? unit.ph ?? ""
                                   : Number(unit.stockingDensityKG).toFixed(2) ??
-                                    ""}
+                                  ""}
                               </Typography>
                             );
                           })}
@@ -913,17 +906,16 @@ export default function ProductionTable({
                                   fontWeight: 500,
                                   fontSize: 14,
                                   backgroundColor: "#F5F6F8",
-                                  padding: `${
-                                    selectedView === "water"
-                                      ? unit.visibility
-                                        ? "8px 12px 8px 0"
-                                        : "19px 12px 19px 0"
-                                      : Number(unit.stockingDensityNM).toFixed(
-                                          2
-                                        )
+                                  padding: `${selectedView === "water"
+                                    ? unit.visibility
                                       ? "8px 12px 8px 0"
                                       : "19px 12px 19px 0"
-                                  }`,
+                                    : Number(unit.stockingDensityNM).toFixed(
+                                      2
+                                    )
+                                      ? "8px 12px 8px 0"
+                                      : "19px 12px 19px 0"
+                                    }`,
                                   margin: "8px 0",
                                   // marginBottom: "10px",
                                   textWrap: "nowrap",
@@ -932,7 +924,7 @@ export default function ProductionTable({
                                 {selectedView === "water"
                                   ? unit.visibility ?? ""
                                   : Number(unit.stockingDensityNM).toFixed(2) ??
-                                    ""}
+                                  ""}
                               </Typography>
                             );
                           })}
