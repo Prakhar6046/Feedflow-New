@@ -243,6 +243,8 @@ export default function FarmTable({ farms }: Props) {
                         borderBottomColor: "#F5F6F8",
                         borderBottomWidth: 2,
                         color: "#555555",
+                        maxWidth: 250,
+                        pr: 2,
                         fontWeight: 500,
                         paddingLeft: {
                           lg: 10,
