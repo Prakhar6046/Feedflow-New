@@ -240,6 +240,7 @@ const WaterQualityParameter: React.FC<Props> = ({
       const index0NO2 = 0;
       const index0Ph = 0;
       const index0visibility = 0;
+
       // Initialize updated values
       let updatedWaterTemp = index0WaterTemp;
       let updatedDo = index0DO;
@@ -249,6 +250,7 @@ const WaterQualityParameter: React.FC<Props> = ({
       let updatedNO2 = index0NO2;
       let updatedPH = index0Ph;
       let updatedVisibility = index0visibility;
+
       // Iterate through watched fields, skipping index 0
       watchedFields.forEach((field, index) => {
         if (index === 0) return; // Skip index 0
@@ -261,6 +263,7 @@ const WaterQualityParameter: React.FC<Props> = ({
         updatedPH += Number(field.ph);
         updatedVisibility += Number(field.visibility);
       });
+
       const totalFields = watchedFields.length - 1;
       const totalWaterTempAvg = updatedWaterTemp / totalFields;
       const totalDo = updatedDo / totalFields;
@@ -270,6 +273,7 @@ const WaterQualityParameter: React.FC<Props> = ({
       const totalNO2 = updatedNO2 / totalFields;
       const totalPH = updatedPH / totalFields;
       const totalVisibility = updatedVisibility / totalFields;
+
       // Set the index 0 values after calculation
       setValue(
         `water.0.waterTemp`,
@@ -285,7 +289,20 @@ const WaterQualityParameter: React.FC<Props> = ({
         `water.0.visibility`,
         totalVisibility ? totalVisibility.toFixed(2).toString() : ""
       );
+
+      // Clear validation errors for index 0 fields
+      clearErrors([
+        "water.0.waterTemp",
+        "water.0.DO",
+        "water.0.TSS",
+        "water.0.NH4",
+        "water.0.NO3",
+        "water.0.NO2",
+        "water.0.ph",
+        "water.0.visibility",
+      ]);
     }
+
     if (isWater && watchedFields[0]?.id) {
       localStorage.setItem("formData", JSON.stringify(watchedFields));
     } else {
@@ -301,6 +318,7 @@ const WaterQualityParameter: React.FC<Props> = ({
     watchedFields.map((field) => field.ph).join(","),
     watchedFields.map((field) => field.visibility).join(","),
     setValue,
+    clearErrors,
     isWater,
     selectedProduction,
   ]);
