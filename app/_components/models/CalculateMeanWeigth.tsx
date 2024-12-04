@@ -64,6 +64,7 @@ const CalculateMeanWeigth = ({ open, setOpen, setAvgOfMeanWeight }: Props) => {
   });
   const handleClose = () => {
     setOpen(false);
+    reset();
   };
 
   const handleKeyPress = (key: string) => {

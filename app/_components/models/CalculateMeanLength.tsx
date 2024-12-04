@@ -60,6 +60,7 @@ const CalculateMeanLength = ({ open, setOpen, setAvgOfMeanLength }: Props) => {
   });
   const handleClose = () => {
     setOpen(false);
+    reset();
   };
   const handleKeyPress = (key: string) => {
     if (key === "Enter") {
