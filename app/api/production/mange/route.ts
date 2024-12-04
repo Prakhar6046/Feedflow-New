@@ -4,8 +4,9 @@ import { NextRequest, NextResponse } from "next/server";
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
+    const filteredData = body.data.filter((data: any) => data.field);
 
-    for (const data of body.data) {
+    for (const data of filteredData) {
       await prisma.fishManageHistory.create({
         data: {
           fishFarmId: data.fishFarm,
