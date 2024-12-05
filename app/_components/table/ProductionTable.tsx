@@ -528,6 +528,8 @@ export default function ProductionTable({
                               xs: 4,
                             },
                             pr: 2,
+
+                            wordBreak: "break-all",
                           }}
                           component="th"
                           scope="row"

@@ -325,6 +325,16 @@ const WaterQualityParameter: React.FC<Props> = ({
     selectedProduction,
   ]);
 
+  // useEffect(() => {
+  //   watchedFields.map((_, i) =>
+  //     setValue(
+  //       `water.${i}.waterTemp`,
+
+  //       watchedFields[1]?.waterTemp
+  //     )
+  //   );
+  // }, [watchedFields[1]?.waterTemp]);
+
   return (
     <Modal
       open={open}
@@ -379,6 +389,31 @@ const WaterQualityParameter: React.FC<Props> = ({
                         flexWrap: "nowrap",
                       }}
                     >
+                      {idx !== 0 && (
+                        <Grid
+                          xs
+                          item
+                          sx={{
+                            width: "fit-content",
+                            minWidth: 130,
+                          }}
+                        >
+                          <Box
+                            display={"flex"}
+                            gap={2}
+                            alignItems={"center"}
+                            position={"relative"}
+                          >
+                            <TextField
+                              type="text"
+                              className="form-input"
+                              // disabled={idx === 0 ? true : false}
+                              sx={{ width: "100%" }}
+                              disabled
+                            />
+                          </Box>
+                        </Grid>
+                      )}
                       {!item.showDate && (
                         <Grid
                           item
@@ -609,6 +644,7 @@ const WaterQualityParameter: React.FC<Props> = ({
                           </LocalizationProvider>
                         </Grid>
                       )}
+
                       <Grid
                         xs
                         item

@@ -246,6 +246,7 @@ export default function FarmTable({ farms }: Props) {
                         maxWidth: 250,
                         pr: 2,
                         fontWeight: 500,
+                        wordBreak: "break-all",
                         paddingLeft: {
                           lg: 10,
                           md: 7,
