@@ -232,7 +232,7 @@ const CalculateMeanLength = ({ open, setOpen, setAvgOfMeanLength }: Props) => {
                                 sx={{
                                   position: "absolute",
                                   right: 6,
-                                  top: "50%",
+                                  top: "29px",
                                   transform: "translate(-6px, -50%)",
                                   backgroundColor: "#fff",
                                   height: 30,

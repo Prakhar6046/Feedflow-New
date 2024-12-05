@@ -608,6 +608,7 @@ const TransferModal: React.FC<Props> = ({
                           xs: "auto",
                         },
                         width: "97%",
+                        pb: 2,
                       }}
                     >
                       <Grid
@@ -1224,8 +1225,8 @@ const TransferModal: React.FC<Props> = ({
                               sx={{
                                 position: "absolute",
                                 right: 6,
-                                top: "50%",
-                                transform: "translate(-6px, -50%)",
+                                top: "29px",
+                                transform: "translate(-6px, 0px)",
                                 backgroundColor: "#fff",
                                 height: 30,
                                 display: "grid",
