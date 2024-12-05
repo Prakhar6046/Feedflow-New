@@ -188,7 +188,7 @@ const TransferModal: React.FC<Props> = ({
       });
       if (!isEnteredBiomassGreater && !isEnteredFishCountGreater) {
         const addStockField = addDataInSample.map((data) => {
-          if (!data.field) {
+          if (!data.field && !selectedProduction.batchNumberId) {
             return { ...data, field: "Stock" };
           } else {
             return data;

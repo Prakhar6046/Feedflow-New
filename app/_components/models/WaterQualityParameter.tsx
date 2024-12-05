@@ -200,7 +200,9 @@ const WaterQualityParameter: React.FC<Props> = ({
         ph: "",
         TSS: "",
         visibility: "",
-        waterTemp: "",
+        waterTemp: watchedFields[1]?.waterTemp
+          ? watchedFields[1].waterTemp
+          : "",
         date: null,
         showDate: true,
       });
