@@ -58,6 +58,8 @@ export default function BasicBreadcrumbs({
     } else {
       setCookie("activeStep", 0);
     }
+    localStorage.removeItem("farmData");
+    localStorage.removeItem("farmProductionUnits");
     router.push(String(buttonRoute));
   };
 

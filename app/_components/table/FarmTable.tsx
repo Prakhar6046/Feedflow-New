@@ -64,6 +64,8 @@ export default function FarmTable({ farms }: Props) {
   const handleEdit = () => {
     if (selectedFarm) {
       dispatch(farmAction.handleIsFarm());
+      localStorage.removeItem("farmData");
+      localStorage.removeItem("farmProductionUnits");
       router.push(`/dashboard/farm/${selectedFarm.id}`);
       setCookie("activeStep", 1);
     }

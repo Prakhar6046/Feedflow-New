@@ -60,6 +60,7 @@ const unitsTypes = [
 const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
   uuidv4();
   const router = useRouter();
+  const formProductionUnitsData = localStorage.getItem("farmProductionUnits");
   const userData: any = getCookie("logged-user");
   const dispatch = useAppDispatch();
   const farm = useAppSelector(selectFarm);
@@ -218,6 +219,8 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
 
         if (responseData.status) {
           router.push("/dashboard/farm");
+          localStorage.removeItem("farmData");
+          localStorage.removeItem("farmProductionUnits");
         }
       } else {
         toast.error("Please fill out the all feilds");
@@ -244,10 +247,12 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
   }, [calculatedValue]);
 
   useEffect(() => {
-    if (editFarm) {
+    if (editFarm && !formProductionUnitsData) {
       setValue("productionUnits", editFarm?.productionUnits);
+    } else if (formProductionUnitsData) {
+      setValue("productionUnits", JSON.parse(formProductionUnitsData));
     }
-  }, []);
+  }, [formProductionUnitsData]);
 
   return (
     <Stack>
@@ -705,7 +710,13 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                   border: "1px solid #06A19B",
                 }}
                 // onClick={() => setCookie("activeStep", 1)}
-                onClick={() => setActiveStep(1)}
+                onClick={() => {
+                  setActiveStep(1),
+                    localStorage.setItem(
+                      "farmProductionUnits",
+                      JSON.stringify(watch("productionUnits"))
+                    );
+                }}
               >
                 Previous
               </Button>
