@@ -604,7 +604,7 @@ const TransferModal: React.FC<Props> = ({
                     <Stack
                       sx={{
                         overflowY: {
-                          xl: "visible",
+                          // xl: "visible",
                           xs: "auto",
                         },
                         width: "97%",

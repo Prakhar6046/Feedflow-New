@@ -375,10 +375,11 @@ const WaterQualityParameter: React.FC<Props> = ({
                   <Stack
                     sx={{
                       overflowY: {
-                        xl: "visible",
+                        // xl: "visible",
                         xs: "auto",
                       },
                       width: "97%",
+                      pb: 2,
                     }}
                   >
                     <Grid
@@ -402,15 +403,20 @@ const WaterQualityParameter: React.FC<Props> = ({
                             display={"flex"}
                             gap={2}
                             alignItems={"center"}
+                            justifyContent={"center"}
                             position={"relative"}
+                            mt={1.5}
+                            fontWeight={600}
                           >
-                            <TextField
+                            {/* <TextField
                               type="text"
                               className="form-input"
                               // disabled={idx === 0 ? true : false}
                               sx={{ width: "100%" }}
                               disabled
-                            />
+                            /> */}
+
+                            <Typography variant="subtitle1">Sample:</Typography>
                           </Box>
                         </Grid>
                       )}
