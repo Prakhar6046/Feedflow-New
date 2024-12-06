@@ -35,6 +35,7 @@ import {
 } from "@/app/_lib/utils/tableHeadData";
 import WaterManageHistoryModal from "../models/WaterManageHistory";
 import Loader from "../Loader";
+import { getLocalItem, setLocalItem } from "@/app/_lib/utils";
 interface Props {
   productions: Production[];
   tableData: any;
@@ -49,7 +50,7 @@ export default function ProductionTable({
   batches,
 }: Props) {
   const router = useRouter();
-  const production = localStorage.getItem("productionData");
+  const production = getLocalItem("productionData");
   const dispatch = useAppDispatch();
   const pathName = usePathname();
   const role = useAppSelector(selectRole);
@@ -114,7 +115,7 @@ export default function ProductionTable({
       router.replace(newPath);
       setOpenWaterQualityModal(true);
     }
-    localStorage.setItem("productionData", JSON.stringify(selectedProd));
+    setLocalItem("productionData", selectedProd);
     setSelectedProduction(selectedProd);
   };
 
@@ -322,7 +323,7 @@ export default function ProductionTable({
 
   useEffect(() => {
     if (pathName) {
-      setSortDataFromLocal(localStorage.getItem(pathName));
+      setSortDataFromLocal(getLocalItem(pathName));
     }
   }, [pathName]);
   useEffect(() => {

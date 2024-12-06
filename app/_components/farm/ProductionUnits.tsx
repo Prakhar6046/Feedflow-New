@@ -42,6 +42,7 @@ import { v4 as uuidv4 } from "uuid";
 import CalculateVolume from "../models/CalculateVolume";
 import { deleteCookie, getCookie } from "cookies-next";
 import { px } from "framer-motion";
+import { getLocalItem, removeLocalItem, setLocalItem } from "@/app/_lib/utils";
 interface Props {
   editFarm?: any;
   setActiveStep: (val: number) => void;
@@ -60,7 +61,7 @@ const unitsTypes = [
 const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
   uuidv4();
   const router = useRouter();
-  const formProductionUnitsData = localStorage.getItem("farmProductionUnits");
+  const formProductionUnitsData = getLocalItem("farmProductionUnits");
   const userData: any = getCookie("logged-user");
   const dispatch = useAppDispatch();
   const farm = useAppSelector(selectFarm);
@@ -219,8 +220,8 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
 
         if (responseData.status) {
           router.push("/dashboard/farm");
-          localStorage.removeItem("farmData");
-          localStorage.removeItem("farmProductionUnits");
+          removeLocalItem("farmData");
+          removeLocalItem("farmProductionUnits");
         }
       } else {
         toast.error("Please fill out the all feilds");
@@ -733,9 +734,9 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                 // onClick={() => setCookie("activeStep", 1)}
                 onClick={() => {
                   setActiveStep(1),
-                    localStorage.setItem(
+                    setLocalItem(
                       "farmProductionUnits",
-                      JSON.stringify(watch("productionUnits"))
+                      watch("productionUnits")
                     );
                 }}
               >

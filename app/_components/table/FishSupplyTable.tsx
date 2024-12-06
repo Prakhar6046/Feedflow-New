@@ -25,6 +25,7 @@ import React, { useEffect, useState } from "react";
 import { selectRole } from "@/lib/features/user/userSlice";
 import { useAppSelector } from "@/lib/hooks";
 import { getCookie } from "cookies-next";
+import { getLocalItem } from "@/app/_lib/utils";
 interface Props {
   tableData: {
     id: string;
@@ -52,7 +53,7 @@ export default function FishSupplyTable({ tableData, fishSupply }: Props) {
 
   useEffect(() => {
     if (pathName) {
-      setSortDataFromLocal(localStorage.getItem(pathName));
+      setSortDataFromLocal(getLocalItem(pathName));
     }
   }, [pathName]);
   const handleClick = (

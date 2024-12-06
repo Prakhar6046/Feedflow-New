@@ -1,4 +1,9 @@
-import { productionMangeFields } from "@/app/_lib/utils";
+import {
+  getLocalItem,
+  productionMangeFields,
+  removeLocalItem,
+  setLocalItem,
+} from "@/app/_lib/utils";
 import * as validationPattern from "@/app/_lib/utils/validationPatterns/index";
 import * as validationMessage from "@/app/_lib/utils/validationsMessage/index";
 import { Farm } from "@/app/_typeModels/Farm";
@@ -81,7 +86,7 @@ const TransferModal: React.FC<Props> = ({
   batches,
   productions,
 }) => {
-  const formData = localStorage.getItem("formData");
+  const formData = getLocalItem("formData");
   const searchParams = useSearchParams();
   const isFish = searchParams.get("isFish");
   const router = useRouter();
@@ -212,8 +217,8 @@ const TransferModal: React.FC<Props> = ({
           toast.dismiss();
           toast.success(res.message);
           setOpen(false);
-          localStorage.removeItem("productionData");
-          localStorage.removeItem("formData");
+          removeLocalItem("productionData");
+          removeLocalItem("formData");
           router.push("/dashboard/production");
           reset();
           router.refresh();
@@ -248,8 +253,8 @@ const TransferModal: React.FC<Props> = ({
     setOpen(false);
     const params = new URLSearchParams(searchParams);
     params.delete("isFish");
-    localStorage.removeItem("productionData");
-    localStorage.removeItem("formData");
+    removeLocalItem("productionData");
+    removeLocalItem("formData");
     router.replace(`/dashboard/production`);
   };
   const openAnchor = Boolean(anchorEl);
@@ -298,8 +303,8 @@ const TransferModal: React.FC<Props> = ({
       const params = new URLSearchParams(searchParams);
       params.delete("isFish");
       router.replace(`/dashboard/production`);
-      localStorage.removeItem("productionData");
-      localStorage.removeItem("formData");
+      removeLocalItem("productionData");
+      removeLocalItem("formData");
     }
   };
   const handleCheckUnitSelected = (idx: number) => {
@@ -491,9 +496,9 @@ const TransferModal: React.FC<Props> = ({
       setValue(`manager.0.count`, updatedCount.toString());
     }
     if (isFish && watchedFields[0]?.id) {
-      localStorage.setItem("formData", JSON.stringify(watchedFields));
+      setLocalItem("formData", watchedFields);
     } else {
-      localStorage.removeItem("formData");
+      removeLocalItem("formData");
     }
   }, [
     watchedFields.map((field) => field.biomass).join(","),

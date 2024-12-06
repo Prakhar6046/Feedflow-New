@@ -25,6 +25,7 @@ import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import Loader from "../Loader";
 import { getCookie, setCookie } from "cookies-next";
 import { SingleUser } from "@/app/_typeModels/User";
+import { getLocalItem, setLocalItem } from "@/app/_lib/utils";
 // import MapComponent from "./MapComponent";
 const MapComponent = dynamic(() => import("./MapComponent"), { ssr: false });
 interface Props {
@@ -51,7 +52,7 @@ const FarmInformation: NextPage<Props> = ({
     reset,
   } = useForm<Farm>();
   const loggedUser: any = getCookie("logged-user");
-  const formData = localStorage.getItem("farmData");
+  const formData = getLocalItem("farmData");
   const user = JSON.parse(loggedUser);
   const [selectedSwtich, setSelectedSwtich] = useState<string>("address");
   const [altitude, setAltitude] = useState<String>("");
@@ -78,7 +79,7 @@ const FarmInformation: NextPage<Props> = ({
   };
   const onSubmit: SubmitHandler<Farm> = (data) => {
     dispatch(farmAction.updateFarm(data));
-    localStorage.setItem("farmData", JSON.stringify(data));
+    setLocalItem("farmData", data);
     setActiveStep(2);
     // setCookie("activeStep", 2);
   };

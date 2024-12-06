@@ -27,6 +27,7 @@ import {
   farmTableHead,
   farmTableHeadMember,
 } from "@/app/_lib/utils/tableHeadData";
+import { getLocalItem, removeLocalItem } from "@/app/_lib/utils";
 
 interface Props {
   farms: Farm[];
@@ -51,7 +52,7 @@ export default function FarmTable({ farms }: Props) {
 
   useEffect(() => {
     if (pathName) {
-      setSortDataFromLocal(localStorage.getItem(pathName));
+      setSortDataFromLocal(getLocalItem(pathName));
     }
   }, [pathName]);
   const handleClick = (
@@ -64,8 +65,8 @@ export default function FarmTable({ farms }: Props) {
   const handleEdit = () => {
     if (selectedFarm) {
       dispatch(farmAction.handleIsFarm());
-      localStorage.removeItem("farmData");
-      localStorage.removeItem("farmProductionUnits");
+      removeLocalItem("farmData");
+      removeLocalItem("farmProductionUnits");
       router.push(`/dashboard/farm/${selectedFarm.id}`);
       setCookie("activeStep", 1);
     }
