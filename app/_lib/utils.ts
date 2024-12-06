@@ -84,10 +84,18 @@ export function getDayMonthDifference(targetDate: any) {
 
 export const productionMangeFields = [
   "Stock",
-  "Re-Stock",
   "Transfer",
   "Harvest",
   "Mortalities",
   "Sample",
 ];
 export const waterQualityFields = ["Sample"];
+
+export const formattedDate = (date: string) => {
+  const convertedDate = new Date(date);
+  return convertedDate.toLocaleString("en-US", {
+    dateStyle: "medium",
+    timeStyle: "medium",
+    timeZone: "UTC", // Adjust this to your desired timezone if needed
+  });
+};

@@ -5,6 +5,22 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
 
+    if (body.waterAvg && body.waterAvg.id) {
+      await prisma.waterManageHistoryAvgrage.create({
+        data: {
+          DO: body.waterAvg.DO,
+          NH4: body.waterAvg.NH4,
+          NO2: body.waterAvg.NO2,
+          NO3: body.waterAvg.NO3,
+          TSS: body.waterAvg.TSS,
+          ph: body.waterAvg.ph,
+          waterTemp: body.waterAvg.waterTemp,
+          visibility: body.waterAvg.visibility,
+          productionId: Number(body.waterAvg.id),
+        },
+      });
+    }
+
     for (const data of body.listData) {
       await prisma.waterManageHistory.create({
         data: {

@@ -59,6 +59,19 @@ export interface Production {
     visibility: String;
     productionId: Number;
   }[];
+  WaterManageHistoryAvgrage?: {
+    id: Number;
+    currentDate: String;
+    waterTemp: String;
+    DO: String;
+    TSS: String;
+    NH4: String;
+    NO3: String;
+    NO2: String;
+    ph: String;
+    visibility: String;
+    productionId: Number;
+  }[];
   FishManageHistory: {
     id: Number;
     fishFarmId: String;
@@ -200,11 +213,12 @@ export interface WaterManageHistoryGroup {
     stockingDensityNM: String;
     stockingLevel: String;
     isManager: Boolean;
+    createdAt: String;
     fishSupply: {
       batchNumber: String;
       age: String;
     };
-    waterManageHistory?: {
+    WaterManageHistoryAvgrage?: {
       id: Number;
       currentDate: String;
       waterTemp: String;

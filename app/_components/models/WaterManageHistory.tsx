@@ -1,3 +1,4 @@
+import { formattedDate } from "@/app/_lib/utils";
 import {
   FarmGroup,
   FishManageHistoryGroup,
@@ -139,6 +140,7 @@ const WaterManageHistoryModal: React.FC<Props> = ({
       field: item.field,
       fishManageHistory: item.FishManageHistory,
       waterManageHistory: item.WaterManageHistory,
+      WaterManageHistoryAvgrage: item.WaterManageHistoryAvgrage,
     });
 
     return result;
@@ -266,8 +268,8 @@ const WaterManageHistoryModal: React.FC<Props> = ({
                             }}
                           >
                             {farm &&
-                              farm.units[0].waterManageHistory &&
-                              farm.units[0].waterManageHistory.map(
+                              farm.units[0].WaterManageHistoryAvgrage &&
+                              farm.units[0].WaterManageHistoryAvgrage.map(
                                 (unit, i) => {
                                   return (
                                     <Typography
@@ -278,7 +280,7 @@ const WaterManageHistoryModal: React.FC<Props> = ({
                                         fontSize: 14,
                                         backgroundColor: "#F5F6F8",
                                         padding: `${
-                                          unit?.currentDate
+                                          farm.units[0].createdAt
                                             ? "8px 12px 8px 0"
                                             : "19px 12px 19px 0"
                                         }`,
@@ -288,7 +290,9 @@ const WaterManageHistoryModal: React.FC<Props> = ({
                                         textWrap: "nowrap",
                                       }}
                                     >
-                                      {unit.currentDate}
+                                      {formattedDate(
+                                        String(farm.units[0].createdAt)
+                                      )}
                                     </Typography>
                                   );
                                 }
@@ -305,8 +309,8 @@ const WaterManageHistoryModal: React.FC<Props> = ({
                             }}
                           >
                             {farm &&
-                              farm.units[0].waterManageHistory &&
-                              farm.units[0].waterManageHistory.map(
+                              farm.units[0].WaterManageHistoryAvgrage &&
+                              farm.units[0].WaterManageHistoryAvgrage.map(
                                 (unit, i) => {
                                   return (
                                     <Typography
@@ -344,8 +348,8 @@ const WaterManageHistoryModal: React.FC<Props> = ({
                             }}
                           >
                             {farm &&
-                              farm.units[0].waterManageHistory &&
-                              farm.units[0].waterManageHistory.map(
+                              farm.units[0].WaterManageHistoryAvgrage &&
+                              farm.units[0].WaterManageHistoryAvgrage.map(
                                 (unit, i) => {
                                   return (
                                     <Typography
@@ -382,8 +386,8 @@ const WaterManageHistoryModal: React.FC<Props> = ({
                             }}
                           >
                             {farm &&
-                              farm.units[0].waterManageHistory &&
-                              farm.units[0].waterManageHistory.map(
+                              farm.units[0].WaterManageHistoryAvgrage &&
+                              farm.units[0].WaterManageHistoryAvgrage.map(
                                 (unit, i) => {
                                   return (
                                     <Typography
@@ -420,8 +424,8 @@ const WaterManageHistoryModal: React.FC<Props> = ({
                             }}
                           >
                             {farm &&
-                              farm.units[0].waterManageHistory &&
-                              farm.units[0].waterManageHistory.map(
+                              farm.units[0].WaterManageHistoryAvgrage &&
+                              farm.units[0].WaterManageHistoryAvgrage.map(
                                 (unit, i) => {
                                   return (
                                     <Typography
@@ -460,8 +464,8 @@ const WaterManageHistoryModal: React.FC<Props> = ({
                             }}
                           >
                             {farm &&
-                              farm.units[0].waterManageHistory &&
-                              farm.units[0].waterManageHistory.map(
+                              farm.units[0].WaterManageHistoryAvgrage &&
+                              farm.units[0].WaterManageHistoryAvgrage.map(
                                 (unit, i) => {
                                   return (
                                     <Typography
@@ -499,8 +503,8 @@ const WaterManageHistoryModal: React.FC<Props> = ({
                             }}
                           >
                             {farm &&
-                              farm.units[0].waterManageHistory &&
-                              farm.units[0].waterManageHistory.map(
+                              farm.units[0].WaterManageHistoryAvgrage &&
+                              farm.units[0].WaterManageHistoryAvgrage.map(
                                 (unit, i) => {
                                   return (
                                     <Typography
@@ -538,8 +542,8 @@ const WaterManageHistoryModal: React.FC<Props> = ({
                             }}
                           >
                             {farm &&
-                              farm.units[0].waterManageHistory &&
-                              farm.units[0].waterManageHistory.map(
+                              farm.units[0].WaterManageHistoryAvgrage &&
+                              farm.units[0].WaterManageHistoryAvgrage.map(
                                 (unit, i) => {
                                   return (
                                     <Typography
@@ -577,8 +581,8 @@ const WaterManageHistoryModal: React.FC<Props> = ({
                             }}
                           >
                             {farm &&
-                              farm.units[0].waterManageHistory &&
-                              farm.units[0].waterManageHistory.map(
+                              farm.units[0].WaterManageHistoryAvgrage &&
+                              farm.units[0].WaterManageHistoryAvgrage.map(
                                 (unit, i) => {
                                   return (
                                     <Typography

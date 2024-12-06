@@ -67,12 +67,6 @@ export default function Page() {
     }
   };
 
-  // useEffect(() => {
-  //   const d = async () => {
-  //     console.log(await hashPassword("12345678"));
-  //   };
-  //   d();
-  // }, []);
   return (
     <>
       <Toaster

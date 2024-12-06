@@ -59,16 +59,14 @@ model Organisation {
   addressId        String?  @unique
   address          Address? @relation(fields: [addressId], references: [id], onUpdate: Cascade)
 
-  contact             Contact[]
-  hatchery            Hatchery[]            @relation("HatcheryCreator")
-  fishSupply          FishSupply[]          @relation("fishSupplyCreator")
-  Farm                Farm[]
-  FeedSupply          FeedSupply[]
-  FishSupply          FishSupply[]
-  production          production[]
-  SamplingEnvironment SamplingEnvironment[]
-  SamplingStock       SamplingStock[]
-  FishManageHistory   FishManageHistory[]
+  contact           Contact[]
+  hatchery          Hatchery[]          @relation("HatcheryCreator")
+  fishSupply        FishSupply[]        @relation("fishSupplyCreator")
+  Farm              Farm[]
+  FeedSupply        FeedSupply[]
+  FishSupply        FishSupply[]
+  production        production[]
+  FishManageHistory FishManageHistory[]
 
   @@index([createdAt])
   @@index([updatedAt])
@@ -127,14 +125,12 @@ model Farm {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  productionUnits     ProductionUnit[]
-  production          production[]
-  User                User?                 @relation(fields: [userId], references: [id])
-  userId              Int?
-  FarmManager         FarmManager[]
-  SamplingEnvironment SamplingEnvironment[]
-  SamplingStock       SamplingStock[]
-  FishManageHistory   FishManageHistory[]
+  productionUnits   ProductionUnit[]
+  production        production[]
+  User              User?               @relation(fields: [userId], references: [id])
+  userId            Int?
+  FarmManager       FarmManager[]
+  FishManageHistory FishManageHistory[]
 
   @@index([createdAt])
   @@index([updatedAt])
@@ -164,14 +160,12 @@ model ProductionUnit {
   capacity      String
   waterflowRate String
 
-  createdAt           DateTime              @default(now())
-  updatedAt           DateTime              @updatedAt
-  Farm                Farm?                 @relation(fields: [farmId], references: [id])
-  farmId              String?
-  production          production[]
-  SamplingEnvironment SamplingEnvironment[]
-  SamplingStock       SamplingStock[]
-  FishManageHistory   FishManageHistory[]
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  Farm              Farm?               @relation(fields: [farmId], references: [id])
+  farmId            String?
+  production        production[]
+  FishManageHistory FishManageHistory[]
 
   @@index([createdAt])
   @@index([updatedAt])
@@ -275,6 +269,26 @@ model WaterManageHistory {
   production   production? @relation(fields: [productionId], references: [id])
 }
 
+model WaterManageHistoryAvgrage {
+  id           Int         @id @default(autoincrement())
+  currentDate  String?
+  waterTemp    String?
+  DO           String?
+  TSS          String?
+  NH4          String?
+  NO3          String?
+  NO2          String?
+  ph           String?
+  visibility   String?
+  productionId Int?
+  production   production? @relation(fields: [productionId], references: [id])
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  @@index([createdAt])
+  @@index([updatedAt])
+}
+
 model FishManageHistory {
   id                Int             @id @default(autoincrement())
   fishFarmId        String
@@ -308,38 +322,39 @@ model FishManageHistory {
 }
 
 model production {
-  id                 Int                  @id @default(autoincrement())
-  fishFarmId         String
-  farm               Farm?                @relation(fields: [fishFarmId], references: [id])
-  productionUnitId   String
-  biomass            String?
-  fishCount          String?
-  batchNumberId      Int?
-  age                String?
-  meanLength         String?
-  meanWeight         String?
-  stockingDensityKG  String?
-  stockingDensityNM  String?
-  stockingLevel      String?
-  createdBy          Int? // Optional field, nullable foreign key
-  updatedBy          String?
-  createdAt          DateTime             @default(now())
-  updatedAt          DateTime             @updatedAt
-  organisationId     Int?
-  field              String?
-  waterTemp          String?
-  DO                 String?
-  TSS                String?
-  NH4                String?
-  NO3                String?
-  NO2                String?
-  ph                 String?
-  visibility         String?
-  organisation       Organisation?        @relation(fields: [organisationId], references: [id], onDelete: SetNull)
-  productionUnit     ProductionUnit?      @relation(fields: [productionUnitId], references: [id])
-  fishSupply         FishSupply?          @relation(fields: [batchNumberId], references: [id])
-  WaterManageHistory WaterManageHistory[]
-  FishManageHistory  FishManageHistory[]
+  id                        Int                         @id @default(autoincrement())
+  fishFarmId                String
+  farm                      Farm?                       @relation(fields: [fishFarmId], references: [id])
+  productionUnitId          String
+  biomass                   String?
+  fishCount                 String?
+  batchNumberId             Int?
+  age                       String?
+  meanLength                String?
+  meanWeight                String?
+  stockingDensityKG         String?
+  stockingDensityNM         String?
+  stockingLevel             String?
+  createdBy                 Int? // Optional field, nullable foreign key
+  updatedBy                 String?
+  createdAt                 DateTime                    @default(now())
+  updatedAt                 DateTime                    @updatedAt
+  organisationId            Int?
+  field                     String?
+  waterTemp                 String?
+  DO                        String?
+  TSS                       String?
+  NH4                       String?
+  NO3                       String?
+  NO2                       String?
+  ph                        String?
+  visibility                String?
+  organisation              Organisation?               @relation(fields: [organisationId], references: [id], onDelete: SetNull)
+  productionUnit            ProductionUnit?             @relation(fields: [productionUnitId], references: [id])
+  fishSupply                FishSupply?                 @relation(fields: [batchNumberId], references: [id])
+  WaterManageHistory        WaterManageHistory[]
+  FishManageHistory         FishManageHistory[]
+  WaterManageHistoryAvgrage WaterManageHistoryAvgrage[]
 
   @@index([createdAt])
   @@index([updatedAt])
@@ -356,48 +371,6 @@ model FarmManager {
   createdAt  DateTime     @default(now())
   updatedAt  DateTime     @updatedAt
   FishSupply FishSupply[]
-
-  @@index([createdAt])
-  @@index([updatedAt])
-}
-
-model SamplingEnvironment {
-  id               Int             @id @default(autoincrement())
-  fishFarmId       String
-  farm             Farm?           @relation(fields: [fishFarmId], references: [id])
-  productionUnitId String
-  date             String?
-  do               String?
-  ammonia          String?
-  TSS              String?
-  createdBy        Int? // Optional field, nullable foreign key
-  updatedBy        String?
-  createdAt        DateTime        @default(now())
-  updatedAt        DateTime        @updatedAt
-  organisationId   Int?
-  organisation     Organisation?   @relation(fields: [organisationId], references: [id], onDelete: SetNull)
-  productionUnit   ProductionUnit? @relation(fields: [productionUnitId], references: [id])
-
-  @@index([createdAt])
-  @@index([updatedAt])
-}
-
-model SamplingStock {
-  id               Int             @id @default(autoincrement())
-  fishFarmId       String
-  farm             Farm?           @relation(fields: [fishFarmId], references: [id])
-  productionUnitId String
-  biomass          String?
-  fishCount        String?
-  meanLength       String?
-  meanWeight       String?
-  createdBy        Int? // Optional field, nullable foreign key
-  updatedBy        String?
-  createdAt        DateTime        @default(now())
-  updatedAt        DateTime        @updatedAt
-  organisationId   Int?
-  organisation     Organisation?   @relation(fields: [organisationId], references: [id], onDelete: SetNull)
-  productionUnit   ProductionUnit? @relation(fields: [productionUnitId], references: [id])
 
   @@index([createdAt])
   @@index([updatedAt])

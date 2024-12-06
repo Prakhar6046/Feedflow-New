@@ -136,6 +136,7 @@ const FarmInformation: NextPage<Props> = ({
     };
     getFeedSupplyer();
   }, []);
+  console.log(errors);
 
   if (loading) {
     return <Loader />;
@@ -195,7 +196,6 @@ const FarmInformation: NextPage<Props> = ({
 
             {errors &&
               errors.farmAltitude &&
-              !watch("farmAltitude") &&
               errors.farmAltitude.type === "required" && (
                 <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
                   {validationMessage.required}
@@ -224,22 +224,16 @@ const FarmInformation: NextPage<Props> = ({
               }}
             />
 
-            {errors &&
-              errors.lat &&
-              !watch("lat") &&
-              errors.lat.type === "required" && (
-                <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
-                  {validationMessage.required}
-                </Typography>
-              )}
-            {errors &&
-              errors.lat &&
-              !watch("lat") &&
-              errors.lat.type === "pattern" && (
-                <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
-                  {validationMessage.NegativeNumberWithDot}
-                </Typography>
-              )}
+            {errors && errors.lat && errors.lat.type === "required" && (
+              <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                {validationMessage.required}
+              </Typography>
+            )}
+            {errors && errors.lat && errors.lat.type === "pattern" && (
+              <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                {validationMessage.NegativeNumberWithDot}
+              </Typography>
+            )}
           </Box>{" "}
           <Box mb={2} width={"100%"}>
             <TextField
@@ -256,22 +250,16 @@ const FarmInformation: NextPage<Props> = ({
               }}
             />
 
-            {errors &&
-              errors.lng &&
-              !watch("lng") &&
-              errors.lng.type === "required" && (
-                <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
-                  {validationMessage.required}
-                </Typography>
-              )}
-            {errors &&
-              errors.lng &&
-              !watch("lng") &&
-              errors.lng.type === "pattern" && (
-                <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
-                  {validationMessage.NegativeNumberWithDot}
-                </Typography>
-              )}
+            {errors && errors.lng && errors.lng.type === "required" && (
+              <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                {validationMessage.required}
+              </Typography>
+            )}
+            {errors && errors.lng && errors.lng.type === "pattern" && (
+              <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                {validationMessage.NegativeNumberWithDot}
+              </Typography>
+            )}
           </Box>
           <Box mb={2} width={"100%"}>
             <FormControl fullWidth className="form-input" focused>
@@ -429,8 +417,7 @@ const FarmInformation: NextPage<Props> = ({
                     {errors &&
                       errors.addressLine1 &&
                       errors.addressLine1.type === "required" &&
-                      (!watch("addressLine1") ||
-                        !addressInformation?.address) && (
+                      !addressInformation?.address && (
                         <Typography
                           variant="body2"
                           color="red"
@@ -475,7 +462,6 @@ const FarmInformation: NextPage<Props> = ({
                     />
                     {errors &&
                       errors.city &&
-                      !watch("city") &&
                       errors.city.type === "required" && (
                         <Typography
                           variant="body2"
@@ -488,7 +474,6 @@ const FarmInformation: NextPage<Props> = ({
                       )}
                     {errors &&
                       errors.city &&
-                      !watch("city") &&
                       errors.city.type === "pattern" && (
                         <Typography
                           variant="body2"
@@ -520,7 +505,6 @@ const FarmInformation: NextPage<Props> = ({
                     />
                     {errors &&
                       errors.province &&
-                      !watch("province") &&
                       errors.province.type === "required" && (
                         <Typography
                           variant="body2"
@@ -533,7 +517,6 @@ const FarmInformation: NextPage<Props> = ({
                       )}
                     {errors &&
                       errors.province &&
-                      !watch("province") &&
                       errors.province.type === "pattern" && (
                         <Typography
                           variant="body2"
@@ -564,7 +547,6 @@ const FarmInformation: NextPage<Props> = ({
                     />
                     {errors &&
                       errors.zipCode &&
-                      !watch("zipCode") &&
                       errors.zipCode.type === "required" && (
                         <Typography
                           variant="body2"
@@ -577,7 +559,6 @@ const FarmInformation: NextPage<Props> = ({
                       )}
                     {errors &&
                       errors.zipCode &&
-                      !watch("zipCode") &&
                       errors.zipCode.type === "pattern" && (
                         <Typography
                           variant="body2"
@@ -611,7 +592,6 @@ const FarmInformation: NextPage<Props> = ({
                     />
                     {errors &&
                       errors.country &&
-                      !watch("country") &&
                       errors.country.type === "required" && (
                         <Typography
                           variant="body2"
@@ -624,7 +604,6 @@ const FarmInformation: NextPage<Props> = ({
                       )}
                     {errors &&
                       errors.country &&
-                      !watch("country") &&
                       errors.country.type === "pattern" && (
                         <Typography
                           variant="body2"

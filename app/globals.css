@@ -499,3 +499,13 @@ label {
   .MuiFormControlLabel-label {
   color: #555555 !important;
 }
+
+
+.custom-date-time{
+  min-width: 250px !important;
+}
+
+.testyyyy > div{
+  padding-top: 0 !important;
+  overflow: visible !important;
+}

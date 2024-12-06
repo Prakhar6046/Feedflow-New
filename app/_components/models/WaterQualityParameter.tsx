@@ -21,7 +21,8 @@ import {
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { Dayjs } from "dayjs";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -133,7 +134,10 @@ const WaterQualityParameter: React.FC<Props> = ({
     try {
       let updatedData = data.water.map((data) => {
         if (data.date) {
-          return { ...data, date: data.date?.format("MM/DD/YYYY") };
+          return {
+            ...data,
+            date: data.date.format("YYYY-MM-DDTHH:mm:ssZ[Z]"),
+          };
         } else {
           return data;
         }
@@ -141,7 +145,7 @@ const WaterQualityParameter: React.FC<Props> = ({
 
       const payload = {
         waterAvg: updatedData[0],
-        listData: updatedData.filter((data, idx) => idx !== 0),
+        listData: updatedData.filter((_, idx) => idx !== 0),
       };
 
       const response = await fetch("/api/production/mange/waterQuality", {
@@ -390,43 +394,13 @@ const WaterQualityParameter: React.FC<Props> = ({
                         flexWrap: "nowrap",
                       }}
                     >
-                      {idx !== 0 && (
-                        <Grid
-                          xs
-                          item
-                          sx={{
-                            width: "fit-content",
-                            minWidth: 130,
-                          }}
-                        >
-                          <Box
-                            display={"flex"}
-                            gap={2}
-                            alignItems={"center"}
-                            justifyContent={"center"}
-                            position={"relative"}
-                            mt={1.5}
-                            fontWeight={600}
-                          >
-                            {/* <TextField
-                              type="text"
-                              className="form-input"
-                              // disabled={idx === 0 ? true : false}
-                              sx={{ width: "100%" }}
-                              disabled
-                            /> */}
-
-                            <Typography variant="subtitle1">Sample:</Typography>
-                          </Box>
-                        </Grid>
-                      )}
                       {!item.showDate && (
                         <Grid
                           item
                           xs
                           sx={{
                             width: "fit-content",
-                            minWidth: 130,
+                            minWidth: 135,
                           }}
                         >
                           <Box width={"100%"}>
@@ -496,7 +470,7 @@ const WaterQualityParameter: React.FC<Props> = ({
                           item
                           sx={{
                             width: "fit-content",
-                            minWidth: 130,
+                            minWidth: 135,
                           }}
                         >
                           <Box width={"100%"}>
@@ -604,49 +578,58 @@ const WaterQualityParameter: React.FC<Props> = ({
                           item
                           sx={{
                             width: "fit-content",
-                            minWidth: 130,
+                            minWidth: 270,
                           }}
                         >
                           <LocalizationProvider dateAdapter={AdapterDayjs}>
-                            <Controller
-                              name={`water.${idx}.date`}
-                              control={control}
-                              rules={{ required: "This field is required." }}
-                              render={({ field, fieldState: { error } }) => (
-                                <>
-                                  <DatePicker
-                                    {...field}
-                                    label="Current Date * "
-                                    className="form-input"
-                                    sx={{
-                                      width: "100%",
-                                    }}
-                                    onChange={(date) => {
-                                      if (date && date.isValid()) {
-                                        field.onChange(date); // Set a valid Dayjs date
-                                        setValue(`water.${idx}.date`, date);
-                                      } else {
-                                        field.onChange(null); // Clear the field if date is invalid
-                                      }
-                                    }}
-                                    slotProps={{
-                                      textField: { focused: true },
-                                    }}
-                                    value={field.value || null}
-                                  />
-                                  {error && (
-                                    <Typography
-                                      variant="body2"
-                                      color="red"
-                                      fontSize={13}
-                                      mt={0.5}
-                                    >
-                                      {error.message}
-                                    </Typography>
+                            <Box className="testyyyy">
+                              <DemoContainer components={["DateTimePicker"]}>
+                                <Controller
+                                  name={`water.${idx}.date`}
+                                  control={control}
+                                  rules={{
+                                    required: "This field is required.",
+                                  }}
+                                  render={({
+                                    field,
+                                    fieldState: { error },
+                                  }) => (
+                                    <Box>
+                                      <DateTimePicker
+                                        {...field}
+                                        label="Current Date * "
+                                        className="form-input custom-date-time"
+                                        sx={{
+                                          width: "100%",
+                                        }}
+                                        onChange={(date) => {
+                                          if (date && date.isValid()) {
+                                            field.onChange(date); // Set a valid Dayjs date
+                                            setValue(`water.${idx}.date`, date);
+                                          } else {
+                                            field.onChange(null); // Clear the field if date is invalid
+                                          }
+                                        }}
+                                        slotProps={{
+                                          textField: { focused: true },
+                                        }}
+                                        value={field.value || null}
+                                      />
+                                      {error && (
+                                        <Typography
+                                          variant="body2"
+                                          color="red"
+                                          fontSize={13}
+                                          mt={0.5}
+                                        >
+                                          {error.message}
+                                        </Typography>
+                                      )}
+                                    </Box>
                                   )}
-                                </>
-                              )}
-                            />
+                                />
+                              </DemoContainer>
+                            </Box>
                           </LocalizationProvider>
                         </Grid>
                       )}
@@ -656,7 +639,7 @@ const WaterQualityParameter: React.FC<Props> = ({
                         item
                         sx={{
                           width: "fit-content",
-                          minWidth: 130,
+                          minWidth: 135,
                         }}
                       >
                         <Box
@@ -732,7 +715,7 @@ const WaterQualityParameter: React.FC<Props> = ({
                         item
                         sx={{
                           width: "fit-content",
-                          minWidth: 130,
+                          minWidth: 135,
                         }}
                       >
                         <Box
@@ -770,7 +753,7 @@ const WaterQualityParameter: React.FC<Props> = ({
                               pl: 1,
                             }}
                           >
-                            %mg/L
+                            mg/L
                           </Typography>
                         </Box>
 
@@ -808,7 +791,7 @@ const WaterQualityParameter: React.FC<Props> = ({
                         item
                         sx={{
                           width: "fit-content",
-                          minWidth: 130,
+                          minWidth: 135,
                         }}
                       >
                         <Box
@@ -885,7 +868,7 @@ const WaterQualityParameter: React.FC<Props> = ({
                         item
                         sx={{
                           width: "fit-content",
-                          minWidth: 130,
+                          minWidth: 135,
                         }}
                       >
                         <Box
@@ -961,7 +944,7 @@ const WaterQualityParameter: React.FC<Props> = ({
                         item
                         sx={{
                           width: "fit-content",
-                          minWidth: 130,
+                          minWidth: 135,
                         }}
                       >
                         <Box
@@ -1037,7 +1020,7 @@ const WaterQualityParameter: React.FC<Props> = ({
                         item
                         sx={{
                           width: "fit-content",
-                          minWidth: 130,
+                          minWidth: 135,
                         }}
                       >
                         <Box
@@ -1113,7 +1096,7 @@ const WaterQualityParameter: React.FC<Props> = ({
                         item
                         sx={{
                           width: "fit-content",
-                          minWidth: 130,
+                          minWidth: 135,
                         }}
                       >
                         <Box
@@ -1170,7 +1153,7 @@ const WaterQualityParameter: React.FC<Props> = ({
                         item
                         sx={{
                           width: "fit-content",
-                          minWidth: 130,
+                          minWidth: 135,
                         }}
                       >
                         <Box

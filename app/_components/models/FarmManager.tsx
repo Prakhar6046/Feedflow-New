@@ -262,7 +262,7 @@ const TransferModal: React.FC<Props> = ({
         id: 0,
         fishFarm: selectedProduction.fishFarmId,
         productionUnit:
-          field === "Harvest" || field === "Mortalities"
+          field === "Stock" || field === "Harvest" || field === "Mortalities"
             ? selectedProduction.productionUnitId
             : "",
         biomass: "",
@@ -650,6 +650,7 @@ const TransferModal: React.FC<Props> = ({
                                   slotProps={{
                                     input: {
                                       readOnly:
+                                        item.field === "Stock" ||
                                         item.field === "Harvest" ||
                                         item.field === "Mortalities" ||
                                         idx === 0
@@ -766,6 +767,7 @@ const TransferModal: React.FC<Props> = ({
                                   slotProps={{
                                     input: {
                                       readOnly:
+                                        item.field === "Stock" ||
                                         item.field === "Harvest" ||
                                         item.field === "Mortalities" ||
                                         idx === 0
@@ -811,6 +813,13 @@ const TransferModal: React.FC<Props> = ({
                                           <MenuItem
                                             value={String(unit.id)}
                                             key={unit.id}
+                                            disabled={
+                                              item.field === "Transfer" &&
+                                              selectedProduction.productionUnitId ===
+                                                unit.id
+                                                ? true
+                                                : false
+                                            }
                                           >
                                             {unit.name}
                                           </MenuItem>
@@ -1847,7 +1856,14 @@ const TransferModal: React.FC<Props> = ({
                       onClick={() => handleCloseAnchor(field)}
                       key={i}
                       disabled={
-                        watchedFields[1]?.field === "Stock"
+                        selectedProduction?.batchNumberId &&
+                        selectedProduction?.biomass &&
+                        selectedProduction?.fishCount &&
+                        selectedProduction?.meanLength &&
+                        selectedProduction?.meanWeight &&
+                        field === "Stock"
+                          ? true
+                          : watchedFields[1]?.field === "Stock"
                           ? true
                           : field === "Stock" &&
                             selectedProduction?.batchNumberId &&
@@ -1855,7 +1871,6 @@ const TransferModal: React.FC<Props> = ({
                           ? true
                           : field === "Harvest" ||
                             field === "Mortalities" ||
-                            field === "Re-Stock" ||
                             field === "Transfer" ||
                             field === "Sample"
                           ? watchedFields[0].count &&

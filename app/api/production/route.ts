@@ -19,6 +19,7 @@ export const GET = async (request: NextRequest) => {
         fishSupply: true,
         WaterManageHistory: true,
         FishManageHistory: true,
+        WaterManageHistoryAvgrage: true,
       },
       orderBy: {
         id: "asc",
