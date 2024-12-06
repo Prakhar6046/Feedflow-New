@@ -560,7 +560,13 @@ export default function UserTable({ users }: Props) {
                               my: 0.5,
                             }}
                           />
-                          <MenuItem onClick={handleDeleteUser}>
+                          <MenuItem
+                            disabled={
+                              JSON.parse(loggedUser ? loggedUser : "")?.role ===
+                              "ADMIN"
+                            }
+                            onClick={handleDeleteUser}
+                          >
                             <Stack
                               display="flex"
                               gap={1.2}

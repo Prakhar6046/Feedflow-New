@@ -196,21 +196,35 @@ const FarmInformation: NextPage<Props> = ({
             )}
           </Box>
           <Box mb={2} width={"100%"}>
-            <TextField
-              label="Farm Altitude *"
-              type="text"
-              className="form-input"
-              // focused={altitude ? true : false}
-              {...register("farmAltitude", {
-                required: true,
-                pattern: validationPattern.numbersWithDot,
-              })}
-              focused
-              sx={{
-                width: "100%",
-              }}
-            />
-
+            <Box position={"relative"}>
+              <TextField
+                label="Farm Altitude *"
+                type="text"
+                className="form-input"
+                // focused={altitude ? true : false}
+                {...register("farmAltitude", {
+                  required: true,
+                  pattern: validationPattern.numbersWithDot,
+                })}
+                focused
+                sx={{
+                  width: "100%",
+                }}
+              />
+              <Typography
+                variant="body1"
+                color="#555555AC"
+                sx={{
+                  position: "absolute",
+                  right: 13,
+                  top: "30%",
+                  backgroundColor: "white",
+                  paddingInline: "5px",
+                }}
+              >
+                m
+              </Typography>
+            </Box>
             {errors &&
               errors.farmAltitude &&
               !watch("farmAltitude") &&

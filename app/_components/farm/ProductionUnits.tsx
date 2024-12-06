@@ -440,7 +440,29 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                       >
                         <Box display={"flex"} gap={2} alignItems={"center"}>
                           <Box position={"relative"}>
-                            <TextField
+                            <Controller
+                              name={`productionUnits.${index}.capacity`} // Dynamic field name
+                              control={control}
+                              defaultValue="" // Set default value if necessary
+                              render={({ field }) => (
+                                <TextField
+                                  {...field} // Spread field props
+                                  label="Capacity *"
+                                  type="text"
+                                  focused
+                                  className="form-input capacity-input"
+                                  sx={{
+                                    width: "100%",
+                                    minWidth: 150,
+                                  }}
+                                />
+                              )}
+                              rules={{
+                                required: true,
+                                pattern: validationPattern.numbersWithDot,
+                              }} // Add validation
+                            />
+                            {/* <TextField
                               label="Capacity *"
                               type="text"
                               className="form-input capacity-input"
@@ -451,8 +473,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                                   pattern: validationPattern.numbersWithDot,
                                 }
                               )}
-                              focused
-                            />
+                            /> */}
 
                             <Typography
                               variant="body1"
