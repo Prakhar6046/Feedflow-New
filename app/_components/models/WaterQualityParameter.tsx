@@ -270,7 +270,9 @@ const WaterQualityParameter: React.FC<Props> = ({
         updatedVisibility += Number(field.visibility);
       });
 
-      const totalFields = watchedFields.length - 1;
+      const totalFields =
+        watchedFields.filter((data) => data.waterTemp).length - 1;
+
       const totalWaterTempAvg = updatedWaterTemp / totalFields;
       const totalDo = updatedDo / totalFields;
       const totalTSS = updatedTSS / totalFields;
@@ -328,16 +330,6 @@ const WaterQualityParameter: React.FC<Props> = ({
     isWater,
     selectedProduction,
   ]);
-
-  // useEffect(() => {
-  //   watchedFields.map((_, i) =>
-  //     setValue(
-  //       `water.${i}.waterTemp`,
-
-  //       watchedFields[1]?.waterTemp
-  //     )
-  //   );
-  // }, [watchedFields[1]?.waterTemp]);
 
   return (
     <Modal
