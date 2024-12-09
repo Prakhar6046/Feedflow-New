@@ -157,3 +157,19 @@ export const convertDate = (isoString: string): string => {
     return "Invalid Date";
   }
 };
+export const removeLocalItem = (itemName: string) => {
+  localStorage.removeItem(itemName);
+};
+
+export const setLocalItem = (itemName: string, data: any) => {
+  localStorage.setItem(itemName, JSON.stringify(data));
+};
+export const getLocalItem = (itemName: string) => {
+  const data = localStorage.getItem(itemName);
+  try {
+    return data ? JSON.parse(data) : null;
+  } catch (error) {
+    console.error("Error parsing localStorage item:", error);
+    return null;
+  }
+};

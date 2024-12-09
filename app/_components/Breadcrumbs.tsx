@@ -12,6 +12,7 @@ import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { getCookie, setCookie } from "cookies-next";
 import { useDebounce } from "../hooks/useDebounce";
 import SearchBar from "./SearchBar";
+import { getLocalItem, removeLocalItem, setLocalItem } from "../_lib/utils";
 interface Props {
   heading: string;
   buttonName?: string;
@@ -58,6 +59,8 @@ export default function BasicBreadcrumbs({
     } else {
       setCookie("activeStep", 0);
     }
+    removeLocalItem("farmData");
+    removeLocalItem("farmProductionUnits");
     router.push(String(buttonRoute));
   };
 
@@ -75,9 +78,9 @@ export default function BasicBreadcrumbs({
   // };
   const handleRememberSort = () => {
     if (!isSort) {
-      localStorage.setItem(pathName, JSON.stringify(sortvalue));
+      setLocalItem(pathName, sortvalue);
     } else {
-      localStorage.removeItem(pathName);
+      removeLocalItem(pathName);
     }
   };
 
@@ -96,7 +99,7 @@ export default function BasicBreadcrumbs({
   }, [role]);
   useEffect(() => {
     if (pathName) {
-      setSortDataFromLocal(localStorage.getItem(pathName));
+      setSortDataFromLocal(getLocalItem(pathName));
     }
   }, [pathName]);
 

@@ -1,4 +1,9 @@
-import { waterQualityFields } from "@/app/_lib/utils";
+import {
+  getLocalItem,
+  removeLocalItem,
+  setLocalItem,
+  waterQualityFields,
+} from "@/app/_lib/utils";
 import * as validationPattern from "@/app/_lib/utils/validationPatterns/index";
 import * as validationMessage from "@/app/_lib/utils/validationsMessage/index";
 import { Farm } from "@/app/_typeModels/Farm";
@@ -76,7 +81,6 @@ const WaterQualityParameter: React.FC<Props> = ({
   farms,
   productions,
 }) => {
-  const formData = localStorage.getItem("formData");
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathName = usePathname();
@@ -85,6 +89,7 @@ const WaterQualityParameter: React.FC<Props> = ({
   const [anchorEl, setAnchorEl] = useState(null);
   const [isApiCallInProgress, setIsApiCallInProgress] =
     useState<boolean>(false);
+  const [formData, setFormData] = useState<any>();
 
   const {
     register,
@@ -162,8 +167,8 @@ const WaterQualityParameter: React.FC<Props> = ({
         toast.success(res.message);
         setOpen(false);
         router.push("/dashboard/production");
-        localStorage.removeItem("productionData");
-        localStorage.removeItem("formData");
+        removeLocalItem("productionData");
+        removeLocalItem("formData");
         reset();
         router.refresh();
       }
@@ -183,8 +188,8 @@ const WaterQualityParameter: React.FC<Props> = ({
     setOpen(false);
     const params = new URLSearchParams(searchParams);
     params.delete("isWater");
-    localStorage.removeItem("productionData");
-    localStorage.removeItem("formData");
+    removeLocalItem("productionData");
+    removeLocalItem("formData");
     router.replace(`/dashboard/production`);
   };
   const openAnchor = Boolean(anchorEl);
@@ -312,9 +317,9 @@ const WaterQualityParameter: React.FC<Props> = ({
     }
 
     if (isWater && watchedFields[0]?.id) {
-      localStorage.setItem("formData", JSON.stringify(watchedFields));
+      setLocalItem("formData", watchedFields);
     } else {
-      localStorage.removeItem("formData");
+      removeLocalItem("formData");
     }
   }, [
     watchedFields.map((field) => field.waterTemp).join(","),
@@ -330,6 +335,13 @@ const WaterQualityParameter: React.FC<Props> = ({
     isWater,
     selectedProduction,
   ]);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const data = getLocalItem("formData");
+      setFormData(data);
+    }
+  }, []);
 
   return (
     <Modal

@@ -1,4 +1,9 @@
-import { productionMangeFields } from "@/app/_lib/utils";
+import {
+  getLocalItem,
+  productionMangeFields,
+  removeLocalItem,
+  setLocalItem,
+} from "@/app/_lib/utils";
 import * as validationPattern from "@/app/_lib/utils/validationPatterns/index";
 import * as validationMessage from "@/app/_lib/utils/validationsMessage/index";
 import { Farm } from "@/app/_typeModels/Farm";
@@ -81,7 +86,6 @@ const TransferModal: React.FC<Props> = ({
   batches,
   productions,
 }) => {
-  const formData = localStorage.getItem("formData");
   const searchParams = useSearchParams();
   const isFish = searchParams.get("isFish");
   const router = useRouter();
@@ -99,6 +103,7 @@ const TransferModal: React.FC<Props> = ({
   const [isMeanLengthCal, setIsMeanLengthCal] = useState<boolean>(false);
   const [avgOfMeanWeight, setAvgOfMeanWeight] = useState<Number>();
   const [avgOfMeanLength, setAvgOfMeanLength] = useState<Number>();
+  const [formData, setFormData] = useState<any>();
   const [selectedMeanWeightId, setSelectedMeanWeightId] = useState<String>("");
   const [selectedMeanLengthId, setSelectedMeanLengthId] = useState<String>("");
   const [isApiCallInProgress, setIsApiCallInProgress] =
@@ -212,8 +217,8 @@ const TransferModal: React.FC<Props> = ({
           toast.dismiss();
           toast.success(res.message);
           setOpen(false);
-          localStorage.removeItem("productionData");
-          localStorage.removeItem("formData");
+          removeLocalItem("productionData");
+          removeLocalItem("formData");
           router.push("/dashboard/production");
           reset();
           router.refresh();
@@ -248,8 +253,8 @@ const TransferModal: React.FC<Props> = ({
     setOpen(false);
     const params = new URLSearchParams(searchParams);
     params.delete("isFish");
-    localStorage.removeItem("productionData");
-    localStorage.removeItem("formData");
+    removeLocalItem("productionData");
+    removeLocalItem("formData");
     router.replace(`/dashboard/production`);
   };
   const openAnchor = Boolean(anchorEl);
@@ -298,8 +303,8 @@ const TransferModal: React.FC<Props> = ({
       const params = new URLSearchParams(searchParams);
       params.delete("isFish");
       router.replace(`/dashboard/production`);
-      localStorage.removeItem("productionData");
-      localStorage.removeItem("formData");
+      removeLocalItem("productionData");
+      removeLocalItem("formData");
     }
   };
   const handleCheckUnitSelected = (idx: number) => {
@@ -308,6 +313,13 @@ const TransferModal: React.FC<Props> = ({
       toast.error("Please select production unit first");
     }
   };
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const data = getLocalItem("formData");
+      setFormData(data);
+    }
+  }, []);
   useEffect(() => {
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
@@ -366,9 +378,11 @@ const TransferModal: React.FC<Props> = ({
       ];
       setValue("manager", data);
     }
+
     if (formData) {
       setValue("manager", JSON.parse(formData));
     }
+
     setSelectedFarm(
       formData
         ? JSON.parse(formData)[0]?.fishFarm
@@ -403,14 +417,17 @@ const TransferModal: React.FC<Props> = ({
             updatedCount = Number(field.count);
             setValue(`manager.0.meanLength`, field.meanLength);
             setValue(`manager.0.meanWeight`, field.meanWeight);
+
             setValue(
               `manager.0.stockingDensityKG`,
               Number(field.stockingDensityKG).toFixed(2)
             );
+
             setValue(
               `manager.0.stockingDensityNM`,
               Number(field.stockingDensityNM).toFixed(2)
             );
+
             setValue(`manager.0.batchNumber`, field.batchNumber);
           }
 
@@ -491,9 +508,9 @@ const TransferModal: React.FC<Props> = ({
       setValue(`manager.0.count`, updatedCount.toString());
     }
     if (isFish && watchedFields[0]?.id) {
-      localStorage.setItem("formData", JSON.stringify(watchedFields));
+      setLocalItem("formData", watchedFields);
     } else {
-      localStorage.removeItem("formData");
+      removeLocalItem("formData");
     }
   }, [
     watchedFields.map((field) => field.biomass).join(","),

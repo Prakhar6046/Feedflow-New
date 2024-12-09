@@ -34,6 +34,7 @@ import Loader from "../Loader";
 import FishManageHistoryModal from "../models/FishManageHistory";
 import WaterManageHistoryModal from "../models/WaterManageHistory";
 import WaterQualityParameter from "../models/WaterQualityParameter";
+import { getLocalItem, setLocalItem } from "@/app/_lib/utils";
 interface Props {
   productions: Production[];
   tableData: any;
@@ -115,7 +116,7 @@ export default function ProductionTable({
       router.replace(newPath);
       setOpenWaterQualityModal(true);
     }
-    localStorage.setItem("productionData", JSON.stringify(selectedProd));
+    setLocalItem("productionData", selectedProd);
     setSelectedProduction(selectedProd);
   };
 
@@ -324,7 +325,7 @@ export default function ProductionTable({
 
   useEffect(() => {
     if (pathName) {
-      setSortDataFromLocal(localStorage.getItem(pathName));
+      setSortDataFromLocal(getLocalItem(pathName));
     }
   }, [pathName]);
   useEffect(() => {
@@ -436,7 +437,7 @@ export default function ProductionTable({
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const storedData = localStorage.getItem("productionData");
+      const storedData = getLocalItem("productionData");
       if (storedData) {
         setProduction(storedData);
       }

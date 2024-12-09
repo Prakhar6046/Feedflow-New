@@ -26,6 +26,7 @@ import {
 } from "@/app/_lib/utils/tableHeadData";
 import { breadcrumsAction } from "@/lib/features/breadcrum/breadcrumSlice";
 import { getCookie } from "cookies-next";
+import { getLocalItem } from "@/app/_lib/utils";
 
 interface Props {
   feeds: FeedSupply[];
@@ -49,7 +50,7 @@ export default function FeedTable({ feeds }: Props) {
 
   useEffect(() => {
     if (pathName) {
-      setSortDataFromLocal(localStorage.getItem(pathName));
+      setSortDataFromLocal(getLocalItem(pathName));
     }
   }, [pathName]);
 

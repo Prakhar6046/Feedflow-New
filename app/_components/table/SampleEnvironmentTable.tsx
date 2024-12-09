@@ -25,6 +25,7 @@ import { getCookie } from "cookies-next";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import SamplingEnvironmentCal from "../models/SamplingEnvironmentCal";
+import { getLocalItem } from "@/app/_lib/utils";
 interface Props {
   tableData: any;
   farms?: Farm[];
@@ -54,7 +55,7 @@ export default function SampleEnvironmentTable({
 
   useEffect(() => {
     if (pathName) {
-      setSortDataFromLocal(localStorage.getItem(pathName));
+      setSortDataFromLocal(getLocalItem(pathName));
     }
   }, [pathName]);
   const handleClick = (

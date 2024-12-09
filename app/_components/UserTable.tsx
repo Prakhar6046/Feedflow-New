@@ -22,7 +22,7 @@ import {
 } from "@mui/material";
 import Image from "next/image";
 import toast from "react-hot-toast";
-import { readableDate } from "../_lib/utils";
+import { getLocalItem, readableDate } from "../_lib/utils";
 import { SingleUser } from "../_typeModels/User";
 import {
   organisationTableHead,
@@ -50,6 +50,7 @@ export default function UserTable({ users }: Props) {
   const router = useRouter();
   const pathName = usePathname();
   const loggedUser = getCookie("logged-user");
+  const loginUser = loggedUser && JSON.parse(loggedUser);
   const role = useAppSelector(selectRole);
   // const sortDataFromLocal = localStorage?.getItem(pathName);
   const [selectedUser, setSelectedUser] = useState<SingleUser | null>(null);
@@ -269,7 +270,7 @@ export default function UserTable({ users }: Props) {
 
   useEffect(() => {
     if (pathName) {
-      setSortDataFromLocal(localStorage.getItem(pathName));
+      setSortDataFromLocal(getLocalItem(pathName));
     }
   }, [pathName]);
 
@@ -560,7 +561,12 @@ export default function UserTable({ users }: Props) {
                               my: 0.5,
                             }}
                           />
-                          <MenuItem onClick={handleDeleteUser}>
+                          <MenuItem
+                            disabled={
+                              loginUser?.role === "ADMIN" ? true : false
+                            }
+                            onClick={handleDeleteUser}
+                          >
                             <Stack
                               display="flex"
                               gap={1.2}

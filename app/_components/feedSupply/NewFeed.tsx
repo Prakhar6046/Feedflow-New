@@ -156,16 +156,16 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
     }
     return data.json();
   };
-  const calCarbohydrate = () => {
-    const nutritionalGuarantee = getValues().nutritionalGuarantee;
+
+  useEffect(() => {
     if (
-      Object.keys(nutritionalGuarantee).length &&
-      nutritionalGuarantee?.moisture?.kg &&
-      nutritionalGuarantee?.crudeProtein?.kg &&
-      nutritionalGuarantee?.crudeFat?.kg &&
-      nutritionalGuarantee?.crudeAsh?.kg &&
-      nutritionalGuarantee?.crudeFiber?.kg
+      watch("nutritionalGuarantee.moisture.kg") &&
+      watch("nutritionalGuarantee.crudeProtein.kg") &&
+      watch("nutritionalGuarantee.crudeFat.kg") &&
+      watch("nutritionalGuarantee.crudeAsh.kg") &&
+      watch("nutritionalGuarantee.crudeFiber.kg")
     ) {
+      const nutritionalGuarantee = getValues().nutritionalGuarantee;
       const value =
         100 -
         Number(nutritionalGuarantee?.moisture?.kg) +
@@ -175,13 +175,14 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
         Number(nutritionalGuarantee?.crudeAsh?.kg);
 
       setValue("nutritionalGuarantee.carbohydrates.kg", String(value));
-    } else {
-      toast.dismiss();
-      toast.error(
-        "Please fill moisture, crude Protein, crude Fat, crude fiber and crude Ash"
-      );
     }
-  };
+  }, [
+    watch("nutritionalGuarantee.moisture.kg"),
+    watch("nutritionalGuarantee.crudeProtein.kg"),
+    watch("nutritionalGuarantee.crudeFat.kg"),
+    watch("nutritionalGuarantee.crudeAsh.kg"),
+    watch("nutritionalGuarantee.crudeFiber.kg"),
+  ]);
   useEffect(() => {
     setLoading(true);
     const feedSupplierGetter = async () => {
@@ -2820,25 +2821,6 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
                           </Typography>
                         )}
                     </Box>
-
-                    <Button
-                      type="button"
-                      variant="contained"
-                      sx={{
-                        background: "#06a19b",
-                        color: "#fff",
-                        fontWeight: 600,
-                        padding: "6px 16px",
-                        width: "fit-content",
-                        textTransform: "capitalize",
-                        borderRadius: "8px",
-                        border: "1px solid #06A19B",
-                        minWidth: 90,
-                      }}
-                      onClick={calCarbohydrate}
-                    >
-                      Calculate
-                    </Button>
 
                     <FormControl
                       fullWidth

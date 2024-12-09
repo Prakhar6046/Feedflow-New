@@ -29,6 +29,7 @@ import {
   usersTableHead,
   usersTableHeadMember,
 } from "../_lib/utils/tableHeadData";
+import { getLocalItem } from "../_lib/utils";
 
 interface Props {
   organisations: SingleOrganisation[];
@@ -56,7 +57,7 @@ export default function BasicTable({ organisations, userRole }: Props) {
 
   useEffect(() => {
     if (pathName) {
-      setSortDataFromLocal(localStorage.getItem(pathName));
+      setSortDataFromLocal(getLocalItem(pathName));
     }
   }, [pathName]);
   const handleClick = (

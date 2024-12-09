@@ -25,6 +25,7 @@ import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import Loader from "../Loader";
 import { getCookie, setCookie } from "cookies-next";
 import { SingleUser } from "@/app/_typeModels/User";
+import { getLocalItem, setLocalItem } from "@/app/_lib/utils";
 // import MapComponent from "./MapComponent";
 const MapComponent = dynamic(() => import("./MapComponent"), { ssr: false });
 interface Props {
@@ -51,6 +52,7 @@ const FarmInformation: NextPage<Props> = ({
     reset,
   } = useForm<Farm>();
   const loggedUser: any = getCookie("logged-user");
+  const formData = getLocalItem("farmData");
   const user = JSON.parse(loggedUser);
   const [selectedSwtich, setSelectedSwtich] = useState<string>("address");
   const [altitude, setAltitude] = useState<String>("");
@@ -77,12 +79,12 @@ const FarmInformation: NextPage<Props> = ({
   };
   const onSubmit: SubmitHandler<Farm> = (data) => {
     dispatch(farmAction.updateFarm(data));
-
+    setLocalItem("farmData", data);
     setActiveStep(2);
     // setCookie("activeStep", 2);
   };
   useEffect(() => {
-    if (editFarm) {
+    if (editFarm && !formData) {
       setValue("name", editFarm?.name);
       setValue(
         "farmAltitude",
@@ -107,7 +109,24 @@ const FarmInformation: NextPage<Props> = ({
         setValue("mangerId", managerIds);
       }
     }
-  }, [editFarm]);
+  }, [editFarm, formData]);
+  useEffect(() => {
+    if (formData) {
+      const data = JSON.parse(formData);
+      setValue("name", data?.name);
+      setValue("farmAltitude", data?.farmAltitude),
+        setValue("addressLine1", data?.addressLine1);
+      setValue("addressLine2", data?.addressLine2 || "");
+      setValue("city", data?.city);
+      setValue("country", data?.country);
+      setValue("zipCode", data?.zipCode);
+      setValue("province", data?.province);
+      setValue("fishFarmer", data?.fishFarmer);
+      setValue("lat", data?.lat);
+      setValue("lng", data?.lng);
+      setValue("mangerId", data?.mangerId);
+    }
+  }, [formData]);
   useEffect(() => {
     if (addressInformation && useAddress) {
       setValue("addressLine1", addressInformation.address);
@@ -178,21 +197,35 @@ const FarmInformation: NextPage<Props> = ({
             )}
           </Box>
           <Box mb={2} width={"100%"}>
-            <TextField
-              label="Farm Altitude *"
-              type="text"
-              className="form-input"
-              // focused={altitude ? true : false}
-              {...register("farmAltitude", {
-                required: true,
-                pattern: validationPattern.numbersWithDot,
-              })}
-              focused
-              sx={{
-                width: "100%",
-              }}
-            />
-
+            <Box position={"relative"}>
+              <TextField
+                label="Farm Altitude *"
+                type="text"
+                className="form-input"
+                // focused={altitude ? true : false}
+                {...register("farmAltitude", {
+                  required: true,
+                  pattern: validationPattern.numbersWithDot,
+                })}
+                focused
+                sx={{
+                  width: "100%",
+                }}
+              />
+              <Typography
+                variant="body1"
+                color="#555555AC"
+                sx={{
+                  position: "absolute",
+                  right: 13,
+                  top: "30%",
+                  backgroundColor: "white",
+                  paddingInline: "5px",
+                }}
+              >
+                m
+              </Typography>
+            </Box>
             {errors &&
               errors.farmAltitude &&
               errors.farmAltitude.type === "required" && (

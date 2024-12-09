@@ -42,6 +42,7 @@ import { v4 as uuidv4 } from "uuid";
 import CalculateVolume from "../models/CalculateVolume";
 import { deleteCookie, getCookie } from "cookies-next";
 import { px } from "framer-motion";
+import { getLocalItem, removeLocalItem, setLocalItem } from "@/app/_lib/utils";
 interface Props {
   editFarm?: any;
   setActiveStep: (val: number) => void;
@@ -60,6 +61,7 @@ const unitsTypes = [
 const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
   uuidv4();
   const router = useRouter();
+  const formProductionUnitsData = getLocalItem("farmProductionUnits");
   const userData: any = getCookie("logged-user");
   const dispatch = useAppDispatch();
   const farm = useAppSelector(selectFarm);
@@ -218,6 +220,8 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
 
         if (responseData.status) {
           router.push("/dashboard/farm");
+          removeLocalItem("farmData");
+          removeLocalItem("farmProductionUnits");
         }
       } else {
         toast.error("Please fill out the all feilds");
@@ -244,10 +248,12 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
   }, [calculatedValue]);
 
   useEffect(() => {
-    if (editFarm) {
+    if (editFarm && !formProductionUnitsData) {
       setValue("productionUnits", editFarm?.productionUnits);
+    } else if (formProductionUnitsData) {
+      setValue("productionUnits", JSON.parse(formProductionUnitsData));
     }
-  }, []);
+  }, [formProductionUnitsData]);
 
   return (
     <Stack>
@@ -435,7 +441,29 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                       >
                         <Box display={"flex"} gap={2} alignItems={"center"}>
                           <Box position={"relative"}>
-                            <TextField
+                            <Controller
+                              name={`productionUnits.${index}.capacity`} // Dynamic field name
+                              control={control}
+                              defaultValue="" // Set default value if necessary
+                              render={({ field }) => (
+                                <TextField
+                                  {...field} // Spread field props
+                                  label="Capacity *"
+                                  type="text"
+                                  focused
+                                  className="form-input capacity-input"
+                                  sx={{
+                                    width: "100%",
+                                    minWidth: 150,
+                                  }}
+                                />
+                              )}
+                              rules={{
+                                required: true,
+                                pattern: validationPattern.numbersWithDot,
+                              }} // Add validation
+                            />
+                            {/* <TextField
                               label="Capacity *"
                               type="text"
                               className="form-input capacity-input"
@@ -446,8 +474,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                                   pattern: validationPattern.numbersWithDot,
                                 }
                               )}
-                              focused
-                            />
+                            /> */}
 
                             <Typography
                               variant="body1"
@@ -705,7 +732,13 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                   border: "1px solid #06A19B",
                 }}
                 // onClick={() => setCookie("activeStep", 1)}
-                onClick={() => setActiveStep(1)}
+                onClick={() => {
+                  setActiveStep(1),
+                    setLocalItem(
+                      "farmProductionUnits",
+                      watch("productionUnits")
+                    );
+                }}
               >
                 Previous
               </Button>

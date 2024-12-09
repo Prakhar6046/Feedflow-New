@@ -1,4 +1,5 @@
 "use client";
+import { getLocalItem } from "@/app/_lib/utils";
 import { Farm } from "@/app/_typeModels/Farm";
 import { Production } from "@/app/_typeModels/production";
 import { SampleEnvironment, SampleStock } from "@/app/_typeModels/sample";
@@ -50,7 +51,7 @@ export default function SampleStockTable({
 
   useEffect(() => {
     if (pathName) {
-      setSortDataFromLocal(localStorage.getItem(pathName));
+      setSortDataFromLocal(getLocalItem(pathName));
     }
   }, [pathName]);
   const handleClick = (
