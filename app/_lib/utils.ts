@@ -99,3 +99,61 @@ export const formattedDate = (date: string) => {
     timeZone: "UTC", // Adjust this to your desired timezone if needed
   });
 };
+
+// Format the date and time
+const options: any = {
+  year: "numeric",
+  month: "short",
+  day: "numeric",
+  hour: "numeric",
+  minute: "numeric",
+  second: "numeric",
+  hour12: true,
+};
+
+export const sanitizeIsoString = (isoString: string): string => {
+  // If the string contains both offset and Z, remove the Z
+  if (isoString.includes("+") && isoString.endsWith("Z")) {
+    return isoString.slice(0, -1); // Remove the trailing Z
+  }
+  return isoString;
+};
+
+export const convertDate = (isoString: string): string => {
+  try {
+    const sanitizedString = sanitizeIsoString(isoString);
+    const date = new Date(sanitizedString);
+
+    if (isNaN(date.getTime())) {
+      throw new Error("Invalid Date");
+    }
+
+    // Format the date manually
+    const months = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
+    const month = months[date.getMonth()];
+    const day = date.getDate();
+    const year = date.getFullYear();
+    let hours = date.getHours();
+    const minutes = date.getMinutes().toString().padStart(2, "0");
+    const seconds = date.getSeconds().toString().padStart(2, "0");
+    const ampm = hours >= 12 ? "PM" : "AM";
+    hours = hours % 12 || 12; // Convert to 12-hour format
+
+    return `${month} ${day}, ${year}, ${hours}:${minutes}:${seconds} ${ampm}`;
+  } catch (error) {
+    return "Invalid Date";
+  }
+};

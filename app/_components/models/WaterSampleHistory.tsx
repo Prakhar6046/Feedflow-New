@@ -1,4 +1,4 @@
-import { formattedDate } from "@/app/_lib/utils";
+import { convertDate, formattedDate } from "@/app/_lib/utils";
 import {
   FarmGroup,
   FishManageHistoryGroup,
@@ -234,34 +234,30 @@ const WaterSampleHistoryModal: React.FC<Props> = ({
                           >
                             {farm &&
                               farm.units[0].WaterSampleHistory &&
-                              farm.units[0].WaterSampleHistory.map(
-                                (unit, i) => {
-                                  return (
-                                    <Typography
-                                      key={i}
-                                      variant="h6"
-                                      sx={{
-                                        fontWeight: 500,
-                                        fontSize: 14,
-                                        // backgroundColor: "#F5F6F8",
-                                        padding: `${
-                                          farm.units[0].createdAt
-                                            ? "8px 12px 8px 0"
-                                            : "19px 12px 19px 0"
-                                        }`,
-                                        margin: "8px 0",
-                                        // marginBottom: "10px",
-                                        // padding: "21px",
-                                        textWrap: "nowrap",
-                                      }}
-                                    >
-                                      {formattedDate(
-                                        String(farm.units[0].createdAt)
-                                      )}
-                                    </Typography>
-                                  );
-                                }
-                              )}
+                              farm.units[0].WaterSampleHistory.map((un, i) => {
+                                return (
+                                  <Typography
+                                    key={i}
+                                    variant="h6"
+                                    sx={{
+                                      fontWeight: 500,
+                                      fontSize: 14,
+                                      // backgroundColor: "#F5F6F8",
+                                      padding: `${
+                                        farm.units[0].createdAt
+                                          ? "8px 12px 8px 0"
+                                          : "19px 12px 19px 0"
+                                      }`,
+                                      margin: "8px 0",
+                                      // marginBottom: "10px",
+                                      // padding: "21px",
+                                      textWrap: "nowrap",
+                                    }}
+                                  >
+                                    {convertDate(String(un.currentDate))}
+                                  </Typography>
+                                );
+                              })}
                           </TableCell>
                           <TableCell
                             className="table-padding"
