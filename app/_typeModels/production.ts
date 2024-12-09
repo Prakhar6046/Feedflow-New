@@ -231,5 +231,18 @@ export interface WaterManageHistoryGroup {
       visibility: String;
       productionId: Number;
     }[];
+    WaterSampleHistory?: {
+      id: Number;
+      currentDate: String;
+      waterTemp: String;
+      DO: String;
+      TSS: String;
+      NH4: String;
+      NO3: String;
+      NO2: String;
+      ph: String;
+      visibility: String;
+      productionId: Number;
+    }[];
   }[];
 }

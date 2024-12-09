@@ -136,7 +136,6 @@ const FarmInformation: NextPage<Props> = ({
     };
     getFeedSupplyer();
   }, []);
-  console.log(errors);
 
   if (loading) {
     return <Loader />;

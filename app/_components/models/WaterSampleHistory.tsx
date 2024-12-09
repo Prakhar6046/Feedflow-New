@@ -23,9 +23,7 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import React, { useState } from "react";
-import WaterSampleHistoryModal from "./WaterSampleHistory";
-import { waterSampleHistoryHead } from "@/app/_lib/utils/tableHeadData";
+import React from "react";
 const style = {
   position: "absolute" as "absolute",
   top: "50%",
@@ -41,7 +39,7 @@ interface Props {
   tableData: any;
   productions: Production[];
 }
-const WaterManageHistoryModal: React.FC<Props> = ({
+const WaterSampleHistoryModal: React.FC<Props> = ({
   setOpen,
   open,
   tableData,
@@ -51,10 +49,9 @@ const WaterManageHistoryModal: React.FC<Props> = ({
     setOpen(false);
   };
 
-  const [order, setOrder] = useState("asc");
-  const [orderBy, setOrderBy] = useState("Farm");
-  const [isWaterSampleHistory, setIsWaterSampleHistory] =
-    useState<boolean>(false);
+  const [order, setOrder] = React.useState("asc");
+  const [orderBy, setOrderBy] = React.useState("Farm");
+
   function EnhancedTableHead(data: any) {
     const { order, orderBy, onRequestSort } = data;
     const createSortHandler =
@@ -146,6 +143,7 @@ const WaterManageHistoryModal: React.FC<Props> = ({
       fishManageHistory: item.FishManageHistory,
       waterManageHistory: item.WaterManageHistory,
       WaterManageHistoryAvgrage: item.WaterManageHistoryAvgrage,
+      WaterSampleHistory: item.WaterManageHistory,
     });
 
     return result;
@@ -155,10 +153,9 @@ const WaterManageHistoryModal: React.FC<Props> = ({
     <Modal
       open={open}
       onClose={handleClose}
-      aria-labelledby="parent-modal-titles"
-      aria-describedby="parent-modal-descriptions"
+      aria-labelledby="child-modal-title-1"
+      aria-describedby="child-modal-description-1"
       className="modal-positioning"
-      data-bs-backdrop="static"
       sx={{
         px: 5,
         overflowY: "auto",
@@ -221,95 +218,23 @@ const WaterManageHistoryModal: React.FC<Props> = ({
                           }}
                         >
                           <TableCell
-                            sx={{
-                              color: "#555555",
-                              borderBottomColor: "#ececec",
-                              borderBottomWidth: 2,
-                              fontWeight: 700,
-                              paddingLeft: {
-                                lg: 10,
-                                md: 7,
-                                xs: 4,
-                              },
-                              textWrap: "nowrap",
-                            }}
-                            component="th"
-                            scope="row"
-                          >
-                            {farm.units.map((unit, i) => {
-                              return (
-                                <Typography
-                                  key={i}
-                                  variant="h6"
-                                  sx={{
-                                    fontWeight: 500,
-                                    fontSize: 14,
-                                    display: "flex",
-                                    alignItems: "center",
-                                    gap: 1,
-                                    padding: "8px 12px",
-                                    margin: "8px 0",
-                                    textWrap: "nowrap",
-                                  }}
-                                >
-                                  {unit.productionUnit.name}
-                                  <Tooltip title="View history" placement="top">
-                                    <Box
-                                      sx={{
-                                        pr: 3,
-                                      }}
-                                    >
-                                      <Button
-                                        onClick={() =>
-                                          setIsWaterSampleHistory(true)
-                                        }
-                                        className=""
-                                        type="button"
-                                        variant="contained"
-                                        style={{
-                                          border: "1px solid #06A19B",
-                                        }}
-                                        sx={{
-                                          background: "transparent",
-                                          fontWeight: "bold",
-                                          padding: 0.25,
-
-                                          borderRadius: "4px",
-                                          alignItems: "center",
-                                          minWidth: "fit-content",
-                                        }}
-                                      >
-                                        <svg
-                                          xmlns="http://www.w3.org/2000/svg"
-                                          width="1em"
-                                          height="1em"
-                                          viewBox="0 0 24 24"
-                                        >
-                                          <path
-                                            fill="#06A19B"
-                                            d="M21 11.11V5a2 2 0 0 0-2-2h-4.18C14.4 1.84 13.3 1 12 1s-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14a2 2 0 0 0 2 2h6.11c1.26 1.24 2.98 2 4.89 2c3.87 0 7-3.13 7-7c0-1.91-.76-3.63-2-4.89M12 3c.55 0 1 .45 1 1s-.45 1-1 1s-1-.45-1-1s.45-1 1-1M5 19V5h2v2h10V5h2v4.68c-.91-.43-1.92-.68-3-.68H7v2h4.1c-.6.57-1.06 1.25-1.42 2H7v2h2.08c-.05.33-.08.66-.08 1c0 1.08.25 2.09.68 3zm11 2c-2.76 0-5-2.24-5-5s2.24-5 5-5s5 2.24 5 5s-2.24 5-5 5m.5-4.75l2.86 1.69l-.75 1.22L15 17v-5h1.5z"
-                                          />
-                                        </svg>
-                                      </Button>
-                                    </Box>
-                                  </Tooltip>
-                                </Typography>
-                              );
-                            })}
-                          </TableCell>{" "}
-                          <TableCell
-                            className="table-padding"
+                            // className="table-padding"
                             sx={{
                               borderBottomWidth: 2,
                               borderBottomColor: "#ececec",
                               color: "#555555",
                               fontWeight: 500,
-                              pl: 0,
+                              paddingLeft: {
+                                lg: 10,
+                                md: 7,
+                                xs: 4,
+                              },
+                              pr: 0,
                             }}
                           >
                             {farm &&
-                              farm.units[0].WaterManageHistoryAvgrage &&
-                              farm.units[0].WaterManageHistoryAvgrage.map(
+                              farm.units[0].WaterSampleHistory &&
+                              farm.units[0].WaterSampleHistory.map(
                                 (unit, i) => {
                                   return (
                                     <Typography
@@ -318,7 +243,7 @@ const WaterManageHistoryModal: React.FC<Props> = ({
                                       sx={{
                                         fontWeight: 500,
                                         fontSize: 14,
-                                        backgroundColor: "#F5F6F8",
+                                        // backgroundColor: "#F5F6F8",
                                         padding: `${
                                           farm.units[0].createdAt
                                             ? "8px 12px 8px 0"
@@ -337,7 +262,7 @@ const WaterManageHistoryModal: React.FC<Props> = ({
                                   );
                                 }
                               )}
-                          </TableCell>{" "}
+                          </TableCell>
                           <TableCell
                             className="table-padding"
                             sx={{
@@ -349,8 +274,8 @@ const WaterManageHistoryModal: React.FC<Props> = ({
                             }}
                           >
                             {farm &&
-                              farm.units[0].WaterManageHistoryAvgrage &&
-                              farm.units[0].WaterManageHistoryAvgrage.map(
+                              farm.units[0].WaterSampleHistory &&
+                              farm.units[0].WaterSampleHistory.map(
                                 (unit, i) => {
                                   return (
                                     <Typography
@@ -359,7 +284,7 @@ const WaterManageHistoryModal: React.FC<Props> = ({
                                       sx={{
                                         fontWeight: 500,
                                         fontSize: 14,
-                                        backgroundColor: "#F5F6F8",
+                                        // backgroundColor: "#F5F6F8",
                                         padding: `${
                                           unit?.waterTemp
                                             ? "8px 12px 8px 0"
@@ -388,8 +313,8 @@ const WaterManageHistoryModal: React.FC<Props> = ({
                             }}
                           >
                             {farm &&
-                              farm.units[0].WaterManageHistoryAvgrage &&
-                              farm.units[0].WaterManageHistoryAvgrage.map(
+                              farm.units[0].WaterSampleHistory &&
+                              farm.units[0].WaterSampleHistory.map(
                                 (unit, i) => {
                                   return (
                                     <Typography
@@ -398,7 +323,7 @@ const WaterManageHistoryModal: React.FC<Props> = ({
                                       sx={{
                                         fontWeight: 500,
                                         fontSize: 14,
-                                        backgroundColor: "#F5F6F8",
+                                        // backgroundColor: "#F5F6F8",
                                         padding: `${
                                           unit.DO
                                             ? "8px 12px 8px 0"
@@ -426,8 +351,8 @@ const WaterManageHistoryModal: React.FC<Props> = ({
                             }}
                           >
                             {farm &&
-                              farm.units[0].WaterManageHistoryAvgrage &&
-                              farm.units[0].WaterManageHistoryAvgrage.map(
+                              farm.units[0].WaterSampleHistory &&
+                              farm.units[0].WaterSampleHistory.map(
                                 (unit, i) => {
                                   return (
                                     <Typography
@@ -441,7 +366,7 @@ const WaterManageHistoryModal: React.FC<Props> = ({
                                             ? "8px 12px 8px 0"
                                             : "19px 12px 19px 0"
                                         }`,
-                                        backgroundColor: "#F5F6F8",
+                                        // backgroundColor: "#F5F6F8",
                                         margin: "8px 0",
 
                                         textWrap: "nowrap",
@@ -464,8 +389,8 @@ const WaterManageHistoryModal: React.FC<Props> = ({
                             }}
                           >
                             {farm &&
-                              farm.units[0].WaterManageHistoryAvgrage &&
-                              farm.units[0].WaterManageHistoryAvgrage.map(
+                              farm.units[0].WaterSampleHistory &&
+                              farm.units[0].WaterSampleHistory.map(
                                 (unit, i) => {
                                   return (
                                     <Typography
@@ -474,7 +399,7 @@ const WaterManageHistoryModal: React.FC<Props> = ({
                                       sx={{
                                         fontWeight: 500,
                                         fontSize: 14,
-                                        backgroundColor: "#F5F6F8",
+                                        // backgroundColor: "#F5F6F8",
                                         padding: `${
                                           unit?.NH4
                                             ? "8px 12px 8px 0"
@@ -504,8 +429,8 @@ const WaterManageHistoryModal: React.FC<Props> = ({
                             }}
                           >
                             {farm &&
-                              farm.units[0].WaterManageHistoryAvgrage &&
-                              farm.units[0].WaterManageHistoryAvgrage.map(
+                              farm.units[0].WaterSampleHistory &&
+                              farm.units[0].WaterSampleHistory.map(
                                 (unit, i) => {
                                   return (
                                     <Typography
@@ -514,7 +439,7 @@ const WaterManageHistoryModal: React.FC<Props> = ({
                                       sx={{
                                         fontWeight: 500,
                                         fontSize: 14,
-                                        backgroundColor: "#F5F6F8",
+                                        // backgroundColor: "#F5F6F8",
                                         padding: `${
                                           unit?.NO3
                                             ? "8px 12px 8px 0"
@@ -543,8 +468,8 @@ const WaterManageHistoryModal: React.FC<Props> = ({
                             }}
                           >
                             {farm &&
-                              farm.units[0].WaterManageHistoryAvgrage &&
-                              farm.units[0].WaterManageHistoryAvgrage.map(
+                              farm.units[0].WaterSampleHistory &&
+                              farm.units[0].WaterSampleHistory.map(
                                 (unit, i) => {
                                   return (
                                     <Typography
@@ -553,7 +478,7 @@ const WaterManageHistoryModal: React.FC<Props> = ({
                                       sx={{
                                         fontWeight: 500,
                                         fontSize: 14,
-                                        backgroundColor: "#F5F6F8",
+                                        // backgroundColor: "#F5F6F8",
                                         padding: `${
                                           unit?.NO2
                                             ? "8px 12px 8px 0"
@@ -582,8 +507,8 @@ const WaterManageHistoryModal: React.FC<Props> = ({
                             }}
                           >
                             {farm &&
-                              farm.units[0].WaterManageHistoryAvgrage &&
-                              farm.units[0].WaterManageHistoryAvgrage.map(
+                              farm.units[0].WaterSampleHistory &&
+                              farm.units[0].WaterSampleHistory.map(
                                 (unit, i) => {
                                   return (
                                     <Typography
@@ -592,7 +517,7 @@ const WaterManageHistoryModal: React.FC<Props> = ({
                                       sx={{
                                         fontWeight: 500,
                                         fontSize: 14,
-                                        backgroundColor: "#F5F6F8",
+                                        // backgroundColor: "#F5F6F8",
                                         padding: `${
                                           unit?.ph
                                             ? "8px 12px 8px 0"
@@ -621,8 +546,8 @@ const WaterManageHistoryModal: React.FC<Props> = ({
                             }}
                           >
                             {farm &&
-                              farm.units[0].WaterManageHistoryAvgrage &&
-                              farm.units[0].WaterManageHistoryAvgrage.map(
+                              farm.units[0].WaterSampleHistory &&
+                              farm.units[0].WaterSampleHistory.map(
                                 (unit, i) => {
                                   return (
                                     <Typography
@@ -631,7 +556,7 @@ const WaterManageHistoryModal: React.FC<Props> = ({
                                       sx={{
                                         fontWeight: 500,
                                         fontSize: 14,
-                                        backgroundColor: "#F5F6F8",
+                                        // backgroundColor: "#F5F6F8",
                                         padding: `${
                                           unit?.visibility
                                             ? "8px 12px 8px 0"
@@ -659,16 +584,9 @@ const WaterManageHistoryModal: React.FC<Props> = ({
             </Table>
           </TableContainer>
         </Paper>
-
-        <WaterSampleHistoryModal
-          open={isWaterSampleHistory}
-          setOpen={setIsWaterSampleHistory}
-          tableData={waterSampleHistoryHead}
-          productions={productions}
-        />
       </Stack>
     </Modal>
   );
 };
 
-export default WaterManageHistoryModal;
+export default WaterSampleHistoryModal;

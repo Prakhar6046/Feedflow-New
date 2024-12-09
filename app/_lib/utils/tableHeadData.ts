@@ -365,6 +365,83 @@ export const fishTableHead = [
     label: "Actions",
   },
 ];
+export const fishManageHistoryHead = [
+  {
+    id: "unit",
+    numeric: false,
+    disablePadding: true,
+    label: "Unit",
+  },
+  {
+    id: "date",
+    numeric: false,
+    disablePadding: true,
+    label: "Date",
+  },
+  {
+    id: "status",
+    numeric: false,
+    disablePadding: true,
+    label: "Status",
+  },
+  {
+    id: "Batch #",
+    numeric: false,
+    disablePadding: true,
+    label: "Batch #",
+  },
+  {
+    id: "Age",
+    numeric: false,
+    disablePadding: true,
+    label: "Age",
+  },
+  {
+    id: "Fish",
+    numeric: false,
+    disablePadding: true,
+    label: "Fish (n)",
+  },
+
+  {
+    id: "Biomass",
+    numeric: true,
+    disablePadding: true,
+    label: "Biomass (Kg)",
+  },
+
+  {
+    id: "Mean weight",
+    numeric: false,
+    disablePadding: true,
+    label: "Mean weight (g)",
+  },
+  {
+    id: "Mean length",
+    numeric: false,
+    disablePadding: true,
+    label: "Mean length (mm)",
+  },
+  {
+    id: "Stocking Density",
+    numeric: false,
+    disablePadding: true,
+    label: `Stocking density (kg/${"m\u00B3"})`,
+  },
+
+  {
+    id: "Stocking density",
+    numeric: false,
+    disablePadding: true,
+    label: `Stocking density (n/${"m\u00B3"})`,
+  },
+  {
+    id: "Stocking level",
+    numeric: false,
+    disablePadding: true,
+    label: "Stocking level",
+  },
+];
 export const farmManagerFishHead = [
   {
     id: "Farm",
@@ -655,251 +732,6 @@ export const farmManagerWaterHeadMember = [
     label: "Visibility",
   },
 ];
-export const sampleEnvironmentHead = [
-  {
-    id: "Farm",
-    numeric: false,
-    disablePadding: true,
-    label: "Farm",
-  },
-  {
-    id: "unit",
-    numeric: false,
-    disablePadding: true,
-    label: "unit",
-  },
-  {
-    id: "Date",
-    numeric: false,
-    disablePadding: true,
-    label: "Date",
-  },
-  {
-    id: "Do",
-    numeric: false,
-    disablePadding: true,
-    label: "Do",
-  },
-  {
-    id: "Ammonia",
-    numeric: false,
-    disablePadding: true,
-    label: "Ammonia",
-  },
-  {
-    id: "TSS",
-    numeric: false,
-    disablePadding: true,
-    label: "TSS",
-  },
-
-  {
-    id: "action",
-    numeric: false,
-    disablePadding: true,
-    label: "Actions",
-  },
-];
-export const sampleEnvironmentHeadMember = [
-  {
-    id: "Farm",
-    numeric: false,
-    disablePadding: true,
-    label: "Farm",
-  },
-  {
-    id: "unit",
-    numeric: false,
-    disablePadding: true,
-    label: "unit",
-  },
-  {
-    id: "Date",
-    numeric: false,
-    disablePadding: true,
-    label: "Date",
-  },
-  {
-    id: "Do",
-    numeric: false,
-    disablePadding: true,
-    label: "Do",
-  },
-  {
-    id: "Ammonia",
-    numeric: false,
-    disablePadding: true,
-    label: "Ammonia",
-  },
-  {
-    id: "TSS",
-    numeric: false,
-    disablePadding: true,
-    label: "TSS",
-  },
-];
-export const sampleStockHead = [
-  {
-    id: "Farm",
-    numeric: false,
-    disablePadding: true,
-    label: "Farm",
-  },
-  {
-    id: "unit",
-    numeric: false,
-    disablePadding: true,
-    label: "unit",
-  },
-  {
-    id: "Biomass",
-    numeric: true,
-    disablePadding: true,
-    label: "Biomass (Kg)",
-  },
-  {
-    id: "count",
-    numeric: true,
-    disablePadding: true,
-    label: "Count",
-  },
-  {
-    id: "Mean weight",
-    numeric: false,
-    disablePadding: true,
-    label: "Mean weight (g)",
-  },
-  {
-    id: "Mean length",
-    numeric: false,
-    disablePadding: true,
-    label: "Mean length (mm)",
-  },
-
-  {
-    id: "action",
-    numeric: false,
-    disablePadding: true,
-    label: "Actions",
-  },
-];
-export const sampleStockHeadMember = [
-  {
-    id: "Farm",
-    numeric: false,
-    disablePadding: true,
-    label: "Farm",
-  },
-  {
-    id: "unit",
-    numeric: false,
-    disablePadding: true,
-    label: "unit",
-  },
-  {
-    id: "Biomass",
-    numeric: true,
-    disablePadding: true,
-    label: "Biomass (Kg)",
-  },
-  {
-    id: "count",
-    numeric: true,
-    disablePadding: true,
-    label: "Count",
-  },
-  {
-    id: "Mean weight",
-    numeric: false,
-    disablePadding: true,
-    label: "Mean weight (g)",
-  },
-  {
-    id: "Mean length",
-    numeric: false,
-    disablePadding: true,
-    label: "Mean length (mm)",
-  },
-];
-
-export const fishManageHistoryHead = [
-  {
-    id: "unit",
-    numeric: false,
-    disablePadding: true,
-    label: "Unit",
-  },
-  {
-    id: "date",
-    numeric: false,
-    disablePadding: true,
-    label: "Date",
-  },
-  {
-    id: "status",
-    numeric: false,
-    disablePadding: true,
-    label: "Status",
-  },
-  {
-    id: "Batch #",
-    numeric: false,
-    disablePadding: true,
-    label: "Batch #",
-  },
-  {
-    id: "Age",
-    numeric: false,
-    disablePadding: true,
-    label: "Age",
-  },
-  {
-    id: "Fish",
-    numeric: false,
-    disablePadding: true,
-    label: "Fish (n)",
-  },
-
-  {
-    id: "Biomass",
-    numeric: true,
-    disablePadding: true,
-    label: "Biomass (Kg)",
-  },
-
-  {
-    id: "Mean weight",
-    numeric: false,
-    disablePadding: true,
-    label: "Mean weight (g)",
-  },
-  {
-    id: "Mean length",
-    numeric: false,
-    disablePadding: true,
-    label: "Mean length (mm)",
-  },
-  {
-    id: "Stocking Density",
-    numeric: false,
-    disablePadding: true,
-    label: `Stocking density (kg/${"m\u00B3"})`,
-  },
-
-  {
-    id: "Stocking density",
-    numeric: false,
-    disablePadding: true,
-    label: `Stocking density (n/${"m\u00B3"})`,
-  },
-  {
-    id: "Stocking level",
-    numeric: false,
-    disablePadding: true,
-    label: "Stocking level",
-  },
-];
-
 export const waterManageHistoryHead = [
   {
     id: "unit",
@@ -907,6 +739,66 @@ export const waterManageHistoryHead = [
     disablePadding: true,
     label: "unit",
   },
+  {
+    id: "Date",
+    numeric: false,
+    disablePadding: true,
+    label: "Date",
+  },
+
+  {
+    id: "water temp",
+    numeric: false,
+    disablePadding: true,
+    label: "Water Temp",
+  },
+  {
+    id: "Dissolved oxygen",
+    numeric: false,
+    disablePadding: true,
+    label: "Dissolved oxygen",
+  },
+  {
+    id: "tss",
+    numeric: false,
+    disablePadding: true,
+    label: "Total Suspened Solids(TSS)",
+  },
+
+  {
+    id: "nh4",
+    numeric: true,
+    disablePadding: true,
+    label: "Ammonia (NH₄)",
+  },
+
+  {
+    id: "no3",
+    numeric: false,
+    disablePadding: true,
+    label: "Nitrate (NO₃⁻)",
+  },
+  {
+    id: "no2",
+    numeric: false,
+    disablePadding: true,
+    label: "Nitrite (NO₂⁻)",
+  },
+  {
+    id: "ph",
+    numeric: false,
+    disablePadding: true,
+    label: "pH",
+  },
+
+  {
+    id: "visibility",
+    numeric: false,
+    disablePadding: true,
+    label: "Visibility",
+  },
+];
+export const waterSampleHistoryHead = [
   {
     id: "Date",
     numeric: false,

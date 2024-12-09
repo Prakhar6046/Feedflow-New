@@ -1,5 +1,9 @@
 "use client";
 import TransferModal from "@/app/_components/models/FarmManager";
+import {
+  fishManageHistoryHead,
+  waterManageHistoryHead,
+} from "@/app/_lib/utils/tableHeadData";
 import { Farm } from "@/app/_typeModels/Farm";
 import { FarmGroup, Production } from "@/app/_typeModels/production";
 import { breadcrumsAction } from "@/lib/features/breadcrum/breadcrumSlice";
@@ -10,7 +14,6 @@ import {
   Button,
   FormControl,
   FormControlLabel,
-  FormLabel,
   Radio,
   RadioGroup,
   TableSortLabel,
@@ -27,14 +30,10 @@ import TableRow from "@mui/material/TableRow";
 import { getCookie, setCookie } from "cookies-next";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import WaterQualityParameter from "../models/WaterQualityParameter";
-import FishManageHistoryModal from "../models/FishManageHistory";
-import {
-  fishManageHistoryHead,
-  waterManageHistoryHead,
-} from "@/app/_lib/utils/tableHeadData";
-import WaterManageHistoryModal from "../models/WaterManageHistory";
 import Loader from "../Loader";
+import FishManageHistoryModal from "../models/FishManageHistory";
+import WaterManageHistoryModal from "../models/WaterManageHistory";
+import WaterQualityParameter from "../models/WaterQualityParameter";
 interface Props {
   productions: Production[];
   tableData: any;
@@ -49,17 +48,18 @@ export default function ProductionTable({
   batches,
 }: Props) {
   const router = useRouter();
-  const production = localStorage.getItem("productionData");
+
   const dispatch = useAppDispatch();
   const pathName = usePathname();
   const role = useAppSelector(selectRole);
   const searchParams = useSearchParams();
   const isFish = searchParams.get("isFish");
   const isWater = searchParams.get("isWater");
+  const [production, setProduction] = useState<any>();
 
   const [selectedView, setSelectedView] = useState<string>();
   const [selectedProduction, setSelectedProduction] = useState<any>(
-    production ? JSON.parse(production) : null
+    production ?? null
   );
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null
@@ -79,6 +79,7 @@ export default function ProductionTable({
     useState<boolean>(false);
   const [isWaterManageHistory, setIsWaterManageHistory] =
     useState<boolean>(false);
+
   const [selectedUnitId, setSelectedUnitId] = useState<String>();
   const handleFishManageHistory = (unit: any) => {
     setSelectedUnitId(unit.productionUnit.id);
@@ -267,7 +268,8 @@ export default function ProductionTable({
 
   const handleTableView = (value: string) => {
     setLoading(true);
-    setSelectedView(value), setCookie("productionCurrentView", value);
+    setSelectedView(value);
+    setCookie("productionCurrentView", value);
     router.refresh();
     setTimeout(() => {
       setLoading(false);
@@ -333,6 +335,7 @@ export default function ProductionTable({
       setCookie("productionCurrentView", "fish");
     }
   }, [getCookie("productionCurrentView")]);
+
   useEffect(() => {
     if (sortDataFromLocal) {
       const data = JSON.parse(sortDataFromLocal);
@@ -418,19 +421,27 @@ export default function ProductionTable({
       }
     }
   }, [sortDataFromLocal]);
-  useEffect(() => {
-    if (sortDataFromLocal) {
-      const data = JSON.parse(sortDataFromLocal);
-      setOrder(data.direction);
-      setOrderBy(data.column);
-    }
-  }, [sortDataFromLocal]);
+  // useEffect(() => {
+  //   if (sortDataFromLocal) {
+  //     const data = JSON.parse(sortDataFromLocal);
+  //     setOrder(data.direction);
+  //     setOrderBy(data.column);
+  //   }
+  // }, [sortDataFromLocal]);
   useEffect(() => {
     if (productions && !sortDataFromLocal) {
       setProductionData(productions);
     }
   }, [productions]);
 
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const storedData = localStorage.getItem("productionData");
+      if (storedData) {
+        setProduction(storedData);
+      }
+    }
+  }, []);
   useEffect(() => {
     router.refresh();
   }, [router]);
@@ -566,7 +577,6 @@ export default function ProductionTable({
                                     textWrap: "nowrap",
                                   }}
                                 >
-                                  {" "}
                                   {unit.productionUnit.name}
                                   <Tooltip title="View history" placement="top">
                                     <Box
@@ -1047,9 +1057,9 @@ export default function ProductionTable({
                                           <path
                                             fill="none"
                                             stroke="currentColor"
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                            stroke-width="1"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth="1"
                                             d="M6.008 12h-.01M11 16.042c.463.153.908.329 1.31.61m0 0A3.95 3.95 0 0 1 14 19.885a.117.117 0 0 1-.118.116c-2.917-.013-4.224-.507-4.773-1.322L8 16.857c-2.492-.503-4.782-2.094-6-4.774c3-6.597 12.5-6.597 15.5 0m-5.19 4.57c2.17-.66 4.105-2.184 5.19-4.57m-5.19-4.569A3.95 3.95 0 0 0 14 4.282c0-.826-4.308.342-4.89 1.206L8 7.31m9.5 4.773c.333-.66 2.1-2.969 4.5-2.969c-.833.825-2.2 3.959-1 5.938c-1.2 0-3-2.309-3.5-2.969"
                                             color="currentColor"
                                           />

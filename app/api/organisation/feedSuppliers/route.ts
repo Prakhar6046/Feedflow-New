@@ -5,18 +5,6 @@ export const GET = async (request: NextRequest) => {
   try {
     const searchParams = request.nextUrl.searchParams;
     const organisationId = searchParams.get("organisationId");
-    // console.log(organisationId);
-
-    // const organisation = await prisma.organisation.findUnique({
-    //   where: { id: Number(organisationId) },
-    // });
-    // if (!organisation) {
-    //   return new NextResponse(
-    //     JSON.stringify({ status: false, message: "Organisation not found" }),
-    //     { status: 404 }
-    //   );
-    // }
-
     const hasFeedSupplierOrg = await prisma.organisation.findMany({
       where: { organisationType: "Feed Supplier" },
     });
