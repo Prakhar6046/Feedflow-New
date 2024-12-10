@@ -241,6 +241,7 @@ const WaterQualityParameter: React.FC<Props> = ({
         : selectedProduction?.fishFarmId
     ); // Set the selected farm when manager is selected
   }, [selectedProduction]);
+
   useEffect(() => {
     if (selectedProduction) {
       const index0WaterTemp = 0;
