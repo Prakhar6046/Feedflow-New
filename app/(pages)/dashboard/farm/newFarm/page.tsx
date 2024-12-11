@@ -19,7 +19,7 @@ export default async function Page() {
         ]}
       />
 
-      <NewFarm farmMembers={farmMembers.data.users} />
+      <NewFarm farmMembers={farmMembers?.data?.users} />
     </>
   );
 }

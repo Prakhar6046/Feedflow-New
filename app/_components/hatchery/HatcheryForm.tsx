@@ -49,7 +49,7 @@ function HatcheryForm({
           width: "100%",
           mt: 2,
         }}
-        focusednpm
+        focused
         // focused={true}
         // value={userData?.data.email ?? "Demo@gmail.com"}
       />

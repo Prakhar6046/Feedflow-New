@@ -342,7 +342,7 @@ export default function AddNewUser({ organisations }: Props) {
                 </Box>
 
                 <Box mb={2} width={"100%"}>
-                  <FormControl fullWidth className="form-input">
+                  <FormControl fullWidth className="form-input" focused>
                     <InputLabel
                       id="demo-simple-select-label"
                       className="user-info"

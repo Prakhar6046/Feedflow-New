@@ -256,6 +256,7 @@ const TransferModal: React.FC<Props> = ({
     removeLocalItem("productionData");
     removeLocalItem("formData");
     router.replace(`/dashboard/production`);
+    toast.dismiss();
   };
   const openAnchor = Boolean(anchorEl);
   const handleClick = (event: any) => {
@@ -1149,6 +1150,12 @@ const TransferModal: React.FC<Props> = ({
                                 {...register(`manager.${idx}.biomass`, {
                                   required: true,
                                   pattern: validationPattern.numbersWithDot,
+
+                                  onChange: (e) =>
+                                    Number(e.target.value) &&
+                                    clearErrors(
+                                      `manager.${idx}.stockingDensityNM`
+                                    ),
                                 })}
                                 onClick={() => handleCheckUnitSelected(idx)}
                                 focused

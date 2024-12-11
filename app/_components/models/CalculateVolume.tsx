@@ -79,6 +79,7 @@ const CalculateVolume: React.FC<Props> = ({
     setHeigthError(false);
     setRadiusError(false);
   };
+
   const handleCalculate = () => {
     if (
       lengthError ||
@@ -188,6 +189,55 @@ const CalculateVolume: React.FC<Props> = ({
   const handleBlur = (field: any, setError: any) => {
     setError(field === "");
   };
+
+  useEffect(() => {
+    if (length) {
+      setLengthError(false);
+    } else {
+      setLengthError(true);
+    }
+  }, [length]);
+
+  useEffect(() => {
+    if (width) {
+      setWidthError(false);
+    } else {
+      setWidthError(true);
+    }
+  }, [width]);
+
+  useEffect(() => {
+    if (depth) {
+      setDepthError(false);
+    } else {
+      setDepthError(true);
+    }
+  }, [depth]);
+
+  useEffect(() => {
+    if (heigth) {
+      setHeigthError(false);
+    } else {
+      setHeigthError(true);
+    }
+  }, [heigth]);
+
+  useEffect(() => {
+    if (area) {
+      setAreaError(false);
+    } else {
+      setAreaError(true);
+    }
+  }, [area]);
+
+  useEffect(() => {
+    if (radius) {
+      setRadiusError(false);
+    } else {
+      setRadiusError(true);
+    }
+  }, [radius]);
+
   return (
     <Modal
       open={open}
