@@ -233,14 +233,12 @@ const WaterQualityParameter: React.FC<Props> = ({
       setValue("water", data);
     }
     if (formData) {
-      setValue("water", JSON.parse(formData));
+      setValue("water", formData);
     }
     setSelectedFarm(
-      formData
-        ? JSON.parse(formData)[0]?.fishFarm
-        : selectedProduction?.fishFarmId
+      formData ? formData[0]?.fishFarm : selectedProduction?.fishFarmId
     ); // Set the selected farm when manager is selected
-  }, [selectedProduction]);
+  }, [selectedProduction, formData]);
 
   useEffect(() => {
     if (selectedProduction) {
@@ -316,11 +314,12 @@ const WaterQualityParameter: React.FC<Props> = ({
         "water.0.visibility",
       ]);
     }
-
-    if (isWater && watchedFields[0]?.id) {
-      setLocalItem("formData", watchedFields);
-    } else {
-      removeLocalItem("formData");
+    if (watchedFields[0]?.id) {
+      if (isWater && watchedFields[0]?.id) {
+        setLocalItem("formData", watchedFields);
+      } else {
+        removeLocalItem("formData");
+      }
     }
   }, [
     watchedFields.map((field) => field.waterTemp).join(","),

@@ -12,19 +12,18 @@ export default function Page() {
   const activeStepIndex = Number(getCookie("activeStep"));
   const loggedUser: any = getCookie("logged-user");
   const [steps, setSteps] = useState<{ label: String; id: number }[]>();
-  const [currentUserOrganisationType, setCurrentUserOrganisationType] =
-    useState<string>();
   const [activeStep, setActiveStep] = useState<number>(
     activeStepIndex !== 0 ? activeStepIndex : 0
   );
 
   useEffect(() => {
-    const userOrganisationType = JSON.parse(loggedUser);
-    if (userOrganisationType?.role === "SUPERADMIN") {
-      setCookie("activeStep", 0);
-    } else {
-      setCookie("activeStep", activeStep);
-    }
+    // const userOrganisationType = JSON.parse(loggedUser);
+    // if (userOrganisationType?.role === "SUPERADMIN") {
+    //   setCookie("activeStep", 0);
+    // } else {
+    //   setCookie("activeStep", activeStep);
+    // }
+    setCookie("activeStep", activeStep);
   }, [activeStep]);
   useEffect(() => {
     if (loggedUser) {

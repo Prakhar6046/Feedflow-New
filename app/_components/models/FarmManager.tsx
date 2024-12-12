@@ -218,7 +218,7 @@ const TransferModal: React.FC<Props> = ({
           toast.success(res.message);
           setOpen(false);
           removeLocalItem("productionData");
-          removeLocalItem("formData");
+          removeLocalItem("transferformData");
           router.push("/dashboard/production");
           reset();
           router.refresh();
@@ -254,7 +254,7 @@ const TransferModal: React.FC<Props> = ({
     const params = new URLSearchParams(searchParams);
     params.delete("isFish");
     removeLocalItem("productionData");
-    removeLocalItem("formData");
+    removeLocalItem("transferformData");
     router.replace(`/dashboard/production`);
     toast.dismiss();
   };
@@ -305,7 +305,7 @@ const TransferModal: React.FC<Props> = ({
       params.delete("isFish");
       router.replace(`/dashboard/production`);
       removeLocalItem("productionData");
-      removeLocalItem("formData");
+      removeLocalItem("transferformData");
     }
   };
   const handleCheckUnitSelected = (idx: number) => {
@@ -317,7 +317,7 @@ const TransferModal: React.FC<Props> = ({
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const data = getLocalItem("formData");
+      const data = getLocalItem("transferformData");
       setFormData(data);
     }
   }, []);
@@ -381,18 +381,16 @@ const TransferModal: React.FC<Props> = ({
     }
 
     if (formData) {
-      setValue("manager", JSON.parse(formData));
+      setValue("manager", formData);
     }
 
     setSelectedFarm(
-      formData
-        ? JSON.parse(formData)[0]?.fishFarm
-        : selectedProduction?.fishFarmId
+      formData ? formData[0]?.fishFarm : selectedProduction?.fishFarmId
     ); // Set the selected farm when manager is selected
     return () => {
       setIsStockDeleted(false);
     };
-  }, [selectedProduction, isStockDeleted]);
+  }, [selectedProduction, isStockDeleted, formData]);
   useEffect(() => {
     if (selectedProduction) {
       const index0Biomass = Number(selectedProduction.biomass) || 0; // Ensure a number
@@ -489,18 +487,19 @@ const TransferModal: React.FC<Props> = ({
           .find((f) => f.id === selectedFarm)
           ?.productionUnits?.find((unit) => unit.id === field.productionUnit);
         if (farm && farm.capacity) {
-          setValue(
-            `manager.${index}.stockingDensityNM`,
-            String(
-              Number(Number(field.count) / Number(farm?.capacity)).toFixed(2)
-            )
-          );
-          setValue(
-            `manager.${index}.stockingDensityKG`,
-            String(
-              Number(Number(field.biomass) / Number(farm?.capacity)).toFixed(2)
-            )
-          );
+          const regex = validationPattern.numbersWithDot;
+          const SDNMvalue = Number(
+            Number(field.count) / Number(farm?.capacity)
+          ).toFixed(2);
+          if (regex.test(SDNMvalue)) {
+            setValue(`manager.${index}.stockingDensityNM`, String(SDNMvalue));
+          }
+          const SDKG = Number(
+            Number(field.biomass) / Number(farm?.capacity)
+          ).toFixed(2);
+          if (regex.test(SDKG)) {
+            setValue(`manager.${index}.stockingDensityKG`, String(SDKG));
+          }
         }
       });
 
@@ -508,10 +507,13 @@ const TransferModal: React.FC<Props> = ({
       setValue(`manager.0.biomass`, updatedBiomass.toString());
       setValue(`manager.0.count`, updatedCount.toString());
     }
-    if (isFish && watchedFields[0]?.id) {
-      setLocalItem("formData", watchedFields);
-    } else {
-      removeLocalItem("formData");
+
+    if (watchedFields[0]?.id) {
+      if (isFish && watchedFields[0]?.id) {
+        setLocalItem("transferformData", watchedFields);
+      } else {
+        removeLocalItem("transferformData");
+      }
     }
   }, [
     watchedFields.map((field) => field.biomass).join(","),
@@ -522,7 +524,6 @@ const TransferModal: React.FC<Props> = ({
     setValue,
     isFish,
     selectedProduction,
-    isFish,
   ]);
   useEffect(() => {
     if (avgOfMeanWeight && selectedMeanWeightId) {
@@ -1149,13 +1150,7 @@ const TransferModal: React.FC<Props> = ({
                                 sx={{ width: "100%" }}
                                 {...register(`manager.${idx}.biomass`, {
                                   required: true,
-                                  pattern: validationPattern.numbersWithDot,
-
-                                  onChange: (e) =>
-                                    Number(e.target.value) &&
-                                    clearErrors(
-                                      `manager.${idx}.stockingDensityNM`
-                                    ),
+                                  pattern: /^\d+(\.\d+)?(e[+-]?\d+)?$/,
                                 })}
                                 onClick={() => handleCheckUnitSelected(idx)}
                                 focused
@@ -1247,7 +1242,7 @@ const TransferModal: React.FC<Props> = ({
                               }}
                               {...register(`manager.${idx}.count`, {
                                 required: true,
-                                pattern: validationPattern.numbersWithDot,
+                                pattern: /^\d+(\.\d+)?(e[+-]?\d+)?$/,
                               })}
                               onClick={() => handleCheckUnitSelected(idx)}
                               focused

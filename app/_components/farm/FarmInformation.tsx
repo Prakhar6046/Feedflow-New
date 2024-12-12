@@ -48,9 +48,10 @@ const FarmInformation: NextPage<Props> = ({
     watch,
     control,
     trigger,
+    clearErrors,
     getValues,
     reset,
-  } = useForm<Farm>();
+  } = useForm<Farm>({ mode: "onChange" });
   const loggedUser: any = getCookie("logged-user");
   const formData = getLocalItem("farmData");
   const user = JSON.parse(loggedUser);
@@ -408,6 +409,7 @@ const FarmInformation: NextPage<Props> = ({
               setAltitude={setAltitude}
               setLat={setLat}
               setLng={setLng}
+              clearErrors={clearErrors}
               setUseAddress={setUseAddress}
               isCalAltitude={true}
               i
