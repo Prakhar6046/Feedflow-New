@@ -225,7 +225,7 @@ export default function SampleEnvironmentTable({
 
   // useEffect(() => {
   //   if (sortDataFromLocal) {
-  //     const data = JSON.parse(sortDataFromLocal);
+  //     const data = sortDataFromLocal;
   //     setOrder(data.direction);
   //     setOrderBy(data.column);
   //     // handleRequestSort(null, data.column);
@@ -310,7 +310,7 @@ export default function SampleEnvironmentTable({
   // }, [sortDataFromLocal]);
   // useEffect(() => {
   //   if (sortDataFromLocal) {
-  //     const data = JSON.parse(sortDataFromLocal);
+  //     const data = sortDataFromLocal;
   //     setOrder(data.direction);
   //     setOrderBy(data.column);
   //   }

@@ -190,7 +190,7 @@ export default function FishSupplyTable({ tableData, fishSupply }: Props) {
   const open = Boolean(anchorEl);
   useEffect(() => {
     if (sortDataFromLocal) {
-      const data = JSON.parse(sortDataFromLocal);
+      const data = sortDataFromLocal;
       setOrder(data.direction);
       setOrderBy(data.column);
       if (fishSupply) {

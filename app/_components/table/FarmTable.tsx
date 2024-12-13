@@ -81,7 +81,7 @@ export default function FarmTable({ farms }: Props) {
 
   useEffect(() => {
     if (sortDataFromLocal) {
-      const data = JSON.parse(sortDataFromLocal);
+      const data = sortDataFromLocal;
       setOrder(data.direction);
       setOrderBy(data.column);
     }
@@ -178,7 +178,7 @@ export default function FarmTable({ farms }: Props) {
   };
   useEffect(() => {
     if (sortDataFromLocal) {
-      const data = JSON.parse(sortDataFromLocal);
+      const data = sortDataFromLocal;
       setOrder(data.direction);
       setOrderBy(data.column);
       // handleRequestSort(null, data.column);

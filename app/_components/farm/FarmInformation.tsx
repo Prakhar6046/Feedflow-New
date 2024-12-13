@@ -113,7 +113,7 @@ const FarmInformation: NextPage<Props> = ({
   }, [editFarm, formData]);
   useEffect(() => {
     if (formData) {
-      const data = JSON.parse(formData);
+      const data = formData;
       setValue("name", data?.name);
       setValue("farmAltitude", data?.farmAltitude),
         setValue("addressLine1", data?.addressLine1);
