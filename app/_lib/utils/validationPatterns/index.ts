@@ -13,3 +13,4 @@ export const alphabetsNumbersAndSpacesPattern2 = /^[a-zA-Z0-9\s]*$/;
 export const numbersWithDot = /^\d*\.?\d*$/;
 export const negativeNumberWithDot = /^-?[0-9]\d*(\.\d+)?$/;
 export const numberWithCommaDot = /^(\d+(?:[\.\,]\d{2})?)$/;
+// ""
