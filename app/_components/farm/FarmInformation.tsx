@@ -130,6 +130,12 @@ const FarmInformation: NextPage<Props> = ({
   }, [formData]);
   useEffect(() => {
     if (addressInformation && useAddress) {
+      addressInformation.address && clearErrors("addressLine1");
+      addressInformation.address2 && clearErrors("addressLine2");
+      addressInformation.city && clearErrors("city");
+      addressInformation.country && clearErrors("country");
+      addressInformation.postcode && clearErrors("zipCode");
+      addressInformation.state && clearErrors("province");
       setValue("addressLine1", addressInformation.address);
       setValue("addressLine2", addressInformation.address2);
       setValue("city", addressInformation.city);

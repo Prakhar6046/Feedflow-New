@@ -528,6 +528,7 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
         <Button
           type="submit"
           variant="contained"
+          disabled={isApiCallInProgress}
           sx={{
             background: "#06A19B",
             fontWeight: 600,

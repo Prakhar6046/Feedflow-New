@@ -92,6 +92,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
     reset,
     setValue,
     watch,
+    clearErrors,
     getValues,
     trigger,
     formState: { errors },
@@ -165,6 +166,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
       watch("nutritionalGuarantee.crudeAsh.kg") &&
       watch("nutritionalGuarantee.crudeFiber.kg")
     ) {
+      clearErrors("nutritionalGuarantee.carbohydrates.kg");
       const nutritionalGuarantee = getValues().nutritionalGuarantee;
       const value =
         100 -
@@ -3211,6 +3213,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
                 <Button
                   type="submit"
                   variant="contained"
+                  disabled={isApiCallInProgress}
                   sx={{
                     color: "#fff",
                     background: "#06A19B",

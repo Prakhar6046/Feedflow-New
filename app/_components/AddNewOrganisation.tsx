@@ -1010,6 +1010,7 @@ const AddNewOrganisation = () => {
             </Stack>
             <Button
               type="submit"
+              disabled={isApiCallInProgress}
               variant="contained"
               sx={{
                 background: "#06A19B",

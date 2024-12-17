@@ -983,6 +983,7 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
               <Button
                 type="submit"
                 variant="contained"
+                disabled={isApiCallInProgress}
                 sx={{
                   background: "#06A19B",
                   fontWeight: 600,
