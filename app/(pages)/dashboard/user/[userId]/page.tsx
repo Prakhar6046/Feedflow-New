@@ -141,6 +141,7 @@ export default function Page({ params }: { params: { userId: string } }) {
     if (data.password) {
       formData.append("password", data.password);
     }
+
     const res = await fetch(`/api/users/${params.userId}`, {
       method: "PUT",
       body: formData,
@@ -341,23 +342,6 @@ export default function Page({ params }: { params: { userId: string } }) {
                     />
                   </Button>
                 </Button>
-
-                {/* <Button
-                  type="button"
-                  variant="contained"
-                  sx={{
-                    background: "#fff",
-                    color: "#06A19B",
-                    fontWeight: 600,
-                    padding: "6px 16px",
-                    width: "fit-content",
-                    textTransform: "capitalize",
-                    borderRadius: "8px",
-                    border: "1px solid #06A19B",
-                  }}
-                >
-                  Edit
-                </Button> */}
               </Grid>
 
               <Grid
@@ -412,23 +396,16 @@ export default function Page({ params }: { params: { userId: string } }) {
                     autoFocus
                     focused
                     InputProps={{
-                      readOnly:
-                        Number(params.userId) === currentUserId ? true : false,
+                      readOnly: true,
                     }}
                     {...register("email", {
                       required: true,
                     })}
                     sx={{
                       width: "100%",
-                      backgroundColor:
-                        Number(params.userId) === currentUserId
-                          ? "#f0f0f0"
-                          : "",
+                      backgroundColor: "#f0f0f0",
                       "& .MuiInputBase-input.Mui-disabled": {
-                        backgroundColor:
-                          Number(params.userId) === currentUserId
-                            ? "#f0f0f0"
-                            : "",
+                        backgroundColor: "#f0f0f0",
                       },
                     }}
                   />
@@ -450,32 +427,25 @@ export default function Page({ params }: { params: { userId: string } }) {
                   type="text"
                   className="form-input"
                   InputProps={{
-                    readOnly:
-                      Number(params.userId) === currentUserId ? true : false,
+                    readOnly: true,
                   }}
                   focused
                   {...register("organisation")}
                   sx={{
                     width: "100%",
                     marginBottom: 2,
-                    backgroundColor:
-                      Number(params.userId) === currentUserId ? "#f0f0f0" : "",
+                    backgroundColor: "#f0f0f0",
                     "& .MuiInputBase-input.Mui-disabled": {
-                      backgroundColor:
-                        Number(params.userId) === currentUserId
-                          ? "#f0f0f0"
-                          : "",
+                      backgroundColor: "#f0f0f0",
                     },
                   }}
                 />
-                {/* {Number(params.userId) === currentUserId && ( */}
                 <TextField
                   label="Organisation Type"
                   type="text"
                   className="form-input"
                   InputProps={{
-                    readOnly:
-                      Number(params.userId) === currentUserId ? true : false,
+                    readOnly: true,
                   }}
                   focused
                   {...register("organisationType")}
