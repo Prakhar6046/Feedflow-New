@@ -23,7 +23,7 @@ import {
   Typography,
 } from "@mui/material";
 import { NextPage } from "next";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import Loader from "../Loader";
 import { getCookie } from "cookies-next";
@@ -33,7 +33,11 @@ import * as validationMessage from "@/app/_lib/utils/validationsMessage/index";
 import { FeedSupply } from "./FeedSelection";
 import { feedAction, selectIsEditFeed } from "@/lib/features/feed/feedSlice";
 import { useRouter } from "next/navigation";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+// import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import DatePicker from "@mui/lab/DatePicker";
 
 interface Props {
   setActiveStep?: any;
@@ -79,6 +83,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const loggedUser: any = getCookie("logged-user");
+  const [month, setMonth] = React.useState(new Date());
   const [loading, setLoading] = useState<boolean>(false);
   const [feedSuppliers, setFeedSuppliers] = useState<any>();
   const isEditFeed = useAppSelector(selectIsEditFeed);
@@ -1136,7 +1141,6 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
                       width: "100%",
                     }}
                   />
-
                   <Typography
                     variant="body2"
                     color="#555555AC"
@@ -1450,7 +1454,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
                         </Box>
                       </Grid>
                     </Grid>
-                    <Box
+                    {/* <Box
                       sx={{
                         visibility: "hidden",
                       }}
@@ -1466,8 +1470,43 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
                           d="M12 20c-4.41 0-8-3.59-8-8s3.59-8 8-8s8 3.59 8 8s-3.59 8-8 8m0-18C6.47 2 2 6.47 2 12s4.47 10 10 10s10-4.47 10-10S17.53 2 12 2m2.59 6L12 10.59L9.41 8L8 9.41L10.59 12L8 14.59L9.41 16L12 13.41L14.59 16L16 14.59L13.41 12L16 9.41z"
                         />
                       </svg>
-                    </Box>
-
+                    </Box> */}
+                    {!watch("nutritionalGuarantee.moisture.value") &&
+                      !watch("nutritionalGuarantee.moisture.kg") && (
+                        <Box
+                          fontSize={14}
+                          fontWeight={500}
+                          width="fit-content"
+                          onClick={() => {
+                            {
+                              setValue(
+                                "nutritionalGuarantee.moisture.value",
+                                ""
+                              ),
+                                setValue(
+                                  "nutritionalGuarantee.moisture.kg",
+                                  ""
+                                );
+                            }
+                          }}
+                          style={{ cursor: "pointer" }}
+                          sx={{
+                            visibility: "hidden",
+                          }}
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="1.5em"
+                            height="1.5em"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              fill="red"
+                              d="M12 20c-4.41 0-8-3.59-8-8s3.59-8 8-8s8 3.59 8 8s-3.59 8-8 8m0-18C6.47 2 2 6.47 2 12s4.47 10 10 10s10-4.47 10-10S17.53 2 12 2m2.59 6L12 10.59L9.41 8L8 9.41L10.59 12L8 14.59L9.41 16L12 13.41L14.59 16L16 14.59L13.41 12L16 9.41z"
+                            />
+                          </svg>
+                        </Box>
+                      )}
                     {(watch("nutritionalGuarantee.moisture.value") ||
                       watch("nutritionalGuarantee.moisture.kg")) && (
                       <Box
@@ -1481,11 +1520,9 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
                           }
                         }}
                         style={{ cursor: "pointer" }}
-                        sx={
-                          {
-                            // visibility: "hidden",
-                          }
-                        }
+                        // sx={{
+                        //   visibility: "hidden",
+                        // }}
                       >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -1515,11 +1552,17 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
                       pb: 1.5,
                     }}
                   >
-                    <Typography variant="subtitle1" fontWeight={600}>
+                    <Typography
+                      variant="subtitle1"
+                      fontWeight={600}
+                      sx={{
+                        minWidth: "14px",
+                      }}
+                    >
                       2.{" "}
                     </Typography>
 
-                    <Grid container spacing={2}>
+                    <Grid container spacing={3}>
                       <Grid item xs={12} md={6}>
                         <Box
                           // display={"flex"}
@@ -1640,25 +1683,24 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
                                 );
                               })}
                             </Select>
-                            {errors &&
-                              errors?.nutritionalGuarantee?.crudeProtein
-                                ?.value &&
-                              errors.nutritionalGuarantee.crudeProtein.value
-                                .type === "required" && (
-                                <Typography
-                                  variant="body2"
-                                  color="red"
-                                  fontSize={13}
-                                  mt={0.5}
-                                >
-                                  {validationMessage.required}
-                                </Typography>
-                              )}
                           </FormControl>
+                          {errors &&
+                            errors?.nutritionalGuarantee?.crudeProtein?.value &&
+                            errors.nutritionalGuarantee.crudeProtein.value
+                              .type === "required" && (
+                              <Typography
+                                variant="body2"
+                                color="red"
+                                fontSize={13}
+                                mt={0.5}
+                              >
+                                {validationMessage.required}
+                              </Typography>
+                            )}
                         </Box>
                       </Grid>
                     </Grid>
-                    <Box
+                    {/* <Box
                       sx={{
                         visibility: "hidden",
                       }}
@@ -1674,8 +1716,44 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
                           d="M12 20c-4.41 0-8-3.59-8-8s3.59-8 8-8s8 3.59 8 8s-3.59 8-8 8m0-18C6.47 2 2 6.47 2 12s4.47 10 10 10s10-4.47 10-10S17.53 2 12 2m2.59 6L12 10.59L9.41 8L8 9.41L10.59 12L8 14.59L9.41 16L12 13.41L14.59 16L16 14.59L13.41 12L16 9.41z"
                         />
                       </svg>
-                    </Box>
+                    </Box> */}
 
+                    {!watch("nutritionalGuarantee.crudeProtein.value") &&
+                      !watch("nutritionalGuarantee.crudeProtein.kg") && (
+                        <Box
+                          fontSize={14}
+                          fontWeight={500}
+                          width="fit-content"
+                          onClick={() => {
+                            {
+                              setValue(
+                                "nutritionalGuarantee.crudeProtein.value",
+                                ""
+                              ),
+                                setValue(
+                                  "nutritionalGuarantee.crudeProtein.kg",
+                                  ""
+                                );
+                            }
+                          }}
+                          style={{ cursor: "pointer" }}
+                          sx={{
+                            visibility: "hidden",
+                          }}
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="1.5em"
+                            height="1.5em"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              fill="red"
+                              d="M12 20c-4.41 0-8-3.59-8-8s3.59-8 8-8s8 3.59 8 8s-3.59 8-8 8m0-18C6.47 2 2 6.47 2 12s4.47 10 10 10s10-4.47 10-10S17.53 2 12 2m2.59 6L12 10.59L9.41 8L8 9.41L10.59 12L8 14.59L9.41 16L12 13.41L14.59 16L16 14.59L13.41 12L16 9.41z"
+                            />
+                          </svg>
+                        </Box>
+                      )}
                     {(watch("nutritionalGuarantee.crudeProtein.value") ||
                       watch("nutritionalGuarantee.crudeProtein.kg")) && (
                       <Box
@@ -1695,11 +1773,11 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
                           }
                         }}
                         style={{ cursor: "pointer" }}
-                        sx={
-                          {
-                            // visibility: "hidden"
-                          }
-                        }
+                        // sx={
+                        //   {
+                        //     visibility: "hidden"
+                        //   }
+                        // }
                       >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -1729,11 +1807,17 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
                       pb: 1.5,
                     }}
                   >
-                    <Typography variant="subtitle1" fontWeight={600}>
+                    <Typography
+                      variant="subtitle1"
+                      fontWeight={600}
+                      sx={{
+                        minWidth: "14px",
+                      }}
+                    >
                       3.{" "}
                     </Typography>
 
-                    <Grid container spacing={2}>
+                    <Grid container spacing={3}>
                       <Grid item xs={12} md={6}>
                         <Box
                           // display={"flex"}
@@ -1847,24 +1931,24 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
                                 );
                               })}
                             </Select>
-                            {errors &&
-                              errors?.nutritionalGuarantee?.crudeFat?.value &&
-                              errors?.nutritionalGuarantee?.crudeFat?.value
-                                .type === "required" && (
-                                <Typography
-                                  variant="body2"
-                                  color="red"
-                                  fontSize={13}
-                                  mt={0.5}
-                                >
-                                  {validationMessage.required}
-                                </Typography>
-                              )}
                           </FormControl>
+                          {errors &&
+                            errors?.nutritionalGuarantee?.crudeFat?.value &&
+                            errors?.nutritionalGuarantee?.crudeFat?.value
+                              .type === "required" && (
+                              <Typography
+                                variant="body2"
+                                color="red"
+                                fontSize={13}
+                                mt={0.5}
+                              >
+                                {validationMessage.required}
+                              </Typography>
+                            )}
                         </Box>
                       </Grid>
                     </Grid>
-                    <Box
+                    {/* <Box
                       sx={{
                         visibility: "hidden",
                       }}
@@ -1880,7 +1964,44 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
                           d="M12 20c-4.41 0-8-3.59-8-8s3.59-8 8-8s8 3.59 8 8s-3.59 8-8 8m0-18C6.47 2 2 6.47 2 12s4.47 10 10 10s10-4.47 10-10S17.53 2 12 2m2.59 6L12 10.59L9.41 8L8 9.41L10.59 12L8 14.59L9.41 16L12 13.41L14.59 16L16 14.59L13.41 12L16 9.41z"
                         />
                       </svg>
-                    </Box>
+                    </Box> */}
+
+                    {!watch("nutritionalGuarantee.crudeFat.value") &&
+                      !watch("nutritionalGuarantee.crudeFat.kg") && (
+                        <Box
+                          fontSize={14}
+                          fontWeight={500}
+                          width="fit-content"
+                          onClick={() => {
+                            {
+                              setValue(
+                                "nutritionalGuarantee.crudeFat.value",
+                                ""
+                              ),
+                                setValue(
+                                  "nutritionalGuarantee.crudeFat.kg",
+                                  ""
+                                );
+                            }
+                          }}
+                          style={{ cursor: "pointer" }}
+                          sx={{
+                            visibility: "hidden",
+                          }}
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="1.5em"
+                            height="1.5em"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              fill="red"
+                              d="M12 20c-4.41 0-8-3.59-8-8s3.59-8 8-8s8 3.59 8 8s-3.59 8-8 8m0-18C6.47 2 2 6.47 2 12s4.47 10 10 10s10-4.47 10-10S17.53 2 12 2m2.59 6L12 10.59L9.41 8L8 9.41L10.59 12L8 14.59L9.41 16L12 13.41L14.59 16L16 14.59L13.41 12L16 9.41z"
+                            />
+                          </svg>
+                        </Box>
+                      )}
 
                     {(watch("nutritionalGuarantee.crudeFat.value") ||
                       watch("nutritionalGuarantee.crudeFat.kg")) && (
@@ -1895,11 +2016,9 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
                           }
                         }}
                         style={{ cursor: "pointer" }}
-                        sx={
-                          {
-                            // visibility: "hidden"
-                          }
-                        }
+                        // sx={{
+                        //   visibility: "hidden",
+                        // }}
                       >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -1915,6 +2034,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
                       </Box>
                     )}
                   </Grid>
+
                   <Grid
                     item
                     xl={6}
@@ -1928,11 +2048,17 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
                       pb: 1.5,
                     }}
                   >
-                    <Typography variant="subtitle1" fontWeight={600}>
+                    <Typography
+                      variant="subtitle1"
+                      fontWeight={600}
+                      sx={{
+                        minWidth: "14px",
+                      }}
+                    >
                       4.{" "}
                     </Typography>
 
-                    <Grid container spacing={2}>
+                    <Grid container spacing={3}>
                       <Grid item xs={12} md={6}>
                         <Box
                           // display={"flex"}
@@ -1951,7 +2077,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
                             focused
                             sx={{
                               width: "100%",
-                              minWidth: 190,
+                              // minWidth: 190,
                             }}
                           />
                           {errors &&
@@ -2046,24 +2172,24 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
                                 );
                               })}
                             </Select>
-                            {errors &&
-                              errors?.nutritionalGuarantee?.crudeAsh?.value &&
-                              errors?.nutritionalGuarantee?.crudeAsh.value
-                                .type === "required" && (
-                                <Typography
-                                  variant="body2"
-                                  color="red"
-                                  fontSize={13}
-                                  mt={0.5}
-                                >
-                                  {validationMessage.required}
-                                </Typography>
-                              )}
                           </FormControl>
+                          {errors &&
+                            errors?.nutritionalGuarantee?.crudeAsh?.value &&
+                            errors?.nutritionalGuarantee?.crudeAsh.value
+                              .type === "required" && (
+                              <Typography
+                                variant="body2"
+                                color="red"
+                                fontSize={13}
+                                mt={0.5}
+                              >
+                                {validationMessage.required}
+                              </Typography>
+                            )}
                         </Box>
                       </Grid>
                     </Grid>
-                    <Box
+                    {/* <Box
                       sx={{
                         visibility: "hidden",
                       }}
@@ -2079,7 +2205,44 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
                           d="M12 20c-4.41 0-8-3.59-8-8s3.59-8 8-8s8 3.59 8 8s-3.59 8-8 8m0-18C6.47 2 2 6.47 2 12s4.47 10 10 10s10-4.47 10-10S17.53 2 12 2m2.59 6L12 10.59L9.41 8L8 9.41L10.59 12L8 14.59L9.41 16L12 13.41L14.59 16L16 14.59L13.41 12L16 9.41z"
                         />
                       </svg>
-                    </Box>
+                    </Box> */}
+
+                    {!watch("nutritionalGuarantee.crudeAsh.value") &&
+                      !watch("nutritionalGuarantee.crudeAsh.kg") && (
+                        <Box
+                          fontSize={14}
+                          fontWeight={500}
+                          width="fit-content"
+                          onClick={() => {
+                            {
+                              setValue(
+                                "nutritionalGuarantee.crudeAsh.value",
+                                ""
+                              ),
+                                setValue(
+                                  "nutritionalGuarantee.crudeAsh.kg",
+                                  ""
+                                );
+                            }
+                          }}
+                          style={{ cursor: "pointer" }}
+                          sx={{
+                            visibility: "hidden",
+                          }}
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="1.5em"
+                            height="1.5em"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              fill="red"
+                              d="M12 20c-4.41 0-8-3.59-8-8s3.59-8 8-8s8 3.59 8 8s-3.59 8-8 8m0-18C6.47 2 2 6.47 2 12s4.47 10 10 10s10-4.47 10-10S17.53 2 12 2m2.59 6L12 10.59L9.41 8L8 9.41L10.59 12L8 14.59L9.41 16L12 13.41L14.59 16L16 14.59L13.41 12L16 9.41z"
+                            />
+                          </svg>
+                        </Box>
+                      )}
 
                     {(watch("nutritionalGuarantee.crudeAsh.value") ||
                       watch("nutritionalGuarantee.crudeAsh.kg")) && (
@@ -2094,11 +2257,11 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
                           }
                         }}
                         style={{ cursor: "pointer" }}
-                        sx={
-                          {
-                            // visibility: "hidden"
-                          }
-                        }
+                        // sx={
+                        //   {
+                        //     visibility: "hidden"
+                        //   }
+                        // }
                       >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -2128,11 +2291,17 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
                       pb: 1.5,
                     }}
                   >
-                    <Typography variant="subtitle1" fontWeight={600}>
+                    <Typography
+                      variant="subtitle1"
+                      fontWeight={600}
+                      sx={{
+                        minWidth: "14px",
+                      }}
+                    >
                       5.{" "}
                     </Typography>
 
-                    <Grid container spacing={2}>
+                    <Grid container spacing={3}>
                       <Grid item xs={12} md={6}>
                         <Box
                           // display={"flex"}
@@ -2151,7 +2320,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
                             focused
                             sx={{
                               width: "100%",
-                              minWidth: 190,
+                              // minWidth: 190,
                             }}
                           />
                           {errors &&
@@ -2249,25 +2418,24 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
                                 );
                               })}
                             </Select>
-
-                            {errors &&
-                              errors?.nutritionalGuarantee?.crudeFiber?.value &&
-                              errors?.nutritionalGuarantee?.crudeFiber.value
-                                .type === "required" && (
-                                <Typography
-                                  variant="body2"
-                                  color="red"
-                                  fontSize={13}
-                                  mt={0.5}
-                                >
-                                  {validationMessage.required}
-                                </Typography>
-                              )}
                           </FormControl>
+                          {errors &&
+                            errors?.nutritionalGuarantee?.crudeFiber?.value &&
+                            errors?.nutritionalGuarantee?.crudeFiber.value
+                              .type === "required" && (
+                              <Typography
+                                variant="body2"
+                                color="red"
+                                fontSize={13}
+                                mt={0.5}
+                              >
+                                {validationMessage.required}
+                              </Typography>
+                            )}
                         </Box>
                       </Grid>
                     </Grid>
-                    <Box
+                    {/* <Box
                       sx={{
                         visibility: "hidden",
                       }}
@@ -2283,8 +2451,44 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
                           d="M12 20c-4.41 0-8-3.59-8-8s3.59-8 8-8s8 3.59 8 8s-3.59 8-8 8m0-18C6.47 2 2 6.47 2 12s4.47 10 10 10s10-4.47 10-10S17.53 2 12 2m2.59 6L12 10.59L9.41 8L8 9.41L10.59 12L8 14.59L9.41 16L12 13.41L14.59 16L16 14.59L13.41 12L16 9.41z"
                         />
                       </svg>
-                    </Box>
+                    </Box> */}
 
+                    {!watch("nutritionalGuarantee.crudeFiber.value") &&
+                      !watch("nutritionalGuarantee.crudeFiber.kg") && (
+                        <Box
+                          fontSize={14}
+                          fontWeight={500}
+                          width="fit-content"
+                          onClick={() => {
+                            {
+                              setValue(
+                                "nutritionalGuarantee.crudeFiber.value",
+                                ""
+                              ),
+                                setValue(
+                                  "nutritionalGuarantee.crudeFiber.kg",
+                                  ""
+                                );
+                            }
+                          }}
+                          style={{ cursor: "pointer" }}
+                          sx={{
+                            visibility: "hidden",
+                          }}
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="1.5em"
+                            height="1.5em"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              fill="red"
+                              d="M12 20c-4.41 0-8-3.59-8-8s3.59-8 8-8s8 3.59 8 8s-3.59 8-8 8m0-18C6.47 2 2 6.47 2 12s4.47 10 10 10s10-4.47 10-10S17.53 2 12 2m2.59 6L12 10.59L9.41 8L8 9.41L10.59 12L8 14.59L9.41 16L12 13.41L14.59 16L16 14.59L13.41 12L16 9.41z"
+                            />
+                          </svg>
+                        </Box>
+                      )}
                     {(watch("nutritionalGuarantee.crudeFiber.value") ||
                       watch("nutritionalGuarantee.crudeFiber.kg")) && (
                       <Box
@@ -2304,11 +2508,11 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
                           }
                         }}
                         style={{ cursor: "pointer" }}
-                        sx={
-                          {
-                            // visibility: "hidden"
-                          }
-                        }
+                        // sx={
+                        //   {
+                        //     visibility: "hidden"
+                        //   }
+                        // }
                       >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -2338,11 +2542,17 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
                       pb: 1.5,
                     }}
                   >
-                    <Typography variant="subtitle1" fontWeight={600}>
+                    <Typography
+                      variant="subtitle1"
+                      fontWeight={600}
+                      sx={{
+                        minWidth: "14px",
+                      }}
+                    >
                       6.{" "}
                     </Typography>
 
-                    <Grid container spacing={2}>
+                    <Grid container spacing={3}>
                       <Grid item xs={12} md={6}>
                         <Box
                           // display={"flex"}
@@ -2455,24 +2665,24 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
                                 );
                               })}
                             </Select>
-                            {errors &&
-                              errors?.nutritionalGuarantee?.calcium?.value &&
-                              errors?.nutritionalGuarantee?.calcium.value
-                                .type === "required" && (
-                                <Typography
-                                  variant="body2"
-                                  color="red"
-                                  fontSize={13}
-                                  mt={0.5}
-                                >
-                                  {validationMessage.required}
-                                </Typography>
-                              )}
                           </FormControl>
+                          {errors &&
+                            errors?.nutritionalGuarantee?.calcium?.value &&
+                            errors?.nutritionalGuarantee?.calcium.value.type ===
+                              "required" && (
+                              <Typography
+                                variant="body2"
+                                color="red"
+                                fontSize={13}
+                                mt={0.5}
+                              >
+                                {validationMessage.required}
+                              </Typography>
+                            )}
                         </Box>
                       </Grid>
                     </Grid>
-                    <Box
+                    {/* <Box
                       sx={{
                         visibility: "hidden",
                       }}
@@ -2488,8 +2698,41 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
                           d="M12 20c-4.41 0-8-3.59-8-8s3.59-8 8-8s8 3.59 8 8s-3.59 8-8 8m0-18C6.47 2 2 6.47 2 12s4.47 10 10 10s10-4.47 10-10S17.53 2 12 2m2.59 6L12 10.59L9.41 8L8 9.41L10.59 12L8 14.59L9.41 16L12 13.41L14.59 16L16 14.59L13.41 12L16 9.41z"
                         />
                       </svg>
-                    </Box>
+                    </Box> */}
 
+                    {!watch("nutritionalGuarantee.calcium.value") &&
+                      !watch("nutritionalGuarantee.calcium.kg") && (
+                        <Box
+                          fontSize={14}
+                          fontWeight={500}
+                          width="fit-content"
+                          onClick={() => {
+                            {
+                              setValue(
+                                "nutritionalGuarantee.calcium.value",
+                                ""
+                              ),
+                                setValue("nutritionalGuarantee.calcium.kg", "");
+                            }
+                          }}
+                          style={{ cursor: "pointer" }}
+                          sx={{
+                            visibility: "hidden",
+                          }}
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="1.5em"
+                            height="1.5em"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              fill="red"
+                              d="M12 20c-4.41 0-8-3.59-8-8s3.59-8 8-8s8 3.59 8 8s-3.59 8-8 8m0-18C6.47 2 2 6.47 2 12s4.47 10 10 10s10-4.47 10-10S17.53 2 12 2m2.59 6L12 10.59L9.41 8L8 9.41L10.59 12L8 14.59L9.41 16L12 13.41L14.59 16L16 14.59L13.41 12L16 9.41z"
+                            />
+                          </svg>
+                        </Box>
+                      )}
                     {(watch("nutritionalGuarantee.calcium.value") ||
                       watch("nutritionalGuarantee.calcium.kg")) && (
                       <Box
@@ -2537,11 +2780,17 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
                       pb: 1.5,
                     }}
                   >
-                    <Typography variant="subtitle1" fontWeight={600}>
+                    <Typography
+                      variant="subtitle1"
+                      fontWeight={600}
+                      sx={{
+                        minWidth: "14px",
+                      }}
+                    >
                       7.{" "}
                     </Typography>
 
-                    <Grid container spacing={2}>
+                    <Grid container spacing={3}>
                       <Grid item xs={12} md={6}>
                         <Box
                           // display={"flex"}
@@ -2661,26 +2910,25 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
                                 );
                               })}
                             </Select>
-                            {errors &&
-                              errors?.nutritionalGuarantee?.phosphorous
-                                ?.value &&
-                              errors?.nutritionalGuarantee?.phosphorous.value
-                                .type === "required" && (
-                                <Typography
-                                  variant="body2"
-                                  color="red"
-                                  fontSize={13}
-                                  mt={0.5}
-                                >
-                                  {validationMessage.required}
-                                </Typography>
-                              )}
                           </FormControl>
+                          {errors &&
+                            errors?.nutritionalGuarantee?.phosphorous?.value &&
+                            errors?.nutritionalGuarantee?.phosphorous.value
+                              .type === "required" && (
+                              <Typography
+                                variant="body2"
+                                color="red"
+                                fontSize={13}
+                                mt={0.5}
+                              >
+                                {validationMessage.required}
+                              </Typography>
+                            )}
                         </Box>
                       </Grid>
                     </Grid>
 
-                    <Box
+                    {/* <Box
                       sx={{
                         visibility: "hidden",
                       }}
@@ -2696,7 +2944,43 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
                           d="M12 20c-4.41 0-8-3.59-8-8s3.59-8 8-8s8 3.59 8 8s-3.59 8-8 8m0-18C6.47 2 2 6.47 2 12s4.47 10 10 10s10-4.47 10-10S17.53 2 12 2m2.59 6L12 10.59L9.41 8L8 9.41L10.59 12L8 14.59L9.41 16L12 13.41L14.59 16L16 14.59L13.41 12L16 9.41z"
                         />
                       </svg>
-                    </Box>
+                    </Box> */}
+                    {!watch("nutritionalGuarantee.phosphorous.value") &&
+                      !watch("nutritionalGuarantee.phosphorous.kg") && (
+                        <Box
+                          fontSize={14}
+                          fontWeight={500}
+                          width="fit-content"
+                          onClick={() => {
+                            {
+                              setValue(
+                                "nutritionalGuarantee.phosphorous.value",
+                                ""
+                              ),
+                                setValue(
+                                  "nutritionalGuarantee.phosphorous.kg",
+                                  ""
+                                );
+                            }
+                          }}
+                          style={{ cursor: "pointer" }}
+                          sx={{
+                            visibility: "hidden",
+                          }}
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="1.5em"
+                            height="1.5em"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              fill="red"
+                              d="M12 20c-4.41 0-8-3.59-8-8s3.59-8 8-8s8 3.59 8 8s-3.59 8-8 8m0-18C6.47 2 2 6.47 2 12s4.47 10 10 10s10-4.47 10-10S17.53 2 12 2m2.59 6L12 10.59L9.41 8L8 9.41L10.59 12L8 14.59L9.41 16L12 13.41L14.59 16L16 14.59L13.41 12L16 9.41z"
+                            />
+                          </svg>
+                        </Box>
+                      )}
                     {(watch("nutritionalGuarantee.phosphorous.value") ||
                       watch("nutritionalGuarantee.phosphorous.kg")) && (
                       <Box
@@ -2718,7 +3002,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
                         style={{ cursor: "pointer" }}
                         sx={
                           {
-                            // visibility: "hidden"
+                            // visibility: "hidden",
                           }
                         }
                       >
@@ -2750,136 +3034,160 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
                       pb: 1.5,
                     }}
                   >
-                    <Typography variant="subtitle1" fontWeight={600}>
+                    <Typography
+                      variant="subtitle1"
+                      fontWeight={600}
+                      sx={{
+                        minWidth: "14px",
+                      }}
+                    >
                       8.{" "}
                     </Typography>
 
-                    <Box
-                      // display={"flex"}
-                      // gap={2}
-                      // alignItems={"center"}
-                      position={"relative"}
-                    >
-                      <TextField
-                        label="Carbohydrates *"
-                        type="text"
-                        InputProps={{ readOnly: true }}
-                        className="form-input"
-                        {...register("nutritionalGuarantee.carbohydrates.kg", {
-                          required: true,
-                          pattern: validationPattern.numbersWithDot,
-                        })}
-                        focused
-                        sx={{
-                          width: "100%",
-                          minWidth: 190,
-                        }}
-                      />
+                    <Grid container spacing={3}>
+                      <Grid item xs={12} md={6}>
+                        <Box
+                          // display={"flex"}
+                          // gap={2}
+                          // alignItems={"center"}
+                          position={"relative"}
+                        >
+                          <TextField
+                            label="Carbohydrates *"
+                            type="text"
+                            InputProps={{ readOnly: true }}
+                            className="form-input"
+                            {...register(
+                              "nutritionalGuarantee.carbohydrates.kg",
+                              {
+                                required: true,
+                                pattern: validationPattern.numbersWithDot,
+                              }
+                            )}
+                            focused
+                            sx={{
+                              width: "100%",
+                              minWidth: 190,
+                            }}
+                          />
 
-                      <Typography
-                        variant="body2"
-                        color="#555555AC"
-                        sx={{
-                          position: "absolute",
-                          right: 6,
-                          top: errors?.nutritionalGuarantee?.carbohydrates?.kg
-                            ? "35%"
-                            : "50%",
-                          transform: "translate(-6px, -50%)",
-                          backgroundColor: "#fff",
-                          height: 30,
-                          display: "grid",
-                          placeItems: "center",
-                          zIndex: 1,
-                          pl: 1,
-                        }}
-                      >
-                        g/kg
-                      </Typography>
-                      {errors &&
-                        errors?.nutritionalGuarantee?.carbohydrates?.kg &&
-                        errors?.nutritionalGuarantee?.carbohydrates.kg.type ===
-                          "required" && (
                           <Typography
                             variant="body2"
-                            color="red"
-                            fontSize={13}
-                            mt={0.5}
+                            color="#555555AC"
+                            sx={{
+                              position: "absolute",
+                              right: 6,
+                              top: errors?.nutritionalGuarantee?.carbohydrates
+                                ?.kg
+                                ? "35%"
+                                : "50%",
+                              transform: "translate(-6px, -50%)",
+                              backgroundColor: "#fff",
+                              height: 30,
+                              display: "grid",
+                              placeItems: "center",
+                              zIndex: 1,
+                              pl: 1,
+                            }}
                           >
-                            {validationMessage.required}
+                            g/kg
                           </Typography>
-                        )}
-                      {errors &&
-                        errors?.nutritionalGuarantee?.carbohydrates?.kg &&
-                        errors?.nutritionalGuarantee?.carbohydrates.kg.type ===
-                          "pattern" && (
-                          <Typography
-                            variant="body2"
-                            color="red"
-                            fontSize={13}
-                            mt={0.5}
-                          >
-                            {validationMessage.OnlyNumbersWithDot}
-                          </Typography>
-                        )}
-                    </Box>
+                          {errors &&
+                            errors?.nutritionalGuarantee?.carbohydrates?.kg &&
+                            errors?.nutritionalGuarantee?.carbohydrates.kg
+                              .type === "required" && (
+                              <Typography
+                                variant="body2"
+                                color="red"
+                                fontSize={13}
+                                mt={0.5}
+                              >
+                                {validationMessage.required}
+                              </Typography>
+                            )}
+                          {errors &&
+                            errors?.nutritionalGuarantee?.carbohydrates?.kg &&
+                            errors?.nutritionalGuarantee?.carbohydrates.kg
+                              .type === "pattern" && (
+                              <Typography
+                                variant="body2"
+                                color="red"
+                                fontSize={13}
+                                mt={0.5}
+                              >
+                                {validationMessage.OnlyNumbersWithDot}
+                              </Typography>
+                            )}
+                        </Box>
+                      </Grid>
 
-                    <FormControl
-                      fullWidth
-                      className="form-input"
-                      sx={{
-                        minWidth: 110,
-                      }}
-                      focused
-                    >
-                      <InputLabel id="feed-supply-select-label10">
-                        Min *
-                      </InputLabel>
-                      <Select
-                        labelId="feed-supply-select-label10"
-                        id="feed-supply-select10"
-                        label="Min *"
-                        {...register(
-                          "nutritionalGuarantee.carbohydrates.value",
-                          {
-                            required: true,
-                          }
-                        )}
-                        value={
-                          watch("nutritionalGuarantee.carbohydrates.value") ||
-                          ""
-                        }
-                        onChange={(e) => {
-                          setValue(
-                            "nutritionalGuarantee.carbohydrates.value",
-                            e.target.value
-                          );
-                          trigger("nutritionalGuarantee.carbohydrates.value");
-                        }}
-                      >
-                        {nutritionalGuarantee.map((guarantee, i) => {
-                          return (
-                            <MenuItem value={guarantee} key={i}>
-                              {guarantee}
-                            </MenuItem>
-                          );
-                        })}
-                      </Select>
-                      {errors &&
-                        errors?.nutritionalGuarantee?.carbohydrates?.value &&
-                        errors?.nutritionalGuarantee?.carbohydrates.value
-                          .type === "required" && (
-                          <Typography
-                            variant="body2"
-                            color="red"
-                            fontSize={13}
-                            mt={0.5}
+                      <Grid item xs={12} md={6}>
+                        <Box width={"100%"}>
+                          <FormControl
+                            fullWidth
+                            className="form-input"
+                            sx={{
+                              minWidth: 110,
+                            }}
+                            focused
                           >
-                            {validationMessage.required}
-                          </Typography>
-                        )}
-                    </FormControl>
-                    <Box
+                            <InputLabel id="feed-supply-select-label10">
+                              Min *
+                            </InputLabel>
+                            <Select
+                              labelId="feed-supply-select-label10"
+                              id="feed-supply-select10"
+                              label="Min *"
+                              {...register(
+                                "nutritionalGuarantee.carbohydrates.value",
+                                {
+                                  required: true,
+                                }
+                              )}
+                              value={
+                                watch(
+                                  "nutritionalGuarantee.carbohydrates.value"
+                                ) || ""
+                              }
+                              onChange={(e) => {
+                                setValue(
+                                  "nutritionalGuarantee.carbohydrates.value",
+                                  e.target.value
+                                );
+                                trigger(
+                                  "nutritionalGuarantee.carbohydrates.value"
+                                );
+                              }}
+                            >
+                              {nutritionalGuarantee.map((guarantee, i) => {
+                                return (
+                                  <MenuItem value={guarantee} key={i}>
+                                    {guarantee}
+                                  </MenuItem>
+                                );
+                              })}
+                            </Select>
+                          </FormControl>
+
+                          {errors &&
+                            errors?.nutritionalGuarantee?.carbohydrates
+                              ?.value &&
+                            errors?.nutritionalGuarantee?.carbohydrates.value
+                              .type === "required" && (
+                              <Typography
+                                variant="body2"
+                                color="red"
+                                fontSize={13}
+                                mt={0.5}
+                              >
+                                {validationMessage.required}
+                              </Typography>
+                            )}
+                        </Box>
+                      </Grid>
+                    </Grid>
+
+                    {/* <Box
                       sx={{
                         visibility: "hidden",
                       }}
@@ -2895,8 +3203,44 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
                           d="M12 20c-4.41 0-8-3.59-8-8s3.59-8 8-8s8 3.59 8 8s-3.59 8-8 8m0-18C6.47 2 2 6.47 2 12s4.47 10 10 10s10-4.47 10-10S17.53 2 12 2m2.59 6L12 10.59L9.41 8L8 9.41L10.59 12L8 14.59L9.41 16L12 13.41L14.59 16L16 14.59L13.41 12L16 9.41z"
                         />
                       </svg>
-                    </Box>
+                    </Box> */}
 
+                    {!watch("nutritionalGuarantee.carbohydrates.value") &&
+                      !watch("nutritionalGuarantee.carbohydrates.kg") && (
+                        <Box
+                          fontSize={14}
+                          fontWeight={500}
+                          width="fit-content"
+                          onClick={() => {
+                            {
+                              setValue(
+                                "nutritionalGuarantee.carbohydrates.value",
+                                ""
+                              ),
+                                setValue(
+                                  "nutritionalGuarantee.carbohydrates.kg",
+                                  ""
+                                );
+                            }
+                          }}
+                          style={{ cursor: "pointer" }}
+                          sx={{
+                            visibility: "hidden",
+                          }}
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="1.5em"
+                            height="1.5em"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              fill="red"
+                              d="M12 20c-4.41 0-8-3.59-8-8s3.59-8 8-8s8 3.59 8 8s-3.59 8-8 8m0-18C6.47 2 2 6.47 2 12s4.47 10 10 10s10-4.47 10-10S17.53 2 12 2m2.59 6L12 10.59L9.41 8L8 9.41L10.59 12L8 14.59L9.41 16L12 13.41L14.59 16L16 14.59L13.41 12L16 9.41z"
+                            />
+                          </svg>
+                        </Box>
+                      )}
                     {(watch("nutritionalGuarantee.carbohydrates.value") ||
                       watch("nutritionalGuarantee.carbohydrates.kg")) && (
                       <Box
@@ -2950,7 +3294,13 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
                       pb: 1.5,
                     }}
                   >
-                    <Typography variant="subtitle1" fontWeight={600}>
+                    <Typography
+                      variant="subtitle1"
+                      fontWeight={600}
+                      sx={{
+                        minWidth: "14px",
+                      }}
+                    >
                       9.{" "}
                     </Typography>
 
@@ -3090,22 +3440,23 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
                           );
                         })}
                       </Select>
-                      {errors &&
-                        errors?.nutritionalGuarantee?.metabolizableEnergy
-                          ?.value &&
-                        errors?.nutritionalGuarantee?.metabolizableEnergy.value
-                          .type === "required" && (
-                          <Typography
-                            variant="body2"
-                            color="red"
-                            fontSize={13}
-                            mt={0.5}
-                          >
-                            {validationMessage.required}
-                          </Typography>
-                        )}
                     </FormControl>
-                    <Box
+                    {errors &&
+                      errors?.nutritionalGuarantee?.metabolizableEnergy
+                        ?.value &&
+                      errors?.nutritionalGuarantee?.metabolizableEnergy.value
+                        .type === "required" && (
+                        <Typography
+                          variant="body2"
+                          color="red"
+                          fontSize={13}
+                          mt={0.5}
+                        >
+                          {validationMessage.required}
+                        </Typography>
+                      )}
+
+                    {/* <Box
                       sx={{
                         visibility: "hidden",
                       }}
@@ -3121,7 +3472,44 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
                           d="M12 20c-4.41 0-8-3.59-8-8s3.59-8 8-8s8 3.59 8 8s-3.59 8-8 8m0-18C6.47 2 2 6.47 2 12s4.47 10 10 10s10-4.47 10-10S17.53 2 12 2m2.59 6L12 10.59L9.41 8L8 9.41L10.59 12L8 14.59L9.41 16L12 13.41L14.59 16L16 14.59L13.41 12L16 9.41z"
                         />
                       </svg>
-                    </Box>
+                    </Box> */}
+
+                    {!watch("nutritionalGuarantee.metabolizableEnergy.value") &&
+                      !watch("nutritionalGuarantee.metabolizableEnergy.kg") && (
+                        <Box
+                          fontSize={14}
+                          fontWeight={500}
+                          width="fit-content"
+                          onClick={() => {
+                            {
+                              setValue(
+                                "nutritionalGuarantee.metabolizableEnergy.value",
+                                ""
+                              ),
+                                setValue(
+                                  "nutritionalGuarantee.metabolizableEnergy.kg",
+                                  ""
+                                );
+                            }
+                          }}
+                          style={{ cursor: "pointer" }}
+                          sx={{
+                            visibility: "hidden",
+                          }}
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="1.5em"
+                            height="1.5em"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              fill="red"
+                              d="M12 20c-4.41 0-8-3.59-8-8s3.59-8 8-8s8 3.59 8 8s-3.59 8-8 8m0-18C6.47 2 2 6.47 2 12s4.47 10 10 10s10-4.47 10-10S17.53 2 12 2m2.59 6L12 10.59L9.41 8L8 9.41L10.59 12L8 14.59L9.41 16L12 13.41L14.59 16L16 14.59L13.41 12L16 9.41z"
+                            />
+                          </svg>
+                        </Box>
+                      )}
 
                     {(watch("nutritionalGuarantee.metabolizableEnergy.value") ||
                       watch("nutritionalGuarantee.metabolizableEnergy.kg")) && (

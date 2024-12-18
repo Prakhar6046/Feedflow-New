@@ -285,6 +285,9 @@ export default function FishSupplyTable({ tableData, fishSupply }: Props) {
                         borderBottomWidth: 2,
                         color: "#555555",
                         fontWeight: 500,
+                        maxWidth: 250,
+                        wordBreak: "break-all",
+                        pr: 2,
                         paddingLeft: {
                           lg: 10,
                           md: 7,
@@ -302,6 +305,7 @@ export default function FishSupplyTable({ tableData, fishSupply }: Props) {
                         borderBottomWidth: 2,
                         color: "#06A198",
                         fontWeight: 500,
+                        p: 0,
                       }}
                     >
                       <Box display={"flex"} alignItems={"center"} gap={1.5}>
@@ -531,7 +535,7 @@ export default function FishSupplyTable({ tableData, fishSupply }: Props) {
                 key={"no table"}
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
               >
-                No Data Found
+                <p style={{ width: "130px" }}>No Data Found</p>
               </TableRow>
             )}
           </TableBody>

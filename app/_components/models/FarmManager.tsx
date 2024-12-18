@@ -1347,7 +1347,7 @@ const TransferModal: React.FC<Props> = ({
                               )}
 
                             <TextField
-                              label="Mean Weight *"
+                              label="Mean Weights *"
                               type="text"
                               className="form-input custom-wrap"
                               sx={{
