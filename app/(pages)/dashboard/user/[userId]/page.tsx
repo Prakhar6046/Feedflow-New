@@ -1,37 +1,33 @@
 "use client";
+import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
+import Loader from "@/app/_components/Loader";
+import * as validationPattern from "@/app/_lib/utils/validationPatterns/index";
+import * as validationMessage from "@/app/_lib/utils/validationsMessage/index";
+import { SingleUser, UserEditFormInputs } from "@/app/_typeModels/User";
+import { selectRole } from "@/lib/features/user/userSlice";
+import { useAppSelector } from "@/lib/hooks";
+import EyeClosed from "@/public/static/img/icons/ic-eye-closed.svg";
+import EyeOpened from "@/public/static/img/icons/ic-eye-open.svg";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import {
   Box,
   Divider,
-  FormControl,
   FormControlLabel,
   Grid,
-  InputLabel,
-  Select,
   Stack,
   Switch,
   SwitchProps,
   TextField,
   Typography,
 } from "@mui/material";
-import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import { useEffect, useState } from "react";
-import Loader from "@/app/_components/Loader";
-import { SubmitHandler, useForm } from "react-hook-form";
-import EyeClosed from "@/public/static/img/icons/ic-eye-closed.svg";
-import toast from "react-hot-toast";
+import { styled } from "@mui/material/styles";
 import { getCookie } from "cookies-next";
-import { SingleUser, UserEditFormInputs } from "@/app/_typeModels/User";
-import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
-import { useRouter } from "next/navigation";
 import Image from "next/image";
-import EyeOpened from "@/public/static/img/icons/ic-eye-open.svg";
-import * as validationPattern from "@/app/_lib/utils/validationPatterns/index";
-import * as validationMessage from "@/app/_lib/utils/validationsMessage/index";
-import { selectRole } from "@/lib/features/user/userSlice";
-import { useAppSelector } from "@/lib/hooks";
-import { selectIsEditFeed } from "@/lib/features/feed/feedSlice";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
