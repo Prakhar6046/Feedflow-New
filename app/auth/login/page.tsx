@@ -57,10 +57,12 @@ export default function Page() {
           router.push("/dashboard/organisation");
         }
       } else if (data?.error) {
+        toast.dismiss();
         toast.error(data?.error);
       }
     } catch (error) {
       console.error("Login error:", error);
+      toast.dismiss();
       toast.error("Something went wrong. Please try again.");
     } finally {
       setLoading(false);
