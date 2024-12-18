@@ -118,6 +118,7 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
       formData.append("organisationType", String(data.organisationType));
       formData.append("address", JSON.stringify(address));
       formData.append("contacts", JSON.stringify(data.contacts));
+      formData.append("imageUrl", String(profilePic));
       if (isHatcherySelected && organisationData) {
         formData.append(
           "hatcheryId",
@@ -169,19 +170,19 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
   const handleUpload = async (imagePath: FileList) => {
     const formData = new FormData();
     formData.append("image", imagePath[0]);
-    formData.append("organisationId", params.organisationId);
+    // formData.append("organisationId", params.organisationId);
     const oldImageName = profilePic?.split("/").pop()?.split(".")[0];
 
     formData.append("oldImageName", oldImageName || "");
 
-    const response = await fetch(`/api/profile-pic/upload/organisation`, {
+    const response = await fetch(`/api/profile-pic/upload/new`, {
       method: "POST",
       body: formData,
     });
 
     if (response.ok) {
       const profile = await response.json();
-      setProfilePic(profile.data.imageUrl);
+      setProfilePic(profile.data.secure_url);
     }
   };
   useEffect(() => {

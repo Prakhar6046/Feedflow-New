@@ -50,6 +50,7 @@ export async function PUT(req: NextRequest, context: { params: any }) {
     const contactsData = JSON.parse(formData.get("contacts") as string);
     const hatcheryId = JSON.parse(formData.get("hatcheryId") as string);
     const hatchery = JSON.parse(formData.get("hatchery") as string);
+    const imageUrl = formData.get("imageUrl") as string;
 
     // Handle address update or create
     const updatedAddress = await prisma.address.upsert({
@@ -159,6 +160,7 @@ export async function PUT(req: NextRequest, context: { params: any }) {
         organisationCode: organisationCode || organisation.organisationCode,
         addressId: updatedAddress.id,
         organisationType: organisationType || organisation.organisationType,
+        imageUrl: imageUrl || organisation.imageUrl,
       },
     });
 

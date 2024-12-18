@@ -553,7 +553,25 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                       >
                         <Box display={"flex"} gap={2} alignItems={"center"}>
                           <Box position={"relative"}>
-                            <TextField
+                            <Controller
+                              name={`productionUnits.${index}.waterflowRate`} // Dynamic field name
+                              control={control}
+                              defaultValue="" // Set default value if necessary
+                              render={({ field }) => (
+                                <TextField
+                                  {...field} // Spread field props
+                                  label="Waterflow Rate *"
+                                  type="text"
+                                  focused
+                                  className="form-input"
+                                />
+                              )}
+                              rules={{
+                                required: true,
+                                pattern: validationPattern.onlyNumbersPattern,
+                              }} // Add validation
+                            />
+                            {/* <TextField
                               label="Waterflow Rate *"
                               type="text"
                               className="form-input"
@@ -565,7 +583,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                                 }
                               )}
                               focused
-                            />
+                            /> */}
                             <Typography
                               variant="body1"
                               color="#555555AC"
