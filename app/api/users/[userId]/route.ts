@@ -66,6 +66,7 @@ export async function PUT(req: NextRequest, context: { params: any }) {
       updateData = {
         name: formData.get("name") as string,
         email: formData.get("email") as string,
+        imageUrl: formData.get("imageUrl") as string,
         organisationId: Number(formData.get("organisationId") as string),
       };
     }

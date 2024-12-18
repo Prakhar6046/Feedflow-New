@@ -134,6 +134,7 @@ export default function Page({ params }: { params: { userId: string } }) {
     formData.append("name", data.name);
     formData.append("email", data.email);
     formData.append("organisationId", String(userData?.data.organisationId));
+    formData.append("imageUrl", String(profilePic));
     if (data.password) {
       formData.append("password", data.password);
     }
@@ -155,21 +156,21 @@ export default function Page({ params }: { params: { userId: string } }) {
   const handleUpload = async (imagePath: FileList) => {
     const formData = new FormData();
     formData.append("image", imagePath[0]);
-    formData.append("userId", params.userId);
+    // formData.append("userId", params.userId);
     // const old: any = profilePic?.split("/");
 
     // formData.append("oldImageName", old ? old[old?.length - 1] : "");
     const oldImageName = profilePic?.split("/").pop()?.split(".")[0];
 
     formData.append("oldImageName", oldImageName || "");
-    const response = await fetch(`/api/profile-pic/upload`, {
+    const response = await fetch(`/api/profile-pic/upload/new`, {
       method: "POST",
       body: formData,
     });
 
     if (response.ok) {
       const updatedUser = await response.json();
-      setProfilePic(updatedUser.data.imageUrl);
+      setProfilePic(updatedUser.data.url);
 
       // toast.success(updatedUser.message);
       // resetField("confirmPassword");

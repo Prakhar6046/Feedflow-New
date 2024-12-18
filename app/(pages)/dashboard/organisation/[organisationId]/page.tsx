@@ -182,7 +182,7 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
 
     if (response.ok) {
       const profile = await response.json();
-      setProfilePic(profile.data.secure_url);
+      setProfilePic(profile.data.url);
     }
   };
   useEffect(() => {
