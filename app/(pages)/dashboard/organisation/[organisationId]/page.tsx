@@ -85,6 +85,7 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
     trigger,
     formState: { errors },
   } = useForm<AddOrganizationFormInputs>({
+    mode: "onChange",
     defaultValues: {
       contacts: [{ name: "", role: "", email: "", phone: "" }],
     },
@@ -848,6 +849,20 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
                       className="form-input"
                       {...register(`contacts.${index}.email` as const, {
                         required: true,
+                        pattern: validationPattern.emailPattern,
+                        validate: (value) => {
+                          const isUnique = fields.every(
+                            (f, i) =>
+                              i === index ||
+                              String(f.email).toLowerCase() !==
+                                String(value).toLowerCase()
+                          );
+                          if (!isUnique) {
+                            return "Please enter a unique email.This email is already used in contacts information";
+                          }
+
+                          return true;
+                        },
                       })}
                       focused
                       sx={{
@@ -869,7 +884,35 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
                           fontSize={13}
                           mt={0.5}
                         >
-                          This field is required.
+                          {validationMessage.required}
+                        </Typography>
+                      )}
+                    {errors &&
+                      errors?.contacts &&
+                      errors?.contacts[index] &&
+                      errors?.contacts[index]?.email &&
+                      errors?.contacts[index]?.email.type === "pattern" && (
+                        <Typography
+                          variant="body2"
+                          color="red"
+                          fontSize={13}
+                          mt={0.5}
+                        >
+                          {validationMessage.emailPatternMessage}
+                        </Typography>
+                      )}
+                    {errors &&
+                      errors?.contacts &&
+                      errors?.contacts[index] &&
+                      errors?.contacts[index]?.email &&
+                      errors?.contacts[index]?.email.type === "validate" && (
+                        <Typography
+                          variant="body2"
+                          color="red"
+                          fontSize={13}
+                          mt={0.5}
+                        >
+                          {errors?.contacts[index]?.email.message}
                         </Typography>
                       )}
                   </Box>

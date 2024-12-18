@@ -852,6 +852,19 @@ const AddNewOrganisation = () => {
                     {...register(`contacts.${index}.email` as const, {
                       required: true,
                       pattern: validationPattern.emailPattern,
+                      validate: (value) => {
+                        const isUnique = fields.every(
+                          (f, i) =>
+                            i === index ||
+                            String(f.email).toLowerCase() !==
+                              String(value).toLowerCase()
+                        );
+                        if (!isUnique) {
+                          return "Please enter a unique email.This email is already used in contacts information";
+                        }
+
+                        return true;
+                      },
                     })}
                     focused
                     sx={{
@@ -884,6 +897,20 @@ const AddNewOrganisation = () => {
                         mt={0.5}
                       >
                         {validationMessage.emailPatternMessage}
+                      </Typography>
+                    )}
+                  {errors &&
+                    errors?.contacts &&
+                    errors?.contacts[index] &&
+                    errors?.contacts[index]?.email &&
+                    errors?.contacts[index]?.email.type === "validate" && (
+                      <Typography
+                        variant="body2"
+                        color="red"
+                        fontSize={13}
+                        mt={0.5}
+                      >
+                        {errors?.contacts[index]?.email.message}
                       </Typography>
                     )}
                 </Box>
