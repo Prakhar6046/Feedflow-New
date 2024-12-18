@@ -230,6 +230,7 @@ export interface WaterManageHistoryGroup {
       ph: String;
       visibility: String;
       productionId: Number;
+      createdAt: String;
     }[];
     WaterSampleHistory?: {
       id: Number;

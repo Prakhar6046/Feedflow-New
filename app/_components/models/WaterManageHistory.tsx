@@ -330,9 +330,7 @@ const WaterManageHistoryModal: React.FC<Props> = ({
                                         textWrap: "nowrap",
                                       }}
                                     >
-                                      {formattedDate(
-                                        String(farm.units[0].createdAt)
-                                      )}
+                                      {formattedDate(String(unit.createdAt))}
                                     </Typography>
                                   );
                                 }
