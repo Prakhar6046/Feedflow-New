@@ -61,7 +61,7 @@ const unitsTypes = [
 const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
   uuidv4();
   const router = useRouter();
-  const formProductionUnitsData = getLocalItem("farmProductionUnits");
+
   const userData: any = getCookie("logged-user");
   const dispatch = useAppDispatch();
   const farm = useAppSelector(selectFarm);
@@ -77,6 +77,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
   const [calculatedValue, setCalculatedValue] = useState<CalculateType>();
   const [isApiCallInProgress, setIsApiCallInProgress] =
     useState<boolean>(false);
+  const [formProductionUnitsData, setFormProductionUnitsData] = useState<any>();
 
   const {
     register,
@@ -235,6 +236,12 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
   };
 
   useEffect(() => {
+    if (typeof window !== "undefined") {
+      const formData = getLocalItem("farmProductionUnits");
+      setFormProductionUnitsData(formData);
+    }
+  }, []);
+  useEffect(() => {
     if (calculatedValue?.id && calculatedValue.output) {
       const updatedFields = productionUnits.map((field) => {
         if (field.id === calculatedValue.id) {
@@ -251,7 +258,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
     if (editFarm && !formProductionUnitsData) {
       setValue("productionUnits", editFarm?.productionUnits);
     } else if (formProductionUnitsData) {
-      setValue("productionUnits", JSON.parse(formProductionUnitsData));
+      setValue("productionUnits", formProductionUnitsData);
     }
   }, [formProductionUnitsData]);
 

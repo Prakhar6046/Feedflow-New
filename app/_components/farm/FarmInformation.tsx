@@ -53,12 +53,13 @@ const FarmInformation: NextPage<Props> = ({
     reset,
   } = useForm<Farm>({ mode: "onChange" });
   const loggedUser: any = getCookie("logged-user");
-  const formData = getLocalItem("farmData");
+
   const user = JSON.parse(loggedUser);
   const [selectedSwtich, setSelectedSwtich] = useState<string>("address");
   const [altitude, setAltitude] = useState<String>("");
   const [lat, setLat] = useState<String>("");
   const [lng, setLng] = useState<String>("");
+  const [formData, setFormData] = useState<any>();
   const [addressInformation, setAddressInformation] = useState<any>();
   const [useAddress, setUseAddress] = useState<boolean>(false);
   const [searchedAddress, setSearchedAddress] = useState<any>();
@@ -111,8 +112,9 @@ const FarmInformation: NextPage<Props> = ({
       }
     }
   }, [editFarm, formData]);
+
   useEffect(() => {
-    if (formData) {
+    if (formData && Object.keys(formData).length) {
       const data = formData;
       setValue("name", data?.name);
       setValue("farmAltitude", data?.farmAltitude),
@@ -127,7 +129,7 @@ const FarmInformation: NextPage<Props> = ({
       setValue("lng", data?.lng);
       setValue("mangerId", data?.mangerId);
     }
-  }, [formData]);
+  }, [formData, setValue]);
   useEffect(() => {
     if (addressInformation && useAddress) {
       addressInformation.address && clearErrors("addressLine1");
@@ -161,6 +163,11 @@ const FarmInformation: NextPage<Props> = ({
       setLoading(false);
     };
     getFeedSupplyer();
+
+    if (typeof window !== "undefined") {
+      const formData = getLocalItem("farmData");
+      setFormData(formData);
+    }
   }, []);
 
   if (loading) {
