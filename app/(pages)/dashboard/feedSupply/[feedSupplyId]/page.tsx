@@ -1,14 +1,9 @@
 "use client";
 import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
-import FeedSelection from "@/app/_components/feedSupply/FeedSelection";
-import FeedSupplyIntro from "@/app/_components/feedSupply/FeedSupplyIntro";
 import NewFeed from "@/app/_components/feedSupply/NewFeed";
-import {
-  selectEditFeed,
-  selectIsEditFeed,
-} from "@/lib/features/feed/feedSlice";
+import { selectIsEditFeed } from "@/lib/features/feed/feedSlice";
 import { useAppSelector } from "@/lib/hooks";
-import { Box, Divider, Grid, Step, StepLabel, Stepper } from "@mui/material";
+import { Grid } from "@mui/material";
 
 import { useEffect, useState } from "react";
 
@@ -54,13 +49,7 @@ export default function Page({ params }: { params: { feedSupplyId: string } }) {
             justifyContent: "center",
           }}
         ></Grid>
-        <Grid
-          item
-          xl={9}
-          md={8}
-          xs={12}
-          my={2}
-        >
+        <Grid item xl={9} md={8} xs={12} my={2}>
           <NewFeed
             setActiveStep={setActiveStep}
             feedSupplyId={params.feedSupplyId}

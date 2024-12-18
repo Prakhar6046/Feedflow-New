@@ -169,6 +169,9 @@ const MapComponent = ({
             `/api/farm/altitude?lat=${data.results[0].geometry.location.lat}&lng=${data.results[0].geometry.location.lng}`
           );
           const res = await altitudeResponse.json();
+          clearErrors("farmAltitude");
+          clearErrors("lat");
+          clearErrors("lng");
           setAltitude(String(res?.results[0]?.elevation));
           setLat(String(res?.results[0]?.location.lat));
           setLng(String(res?.results[0]?.location.lng));
@@ -388,6 +391,9 @@ const MapComponent = ({
                                   )
                                     .then((altitudeRes) => altitudeRes.json())
                                     .then((altitudeData) => {
+                                      clearErrors("farmAltitude");
+                                      clearErrors("lat");
+                                      clearErrors("lng");
                                       setAltitude(
                                         String(
                                           altitudeData?.results[0]?.elevation
