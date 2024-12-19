@@ -1,7 +1,5 @@
 import * as validationPattern from "@/app/_lib/utils/validationPatterns/index";
 import * as validationMessage from "@/app/_lib/utils/validationsMessage/index";
-import { Farm } from "@/app/_typeModels/Farm";
-import { Production } from "@/app/_typeModels/production";
 import { Close as CloseIcon } from "@mui/icons-material"; // Use Material-UI's Close icon directly
 import {
   Box,
