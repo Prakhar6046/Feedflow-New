@@ -325,8 +325,6 @@ const WaterManageHistoryModal: React.FC<Props> = ({
                                             : "19px 12px 19px 0"
                                         }`,
                                         margin: "8px 0",
-                                        // marginBottom: "10px",
-                                        // padding: "21px",
                                         textWrap: "nowrap",
                                       }}
                                     >
