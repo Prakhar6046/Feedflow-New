@@ -112,12 +112,26 @@ export default function AddNewUser({ organisations }: Props) {
   };
 
   const handleUpload = async (imagePath: FileList) => {
-    const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
-    if (!allowedTypes.includes(imagePath[0].type)) {
-      setError("Only image files are allowed.");
+    const file = imagePath[0];
+    const allowedTypes = ["image/jpeg", "image/png", "image/svg+xml"];
+    if (!allowedTypes.includes(file?.type)) {
+      toast.dismiss();
+      toast.error(
+        "Invalid file type. Please upload an image in .jpg, .jpeg, .png or.svg format."
+      );
       return;
     }
-    setError(null);
+    // Validate file size
+    const maxSizeInMB = 2;
+    const maxSizeInBytes = maxSizeInMB * 1024 * 1024;
+    if (file.size > maxSizeInBytes) {
+      toast.dismiss();
+      toast.error(
+        `File size exceeds ${maxSizeInMB}MB. Please upload a smaller file.`
+      );
+      return;
+    }
+
     const formData = new FormData();
     formData.append("image", imagePath[0]);
     const oldImageName = profilePic?.split("/").pop()?.split(".")[0];
@@ -132,6 +146,7 @@ export default function AddNewUser({ organisations }: Props) {
     if (response.ok) {
       const profileData = await response.json();
       setProfilePic(profileData.data.url);
+      toast.dismiss();
       toast.success("Profile photo successfully uploaded");
     }
   };
@@ -220,7 +235,7 @@ export default function AddNewUser({ organisations }: Props) {
                     {...register("image", {
                       onChange: (e) => handleUpload(e.target.files),
                     })}
-                    multiple
+                    accept=".jpg,.jpeg,.png,.svg"
                   />
                   <Button
                     component="label"
@@ -257,15 +272,10 @@ export default function AddNewUser({ organisations }: Props) {
                       {...register("image", {
                         onChange: (e) => handleUpload(e.target.files),
                       })}
-                      multiple
+                      accept=".jpg,.jpeg,.png,.svg"
                     />
                   </Button>
                 </Button>
-                {error && (
-                  <Typography variant="body2" color="error" mt={1}>
-                    {error}
-                  </Typography>
-                )}
               </Grid>
 
               <Grid

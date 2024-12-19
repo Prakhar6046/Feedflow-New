@@ -138,6 +138,26 @@ const AddNewOrganisation = () => {
     }
   };
   const handleUpload = async (imagePath: FileList) => {
+    const file = imagePath[0];
+    const allowedTypes = ["image/jpeg", "image/png", "image/svg+xml"];
+    if (!allowedTypes.includes(file?.type)) {
+      toast.dismiss();
+      toast.error(
+        "Invalid file type. Please upload an image in .jpg, .jpeg, .png or.svg format."
+      );
+      return;
+    }
+    // Validate file size
+    const maxSizeInMB = 2;
+    const maxSizeInBytes = maxSizeInMB * 1024 * 1024;
+    if (file.size > maxSizeInBytes) {
+      toast.dismiss();
+      toast.error(
+        `File size exceeds ${maxSizeInMB}MB. Please upload a smaller file.`
+      );
+      return;
+    }
+
     const formData = new FormData();
     formData.append("image", imagePath[0]);
     const oldImageName = profilePic?.split("/").pop()?.split(".")[0];
@@ -263,7 +283,7 @@ const AddNewOrganisation = () => {
               {...register("image", {
                 onChange: (e) => handleUpload(e.target.files),
               })}
-              multiple
+              accept=".jpg,.jpeg,.png,.svg"
             />
             <Button
               component="label"
@@ -300,7 +320,7 @@ const AddNewOrganisation = () => {
                 {...register("image", {
                   onChange: (e) => handleUpload(e.target.files),
                 })}
-                multiple
+                accept=".jpg,.jpeg,.png,.svg"
               />
             </Button>
           </Button>
@@ -324,8 +344,8 @@ const AddNewOrganisation = () => {
               margin="0 auto"
               color="#979797"
             >
-              Allowed *.jpeg, *.jpg, *.png, *.gif <br />
-              max size of 3.15M byte
+              Allowed *.jpeg, *.jpg, *.png, *.gif,*.svg <br />
+              max size of 2M byte
             </Typography>
           </Box>
         </Grid>

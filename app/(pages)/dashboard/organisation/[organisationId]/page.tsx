@@ -169,6 +169,25 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
     }
   };
   const handleUpload = async (imagePath: FileList) => {
+    const file = imagePath[0];
+    const allowedTypes = ["image/jpeg", "image/png", "image/svg+xml"];
+    if (!allowedTypes.includes(file?.type)) {
+      toast.dismiss();
+      toast.error(
+        "Invalid file type. Please upload an image in .jpg, .jpeg, .png or.svg format."
+      );
+      return;
+    }
+    // Validate file size
+    const maxSizeInMB = 2;
+    const maxSizeInBytes = maxSizeInMB * 1024 * 1024;
+    if (file.size > maxSizeInBytes) {
+      toast.dismiss();
+      toast.error(
+        `File size exceeds ${maxSizeInMB}MB. Please upload a smaller file.`
+      );
+      return;
+    }
     const formData = new FormData();
     formData.append("image", imagePath[0]);
     // formData.append("organisationId", params.organisationId);
@@ -349,7 +368,7 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
                 {...register("image", {
                   onChange: (e) => handleUpload(e.target.files),
                 })}
-                multiple
+                accept=".jpg,.jpeg,.png,.svg"
               />
               <Button
                 component="label"
@@ -386,7 +405,7 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
                   {...register("image", {
                     onChange: (e) => handleUpload(e.target.files),
                   })}
-                  multiple
+                  accept=".jpg,.jpeg,.png,.svg"
                 />
               </Button>
             </Button>
