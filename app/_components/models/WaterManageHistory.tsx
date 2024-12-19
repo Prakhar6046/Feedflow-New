@@ -320,7 +320,7 @@ const WaterManageHistoryModal: React.FC<Props> = ({
                                         fontSize: 14,
                                         backgroundColor: "#F5F6F8",
                                         padding: `${
-                                          farm.units[0].createdAt
+                                          unit.createdAt
                                             ? "8px 12px 8px 0"
                                             : "19px 12px 19px 0"
                                         }`,
