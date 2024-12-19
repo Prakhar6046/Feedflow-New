@@ -4,14 +4,13 @@ import { NextRequest, NextResponse } from "next/server";
 
 export const DELETE = async (request: NextRequest) => {
   try {
-    const searchParams = request.nextUrl.searchParams;
-    const role = searchParams.get("role");
     const body = await request.json();
+    console.log("payload", body);
     const id = Number(body.id);
     const type = body.type;
     const public_id = body.image;
 
-    if (!id && !type) {
+    if (!id || !type) {
       return new NextResponse(
         JSON.stringify({ message: "Missing or invalid id and type" })
       );
