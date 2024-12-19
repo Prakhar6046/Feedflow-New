@@ -282,11 +282,6 @@ export default function AddNewUser({ organisations }: Props) {
                       accept=".jpg,.jpeg,.png,.svg"
                     />
                   </Button>
-<<<<<<< HEAD
-                </Button>
-              </Grid>
-=======
->>>>>>> new-ui-fixes
 
                   {/* delete button */}
                   <Button
