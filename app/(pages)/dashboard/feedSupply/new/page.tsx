@@ -147,12 +147,14 @@ export default function Page() {
             <FeedStore setActiveStep={setActiveStep} steps={steps} />
           )}
           {steps && steps[1].label === "New Feed" && activeStep === 1 && (
-            <NewFeed setActiveStep={setActiveStep} />
+            <NewFeed setActiveStep={setActiveStep} activeStep={activeStep} />
           )}
           {steps &&
             steps[2] &&
             steps[2].label === "New Feed" &&
-            activeStep === 2 && <NewFeed setActiveStep={setActiveStep} />}
+            activeStep === 2 && (
+              <NewFeed setActiveStep={setActiveStep} activeStep={activeStep} />
+            )}
         </Grid>
       </Grid>
     </>

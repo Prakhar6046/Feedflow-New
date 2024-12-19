@@ -38,6 +38,7 @@ import NutritionalGuarantee from "./NutritionalGuarantee";
 interface Props {
   setActiveStep?: any;
   feedSupplyId?: String;
+  activeStep: number;
 }
 interface nutritionalGuarantee {
   moisture: { kg: String; value: String };
@@ -75,7 +76,11 @@ export interface FormInputs {
   feedSupplier: String;
   nutritionalGuarantee: nutritionalGuarantee;
 }
-const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
+const NewFeed: NextPage<Props> = ({
+  setActiveStep,
+  feedSupplyId,
+  activeStep,
+}) => {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const loggedUser: any = getCookie("logged-user");
@@ -1304,7 +1309,7 @@ const NewFeed: NextPage<Props> = ({ setActiveStep, feedSupplyId }) => {
                         borderRadius: "8px",
                         border: "1px solid #06A19B",
                       }}
-                      onClick={() => setActiveStep(0)}
+                      onClick={() => setActiveStep(activeStep - 1)}
                     >
                       Previous
                     </Button>
