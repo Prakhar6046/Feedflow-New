@@ -51,6 +51,7 @@ export default function Page({ params }: { params: { feedSupplyId: string } }) {
         ></Grid>
         <Grid item xl={9} md={8} xs={12} my={2}>
           <NewFeed
+            activeStep={activeStep}
             setActiveStep={setActiveStep}
             feedSupplyId={params.feedSupplyId}
           />
