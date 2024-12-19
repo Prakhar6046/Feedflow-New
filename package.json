@@ -27,6 +27,7 @@
     "change-case": "^4.1.2",
     "cloudinary": "^2.5.0",
     "cookies-next": "^4.3.0",
+    "date-fns": "^4.1.0",
     "dayjs": "^1.11.13",
     "form-data": "^4.0.0",
     "framer-motion": "^11.5.2",

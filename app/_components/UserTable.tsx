@@ -324,7 +324,7 @@ export default function UserTable({ users }: Props) {
                       scope="row"
                     >
                       <Box display={"flex"} alignItems={"center"} gap={1.5}>
-                        {user?.imageUrl ? (
+                        {user?.imageUrl && user?.imageUrl !== "null" ? (
                           <Image
                             src={String(user.imageUrl)}
                             width={40}
@@ -403,7 +403,8 @@ export default function UserTable({ users }: Props) {
                         alignItems={"center"}
                         gap={"12px"}
                       >
-                        {user?.organisation.imageUrl ? (
+                        {user?.organisation?.imageUrl &&
+                        user?.organisation?.imageUrl !== "null" ? (
                           <Image
                             src={String(user.organisation.imageUrl)}
                             width={40}

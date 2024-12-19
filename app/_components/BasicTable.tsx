@@ -282,7 +282,8 @@ export default function BasicTable({ organisations, userRole }: Props) {
                       scope="row"
                     >
                       <Box display={"flex"} alignItems={"center"} gap={1.5}>
-                        {organisation?.imageUrl ? (
+                        {organisation?.imageUrl &&
+                        organisation?.imageUrl !== "null" ? (
                           <Image
                             src={String(organisation.imageUrl)}
                             width={40}
