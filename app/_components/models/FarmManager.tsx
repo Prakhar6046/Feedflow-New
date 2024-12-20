@@ -514,6 +514,7 @@ const TransferModal: React.FC<Props> = ({
         setLocalItem("transferformData", watchedFields);
       } else {
         removeLocalItem("transferformData");
+        setFormData(null);
       }
     }
   }, [
