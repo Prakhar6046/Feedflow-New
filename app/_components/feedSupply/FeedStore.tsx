@@ -18,28 +18,30 @@ function FeedStore({ setActiveStep, steps }: Iprops) {
             justifyContent={"flex-end"}
             width={"100%"}
           >
-            <Box
-              display={"flex"}
-              justifyContent={"flex-end"}
-              alignItems={"flex-end"}
-              gap={3}
+            {" "}
+          </Box>
+          <Box
+            display={"flex"}
+            justifyContent={"flex-end"}
+            alignItems={"flex-end"}
+            gap={3}
+            mt="14rem"
+          >
+            <Button
+              type="button"
+              variant="contained"
+              sx={{
+                background: "#06A19B",
+                fontWeight: 600,
+                padding: "6px 16px",
+                width: "fit-content",
+                textTransform: "capitalize",
+                borderRadius: "8px",
+              }}
+              onClick={() => setActiveStep(2)}
             >
-              <Button
-                type="button"
-                variant="contained"
-                sx={{
-                  background: "#06A19B",
-                  fontWeight: 600,
-                  padding: "6px 16px",
-                  width: "fit-content",
-                  textTransform: "capitalize",
-                  borderRadius: "8px",
-                }}
-                onClick={() => setActiveStep(2)}
-              >
-                Next
-              </Button>
-            </Box>
+              Next
+            </Button>
           </Box>
         </Box>
       )}

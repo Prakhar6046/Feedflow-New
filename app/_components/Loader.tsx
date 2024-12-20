@@ -16,7 +16,13 @@ const Loader: NextPage<Props> = ({}) => {
       className="loading-spinner"
     >
       <Box sx={{ display: "flex" }}>
-        <CircularProgress />
+        <div className="loader-container">
+          <div className="loader-inner">
+            <img src="../static/img/loader.png" className="loader" />
+          </div>
+          <div></div>
+          <div></div>
+        </div>
       </Box>
     </Stack>
   );
