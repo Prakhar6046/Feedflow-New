@@ -1,6 +1,10 @@
 "use client";
 import TransferModal from "@/app/_components/models/FarmManager";
 import {
+  farmManagerFishHead,
+  farmManagerFishHeadMember,
+  farmManagerWaterHead,
+  farmManagerWaterHeadMember,
   fishManageHistoryHead,
   waterManageHistoryHead,
 } from "@/app/_lib/utils/tableHeadData";
@@ -37,14 +41,13 @@ import WaterQualityParameter from "../models/WaterQualityParameter";
 import { getLocalItem, setLocalItem } from "@/app/_lib/utils";
 interface Props {
   productions: Production[];
-  tableData: any;
+  tableData?: any;
   farms: Farm[];
   batches: { batchNumber: String; id: Number }[];
 }
 
 export default function ProductionTable({
   productions,
-  tableData,
   farms,
   batches,
 }: Props) {
@@ -57,11 +60,20 @@ export default function ProductionTable({
   const isFish = searchParams.get("isFish");
   const isWater = searchParams.get("isWater");
   const [production, setProduction] = useState<any>();
+  const loggedUser: any = getCookie("logged-user");
 
   const [selectedView, setSelectedView] = useState<string>();
   const [selectedProduction, setSelectedProduction] = useState<any>(
     production ?? null
   );
+  const [tableHead, setTableHead] = useState<
+    {
+      id: string;
+      numeric: boolean;
+      disablePadding: boolean;
+      label: string;
+    }[]
+  >();
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null
   );
@@ -132,7 +144,7 @@ export default function ProductionTable({
     return (
       <TableHead className="prod-action">
         <TableRow>
-          {tableData.map((headCell: any, idx: number, headCells: any) => (
+          {tableHead?.map((headCell: any, idx: number, headCells: any) => (
             <TableCell
               key={headCell.id}
               sortDirection={
@@ -268,13 +280,9 @@ export default function ProductionTable({
   };
 
   const handleTableView = (value: string) => {
-    setLoading(true);
     setSelectedView(value);
     setCookie("productionCurrentView", value);
     router.refresh();
-    setTimeout(() => {
-      setLoading(false);
-    }, 2000);
   };
 
   const groupedData: any = productions?.reduce((result: any, item) => {
@@ -422,18 +430,29 @@ export default function ProductionTable({
       }
     }
   }, [sortDataFromLocal]);
-  // useEffect(() => {
-  //   if (sortDataFromLocal) {
-  //     const data = sortDataFromLocal;
-  //     setOrder(data.direction);
-  //     setOrderBy(data.column);
-  //   }
-  // }, [sortDataFromLocal]);
+
   useEffect(() => {
     if (productions && !sortDataFromLocal) {
       setProductionData(productions);
     }
   }, [productions]);
+
+  useEffect(() => {
+    const user = JSON.parse(loggedUser);
+    if (selectedView === "fish") {
+      if (user.role !== "MEMBER") {
+        setTableHead(farmManagerFishHead);
+      } else {
+        setTableHead(farmManagerFishHeadMember);
+      }
+    } else {
+      if (user.role !== "MEMBER") {
+        setTableHead(farmManagerWaterHead);
+      } else {
+        setTableHead(farmManagerWaterHeadMember);
+      }
+    }
+  }, [selectedView]);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -1022,91 +1041,98 @@ export default function ProductionTable({
                                     mb={1}
                                     key={Number(unit.id)}
                                   >
-                                    <Tooltip title="Fish" placement="top">
-                                      <Button
-                                        id="basic-button"
-                                        aria-controls={
-                                          open ? "basic-menu" : undefined
-                                        }
-                                        aria-haspopup="true"
-                                        aria-expanded={
-                                          open ? "true" : undefined
-                                        }
-                                        onClick={(e) =>
-                                          handleClick(e, unit, true)
-                                        }
-                                        disabled={unit.isManager ? false : true}
-                                        className=""
-                                        type="button"
-                                        variant="contained"
-                                        sx={{
-                                          background: "#06A19B",
-                                          fontWeight: "bold",
-                                          paddingX: 0.75,
-                                          paddingY: 0.25,
-                                          borderRadius: "8px",
-                                          alignItems: "center",
-                                          minWidth: "fit-content",
-                                        }}
-                                      >
-                                        <svg
-                                          xmlns="http://www.w3.org/2000/svg"
-                                          width="22px"
-                                          height="22px"
-                                          viewBox="0 0 24 24"
+                                    {selectedView === "fish" ? (
+                                      <Tooltip title="Fish" placement="top">
+                                        <Button
+                                          id="basic-button"
+                                          aria-controls={
+                                            open ? "basic-menu" : undefined
+                                          }
+                                          aria-haspopup="true"
+                                          aria-expanded={
+                                            open ? "true" : undefined
+                                          }
+                                          onClick={(e) =>
+                                            handleClick(e, unit, true)
+                                          }
+                                          disabled={
+                                            unit.isManager ? false : true
+                                          }
+                                          className=""
+                                          type="button"
+                                          variant="contained"
+                                          sx={{
+                                            background: "#06A19B",
+                                            fontWeight: "bold",
+                                            paddingX: 0.75,
+                                            paddingY: 0.25,
+                                            borderRadius: "8px",
+                                            alignItems: "center",
+                                            minWidth: "fit-content",
+                                          }}
                                         >
-                                          <path
-                                            fill="none"
-                                            stroke="currentColor"
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            strokeWidth="1"
-                                            d="M6.008 12h-.01M11 16.042c.463.153.908.329 1.31.61m0 0A3.95 3.95 0 0 1 14 19.885a.117.117 0 0 1-.118.116c-2.917-.013-4.224-.507-4.773-1.322L8 16.857c-2.492-.503-4.782-2.094-6-4.774c3-6.597 12.5-6.597 15.5 0m-5.19 4.57c2.17-.66 4.105-2.184 5.19-4.57m-5.19-4.569A3.95 3.95 0 0 0 14 4.282c0-.826-4.308.342-4.89 1.206L8 7.31m9.5 4.773c.333-.66 2.1-2.969 4.5-2.969c-.833.825-2.2 3.959-1 5.938c-1.2 0-3-2.309-3.5-2.969"
-                                            color="currentColor"
-                                          />
-                                        </svg>
-                                      </Button>
-                                    </Tooltip>
-                                    <Tooltip title="Water" placement="top">
-                                      <Button
-                                        id="basic-button"
-                                        aria-controls={
-                                          open ? "basic-menu" : undefined
-                                        }
-                                        aria-haspopup="true"
-                                        aria-expanded={
-                                          open ? "true" : undefined
-                                        }
-                                        onClick={(e) =>
-                                          handleClick(e, unit, false)
-                                        }
-                                        disabled={unit.isManager ? false : true}
-                                        className=""
-                                        type="button"
-                                        variant="contained"
-                                        sx={{
-                                          background: "#06A19B",
-                                          fontWeight: "bold",
-                                          paddingX: 1,
-                                          paddingY: 0.25,
-                                          borderRadius: "8px",
-                                          alignItems: "center",
-                                          minWidth: "fit-content",
-                                        }}
-                                      >
-                                        <svg
-                                          xmlns="http://www.w3.org/2000/svg"
-                                          width="18px"
-                                          height="18px"
-                                          viewBox="0 0 24 24"
+                                          <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            width="22px"
+                                            height="22px"
+                                            viewBox="0 0 24 24"
+                                          >
+                                            <path
+                                              fill="none"
+                                              stroke="currentColor"
+                                              strokeLinecap="round"
+                                              strokeLinejoin="round"
+                                              strokeWidth="1"
+                                              d="M6.008 12h-.01M11 16.042c.463.153.908.329 1.31.61m0 0A3.95 3.95 0 0 1 14 19.885a.117.117 0 0 1-.118.116c-2.917-.013-4.224-.507-4.773-1.322L8 16.857c-2.492-.503-4.782-2.094-6-4.774c3-6.597 12.5-6.597 15.5 0m-5.19 4.57c2.17-.66 4.105-2.184 5.19-4.57m-5.19-4.569A3.95 3.95 0 0 0 14 4.282c0-.826-4.308.342-4.89 1.206L8 7.31m9.5 4.773c.333-.66 2.1-2.969 4.5-2.969c-.833.825-2.2 3.959-1 5.938c-1.2 0-3-2.309-3.5-2.969"
+                                              color="currentColor"
+                                            />
+                                          </svg>
+                                        </Button>
+                                      </Tooltip>
+                                    ) : (
+                                      <Tooltip title="Water" placement="top">
+                                        <Button
+                                          id="basic-button"
+                                          aria-controls={
+                                            open ? "basic-menu" : undefined
+                                          }
+                                          aria-haspopup="true"
+                                          aria-expanded={
+                                            open ? "true" : undefined
+                                          }
+                                          onClick={(e) =>
+                                            handleClick(e, unit, false)
+                                          }
+                                          disabled={
+                                            unit.isManager ? false : true
+                                          }
+                                          className=""
+                                          type="button"
+                                          variant="contained"
+                                          sx={{
+                                            background: "#06A19B",
+                                            fontWeight: "bold",
+                                            paddingX: 1,
+                                            paddingY: 0.25,
+                                            borderRadius: "8px",
+                                            alignItems: "center",
+                                            minWidth: "fit-content",
+                                          }}
                                         >
-                                          <path
-                                            fill="currentColor"
-                                            d="M12.275 19q.3-.025.513-.238T13 18.25q0-.35-.225-.562T12.2 17.5q-1.025.075-2.175-.562t-1.45-2.313q-.05-.275-.262-.45T7.825 14q-.35 0-.575.263t-.15.612q.425 2.275 2 3.25t3.175.875M12 22q-3.425 0-5.712-2.35T4 13.8q0-2.5 1.988-5.437T12 2q4.025 3.425 6.013 6.363T20 13.8q0 3.5-2.287 5.85T12 22m0-2q2.6 0 4.3-1.763T18 13.8q0-1.825-1.513-4.125T12 4.65Q9.025 7.375 7.513 9.675T6 13.8q0 2.675 1.7 4.438T12 20m0-8"
-                                          />
-                                        </svg>
-                                      </Button>
-                                    </Tooltip>
+                                          <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            width="18px"
+                                            height="18px"
+                                            viewBox="0 0 24 24"
+                                          >
+                                            <path
+                                              fill="currentColor"
+                                              d="M12.275 19q.3-.025.513-.238T13 18.25q0-.35-.225-.562T12.2 17.5q-1.025.075-2.175-.562t-1.45-2.313q-.05-.275-.262-.45T7.825 14q-.35 0-.575.263t-.15.612q.425 2.275 2 3.25t3.175.875M12 22q-3.425 0-5.712-2.35T4 13.8q0-2.5 1.988-5.437T12 2q4.025 3.425 6.013 6.363T20 13.8q0 3.5-2.287 5.85T12 22m0-2q2.6 0 4.3-1.763T18 13.8q0-1.825-1.513-4.125T12 4.65Q9.025 7.375 7.513 9.675T6 13.8q0 2.675 1.7 4.438T12 20m0-8"
+                                            />
+                                          </svg>
+                                        </Button>
+                                      </Tooltip>
+                                    )}
                                   </Box>
                                 );
                               })}
