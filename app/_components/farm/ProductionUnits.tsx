@@ -1,3 +1,4 @@
+import { getLocalItem, removeLocalItem, setLocalItem } from "@/app/_lib/utils";
 import * as validationPattern from "@/app/_lib/utils/validationPatterns/index";
 import * as validationMessage from "@/app/_lib/utils/validationsMessage/index";
 import {
@@ -28,6 +29,7 @@ import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableRow from "@mui/material/TableRow";
+import { getCookie } from "cookies-next";
 import { NextPage } from "next";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -39,10 +41,7 @@ import {
 } from "react-hook-form";
 import toast from "react-hot-toast";
 import { v4 as uuidv4 } from "uuid";
-import CalculateVolume from "../models/CalculateVolume";
-import { deleteCookie, getCookie } from "cookies-next";
-import { px } from "framer-motion";
-import { getLocalItem, removeLocalItem, setLocalItem } from "@/app/_lib/utils";
+import CalculateVolume from "../models/CalculateFarmVolume";
 interface Props {
   editFarm?: any;
   setActiveStep: (val: number) => void;
@@ -61,18 +60,11 @@ const unitsTypes = [
 const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
   uuidv4();
   const router = useRouter();
-
   const userData: any = getCookie("logged-user");
   const dispatch = useAppDispatch();
   const farm = useAppSelector(selectFarm);
   const isEditFarm = useAppSelector(selectIsEditFarm);
   const [selectedUnit, setSelectedUnit] = React.useState<UnitsTypes>();
-  const [length, setLength] = useState<string>();
-  const [width, setWidth] = useState<string>();
-  const [depth, setDepth] = useState<string>();
-  const [radius, setRadius] = useState<string>();
-  const [area, setArea] = useState<string>();
-  const [heigth, setHeigth] = useState<string>();
   const [open, setopen] = useState<boolean>(false);
   const [calculatedValue, setCalculatedValue] = useState<CalculateType>();
   const [isApiCallInProgress, setIsApiCallInProgress] =
@@ -85,6 +77,8 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
     control,
     setValue,
     watch,
+    trigger,
+    clearErrors,
     formState: { errors },
   } = useForm<ProductionUnitsFormTypes>({
     mode: "onChange",
@@ -134,12 +128,13 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
   const handleCalculate = (item: any, index: any) => {
     if (item) {
       setopen(true);
-      setRadius("");
-      setArea("");
-      setDepth("");
-      setHeigth("");
-      setLength("");
-      setWidth("");
+      setValue("length", "");
+      setValue("width", "");
+      setValue("radius", "");
+      setValue("area", "");
+      setValue("depth", "");
+      setValue("height", "");
+      clearErrors(["length", "width", "depth", "radius", "area", "height"]);
       const getFormula = unitsTypes.find(
         (unit) => unit.name === watch(`productionUnits.${index}.type`)
       );
@@ -147,6 +142,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
         name: getFormula?.name,
         formula: getFormula?.formula,
         id: productionUnits[index].id,
+        index: index,
       });
       setCalculatedValue({ output: 0, id: null });
     }
@@ -156,7 +152,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
     // Prevent API call if one is already in progress
     if (isApiCallInProgress) return;
     setIsApiCallInProgress(true);
-
+    clearErrors(["length", "width", "depth", "radius", "area", "height"]);
     try {
       const loggedUserData = JSON.parse(userData);
 
@@ -792,19 +788,14 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
         setOpen={setopen}
         selectedUnit={selectedUnit}
         setCalculatedValue={setCalculatedValue}
-        area={area}
-        setArea={setArea}
-        depth={depth}
-        setDepth={setDepth}
-        heigth={heigth}
-        setHeigth={setHeigth}
-        length={length}
-        setLength={setLength}
-        radius={radius}
-        setRadius={setRadius}
-        width={width}
-        setWidth={setWidth}
+        register={register}
+        watch={watch}
+        errors={errors}
+        trigger={trigger}
         calculatedValue={calculatedValue}
+        setValue={setValue}
+        clearErrors={clearErrors}
+        validationMessage={validationMessage}
       />
     </Stack>
   );

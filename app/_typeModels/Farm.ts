@@ -37,6 +37,7 @@ export interface UnitsTypes {
   name: string | undefined;
   formula: string | undefined;
   id: string;
+  index: number;
 }
 export interface CalculateType {
   output: number;
@@ -50,4 +51,10 @@ export interface ProductionUnitsFormTypes {
     waterflowRate: string;
     id: any;
   }[];
+  area: string;
+  depth: string;
+  width: string;
+  length: string;
+  height: string;
+  radius: string;
 }
