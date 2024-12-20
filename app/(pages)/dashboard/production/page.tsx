@@ -40,15 +40,6 @@ export default async function Page({
         ]}
       />
       <ProductionTable
-        // tableData={
-        //   user.role !== "MEMBER"
-        //     ? productionCurrentView === "fish"
-        //       ? farmManagerFishHead
-        //       : farmManagerWaterHead
-        //     : productionCurrentView === "fish"
-        //     ? farmManagerFishHeadMember
-        //     : farmManagerWaterHeadMember
-        // }
         productions={productions.data}
         farms={farms.data}
         batches={batches.data}

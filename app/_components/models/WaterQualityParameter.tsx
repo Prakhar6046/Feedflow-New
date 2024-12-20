@@ -209,9 +209,7 @@ const WaterQualityParameter: React.FC<Props> = ({
         ph: "",
         TSS: "",
         visibility: "",
-        waterTemp: watchedFields[1]?.waterTemp
-          ? watchedFields[1].waterTemp
-          : "",
+        waterTemp: "",
         date: null,
         showDate: true,
       });
@@ -274,18 +272,18 @@ const WaterQualityParameter: React.FC<Props> = ({
         updatedVisibility += Number(field.visibility);
       });
 
-      const totalFields =
-        watchedFields.filter((data) => data.waterTemp).length - 1;
+      const totalFields = (field: string) => {
+        return watchedFields.filter((data: any) => data[field]).length - 1;
+      };
 
-      const totalWaterTempAvg = updatedWaterTemp / totalFields;
-      const totalDo = updatedDo / totalFields;
-      const totalTSS = updatedTSS / totalFields;
-      const totalNH4 = updatedNH4 / totalFields;
-      const totalNO3 = updatedNO3 / totalFields;
-      const totalNO2 = updatedNO2 / totalFields;
-      const totalPH = updatedPH / totalFields;
-      const totalVisibility = updatedVisibility / totalFields;
-
+      const totalWaterTempAvg = updatedWaterTemp / totalFields("waterTemp");
+      const totalDo = updatedDo / totalFields("Do");
+      const totalTSS = updatedTSS / totalFields("TSS");
+      const totalNH4 = updatedNH4 / totalFields("NH4");
+      const totalNO3 = updatedNO3 / totalFields("NO3");
+      const totalNO2 = updatedNO2 / totalFields("NO2");
+      const totalPH = updatedPH / totalFields("ph");
+      const totalVisibility = updatedVisibility / totalFields("visibility");
       // Set the index 0 values after calculation
       setValue(
         `water.0.waterTemp`,
