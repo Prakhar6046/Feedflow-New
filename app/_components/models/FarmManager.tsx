@@ -262,6 +262,7 @@ const TransferModal: React.FC<Props> = ({
   const handleClick = (event: any) => {
     setAnchorEl(event.currentTarget);
   };
+
   const handleCloseAnchor = (field: string) => {
     if (field.length) {
       append({
@@ -269,7 +270,7 @@ const TransferModal: React.FC<Props> = ({
         fishFarm: selectedProduction.fishFarmId,
         productionUnit:
           field === "Stock" || field === "Harvest" || field === "Mortalities"
-            ? selectedProduction.productionUnitId
+            ? selectedProduction?.productionUnitId
             : "",
         biomass: "",
         count: "",
@@ -366,7 +367,7 @@ const TransferModal: React.FC<Props> = ({
         {
           id: selectedProduction.id,
           fishFarm: selectedProduction.fishFarmId,
-          productionUnit: selectedProduction.productionUnitId,
+          productionUnit: selectedProduction?.productionUnitId,
           biomass: selectedProduction.biomass,
           count: selectedProduction.fishCount,
           meanWeight: selectedProduction.meanWeight,
@@ -520,7 +521,11 @@ const TransferModal: React.FC<Props> = ({
     watchedFields.map((field) => field.count).join(","),
     watchedFields.map((field) => field.meanLength).join(","),
     watchedFields.map((field) => field.meanWeight).join(","),
+    watchedFields.map((field) => field.batchNumber).join(","),
+    watchedFields.map((field) => field.productionUnit).join(","),
+    watchedFields.map((field) => field.stockingLevel).join(","),
     watchedFields.map((field) => field.stockingDensityKG).join(","),
+    watchedFields.map((field) => field.stockingDensityNM).join(","),
     setValue,
     isFish,
     selectedProduction,
@@ -776,13 +781,6 @@ const TransferModal: React.FC<Props> = ({
                                       textOverflow: "unset",
                                     },
                                   }}
-                                  // disabled={
-                                  //   item.field === "Harvest" ||
-                                  //   item.field === "Mortalities" ||
-                                  //   idx === 0
-                                  //     ? true
-                                  //     : false
-                                  // }
                                   slotProps={{
                                     input: {
                                       readOnly:
@@ -834,7 +832,7 @@ const TransferModal: React.FC<Props> = ({
                                             key={unit.id}
                                             disabled={
                                               item.field === "Transfer" &&
-                                              selectedProduction.productionUnitId ===
+                                              selectedProduction?.productionUnitId ===
                                                 unit.id
                                                 ? true
                                                 : false
@@ -1658,14 +1656,7 @@ const TransferModal: React.FC<Props> = ({
                               <TextField
                                 label={`Stocking Density *`}
                                 type="text"
-                                className="form-input"
-                                // disabled={
-                                //   idx === 0 ||
-                                //   item.field !== "Harvest" ||
-                                //   item.field !== "Mortalities"
-                                //     ? true
-                                //     : false
-                                // }
+                                className="form-input "
                                 slotProps={{
                                   input: { readOnly: true },
                                 }}
@@ -1683,11 +1674,12 @@ const TransferModal: React.FC<Props> = ({
                                 focused
                                 sx={{
                                   width: "100%",
+                                  opacity: "40%",
                                 }}
                               />
                               <Typography
                                 variant="body2"
-                                color="#555555AC"
+                                color="rgba(0,0,0,0.2)"
                                 sx={{
                                   position: "absolute",
                                   right: 6,
