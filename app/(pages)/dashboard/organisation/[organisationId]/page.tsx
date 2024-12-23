@@ -1,15 +1,21 @@
 "use client";
 // import UploadFileOutlinedIcon from '@mui/icons-material/UploadFileOutlined';
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import * as validationPattern from "@/app/_lib/utils/validationPatterns/index";
 import * as validationMessage from "@/app/_lib/utils/validationsMessage/index";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import Select from "@mui/material/Select";
 
 import {
   OrganisationType,
   RoleType,
 } from "@/app/_components/AddNewOrganisation";
+import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
+import MapComponent from "@/app/_components/farm/MapComponent";
+import HatcheryForm from "@/app/_components/hatchery/HatcheryForm";
 import Loader from "@/app/_components/Loader";
+import { AddOrganizationFormInputs } from "@/app/_typeModels/Organization";
+import { selectRole } from "@/lib/features/user/userSlice";
+import { useAppSelector } from "@/lib/hooks";
 import {
   Box,
   Button,
@@ -23,16 +29,10 @@ import {
   Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import { AddOrganizationFormInputs } from "@/app/_typeModels/Organization";
-import { useRouter } from "next/navigation";
-import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
-import MapComponent from "@/app/_components/farm/MapComponent";
-import HatcheryForm from "@/app/_components/hatchery/HatcheryForm";
-import { useAppSelector } from "@/lib/hooks";
-import { selectRole } from "@/lib/features/user/userSlice";
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
   clipPath: "inset(50%)",
@@ -81,6 +81,7 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
     control,
     getValues,
     resetField,
+    clearErrors,
     watch,
     trigger,
     formState: { errors },
@@ -899,6 +900,22 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
                           required: watch(`contacts.${index}.role`)
                             ? false
                             : true,
+                          validate: (value) => {
+                            if (value === "Admin") {
+                              watch("contacts").forEach((_, idx) => {
+                                clearErrors(`contacts.${idx}.role`);
+                              });
+                              return true;
+                            }
+                            const hasAdmin = watch("contacts").some(
+                              (contact) => contact.role === "Admin"
+                            );
+
+                            if (!hasAdmin) {
+                              return "Please add an admin first, then add a member.";
+                            }
+                            return true;
+                          },
                           onChange: (e) =>
                             setValue(`contacts.${index}.role`, e.target.value),
                           // pattern: validationPattern.alphabetsAndSpacesPattern,
@@ -927,6 +944,20 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
                           mt={0.5}
                         >
                           This field is required.
+                        </Typography>
+                      )}
+                    {errors &&
+                      errors?.contacts &&
+                      errors?.contacts[index] &&
+                      errors?.contacts[index]?.role &&
+                      errors?.contacts[index]?.role.type === "validate" && (
+                        <Typography
+                          variant="body2"
+                          color="red"
+                          fontSize={13}
+                          mt={0.5}
+                        >
+                          {errors?.contacts[index]?.role?.message}
                         </Typography>
                       )}
                   </Box>
@@ -1013,6 +1044,7 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
                       className="form-input"
                       {...register(`contacts.${index}.phone` as const, {
                         required: true,
+                        pattern: validationPattern.phonePattern,
                       })}
                       focused
                       sx={{
@@ -1035,6 +1067,20 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
                           mt={0.5}
                         >
                           This field is required.
+                        </Typography>
+                      )}
+                    {errors &&
+                      errors?.contacts &&
+                      errors?.contacts[index] &&
+                      errors?.contacts[index]?.phone &&
+                      errors?.contacts[index]?.phone.type === "pattern" && (
+                        <Typography
+                          variant="body2"
+                          color="red"
+                          fontSize={13}
+                          mt={0.5}
+                        >
+                          {validationMessage.phonePatternMessage}
                         </Typography>
                       )}
                   </Box>

@@ -1,9 +1,9 @@
 "use client";
 // import UploadFileOutlinedIcon from '@mui/icons-material/UploadFileOutlined';
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import * as validationPattern from "@/app/_lib/utils/validationPatterns/index";
 import * as validationMessage from "@/app/_lib/utils/validationsMessage/index";
-import Select, { SelectChangeEvent } from "@mui/material/Select";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import Select from "@mui/material/Select";
 
 import {
   Box,
@@ -12,31 +12,17 @@ import {
   FormControl,
   Grid,
   InputLabel,
-  Menu,
   MenuItem,
   Stack,
   TextField,
   Typography,
 } from "@mui/material";
-import {
-  selectOrganisationLoading,
-  selectOrganisations,
-} from "@/lib/features/organisation/organisationSlice";
-import { useAppSelector } from "@/lib/hooks";
 import { styled } from "@mui/material/styles";
-import Link from "next/link";
-import { NextPage } from "next";
 import { useEffect, useState } from "react";
 
-import Loader from "@/app/_components/Loader";
-import {
-  FieldErrors,
-  SubmitHandler,
-  useFieldArray,
-  useForm,
-} from "react-hook-form";
-import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 import { AddOrganizationFormInputs } from "../_typeModels/Organization";
 import MapComponent from "./farm/MapComponent";
 import HatcheryForm from "./hatchery/HatcheryForm";
@@ -75,7 +61,7 @@ const AddNewOrganisation = () => {
     setValue,
     handleSubmit,
     control,
-    getValues,
+    clearErrors,
     watch,
     reset,
     trigger,
@@ -829,6 +815,22 @@ const AddNewOrganisation = () => {
                         required: watch(`contacts.${index}.role`)
                           ? false
                           : true,
+                        validate: (value) => {
+                          if (value === "Admin") {
+                            watch("contacts").forEach((_, idx) => {
+                              clearErrors(`contacts.${idx}.role`);
+                            });
+                            return true;
+                          }
+                          const hasAdmin = watch("contacts").some(
+                            (contact) => contact.role === "Admin"
+                          );
+
+                          if (!hasAdmin) {
+                            return "Please add an admin first, then add a member.";
+                          }
+                          return true;
+                        },
                         onChange: (e) =>
                           setValue(`contacts.${index}.role`, e.target.value),
                         // pattern: validationPattern.alphabetsAndSpacesPattern,
@@ -855,6 +857,20 @@ const AddNewOrganisation = () => {
                         mt={0.5}
                       >
                         {validationMessage.required}
+                      </Typography>
+                    )}
+                  {errors &&
+                    errors?.contacts &&
+                    errors?.contacts[index] &&
+                    errors?.contacts[index]?.role &&
+                    errors?.contacts[index]?.role.type === "validate" && (
+                      <Typography
+                        variant="body2"
+                        color="red"
+                        fontSize={13}
+                        mt={0.5}
+                      >
+                        {errors?.contacts[index]?.role?.message}
                       </Typography>
                     )}
                 </Box>
