@@ -73,10 +73,12 @@ const NutritionalGuarantee = ({
               gap: 1.5,
               alignItems: "center",
               minWidth: "200px",
+
               overflowX: "auto",
               pb: 1.5,
             }}
           >
+            {" "}
             <Typography
               variant="subtitle1"
               fontWeight={600}
@@ -86,75 +88,76 @@ const NutritionalGuarantee = ({
             >
               1.{" "}
             </Typography>
-
             <Grid container spacing={3}>
               <Grid item xs={12} md={6}>
-                <Box
-                  // display={"flex"}
-                  // gap={2}
-                  // alignItems={"center"}
-                  position={"relative"}
-                >
-                  <TextField
-                    label="Moisture *"
-                    type="text"
-                    className="form-input"
-                    {...register("nutritionalGuarantee.moisture.kg", {
-                      required: true,
-                      pattern: validationPattern.numbersWithDot,
-                    })}
-                    focused
-                    sx={{
-                      width: "100%",
-                      // minWidth: 190,
-                    }}
-                  />
-                  {errors &&
-                    errors?.nutritionalGuarantee?.moisture?.kg &&
-                    errors.nutritionalGuarantee.moisture.kg.type ===
-                      "required" && (
-                      <Typography
-                        variant="body2"
-                        color="red"
-                        fontSize={13}
-                        mt={0.5}
-                      >
-                        {validationMessage.required}
-                      </Typography>
-                    )}
-                  {errors &&
-                    errors?.nutritionalGuarantee?.moisture?.kg &&
-                    errors?.nutritionalGuarantee?.moisture?.kg.type ===
-                      "pattern" && (
-                      <Typography
-                        variant="body2"
-                        color="red"
-                        fontSize={13}
-                        mt={0.5}
-                      >
-                        {validationMessage.OnlyNumbersWithDot}
-                      </Typography>
-                    )}
-                  <Typography
-                    variant="body2"
-                    color="#555555AC"
-                    sx={{
-                      position: "absolute",
-                      right: 6,
-                      top: errors?.nutritionalGuarantee?.moisture?.kg
-                        ? "35%"
-                        : "50%",
-                      transform: "translate(-6px, -50%)",
-                      backgroundColor: "#fff",
-                      height: 30,
-                      display: "grid",
-                      placeItems: "center",
-                      zIndex: 1,
-                      pl: 1,
-                    }}
+                <Box display={"flex"} gap={2} alignItems={"center"}>
+                  <Box
+                    // display={"flex"}
+                    // gap={2}
+                    // alignItems={"center"}
+                    position={"relative"}
+                    maxWidth={"230px"}
                   >
-                    g/kg
-                  </Typography>
+                    <TextField
+                      label="Moisture *"
+                      type="text"
+                      className="form-input"
+                      {...register("nutritionalGuarantee.moisture.kg", {
+                        required: true,
+                        pattern: validationPattern.numbersWithDot,
+                      })}
+                      focused
+                      sx={{
+                        width: "100%",
+                      }}
+                    />
+                    {errors &&
+                      errors?.nutritionalGuarantee?.moisture?.kg &&
+                      errors.nutritionalGuarantee.moisture.kg.type ===
+                        "required" && (
+                        <Typography
+                          variant="body2"
+                          color="red"
+                          fontSize={13}
+                          mt={0.5}
+                        >
+                          {validationMessage.required}
+                        </Typography>
+                      )}
+                    {errors &&
+                      errors?.nutritionalGuarantee?.moisture?.kg &&
+                      errors?.nutritionalGuarantee?.moisture?.kg.type ===
+                        "pattern" && (
+                        <Typography
+                          variant="body2"
+                          color="red"
+                          fontSize={13}
+                          mt={0.5}
+                        >
+                          {validationMessage.OnlyNumbersWithDot}
+                        </Typography>
+                      )}
+                    <Typography
+                      variant="body1"
+                      color="#555555AC"
+                      sx={{
+                        position: "absolute",
+                        right: 6,
+                        top: errors?.nutritionalGuarantee?.crudeProtein?.kg
+                          ? "30px"
+                          : "30px",
+                        transform: "translate(-6px, -50%)",
+                        backgroundColor: "#fff",
+                        height: 30,
+                        display: "grid",
+                        placeItems: "center",
+                        zIndex: 1,
+                        pl: 1,
+                      }}
+                    >
+                      g/kg
+                    </Typography>
+                  </Box>
                 </Box>
               </Grid>
 

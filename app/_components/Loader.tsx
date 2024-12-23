@@ -2,6 +2,8 @@ import { NextPage } from "next";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 import { Stack } from "@mui/material";
+import loaderImg from "../../public/static/img/loader.png";
+import Image from "next/image";
 interface Props {}
 
 const Loader: NextPage<Props> = ({}) => {
@@ -18,7 +20,7 @@ const Loader: NextPage<Props> = ({}) => {
       <Box sx={{ display: "flex" }}>
         <div className="loader-container">
           <div className="loader-inner">
-            <img src="../static/img/loader.png" className="loader" />
+            <Image src={loaderImg} className="loader" alt="loader" />
           </div>
           <div></div>
           <div></div>
