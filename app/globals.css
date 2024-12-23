@@ -500,12 +500,62 @@ label {
   color: #555555 !important;
 }
 
-
-.custom-date-time{
+.custom-date-time {
   min-width: 250px !important;
 }
 
-.testyyyy > div{
+.tablecell > div {
   padding-top: 0 !important;
   overflow: visible !important;
+}
+
+/* loader-css */
+.loader-inner {
+  animation: zoomInOut 3s infinite ease-in-out;
+  display: inline-block;
+  border: 0.1px solid #11808c;
+  border-radius: 50%;
+}
+
+.loader-container {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.loader-inner {
+  position: relative;
+  animation: zoomOutIn 1.2s infinite alternate;
+}
+
+.loader {
+  width: 50px;
+  height: 50px;
+  animation: zoomInOut 1.2s infinite alternate;
+  display: block;
+  padding: 7px;
+}
+
+/* loader animation for outside img */
+@keyframes zoomOutIn {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.5);
+  }
+}
+
+/* loader animation for img */
+@keyframes zoomInOut {
+  0% {
+    transform: scale(1.5);
+  }
+  100% {
+    transform: scale(1);
+  }
 }

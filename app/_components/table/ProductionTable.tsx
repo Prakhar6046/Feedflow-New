@@ -554,6 +554,7 @@ export default function ProductionTable({
                               maxWidth: 250,
                               borderBottomColor: "#ececec",
                               borderBottomWidth: 2,
+
                               fontWeight: 700,
                               paddingLeft: {
                                 lg: 10,
@@ -573,7 +574,7 @@ export default function ProductionTable({
                             className="table-padding"
                             sx={{
                               borderBottomWidth: 2,
-                              borderBottomColor: "#ececec",
+                              borderBottomColor: "#F5F6F8",
                               color: "#555555",
                               fontWeight: 500,
                               pl: 0,
@@ -592,6 +593,9 @@ export default function ProductionTable({
                                     justifyContent: "space-between",
                                     gap: 1,
                                     backgroundColor: "#F5F6F8",
+
+                                    borderTopLeftRadius: "8px",
+                                    borderBottomLeftRadius: "8px",
                                     padding: "8px 12px",
                                     margin: "8px 0",
                                     textWrap: "nowrap",
@@ -647,6 +651,7 @@ export default function ProductionTable({
                             sx={{
                               borderBottomWidth: 2,
                               borderBottomColor: "#ececec",
+
                               color: "#555555",
                               fontWeight: 500,
                               pl: 0,
@@ -1031,6 +1036,8 @@ export default function ProductionTable({
                                   <Box
                                     sx={{
                                       backgroundColor: "#F5F6F8",
+                                      borderTopRightRadius: "8px",
+                                      borderTopLeftRadius: "8px",
                                       padding: "6px 12px",
                                       // margin: "5px 0 8px 0",
                                       margin: "8px 0",
