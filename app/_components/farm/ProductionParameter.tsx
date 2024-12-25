@@ -17,7 +17,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import { Years } from "@/app/_lib/utils";
 import { waterQualityPredictedHead } from "@/app/_lib/utils/tableHeadData";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
 
 // Function to create data (assuming this structure for the data)
 
@@ -30,11 +30,11 @@ interface FormData {
   applyToAll: Record<string, boolean>;
 }
 export default function BasicTable({ setActiveStep }: Props) {
-  const { control, handleSubmit } = useForm<FormData>({
+  const { control, register, handleSubmit } = useForm<FormData>({
     defaultValues: {
       predictedValues: {},
-      idealRange: {},
-      applyToAll: {},
+      // idealRange: {},
+      // applyToAll: {},
     },
   });
   const onSubmit: SubmitHandler<FormData> = (data) => {
@@ -42,7 +42,7 @@ export default function BasicTable({ setActiveStep }: Props) {
   };
   return (
     <Box>
-      <form>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <Paper
           sx={{
             width: "100%",
@@ -134,19 +134,26 @@ export default function BasicTable({ setActiveStep }: Props) {
                               textAlign: "center",
                             }}
                           >
-                            <input
-                              className="number-items"
-                              type="number"
-                              placeholder="0"
-                              style={{
-                                maxWidth: "80px",
-                                padding: "4px 2px",
-                                border: "none",
-                                textAlign: "center",
-                                fontSize: "14px",
-                                fontWeight: "500",
-                                color: "#555555",
-                              }}
+                            <Controller
+                              name={`predictedValues.${head}.${year}`}
+                              control={control}
+                              render={({ field }) => (
+                                <input
+                                  className="number-items"
+                                  {...field} // Use {...field} for binding the input
+                                  type="number"
+                                  placeholder="0"
+                                  style={{
+                                    maxWidth: "80px",
+                                    padding: "4px 2px",
+                                    border: "none",
+                                    textAlign: "center",
+                                    fontSize: "14px",
+                                    fontWeight: "500",
+                                    color: "#555555",
+                                  }}
+                                />
+                              )}
                             />
                           </TableCell>
                         ))}
@@ -211,7 +218,7 @@ export default function BasicTable({ setActiveStep }: Props) {
                           fontWeight: "700",
                         }}
                       >
-                        {["Min", "Max"].map((field, index) => (
+                        {["Min", "Max"].map((val, index) => (
                           <TableCell
                             key={index}
                             className=" table-border"
@@ -224,20 +231,27 @@ export default function BasicTable({ setActiveStep }: Props) {
                               textAlign: "center",
                             }}
                           >
-                            <input
-                              className="number-items"
-                              type="number"
-                              placeholder="0"
-                              style={{
-                                maxWidth: "90px",
-                                padding: "4px 2px",
-                                textWrap: "nowrap",
-                                border: "none",
-                                textAlign: "center",
-                                fontSize: "14px",
-                                fontWeight: "500",
-                                color: "#555555",
-                              }}
+                            <Controller
+                              name={`idealRange.${head}.${val}`}
+                              control={control}
+                              render={({ field }) => (
+                                <input
+                                  className="number-items"
+                                  type="number"
+                                  {...field}
+                                  placeholder="0"
+                                  style={{
+                                    maxWidth: "90px",
+                                    padding: "4px 2px",
+                                    textWrap: "nowrap",
+                                    border: "none",
+                                    textAlign: "center",
+                                    fontSize: "14px",
+                                    fontWeight: "500",
+                                    color: "#555555",
+                                  }}
+                                />
+                              )}
                             />
                           </TableCell>
                         ))}
@@ -340,9 +354,9 @@ export default function BasicTable({ setActiveStep }: Props) {
             Previous
           </Button>
           <Button
-            type="button"
+            type="submit"
             variant="contained"
-            onClick={() => setActiveStep(4)}
+            // onClick={() => setActiveStep(4)}
             sx={{
               background: "#06A19B",
               fontWeight: 600,

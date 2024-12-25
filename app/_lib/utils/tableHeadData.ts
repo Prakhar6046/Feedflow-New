@@ -861,11 +861,11 @@ export const waterSampleHistoryHead = [
 
 export const waterQualityPredictedHead = [
   "Water Temperature °C",
-  "Dissolved Oxygen (DO), mg/L",
+  "Dissolved Oxygen (DO) mg/L",
   "Total Suspended solids (TSS)",
-  "Ammonia (NH₄),mg/L",
-  "Nitrate (NO₃),mg/L",
-  "Nitrite (NO₂),mg/L",
+  "Ammonia (NH₄) mg/L",
+  "Nitrate (NO₃) mg/L",
+  "Nitrite (NO₂) mg/L",
   "pH",
-  "Visibility,cm",
+  "Visibility cm",
 ];
