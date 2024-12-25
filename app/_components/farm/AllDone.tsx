@@ -1,5 +1,4 @@
 import { Box, Button, Stack, Typography } from "@mui/material";
-import { setCookie } from "cookies-next";
 import { NextPage } from "next";
 import { useRouter } from "next/navigation";
 
@@ -167,7 +166,7 @@ const AllDone: NextPage<Props> = ({ setActiveStep }) => {
             borderRadius: "8px",
             border: "1px solid #06A19B",
           }}
-          onClick={() => setActiveStep(2)}
+          onClick={() => setActiveStep(3)}
           // onClick={() => setCookie("activeStep", 2)}
         >
           Previous
@@ -185,7 +184,7 @@ const AllDone: NextPage<Props> = ({ setActiveStep }) => {
           }}
           onClick={handleClick}
         >
-          Go to the dashboard
+          Done
         </Button>
       </Box>
     </Stack>

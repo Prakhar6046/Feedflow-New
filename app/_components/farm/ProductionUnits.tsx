@@ -765,9 +765,12 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
               </Button>
 
               <Button
-                type="submit"
+                type="button"
                 variant="contained"
-                disabled={isApiCallInProgress}
+                onClick={() => {
+                  setActiveStep(3);
+                }}
+                // disabled={isApiCallInProgress}
                 sx={{
                   background: "#06A19B",
                   fontWeight: 600,
@@ -777,7 +780,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                   borderRadius: "8px",
                 }}
               >
-                Save
+                Next
               </Button>
             </Box>
           </Box>
