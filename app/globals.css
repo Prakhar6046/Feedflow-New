@@ -559,3 +559,11 @@ label {
     transform: scale(1);
   }
 }
+.number-items:focus-visible {
+  outline: none;
+}
+
+.table-border input:focus-visible {
+  outline: none;
+  border: 1px solid #d3d3d3 !important;
+}

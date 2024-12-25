@@ -533,21 +533,17 @@ export default function ProductionTable({
                             sx={{
                               color: "#555555",
                               maxWidth: 250,
-                              borderBottomColor: "#ececec",
+                              borderBottomColor: "#F5F6F8",
                               borderBottomWidth: 2,
-
                               fontWeight: 700,
+                              textWrap: "nowrap",
                               paddingLeft: {
                                 lg: 10,
                                 md: 7,
                                 xs: 4,
                               },
                               pr: 2,
-
-                              wordBreak: "break-all",
                             }}
-                            component="th"
-                            scope="row"
                           >
                             {farm.farm ?? ""}
                           </TableCell>
@@ -574,7 +570,6 @@ export default function ProductionTable({
                                     justifyContent: "space-between",
                                     gap: 1,
                                     backgroundColor: "#F5F6F8",
-
                                     borderTopLeftRadius: "8px",
                                     borderBottomLeftRadius: "8px",
                                     padding: "8px 12px",
@@ -603,7 +598,6 @@ export default function ProductionTable({
                                           background: "transparent",
                                           fontWeight: "bold",
                                           padding: 0.25,
-
                                           borderRadius: "4px",
                                           alignItems: "center",
                                           minWidth: "fit-content",
@@ -632,7 +626,6 @@ export default function ProductionTable({
                             sx={{
                               borderBottomWidth: 2,
                               borderBottomColor: "#ececec",
-
                               color: "#555555",
                               fontWeight: 500,
                               pl: 0,
@@ -736,8 +729,7 @@ export default function ProductionTable({
                                         : "19px 12px 19px 0"
                                     }`,
                                     margin: "8px 0",
-                                    // marginBottom: "10px",
-                                    // padding: "21px",
+
                                     textWrap: "nowrap",
                                   }}
                                 >
