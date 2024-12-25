@@ -584,7 +584,7 @@ const WaterQualityParameter: React.FC<Props> = ({
                           }}
                         >
                           <LocalizationProvider dateAdapter={AdapterDayjs}>
-                            <Box className="testyyyy">
+                            <Box className="tablecell">
                               <DemoContainer components={["DateTimePicker"]}>
                                 <Controller
                                   name={`water.${idx}.date`}
