@@ -71,9 +71,7 @@ const NutritionalGuarantee = ({
             sx={{
               display: "flex",
               gap: 1.5,
-              alignItems: "center",
               minWidth: "200px",
-
               overflowX: "auto",
               pb: 1.5,
             }}
@@ -84,80 +82,79 @@ const NutritionalGuarantee = ({
               fontWeight={600}
               sx={{
                 minWidth: "14px",
+                position: "relative",
+                top: "10px",
               }}
             >
               1.{" "}
             </Typography>
             <Grid container spacing={3}>
               <Grid item xs={12} md={6}>
-                <Box display={"flex"} gap={2} alignItems={"center"}>
-                  <Box
-                    // display={"flex"}
-                    // gap={2}
-                    // alignItems={"center"}
-                    position={"relative"}
-                    maxWidth={"230px"}
+                <Box
+                  // display={"flex"}
+                  // gap={2}
+                  // alignItems={"center"}
+                  position={"relative"}
+                >
+                  <TextField
+                    label="Moisture *"
+                    type="text"
+                    className="form-input"
+                    {...register("nutritionalGuarantee.moisture.kg", {
+                      required: true,
+                      pattern: validationPattern.numbersWithDot,
+                    })}
+                    focused
+                    sx={{
+                      width: "100%",
+                    }}
+                  />
+                  {errors &&
+                    errors?.nutritionalGuarantee?.moisture?.kg &&
+                    errors.nutritionalGuarantee.moisture.kg.type ===
+                      "required" && (
+                      <Typography
+                        variant="body2"
+                        color="red"
+                        fontSize={13}
+                        mt={0.5}
+                      >
+                        {validationMessage.required}
+                      </Typography>
+                    )}
+                  {errors &&
+                    errors?.nutritionalGuarantee?.moisture?.kg &&
+                    errors?.nutritionalGuarantee?.moisture?.kg.type ===
+                      "pattern" && (
+                      <Typography
+                        variant="body2"
+                        color="red"
+                        fontSize={13}
+                        mt={0.5}
+                      >
+                        {validationMessage.OnlyNumbersWithDot}
+                      </Typography>
+                    )}
+                  <Typography
+                    variant="body1"
+                    color="#555555AC"
+                    sx={{
+                      position: "absolute",
+                      right: 6,
+                      top: errors?.nutritionalGuarantee?.crudeProtein?.kg
+                        ? "30px"
+                        : "30px",
+                      transform: "translate(-6px, -50%)",
+                      backgroundColor: "#fff",
+                      height: 30,
+                      display: "grid",
+                      placeItems: "center",
+                      zIndex: 1,
+                      pl: 1,
+                    }}
                   >
-                    <TextField
-                      label="Moisture *"
-                      type="text"
-                      className="form-input"
-                      {...register("nutritionalGuarantee.moisture.kg", {
-                        required: true,
-                        pattern: validationPattern.numbersWithDot,
-                      })}
-                      focused
-                      sx={{
-                        width: "100%",
-                      }}
-                    />
-                    {errors &&
-                      errors?.nutritionalGuarantee?.moisture?.kg &&
-                      errors.nutritionalGuarantee.moisture.kg.type ===
-                        "required" && (
-                        <Typography
-                          variant="body2"
-                          color="red"
-                          fontSize={13}
-                          mt={0.5}
-                        >
-                          {validationMessage.required}
-                        </Typography>
-                      )}
-                    {errors &&
-                      errors?.nutritionalGuarantee?.moisture?.kg &&
-                      errors?.nutritionalGuarantee?.moisture?.kg.type ===
-                        "pattern" && (
-                        <Typography
-                          variant="body2"
-                          color="red"
-                          fontSize={13}
-                          mt={0.5}
-                        >
-                          {validationMessage.OnlyNumbersWithDot}
-                        </Typography>
-                      )}
-                    <Typography
-                      variant="body1"
-                      color="#555555AC"
-                      sx={{
-                        position: "absolute",
-                        right: 6,
-                        top: errors?.nutritionalGuarantee?.crudeProtein?.kg
-                          ? "30px"
-                          : "30px",
-                        transform: "translate(-6px, -50%)",
-                        backgroundColor: "#fff",
-                        height: 30,
-                        display: "grid",
-                        placeItems: "center",
-                        zIndex: 1,
-                        pl: 1,
-                      }}
-                    >
-                      g/kg
-                    </Typography>
-                  </Box>
+                    g/kg
+                  </Typography>
                 </Box>
               </Grid>
 
@@ -215,23 +212,6 @@ const NutritionalGuarantee = ({
                 </Box>
               </Grid>
             </Grid>
-            {/* <Box
-                sx={{
-                  visibility: "hidden",
-                }}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="1.5em"
-                  height="1.5em"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    fill="red"
-                    d="M12 20c-4.41 0-8-3.59-8-8s3.59-8 8-8s8 3.59 8 8s-3.59 8-8 8m0-18C6.47 2 2 6.47 2 12s4.47 10 10 10s10-4.47 10-10S17.53 2 12 2m2.59 6L12 10.59L9.41 8L8 9.41L10.59 12L8 14.59L9.41 16L12 13.41L14.59 16L16 14.59L13.41 12L16 9.41z"
-                  />
-                </svg>
-              </Box> */}
             {!watch("nutritionalGuarantee.moisture.value") &&
               !watch("nutritionalGuarantee.moisture.kg") && (
                 <Box
@@ -279,9 +259,10 @@ const NutritionalGuarantee = ({
                   }
                 }}
                 style={{ cursor: "pointer" }}
-                // sx={{
-                //   visibility: "hidden",
-                // }}
+                sx={{
+                  position: "relative",
+                  top: "10px",
+                }}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -305,7 +286,7 @@ const NutritionalGuarantee = ({
             sx={{
               display: "flex",
               gap: 1.5,
-              alignItems: "center",
+
               minWidth: "200px",
               overflowX: "auto",
               pb: 1.5,
@@ -316,6 +297,8 @@ const NutritionalGuarantee = ({
               fontWeight={600}
               sx={{
                 minWidth: "14px",
+                position: "relative",
+                top: "10px",
               }}
             >
               2.{" "}
@@ -376,8 +359,8 @@ const NutritionalGuarantee = ({
                       position: "absolute",
                       right: 6,
                       top: errors?.nutritionalGuarantee?.crudeProtein?.kg
-                        ? "35%"
-                        : "50%",
+                        ? "30px"
+                        : "30px",
                       transform: "translate(-6px, -50%)",
                       backgroundColor: "#fff",
                       height: 30,
@@ -513,11 +496,10 @@ const NutritionalGuarantee = ({
                   }
                 }}
                 style={{ cursor: "pointer" }}
-                // sx={
-                //   {
-                //     visibility: "hidden"
-                //   }
-                // }
+                sx={{
+                  position: "relative",
+                  top: "10px",
+                }}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -541,7 +523,7 @@ const NutritionalGuarantee = ({
             sx={{
               display: "flex",
               gap: 1.5,
-              alignItems: "center",
+
               minWidth: "200px",
               overflowX: "auto",
               pb: 1.5,
@@ -552,6 +534,8 @@ const NutritionalGuarantee = ({
               fontWeight={600}
               sx={{
                 minWidth: "14px",
+                position: "relative",
+                top: "10px",
               }}
             >
               3.{" "}
@@ -612,8 +596,8 @@ const NutritionalGuarantee = ({
                       position: "absolute",
                       right: 6,
                       top: errors?.nutritionalGuarantee?.crudeFat?.kg
-                        ? "35%"
-                        : "50%",
+                        ? "30px"
+                        : "20px",
                       transform: "translate(-6px, -50%)",
                       backgroundColor: "#fff",
                       height: 30,
@@ -748,9 +732,10 @@ const NutritionalGuarantee = ({
                   }
                 }}
                 style={{ cursor: "pointer" }}
-                // sx={{
-                //   visibility: "hidden",
-                // }}
+                sx={{
+                  position: "relative",
+                  top: "10px",
+                }}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -774,7 +759,7 @@ const NutritionalGuarantee = ({
             sx={{
               display: "flex",
               gap: 1.5,
-              alignItems: "center",
+
               minWidth: "200px",
               overflowX: "auto",
               pb: 1.5,
@@ -785,6 +770,8 @@ const NutritionalGuarantee = ({
               fontWeight={600}
               sx={{
                 minWidth: "14px",
+                position: "relative",
+                top: "10px",
               }}
             >
               4.{" "}
@@ -845,8 +832,8 @@ const NutritionalGuarantee = ({
                       position: "absolute",
                       right: 6,
                       top: errors?.nutritionalGuarantee?.crudeAsh?.kg
-                        ? "35%"
-                        : "50%",
+                        ? "30px"
+                        : "30px",
                       transform: "translate(-6px, -50%)",
                       backgroundColor: "#fff",
                       height: 30,
@@ -981,11 +968,10 @@ const NutritionalGuarantee = ({
                   }
                 }}
                 style={{ cursor: "pointer" }}
-                // sx={
-                //   {
-                //     visibility: "hidden"
-                //   }
-                // }
+                sx={{
+                  position: "relative",
+                  top: "10px",
+                }}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -1009,7 +995,6 @@ const NutritionalGuarantee = ({
             sx={{
               display: "flex",
               gap: 1.5,
-              alignItems: "center",
               minWidth: "200px",
               overflowX: "auto",
               pb: 1.5,
@@ -1020,6 +1005,8 @@ const NutritionalGuarantee = ({
               fontWeight={600}
               sx={{
                 minWidth: "14px",
+                position: "relative",
+                top: "10px",
               }}
             >
               5.{" "}
@@ -1080,8 +1067,8 @@ const NutritionalGuarantee = ({
                       position: "absolute",
                       right: 6,
                       top: errors?.nutritionalGuarantee?.crudeFiber?.kg
-                        ? "35%"
-                        : "50%",
+                        ? "30px"
+                        : "30px",
                       transform: "translate(-6px, -50%)",
                       backgroundColor: "#fff",
                       height: 30,
@@ -1217,11 +1204,10 @@ const NutritionalGuarantee = ({
                   }
                 }}
                 style={{ cursor: "pointer" }}
-                // sx={
-                //   {
-                //     visibility: "hidden"
-                //   }
-                // }
+                sx={{
+                  position: "relative",
+                  top: "10px",
+                }}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -1245,7 +1231,6 @@ const NutritionalGuarantee = ({
             sx={{
               display: "flex",
               gap: 1.5,
-              alignItems: "center",
               minWidth: "200px",
               overflowX: "auto",
               pb: 1.5,
@@ -1256,6 +1241,8 @@ const NutritionalGuarantee = ({
               fontWeight={600}
               sx={{
                 minWidth: "14px",
+                position: "relative",
+                top: "10px",
               }}
             >
               6.{" "}
@@ -1316,8 +1303,8 @@ const NutritionalGuarantee = ({
                       position: "absolute",
                       right: 6,
                       top: errors?.nutritionalGuarantee?.calcium?.kg
-                        ? "35%"
-                        : "50%",
+                        ? "30px"
+                        : "30px",
                       transform: "translate(-6px, -50%)",
                       backgroundColor: "#fff",
                       height: 30,
@@ -1450,11 +1437,10 @@ const NutritionalGuarantee = ({
                   }
                 }}
                 style={{ cursor: "pointer" }}
-                sx={
-                  {
-                    // visibility: "hidden"
-                  }
-                }
+                sx={{
+                  position: "relative",
+                  top: "10px",
+                }}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -1478,7 +1464,6 @@ const NutritionalGuarantee = ({
             sx={{
               display: "flex",
               gap: 1.5,
-              alignItems: "center",
               minWidth: "200px",
               overflowX: "auto",
               pb: 1.5,
@@ -1489,6 +1474,8 @@ const NutritionalGuarantee = ({
               fontWeight={600}
               sx={{
                 minWidth: "14px",
+                position: "relative",
+                top: "10px",
               }}
             >
               7.{" "}
@@ -1549,8 +1536,8 @@ const NutritionalGuarantee = ({
                       position: "absolute",
                       right: 6,
                       top: errors?.nutritionalGuarantee?.phosphorous?.kg
-                        ? "35%"
-                        : "50%",
+                        ? "30px"
+                        : "30px",
                       transform: "translate(-6px, -50%)",
                       backgroundColor: "#fff",
                       height: 30,
@@ -1686,11 +1673,10 @@ const NutritionalGuarantee = ({
                   }
                 }}
                 style={{ cursor: "pointer" }}
-                sx={
-                  {
-                    // visibility: "hidden",
-                  }
-                }
+                sx={{
+                  position: "relative",
+                  top: "10px",
+                }}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -1714,7 +1700,6 @@ const NutritionalGuarantee = ({
             sx={{
               display: "flex",
               gap: 1.5,
-              alignItems: "center",
               minWidth: "200px",
               overflowX: "auto",
               pb: 1.5,
@@ -1725,6 +1710,8 @@ const NutritionalGuarantee = ({
               fontWeight={600}
               sx={{
                 minWidth: "14px",
+                position: "relative",
+                top: "10px",
               }}
             >
               8.{" "}
@@ -1750,7 +1737,6 @@ const NutritionalGuarantee = ({
                     focused
                     sx={{
                       width: "100%",
-                      minWidth: 190,
                     }}
                   />
 
@@ -1761,8 +1747,8 @@ const NutritionalGuarantee = ({
                       position: "absolute",
                       right: 6,
                       top: errors?.nutritionalGuarantee?.carbohydrates?.kg
-                        ? "35%"
-                        : "50%",
+                        ? "30px"
+                        : "30px",
                       transform: "translate(-6px, -50%)",
                       backgroundColor: "#fff",
                       height: 30,
@@ -1926,11 +1912,10 @@ const NutritionalGuarantee = ({
                   }
                 }}
                 style={{ cursor: "pointer" }}
-                sx={
-                  {
-                    // visibility: "hidden"
-                  }
-                }
+                sx={{
+                  position: "relative",
+                  top: "10px",
+                }}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -1954,9 +1939,9 @@ const NutritionalGuarantee = ({
             sx={{
               display: "flex",
               gap: 1.5,
-              alignItems: "center",
               minWidth: "200px",
               overflowX: "auto",
+              alignItems: "self-start",
               pb: 1.5,
             }}
           >
@@ -1965,6 +1950,8 @@ const NutritionalGuarantee = ({
               fontWeight={600}
               sx={{
                 minWidth: "14px",
+                position: "relative",
+                top: "10px",
               }}
             >
               9.{" "}
@@ -1998,8 +1985,8 @@ const NutritionalGuarantee = ({
                   position: "absolute",
                   right: 6,
                   top: errors?.nutritionalGuarantee?.metabolizableEnergy?.kg
-                    ? "35%"
-                    : "50%",
+                    ? "30px"
+                    : "30px",
                   transform: "translate(-6px, -50%)",
                   backgroundColor: "#fff",
                   height: 30,
@@ -2181,11 +2168,10 @@ const NutritionalGuarantee = ({
                   }
                 }}
                 style={{ cursor: "pointer" }}
-                sx={
-                  {
-                    // visibility: "hidden"
-                  }
-                }
+                sx={{
+                  position: "relative",
+                  top: "10px",
+                }}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

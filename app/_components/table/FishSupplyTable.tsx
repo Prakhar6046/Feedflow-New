@@ -494,6 +494,10 @@ export default function FishSupplyTable({ tableData, fishSupply }: Props) {
                           MenuListProps={{
                             "aria-labelledby": "basic-button",
                           }}
+                          sx={{
+                            position: "absolute",
+                            left: "-1px",
+                          }}
                         >
                           <MenuItem onClick={handleEdit}>
                             <Stack
@@ -518,12 +522,12 @@ export default function FishSupplyTable({ tableData, fishSupply }: Props) {
                             </Stack>
                           </MenuItem>
 
-                          {/* <Divider
+                          <Divider
                             sx={{
                               borderColor: "#9797971A",
                               my: 0.5,
                             }}
-                          /> */}
+                          />
                         </Menu>
                       </TableCell>
                     )}
