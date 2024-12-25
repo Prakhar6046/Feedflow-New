@@ -1,12 +1,11 @@
 "use client";
 import TransferModal from "@/app/_components/models/FarmManager";
+import { getLocalItem, setLocalItem } from "@/app/_lib/utils";
 import {
   farmManagerFishHead,
   farmManagerFishHeadMember,
   farmManagerWaterHead,
   farmManagerWaterHeadMember,
-  fishManageHistoryHead,
-  waterManageHistoryHead,
 } from "@/app/_lib/utils/tableHeadData";
 import { Farm } from "@/app/_typeModels/Farm";
 import { FarmGroup, Production } from "@/app/_typeModels/production";
@@ -35,10 +34,7 @@ import { getCookie, setCookie } from "cookies-next";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import Loader from "../Loader";
-import FishManageHistoryModal from "../models/FishManageHistory";
-import WaterManageHistoryModal from "../models/WaterManageHistory";
 import WaterQualityParameter from "../models/WaterQualityParameter";
-import { getLocalItem, setLocalItem } from "@/app/_lib/utils";
 interface Props {
   productions: Production[];
   tableData?: any;
@@ -95,14 +91,19 @@ export default function ProductionTable({
 
   const [selectedUnitId, setSelectedUnitId] = useState<String>();
   const handleFishManageHistory = (unit: any) => {
-    setSelectedUnitId(unit.productionUnit.id);
     if (selectedView == "fish") {
-      setIsWaterManageHistory(false);
-      setIsFishManageHistory(true);
+      router.push(`/dashboard/production/fish/${unit.productionUnit.id}`);
     } else {
-      setIsFishManageHistory(false);
-      setIsWaterManageHistory(true);
+      router.push(`/dashboard/production/water/${unit.productionUnit.id}`);
     }
+    // setSelectedUnitId(unit.productionUnit.id);
+    // if (selectedView == "fish") {
+    //   setIsWaterManageHistory(false);
+    //   setIsFishManageHistory(true);
+    // } else {
+    //   setIsFishManageHistory(false);
+    //   setIsWaterManageHistory(true);
+    // }
   };
 
   const handleClick = (
@@ -1162,22 +1163,6 @@ export default function ProductionTable({
             selectedProduction={selectedProduction}
             farms={farms}
             productions={productions}
-          />
-          <FishManageHistoryModal
-            open={isFishManageHistory}
-            setOpen={setIsFishManageHistory}
-            tableData={fishManageHistoryHead}
-            productions={productions?.filter(
-              (data) => data.productionUnitId === selectedUnitId
-            )}
-          />
-          <WaterManageHistoryModal
-            open={isWaterManageHistory}
-            setOpen={setIsWaterManageHistory}
-            tableData={waterManageHistoryHead}
-            productions={productions?.filter(
-              (data) => data.productionUnitId === selectedUnitId
-            )}
           />
         </>
       ) : (

@@ -67,6 +67,7 @@ model Organisation {
   FishSupply        FishSupply[]
   production        production[]
   FishManageHistory FishManageHistory[]
+  GrowthModels      GrowthModel[]
 
   @@index([createdAt])
   @@index([updatedAt])
@@ -125,12 +126,54 @@ model Farm {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  productionUnits   ProductionUnit[]
-  production        production[]
-  User              User?               @relation(fields: [userId], references: [id])
-  userId            Int?
-  FarmManager       FarmManager[]
-  FishManageHistory FishManageHistory[]
+  productionUnits                 ProductionUnit[]
+  production                      production[]
+  User                            User?                             @relation(fields: [userId], references: [id])
+  userId                          Int?
+  FarmManager                     FarmManager[]
+  FishManageHistory               FishManageHistory[]
+  WaterQualityPredictedParameters WaterQualityPredictedParameters[]
+
+  @@index([createdAt])
+  @@index([updatedAt])
+}
+
+model YearBasedPredication {
+  id                               Int                             @id @default(autoincrement())
+  waterQualityPredictedParameterId Int
+  waterQualityPredictedParameter   WaterQualityPredictedParameters @relation(fields: [waterQualityPredictedParameterId], references: [id])
+  createdAt                        DateTime                        @default(now())
+  updatedAt                        DateTime                        @updatedAt
+
+  jan           Json
+  fed           Json
+  mar           Json
+  apr           Json
+  may           Json
+  jun           Json
+  jul           Json
+  aug           Json
+  sep           Json
+  oct           Json
+  nov           Json
+  dec           Json
+  GrowthModelId Int
+  GrowthModel   GrowthModel @relation(fields: [GrowthModelId], references: [id])
+
+  @@index([createdAt])
+  @@index([updatedAt])
+}
+
+model WaterQualityPredictedParameters {
+  id     Int    @id @default(autoincrement())
+  farmId String
+  farm   Farm   @relation(fields: [farmId], references: [id])
+
+  updatedBy            String?
+  createdBy            String?
+  createdAt            DateTime               @default(now())
+  updatedAt            DateTime               @updatedAt
+  YearBasedPredication YearBasedPredication[]
 
   @@index([createdAt])
   @@index([updatedAt])
@@ -371,6 +414,49 @@ model FarmManager {
   createdAt  DateTime     @default(now())
   updatedAt  DateTime     @updatedAt
   FishSupply FishSupply[]
+
+  @@index([createdAt])
+  @@index([updatedAt])
+}
+
+model niloticusAureus {
+  id                       Int           @id @default(autoincrement())
+  temperatureCoefficient   String?
+  growthEquationLength     String?
+  growthEquationBodyWeight String?
+  conditionFactor1         String?
+  conditionFactor2         String?
+  specie                   String?
+  createdAt                DateTime      @default(now())
+  updatedAt                DateTime      @updatedAt
+  GrowthModel              GrowthModel[]
+}
+
+model niloticusThaiStrain {
+  id                       Int           @id @default(autoincrement())
+  temperatureCoefficient   String?
+  growthEquationLength     String?
+  growthEquationBodyWeight String?
+  conditionFactor1         String?
+  conditionFactor2         String?
+  specie                   String?
+  createdAt                DateTime      @default(now())
+  updatedAt                DateTime      @updatedAt
+  GrowthModel              GrowthModel[]
+}
+
+model GrowthModel {
+  id                    Int                 @id @default(autoincrement())
+  organisationId        Int?
+  organisation          Organisation?       @relation(fields: [organisationId], references: [id])
+  niloticusAureusId     Int
+  niloticusThaiStrainId Int
+  niloticusAureus       niloticusAureus     @relation(fields: [niloticusAureusId], references: [id])
+  niloticusThaiStrain   niloticusThaiStrain @relation(fields: [niloticusThaiStrainId], references: [id])
+
+  createdAt            DateTime               @default(now())
+  updatedAt            DateTime               @updatedAt
+  YearBasedPredication YearBasedPredication[]
 
   @@index([createdAt])
   @@index([updatedAt])
