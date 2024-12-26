@@ -102,9 +102,7 @@ export default function NewFarm({ farmMembers }: Props) {
           />
         )}
         {activeStep === 2 && <ProductionUnits setActiveStep={setActiveStep} />}
-        {activeStep === 3 && (
-          <ProductionParameter setActiveStep={setActiveStep} />
-        )}
+        {activeStep === 3 && <ProductionParameter />}
         {activeStep === 4 && <AllDone setActiveStep={setActiveStep} />}
       </Grid>
     </Grid>
