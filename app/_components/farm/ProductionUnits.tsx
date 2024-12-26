@@ -92,9 +92,15 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
           id: uuidv4(),
         },
       ],
+      area: "1",
+      depth: "1",
+      width: "1",
+      length: "1",
+      height: "1",
+      radius: "1",
     },
   });
-
+  console.log(errors);
   const { fields, append, remove } = useFieldArray({
     control,
     name: "productionUnits",
@@ -201,6 +207,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
           userId: loggedUserData.id,
         };
       }
+      console.log(payload);
       if (Object.keys(payload).length && payload.name) {
         const response = await fetch(
           `${isEditFarm ? "/api/farm/edit-farm" : "/api/farm/add-farm"}`,
@@ -233,8 +240,12 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const formData = getLocalItem("farmProductionUnits");
-      setFormProductionUnitsData(formData);
+      const productionUnit = getLocalItem("farmProductionUnits");
+      const farmData = getLocalItem("farmData");
+      setFormProductionUnitsData({
+        farmData: farmData,
+        productionUnitData: productionUnit,
+      });
     }
   }, []);
   useEffect(() => {
@@ -251,11 +262,32 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
   }, [calculatedValue]);
 
   useEffect(() => {
-    if (editFarm && !formProductionUnitsData) {
+    if (
+      editFarm &&
+      !formProductionUnitsData &&
+      !formProductionUnitsData?.productionUnitData
+    ) {
       setValue("productionUnits", editFarm?.productionUnits);
     } else if (formProductionUnitsData) {
-      setValue("productionUnits", formProductionUnitsData);
+      if (
+        formProductionUnitsData?.productionUnitData &&
+        formProductionUnitsData?.productionUnitData[0] &&
+        formProductionUnitsData?.productionUnitData[0]?.name
+      ) {
+        setValue(
+          "productionUnits",
+          formProductionUnitsData?.productionUnitData
+        );
+      }
+
+      dispatch(farmAction.updateFarm(formProductionUnitsData?.farmData));
     }
+    setValue("area", "1");
+    setValue("depth", "1");
+    setValue("height", "1");
+    setValue("length", "1");
+    setValue("radius", "1");
+    setValue("width", "1");
   }, [formProductionUnitsData]);
 
   return (
