@@ -1,6 +1,7 @@
 "use client";
 import { breadcrumsAction } from "@/lib/features/breadcrum/breadcrumSlice";
 import { selectOrganisationLoading } from "@/lib/features/organisation/organisationSlice";
+import { selectRole } from "@/lib/features/user/userSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import {
   Box,
@@ -18,18 +19,16 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import { getCookie } from "cookies-next";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { SingleOrganisation } from "../_typeModels/Organization";
-import { selectRole } from "@/lib/features/user/userSlice";
+import { getLocalItem } from "../_lib/utils";
 import {
   usersTableHead,
   usersTableHeadMember,
 } from "../_lib/utils/tableHeadData";
-import { getLocalItem } from "../_lib/utils";
+import { SingleOrganisation } from "../_typeModels/Organization";
 
 interface Props {
   organisations: SingleOrganisation[];
@@ -335,11 +334,9 @@ export default function BasicTable({ organisations, userRole }: Props) {
                         pl: 0,
                       }}
                     >
-                      {(organisation &&
-                        organisation.contact &&
-                        organisation.contact[0] &&
-                        organisation.contact[0].email) ??
-                        ""}
+                      {organisation?.contact?.find(
+                        (contact) => contact.role === "Admin"
+                      )?.email ?? ""}
                     </TableCell>
                     <TableCell
                       sx={{
@@ -350,11 +347,9 @@ export default function BasicTable({ organisations, userRole }: Props) {
                         pl: 0,
                       }}
                     >
-                      {(organisation &&
-                        organisation.contact &&
-                        organisation.contact[0] &&
-                        organisation.contact[0].phone) ??
-                        ""}
+                      {organisation?.contact?.find(
+                        (contact) => contact.role === "Admin"
+                      )?.phone ?? ""}
                     </TableCell>
                     <TableCell
                       sx={{
@@ -365,11 +360,9 @@ export default function BasicTable({ organisations, userRole }: Props) {
                         pl: 0,
                       }}
                     >
-                      {(organisation &&
-                        organisation.contact &&
-                        organisation.contact[0] &&
-                        organisation.contact[0].name) ??
-                        ""}
+                      {organisation?.contact?.find(
+                        (contact) => contact.role === "Admin"
+                      )?.name ?? ""}
                     </TableCell>
                     {role !== "MEMBER" && (
                       <TableCell
@@ -415,6 +408,11 @@ export default function BasicTable({ organisations, userRole }: Props) {
                           onClose={handleClose}
                           MenuListProps={{
                             "aria-labelledby": "basic-button",
+                          }}
+                          sx={{
+                            position: "absolute",
+                            left: "-10px",
+                            top: "-7px",
                           }}
                         >
                           <MenuItem onClick={handleEdit}>

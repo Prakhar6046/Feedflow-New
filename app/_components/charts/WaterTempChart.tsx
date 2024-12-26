@@ -10,11 +10,12 @@ import {
   Tooltip,
   Legend,
   Title,
+  Chart,
+  ChartOptions,
 } from "chart.js";
 import annotationPlugin from "chartjs-plugin-annotation";
 import { useEffect, useRef } from "react";
 import "chartjs-adapter-date-fns";
-
 // Register Chart.js components and plugins
 ChartJS.register(
   LineElement,
@@ -29,15 +30,14 @@ ChartJS.register(
 );
 interface Iprops {
   xAxisData: string[];
-  ydata: string[];
+  ydata: (String | undefined)[];
   title: string;
 }
 const WaterTempChart = ({ xAxisData, ydata, title }: Iprops) => {
-  console.log(xAxisData);
-  const chartRef = useRef(null);
-  const waterDropletImage = useRef<HTMLImageElement | null>(null);
+  const chartRef = useRef<Chart | any>(null);
+  let waterDropletImage = useRef<HTMLImageElement | null>(null);
   const data = {
-    labels: xAxisData.map((date) => new Date(date)),
+    labels: xAxisData?.map((date) => new Date(date)),
     datasets: [
       {
         label: "Batch average",
@@ -55,55 +55,26 @@ const WaterTempChart = ({ xAxisData, ydata, title }: Iprops) => {
     ],
   };
 
-  const options = {
+  const options: ChartOptions<"line"> = {
     responsive: true,
     maintainAspectRatio: false,
+
     plugins: {
       legend: {
-        display: true,
-      },
-      datalabels: {
         display: true,
       },
       tooltip: {
         enabled: true,
       },
-
       title: {
         display: true,
         text: title,
         color: "black",
         font: {
           size: 24, // Increase the font size for the title
-          weight: "bold", // Optional: Make the font bold
+          weight: 400, // Optional: Make the font bold
         },
       },
-      // annotation: {
-      //   annotations: {
-      //     maxLine: {
-      //       type: "line",
-      //       yMin: 50, // Max value line
-      //       yMax: 50,
-      //       borderColor: "red",
-      //       borderWidth: 2,
-      //       label: {
-      //         content: "spec max",
-      //         enabled: true,
-      //         position: "center", // Try changing to "start" or "center"
-      //         backgroundColor: "rgba(255, 255, 255, 0.9)", // Light background
-      //         borderColor: "red",
-      //         borderWidth: 1,
-      //         borderRadius: 4, // Rounded corners
-      //         padding: 6,
-      //         color: "red", // Text color
-      //         font: {
-      //           size: 12, // Font size for the label
-      //           weight: "bold",
-      //         },
-      //       },
-      //     },
-      //   },
-      // },
     },
     scales: {
       x: {
@@ -114,7 +85,7 @@ const WaterTempChart = ({ xAxisData, ydata, title }: Iprops) => {
         time: {
           unit: "hour", // Choose unit for better granularity (e.g., 'hour', 'day')
           displayFormats: {
-            hour: "MMM d, h:mm a", // Customize the display format
+            hour: "MMM d, yyyy, h:mm a", // Display the year along with the date and time
           },
         },
       },
@@ -126,24 +97,32 @@ const WaterTempChart = ({ xAxisData, ydata, title }: Iprops) => {
   };
   const customImagePlugin = {
     id: "customImagePoints",
-    afterDraw(chart) {
+    afterDraw(chart: Chart) {
       const { ctx } = chart;
-      if (waterDropletImage.complete) {
-        chart.data.datasets[0].data.forEach((point, index) => {
-          const meta = chart.getDatasetMeta(0);
-          const x = meta.data[index].x;
-          const y = meta.data[index].y;
 
-          ctx.drawImage(
-            waterDropletImage,
-            x - 10, // Adjust position
-            y - 10,
-            20, // Width
-            20 // Height
-          );
-        });
-      } else {
-        console.warn("Image not loaded yet");
+      // Check if the image has been loaded and is available
+      if (waterDropletImage.current) {
+        const img = waterDropletImage.current;
+
+        // Only draw the image if it's fully loaded
+        if (img.complete) {
+          chart.data.datasets[0].data.forEach((_, index) => {
+            const meta = chart.getDatasetMeta(0);
+            const x = meta.data[index].x;
+            const y = meta.data[index].y;
+
+            // Draw the image at the appropriate position
+            ctx.drawImage(
+              img,
+              x - 10, // Adjust position
+              y - 10,
+              20, // Width
+              20 // Height
+            );
+          });
+        } else {
+          console.warn("Image not loaded yet");
+        }
       }
     },
   };
@@ -152,7 +131,7 @@ const WaterTempChart = ({ xAxisData, ydata, title }: Iprops) => {
     beforeDraw: (chart: any) => {
       const {
         ctx,
-        chartArea: { top, bottom, left, right },
+        chartArea: { left, right },
         scales: { y },
       } = chart;
 
@@ -176,7 +155,7 @@ const WaterTempChart = ({ xAxisData, ydata, title }: Iprops) => {
       ctx.restore();
     },
   };
-  const crosshairLine = (chart, mousemove) => {
+  const crosshairLine = (chart: Chart, mousemove: MouseEvent) => {
     if (!chart || !chart.chartArea) return;
     const {
       canvas,
@@ -211,11 +190,9 @@ const WaterTempChart = ({ xAxisData, ydata, title }: Iprops) => {
     }
   };
 
-  const crosshairLable = (chart, mousemove) => {
+  const crosshairLable = (chart: any, mousemove: MouseEvent) => {
     const {
-      canvas,
       ctx,
-      data,
       chartArea: { left, right, top, bottom, width, height },
       scales: { x, y },
     } = chart;
@@ -238,20 +215,28 @@ const WaterTempChart = ({ xAxisData, ydata, title }: Iprops) => {
     ctx.fillRect(coorX - textWidth / 2, bottom, textWidth, 20);
     ctx.closePath();
     ctx.fillStyle = "white";
-    // const xValue=xAxisData?.
     const nearestValue = x.getValueForPixel(coorX);
     if (nearestValue !== undefined) {
-      ctx.fillText(nearestValue, coorX, bottom + 10);
-    } else {
-      console.warn("No value found for the given pixel");
+      ctx.fillText(
+        new Date(x.getValueForPixel(coorX)).toLocaleString(),
+        coorX,
+        bottom + 10
+      );
     }
-    ctx.restore();
+    x.restore();
   };
-  const drawRoundedRect = (ctx, x, y, width, height, radius) => {
+  const drawRoundedRect = (
+    ctx: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+    radius: any
+  ) => {
     if (typeof radius === "number") {
       radius = { tl: radius, tr: radius, br: radius, bl: radius };
     } else {
-      const defaultRadius = { tl: 0, tr: 0, br: 0, bl: 0 };
+      const defaultRadius: any = { tl: 0, tr: 0, br: 0, bl: 0 };
       for (let side in defaultRadius) {
         radius[side] = radius[side] || defaultRadius[side];
       }
@@ -277,7 +262,7 @@ const WaterTempChart = ({ xAxisData, ydata, title }: Iprops) => {
   };
   const dottedLine = {
     id: "dottedLine",
-    beforeDatasetDraw(chart, arg, options) {
+    beforeDatasetDraw(chart: any) {
       const {
         ctx,
         data,
@@ -288,8 +273,10 @@ const WaterTempChart = ({ xAxisData, ydata, title }: Iprops) => {
       // Calculate the average of the dataset
       const dataset = data?.datasets[0]?.data;
       const avg =
-        dataset?.reduce((sum, value) => Number(sum) + Number(value), 0) /
-        dataset?.length;
+        dataset?.reduce(
+          (sum: string, value: string) => Number(sum) + Number(value),
+          0
+        ) / dataset?.length;
 
       ctx.save();
       ctx.beginPath();
@@ -318,7 +305,7 @@ const WaterTempChart = ({ xAxisData, ydata, title }: Iprops) => {
   };
   const maxValPlugin = {
     id: "maxValPlugin",
-    beforeDatasetDraw(chart, arg, options) {
+    beforeDatasetDraw(chart: Chart) {
       const {
         ctx,
         data,
@@ -358,73 +345,75 @@ const WaterTempChart = ({ xAxisData, ydata, title }: Iprops) => {
   //custom tooltip plugin block
   const customTooltip = {
     id: "customTooltip",
-    afterDraw(chart, args, pluginOptions) {
+    afterDraw(chart: Chart) {
       const {
         ctx,
-        data,
-        chartArea: { left, right, top, bottom, width, height },
+        chartArea: { left, right, top, bottom },
         scales: { x, y },
       } = chart;
-      ctx.save();
-      chart.canvas.addEventListener("mousemove", (e) => {
-        tooltipPosition(e);
-      });
-      const tooltipPosition = (mousemove) => {
-        let xTooltip;
-        let yTooltip;
+
+      chart.canvas.addEventListener("mousemove", (e) => tooltipPosition(e));
+
+      const tooltipPosition = (mousemove: MouseEvent) => {
+        let xTooltip, yTooltip;
         const rightSide = right - mousemove.offsetX;
-        if (rightSide <= 170) {
-          xTooltip = mousemove.offsetX - 170;
-        } else {
-          xTooltip = mousemove.offsetX + 20;
-        }
-        if (mousemove.offsetY <= 90) {
-          yTooltip = mousemove.offsetY + 20;
-        } else {
-          yTooltip = mousemove.offsetY - 90;
-        }
+
+        xTooltip =
+          rightSide <= 170 ? mousemove.offsetX - 170 : mousemove.offsetX + 20;
+        yTooltip =
+          mousemove.offsetY <= 90
+            ? mousemove.offsetY + 20
+            : mousemove.offsetY - 60;
+
         if (
           mousemove.offsetX >= left &&
           mousemove.offsetX <= right &&
           mousemove.offsetY >= top &&
           mousemove.offsetY <= bottom
         ) {
+          ctx.save();
+
+          // Tooltip box
           ctx.beginPath();
-          ctx.fillStyle = "rgba(102,102,102,0.2)";
-          ctx.strokeStyle = "rgba(102,102,102,0.2)";
+          ctx.fillStyle = "rgba(173, 216, 230, 0.9)";
+          ctx.strokeStyle = "rgba(173, 216, 230, 0.9)";
           ctx.lineJoin = "round";
           ctx.lineWidth = 5;
           ctx.setLineDash([]);
-          ctx.font = "13px sans-serif bold";
-          ctx.textBaseline = "middle";
-          ctx.textAlign = "center";
-          ctx.fillRect(xTooltip, yTooltip, 100, 50);
-          ctx.strokeRect(xTooltip, yTooltip, 100, 50);
-          ctx.font = "13px sans-serif bold";
-          ctx.fillStyle = "white";
-          ctx.textBaseline = "middle";
-          ctx.textAlign = "center";
-          const mouseX = mousemove.offsetX;
-          const mouseY = mousemove.offsetY;
-          const xValue = x.getValueForPixel(mouseX); // Get X-axis value
-          const yValue = y.getValueForPixel(mouseY);
-          ctx.fillText(
-            `${xValue} ${yValue.toFixed(2)}`,
-            xTooltip + 50,
-            yTooltip + 10
-          );
+          ctx.fillRect(xTooltip, yTooltip, 150, 60);
+          ctx.strokeRect(xTooltip, yTooltip, 150, 60);
           ctx.closePath();
+          ctx.restore();
+
+          // Tooltip text
+          ctx.font = "13px sans-serif";
+          ctx.fillStyle = "#006d77"; // Teal color for text
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+
+          const xValue: number | any = x.getValueForPixel(mousemove.offsetX); // X-axis value
+          const yValue = y.getValueForPixel(mousemove.offsetY)?.toFixed(2); // Y-axis value
+
+          ctx.fillText(
+            `Date: ${new Date(xValue).toLocaleDateString()}`,
+            xTooltip + 75, // Center text horizontally
+            yTooltip + 20 // Adjust vertical position
+          );
+          ctx.fillText(`Value: ${yValue}`, xTooltip + 75, yTooltip + 40);
+
           ctx.restore();
         }
       };
     },
   };
+
   useEffect(() => {
     const chartInstance = chartRef.current;
     if (chartInstance) {
       const canvas = chartInstance.canvas;
       if (canvas) {
-        const handleMouseMove = (e) => crosshairLine(chartInstance, e);
+        const handleMouseMove = (e: MouseEvent) =>
+          crosshairLine(chartInstance, e);
         canvas.addEventListener("mousemove", handleMouseMove);
         return () => {
           canvas.removeEventListener("mousemove", handleMouseMove);
@@ -455,10 +444,7 @@ const WaterTempChart = ({ xAxisData, ydata, title }: Iprops) => {
     };
   }, []);
   return (
-    <div
-      style={{ width: "900px", height: "500px" }}
-      className="d-flex justify-content-center align-items-center"
-    >
+    <div className="d-flex justify-content-center align-items-center chart-container">
       <Line
         ref={chartRef}
         data={data}

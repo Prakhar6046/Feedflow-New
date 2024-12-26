@@ -559,14 +559,77 @@ label {
     transform: scale(1);
   }
 }
-.charts-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  width: 100%;
+.chart-container {
+  width: 100%; /* Take full width of parent */
+  height: 450px; /* Adjust as needed */
+  aspect-ratio: 16 / 9;
 }
 
-.charts-container > * {
-  flex: 1;
+.number-items:focus-visible {
+  outline: none;
+}
+
+.table-border input:focus-visible {
+  outline: none;
+  border: 1px solid #d3d3d3 !important;
+}
+
+.tab-item {
+  padding: 8px 0px;
+  border: none;
+  border-radius: 26px;
+  background-color: transparent;
+  color: #67737f;
+  font-weight: 500;
+  cursor: pointer;
+  width: 92px;
+  font-weight: 500;
+  font-size: 16px;
+  text-align: center;
+}
+
+/* Active tab style */
+.tab-item:focus {
+  background-color: #06a19b;
+  color: white;
+}
+.date-picker {
+  margin-top: 0px !important;
+  border-radius: 10px !important;
+}
+
+.date-picker label {
+  color: #67737f !important;
+}
+.form-grid {
+  padding-top: 0px !important;
+  padding-left: 0px !important;
+}
+
+/* tooltip css */
+.tooltip-container {
+  position: absolute;
+  width: 180px;
+  height: 60px;
+  background-color: rgba(173, 216, 230, 0.9); /* Light pastel blue */
+  border-radius: 12px; /* Rounded corners */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  font-family: "Arial", sans-serif;
+  color: #006d77; /* Subtle teal for text */
+  text-align: center;
+}
+
+.tooltip-container .icon {
+  font-size: 24px; /* Adjust as per icon */
+  margin-bottom: 5px;
+  color: #006d77; /* Match text color */
+}
+
+.tooltip-container .text {
+  font-size: 14px;
 }

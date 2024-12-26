@@ -154,20 +154,6 @@ const WaterManageHistoryModal: React.FC<Props> = ({
 
     return result;
   }, []);
-  useEffect(() => {
-    if (groupedData.length) {
-      const createdAtArray = groupedData
-        ?.flatMap((farm) =>
-          farm.units?.flatMap((unit) =>
-            unit.WaterManageHistoryAvgrage?.map((history) =>
-              formattedDate(String(history.createdAt))
-            )
-          )
-        )
-        .filter(Boolean);
-      setXAxisData(createdAtArray);
-    }
-  }, [productions]);
 
   return (
     <Modal
@@ -681,7 +667,7 @@ const WaterManageHistoryModal: React.FC<Props> = ({
           productions={productions}
         />
         <div className="charts-container ">
-          {xAxisData?.length !== 0 && (
+          {/* {xAxisData?.length !== 0 && (
             <WaterTempChart
               key={`waterTempChart`}
               xAxisData={xAxisData}
@@ -696,7 +682,7 @@ const WaterManageHistoryModal: React.FC<Props> = ({
                 .filter(Boolean)}
               title="Water Temperature"
             />
-          )}
+          )} */}
 
           {/* {xAxisData?.length!==0 && (
             <WaterTempChart

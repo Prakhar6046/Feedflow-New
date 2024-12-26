@@ -1,12 +1,11 @@
 "use client";
 import TransferModal from "@/app/_components/models/FarmManager";
+import { getLocalItem, setLocalItem } from "@/app/_lib/utils";
 import {
   farmManagerFishHead,
   farmManagerFishHeadMember,
   farmManagerWaterHead,
   farmManagerWaterHeadMember,
-  fishManageHistoryHead,
-  waterManageHistoryHead,
 } from "@/app/_lib/utils/tableHeadData";
 import { Farm } from "@/app/_typeModels/Farm";
 import { FarmGroup, Production } from "@/app/_typeModels/production";
@@ -35,10 +34,7 @@ import { getCookie, setCookie } from "cookies-next";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import Loader from "../Loader";
-import FishManageHistoryModal from "../models/FishManageHistory";
-import WaterManageHistoryModal from "../models/WaterManageHistory";
 import WaterQualityParameter from "../models/WaterQualityParameter";
-import { getLocalItem, setLocalItem } from "@/app/_lib/utils";
 interface Props {
   productions: Production[];
   tableData?: any;
@@ -95,14 +91,19 @@ export default function ProductionTable({
 
   const [selectedUnitId, setSelectedUnitId] = useState<String>();
   const handleFishManageHistory = (unit: any) => {
-    setSelectedUnitId(unit.productionUnit.id);
     if (selectedView == "fish") {
-      setIsWaterManageHistory(false);
-      setIsFishManageHistory(true);
+      router.push(`/dashboard/production/fish/${unit.productionUnit.id}`);
     } else {
-      setIsFishManageHistory(false);
-      setIsWaterManageHistory(true);
+      router.push(`/dashboard/production/water/${unit.productionUnit.id}`);
     }
+    // setSelectedUnitId(unit.productionUnit.id);
+    // if (selectedView == "fish") {
+    //   setIsWaterManageHistory(false);
+    //   setIsFishManageHistory(true);
+    // } else {
+    //   setIsFishManageHistory(false);
+    //   setIsWaterManageHistory(true);
+    // }
   };
 
   const handleClick = (
@@ -552,21 +553,17 @@ export default function ProductionTable({
                             sx={{
                               color: "#555555",
                               maxWidth: 250,
-                              borderBottomColor: "#ececec",
+                              borderBottomColor: "#F5F6F8",
                               borderBottomWidth: 2,
-
                               fontWeight: 700,
+                              textWrap: "nowrap",
                               paddingLeft: {
                                 lg: 10,
                                 md: 7,
                                 xs: 4,
                               },
                               pr: 2,
-
-                              wordBreak: "break-all",
                             }}
-                            component="th"
-                            scope="row"
                           >
                             {farm.farm ?? ""}
                           </TableCell>
@@ -593,7 +590,6 @@ export default function ProductionTable({
                                     justifyContent: "space-between",
                                     gap: 1,
                                     backgroundColor: "#F5F6F8",
-
                                     borderTopLeftRadius: "8px",
                                     borderBottomLeftRadius: "8px",
                                     padding: "8px 12px",
@@ -622,7 +618,6 @@ export default function ProductionTable({
                                           background: "transparent",
                                           fontWeight: "bold",
                                           padding: 0.25,
-
                                           borderRadius: "4px",
                                           alignItems: "center",
                                           minWidth: "fit-content",
@@ -651,7 +646,6 @@ export default function ProductionTable({
                             sx={{
                               borderBottomWidth: 2,
                               borderBottomColor: "#ececec",
-
                               color: "#555555",
                               fontWeight: 500,
                               pl: 0,
@@ -755,8 +749,7 @@ export default function ProductionTable({
                                         : "19px 12px 19px 0"
                                     }`,
                                     margin: "8px 0",
-                                    // marginBottom: "10px",
-                                    // padding: "21px",
+
                                     textWrap: "nowrap",
                                   }}
                                 >
@@ -1028,6 +1021,7 @@ export default function ProductionTable({
                                 borderBottomWidth: 2,
                                 color: "#555555",
                                 fontWeight: 500,
+                                pl: 0,
                               }}
                               className="cursor-pointer table-padding"
                             >
@@ -1170,22 +1164,6 @@ export default function ProductionTable({
             selectedProduction={selectedProduction}
             farms={farms}
             productions={productions}
-          />
-          <FishManageHistoryModal
-            open={isFishManageHistory}
-            setOpen={setIsFishManageHistory}
-            tableData={fishManageHistoryHead}
-            productions={productions?.filter(
-              (data) => data.productionUnitId === selectedUnitId
-            )}
-          />
-          <WaterManageHistoryModal
-            open={isWaterManageHistory}
-            setOpen={setIsWaterManageHistory}
-            tableData={waterManageHistoryHead}
-            productions={productions?.filter(
-              (data) => data.productionUnitId === selectedUnitId
-            )}
           />
         </>
       ) : (

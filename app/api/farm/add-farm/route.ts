@@ -5,7 +5,8 @@ import { NextRequest, NextResponse } from "next/server";
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-
+    const productionParameter = body.productionParameter;
+    // const
     const newFarmAddress = await prisma.farmAddress.create({
       data: { ...body.farmAddress },
     });
@@ -61,24 +62,13 @@ export async function POST(req: NextRequest) {
       })),
     });
 
-    // Create samplingEnvironment using the ids of the created production units
-    // const newSamplingEnvironmentData =
-    //   await prisma.samplingEnvironment.createMany({
-    //     data: newSamplingEnvironment.map((unit: any) => ({
-    //       fishFarmId: farm.id,
-    //       productionUnitId: unit.id, // Use the production unit id
-    //       organisationId: body.organsationId,
-    //     })),
-    //   });
-
-    // Create samplingStock using the ids of the created production units
-    // const newSamplingStockData = await prisma.samplingStock.createMany({
-    //   data: newSamplingEnvironment.map((unit: any) => ({
-    //     fishFarmId: farm.id,
-    //     productionUnitId: unit.id, // Use the production unit id
-    //     organisationId: body.organsationId,
-    //   })),
-    // });
+    //Creating production parameter
+    await prisma.waterQualityPredictedParameters.create({
+      data: {
+        farmId: farm.id,
+        YearBasedPredication: { create: { waterTemp: productionParameter } },
+      },
+    });
 
     return NextResponse.json({
       message: "Farm created successfully",

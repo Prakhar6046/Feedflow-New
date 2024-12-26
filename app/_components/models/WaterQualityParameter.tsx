@@ -589,13 +589,7 @@ const WaterQualityParameter: React.FC<Props> = ({
                                 <Controller
                                   name={`water.${idx}.date`}
                                   control={control}
-                                  rules={{
-                                    required: "This field is required.",
-                                  }}
-                                  render={({
-                                    field,
-                                    fieldState: { error },
-                                  }) => (
+                                  render={({ field }) => (
                                     <Box>
                                       <DateTimePicker
                                         {...field}
@@ -617,16 +611,6 @@ const WaterQualityParameter: React.FC<Props> = ({
                                         }}
                                         value={field.value || null}
                                       />
-                                      {error && (
-                                        <Typography
-                                          variant="body2"
-                                          color="red"
-                                          fontSize={13}
-                                          mt={0.5}
-                                        >
-                                          {error.message}
-                                        </Typography>
-                                      )}
                                     </Box>
                                   )}
                                 />
@@ -657,7 +641,6 @@ const WaterQualityParameter: React.FC<Props> = ({
                             // disabled={idx === 0 ? true : false}
                             sx={{ width: "100%" }}
                             {...register(`water.${idx}.waterTemp`, {
-                              required: true,
                               pattern: validationPattern.numbersWithDot,
                             })}
                             focused
@@ -683,20 +666,6 @@ const WaterQualityParameter: React.FC<Props> = ({
                           </Typography>
                         </Box>
 
-                        {errors &&
-                          errors.water &&
-                          errors.water[idx] &&
-                          errors.water[idx].waterTemp &&
-                          errors.water[idx].waterTemp.type === "required" && (
-                            <Typography
-                              variant="body2"
-                              color="red"
-                              fontSize={13}
-                              mt={0.5}
-                            >
-                              {validationMessage.required}
-                            </Typography>
-                          )}
                         {errors &&
                           errors.water &&
                           errors.water[idx] &&
@@ -733,7 +702,6 @@ const WaterQualityParameter: React.FC<Props> = ({
                             className="form-input"
                             // disabled={idx === 0 ? true : false}
                             {...register(`water.${idx}.DO`, {
-                              required: true,
                               pattern: validationPattern.numbersWithDot,
                             })}
                             sx={{ width: "100%" }}
@@ -759,20 +727,6 @@ const WaterQualityParameter: React.FC<Props> = ({
                           </Typography>
                         </Box>
 
-                        {errors &&
-                          errors.water &&
-                          errors.water[idx] &&
-                          errors.water[idx].DO &&
-                          errors.water[idx].DO.type === "required" && (
-                            <Typography
-                              variant="body2"
-                              color="red"
-                              fontSize={13}
-                              mt={0.5}
-                            >
-                              {validationMessage.required}
-                            </Typography>
-                          )}
                         {errors &&
                           errors.water &&
                           errors.water[idx] &&
@@ -810,7 +764,6 @@ const WaterQualityParameter: React.FC<Props> = ({
                             // disabled={idx === 0 ? true : false}
                             sx={{ width: "100%" }}
                             {...register(`water.${idx}.TSS`, {
-                              required: true,
                               pattern: validationPattern.numbersWithDot,
                             })}
                           />
@@ -835,20 +788,6 @@ const WaterQualityParameter: React.FC<Props> = ({
                           </Typography>
                         </Box>
 
-                        {errors &&
-                          errors.water &&
-                          errors.water[idx] &&
-                          errors.water[idx].TSS &&
-                          errors.water[idx].TSS.type === "required" && (
-                            <Typography
-                              variant="body2"
-                              color="red"
-                              fontSize={13}
-                              mt={0.5}
-                            >
-                              {validationMessage.required}
-                            </Typography>
-                          )}
                         {errors &&
                           errors.water &&
                           errors.water[idx] &&
@@ -887,7 +826,6 @@ const WaterQualityParameter: React.FC<Props> = ({
                             // disabled={idx === 0 ? true : false}
                             sx={{ width: "100%" }}
                             {...register(`water.${idx}.NH4`, {
-                              required: true,
                               pattern: validationPattern.numbersWithDot,
                             })}
                           />
@@ -911,21 +849,6 @@ const WaterQualityParameter: React.FC<Props> = ({
                             mg/L
                           </Typography>
                         </Box>
-
-                        {errors &&
-                          errors.water &&
-                          errors.water[idx] &&
-                          errors.water[idx].NH4 &&
-                          errors.water[idx].NH4.type === "required" && (
-                            <Typography
-                              variant="body2"
-                              color="red"
-                              fontSize={13}
-                              mt={0.5}
-                            >
-                              {validationMessage.required}
-                            </Typography>
-                          )}
                         {errors &&
                           errors.water &&
                           errors.water[idx] &&
@@ -963,7 +886,6 @@ const WaterQualityParameter: React.FC<Props> = ({
                             // disabled={idx === 0 ? true : false}
                             sx={{ width: "100%" }}
                             {...register(`water.${idx}.NO3`, {
-                              required: true,
                               pattern: validationPattern.numbersWithDot,
                             })}
                           />
@@ -988,20 +910,6 @@ const WaterQualityParameter: React.FC<Props> = ({
                           </Typography>
                         </Box>
 
-                        {errors &&
-                          errors.water &&
-                          errors.water[idx] &&
-                          errors.water[idx].NO3 &&
-                          errors.water[idx].NO3.type === "required" && (
-                            <Typography
-                              variant="body2"
-                              color="red"
-                              fontSize={13}
-                              mt={0.5}
-                            >
-                              {validationMessage.required}
-                            </Typography>
-                          )}
                         {errors &&
                           errors.water &&
                           errors.water[idx] &&
@@ -1039,7 +947,6 @@ const WaterQualityParameter: React.FC<Props> = ({
                             // disabled={idx === 0 ? true : false}
                             sx={{ width: "100%" }}
                             {...register(`water.${idx}.NO2`, {
-                              required: true,
                               pattern: validationPattern.numbersWithDot,
                             })}
                           />
@@ -1064,20 +971,6 @@ const WaterQualityParameter: React.FC<Props> = ({
                           </Typography>
                         </Box>
 
-                        {errors &&
-                          errors.water &&
-                          errors.water[idx] &&
-                          errors.water[idx].NO2 &&
-                          errors.water[idx].NO2.type === "required" && (
-                            <Typography
-                              variant="body2"
-                              color="red"
-                              fontSize={13}
-                              mt={0.5}
-                            >
-                              {validationMessage.required}
-                            </Typography>
-                          )}
                         {errors &&
                           errors.water &&
                           errors.water[idx] &&
@@ -1115,26 +1008,11 @@ const WaterQualityParameter: React.FC<Props> = ({
                             // disabled={idx === 0 ? true : false}
                             sx={{ width: "100%" }}
                             {...register(`water.${idx}.ph`, {
-                              required: true,
                               pattern: validationPattern.numbersWithDot,
                             })}
                           />
                         </Box>
 
-                        {errors &&
-                          errors.water &&
-                          errors.water[idx] &&
-                          errors.water[idx].ph &&
-                          errors.water[idx].ph.type === "required" && (
-                            <Typography
-                              variant="body2"
-                              color="red"
-                              fontSize={13}
-                              mt={0.5}
-                            >
-                              {validationMessage.required}
-                            </Typography>
-                          )}
                         {errors &&
                           errors.water &&
                           errors.water[idx] &&
@@ -1172,7 +1050,6 @@ const WaterQualityParameter: React.FC<Props> = ({
                             // disabled={idx === 0 ? true : false}
                             sx={{ width: "100%" }}
                             {...register(`water.${idx}.visibility`, {
-                              required: true,
                               pattern: validationPattern.numbersWithDot,
                             })}
                           />
@@ -1197,20 +1074,6 @@ const WaterQualityParameter: React.FC<Props> = ({
                           </Typography>
                         </Box>
 
-                        {errors &&
-                          errors.water &&
-                          errors.water[idx] &&
-                          errors.water[idx].visibility &&
-                          errors.water[idx].visibility.type === "required" && (
-                            <Typography
-                              variant="body2"
-                              color="red"
-                              fontSize={13}
-                              mt={0.5}
-                            >
-                              {validationMessage.required}
-                            </Typography>
-                          )}
                         {errors &&
                           errors.water &&
                           errors.water[idx] &&

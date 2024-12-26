@@ -9,6 +9,7 @@ import { SingleUser } from "@/app/_typeModels/User";
 import { Box, Divider, Grid, Step, StepLabel, Stepper } from "@mui/material";
 import { getCookie, setCookie } from "cookies-next";
 import { useEffect, useState } from "react";
+import ProductionParaMeter from "./ProductionParameter";
 
 const steps = [
   {
@@ -130,7 +131,13 @@ const EditFarm = ({ farmId, farmMembers }: Props) => {
         {activeStep === 2 && (
           <ProductionUnits setActiveStep={setActiveStep} editFarm={editFarm} />
         )}
-        {activeStep === 3 && <AllDone setActiveStep={setActiveStep} />}
+        {activeStep === 3 && (
+          <ProductionParaMeter
+            setActiveStep={setActiveStep}
+            editFarm={editFarm}
+          />
+        )}
+        {activeStep === 4 && <AllDone setActiveStep={setActiveStep} />}
       </Grid>
     </Grid>
   );
