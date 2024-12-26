@@ -302,23 +302,29 @@ function GrowthModel() {
                 />
               </Grid>
             </Grid>
-
-            <Button
-              type="submit"
-              variant="contained"
-              sx={{
-                color: "#fff",
-                background: "#06A19B",
-                fontWeight: 600,
-                padding: "6px 16px",
-                width: "fit-content",
-                textTransform: "capitalize",
-                borderRadius: "8px",
-                border: "1px solid #06A19B",
-              }}
+            <Box
+              display={"flex"}
+              justifyContent={"end"}
+              alignItems={"end"}
+              marginBlock={"20px"}
             >
-              Save
-            </Button>
+              <Button
+                type="submit"
+                variant="contained"
+                sx={{
+                  color: "#fff",
+                  background: "#06A19B",
+                  fontWeight: 600,
+                  padding: "6px 16px",
+                  width: "fit-content",
+                  textTransform: "capitalize",
+                  borderRadius: "8px",
+                  border: "1px solid #06A19B",
+                }}
+              >
+                Save
+              </Button>
+            </Box>
           </Box>
         </form>
       </Stack>

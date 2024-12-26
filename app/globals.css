@@ -567,3 +567,35 @@ label {
   outline: none;
   border: 1px solid #d3d3d3 !important;
 }
+
+.tab-item {
+  padding: 8px 0px;
+  border: none;
+  border-radius: 26px;
+  background-color: transparent;
+  color: #67737f;
+  font-weight: 500;
+  cursor: pointer;
+  width: 92px;
+  font-weight: 500;
+  font-size: 16px;
+  text-align: center;
+}
+
+/* Active tab style */
+.tab-item:focus {
+  background-color: #06a19b;
+  color: white;
+}
+.date-picker {
+  margin-top: 0px !important;
+  border-radius: 10px !important;
+}
+
+.date-picker label {
+  color: #67737f !important;
+}
+.form-grid {
+  padding-top: 0px !important;
+  padding-left: 0px !important;
+}

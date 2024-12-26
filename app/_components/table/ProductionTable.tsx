@@ -1021,6 +1021,7 @@ export default function ProductionTable({
                                 borderBottomWidth: 2,
                                 color: "#555555",
                                 fontWeight: 500,
+                                pl: 0,
                               }}
                               className="cursor-pointer table-padding"
                             >
