@@ -106,7 +106,18 @@ export default function ProductionParaMeter({
           };
         } else {
           payload = {
-            productionParameter: data,
+            productionParameter: {
+              waterTemp: data.predictedValues["Water Temperature °C"],
+              DO: data.predictedValues["Dissolved Oxygen (DO) mg/L"],
+              TSS: data.predictedValues["Total Suspended solids (TSS)"],
+              NH4: data.predictedValues["Ammonia (NH₄) mg/L"],
+              NO3: data.predictedValues["Nitrate (NO₃) mg/L"],
+              NO2: data.predictedValues["Nitrite (NO₂) mg/L"],
+              ph: data.predictedValues["pH"],
+              visibility: data.predictedValues["Visibility cm"],
+              growthModel: data.growthModel,
+            },
+
             farmAddress: {
               addressLine1: farmData.addressLine1,
               addressLine2: farmData.addressLine2,
