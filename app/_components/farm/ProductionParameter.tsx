@@ -18,6 +18,8 @@ import TableRow from "@mui/material/TableRow";
 import { Years } from "@/app/_lib/utils";
 import { waterQualityPredictedHead } from "@/app/_lib/utils/tableHeadData";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import * as validationPattern from "@/app/_lib/utils/validationPatterns/index";
+import * as validationMessage from "@/app/_lib/utils/validationsMessage/index";
 
 // Function to create data (assuming this structure for the data)
 
@@ -30,7 +32,11 @@ interface FormData {
   applyToAll: Record<string, boolean>;
 }
 export default function BasicTable({ setActiveStep }: Props) {
-  const { control, register, handleSubmit } = useForm<FormData>({
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>({
     defaultValues: {
       predictedValues: {},
       // idealRange: {},
@@ -40,6 +46,7 @@ export default function BasicTable({ setActiveStep }: Props) {
   const onSubmit: SubmitHandler<FormData> = (data) => {
     console.log("Form Data:", data);
   };
+  console.log(errors);
   return (
     <Box>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -136,11 +143,15 @@ export default function BasicTable({ setActiveStep }: Props) {
                           >
                             <Controller
                               name={`predictedValues.${head}.${year}`}
+                              rules={{
+                                pattern:
+                                  validationPattern.negativeNumberWithDot,
+                              }}
                               control={control}
                               render={({ field }) => (
                                 <input
                                   className="number-items"
-                                  {...field} // Use {...field} for binding the input
+                                  {...field}
                                   type="number"
                                   placeholder="0"
                                   style={{
@@ -155,6 +166,16 @@ export default function BasicTable({ setActiveStep }: Props) {
                                 />
                               )}
                             />
+                            {errors?.predictedValues?.[head]?.[year] && (
+                              <Typography
+                                variant="body2"
+                                color="error"
+                                fontSize={13}
+                                mt={0.5}
+                              >
+                                {validationMessage.NegativeNumberWithDot}
+                              </Typography>
+                            )}
                           </TableCell>
                         ))}
                       </TableRow>
@@ -234,6 +255,10 @@ export default function BasicTable({ setActiveStep }: Props) {
                             <Controller
                               name={`idealRange.${head}.${val}`}
                               control={control}
+                              rules={{
+                                pattern:
+                                  validationPattern.negativeNumberWithDot,
+                              }}
                               render={({ field }) => (
                                 <input
                                   className="number-items"
@@ -253,6 +278,16 @@ export default function BasicTable({ setActiveStep }: Props) {
                                 />
                               )}
                             />
+                            {errors?.idealRange?.[head]?.[val] && (
+                              <Typography
+                                variant="body2"
+                                color="error"
+                                fontSize={13}
+                                mt={0.5}
+                              >
+                                {validationMessage.NegativeNumberWithDot}
+                              </Typography>
+                            )}
                           </TableCell>
                         ))}
                       </TableRow>
