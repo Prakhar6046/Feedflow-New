@@ -23,9 +23,10 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import WaterSampleHistoryModal from "./WaterSampleHistory";
 import { waterSampleHistoryHead } from "@/app/_lib/utils/tableHeadData";
+import WaterTempChart from "../charts/WaterTempChart";
 const style = {
   position: "absolute" as "absolute",
   top: "50%",
@@ -55,6 +56,9 @@ const WaterManageHistoryModal: React.FC<Props> = ({
   const [orderBy, setOrderBy] = useState("Farm");
   const [isWaterSampleHistory, setIsWaterSampleHistory] =
     useState<boolean>(false);
+  const [xAxisData, setXAxisData] = useState();
+
+  // const [ammonia, setSuspendedSolids] = useState();
   function EnhancedTableHead(data: any) {
     const { order, orderBy, onRequestSort } = data;
     const createSortHandler =
@@ -150,6 +154,20 @@ const WaterManageHistoryModal: React.FC<Props> = ({
 
     return result;
   }, []);
+  useEffect(() => {
+    if (groupedData.length) {
+      const createdAtArray = groupedData
+        ?.flatMap((farm) =>
+          farm.units?.flatMap((unit) =>
+            unit.WaterManageHistoryAvgrage?.map((history) =>
+              formattedDate(String(history.createdAt))
+            )
+          )
+        )
+        .filter(Boolean);
+      setXAxisData(createdAtArray);
+    }
+  }, [productions]);
 
   return (
     <Modal
@@ -662,6 +680,133 @@ const WaterManageHistoryModal: React.FC<Props> = ({
           tableData={waterSampleHistoryHead}
           productions={productions}
         />
+        <div className="charts-container ">
+          {xAxisData?.length !== 0 && (
+            <WaterTempChart
+              key={`waterTempChart`}
+              xAxisData={xAxisData}
+              ydata={groupedData
+                ?.flatMap((farm) =>
+                  farm.units?.flatMap((unit) =>
+                    unit.WaterManageHistoryAvgrage?.map(
+                      (history) => history.waterTemp
+                    )
+                  )
+                )
+                .filter(Boolean)}
+              title="Water Temperature"
+            />
+          )}
+
+          {/* {xAxisData?.length!==0 && (
+            <WaterTempChart
+              key={`dissolvedOxgChart`}
+              xAxisData={xAxisData}
+              ydata={groupedData
+                ?.flatMap((farm) =>
+                  farm.units?.flatMap((unit) =>
+                    unit.WaterManageHistoryAvgrage?.map((history) => history.DO)
+                  )
+                )
+                .filter(Boolean)}
+              title="Dissolved Oxygen"
+            />
+          )} */}
+          {/* {xAxisData?.length!==0  && (
+            <WaterTempChart
+              key={`TSS`}
+              xAxisData={xAxisData}
+              ydata={groupedData
+                ?.flatMap((farm) =>
+                  farm.units?.flatMap((unit) =>
+                    unit.WaterManageHistoryAvgrage?.map(
+                      (history) => history.TSS
+                    )
+                  )
+                )
+                .filter(Boolean)}
+              title="Total Suspended Solids"
+            />
+          )} */}
+          {/* {xAxisData?.length!==0  && (
+            <WaterTempChart
+              key={`ammonia`}
+              xAxisData={xAxisData}
+              ydata={groupedData
+                ?.flatMap((farm) =>
+                  farm.units?.flatMap((unit) =>
+                    unit.WaterManageHistoryAvgrage?.map(
+                      (history) => history.NH4
+                    )
+                  )
+                )
+                .filter(Boolean)}
+              title="Ammonia"
+            />
+          )} */}
+          {/* {xAxisData?.length!==0  && (
+            <WaterTempChart
+              key={`nitrate`}
+              xAxisData={xAxisData}
+              ydata={groupedData
+                ?.flatMap((farm) =>
+                  farm.units?.flatMap((unit) =>
+                    unit.WaterManageHistoryAvgrage?.map(
+                      (history) => history.NO3
+                    )
+                  )
+                )
+                .filter(Boolean)}
+              title="Nitrate"
+            />
+          )} */}
+          {/* {xAxisData?.length!==0  && (
+            <WaterTempChart
+              key={`nitrite`}
+              xAxisData={xAxisData}
+              ydata={groupedData
+                ?.flatMap((farm) =>
+                  farm.units?.flatMap((unit) =>
+                    unit.WaterManageHistoryAvgrage?.map(
+                      (history) => history.NO2
+                    )
+                  )
+                )
+                .filter(Boolean)}
+              title="Nitrite"
+            />
+          )} */}
+          {/* {xAxisData?.length!==0  && (
+            <WaterTempChart
+              key={`ph`}
+              xAxisData={xAxisData}
+              ydata={groupedData
+                ?.flatMap((farm) =>
+                  farm.units?.flatMap((unit) =>
+                    unit.WaterManageHistoryAvgrage?.map((history) => history.ph)
+                  )
+                )
+                .filter(Boolean)}
+              title="PH"
+            />
+          )} */}
+          {/* {xAxisData?.length!==0  && (
+            <WaterTempChart
+              key={`visibility`}
+              xAxisData={xAxisData}
+              ydata={groupedData
+                ?.flatMap((farm) =>
+                  farm.units?.flatMap((unit) =>
+                    unit.WaterManageHistoryAvgrage?.map(
+                      (history) => history.visibility
+                    )
+                  )
+                )
+                .filter(Boolean)}
+              title="Visibility"
+            />
+          )} */}
+        </div>
       </Stack>
     </Modal>
   );

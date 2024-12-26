@@ -1,5 +1,4 @@
 import {
-  FarmGroup,
   FishManageHistoryGroup,
   Production,
 } from "@/app/_typeModels/production";
@@ -140,7 +139,6 @@ const FishManageHistoryModal: React.FC<Props> = ({
 
     return result;
   }, []);
-
   return (
     <Modal
       open={open}
