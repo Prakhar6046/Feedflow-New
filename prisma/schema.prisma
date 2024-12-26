@@ -145,20 +145,18 @@ model YearBasedPredication {
   createdAt                        DateTime                        @default(now())
   updatedAt                        DateTime                        @updatedAt
 
-  jan           Json
-  fed           Json
-  mar           Json
-  apr           Json
-  may           Json
-  jun           Json
-  jul           Json
-  aug           Json
-  sep           Json
-  oct           Json
-  nov           Json
-  dec           Json
-  GrowthModelId Int
-  GrowthModel   GrowthModel @relation(fields: [GrowthModelId], references: [id])
+  waterTemp  Json?
+  DO         Json?
+  TSS        Json?
+  NH4        Json?
+  NO3        Json?
+  NO2        Json?
+  ph         Json?
+  visibility Json?
+
+  GrowthModel String
+  // GrowthModelId Int
+  // GrowthModel   GrowthModel @relation(fields: [GrowthModelId], references: [id])
 
   @@index([createdAt])
   @@index([updatedAt])
@@ -454,9 +452,8 @@ model GrowthModel {
   niloticusAureus       niloticusAureus     @relation(fields: [niloticusAureusId], references: [id])
   niloticusThaiStrain   niloticusThaiStrain @relation(fields: [niloticusThaiStrainId], references: [id])
 
-  createdAt            DateTime               @default(now())
-  updatedAt            DateTime               @updatedAt
-  YearBasedPredication YearBasedPredication[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([createdAt])
   @@index([updatedAt])

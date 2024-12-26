@@ -9,7 +9,7 @@ import AquaFarmWizard from "./AquaFarmWizard";
 import FarmInformation from "./FarmInformation";
 import ProductionUnits from "./ProductionUnits";
 import AllDone from "./AllDone";
-import ProductionParameter from "./ProductionParameter";
+import ProductionParaMeter from "./ProductionParameter";
 
 const steps = [
   {
@@ -32,12 +32,14 @@ interface Props {
 export default function NewFarm({ farmMembers }: Props) {
   const activeStepIndex = Number(getCookie("activeStep"));
   const [activeStep, setActiveStep] = useState<number>(
-    activeStepIndex !== 0 ? 3 : 0
+    activeStepIndex !== 0 ? activeStepIndex : 0
   );
 
   useEffect(() => {
     setCookie("activeStep", activeStep);
   }, [activeStep]);
+
+  console.log(activeStep);
 
   return (
     <Grid
@@ -103,7 +105,7 @@ export default function NewFarm({ farmMembers }: Props) {
         )}
         {activeStep === 2 && <ProductionUnits setActiveStep={setActiveStep} />}
         {activeStep === 3 && (
-          <ProductionParameter setActiveStep={setActiveStep} />
+          <ProductionParaMeter setActiveStep={setActiveStep} />
         )}
         {activeStep === 4 && <AllDone setActiveStep={setActiveStep} />}
       </Grid>

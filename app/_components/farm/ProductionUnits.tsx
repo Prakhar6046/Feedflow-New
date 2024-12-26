@@ -59,16 +59,13 @@ const unitsTypes = [
 
 const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
   uuidv4();
-  const router = useRouter();
-  const userData: any = getCookie("logged-user");
+
   const dispatch = useAppDispatch();
-  const farm = useAppSelector(selectFarm);
-  const isEditFarm = useAppSelector(selectIsEditFarm);
+
   const [selectedUnit, setSelectedUnit] = React.useState<UnitsTypes>();
   const [open, setopen] = useState<boolean>(false);
   const [calculatedValue, setCalculatedValue] = useState<CalculateType>();
-  const [isApiCallInProgress, setIsApiCallInProgress] =
-    useState<boolean>(false);
+
   const [formProductionUnitsData, setFormProductionUnitsData] = useState<any>();
 
   const {
@@ -92,9 +89,15 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
           id: uuidv4(),
         },
       ],
+      area: "1",
+      depth: "1",
+      width: "1",
+      length: "1",
+      height: "1",
+      radius: "1",
     },
   });
-
+  console.log(errors);
   const { fields, append, remove } = useFieldArray({
     control,
     name: "productionUnits",
@@ -148,93 +151,20 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
     }
   };
 
-  const onSubmit: SubmitHandler<ProductionUnitsFormTypes> = async (data) => {
-    // Prevent API call if one is already in progress
-    if (isApiCallInProgress) return;
-    setIsApiCallInProgress(true);
+  const onSubmit: SubmitHandler<ProductionUnitsFormTypes> = (data) => {
     clearErrors(["length", "width", "depth", "radius", "area", "height"]);
-    try {
-      const loggedUserData = JSON.parse(userData);
-
-      let payload;
-      if (isEditFarm && editFarm?.farmAddress?.id) {
-        payload = {
-          farmAddress: {
-            addressLine1: farm.addressLine1,
-            addressLine2: farm.addressLine2,
-            city: farm.city,
-            province: farm.province,
-            zipCode: farm.zipCode,
-            country: farm.country,
-            id: editFarm.farmAddress?.id,
-          },
-          productionUnits: data.productionUnits,
-          name: farm.name,
-          farmAltitude: farm.farmAltitude,
-          fishFarmer: farm.fishFarmer,
-          lat: farm.lat,
-          lng: farm.lng,
-          id: editFarm?.id,
-          organsationId: loggedUserData.organisationId,
-          productions: editFarm.production,
-          mangerId: farm.mangerId ? farm.mangerId : null,
-          userId: loggedUserData.id,
-        };
-      } else {
-        payload = {
-          farmAddress: {
-            addressLine1: farm.addressLine1,
-            addressLine2: farm.addressLine2,
-            city: farm.city,
-            province: farm.province,
-            zipCode: farm.zipCode,
-            country: farm.country,
-          },
-          productionUnits: data.productionUnits,
-          name: farm.name,
-          farmAltitude: farm.farmAltitude,
-          lat: farm.lat,
-          lng: farm.lng,
-          fishFarmer: farm.fishFarmer,
-          organsationId: loggedUserData.organisationId,
-          mangerId: farm.mangerId ? farm.mangerId : null,
-          userId: loggedUserData.id,
-        };
-      }
-      if (Object.keys(payload).length && payload.name) {
-        const response = await fetch(
-          `${isEditFarm ? "/api/farm/edit-farm" : "/api/farm/add-farm"}`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(payload),
-          }
-        );
-        const responseData = await response.json();
-        toast.success(responseData.message);
-
-        if (responseData.status) {
-          router.push("/dashboard/farm");
-          removeLocalItem("farmData");
-          removeLocalItem("farmProductionUnits");
-        }
-      } else {
-        toast.error("Please fill out the all feilds");
-      }
-      dispatch(farmAction.resetState());
-    } catch (error) {
-      toast.error("Something went wrong. Please try again.");
-    } finally {
-      setIsApiCallInProgress(false);
-    }
+    setActiveStep(3);
+    setLocalItem("farmProductionUnits", watch("productionUnits"));
   };
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const formData = getLocalItem("farmProductionUnits");
-      setFormProductionUnitsData(formData);
+      const productionUnit = getLocalItem("farmProductionUnits");
+      const farmData = getLocalItem("farmData");
+      setFormProductionUnitsData({
+        farmData: farmData,
+        productionUnitData: productionUnit,
+      });
     }
   }, []);
   useEffect(() => {
@@ -251,11 +181,32 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
   }, [calculatedValue]);
 
   useEffect(() => {
-    if (editFarm && !formProductionUnitsData) {
+    if (
+      editFarm &&
+      !formProductionUnitsData &&
+      !formProductionUnitsData?.productionUnitData
+    ) {
       setValue("productionUnits", editFarm?.productionUnits);
     } else if (formProductionUnitsData) {
-      setValue("productionUnits", formProductionUnitsData);
+      if (
+        formProductionUnitsData?.productionUnitData &&
+        formProductionUnitsData?.productionUnitData[0] &&
+        formProductionUnitsData?.productionUnitData[0]?.name
+      ) {
+        setValue(
+          "productionUnits",
+          formProductionUnitsData?.productionUnitData
+        );
+      }
+
+      dispatch(farmAction.updateFarm(formProductionUnitsData?.farmData));
     }
+    setValue("area", "1");
+    setValue("depth", "1");
+    setValue("height", "1");
+    setValue("length", "1");
+    setValue("radius", "1");
+    setValue("width", "1");
   }, [formProductionUnitsData]);
 
   return (
@@ -767,7 +718,6 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
               <Button
                 type="submit"
                 variant="contained"
-                disabled={isApiCallInProgress}
                 sx={{
                   background: "#06A19B",
                   fontWeight: 600,
@@ -777,7 +727,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                   borderRadius: "8px",
                 }}
               >
-                Save
+                Next
               </Button>
             </Box>
           </Box>
