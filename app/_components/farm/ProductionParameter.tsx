@@ -1,11 +1,19 @@
-import React, { useState } from "react";
+import { getLocalItem, setLocalItem, Years } from "@/app/_lib/utils";
+import { waterQualityPredictedHead } from "@/app/_lib/utils/tableHeadData";
+import * as validationPattern from "@/app/_lib/utils/validationPatterns/index";
+import * as validationMessage from "@/app/_lib/utils/validationsMessage/index";
+import { selectFarm, selectIsEditFarm } from "@/lib/features/farm/farmSlice";
+import { useAppSelector } from "@/lib/hooks";
 import {
   Box,
   Button,
   Checkbox,
+  FormControl,
   FormControlLabel,
   Grid,
-  Tooltip,
+  InputLabel,
+  MenuItem,
+  Select,
   Typography,
 } from "@mui/material";
 import Paper from "@mui/material/Paper";
@@ -15,38 +23,154 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import { Years } from "@/app/_lib/utils";
-import { waterQualityPredictedHead } from "@/app/_lib/utils/tableHeadData";
+import { getCookie } from "cookies-next";
+import { useEffect, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import * as validationPattern from "@/app/_lib/utils/validationPatterns/index";
-import * as validationMessage from "@/app/_lib/utils/validationsMessage/index";
+import toast from "react-hot-toast";
 
 // Function to create data (assuming this structure for the data)
 
 interface Props {
   setActiveStep: (val: number) => void;
+  editFarm: any;
 }
 interface FormData {
   predictedValues: Record<string, Record<number, string>>;
   idealRange: Record<string, { min: string; max: string }>;
   applyToAll: Record<string, boolean>;
+  growthModel: string;
 }
-export default function BasicTable({ setActiveStep }: Props) {
+export default function ProductionParaMeter({
+  setActiveStep,
+  editFarm,
+}: Props) {
+  const userData: any = getCookie("logged-user");
+  const farm = useAppSelector(selectFarm);
+  const isEditFarm = useAppSelector(selectIsEditFarm);
+  const [formProductionParameters, setFormProductionParameters] =
+    useState<any>();
+  const [isApiCallInProgress, setIsApiCallInProgress] =
+    useState<boolean>(false);
+
   const {
     control,
     handleSubmit,
+    watch,
+    register,
+    setValue,
     formState: { errors },
   } = useForm<FormData>({
     defaultValues: {
       predictedValues: {},
-      // idealRange: {},
-      // applyToAll: {},
     },
   });
-  const onSubmit: SubmitHandler<FormData> = (data) => {
-    console.log("Form Data:", data);
+  const allWatchObject = {
+    predictedValues: watch("predictedValues"),
+    idealRange: watch("idealRange"),
   };
-  console.log(errors);
+  const onSubmit: SubmitHandler<FormData> = async (data) => {
+    const farmData = getLocalItem("farmData");
+    const farmProductionUnits = getLocalItem("farmProductionUnits");
+    if (farmData && farmProductionUnits && data) {
+      // Prevent API call if one is already in progress
+      if (isApiCallInProgress) return;
+      setIsApiCallInProgress(true);
+
+      try {
+        const loggedUserData = JSON.parse(userData);
+
+        let payload;
+        if (isEditFarm && editFarm?.farmAddress?.id) {
+          payload = {
+            productionParameter: data,
+            farmAddress: {
+              addressLine1: farmData.addressLine1,
+              addressLine2: farmData.addressLine2,
+              city: farmData.city,
+              province: farmData.province,
+              zipCode: farmData.zipCode,
+              country: farmData.country,
+              id: editFarm.farmAddress?.id,
+            },
+            productionUnits: farmProductionUnits,
+            name: farmData.name,
+            farmAltitude: farmData.farmAltitude,
+            fishFarmer: farmData.fishFarmer,
+            lat: farmData.lat,
+            lng: farmData.lng,
+            id: editFarm?.id,
+            organsationId: loggedUserData.organisationId,
+            productions: editFarm.production,
+            mangerId: farmData.mangerId ? farmData.mangerId : null,
+            userId: loggedUserData.id,
+          };
+        } else {
+          payload = {
+            productionParameter: data,
+            farmAddress: {
+              addressLine1: farmData.addressLine1,
+              addressLine2: farmData.addressLine2,
+              city: farmData.city,
+              province: farmData.province,
+              zipCode: farmData.zipCode,
+              country: farmData.country,
+            },
+            productionUnits: farmProductionUnits,
+            name: farmData.name,
+            farmAltitude: farmData.farmAltitude,
+            lat: farmData.lat,
+            lng: farmData.lng,
+            fishFarmer: farmData.fishFarmer,
+            organsationId: loggedUserData.organisationId,
+            mangerId: farmData.mangerId ? farmData.mangerId : null,
+            userId: loggedUserData.id,
+          };
+        }
+        console.log(payload);
+
+        // if (Object.keys(payload).length && payload.name) {
+        //   const response = await fetch(
+        //     `${isEditFarm ? "/api/farm/edit-farm" : "/api/farm/add-farm"}`,
+        //     {
+        //       method: "POST",
+        //       headers: {
+        //         "Content-Type": "application/json",
+        //       },
+        //       body: JSON.stringify(payload),
+        //     }
+        //   );
+        //   const responseData = await response.json();
+        //   toast.success(responseData.message);
+
+        //   if (responseData.status) {
+        //     router.push("/dashboard/farm");
+        //     removeLocalItem("farmData");
+        //     removeLocalItem("farmProductionUnits");
+        //   }
+        // } else {
+        //   toast.error("Please fill out the all feilds");
+        // }
+        // dispatch(farmAction.resetState());
+      } catch (error) {
+        toast.error("Something went wrong. Please try again.");
+      } finally {
+        setIsApiCallInProgress(false);
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const formData = getLocalItem("productionParametes");
+      setFormProductionParameters(formData);
+    }
+  }, []);
+  useEffect(() => {
+    if (formProductionParameters) {
+      setValue("predictedValues", formProductionParameters.predictedValues);
+      setValue("idealRange", formProductionParameters.idealRange);
+    }
+  }, [formProductionParameters]);
   return (
     <Box>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -152,7 +276,7 @@ export default function BasicTable({ setActiveStep }: Props) {
                                 <input
                                   className="number-items"
                                   {...field}
-                                  type="number"
+                                  type="text"
                                   placeholder="0"
                                   style={{
                                     maxWidth: "80px",
@@ -162,6 +286,15 @@ export default function BasicTable({ setActiveStep }: Props) {
                                     fontSize: "14px",
                                     fontWeight: "500",
                                     color: "#555555",
+                                  }}
+                                  onInput={(e) => {
+                                    const value = e.currentTarget.value;
+                                    const regex = /^-?\d*\.?\d*$/;
+                                    if (!regex.test(value)) {
+                                      e.currentTarget.value = field.value || "";
+                                    } else {
+                                      field.onChange(value);
+                                    }
                                   }}
                                 />
                               )}
@@ -262,7 +395,7 @@ export default function BasicTable({ setActiveStep }: Props) {
                               render={({ field }) => (
                                 <input
                                   className="number-items"
-                                  type="number"
+                                  type="text"
                                   {...field}
                                   placeholder="0"
                                   style={{
@@ -274,6 +407,15 @@ export default function BasicTable({ setActiveStep }: Props) {
                                     fontSize: "14px",
                                     fontWeight: "500",
                                     color: "#555555",
+                                  }}
+                                  onInput={(e) => {
+                                    const value = e.currentTarget.value;
+                                    const regex = /^-?\d*\.?\d*$/;
+                                    if (!regex.test(value)) {
+                                      e.currentTarget.value = field.value || "";
+                                    } else {
+                                      field.onChange(value);
+                                    }
                                   }}
                                 />
                               )}
@@ -362,6 +504,29 @@ export default function BasicTable({ setActiveStep }: Props) {
           </Grid>
         </Paper>
 
+        <Box>
+          <Typography variant="subtitle1" fontWeight={500} marginBottom={3}>
+            Growth Parameters
+          </Typography>
+          {/* div-1 */}
+          <Grid item md={6} xs={12}>
+            <FormControl fullWidth className="form-input" focused>
+              <InputLabel id="feed-supply-select-label5">
+                Growth Model *
+              </InputLabel>
+              <Select
+                labelId="feed-supply-select-label5"
+                id="feed-supply-select5"
+                label="    Growth Model *"
+                {...register("growthModel")}
+              >
+                <MenuItem value={"Module 1"}>Module 1</MenuItem>
+                <MenuItem value={"Module 2"}>Module 2</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
+        </Box>
+
         <Box
           display={"flex"}
           justifyContent={"flex-end"}
@@ -372,7 +537,11 @@ export default function BasicTable({ setActiveStep }: Props) {
           <Button
             type="button"
             variant="contained"
-            onClick={() => setActiveStep(2)}
+            onClick={() => {
+              setActiveStep(2);
+
+              setLocalItem("productionParametes", allWatchObject);
+            }}
             sx={{
               background: "#fff",
               color: "#06A19B",
@@ -391,7 +560,6 @@ export default function BasicTable({ setActiveStep }: Props) {
           <Button
             type="submit"
             variant="contained"
-            // onClick={() => setActiveStep(4)}
             sx={{
               background: "#06A19B",
               fontWeight: 600,
