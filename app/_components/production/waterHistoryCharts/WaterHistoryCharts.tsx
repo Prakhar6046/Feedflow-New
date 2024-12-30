@@ -28,8 +28,13 @@ function WaterHistoryCharts({ productions, groupedData }: Iprops) {
     }
   }, [productions]);
   return (
-    <Grid container spacing={2} gap={1}>
-      <Grid item xs={12}>
+    <Grid container spacing={3} sx={{
+      px: {
+        lg: 5,
+        xs: 2.5
+      }
+    }}>
+      <Grid item lg={6} xs={12}>
         {xAxisData?.length !== 0 && (
           <WaterTempChart
             key={`waterTempChart`}
@@ -47,7 +52,7 @@ function WaterHistoryCharts({ productions, groupedData }: Iprops) {
           />
         )}
       </Grid>
-      <Grid item xs={12}>
+      <Grid item lg={6} xs={12}>
         {xAxisData?.length !== 0 && (
           <WaterTempChart
             key={`dissolvedOxgChart`}
@@ -63,7 +68,7 @@ function WaterHistoryCharts({ productions, groupedData }: Iprops) {
           />
         )}
       </Grid>
-      <Grid item xs={12}>
+      <Grid item lg={6} xs={12}>
         {xAxisData?.length !== 0 && (
           <WaterTempChart
             key={`TSS`}
@@ -79,7 +84,7 @@ function WaterHistoryCharts({ productions, groupedData }: Iprops) {
           />
         )}
       </Grid>
-      <Grid item xs={12}>
+      <Grid item lg={6} xs={12}>
         {xAxisData?.length !== 0 && (
           <WaterTempChart
             key={`ammonia`}
@@ -95,7 +100,7 @@ function WaterHistoryCharts({ productions, groupedData }: Iprops) {
           />
         )}
       </Grid>
-      <Grid item xs={12}>
+      <Grid item lg={6} xs={12}>
         {xAxisData?.length !== 0 && (
           <WaterTempChart
             key={`nitrate`}
@@ -111,7 +116,7 @@ function WaterHistoryCharts({ productions, groupedData }: Iprops) {
           />
         )}
       </Grid>
-      <Grid item xs={12}>
+      <Grid item lg={6} xs={12}>
         {xAxisData?.length !== 0 && (
           <WaterTempChart
             key={`nitrite`}
@@ -127,7 +132,7 @@ function WaterHistoryCharts({ productions, groupedData }: Iprops) {
           />
         )}
       </Grid>
-      <Grid item xs={12}>
+      <Grid item lg={6} xs={12}>
         {xAxisData?.length !== 0 && (
           <WaterTempChart
             key={`ph`}
@@ -143,7 +148,7 @@ function WaterHistoryCharts({ productions, groupedData }: Iprops) {
           />
         )}
       </Grid>
-      <Grid item xs={12}>
+      <Grid item lg={6} xs={12}>
         {xAxisData?.length !== 0 && (
           <WaterTempChart
             key={`visibility`}

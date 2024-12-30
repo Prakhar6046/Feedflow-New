@@ -589,7 +589,7 @@ label {
 }
 
 /* Active tab style */
-.tab-item:focus {
+.tab-item.active {
   background-color: #06a19b;
   color: white;
 }

@@ -7,7 +7,7 @@ import {
 } from "@/app/_typeModels/production";
 import { Tab } from "@mui/base/Tab";
 import { TabPanel } from "@mui/base/TabPanel";
-import { Tabs } from "@mui/base/Tabs";
+import { Tabs, TabsContext } from "@mui/base/Tabs";
 import { TabsList } from "@mui/base/TabsList";
 import {
   Box,
@@ -68,8 +68,8 @@ const WaterManageHistoryTable: React.FC<Props> = ({
                 idx === headCells.length - 1
                   ? false
                   : orderBy === headCell.id
-                  ? order
-                  : false
+                    ? order
+                    : false
               }
               // align="center"
               sx={{
@@ -154,48 +154,44 @@ const WaterManageHistoryTable: React.FC<Props> = ({
     <Box
       sx={{
         width: "100%",
-        overflow: "hidden",
         borderRadius: "14px",
         boxShadow: "0px 0px 16px 5px #0000001A",
-        margin: 4,
+        my: 4,
+        px: 5,
+        pt: 2.5,
+        pb: 5
       }}
     >
       <Tabs
         defaultValue={1}
         style={{
           width: "100%",
-          overflow: "hidden",
+          // overflow: "hidden",
         }}
       >
         {" "}
         <Grid
           container
-          spacing={3}
+          columnSpacing={3}
+          rowSpacing={1}
           alignItems={"center"}
-          sx={{
-            margin: "32px",
-            alignItems: "center",
-          }}
+          flexWrap={"wrap"}
+          justifyContent={"space-between"}
+          mb={4}
         >
           {" "}
           <Grid
             item
-            xl={2}
-            lg={5}
-            md={3}
-            xs={12}
-            alignItems={"center"}
-            className="form-grid"
+            xs={"auto"}
           >
             <TabsList
               style={{
                 borderRadius: "25px",
-
                 border: "1px solid #A6A6A6",
                 width: "186px",
               }}
             >
-              <Tab value={1} className="tab-item">
+              <Tab value={1} className="tab-item active">
                 List
               </Tab>
               <Tab value={2} className="tab-item">
@@ -204,7 +200,7 @@ const WaterManageHistoryTable: React.FC<Props> = ({
             </TabsList>
           </Grid>
           {/*hISTORY-CHART*/}
-          <Grid item xl={4} lg={7} md={9} xs={12} className="form-grid">
+          <Grid item xs={"auto"}>
             <FormControl>
               <FormLabel>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -215,6 +211,7 @@ const WaterManageHistoryTable: React.FC<Props> = ({
                       gap: 3,
                       alignItems: "center",
                       margin: "0",
+                      flexWrap: "wrap",
                     }}
                     components={["DatePicker", "DatePicker", "DatePicker"]}
                   >
@@ -228,7 +225,6 @@ const WaterManageHistoryTable: React.FC<Props> = ({
                       slotProps={{}}
                       sx={{
                         marginTop: "0",
-
                         borderRadius: "6px",
                       }}
                       className="date-picker"
@@ -238,7 +234,7 @@ const WaterManageHistoryTable: React.FC<Props> = ({
               </FormLabel>
             </FormControl>
           </Grid>
-          <Grid item xl={6} xs={12} className="form-grid">
+          <Grid item xs={"auto"}>
             {/* Heading for Annotations */}
             <Typography
               component="h6"
@@ -256,6 +252,7 @@ const WaterManageHistoryTable: React.FC<Props> = ({
               display="flex"
               flexDirection="row"
               alignItems="center"
+              flexWrap={"wrap"}
               gap={{
                 xl: "20px",
                 md: "10px",
@@ -432,7 +429,6 @@ const WaterManageHistoryTable: React.FC<Props> = ({
               borderRadius: "14px",
               boxShadow: "0px 0px 16px 5px #0000001A",
               textAlign: "center",
-              margin: 4,
             }}
           >
             <TableContainer>
@@ -447,7 +443,7 @@ const WaterManageHistoryTable: React.FC<Props> = ({
                 <EnhancedTableHead
                   order={order}
                   orderBy={orderBy}
-                  // onRequestSort={handleRequestSort}
+                // onRequestSort={handleRequestSort}
                 />
                 <TableBody>
                   {groupedData && groupedData?.length > 0 ? (
@@ -562,11 +558,10 @@ const WaterManageHistoryTable: React.FC<Props> = ({
                                           fontWeight: 500,
                                           fontSize: 14,
                                           backgroundColor: "#F5F6F8",
-                                          padding: `${
-                                            unit.createdAt
-                                              ? "8px 12px 8px 0"
-                                              : "19px 12px 19px 0"
-                                          }`,
+                                          padding: `${unit.createdAt
+                                            ? "8px 12px 8px 0"
+                                            : "19px 12px 19px 0"
+                                            }`,
                                           margin: "8px 0",
                                           textWrap: "nowrap",
                                         }}
@@ -599,11 +594,10 @@ const WaterManageHistoryTable: React.FC<Props> = ({
                                           fontWeight: 500,
                                           fontSize: 14,
                                           backgroundColor: "#F5F6F8",
-                                          padding: `${
-                                            unit?.waterTemp
-                                              ? "8px 12px 8px 0"
-                                              : "19px 12px 19px 0"
-                                          }`,
+                                          padding: `${unit?.waterTemp
+                                            ? "8px 12px 8px 0"
+                                            : "19px 12px 19px 0"
+                                            }`,
                                           margin: "8px 0",
                                           // marginBottom: "10px",
                                           // padding: "21px",
@@ -638,11 +632,10 @@ const WaterManageHistoryTable: React.FC<Props> = ({
                                           fontWeight: 500,
                                           fontSize: 14,
                                           backgroundColor: "#F5F6F8",
-                                          padding: `${
-                                            unit.DO
-                                              ? "8px 12px 8px 0"
-                                              : "19px 12px 19px 0"
-                                          }`,
+                                          padding: `${unit.DO
+                                            ? "8px 12px 8px 0"
+                                            : "19px 12px 19px 0"
+                                            }`,
                                           margin: "8px 0",
                                           textWrap: "nowrap",
                                         }}
@@ -675,11 +668,10 @@ const WaterManageHistoryTable: React.FC<Props> = ({
                                         sx={{
                                           fontWeight: 500,
                                           fontSize: 14,
-                                          padding: `${
-                                            unit.TSS
-                                              ? "8px 12px 8px 0"
-                                              : "19px 12px 19px 0"
-                                          }`,
+                                          padding: `${unit.TSS
+                                            ? "8px 12px 8px 0"
+                                            : "19px 12px 19px 0"
+                                            }`,
                                           backgroundColor: "#F5F6F8",
                                           margin: "8px 0",
 
@@ -714,11 +706,10 @@ const WaterManageHistoryTable: React.FC<Props> = ({
                                           fontWeight: 500,
                                           fontSize: 14,
                                           backgroundColor: "#F5F6F8",
-                                          padding: `${
-                                            unit?.NH4
-                                              ? "8px 12px 8px 0"
-                                              : "19px 12px 19px 0"
-                                          }`,
+                                          padding: `${unit?.NH4
+                                            ? "8px 12px 8px 0"
+                                            : "19px 12px 19px 0"
+                                            }`,
                                           margin: "8px 0",
                                           // marginBottom: "10px",
                                           // padding: "21px",
@@ -754,11 +745,10 @@ const WaterManageHistoryTable: React.FC<Props> = ({
                                           fontWeight: 500,
                                           fontSize: 14,
                                           backgroundColor: "#F5F6F8",
-                                          padding: `${
-                                            unit?.NO3
-                                              ? "8px 12px 8px 0"
-                                              : "19px 12px 19px 0"
-                                          }`,
+                                          padding: `${unit?.NO3
+                                            ? "8px 12px 8px 0"
+                                            : "19px 12px 19px 0"
+                                            }`,
                                           margin: "8px 0",
                                           // marginBottom: "10px",
                                           textWrap: "nowrap",
@@ -793,11 +783,10 @@ const WaterManageHistoryTable: React.FC<Props> = ({
                                           fontWeight: 500,
                                           fontSize: 14,
                                           backgroundColor: "#F5F6F8",
-                                          padding: `${
-                                            unit?.NO2
-                                              ? "8px 12px 8px 0"
-                                              : "19px 12px 19px 0"
-                                          }`,
+                                          padding: `${unit?.NO2
+                                            ? "8px 12px 8px 0"
+                                            : "19px 12px 19px 0"
+                                            }`,
                                           margin: "8px 0",
                                           // marginBottom: "10px",
                                           textWrap: "nowrap",
@@ -832,11 +821,10 @@ const WaterManageHistoryTable: React.FC<Props> = ({
                                           fontWeight: 500,
                                           fontSize: 14,
                                           backgroundColor: "#F5F6F8",
-                                          padding: `${
-                                            unit?.ph
-                                              ? "8px 12px 8px 0"
-                                              : "19px 12px 19px 0"
-                                          }`,
+                                          padding: `${unit?.ph
+                                            ? "8px 12px 8px 0"
+                                            : "19px 12px 19px 0"
+                                            }`,
                                           margin: "8px 0",
                                           // marginBottom: "10px",
                                           textWrap: "nowrap",
@@ -871,11 +859,10 @@ const WaterManageHistoryTable: React.FC<Props> = ({
                                           fontWeight: 500,
                                           fontSize: 14,
                                           backgroundColor: "#F5F6F8",
-                                          padding: `${
-                                            unit?.visibility
-                                              ? "8px 12px 8px 0"
-                                              : "19px 12px 19px 0"
-                                          }`,
+                                          padding: `${unit?.visibility
+                                            ? "8px 12px 8px 0"
+                                            : "19px 12px 19px 0"
+                                            }`,
                                           margin: "8px 0",
                                           // marginBottom: "10px",
                                           textWrap: "nowrap",
