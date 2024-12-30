@@ -32,9 +32,10 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import WaterSampleHistoryModal from "../models/WaterSampleHistory";
 import WaterHistoryCharts from "../production/waterHistoryCharts/WaterHistoryCharts";
+import { getCookie, setCookie } from "cookies-next";
 const style = {
   bgcolor: "background.paper",
   boxShadow: 24,
@@ -47,8 +48,10 @@ const WaterManageHistoryTable: React.FC<Props> = ({
   tableData,
   productions,
 }) => {
+  const currentTab = getCookie("waterTab");
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("Farm");
+  const [tab, setTab] = useState(currentTab ? currentTab : "list");
   const [isWaterSampleHistory, setIsWaterSampleHistory] =
     useState<boolean>(false);
   function EnhancedTableHead(data: any) {
@@ -68,8 +71,8 @@ const WaterManageHistoryTable: React.FC<Props> = ({
                 idx === headCells.length - 1
                   ? false
                   : orderBy === headCell.id
-                    ? order
-                    : false
+                  ? order
+                  : false
               }
               // align="center"
               sx={{
@@ -149,6 +152,12 @@ const WaterManageHistoryTable: React.FC<Props> = ({
     },
     []
   );
+  console.log(tab);
+  useEffect(() => {
+    if (tab) {
+      setCookie("waterTab", tab);
+    }
+  }, [tab]);
 
   return (
     <Box
@@ -159,7 +168,7 @@ const WaterManageHistoryTable: React.FC<Props> = ({
         my: 4,
         px: 5,
         pt: 2.5,
-        pb: 5
+        pb: 5,
       }}
     >
       <Tabs
@@ -180,246 +189,258 @@ const WaterManageHistoryTable: React.FC<Props> = ({
           mb={4}
         >
           {" "}
-          <Grid
-            item
-            xs={"auto"}
-          >
+          <Grid item xs={"auto"}>
             <TabsList
               style={{
                 borderRadius: "25px",
                 border: "1px solid #A6A6A6",
                 width: "186px",
               }}
+              onClick={(e: any) => {
+                const v = e.target;
+                setTab(v.id);
+              }}
             >
-              <Tab value={1} className="tab-item active">
+              <Tab
+                value={1}
+                id="list"
+                className={`tab-item ${tab === "list" ? "active" : ""}`}
+              >
                 List
               </Tab>
-              <Tab value={2} className="tab-item">
+              <Tab
+                value={2}
+                id="graph"
+                className={`tab-item ${tab === "graph" ? "active" : ""}`}
+              >
                 Graph
               </Tab>
             </TabsList>
           </Grid>
           {/*hISTORY-CHART*/}
-          <Grid item xs={"auto"}>
-            <FormControl>
-              <FormLabel>
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <DemoContainer
-                    sx={{
-                      display: "flex",
-                      flexDirection: "row",
-                      gap: 3,
-                      alignItems: "center",
-                      margin: "0",
-                      flexWrap: "wrap",
-                    }}
-                    components={["DatePicker", "DatePicker", "DatePicker"]}
-                  >
-                    <DatePicker
-                      label="Start Date"
-                      slotProps={{}}
-                      className="date-picker"
-                    />
-                    <DatePicker
-                      label="End Date"
-                      slotProps={{}}
-                      sx={{
-                        marginTop: "0",
-                        borderRadius: "6px",
-                      }}
-                      className="date-picker"
-                    />
-                  </DemoContainer>
-                </LocalizationProvider>
-              </FormLabel>
-            </FormControl>
-          </Grid>
-          <Grid item xs={"auto"}>
-            {/* Heading for Annotations */}
-            <Typography
-              component="h6"
-              sx={{
-                fontWeight: "500",
-                color: "#67737F",
-                marginLeft: "10px",
-              }}
-            >
-              Annotations
-            </Typography>
+          {tab === "graph" && (
+            <>
+              <Grid item xl={4} lg={7} md={9} xs={12} className="form-grid">
+                <FormControl>
+                  <FormLabel>
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <DemoContainer
+                        sx={{
+                          display: "flex",
+                          flexDirection: "row",
+                          gap: 3,
+                          alignItems: "center",
+                          margin: "0",
+                        }}
+                        components={["DatePicker", "DatePicker", "DatePicker"]}
+                      >
+                        <DatePicker
+                          label="Start Date"
+                          slotProps={{}}
+                          className="date-picker"
+                        />
+                        <DatePicker
+                          label="End Date"
+                          slotProps={{}}
+                          sx={{
+                            marginTop: "0",
 
-            {/* Container for Checkboxes */}
-            <Box
-              display="flex"
-              flexDirection="row"
-              alignItems="center"
-              flexWrap={"wrap"}
-              gap={{
-                xl: "20px",
-                md: "10px",
-                xs: "2px",
-              }}
-            >
-              {/* First Checkbox */}
-              <Box>
-                <FormControlLabel
-                  style={{ marginInline: "auto" }}
-                  control={
-                    <Checkbox
-                      defaultChecked
-                      sx={{
-                        color: "#06A19B",
-                        "&.Mui-checked": {
-                          color: "#06A19B",
-                        },
-                      }}
-                    />
-                  }
-                  label={
-                    <Typography
-                      sx={{
-                        color: "#67737F",
-                        fontWeight: "500",
-                      }}
-                    >
-                      Limits
-                    </Typography>
-                  }
-                />
-              </Box>
-
-              {/* Second Checkbox */}
-              <Box display="flex" alignItems="center">
-                <FormControlLabel
-                  style={{ marginInline: "auto" }}
-                  control={
-                    <Checkbox
-                      defaultChecked
-                      sx={{
-                        color: "#06A19B",
-                        "&.Mui-checked": {
-                          color: "#06A19B",
-                        },
-                      }}
-                    />
-                  }
-                  label={
-                    <Typography
-                      sx={{
-                        color: "#67737F",
-                        fontWeight: "500",
-                      }}
-                    >
-                      Ranges
-                    </Typography>
-                  }
-                />
-              </Box>
-
-              {/* Third Checkbox */}
-              <Box display="flex" alignItems="center">
-                <FormControlLabel
-                  style={{ marginInline: "auto" }}
-                  control={
-                    <Checkbox
-                      defaultChecked
-                      sx={{
-                        color: "#06A19B",
-                        "&.Mui-checked": {
-                          color: "#06A19B",
-                        },
-                      }}
-                    />
-                  }
-                  label={
-                    <Typography
-                      sx={{
-                        color: "#67737F",
-                        fontWeight: "500",
-                      }}
-                    >
-                      Red
-                    </Typography>
-                  }
-                />
-              </Box>
-
-              {/* Fourth Checkbox */}
-              <Box display="flex" alignItems="center">
-                <FormControlLabel
-                  style={{ marginInline: "auto" }}
-                  control={
-                    <Checkbox
-                      defaultChecked
-                      sx={{
-                        color: "#06A19B",
-                        "&.Mui-checked": {
-                          color: "#06A19B",
-                        },
-                      }}
-                    />
-                  }
-                  label={
-                    <Typography
-                      sx={{
-                        color: "#67737F",
-                        fontWeight: "500",
-                      }}
-                    >
-                      Orange
-                    </Typography>
-                  }
-                />
-              </Box>
-
-              {/* Fifth Checkbox */}
-              <Box display="flex" alignItems="center">
-                <FormControlLabel
-                  style={{ marginInline: "auto" }}
-                  control={
-                    <Checkbox
-                      defaultChecked
-                      sx={{
-                        color: "#06A19B",
-                        "&.Mui-checked": {
-                          color: "#06A19B",
-                        },
-                      }}
-                    />
-                  }
-                  label={
-                    <Typography
-                      sx={{
-                        color: "#67737F",
-                        fontWeight: "500",
-                      }}
-                    >
-                      Green
-                    </Typography>
-                  }
-                />
-              </Box>
-
-              <Box>
-                <Button
-                  type="submit"
-                  variant="contained"
+                            borderRadius: "6px",
+                          }}
+                          className="date-picker"
+                        />
+                      </DemoContainer>
+                    </LocalizationProvider>
+                  </FormLabel>
+                </FormControl>
+              </Grid>
+              <Grid item xl={6} xs={12} className="form-grid">
+                {/* Heading for Annotations */}
+                <Typography
+                  component="h6"
                   sx={{
-                    color: "#fff",
-                    background: "#06A19B",
-                    fontWeight: 600,
-                    padding: "6px 16px",
-                    width: "fit-content",
-                    textTransform: "capitalize",
-                    borderRadius: "8px",
-                    border: "1px solid #06A19B",
-                    textWrap: "nowrap",
+                    fontWeight: "500",
+                    color: "#67737F",
+                    marginLeft: "10px",
                   }}
                 >
-                  Create Record
-                </Button>
-              </Box>
-            </Box>
-          </Grid>
+                  Annotations
+                </Typography>
+
+                {/* Container for Checkboxes */}
+                <Box
+                  display="flex"
+                  flexDirection="row"
+                  alignItems="center"
+                  gap={{
+                    xl: "20px",
+                    md: "10px",
+                    xs: "2px",
+                  }}
+                >
+                  {/* First Checkbox */}
+                  <Box>
+                    <FormControlLabel
+                      style={{ marginInline: "auto" }}
+                      control={
+                        <Checkbox
+                          defaultChecked
+                          sx={{
+                            color: "#06A19B",
+                            "&.Mui-checked": {
+                              color: "#06A19B",
+                            },
+                          }}
+                        />
+                      }
+                      label={
+                        <Typography
+                          sx={{
+                            color: "#67737F",
+                            fontWeight: "500",
+                          }}
+                        >
+                          Limits
+                        </Typography>
+                      }
+                    />
+                  </Box>
+
+                  {/* Second Checkbox */}
+                  <Box display="flex" alignItems="center">
+                    <FormControlLabel
+                      style={{ marginInline: "auto" }}
+                      control={
+                        <Checkbox
+                          defaultChecked
+                          sx={{
+                            color: "#06A19B",
+                            "&.Mui-checked": {
+                              color: "#06A19B",
+                            },
+                          }}
+                        />
+                      }
+                      label={
+                        <Typography
+                          sx={{
+                            color: "#67737F",
+                            fontWeight: "500",
+                          }}
+                        >
+                          Ranges
+                        </Typography>
+                      }
+                    />
+                  </Box>
+
+                  {/* Third Checkbox */}
+                  <Box display="flex" alignItems="center">
+                    <FormControlLabel
+                      style={{ marginInline: "auto" }}
+                      control={
+                        <Checkbox
+                          defaultChecked
+                          sx={{
+                            color: "#06A19B",
+                            "&.Mui-checked": {
+                              color: "#06A19B",
+                            },
+                          }}
+                        />
+                      }
+                      label={
+                        <Typography
+                          sx={{
+                            color: "#67737F",
+                            fontWeight: "500",
+                          }}
+                        >
+                          Red
+                        </Typography>
+                      }
+                    />
+                  </Box>
+
+                  {/* Fourth Checkbox */}
+                  <Box display="flex" alignItems="center">
+                    <FormControlLabel
+                      style={{ marginInline: "auto" }}
+                      control={
+                        <Checkbox
+                          defaultChecked
+                          sx={{
+                            color: "#06A19B",
+                            "&.Mui-checked": {
+                              color: "#06A19B",
+                            },
+                          }}
+                        />
+                      }
+                      label={
+                        <Typography
+                          sx={{
+                            color: "#67737F",
+                            fontWeight: "500",
+                          }}
+                        >
+                          Orange
+                        </Typography>
+                      }
+                    />
+                  </Box>
+
+                  {/* Fifth Checkbox */}
+                  <Box display="flex" alignItems="center">
+                    <FormControlLabel
+                      style={{ marginInline: "auto" }}
+                      control={
+                        <Checkbox
+                          defaultChecked
+                          sx={{
+                            color: "#06A19B",
+                            "&.Mui-checked": {
+                              color: "#06A19B",
+                            },
+                          }}
+                        />
+                      }
+                      label={
+                        <Typography
+                          sx={{
+                            color: "#67737F",
+                            fontWeight: "500",
+                          }}
+                        >
+                          Green
+                        </Typography>
+                      }
+                    />
+                  </Box>
+
+                  <Box>
+                    <Button
+                      type="submit"
+                      variant="contained"
+                      sx={{
+                        color: "#fff",
+                        background: "#06A19B",
+                        fontWeight: 600,
+                        padding: "6px 16px",
+                        width: "fit-content",
+                        textTransform: "capitalize",
+                        borderRadius: "8px",
+                        border: "1px solid #06A19B",
+                        textWrap: "nowrap",
+                      }}
+                    >
+                      Create Record
+                    </Button>
+                  </Box>
+                </Box>
+              </Grid>
+            </>
+          )}
         </Grid>
         <TabPanel value={1}>
           <Paper
@@ -443,7 +464,7 @@ const WaterManageHistoryTable: React.FC<Props> = ({
                 <EnhancedTableHead
                   order={order}
                   orderBy={orderBy}
-                // onRequestSort={handleRequestSort}
+                  // onRequestSort={handleRequestSort}
                 />
                 <TableBody>
                   {groupedData && groupedData?.length > 0 ? (
@@ -558,10 +579,11 @@ const WaterManageHistoryTable: React.FC<Props> = ({
                                           fontWeight: 500,
                                           fontSize: 14,
                                           backgroundColor: "#F5F6F8",
-                                          padding: `${unit.createdAt
-                                            ? "8px 12px 8px 0"
-                                            : "19px 12px 19px 0"
-                                            }`,
+                                          padding: `${
+                                            unit.createdAt
+                                              ? "8px 12px 8px 0"
+                                              : "19px 12px 19px 0"
+                                          }`,
                                           margin: "8px 0",
                                           textWrap: "nowrap",
                                         }}
@@ -594,10 +616,11 @@ const WaterManageHistoryTable: React.FC<Props> = ({
                                           fontWeight: 500,
                                           fontSize: 14,
                                           backgroundColor: "#F5F6F8",
-                                          padding: `${unit?.waterTemp
-                                            ? "8px 12px 8px 0"
-                                            : "19px 12px 19px 0"
-                                            }`,
+                                          padding: `${
+                                            unit?.waterTemp
+                                              ? "8px 12px 8px 0"
+                                              : "19px 12px 19px 0"
+                                          }`,
                                           margin: "8px 0",
                                           // marginBottom: "10px",
                                           // padding: "21px",
@@ -632,10 +655,11 @@ const WaterManageHistoryTable: React.FC<Props> = ({
                                           fontWeight: 500,
                                           fontSize: 14,
                                           backgroundColor: "#F5F6F8",
-                                          padding: `${unit.DO
-                                            ? "8px 12px 8px 0"
-                                            : "19px 12px 19px 0"
-                                            }`,
+                                          padding: `${
+                                            unit.DO
+                                              ? "8px 12px 8px 0"
+                                              : "19px 12px 19px 0"
+                                          }`,
                                           margin: "8px 0",
                                           textWrap: "nowrap",
                                         }}
@@ -668,10 +692,11 @@ const WaterManageHistoryTable: React.FC<Props> = ({
                                         sx={{
                                           fontWeight: 500,
                                           fontSize: 14,
-                                          padding: `${unit.TSS
-                                            ? "8px 12px 8px 0"
-                                            : "19px 12px 19px 0"
-                                            }`,
+                                          padding: `${
+                                            unit.TSS
+                                              ? "8px 12px 8px 0"
+                                              : "19px 12px 19px 0"
+                                          }`,
                                           backgroundColor: "#F5F6F8",
                                           margin: "8px 0",
 
@@ -706,10 +731,11 @@ const WaterManageHistoryTable: React.FC<Props> = ({
                                           fontWeight: 500,
                                           fontSize: 14,
                                           backgroundColor: "#F5F6F8",
-                                          padding: `${unit?.NH4
-                                            ? "8px 12px 8px 0"
-                                            : "19px 12px 19px 0"
-                                            }`,
+                                          padding: `${
+                                            unit?.NH4
+                                              ? "8px 12px 8px 0"
+                                              : "19px 12px 19px 0"
+                                          }`,
                                           margin: "8px 0",
                                           // marginBottom: "10px",
                                           // padding: "21px",
@@ -745,10 +771,11 @@ const WaterManageHistoryTable: React.FC<Props> = ({
                                           fontWeight: 500,
                                           fontSize: 14,
                                           backgroundColor: "#F5F6F8",
-                                          padding: `${unit?.NO3
-                                            ? "8px 12px 8px 0"
-                                            : "19px 12px 19px 0"
-                                            }`,
+                                          padding: `${
+                                            unit?.NO3
+                                              ? "8px 12px 8px 0"
+                                              : "19px 12px 19px 0"
+                                          }`,
                                           margin: "8px 0",
                                           // marginBottom: "10px",
                                           textWrap: "nowrap",
@@ -783,10 +810,11 @@ const WaterManageHistoryTable: React.FC<Props> = ({
                                           fontWeight: 500,
                                           fontSize: 14,
                                           backgroundColor: "#F5F6F8",
-                                          padding: `${unit?.NO2
-                                            ? "8px 12px 8px 0"
-                                            : "19px 12px 19px 0"
-                                            }`,
+                                          padding: `${
+                                            unit?.NO2
+                                              ? "8px 12px 8px 0"
+                                              : "19px 12px 19px 0"
+                                          }`,
                                           margin: "8px 0",
                                           // marginBottom: "10px",
                                           textWrap: "nowrap",
@@ -821,10 +849,11 @@ const WaterManageHistoryTable: React.FC<Props> = ({
                                           fontWeight: 500,
                                           fontSize: 14,
                                           backgroundColor: "#F5F6F8",
-                                          padding: `${unit?.ph
-                                            ? "8px 12px 8px 0"
-                                            : "19px 12px 19px 0"
-                                            }`,
+                                          padding: `${
+                                            unit?.ph
+                                              ? "8px 12px 8px 0"
+                                              : "19px 12px 19px 0"
+                                          }`,
                                           margin: "8px 0",
                                           // marginBottom: "10px",
                                           textWrap: "nowrap",
@@ -859,10 +888,11 @@ const WaterManageHistoryTable: React.FC<Props> = ({
                                           fontWeight: 500,
                                           fontSize: 14,
                                           backgroundColor: "#F5F6F8",
-                                          padding: `${unit?.visibility
-                                            ? "8px 12px 8px 0"
-                                            : "19px 12px 19px 0"
-                                            }`,
+                                          padding: `${
+                                            unit?.visibility
+                                              ? "8px 12px 8px 0"
+                                              : "19px 12px 19px 0"
+                                          }`,
                                           margin: "8px 0",
                                           // marginBottom: "10px",
                                           textWrap: "nowrap",
