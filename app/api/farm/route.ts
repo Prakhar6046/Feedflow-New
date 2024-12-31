@@ -14,6 +14,9 @@ export const GET = async (request: NextRequest) => {
         farmAddress: true,
         productionUnits: true,
         production: true,
+        WaterQualityPredictedParameters: {
+          include: { YearBasedPredication: true },
+        },
       },
       orderBy: {
         createdAt: "desc", // Sort by createdAt in descending order

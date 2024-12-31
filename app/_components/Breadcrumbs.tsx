@@ -101,6 +101,9 @@ export default function BasicBreadcrumbs({
     if (pathName) {
       setSortDataFromLocal(getLocalItem(pathName));
     }
+    if (pathName === "/dashboard/farm") {
+      setCookie("isEditFarm", false);
+    }
   }, [pathName]);
 
   return (

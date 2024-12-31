@@ -18,6 +18,9 @@ export const GET = async (request: NextRequest, context: { params: any }) => {
         productionUnits: true,
         production: true,
         FarmManager: true,
+        WaterQualityPredictedParameters: {
+          include: { YearBasedPredication: true },
+        },
       },
     });
     return new NextResponse(JSON.stringify({ status: true, data }), {

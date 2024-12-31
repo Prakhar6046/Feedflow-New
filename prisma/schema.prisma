@@ -145,15 +145,15 @@ model YearBasedPredication {
   createdAt                        DateTime                        @default(now())
   updatedAt                        DateTime                        @updatedAt
 
-  waterTemp  Json?
-  DO         Json?
-  TSS        Json?
-  NH4        Json?
-  NO3        Json?
-  NO2        Json?
-  ph         Json?
-  visibility Json?
-
+  waterTemp   Json?
+  DO          Json?
+  TSS         Json?
+  NH4         Json?
+  NO3         Json?
+  NO2         Json?
+  ph          Json?
+  visibility  Json?
+  idealRange  Json?
   GrowthModel String
   // GrowthModelId Int
   // GrowthModel   GrowthModel @relation(fields: [GrowthModelId], references: [id])

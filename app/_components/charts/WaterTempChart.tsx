@@ -140,17 +140,17 @@ const WaterTempChart = ({ xAxisData, ydata, title }: Iprops) => {
       ctx.fillStyle = "rgba(144, 238, 144, 0.3)"; // Light green
       ctx.fillRect(
         left,
-        y.getPixelForValue(0),
+        y.getPixelForValue(2.0),
         right - left,
-        y.getPixelForValue(60) - y.getPixelForValue(0)
+        y.getPixelForValue(2.5) - y.getPixelForValue(2.0)
       );
       // Red background
       ctx.fillStyle = "rgba(255, 99, 132, 0.3)"; // Light red
       ctx.fillRect(
         left,
-        y.getPixelForValue(60),
+        y.getPixelForValue(2.5),
         right - left,
-        y.getPixelForValue(140) - y.getPixelForValue(60)
+        y.getPixelForValue(3) - y.getPixelForValue(2.5)
       );
       ctx.restore();
     },
@@ -315,7 +315,7 @@ const WaterTempChart = ({ xAxisData, ydata, title }: Iprops) => {
 
       // Calculate the average of the dataset
       const dataset = data?.datasets[0]?.data;
-      const maxVal = 60;
+      const maxVal = 2.5;
 
       ctx.save();
       ctx.beginPath();

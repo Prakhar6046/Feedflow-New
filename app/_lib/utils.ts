@@ -188,3 +188,7 @@ export const Years = [
   "Nov",
   "Dec",
 ];
+export const getCurrentMonth = () => {
+  const currentMonth = new Date().getMonth();
+  return Years[currentMonth];
+};

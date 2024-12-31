@@ -6,7 +6,13 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const productionParameter = body.productionParameter;
-    // const
+    if (!productionParameter || !body.farmAddress || !body.productionUnits) {
+      return NextResponse.json(
+        { error: "All required payload missing or invalid" },
+        { status: 404 }
+      );
+    }
+
     const newFarmAddress = await prisma.farmAddress.create({
       data: { ...body.farmAddress },
     });
@@ -63,10 +69,14 @@ export async function POST(req: NextRequest) {
     });
 
     //Creating production parameter
+    const paylaodForProductionParameter = {
+      ...productionParameter,
+      idealRange: productionParameter.idealRange,
+    };
     await prisma.waterQualityPredictedParameters.create({
       data: {
         farmId: farm.id,
-        YearBasedPredication: { create: { waterTemp: productionParameter } },
+        YearBasedPredication: { create: { ...paylaodForProductionParameter } },
       },
     });
 

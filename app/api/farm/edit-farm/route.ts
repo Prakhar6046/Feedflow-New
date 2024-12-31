@@ -4,11 +4,16 @@ import { NextRequest, NextResponse } from "next/server";
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
+    const { yearBasedPredicationId, ...productionParameterPayload } =
+      body.productionParameter;
+
     // Ensure that the farmAddress contains an id for updating
     if (!body.farmAddress.id) {
       throw new Error("Farm address ID is required for updating.");
     }
-
+    if (!yearBasedPredicationId) {
+      throw new Error("Year Based Predication ID is required for updating.");
+    }
     // Update the existing farm address
     const updatedFarmAddress = await prisma.farmAddress.update({
       where: { id: body.farmAddress.id },
@@ -135,7 +140,18 @@ export async function POST(req: NextRequest) {
         where: { id: unit.id },
       });
     }
-
+    // const productionParameter = body.productionParameter;
+    const paylaodForProductionParameter = {
+      ...productionParameterPayload,
+      idealRange: productionParameterPayload.idealRange,
+    };
+    const updateProductionPredection = await prisma.yearBasedPredication.update(
+      {
+        where: { id: yearBasedPredicationId },
+        data: { ...paylaodForProductionParameter },
+      }
+    );
+    //
     return NextResponse.json({
       message: "Farm updated successfully",
       data: updatedFarm,

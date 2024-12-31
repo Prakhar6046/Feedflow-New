@@ -32,6 +32,7 @@ export interface Farm {
     id: any;
   }[];
   production: Production[];
+  WaterQualityPredictedParameters: ProductionParaMeterType[];
 }
 export interface UnitsTypes {
   name: string | undefined;
@@ -57,4 +58,55 @@ export interface ProductionUnitsFormTypes {
   length: string;
   height: string;
   radius: string;
+}
+
+export interface Years {
+  Jan: string;
+  Feb: string;
+  Mar: string;
+  Apr: string;
+  May: string;
+  Jun: string;
+  Jul: string;
+  Aug: string;
+  Sep: string;
+  Oct: string;
+  Nov: string;
+  Dec: string;
+}
+
+export interface ProductionParaMeterType {
+  id: number;
+  farmId: string;
+  updatedBy: string;
+  createdBy: string;
+  createdAt: string;
+  updatedAt: string;
+  YearBasedPredication: [
+    {
+      id: number;
+      waterQualityPredictedParameterId: number;
+      createdAt: string;
+      updatedAt: string;
+      waterTemp?: Years;
+      DO?: Years;
+      TSS?: Years;
+      NH4?: Years;
+      NO3?: Years;
+      NO2?: Years;
+      ph?: Years;
+      visibility?: Years;
+      GrowthModel: string;
+      idealRange: {
+        DO?: { Max: string; Min: string };
+        ph?: { Max: string; Min: string };
+        NH4?: { Max: string; Min: string };
+        NO2?: { Max: string; Min: string };
+        NO3?: { Max: string; Min: string };
+        TSS?: { Max: string; Min: string };
+        waterTemp?: { Max: string; Min: string };
+        visibility?: { Max: string; Min: string };
+      };
+    }
+  ];
 }

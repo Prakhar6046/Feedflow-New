@@ -153,7 +153,7 @@ const AllDone: NextPage<Props> = ({ setActiveStep }) => {
         gap={3}
         mt={1}
       >
-        <Button
+        {/* <Button
           type="submit"
           variant="contained"
           sx={{
@@ -170,9 +170,9 @@ const AllDone: NextPage<Props> = ({ setActiveStep }) => {
           // onClick={() => setCookie("activeStep", 2)}
         >
           Previous
-        </Button>
+        </Button> */}
         <Button
-          type="submit"
+          type="button"
           variant="contained"
           sx={{
             background: "#06A19B",

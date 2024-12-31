@@ -15,6 +15,7 @@ import { sidebarAction } from "@/lib/features/sidebar/sidebarSlice";
 import Logo from "@/public/static/img/logo.svg";
 import { farmAction } from "@/lib/features/farm/farmSlice";
 import SampleIcon from "@/public/static/img/ic-sample.svg";
+import { setCookie } from "cookies-next";
 
 function ClosedSidebar() {
   const router = useRouter();
@@ -194,7 +195,7 @@ function ClosedSidebar() {
           <Link
             href={"/dashboard/farm"}
             className="nav-links"
-            onClick={() => dispatch(farmAction.resetState())}
+            onClick={() => setCookie("isEditFarm", false)}
           >
             <ListItem
               sx={{

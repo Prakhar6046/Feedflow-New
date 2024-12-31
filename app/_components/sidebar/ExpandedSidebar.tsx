@@ -16,7 +16,7 @@ import {
   selectSwitchSidebar,
   sidebarAction,
 } from "@/lib/features/sidebar/sidebarSlice";
-import { getCookie } from "cookies-next";
+import { getCookie, setCookie } from "cookies-next";
 import { LoggedUser } from "../AccountPopover";
 import Logo from "@/public/static/img/logo.svg";
 import { farmAction } from "@/lib/features/farm/farmSlice";
@@ -299,7 +299,7 @@ const ExpandedSidebar = () => {
           <Link
             href={"/dashboard/farm"}
             className="nav-links"
-            onClick={() => dispatch(farmAction.resetState())}
+            onClick={() => setCookie("isEditFarm", false)}
           >
             <ListItem
               sx={{

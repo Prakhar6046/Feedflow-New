@@ -67,7 +67,7 @@ const FarmInformation: NextPage<Props> = ({
   const [loading, setLoading] = useState<boolean>(false);
   const selectedManagerIds = watch("mangerId") || [];
   const watchFishFarmer = watch("fishFarmer");
-  const isEditFarm = useAppSelector(selectIsEditFarm);
+  const isEditFarm = getCookie("isEditFarm");
 
   const handleChange = (event: any) => {
     const {

@@ -64,10 +64,10 @@ export default function FarmTable({ farms }: Props) {
   };
   const handleEdit = () => {
     if (selectedFarm) {
-      dispatch(farmAction.handleIsFarm());
       removeLocalItem("farmData");
       removeLocalItem("farmProductionUnits");
       router.push(`/dashboard/farm/${selectedFarm.id}`);
+      setCookie("isEditFarm", true);
       setCookie("activeStep", 1);
     }
   };

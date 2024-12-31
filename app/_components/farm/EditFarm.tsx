@@ -61,6 +61,7 @@ const EditFarm = ({ farmId, farmMembers }: Props) => {
     };
     getFarmData();
   }, []);
+
   if (loading) {
     return <Loader />;
   }
@@ -134,6 +135,7 @@ const EditFarm = ({ farmId, farmMembers }: Props) => {
         {activeStep === 3 && (
           <ProductionParaMeter
             setActiveStep={setActiveStep}
+            productionParaMeter={editFarm?.WaterQualityPredictedParameters}
             editFarm={editFarm}
           />
         )}
