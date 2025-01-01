@@ -1,8 +1,10 @@
 import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
-import { NextPage } from "next";
+import { Metadata, NextPage } from "next";
 
 interface Props {}
-
+export const metadata: Metadata = {
+  title: "Dashboard",
+};
 const Page: NextPage<Props> = ({}) => {
   return (
     <div>

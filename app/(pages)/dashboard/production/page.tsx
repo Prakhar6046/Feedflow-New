@@ -2,8 +2,11 @@ import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
 import ProductionTable from "@/app/_components/table/ProductionTable";
 import { getBatches, getFarms, getProductions } from "@/app/_lib/action";
 import { getCookie } from "cookies-next";
+import { Metadata } from "next";
 import { cookies } from "next/headers";
-
+export const metadata: Metadata = {
+  title: "Production Manager",
+};
 export default async function Page({
   searchParams,
 }: {

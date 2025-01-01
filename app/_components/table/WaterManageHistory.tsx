@@ -445,7 +445,13 @@ const WaterManageHistoryTable: React.FC<Props> = ({
             </>
           )}
         </Grid>
-        <TabPanel value={1}>
+        <TabPanel
+          value={1}
+          className={`base-TabPanel-root ${
+            tab === "list" ? "" : "base-TabPanel-hidden"
+          }`}
+          hidden={tab === "list" ? false : true}
+        >
           <Paper
             sx={{
               width: "100%",
@@ -926,7 +932,13 @@ const WaterManageHistoryTable: React.FC<Props> = ({
             />
           </Paper>
         </TabPanel>
-        <TabPanel value={2}>
+        <TabPanel
+          value={2}
+          className={`base-TabPanel-root ${
+            tab === "graph" ? "" : "base-TabPanel-hidden"
+          }`}
+          hidden={tab === "graph" ? false : true}
+        >
           <WaterHistoryCharts
             productions={productions}
             groupedData={groupedData}

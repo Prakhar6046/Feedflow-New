@@ -6,8 +6,11 @@ import {
   waterManageHistoryHead,
 } from "@/app/_lib/utils/tableHeadData";
 import { getCookie } from "cookies-next";
+import { Metadata } from "next";
 import { cookies } from "next/headers";
-
+export const metadata: Metadata = {
+  title: "Water History",
+};
 export default async function Page({
   params,
   searchParams,
@@ -38,12 +41,12 @@ export default async function Page({
   return (
     <>
       <BasicBreadcrumbs
-        heading={"History"}
+        heading={"Water History"}
         links={[
           { name: "Dashboard", link: "/dashboard" },
-          { name: "Production", link: "/dashboard/production" },
+          { name: "Production Manager", link: "/dashboard/production" },
           {
-            name: "Water",
+            name: "Water History",
             link: `/dashboard/production/water/${params.waterId}`,
           },
         ]}

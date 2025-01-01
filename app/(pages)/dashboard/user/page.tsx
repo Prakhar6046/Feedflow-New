@@ -2,8 +2,11 @@ import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
 import UserTable from "@/app/_components/UserTable";
 import { getUsers } from "@/app/_lib/action";
 import { getCookie } from "cookies-next";
+import { Metadata } from "next";
 import { cookies } from "next/headers";
-
+export const metadata: Metadata = {
+  title: "User",
+};
 export default async function Page({
   searchParams,
 }: {
