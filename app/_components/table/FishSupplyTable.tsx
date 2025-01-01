@@ -263,6 +263,7 @@ export default function FishSupplyTable({ tableData, fishSupply }: Props) {
       <TableContainer
         sx={{
           maxHeight: "72.5vh",
+          overflow: "auto",
         }}
       >
         <Table stickyHeader aria-label="sticky table">

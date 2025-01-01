@@ -467,16 +467,30 @@ const AddNewOrganisation = () => {
                 errors={errors}
               />
             )}
-            <Typography
-              variant="subtitle1"
-              color="black"
-              fontWeight={500}
-              fontSize={16}
+            <Box
+              display={"flex"}
+              alignItems={"center"}
+              justifyContent="space-between"
               marginTop={3}
               marginBottom={2}
             >
-              Address
-            </Typography>
+              <Typography
+                variant="subtitle1"
+                color="black"
+                fontWeight={500}
+                fontSize={16}
+              >
+                Address
+              </Typography>
+
+              <MapComponent
+                setAddressInformation={setAddressInformation}
+                setSearchedAddress={setSearchedAddress}
+                setUseAddress={setUseAddress}
+                isCalAltitude={true}
+                setAltitude={setAltitude}
+              />
+            </Box>
             <Stack
               display={"flex"}
               justifyContent={"flex-start"}
@@ -705,7 +719,7 @@ const AddNewOrganisation = () => {
                   )}
               </Box>
             </Stack>
-            <Box display={"flex"} justifyContent={"end"} width={"100%"}>
+            {/* <Box display={"flex"} justifyContent={"end"} width={"100%"}>
               <MapComponent
                 setAddressInformation={setAddressInformation}
                 setSearchedAddress={setSearchedAddress}
@@ -713,7 +727,7 @@ const AddNewOrganisation = () => {
                 isCalAltitude={true}
                 setAltitude={setAltitude}
               />
-            </Box>
+            </Box> */}
             <Typography
               variant="subtitle1"
               color="black"

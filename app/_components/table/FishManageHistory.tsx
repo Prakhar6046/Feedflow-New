@@ -171,77 +171,86 @@ const FishManageHistoryTable: React.FC<Props> = ({
         }}
       >
         {" "}
-        <Grid
-          container
-          spacing={3}
-          alignItems={"center"}
+        <Box
+          display={"flex"}
+          gap="40px"
           sx={{
             margin: "32px",
-            alignItems: "center",
+
+            flexDirection: {
+              xl: "row",
+              xs: "column",
+            },
           }}
         >
           {" "}
-          <Grid
-            item
-            xl={2}
-            lg={5}
-            md={3}
-            xs={12}
+          <Box
+            display={"flex"}
             alignItems={"center"}
-            className="form-grid"
+            gap="20px"
+            sx={{
+              flexDirection: {
+                md: "row",
+                xs: "column",
+              },
+            }}
           >
-            <TabsList
-              style={{
-                borderRadius: "25px",
+            <Box>
+              <Box className="form-grid">
+                <TabsList
+                  style={{
+                    borderRadius: "25px",
 
-                border: "1px solid #A6A6A6",
-                width: "186px",
-              }}
-            >
-              <Tab value={1} className="tab-item">
-                List
-              </Tab>
-              <Tab value={2} className="tab-item">
-                Graph
-              </Tab>
-            </TabsList>
-          </Grid>
-          {/*hISTORY-CHART*/}
-          <Grid item xl={4} lg={7} md={9} xs={12} className="form-grid">
-            <FormControl>
-              <FormLabel>
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <DemoContainer
-                    sx={{
-                      display: "flex",
-                      flexDirection: "row",
-                      gap: 3,
-                      alignItems: "center",
-                      margin: "0",
-                    }}
-                    components={["DatePicker", "DatePicker", "DatePicker"]}
-                  >
-                    <DatePicker
-                      label="Start Date"
-                      slotProps={{}}
-                      className="date-picker"
-                    />
-                    <DatePicker
-                      label="End Date"
-                      slotProps={{}}
+                    border: "1px solid #A6A6A6",
+                    width: "186px",
+                  }}
+                >
+                  <Tab value={1} className="tab-item">
+                    List
+                  </Tab>
+                  <Tab value={2} className="tab-item">
+                    Graph
+                  </Tab>
+                </TabsList>
+              </Box>
+            </Box>
+            {/*hISTORY-CHART*/}
+            <Box className="form-grid">
+              <FormControl>
+                <FormLabel>
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DemoContainer
                       sx={{
-                        marginTop: "0",
-
-                        borderRadius: "6px",
+                        display: "flex",
+                        flexDirection: "row",
+                        gap: 3,
+                        alignItems: "center",
+                        margin: "0",
                       }}
-                      className="date-picker"
-                    />
-                  </DemoContainer>
-                </LocalizationProvider>
-              </FormLabel>
-            </FormControl>
-          </Grid>
-          <Grid item xl={6} xs={12} className="form-grid">
+                      components={["DatePicker", "DatePicker", "DatePicker"]}
+                    >
+                      <DatePicker
+                        label="Start Date"
+                        slotProps={{}}
+                        className="date-picker"
+                      />
+                      <DatePicker
+                        label="End Date"
+                        slotProps={{}}
+                        sx={{
+                          marginTop: "0",
+
+                          borderRadius: "6px",
+                        }}
+                        className="date-picker"
+                      />
+                    </DemoContainer>
+                  </LocalizationProvider>
+                </FormLabel>
+              </FormControl>
+            </Box>
+          </Box>
+          <Box className="form-grid">
             {/* Heading for Annotations */}
             <Typography
               component="h6"
@@ -425,8 +434,8 @@ const FishManageHistoryTable: React.FC<Props> = ({
                 </Button>
               </Box>
             </Box>
-          </Grid>
-        </Grid>
+          </Box>
+        </Box>
         <TabPanel value={1}>
           <Paper
             sx={{
@@ -562,6 +571,7 @@ const FishManageHistoryTable: React.FC<Props> = ({
                                 color: "#555555",
                                 fontWeight: 500,
                                 pl: 0,
+                                textWrap: "nowrap",
                               }}
                             >
                               {farm &&

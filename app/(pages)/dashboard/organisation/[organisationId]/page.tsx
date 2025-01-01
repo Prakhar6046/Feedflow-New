@@ -617,17 +617,31 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
                   errors={errors}
                 />
               )}
-              <Typography
-                variant="subtitle1"
-                fontWeight={500}
-                color="black"
-                fontSize={16}
+
+              <Box
+                display={"flex"}
+                alignItems={"center"}
+                justifyContent={"space-between"}
                 marginTop={3}
                 marginBottom={2}
               >
-                Address
-              </Typography>
+                <Typography
+                  variant="subtitle1"
+                  fontWeight={500}
+                  color="black"
+                  fontSize={16}
+                >
+                  Address
+                </Typography>
 
+                <MapComponent
+                  setAddressInformation={setAddressInformation}
+                  setSearchedAddress={setSearchedAddress}
+                  setUseAddress={setUseAddress}
+                  isCalAltitude={true}
+                  setAltitude={setAltitude}
+                />
+              </Box>
               <Stack
                 display={"flex"}
                 justifyContent={"flex-start"}
@@ -731,7 +745,7 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
 
                 <Box width={"100%"}>
                   <TextField
-                    label="Post Code *"
+                    label="Post Code*"
                     type="text"
                     className="form-input"
                     {...register("postCode", {
@@ -807,7 +821,7 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
                     )}
                 </Box>
               </Stack>
-              <Box display={"flex"} justifyContent={"end"} width={"100%"}>
+              {/* <Box display={"flex"} justifyContent={"end"} width={"100%"}>
                 <MapComponent
                   setAddressInformation={setAddressInformation}
                   setSearchedAddress={setSearchedAddress}
@@ -815,7 +829,7 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
                   isCalAltitude={true}
                   setAltitude={setAltitude}
                 />
-              </Box>
+              </Box> */}
 
               <Typography
                 variant="subtitle1"

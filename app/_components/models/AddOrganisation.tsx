@@ -102,7 +102,7 @@ const AddOrganization: React.FC<Props> = ({ setOpen, open }) => {
             alignItems="center"
             sx={{
               opacity: 0.5,
-              cursor: "pointer"
+              cursor: "pointer",
             }}
             onClick={handleClose}
           >

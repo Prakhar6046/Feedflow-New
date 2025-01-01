@@ -142,7 +142,12 @@ export default function ProductionTable({
       };
 
     return (
-      <TableHead className="prod-action">
+      <TableHead
+        className="prod-action"
+        sx={{
+          textWrap: "nowrap",
+        }}
+      >
         <TableRow>
           {tableHead?.map((headCell: any, idx: number, headCells: any) => (
             <TableCell
@@ -516,18 +521,23 @@ export default function ProductionTable({
           <Paper
             sx={{
               width: "100%",
-              overflow: "hidden",
+              overflow: "auto",
               borderRadius: "14px",
               boxShadow: "0px 0px 16px 5px #0000001A",
               textAlign: "center",
               mt: 4,
             }}
           >
-            <TableContainer>
+            <TableContainer
+              sx={{
+                overflow: "auto",
+              }}
+            >
               <Table stickyHeader aria-label="sticky table">
                 <TableHead
                   sx={{
                     textAlign: "center",
+                    textWrap: "nowrap",
                   }}
                 >
                   <TableRow></TableRow>
@@ -573,6 +583,7 @@ export default function ProductionTable({
                               color: "#555555",
                               fontWeight: 500,
                               pl: 0,
+                              textWrap: "nowrap",
                             }}
                           >
                             {farm.units.map((unit, i) => {
@@ -647,6 +658,7 @@ export default function ProductionTable({
                               color: "#555555",
                               fontWeight: 500,
                               pl: 0,
+                              textWrap: "nowrap",
                             }}
                           >
                             {farm.units.map((unit, i) => {
@@ -687,6 +699,7 @@ export default function ProductionTable({
                               fontWeight: 500,
                               pl: 0,
                               p: 0,
+                              textWrap: "nowrap",
                             }}
                           >
                             {farm.units.map((unit, i) => {
@@ -726,6 +739,7 @@ export default function ProductionTable({
                               color: "#555555",
                               fontWeight: 500,
                               pl: 0,
+                              textWrap: "nowrap",
                             }}
                           >
                             {farm.units.map((unit, i) => {
@@ -767,6 +781,7 @@ export default function ProductionTable({
                               color: "#555555",
                               fontWeight: 500,
                               pl: 0,
+                              textWrap: "nowrap",
                             }}
                           >
                             {farm.units.map((unit, i) => {
@@ -810,6 +825,7 @@ export default function ProductionTable({
                               color: "#555555",
                               fontWeight: 500,
                               pl: 0,
+                              textWrap: "nowrap",
                             }}
                           >
                             {farm.units.map((unit, i) => {
@@ -853,6 +869,7 @@ export default function ProductionTable({
                               color: "#555555",
                               fontWeight: 500,
                               pl: 0,
+                              textWrap: "nowrap",
                             }}
                           >
                             {farm.units.map((unit, i) => {
@@ -896,6 +913,7 @@ export default function ProductionTable({
                               color: "#555555",
                               fontWeight: 500,
                               pl: 0,
+                              textWrap: "nowrap",
                             }}
                           >
                             {farm.units.map((unit, i) => {
@@ -941,6 +959,7 @@ export default function ProductionTable({
                               color: "#555555",
                               fontWeight: 500,
                               pl: 0,
+                              textWrap: "nowrap",
                             }}
                           >
                             {farm.units.map((unit, i) => {
@@ -988,6 +1007,7 @@ export default function ProductionTable({
                                 color: "#555555",
                                 fontWeight: 500,
                                 pl: 0,
+                                textWrap: "nowrap",
                               }}
                             >
                               {farm.units.map((unit, i) => {
@@ -1020,6 +1040,7 @@ export default function ProductionTable({
                                 color: "#555555",
                                 fontWeight: 500,
                                 pl: 0,
+                                textWrap: "nowrap",
                               }}
                               className="cursor-pointer table-padding"
                             >

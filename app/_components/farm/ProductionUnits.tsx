@@ -518,6 +518,10 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                                   type="text"
                                   focused
                                   className="form-input"
+                                  sx={{
+                                    width: "100%",
+                                    minWidth: 150,
+                                  }}
                                 />
                               )}
                               rules={{
