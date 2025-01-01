@@ -381,7 +381,7 @@ export default function ProductionParaMeter({
                         >
                           {head}
                         </TableCell>
-                        {Years.map((year, index) => (
+                        {Years.map((year: any, index) => (
                           <TableCell
                             key={index}
                             className=" table-border"
@@ -492,7 +492,7 @@ export default function ProductionParaMeter({
                   </TableHead>
 
                   <TableBody>
-                    {waterQualityPredictedHead.map((head, i) => (
+                    {waterQualityPredictedHead.map((head: any, i) => (
                       <TableRow
                         key={i}
                         sx={{
@@ -501,7 +501,7 @@ export default function ProductionParaMeter({
                           fontWeight: "700",
                         }}
                       >
-                        {["Min", "Max"].map((val, index) => (
+                        {["Min", "Max"].map((val: any, index) => (
                           <TableCell
                             key={index}
                             className=" table-border"

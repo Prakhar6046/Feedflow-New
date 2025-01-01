@@ -5,10 +5,10 @@ import {
   Production,
   WaterManageHistoryGroup,
 } from "@/app/_typeModels/production";
-import { Tab } from "@mui/base/Tab";
-import { TabPanel } from "@mui/base/TabPanel";
-import { Tabs, TabsContext } from "@mui/base/Tabs";
-import { TabsList } from "@mui/base/TabsList";
+import Tab from "@mui/material/Tab";
+import TabContext from "@mui/lab/TabContext";
+import TabList from "@mui/lab/TabList";
+import TabPanel from "@mui/lab/TabPanel";
 import {
   Box,
   Button,
@@ -51,10 +51,9 @@ const WaterManageHistoryTable: React.FC<Props> = ({
   productions,
   farms,
 }) => {
-  const currentTab = getCookie("waterTab");
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("Farm");
-  const [tab, setTab] = useState(currentTab ? currentTab : "list");
+  const [tab, setTab] = useState<string>("");
   console.log("pro", productions);
   const [isWaterSampleHistory, setIsWaterSampleHistory] =
     useState<boolean>(false);
@@ -161,6 +160,12 @@ const WaterManageHistoryTable: React.FC<Props> = ({
       setCookie("waterTab", tab);
     }
   }, [tab]);
+  useEffect(() => {
+    const currentTab = getCookie("waterTab");
+    if (currentTab) {
+      setTab(currentTab);
+    }
+  }, []);
 
   return (
     <Box
@@ -174,14 +179,7 @@ const WaterManageHistoryTable: React.FC<Props> = ({
         pb: 5,
       }}
     >
-      <Tabs
-        defaultValue={1}
-        style={{
-          width: "100%",
-          // overflow: "hidden",
-        }}
-      >
-        {" "}
+      <TabContext value={tab}>
         <Grid
           container
           columnSpacing={3}
@@ -193,32 +191,19 @@ const WaterManageHistoryTable: React.FC<Props> = ({
         >
           {" "}
           <Grid item xs={"auto"}>
-            <TabsList
+            <TabList
               style={{
                 borderRadius: "25px",
                 border: "1px solid #A6A6A6",
                 width: "186px",
               }}
-              onClick={(e: any) => {
-                const v = e.target;
-                setTab(v.id);
+              onChange={(_, val: string) => {
+                setTab(val);
               }}
             >
-              <Tab
-                value={1}
-                id="list"
-                className={`tab-item ${tab === "list" ? "active" : ""}`}
-              >
-                List
-              </Tab>
-              <Tab
-                value={2}
-                id="graph"
-                className={`tab-item ${tab === "graph" ? "active" : ""}`}
-              >
-                Graph
-              </Tab>
-            </TabsList>
+              <Tab label="List" value="list" className="tab-item" />
+              <Tab label="Graph" value="graph" className="tab-item" />
+            </TabList>
           </Grid>
           {/*hISTORY-CHART*/}
           {tab === "graph" && (
@@ -446,10 +431,10 @@ const WaterManageHistoryTable: React.FC<Props> = ({
           )}
         </Grid>
         <TabPanel
-          value={1}
-          className={`base-TabPanel-root ${
-            tab === "list" ? "" : "base-TabPanel-hidden"
-          }`}
+          value="list"
+          // className={`base-TabPanel-root ${
+          //   tab === "list" ? "" : "base-TabPanel-hidden"
+          // }`}
           hidden={tab === "list" ? false : true}
         >
           <Paper
@@ -483,7 +468,9 @@ const WaterManageHistoryTable: React.FC<Props> = ({
                           <TableRow
                             key={i}
                             sx={{
-                              "&:last-child td, &:last-child th": { border: 0 },
+                              "&:last-child td, &:last-child th": {
+                                border: 0,
+                              },
                             }}
                           >
                             <TableCell
@@ -933,10 +920,10 @@ const WaterManageHistoryTable: React.FC<Props> = ({
           </Paper>
         </TabPanel>
         <TabPanel
-          value={2}
-          className={`base-TabPanel-root ${
-            tab === "graph" ? "" : "base-TabPanel-hidden"
-          }`}
+          value="graph"
+          // className={`base-TabPanel-root ${
+          //   tab === "graph" ? "" : "base-TabPanel-hidden"
+          // }`}
           hidden={tab === "graph" ? false : true}
         >
           <WaterHistoryCharts
@@ -945,7 +932,7 @@ const WaterManageHistoryTable: React.FC<Props> = ({
             farms={farms}
           />
         </TabPanel>
-      </Tabs>
+      </TabContext>
     </Box>
   );
 };
