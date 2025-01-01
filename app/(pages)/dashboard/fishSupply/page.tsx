@@ -7,8 +7,11 @@ import {
 } from "@/app/_lib/utils/tableHeadData";
 import { Box } from "@mui/material";
 import { getCookie } from "cookies-next";
+import { Metadata } from "next";
 import { cookies } from "next/headers";
-
+export const metadata: Metadata = {
+  title: "Fish Supply",
+};
 export default async function Page({
   searchParams,
 }: {

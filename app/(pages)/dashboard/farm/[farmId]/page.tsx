@@ -2,7 +2,11 @@ import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
 import EditFarm from "@/app/_components/farm/EditFarm";
 import { getFarmMembers } from "@/app/_lib/action";
 import { getCookie } from "cookies-next";
+import { Metadata } from "next";
 import { cookies } from "next/headers";
+export const metadata: Metadata = {
+  title: "Edit Farm",
+};
 export default async function Page({ params }: { params: { farmId: string } }) {
   const loggedUser: any = getCookie("logged-user", { cookies });
   const user = JSON.parse(loggedUser);

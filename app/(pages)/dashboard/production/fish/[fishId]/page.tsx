@@ -3,8 +3,11 @@ import FishManageHistoryTable from "@/app/_components/table/FishManageHistory";
 import { getProductions } from "@/app/_lib/action";
 import { fishManageHistoryHead } from "@/app/_lib/utils/tableHeadData";
 import { getCookie } from "cookies-next";
+import { Metadata } from "next";
 import { cookies } from "next/headers";
-
+export const metadata: Metadata = {
+  title: "Fish History",
+};
 export default async function Page({
   params,
   searchParams,
@@ -29,11 +32,14 @@ export default async function Page({
   return (
     <>
       <BasicBreadcrumbs
-        heading={"History"}
+        heading={"Fish History"}
         links={[
           { name: "Dashboard", link: "/dashboard" },
-          { name: "Production", link: "/dashboard/production" },
-          { name: "Fish", link: `/dashboard/production/fish/${params.fishId}` },
+          { name: "Production Manager", link: "/dashboard/production" },
+          {
+            name: "Fish History",
+            link: `/dashboard/production/fish/${params.fishId}`,
+          },
         ]}
         hideSearchInput
       />

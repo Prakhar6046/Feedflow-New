@@ -1,6 +1,9 @@
 import AddNewOrganisation from "@/app/_components/AddNewOrganisation";
 import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
-
+import { Metadata } from "next";
+export const metadata: Metadata = {
+  title: "Organisations",
+};
 export default async function Page() {
   return (
     <>
