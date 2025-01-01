@@ -36,6 +36,7 @@ import React, { useEffect, useState } from "react";
 import WaterSampleHistoryModal from "../models/WaterSampleHistory";
 import WaterHistoryCharts from "../production/waterHistoryCharts/WaterHistoryCharts";
 import { getCookie, setCookie } from "cookies-next";
+import { Farm } from "@/app/_typeModels/Farm";
 const style = {
   bgcolor: "background.paper",
   boxShadow: 24,
@@ -43,15 +44,18 @@ const style = {
 interface Props {
   tableData: any;
   productions: Production[];
+  farms: Farm[];
 }
 const WaterManageHistoryTable: React.FC<Props> = ({
   tableData,
   productions,
+  farms,
 }) => {
   const currentTab = getCookie("waterTab");
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("Farm");
   const [tab, setTab] = useState(currentTab ? currentTab : "list");
+  console.log("pro", productions);
   const [isWaterSampleHistory, setIsWaterSampleHistory] =
     useState<boolean>(false);
   function EnhancedTableHead(data: any) {
@@ -152,7 +156,6 @@ const WaterManageHistoryTable: React.FC<Props> = ({
     },
     []
   );
-  console.log(tab);
   useEffect(() => {
     if (tab) {
       setCookie("waterTab", tab);
@@ -927,6 +930,7 @@ const WaterManageHistoryTable: React.FC<Props> = ({
           <WaterHistoryCharts
             productions={productions}
             groupedData={groupedData}
+            farms={farms}
           />
         </TabPanel>
       </Tabs>

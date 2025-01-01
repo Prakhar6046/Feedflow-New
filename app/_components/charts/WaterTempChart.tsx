@@ -32,8 +32,9 @@ interface Iprops {
   xAxisData: string[];
   ydata: (String | undefined)[];
   title: string;
+  maxVal: any;
 }
-const WaterTempChart = ({ xAxisData, ydata, title }: Iprops) => {
+const WaterTempChart = ({ xAxisData, ydata, title, maxVal }: Iprops) => {
   const chartRef = useRef<Chart | any>(null);
   let waterDropletImage = useRef<HTMLImageElement | null>(null);
   const data = {
@@ -58,7 +59,12 @@ const WaterTempChart = ({ xAxisData, ydata, title }: Iprops) => {
   const options: ChartOptions<"line"> = {
     responsive: true,
     maintainAspectRatio: false,
-
+    layout: {
+      padding: {
+        left: 10,
+        right: 100,
+      },
+    },
     plugins: {
       legend: {
         display: true,
@@ -90,6 +96,8 @@ const WaterTempChart = ({ xAxisData, ydata, title }: Iprops) => {
         },
       },
       y: {
+        suggestedMax: maxVal && Number(maxVal) * 2,
+        suggestedMin: 0,
         title: { display: true, text: title },
         grid: { display: true },
       },
@@ -131,7 +139,7 @@ const WaterTempChart = ({ xAxisData, ydata, title }: Iprops) => {
     beforeDraw: (chart: any) => {
       const {
         ctx,
-        chartArea: { left, right },
+        chartArea: { left, right, top },
         scales: { y },
       } = chart;
 
@@ -140,17 +148,17 @@ const WaterTempChart = ({ xAxisData, ydata, title }: Iprops) => {
       ctx.fillStyle = "rgba(144, 238, 144, 0.3)"; // Light green
       ctx.fillRect(
         left,
-        y.getPixelForValue(2.0),
+        y.getPixelForValue(0),
         right - left,
-        y.getPixelForValue(2.5) - y.getPixelForValue(2.0)
+        y.getPixelForValue(Number(maxVal)) - y.getPixelForValue(0)
       );
       // Red background
-      ctx.fillStyle = "rgba(255, 99, 132, 0.3)"; // Light red
+      ctx.fillStyle = "rgba(238, 62, 62, 0.3)"; // Light red
       ctx.fillRect(
         left,
-        y.getPixelForValue(2.5),
+        y.getPixelForValue(Number(maxVal)),
         right - left,
-        y.getPixelForValue(3) - y.getPixelForValue(2.5)
+        top - y.getPixelForValue(Number(maxVal))
       );
       ctx.restore();
     },
@@ -223,7 +231,7 @@ const WaterTempChart = ({ xAxisData, ydata, title }: Iprops) => {
         bottom + 10
       );
     }
-    x.restore();
+    ctx.restore();
   };
   const drawRoundedRect = (
     ctx: CanvasRenderingContext2D,
@@ -315,20 +323,20 @@ const WaterTempChart = ({ xAxisData, ydata, title }: Iprops) => {
 
       // Calculate the average of the dataset
       const dataset = data?.datasets[0]?.data;
-      const maxVal = 2.5;
+      const maxValue = Number(maxVal);
 
       ctx.save();
       ctx.beginPath();
       ctx.lineWidth = 1;
       ctx.setLineDash([5, 4]);
       ctx.strokeStyle = "red";
-      ctx.moveTo(left, y.getPixelForValue(maxVal));
-      ctx.lineTo(right, y.getPixelForValue(maxVal));
+      ctx.moveTo(left, y.getPixelForValue(maxValue));
+      ctx.lineTo(right, y.getPixelForValue(maxValue));
       ctx.stroke();
 
       // Draw the rounded rectangle and label with "avg"
       ctx.fillStyle = "red"; // Green background for the label
-      drawRoundedRect(ctx, right, y.getPixelForValue(maxVal) - 10, 60, 25, 4);
+      drawRoundedRect(ctx, right, y.getPixelForValue(maxValue) - 10, 60, 25, 4);
       ctx.font = "13px sans-serif bold";
       ctx.fillStyle = "white"; // White text color
       ctx.textBaseline = "middle";
@@ -336,7 +344,7 @@ const WaterTempChart = ({ xAxisData, ydata, title }: Iprops) => {
       ctx.fillText(
         "max value", // Label as "avg"
         right + 30,
-        y.getPixelForValue(maxVal) + 5
+        y.getPixelForValue(maxValue) + 5
       );
 
       ctx.restore();

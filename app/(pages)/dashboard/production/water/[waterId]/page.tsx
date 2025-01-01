@@ -1,6 +1,6 @@
 import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
 import WaterManageHistoryTable from "@/app/_components/table/WaterManageHistory";
-import { getProductions } from "@/app/_lib/action";
+import { getFarms, getProductions } from "@/app/_lib/action";
 import {
   fishManageHistoryHead,
   waterManageHistoryHead,
@@ -28,6 +28,12 @@ export default async function Page({
     noFilter: false,
     userId: user.id,
   });
+  const farms = await getFarms({
+    role: user.role,
+    organisationId: user.organisationId,
+    query: "",
+    noFilter: false,
+  });
 
   return (
     <>
@@ -48,6 +54,7 @@ export default async function Page({
         productions={productions?.data?.filter(
           (data: any) => data.productionUnitId === params.waterId
         )}
+        farms={farms.data}
       />
     </>
   );

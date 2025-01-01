@@ -6,15 +6,22 @@ import {
   Production,
   WaterManageHistoryGroup,
 } from "@/app/_typeModels/production";
+import { Farm } from "@/app/_typeModels/Farm";
 
 type Iprops = {
   productions: Production[];
   groupedData: WaterManageHistoryGroup[];
+  farms: Farm[];
 };
-function WaterHistoryCharts({ productions, groupedData }: Iprops) {
+function WaterHistoryCharts({ productions, groupedData, farms }: Iprops) {
   const [xAxisData, setXAxisData] = useState<(string | any)[]>([]);
+  const [currentFarm, setCurrentFarm] = useState<Farm>();
   useEffect(() => {
-    if (groupedData?.length) {
+    if (groupedData?.length && farms) {
+      const farm = farms.find((farm) => farm.id === productions[0]?.fishFarmId);
+      if (farm) {
+        setCurrentFarm(farm);
+      }
       const createdAtArray = groupedData
         ?.flatMap((farm) =>
           farm.units?.flatMap((unit) =>
@@ -27,13 +34,19 @@ function WaterHistoryCharts({ productions, groupedData }: Iprops) {
       setXAxisData(createdAtArray);
     }
   }, [productions]);
+  console.log(currentFarm);
+
   return (
-    <Grid container spacing={3} sx={{
-      px: {
-        lg: 5,
-        xs: 2.5
-      }
-    }}>
+    <Grid
+      container
+      spacing={3}
+      sx={{
+        px: {
+          lg: 5,
+          xs: 2.5,
+        },
+      }}
+    >
       <Grid item lg={6} xs={12}>
         {xAxisData?.length !== 0 && (
           <WaterTempChart
@@ -48,6 +61,10 @@ function WaterHistoryCharts({ productions, groupedData }: Iprops) {
                 )
               )
               .filter(Boolean)}
+            maxVal={
+              currentFarm?.WaterQualityPredictedParameters[0]
+                .YearBasedPredication[0].idealRange.waterTemp?.Max
+            }
             title="Water Temperature"
           />
         )}
@@ -64,6 +81,10 @@ function WaterHistoryCharts({ productions, groupedData }: Iprops) {
                 )
               )
               .filter(Boolean)}
+            maxVal={
+              currentFarm?.WaterQualityPredictedParameters[0]
+                .YearBasedPredication[0].idealRange.DO?.Max
+            }
             title="Dissolved Oxygen"
           />
         )}
@@ -81,6 +102,10 @@ function WaterHistoryCharts({ productions, groupedData }: Iprops) {
               )
               .filter(Boolean)}
             title="Total Suspended Solids"
+            maxVal={
+              currentFarm?.WaterQualityPredictedParameters[0]
+                .YearBasedPredication[0].idealRange.TSS?.Max
+            }
           />
         )}
       </Grid>
@@ -97,6 +122,10 @@ function WaterHistoryCharts({ productions, groupedData }: Iprops) {
               )
               .filter(Boolean)}
             title="Ammonia"
+            maxVal={
+              currentFarm?.WaterQualityPredictedParameters[0]
+                .YearBasedPredication[0].idealRange.NH4?.Max
+            }
           />
         )}
       </Grid>
@@ -113,6 +142,10 @@ function WaterHistoryCharts({ productions, groupedData }: Iprops) {
               )
               .filter(Boolean)}
             title="Nitrate"
+            maxVal={
+              currentFarm?.WaterQualityPredictedParameters[0]
+                .YearBasedPredication[0].idealRange.NO3?.Max
+            }
           />
         )}
       </Grid>
@@ -129,6 +162,10 @@ function WaterHistoryCharts({ productions, groupedData }: Iprops) {
               )
               .filter(Boolean)}
             title="Nitrite"
+            maxVal={
+              currentFarm?.WaterQualityPredictedParameters[0]
+                .YearBasedPredication[0].idealRange.NO2?.Max
+            }
           />
         )}
       </Grid>
@@ -145,6 +182,10 @@ function WaterHistoryCharts({ productions, groupedData }: Iprops) {
               )
               .filter(Boolean)}
             title="PH"
+            maxVal={
+              currentFarm?.WaterQualityPredictedParameters[0]
+                .YearBasedPredication[0].idealRange.ph?.Max
+            }
           />
         )}
       </Grid>
@@ -163,6 +204,10 @@ function WaterHistoryCharts({ productions, groupedData }: Iprops) {
               )
               .filter(Boolean)}
             title="Visibility"
+            maxVal={
+              currentFarm?.WaterQualityPredictedParameters[0]
+                .YearBasedPredication[0].idealRange.visibility?.Max
+            }
           />
         )}
       </Grid>

@@ -48,7 +48,6 @@ export default function ProductionTable({
   batches,
 }: Props) {
   const router = useRouter();
-
   const dispatch = useAppDispatch();
   const pathName = usePathname();
   const role = useAppSelector(selectRole);
@@ -331,7 +330,6 @@ export default function ProductionTable({
 
     return result;
   }, []);
-
   useEffect(() => {
     if (pathName) {
       setSortDataFromLocal(getLocalItem(pathName));
