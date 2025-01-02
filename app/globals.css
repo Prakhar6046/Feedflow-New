@@ -578,8 +578,8 @@ label {
   padding: 8px 0px;
   border: none;
   border-radius: 26px;
-  background-color: transparent;
-  color: #67737f;
+  background-color: transparent !important;
+  color: #67737f !important;
   font-weight: 500;
   cursor: pointer;
   width: 92px;
@@ -590,8 +590,9 @@ label {
 
 /* Active tab style */
 .tab-item.active {
-  background-color: #06a19b;
-  color: white;
+  background-color: #06a19b !important 
+  ;
+  color: white !important;
 }
 .date-picker {
   margin-top: 0px !important;
@@ -632,4 +633,12 @@ label {
 
 .tooltip-container .text {
   font-size: 14px;
+}
+.tab-list span {
+  background-color: transparent !important;
+}
+
+.tab-item.Mui-selected {
+  color: white !important;
+  background-color: #06a19b !important;
 }

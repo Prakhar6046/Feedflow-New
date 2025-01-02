@@ -192,6 +192,7 @@ const WaterManageHistoryTable: React.FC<Props> = ({
           {" "}
           <Grid item xs={"auto"}>
             <TabList
+              className="tab-list"
               style={{
                 borderRadius: "25px",
                 border: "1px solid #A6A6A6",
