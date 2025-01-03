@@ -42,6 +42,7 @@ export default async function Page({
     <>
       <BasicBreadcrumbs
         heading={"Water History"}
+        isTable={true}
         links={[
           { name: "Dashboard", link: "/dashboard" },
           { name: "Production Manager", link: "/dashboard/production" },

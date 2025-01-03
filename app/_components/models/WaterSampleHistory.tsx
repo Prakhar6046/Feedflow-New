@@ -49,29 +49,13 @@ const WaterSampleHistoryModal: React.FC<Props> = ({
     setOpen(false);
   };
 
-  const [order, setOrder] = React.useState("asc");
-  const [orderBy, setOrderBy] = React.useState("Farm");
-
-  function EnhancedTableHead(data: any) {
-    const { order, orderBy, onRequestSort } = data;
-    const createSortHandler =
-      (property: string) => (event: React.MouseEvent<HTMLButtonElement>) => {
-        onRequestSort(event, property);
-      };
-
+  function EnhancedTableHead() {
     return (
       <TableHead className="prod-action">
         <TableRow>
           {tableData.map((headCell: any, idx: number, headCells: any) => (
             <TableCell
               key={headCell.id}
-              sortDirection={
-                idx === headCells.length - 1
-                  ? false
-                  : orderBy === headCell.id
-                  ? order
-                  : false
-              }
               // align="center"
               sx={{
                 borderBottom: 0,
@@ -90,17 +74,7 @@ const WaterSampleHistoryModal: React.FC<Props> = ({
                 },
               }}
             >
-              {idx === headCells.length - 1 ? (
-                headCell.label
-              ) : (
-                <TableSortLabel
-                  active={orderBy === headCell.id}
-                  direction={orderBy === headCell.id ? order : "asc"}
-                  onClick={createSortHandler(headCell.id)}
-                >
-                  {headCell.label}
-                </TableSortLabel>
-              )}
+              {headCell.label}
             </TableCell>
           ))}
         </TableRow>
@@ -201,11 +175,7 @@ const WaterSampleHistoryModal: React.FC<Props> = ({
               >
                 <TableRow></TableRow>
               </TableHead>
-              <EnhancedTableHead
-                order={order}
-                orderBy={orderBy}
-                // onRequestSort={handleRequestSort}
-              />
+              <EnhancedTableHead />
               <TableBody>
                 {groupedData && groupedData?.length > 0 ? (
                   groupedData?.map(

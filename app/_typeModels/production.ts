@@ -189,7 +189,7 @@ export interface FishManageHistoryGroup {
   }[];
 }
 export interface WaterManageHistoryGroup {
-  farm: String;
+  unit: String;
   units: {
     id: Number;
     productionUnit: {

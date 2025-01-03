@@ -1,6 +1,10 @@
 "use client";
 import TransferModal from "@/app/_components/models/FarmManager";
-import { getLocalItem, setLocalItem } from "@/app/_lib/utils";
+import {
+  getLocalItem,
+  ProductionSortTables,
+  setLocalItem,
+} from "@/app/_lib/utils";
 import {
   farmManagerFishHead,
   farmManagerFishHeadMember,
@@ -79,7 +83,7 @@ export default function ProductionTable({
     isWater ? true : false
   );
   const [loading, setLoading] = useState<boolean>(false);
-  const [productionData, setProductionData] = useState<Production[]>();
+  const [productionData, setProductionData] = useState<FarmGroup[]>();
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("Farm");
   const [sortDataFromLocal, setSortDataFromLocal] = React.useState<any>("");
@@ -176,7 +180,9 @@ export default function ProductionTable({
                 },
               }}
             >
-              {idx === headCells.length - 1 ? (
+              {idx === headCells.length - 1 ||
+              (selectedView === "fish" && idx === 2) ||
+              (selectedView === "fish" && idx === 3) ? (
                 headCell.label
               ) : (
                 <TableSortLabel
@@ -207,78 +213,13 @@ export default function ProductionTable({
         column: property,
       })
     );
-
-    if (productions) {
-      const sortedData = [...productions].sort(
-        (production1: Production, production2: Production) => {
-          const orderType = order === "asc" ? 1 : -1;
-          if (property === "Farm") {
-            if (production1.farm.name < production2.farm.name)
-              return -1 * orderType;
-            if (production1.farm.name > production2.farm.name)
-              return 1 * orderType;
-          } else if (property === "Producton unit") {
-            if (
-              production1.productionUnit.name < production2.productionUnit.name
-            )
-              return -1 * orderType;
-            if (
-              production1.productionUnit.name > production2.productionUnit.name
-            )
-              return 1 * orderType;
-          } else if (property === "Batch number") {
-            if (
-              production1.fishSupply?.batchNumber <
-              production2.fishSupply?.batchNumber
-            )
-              return -1 * orderType;
-            if (
-              production1.fishSupply?.batchNumber >
-              production2.fishSupply?.batchNumber
-            )
-              return 1 * orderType;
-          } else if (property === "Age (days|months)") {
-            if (production1.fishSupply?.age < production2.fishSupply?.age)
-              return -1 * orderType;
-            if (production1.fishSupply?.age > production2.fishSupply?.age)
-              return 1 * orderType;
-          } else if (property === "Fish Count") {
-            if (production1.fishCount < production2.fishCount)
-              return -1 * orderType;
-            if (production1.fishCount > production2.fishCount)
-              return 1 * orderType;
-          } else if (property === "Biomass") {
-            if (production1.biomass < production2.biomass)
-              return -1 * orderType;
-            if (production1.biomass > production2.biomass) return 1 * orderType;
-          } else if (property === "Mean weight") {
-            if (production1.meanWeight < production2.meanWeight)
-              return -1 * orderType;
-            if (production1.meanWeight > production2.meanWeight)
-              return 1 * orderType;
-          } else if (property === "Mean length") {
-            if (production1.meanLength < production2.meanLength)
-              return -1 * orderType;
-            if (production1.meanLength > production2.meanLength)
-              return 1 * orderType;
-          } else if (property === "Stocking Density") {
-            if (production1.stockingDensityKG < production2.stockingDensityKG)
-              return -1 * orderType;
-            if (production1.stockingDensityKG > production2.stockingDensityKG)
-              return 1 * orderType;
-          } else if (property === "Stocking density") {
-            if (production1.stockingDensityNM < production2.stockingDensityNM)
-              return -1 * orderType;
-            if (production1.stockingDensityNM > production2.stockingDensityNM)
-              return 1 * orderType;
-          } else if (property === "Stocking level") {
-            if (production1.stockingLevel < production2.stockingLevel)
-              return -1 * orderType;
-            if (production1.stockingLevel > production2.stockingLevel)
-              return 1 * orderType;
-          }
-          return 0;
-        }
+    if (groupedData && selectedView) {
+      const sortedData = ProductionSortTables(
+        groupedData,
+        order,
+        property,
+        selectedView,
+        false
       );
       setProductionData(sortedData);
     }
@@ -290,7 +231,7 @@ export default function ProductionTable({
     router.refresh();
   };
 
-  const groupedData: any = productions?.reduce((result: any, item) => {
+  const groupedData: FarmGroup[] = productions?.reduce((result: any, item) => {
     // Find or create a farm group
     let farmGroup: any = result.find(
       (group: any) => group.farm === item.farm.name
@@ -354,81 +295,13 @@ export default function ProductionTable({
       const data = sortDataFromLocal;
       setOrder(data.direction);
       setOrderBy(data.column);
-      // handleRequestSort(null, data.column);
-      if (productions) {
-        const sortedData = [...productions].sort(
-          (production1: any, production2: any) => {
-            const orderType = data.direction === "asc" ? -1 : 1;
-            if (data.column === "Farm") {
-              if (production1.farm.name < production2.farm.name)
-                return -1 * orderType;
-              if (production1.farm.name > production2.farm.name)
-                return 1 * orderType;
-            } else if (data.column === "Producton unit") {
-              if (
-                production1.productionUnit.name <
-                production2.productionUnit.name
-              )
-                return -1 * orderType;
-              if (
-                production1.productionUnit.name >
-                production2.productionUnit.name
-              )
-                return 1 * orderType;
-            } else if (data.column === "Batch number") {
-              if (
-                production1.fishSupply?.batchNumber <
-                production2.fishSupply?.batchNumber
-              )
-                return -1 * orderType;
-              if (
-                production1.fishSupply?.batchNumber >
-                production2.fishSupply?.batchNumber
-              )
-                return 1 * orderType;
-            } else if (data.column === "Age (days|months)") {
-              if (production1.fishSupply?.age < production2.fishSupply?.age)
-                return -1 * orderType;
-              if (production1.fishSupply?.age > production2.fishSupply?.age)
-                return 1 * orderType;
-            } else if (data.column === "Fish Count") {
-              if (production1.fishCount < production2.fishCount)
-                return -1 * orderType;
-              if (production1.fishCount > production2.fishCount)
-                return 1 * orderType;
-            } else if (data.column === "Biomass") {
-              if (production1.biomass < production2.biomass)
-                return -1 * orderType;
-              if (production1.biomass > production2.biomass)
-                return 1 * orderType;
-            } else if (data.column === "Mean weight") {
-              if (production1.meanWeight < production2.meanWeight)
-                return -1 * orderType;
-              if (production1.meanWeight > production2.meanWeight)
-                return 1 * orderType;
-            } else if (data.column === "Mean length") {
-              if (production1.meanLength < production2.meanLength)
-                return -1 * orderType;
-              if (production1.meanLength > production2.meanLength)
-                return 1 * orderType;
-            } else if (data.column === "Stocking Density") {
-              if (production1.stockingDensityKG < production2.stockingDensityKG)
-                return -1 * orderType;
-              if (production1.stockingDensityKG > production2.stockingDensityKG)
-                return 1 * orderType;
-            } else if (data.column === "Stocking density") {
-              if (production1.stockingDensityNM < production2.stockingDensityNM)
-                return -1 * orderType;
-              if (production1.stockingDensityNM > production2.stockingDensityNM)
-                return 1 * orderType;
-            } else if (data.column === "Stocking level") {
-              if (production1.stockingLevel < production2.stockingLevel)
-                return -1 * orderType;
-              if (production1.stockingLevel > production2.stockingLevel)
-                return 1 * orderType;
-            }
-            return 0;
-          }
+      if (groupedData) {
+        const sortedData = ProductionSortTables(
+          groupedData,
+          data.direction,
+          data.column,
+          selectedView,
+          true
         );
         setProductionData(sortedData);
       }
@@ -436,10 +309,10 @@ export default function ProductionTable({
   }, [sortDataFromLocal]);
 
   useEffect(() => {
-    if (productions && !sortDataFromLocal) {
-      setProductionData(productions);
+    if (groupedData && !sortDataFromLocal) {
+      setProductionData(groupedData);
     }
-  }, [productions]);
+  }, []);
 
   useEffect(() => {
     const user = JSON.parse(loggedUser);
@@ -548,8 +421,8 @@ export default function ProductionTable({
                   onRequestSort={handleRequestSort}
                 />
                 <TableBody>
-                  {groupedData && groupedData?.length > 0 ? (
-                    groupedData?.map((farm: FarmGroup, i: number) => {
+                  {productionData && productionData?.length > 0 ? (
+                    productionData?.map((farm: FarmGroup, i: number) => {
                       return (
                         <TableRow
                           key={i}
@@ -661,7 +534,7 @@ export default function ProductionTable({
                               textWrap: "nowrap",
                             }}
                           >
-                            {farm.units.map((unit, i) => {
+                            {farm.units?.map((unit: any, i) => {
                               return (
                                 <Typography
                                   key={i}

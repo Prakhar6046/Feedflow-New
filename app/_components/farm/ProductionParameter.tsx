@@ -78,11 +78,7 @@ export default function ProductionParaMeter({
     growthModel: watch("growthModel"),
   };
 
-  console.log(isEditFarm);
-
   const onSubmit: SubmitHandler<FormData> = async (data) => {
-    console.log(editFarm);
-
     const farmData = getLocalItem("farmData");
     const farmProductionUnits = getLocalItem("farmProductionUnits");
     if (farmData && farmProductionUnits && data) {
@@ -501,14 +497,13 @@ export default function ProductionParaMeter({
                           fontWeight: "700",
                         }}
                       >
-                        {["Min", "Max"].map((val: any, index) => (
+                        {(["Min", "Max"] as const).map((val, index) => (
                           <TableCell
                             key={index}
-                            className=" table-border"
+                            className="table-border"
                             sx={{
                               borderBottomWidth: 2,
                               borderBottomColor: "#ececec",
-
                               padding: "5px 1px",
                               textWrap: "nowrap",
                               textAlign: "center",

@@ -39,11 +39,9 @@ export default function BasicTable({ organisations, userRole }: Props) {
   const router = useRouter();
   const pathName = usePathname();
   const dispatch = useAppDispatch();
-  // const sortDataFromLocal = "";
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("organisation");
   const role = useAppSelector(selectRole);
-  // const searchedOrganisations = useAppSelector(selectOrganisations);
   const loading = useAppSelector(selectOrganisationLoading);
   const [selectedOrganisation, setSelectedOrganisation] =
     useState<SingleOrganisation | null>(null);

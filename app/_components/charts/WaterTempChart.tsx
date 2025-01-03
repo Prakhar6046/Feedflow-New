@@ -33,10 +33,29 @@ interface Iprops {
   ydata: (String | undefined)[];
   title: string;
   maxVal: any;
+  startDate: string;
+  endDate: string;
+  dateDiff: number;
 }
-const WaterTempChart = ({ xAxisData, ydata, title, maxVal }: Iprops) => {
+const WaterTempChart = ({
+  xAxisData,
+  ydata,
+  title,
+  maxVal,
+  startDate,
+  endDate,
+  dateDiff,
+}: Iprops) => {
   const chartRef = useRef<Chart | any>(null);
   let waterDropletImage = useRef<HTMLImageElement | null>(null);
+  const getUnit = (diff: number): any => {
+    if (diff <= 1) return "hour"; // Use hourly granularity for 1 day or less
+    if (diff <= 7) return "day"; // Use daily granularity for up to a week
+    if (diff <= 30) return "week"; // Use weekly granularity for up to a month
+    if (diff <= 365) return "month"; // Use monthly granularity for up to a year
+    return "year"; // Use yearly granularity for over a year
+  };
+
   const data = {
     labels: xAxisData?.map((date) => new Date(date)),
     datasets: [
@@ -84,16 +103,23 @@ const WaterTempChart = ({ xAxisData, ydata, title, maxVal }: Iprops) => {
     },
     scales: {
       x: {
-        type: "time", // Set scale type to "time" for date handling
+        type: "time",
         position: "bottom",
         title: { display: true, text: "Date" },
         grid: { display: false },
         time: {
-          unit: "hour", // Choose unit for better granularity (e.g., 'hour', 'day')
+          unit: getUnit(dateDiff),
           displayFormats: {
-            hour: "MMM d, yyyy, h:mm a", // Display the year along with the date and time
+            hour: "MMM d, yyyy h:mm a",
+            day: "MMM d, yyyy",
+            week: "MMM d",
+            month: "MMM yyyy",
+            year: "yyyy",
           },
         },
+
+        suggestedMax: endDate,
+        suggestedMin: startDate,
       },
       y: {
         suggestedMax: maxVal && Number(maxVal) * 2,

@@ -608,7 +608,7 @@ export const farmManagerWaterHead = [
   },
 
   {
-    id: "water temp",
+    id: "watertemp",
     numeric: false,
     disablePadding: true,
     label: "Water Temp",

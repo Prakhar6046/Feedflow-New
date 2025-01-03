@@ -7,34 +7,58 @@ import {
   WaterManageHistoryGroup,
 } from "@/app/_typeModels/production";
 import { Farm } from "@/app/_typeModels/Farm";
+import dayjs from "dayjs";
 
 type Iprops = {
   productions: Production[];
-  groupedData: WaterManageHistoryGroup[];
+  groupedData: WaterManageHistoryGroup;
   farms: Farm[];
+  startDate: string;
+  endDate: string;
 };
-function WaterHistoryCharts({ productions, groupedData, farms }: Iprops) {
+function WaterHistoryCharts({
+  productions,
+  groupedData,
+  farms,
+  startDate,
+  endDate,
+}: Iprops) {
   const [xAxisData, setXAxisData] = useState<(string | any)[]>([]);
+  const [dateDiff, setDateDiff] = useState<number>();
   const [currentFarm, setCurrentFarm] = useState<Farm>();
   useEffect(() => {
-    if (groupedData?.length && farms) {
+    if (groupedData?.unit && farms) {
       const farm = farms.find((farm) => farm.id === productions[0]?.fishFarmId);
       if (farm) {
         setCurrentFarm(farm);
       }
-      const createdAtArray = groupedData
-        ?.flatMap((farm) =>
-          farm.units?.flatMap((unit) =>
-            unit.WaterManageHistoryAvgrage?.map((history) =>
-              formattedDate(String(history.createdAt))
-            )
-          )
+      const createdAtArray = groupedData.units?.flatMap((unit) =>
+        unit.WaterManageHistoryAvgrage?.map((history) =>
+          String(history.createdAt)
         )
-        .filter(Boolean);
-      setXAxisData(createdAtArray);
+      );
+
+      const diffInDays = dayjs(endDate).diff(dayjs(startDate), "day");
+      setDateDiff(diffInDays);
+      if (startDate && endDate && createdAtArray) {
+        const startD = new Date(startDate);
+        startD.setHours(0, 0, 0, 0);
+        const endD = new Date(endDate);
+        endD.setHours(0, 0, 0, 0);
+        const filteredTimestamps = createdAtArray?.filter((timestamp) => {
+          if (timestamp) {
+            const date = new Date(timestamp);
+            date.setHours(0, 0, 0, 0);
+            return date >= startD && date <= endD;
+          }
+        });
+
+        setXAxisData(filteredTimestamps);
+      } else {
+        setXAxisData(createdAtArray);
+      }
     }
-  }, [productions]);
-  console.log(currentFarm);
+  }, [productions, startDate, endDate]);
 
   return (
     <Grid
@@ -52,19 +76,18 @@ function WaterHistoryCharts({ productions, groupedData, farms }: Iprops) {
           <WaterTempChart
             key={`waterTempChart`}
             xAxisData={xAxisData}
-            ydata={groupedData
-              ?.flatMap((farm) =>
-                farm.units?.flatMap((unit) =>
-                  unit.WaterManageHistoryAvgrage?.map(
-                    (history) => history.waterTemp
-                  )
-                )
+            ydata={groupedData?.units?.flatMap((unit) =>
+              unit.WaterManageHistoryAvgrage?.map(
+                (history) => history.waterTemp
               )
-              .filter(Boolean)}
+            )}
             maxVal={
               currentFarm?.WaterQualityPredictedParameters[0]
                 .YearBasedPredication[0].idealRange.waterTemp?.Max
             }
+            endDate={endDate}
+            startDate={startDate}
+            dateDiff={dateDiff ? dateDiff : 1}
             title="Water Temperature"
           />
         )}
@@ -74,17 +97,16 @@ function WaterHistoryCharts({ productions, groupedData, farms }: Iprops) {
           <WaterTempChart
             key={`dissolvedOxgChart`}
             xAxisData={xAxisData}
-            ydata={groupedData
-              ?.flatMap((farm) =>
-                farm.units?.flatMap((unit) =>
-                  unit.WaterManageHistoryAvgrage?.map((history) => history.DO)
-                )
-              )
-              .filter(Boolean)}
+            ydata={groupedData?.units?.flatMap((unit) =>
+              unit.WaterManageHistoryAvgrage?.map((history) => history.DO)
+            )}
             maxVal={
               currentFarm?.WaterQualityPredictedParameters[0]
                 .YearBasedPredication[0].idealRange.DO?.Max
             }
+            endDate={endDate}
+            startDate={startDate}
+            dateDiff={dateDiff ? dateDiff : 1}
             title="Dissolved Oxygen"
           />
         )}
@@ -94,18 +116,17 @@ function WaterHistoryCharts({ productions, groupedData, farms }: Iprops) {
           <WaterTempChart
             key={`TSS`}
             xAxisData={xAxisData}
-            ydata={groupedData
-              ?.flatMap((farm) =>
-                farm.units?.flatMap((unit) =>
-                  unit.WaterManageHistoryAvgrage?.map((history) => history.TSS)
-                )
-              )
-              .filter(Boolean)}
+            ydata={groupedData?.units?.flatMap((unit) =>
+              unit.WaterManageHistoryAvgrage?.map((history) => history.TSS)
+            )}
             title="Total Suspended Solids"
             maxVal={
               currentFarm?.WaterQualityPredictedParameters[0]
                 .YearBasedPredication[0].idealRange.TSS?.Max
             }
+            endDate={endDate}
+            startDate={startDate}
+            dateDiff={dateDiff ? dateDiff : 1}
           />
         )}
       </Grid>
@@ -114,18 +135,17 @@ function WaterHistoryCharts({ productions, groupedData, farms }: Iprops) {
           <WaterTempChart
             key={`ammonia`}
             xAxisData={xAxisData}
-            ydata={groupedData
-              ?.flatMap((farm) =>
-                farm.units?.flatMap((unit) =>
-                  unit.WaterManageHistoryAvgrage?.map((history) => history.NH4)
-                )
-              )
-              .filter(Boolean)}
+            ydata={groupedData?.units?.flatMap((unit) =>
+              unit.WaterManageHistoryAvgrage?.map((history) => history.NH4)
+            )}
             title="Ammonia"
             maxVal={
               currentFarm?.WaterQualityPredictedParameters[0]
                 .YearBasedPredication[0].idealRange.NH4?.Max
             }
+            endDate={endDate}
+            startDate={startDate}
+            dateDiff={dateDiff ? dateDiff : 1}
           />
         )}
       </Grid>
@@ -134,18 +154,17 @@ function WaterHistoryCharts({ productions, groupedData, farms }: Iprops) {
           <WaterTempChart
             key={`nitrate`}
             xAxisData={xAxisData}
-            ydata={groupedData
-              ?.flatMap((farm) =>
-                farm.units?.flatMap((unit) =>
-                  unit.WaterManageHistoryAvgrage?.map((history) => history.NO3)
-                )
-              )
-              .filter(Boolean)}
+            ydata={groupedData?.units?.flatMap((unit) =>
+              unit.WaterManageHistoryAvgrage?.map((history) => history.NO3)
+            )}
             title="Nitrate"
             maxVal={
               currentFarm?.WaterQualityPredictedParameters[0]
                 .YearBasedPredication[0].idealRange.NO3?.Max
             }
+            endDate={endDate}
+            startDate={startDate}
+            dateDiff={dateDiff ? dateDiff : 1}
           />
         )}
       </Grid>
@@ -154,18 +173,17 @@ function WaterHistoryCharts({ productions, groupedData, farms }: Iprops) {
           <WaterTempChart
             key={`nitrite`}
             xAxisData={xAxisData}
-            ydata={groupedData
-              ?.flatMap((farm) =>
-                farm.units?.flatMap((unit) =>
-                  unit.WaterManageHistoryAvgrage?.map((history) => history.NO2)
-                )
-              )
-              .filter(Boolean)}
+            ydata={groupedData?.units?.flatMap((unit) =>
+              unit.WaterManageHistoryAvgrage?.map((history) => history.NO2)
+            )}
             title="Nitrite"
             maxVal={
               currentFarm?.WaterQualityPredictedParameters[0]
                 .YearBasedPredication[0].idealRange.NO2?.Max
             }
+            endDate={endDate}
+            startDate={startDate}
+            dateDiff={dateDiff ? dateDiff : 1}
           />
         )}
       </Grid>
@@ -174,18 +192,17 @@ function WaterHistoryCharts({ productions, groupedData, farms }: Iprops) {
           <WaterTempChart
             key={`ph`}
             xAxisData={xAxisData}
-            ydata={groupedData
-              ?.flatMap((farm) =>
-                farm.units?.flatMap((unit) =>
-                  unit.WaterManageHistoryAvgrage?.map((history) => history.ph)
-                )
-              )
-              .filter(Boolean)}
+            ydata={groupedData?.units?.flatMap((unit) =>
+              unit.WaterManageHistoryAvgrage?.map((history) => history.ph)
+            )}
             title="PH"
             maxVal={
               currentFarm?.WaterQualityPredictedParameters[0]
                 .YearBasedPredication[0].idealRange.ph?.Max
             }
+            endDate={endDate}
+            startDate={startDate}
+            dateDiff={dateDiff ? dateDiff : 1}
           />
         )}
       </Grid>
@@ -194,20 +211,19 @@ function WaterHistoryCharts({ productions, groupedData, farms }: Iprops) {
           <WaterTempChart
             key={`visibility`}
             xAxisData={xAxisData}
-            ydata={groupedData
-              ?.flatMap((farm) =>
-                farm.units?.flatMap((unit) =>
-                  unit.WaterManageHistoryAvgrage?.map(
-                    (history) => history.visibility
-                  )
-                )
+            ydata={groupedData?.units?.flatMap((unit) =>
+              unit.WaterManageHistoryAvgrage?.map(
+                (history) => history.visibility
               )
-              .filter(Boolean)}
+            )}
             title="Visibility"
             maxVal={
               currentFarm?.WaterQualityPredictedParameters[0]
                 .YearBasedPredication[0].idealRange.visibility?.Max
             }
+            endDate={endDate}
+            startDate={startDate}
+            dateDiff={dateDiff ? dateDiff : 1}
           />
         )}
       </Grid>

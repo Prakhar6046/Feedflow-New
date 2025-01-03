@@ -39,8 +39,6 @@ export default function NewFarm({ farmMembers }: Props) {
     setCookie("activeStep", activeStep);
   }, [activeStep]);
 
-  console.log(activeStep);
-
   return (
     <Grid
       container

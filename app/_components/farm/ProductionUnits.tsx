@@ -97,7 +97,6 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
       radius: "1",
     },
   });
-  console.log(errors);
   const { fields, append, remove } = useFieldArray({
     control,
     name: "productionUnits",
