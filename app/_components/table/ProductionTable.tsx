@@ -99,14 +99,6 @@ export default function ProductionTable({
     } else {
       router.push(`/dashboard/production/water/${unit.productionUnit.id}`);
     }
-    // setSelectedUnitId(unit.productionUnit.id);
-    // if (selectedView == "fish") {
-    //   setIsWaterManageHistory(false);
-    //   setIsFishManageHistory(true);
-    // } else {
-    //   setIsFishManageHistory(false);
-    //   setIsWaterManageHistory(true);
-    // }
   };
 
   const handleClick = (
