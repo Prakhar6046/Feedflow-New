@@ -36,6 +36,7 @@ interface Props {
 }
 
 export default function BasicTable({ organisations, userRole }: Props) {
+
   const router = useRouter();
   const pathName = usePathname();
   const dispatch = useAppDispatch();
@@ -333,7 +334,9 @@ export default function BasicTable({ organisations, userRole }: Props) {
                       }}
                     >
                       {organisation?.contact?.find(
-                        (contact) => contact.role === "Admin"
+                        (contact) =>
+                          contact.role === "Admin" ||
+                          contact.name === "Super Admin"
                       )?.email ?? ""}
                     </TableCell>
                     <TableCell
@@ -346,7 +349,9 @@ export default function BasicTable({ organisations, userRole }: Props) {
                       }}
                     >
                       {organisation?.contact?.find(
-                        (contact) => contact.role === "Admin"
+                        (contact) =>
+                          contact.role === "Admin" ||
+                          contact.name === "Super Admin"
                       )?.phone ?? ""}
                     </TableCell>
                     <TableCell
@@ -359,7 +364,9 @@ export default function BasicTable({ organisations, userRole }: Props) {
                       }}
                     >
                       {organisation?.contact?.find(
-                        (contact) => contact.role === "Admin"
+                        (contact) =>
+                          contact.role === "Admin" ||
+                          contact.name === "Super Admin"
                       )?.name ?? ""}
                     </TableCell>
                     {role !== "MEMBER" && (
