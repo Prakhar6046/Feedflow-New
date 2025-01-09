@@ -22,11 +22,11 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import { Tabs } from "@mui/base/Tabs";
-import { TabsList } from "@mui/base/TabsList";
-import { TabPanel } from "@mui/base/TabPanel";
-import { Tab } from "@mui/base/Tab";
-import React, { useState } from "react";
+import TabContext from "@mui/lab/TabContext";
+import TabList from "@mui/lab/TabList";
+import TabPanel from "@mui/lab/TabPanel";
+import Tab from "@mui/material/Tab";
+import React, { useEffect, useMemo, useState } from "react";
 import MuiTextField from "@mui/material/TextField";
 import Input from "../theme/overrides/Input";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
@@ -35,6 +35,14 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { pink } from "@mui/material/colors";
+import { useAppDispatch } from "@/lib/hooks";
+import { usePathname } from "next/navigation";
+import dayjs from "dayjs";
+import { getLocalItem } from "@/app/_lib/utils";
+import { getCookie, setCookie } from "cookies-next";
+import { breadcrumsAction } from "@/lib/features/breadcrum/breadcrumSlice";
+import FishHistoryCharts from "../production/fishHistoryCharts/FishHistoryCharts";
+import { Farm } from "@/app/_typeModels/Farm";
 
 // const TextField = React.forwardRef((props, ref) => (
 //   <MuiTextField {...props} ref={ref} size="small" />
@@ -51,15 +59,19 @@ const FishManageHistoryTable: React.FC<Props> = ({
   tableData,
   productions,
 }) => {
-  const [value, setValue] = useState(1); // State to track active tab
-
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-    setValue(newValue);
-  };
-
-  const [order, setOrder] = React.useState("asc");
-  const [orderBy, setOrderBy] = React.useState("Farm");
-
+  const dispatch = useAppDispatch();
+  const pathName = usePathname();
+  const [order, setOrder] = useState("asc");
+  const [orderBy, setOrderBy] = useState("Farm");
+  const [tab, setTab] = useState<string>("list");
+  const [waterHistoryData, setWaterHistoryData] = useState<any>();
+  const [sortDataFromLocal, setSortDataFromLocal] = React.useState<any>("");
+  const [isWaterSampleHistory, setIsWaterSampleHistory] =
+    useState<boolean>(false);
+  const [startDate, setStartDate] = useState<string>(
+    dayjs().subtract(1, "week").format()
+  );
+  const [endDate, setEndDate] = useState<string>(dayjs().format());
   function EnhancedTableHead(data: any) {
     const { order, orderBy, onRequestSort } = data;
     const createSortHandler =
@@ -98,7 +110,7 @@ const FishManageHistoryTable: React.FC<Props> = ({
                 },
               }}
             >
-              {idx === headCells.length - 1 ? (
+              {idx === 0 ? (
                 headCell.label
               ) : (
                 <TableSortLabel
@@ -115,328 +127,296 @@ const FishManageHistoryTable: React.FC<Props> = ({
       </TableHead>
     );
   }
-  const groupedData: any = productions?.reduce((result: any, item) => {
-    // Find or create a farm group
-    let farmGroup: any = result.find(
-      (group: any) => group.farm === item.farm.name
-    );
-    if (!farmGroup) {
-      farmGroup = { unit: item.productionUnit.name, units: [] };
-      result.push(farmGroup);
+  const groupedData: FishManageHistoryGroup[] = useMemo(() => {
+    const filteredFarm = productions?.reduce((result: any, item) => {
+      // Find or create a farm group
+      let farmGroup: any = result.find(
+        (group: any) => group.farm === item.farm.name
+      );
+      if (!farmGroup) {
+        farmGroup = { unit: item.productionUnit.name, units: [] };
+        result.push(farmGroup);
+      }
+
+      // Add the current production unit and all related data to the group
+      farmGroup.units.push({
+        id: item.id,
+        productionUnit: item.productionUnit,
+        fishSupply: item.fishSupply,
+        organisation: item.organisation,
+        farm: item.farm,
+        biomass: item.biomass,
+        fishCount: item.fishCount,
+        batchNumberId: item.batchNumberId,
+        age: item.age,
+        meanLength: item.meanLength,
+        meanWeight: item.meanWeight,
+        stockingDensityKG: item.stockingDensityKG,
+        stockingDensityNM: item.stockingDensityNM,
+        stockingLevel: item.stockingLevel,
+        createdBy: item.createdBy,
+        updatedBy: item.updatedBy,
+        createdAt: item.createdAt,
+        updatedAt: item.updatedAt,
+        isManager: item.isManager,
+        field: item.field,
+        fishManageHistory: item.FishManageHistory,
+      });
+
+      return result;
+    }, []);
+    return filteredFarm ?? null;
+  }, [productions]);
+  // const handleRequestSort = (
+  //   _: React.MouseEvent<HTMLButtonElement> | null,
+  //   property: string
+  // ) => {
+  //   const isAsc = orderBy === property && order === "asc";
+  //   setOrder(isAsc ? "desc" : "asc");
+  //   setOrderBy(property);
+  //   console.log(property);
+  //   dispatch(
+  //     breadcrumsAction.handleSort({
+  //       direction: isAsc ? "desc" : "asc",
+  //       column: property,
+  //     })
+  //   );
+  //   const unitData = groupedData?.units[0]?.WaterManageHistoryAvgrage;
+  //   if (unitData) {
+  //     const sortedData = [...unitData].sort((water1, water2) => {
+  //       const orderType = order === "asc" ? 1 : -1;
+  //       if (property == "Date") {
+  //         if (water1.createdAt < water2.createdAt) return -1 * orderType;
+  //         if (water1.createdAt > water2.createdAt) return 1 * orderType;
+  //         return 0;
+  //       } else if (property === "water temp") {
+  //         if (water1.waterTemp < water2.waterTemp) return -1 * orderType;
+  //         if (water1.waterTemp > water2.waterTemp) return 1 * orderType;
+  //         return 0;
+  //       } else if (property === "Dissolved oxygen") {
+  //         if (water1.DO < water2.DO) return -1 * orderType;
+  //         if (water1.DO > water2.DO) return 1 * orderType;
+  //         return 0;
+  //       } else if (property === "tss") {
+  //         if (water1.TSS < water2.TSS) return -1 * orderType;
+  //         if (water1.TSS > water2.TSS) return 1 * orderType;
+  //         return 0;
+  //       } else if (property === "nh4") {
+  //         if (water1.NH4 < water2.NH4) return -1 * orderType;
+  //         if (water1.NH4 > water2.NH4) return 1 * orderType;
+  //         return 0;
+  //       } else if (property === "no3") {
+  //         if (water1.NO3 < water2.NO3) return -1 * orderType;
+  //         if (water1.NO3 > water2.NO3) return 1 * orderType;
+  //         return 0;
+  //       } else if (property === "no2") {
+  //         if (water1.NO2 < water2.NO2) return -1 * orderType;
+  //         if (water1.NO2 > water2.NO2) return 1 * orderType;
+  //         return 0;
+  //       } else if (property === "ph") {
+  //         if (water1.ph < water2.ph) return -1 * orderType;
+  //         if (water1.ph > water2.ph) return 1 * orderType;
+  //         return 0;
+  //       } else if (property === "visibility") {
+  //         if (water1.visibility < water2.visibility) return -1 * orderType;
+  //         if (water1.visibility > water2.visibility) return 1 * orderType;
+  //         return 0;
+  //       }
+
+  //       return 0;
+  //     });
+  //     const finalSortedData = {
+  //       unit: groupedData?.unit,
+  //       units: [
+  //         {
+  //           ...groupedData?.units[0],
+  //           WaterManageHistoryAvgrage: sortedData,
+  //         },
+  //       ],
+  //     };
+
+  //     // Update water history data
+  //     setWaterHistoryData(finalSortedData);
+  //   }
+  // };
+  // useEffect(() => {
+  //   if (sortDataFromLocal) {
+  //     const data = sortDataFromLocal;
+  //     setOrder(data.direction);
+  //     setOrderBy(data.column);
+  //     const unitData = groupedData?.units[0]?.WaterManageHistoryAvgrage;
+  //     if (unitData) {
+  //       const sortedData = [...unitData].sort((water1, water2) => {
+  //         const orderType = data.direction === "asc" ? -1 : 1;
+  //         if (data.column == "Date") {
+  //           if (water1.createdAt < water2.createdAt) return -1 * orderType;
+  //           if (water1.createdAt > water2.createdAt) return 1 * orderType;
+  //           return 0;
+  //         } else if (data.column === "water temp") {
+  //           if (water1.waterTemp < water2.waterTemp) return -1 * orderType;
+  //           if (water1.waterTemp > water2.waterTemp) return 1 * orderType;
+  //           return 0;
+  //         } else if (data.column === "Dissolved oxygen") {
+  //           if (water1.DO < water2.DO) return -1 * orderType;
+  //           if (water1.DO > water2.DO) return 1 * orderType;
+  //           return 0;
+  //         } else if (data.column === "tss") {
+  //           if (water1.TSS < water2.TSS) return -1 * orderType;
+  //           if (water1.TSS > water2.TSS) return 1 * orderType;
+  //           return 0;
+  //         } else if (data.column === "nh4") {
+  //           if (water1.NH4 < water2.NH4) return -1 * orderType;
+  //           if (water1.NH4 > water2.NH4) return 1 * orderType;
+  //           return 0;
+  //         } else if (data.column === "no3") {
+  //           if (water1.NO3 < water2.NO3) return -1 * orderType;
+  //           if (water1.NO3 > water2.NO3) return 1 * orderType;
+  //           return 0;
+  //         } else if (data.column === "no2") {
+  //           if (water1.NO2 < water2.NO2) return -1 * orderType;
+  //           if (water1.NO2 > water2.NO2) return 1 * orderType;
+  //           return 0;
+  //         } else if (data.column === "ph") {
+  //           if (water1.ph < water2.ph) return -1 * orderType;
+  //           if (water1.ph > water2.ph) return 1 * orderType;
+  //           return 0;
+  //         } else if (data.column === "visibility") {
+  //           if (water1.visibility < water2.visibility) return -1 * orderType;
+  //           if (water1.visibility > water2.visibility) return 1 * orderType;
+  //           return 0;
+  //         }
+
+  //         return 0;
+  //       });
+  //       const finalSortedData = {
+  //         unit: groupedData?.unit,
+  //         units: [
+  //           {
+  //             ...groupedData?.units[0],
+  //             WaterManageHistoryAvgrage: sortedData,
+  //           },
+  //         ],
+  //       };
+
+  //       // Update water history data
+  //       setWaterHistoryData(finalSortedData);
+  //     }
+  //   }
+  // }, [sortDataFromLocal]);
+  useEffect(() => {
+    if (tab) {
+      setCookie("fishTab", tab);
     }
-
-    // Add the current production unit and all related data to the group
-    farmGroup.units.push({
-      id: item.id,
-      productionUnit: item.productionUnit,
-      fishSupply: item.fishSupply,
-      organisation: item.organisation,
-      farm: item.farm,
-      biomass: item.biomass,
-      fishCount: item.fishCount,
-      batchNumberId: item.batchNumberId,
-      age: item.age,
-      meanLength: item.meanLength,
-      meanWeight: item.meanWeight,
-      stockingDensityKG: item.stockingDensityKG,
-      stockingDensityNM: item.stockingDensityNM,
-      stockingLevel: item.stockingLevel,
-      createdBy: item.createdBy,
-      updatedBy: item.updatedBy,
-      createdAt: item.createdAt,
-      updatedAt: item.updatedAt,
-      isManager: item.isManager,
-      field: item.field,
-      fishManageHistory: item.FishManageHistory,
-    });
-
-    return result;
+  }, [tab]);
+  useEffect(() => {
+    if (groupedData && !sortDataFromLocal) {
+      setWaterHistoryData(groupedData);
+    }
+  }, [groupedData]);
+  useEffect(() => {
+    if (pathName) {
+      setSortDataFromLocal(getLocalItem(pathName));
+    }
+  }, [pathName]);
+  useEffect(() => {
+    const currentTab = getCookie("fishTab");
+    if (currentTab) {
+      setTab(currentTab);
+    } else {
+      setTab("list");
+    }
   }, []);
 
   return (
     <Box
       sx={{
         width: "100%",
-        overflow: "hidden",
         borderRadius: "14px",
         boxShadow: "0px 0px 16px 5px #0000001A",
-        margin: 4,
+        my: 4,
+        px: 5,
+        pt: 2.5,
+        pb: 5,
       }}
     >
-      <Tabs
-        defaultValue={1}
-        style={{
-          width: "100%",
-          overflow: "hidden",
-        }}
-      >
-        {" "}
-        <Box
-          display={"flex"}
-          gap="40px"
-          sx={{
-            margin: "32px",
-
-            flexDirection: {
-              xl: "row",
-              xs: "column",
-            },
-          }}
+      <TabContext value={tab}>
+        <Grid
+          container
+          columnSpacing={3}
+          rowSpacing={1}
+          alignItems={"center"}
+          flexWrap={"wrap"}
+          justifyContent={"space-between"}
+          mb={4}
         >
           {" "}
-          <Box
-            display={"flex"}
-            alignItems={"center"}
-            gap="20px"
-            sx={{
-              flexDirection: {
-                md: "row",
-                xs: "column",
-              },
-            }}
-          >
-            <Box>
-              <Box className="form-grid">
-                <TabsList
-                  style={{
-                    borderRadius: "25px",
-
-                    border: "1px solid #A6A6A6",
-                    width: "186px",
-                  }}
-                >
-                  <Tab value={1} className="tab-item">
-                    List
-                  </Tab>
-                  <Tab value={2} className="tab-item">
-                    Graph
-                  </Tab>
-                </TabsList>
-              </Box>
-            </Box>
-            {/*hISTORY-CHART*/}
-            <Box className="form-grid">
-              <FormControl>
-                <FormLabel>
-                  <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <DemoContainer
-                      sx={{
-                        display: "flex",
-                        flexDirection: "row",
-                        gap: 3,
-                        alignItems: "center",
-                        margin: "0",
-                      }}
-                      components={["DatePicker", "DatePicker", "DatePicker"]}
-                    >
-                      <DatePicker
-                        label="Start Date"
-                        slotProps={{}}
-                        className="date-picker"
-                      />
-                      <DatePicker
-                        label="End Date"
-                        slotProps={{}}
+          <Grid item xs={"auto"}>
+            <TabList
+              className="tab-list"
+              style={{
+                borderRadius: "25px",
+                border: "1px solid #A6A6A6",
+                width: "186px",
+              }}
+              onChange={(_, val: string) => {
+                setTab(val);
+              }}
+            >
+              <Tab label="List" value="list" className="tab-item" />
+              <Tab label="Graph" value="graph" className="tab-item" />
+            </TabList>
+          </Grid>
+          {/*hISTORY-CHART*/}
+          {tab === "graph" && (
+            <>
+              <Grid item xl={4} lg={7} md={9} xs={12} className="form-grid">
+                <FormControl>
+                  <FormLabel>
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <DemoContainer
                         sx={{
-                          marginTop: "0",
-
-                          borderRadius: "6px",
+                          display: "flex",
+                          flexDirection: "row",
+                          gap: 3,
+                          alignItems: "center",
+                          margin: "0",
                         }}
-                        className="date-picker"
-                      />
-                    </DemoContainer>
-                  </LocalizationProvider>
-                </FormLabel>
-              </FormControl>
-            </Box>
-          </Box>
-          <Box className="form-grid">
-            {/* Heading for Annotations */}
-            <Typography
-              component="h6"
-              sx={{
-                fontWeight: "500",
-                color: "#67737F",
-                marginLeft: "10px",
-              }}
-            >
-              Annotations
-            </Typography>
+                        components={["DatePicker"]}
+                      >
+                        <DatePicker
+                          label="Start Date"
+                          className="date-picker"
+                          value={dayjs(startDate)}
+                          onChange={(value) => {
+                            const isoDate = value?.toISOString();
+                            if (isoDate) setStartDate(isoDate);
+                          }}
+                          maxDate={dayjs(endDate)}
+                        />
+                        <DatePicker
+                          label="End Date"
+                          value={dayjs(endDate)}
+                          onChange={(value) => {
+                            const isoDate = value?.toISOString();
+                            if (isoDate) setEndDate(isoDate);
+                          }}
+                          sx={{
+                            marginTop: "0",
 
-            {/* Container for Checkboxes */}
-            <Box
-              display="flex"
-              flexDirection="row"
-              alignItems="center"
-              gap={{
-                xl: "20px",
-                md: "10px",
-                xs: "2px",
-              }}
-            >
-              {/* First Checkbox */}
-              <Box>
-                <FormControlLabel
-                  style={{ marginInline: "auto" }}
-                  control={
-                    <Checkbox
-                      defaultChecked
-                      sx={{
-                        color: "#06A19B",
-                        "&.Mui-checked": {
-                          color: "#06A19B",
-                        },
-                      }}
-                    />
-                  }
-                  label={
-                    <Typography
-                      sx={{
-                        color: "#67737F",
-                        fontWeight: "500",
-                      }}
-                    >
-                      Limits
-                    </Typography>
-                  }
-                />
-              </Box>
-
-              {/* Second Checkbox */}
-              <Box display="flex" alignItems="center">
-                <FormControlLabel
-                  style={{ marginInline: "auto" }}
-                  control={
-                    <Checkbox
-                      defaultChecked
-                      sx={{
-                        color: "#06A19B",
-                        "&.Mui-checked": {
-                          color: "#06A19B",
-                        },
-                      }}
-                    />
-                  }
-                  label={
-                    <Typography
-                      sx={{
-                        color: "#67737F",
-                        fontWeight: "500",
-                      }}
-                    >
-                      Ranges
-                    </Typography>
-                  }
-                />
-              </Box>
-
-              {/* Third Checkbox */}
-              <Box display="flex" alignItems="center">
-                <FormControlLabel
-                  style={{ marginInline: "auto" }}
-                  control={
-                    <Checkbox
-                      defaultChecked
-                      sx={{
-                        color: "#06A19B",
-                        "&.Mui-checked": {
-                          color: "#06A19B",
-                        },
-                      }}
-                    />
-                  }
-                  label={
-                    <Typography
-                      sx={{
-                        color: "#67737F",
-                        fontWeight: "500",
-                      }}
-                    >
-                      Red
-                    </Typography>
-                  }
-                />
-              </Box>
-
-              {/* Fourth Checkbox */}
-              <Box display="flex" alignItems="center">
-                <FormControlLabel
-                  style={{ marginInline: "auto" }}
-                  control={
-                    <Checkbox
-                      defaultChecked
-                      sx={{
-                        color: "#06A19B",
-                        "&.Mui-checked": {
-                          color: "#06A19B",
-                        },
-                      }}
-                    />
-                  }
-                  label={
-                    <Typography
-                      sx={{
-                        color: "#67737F",
-                        fontWeight: "500",
-                      }}
-                    >
-                      Orange
-                    </Typography>
-                  }
-                />
-              </Box>
-
-              {/* Fifth Checkbox */}
-              <Box display="flex" alignItems="center">
-                <FormControlLabel
-                  style={{ marginInline: "auto" }}
-                  control={
-                    <Checkbox
-                      defaultChecked
-                      sx={{
-                        color: "#06A19B",
-                        "&.Mui-checked": {
-                          color: "#06A19B",
-                        },
-                      }}
-                    />
-                  }
-                  label={
-                    <Typography
-                      sx={{
-                        color: "#67737F",
-                        fontWeight: "500",
-                      }}
-                    >
-                      Green
-                    </Typography>
-                  }
-                />
-              </Box>
-
-              <Box>
-                <Button
-                  type="submit"
-                  variant="contained"
-                  sx={{
-                    color: "#fff",
-                    background: "#06A19B",
-                    fontWeight: 600,
-                    padding: "6px 16px",
-                    width: "fit-content",
-                    textTransform: "capitalize",
-                    borderRadius: "8px",
-                    border: "1px solid #06A19B",
-                    textWrap: "nowrap",
-                  }}
-                >
-                  Create Record
-                </Button>
-              </Box>
-            </Box>
-          </Box>
-        </Box>
-        <TabPanel value={1}>
+                            borderRadius: "6px",
+                          }}
+                          className="date-picker"
+                          maxDate={dayjs()}
+                        />
+                      </DemoContainer>
+                    </LocalizationProvider>
+                  </FormLabel>
+                </FormControl>
+              </Grid>
+            </>
+          )}
+        </Grid>
+        <TabPanel value="list" hidden={tab === "list" ? false : true}>
           <Paper
             sx={{
               width: "100%",
@@ -965,8 +945,16 @@ const FishManageHistoryTable: React.FC<Props> = ({
             </TableContainer>
           </Paper>
         </TabPanel>
-        <TabPanel value={2}>Second page</TabPanel>
-      </Tabs>
+        <TabPanel value="graph" hidden={tab === "graph" ? false : true}>
+          <FishHistoryCharts
+            productions={productions}
+            groupedData={groupedData}
+            startDate={startDate}
+            endDate={endDate}
+          />
+          Graph
+        </TabPanel>
+      </TabContext>
     </Box>
   );
 };

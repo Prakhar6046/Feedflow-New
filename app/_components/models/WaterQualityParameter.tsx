@@ -241,54 +241,15 @@ const WaterQualityParameter: React.FC<Props> = ({
   }, [selectedProduction, formData]);
 
   useEffect(() => {
-    if (selectedProduction && selectedFarm && farms.length) {
-      const farm = farms.find((farm) => farm.id == selectedFarm);
-      const yearBasedPredication: any =
-        farm?.WaterQualityPredictedParameters[0]?.YearBasedPredication[0];
-      const currentMonth = getCurrentMonth();
-
-      // setValue(`water.0.DO`);
-      // setValue(`water.0.TSS`);
-      // setValue(`water.0.NH4`);
-      // setValue(`water.0.NO3`);
-      // setValue(`water.0.NO2`);
-      // setValue(`water.0.ph`);
-      // setValue(`water.0.waterTemp`);
-      // setValue(`water.0.visibility`);
-      const firstRow = watchedFields[1];
-      console.log(firstRow);
-      const index0WaterTemp =
-        yearBasedPredication?.waterTemp[currentMonth] && !firstRow?.waterTemp
-          ? Number(yearBasedPredication?.waterTemp[currentMonth])
-          : 0;
-      const index0DO =
-        yearBasedPredication?.DO[currentMonth] && !firstRow?.DO
-          ? Number(yearBasedPredication?.DO[currentMonth])
-          : 0;
-      const index0TSS =
-        yearBasedPredication?.TSS[currentMonth] && !firstRow?.TSS
-          ? Number(yearBasedPredication?.TSS[currentMonth])
-          : 0;
-      const index0NH4 =
-        yearBasedPredication?.NH4[currentMonth] && !firstRow?.NH4
-          ? Number(yearBasedPredication?.NH4[currentMonth])
-          : 0;
-      const index0NO3 =
-        yearBasedPredication?.NO3[currentMonth] && !firstRow?.NO3
-          ? Number(yearBasedPredication?.NO3[currentMonth])
-          : 0;
-      const index0NO2 =
-        yearBasedPredication?.NO2[currentMonth] && !firstRow?.NO2
-          ? Number(yearBasedPredication?.NO2[currentMonth])
-          : 0;
-      const index0Ph =
-        yearBasedPredication?.ph[currentMonth] && !firstRow?.ph
-          ? Number(yearBasedPredication?.ph[currentMonth])
-          : 0;
-      const index0visibility =
-        yearBasedPredication?.visibility[currentMonth] && !firstRow?.visibility
-          ? Number(yearBasedPredication?.visibility[currentMonth])
-          : 0;
+    if (selectedProduction && selectedFarm) {
+      const index0WaterTemp = 0;
+      const index0DO = 0;
+      const index0TSS = 0;
+      const index0NH4 = 0;
+      const index0NO3 = 0;
+      const index0NO2 = 0;
+      const index0Ph = 0;
+      const index0visibility = 0;
 
       // Initialize updated values
       let updatedWaterTemp = index0WaterTemp;
@@ -382,7 +343,6 @@ const WaterQualityParameter: React.FC<Props> = ({
     selectedFarm,
     selectedProduction,
   ]);
-  useEffect(() => {}, [selectedFarm, farms]);
 
   useEffect(() => {
     if (typeof window !== "undefined") {

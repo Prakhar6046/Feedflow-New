@@ -61,6 +61,7 @@ export default function BasicBreadcrumbs({
     }
     removeLocalItem("farmData");
     removeLocalItem("farmProductionUnits");
+    removeLocalItem("productionParametes");
     router.push(String(buttonRoute));
   };
 

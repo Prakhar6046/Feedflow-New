@@ -32,16 +32,15 @@ interface Iprops {
   xAxisData: string[];
   ydata: (String | undefined)[];
   title: string;
-  maxVal: any;
+
   startDate: string;
   endDate: string;
   dateDiff: number;
 }
-const WaterTempChart = ({
+const FishChart = ({
   xAxisData,
   ydata,
   title,
-  maxVal,
   startDate,
   endDate,
   dateDiff,
@@ -80,7 +79,7 @@ const WaterTempChart = ({
           "rgb(153, 102, 255)",
           "rgb(201, 203, 207)",
         ],
-        borderWidth: 1,
+        borderWidth: 2,
       },
     ],
   };
@@ -132,42 +131,12 @@ const WaterTempChart = ({
         suggestedMin: startDate,
       },
       y: {
-        suggestedMax: maxVal && Number(maxVal) * 2,
-        suggestedMin: 0,
         title: { display: true, text: title },
         grid: { display: true },
       },
     },
   };
-  const backgroundPlugin = {
-    id: "backgroundColor",
-    beforeDraw: (chart: any) => {
-      const {
-        ctx,
-        chartArea: { left, right, top },
-        scales: { y },
-      } = chart;
 
-      ctx.save();
-      // Green background
-      ctx.fillStyle = "rgba(144, 238, 144, 0.3)"; // Light green
-      ctx.fillRect(
-        left,
-        y.getPixelForValue(0),
-        right - left,
-        y.getPixelForValue(Number(maxVal)) - y.getPixelForValue(0)
-      );
-      // Red background
-      ctx.fillStyle = "rgba(238, 62, 62, 0.3)"; // Light red
-      ctx.fillRect(
-        left,
-        y.getPixelForValue(Number(maxVal)),
-        right - left,
-        top - y.getPixelForValue(Number(maxVal))
-      );
-      ctx.restore();
-    },
-  };
   const crosshairLine = (chart: Chart, mousemove: MouseEvent) => {
     if (!chart || !chart.chartArea) return;
     const {
@@ -316,45 +285,7 @@ const WaterTempChart = ({
       ctx.restore();
     },
   };
-  const maxValPlugin = {
-    id: "maxValPlugin",
-    beforeDatasetDraw(chart: Chart) {
-      const {
-        ctx,
-        data,
-        chartArea: { left, right },
-        scales: { y },
-      } = chart;
 
-      // Calculate the average of the dataset
-      const dataset = data?.datasets[0]?.data;
-      const maxValue = Number(maxVal);
-
-      ctx.save();
-      ctx.beginPath();
-      ctx.lineWidth = 1;
-      ctx.setLineDash([5, 4]);
-      ctx.strokeStyle = "red";
-      ctx.moveTo(left, y.getPixelForValue(maxValue));
-      ctx.lineTo(right, y.getPixelForValue(maxValue));
-      ctx.stroke();
-
-      // Draw the rounded rectangle and label with "avg"
-      ctx.fillStyle = "red"; // Green background for the label
-      drawRoundedRect(ctx, right, y.getPixelForValue(maxValue) - 10, 60, 25, 4);
-      ctx.font = "13px sans-serif bold";
-      ctx.fillStyle = "white"; // White text color
-      ctx.textBaseline = "middle";
-      ctx.textAlign = "center";
-      ctx.fillText(
-        "max value", // Label as "avg"
-        right + 30,
-        y.getPixelForValue(maxValue) + 5
-      );
-
-      ctx.restore();
-    },
-  };
   //custom tooltip plugin block
   const customTooltip = {
     id: "customTooltip",
@@ -393,8 +324,8 @@ const WaterTempChart = ({
           ctx.lineJoin = "round";
           ctx.lineWidth = 5;
           ctx.setLineDash([]);
-          ctx.fillRect(xTooltip, yTooltip, 150, 75);
-          ctx.strokeRect(xTooltip, yTooltip, 150, 75);
+          ctx.fillRect(xTooltip, yTooltip, 150, 60);
+          ctx.strokeRect(xTooltip, yTooltip, 150, 60);
           ctx.closePath();
           ctx.restore();
 
@@ -406,23 +337,13 @@ const WaterTempChart = ({
 
           const xValue: number | any = x.getValueForPixel(mousemove.offsetX); // X-axis value
           const yValue = y.getValueForPixel(mousemove.offsetY)?.toFixed(2); // Y-axis value
-          const lineHeight = 20;
+
           ctx.fillText(
             `Date: ${new Date(xValue).toLocaleDateString()}`,
             xTooltip + 75, // Center text horizontally
             yTooltip + 20 // Adjust vertical position
           );
-          ctx.fillText(`Real Value: ${yValue}`, xTooltip + 75, yTooltip + 40);
-          ctx.fillText(
-            `Predicted Value: ${yValue}`,
-            xTooltip + 75,
-            yTooltip + 60
-          );
-          // ctx.fillText("Date       : 1/4/2025", xTooltip + 75, yTooltip + 20);
-          // yTooltip + 20+= lineHeight;
-          // ctx.fillText("Real Value: 31.90", xTooltip + 75,yTooltip + 20);
-          // y += lineHeight;
-          // ctx.fillText("Predicted Value: 31.90",xTooltip + 75, yTooltip + 20);
+          ctx.fillText(` Value: ${yValue}`, xTooltip + 75, yTooltip + 40);
 
           ctx.restore();
         }
@@ -454,10 +375,10 @@ const WaterTempChart = ({
         ref={chartRef}
         data={data}
         options={options}
-        plugins={[dottedLine, customTooltip, backgroundPlugin, maxValPlugin]}
+        plugins={[dottedLine, customTooltip]}
       />
     </div>
   );
 };
 
-export default WaterTempChart;
+export default FishChart;

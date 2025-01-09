@@ -18,6 +18,7 @@ const steps = [
   {
     label: "Farm",
   },
+  { label: "Production Parameters" },
   {
     label: "Production Units",
   },
@@ -130,15 +131,16 @@ const EditFarm = ({ farmId, farmMembers }: Props) => {
           />
         )}
         {activeStep === 2 && (
-          <ProductionUnits setActiveStep={setActiveStep} editFarm={editFarm} />
-        )}
-        {activeStep === 3 && (
           <ProductionParaMeter
             setActiveStep={setActiveStep}
             productionParaMeter={editFarm?.WaterQualityPredictedParameters}
             editFarm={editFarm}
           />
         )}
+        {activeStep === 3 && (
+          <ProductionUnits setActiveStep={setActiveStep} editFarm={editFarm} />
+        )}
+
         {activeStep === 4 && <AllDone setActiveStep={setActiveStep} />}
       </Grid>
     </Grid>

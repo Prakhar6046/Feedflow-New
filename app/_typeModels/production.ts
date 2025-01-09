@@ -178,7 +178,7 @@ export interface FishManageHistoryGroup {
       stockingDensityKG: String;
       stockingDensityNM: String;
       stockingLevel: String;
-      createdBy: String;
+      createdBy: string;
       updatedBy: String;
       createdAt: String;
       updatedAt: String;

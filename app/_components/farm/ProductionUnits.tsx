@@ -29,7 +29,7 @@ import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableRow from "@mui/material/TableRow";
-import { getCookie } from "cookies-next";
+import { deleteCookie, getCookie } from "cookies-next";
 import { NextPage } from "next";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -59,15 +59,15 @@ const unitsTypes = [
 
 const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
   uuidv4();
-
   const dispatch = useAppDispatch();
-
+  const isEditFarm = getCookie("isEditFarm");
+  const userData: any = getCookie("logged-user");
   const [selectedUnit, setSelectedUnit] = React.useState<UnitsTypes>();
   const [open, setopen] = useState<boolean>(false);
   const [calculatedValue, setCalculatedValue] = useState<CalculateType>();
-
   const [formProductionUnitsData, setFormProductionUnitsData] = useState<any>();
-
+  const [isApiCallInProgress, setIsApiCallInProgress] =
+    useState<boolean>(false);
   const {
     register,
     handleSubmit,
@@ -150,10 +150,107 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
     }
   };
 
-  const onSubmit: SubmitHandler<ProductionUnitsFormTypes> = (data) => {
-    clearErrors(["length", "width", "depth", "radius", "area", "height"]);
-    setActiveStep(3);
-    setLocalItem("farmProductionUnits", watch("productionUnits"));
+  // const onSubmit: SubmitHandler<ProductionUnitsFormTypes> = (data) => {
+  //   clearErrors(["length", "width", "depth", "radius", "area", "height"]);
+  //   setActiveStep(3);
+  //   setLocalItem("farmProductionUnits", watch("productionUnits"));
+  // };
+  const onSubmit: SubmitHandler<ProductionUnitsFormTypes> = async (data) => {
+    const farmData = getLocalItem("farmData");
+    const farmPredictionValues = getLocalItem("productionParametes");
+    if (farmData && farmPredictionValues && data) {
+      // Prevent API call if one is already in progress
+      if (isApiCallInProgress) return;
+      setIsApiCallInProgress(true);
+
+      try {
+        const loggedUserData = JSON.parse(userData);
+        let payload;
+        if (
+          isEditFarm === "true" &&
+          editFarm?.farmAddress?.id &&
+          editFarm?.WaterQualityPredictedParameters[0]?.id
+        ) {
+          payload = {
+            productionParameter: farmPredictionValues,
+
+            farmAddress: {
+              addressLine1: farmData.addressLine1,
+              addressLine2: farmData.addressLine2,
+              city: farmData.city,
+              province: farmData.province,
+              zipCode: farmData.zipCode,
+              country: farmData.country,
+              id: editFarm.farmAddress?.id,
+            },
+            productionUnits: data.productionUnits,
+            name: farmData.name,
+            farmAltitude: farmData.farmAltitude,
+            fishFarmer: farmData.fishFarmer,
+            lat: farmData.lat,
+            lng: farmData.lng,
+            id: editFarm?.id,
+            organsationId: loggedUserData.organisationId,
+            productions: editFarm.production,
+            mangerId: farmData.mangerId ? farmData.mangerId : null,
+            userId: loggedUserData.id,
+          };
+        } else {
+          payload = {
+            productionParameter: farmPredictionValues,
+            farmAddress: {
+              addressLine1: farmData.addressLine1,
+              addressLine2: farmData.addressLine2,
+              city: farmData.city,
+              province: farmData.province,
+              zipCode: farmData.zipCode,
+              country: farmData.country,
+            },
+            productionUnits: data.productionUnits,
+            name: farmData.name,
+            farmAltitude: farmData.farmAltitude,
+            lat: farmData.lat,
+            lng: farmData.lng,
+            fishFarmer: farmData.fishFarmer,
+            organsationId: loggedUserData.organisationId,
+            mangerId: farmData.mangerId ? farmData.mangerId : null,
+            userId: loggedUserData.id,
+          };
+        }
+        if (Object.keys(payload).length && payload.name) {
+          const response = await fetch(
+            `${
+              isEditFarm === "true"
+                ? "/api/farm/edit-farm"
+                : "/api/farm/add-farm"
+            }`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(payload),
+            }
+          );
+          const responseData = await response.json();
+          toast.success(responseData.message);
+
+          if (responseData.status) {
+            setActiveStep(4);
+            deleteCookie("isEditFarm");
+            removeLocalItem("farmData");
+            removeLocalItem("farmProductionUnits");
+            removeLocalItem("productionParametes");
+          }
+        } else {
+          toast.error("Please fill out the all feilds");
+        }
+      } catch (error) {
+        toast.error("Something went wrong. Please try again.");
+      } finally {
+        setIsApiCallInProgress(false);
+      }
+    }
   };
 
   useEffect(() => {
