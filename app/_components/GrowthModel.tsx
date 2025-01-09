@@ -16,7 +16,7 @@ import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 interface InputType {
-  moduleName: String;
+  name: String;
   specie: String;
   temperatureCoefficient: String;
   growthEquationLength: String;
@@ -31,20 +31,24 @@ function GrowthModel() {
     const user = JSON.parse(loggedUser);
     if (user?.organisationId && Object.keys(data)?.length) {
       console.log(data);
-      // const response = await fetch("/api/growth-model", {
-      //   method: "POST",
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //   },
-      //   body: JSON.stringify({ ...data, organisationId: user.organisationId }),
-      // });
 
-      // if (response.ok) {
-      //   const data = await response.json();
-      //   toast.dismiss();
-      //   toast.success(data.message);
-      //   reset();
-      // }
+      const response = await fetch("/api/growth-model", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model: data,
+          organisationId: user.organisationId,
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        toast.dismiss();
+        toast.success(data.message);
+        reset();
+      }
     }
   };
   return (
@@ -86,7 +90,7 @@ function GrowthModel() {
                     type="text"
                     className="form-input"
                     focused
-                    {...register("moduleName")}
+                    {...register("name")}
                     sx={{
                       width: "100%",
                     }}

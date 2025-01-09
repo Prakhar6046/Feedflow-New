@@ -145,18 +145,17 @@ model YearBasedPredication {
   createdAt                        DateTime                        @default(now())
   updatedAt                        DateTime                        @updatedAt
 
-  waterTemp   Json?
-  DO          Json?
-  TSS         Json?
-  NH4         Json?
-  NO3         Json?
-  NO2         Json?
-  ph          Json?
-  visibility  Json?
-  idealRange  Json?
-  GrowthModel String
-  // GrowthModelId Int
-  // GrowthModel   GrowthModel @relation(fields: [GrowthModelId], references: [id])
+  waterTemp     Json?
+  DO            Json?
+  TSS           Json?
+  NH4           Json?
+  NO3           Json?
+  NO2           Json?
+  ph            Json?
+  visibility    Json?
+  idealRange    Json?
+  growthModelId Int
+  GrowthModel   GrowthModel @relation(fields: [growthModelId], references: [id])
 
   @@index([createdAt])
   @@index([updatedAt])
@@ -417,43 +416,29 @@ model FarmManager {
   @@index([updatedAt])
 }
 
-model niloticusAureus {
+model Model {
   id                       Int           @id @default(autoincrement())
+  name                     String?
+  specie                   String?
   temperatureCoefficient   String?
   growthEquationLength     String?
   growthEquationBodyWeight String?
   conditionFactor1         String?
   conditionFactor2         String?
-  specie                   String?
-  createdAt                DateTime      @default(now())
-  updatedAt                DateTime      @updatedAt
-  GrowthModel              GrowthModel[]
-}
-
-model niloticusThaiStrain {
-  id                       Int           @id @default(autoincrement())
-  temperatureCoefficient   String?
-  growthEquationLength     String?
-  growthEquationBodyWeight String?
-  conditionFactor1         String?
-  conditionFactor2         String?
-  specie                   String?
   createdAt                DateTime      @default(now())
   updatedAt                DateTime      @updatedAt
   GrowthModel              GrowthModel[]
 }
 
 model GrowthModel {
-  id                    Int                 @id @default(autoincrement())
-  organisationId        Int?
-  organisation          Organisation?       @relation(fields: [organisationId], references: [id])
-  niloticusAureusId     Int
-  niloticusThaiStrainId Int
-  niloticusAureus       niloticusAureus     @relation(fields: [niloticusAureusId], references: [id])
-  niloticusThaiStrain   niloticusThaiStrain @relation(fields: [niloticusThaiStrainId], references: [id])
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id                   Int                    @id @default(autoincrement())
+  organisationId       Int?
+  organisation         Organisation?          @relation(fields: [organisationId], references: [id])
+  modelId              Int
+  models               Model                  @relation(fields: [modelId], references: [id])
+  createdAt            DateTime               @default(now())
+  updatedAt            DateTime               @updatedAt
+  YearBasedPredication YearBasedPredication[]
 
   @@index([createdAt])
   @@index([updatedAt])
