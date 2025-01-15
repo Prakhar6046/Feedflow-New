@@ -281,3 +281,19 @@ export const getSampleStock = async (payload: {
     return error;
   }
 };
+export const getGrowthModels = async () => {
+  try {
+    const data = await fetch(`${process.env.BASE_URL}/api/growth-model`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      cache: "no-store",
+    });
+    const res = await data.json();
+
+    return res;
+  } catch (error) {
+    return error;
+  }
+};

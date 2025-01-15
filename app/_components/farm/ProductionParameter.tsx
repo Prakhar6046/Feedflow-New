@@ -40,6 +40,7 @@ interface Props {
   setActiveStep: (val: number) => void;
   productionParaMeter?: ProductionParaMeterType[];
   editFarm?: any;
+  growthModels: any;
 }
 interface FormData {
   predictedValues: Record<string, Record<number, string>>;
@@ -51,6 +52,7 @@ export default function ProductionParaMeter({
   setActiveStep,
   productionParaMeter,
   editFarm,
+  growthModels,
 }: Props) {
   const isEditFarm = getCookie("isEditFarm");
 
@@ -321,6 +323,7 @@ export default function ProductionParaMeter({
       setValue("growthModel", formProductionParameters.growthModel);
     }
   }, [formProductionParameters]);
+  console.log(growthModels);
   return (
     <Box>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -672,8 +675,11 @@ export default function ProductionParaMeter({
                   setValue("growthModel", e.target.value);
                 }}
               >
-                <MenuItem value={"Module 1"}>Module 1</MenuItem>
-                <MenuItem value={"Module 2"}>Module 2</MenuItem>
+                {growthModels &&
+                  growthModels.length &&
+                  growthModels.map((model) => {
+                    <MenuItem value={model.id}>{model.name}</MenuItem>;
+                  })}
               </Select>
             </FormControl>
           </Grid>

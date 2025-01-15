@@ -11,6 +11,7 @@ export default async function Page({ params }: { params: { farmId: string } }) {
   const loggedUser: any = getCookie("logged-user", { cookies });
   const user = JSON.parse(loggedUser);
   const farmMembers = await getFarmMembers(user.organisationId);
+  const growthModels = await getGrowthModels();
   return (
     <>
       <BasicBreadcrumbs
@@ -22,7 +23,11 @@ export default async function Page({ params }: { params: { farmId: string } }) {
           { name: "Edit Farm", link: `/dashboard/farm/${params.farmId}` },
         ]}
       />
-      <EditFarm farmId={params.farmId} farmMembers={farmMembers.data.users} />
+      <EditFarm
+        farmId={params.farmId}
+        farmMembers={farmMembers.data.users}
+        growthModels={growthModels?.data[0].models}
+      />
     </>
   );
 }

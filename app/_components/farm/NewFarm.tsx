@@ -29,8 +29,9 @@ const steps = [
 ];
 interface Props {
   farmMembers: SingleUser[];
+  growthModels: any;
 }
-export default function NewFarm({ farmMembers }: Props) {
+export default function NewFarm({ farmMembers, growthModels }: Props) {
   const activeStepIndex = Number(getCookie("activeStep"));
   const [activeStep, setActiveStep] = useState<number>(
     activeStepIndex !== 0 ? activeStepIndex : 0
@@ -39,7 +40,7 @@ export default function NewFarm({ farmMembers }: Props) {
   useEffect(() => {
     setCookie("activeStep", activeStep);
   }, [activeStep]);
-
+  console.log(growthModels);
   return (
     <Grid
       container
@@ -103,7 +104,10 @@ export default function NewFarm({ farmMembers }: Props) {
           />
         )}
         {activeStep === 2 && (
-          <ProductionParaMeter setActiveStep={setActiveStep} />
+          <ProductionParaMeter
+            setActiveStep={setActiveStep}
+            growthModels={growthModels}
+          />
         )}
         {activeStep === 3 && <ProductionUnits setActiveStep={setActiveStep} />}
 

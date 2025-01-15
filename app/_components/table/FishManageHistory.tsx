@@ -64,7 +64,8 @@ const FishManageHistoryTable: React.FC<Props> = ({
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("Farm");
   const [tab, setTab] = useState<string>("list");
-  const [waterHistoryData, setWaterHistoryData] = useState<any>();
+  const [fishHistoryData, setFishHistoryData] =
+    useState<FishManageHistoryGroup>();
   const [sortDataFromLocal, setSortDataFromLocal] = React.useState<any>("");
   const [isWaterSampleHistory, setIsWaterSampleHistory] =
     useState<boolean>(false);
@@ -110,7 +111,7 @@ const FishManageHistoryTable: React.FC<Props> = ({
                 },
               }}
             >
-              {idx === 0 ? (
+              {idx === 0 || idx === 1 || idx === 3 || idx === 4 ? (
                 headCell.label
               ) : (
                 <TableSortLabel
@@ -127,14 +128,14 @@ const FishManageHistoryTable: React.FC<Props> = ({
       </TableHead>
     );
   }
-  const groupedData: FishManageHistoryGroup[] = useMemo(() => {
+  const groupedData: FishManageHistoryGroup = useMemo(() => {
     const filteredFarm = productions?.reduce((result: any, item) => {
       // Find or create a farm group
       let farmGroup: any = result.find(
         (group: any) => group.farm === item.farm.name
       );
       if (!farmGroup) {
-        farmGroup = { unit: item.productionUnit.name, units: [] };
+        farmGroup = { farm: item.productionUnit.name, units: [] };
         result.push(farmGroup);
       }
 
@@ -165,144 +166,145 @@ const FishManageHistoryTable: React.FC<Props> = ({
 
       return result;
     }, []);
-    return filteredFarm ?? null;
+    return filteredFarm[0] ?? null;
   }, [productions]);
-  // const handleRequestSort = (
-  //   _: React.MouseEvent<HTMLButtonElement> | null,
-  //   property: string
-  // ) => {
-  //   const isAsc = orderBy === property && order === "asc";
-  //   setOrder(isAsc ? "desc" : "asc");
-  //   setOrderBy(property);
-  //   console.log(property);
-  //   dispatch(
-  //     breadcrumsAction.handleSort({
-  //       direction: isAsc ? "desc" : "asc",
-  //       column: property,
-  //     })
-  //   );
-  //   const unitData = groupedData?.units[0]?.WaterManageHistoryAvgrage;
-  //   if (unitData) {
-  //     const sortedData = [...unitData].sort((water1, water2) => {
-  //       const orderType = order === "asc" ? 1 : -1;
-  //       if (property == "Date") {
-  //         if (water1.createdAt < water2.createdAt) return -1 * orderType;
-  //         if (water1.createdAt > water2.createdAt) return 1 * orderType;
-  //         return 0;
-  //       } else if (property === "water temp") {
-  //         if (water1.waterTemp < water2.waterTemp) return -1 * orderType;
-  //         if (water1.waterTemp > water2.waterTemp) return 1 * orderType;
-  //         return 0;
-  //       } else if (property === "Dissolved oxygen") {
-  //         if (water1.DO < water2.DO) return -1 * orderType;
-  //         if (water1.DO > water2.DO) return 1 * orderType;
-  //         return 0;
-  //       } else if (property === "tss") {
-  //         if (water1.TSS < water2.TSS) return -1 * orderType;
-  //         if (water1.TSS > water2.TSS) return 1 * orderType;
-  //         return 0;
-  //       } else if (property === "nh4") {
-  //         if (water1.NH4 < water2.NH4) return -1 * orderType;
-  //         if (water1.NH4 > water2.NH4) return 1 * orderType;
-  //         return 0;
-  //       } else if (property === "no3") {
-  //         if (water1.NO3 < water2.NO3) return -1 * orderType;
-  //         if (water1.NO3 > water2.NO3) return 1 * orderType;
-  //         return 0;
-  //       } else if (property === "no2") {
-  //         if (water1.NO2 < water2.NO2) return -1 * orderType;
-  //         if (water1.NO2 > water2.NO2) return 1 * orderType;
-  //         return 0;
-  //       } else if (property === "ph") {
-  //         if (water1.ph < water2.ph) return -1 * orderType;
-  //         if (water1.ph > water2.ph) return 1 * orderType;
-  //         return 0;
-  //       } else if (property === "visibility") {
-  //         if (water1.visibility < water2.visibility) return -1 * orderType;
-  //         if (water1.visibility > water2.visibility) return 1 * orderType;
-  //         return 0;
-  //       }
+  const handleRequestSort = (
+    _: React.MouseEvent<HTMLButtonElement> | null,
+    property: string
+  ) => {
+    const isAsc = orderBy === property && order === "asc";
+    setOrder(isAsc ? "desc" : "asc");
+    console.log(isAsc);
+    setOrderBy(property);
+    dispatch(
+      breadcrumsAction.handleSort({
+        direction: isAsc ? "desc" : "asc",
+        column: property,
+      })
+    );
+    const unitData = groupedData?.units[0]?.fishManageHistory;
+    if (unitData) {
+      const sortedData = [...unitData].sort((fish1, fish2) => {
+        const orderType = order === "asc" ? 1 : -1;
+        if (property === "date") {
+          if (fish1.currentDate < fish2.currentDate) return -1 * orderType;
+          if (fish1.currentDate > fish2.currentDate) return 1 * orderType;
+          return 0;
+        } else if (property === "status") {
+          if (fish1.field < fish2.field) return -1 * orderType;
+          if (fish1.field > fish2.field) return 1 * orderType;
+          return 0;
+        } else if (property === "Mean weight") {
+          if (fish1.meanWeight < fish2.meanWeight) return -1 * orderType;
+          if (fish1.meanWeight > fish2.meanWeight) return 1 * orderType;
+          return 0;
+        } else if (property === "Fish") {
+          if (fish1.fishCount < fish2.fishCount) return -1 * orderType;
+          if (fish1.fishCount > fish2.fishCount) return 1 * orderType;
+          return 0;
+        } else if (property === "Biomass") {
+          if (fish1.biomass < fish2.biomass) return -1 * orderType;
+          if (fish1.biomass > fish2.biomass) return 1 * orderType;
+          return 0;
+        } else if (property === "Mean length") {
+          if (fish1.meanLength < fish2.meanLength) return -1 * orderType;
+          if (fish1.meanLength > fish2.meanLength) return 1 * orderType;
+          return 0;
+        } else if (property === "Stocking Density") {
+          if (fish1.stockingDensityKG < fish2.stockingDensityKG)
+            return -1 * orderType;
+          if (fish1.stockingDensityKG > fish2.stockingDensityKG)
+            return 1 * orderType;
+          return 0;
+        } else if (property === "Stocking density") {
+          if (fish1.stockingDensityNM < fish2.stockingDensityNM)
+            return -1 * orderType;
+          if (fish1.stockingDensityNM > fish2.stockingDensityNM)
+            return 1 * orderType;
+          return 0;
+        }
 
-  //       return 0;
-  //     });
-  //     const finalSortedData = {
-  //       unit: groupedData?.unit,
-  //       units: [
-  //         {
-  //           ...groupedData?.units[0],
-  //           WaterManageHistoryAvgrage: sortedData,
-  //         },
-  //       ],
-  //     };
+        return 0;
+      });
+      console.log(sortedData);
+      const finalSortedData = {
+        farm: groupedData?.farm,
+        units: [
+          {
+            ...groupedData?.units[0],
+            fishManageHistory: sortedData,
+          },
+        ],
+      };
 
-  //     // Update water history data
-  //     setWaterHistoryData(finalSortedData);
-  //   }
-  // };
-  // useEffect(() => {
-  //   if (sortDataFromLocal) {
-  //     const data = sortDataFromLocal;
-  //     setOrder(data.direction);
-  //     setOrderBy(data.column);
-  //     const unitData = groupedData?.units[0]?.WaterManageHistoryAvgrage;
-  //     if (unitData) {
-  //       const sortedData = [...unitData].sort((water1, water2) => {
-  //         const orderType = data.direction === "asc" ? -1 : 1;
-  //         if (data.column == "Date") {
-  //           if (water1.createdAt < water2.createdAt) return -1 * orderType;
-  //           if (water1.createdAt > water2.createdAt) return 1 * orderType;
-  //           return 0;
-  //         } else if (data.column === "water temp") {
-  //           if (water1.waterTemp < water2.waterTemp) return -1 * orderType;
-  //           if (water1.waterTemp > water2.waterTemp) return 1 * orderType;
-  //           return 0;
-  //         } else if (data.column === "Dissolved oxygen") {
-  //           if (water1.DO < water2.DO) return -1 * orderType;
-  //           if (water1.DO > water2.DO) return 1 * orderType;
-  //           return 0;
-  //         } else if (data.column === "tss") {
-  //           if (water1.TSS < water2.TSS) return -1 * orderType;
-  //           if (water1.TSS > water2.TSS) return 1 * orderType;
-  //           return 0;
-  //         } else if (data.column === "nh4") {
-  //           if (water1.NH4 < water2.NH4) return -1 * orderType;
-  //           if (water1.NH4 > water2.NH4) return 1 * orderType;
-  //           return 0;
-  //         } else if (data.column === "no3") {
-  //           if (water1.NO3 < water2.NO3) return -1 * orderType;
-  //           if (water1.NO3 > water2.NO3) return 1 * orderType;
-  //           return 0;
-  //         } else if (data.column === "no2") {
-  //           if (water1.NO2 < water2.NO2) return -1 * orderType;
-  //           if (water1.NO2 > water2.NO2) return 1 * orderType;
-  //           return 0;
-  //         } else if (data.column === "ph") {
-  //           if (water1.ph < water2.ph) return -1 * orderType;
-  //           if (water1.ph > water2.ph) return 1 * orderType;
-  //           return 0;
-  //         } else if (data.column === "visibility") {
-  //           if (water1.visibility < water2.visibility) return -1 * orderType;
-  //           if (water1.visibility > water2.visibility) return 1 * orderType;
-  //           return 0;
-  //         }
+      // Update fish history data
+      setFishHistoryData(finalSortedData);
+    }
+  };
+  useEffect(() => {
+    if (sortDataFromLocal) {
+      const data = sortDataFromLocal;
+      setOrder(data.direction);
+      setOrderBy(data.column);
+      const unitData = groupedData?.units[0]?.fishManageHistory;
+      if (unitData) {
+        const sortedData = [...unitData].sort((fish1, fish2) => {
+          const orderType = data.direction === "asc" ? -1 : 1;
+          if (data.column === "date") {
+            if (fish1.currentDate < fish2.currentDate) return -1 * orderType;
+            if (fish1.currentDate > fish2.currentDate) return 1 * orderType;
+            return 0;
+          } else if (data.column === "status") {
+            if (fish1.field < fish2.field) return -1 * orderType;
+            if (fish1.field > fish2.field) return 1 * orderType;
+            return 0;
+          } else if (data.column === "Mean weight") {
+            if (fish1.meanWeight < fish2.meanWeight) return -1 * orderType;
+            if (fish1.meanWeight > fish2.meanWeight) return 1 * orderType;
+            return 0;
+          } else if (data.column === "Fish") {
+            if (fish1.fishCount < fish2.fishCount) return -1 * orderType;
+            if (fish1.fishCount > fish2.fishCount) return 1 * orderType;
+            return 0;
+          } else if (data.column === "Biomass") {
+            if (fish1.biomass < fish2.biomass) return -1 * orderType;
+            if (fish1.biomass > fish2.biomass) return 1 * orderType;
+            return 0;
+          } else if (data.column === "Mean length") {
+            if (fish1.meanLength < fish2.meanLength) return -1 * orderType;
+            if (fish1.meanLength > fish2.meanLength) return 1 * orderType;
+            return 0;
+          } else if (data.column === "Stocking Density") {
+            if (fish1.stockingDensityKG < fish2.stockingDensityKG)
+              return -1 * orderType;
+            if (fish1.stockingDensityKG > fish2.stockingDensityKG)
+              return 1 * orderType;
+            return 0;
+          } else if (data.column === "Stocking density") {
+            if (fish1.stockingDensityNM < fish2.stockingDensityNM)
+              return -1 * orderType;
+            if (fish1.stockingDensityNM > fish2.stockingDensityNM)
+              return 1 * orderType;
+            return 0;
+          }
 
-  //         return 0;
-  //       });
-  //       const finalSortedData = {
-  //         unit: groupedData?.unit,
-  //         units: [
-  //           {
-  //             ...groupedData?.units[0],
-  //             WaterManageHistoryAvgrage: sortedData,
-  //           },
-  //         ],
-  //       };
+          return 0;
+        });
+        const finalSortedData = {
+          farm: groupedData?.farm,
+          units: [
+            {
+              ...groupedData?.units[0],
+              fishManageHistory: sortedData,
+            },
+          ],
+        };
 
-  //       // Update water history data
-  //       setWaterHistoryData(finalSortedData);
-  //     }
-  //   }
-  // }, [sortDataFromLocal]);
+        // Update fish history data
+        setFishHistoryData(finalSortedData);
+      }
+    }
+  }, [sortDataFromLocal]);
   useEffect(() => {
     if (tab) {
       setCookie("fishTab", tab);
@@ -310,7 +312,7 @@ const FishManageHistoryTable: React.FC<Props> = ({
   }, [tab]);
   useEffect(() => {
     if (groupedData && !sortDataFromLocal) {
-      setWaterHistoryData(groupedData);
+      setFishHistoryData(groupedData);
     }
   }, [groupedData]);
   useEffect(() => {
@@ -326,7 +328,7 @@ const FishManageHistoryTable: React.FC<Props> = ({
       setTab("list");
     }
   }, []);
-
+  console.log(fishHistoryData);
   return (
     <Box
       sx={{
@@ -439,38 +441,73 @@ const FishManageHistoryTable: React.FC<Props> = ({
                 <EnhancedTableHead
                   order={order}
                   orderBy={orderBy}
-                  // onRequestSort={handleRequestSort}
+                  onRequestSort={handleRequestSort}
                 />
                 <TableBody>
-                  {groupedData && groupedData?.length > 0 ? (
-                    groupedData?.map(
-                      (farm: FishManageHistoryGroup, i: number) => {
-                        return (
-                          <TableRow
-                            key={i}
+                  {fishHistoryData ? (
+                    fishHistoryData.units && (
+                      <TableRow
+                        sx={{
+                          "&:last-child td, &:last-child th": { border: 0 },
+                        }}
+                      >
+                        <TableCell
+                          sx={{
+                            color: "#555555",
+                            maxWidth: 250,
+                            borderBottomColor: "#ececec",
+                            borderBottomWidth: 2,
+                            fontWeight: 700,
+                            textWrap: "nowrap",
+                            paddingLeft: {
+                              lg: 10,
+                              md: 7,
+                              xs: 4,
+                            },
+                            pr: 2,
+                          }}
+                          component="th"
+                          scope="row"
+                        >
+                          <Typography
+                            variant="h6"
                             sx={{
-                              "&:last-child td, &:last-child th": { border: 0 },
+                              fontWeight: 500,
+                              fontSize: 14,
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "space-between",
+                              gap: 1,
+                              backgroundColor: "#F5F6F8",
+                              borderTopLeftRadius: "8px",
+                              borderBottomLeftRadius: "8px",
+                              padding: "8px 12px",
+                              margin: "8px 0",
+                              textWrap: "nowrap",
                             }}
                           >
-                            <TableCell
+                            {fishHistoryData.farm}
+                            <Box
                               sx={{
-                                color: "#555555",
-                                maxWidth: 250,
-                                borderBottomColor: "#ececec",
-                                borderBottomWidth: 2,
-                                fontWeight: 700,
-                                textWrap: "nowrap",
-                                paddingLeft: {
-                                  lg: 10,
-                                  md: 7,
-                                  xs: 4,
-                                },
-                                pr: 2,
+                                pr: 3,
                               }}
-                              component="th"
-                              scope="row"
-                            >
-                              {farm.units.map((unit, i) => {
+                            ></Box>
+                          </Typography>
+                        </TableCell>{" "}
+                        <TableCell
+                          className="table-padding"
+                          sx={{
+                            borderBottomWidth: 2,
+                            borderBottomColor: "#ececec",
+                            color: "#555555",
+                            fontWeight: 500,
+                            pl: 0,
+                          }}
+                        >
+                          {fishHistoryData &&
+                            fishHistoryData.units[0].fishManageHistory &&
+                            fishHistoryData.units[0].fishManageHistory.map(
+                              (unit, i) => {
                                 return (
                                   <Typography
                                     key={i}
@@ -478,464 +515,418 @@ const FishManageHistoryTable: React.FC<Props> = ({
                                     sx={{
                                       fontWeight: 500,
                                       fontSize: 14,
-                                      display: "flex",
-                                      alignItems: "center",
-                                      justifyContent: "space-between",
-                                      gap: 1,
                                       backgroundColor: "#F5F6F8",
-                                      borderTopLeftRadius: "8px",
-                                      borderBottomLeftRadius: "8px",
-                                      padding: "8px 12px",
+                                      padding: `${
+                                        unit?.currentDate || unit.updatedAt
+                                          ? "8px 12px 8px 0"
+                                          : "19px 12px 19px 0"
+                                      }`,
+                                      margin: "8px 0",
+                                      // marginBottom: "10px",
+                                      // padding: "21px",
+                                      textWrap: "nowrap",
+                                    }}
+                                  >
+                                    {unit.currentDate
+                                      ? unit.currentDate
+                                      : new Date(
+                                          String(unit?.updatedAt)
+                                        ).toLocaleDateString()}
+                                  </Typography>
+                                );
+                              }
+                            )}
+                        </TableCell>{" "}
+                        <TableCell
+                          className="table-padding"
+                          sx={{
+                            borderBottomWidth: 2,
+                            borderBottomColor: "#ececec",
+                            color: "#555555",
+                            fontWeight: 500,
+                            pl: 0,
+                            textWrap: "nowrap",
+                          }}
+                        >
+                          {fishHistoryData &&
+                            fishHistoryData.units[0].fishManageHistory &&
+                            fishHistoryData.units[0].fishManageHistory.map(
+                              (unit, i) => {
+                                return (
+                                  <Typography
+                                    key={i}
+                                    variant="h6"
+                                    sx={{
+                                      fontWeight: 500,
+                                      fontSize: 14,
+                                      backgroundColor: "#F5F6F8",
+                                      padding: `${
+                                        unit?.field
+                                          ? "8px 12px 8px 0"
+                                          : "19px 12px 19px 0"
+                                      }`,
+                                      margin: "8px 0",
+                                      // marginBottom: "10px",
+                                      // padding: "21px",
+                                      textWrap: "nowrap",
+                                    }}
+                                  >
+                                    {unit.field ? unit.field : "Stock"}
+                                  </Typography>
+                                );
+                              }
+                            )}
+                        </TableCell>
+                        <TableCell
+                          className="table-padding"
+                          sx={{
+                            borderBottomWidth: 2,
+                            borderBottomColor: "#ececec",
+                            color: "#555555",
+                            fontWeight: 500,
+                            pl: 0,
+                          }}
+                        >
+                          {fishHistoryData &&
+                            fishHistoryData.units[0].fishManageHistory &&
+                            fishHistoryData.units[0].fishManageHistory.map(
+                              (unit, i) => {
+                                return (
+                                  <Typography
+                                    key={i}
+                                    variant="h6"
+                                    sx={{
+                                      fontWeight: 500,
+                                      fontSize: 14,
+                                      backgroundColor: "#F5F6F8",
+                                      padding: `${
+                                        fishHistoryData.units[0].fishSupply
+                                          ?.batchNumber
+                                          ? "8px 12px 8px 0"
+                                          : "19px 12px 19px 0"
+                                      }`,
                                       margin: "8px 0",
                                       textWrap: "nowrap",
                                     }}
                                   >
-                                    {unit.productionUnit.name}
-                                    <Box
-                                      sx={{
-                                        pr: 3,
-                                      }}
-                                    ></Box>
+                                    {fishHistoryData.units[0].fishSupply
+                                      ?.batchNumber ?? ""}
                                   </Typography>
                                 );
-                              })}
-                            </TableCell>{" "}
-                            <TableCell
-                              className="table-padding"
-                              sx={{
-                                borderBottomWidth: 2,
-                                borderBottomColor: "#ececec",
-                                color: "#555555",
-                                fontWeight: 500,
-                                pl: 0,
-                              }}
-                            >
-                              {farm &&
-                                farm.units[0].fishManageHistory &&
-                                farm.units[0].fishManageHistory.map(
-                                  (unit, i) => {
-                                    return (
-                                      <Typography
-                                        key={i}
-                                        variant="h6"
-                                        sx={{
-                                          fontWeight: 500,
-                                          fontSize: 14,
-                                          backgroundColor: "#F5F6F8",
-                                          padding: `${
-                                            unit?.fishCount
-                                              ? "8px 12px 8px 0"
-                                              : "19px 12px 19px 0"
-                                          }`,
-                                          margin: "8px 0",
-                                          // marginBottom: "10px",
-                                          // padding: "21px",
-                                          textWrap: "nowrap",
-                                        }}
-                                      >
-                                        {unit.currentDate
-                                          ? unit.currentDate
-                                          : new Date(
-                                              String(unit?.updatedAt)
-                                            ).toLocaleDateString()}
-                                      </Typography>
-                                    );
-                                  }
-                                )}
-                            </TableCell>{" "}
-                            <TableCell
-                              className="table-padding"
-                              sx={{
-                                borderBottomWidth: 2,
-                                borderBottomColor: "#ececec",
-                                color: "#555555",
-                                fontWeight: 500,
-                                pl: 0,
-                                textWrap: "nowrap",
-                              }}
-                            >
-                              {farm &&
-                                farm.units[0].fishManageHistory &&
-                                farm.units[0].fishManageHistory.map(
-                                  (unit, i) => {
-                                    return (
-                                      <Typography
-                                        key={i}
-                                        variant="h6"
-                                        sx={{
-                                          fontWeight: 500,
-                                          fontSize: 14,
-                                          backgroundColor: "#F5F6F8",
-                                          padding: `${
-                                            unit?.fishCount
-                                              ? "8px 12px 8px 0"
-                                              : "19px 12px 19px 0"
-                                          }`,
-                                          margin: "8px 0",
-                                          // marginBottom: "10px",
-                                          // padding: "21px",
-                                          textWrap: "nowrap",
-                                        }}
-                                      >
-                                        {unit.field ? unit.field : "Stock"}
-                                      </Typography>
-                                    );
-                                  }
-                                )}
-                            </TableCell>
-                            <TableCell
-                              className="table-padding"
-                              sx={{
-                                borderBottomWidth: 2,
-                                borderBottomColor: "#ececec",
-                                color: "#555555",
-                                fontWeight: 500,
-                                pl: 0,
-                              }}
-                            >
-                              {farm &&
-                                farm.units[0].fishManageHistory &&
-                                farm.units[0].fishManageHistory.map(
-                                  (unit, i) => {
-                                    return (
-                                      <Typography
-                                        key={i}
-                                        variant="h6"
-                                        sx={{
-                                          fontWeight: 500,
-                                          fontSize: 14,
-                                          backgroundColor: "#F5F6F8",
-                                          padding: `${
-                                            farm.units[0].fishSupply
-                                              ?.batchNumber
-                                              ? "8px 12px 8px 0"
-                                              : "19px 12px 19px 0"
-                                          }`,
-                                          margin: "8px 0",
-                                          textWrap: "nowrap",
-                                        }}
-                                      >
-                                        {farm.units[0].fishSupply
-                                          ?.batchNumber ?? ""}
-                                      </Typography>
-                                    );
-                                  }
-                                )}
-                            </TableCell>
-                            <TableCell
-                              className="table-padding"
-                              sx={{
-                                borderBottomWidth: 2,
-                                borderBottomColor: "#ececec",
-                                color: "#555555",
-                                fontWeight: 500,
-                                pl: 0,
-                                p: 0,
-                              }}
-                            >
-                              {farm &&
-                                farm.units[0].fishManageHistory &&
-                                farm.units[0].fishManageHistory.map(
-                                  (unit, i) => {
-                                    return (
-                                      <Typography
-                                        key={i}
-                                        variant="h6"
-                                        sx={{
-                                          fontWeight: 500,
-                                          fontSize: 14,
-                                          padding: `${
-                                            farm.units[0].fishSupply?.age
-                                              ? "8px 12px 8px 0"
-                                              : "19px 12px 19px 0"
-                                          }`,
-                                          backgroundColor: "#F5F6F8",
-                                          margin: "8px 0",
+                              }
+                            )}
+                        </TableCell>
+                        <TableCell
+                          className="table-padding"
+                          sx={{
+                            borderBottomWidth: 2,
+                            borderBottomColor: "#ececec",
+                            color: "#555555",
+                            fontWeight: 500,
+                            pl: 0,
+                            p: 0,
+                          }}
+                        >
+                          {fishHistoryData &&
+                            fishHistoryData.units[0].fishManageHistory &&
+                            fishHistoryData.units[0].fishManageHistory.map(
+                              (unit, i) => {
+                                return (
+                                  <Typography
+                                    key={i}
+                                    variant="h6"
+                                    sx={{
+                                      fontWeight: 500,
+                                      fontSize: 14,
+                                      padding: `${
+                                        fishHistoryData.units[0].fishSupply?.age
+                                          ? "8px 12px 8px 0"
+                                          : "19px 12px 19px 0"
+                                      }`,
+                                      backgroundColor: "#F5F6F8",
+                                      margin: "8px 0",
 
-                                          textWrap: "nowrap",
-                                        }}
-                                      >
-                                        {farm.units[0].fishSupply?.age ?? ""}
-                                      </Typography>
-                                    );
-                                  }
-                                )}
-                            </TableCell>
-                            <TableCell
-                              className="table-padding"
-                              sx={{
-                                borderBottomWidth: 2,
-                                borderBottomColor: "#ececec",
-                                color: "#555555",
-                                fontWeight: 500,
-                                pl: 0,
-                              }}
-                            >
-                              {farm &&
-                                farm.units[0].fishManageHistory &&
-                                farm.units[0].fishManageHistory.map(
-                                  (unit, i) => {
-                                    return (
-                                      <Typography
-                                        key={i}
-                                        variant="h6"
-                                        sx={{
-                                          fontWeight: 500,
-                                          fontSize: 14,
-                                          backgroundColor: "#F5F6F8",
-                                          padding: `${
-                                            unit?.fishCount
-                                              ? "8px 12px 8px 0"
-                                              : "19px 12px 19px 0"
-                                          }`,
-                                          margin: "8px 0",
-                                          // marginBottom: "10px",
-                                          // padding: "21px",
-                                          textWrap: "nowrap",
-                                        }}
-                                      >
-                                        {unit?.fishCount ?? ""}
-                                      </Typography>
-                                    );
-                                  }
-                                )}
-                            </TableCell>
-                            <TableCell
-                              className="table-padding"
-                              // align="center"
-                              sx={{
-                                borderBottomColor: "#ececec",
-                                borderBottomWidth: 2,
-                                color: "#555555",
-                                fontWeight: 500,
-                                pl: 0,
-                              }}
-                            >
-                              {farm &&
-                                farm.units[0].fishManageHistory &&
-                                farm.units[0].fishManageHistory.map(
-                                  (unit, i) => {
-                                    return (
-                                      <Typography
-                                        key={i}
-                                        variant="h6"
-                                        sx={{
-                                          fontWeight: 500,
-                                          fontSize: 14,
-                                          backgroundColor: "#F5F6F8",
-                                          padding: `${
-                                            unit?.biomass
-                                              ? "8px 12px 8px 0"
-                                              : "19px 12px 19px 0"
-                                          }`,
-                                          margin: "8px 0",
-                                          // marginBottom: "10px",
-                                          textWrap: "nowrap",
-                                        }}
-                                      >
-                                        {unit.biomass
-                                          ? `${unit.biomass} kg`
-                                          : ""}
-                                      </Typography>
-                                    );
-                                  }
-                                )}
-                            </TableCell>
-                            <TableCell
-                              className="table-padding"
-                              // align="center"
-                              sx={{
-                                borderBottomColor: "#ececec",
-                                borderBottomWidth: 2,
-                                color: "#555555",
-                                fontWeight: 500,
-                                pl: 0,
-                              }}
-                            >
-                              {farm &&
-                                farm.units[0].fishManageHistory &&
-                                farm.units[0].fishManageHistory.map(
-                                  (unit, i) => {
-                                    return (
-                                      <Typography
-                                        key={i}
-                                        variant="h6"
-                                        sx={{
-                                          fontWeight: 500,
-                                          fontSize: 14,
-                                          backgroundColor: "#F5F6F8",
-                                          padding: `${
-                                            unit?.meanWeight
-                                              ? "8px 12px 8px 0"
-                                              : "19px 12px 19px 0"
-                                          }`,
-                                          margin: "8px 0",
-                                          // marginBottom: "10px",
-                                          textWrap: "nowrap",
-                                        }}
-                                      >
-                                        {unit.meanWeight
-                                          ? `${unit.meanWeight} g`
-                                          : ""}
-                                      </Typography>
-                                    );
-                                  }
-                                )}
-                            </TableCell>
-                            <TableCell
-                              className="table-padding"
-                              // align="center"
-                              sx={{
-                                borderBottomColor: "#ececec",
-                                borderBottomWidth: 2,
-                                color: "#555555",
-                                fontWeight: 500,
-                                pl: 0,
-                              }}
-                            >
-                              {farm &&
-                                farm.units[0].fishManageHistory &&
-                                farm.units[0].fishManageHistory.map(
-                                  (unit, i) => {
-                                    return (
-                                      <Typography
-                                        key={i}
-                                        variant="h6"
-                                        sx={{
-                                          fontWeight: 500,
-                                          fontSize: 14,
-                                          backgroundColor: "#F5F6F8",
-                                          padding: `${
-                                            unit?.meanLength
-                                              ? "8px 12px 8px 0"
-                                              : "19px 12px 19px 0"
-                                          }`,
-                                          margin: "8px 0",
-                                          // marginBottom: "10px",
-                                          textWrap: "nowrap",
-                                        }}
-                                      >
-                                        {unit.meanLength
-                                          ? `${unit.meanLength} mm`
-                                          : ""}
-                                      </Typography>
-                                    );
-                                  }
-                                )}
-                            </TableCell>
-                            <TableCell
-                              className="table-padding"
-                              // align="center"
-                              sx={{
-                                borderBottomColor: "#ececec",
-                                borderBottomWidth: 2,
-                                color: "#555555",
-                                fontWeight: 500,
-                                pl: 0,
-                              }}
-                            >
-                              {farm &&
-                                farm.units[0].fishManageHistory &&
-                                farm.units[0].fishManageHistory.map(
-                                  (unit, i) => {
-                                    return (
-                                      <Typography
-                                        key={i}
-                                        variant="h6"
-                                        sx={{
-                                          fontWeight: 500,
-                                          fontSize: 14,
-                                          backgroundColor: "#F5F6F8",
-                                          padding: "8px 12px 8px 0",
-                                          margin: "8px 0",
-                                          // marginBottom: "10px",
-                                          textWrap: "nowrap",
-                                        }}
-                                      >
-                                        {Number(unit.stockingDensityKG).toFixed(
-                                          2
-                                        ) ?? ""}
-                                      </Typography>
-                                    );
-                                  }
-                                )}
-                            </TableCell>
-                            <TableCell
-                              className="table-padding"
-                              // align="center"
-                              sx={{
-                                borderBottomColor: "#ececec",
-                                borderBottomWidth: 2,
-                                color: "#555555",
-                                fontWeight: 500,
-                                pl: 0,
-                              }}
-                            >
-                              {farm &&
-                                farm.units[0].fishManageHistory &&
-                                farm.units[0].fishManageHistory.map(
-                                  (unit, i) => {
-                                    return (
-                                      <Typography
-                                        key={i}
-                                        variant="h6"
-                                        sx={{
-                                          fontWeight: 500,
-                                          fontSize: 14,
-                                          backgroundColor: "#F5F6F8",
-                                          padding: "8px 12px 8px 0",
-                                          margin: "8px 0",
-                                          // marginBottom: "10px",
-                                          textWrap: "nowrap",
-                                        }}
-                                      >
-                                        {Number(unit.stockingDensityNM).toFixed(
-                                          2
-                                        ) ?? ""}
-                                      </Typography>
-                                    );
-                                  }
-                                )}
+                                      textWrap: "nowrap",
+                                    }}
+                                  >
+                                    {fishHistoryData.units[0].fishSupply?.age ??
+                                      ""}
+                                  </Typography>
+                                );
+                              }
+                            )}
+                        </TableCell>
+                        <TableCell
+                          className="table-padding"
+                          sx={{
+                            borderBottomWidth: 2,
+                            borderBottomColor: "#ececec",
+                            color: "#555555",
+                            fontWeight: 500,
+                            pl: 0,
+                          }}
+                        >
+                          {fishHistoryData &&
+                            fishHistoryData.units[0].fishManageHistory &&
+                            fishHistoryData.units[0].fishManageHistory.map(
+                              (unit, i) => {
+                                return (
+                                  <Typography
+                                    key={i}
+                                    variant="h6"
+                                    sx={{
+                                      fontWeight: 500,
+                                      fontSize: 14,
+                                      backgroundColor: "#F5F6F8",
+                                      padding: `${
+                                        unit?.fishCount
+                                          ? "8px 12px 8px 0"
+                                          : "19px 12px 19px 0"
+                                      }`,
+                                      margin: "8px 0",
+                                      // marginBottom: "10px",
+                                      // padding: "21px",
+                                      textWrap: "nowrap",
+                                    }}
+                                  >
+                                    {unit?.fishCount ?? ""}
+                                  </Typography>
+                                );
+                              }
+                            )}
+                        </TableCell>
+                        <TableCell
+                          className="table-padding"
+                          // align="center"
+                          sx={{
+                            borderBottomColor: "#ececec",
+                            borderBottomWidth: 2,
+                            color: "#555555",
+                            fontWeight: 500,
+                            pl: 0,
+                          }}
+                        >
+                          {fishHistoryData &&
+                            fishHistoryData.units[0].fishManageHistory &&
+                            fishHistoryData.units[0].fishManageHistory.map(
+                              (unit, i) => {
+                                return (
+                                  <Typography
+                                    key={i}
+                                    variant="h6"
+                                    sx={{
+                                      fontWeight: 500,
+                                      fontSize: 14,
+                                      backgroundColor: "#F5F6F8",
+                                      padding: `${
+                                        unit?.biomass
+                                          ? "8px 12px 8px 0"
+                                          : "19px 12px 19px 0"
+                                      }`,
+                                      margin: "8px 0",
+                                      // marginBottom: "10px",
+                                      textWrap: "nowrap",
+                                    }}
+                                  >
+                                    {unit.biomass ? `${unit.biomass} kg` : ""}
+                                  </Typography>
+                                );
+                              }
+                            )}
+                        </TableCell>
+                        <TableCell
+                          className="table-padding"
+                          // align="center"
+                          sx={{
+                            borderBottomColor: "#ececec",
+                            borderBottomWidth: 2,
+                            color: "#555555",
+                            fontWeight: 500,
+                            pl: 0,
+                          }}
+                        >
+                          {fishHistoryData &&
+                            fishHistoryData.units[0].fishManageHistory &&
+                            fishHistoryData.units[0].fishManageHistory.map(
+                              (unit, i) => {
+                                return (
+                                  <Typography
+                                    key={i}
+                                    variant="h6"
+                                    sx={{
+                                      fontWeight: 500,
+                                      fontSize: 14,
+                                      backgroundColor: "#F5F6F8",
+                                      padding: `${
+                                        unit?.meanWeight
+                                          ? "8px 12px 8px 0"
+                                          : "19px 12px 19px 0"
+                                      }`,
+                                      margin: "8px 0",
+                                      // marginBottom: "10px",
+                                      textWrap: "nowrap",
+                                    }}
+                                  >
+                                    {unit.meanWeight
+                                      ? `${unit.meanWeight} g`
+                                      : ""}
+                                  </Typography>
+                                );
+                              }
+                            )}
+                        </TableCell>
+                        <TableCell
+                          className="table-padding"
+                          // align="center"
+                          sx={{
+                            borderBottomColor: "#ececec",
+                            borderBottomWidth: 2,
+                            color: "#555555",
+                            fontWeight: 500,
+                            pl: 0,
+                          }}
+                        >
+                          {fishHistoryData &&
+                            fishHistoryData.units[0].fishManageHistory &&
+                            fishHistoryData.units[0].fishManageHistory.map(
+                              (unit, i) => {
+                                return (
+                                  <Typography
+                                    key={i}
+                                    variant="h6"
+                                    sx={{
+                                      fontWeight: 500,
+                                      fontSize: 14,
+                                      backgroundColor: "#F5F6F8",
+                                      padding: `${
+                                        unit?.meanLength
+                                          ? "8px 12px 8px 0"
+                                          : "19px 12px 19px 0"
+                                      }`,
+                                      margin: "8px 0",
+                                      // marginBottom: "10px",
+                                      textWrap: "nowrap",
+                                    }}
+                                  >
+                                    {unit.meanLength
+                                      ? `${unit.meanLength} mm`
+                                      : ""}
+                                  </Typography>
+                                );
+                              }
+                            )}
+                        </TableCell>
+                        <TableCell
+                          className="table-padding"
+                          // align="center"
+                          sx={{
+                            borderBottomColor: "#ececec",
+                            borderBottomWidth: 2,
+                            color: "#555555",
+                            fontWeight: 500,
+                            pl: 0,
+                          }}
+                        >
+                          {fishHistoryData &&
+                            fishHistoryData.units[0].fishManageHistory &&
+                            fishHistoryData.units[0].fishManageHistory.map(
+                              (unit, i) => {
+                                return (
+                                  <Typography
+                                    key={i}
+                                    variant="h6"
+                                    sx={{
+                                      fontWeight: 500,
+                                      fontSize: 14,
+                                      backgroundColor: "#F5F6F8",
+                                      padding: "8px 12px 8px 0",
+                                      margin: "8px 0",
+                                      // marginBottom: "10px",
+                                      textWrap: "nowrap",
+                                    }}
+                                  >
+                                    {Number(unit.stockingDensityKG).toFixed(
+                                      2
+                                    ) ?? ""}
+                                  </Typography>
+                                );
+                              }
+                            )}
+                        </TableCell>
+                        <TableCell
+                          className="table-padding"
+                          // align="center"
+                          sx={{
+                            borderBottomColor: "#ececec",
+                            borderBottomWidth: 2,
+                            color: "#555555",
+                            fontWeight: 500,
+                            pl: 0,
+                          }}
+                        >
+                          {fishHistoryData &&
+                            fishHistoryData.units[0].fishManageHistory &&
+                            fishHistoryData.units[0].fishManageHistory.map(
+                              (unit, i) => {
+                                return (
+                                  <Typography
+                                    key={i}
+                                    variant="h6"
+                                    sx={{
+                                      fontWeight: 500,
+                                      fontSize: 14,
+                                      backgroundColor: "#F5F6F8",
+                                      padding: "8px 12px 8px 0",
+                                      margin: "8px 0",
+                                      // marginBottom: "10px",
+                                      textWrap: "nowrap",
+                                    }}
+                                  >
+                                    {Number(unit.stockingDensityNM).toFixed(
+                                      2
+                                    ) ?? ""}
+                                  </Typography>
+                                );
+                              }
+                            )}
 
-                              {/* {farm.meanWeight ? `${farm.meanWeight}g` : ""} */}
-                            </TableCell>{" "}
-                            <TableCell
-                              className="table-padding"
-                              sx={{
-                                borderBottomColor: "#ececec",
-                                borderBottomWidth: 2,
-                                color: "#555555",
-                                fontWeight: 500,
-                                pl: 0,
-                              }}
-                            >
-                              {farm &&
-                                farm.units[0].fishManageHistory &&
-                                farm.units[0].fishManageHistory.map(
-                                  (unit, i) => {
-                                    return (
-                                      <Typography
-                                        key={i}
-                                        variant="h6"
-                                        sx={{
-                                          fontWeight: 500,
-                                          fontSize: 14,
-                                          backgroundColor: "#F5F6F8",
-                                          padding: "8px 12px 8px 0",
-                                          margin: "8px 0",
-                                          // marginBottom: "10px",
-                                          textWrap: "nowrap",
-                                        }}
-                                      >
-                                        {Number(unit.stockingLevel) ?? ""}
-                                      </Typography>
-                                    );
-                                  }
-                                )}
-                            </TableCell>
-                          </TableRow>
-                        );
-                      }
+                          {/* {farm.meanWeight ? `${farm.meanWeight}g` : ""} */}
+                        </TableCell>{" "}
+                        <TableCell
+                          className="table-padding"
+                          sx={{
+                            borderBottomColor: "#ececec",
+                            borderBottomWidth: 2,
+                            color: "#555555",
+                            fontWeight: 500,
+                            pl: 0,
+                          }}
+                        >
+                          {fishHistoryData &&
+                            fishHistoryData.units[0].fishManageHistory &&
+                            fishHistoryData.units[0].fishManageHistory.map(
+                              (unit, i) => {
+                                return (
+                                  <Typography
+                                    key={i}
+                                    variant="h6"
+                                    sx={{
+                                      fontWeight: 500,
+                                      fontSize: 14,
+                                      backgroundColor: "#F5F6F8",
+                                      padding: "8px 12px 8px 0",
+                                      margin: "8px 0",
+                                      // marginBottom: "10px",
+                                      textWrap: "nowrap",
+                                    }}
+                                  >
+                                    {Number(unit.stockingLevel) ?? ""}
+                                  </Typography>
+                                );
+                              }
+                            )}
+                        </TableCell>
+                      </TableRow>
                     )
                   ) : (
                     <TableRow>No Data Found</TableRow>
@@ -952,7 +943,6 @@ const FishManageHistoryTable: React.FC<Props> = ({
             startDate={startDate}
             endDate={endDate}
           />
-          Graph
         </TabPanel>
       </TabContext>
     </Box>

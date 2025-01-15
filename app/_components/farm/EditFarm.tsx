@@ -29,8 +29,9 @@ const steps = [
 interface Props {
   farmId: String;
   farmMembers: SingleUser[];
+  growthModels: any;
 }
-const EditFarm = ({ farmId, farmMembers }: Props) => {
+const EditFarm = ({ farmId, farmMembers, growthModels }: Props) => {
   const activeStepIndex = Number(getCookie("activeStep"));
   const [activeStep, setActiveStep] = useState<number>(
     activeStepIndex !== 0 ? activeStepIndex : 0
@@ -135,6 +136,7 @@ const EditFarm = ({ farmId, farmMembers }: Props) => {
             setActiveStep={setActiveStep}
             productionParaMeter={editFarm?.WaterQualityPredictedParameters}
             editFarm={editFarm}
+            growthModels={growthModels}
           />
         )}
         {activeStep === 3 && (

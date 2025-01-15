@@ -154,8 +154,10 @@ model YearBasedPredication {
   ph            Json?
   visibility    Json?
   idealRange    Json?
-  growthModelId Int
-  GrowthModel   GrowthModel @relation(fields: [growthModelId], references: [id])
+  GrowthModel   String?
+  // growthModelId Int
+  // GrowthModel   GrowthModel @relation(fields: [growthModelId], references: [id])
+  growthModelId Int?
 
   @@index([createdAt])
   @@index([updatedAt])
@@ -431,14 +433,13 @@ model Model {
 }
 
 model GrowthModel {
-  id                   Int                    @id @default(autoincrement())
-  organisationId       Int?
-  organisation         Organisation?          @relation(fields: [organisationId], references: [id])
-  modelId              Int
-  models               Model                  @relation(fields: [modelId], references: [id])
-  createdAt            DateTime               @default(now())
-  updatedAt            DateTime               @updatedAt
-  YearBasedPredication YearBasedPredication[]
+  id             Int           @id @default(autoincrement())
+  organisationId Int?
+  organisation   Organisation? @relation(fields: [organisationId], references: [id])
+  modelId        Int
+  models         Model         @relation(fields: [modelId], references: [id])
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
 
   @@index([createdAt])
   @@index([updatedAt])

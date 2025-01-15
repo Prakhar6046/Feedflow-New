@@ -9,7 +9,7 @@ import FishChart from "../../charts/FishChart";
 
 type Iprops = {
   productions: Production[];
-  groupedData: FishManageHistoryGroup[];
+  groupedData: FishManageHistoryGroup;
   startDate: string;
   endDate: string;
 };
@@ -25,11 +25,9 @@ function FishHistoryCharts({
   console.log(productions);
   useEffect(() => {
     if (groupedData) {
-      const createdAtArray = groupedData.flatMap((group) =>
-        group.units.flatMap(
-          (unit) =>
-            unit.fishManageHistory?.map((history) => history.createdAt) || []
-        )
+      const createdAtArray = groupedData.units.flatMap(
+        (unit) =>
+          unit.fishManageHistory?.map((history) => history.createdAt) || []
       );
 
       const diffInDays = dayjs(endDate).diff(dayjs(startDate), "day");
@@ -71,12 +69,10 @@ function FishHistoryCharts({
           <FishChart
             key={`Fish Count`}
             xAxisData={xAxisData}
-            ydata={groupedData.flatMap((group) =>
-              group.units.flatMap(
-                (unit) =>
-                  unit.fishManageHistory?.map((history) => history.fishCount) ||
-                  []
-              )
+            ydata={groupedData.units.flatMap(
+              (unit) =>
+                unit.fishManageHistory?.map((history) => history.fishCount) ||
+                []
             )}
             endDate={endDate}
             startDate={startDate}
@@ -90,12 +86,9 @@ function FishHistoryCharts({
           <FishChart
             key={`Biomass`}
             xAxisData={xAxisData}
-            ydata={groupedData.flatMap((group) =>
-              group.units.flatMap(
-                (unit) =>
-                  unit.fishManageHistory?.map((history) => history.biomass) ||
-                  []
-              )
+            ydata={groupedData.units.flatMap(
+              (unit) =>
+                unit.fishManageHistory?.map((history) => history.biomass) || []
             )}
             endDate={endDate}
             startDate={startDate}
@@ -109,13 +102,10 @@ function FishHistoryCharts({
           <FishChart
             key={`Mean Weight`}
             xAxisData={xAxisData}
-            ydata={groupedData.flatMap((group) =>
-              group.units.flatMap(
-                (unit) =>
-                  unit.fishManageHistory?.map(
-                    (history) => history.meanWeight
-                  ) || []
-              )
+            ydata={groupedData.units.flatMap(
+              (unit) =>
+                unit.fishManageHistory?.map((history) => history.meanWeight) ||
+                []
             )}
             endDate={endDate}
             startDate={startDate}
@@ -129,13 +119,10 @@ function FishHistoryCharts({
           <FishChart
             key={`Mean Length`}
             xAxisData={xAxisData}
-            ydata={groupedData.flatMap((group) =>
-              group.units.flatMap(
-                (unit) =>
-                  unit.fishManageHistory?.map(
-                    (history) => history.meanLength
-                  ) || []
-              )
+            ydata={groupedData.units.flatMap(
+              (unit) =>
+                unit.fishManageHistory?.map((history) => history.meanLength) ||
+                []
             )}
             endDate={endDate}
             startDate={startDate}
@@ -149,13 +136,11 @@ function FishHistoryCharts({
           <FishChart
             key={`Stocking density (kg/${"m\u00B3"})`}
             xAxisData={xAxisData}
-            ydata={groupedData.flatMap((group) =>
-              group.units.flatMap(
-                (unit) =>
-                  unit.fishManageHistory?.map(
-                    (history) => history.stockingDensityKG
-                  ) || []
-              )
+            ydata={groupedData.units.flatMap(
+              (unit) =>
+                unit.fishManageHistory?.map(
+                  (history) => history.stockingDensityKG
+                ) || []
             )}
             endDate={endDate}
             startDate={startDate}
@@ -169,13 +154,11 @@ function FishHistoryCharts({
           <FishChart
             key={`Stocking density (n/${"m\u00B3"})`}
             xAxisData={xAxisData}
-            ydata={groupedData.flatMap((group) =>
-              group.units.flatMap(
-                (unit) =>
-                  unit.fishManageHistory?.map(
-                    (history) => history.stockingDensityNM
-                  ) || []
-              )
+            ydata={groupedData.units.flatMap(
+              (unit) =>
+                unit.fishManageHistory?.map(
+                  (history) => history.stockingDensityNM
+                ) || []
             )}
             endDate={endDate}
             startDate={startDate}
