@@ -130,7 +130,7 @@ const EditFarm = ({ farmId, farmMembers }: Props) => {
           />
         )}
         {activeStep === 2 && (
-          <ProductionUnits setActiveStep={setActiveStep} editFarm={editFarm} />
+          <ProductionUnits setActiveStep={setActiveStep} editFarm={editFarm} />              
         )}
         {activeStep === 3 && (
           <ProductionParaMeter

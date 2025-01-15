@@ -129,7 +129,7 @@ function AddUnitForm({ farms }: Props) {
             <Grid item lg={6} xs={12}>
               <Box mb={2} width={"100%"}>
                 <FormControl fullWidth className="form-input">
-                  <InputLabel id="feed-supply-select-label1">
+                  <InputLabel id="feed-supply-select-label1" sx={{color:"black"}}>
                     Fish Farmer *
                   </InputLabel>
                   <Select
