@@ -30,8 +30,6 @@ function GrowthModel() {
   const onSubmit: SubmitHandler<InputType> = async (data) => {
     const user = JSON.parse(loggedUser);
     if (user?.organisationId && Object.keys(data)?.length) {
-      console.log(data);
-
       const response = await fetch("/api/growth-model", {
         method: "POST",
         headers: {

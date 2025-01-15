@@ -5,6 +5,7 @@ import { NextRequest, NextResponse } from "next/server";
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
+
     const productionParameter = body.productionParameter;
     if (!productionParameter || !body.farmAddress || !body.productionUnits) {
       return NextResponse.json(

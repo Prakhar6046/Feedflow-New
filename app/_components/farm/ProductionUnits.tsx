@@ -217,6 +217,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
             userId: loggedUserData.id,
           };
         }
+
         if (Object.keys(payload).length && payload.name) {
           const response = await fetch(
             `${
@@ -845,7 +846,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                 }}
                 // onClick={() => setCookie("activeStep", 1)}
                 onClick={() => {
-                  setActiveStep(1),
+                  setActiveStep(2),
                     setLocalItem(
                       "farmProductionUnits",
                       watch("productionUnits")

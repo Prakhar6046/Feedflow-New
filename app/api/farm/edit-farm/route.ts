@@ -4,7 +4,8 @@ import { NextRequest, NextResponse } from "next/server";
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { yearBasedPredicationId, ...productionParameterPayload } =
+
+    const { yearBasedPredicationId, modelId, ...productionParameterPayload } =
       body.productionParameter;
 
     // Ensure that the farmAddress contains an id for updating
@@ -144,7 +145,18 @@ export async function POST(req: NextRequest) {
     const paylaodForProductionParameter = {
       ...productionParameterPayload,
       idealRange: productionParameterPayload.idealRange,
+      modelId,
     };
+
+    const existingPredication = await prisma.yearBasedPredication.findUnique({
+      where: { id: yearBasedPredicationId },
+    });
+
+    if (!existingPredication) {
+      throw new Error(
+        `Year Based Predication record with ID ${yearBasedPredicationId} not found.`
+      );
+    }
     const updateProductionPredection = await prisma.yearBasedPredication.update(
       {
         where: { id: yearBasedPredicationId },

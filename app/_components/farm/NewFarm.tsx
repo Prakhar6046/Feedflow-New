@@ -40,7 +40,6 @@ export default function NewFarm({ farmMembers, growthModels }: Props) {
   useEffect(() => {
     setCookie("activeStep", activeStep);
   }, [activeStep]);
-  console.log(growthModels);
   return (
     <Grid
       container

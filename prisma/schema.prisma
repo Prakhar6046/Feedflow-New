@@ -145,19 +145,18 @@ model YearBasedPredication {
   createdAt                        DateTime                        @default(now())
   updatedAt                        DateTime                        @updatedAt
 
-  waterTemp     Json?
-  DO            Json?
-  TSS           Json?
-  NH4           Json?
-  NO3           Json?
-  NO2           Json?
-  ph            Json?
-  visibility    Json?
-  idealRange    Json?
-  GrowthModel   String?
-  // growthModelId Int
-  // GrowthModel   GrowthModel @relation(fields: [growthModelId], references: [id])
-  growthModelId Int?
+  waterTemp  Json?
+  DO         Json?
+  TSS        Json?
+  NH4        Json?
+  NO3        Json?
+  NO2        Json?
+  ph         Json?
+  visibility Json?
+  idealRange Json?
+
+  modelId Int?
+  Model   Model? @relation(fields: [modelId], references: [id])
 
   @@index([createdAt])
   @@index([updatedAt])
@@ -419,7 +418,7 @@ model FarmManager {
 }
 
 model Model {
-  id                       Int           @id @default(autoincrement())
+  id                       Int                    @id @default(autoincrement())
   name                     String?
   specie                   String?
   temperatureCoefficient   String?
@@ -427,9 +426,10 @@ model Model {
   growthEquationBodyWeight String?
   conditionFactor1         String?
   conditionFactor2         String?
-  createdAt                DateTime      @default(now())
-  updatedAt                DateTime      @updatedAt
+  createdAt                DateTime               @default(now())
+  updatedAt                DateTime               @updatedAt
   GrowthModel              GrowthModel[]
+  YearBasedPredication     YearBasedPredication[]
 }
 
 model GrowthModel {

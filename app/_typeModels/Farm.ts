@@ -110,3 +110,24 @@ export interface ProductionParaMeterType {
     }
   ];
 }
+export interface Models {
+  id: number;
+  name: string;
+  specie: string;
+  temperatureCoefficient: string;
+  growthEquationLength: string;
+  growthEquationBodyWeight: string;
+  conditionFactor1: string;
+  conditionFactor2: string;
+  updatedAt: string;
+  createdAt: string;
+}
+export interface GrowthModel {
+  id: number;
+  farmId: string;
+  updatedAt: string;
+  createdAt: string;
+  organisationId: 1;
+  modelId: 2;
+  models: Models;
+}

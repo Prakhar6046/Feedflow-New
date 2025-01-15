@@ -26,7 +26,7 @@ export default async function Page() {
 
       <NewFarm
         farmMembers={farmMembers?.data?.users}
-        growthModels={growthModels?.data[0].models}
+        growthModels={growthModels?.data}
       />
     </>
   );

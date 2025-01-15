@@ -1,14 +1,9 @@
-import {
-  getLocalItem,
-  removeLocalItem,
-  setLocalItem,
-  Years,
-} from "@/app/_lib/utils";
+import { getLocalItem, setLocalItem, Years } from "@/app/_lib/utils";
 import { waterQualityPredictedHead } from "@/app/_lib/utils/tableHeadData";
 import * as validationPattern from "@/app/_lib/utils/validationPatterns/index";
 import * as validationMessage from "@/app/_lib/utils/validationsMessage/index";
-import { ProductionParaMeterType } from "@/app/_typeModels/Farm";
-import { selectFarm, selectIsEditFarm } from "@/lib/features/farm/farmSlice";
+import { GrowthModel, ProductionParaMeterType } from "@/app/_typeModels/Farm";
+import { selectFarm } from "@/lib/features/farm/farmSlice";
 import { useAppSelector } from "@/lib/hooks";
 import {
   Box,
@@ -29,10 +24,9 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import { deleteCookie, getCookie } from "cookies-next";
+import { getCookie } from "cookies-next";
 import { useEffect, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import toast from "react-hot-toast";
 
 // Function to create data (assuming this structure for the data)
 
@@ -46,7 +40,7 @@ interface FormData {
   predictedValues: Record<string, Record<number, string>>;
   idealRange: Record<string, { Min: string; Max: string }>;
   applyToAll: Record<string, boolean>;
-  growthModel: string;
+  modelId: number;
 }
 export default function ProductionParaMeter({
   setActiveStep,
@@ -76,31 +70,66 @@ export default function ProductionParaMeter({
   const allWatchObject = {
     predictedValues: watch("predictedValues"),
     idealRange: watch("idealRange"),
-    growthModel: watch("growthModel"),
+    modelId: watch("modelId"),
   };
   const onSubmit: SubmitHandler<FormData> = (data) => {
-    const payload = {
-      waterTemp: data.predictedValues["Water Temperature °C"],
-      DO: data.predictedValues["Dissolved Oxygen (DO) mg/L"],
-      TSS: data.predictedValues["Total Suspended solids (TSS)"],
-      NH4: data.predictedValues["Ammonia (NH₄) mg/L"],
-      NO3: data.predictedValues["Nitrate (NO₃) mg/L"],
-      NO2: data.predictedValues["Nitrite (NO₂) mg/L"],
-      ph: data.predictedValues["pH"],
-      visibility: data.predictedValues["Visibility cm"],
-      GrowthModel: data.growthModel,
-      yearBasedPredicationId: editFarm?.WaterQualityPredictedParameters[0]?.id,
-      idealRange: {
-        waterTemp: data.idealRange["Water Temperature °C"],
-        DO: data.idealRange["Dissolved Oxygen (DO) mg/L"],
-        TSS: data.idealRange["Total Suspended solids (TSS)"],
-        NH4: data.idealRange["Ammonia (NH₄) mg/L"],
-        NO3: data.idealRange["Nitrate (NO₃) mg/L"],
-        NO2: data.idealRange["Nitrite (NO₂) mg/L"],
-        ph: data.idealRange["pH"],
-        visibility: data.idealRange["Visibility cm"],
-      },
-    };
+    let payload;
+    if (
+      isEditFarm &&
+      productionParaMeter &&
+      productionParaMeter[0]?.YearBasedPredication
+    ) {
+      const predictedValues = productionParaMeter[0]?.YearBasedPredication[0];
+      payload = {
+        waterTemp: data.predictedValues["Water Temperature °C"],
+        DO: data.predictedValues["Dissolved Oxygen (DO) mg/L"],
+        TSS: data.predictedValues["Total Suspended solids (TSS)"],
+        NH4: data.predictedValues["Ammonia (NH₄) mg/L"],
+        NO3: data.predictedValues["Nitrate (NO₃) mg/L"],
+        NO2: data.predictedValues["Nitrite (NO₂) mg/L"],
+        ph: data.predictedValues["pH"],
+        visibility: data.predictedValues["Visibility cm"],
+        modelId: data.modelId,
+        yearBasedPredicationId:
+          editFarm?.WaterQualityPredictedParameters[0]?.YearBasedPredication[0]
+            .id,
+        idealRange: {
+          waterTemp: data.idealRange["Water Temperature °C"],
+          DO: data.idealRange["Dissolved Oxygen (DO) mg/L"],
+          TSS: data.idealRange["Total Suspended solids (TSS)"],
+          NH4: data.idealRange["Ammonia (NH₄) mg/L"],
+          NO3: data.idealRange["Nitrate (NO₃) mg/L"],
+          NO2: data.idealRange["Nitrite (NO₂) mg/L"],
+          ph: data.idealRange["pH"],
+          visibility: data.idealRange["Visibility cm"],
+        },
+      };
+    } else {
+      payload = {
+        waterTemp: data.predictedValues["Water Temperature °C"],
+        DO: data.predictedValues["Dissolved Oxygen (DO) mg/L"],
+        TSS: data.predictedValues["Total Suspended solids (TSS)"],
+        NH4: data.predictedValues["Ammonia (NH₄) mg/L"],
+        NO3: data.predictedValues["Nitrate (NO₃) mg/L"],
+        NO2: data.predictedValues["Nitrite (NO₂) mg/L"],
+        ph: data.predictedValues["pH"],
+        visibility: data.predictedValues["Visibility cm"],
+        modelId: data.modelId,
+        yearBasedPredicationId:
+          editFarm?.WaterQualityPredictedParameters[0]?.id,
+        idealRange: {
+          waterTemp: data.idealRange["Water Temperature °C"],
+          DO: data.idealRange["Dissolved Oxygen (DO) mg/L"],
+          TSS: data.idealRange["Total Suspended solids (TSS)"],
+          NH4: data.idealRange["Ammonia (NH₄) mg/L"],
+          NO3: data.idealRange["Nitrate (NO₃) mg/L"],
+          NO2: data.idealRange["Nitrite (NO₂) mg/L"],
+          ph: data.idealRange["pH"],
+          visibility: data.idealRange["Visibility cm"],
+        },
+      };
+    }
+
     setLocalItem("productionParametes", payload);
     setActiveStep(3);
   };
@@ -312,7 +341,7 @@ export default function ProductionParaMeter({
       };
 
       setValue("predictedValues", predictedValues);
-      setValue("growthModel", prediction.GrowthModel);
+      setValue("modelId", prediction.modelId);
     }
   }, [productionParaMeter, isEditFarm, setValue]);
 
@@ -320,10 +349,10 @@ export default function ProductionParaMeter({
     if (formProductionParameters) {
       setValue("predictedValues", formProductionParameters.predictedValues);
       setValue("idealRange", formProductionParameters.idealRange);
-      setValue("growthModel", formProductionParameters.growthModel);
+      setValue("modelId", formProductionParameters.modelId);
     }
   }, [formProductionParameters]);
-  console.log(growthModels);
+
   return (
     <Box>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -669,16 +698,19 @@ export default function ProductionParaMeter({
                 labelId="feed-supply-select-label5"
                 id="feed-supply-select5"
                 label="Growth Model *"
-                {...register("growthModel")}
-                value={watch("growthModel") || ""}
+                {...register("modelId")}
+                value={watch("modelId") || ""}
                 onChange={(e) => {
-                  setValue("growthModel", e.target.value);
+                  setValue("modelId", Number(e.target.value));
                 }}
               >
                 {growthModels &&
-                  growthModels.length &&
-                  growthModels.map((model) => {
-                    <MenuItem value={model.id}>{model.name}</MenuItem>;
+                  growthModels?.map((model: GrowthModel) => {
+                    return (
+                      <MenuItem value={model.models.id} key={model.id}>
+                        {model.models.name}
+                      </MenuItem>
+                    );
                   })}
               </Select>
             </FormControl>
@@ -696,7 +728,7 @@ export default function ProductionParaMeter({
             type="button"
             variant="contained"
             onClick={() => {
-              setActiveStep(2);
+              setActiveStep(1);
               setLocalItem("productionParametes", allWatchObject);
             }}
             sx={{
