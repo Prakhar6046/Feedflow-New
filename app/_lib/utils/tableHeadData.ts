@@ -279,7 +279,7 @@ export const fishTableHeadMember = [
     label: "Hatchery",
   },
   {
-    id: "fishFarm",
+    id: "fishFar",
     numeric: false,
     disablePadding: true,
     label: "Fish Farm",

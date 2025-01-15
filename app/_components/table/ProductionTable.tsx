@@ -21,9 +21,14 @@ import {
   Button,
   FormControl,
   FormControlLabel,
+  Grid,
+  InputLabel,
+  MenuItem,
   Radio,
   RadioGroup,
+  Select,
   TableSortLabel,
+  TextField,
   Tooltip,
   Typography,
 } from "@mui/material";
@@ -34,11 +39,19 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
+import { DateRangePicker } from "@mui/x-date-pickers-pro/DateRangePicker";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DemoContainer, DemoItem } from "@mui/x-date-pickers/internals/demo";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { getCookie, setCookie } from "cookies-next";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import Loader from "../Loader";
 import WaterQualityParameter from "../models/WaterQualityParameter";
+import dayjs from "dayjs";
+
+const today = dayjs();
+const tomorrow = dayjs().add(1, "day");
 interface Props {
   productions: Production[];
   tableData?: any;
@@ -365,6 +378,7 @@ export default function ProductionTable({
                   display: "flex",
                   flexDirection: "row",
                   alignItems: "center",
+                  flexWrap: "nowrap",
                 }}
               >
                 <FormControlLabel
@@ -381,6 +395,116 @@ export default function ProductionTable({
                 />
               </RadioGroup>
             </FormControl>
+          </Box>
+
+          <Box sx={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
+            <Grid
+              item
+              xs
+              sx={{
+                width: "fit-content",
+                minWidth: 235,
+                paddingTop: "8px",
+              }}
+            >
+              <Box sx={{ width: "100%" }}>
+                <FormControl fullWidth className="form-input">
+                  <InputLabel id="demo-simple-select-label">
+                    Monthly averages
+                  </InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    label="Age"
+                  >
+                    <MenuItem value={10}>Ten</MenuItem>
+                    <MenuItem value={20}>Twenty</MenuItem>
+                    <MenuItem value={30}>Thirty</MenuItem>
+                  </Select>
+                </FormControl>
+              </Box>
+            </Grid>
+            <Grid
+              item
+              xs
+              sx={{
+                width: "fit-content",
+                minWidth: 235,
+                paddingTop: "8px",
+              }}
+            >
+              <Box sx={{ width: "100%" }}>
+                <FormControl fullWidth className="form-input">
+                  <InputLabel id="demo-simple-select-label">
+                    All frames
+                  </InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    label="Age"
+                  >
+                    <MenuItem value={10}>Ten</MenuItem>
+                    <MenuItem value={20}>Twenty</MenuItem>
+                    <MenuItem value={30}>Thirty</MenuItem>
+                  </Select>
+                </FormControl>
+              </Box>
+            </Grid>
+            <Grid
+              item
+              xs
+              sx={{
+                width: "fit-content",
+                minWidth: 235,
+                paddingTop: "8px",
+              }}
+            >
+              <TextField
+                label="All units"
+                type="text"
+                className="form-input"
+                // disabled={idx === 0 ? true : false}
+                sx={{ width: "100%" }}
+              />
+            </Grid>
+            <Grid sx={{overflow:"auto"}} item>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DemoContainer
+                  components={[
+                    "DatePicker",
+                    "DateTimePicker",
+                    "DateRangePicker",
+                    "DateTimeRangePicker",
+                  ]}
+                >
+                  <DemoItem component="DateRangePicker">
+                    <DateRangePicker
+                      defaultValue={[today, tomorrow]}
+                      minDate={tomorrow}
+                    />
+                  </DemoItem>
+                </DemoContainer>
+              </LocalizationProvider>
+            </Grid>
+            <Grid item sx={{overflow:"auto"}}>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DemoContainer
+                  components={[
+                    "DatePicker",
+                    "DateTimePicker",
+                    "DateRangePicker",
+                    "DateTimeRangePicker",
+                  ]}
+                >
+                  <DemoItem component="DateRangePicker" >
+                    <DateRangePicker
+                      defaultValue={[today, tomorrow]}
+                      minDate={tomorrow}
+                    />
+                  </DemoItem>
+                </DemoContainer>
+              </LocalizationProvider>
+            </Grid>
           </Box>
 
           <Paper
