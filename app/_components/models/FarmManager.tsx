@@ -656,7 +656,9 @@ const TransferModal: React.FC<Props> = ({
                             <Box width={"100%"}>
                               <FormControl
                                 fullWidth
-                                className="form-input"
+                                className={`form-input ${
+                                  idx === 0 && "selected"
+                                }`}
                                 focused
                               >
                                 <InputLabel id="">Fish Farm *</InputLabel>
@@ -753,7 +755,9 @@ const TransferModal: React.FC<Props> = ({
                             <Box width={"100%"}>
                               <FormControl
                                 fullWidth
-                                className="form-input"
+                                className={`form-input ${
+                                  idx === 0 && "selected"
+                                }`}
                                 focused
                               >
                                 <InputLabel id="">Production Unit *</InputLabel>
@@ -886,7 +890,9 @@ const TransferModal: React.FC<Props> = ({
                             <Box mb={2} width={"100%"}>
                               <FormControl
                                 fullWidth
-                                className="form-input"
+                                className={`form-input ${
+                                  idx === 0 && "selected"
+                                }`}
                                 focused
                               >
                                 <InputLabel id="">Batch No. *</InputLabel>
@@ -1134,7 +1140,9 @@ const TransferModal: React.FC<Props> = ({
                               <TextField
                                 label="Biomass *"
                                 type="text"
-                                className="form-input"
+                                className={`form-input ${
+                                  idx === 0 && "selected"
+                                }`}
                                 // disabled={idx === 0 ? true : false}
                                 slotProps={{
                                   input: {
@@ -1159,6 +1167,7 @@ const TransferModal: React.FC<Props> = ({
                                 variant="body2"
                                 color="#555555AC"
                                 sx={{
+                                  color: `${idx === 0 ? "black" : "grey"}`,
                                   position: "absolute",
                                   right: 6,
                                   top: "50%",
@@ -1225,7 +1234,9 @@ const TransferModal: React.FC<Props> = ({
                             <TextField
                               label="Fish Count *"
                               type="text"
-                              className="form-input"
+                              className={`form-input ${
+                                idx === 0 && "selected"
+                              }`}
                               sx={{ width: "100%" }}
                               // disabled={idx === 0 ? true : false}
 
@@ -1250,6 +1261,7 @@ const TransferModal: React.FC<Props> = ({
                               variant="body2"
                               color="#555555AC"
                               sx={{
+                                color: `${idx === 0 ? "black" : "grey"}`,
                                 position: "absolute",
                                 right: 6,
                                 top: "29px",
@@ -1348,7 +1360,9 @@ const TransferModal: React.FC<Props> = ({
                             <TextField
                               label="Mean Weights *"
                               type="text"
-                              className="form-input custom-wrap"
+                              className={`form-input ${
+                                idx === 0 && "selected"
+                              }`}
                               sx={{
                                 width: "100%",
                               }}
@@ -1369,6 +1383,7 @@ const TransferModal: React.FC<Props> = ({
                               variant="body2"
                               color="#555555AC"
                               sx={{
+                                color: `${idx === 0 ? "black" : "grey"}`,
                                 position: "absolute",
                                 right: 6,
                                 top: "50%",
@@ -1464,7 +1479,9 @@ const TransferModal: React.FC<Props> = ({
                             <TextField
                               label="Mean Length *"
                               type="text"
-                              className="form-input"
+                              className={`form-input ${
+                                idx === 0 && "selected"
+                              }`}
                               sx={{
                                 width: "100%",
                               }}
@@ -1487,6 +1504,7 @@ const TransferModal: React.FC<Props> = ({
                                 variant="body2"
                                 color="#555555AC"
                                 sx={{
+                                  color: `${idx === 0 ? "black" : "grey"}`,
                                   position: "absolute",
                                   right: 3,
                                   top: "50%",
@@ -1554,7 +1572,9 @@ const TransferModal: React.FC<Props> = ({
                               <TextField
                                 label={`Stocking Density *`}
                                 type="text"
-                                className="form-input"
+                                className={`form-input ${
+                                  idx === 0 && "selected"
+                                }`}
                                 // disabled={
                                 //   idx === 0 ||
                                 //   item.field !== "Harvest" ||
@@ -1585,6 +1605,7 @@ const TransferModal: React.FC<Props> = ({
                                 variant="body2"
                                 color="#555555AC"
                                 sx={{
+                                  color: `${idx === 0 ? "black" : "grey"}`,
                                   position: "absolute",
                                   right: 6,
                                   top: "50%",
@@ -1657,7 +1678,9 @@ const TransferModal: React.FC<Props> = ({
                               <TextField
                                 label={`Stocking Density *`}
                                 type="text"
-                                className="form-input "
+                                className={`form-input ${
+                                  idx === 0 && "selected"
+                                }`}
                                 slotProps={{
                                   input: { readOnly: true },
                                 }}
@@ -1675,13 +1698,13 @@ const TransferModal: React.FC<Props> = ({
                                 focused
                                 sx={{
                                   width: "100%",
-                                  opacity: "40%",
                                 }}
                               />
                               <Typography
                                 variant="body2"
                                 color="rgba(0,0,0,0.2)"
                                 sx={{
+                                  color: `${idx === 0 ? "black" : "grey"}`,
                                   position: "absolute",
                                   right: 6,
                                   top: "50%",
@@ -1748,7 +1771,9 @@ const TransferModal: React.FC<Props> = ({
                             <TextField
                               label="Stocking Level *"
                               type="text"
-                              className="form-input"
+                              className={`form-input ${
+                                idx === 0 && "selected"
+                              }`}
                               slotProps={{
                                 input: { readOnly: true },
                               }}

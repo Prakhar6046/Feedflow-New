@@ -1,7 +1,9 @@
 "use client";
 import TransferModal from "@/app/_components/models/FarmManager";
 import {
+  averagesDropdown,
   getLocalItem,
+  months,
   ProductionSortTables,
   setLocalItem,
 } from "@/app/_lib/utils";
@@ -19,11 +21,14 @@ import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import {
   Box,
   Button,
+  Checkbox,
   FormControl,
   FormControlLabel,
   Grid,
   InputLabel,
+  ListItemText,
   MenuItem,
+  OutlinedInput,
   Radio,
   RadioGroup,
   Select,
@@ -58,6 +63,16 @@ interface Props {
   farms: Farm[];
   batches: { batchNumber: String; id: Number }[];
 }
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
 
 export default function ProductionTable({
   productions,
@@ -73,7 +88,8 @@ export default function ProductionTable({
   const isWater = searchParams.get("isWater");
   const [production, setProduction] = useState<any>();
   const loggedUser: any = getCookie("logged-user");
-
+  const currentYear = dayjs().year();
+  const years = Array.from({ length: 6 }, (_, i) => currentYear - i);
   const [selectedView, setSelectedView] = useState<string>();
   const [selectedProduction, setSelectedProduction] = useState<any>(
     production ?? null
@@ -106,6 +122,33 @@ export default function ProductionTable({
     useState<boolean>(false);
 
   const [selectedUnitId, setSelectedUnitId] = useState<String>();
+
+  const [selectedDropDownfarms, setSelectedDropDownfarms] = useState(
+    Array<string>
+  );
+  const [selectedDropDownUnits, setSelectedDropDownUnits] = useState(
+    Array<string>
+  );
+  const [selectedDropDownYears, setSelectedDropDownYears] = useState([]);
+  const [allFarms, setAllFarms] = useState<{ id: string; option: string }[]>();
+  const [allUnits, setAllUnits] = useState<{ id: string; option: string }[]>([
+    { id: "0", option: "All units" },
+  ]);
+  const handleChange = (event: any, isFarmChange: boolean) => {
+    const {
+      target: { value },
+    } = event;
+    if (isFarmChange) {
+      setSelectedDropDownfarms(
+        // typeof value === "string" ? value.split(",") : value
+        allFarms.filter((farm) => value.includes(farm.option))
+      );
+    } else {
+      setSelectedDropDownUnits(
+        allUnits.filter((unit) => value.includes(unit.option))
+      );
+    }
+  };
   const handleFishManageHistory = (unit: any) => {
     if (selectedView == "fish") {
       router.push(`/dashboard/production/fish/${unit.productionUnit.id}`);
@@ -139,6 +182,14 @@ export default function ProductionTable({
     }
     setLocalItem("productionData", selectedProd);
     setSelectedProduction(selectedProd);
+  };
+  const handleYearChange = (event: any) => {
+    const {
+      target: { value },
+    } = event;
+    setSelectedDropDownYears(
+      typeof value === "string" ? value.split(",") : value
+    );
   };
 
   const open = Boolean(anchorEl);
@@ -355,6 +406,46 @@ export default function ProductionTable({
     }, 2000);
   }, []);
 
+  useEffect(() => {
+    if (farms) {
+      let customFarms = farms.map((farm) => {
+        return { id: farm.id, option: farm.name };
+      });
+      customFarms.unshift({ id: "0", option: "All farms" });
+      setAllFarms(customFarms);
+    }
+  }, [farms]);
+  useEffect(() => {
+    if (selectedDropDownfarms) {
+      const getProductionUnits = (
+        dynamicFarms: {
+          id: string;
+          option: string;
+        }[],
+        detailedFarms: Farm[]
+      ) => {
+        return dynamicFarms.map((dynamicFarm) => {
+          const matchedFarm = detailedFarms.find(
+            (farm) => farm.id === dynamicFarm.id
+          );
+          return {
+            farmId: dynamicFarm.id,
+            option: dynamicFarm.option,
+            productionUnits: matchedFarm?.productionUnits || [],
+          };
+        });
+      };
+      const result = getProductionUnits(selectedDropDownfarms, farms);
+      let customUnits = result.flatMap((farm) =>
+        farm.productionUnits.map((unit) => ({
+          id: unit.id,
+          option: unit.name,
+        }))
+      );
+      setAllUnits(customUnits);
+    }
+  }, [selectedDropDownfarms]);
+
   return (
     <>
       {!loading ? (
@@ -400,7 +491,7 @@ export default function ProductionTable({
           <Box sx={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
             <Grid
               item
-              xs
+              xs={2}
               sx={{
                 width: "fit-content",
                 minWidth: 235,
@@ -408,25 +499,29 @@ export default function ProductionTable({
               }}
             >
               <Box sx={{ width: "100%" }}>
-                <FormControl fullWidth className="form-input">
+                <FormControl fullWidth className="form-input" focused>
                   <InputLabel id="demo-simple-select-label">
-                    Monthly averages
+                    Averages
                   </InputLabel>
                   <Select
                     labelId="demo-simple-select-label"
                     id="demo-simple-select"
-                    label="Age"
+                    label="Averages"
                   >
-                    <MenuItem value={10}>Ten</MenuItem>
-                    <MenuItem value={20}>Twenty</MenuItem>
-                    <MenuItem value={30}>Thirty</MenuItem>
+                    {averagesDropdown.map((data, i) => {
+                      return (
+                        <MenuItem value={data} key={i}>
+                          {data}
+                        </MenuItem>
+                      );
+                    })}
                   </Select>
                 </FormControl>
               </Box>
             </Grid>
             <Grid
               item
-              xs
+              xs={2}
               sx={{
                 width: "fit-content",
                 minWidth: 235,
@@ -434,77 +529,173 @@ export default function ProductionTable({
               }}
             >
               <Box sx={{ width: "100%" }}>
-                <FormControl fullWidth className="form-input">
-                  <InputLabel id="demo-simple-select-label">
-                    All frames
+                <FormControl fullWidth className="form-input" focused>
+                  <InputLabel id="demo-simple-select-label-1">
+                    All farms
                   </InputLabel>
                   <Select
-                    labelId="demo-simple-select-label"
+                    labelId="demo-simple-select-label-1"
                     id="demo-simple-select"
-                    label="Age"
+                    label="All farms"
+                    multiple
+                    value={selectedDropDownfarms.map((farm) => farm.option)}
+                    onChange={(e) => handleChange(e, true)}
+                    input={<OutlinedInput label="Tag" />}
+                    renderValue={(selected) => selected.join(", ")}
+                    MenuProps={MenuProps}
                   >
-                    <MenuItem value={10}>Ten</MenuItem>
-                    <MenuItem value={20}>Twenty</MenuItem>
-                    <MenuItem value={30}>Thirty</MenuItem>
+                    {allFarms?.map((farm) => (
+                      <MenuItem key={farm.id} value={farm.option}>
+                        <Checkbox
+                          checked={selectedDropDownfarms.some(
+                            (selected) => selected.option === farm.option
+                          )}
+                        />
+                        <ListItemText primary={farm.option} />
+                      </MenuItem>
+                    ))}
                   </Select>
                 </FormControl>
               </Box>
             </Grid>
             <Grid
               item
-              xs
+              xs={2}
               sx={{
                 width: "fit-content",
                 minWidth: 235,
                 paddingTop: "8px",
               }}
             >
-              <TextField
-                label="All units"
-                type="text"
-                className="form-input"
-                // disabled={idx === 0 ? true : false}
-                sx={{ width: "100%" }}
-              />
-            </Grid>
-            <Grid sx={{overflow:"auto"}} item>
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DemoContainer
-                  components={[
-                    "DatePicker",
-                    "DateTimePicker",
-                    "DateRangePicker",
-                    "DateTimeRangePicker",
-                  ]}
+              <Box sx={{ width: "100%" }}>
+                <FormControl
+                  fullWidth
+                  className="form-input"
+                  focused
+                  disabled={selectedDropDownfarms.length ? false : true}
                 >
-                  <DemoItem component="DateRangePicker">
-                    <DateRangePicker
-                      defaultValue={[today, tomorrow]}
-                      minDate={tomorrow}
-                    />
-                  </DemoItem>
-                </DemoContainer>
-              </LocalizationProvider>
+                  <InputLabel id="demo-simple-select-label">
+                    All units
+                  </InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    label="All units"
+                    multiple
+                    value={selectedDropDownUnits.map((unit) => unit?.option)}
+                    onChange={(e) => handleChange(e, false)}
+                    input={<OutlinedInput label="Tag" />}
+                    renderValue={(selected) => selected.join(", ")}
+                    MenuProps={MenuProps}
+                  >
+                    {allUnits.map((unit) => (
+                      <MenuItem key={unit.id} value={unit.option}>
+                        <Checkbox
+                          checked={selectedDropDownUnits.some(
+                            (selected) => selected?.option === unit.option
+                          )}
+                        />
+                        <ListItemText primary={unit.option} />
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Box>
             </Grid>
-            <Grid item sx={{overflow:"auto"}}>
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DemoContainer
-                  components={[
-                    "DatePicker",
-                    "DateTimePicker",
-                    "DateRangePicker",
-                    "DateTimeRangePicker",
-                  ]}
-                >
-                  <DemoItem component="DateRangePicker" >
-                    <DateRangePicker
-                      defaultValue={[today, tomorrow]}
-                      minDate={tomorrow}
-                    />
-                  </DemoItem>
-                </DemoContainer>
-              </LocalizationProvider>
+            <Grid
+              item
+              xs={2}
+              sx={{
+                width: "fit-content",
+                minWidth: 235,
+                paddingTop: "8px",
+              }}
+            >
+              <Box sx={{ width: "100%" }}>
+                <FormControl fullWidth className="form-input" focused>
+                  <InputLabel id="demo-simple-select-label">
+                    Start month
+                  </InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    label="Start month"
+                  >
+                    {months.map((month) => (
+                      <MenuItem value={month.id} key={month.id}>
+                        {month.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Box>
             </Grid>
+            <Grid
+              item
+              xs={2}
+              sx={{
+                width: "fit-content",
+                minWidth: 235,
+                paddingTop: "8px",
+              }}
+            >
+              <Box sx={{ width: "100%" }}>
+                <FormControl fullWidth className="form-input" focused>
+                  <InputLabel id="demo-simple-select-label">
+                    End month
+                  </InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    label="End month"
+                  >
+                    {months.map((month) => (
+                      <MenuItem value={month.id} key={month.id}>
+                        {month.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Box>
+            </Grid>
+            <Grid
+              item
+              xs={2}
+              sx={{
+                width: "fit-content",
+                minWidth: 235,
+                paddingTop: "8px",
+              }}
+            >
+              <Box sx={{ width: "100%" }}>
+                <FormControl fullWidth className="form-input" focused>
+                  <InputLabel id="demo-simple-select-label-1">
+                    Select Year
+                  </InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label-1"
+                    id="demo-simple-select"
+                    label="Select Year"
+                    multiple
+                    value={selectedDropDownYears}
+                    onChange={(e) => handleYearChange(e)}
+                    input={<OutlinedInput label="Year" />}
+                    renderValue={(selected) => selected.join(", ")}
+                    MenuProps={MenuProps}
+                  >
+                    {years.map((year) => (
+                      <MenuItem key={year} value={year}>
+                        <Checkbox
+                          checked={selectedDropDownYears.includes(year)}
+                        />
+                        <ListItemText primary={year} />
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Box>
+            </Grid>
+            ;
           </Box>
 
           <Paper

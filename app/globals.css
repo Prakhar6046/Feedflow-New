@@ -642,7 +642,11 @@ label {
   color: white !important;
   background-color: #06a19b !important;
 }
-.selected > label{
+.selected > label {
   color: black !important;
   font-weight: 500;
+}
+
+.selected input {
+  cursor: not-allowed !important;
 }
