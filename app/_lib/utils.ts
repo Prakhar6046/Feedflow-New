@@ -440,7 +440,7 @@ export const ProductionSortTables = (
 export const averagesDropdown = [
   "Lastest sample average",
   "Monthly average",
+  "Yearly average",
   "All-time average",
-  "Monthly average",
   "Individual average",
 ];

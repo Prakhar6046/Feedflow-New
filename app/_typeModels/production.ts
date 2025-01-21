@@ -95,6 +95,24 @@ export interface Production {
     productionId: Number;
   }[];
 }
+export interface MonthyFishAverage {
+  biomass: Number;
+  fishCount: Number;
+  meanLength: Number;
+  meanWeight: Number;
+  stockingDensityKG: Number;
+  stockingDensityNM: Number;
+}
+export interface MonthyWaterAverage {
+  DO: Number;
+  NH4: Number;
+  NO2: Number;
+  NO3: Number;
+  TSS: Number;
+  ph: Number;
+  visibility: Number;
+  waterTemp: Number;
+}
 export interface FarmGroup {
   farm: String;
   units: {
@@ -106,6 +124,7 @@ export interface FarmGroup {
     NO3: String;
     NO2: String;
     ph: String;
+    createdAt: String;
     visibility: String;
     productionUnit: {
       id: String;
@@ -117,6 +136,14 @@ export interface FarmGroup {
       updatedAt: String;
       farmId: String;
     };
+    monthlyAverages?: MonthyFishAverage;
+    yearlyAverages?: MonthyFishAverage;
+    allTimeAverages?: MonthyFishAverage;
+    individualAverages?: MonthyFishAverage;
+    monthlyAveragesWater?: MonthyWaterAverage;
+    yearlyAveragesWater?: MonthyWaterAverage;
+    allTimeAveragesWater?: MonthyWaterAverage;
+    individualAveragesWater?: MonthyWaterAverage;
     biomass: String;
     fishCount: String;
     batchNumberId: Number;

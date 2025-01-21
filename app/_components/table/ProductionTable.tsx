@@ -1,9 +1,7 @@
 "use client";
 import TransferModal from "@/app/_components/models/FarmManager";
 import {
-  averagesDropdown,
   getLocalItem,
-  months,
   ProductionSortTables,
   setLocalItem,
 } from "@/app/_lib/utils";
@@ -14,26 +12,22 @@ import {
   farmManagerWaterHeadMember,
 } from "@/app/_lib/utils/tableHeadData";
 import { Farm } from "@/app/_typeModels/Farm";
-import { FarmGroup, Production } from "@/app/_typeModels/production";
+import {
+  FarmGroup,
+  MonthyFishAverage,
+  Production,
+} from "@/app/_typeModels/production";
 import { breadcrumsAction } from "@/lib/features/breadcrum/breadcrumSlice";
 import { selectRole } from "@/lib/features/user/userSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import {
   Box,
   Button,
-  Checkbox,
   FormControl,
   FormControlLabel,
-  Grid,
-  InputLabel,
-  ListItemText,
-  MenuItem,
-  OutlinedInput,
   Radio,
   RadioGroup,
-  Select,
   TableSortLabel,
-  TextField,
   Tooltip,
   Typography,
 } from "@mui/material";
@@ -44,35 +38,18 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import { DateRangePicker } from "@mui/x-date-pickers-pro/DateRangePicker";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { DemoContainer, DemoItem } from "@mui/x-date-pickers/internals/demo";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { getCookie, setCookie } from "cookies-next";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import Loader from "../Loader";
 import WaterQualityParameter from "../models/WaterQualityParameter";
-import dayjs from "dayjs";
+import ProductionManagerFilter from "../ProductionManagerFilter";
 
-const today = dayjs();
-const tomorrow = dayjs().add(1, "day");
 interface Props {
   productions: Production[];
   tableData?: any;
   farms: Farm[];
   batches: { batchNumber: String; id: Number }[];
 }
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250,
-    },
-  },
-};
 
 export default function ProductionTable({
   productions,
@@ -88,8 +65,7 @@ export default function ProductionTable({
   const isWater = searchParams.get("isWater");
   const [production, setProduction] = useState<any>();
   const loggedUser: any = getCookie("logged-user");
-  const currentYear = dayjs().year();
-  const years = Array.from({ length: 6 }, (_, i) => currentYear - i);
+
   const [selectedView, setSelectedView] = useState<string>();
   const [selectedProduction, setSelectedProduction] = useState<any>(
     production ?? null
@@ -111,18 +87,10 @@ export default function ProductionTable({
   const [openWaterQualityModal, setOpenWaterQualityModal] = useState<boolean>(
     isWater ? true : false
   );
-  const [loading, setLoading] = useState<boolean>(false);
   const [productionData, setProductionData] = useState<FarmGroup[]>();
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("Farm");
   const [sortDataFromLocal, setSortDataFromLocal] = React.useState<any>("");
-  const [isFishManageHistory, setIsFishManageHistory] =
-    useState<boolean>(false);
-  const [isWaterManageHistory, setIsWaterManageHistory] =
-    useState<boolean>(false);
-
-  const [selectedUnitId, setSelectedUnitId] = useState<String>();
-
   const [selectedDropDownfarms, setSelectedDropDownfarms] = useState(
     Array<string>
   );
@@ -130,25 +98,57 @@ export default function ProductionTable({
     Array<string>
   );
   const [selectedDropDownYears, setSelectedDropDownYears] = useState([]);
-  const [allFarms, setAllFarms] = useState<{ id: string; option: string }[]>();
-  const [allUnits, setAllUnits] = useState<{ id: string; option: string }[]>([
-    { id: "0", option: "All units" },
-  ]);
+  const [selectedAverage, setSelectedAverage] = useState("");
+  const [startMonth, setStartMonth] = useState<number>();
+  const [endMonth, setEndMonth] = useState<number>();
+
+  const [allFarms, setAllFarms] = useState<{ id: string; option: string }[]>(
+    []
+  );
+  const [allUnits, setAllUnits] = useState<{ id: string; option: string }[]>(
+    []
+  );
+
   const handleChange = (event: any, isFarmChange: boolean) => {
     const {
       target: { value },
     } = event;
+
     if (isFarmChange) {
-      setSelectedDropDownfarms(
-        // typeof value === "string" ? value.split(",") : value
-        allFarms.filter((farm) => value.includes(farm.option))
-      );
+      if (value.includes("All farms")) {
+        setSelectedDropDownfarms(allFarms);
+      } else {
+        const wasAllFarmsSelected = selectedDropDownfarms.some(
+          (farm) => farm?.option === "All farms"
+        );
+
+        if (wasAllFarmsSelected) {
+          setSelectedDropDownfarms([]);
+        } else {
+          setSelectedDropDownfarms(
+            allFarms?.filter((farm) => value.includes(farm.option))
+          );
+        }
+      }
     } else {
-      setSelectedDropDownUnits(
-        allUnits.filter((unit) => value.includes(unit.option))
-      );
+      if (value.includes("All units")) {
+        setSelectedDropDownUnits(allUnits);
+      } else {
+        const wasAllFarmsSelected = selectedDropDownUnits.some(
+          (unit) => unit?.option === "All units"
+        );
+
+        if (wasAllFarmsSelected) {
+          setSelectedDropDownUnits([]);
+        } else {
+          setSelectedDropDownUnits(
+            allUnits.filter((unit) => value.includes(unit.option))
+          );
+        }
+      }
     }
   };
+
   const handleFishManageHistory = (unit: any) => {
     if (selectedView == "fish") {
       router.push(`/dashboard/production/fish/${unit.productionUnit.id}`);
@@ -328,6 +328,7 @@ export default function ProductionTable({
       NO2: item.NO2,
       ph: item.ph,
       visibility: item.visibility,
+      WaterManageHistoryAvgrage: item.WaterManageHistoryAvgrage,
     });
 
     return result;
@@ -365,12 +366,6 @@ export default function ProductionTable({
   }, [sortDataFromLocal]);
 
   useEffect(() => {
-    if (groupedData && !sortDataFromLocal) {
-      setProductionData(groupedData);
-    }
-  }, []);
-
-  useEffect(() => {
     const user = JSON.parse(loggedUser);
     if (selectedView === "fish") {
       if (user.role !== "MEMBER") {
@@ -394,17 +389,13 @@ export default function ProductionTable({
         setProduction(storedData);
       }
     }
+    if (groupedData && !sortDataFromLocal) {
+      setProductionData(groupedData);
+    }
   }, []);
   useEffect(() => {
     router.refresh();
   }, [router]);
-
-  useEffect(() => {
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-    }, 2000);
-  }, []);
 
   useEffect(() => {
     if (farms) {
@@ -442,324 +433,996 @@ export default function ProductionTable({
           option: unit.name,
         }))
       );
+      customUnits.unshift({ id: "0", option: "All units" });
       setAllUnits(customUnits);
     }
   }, [selectedDropDownfarms]);
 
+  useEffect(() => {
+    if (!groupedData || !groupedData.length) return;
+
+    // Utility: Filter by farms
+    const filterByFarms = (data, selectedFarms) => {
+      if (!selectedFarms.length) return data;
+      const selectedFarmIds = selectedFarms.map((farm) => farm?.id);
+      return data
+        .map((farm) => ({
+          ...farm,
+          units: farm.units.filter((unit) =>
+            selectedFarmIds.includes(unit.farm?.id)
+          ),
+        }))
+        .filter((farm) => farm.units.length > 0);
+    };
+
+    // Utility: Filter by units
+    const filterByUnits = (data, selectedUnits) => {
+      if (!selectedUnits.length) return data;
+      const selectedUnitIds = selectedUnits.map((unit) => unit?.id);
+      return data
+        .map((farm) => ({
+          ...farm,
+          units: farm.units.filter((unit) =>
+            selectedUnitIds.includes(unit.productionUnit?.id)
+          ),
+        }))
+        .filter((farm) => farm.units.length > 0);
+    };
+
+    // Utility: Filter by years
+    const filterByYears = (data, selectedYears) => {
+      if (!selectedYears.length) return data;
+      return data
+        .map((farm) => ({
+          ...farm,
+          units: farm.units.filter((unit) =>
+            selectedYears.includes(new Date(unit.createdAt).getFullYear())
+          ),
+        }))
+        .filter((farm) => farm.units.length > 0);
+    };
+
+    // Utility: Filter by months
+    const filterByMonths = (data, years, startMonth, endMonth) => {
+      if (!years.length || !startMonth || !endMonth) return data;
+
+      const startDates = years.map(
+        (year) => new Date(`${year}-${String(startMonth).padStart(2, "0")}-01`)
+      );
+      const endDates = years.map((year) => {
+        const end = new Date(`${year}-${String(endMonth).padStart(2, "0")}-01`);
+        end.setMonth(end.getMonth() + 1); // Include the end of the month
+        return end;
+      });
+
+      return data
+        .map((farm) => ({
+          ...farm,
+          units: farm.units.filter((unit) => {
+            const createdAt = new Date(unit.createdAt);
+            return startDates.some(
+              (start, index) =>
+                createdAt >= start && createdAt < endDates[index]
+            );
+          }),
+        }))
+        .filter((farm) => farm.units.length > 0);
+    };
+
+    // Utility: Calculate averages
+    const calculateAverages = (data, type) => {
+      const calculateIndividualAverages = (history, fields) => {
+        const totals = fields.reduce((acc, field) => {
+          acc[field] = 0;
+          return acc;
+        }, {});
+        let count = 0;
+
+        history.forEach((entry) => {
+          fields.forEach((field) => {
+            totals[field] += parseFloat(entry[field]) || 0;
+          });
+          count += 1;
+        });
+
+        return fields.reduce((averages, field) => {
+          averages[field] = count > 0 ? totals[field] / count : 0;
+          return averages;
+        }, {});
+      };
+
+      switch (type) {
+        case "Monthly average":
+          return data.map((farm) => ({
+            ...farm,
+            units: farm.units.map((unit) => ({
+              ...unit,
+              monthlyAverages: calculateIndividualAverages(
+                unit.fishManageHistory.filter((entry) => {
+                  const createdAt = new Date(entry.createdAt);
+                  return (
+                    createdAt.getMonth() + 1 >= startMonth &&
+                    createdAt.getMonth() + 1 <= endMonth &&
+                    selectedDropDownYears.includes(createdAt.getFullYear())
+                  );
+                }),
+                [
+                  "biomass",
+                  "fishCount",
+                  "meanLength",
+                  "meanWeight",
+                  "stockingDensityKG",
+                  "stockingDensityNM",
+                ]
+              ),
+
+              monthlyAveragesWater: calculateIndividualAverages(
+                unit.WaterManageHistoryAvgrage.filter((entry) => {
+                  const createdAt = new Date(entry.createdAt);
+                  return (
+                    createdAt.getMonth() + 1 >= startMonth &&
+                    createdAt.getMonth() + 1 <= endMonth &&
+                    selectedDropDownYears.includes(createdAt.getFullYear())
+                  );
+                }),
+
+                [
+                  "DO",
+                  "NH4",
+                  "NO2",
+                  "NO3",
+                  "TSS",
+                  "ph",
+                  "visibility",
+                  "waterTemp",
+                ]
+              ),
+            })),
+          }));
+
+        case "Yearly average":
+          return data.map((farm) => ({
+            ...farm,
+            units: farm.units.map((unit) => ({
+              ...unit,
+              yearlyAverages: calculateIndividualAverages(
+                unit.fishManageHistory.filter((entry) => {
+                  const createdAt = new Date(entry.createdAt);
+                  return selectedDropDownYears.includes(
+                    createdAt.getFullYear()
+                  );
+                }),
+                [
+                  "biomass",
+                  "fishCount",
+                  "meanLength",
+                  "meanWeight",
+                  "stockingDensityKG",
+                  "stockingDensityNM",
+                ]
+              ),
+              yearlyAveragesWater: calculateIndividualAverages(
+                unit.WaterManageHistoryAvgrage.filter((entry) => {
+                  const createdAt = new Date(entry.createdAt);
+                  return selectedDropDownYears.includes(
+                    createdAt.getFullYear()
+                  );
+                }),
+                [
+                  "DO",
+                  "NH4",
+                  "NO2",
+                  "NO3",
+                  "TSS",
+                  "ph",
+                  "visibility",
+                  "waterTemp",
+                ]
+              ),
+            })),
+          }));
+
+        case "All-time average":
+          return data.map((farm) => ({
+            ...farm,
+            units: farm.units.map((unit) => ({
+              ...unit,
+              allTimeAverages: calculateIndividualAverages(
+                unit.fishManageHistory || [],
+                [
+                  "biomass",
+                  "fishCount",
+                  "meanLength",
+                  "meanWeight",
+                  "stockingDensityKG",
+                  "stockingDensityNM",
+                ]
+              ),
+              allTimeAveragesWtaer: calculateIndividualAverages(
+                unit.WaterManageHistoryAvgrage || [],
+                [
+                  "DO",
+                  "NH4",
+                  "NO2",
+                  "NO3",
+                  "TSS",
+                  "ph",
+                  "visibility",
+                  "waterTemp",
+                ]
+              ),
+            })),
+          }));
+
+        case "Individual average":
+          return data.map((farm) => ({
+            ...farm,
+            units: farm.units.map((unit) => ({
+              ...unit,
+              individualAverages: calculateIndividualAverages(
+                unit.fishManageHistory || [],
+                [
+                  "biomass",
+                  "fishCount",
+                  "meanLength",
+                  "meanWeight",
+                  "stockingDensityKG",
+                  "stockingDensityNM",
+                ]
+              ),
+              individualAveragesWater: calculateIndividualAverages(
+                unit.WaterManageHistoryAvgrage || [],
+                [
+                  "DO",
+                  "NH4",
+                  "NO2",
+                  "NO3",
+                  "TSS",
+                  "ph",
+                  "visibility",
+                  "waterTemp",
+                ]
+              ),
+            })),
+          }));
+
+        default:
+          return data;
+      }
+    };
+
+    // Apply filters sequentially
+    let filteredData = groupedData;
+    filteredData = filterByFarms(filteredData, selectedDropDownfarms);
+    filteredData = filterByUnits(filteredData, selectedDropDownUnits);
+    filteredData = filterByYears(filteredData, selectedDropDownYears);
+    filteredData = filterByMonths(
+      filteredData,
+      selectedDropDownYears,
+      startMonth,
+      endMonth
+    );
+
+    // Apply averages
+    const processedData = calculateAverages(filteredData, selectedAverage);
+    console.log(processedData);
+
+    setProductionData(processedData);
+  }, [
+    selectedDropDownfarms,
+    selectedDropDownUnits,
+    selectedDropDownYears,
+    startMonth,
+    endMonth,
+    selectedAverage,
+  ]);
+
   return (
     <>
-      {!loading ? (
-        <>
-          <Box
+      <>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "flex-end",
+          }}
+        >
+          <FormControl>
+            <RadioGroup
+              aria-labelledby="demo-radio-buttons-group-label"
+              value={selectedView ? selectedView : "fish"}
+              name="radio-buttons-group"
+              onChange={(e) => {
+                handleTableView(e.target.value);
+              }}
+              className="ic-radio"
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                flexWrap: "nowrap",
+              }}
+            >
+              <FormControlLabel
+                value="fish"
+                control={<Radio />}
+                label="Fish"
+                className="input-btn"
+              />
+              <FormControlLabel
+                value="water"
+                control={<Radio />}
+                label="Water"
+                className="input-btn"
+              />
+            </RadioGroup>
+          </FormControl>
+        </Box>
+
+        <ProductionManagerFilter
+          allFarms={allFarms}
+          allUnits={allUnits}
+          handleChange={handleChange}
+          handleYearChange={handleYearChange}
+          selectedAverage={selectedAverage}
+          selectedDropDownUnits={selectedDropDownUnits}
+          selectedDropDownYears={selectedDropDownYears}
+          selectedDropDownfarms={selectedDropDownfarms}
+          setEndMonth={setEndMonth}
+          setStartMonth={setStartMonth}
+          setSelectedAverage={setSelectedAverage}
+          startMonth={Number(startMonth)}
+        />
+        <Paper
+          sx={{
+            width: "100%",
+            overflow: "auto",
+            borderRadius: "14px",
+            boxShadow: "0px 0px 16px 5px #0000001A",
+            textAlign: "center",
+            mt: 4,
+          }}
+        >
+          <TableContainer
             sx={{
-              display: "flex",
-              justifyContent: "flex-end",
+              overflow: "auto",
             }}
           >
-            <FormControl>
-              <RadioGroup
-                aria-labelledby="demo-radio-buttons-group-label"
-                value={selectedView ? selectedView : "fish"}
-                name="radio-buttons-group"
-                onChange={(e) => {
-                  handleTableView(e.target.value);
-                }}
-                className="ic-radio"
+            <Table stickyHeader aria-label="sticky table">
+              <TableHead
                 sx={{
-                  display: "flex",
-                  flexDirection: "row",
-                  alignItems: "center",
-                  flexWrap: "nowrap",
+                  textAlign: "center",
+                  textWrap: "nowrap",
                 }}
               >
-                <FormControlLabel
-                  value="fish"
-                  control={<Radio />}
-                  label="Fish"
-                  className="input-btn"
-                />
-                <FormControlLabel
-                  value="water"
-                  control={<Radio />}
-                  label="Water"
-                  className="input-btn"
-                />
-              </RadioGroup>
-            </FormControl>
-          </Box>
-
-          <Box sx={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
-            <Grid
-              item
-              xs={2}
-              sx={{
-                width: "fit-content",
-                minWidth: 235,
-                paddingTop: "8px",
-              }}
-            >
-              <Box sx={{ width: "100%" }}>
-                <FormControl fullWidth className="form-input" focused>
-                  <InputLabel id="demo-simple-select-label">
-                    Averages
-                  </InputLabel>
-                  <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    label="Averages"
-                  >
-                    {averagesDropdown.map((data, i) => {
-                      return (
-                        <MenuItem value={data} key={i}>
-                          {data}
-                        </MenuItem>
-                      );
-                    })}
-                  </Select>
-                </FormControl>
-              </Box>
-            </Grid>
-            <Grid
-              item
-              xs={2}
-              sx={{
-                width: "fit-content",
-                minWidth: 235,
-                paddingTop: "8px",
-              }}
-            >
-              <Box sx={{ width: "100%" }}>
-                <FormControl fullWidth className="form-input" focused>
-                  <InputLabel id="demo-simple-select-label-1">
-                    All farms
-                  </InputLabel>
-                  <Select
-                    labelId="demo-simple-select-label-1"
-                    id="demo-simple-select"
-                    label="All farms"
-                    multiple
-                    value={selectedDropDownfarms.map((farm) => farm.option)}
-                    onChange={(e) => handleChange(e, true)}
-                    input={<OutlinedInput label="Tag" />}
-                    renderValue={(selected) => selected.join(", ")}
-                    MenuProps={MenuProps}
-                  >
-                    {allFarms?.map((farm) => (
-                      <MenuItem key={farm.id} value={farm.option}>
-                        <Checkbox
-                          checked={selectedDropDownfarms.some(
-                            (selected) => selected.option === farm.option
-                          )}
-                        />
-                        <ListItemText primary={farm.option} />
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Box>
-            </Grid>
-            <Grid
-              item
-              xs={2}
-              sx={{
-                width: "fit-content",
-                minWidth: 235,
-                paddingTop: "8px",
-              }}
-            >
-              <Box sx={{ width: "100%" }}>
-                <FormControl
-                  fullWidth
-                  className="form-input"
-                  focused
-                  disabled={selectedDropDownfarms.length ? false : true}
-                >
-                  <InputLabel id="demo-simple-select-label">
-                    All units
-                  </InputLabel>
-                  <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    label="All units"
-                    multiple
-                    value={selectedDropDownUnits.map((unit) => unit?.option)}
-                    onChange={(e) => handleChange(e, false)}
-                    input={<OutlinedInput label="Tag" />}
-                    renderValue={(selected) => selected.join(", ")}
-                    MenuProps={MenuProps}
-                  >
-                    {allUnits.map((unit) => (
-                      <MenuItem key={unit.id} value={unit.option}>
-                        <Checkbox
-                          checked={selectedDropDownUnits.some(
-                            (selected) => selected?.option === unit.option
-                          )}
-                        />
-                        <ListItemText primary={unit.option} />
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Box>
-            </Grid>
-            <Grid
-              item
-              xs={2}
-              sx={{
-                width: "fit-content",
-                minWidth: 235,
-                paddingTop: "8px",
-              }}
-            >
-              <Box sx={{ width: "100%" }}>
-                <FormControl fullWidth className="form-input" focused>
-                  <InputLabel id="demo-simple-select-label">
-                    Start month
-                  </InputLabel>
-                  <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    label="Start month"
-                  >
-                    {months.map((month) => (
-                      <MenuItem value={month.id} key={month.id}>
-                        {month.name}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Box>
-            </Grid>
-            <Grid
-              item
-              xs={2}
-              sx={{
-                width: "fit-content",
-                minWidth: 235,
-                paddingTop: "8px",
-              }}
-            >
-              <Box sx={{ width: "100%" }}>
-                <FormControl fullWidth className="form-input" focused>
-                  <InputLabel id="demo-simple-select-label">
-                    End month
-                  </InputLabel>
-                  <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    label="End month"
-                  >
-                    {months.map((month) => (
-                      <MenuItem value={month.id} key={month.id}>
-                        {month.name}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Box>
-            </Grid>
-            <Grid
-              item
-              xs={2}
-              sx={{
-                width: "fit-content",
-                minWidth: 235,
-                paddingTop: "8px",
-              }}
-            >
-              <Box sx={{ width: "100%" }}>
-                <FormControl fullWidth className="form-input" focused>
-                  <InputLabel id="demo-simple-select-label-1">
-                    Select Year
-                  </InputLabel>
-                  <Select
-                    labelId="demo-simple-select-label-1"
-                    id="demo-simple-select"
-                    label="Select Year"
-                    multiple
-                    value={selectedDropDownYears}
-                    onChange={(e) => handleYearChange(e)}
-                    input={<OutlinedInput label="Year" />}
-                    renderValue={(selected) => selected.join(", ")}
-                    MenuProps={MenuProps}
-                  >
-                    {years.map((year) => (
-                      <MenuItem key={year} value={year}>
-                        <Checkbox
-                          checked={selectedDropDownYears.includes(year)}
-                        />
-                        <ListItemText primary={year} />
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Box>
-            </Grid>
-            ;
-          </Box>
-
-          <Paper
-            sx={{
-              width: "100%",
-              overflow: "auto",
-              borderRadius: "14px",
-              boxShadow: "0px 0px 16px 5px #0000001A",
-              textAlign: "center",
-              mt: 4,
-            }}
-          >
-            <TableContainer
-              sx={{
-                overflow: "auto",
-              }}
-            >
-              <Table stickyHeader aria-label="sticky table">
-                <TableHead
-                  sx={{
-                    textAlign: "center",
-                    textWrap: "nowrap",
-                  }}
-                >
-                  <TableRow></TableRow>
-                </TableHead>
-                <EnhancedTableHead
-                  order={order}
-                  orderBy={orderBy}
-                  onRequestSort={handleRequestSort}
-                />
-                <TableBody>
-                  {productionData && productionData?.length > 0 ? (
-                    productionData?.map((farm: FarmGroup, i: number) => {
-                      return (
-                        <TableRow
-                          key={i}
+                <TableRow></TableRow>
+              </TableHead>
+              <EnhancedTableHead
+                order={order}
+                orderBy={orderBy}
+                onRequestSort={handleRequestSort}
+              />
+              <TableBody>
+                {productionData && productionData?.length > 0 ? (
+                  productionData?.map((farm: FarmGroup, i: number) => {
+                    return (
+                      <TableRow
+                        key={i}
+                        sx={{
+                          "&:last-child td, &:last-child th": { border: 0 },
+                        }}
+                      >
+                        <TableCell
                           sx={{
-                            "&:last-child td, &:last-child th": { border: 0 },
+                            color: "#555555",
+                            maxWidth: 250,
+                            borderBottomColor: "#F5F6F8",
+                            borderBottomWidth: 2,
+                            fontWeight: 700,
+                            textWrap: "nowrap",
+                            paddingLeft: {
+                              lg: 10,
+                              md: 7,
+                              xs: 4,
+                            },
+                            pr: 2,
                           }}
                         >
-                          <TableCell
-                            sx={{
-                              color: "#555555",
-                              maxWidth: 250,
-                              borderBottomColor: "#F5F6F8",
-                              borderBottomWidth: 2,
-                              fontWeight: 700,
-                              textWrap: "nowrap",
-                              paddingLeft: {
-                                lg: 10,
-                                md: 7,
-                                xs: 4,
-                              },
-                              pr: 2,
-                            }}
-                          >
-                            {farm.farm ?? ""}
-                          </TableCell>
+                          {farm.farm ?? ""}
+                        </TableCell>
+                        <TableCell
+                          className="table-padding"
+                          sx={{
+                            borderBottomWidth: 2,
+                            borderBottomColor: "#F5F6F8",
+                            color: "#555555",
+                            fontWeight: 500,
+                            pl: 0,
+                            textWrap: "nowrap",
+                          }}
+                        >
+                          {farm.units.map((unit, i) => {
+                            return (
+                              <Typography
+                                key={i}
+                                variant="h6"
+                                sx={{
+                                  fontWeight: 500,
+                                  fontSize: 14,
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "space-between",
+                                  gap: 1,
+                                  backgroundColor: "#F5F6F8",
+                                  borderTopLeftRadius: "8px",
+                                  borderBottomLeftRadius: "8px",
+                                  padding: "8px 12px",
+                                  margin: "8px 0",
+                                  textWrap: "nowrap",
+                                }}
+                              >
+                                {unit.productionUnit.name}
+                                {/* {selectedView === "water" && ( */}
+                                <Tooltip title="View history" placement="top">
+                                  <Box
+                                    sx={{
+                                      pr: 3,
+                                    }}
+                                  >
+                                    <Button
+                                      onClick={() =>
+                                        handleFishManageHistory(unit)
+                                      }
+                                      className=""
+                                      type="button"
+                                      variant="contained"
+                                      style={{
+                                        border: "1px solid #06A19B",
+                                      }}
+                                      sx={{
+                                        background: "transparent",
+                                        fontWeight: "bold",
+                                        padding: 0.25,
+                                        borderRadius: "4px",
+                                        alignItems: "center",
+                                        minWidth: "fit-content",
+                                      }}
+                                    >
+                                      <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="1em"
+                                        height="1em"
+                                        viewBox="0 0 24 24"
+                                      >
+                                        <path
+                                          fill="#06A19B"
+                                          d="M21 11.11V5a2 2 0 0 0-2-2h-4.18C14.4 1.84 13.3 1 12 1s-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14a2 2 0 0 0 2 2h6.11c1.26 1.24 2.98 2 4.89 2c3.87 0 7-3.13 7-7c0-1.91-.76-3.63-2-4.89M12 3c.55 0 1 .45 1 1s-.45 1-1 1s-1-.45-1-1s.45-1 1-1M5 19V5h2v2h10V5h2v4.68c-.91-.43-1.92-.68-3-.68H7v2h4.1c-.6.57-1.06 1.25-1.42 2H7v2h2.08c-.05.33-.08.66-.08 1c0 1.08.25 2.09.68 3zm11 2c-2.76 0-5-2.24-5-5s2.24-5 5-5s5 2.24 5 5s-2.24 5-5 5m.5-4.75l2.86 1.69l-.75 1.22L15 17v-5h1.5z"
+                                        />
+                                      </svg>
+                                    </Button>
+                                  </Box>
+                                </Tooltip>
+                                {/* // )} */}
+                              </Typography>
+                            );
+                          })}
+                        </TableCell>
+                        <TableCell
+                          className="table-padding"
+                          sx={{
+                            borderBottomWidth: 2,
+                            borderBottomColor: "#ececec",
+                            color: "#555555",
+                            fontWeight: 500,
+                            pl: 0,
+                            textWrap: "nowrap",
+                          }}
+                        >
+                          {farm.units?.map((unit: any, i) => {
+                            return (
+                              <Typography
+                                key={i}
+                                variant="h6"
+                                sx={{
+                                  fontWeight: 500,
+                                  fontSize: 14,
+                                  backgroundColor: "#F5F6F8",
+                                  padding: `${
+                                    selectedView === "water"
+                                      ? unit.waterTemp
+                                        ? "8px 12px 8px 0"
+                                        : "19px 12px 19px 0"
+                                      : unit?.fishSupply?.batchNumber
+                                      ? "8px 12px 8px 0"
+                                      : "19px 12px 19px 0"
+                                  }`,
+                                  margin: "8px 0",
+                                  textWrap: "nowrap",
+                                }}
+                              >
+                                {selectedView === "water"
+                                  ? unit.waterTemp ?? ""
+                                  : unit?.fishSupply?.batchNumber ?? ""}
+                              </Typography>
+                            );
+                          })}
+                        </TableCell>
+                        <TableCell
+                          className="table-padding"
+                          sx={{
+                            borderBottomWidth: 2,
+                            borderBottomColor: "#ececec",
+                            color: "#555555",
+                            fontWeight: 500,
+                            pl: 0,
+                            p: 0,
+                            textWrap: "nowrap",
+                          }}
+                        >
+                          {farm.units.map((unit, i) => {
+                            return (
+                              <Typography
+                                key={i}
+                                variant="h6"
+                                sx={{
+                                  fontWeight: 500,
+                                  fontSize: 14,
+                                  padding: `${
+                                    selectedView === "water"
+                                      ? unit.DO
+                                        ? "8px 12px 8px 0"
+                                        : "19px 12px 19px 0"
+                                      : unit?.fishSupply?.age
+                                      ? "8px 12px 8px 0"
+                                      : "19px 12px 19px 0"
+                                  }`,
+                                  backgroundColor: "#F5F6F8",
+                                  margin: "8px 0",
+                                  textWrap: "nowrap",
+                                }}
+                              >
+                                {selectedView === "water"
+                                  ? unit.DO ?? ""
+                                  : unit?.fishSupply?.age ?? ""}
+                              </Typography>
+                            );
+                          })}
+                        </TableCell>
+                        <TableCell
+                          className="table-padding"
+                          sx={{
+                            borderBottomWidth: 2,
+                            borderBottomColor: "#ececec",
+                            color: "#555555",
+                            fontWeight: 500,
+                            pl: 0,
+                            textWrap: "nowrap",
+                          }}
+                        >
+                          {farm.units.map((unit, i) => {
+                            return (
+                              <Typography
+                                key={i}
+                                variant="h6"
+                                sx={{
+                                  fontWeight: 500,
+                                  fontSize: 14,
+                                  backgroundColor: "#F5F6F8",
+                                  padding: `${
+                                    selectedView === "water"
+                                      ? unit.TSS ||
+                                        unit.monthlyAveragesWater?.TSS ||
+                                        unit.yearlyAveragesWater?.TSS ||
+                                        unit.allTimeAveragesWater?.TSS ||
+                                        unit.individualAveragesWater?.TSS
+                                        ? "8px 12px 8px 0"
+                                        : "19px 12px 19px 0"
+                                      : unit?.fishCount ||
+                                        unit.monthlyAverages?.fishCount ||
+                                        unit.yearlyAverages?.fishCount ||
+                                        unit.allTimeAverages?.fishCount ||
+                                        unit.individualAverages?.fishCount
+                                      ? "8px 12px 8px 0"
+                                      : "19px 12px 19px 0"
+                                  }`,
+                                  margin: "8px 0",
+
+                                  textWrap: "nowrap",
+                                }}
+                              >
+                                {selectedView === "water"
+                                  ? selectedAverage === "Monthly average" ||
+                                    selectedAverage === "Yearly average" ||
+                                    selectedAverage === "All-time average" ||
+                                    selectedAverage === "Individual average"
+                                    ? String(unit.monthlyAveragesWater?.TSS) ||
+                                      String(unit.yearlyAveragesWater?.TSS) ||
+                                      String(unit.allTimeAveragesWater?.TSS) ||
+                                      String(unit.individualAveragesWater?.TSS)
+                                    : unit.TSS ?? ""
+                                  : selectedAverage === "Monthly average" ||
+                                    selectedAverage === "Yearly average" ||
+                                    selectedAverage === "All-time average" ||
+                                    selectedAverage === "Individual average"
+                                  ? String(unit.monthlyAverages?.fishCount) ||
+                                    String(unit.yearlyAverages?.fishCount) ||
+                                    String(unit.allTimeAverages?.fishCount) ||
+                                    String(unit.individualAverages?.fishCount)
+                                  : unit?.fishCount ?? ""}
+                              </Typography>
+                            );
+                          })}
+                        </TableCell>
+                        <TableCell
+                          className="table-padding"
+                          // align="center"
+                          sx={{
+                            borderBottomColor: "#ececec",
+                            borderBottomWidth: 2,
+                            color: "#555555",
+                            fontWeight: 500,
+                            pl: 0,
+                            textWrap: "nowrap",
+                          }}
+                        >
+                          {farm.units.map((unit, i) => {
+                            return (
+                              <Typography
+                                key={i}
+                                variant="h6"
+                                sx={{
+                                  fontWeight: 500,
+                                  fontSize: 14,
+                                  backgroundColor: "#F5F6F8",
+                                  padding: `${
+                                    selectedView === "water"
+                                      ? unit.NH4 ||
+                                        unit.monthlyAveragesWater?.NH4 ||
+                                        unit.yearlyAveragesWater?.NH4 ||
+                                        unit.allTimeAveragesWater?.NH4 ||
+                                        unit.individualAveragesWater?.NH4
+                                        ? "8px 12px 8px 0"
+                                        : "19px 12px 19px 0"
+                                      : unit?.biomass ||
+                                        unit.monthlyAverages?.biomass ||
+                                        unit.yearlyAverages?.biomass ||
+                                        unit.allTimeAverages?.biomass ||
+                                        unit.individualAverages?.biomass
+                                      ? "8px 12px 8px 0"
+                                      : "19px 12px 19px 0"
+                                  }`,
+                                  margin: "8px 0",
+                                  // marginBottom: "10px",
+                                  textWrap: "nowrap",
+                                }}
+                              >
+                                {selectedView === "water"
+                                  ? selectedAverage === "Monthly average" ||
+                                    selectedAverage === "Yearly average" ||
+                                    selectedAverage === "All-time average" ||
+                                    selectedAverage === "Individual average"
+                                    ? String(unit.monthlyAveragesWater?.NH4) ||
+                                      String(unit.yearlyAveragesWater?.NH4) ||
+                                      String(unit.allTimeAveragesWater?.NH4) ||
+                                      String(unit.individualAveragesWater?.NH4)
+                                    : unit.NH4 ?? ""
+                                  : selectedAverage === "Monthly average" ||
+                                    selectedAverage === "Yearly average" ||
+                                    selectedAverage === "All-time average" ||
+                                    selectedAverage === "Individual average"
+                                  ? String(unit.monthlyAverages?.biomass) ||
+                                    String(unit.yearlyAverages?.biomass) ||
+                                    String(unit.allTimeAverages?.biomass) ||
+                                    String(unit.individualAverages?.biomass)
+                                  : unit.biomass ?? ""}
+                              </Typography>
+                            );
+                          })}
+                        </TableCell>
+                        <TableCell
+                          className="table-padding"
+                          // align="center"
+                          sx={{
+                            borderBottomColor: "#ececec",
+                            borderBottomWidth: 2,
+                            color: "#555555",
+                            fontWeight: 500,
+                            pl: 0,
+                            textWrap: "nowrap",
+                          }}
+                        >
+                          {farm.units.map((unit, i) => {
+                            return (
+                              <Typography
+                                key={i}
+                                variant="h6"
+                                sx={{
+                                  fontWeight: 500,
+                                  fontSize: 14,
+                                  backgroundColor: "#F5F6F8",
+                                  padding: `${
+                                    selectedView === "water"
+                                      ? unit.NO3 ||
+                                        unit.monthlyAveragesWater?.NO3 ||
+                                        unit.yearlyAveragesWater?.NO3 ||
+                                        unit.allTimeAveragesWater?.NO3 ||
+                                        unit.individualAveragesWater?.NO3
+                                        ? "8px 12px 8px 0"
+                                        : "19px 12px 19px 0"
+                                      : unit?.meanWeight ||
+                                        unit.monthlyAverages?.meanWeight ||
+                                        unit.yearlyAverages?.meanWeight ||
+                                        unit.allTimeAverages?.meanWeight ||
+                                        unit.individualAverages?.meanWeight
+                                      ? "8px 12px 8px 0"
+                                      : "19px 12px 19px 0"
+                                  }`,
+                                  margin: "8px 0",
+                                  // marginBottom: "10px",
+                                  textWrap: "nowrap",
+                                }}
+                              >
+                                {selectedView === "water"
+                                  ? selectedAverage === "Monthly average" ||
+                                    selectedAverage === "Yearly average" ||
+                                    selectedAverage === "All-time average" ||
+                                    selectedAverage === "Individual average"
+                                    ? String(unit.monthlyAveragesWater?.NO3) ||
+                                      String(unit.yearlyAveragesWater?.NO3) ||
+                                      String(unit.allTimeAveragesWater?.NO3) ||
+                                      String(unit.individualAveragesWater?.NO3)
+                                    : unit.NO3 ?? ""
+                                  : selectedAverage === "Monthly average" ||
+                                    selectedAverage === "Yearly average" ||
+                                    selectedAverage === "All-time average" ||
+                                    selectedAverage === "Individual average"
+                                  ? String(unit.monthlyAverages?.meanWeight) ||
+                                    String(unit.yearlyAverages?.meanWeight) ||
+                                    String(unit.allTimeAverages?.meanWeight) ||
+                                    String(unit.individualAverages?.meanWeight)
+                                  : unit.meanWeight ?? ""}
+                              </Typography>
+                            );
+                          })}
+                        </TableCell>
+                        <TableCell
+                          className="table-padding"
+                          // align="center"
+                          sx={{
+                            borderBottomColor: "#ececec",
+                            borderBottomWidth: 2,
+                            color: "#555555",
+                            fontWeight: 500,
+                            pl: 0,
+                            textWrap: "nowrap",
+                          }}
+                        >
+                          {farm.units.map((unit, i) => {
+                            return (
+                              <Typography
+                                key={i}
+                                variant="h6"
+                                sx={{
+                                  fontWeight: 500,
+                                  fontSize: 14,
+                                  backgroundColor: "#F5F6F8",
+                                  padding: `${
+                                    selectedView === "water"
+                                      ? unit.NO2 ||
+                                        unit.monthlyAveragesWater?.NO2 ||
+                                        unit.yearlyAveragesWater?.NO2 ||
+                                        unit.allTimeAveragesWater?.NO2 ||
+                                        unit.individualAveragesWater?.NO2
+                                        ? "8px 12px 8px 0"
+                                        : "19px 12px 19px 0"
+                                      : unit?.meanLength ||
+                                        unit.monthlyAverages?.meanLength ||
+                                        unit.yearlyAverages?.meanLength ||
+                                        unit.allTimeAverages?.meanLength ||
+                                        unit.individualAverages?.meanLength
+                                      ? "8px 12px 8px 0"
+                                      : "19px 12px 19px 0"
+                                  }`,
+                                  margin: "8px 0",
+                                  // marginBottom: "10px",
+                                  textWrap: "nowrap",
+                                }}
+                              >
+                                {selectedView === "water"
+                                  ? selectedAverage === "Monthly average" ||
+                                    selectedAverage === "Yearly average" ||
+                                    selectedAverage === "All-time average" ||
+                                    selectedAverage === "Individual average"
+                                    ? String(unit.monthlyAveragesWater?.NO2) ||
+                                      String(unit.yearlyAveragesWater?.NO2) ||
+                                      String(unit.allTimeAveragesWater?.NO2) ||
+                                      String(unit.individualAveragesWater?.NO2)
+                                    : unit.NO2 ?? ""
+                                  : selectedAverage === "Monthly average" ||
+                                    selectedAverage === "Yearly average" ||
+                                    selectedAverage === "All-time average" ||
+                                    selectedAverage === "Individual average"
+                                  ? String(unit.monthlyAverages?.meanLength) ||
+                                    String(unit.yearlyAverages?.meanLength) ||
+                                    String(unit.allTimeAverages?.meanLength) ||
+                                    String(unit.individualAverages?.meanLength)
+                                  : unit.meanLength ?? ""}
+                              </Typography>
+                            );
+                          })}
+                        </TableCell>
+                        <TableCell
+                          className="table-padding"
+                          // align="center"
+                          sx={{
+                            borderBottomColor: "#ececec",
+                            borderBottomWidth: 2,
+                            color: "#555555",
+                            fontWeight: 500,
+                            pl: 0,
+                            textWrap: "nowrap",
+                          }}
+                        >
+                          {farm.units.map((unit, i) => {
+                            return (
+                              <Typography
+                                key={i}
+                                variant="h6"
+                                sx={{
+                                  fontWeight: 500,
+                                  fontSize: 14,
+                                  backgroundColor: "#F5F6F8",
+                                  padding: `${
+                                    selectedView === "water"
+                                      ? unit.ph ||
+                                        unit.monthlyAveragesWater?.ph ||
+                                        unit.yearlyAveragesWater?.ph ||
+                                        unit.allTimeAveragesWater?.ph ||
+                                        unit.individualAveragesWater?.ph
+                                        ? "8px 12px 8px 0"
+                                        : "19px 12px 19px 0"
+                                      : Number(unit.stockingDensityKG).toFixed(
+                                          2
+                                        ) ||
+                                        unit.monthlyAverages
+                                          ?.stockingDensityKG ||
+                                        unit.yearlyAverages?.fishCount ||
+                                        unit.allTimeAverages?.fishCount ||
+                                        unit.individualAverages?.fishCount
+                                      ? "8px 12px 8px 0"
+                                      : "19px 12px 19px 0"
+                                  }`,
+                                  margin: "8px 0",
+                                  // marginBottom: "10px",
+                                  textWrap: "nowrap",
+                                }}
+                              >
+                                {selectedView === "water"
+                                  ? selectedAverage === "Monthly average" ||
+                                    selectedAverage === "Yearly average" ||
+                                    selectedAverage === "All-time average" ||
+                                    selectedAverage === "Individual average"
+                                    ? String(unit.monthlyAveragesWater?.ph) ||
+                                      String(unit.yearlyAveragesWater?.ph) ||
+                                      String(unit.allTimeAveragesWater?.ph) ||
+                                      String(unit.individualAveragesWater?.ph)
+                                    : unit.ph ?? ""
+                                  : selectedAverage === "Monthly average" ||
+                                    selectedAverage === "Yearly average" ||
+                                    selectedAverage === "All-time average" ||
+                                    selectedAverage === "Individual average"
+                                  ? Number(
+                                      unit.monthlyAverages?.stockingDensityKG
+                                    ) ||
+                                    Number(
+                                      unit.yearlyAverages?.stockingDensityKG
+                                    ) ||
+                                    Number(
+                                      unit.allTimeAverages?.stockingDensityKG
+                                    ) ||
+                                    Number(
+                                      unit.individualAverages?.stockingDensityKG
+                                    )
+                                  : Number(unit.stockingDensityKG).toFixed(2) ??
+                                    ""}
+                              </Typography>
+                            );
+                          })}
+                        </TableCell>
+                        <TableCell
+                          className="table-padding"
+                          // align="center"
+                          sx={{
+                            borderBottomColor: "#ececec",
+                            borderBottomWidth: 2,
+                            color: "#555555",
+                            fontWeight: 500,
+                            pl: 0,
+                            textWrap: "nowrap",
+                          }}
+                        >
+                          {farm.units.map((unit, i) => {
+                            return (
+                              <Typography
+                                key={i}
+                                variant="h6"
+                                sx={{
+                                  fontWeight: 500,
+                                  fontSize: 14,
+                                  backgroundColor: "#F5F6F8",
+                                  padding: `${
+                                    selectedView === "water"
+                                      ? unit.visibility ||
+                                        unit.monthlyAveragesWater?.visibility ||
+                                        unit.yearlyAveragesWater?.visibility ||
+                                        unit.allTimeAveragesWater?.visibility ||
+                                        unit.individualAveragesWater?.visibility
+                                        ? "8px 12px 8px 0"
+                                        : "19px 12px 19px 0"
+                                      : Number(unit.stockingDensityNM).toFixed(
+                                          2
+                                        ) ||
+                                        unit.monthlyAverages
+                                          ?.stockingDensityNM ||
+                                        unit.yearlyAverages
+                                          ?.stockingDensityNM ||
+                                        unit.allTimeAverages
+                                          ?.stockingDensityNM ||
+                                        unit.individualAverages
+                                          ?.stockingDensityNM
+                                      ? "8px 12px 8px 0"
+                                      : "19px 12px 19px 0"
+                                  }`,
+                                  margin: "8px 0",
+                                  // marginBottom: "10px",
+                                  textWrap: "nowrap",
+                                }}
+                              >
+                                {selectedView === "water"
+                                  ? selectedAverage === "Monthly average" ||
+                                    selectedAverage === "Yearly average" ||
+                                    selectedAverage === "All-time average" ||
+                                    selectedAverage === "Individual average"
+                                    ? String(
+                                        unit.monthlyAveragesWater?.visibility
+                                      ) ||
+                                      String(
+                                        unit.yearlyAveragesWater?.visibility
+                                      ) ||
+                                      String(
+                                        unit.allTimeAveragesWater?.visibility
+                                      ) ||
+                                      String(
+                                        unit.individualAveragesWater?.visibility
+                                      )
+                                    : unit.visibility ?? ""
+                                  : selectedAverage === "Monthly average" ||
+                                    selectedAverage === "Yearly average" ||
+                                    selectedAverage === "All-time average" ||
+                                    selectedAverage === "Individual average"
+                                  ? Number(
+                                      unit.monthlyAverages?.stockingDensityNM
+                                    ) ||
+                                    Number(
+                                      unit.yearlyAverages?.stockingDensityNM
+                                    ) ||
+                                    Number(
+                                      unit.allTimeAverages?.stockingDensityNM
+                                    ) ||
+                                    Number(
+                                      unit.individualAverages?.stockingDensityNM
+                                    )
+                                  : Number(unit.stockingDensityNM).toFixed(2) ??
+                                    ""}
+                              </Typography>
+                            );
+                          })}
+                        </TableCell>{" "}
+                        {selectedView !== "water" && (
                           <TableCell
                             className="table-padding"
                             sx={{
+                              borderBottomColor: "#ececec",
                               borderBottomWidth: 2,
-                              borderBottomColor: "#F5F6F8",
                               color: "#555555",
                               fontWeight: 500,
                               pl: 0,
@@ -774,602 +1437,169 @@ export default function ProductionTable({
                                   sx={{
                                     fontWeight: 500,
                                     fontSize: 14,
-                                    display: "flex",
-                                    alignItems: "center",
-                                    justifyContent: "space-between",
-                                    gap: 1,
                                     backgroundColor: "#F5F6F8",
-                                    borderTopLeftRadius: "8px",
-                                    borderBottomLeftRadius: "8px",
-                                    padding: "8px 12px",
+                                    padding: "8px 12px 8px 0",
                                     margin: "8px 0",
+                                    // marginBottom: "10px",
                                     textWrap: "nowrap",
                                   }}
                                 >
-                                  {unit.productionUnit.name}
-                                  {/* {selectedView === "water" && ( */}
-                                  <Tooltip title="View history" placement="top">
-                                    <Box
-                                      sx={{
-                                        pr: 3,
-                                      }}
-                                    >
+                                  {Number(unit.stockingLevel) ?? ""}
+                                </Typography>
+                              );
+                            })}
+                          </TableCell>
+                        )}
+                        {role !== "MEMBER" && (
+                          <TableCell
+                            // align="center"
+                            sx={{
+                              borderBottomColor: "#ececec",
+                              borderBottomWidth: 2,
+                              color: "#555555",
+                              fontWeight: 500,
+                              pl: 0,
+                              textWrap: "nowrap",
+                            }}
+                            className="cursor-pointer table-padding"
+                          >
+                            {farm.units.map((unit) => {
+                              return (
+                                <Box
+                                  sx={{
+                                    backgroundColor: "#F5F6F8",
+                                    borderTopRightRadius: "8px",
+                                    borderTopLeftRadius: "8px",
+                                    padding: "6px 12px",
+                                    // margin: "5px 0 8px 0",
+                                    margin: "8px 0",
+                                    textWrap: "nowrap",
+                                  }}
+                                  display={"flex"}
+                                  gap={1}
+                                  mb={1}
+                                  key={Number(unit.id)}
+                                >
+                                  {selectedView === "fish" ? (
+                                    <Tooltip title="Fish" placement="top">
                                       <Button
-                                        onClick={() =>
-                                          handleFishManageHistory(unit)
+                                        id="basic-button"
+                                        aria-controls={
+                                          open ? "basic-menu" : undefined
                                         }
+                                        aria-haspopup="true"
+                                        aria-expanded={
+                                          open ? "true" : undefined
+                                        }
+                                        onClick={(e) =>
+                                          handleClick(e, unit, true)
+                                        }
+                                        disabled={unit.isManager ? false : true}
                                         className=""
                                         type="button"
                                         variant="contained"
-                                        style={{
-                                          border: "1px solid #06A19B",
-                                        }}
                                         sx={{
-                                          background: "transparent",
+                                          background: "#06A19B",
                                           fontWeight: "bold",
-                                          padding: 0.25,
-                                          borderRadius: "4px",
+                                          paddingX: 0.75,
+                                          paddingY: 0.25,
+                                          borderRadius: "8px",
                                           alignItems: "center",
                                           minWidth: "fit-content",
                                         }}
                                       >
                                         <svg
                                           xmlns="http://www.w3.org/2000/svg"
-                                          width="1em"
-                                          height="1em"
+                                          width="22px"
+                                          height="22px"
                                           viewBox="0 0 24 24"
                                         >
                                           <path
-                                            fill="#06A19B"
-                                            d="M21 11.11V5a2 2 0 0 0-2-2h-4.18C14.4 1.84 13.3 1 12 1s-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14a2 2 0 0 0 2 2h6.11c1.26 1.24 2.98 2 4.89 2c3.87 0 7-3.13 7-7c0-1.91-.76-3.63-2-4.89M12 3c.55 0 1 .45 1 1s-.45 1-1 1s-1-.45-1-1s.45-1 1-1M5 19V5h2v2h10V5h2v4.68c-.91-.43-1.92-.68-3-.68H7v2h4.1c-.6.57-1.06 1.25-1.42 2H7v2h2.08c-.05.33-.08.66-.08 1c0 1.08.25 2.09.68 3zm11 2c-2.76 0-5-2.24-5-5s2.24-5 5-5s5 2.24 5 5s-2.24 5-5 5m.5-4.75l2.86 1.69l-.75 1.22L15 17v-5h1.5z"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth="1"
+                                            d="M6.008 12h-.01M11 16.042c.463.153.908.329 1.31.61m0 0A3.95 3.95 0 0 1 14 19.885a.117.117 0 0 1-.118.116c-2.917-.013-4.224-.507-4.773-1.322L8 16.857c-2.492-.503-4.782-2.094-6-4.774c3-6.597 12.5-6.597 15.5 0m-5.19 4.57c2.17-.66 4.105-2.184 5.19-4.57m-5.19-4.569A3.95 3.95 0 0 0 14 4.282c0-.826-4.308.342-4.89 1.206L8 7.31m9.5 4.773c.333-.66 2.1-2.969 4.5-2.969c-.833.825-2.2 3.959-1 5.938c-1.2 0-3-2.309-3.5-2.969"
+                                            color="currentColor"
                                           />
                                         </svg>
                                       </Button>
-                                    </Box>
-                                  </Tooltip>
-                                  {/* // )} */}
-                                </Typography>
-                              );
-                            })}
-                          </TableCell>
-                          <TableCell
-                            className="table-padding"
-                            sx={{
-                              borderBottomWidth: 2,
-                              borderBottomColor: "#ececec",
-                              color: "#555555",
-                              fontWeight: 500,
-                              pl: 0,
-                              textWrap: "nowrap",
-                            }}
-                          >
-                            {farm.units?.map((unit: any, i) => {
-                              return (
-                                <Typography
-                                  key={i}
-                                  variant="h6"
-                                  sx={{
-                                    fontWeight: 500,
-                                    fontSize: 14,
-                                    backgroundColor: "#F5F6F8",
-                                    padding: `${
-                                      selectedView === "water"
-                                        ? unit.waterTemp
-                                          ? "8px 12px 8px 0"
-                                          : "19px 12px 19px 0"
-                                        : unit?.fishSupply?.batchNumber
-                                        ? "8px 12px 8px 0"
-                                        : "19px 12px 19px 0"
-                                    }`,
-                                    margin: "8px 0",
-                                    textWrap: "nowrap",
-                                  }}
-                                >
-                                  {selectedView === "water"
-                                    ? unit.waterTemp ?? ""
-                                    : unit?.fishSupply?.batchNumber ?? ""}
-                                </Typography>
-                              );
-                            })}
-                          </TableCell>
-                          <TableCell
-                            className="table-padding"
-                            sx={{
-                              borderBottomWidth: 2,
-                              borderBottomColor: "#ececec",
-                              color: "#555555",
-                              fontWeight: 500,
-                              pl: 0,
-                              p: 0,
-                              textWrap: "nowrap",
-                            }}
-                          >
-                            {farm.units.map((unit, i) => {
-                              return (
-                                <Typography
-                                  key={i}
-                                  variant="h6"
-                                  sx={{
-                                    fontWeight: 500,
-                                    fontSize: 14,
-                                    padding: `${
-                                      selectedView === "water"
-                                        ? unit.DO
-                                          ? "8px 12px 8px 0"
-                                          : "19px 12px 19px 0"
-                                        : unit?.fishSupply?.age
-                                        ? "8px 12px 8px 0"
-                                        : "19px 12px 19px 0"
-                                    }`,
-                                    backgroundColor: "#F5F6F8",
-                                    margin: "8px 0",
-                                    textWrap: "nowrap",
-                                  }}
-                                >
-                                  {selectedView === "water"
-                                    ? unit.DO ?? ""
-                                    : unit?.fishSupply?.age ?? ""}
-                                </Typography>
-                              );
-                            })}
-                          </TableCell>
-                          <TableCell
-                            className="table-padding"
-                            sx={{
-                              borderBottomWidth: 2,
-                              borderBottomColor: "#ececec",
-                              color: "#555555",
-                              fontWeight: 500,
-                              pl: 0,
-                              textWrap: "nowrap",
-                            }}
-                          >
-                            {farm.units.map((unit, i) => {
-                              return (
-                                <Typography
-                                  key={i}
-                                  variant="h6"
-                                  sx={{
-                                    fontWeight: 500,
-                                    fontSize: 14,
-                                    backgroundColor: "#F5F6F8",
-                                    padding: `${
-                                      selectedView === "water"
-                                        ? unit.TSS
-                                          ? "8px 12px 8px 0"
-                                          : "19px 12px 19px 0"
-                                        : unit?.fishCount
-                                        ? "8px 12px 8px 0"
-                                        : "19px 12px 19px 0"
-                                    }`,
-                                    margin: "8px 0",
-
-                                    textWrap: "nowrap",
-                                  }}
-                                >
-                                  {selectedView === "water"
-                                    ? unit.TSS ?? ""
-                                    : unit?.fishCount ?? ""}
-                                </Typography>
-                              );
-                            })}
-                          </TableCell>
-                          <TableCell
-                            className="table-padding"
-                            // align="center"
-                            sx={{
-                              borderBottomColor: "#ececec",
-                              borderBottomWidth: 2,
-                              color: "#555555",
-                              fontWeight: 500,
-                              pl: 0,
-                              textWrap: "nowrap",
-                            }}
-                          >
-                            {farm.units.map((unit, i) => {
-                              return (
-                                <Typography
-                                  key={i}
-                                  variant="h6"
-                                  sx={{
-                                    fontWeight: 500,
-                                    fontSize: 14,
-                                    backgroundColor: "#F5F6F8",
-                                    padding: `${
-                                      selectedView === "water"
-                                        ? unit.NH4
-                                          ? "8px 12px 8px 0"
-                                          : "19px 12px 19px 0"
-                                        : unit?.biomass
-                                        ? "8px 12px 8px 0"
-                                        : "19px 12px 19px 0"
-                                    }`,
-                                    margin: "8px 0",
-                                    // marginBottom: "10px",
-                                    textWrap: "nowrap",
-                                  }}
-                                >
-                                  {selectedView === "water"
-                                    ? unit.NH4 ?? ""
-                                    : unit.biomass
-                                    ? `${unit.biomass} kg`
-                                    : ""}
-                                </Typography>
-                              );
-                            })}
-                          </TableCell>
-                          <TableCell
-                            className="table-padding"
-                            // align="center"
-                            sx={{
-                              borderBottomColor: "#ececec",
-                              borderBottomWidth: 2,
-                              color: "#555555",
-                              fontWeight: 500,
-                              pl: 0,
-                              textWrap: "nowrap",
-                            }}
-                          >
-                            {farm.units.map((unit, i) => {
-                              return (
-                                <Typography
-                                  key={i}
-                                  variant="h6"
-                                  sx={{
-                                    fontWeight: 500,
-                                    fontSize: 14,
-                                    backgroundColor: "#F5F6F8",
-                                    padding: `${
-                                      selectedView === "water"
-                                        ? unit.NO3
-                                          ? "8px 12px 8px 0"
-                                          : "19px 12px 19px 0"
-                                        : unit?.meanWeight
-                                        ? "8px 12px 8px 0"
-                                        : "19px 12px 19px 0"
-                                    }`,
-                                    margin: "8px 0",
-                                    // marginBottom: "10px",
-                                    textWrap: "nowrap",
-                                  }}
-                                >
-                                  {selectedView === "water"
-                                    ? unit.NO3 ?? ""
-                                    : unit.meanWeight
-                                    ? `${unit.meanWeight} g`
-                                    : ""}
-                                </Typography>
-                              );
-                            })}
-                          </TableCell>
-                          <TableCell
-                            className="table-padding"
-                            // align="center"
-                            sx={{
-                              borderBottomColor: "#ececec",
-                              borderBottomWidth: 2,
-                              color: "#555555",
-                              fontWeight: 500,
-                              pl: 0,
-                              textWrap: "nowrap",
-                            }}
-                          >
-                            {farm.units.map((unit, i) => {
-                              return (
-                                <Typography
-                                  key={i}
-                                  variant="h6"
-                                  sx={{
-                                    fontWeight: 500,
-                                    fontSize: 14,
-                                    backgroundColor: "#F5F6F8",
-                                    padding: `${
-                                      selectedView === "water"
-                                        ? unit.NO2
-                                          ? "8px 12px 8px 0"
-                                          : "19px 12px 19px 0"
-                                        : unit?.meanLength
-                                        ? "8px 12px 8px 0"
-                                        : "19px 12px 19px 0"
-                                    }`,
-                                    margin: "8px 0",
-                                    // marginBottom: "10px",
-                                    textWrap: "nowrap",
-                                  }}
-                                >
-                                  {selectedView === "water"
-                                    ? unit.NO2
-                                    : unit.meanLength
-                                    ? `${unit.meanLength} mm`
-                                    : ""}
-                                </Typography>
-                              );
-                            })}
-                          </TableCell>
-                          <TableCell
-                            className="table-padding"
-                            // align="center"
-                            sx={{
-                              borderBottomColor: "#ececec",
-                              borderBottomWidth: 2,
-                              color: "#555555",
-                              fontWeight: 500,
-                              pl: 0,
-                              textWrap: "nowrap",
-                            }}
-                          >
-                            {farm.units.map((unit, i) => {
-                              return (
-                                <Typography
-                                  key={i}
-                                  variant="h6"
-                                  sx={{
-                                    fontWeight: 500,
-                                    fontSize: 14,
-                                    backgroundColor: "#F5F6F8",
-                                    padding: `${
-                                      selectedView === "water"
-                                        ? unit.ph
-                                          ? "8px 12px 8px 0"
-                                          : "19px 12px 19px 0"
-                                        : Number(
-                                            unit.stockingDensityKG
-                                          ).toFixed(2)
-                                        ? "8px 12px 8px 0"
-                                        : "19px 12px 19px 0"
-                                    }`,
-                                    margin: "8px 0",
-                                    // marginBottom: "10px",
-                                    textWrap: "nowrap",
-                                  }}
-                                >
-                                  {selectedView === "water"
-                                    ? unit.ph ?? ""
-                                    : Number(unit.stockingDensityKG).toFixed(
-                                        2
-                                      ) ?? ""}
-                                </Typography>
-                              );
-                            })}
-                          </TableCell>
-                          <TableCell
-                            className="table-padding"
-                            // align="center"
-                            sx={{
-                              borderBottomColor: "#ececec",
-                              borderBottomWidth: 2,
-                              color: "#555555",
-                              fontWeight: 500,
-                              pl: 0,
-                              textWrap: "nowrap",
-                            }}
-                          >
-                            {farm.units.map((unit, i) => {
-                              return (
-                                <Typography
-                                  key={i}
-                                  variant="h6"
-                                  sx={{
-                                    fontWeight: 500,
-                                    fontSize: 14,
-                                    backgroundColor: "#F5F6F8",
-                                    padding: `${
-                                      selectedView === "water"
-                                        ? unit.visibility
-                                          ? "8px 12px 8px 0"
-                                          : "19px 12px 19px 0"
-                                        : Number(
-                                            unit.stockingDensityNM
-                                          ).toFixed(2)
-                                        ? "8px 12px 8px 0"
-                                        : "19px 12px 19px 0"
-                                    }`,
-                                    margin: "8px 0",
-                                    // marginBottom: "10px",
-                                    textWrap: "nowrap",
-                                  }}
-                                >
-                                  {selectedView === "water"
-                                    ? unit.visibility ?? ""
-                                    : Number(unit.stockingDensityNM).toFixed(
-                                        2
-                                      ) ?? ""}
-                                </Typography>
-                              );
-                            })}
-
-                            {/* {farm.meanWeight ? `${farm.meanWeight}g` : ""} */}
-                          </TableCell>{" "}
-                          {selectedView !== "water" && (
-                            <TableCell
-                              className="table-padding"
-                              sx={{
-                                borderBottomColor: "#ececec",
-                                borderBottomWidth: 2,
-                                color: "#555555",
-                                fontWeight: 500,
-                                pl: 0,
-                                textWrap: "nowrap",
-                              }}
-                            >
-                              {farm.units.map((unit, i) => {
-                                return (
-                                  <Typography
-                                    key={i}
-                                    variant="h6"
-                                    sx={{
-                                      fontWeight: 500,
-                                      fontSize: 14,
-                                      backgroundColor: "#F5F6F8",
-                                      padding: "8px 12px 8px 0",
-                                      margin: "8px 0",
-                                      // marginBottom: "10px",
-                                      textWrap: "nowrap",
-                                    }}
-                                  >
-                                    {Number(unit.stockingLevel) ?? ""}
-                                  </Typography>
-                                );
-                              })}
-                            </TableCell>
-                          )}
-                          {role !== "MEMBER" && (
-                            <TableCell
-                              // align="center"
-                              sx={{
-                                borderBottomColor: "#ececec",
-                                borderBottomWidth: 2,
-                                color: "#555555",
-                                fontWeight: 500,
-                                pl: 0,
-                                textWrap: "nowrap",
-                              }}
-                              className="cursor-pointer table-padding"
-                            >
-                              {farm.units.map((unit) => {
-                                return (
-                                  <Box
-                                    sx={{
-                                      backgroundColor: "#F5F6F8",
-                                      borderTopRightRadius: "8px",
-                                      borderTopLeftRadius: "8px",
-                                      padding: "6px 12px",
-                                      // margin: "5px 0 8px 0",
-                                      margin: "8px 0",
-                                      textWrap: "nowrap",
-                                    }}
-                                    display={"flex"}
-                                    gap={1}
-                                    mb={1}
-                                    key={Number(unit.id)}
-                                  >
-                                    {selectedView === "fish" ? (
-                                      <Tooltip title="Fish" placement="top">
-                                        <Button
-                                          id="basic-button"
-                                          aria-controls={
-                                            open ? "basic-menu" : undefined
-                                          }
-                                          aria-haspopup="true"
-                                          aria-expanded={
-                                            open ? "true" : undefined
-                                          }
-                                          onClick={(e) =>
-                                            handleClick(e, unit, true)
-                                          }
-                                          disabled={
-                                            unit.isManager ? false : true
-                                          }
-                                          className=""
-                                          type="button"
-                                          variant="contained"
-                                          sx={{
-                                            background: "#06A19B",
-                                            fontWeight: "bold",
-                                            paddingX: 0.75,
-                                            paddingY: 0.25,
-                                            borderRadius: "8px",
-                                            alignItems: "center",
-                                            minWidth: "fit-content",
-                                          }}
+                                    </Tooltip>
+                                  ) : (
+                                    <Tooltip title="Water" placement="top">
+                                      <Button
+                                        id="basic-button"
+                                        aria-controls={
+                                          open ? "basic-menu" : undefined
+                                        }
+                                        aria-haspopup="true"
+                                        aria-expanded={
+                                          open ? "true" : undefined
+                                        }
+                                        onClick={(e) =>
+                                          handleClick(e, unit, false)
+                                        }
+                                        disabled={unit.isManager ? false : true}
+                                        className=""
+                                        type="button"
+                                        variant="contained"
+                                        sx={{
+                                          background: "#06A19B",
+                                          fontWeight: "bold",
+                                          paddingX: 1,
+                                          paddingY: 0.25,
+                                          borderRadius: "8px",
+                                          alignItems: "center",
+                                          minWidth: "fit-content",
+                                        }}
+                                      >
+                                        <svg
+                                          xmlns="http://www.w3.org/2000/svg"
+                                          width="18px"
+                                          height="22.5px"
+                                          viewBox="0 0 24 24"
                                         >
-                                          <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            width="22px"
-                                            height="22px"
-                                            viewBox="0 0 24 24"
-                                          >
-                                            <path
-                                              fill="none"
-                                              stroke="currentColor"
-                                              strokeLinecap="round"
-                                              strokeLinejoin="round"
-                                              strokeWidth="1"
-                                              d="M6.008 12h-.01M11 16.042c.463.153.908.329 1.31.61m0 0A3.95 3.95 0 0 1 14 19.885a.117.117 0 0 1-.118.116c-2.917-.013-4.224-.507-4.773-1.322L8 16.857c-2.492-.503-4.782-2.094-6-4.774c3-6.597 12.5-6.597 15.5 0m-5.19 4.57c2.17-.66 4.105-2.184 5.19-4.57m-5.19-4.569A3.95 3.95 0 0 0 14 4.282c0-.826-4.308.342-4.89 1.206L8 7.31m9.5 4.773c.333-.66 2.1-2.969 4.5-2.969c-.833.825-2.2 3.959-1 5.938c-1.2 0-3-2.309-3.5-2.969"
-                                              color="currentColor"
-                                            />
-                                          </svg>
-                                        </Button>
-                                      </Tooltip>
-                                    ) : (
-                                      <Tooltip title="Water" placement="top">
-                                        <Button
-                                          id="basic-button"
-                                          aria-controls={
-                                            open ? "basic-menu" : undefined
-                                          }
-                                          aria-haspopup="true"
-                                          aria-expanded={
-                                            open ? "true" : undefined
-                                          }
-                                          onClick={(e) =>
-                                            handleClick(e, unit, false)
-                                          }
-                                          disabled={
-                                            unit.isManager ? false : true
-                                          }
-                                          className=""
-                                          type="button"
-                                          variant="contained"
-                                          sx={{
-                                            background: "#06A19B",
-                                            fontWeight: "bold",
-                                            paddingX: 1,
-                                            paddingY: 0.25,
-                                            borderRadius: "8px",
-                                            alignItems: "center",
-                                            minWidth: "fit-content",
-                                          }}
-                                        >
-                                          <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            width="18px"
-                                            height="22.5px"
-                                            viewBox="0 0 24 24"
-                                          >
-                                            <path
-                                              fill="currentColor"
-                                              d="M12.275 19q.3-.025.513-.238T13 18.25q0-.35-.225-.562T12.2 17.5q-1.025.075-2.175-.562t-1.45-2.313q-.05-.275-.262-.45T7.825 14q-.35 0-.575.263t-.15.612q.425 2.275 2 3.25t3.175.875M12 22q-3.425 0-5.712-2.35T4 13.8q0-2.5 1.988-5.437T12 2q4.025 3.425 6.013 6.363T20 13.8q0 3.5-2.287 5.85T12 22m0-2q2.6 0 4.3-1.763T18 13.8q0-1.825-1.513-4.125T12 4.65Q9.025 7.375 7.513 9.675T6 13.8q0 2.675 1.7 4.438T12 20m0-8"
-                                            />
-                                          </svg>
-                                        </Button>
-                                      </Tooltip>
-                                    )}
-                                  </Box>
-                                );
-                              })}
-                            </TableCell>
-                          )}
-                        </TableRow>
-                      );
-                    })
-                  ) : (
-                    <TableRow>No Data Found</TableRow>
-                  )}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </Paper>
+                                          <path
+                                            fill="currentColor"
+                                            d="M12.275 19q.3-.025.513-.238T13 18.25q0-.35-.225-.562T12.2 17.5q-1.025.075-2.175-.562t-1.45-2.313q-.05-.275-.262-.45T7.825 14q-.35 0-.575.263t-.15.612q.425 2.275 2 3.25t3.175.875M12 22q-3.425 0-5.712-2.35T4 13.8q0-2.5 1.988-5.437T12 2q4.025 3.425 6.013 6.363T20 13.8q0 3.5-2.287 5.85T12 22m0-2q2.6 0 4.3-1.763T18 13.8q0-1.825-1.513-4.125T12 4.65Q9.025 7.375 7.513 9.675T6 13.8q0 2.675 1.7 4.438T12 20m0-8"
+                                          />
+                                        </svg>
+                                      </Button>
+                                    </Tooltip>
+                                  )}
+                                </Box>
+                              );
+                            })}
+                          </TableCell>
+                        )}
+                      </TableRow>
+                    );
+                  })
+                ) : (
+                  <TableRow>No Data Found</TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Paper>
 
-          <TransferModal
-            open={openTransferModal}
-            setOpen={setOpenTransferModal}
-            selectedProduction={selectedProduction}
-            farms={farms}
-            batches={batches}
-            productions={productions}
-          />
-          <WaterQualityParameter
-            open={openWaterQualityModal}
-            setOpen={setOpenWaterQualityModal}
-            selectedProduction={selectedProduction}
-            farms={farms}
-            productions={productions}
-          />
-        </>
-      ) : (
-        <Loader />
-      )}
+        <TransferModal
+          open={openTransferModal}
+          setOpen={setOpenTransferModal}
+          selectedProduction={selectedProduction}
+          farms={farms}
+          batches={batches}
+          productions={productions}
+        />
+        <WaterQualityParameter
+          open={openWaterQualityModal}
+          setOpen={setOpenWaterQualityModal}
+          selectedProduction={selectedProduction}
+          farms={farms}
+          productions={productions}
+        />
+      </>
     </>
   );
 }

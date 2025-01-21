@@ -341,7 +341,7 @@ export default function ProductionParaMeter({
       };
 
       setValue("predictedValues", predictedValues);
-      setValue("modelId", prediction.modelId);
+      setValue("modelId", prediction?.modelId);
     }
   }, [productionParaMeter, isEditFarm, setValue]);
 
