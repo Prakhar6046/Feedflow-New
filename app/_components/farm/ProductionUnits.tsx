@@ -859,6 +859,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
               <Button
                 type="submit"
                 variant="contained"
+                disabled={isApiCallInProgress ? true : false}
                 sx={{
                   background: "#06A19B",
                   fontWeight: 600,

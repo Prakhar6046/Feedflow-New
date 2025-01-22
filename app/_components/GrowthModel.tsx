@@ -13,7 +13,7 @@ import {
   Typography,
 } from "@mui/material";
 import { getCookie } from "cookies-next";
-import React from "react";
+import React, { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 interface InputType {
@@ -33,25 +33,36 @@ function GrowthModel() {
     reset,
     formState: { errors },
   } = useForm<InputType>();
+  const [isApiCallInProgress, setIsApiCallInProgress] =
+    useState<boolean>(false);
   const onSubmit: SubmitHandler<InputType> = async (data) => {
     const user = JSON.parse(loggedUser);
     if (user?.organisationId && data.name) {
-      const response = await fetch("/api/growth-model", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          model: data,
-          organisationId: user.organisationId,
-        }),
-      });
+      // Prevent API call if one is already in progress
+      if (isApiCallInProgress) return;
+      setIsApiCallInProgress(true);
+      try {
+        const response = await fetch("/api/growth-model", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            model: data,
+            organisationId: user.organisationId,
+          }),
+        });
 
-      if (response.ok) {
-        const data = await response.json();
-        toast.dismiss();
-        toast.success(data.message);
-        reset();
+        if (response.ok) {
+          const data = await response.json();
+          toast.dismiss();
+          toast.success(data.message);
+          reset();
+        }
+      } catch (error) {
+        toast.error("Something went wrong. Please try again.");
+      } finally {
+        setIsApiCallInProgress(false);
       }
     }
   };
