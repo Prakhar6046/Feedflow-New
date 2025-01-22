@@ -1,12 +1,10 @@
+import { CssBaseline } from "@mui/material";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import "./globals.css";
-import ThemeProvider from "./_components/theme";
-import { SettingsProvider } from "./contexts/SettingsContext";
 import { SettingsValueProps } from "./_components/settings/types";
-import { CssBaseline } from "@mui/material";
+import "./globals.css";
 import StoreProvider from "./StoreProvider";
-
 // Define the default settings according to SettingsValueProps
 const settings: SettingsValueProps = {
   themeMode: "light",
@@ -33,6 +31,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <StoreProvider>
+        <SpeedInsights />
         {/* <SettingsProvider defaultSettings={settings}>
         <ThemeProvider> */}
         <CssBaseline />
