@@ -3,6 +3,7 @@ import {
   Box,
   Button,
   FormControl,
+  FormHelperText,
   Grid,
   InputLabel,
   MenuItem,
@@ -26,7 +27,12 @@ interface InputType {
 }
 function GrowthModel() {
   const loggedUser: any = getCookie("logged-user");
-  const { register, handleSubmit, reset } = useForm<InputType>();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<InputType>();
   const onSubmit: SubmitHandler<InputType> = async (data) => {
     const user = JSON.parse(loggedUser);
     if (user?.organisationId && data.name) {
@@ -47,8 +53,6 @@ function GrowthModel() {
         toast.success(data.message);
         reset();
       }
-    } else {
-      toast.error("Please add model name");
     }
   };
   return (
@@ -90,7 +94,9 @@ function GrowthModel() {
                     type="text"
                     className="form-input"
                     focused
-                    {...register("name")}
+                    {...register("name", { required: true })}
+                    error={!!errors.name}
+                    helperText={errors.name ? "Name is required" : ""}
                     sx={{
                       width: "100%",
                     }}
@@ -106,12 +112,17 @@ function GrowthModel() {
                     labelId="feed-supply-select-label5"
                     id="feed-supply-select5"
                     label="Species *"
-                    {...register("specie")}
+                    {...register("specie", { required: true })}
                   >
                     <MenuItem value={" Tilapia (Oreochromis Nilotic x Aureus)"}>
                       Tilapia (Oreochromis Nilotic x Aureus)
                     </MenuItem>
                   </Select>
+                  {errors.specie && (
+                    <FormHelperText sx={{ color: "#d32f2f" }}>
+                      {errors.specie ? "Specie is required" : ""}
+                    </FormHelperText>
+                  )}
                 </FormControl>
               </Grid>
 
@@ -122,7 +133,13 @@ function GrowthModel() {
                   type="text"
                   className="form-input"
                   focused
-                  {...register("temperatureCoefficient")}
+                  {...register("temperatureCoefficient", { required: true })}
+                  error={!!errors.temperatureCoefficient}
+                  helperText={
+                    errors.temperatureCoefficient
+                      ? "Temperature coefficient is required"
+                      : ""
+                  }
                   sx={{
                     width: "100%",
                   }}
@@ -149,7 +166,13 @@ function GrowthModel() {
                   label="Growth equation - Length *"
                   type="text"
                   className="form-input"
-                  {...register("growthEquationLength")}
+                  {...register("growthEquationLength", { required: true })}
+                  error={!!errors.growthEquationLength}
+                  helperText={
+                    errors.growthEquationLength
+                      ? "Growth equation Length is required"
+                      : ""
+                  }
                   focused
                   sx={{
                     width: "100%",
@@ -163,7 +186,13 @@ function GrowthModel() {
                   label="Growth equation (bodyweight) *"
                   type="text"
                   className="form-input"
-                  {...register("growthEquationBodyWeight")}
+                  {...register("growthEquationBodyWeight", { required: true })}
+                  error={!!errors.growthEquationBodyWeight}
+                  helperText={
+                    errors.growthEquationBodyWeight
+                      ? "Growth equation body weight is required"
+                      : ""
+                  }
                   focused
                   sx={{
                     width: "100%",
@@ -177,7 +206,13 @@ function GrowthModel() {
                   label="Condition Factor *"
                   type="text"
                   className="form-input"
-                  {...register("conditionFactor1")}
+                  {...register("conditionFactor1", { required: true })}
+                  error={!!errors.conditionFactor1}
+                  helperText={
+                    errors.conditionFactor1
+                      ? "Condition factor is required"
+                      : ""
+                  }
                   focused
                   sx={{
                     width: "100%",
@@ -188,7 +223,7 @@ function GrowthModel() {
               {/* grid-6 */}
               <Grid item md={6} xs={12}>
                 <TextField
-                  label="Condition Factor *"
+                  label="Condition Factor"
                   type="text"
                   className="form-input"
                   {...register("conditionFactor2")}
