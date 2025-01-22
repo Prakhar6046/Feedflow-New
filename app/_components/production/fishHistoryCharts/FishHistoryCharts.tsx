@@ -22,7 +22,6 @@ function FishHistoryCharts({
   const [xAxisData, setXAxisData] = useState<(string | any)[]>([]);
   const [dateDiff, setDateDiff] = useState<number>();
 
-  console.log(productions);
   useEffect(() => {
     if (groupedData) {
       const createdAtArray = groupedData.units.flatMap(
@@ -37,7 +36,7 @@ function FishHistoryCharts({
         startD.setHours(0, 0, 0, 0);
         const endD = new Date(endDate);
         endD.setHours(0, 0, 0, 0);
-        const filteredTimestamps = createdAtArray?.filter((timestamp) => {
+        const filteredTimestamps = createdAtArray?.filter((timestamp: any) => {
           if (timestamp) {
             const date = new Date(timestamp);
             date.setHours(0, 0, 0, 0);
@@ -51,8 +50,7 @@ function FishHistoryCharts({
       }
     }
   }, [productions, startDate, endDate]);
-  console.log(groupedData);
-  console.log(xAxisData);
+
   return (
     <Grid
       container

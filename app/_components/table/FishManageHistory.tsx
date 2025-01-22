@@ -174,7 +174,6 @@ const FishManageHistoryTable: React.FC<Props> = ({
   ) => {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
-    console.log(isAsc);
     setOrderBy(property);
     dispatch(
       breadcrumsAction.handleSort({
@@ -226,7 +225,6 @@ const FishManageHistoryTable: React.FC<Props> = ({
 
         return 0;
       });
-      console.log(sortedData);
       const finalSortedData = {
         farm: groupedData?.farm,
         units: [
@@ -328,7 +326,6 @@ const FishManageHistoryTable: React.FC<Props> = ({
       setTab("list");
     }
   }, []);
-  console.log(fishHistoryData);
   return (
     <Box
       sx={{

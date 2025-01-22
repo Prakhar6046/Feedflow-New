@@ -174,7 +174,6 @@ const WaterManageHistoryTable: React.FC<Props> = ({
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
     setOrderBy(property);
-    console.log(property);
     dispatch(
       breadcrumsAction.handleSort({
         direction: isAsc ? "desc" : "asc",

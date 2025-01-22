@@ -84,6 +84,7 @@ export interface ProductionParaMeterType {
   updatedAt: string;
   YearBasedPredication: [
     {
+      modelId(arg0: string, modelId: any): unknown;
       id: number;
       waterQualityPredictedParameterId: number;
       createdAt: string;
@@ -130,4 +131,21 @@ export interface GrowthModel {
   organisationId: 1;
   modelId: 2;
   models: Models;
+}
+
+export interface Prediction {
+  id: Number;
+  waterQualityPredictedParameterId: Number;
+  createdAt: String;
+  updatedAt: String;
+  waterTemp: any;
+  DO: any;
+  TSS: any;
+  NH4: any;
+  NO3: any;
+  NO2: any;
+  ph: any;
+  visibility: any;
+  idealRange: any;
+  modelId: Number;
 }

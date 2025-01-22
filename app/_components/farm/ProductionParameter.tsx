@@ -2,7 +2,11 @@ import { getLocalItem, setLocalItem, Years } from "@/app/_lib/utils";
 import { waterQualityPredictedHead } from "@/app/_lib/utils/tableHeadData";
 import * as validationPattern from "@/app/_lib/utils/validationPatterns/index";
 import * as validationMessage from "@/app/_lib/utils/validationsMessage/index";
-import { GrowthModel, ProductionParaMeterType } from "@/app/_typeModels/Farm";
+import {
+  GrowthModel,
+  Prediction,
+  ProductionParaMeterType,
+} from "@/app/_typeModels/Farm";
 import { selectFarm } from "@/lib/features/farm/farmSlice";
 import { useAppSelector } from "@/lib/hooks";
 import {
@@ -288,7 +292,7 @@ export default function ProductionParaMeter({
       productionParaMeter &&
       productionParaMeter[0]?.YearBasedPredication
     ) {
-      const prediction = productionParaMeter[0].YearBasedPredication[0];
+      const prediction: any = productionParaMeter[0].YearBasedPredication[0];
 
       // Creating the idealRange object for Min and Max
       const idealRange = {

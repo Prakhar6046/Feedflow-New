@@ -15,16 +15,17 @@ import dayjs from "dayjs";
 interface Props {
   selectedAverage: String;
   setSelectedAverage: (val: any) => void;
-  selectedDropDownfarms: Array<string>;
+  selectedDropDownfarms: { id: string; option: string }[] | [];
   allFarms: { id: string; option: string }[];
   allUnits: { id: string; option: string }[];
-  selectedDropDownUnits: Array<string>;
-  selectedDropDownYears: Array<number>;
+  selectedDropDownUnits: { id: string; option: string }[] | [];
+  selectedDropDownYears: Array<number> | [];
   setEndMonth: (val: number) => void;
   setStartMonth: (val: number) => void;
   handleYearChange: (e: any) => void;
   handleChange: (e: any, isFarmChange: boolean) => void;
   startMonth: number;
+  endMonth: number;
 }
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -49,6 +50,7 @@ function ProductionManagerFilter({
   handleYearChange,
   handleChange,
   startMonth,
+  endMonth,
 }: Props) {
   const currentYear = dayjs().year();
   const years = Array.from({ length: 6 }, (_, i) => currentYear - i);
@@ -64,24 +66,25 @@ function ProductionManagerFilter({
         }}
       >
         <Box sx={{ width: "100%" }}>
-          <FormControl fullWidth className="form-input" focused>
+          <FormControl fullWidth className="form-input selected" focused>
             <InputLabel id="demo-simple-select-label-1">All farms</InputLabel>
             <Select
               labelId="demo-simple-select-label-1"
               id="demo-simple-select"
               label="All farms"
               multiple
-              value={selectedDropDownfarms.map((farm) => farm.option)}
+              sx={{ color: "black" }}
+              value={selectedDropDownfarms?.map((farm: any) => farm.option)}
               onChange={(e) => handleChange(e, true)}
               input={<OutlinedInput label="All farms" />}
               renderValue={(selected) => selected.join(", ")}
               MenuProps={MenuProps}
             >
-              {allFarms?.map((farm) => (
+              {allFarms?.map((farm: any) => (
                 <MenuItem key={farm.id} value={farm.option}>
                   <Checkbox
-                    checked={selectedDropDownfarms.some(
-                      (selected) => selected.option === farm.option
+                    checked={selectedDropDownfarms?.some(
+                      (selected: any) => selected.option === farm.option
                     )}
                   />
                   <ListItemText primary={farm.option} />
@@ -101,30 +104,31 @@ function ProductionManagerFilter({
         }}
       >
         <Box sx={{ width: "100%" }}>
-          <FormControl fullWidth className="form-input" focused>
-            <InputLabel
-              id="demo-simple-select-label"
-              disabled={selectedDropDownfarms.length > 1 ? false : true}
-            >
-              All units
-            </InputLabel>
+          <FormControl
+            fullWidth
+            className={`form-input ${
+              selectedDropDownfarms?.length >= 1 && "selected"
+            }`}
+            focused
+          >
+            <InputLabel id="demo-simple-select-label">All units</InputLabel>
             <Select
               labelId="demo-simple-select-label"
               id="demo-simple-select"
               label="All units"
               multiple
-              // readOnly={selectedDropDownfarms.length ? false : true}
-              value={selectedDropDownUnits.map((unit) => unit?.option)}
+              disabled={selectedDropDownfarms?.length >= 1 ? false : true}
+              value={selectedDropDownUnits?.map((unit: any) => unit?.option)}
               onChange={(e) => handleChange(e, false)}
               input={<OutlinedInput label="All units" />}
               renderValue={(selected) => selected.join(", ")}
               MenuProps={MenuProps}
             >
-              {allUnits.map((unit) => (
+              {allUnits.map((unit: any) => (
                 <MenuItem key={unit.id} value={unit.option}>
                   <Checkbox
-                    checked={selectedDropDownUnits.some(
-                      (selected) => selected?.option === unit.option
+                    checked={selectedDropDownUnits?.some(
+                      (selected: any) => selected?.option === unit.option
                     )}
                   />
                   <ListItemText primary={unit.option} />
@@ -144,14 +148,26 @@ function ProductionManagerFilter({
         }}
       >
         <Box sx={{ width: "100%" }}>
-          <FormControl fullWidth className="form-input" focused>
+          <FormControl
+            fullWidth
+            className={`form-input ${
+              selectedDropDownfarms?.length &&
+              selectedDropDownUnits?.length &&
+              "selected"
+            }`}
+            focused
+          >
             <InputLabel id="demo-simple-select-label-1">Select Year</InputLabel>
             <Select
               labelId="demo-simple-select-label-1"
               id="demo-simple-select"
               label="Select Year"
               multiple
-              disabled={selectedDropDownUnits?.length ? false : true}
+              disabled={
+                selectedDropDownfarms?.length && selectedDropDownUnits?.length
+                  ? false
+                  : true
+              }
               value={selectedDropDownYears}
               onChange={(e) => handleYearChange(e)}
               input={<OutlinedInput label="Select Year" />}
@@ -160,7 +176,7 @@ function ProductionManagerFilter({
             >
               {years.map((year) => (
                 <MenuItem key={year} value={year}>
-                  <Checkbox checked={selectedDropDownYears.includes(year)} />
+                  <Checkbox checked={selectedDropDownYears?.includes(year)} />
                   <ListItemText primary={year} />
                 </MenuItem>
               ))}
@@ -178,13 +194,28 @@ function ProductionManagerFilter({
         }}
       >
         <Box sx={{ width: "100%" }}>
-          <FormControl fullWidth className="form-input" focused>
+          <FormControl
+            fullWidth
+            className={`form-input ${
+              selectedDropDownfarms?.length &&
+              selectedDropDownUnits?.length &&
+              selectedDropDownYears?.length &&
+              "selected"
+            }`}
+            focused
+          >
             <InputLabel id="demo-simple-select-label">Start month</InputLabel>
             <Select
               labelId="demo-simple-select-label"
               id="demo-simple-select"
               label="Start month"
-              disabled={selectedDropDownYears?.length ? false : true}
+              disabled={
+                selectedDropDownfarms?.length &&
+                selectedDropDownUnits?.length &&
+                selectedDropDownYears?.length
+                  ? false
+                  : true
+              }
               onChange={(e) => setStartMonth(Number(e.target.value))}
             >
               {months.map((month) => (
@@ -206,13 +237,30 @@ function ProductionManagerFilter({
         }}
       >
         <Box sx={{ width: "100%" }}>
-          <FormControl fullWidth className="form-input" focused>
+          <FormControl
+            fullWidth
+            className={`form-input ${
+              selectedDropDownfarms?.length &&
+              selectedDropDownUnits?.length &&
+              selectedDropDownYears?.length &&
+              startMonth &&
+              "selected"
+            }`}
+            focused
+          >
             <InputLabel id="demo-simple-select-label">End month</InputLabel>
             <Select
               labelId="demo-simple-select-label"
               id="demo-simple-select"
               label="End month"
-              disabled={selectedDropDownYears?.length ? false : true}
+              disabled={
+                selectedDropDownfarms?.length &&
+                selectedDropDownUnits?.length &&
+                selectedDropDownYears?.length &&
+                startMonth
+                  ? false
+                  : true
+              }
               onChange={(e) => setEndMonth(Number(e.target.value))}
             >
               {months.map((month) => (
@@ -238,13 +286,33 @@ function ProductionManagerFilter({
         }}
       >
         <Box sx={{ width: "100%" }}>
-          <FormControl fullWidth className="form-input" focused>
+          <FormControl
+            fullWidth
+            className={`form-input ${
+              selectedDropDownfarms?.length &&
+              selectedDropDownUnits?.length &&
+              selectedDropDownYears?.length &&
+              startMonth &&
+              endMonth &&
+              "selected"
+            }`}
+            focused
+          >
             <InputLabel id="demo-simple-select-label">Averages</InputLabel>
             <Select
               labelId="demo-simple-select-label"
               id="demo-simple-select"
               label="Averages"
               value={selectedAverage}
+              disabled={
+                selectedDropDownfarms &&
+                selectedDropDownUnits &&
+                selectedDropDownYears &&
+                startMonth &&
+                endMonth
+                  ? false
+                  : true
+              }
               onChange={(e) => setSelectedAverage(e.target.value)}
             >
               {averagesDropdown.map((data, i) => {

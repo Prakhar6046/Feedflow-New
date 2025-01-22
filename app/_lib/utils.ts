@@ -227,8 +227,6 @@ export const ProductionSortTables = (
     if (selectedView === "fish") {
       const sortedData = [...groupedData].sort(
         (production1: FarmGroup, production2: FarmGroup) => {
-          console.log(selectedView);
-          console.log(property);
           if (property === "Farm") {
             if (production1.farm < production2.farm) return -1 * orderType;
             if (production1.farm > production2.farm) return 1 * orderType;
