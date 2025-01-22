@@ -19,7 +19,7 @@ interface Props {
   allFarms: { id: string; option: string }[];
   allUnits: { id: string; option: string }[];
   selectedDropDownUnits: { id: string; option: string }[] | [];
-  selectedDropDownYears: Array<number> | [];
+  selectedDropDownYears: Array<number> | [] | any;
   setEndMonth: (val: number) => void;
   setStartMonth: (val: number) => void;
   handleYearChange: (e: any) => void;
