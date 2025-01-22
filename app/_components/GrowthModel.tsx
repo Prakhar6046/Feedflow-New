@@ -48,7 +48,7 @@ function GrowthModel() {
         reset();
       }
     } else {
-      toast.error("Please add modol name");
+      toast.error("Please add model name");
     }
   };
   return (
