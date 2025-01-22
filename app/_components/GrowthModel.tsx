@@ -29,7 +29,7 @@ function GrowthModel() {
   const { register, handleSubmit, reset } = useForm<InputType>();
   const onSubmit: SubmitHandler<InputType> = async (data) => {
     const user = JSON.parse(loggedUser);
-    if (user?.organisationId && Object.keys(data)?.length) {
+    if (user?.organisationId && data.name) {
       const response = await fetch("/api/growth-model", {
         method: "POST",
         headers: {
@@ -47,6 +47,8 @@ function GrowthModel() {
         toast.success(data.message);
         reset();
       }
+    } else {
+      toast.error("Please add modol name");
     }
   };
   return (
@@ -81,10 +83,10 @@ function GrowthModel() {
               <Grid item md={6} xs={12}>
                 <FormControl fullWidth className="form-input" focused>
                   <InputLabel id="feed-supply-select-label5">
-                    Module Name *
+                    Model Name *
                   </InputLabel>
                   <TextField
-                    label="Module Name *"
+                    label="Model Name *"
                     type="text"
                     className="form-input"
                     focused
