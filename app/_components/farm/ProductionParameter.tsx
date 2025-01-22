@@ -15,6 +15,7 @@ import {
   Checkbox,
   FormControl,
   FormControlLabel,
+  FormHelperText,
   Grid,
   InputLabel,
   MenuItem,
@@ -702,7 +703,7 @@ export default function ProductionParaMeter({
                 labelId="feed-supply-select-label5"
                 id="feed-supply-select5"
                 label="Growth Model *"
-                {...register("modelId")}
+                {...register("modelId", { required: true })}
                 value={watch("modelId") || ""}
                 onChange={(e) => {
                   setValue("modelId", Number(e.target.value));
@@ -717,6 +718,11 @@ export default function ProductionParaMeter({
                     );
                   })}
               </Select>
+              {errors.modelId && (
+                <FormHelperText sx={{ color: "#d32f2f" }}>
+                  {errors.modelId ? "Model is required" : ""}
+                </FormHelperText>
+              )}
             </FormControl>
           </Grid>
         </Box>

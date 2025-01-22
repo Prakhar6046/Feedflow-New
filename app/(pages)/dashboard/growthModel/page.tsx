@@ -8,10 +8,10 @@ export default async function Page() {
   return (
     <>
       <BasicBreadcrumbs
-        heading={"Growth Parameter"}
+        heading={"Growth Models"}
         links={[
           { name: "Dashboard", link: "/dashboard" },
-          { name: "Growth Parameter", link: "/dashboard/growthModel" },
+          { name: "Growth Models", link: "/dashboard/growthModel" },
         ]}
         hideSearchInput
       />
