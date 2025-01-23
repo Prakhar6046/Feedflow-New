@@ -939,6 +939,31 @@ export default function ProductionTable({
                           }}
                         >
                           {farm.units?.map((unit: any, i) => {
+                            const value =
+                              selectedView === "water"
+                                ? selectedAverage === "Monthly average"
+                                  ? String(
+                                      unit.monthlyAveragesWater?.waterTemp
+                                    ) || ""
+                                  : selectedAverage === "Yearly average"
+                                  ? String(
+                                      unit.yearlyAveragesWater?.waterTemp
+                                    ) || ""
+                                  : selectedAverage === "All-time average"
+                                  ? String(
+                                      unit.allTimeAveragesWater?.waterTemp
+                                    ) || ""
+                                  : selectedAverage === "Individual average"
+                                  ? String(
+                                      unit.individualAveragesWater?.waterTemp
+                                    ) || ""
+                                  : unit.waterTemp ?? ""
+                                : unit?.fishSupply?.batchNumber;
+
+                            // Calculate padding based on whether a value exists
+                            const paddingValue = value
+                              ? "8px 12px 8px 0"
+                              : "19px 12px 19px 0";
                             return (
                               <Typography
                                 key={i}
@@ -947,22 +972,12 @@ export default function ProductionTable({
                                   fontWeight: 500,
                                   fontSize: 14,
                                   backgroundColor: "#F5F6F8",
-                                  padding: `${
-                                    selectedView === "water"
-                                      ? unit.waterTemp
-                                        ? "8px 12px 8px 0"
-                                        : "19px 12px 19px 0"
-                                      : unit?.fishSupply?.batchNumber
-                                      ? "8px 12px 8px 0"
-                                      : "19px 12px 19px 0"
-                                  }`,
+                                  padding: paddingValue,
                                   margin: "8px 0",
                                   textWrap: "nowrap",
                                 }}
                               >
-                                {selectedView === "water"
-                                  ? unit.waterTemp ?? ""
-                                  : unit?.fishSupply?.batchNumber ?? ""}
+                                {value}
                               </Typography>
                             );
                           })}
@@ -980,6 +995,24 @@ export default function ProductionTable({
                           }}
                         >
                           {farm.units.map((unit, i) => {
+                            const value =
+                              selectedView === "water"
+                                ? selectedAverage === "Monthly average"
+                                  ? String(unit.monthlyAveragesWater?.DO) || ""
+                                  : selectedAverage === "Yearly average"
+                                  ? String(unit.yearlyAveragesWater?.DO) || ""
+                                  : selectedAverage === "All-time average"
+                                  ? String(unit.allTimeAveragesWater?.DO) || ""
+                                  : selectedAverage === "Individual average"
+                                  ? String(unit.individualAveragesWater?.DO) ||
+                                    ""
+                                  : unit.DO ?? ""
+                                : unit?.fishSupply?.age;
+
+                            // Calculate padding based on whether a value exists
+                            const paddingValue = value
+                              ? "8px 12px 8px 0"
+                              : "19px 12px 19px 0";
                             return (
                               <Typography
                                 key={i}
@@ -987,23 +1020,13 @@ export default function ProductionTable({
                                 sx={{
                                   fontWeight: 500,
                                   fontSize: 14,
-                                  padding: `${
-                                    selectedView === "water"
-                                      ? unit.DO
-                                        ? "8px 12px 8px 0"
-                                        : "19px 12px 19px 0"
-                                      : unit?.fishSupply?.age
-                                      ? "8px 12px 8px 0"
-                                      : "19px 12px 19px 0"
-                                  }`,
+                                  padding: paddingValue,
                                   backgroundColor: "#F5F6F8",
                                   margin: "8px 0",
                                   textWrap: "nowrap",
                                 }}
                               >
-                                {selectedView === "water"
-                                  ? unit.DO ?? ""
-                                  : unit?.fishSupply?.age ?? ""}
+                                {value}
                               </Typography>
                             );
                           })}
