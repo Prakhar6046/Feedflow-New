@@ -811,7 +811,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                         </TableCell>
                       )}
 
-                      {index !== 0 && (
+                      {
                         <TableCell
                           sx={{
                             border: 0,
@@ -848,7 +848,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                             </svg>
                           </Box>
                         </TableCell>
-                      )}
+                      }
                     </TableRow>
                     {/* ))} */}
                   </TableBody>
@@ -925,7 +925,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                   borderRadius: "8px",
                 }}
               >
-                Next
+                Save
               </Button>
             </Box>
           </Box>
