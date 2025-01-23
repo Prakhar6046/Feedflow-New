@@ -143,7 +143,7 @@ export async function POST(req: NextRequest) {
     }
     // const productionParameter = body.productionParameter;
     const paylaodForProductionParameter = {
-      ...productionParameterPayload,
+      ...productionParameterPayload.predictedValues,
       idealRange: productionParameterPayload.idealRange,
       modelId,
     };

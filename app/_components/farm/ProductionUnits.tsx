@@ -172,7 +172,40 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
           editFarm?.WaterQualityPredictedParameters[0]?.id
         ) {
           payload = {
-            productionParameter: farmPredictionValues,
+            productionParameter: {
+              ...farmPredictionValues,
+              predictedValues: {
+                waterTemp:
+                  farmPredictionValues.predictedValues["Water Temperature °C"],
+                DO: farmPredictionValues.predictedValues[
+                  "Dissolved Oxygen (DO) mg/L"
+                ],
+                TSS: farmPredictionValues.predictedValues[
+                  "Total Suspended solids (TSS)"
+                ],
+                NH4: farmPredictionValues.predictedValues["Ammonia (NH₄) mg/L"],
+                NO3: farmPredictionValues.predictedValues["Nitrate (NO₃) mg/L"],
+                NO2: farmPredictionValues.predictedValues["Nitrite (NO₂) mg/L"],
+                ph: farmPredictionValues.predictedValues["pH"],
+                visibility:
+                  farmPredictionValues.predictedValues["Visibility cm"],
+              },
+              idealRange: {
+                waterTemp:
+                  farmPredictionValues.idealRange["Water Temperature °C"],
+                DO: farmPredictionValues.idealRange[
+                  "Dissolved Oxygen (DO) mg/L"
+                ],
+                TSS: farmPredictionValues.idealRange[
+                  "Total Suspended solids (TSS)"
+                ],
+                NH4: farmPredictionValues.idealRange["Ammonia (NH₄) mg/L"],
+                NO3: farmPredictionValues.idealRange["Nitrate (NO₃) mg/L"],
+                NO2: farmPredictionValues.idealRange["Nitrite (NO₂) mg/L"],
+                ph: farmPredictionValues.idealRange["pH"],
+                visibility: farmPredictionValues.idealRange["Visibility cm"],
+              },
+            },
 
             farmAddress: {
               addressLine1: farmData.addressLine1,
@@ -197,7 +230,40 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
           };
         } else {
           payload = {
-            productionParameter: farmPredictionValues,
+            productionParameter: {
+              ...farmPredictionValues,
+              predictedValues: {
+                waterTemp:
+                  farmPredictionValues.predictedValues["Water Temperature °C"],
+                DO: farmPredictionValues.predictedValues[
+                  "Dissolved Oxygen (DO) mg/L"
+                ],
+                TSS: farmPredictionValues.predictedValues[
+                  "Total Suspended solids (TSS)"
+                ],
+                NH4: farmPredictionValues.predictedValues["Ammonia (NH₄) mg/L"],
+                NO3: farmPredictionValues.predictedValues["Nitrate (NO₃) mg/L"],
+                NO2: farmPredictionValues.predictedValues["Nitrite (NO₂) mg/L"],
+                ph: farmPredictionValues.predictedValues["pH"],
+                visibility:
+                  farmPredictionValues.predictedValues["Visibility cm"],
+              },
+              idealRange: {
+                waterTemp:
+                  farmPredictionValues.idealRange["Water Temperature °C"],
+                DO: farmPredictionValues.idealRange[
+                  "Dissolved Oxygen (DO) mg/L"
+                ],
+                TSS: farmPredictionValues.idealRange[
+                  "Total Suspended solids (TSS)"
+                ],
+                NH4: farmPredictionValues.idealRange["Ammonia (NH₄) mg/L"],
+                NO3: farmPredictionValues.idealRange["Nitrate (NO₃) mg/L"],
+                NO2: farmPredictionValues.idealRange["Nitrite (NO₂) mg/L"],
+                ph: farmPredictionValues.idealRange["pH"],
+                visibility: farmPredictionValues.idealRange["Visibility cm"],
+              },
+            },
             farmAddress: {
               addressLine1: farmData.addressLine1,
               addressLine2: farmData.addressLine2,

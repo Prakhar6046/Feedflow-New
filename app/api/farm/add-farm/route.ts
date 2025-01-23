@@ -71,9 +71,11 @@ export async function POST(req: NextRequest) {
 
     //Creating production parameter
     const paylaodForProductionParameter = {
-      ...productionParameter,
+      ...productionParameter.predictedValues,
       idealRange: productionParameter.idealRange,
+      modelId: productionParameter.modelId,
     };
+
     await prisma.waterQualityPredictedParameters.create({
       data: {
         farmId: farm.id,
