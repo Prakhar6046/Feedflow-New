@@ -10,7 +10,7 @@ export interface FarmInitialState {
 export interface Farm {
   name: String;
   mangerId?: String[];
-  FarmManager?: {
+  FarmManger?: {
     userId: Number;
   }[];
   addressLine1: String;

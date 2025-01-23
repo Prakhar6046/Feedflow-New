@@ -74,7 +74,7 @@ export const GET = async (request: NextRequest) => {
     let dataWithIsManager;
     if (role !== "SUPERADMIN") {
       // currentUserFarms = get farms for current user here
-      const currentUserFarms = await prisma.farmManager.findMany({
+      const currentUserFarms = await prisma.farmManger.findMany({
         where: { userId: Number(userId) },
       });
 

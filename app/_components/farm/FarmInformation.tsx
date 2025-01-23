@@ -101,9 +101,9 @@ const FarmInformation: NextPage<Props> = ({
       setValue("fishFarmer", editFarm?.fishFarmer);
       setValue("lat", String(Number(editFarm?.lat).toFixed(2)));
       setValue("lng", String(Number(editFarm?.lng).toFixed(2)));
-      if (editFarm.FarmManager) {
+      if (editFarm.FarmManger) {
         let managerIds: String[] = [];
-        editFarm.FarmManager.map((user: any) => {
+        editFarm.FarmManger.map((user: any) => {
           if (user.userId) {
             managerIds.push(String(user.userId));
           }
