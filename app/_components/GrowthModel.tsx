@@ -31,6 +31,7 @@ function GrowthModel() {
     register,
     handleSubmit,
     reset,
+    clearErrors,
     formState: { errors },
   } = useForm<InputType>();
   const [isApiCallInProgress, setIsApiCallInProgress] =
@@ -123,7 +124,12 @@ function GrowthModel() {
                     labelId="feed-supply-select-label5"
                     id="feed-supply-select5"
                     label="Species *"
-                    {...register("specie", { required: true })}
+                    {...register("specie", {
+                      required: true,
+                    })}
+                    onChange={(e) => {
+                      clearErrors("specie");
+                    }}
                   >
                     <MenuItem value={" Tilapia (Oreochromis Nilotic x Aureus)"}>
                       Tilapia (Oreochromis Nilotic x Aureus)

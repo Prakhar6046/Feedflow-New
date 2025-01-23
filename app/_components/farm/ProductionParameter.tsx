@@ -2,11 +2,7 @@ import { getLocalItem, setLocalItem, Years } from "@/app/_lib/utils";
 import { waterQualityPredictedHead } from "@/app/_lib/utils/tableHeadData";
 import * as validationPattern from "@/app/_lib/utils/validationPatterns/index";
 import * as validationMessage from "@/app/_lib/utils/validationsMessage/index";
-import {
-  GrowthModel,
-  Prediction,
-  ProductionParaMeterType,
-} from "@/app/_typeModels/Farm";
+import { GrowthModel, ProductionParaMeterType } from "@/app/_typeModels/Farm";
 import { selectFarm } from "@/lib/features/farm/farmSlice";
 import { useAppSelector } from "@/lib/hooks";
 import {
@@ -32,8 +28,6 @@ import TableRow from "@mui/material/TableRow";
 import { getCookie } from "cookies-next";
 import { useEffect, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-
-// Function to create data (assuming this structure for the data)
 
 interface Props {
   setActiveStep: (val: number) => void;
@@ -66,6 +60,7 @@ export default function ProductionParaMeter({
     watch,
     register,
     setValue,
+    clearErrors,
     formState: { errors },
   } = useForm<FormData>({
     defaultValues: {
@@ -151,147 +146,6 @@ export default function ProductionParaMeter({
     setLocalItem("productionParametes", payload);
     setActiveStep(3);
   };
-  // const onSubmit: SubmitHandler<FormData> = async (data) => {
-  //   const farmData = getLocalItem("farmData");
-  //   const farmProductionUnits = getLocalItem("farmProductionUnits");
-  //   if (farmData && farmProductionUnits && data) {
-  //     // Prevent API call if one is already in progress
-  //     if (isApiCallInProgress) return;
-  //     setIsApiCallInProgress(true);
-
-  //     try {
-  //       const loggedUserData = JSON.parse(userData);
-  //       let payload;
-  //       if (
-  //         isEditFarm === "true" &&
-  //         editFarm?.farmAddress?.id &&
-  //         editFarm?.WaterQualityPredictedParameters[0]?.id
-  //       ) {
-  //         payload = {
-  //           productionParameter: {
-  //             waterTemp: data.predictedValues["Water Temperature °C"],
-  //             DO: data.predictedValues["Dissolved Oxygen (DO) mg/L"],
-  //             TSS: data.predictedValues["Total Suspended solids (TSS)"],
-  //             NH4: data.predictedValues["Ammonia (NH₄) mg/L"],
-  //             NO3: data.predictedValues["Nitrate (NO₃) mg/L"],
-  //             NO2: data.predictedValues["Nitrite (NO₂) mg/L"],
-  //             ph: data.predictedValues["pH"],
-  //             visibility: data.predictedValues["Visibility cm"],
-  //             GrowthModel: data.growthModel,
-  //             yearBasedPredicationId:
-  //               editFarm.WaterQualityPredictedParameters[0].id,
-  //             idealRange: {
-  //               waterTemp: data.idealRange["Water Temperature °C"],
-  //               DO: data.idealRange["Dissolved Oxygen (DO) mg/L"],
-  //               TSS: data.idealRange["Total Suspended solids (TSS)"],
-  //               NH4: data.idealRange["Ammonia (NH₄) mg/L"],
-  //               NO3: data.idealRange["Nitrate (NO₃) mg/L"],
-  //               NO2: data.idealRange["Nitrite (NO₂) mg/L"],
-  //               ph: data.idealRange["pH"],
-  //               visibility: data.idealRange["Visibility cm"],
-  //             },
-  //           },
-
-  //           farmAddress: {
-  //             addressLine1: farmData.addressLine1,
-  //             addressLine2: farmData.addressLine2,
-  //             city: farmData.city,
-  //             province: farmData.province,
-  //             zipCode: farmData.zipCode,
-  //             country: farmData.country,
-  //             id: editFarm.farmAddress?.id,
-  //           },
-  //           productionUnits: farmProductionUnits,
-  //           name: farmData.name,
-  //           farmAltitude: farmData.farmAltitude,
-  //           fishFarmer: farmData.fishFarmer,
-  //           lat: farmData.lat,
-  //           lng: farmData.lng,
-  //           id: editFarm?.id,
-  //           organsationId: loggedUserData.organisationId,
-  //           productions: editFarm.production,
-  //           mangerId: farmData.mangerId ? farmData.mangerId : null,
-  //           userId: loggedUserData.id,
-  //         };
-  //       } else {
-  //         payload = {
-  //           productionParameter: {
-  //             waterTemp: data.predictedValues["Water Temperature °C"],
-  //             DO: data.predictedValues["Dissolved Oxygen (DO) mg/L"],
-  //             TSS: data.predictedValues["Total Suspended solids (TSS)"],
-  //             NH4: data.predictedValues["Ammonia (NH₄) mg/L"],
-  //             NO3: data.predictedValues["Nitrate (NO₃) mg/L"],
-  //             NO2: data.predictedValues["Nitrite (NO₂) mg/L"],
-  //             ph: data.predictedValues["pH"],
-  //             visibility: data.predictedValues["Visibility cm"],
-  //             GrowthModel: data.growthModel,
-  //             idealRange: {
-  //               waterTemp: data.idealRange["Water Temperature °C"],
-  //               DO: data.idealRange["Dissolved Oxygen (DO) mg/L"],
-  //               TSS: data.idealRange["Total Suspended solids (TSS)"],
-  //               NH4: data.idealRange["Ammonia (NH₄) mg/L"],
-  //               NO3: data.idealRange["Nitrate (NO₃) mg/L"],
-  //               NO2: data.idealRange["Nitrite (NO₂) mg/L"],
-  //               ph: data.idealRange["pH"],
-  //               visibility: data.idealRange["Visibility cm"],
-  //             },
-  //           },
-
-  //           farmAddress: {
-  //             addressLine1: farmData.addressLine1,
-  //             addressLine2: farmData.addressLine2,
-  //             city: farmData.city,
-  //             province: farmData.province,
-  //             zipCode: farmData.zipCode,
-  //             country: farmData.country,
-  //           },
-  //           productionUnits: farmProductionUnits,
-  //           name: farmData.name,
-  //           farmAltitude: farmData.farmAltitude,
-  //           lat: farmData.lat,
-  //           lng: farmData.lng,
-  //           fishFarmer: farmData.fishFarmer,
-  //           organsationId: loggedUserData.organisationId,
-  //           mangerId: farmData.mangerId ? farmData.mangerId : null,
-  //           userId: loggedUserData.id,
-  //         };
-  //       }
-
-  //       if (Object.keys(payload).length && payload.name) {
-  //         const response = await fetch(
-  //           `${
-  //             isEditFarm === "true"
-  //               ? "/api/farm/edit-farm"
-  //               : "/api/farm/add-farm"
-  //           }`,
-  //           {
-  //             method: "POST",
-  //             headers: {
-  //               "Content-Type": "application/json",
-  //             },
-  //             body: JSON.stringify(payload),
-  //           }
-  //         );
-  //         const responseData = await response.json();
-  //         toast.success(responseData.message);
-
-  //         if (responseData.status) {
-  //           setActiveStep(4);
-  //           deleteCookie("isEditFarm");
-  //           removeLocalItem("farmData");
-  //           removeLocalItem("farmProductionUnits");
-  //           removeLocalItem("productionParametes");
-  //         }
-  //       } else {
-  //         toast.error("Please fill out the all feilds");
-  //       }
-  //     } catch (error) {
-  //       toast.error("Something went wrong. Please try again.");
-  //     } finally {
-  //       setIsApiCallInProgress(false);
-  //     }
-  //   }
-  // };
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -722,6 +576,7 @@ export default function ProductionParaMeter({
                 value={watch("modelId") || ""}
                 onChange={(e) => {
                   setValue("modelId", Number(e.target.value));
+                  clearErrors("modelId");
                 }}
               >
                 {growthModels &&
@@ -766,8 +621,6 @@ export default function ProductionParaMeter({
               borderRadius: "8px",
               border: "1px solid #06A19B",
             }}
-
-            // onClick={() => setCookie("activeStep", 0)}
           >
             Previous
           </Button>
