@@ -146,7 +146,9 @@ export async function PUT(req: NextRequest, context: { params: any }) {
             role: contact.role,
             email: contact.email,
             phone: contact.phone,
-            userId: String(userId), // Keep the userId association
+            userId: String(userId),
+
+            // Keep the userId association
           },
         });
       }

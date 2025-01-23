@@ -107,7 +107,7 @@ function GrowthModel() {
                     focused
                     {...register("name", { required: true })}
                     error={!!errors.name}
-                    helperText={errors.name ? "Name is required" : ""}
+                    helperText={errors.name ? "This feild is required" : ""}
                     sx={{
                       width: "100%",
                     }}
@@ -131,7 +131,7 @@ function GrowthModel() {
                   </Select>
                   {errors.specie && (
                     <FormHelperText sx={{ color: "#d32f2f" }}>
-                      {errors.specie ? "Specie is required" : ""}
+                      {errors.specie ? "This feild is required" : ""}
                     </FormHelperText>
                   )}
                 </FormControl>
@@ -148,7 +148,7 @@ function GrowthModel() {
                   error={!!errors.temperatureCoefficient}
                   helperText={
                     errors.temperatureCoefficient
-                      ? "Temperature coefficient is required"
+                      ? "This feild is required"
                       : ""
                   }
                   sx={{
@@ -180,9 +180,7 @@ function GrowthModel() {
                   {...register("growthEquationLength", { required: true })}
                   error={!!errors.growthEquationLength}
                   helperText={
-                    errors.growthEquationLength
-                      ? "Growth equation Length is required"
-                      : ""
+                    errors.growthEquationLength ? "This feild is required" : ""
                   }
                   focused
                   sx={{
@@ -201,7 +199,7 @@ function GrowthModel() {
                   error={!!errors.growthEquationBodyWeight}
                   helperText={
                     errors.growthEquationBodyWeight
-                      ? "Growth equation body weight is required"
+                      ? "This feild is required"
                       : ""
                   }
                   focused
@@ -220,9 +218,7 @@ function GrowthModel() {
                   {...register("conditionFactor1", { required: true })}
                   error={!!errors.conditionFactor1}
                   helperText={
-                    errors.conditionFactor1
-                      ? "Condition factor is required"
-                      : ""
+                    errors.conditionFactor1 ? "This feild is required" : ""
                   }
                   focused
                   sx={{

@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
     });
     //Creating farm manager
     if (body?.mangerId?.length) {
-      await prisma.farmManager.createMany({
+      await prisma.FarmManager.createMany({
         data: body.mangerId.map((userId: string) => ({
           farmId: farm.id,
           userId: Number(userId),
