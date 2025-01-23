@@ -70,7 +70,7 @@ const FishManageHistoryTable: React.FC<Props> = ({
   const [isWaterSampleHistory, setIsWaterSampleHistory] =
     useState<boolean>(false);
   const [startDate, setStartDate] = useState<string>(
-    dayjs().subtract(1, "week").format()
+    dayjs().subtract(2, "weeks").format()
   );
   const [endDate, setEndDate] = useState<string>(dayjs().format());
   function EnhancedTableHead(data: any) {
