@@ -67,16 +67,16 @@ function ProductionManagerFilter({
       >
         <Box sx={{ width: "100%" }}>
           <FormControl fullWidth className="form-input selected" focused>
-            <InputLabel id="demo-simple-select-label-1">All farms</InputLabel>
+            <InputLabel id="demo-simple-select-label-1">Farms</InputLabel>
             <Select
               labelId="demo-simple-select-label-1"
               id="demo-simple-select"
-              label="All farms"
+              label="Farms"
               multiple
               sx={{ color: "black" }}
               value={selectedDropDownfarms?.map((farm: any) => farm.option)}
               onChange={(e) => handleChange(e, true)}
-              input={<OutlinedInput label="All farms" />}
+              input={<OutlinedInput label="Farms" />}
               renderValue={(selected) => selected.join(", ")}
               MenuProps={MenuProps}
             >
@@ -111,16 +111,16 @@ function ProductionManagerFilter({
             }`}
             focused
           >
-            <InputLabel id="demo-simple-select-label">All units</InputLabel>
+            <InputLabel id="demo-simple-select-label">Units</InputLabel>
             <Select
               labelId="demo-simple-select-label"
               id="demo-simple-select"
-              label="All units"
+              label="Units"
               multiple
               disabled={selectedDropDownfarms?.length >= 1 ? false : true}
               value={selectedDropDownUnits?.map((unit: any) => unit?.option)}
               onChange={(e) => handleChange(e, false)}
-              input={<OutlinedInput label="All units" />}
+              input={<OutlinedInput label="Units" />}
               renderValue={(selected) => selected.join(", ")}
               MenuProps={MenuProps}
             >
