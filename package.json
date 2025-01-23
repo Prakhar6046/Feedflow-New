@@ -1,4 +1,4 @@
-{
+ha{
   "name": "feedflow",
   "version": "0.1.0",
   "private": true,
@@ -36,9 +36,11 @@
     "dayjs": "^1.11.13",
     "form-data": "^4.0.0",
     "framer-motion": "^11.5.2",
+    "html2canvas": "^1.4.1",
     "install": "^0.13.0",
     "js-cookie": "^3.0.5",
     "jsonwebtoken": "^9.0.2",
+    "jspdf": "^2.5.2",
     "leaflet": "^1.9.4",
     "multer": "^1.4.5-lts.1",
     "next": "14.2.7",

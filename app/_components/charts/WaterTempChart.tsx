@@ -32,7 +32,7 @@ interface Iprops {
   xAxisData: string[];
   ydata: (String | undefined)[];
   title: string;
-  maxVal: any;
+  maxVal: any | undefined;
   startDate: string;
   endDate: string;
   dateDiff: number;
