@@ -55,13 +55,15 @@ function ProductionManagerFilter({
   const currentYear = dayjs().year();
   const years = Array.from({ length: 6 }, (_, i) => currentYear - i);
   return (
-    <Box sx={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
+    <Grid container spacing={2} mt={1}>
       <Grid
         item
-        xs={2}
+        lg={2}
+        md={4}
+        sm={6} xs={12}
         sx={{
           width: "fit-content",
-          minWidth: 235,
+
           paddingTop: "8px",
         }}
       >
@@ -96,19 +98,20 @@ function ProductionManagerFilter({
       </Grid>
       <Grid
         item
-        xs={2}
+        lg={2}
+        md={4}
+        sm={6} xs={12}
         sx={{
           width: "fit-content",
-          minWidth: 235,
+
           paddingTop: "8px",
         }}
       >
         <Box sx={{ width: "100%" }}>
           <FormControl
             fullWidth
-            className={`form-input ${
-              selectedDropDownfarms?.length >= 1 && "selected"
-            }`}
+            className={`form-input ${selectedDropDownfarms?.length >= 1 && "selected"
+              }`}
             focused
           >
             <InputLabel id="demo-simple-select-label">Units</InputLabel>
@@ -140,21 +143,22 @@ function ProductionManagerFilter({
       </Grid>
       <Grid
         item
-        xs={2}
+        lg={2}
+        md={4}
+        sm={6} xs={12}
         sx={{
           width: "fit-content",
-          minWidth: 235,
+
           paddingTop: "8px",
         }}
       >
         <Box sx={{ width: "100%" }}>
           <FormControl
             fullWidth
-            className={`form-input ${
-              selectedDropDownfarms?.length &&
+            className={`form-input ${selectedDropDownfarms?.length &&
               selectedDropDownUnits?.length &&
               "selected"
-            }`}
+              }`}
             focused
           >
             <InputLabel id="demo-simple-select-label-1">Select Year</InputLabel>
@@ -186,22 +190,23 @@ function ProductionManagerFilter({
       </Grid>
       <Grid
         item
-        xs={2}
+        lg={2}
+        md={4}
+        sm={6} xs={12}
         sx={{
           width: "fit-content",
-          minWidth: 235,
+
           paddingTop: "8px",
         }}
       >
         <Box sx={{ width: "100%" }}>
           <FormControl
             fullWidth
-            className={`form-input ${
-              selectedDropDownfarms?.length &&
+            className={`form-input ${selectedDropDownfarms?.length &&
               selectedDropDownUnits?.length &&
               selectedDropDownYears?.length &&
               "selected"
-            }`}
+              }`}
             focused
           >
             <InputLabel id="demo-simple-select-label">Start month</InputLabel>
@@ -211,8 +216,8 @@ function ProductionManagerFilter({
               label="Start month"
               disabled={
                 selectedDropDownfarms?.length &&
-                selectedDropDownUnits?.length &&
-                selectedDropDownYears?.length
+                  selectedDropDownUnits?.length &&
+                  selectedDropDownYears?.length
                   ? false
                   : true
               }
@@ -229,23 +234,24 @@ function ProductionManagerFilter({
       </Grid>
       <Grid
         item
-        xs={2}
+        lg={2}
+        md={4}
+        sm={6} xs={12}
         sx={{
           width: "fit-content",
-          minWidth: 235,
+
           paddingTop: "8px",
         }}
       >
         <Box sx={{ width: "100%" }}>
           <FormControl
             fullWidth
-            className={`form-input ${
-              selectedDropDownfarms?.length &&
+            className={`form-input ${selectedDropDownfarms?.length &&
               selectedDropDownUnits?.length &&
               selectedDropDownYears?.length &&
               startMonth &&
               "selected"
-            }`}
+              }`}
             focused
           >
             <InputLabel id="demo-simple-select-label">End month</InputLabel>
@@ -255,9 +261,9 @@ function ProductionManagerFilter({
               label="End month"
               disabled={
                 selectedDropDownfarms?.length &&
-                selectedDropDownUnits?.length &&
-                selectedDropDownYears?.length &&
-                startMonth
+                  selectedDropDownUnits?.length &&
+                  selectedDropDownYears?.length &&
+                  startMonth
                   ? false
                   : true
               }
@@ -278,24 +284,25 @@ function ProductionManagerFilter({
       </Grid>
       <Grid
         item
-        xs={2}
+        lg={2}
+        md={4}
+        sm={6} xs={12}
         sx={{
           width: "fit-content",
-          minWidth: 235,
+
           paddingTop: "8px",
         }}
       >
         <Box sx={{ width: "100%" }}>
           <FormControl
             fullWidth
-            className={`form-input ${
-              selectedDropDownfarms?.length &&
+            className={`form-input ${selectedDropDownfarms?.length &&
               selectedDropDownUnits?.length &&
               selectedDropDownYears?.length &&
               startMonth &&
               endMonth &&
               "selected"
-            }`}
+              }`}
             focused
           >
             <InputLabel id="demo-simple-select-label">Averages</InputLabel>
@@ -306,10 +313,10 @@ function ProductionManagerFilter({
               value={selectedAverage}
               disabled={
                 selectedDropDownfarms &&
-                selectedDropDownUnits &&
-                selectedDropDownYears &&
-                startMonth &&
-                endMonth
+                  selectedDropDownUnits &&
+                  selectedDropDownYears &&
+                  startMonth &&
+                  endMonth
                   ? false
                   : true
               }
@@ -328,16 +335,16 @@ function ProductionManagerFilter({
       </Grid>
       {/* <Grid
         item
-        xs={2}
+     lg={2}
         sx={{
           width: "fit-content",
-          minWidth: 235,
+         
           paddingTop: "8px",
         }}
       >
         <Box sx={{ width: "100%" }}>Clear</Box>
       </Grid> */}
-    </Box>
+    </Grid>
   );
 }
 

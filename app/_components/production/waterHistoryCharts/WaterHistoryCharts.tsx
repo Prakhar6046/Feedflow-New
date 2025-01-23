@@ -8,6 +8,7 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  Box,
 } from "@mui/material";
 import { createRoot } from "react-dom/client";
 import jsPDF from "jspdf";
@@ -48,16 +49,16 @@ function WaterHistoryCharts({
     yDataKey: IdealRangeKeys;
     title: string;
   }[] = [
-    { key: "waterTempChart", yDataKey: "waterTemp", title: "Water Temperature" },
-    { key: "dissolvedOxgChart", yDataKey: "DO", title: "Dissolved Oxygen" },
-    { key: "TSS", yDataKey: "TSS", title: "TSS" },
-    { key: "ammonia", yDataKey: "NH4", title: "Ammonia" },
-    { key: "nitrate", yDataKey: "NO3", title: "Nitrate" },
-    { key: "nitrite", yDataKey: "NO2", title: "Nitrite" },
-    { key: "ph", yDataKey: "ph", title: "PH" },
-    { key: "visibility", yDataKey: "visibility", title: "Visibility" },
-  ];
-  
+      { key: "waterTempChart", yDataKey: "waterTemp", title: "Water Temperature" },
+      { key: "dissolvedOxgChart", yDataKey: "DO", title: "Dissolved Oxygen" },
+      { key: "TSS", yDataKey: "TSS", title: "TSS" },
+      { key: "ammonia", yDataKey: "NH4", title: "Ammonia" },
+      { key: "nitrate", yDataKey: "NO3", title: "Nitrate" },
+      { key: "nitrite", yDataKey: "NO2", title: "Nitrite" },
+      { key: "ph", yDataKey: "ph", title: "PH" },
+      { key: "visibility", yDataKey: "visibility", title: "Visibility" },
+    ];
+
 
   useEffect(() => {
     if (groupedData?.units && farms) {
@@ -461,13 +462,29 @@ function WaterHistoryCharts({
 
   return (
     <div>
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={() => setIsModalOpen(true)}
-      >
-        Select Charts to Download
-      </Button>
+      <Box sx={{
+        display: 'flex',
+        justifyContent: "end",
+        marginRight: -3,
+        marginBottom: 2
+      }}>
+        <Button
+          variant="contained"
+          sx={{
+            background: "#06A19B",
+            fontWeight: "600",
+            padding: "8px 24px",
+            width: "fit-content",
+            textTransform: "capitalize",
+            borderRadius: "8px",
+            fontSize: 16,
+          }}
+          onClick={() => setIsModalOpen(true)}
+        >
+          Select Charts to Download
+        </Button>
+      </Box>
+
 
       <Dialog open={isModalOpen} onClose={() => setIsModalOpen(false)}>
         <DialogTitle>Select Charts</DialogTitle>
