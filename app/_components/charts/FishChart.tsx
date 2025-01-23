@@ -16,7 +16,6 @@ import {
 import annotationPlugin from "chartjs-plugin-annotation";
 import { useEffect, useRef } from "react";
 import "chartjs-adapter-date-fns";
-// Register Chart.js components and plugins
 ChartJS.register(
   LineElement,
   CategoryScale,
