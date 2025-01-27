@@ -570,7 +570,7 @@ function WaterHistoryCharts({
             Download
           </Button> */}
           <Button
-            type="submit"
+            type="button"
             variant="contained"
             sx={{
               background: "#06A19B",
@@ -580,76 +580,14 @@ function WaterHistoryCharts({
               textTransform: "capitalize",
               borderRadius: "8px",
             }}
-            onClick={() => setIsHandleOpen(true)}
+            onClick={previewCharts}
           >
             Preview
           </Button>
-          <Dialog open={isHandleOpen} onClose={() => setIsHandleOpen(false)}>
-            <DialogTitle>Select Charts</DialogTitle>
-            <DialogContent>
-              {chartOptions.map(({ key, title }) => (
-                <FormControlLabel
-                  key={key}
-                  control={
-                    <Checkbox
-                      checked={selectedCharts.includes(key)}
-                      onChange={() => handleCheckboxChange(key)}
-                      className="checkbox-border"
-                      icon={<RadioButtonUncheckedIcon />}
-                      checkedIcon={<CheckCircleIcon />}
-                      sx={{
-                        "&.Mui-checked": {
-                          color: "#06A19B",
-                        },
-                      }}
-                    />
-                  }
-                  label={title}
-                />
-              ))}
-            </DialogContent>
-            <DialogActions
-              sx={{
-                p: 3,
-              }}
-            >
-              <Button
-                type="submit"
-                variant="contained"
-                sx={{
-                  background: "#06A19B",
-                  fontWeight: 600,
-                  padding: "6px 16px",
-                  width: "fit-content",
-                  textTransform: "capitalize",
-                  borderRadius: "8px",
-                }}
-                onClick={() => setIsHandleOpen(true)}
-              >
-                Preview
-              </Button>
-
-              <Button
-                type="submit"
-                variant="contained"
-                sx={{
-                  background: "#fff",
-                  color: "#06A19B",
-                  fontWeight: 600,
-                  padding: "6px 16px",
-                  width: "fit-content",
-                  textTransform: "capitalize",
-                  borderRadius: "8px",
-                  border: "1px solid #06A19B",
-                }}
-              >
-                Cancel
-              </Button>
-            </DialogActions>
-          </Dialog>
 
           <Button
-            type="submit"
+            type="button"
+            onClick={() => setIsModalOpen(false)}
             variant="contained"
             sx={{
               background: "#fff",
