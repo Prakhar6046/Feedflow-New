@@ -118,15 +118,15 @@ function WaterChartDownloadPreview({
                       width={200}
                     />
                     <Typography>
-                      <h6
+                      <Box
                         style={{
                           marginBottom: "4px",
                           fontSize: "16px",
                         }}
                       >
                         Production Report
-                      </h6>
-                      <p
+                      </Box>
+                      <Box
                         style={{
                           fontSize: "14px",
                           color: "#6C757D",
@@ -136,7 +136,7 @@ function WaterChartDownloadPreview({
                         {productions[0]?.productionUnit?.name}{" "}
                         {productions[0]?.farm?.name} <br />
                         <span>2025/01/23 to 2025/01/23</span>
-                      </p>
+                      </Box>
                     </Typography>
                   </Box>
                   <Box
@@ -144,7 +144,7 @@ function WaterChartDownloadPreview({
                       padding: "32px 20px",
                     }}
                   >
-                    <h5
+                    <Typography
                       style={{
                         fontSize: "22px",
                         fontWeight: "bold",
@@ -152,7 +152,7 @@ function WaterChartDownloadPreview({
                       }}
                     >
                       Production Unit
-                    </h5>
+                    </Typography>
                     <ul
                       style={{
                         padding: 0,

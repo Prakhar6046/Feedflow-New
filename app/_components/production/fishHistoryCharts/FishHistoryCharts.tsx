@@ -21,6 +21,8 @@ import html2canvas from "html2canvas";
 import { createRoot } from "react-dom/client";
 import { useRouter } from "next/navigation";
 import { setLocalItem } from "@/app/_lib/utils";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
 
 type Iprops = {
   productions: Production[];
@@ -513,14 +515,26 @@ function FishHistoryCharts({
                 <Checkbox
                   checked={selectedCharts.includes(key)}
                   onChange={() => handleCheckboxChange(key)}
+                  className="checkbox-border"
+                  icon={<RadioButtonUncheckedIcon />}
+                  checkedIcon={<CheckCircleIcon />}
+                  sx={{
+                    "&.Mui-checked": {
+                      color: "#06A19B",
+                    },
+                  }}
                 />
               }
               label={title}
             />
           ))}
         </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setIsModalOpen(false)} color="secondary">
+        <DialogActions
+          sx={{
+            p: 3,
+          }}
+        >
+          {/* <Button onClick={() => setIsModalOpen(false)} color="secondary">
             Cancel
           </Button>
           <Button
@@ -529,6 +543,40 @@ function FishHistoryCharts({
             disabled={selectedCharts.length === 0}
           >
             Download
+          </Button> */}
+
+          <Button
+            type="button"
+            variant="contained"
+            sx={{
+              background: "#06A19B",
+              fontWeight: 600,
+              padding: "6px 16px",
+              width: "fit-content",
+              textTransform: "capitalize",
+              borderRadius: "8px",
+            }}
+            onClick={previewCharts}
+          >
+            Preview
+          </Button>
+
+          <Button
+            type="button"
+            onClick={() => setIsModalOpen(false)}
+            variant="contained"
+            sx={{
+              background: "#fff",
+              color: "#06A19B",
+              fontWeight: 600,
+              padding: "6px 16px",
+              width: "fit-content",
+              textTransform: "capitalize",
+              borderRadius: "8px",
+              border: "1px solid #06A19B",
+            }}
+          >
+            Cancel
           </Button>
         </DialogActions>
       </Dialog>
