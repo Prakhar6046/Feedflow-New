@@ -33,7 +33,7 @@ function FishHistoryCharts({
   startDate,
   endDate,
 }: Iprops) {
-  console.log(productions)
+  console.log(productions);
   const [xAxisData, setXAxisData] = useState<(string | any)[]>([]);
   const [dateDiff, setDateDiff] = useState<number>();
   const [selectedCharts, setSelectedCharts] = useState<string[]>([]);
@@ -123,7 +123,13 @@ function FishHistoryCharts({
       // Render the layout
       const root = createRoot(chartDiv);
       root.render(
-        <div style={{ width: "100%", height: "100%", fontFamily: "Arial, sans-serif" }}>
+        <div
+          style={{
+            width: "100%",
+            height: "100%",
+            fontFamily: "Arial, sans-serif",
+          }}
+        >
           <div
             style={{
               padding: "12px 20px",
@@ -140,7 +146,7 @@ function FishHistoryCharts({
               <h6
                 style={{
                   marginBottom: "4px",
-                  fontSize: "16px"
+                  fontSize: "16px",
                 }}
               >
                 Production Report
@@ -152,7 +158,8 @@ function FishHistoryCharts({
                   marginBottom: "0",
                 }}
               >
-                {productions[0]?.productionUnit?.name}  {productions[0]?.farm?.name} <br />
+                {productions[0]?.productionUnit?.name}{" "}
+                {productions[0]?.farm?.name} <br />
                 <span>2025/01/23 to 2025/01/23</span>
               </p>
             </div>
@@ -190,7 +197,7 @@ function FishHistoryCharts({
                   <h6
                     style={{
                       margin: 0,
-                      fontSize: "16px"
+                      fontSize: "16px",
                     }}
                   >
                     Unit Name :
@@ -216,7 +223,7 @@ function FishHistoryCharts({
                   <h6
                     style={{
                       margin: 0,
-                      fontSize: "16px"
+                      fontSize: "16px",
                     }}
                   >
                     Type :
@@ -242,7 +249,7 @@ function FishHistoryCharts({
                   <h6
                     style={{
                       margin: 0,
-                      fontSize: "16px"
+                      fontSize: "16px",
                     }}
                   >
                     Water Flow :
@@ -268,7 +275,7 @@ function FishHistoryCharts({
                   <h6
                     style={{
                       margin: 0,
-                      fontSize: "16px"
+                      fontSize: "16px",
                     }}
                   >
                     Volume :
@@ -285,11 +292,25 @@ function FishHistoryCharts({
               </li>
             </ul>
           </div>
-          <div style={{ width: "100%", height: "100%", fontFamily: "Arial, sans-serif" }}>
-
+          <div
+            style={{
+              width: "100%",
+              height: "100%",
+              fontFamily: "Arial, sans-serif",
+            }}
+          >
             {/* Chart */}
-            <div style={{ width: "100%", marginBottom: "20px", display: "flex", alignItems: "start" }}>
-              <div style={{ width: "50%", marginBottom: "20px", display: "flex", }}>
+            <div
+              style={{
+                width: "100%",
+                marginBottom: "20px",
+                display: "flex",
+                alignItems: "start",
+              }}
+            >
+              <div
+                style={{ width: "50%", marginBottom: "20px", display: "flex" }}
+              >
                 <FishChart
                   key={key}
                   xAxisData={xAxisData}
@@ -306,32 +327,106 @@ function FishHistoryCharts({
                 />
               </div>
 
-              <table style={{ width: "50%", borderCollapse: "collapse", fontSize: "12px", color: "#333", marginTop: "16px" }}>
+              <table
+                style={{
+                  width: "50%",
+                  borderCollapse: "collapse",
+                  fontSize: "12px",
+                  color: "#333",
+                  marginTop: "16px",
+                }}
+              >
                 <thead>
                   <tr>
-                    <th style={{ border: "1px solid #ccc", padding: "8px 12px", textAlign: "left", borderTopLeftRadius: "8px", background: "#efefef" }}>Date</th>
-                    <th style={{ border: "1px solid #ccc", padding: "8px 12px", textAlign: "left", background: "#efefef" }}>Value</th>
-                    <th style={{ border: "1px solid #ccc", padding: "8px 12px", textAlign: "left", background: "#efefef" }}>Change</th>
-                    <th style={{ border: "1px solid #ccc", padding: "8px 12px", textAlign: "left", borderTopRightRadius: "8px", background: "#efefef" }}>Cumulative</th>
+                    <th
+                      style={{
+                        border: "1px solid #ccc",
+                        padding: "8px 12px",
+                        textAlign: "left",
+                        borderTopLeftRadius: "8px",
+                        background: "#efefef",
+                      }}
+                    >
+                      Date
+                    </th>
+                    <th
+                      style={{
+                        border: "1px solid #ccc",
+                        padding: "8px 12px",
+                        textAlign: "left",
+                        background: "#efefef",
+                      }}
+                    >
+                      Value
+                    </th>
+                    <th
+                      style={{
+                        border: "1px solid #ccc",
+                        padding: "8px 12px",
+                        textAlign: "left",
+                        background: "#efefef",
+                      }}
+                    >
+                      Change
+                    </th>
+                    <th
+                      style={{
+                        border: "1px solid #ccc",
+                        padding: "8px 12px",
+                        textAlign: "left",
+                        borderTopRightRadius: "8px",
+                        background: "#efefef",
+                      }}
+                    >
+                      Cumulative
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
-                  {groupedData.units.flatMap((unit) =>
-                    unit.fishManageHistory?.map((history: any) => (
-                      <tr key={history.date}>
-                        <td style={{ border: "1px solid #ccc", padding: "8px 12px" }}>{history.date}</td>
-                        <td style={{ border: "1px solid #ccc", padding: "8px 12px" }}>{history[yDataKey]}</td>
-                        <td style={{ border: "1px solid #ccc", padding: "8px 12px" }}>{history.change || ""}</td>
-                        <td style={{ border: "1px solid #ccc", padding: "8px 12px" }}>{history.cumulative || ""}</td>
-                      </tr>
-                    )) || []
+                  {groupedData.units.flatMap(
+                    (unit) =>
+                      unit.fishManageHistory?.map((history: any) => (
+                        <tr key={history.date}>
+                          <td
+                            style={{
+                              border: "1px solid #ccc",
+                              padding: "8px 12px",
+                            }}
+                          >
+                            {history.date}
+                          </td>
+                          <td
+                            style={{
+                              border: "1px solid #ccc",
+                              padding: "8px 12px",
+                            }}
+                          >
+                            {history[yDataKey]}
+                          </td>
+                          <td
+                            style={{
+                              border: "1px solid #ccc",
+                              padding: "8px 12px",
+                            }}
+                          >
+                            {history.change || ""}
+                          </td>
+                          <td
+                            style={{
+                              border: "1px solid #ccc",
+                              padding: "8px 12px",
+                            }}
+                          >
+                            {history.cumulative || ""}
+                          </td>
+                        </tr>
+                      )) || []
                   )}
                 </tbody>
               </table>
             </div>
           </div>
         </div>
-
       );
 
       // Wait for rendering to complete
@@ -368,11 +463,13 @@ function FishHistoryCharts({
 
   return (
     <div>
-      <Box sx={{
-        display: 'flex',
-        justifyContent: "end",
-        marginRight: -3
-      }}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "end",
+          marginRight: -3,
+        }}
+      >
         <Button
           variant="contained"
           sx={{
@@ -389,7 +486,6 @@ function FishHistoryCharts({
           Select Charts to Download
         </Button>
       </Box>
-
 
       <Dialog open={isModalOpen} onClose={() => setIsModalOpen(false)}>
         <DialogTitle>Select Charts</DialogTitle>
