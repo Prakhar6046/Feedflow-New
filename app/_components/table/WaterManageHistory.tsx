@@ -47,11 +47,13 @@ interface Props {
   tableData: any;
   productions: Production[];
   farms: Farm[];
+  waterId: string;
 }
 const WaterManageHistoryTable: React.FC<Props> = ({
   tableData,
   productions,
   farms,
+  waterId,
 }) => {
   const dispatch = useAppDispatch();
   const pathName = usePathname();
@@ -904,6 +906,7 @@ const WaterManageHistoryTable: React.FC<Props> = ({
             productions={productions}
             groupedData={groupedData}
             farms={farms}
+            waterId={waterId}
             startDate={startDate}
             endDate={endDate}
           />

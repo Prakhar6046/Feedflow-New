@@ -20,6 +20,8 @@ import {
   WaterManageHistoryGroup,
 } from "@/app/_typeModels/production";
 import { Farm } from "@/app/_typeModels/Farm";
+import { setLocalItem } from "@/app/_lib/utils";
+import { useRouter } from "next/navigation";
 
 type Iprops = {
   productions: Production[];
@@ -27,38 +29,50 @@ type Iprops = {
   farms: Farm[];
   startDate: string;
   endDate: string;
+  waterId: string;
 };
-
+export type IdealRangeKeys =
+  | "DO"
+  | "ph"
+  | "NH4"
+  | "NO2"
+  | "NO3"
+  | "TSS"
+  | "waterTemp"
+  | "visibility";
 function WaterHistoryCharts({
   productions,
   groupedData,
   farms,
   startDate,
+  waterId,
   endDate,
 }: Iprops) {
+  const router = useRouter();
   const [xAxisData, setXAxisData] = useState<string[]>([]);
   const [dateDiff, setDateDiff] = useState<number>(0);
   const [currentFarm, setCurrentFarm] = useState<Farm | undefined>();
   const [selectedCharts, setSelectedCharts] = useState<string[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  type IdealRangeKeys = "DO" | "ph" | "NH4" | "NO2" | "NO3" | "TSS" | "waterTemp" | "visibility";
-
   const chartOptions: {
     key: string;
     yDataKey: IdealRangeKeys;
     title: string;
   }[] = [
-      { key: "waterTempChart", yDataKey: "waterTemp", title: "Water Temperature" },
-      { key: "dissolvedOxgChart", yDataKey: "DO", title: "Dissolved Oxygen" },
-      { key: "TSS", yDataKey: "TSS", title: "TSS" },
-      { key: "ammonia", yDataKey: "NH4", title: "Ammonia" },
-      { key: "nitrate", yDataKey: "NO3", title: "Nitrate" },
-      { key: "nitrite", yDataKey: "NO2", title: "Nitrite" },
-      { key: "ph", yDataKey: "ph", title: "PH" },
-      { key: "visibility", yDataKey: "visibility", title: "Visibility" },
-    ];
-
+    {
+      key: "waterTempChart",
+      yDataKey: "waterTemp",
+      title: "Water Temperature",
+    },
+    { key: "dissolvedOxgChart", yDataKey: "DO", title: "Dissolved Oxygen" },
+    { key: "TSS", yDataKey: "TSS", title: "TSS" },
+    { key: "ammonia", yDataKey: "NH4", title: "Ammonia" },
+    { key: "nitrate", yDataKey: "NO3", title: "Nitrate" },
+    { key: "nitrite", yDataKey: "NO2", title: "Nitrite" },
+    { key: "ph", yDataKey: "ph", title: "PH" },
+    { key: "visibility", yDataKey: "visibility", title: "Visibility" },
+  ];
 
   useEffect(() => {
     if (groupedData?.units && farms) {
@@ -459,15 +473,29 @@ function WaterHistoryCharts({
     setSelectedCharts([]);
     setIsModalOpen(false);
   };
-
+  const previewCharts = () => {
+    const data = {
+      selectedCharts: selectedCharts,
+      xAxisData: xAxisData,
+      groupedData: groupedData,
+      currentFarm: currentFarm,
+      startDate: startDate,
+      endDate: endDate,
+      dateDiff: dateDiff,
+    };
+    setLocalItem("waterPreviewData", data);
+    router.push(`/dashboard/production/water/${waterId}/chartPreview`);
+  };
   return (
     <div>
-      <Box sx={{
-        display: 'flex',
-        justifyContent: "end",
-        marginRight: -3,
-        marginBottom: 2
-      }}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "end",
+          marginRight: -3,
+          marginBottom: 2,
+        }}
+      >
         <Button
           variant="contained"
           sx={{
@@ -484,7 +512,6 @@ function WaterHistoryCharts({
           Select Charts to Download
         </Button>
       </Box>
-
 
       <Dialog open={isModalOpen} onClose={() => setIsModalOpen(false)}>
         <DialogTitle>Select Charts</DialogTitle>
@@ -507,11 +534,12 @@ function WaterHistoryCharts({
             Cancel
           </Button>
           <Button
-            onClick={downloadChartsAsPDF}
+            // onClick={downloadChartsAsPDF}
+            onClick={previewCharts}
             color="primary"
             disabled={selectedCharts.length === 0}
           >
-            Download
+            Preview
           </Button>
         </DialogActions>
       </Dialog>
