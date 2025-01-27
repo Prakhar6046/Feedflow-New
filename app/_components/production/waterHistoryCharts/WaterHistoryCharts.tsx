@@ -10,6 +10,7 @@ import {
   DialogTitle,
   Box,
 } from "@mui/material";
+import Modal from "@mui/material/Modal";
 import { createRoot } from "react-dom/client";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
@@ -23,6 +24,8 @@ import { Farm } from "@/app/_typeModels/Farm";
 import { setLocalItem } from "@/app/_lib/utils";
 import { useRouter } from "next/navigation";
 
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
 type Iprops = {
   productions: Production[];
   groupedData: WaterManageHistoryGroup;
@@ -54,6 +57,18 @@ function WaterHistoryCharts({
   const [currentFarm, setCurrentFarm] = useState<Farm | undefined>();
   const [selectedCharts, setSelectedCharts] = useState<string[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const [isHandleOpen, setIsHandleOpen] = useState(false);
+
+  type IdealRangeKeys =
+    | "DO"
+    | "ph"
+    | "NH4"
+    | "NO2"
+    | "NO3"
+    | "TSS"
+    | "waterTemp"
+    | "visibility";
 
   const chartOptions: {
     key: string;
@@ -527,14 +542,26 @@ function WaterHistoryCharts({
                 <Checkbox
                   checked={selectedCharts.includes(key)}
                   onChange={() => handleCheckboxChange(key)}
+                  className="checkbox-border"
+                  icon={<RadioButtonUncheckedIcon />}
+                  checkedIcon={<CheckCircleIcon />}
+                  sx={{
+                    "&.Mui-checked": {
+                      color: "#06A19B",
+                    },
+                  }}
                 />
               }
               label={title}
             />
           ))}
         </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setIsModalOpen(false)} color="secondary">
+        <DialogActions
+          sx={{
+            p: 3,
+          }}
+        >
+          {/* <Button onClick={() => setIsModalOpen(false)} color="secondary">
             Cancel
           </Button>
           <Button
@@ -544,6 +571,102 @@ function WaterHistoryCharts({
             disabled={selectedCharts.length === 0}
           >
             Preview
+            Download
+          </Button> */}
+          <Button
+            type="submit"
+            variant="contained"
+            sx={{
+              background: "#06A19B",
+              fontWeight: 600,
+              padding: "6px 16px",
+              width: "fit-content",
+              textTransform: "capitalize",
+              borderRadius: "8px",
+            }}
+            onClick={() => setIsHandleOpen(true)}
+          >
+            Preview
+          </Button>
+          <Dialog open={isHandleOpen} onClose={() => setIsHandleOpen(false)}>
+            <DialogTitle>Select Charts</DialogTitle>
+            <DialogContent>
+              {chartOptions.map(({ key, title }) => (
+                <FormControlLabel
+                  key={key}
+                  control={
+                    <Checkbox
+                      checked={selectedCharts.includes(key)}
+                      onChange={() => handleCheckboxChange(key)}
+                      className="checkbox-border"
+                      icon={<RadioButtonUncheckedIcon />}
+                      checkedIcon={<CheckCircleIcon />}
+                      sx={{
+                        "&.Mui-checked": {
+                          color: "#06A19B",
+                        },
+                      }}
+                    />
+                  }
+                  label={title}
+                />
+              ))}
+            </DialogContent>
+            <DialogActions
+              sx={{
+                p: 3,
+              }}
+            >
+              <Button
+                type="submit"
+                variant="contained"
+                sx={{
+                  background: "#06A19B",
+                  fontWeight: 600,
+                  padding: "6px 16px",
+                  width: "fit-content",
+                  textTransform: "capitalize",
+                  borderRadius: "8px",
+                }}
+                onClick={() => setIsHandleOpen(true)}
+              >
+                Preview
+              </Button>
+
+              <Button
+                type="submit"
+                variant="contained"
+                sx={{
+                  background: "#fff",
+                  color: "#06A19B",
+                  fontWeight: 600,
+                  padding: "6px 16px",
+                  width: "fit-content",
+                  textTransform: "capitalize",
+                  borderRadius: "8px",
+                  border: "1px solid #06A19B",
+                }}
+              >
+                Cancel
+              </Button>
+            </DialogActions>
+          </Dialog>
+
+          <Button
+            type="submit"
+            variant="contained"
+            sx={{
+              background: "#fff",
+              color: "#06A19B",
+              fontWeight: 600,
+              padding: "6px 16px",
+              width: "fit-content",
+              textTransform: "capitalize",
+              borderRadius: "8px",
+              border: "1px solid #06A19B",
+            }}
+          >
+            Cancel
           </Button>
         </DialogActions>
       </Dialog>

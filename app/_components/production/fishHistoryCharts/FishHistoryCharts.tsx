@@ -37,7 +37,11 @@ function FishHistoryCharts({
   endDate,
   fishId,
 }: Iprops) {
+<<<<<<< HEAD
   const router = useRouter();
+=======
+  console.log(productions);
+>>>>>>> production-charts
   const [xAxisData, setXAxisData] = useState<(string | any)[]>([]);
   const [dateDiff, setDateDiff] = useState<number>();
   const [selectedCharts, setSelectedCharts] = useState<string[]>([]);

@@ -32,7 +32,9 @@ body {
   color: #fff;
   background: #06a19b;
 }
-
+.checkbox-border {
+  color: #06a19b;
+}
 /* CSS For Table Edit option  */
 .table-edit-option {
   border-radius: 50% !important;
