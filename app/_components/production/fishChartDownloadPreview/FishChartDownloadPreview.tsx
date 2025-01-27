@@ -2,47 +2,44 @@
 import { getLocalItem } from "@/app/_lib/utils";
 import { Farm } from "@/app/_typeModels/Farm";
 import {
+  FishManageHistoryGroup,
   Production,
-  WaterManageHistoryGroup,
 } from "@/app/_typeModels/production";
 import { useEffect, useState } from "react";
-import { IdealRangeKeys } from "../waterHistoryCharts/WaterHistoryCharts";
-import WaterTempChart from "../../charts/WaterTempChart";
+import FishChart from "../../charts/FishChart";
 type ChartDataType = {
   selectedCharts: string[];
   xAxisData: string[];
-  groupedData: WaterManageHistoryGroup;
+  groupedData: FishManageHistoryGroup;
   currentFarm: Farm | undefined;
   startDate: string;
   endDate: string;
   dateDiff: number;
 };
-function WaterChartDownloadPreview({
+function FishChartDownloadPreview({
   productions,
 }: {
   productions: Production[];
 }) {
   const [chartData, setChartData] = useState<ChartDataType>();
-  const chartOptions: {
-    key: string;
-    yDataKey: IdealRangeKeys;
-    title: string;
-  }[] = [
+  const chartOptions = [
+    { key: "Fish Count", yDataKey: "fishCount", title: "Fish Count" },
+    { key: "Biomass", yDataKey: "biomass", title: "Biomass" },
+    { key: "Mean Weight", yDataKey: "meanWeight", title: "Mean Weight" },
+    { key: "Mean Length", yDataKey: "meanLength", title: "Mean Length" },
     {
-      key: "waterTempChart",
-      yDataKey: "waterTemp",
-      title: "Water Temperature",
+      key: "Stocking density (kg/m³)",
+      yDataKey: "stockingDensityKG",
+      title: `Stocking density (kg/${"m\u00B3"})`,
     },
-    { key: "dissolvedOxgChart", yDataKey: "DO", title: "Dissolved Oxygen" },
-    { key: "TSS", yDataKey: "TSS", title: "TSS" },
-    { key: "ammonia", yDataKey: "NH4", title: "Ammonia" },
-    { key: "nitrate", yDataKey: "NO3", title: "Nitrate" },
-    { key: "nitrite", yDataKey: "NO2", title: "Nitrite" },
-    { key: "ph", yDataKey: "ph", title: "PH" },
-    { key: "visibility", yDataKey: "visibility", title: "Visibility" },
+    {
+      key: "Stocking density (n/m³)",
+      yDataKey: "stockingDensityNM",
+      title: `Stocking density (n/${"m\u00B3"})`,
+    },
   ];
   useEffect(() => {
-    const data = getLocalItem("waterPreviewData");
+    const data = getLocalItem("fishPreviewData");
     if (data) {
       setChartData(data);
     }
@@ -255,27 +252,17 @@ function WaterChartDownloadPreview({
                       display: "flex",
                     }}
                   >
-                    <WaterTempChart
+                    <FishChart
                       key={key}
                       xAxisData={chartData?.xAxisData}
                       ydata={chartData?.groupedData.units.flatMap(
                         (unit) =>
-                          unit.WaterManageHistoryAvgrage?.map(
+                          unit.fishManageHistory?.map(
                             (history: any) => history[yDataKey]
                           ) || []
                       )}
-                      maxVal={
-                        chartData?.currentFarm
-                          ?.WaterQualityPredictedParameters[0]
-                          ?.YearBasedPredication[0]?.idealRange[yDataKey]?.Max
-                      }
-                      minVal={
-                        chartData?.currentFarm
-                          ?.WaterQualityPredictedParameters[0]
-                          ?.YearBasedPredication[0]?.idealRange[yDataKey]?.Min
-                      }
-                      startDate={chartData?.startDate}
                       endDate={chartData?.endDate}
+                      startDate={chartData?.startDate}
                       dateDiff={chartData?.dateDiff || 1}
                       title={title}
                     />
@@ -339,44 +326,42 @@ function WaterChartDownloadPreview({
                     <tbody>
                       {chartData?.groupedData.units.flatMap(
                         (unit) =>
-                          unit.WaterManageHistoryAvgrage?.map(
-                            (history: any) => (
-                              <tr key={history.date}>
-                                <td
-                                  style={{
-                                    border: "1px solid #ccc",
-                                    padding: "8px 12px",
-                                  }}
-                                >
-                                  {history.date}
-                                </td>
-                                <td
-                                  style={{
-                                    border: "1px solid #ccc",
-                                    padding: "8px 12px",
-                                  }}
-                                >
-                                  {history[yDataKey]}
-                                </td>
-                                <td
-                                  style={{
-                                    border: "1px solid #ccc",
-                                    padding: "8px 12px",
-                                  }}
-                                >
-                                  {history.change || ""}
-                                </td>
-                                <td
-                                  style={{
-                                    border: "1px solid #ccc",
-                                    padding: "8px 12px",
-                                  }}
-                                >
-                                  {history.cumulative || ""}
-                                </td>
-                              </tr>
-                            )
-                          ) || []
+                          unit.fishManageHistory?.map((history: any) => (
+                            <tr key={history.date}>
+                              <td
+                                style={{
+                                  border: "1px solid #ccc",
+                                  padding: "8px 12px",
+                                }}
+                              >
+                                {history.date}
+                              </td>
+                              <td
+                                style={{
+                                  border: "1px solid #ccc",
+                                  padding: "8px 12px",
+                                }}
+                              >
+                                {history[yDataKey]}
+                              </td>
+                              <td
+                                style={{
+                                  border: "1px solid #ccc",
+                                  padding: "8px 12px",
+                                }}
+                              >
+                                {history.change || ""}
+                              </td>
+                              <td
+                                style={{
+                                  border: "1px solid #ccc",
+                                  padding: "8px 12px",
+                                }}
+                              >
+                                {history.cumulative || ""}
+                              </td>
+                            </tr>
+                          )) || []
                       )}
                     </tbody>
                   </table>
@@ -395,4 +380,4 @@ function WaterChartDownloadPreview({
   );
 }
 
-export default WaterChartDownloadPreview;
+export default FishChartDownloadPreview;

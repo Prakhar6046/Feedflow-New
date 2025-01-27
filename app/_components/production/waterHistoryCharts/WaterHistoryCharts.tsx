@@ -335,6 +335,10 @@ function WaterHistoryCharts({
                     currentFarm?.WaterQualityPredictedParameters[0]
                       ?.YearBasedPredication[0]?.idealRange[yDataKey]?.Max
                   }
+                  minVal={
+                    currentFarm?.WaterQualityPredictedParameters[0]
+                      ?.YearBasedPredication[0]?.idealRange[yDataKey]?.Min
+                  }
                   startDate={startDate}
                   endDate={endDate}
                   dateDiff={dateDiff || 1}
@@ -560,6 +564,10 @@ function WaterHistoryCharts({
                 maxVal={
                   currentFarm?.WaterQualityPredictedParameters[0]
                     ?.YearBasedPredication[0]?.idealRange[yDataKey]?.Max
+                }
+                minVal={
+                  currentFarm?.WaterQualityPredictedParameters[0]
+                    ?.YearBasedPredication[0]?.idealRange[yDataKey]?.Min
                 }
                 startDate={startDate}
                 endDate={endDate}

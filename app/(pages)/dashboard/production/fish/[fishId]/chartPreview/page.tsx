@@ -1,13 +1,9 @@
 import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
-import FishManageHistoryTable from "@/app/_components/table/FishManageHistory";
+import FishChartDownloadPreview from "@/app/_components/production/fishChartDownloadPreview/FishChartDownloadPreview";
+import WaterChartDownloadPreview from "@/app/_components/production/waterChartDownloadPreview/WaterChartDownloadPreview";
 import { getProductions } from "@/app/_lib/action";
-import { fishManageHistoryHead } from "@/app/_lib/utils/tableHeadData";
 import { getCookie } from "cookies-next";
-import { Metadata } from "next";
 import { cookies } from "next/headers";
-export const metadata: Metadata = {
-  title: "Fish History",
-};
 export default async function Page({
   params,
   searchParams,
@@ -31,7 +27,7 @@ export default async function Page({
   return (
     <>
       <BasicBreadcrumbs
-        heading={"Fish History"}
+        heading={"Fish Chart Preview"}
         isTable={true}
         links={[
           { name: "Dashboard", link: "/dashboard" },
@@ -40,15 +36,17 @@ export default async function Page({
             name: "Fish History",
             link: `/dashboard/production/fish/${params.fishId}`,
           },
+          {
+            name: "Fish Chart Preview",
+            link: `/dashboard/production/fish/${params.fishId}/chartPreview`,
+          },
         ]}
         hideSearchInput
       />
-      <FishManageHistoryTable
-        tableData={fishManageHistoryHead}
+      <FishChartDownloadPreview
         productions={productions?.data?.filter(
           (data: any) => data.productionUnitId === params.fishId
         )}
-        fishId={params.fishId}
       />
     </>
   );

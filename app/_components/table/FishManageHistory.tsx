@@ -54,10 +54,12 @@ const style = {
 interface Props {
   tableData: any;
   productions: Production[];
+  fishId: string;
 }
 const FishManageHistoryTable: React.FC<Props> = ({
   tableData,
   productions,
+  fishId,
 }) => {
   const dispatch = useAppDispatch();
   const pathName = usePathname();
@@ -939,6 +941,7 @@ const FishManageHistoryTable: React.FC<Props> = ({
             groupedData={groupedData}
             startDate={startDate}
             endDate={endDate}
+            fishId={fishId}
           />
         </TabPanel>
       </TabContext>

@@ -33,6 +33,7 @@ interface Iprops {
   ydata: (String | undefined)[];
   title: string;
   maxVal: any | undefined;
+  minVal: any | undefined;
   startDate: string;
   endDate: string;
   dateDiff: number;
@@ -42,6 +43,7 @@ const WaterTempChart = ({
   ydata,
   title,
   maxVal,
+  minVal,
   startDate,
   endDate,
   dateDiff,
@@ -149,13 +151,13 @@ const WaterTempChart = ({
       } = chart;
 
       ctx.save();
-      // Green background
-      ctx.fillStyle = "rgba(144, 238, 144, 0.3)"; // Light green
+
+      ctx.fillStyle = "rgba(238, 62, 62, 0.3)"; // Light red
       ctx.fillRect(
         left,
         y.getPixelForValue(0),
         right - left,
-        y.getPixelForValue(Number(maxVal)) - y.getPixelForValue(0)
+        y.getPixelForValue(Number(minVal)) - y.getPixelForValue(0)
       );
       // Red background
       ctx.fillStyle = "rgba(238, 62, 62, 0.3)"; // Light red
@@ -164,6 +166,14 @@ const WaterTempChart = ({
         y.getPixelForValue(Number(maxVal)),
         right - left,
         top - y.getPixelForValue(Number(maxVal))
+      );
+      // Green background
+      ctx.fillStyle = "rgba(144, 238, 144, 0.3)"; // Light green
+      ctx.fillRect(
+        left,
+        y.getPixelForValue(Number(minVal)),
+        right - left,
+        y.getPixelForValue(Number(maxVal)) - y.getPixelForValue(minVal)
       );
       ctx.restore();
     },
@@ -355,6 +365,46 @@ const WaterTempChart = ({
       ctx.restore();
     },
   };
+
+  const minValPlugin = {
+    id: "minValPlugin",
+    beforeDatasetDraw(chart: Chart) {
+      const {
+        ctx,
+        data,
+        chartArea: { left, right },
+        scales: { y },
+      } = chart;
+
+      // Calculate the average of the dataset
+      const dataset = data?.datasets[0]?.data;
+      const minValue = Number(minVal);
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.lineWidth = 1;
+      ctx.setLineDash([5, 4]);
+      ctx.strokeStyle = "red";
+      ctx.moveTo(left, y.getPixelForValue(minValue));
+      ctx.lineTo(right, y.getPixelForValue(minValue));
+      ctx.stroke();
+
+      // Draw the rounded rectangle and label with "avg"
+      ctx.fillStyle = "red"; // Green background for the label
+      drawRoundedRect(ctx, right, y.getPixelForValue(minValue) - 10, 60, 25, 4);
+      ctx.font = "13px sans-serif bold";
+      ctx.fillStyle = "white"; // White text color
+      ctx.textBaseline = "middle";
+      ctx.textAlign = "center";
+      ctx.fillText(
+        "min value", // Label as "avg"
+        right + 30,
+        y.getPixelForValue(minValue) + 5
+      );
+
+      ctx.restore();
+    },
+  };
   //custom tooltip plugin block
   const customTooltip = {
     id: "customTooltip",
@@ -454,7 +504,13 @@ const WaterTempChart = ({
         ref={chartRef}
         data={data}
         options={options}
-        plugins={[dottedLine, customTooltip, backgroundPlugin, maxValPlugin]}
+        plugins={[
+          dottedLine,
+          customTooltip,
+          backgroundPlugin,
+          maxValPlugin,
+          minValPlugin,
+        ]}
       />
     </div>
   );
