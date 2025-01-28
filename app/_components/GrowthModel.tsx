@@ -36,6 +36,7 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
     clearErrors,
     formState: { errors },
   } = useForm<InputType>();
+
   const [isApiCallInProgress, setIsApiCallInProgress] =
     useState<boolean>(false);
   const onSubmit: SubmitHandler<InputType> = async (data) => {
@@ -110,7 +111,7 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
                     focused
                     {...register("name", { required: true })}
                     error={!!errors.name}
-                    helperText={errors.name ? "This feild is required" : ""}
+                    helperText={errors.name ? "This field is required" : ""}
                     sx={{
                       width: "100%",
                     }}
@@ -139,7 +140,7 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
                   </Select>
                   {errors.specie && (
                     <FormHelperText sx={{ color: "#d32f2f" }}>
-                      {errors.specie ? "This feild is required" : ""}
+                      {errors.specie ? "This field is required" : ""}
                     </FormHelperText>
                   )}
                 </FormControl>
@@ -156,7 +157,7 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
                   error={!!errors.temperatureCoefficient}
                   helperText={
                     errors.temperatureCoefficient
-                      ? "This feild is required"
+                      ? "This field is required"
                       : ""
                   }
                   sx={{
@@ -188,7 +189,7 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
                   {...register("growthEquationLength", { required: true })}
                   error={!!errors.growthEquationLength}
                   helperText={
-                    errors.growthEquationLength ? "This feild is required" : ""
+                    errors.growthEquationLength ? "This field is required" : ""
                   }
                   focused
                   sx={{
@@ -207,7 +208,7 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
                   error={!!errors.growthEquationBodyWeight}
                   helperText={
                     errors.growthEquationBodyWeight
-                      ? "This feild is required"
+                      ? "This field is required"
                       : ""
                   }
                   focused
@@ -226,7 +227,7 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
                   {...register("conditionFactor1", { required: true })}
                   error={!!errors.conditionFactor1}
                   helperText={
-                    errors.conditionFactor1 ? "This feild is required" : ""
+                    errors.conditionFactor1 ? "This field is required" : ""
                   }
                   focused
                   sx={{
@@ -270,7 +271,7 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
                   </Select>
                   {errors.farm && (
                     <FormHelperText sx={{ color: "#d32f2f" }}>
-                      {errors.specie ? "This feild is required" : ""}
+                      {errors.specie ? "This field is required" : ""}
                     </FormHelperText>
                   )}
                 </FormControl>

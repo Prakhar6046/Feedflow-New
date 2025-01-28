@@ -75,7 +75,7 @@ export default function ProductionParaMeter({
   const onSubmit: SubmitHandler<FormData> = (data) => {
     let payload;
     if (
-      isEditFarm &&
+      isEditFarm === "true" &&
       productionParaMeter &&
       productionParaMeter[0]?.YearBasedPredication
     ) {

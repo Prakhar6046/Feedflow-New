@@ -47,11 +47,6 @@ const EditFarm = ({ farmId, farmMembers, growthModels, farms }: Props) => {
     return res;
   };
 
-  // useEffect(() => {
-  //   if (isEditFarm) {
-  //     setActiveStep(1);
-  //   }
-  // }, [isEditFarm]);
   useEffect(() => {
     setCookie("activeStep", activeStep);
   }, [activeStep]);

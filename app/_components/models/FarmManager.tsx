@@ -2000,6 +2000,7 @@ const TransferModal: React.FC<Props> = ({
                 className=""
                 type="submit"
                 variant="contained"
+                disabled={watchedFields.length > 1 ? false : true}
                 sx={{
                   background: "#06A19B",
                   fontWeight: "bold",

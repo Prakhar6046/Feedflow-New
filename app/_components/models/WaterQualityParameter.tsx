@@ -140,40 +140,42 @@ const WaterQualityParameter: React.FC<Props> = ({
     setIsApiCallInProgress(true);
 
     try {
-      let updatedData = data.water.map((data) => {
-        if (data.date) {
-          return {
-            ...data,
-            date: data.date.format("YYYY-MM-DDTHH:mm:ssZ[Z]"),
-          };
-        } else {
-          return data;
+      if (data.water[1]) {
+        let updatedData = data.water.map((data) => {
+          if (data.date) {
+            return {
+              ...data,
+              date: data.date.format("YYYY-MM-DDTHH:mm:ssZ[Z]"),
+            };
+          } else {
+            return data;
+          }
+        });
+
+        const payload = {
+          waterAvg: updatedData[0],
+          listData: updatedData.filter((_, idx) => idx !== 0),
+        };
+
+        const response = await fetch("/api/production/mange/waterQuality", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        });
+
+        const res = await response.json();
+        if (res.status) {
+          toast.dismiss();
+          toast.success(res.message);
+          setOpen(false);
+          router.push("/dashboard/production");
+          removeLocalItem("productionData");
+          removeLocalItem("formData");
+          reset();
+          router.refresh();
         }
-      });
-
-      const payload = {
-        waterAvg: updatedData[0],
-        listData: updatedData.filter((_, idx) => idx !== 0),
-      };
-
-      const response = await fetch("/api/production/mange/waterQuality", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-
-      const res = await response.json();
-      if (res.status) {
-        toast.dismiss();
-        toast.success(res.message);
-        setOpen(false);
-        router.push("/dashboard/production");
-        removeLocalItem("productionData");
-        removeLocalItem("formData");
-        reset();
-        router.refresh();
       }
     } catch (error) {
       toast.error("Something went wrong. Please try again.");
@@ -1371,6 +1373,7 @@ const WaterQualityParameter: React.FC<Props> = ({
               className=""
               type="submit"
               variant="contained"
+              disabled={watchedFields.length > 1 ? false : true}
               sx={{
                 background: "#06A19B",
                 fontWeight: "bold",
