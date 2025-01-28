@@ -25,7 +25,7 @@ interface InputType {
   growthEquationBodyWeight: String;
   conditionFactor1: String;
   conditionFactor2: String;
-  farm: String;
+  // farm: String;
 }
 function GrowthModel({ farms }: { farms: Farm[] }) {
   const loggedUser: any = getCookie("logged-user");
@@ -249,7 +249,7 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
                   }}
                 />
               </Grid>
-              <Grid item md={6} xs={12}>
+              {/* <Grid item md={6} xs={12}>
                 <FormControl fullWidth className="form-input" focused>
                   <InputLabel id="farm-select-label5">Farm *</InputLabel>
                   <Select
@@ -275,7 +275,7 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
                     </FormHelperText>
                   )}
                 </FormControl>
-              </Grid>
+              </Grid> */}
             </Grid>
           </Box>
           <Box
