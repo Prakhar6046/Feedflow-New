@@ -122,6 +122,7 @@ function WaterChartDownloadPreview({
                         style={{
                           marginBottom: "4px",
                           fontSize: "16px",
+                          color: "white",
                         }}
                       >
                         Production Report
@@ -129,7 +130,7 @@ function WaterChartDownloadPreview({
                       <Box
                         style={{
                           fontSize: "14px",
-                          color: "#6C757D",
+                          color: "white",
                           marginBottom: "0",
                         }}
                       >

@@ -118,6 +118,7 @@ function FishChartDownloadPreview({
                         style={{
                           marginBottom: "4px",
                           fontSize: "16px",
+                          color: "white",
                         }}
                       >
                         Production Report
@@ -125,7 +126,7 @@ function FishChartDownloadPreview({
                       <Box
                         style={{
                           fontSize: "14px",
-                          color: "#6C757D",
+                          color: "white",
                           marginBottom: "0",
                         }}
                       >
@@ -163,7 +164,7 @@ function FishChartDownloadPreview({
                           marginInline: "10px",
                         }}
                       >
-                        <Typography
+                        <Box
                           sx={{
                             display: "flex",
                             alignItems: "center",
@@ -174,30 +175,33 @@ function FishChartDownloadPreview({
                             },
                           }}
                         >
-                          <Box
+                          <Typography
+                            component={"h5"}
                             style={{
                               margin: 0,
                               fontSize: "16px",
                             }}
                           >
                             Unit Name :
-                          </Box>
-                          <Box
+                          </Typography>
+
+                          <Typography
+                            component={"p"}
                             style={{
                               margin: 0,
                               fontSize: "14px",
                             }}
                           >
                             {productions[0]?.productionUnit?.name}
-                          </Box>
-                        </Typography>
+                          </Typography>
+                        </Box>
                       </li>
                       <li
                         style={{
                           marginInline: "10px",
                         }}
                       >
-                        <Typography
+                        <Box
                           sx={{
                             display: "flex",
                             alignItems: "center",
@@ -208,30 +212,32 @@ function FishChartDownloadPreview({
                             },
                           }}
                         >
-                          <Box
+                          <Typography
+                            component={"h5"}
                             style={{
                               margin: 0,
                               fontSize: "16px",
                             }}
                           >
                             Type :
-                          </Box>
-                          <Box
+                          </Typography>
+                          <Typography
+                            component={"p"}
                             style={{
                               margin: 0,
                               fontSize: "14px",
                             }}
                           >
                             {productions[0]?.productionUnit?.type}
-                          </Box>
-                        </Typography>
+                          </Typography>
+                        </Box>
                       </li>
                       <li
                         style={{
                           marginInline: "10px",
                         }}
                       >
-                        <Typography
+                        <Box
                           sx={{
                             display: "flex",
                             alignItems: "center",
@@ -242,30 +248,32 @@ function FishChartDownloadPreview({
                             },
                           }}
                         >
-                          <Box
+                          <Typography
+                            component={"h5"}
                             style={{
                               margin: 0,
                               fontSize: "16px",
                             }}
                           >
                             Water Flow :
-                          </Box>
-                          <Box
+                          </Typography>
+                          <Typography
+                            component={"p"}
                             style={{
                               margin: 0,
                               fontSize: "14px",
                             }}
                           >
                             {productions[0]?.productionUnit?.waterflowRate} L/H
-                          </Box>
-                        </Typography>
+                          </Typography>
+                        </Box>
                       </li>
                       <li
                         style={{
                           marginInline: "10px",
                         }}
                       >
-                        <Typography
+                        <Box
                           sx={{
                             display: "flex",
                             alignItems: "center",
@@ -276,23 +284,25 @@ function FishChartDownloadPreview({
                             },
                           }}
                         >
-                          <Box
+                          <Typography
+                            component={"h5"}
                             style={{
                               margin: 0,
                               fontSize: "16px",
                             }}
                           >
                             Volume :
-                          </Box>
-                          <Box
+                          </Typography>
+                          <Typography
+                            component={"p"}
                             style={{
                               margin: 0,
                               fontSize: "14px",
                             }}
                           >
                             {productions[0]?.productionUnit?.capacity}m3
-                          </Box>
-                        </Typography>
+                          </Typography>
+                        </Box>
                       </li>
                     </ul>
                   </Box>
