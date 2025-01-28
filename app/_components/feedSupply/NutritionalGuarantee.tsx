@@ -2033,7 +2033,7 @@ const NutritionalGuarantee = ({
                 background: "#06a19b",
                 color: "#fff",
                 fontWeight: 600,
-                padding: "6px 16px",
+                padding: "6px",
                 width: "fit-content",
                 textTransform: "capitalize",
                 borderRadius: "8px",
@@ -2044,51 +2044,61 @@ const NutritionalGuarantee = ({
             >
               Calculate
             </Button>
-
-            <FormControl
-              fullWidth
-              className="form-input"
-              sx={{
-                minWidth: 110,
-              }}
-              focused
-            >
-              <InputLabel id="feed-supply-select-label10">Min *</InputLabel>
-              <Select
-                labelId="feed-supply-select-label10"
-                id="feed-supply-select10"
-                label="Min *"
-                {...register("nutritionalGuarantee.metabolizableEnergy.value", {
-                  required: true,
-                })}
-                value={
-                  watch("nutritionalGuarantee.metabolizableEnergy.value") || ""
-                }
-                onChange={(e) => {
-                  setValue(
-                    "nutritionalGuarantee.metabolizableEnergy.value",
-                    e.target.value
-                  );
-                  trigger("nutritionalGuarantee.metabolizableEnergy.value");
+            <Box width={"100%"}>
+              <FormControl
+                fullWidth
+                className="form-input"
+                sx={{
+                  minWidth: 110,
                 }}
+                focused
               >
-                {nutritionalGuarantee.map((guarantee, i) => {
-                  return (
-                    <MenuItem value={guarantee} key={i}>
-                      {guarantee}
-                    </MenuItem>
-                  );
-                })}
-              </Select>
-            </FormControl>
-            {errors &&
-              errors?.nutritionalGuarantee?.metabolizableEnergy?.value &&
-              errors?.nutritionalGuarantee?.metabolizableEnergy.value.type ===
-                "required" && (
-                <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
-                  {validationMessage.required}
-                </Typography>
-              )}
+                <InputLabel id="feed-supply-select-label10">Min *</InputLabel>
+                <Select
+                  labelId="feed-supply-select-label10"
+                  id="feed-supply-select10"
+                  label="Min *"
+                  {...register(
+                    "nutritionalGuarantee.metabolizableEnergy.value",
+                    {
+                      required: true,
+                    }
+                  )}
+                  value={
+                    watch("nutritionalGuarantee.metabolizableEnergy.value") ||
+                    ""
+                  }
+                  onChange={(e) => {
+                    setValue(
+                      "nutritionalGuarantee.metabolizableEnergy.value",
+                      e.target.value
+                    );
+                    trigger("nutritionalGuarantee.metabolizableEnergy.value");
+                  }}
+                >
+                  {nutritionalGuarantee.map((guarantee, i) => {
+                    return (
+                      <MenuItem value={guarantee} key={i}>
+                        {guarantee}
+                      </MenuItem>
+                    );
+                  })}
+                </Select>
+              </FormControl>
+              {errors &&
+                errors?.nutritionalGuarantee?.metabolizableEnergy?.value &&
+                errors?.nutritionalGuarantee?.metabolizableEnergy.value.type ===
+                  "required" && (
+                  <Typography
+                    variant="body2"
+                    color="red"
+                    fontSize={13}
+                    mt={0.5}
+                  >
+                    {validationMessage.required}
+                  </Typography>
+                )}
+            </Box>
 
             {/* <Box
                 sx={{
