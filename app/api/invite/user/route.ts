@@ -19,6 +19,11 @@ export async function POST(req: NextRequest) {
     }
 
     const results = await prisma.user.findUnique({ where: { id: userId } });
+    const UpdateUser = await prisma.user.update({
+      where: { id: userId },
+      data: { invite: true },
+    });
+
     // Send the email
     const mailOptions = {
       from: process.env.EMAIL_USER, // Sender address
