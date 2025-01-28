@@ -36,7 +36,6 @@ interface Props {
 }
 
 export default function BasicTable({ organisations, userRole }: Props) {
-
   const router = useRouter();
   const pathName = usePathname();
   const dispatch = useAppDispatch();
@@ -445,7 +444,16 @@ export default function BasicTable({ organisations, userRole }: Props) {
                             </Stack>
                           </MenuItem>
                           {userRole === "SUPERADMIN" && (
-                            <MenuItem onClick={handleInviteOrganisation}>
+                            <MenuItem
+                              onClick={handleInviteOrganisation}
+                              disabled={
+                                selectedOrganisation?.users?.find(
+                                  (val) => val.role === "ADMIN" && val.invite
+                                )
+                                  ? true
+                                  : false
+                              }
+                            >
                               <Stack
                                 display="flex"
                                 gap={1.2}
@@ -465,7 +473,11 @@ export default function BasicTable({ organisations, userRole }: Props) {
                                 </svg>
 
                                 <Typography variant="subtitle2">
-                                  Invite
+                                  {selectedOrganisation?.users?.find(
+                                    (val) => val.role === "ADMIN" && val.invite
+                                  )
+                                    ? "Invited"
+                                    : "Invite"}
                                 </Typography>
                               </Stack>
                             </MenuItem>

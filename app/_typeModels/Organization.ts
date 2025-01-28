@@ -1,3 +1,5 @@
+import { SingleUser } from "./User";
+
 export interface OrganizationInitialState {
   isLoading: boolean;
   organisations: Organisation[];
@@ -47,6 +49,7 @@ export interface SingleOrganisation {
   contactId?: String;
   address?: OrganizationAddress;
   contact?: OrganizationContact[];
+  users?: SingleUser[];
 }
 export interface AddOrganizationFormInputs {
   organisationName: String;
