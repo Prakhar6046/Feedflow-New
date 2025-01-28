@@ -263,8 +263,8 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
                       clearErrors("farm");
                     }}
                   >
-                    {farms?.map((farm, idx) => (
-                      <MenuItem key={idx} value={farm.id || null}>
+                    {farms?.map((farm: any) => (
+                      <MenuItem key={farm?.id} value={farm.id || null}>
                         {farm.name}
                       </MenuItem>
                     ))}

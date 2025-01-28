@@ -466,6 +466,7 @@ function WaterChartDownloadPreview({
               const { title, yDataKey } = chartOption;
               return (
                 <Box
+                  key={title}
                   marginBottom={4}
                   style={{
                     width: "100%",
