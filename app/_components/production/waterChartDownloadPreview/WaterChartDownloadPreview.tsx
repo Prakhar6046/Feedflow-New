@@ -411,10 +411,16 @@ function WaterChartDownloadPreview({
       alert("No charts selected for download.");
       return;
     }
-
-    pdf.save("SelectedCharts.pdf");
-    removeLocalItem("waterPreviewData");
-    router.push("/dashboard/production");
+    const fileName = `water_report_${new Date()
+      .toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      })
+      .replace(/[\s,\/]+/g, "_")}.pdf`;
+    pdf.save(fileName);
+    // removeLocalItem("waterPreviewData");
+    // router.push("/dashboard/production");
   };
   useEffect(() => {
     const data = getLocalItem("waterPreviewData");
