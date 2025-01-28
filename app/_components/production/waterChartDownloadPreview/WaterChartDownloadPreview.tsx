@@ -96,6 +96,7 @@ function WaterChartDownloadPreview({
                 style={{
                   marginBottom: "4px",
                   fontSize: "16px",
+                  color: "white",
                 }}
               >
                 Production Report
@@ -103,7 +104,7 @@ function WaterChartDownloadPreview({
               <p
                 style={{
                   fontSize: "14px",
-                  color: "#6C757D",
+                  color: "white",
                   marginBottom: "0",
                 }}
               >
@@ -413,7 +414,7 @@ function WaterChartDownloadPreview({
 
     pdf.save("SelectedCharts.pdf");
     removeLocalItem("waterPreviewData");
-    router.push("/dashbaord/production");
+    router.push("/dashboard/production");
   };
   useEffect(() => {
     const data = getLocalItem("waterPreviewData");
