@@ -75,6 +75,15 @@ const AddNewOrganisation = () => {
 
   const onSubmit: SubmitHandler<AddOrganizationFormInputs> = async (data) => {
     // Prevent API call if one is already in progress
+    const hasAdmin = watch("contacts").some(
+      (contact) => contact.role === "Admin"
+    );
+
+    if (!hasAdmin) {
+      toast.dismiss();
+      toast.error("Please add at least one contact having role Admin.");
+      return;
+    }
     if (isApiCallInProgress) return;
     setIsApiCallInProgress(true);
     try {
@@ -829,22 +838,22 @@ const AddNewOrganisation = () => {
                         required: watch(`contacts.${index}.role`)
                           ? false
                           : true,
-                        validate: (value) => {
-                          if (value === "Admin") {
-                            watch("contacts").forEach((_, idx) => {
-                              clearErrors(`contacts.${idx}.role`);
-                            });
-                            return true;
-                          }
-                          const hasAdmin = watch("contacts").some(
-                            (contact) => contact.role === "Admin"
-                          );
+                        // validate: (value) => {
+                        //   if (value === "Admin") {
+                        //     watch("contacts").forEach((_, idx) => {
+                        //       clearErrors(`contacts.${idx}.role`);
+                        //     });
+                        //     return true;
+                        //   }
+                        //   const hasAdmin = watch("contacts").some(
+                        //     (contact) => contact.role === "Admin"
+                        //   );
 
-                          if (!hasAdmin) {
-                            return "Please add an admin first, then add a member.";
-                          }
-                          return true;
-                        },
+                        //   if (!hasAdmin) {
+                        //     return "Please add an admin first, then add a member.";
+                        //   }
+                        //   return true;
+                        // },
                         onChange: (e) =>
                           setValue(`contacts.${index}.role`, e.target.value),
                         // pattern: validationPattern.alphabetsAndSpacesPattern,
@@ -873,7 +882,7 @@ const AddNewOrganisation = () => {
                         {validationMessage.required}
                       </Typography>
                     )}
-                  {errors &&
+                  {/* {errors &&
                     errors?.contacts &&
                     errors?.contacts[index] &&
                     errors?.contacts[index]?.role &&
@@ -886,7 +895,7 @@ const AddNewOrganisation = () => {
                       >
                         {errors?.contacts[index]?.role?.message}
                       </Typography>
-                    )}
+                    )} */}
                 </Box>
 
                 <Box

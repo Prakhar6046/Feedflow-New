@@ -55,9 +55,8 @@ export default function AddNewUser({ organisations }: Props) {
 
   const {
     register,
-    setValue,
     handleSubmit,
-    getValues,
+    clearErrors,
     reset,
     formState: { errors },
   } = useForm<AddUserFormInputs>();
@@ -108,6 +107,7 @@ export default function AddNewUser({ organisations }: Props) {
     }
   };
   const handleChange = (event: SelectChangeEvent) => {
+    clearErrors("organisationId");
     setSelectedOrganisation(event.target.value as string);
   };
 

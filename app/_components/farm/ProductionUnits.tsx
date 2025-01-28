@@ -790,7 +790,6 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                             pr: 1,
                             position: "relative",
                           }}
-                          onClick={() => remove(index)}
                         >
                           <Box
                             sx={{
