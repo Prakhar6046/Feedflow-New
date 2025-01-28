@@ -32,12 +32,14 @@ interface Props {
   editFarm?: any;
   setActiveStep: (val: number) => void;
   farmMembers: SingleUser[];
+  farms: Farm[];
 }
 
 const FarmInformation: NextPage<Props> = ({
   setActiveStep,
   editFarm,
   farmMembers,
+  farms,
 }: Props) => {
   const dispatch = useAppDispatch();
   const {
@@ -198,6 +200,19 @@ const FarmInformation: NextPage<Props> = ({
               className="form-input"
               {...register("name", {
                 required: true,
+                validate: (value: String) => {
+                  const isUnique = farms.every((val) => {
+                    if (editFarm && val.id === editFarm.id) {
+                      return true;
+                    }
+                    return val.name.toLowerCase() !== value.toLowerCase();
+                  });
+
+                  return (
+                    isUnique ||
+                    "Please enter a unique farm name. The farm name you entered is not available."
+                  );
+                },
               })}
               focused
               sx={{
@@ -207,6 +222,11 @@ const FarmInformation: NextPage<Props> = ({
             {errors && errors.name && errors.name.type === "required" && (
               <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
                 {validationMessage.required}
+              </Typography>
+            )}
+            {errors && errors.name && errors.name.type === "validate" && (
+              <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                {errors?.name.message}
               </Typography>
             )}
           </Box>
