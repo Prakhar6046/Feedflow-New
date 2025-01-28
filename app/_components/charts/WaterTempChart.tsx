@@ -64,25 +64,17 @@ const WaterTempChart = ({
         // yAxisID: "first",
         label: `${title} average`,
         data: ydata || [1, 2, 34, 55],
-        backgroundColor: [
-          "rgba(255, 99, 132, 0.2)",
-          "rgba(255, 159, 64, 0.2)",
-          "rgba(255, 205, 86, 0.2)",
-          "rgba(75, 192, 192, 0.2)",
-          "rgba(54, 162, 235, 0.2)",
-          "rgba(153, 102, 255, 0.2)",
-          "rgba(201, 203, 207, 0.2)",
-        ],
-        borderColor: [
-          "rgb(255, 99, 132)",
-          "rgb(255, 159, 64)",
-          "rgb(255, 205, 86)",
-          "rgb(75, 192, 192)",
-          "rgb(54, 162, 235)",
-          "rgb(153, 102, 255)",
-          "rgb(201, 203, 207)",
-        ],
-        borderWidth: 1,
+        backgroundColor: "rgba(30, 144, 255, 0.2)", // Light blue fill
+        borderColor: "#1E90FF",
+        borderWidth: 2,
+      },
+      {
+        // yAxisID: "second",
+        label: `Predicted Values`,
+        data: ["1", "2", "34", "55"],
+        backgroundColor: "rgba(255, 165, 0, 0.2)", // Light orange fill
+        borderColor: "#FFA500",
+        borderWidth: 2,
       },
     ],
   };
@@ -129,18 +121,23 @@ const WaterTempChart = ({
             year: "yyyy",
           },
         },
-
         suggestedMax: endDate,
         suggestedMin: startDate,
       },
       y: {
-        suggestedMax: maxVal && Number(maxVal) * 2,
+        // suggestedMax: maxVal && Number(maxVal) * 2,
         suggestedMin: 0,
         title: { display: true, text: title },
         grid: { display: true },
       },
+      // y1: {
+      //   position: "left",
+      //   title: { display: true, text: "Predicted Values" },
+      //   grid: { display: false },
+      // },
     },
   };
+
   const backgroundPlugin = {
     id: "backgroundColor",
     beforeDraw: (chart: any) => {

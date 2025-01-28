@@ -18,7 +18,7 @@ export default async function Page({
   const loggedUser: any = getCookie("logged-user", { cookies });
   const user = JSON.parse(loggedUser);
 
-  const famrs = await getFarms({
+  const farms = await getFarms({
     role: user.role,
     organisationId: user.organisationId,
     query,
@@ -38,7 +38,7 @@ export default async function Page({
           { name: "Farm", link: "/dashboard/farm" },
         ]}
       />
-      <FarmTable farms={famrs?.data} />
+      <FarmTable farms={farms?.data} />
     </>
   );
 }

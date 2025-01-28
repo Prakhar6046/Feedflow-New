@@ -27,10 +27,19 @@ export default async function Page({
   return (
     <>
       <BasicBreadcrumbs
-        heading={"Water History"}
+        heading={"Water Chart Preview"}
+        // isTable={true}
         links={[
           { name: "Dashboard", link: "/dashboard" },
           { name: "Production Manager", link: "/dashboard/production" },
+          {
+            name: "Water History",
+            link: `/dashboard/production/water/${params.waterId}`,
+          },
+          {
+            name: "Water Chart Preview",
+            link: `/dashboard/production/water/${params.waterId}/chartPreview`,
+          },
         ]}
         hideSearchInput
       />

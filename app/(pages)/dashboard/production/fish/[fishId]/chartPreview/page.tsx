@@ -28,7 +28,7 @@ export default async function Page({
     <>
       <BasicBreadcrumbs
         heading={"Fish Chart Preview"}
-        isTable={true}
+        // isTable={true}
         links={[
           { name: "Dashboard", link: "/dashboard" },
           { name: "Production Manager", link: "/dashboard/production" },
