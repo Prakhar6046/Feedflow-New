@@ -240,6 +240,7 @@ const FarmInformation: NextPage<Props> = ({
                 {...register("farmAltitude", {
                   required: true,
                   pattern: validationPattern.numbersWithDot,
+                  maxLength: 10,
                 })}
                 focused
                 sx={{
@@ -274,6 +275,13 @@ const FarmInformation: NextPage<Props> = ({
                   {validationMessage.onlyNumbers}
                 </Typography>
               )}
+            {errors &&
+              errors.farmAltitude &&
+              errors.farmAltitude.type === "maxLength" && (
+                <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                  {validationMessage.numberMaxLength}
+                </Typography>
+              )}
           </Box>
           <Box mb={2} width={"100%"}>
             <TextField
@@ -283,6 +291,7 @@ const FarmInformation: NextPage<Props> = ({
               {...register("lat", {
                 required: true,
                 pattern: validationPattern.negativeNumberWithDot,
+                maxLength: 10,
               })}
               focused
               sx={{
@@ -300,6 +309,11 @@ const FarmInformation: NextPage<Props> = ({
                 {validationMessage.NegativeNumberWithDot}
               </Typography>
             )}
+            {errors && errors.lat && errors.lat.type === "maxLength" && (
+              <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                {validationMessage.numberMaxLength}
+              </Typography>
+            )}
           </Box>{" "}
           <Box mb={2} width={"100%"}>
             <TextField
@@ -309,6 +323,7 @@ const FarmInformation: NextPage<Props> = ({
               {...register("lng", {
                 required: true,
                 pattern: validationPattern.negativeNumberWithDot,
+                maxLength: 10,
               })}
               focused
               sx={{
@@ -324,6 +339,11 @@ const FarmInformation: NextPage<Props> = ({
             {errors && errors.lng && errors.lng.type === "pattern" && (
               <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
                 {validationMessage.NegativeNumberWithDot}
+              </Typography>
+            )}
+            {errors && errors.lng && errors.lng.type === "pattern" && (
+              <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                {validationMessage.numberMaxLength}
               </Typography>
             )}
           </Box>

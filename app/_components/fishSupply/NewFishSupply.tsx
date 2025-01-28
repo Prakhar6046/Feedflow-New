@@ -354,6 +354,7 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
                 {...register("spawningNumber", {
                   required: true,
                   pattern: validationPattern.numbersWithDot,
+                  maxLength: 10,
                 })}
                 focused
                 type="number"
@@ -385,6 +386,18 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
                     mt={0.5}
                   >
                     {validationMessage.OnlyNumbersWithDot}
+                  </Typography>
+                )}
+              {errors &&
+                errors.spawningNumber &&
+                errors.spawningNumber.type === "maxLength" && (
+                  <Typography
+                    variant="body2"
+                    color="red"
+                    fontSize={13}
+                    mt={0.5}
+                  >
+                    {validationMessage.numberMaxLength}
                   </Typography>
                 )}
             </Box>

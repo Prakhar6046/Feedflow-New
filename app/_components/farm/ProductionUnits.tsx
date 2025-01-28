@@ -568,6 +568,7 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                               rules={{
                                 required: true,
                                 pattern: validationPattern.numbersWithDot,
+                                maxLength: 10,
                               }} // Add validation
                             />
                             {/* <TextField
@@ -622,32 +623,23 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                         </Box>
                         {errors &&
                           errors.productionUnits &&
-                          errors.productionUnits[index]?.capacity &&
-                          errors.productionUnits[index]?.capacity.type ===
-                            "required" && (
+                          errors?.productionUnits[index]?.capacity && (
                             <Typography
                               variant="body2"
                               color="red"
                               fontSize={13}
                               mt={0.5}
                             >
-                              {validationMessage.required}
-                            </Typography>
-                          )}
-                        {errors &&
-                          errors.productionUnits &&
-                          errors.productionUnits[index]?.capacity &&
-                          errors.productionUnits[index]?.capacity.type ===
-                            "pattern" && (
-                            <Typography
-                              variant="body2"
-                              color="red"
-                              fontSize={13}
-                              mt={0.5}
-                              width="50%"
-                              maxWidth={"230px"}
-                            >
-                              {validationMessage.OnlyNumbersWithDot}
+                              {errors.productionUnits[index]?.capacity.type ===
+                              "required"
+                                ? validationMessage.required
+                                : errors.productionUnits[index]?.capacity
+                                    .type === "pattern"
+                                ? validationMessage.OnlyNumbersWithDot
+                                : errors.productionUnits[index]?.capacity
+                                    .type === "maxLength"
+                                ? validationMessage.numberMaxLength
+                                : ""}
                             </Typography>
                           )}
                       </TableCell>
@@ -680,21 +672,9 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                               rules={{
                                 required: true,
                                 pattern: validationPattern.onlyNumbersPattern,
+                                maxLength: 10,
                               }} // Add validation
                             />
-                            {/* <TextField
-                              label="Waterflow Rate *"
-                              type="text"
-                              className="form-input"
-                              {...register(
-                                `productionUnits.${index}.waterflowRate` as const,
-                                {
-                                  required: true,
-                                  pattern: validationPattern.onlyNumbersPattern,
-                                }
-                              )}
-                              focused
-                            /> */}
                             <Typography
                               variant="body1"
                               color="#555555AC"
@@ -710,33 +690,25 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                             </Typography>
                           </Box>
                         </Box>
-
-                        {errors &&
-                          errors.productionUnits &&
-                          errors.productionUnits[index]?.waterflowRate?.type ===
-                            "required" && (
-                            <Typography
-                              variant="body2"
-                              color="red"
-                              fontSize={13}
-                              mt={0.5}
-                            >
-                              {validationMessage.required}
-                            </Typography>
-                          )}
-                        {errors &&
-                          errors.productionUnits &&
-                          errors.productionUnits[index]?.waterflowRate?.type ===
-                            "pattern" && (
-                            <Typography
-                              variant="body2"
-                              color="red"
-                              fontSize={13}
-                              mt={0.5}
-                            >
-                              {validationMessage.onlyNumbers}
-                            </Typography>
-                          )}
+                        {errors?.productionUnits?.[index]?.waterflowRate && (
+                          <Typography
+                            variant="body2"
+                            color="red"
+                            fontSize={13}
+                            mt={0.5}
+                          >
+                            {errors?.productionUnits?.[index]?.waterflowRate
+                              .type === "required"
+                              ? validationMessage.required
+                              : errors?.productionUnits?.[index]?.waterflowRate
+                                  .type === "pattern"
+                              ? validationMessage.onlyNumbers
+                              : errors?.productionUnits?.[index]?.waterflowRate
+                                  .type === "maxLength"
+                              ? validationMessage.numberMaxLength
+                              : ""}
+                          </Typography>
+                        )}
                       </TableCell>
                       {index === 0 && (
                         <TableCell
@@ -810,7 +782,6 @@ const ProductionUnits: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                           </Box>
                         </TableCell>
                       )}
-
                       {
                         <TableCell
                           sx={{

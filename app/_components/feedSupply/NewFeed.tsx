@@ -643,6 +643,7 @@ const NewFeed: NextPage<Props> = ({
                     {...register("particleSize", {
                       required: true,
                       pattern: validationPattern.numbersWithDot,
+                      maxLength: 10,
                     })}
                     focused
                     sx={{
@@ -691,6 +692,18 @@ const NewFeed: NextPage<Props> = ({
                       mt={0.5}
                     >
                       {validationMessage.OnlyNumbersWithDot}
+                    </Typography>
+                  )}
+                {errors &&
+                  errors.particleSize &&
+                  errors.particleSize.type === "maxLength" && (
+                    <Typography
+                      variant="body2"
+                      color="red"
+                      fontSize={13}
+                      mt={0.5}
+                    >
+                      {validationMessage.numberMaxLength}
                     </Typography>
                   )}
               </Grid>
@@ -838,6 +851,7 @@ const NewFeed: NextPage<Props> = ({
                     {...register("animalSizeInLength", {
                       required: true,
                       pattern: validationPattern.numbersWithDot,
+                      maxLength: 10,
                     })}
                     focused
                     sx={{
@@ -888,6 +902,18 @@ const NewFeed: NextPage<Props> = ({
                       {validationMessage.OnlyNumbersWithDot}
                     </Typography>
                   )}
+                {errors &&
+                  errors.animalSizeInLength &&
+                  errors.animalSizeInLength.type === "maxLength" && (
+                    <Typography
+                      variant="body2"
+                      color="red"
+                      fontSize={13}
+                      mt={0.5}
+                    >
+                      {validationMessage.numberMaxLength}
+                    </Typography>
+                  )}
               </Grid>
 
               <Grid item md={6} xs={12}>
@@ -904,6 +930,7 @@ const NewFeed: NextPage<Props> = ({
                     {...register("animalSizeInWeight", {
                       required: true,
                       pattern: validationPattern.numbersWithDot,
+                      maxLength: 10,
                     })}
                     focused
                     sx={{
@@ -952,6 +979,18 @@ const NewFeed: NextPage<Props> = ({
                       mt={0.5}
                     >
                       {validationMessage.OnlyNumbersWithDot}
+                    </Typography>
+                  )}
+                {errors &&
+                  errors.animalSizeInWeight &&
+                  errors.animalSizeInWeight.type === "maxLength" && (
+                    <Typography
+                      variant="body2"
+                      color="red"
+                      fontSize={13}
+                      mt={0.5}
+                    >
+                      {validationMessage.numberMaxLength}
                     </Typography>
                   )}
               </Grid>
@@ -1136,6 +1175,7 @@ const NewFeed: NextPage<Props> = ({
                     {...register("shelfLife", {
                       required: true,
                       pattern: validationPattern.numbersWithDot,
+                      maxLength: 10,
                     })}
                     focused
                     sx={{
@@ -1183,6 +1223,18 @@ const NewFeed: NextPage<Props> = ({
                       mt={0.5}
                     >
                       {validationMessage.OnlyNumbersWithDot}
+                    </Typography>
+                  )}
+                {errors &&
+                  errors.shelfLife &&
+                  errors.shelfLife.type === "maxLength" && (
+                    <Typography
+                      variant="body2"
+                      color="red"
+                      fontSize={13}
+                      mt={0.5}
+                    >
+                      {validationMessage.numberMaxLength}
                     </Typography>
                   )}
               </Grid>

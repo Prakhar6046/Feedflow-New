@@ -103,6 +103,7 @@ const NutritionalGuarantee = ({
                     {...register("nutritionalGuarantee.moisture.kg", {
                       required: true,
                       pattern: validationPattern.numbersWithDot,
+                      maxLength: 10,
                     })}
                     focused
                     sx={{
@@ -133,6 +134,19 @@ const NutritionalGuarantee = ({
                         mt={0.5}
                       >
                         {validationMessage.OnlyNumbersWithDot}
+                      </Typography>
+                    )}
+                  {errors &&
+                    errors?.nutritionalGuarantee?.moisture?.kg &&
+                    errors?.nutritionalGuarantee?.moisture?.kg.type ===
+                      "maxLength" && (
+                      <Typography
+                        variant="body2"
+                        color="red"
+                        fontSize={13}
+                        mt={0.5}
+                      >
+                        {validationMessage.numberMaxLength}
                       </Typography>
                     )}
                   <Typography
@@ -319,6 +333,7 @@ const NutritionalGuarantee = ({
                     {...register("nutritionalGuarantee.crudeProtein.kg", {
                       required: true,
                       pattern: validationPattern.numbersWithDot,
+                      maxLength: 10,
                     })}
                     focused
                     sx={{
@@ -350,6 +365,19 @@ const NutritionalGuarantee = ({
                         mt={0.5}
                       >
                         {validationMessage.OnlyNumbersWithDot}
+                      </Typography>
+                    )}
+                  {errors &&
+                    errors?.nutritionalGuarantee?.crudeProtein?.kg &&
+                    errors.nutritionalGuarantee.crudeProtein.kg.type ===
+                      "maxLength" && (
+                      <Typography
+                        variant="body2"
+                        color="red"
+                        fontSize={13}
+                        mt={0.5}
+                      >
+                        {validationMessage.numberMaxLength}
                       </Typography>
                     )}
                   <Typography
@@ -556,6 +584,7 @@ const NutritionalGuarantee = ({
                     {...register("nutritionalGuarantee.crudeFat.kg", {
                       required: true,
                       pattern: validationPattern.numbersWithDot,
+                      maxLength: 10,
                     })}
                     focused
                     sx={{
@@ -587,6 +616,19 @@ const NutritionalGuarantee = ({
                         mt={0.5}
                       >
                         {validationMessage.OnlyNumbersWithDot}
+                      </Typography>
+                    )}
+                  {errors &&
+                    errors?.nutritionalGuarantee?.crudeFat?.kg &&
+                    errors?.nutritionalGuarantee?.crudeFat?.kg.type ===
+                      "maxLength" && (
+                      <Typography
+                        variant="body2"
+                        color="red"
+                        fontSize={13}
+                        mt={0.5}
+                      >
+                        {validationMessage.numberMaxLength}
                       </Typography>
                     )}
                   <Typography
@@ -792,6 +834,7 @@ const NutritionalGuarantee = ({
                     {...register("nutritionalGuarantee.crudeAsh.kg", {
                       required: true,
                       pattern: validationPattern.numbersWithDot,
+                      maxLength: 10,
                     })}
                     focused
                     sx={{
@@ -823,6 +866,19 @@ const NutritionalGuarantee = ({
                         mt={0.5}
                       >
                         {validationMessage.OnlyNumbersWithDot}
+                      </Typography>
+                    )}
+                  {errors &&
+                    errors?.nutritionalGuarantee?.crudeAsh?.kg &&
+                    errors?.nutritionalGuarantee?.crudeAsh.kg.type ===
+                      "maxLength" && (
+                      <Typography
+                        variant="body2"
+                        color="red"
+                        fontSize={13}
+                        mt={0.5}
+                      >
+                        {validationMessage.numberMaxLength}
                       </Typography>
                     )}
                   <Typography
@@ -1027,6 +1083,7 @@ const NutritionalGuarantee = ({
                     {...register("nutritionalGuarantee.crudeFiber.kg", {
                       required: true,
                       pattern: validationPattern.numbersWithDot,
+                      maxLength: 10,
                     })}
                     focused
                     sx={{
@@ -1058,6 +1115,19 @@ const NutritionalGuarantee = ({
                         mt={0.5}
                       >
                         {validationMessage.OnlyNumbersWithDot}
+                      </Typography>
+                    )}
+                  {errors &&
+                    errors?.nutritionalGuarantee?.crudeFiber?.kg &&
+                    errors?.nutritionalGuarantee?.crudeFiber.kg.type ===
+                      "maxLength" && (
+                      <Typography
+                        variant="body2"
+                        color="red"
+                        fontSize={13}
+                        mt={0.5}
+                      >
+                        {validationMessage.numberMaxLength}
                       </Typography>
                     )}
                   <Typography
@@ -1263,6 +1333,7 @@ const NutritionalGuarantee = ({
                     {...register("nutritionalGuarantee.calcium.kg", {
                       required: true,
                       pattern: validationPattern.numbersWithDot,
+                      maxLength: 10,
                     })}
                     focused
                     sx={{
@@ -1294,6 +1365,19 @@ const NutritionalGuarantee = ({
                         mt={0.5}
                       >
                         {validationMessage.OnlyNumbersWithDot}
+                      </Typography>
+                    )}
+                  {errors &&
+                    errors?.nutritionalGuarantee?.calcium?.kg &&
+                    errors?.nutritionalGuarantee?.calcium.kg.type ===
+                      "maxLength" && (
+                      <Typography
+                        variant="body2"
+                        color="red"
+                        fontSize={13}
+                        mt={0.5}
+                      >
+                        {validationMessage.numberMaxLength}
                       </Typography>
                     )}
                   <Typography
@@ -1496,6 +1580,7 @@ const NutritionalGuarantee = ({
                     {...register("nutritionalGuarantee.phosphorous.kg", {
                       required: true,
                       pattern: validationPattern.numbersWithDot,
+                      maxLength: 10,
                     })}
                     focused
                     sx={{
@@ -1527,6 +1612,19 @@ const NutritionalGuarantee = ({
                         mt={0.5}
                       >
                         {validationMessage.OnlyNumbersWithDot}
+                      </Typography>
+                    )}
+                  {errors &&
+                    errors?.nutritionalGuarantee?.phosphorous?.kg &&
+                    errors?.nutritionalGuarantee?.phosphorous.kg.type ===
+                      "maxLength" && (
+                      <Typography
+                        variant="body2"
+                        color="red"
+                        fontSize={13}
+                        mt={0.5}
+                      >
+                        {validationMessage.numberMaxLength}
                       </Typography>
                     )}
                   <Typography
@@ -1733,6 +1831,7 @@ const NutritionalGuarantee = ({
                     {...register("nutritionalGuarantee.carbohydrates.kg", {
                       required: true,
                       pattern: validationPattern.numbersWithDot,
+                      maxLength: 10,
                     })}
                     focused
                     sx={{
@@ -1784,6 +1883,19 @@ const NutritionalGuarantee = ({
                         mt={0.5}
                       >
                         {validationMessage.OnlyNumbersWithDot}
+                      </Typography>
+                    )}
+                  {errors &&
+                    errors?.nutritionalGuarantee?.carbohydrates?.kg &&
+                    errors?.nutritionalGuarantee?.carbohydrates.kg.type ===
+                      "maxLength" && (
+                      <Typography
+                        variant="body2"
+                        color="red"
+                        fontSize={13}
+                        mt={0.5}
+                      >
+                        {validationMessage.numberMaxLength}
                       </Typography>
                     )}
                 </Box>
@@ -1970,6 +2082,7 @@ const NutritionalGuarantee = ({
                 {...register("nutritionalGuarantee.metabolizableEnergy.kg", {
                   required: true,
                   pattern: validationPattern.numbersWithDot,
+                  maxLength: 10,
                 })}
                 focused
                 sx={{
@@ -2022,6 +2135,19 @@ const NutritionalGuarantee = ({
                     mt={0.5}
                   >
                     {validationMessage.OnlyNumbersWithDot}
+                  </Typography>
+                )}
+              {errors &&
+                errors?.nutritionalGuarantee?.metabolizableEnergy?.kg &&
+                errors?.nutritionalGuarantee?.metabolizableEnergy.kg.type ===
+                  "maxLength" && (
+                  <Typography
+                    variant="body2"
+                    color="red"
+                    fontSize={13}
+                    mt={0.5}
+                  >
+                    {validationMessage.numberMaxLength}
                   </Typography>
                 )}
             </Box>

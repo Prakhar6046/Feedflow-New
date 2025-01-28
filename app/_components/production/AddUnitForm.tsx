@@ -129,7 +129,10 @@ function AddUnitForm({ farms }: Props) {
             <Grid item lg={6} xs={12}>
               <Box mb={2} width={"100%"}>
                 <FormControl fullWidth className="form-input">
-                  <InputLabel id="feed-supply-select-label1" sx={{color:"black"}}>
+                  <InputLabel
+                    id="feed-supply-select-label1"
+                    sx={{ color: "black" }}
+                  >
                     Fish Farmer *
                   </InputLabel>
                   <Select
@@ -267,6 +270,7 @@ function AddUnitForm({ farms }: Props) {
                     {...register("biomass", {
                       required: true,
                       pattern: validationPattern.numbersWithDot,
+                      maxLength: 10,
                     })}
                     sx={{
                       width: "100%",
@@ -315,6 +319,18 @@ function AddUnitForm({ farms }: Props) {
                         {validationMessage.OnlyNumbersWithDot}
                       </Typography>
                     )}
+                  {errors &&
+                    errors.biomass &&
+                    errors.biomass.type === "maxLength" && (
+                      <Typography
+                        variant="body2"
+                        color="red"
+                        fontSize={13}
+                        mt={0.5}
+                      >
+                        {validationMessage.numberMaxLength}
+                      </Typography>
+                    )}
                   {/* <Box mb={2} width={"100%"}>
               <FormControl fullWidth className="form-input">
                 <InputLabel id="feed-supply-select-label1">
@@ -353,6 +369,7 @@ function AddUnitForm({ farms }: Props) {
                   {...register("fishCount", {
                     required: true,
                     pattern: validationPattern.numbersWithDot,
+                    maxLength: 10,
                   })}
                   sx={{
                     width: "100%",
@@ -381,6 +398,18 @@ function AddUnitForm({ farms }: Props) {
                       mt={0.5}
                     >
                       {validationMessage.OnlyNumbersWithDot}
+                    </Typography>
+                  )}
+                {errors &&
+                  errors.fishCount &&
+                  errors.fishCount.type === "maxLength" && (
+                    <Typography
+                      variant="body2"
+                      color="red"
+                      fontSize={13}
+                      mt={0.5}
+                    >
+                      {validationMessage.numberMaxLength}
                     </Typography>
                   )}
               </Box>
@@ -431,6 +460,7 @@ function AddUnitForm({ farms }: Props) {
                     {...register("meanWeight", {
                       required: true,
                       pattern: validationPattern.numbersWithDot,
+                      maxLength: 10,
                     })}
                     sx={{
                       width: "100%",
@@ -480,6 +510,18 @@ function AddUnitForm({ farms }: Props) {
                         {validationMessage.OnlyNumbersWithDot}
                       </Typography>
                     )}
+                  {errors &&
+                    errors.meanWeight &&
+                    errors.meanWeight.type === "maxLength" && (
+                      <Typography
+                        variant="body2"
+                        color="red"
+                        fontSize={13}
+                        mt={0.5}
+                      >
+                        {validationMessage.numberMaxLength}
+                      </Typography>
+                    )}
                 </Box>
               </Box>
             </Grid>
@@ -494,6 +536,7 @@ function AddUnitForm({ farms }: Props) {
                     {...register("meanLength", {
                       required: true,
                       pattern: validationPattern.numbersWithDot,
+                      maxLength: 10,
                     })}
                     sx={{
                       width: "100%",
@@ -541,6 +584,18 @@ function AddUnitForm({ farms }: Props) {
                         mt={0.5}
                       >
                         {validationMessage.OnlyNumbersWithDot}
+                      </Typography>
+                    )}
+                  {errors &&
+                    errors.meanLength &&
+                    errors.meanLength.type === "maxLength" && (
+                      <Typography
+                        variant="body2"
+                        color="red"
+                        fontSize={13}
+                        mt={0.5}
+                      >
+                        {validationMessage.numberMaxLength}
                       </Typography>
                     )}
                 </Box>

@@ -171,6 +171,7 @@ const CalculateMeanLength = ({ open, setOpen, setAvgOfMeanLength }: Props) => {
                               {...register(`meanlength.${idx}.measurement`, {
                                 required: true,
                                 pattern: validationPattern.numbersWithDot,
+                                maxLength: 10,
                               })}
                               focused
                               className="form-input"
@@ -204,6 +205,20 @@ const CalculateMeanLength = ({ open, setOpen, setAvgOfMeanLength }: Props) => {
                                   {validationMessage.OnlyNumbersWithDot}
                                 </Typography>
                               )}
+                            {errors &&
+                              errors.meanlength &&
+                              errors.meanlength[idx] &&
+                              errors.meanlength[idx].measurement?.type ===
+                                "maxLength" && (
+                                <Typography
+                                  variant="body2"
+                                  color="red"
+                                  fontSize={13}
+                                  mt={0.5}
+                                >
+                                  {validationMessage.numberMaxLength}
+                                </Typography>
+                              )}
                           </Grid>
 
                           <Grid
@@ -221,6 +236,7 @@ const CalculateMeanLength = ({ open, setOpen, setAvgOfMeanLength }: Props) => {
                                 {...register(`meanlength.${idx}.length`, {
                                   required: true,
                                   pattern: validationPattern.numbersWithDot,
+                                  maxLength: 10,
                                 })}
                                 focused
                                 className="form-input"
@@ -270,6 +286,20 @@ const CalculateMeanLength = ({ open, setOpen, setAvgOfMeanLength }: Props) => {
                                     mt={0.5}
                                   >
                                     {validationMessage.OnlyNumbersWithDot}
+                                  </Typography>
+                                )}
+                              {errors &&
+                                errors.meanlength &&
+                                errors.meanlength[idx] &&
+                                errors.meanlength[idx].length?.type ==
+                                  "maxLength" && (
+                                  <Typography
+                                    variant="body2"
+                                    color="red"
+                                    fontSize={13}
+                                    mt={0.5}
+                                  >
+                                    {validationMessage.numberMaxLength}
                                   </Typography>
                                 )}
                             </Box>
