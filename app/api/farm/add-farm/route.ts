@@ -83,6 +83,12 @@ export async function POST(req: NextRequest) {
       },
     });
 
+    await prisma.yearBasedPredicationProductionUnit.createMany({
+      data: newProductUnits.map((unit: any) => ({
+        productionUnitId: unit.id,
+        ...paylaodForProductionParameter,
+      })),
+    });
     return NextResponse.json({
       message: "Farm created successfully",
       data: "farm",

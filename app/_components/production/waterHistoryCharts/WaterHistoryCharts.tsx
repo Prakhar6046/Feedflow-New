@@ -137,6 +137,7 @@ function WaterHistoryCharts({
     setLocalItem("waterPreviewData", data);
     router.push(`/dashboard/production/water/${waterId}/chartPreview`);
   };
+
   return (
     <div>
       <Box
@@ -160,11 +161,16 @@ function WaterHistoryCharts({
           }}
           onClick={() => setIsModalOpen(true)}
         >
-          Select Charts to Download
+          Create Report
         </Button>
       </Box>
 
-      <Dialog open={isModalOpen} onClose={() => setIsModalOpen(false)}>
+      <Dialog
+        open={isModalOpen}
+        onClose={() => {
+          setIsModalOpen(false), setSelectedCharts([]);
+        }}
+      >
         <DialogTitle>Select Charts</DialogTitle>
         <DialogContent>
           {chartOptions.map(({ key, title }) => (
@@ -193,18 +199,23 @@ function WaterHistoryCharts({
             p: 3,
           }}
         >
-          {/* <Button onClick={() => setIsModalOpen(false)} color="secondary">
-            Cancel
-          </Button>
           <Button
-            // onClick={downloadChartsAsPDF}
-            onClick={previewCharts}
-            color="primary"
-            disabled={selectedCharts.length === 0}
+            type="button"
+            variant="contained"
+            sx={{
+              background: "#06A19B",
+              fontWeight: 600,
+              padding: "6px 16px",
+              width: "fit-content",
+              textTransform: "capitalize",
+              borderRadius: "8px",
+            }}
+            onClick={() => {
+              chartOptions.map((chart) => handleCheckboxChange(chart.key));
+            }}
           >
-            Preview
-            Download
-          </Button> */}
+            Select all charts
+          </Button>
           <Button
             type="button"
             variant="contained"
@@ -223,7 +234,9 @@ function WaterHistoryCharts({
 
           <Button
             type="button"
-            onClick={() => setIsModalOpen(false)}
+            onClick={() => {
+              setIsModalOpen(false), setSelectedCharts([]);
+            }}
             variant="contained"
             sx={{
               background: "#fff",
