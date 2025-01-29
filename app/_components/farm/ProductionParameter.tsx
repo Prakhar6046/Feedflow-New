@@ -40,6 +40,7 @@ interface FormData {
   idealRange: Record<string, { Min: string; Max: string }>;
   applyToAll: Record<string, boolean>;
   modelId: number;
+  specie: String;
 }
 export default function ProductionParaMeter({
   setActiveStep,
@@ -572,7 +573,7 @@ export default function ProductionParaMeter({
           </Grid>
         </Paper>
 
-        <Box>
+        <Box mt={7}>
           <Typography variant="subtitle1" fontWeight={500} marginBottom={3}>
             Growth Parameters
           </Typography>

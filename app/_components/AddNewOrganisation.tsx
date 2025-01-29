@@ -236,6 +236,15 @@ const AddNewOrganisation = () => {
             },
           }}
         >
+          {" "}
+          <Typography
+            variant="h6"
+            color="rgb(99, 115, 129)"
+            fontSize={14}
+            alignSelf={"flex-start"}
+          >
+            Profile Picture
+          </Typography>
           <Button
             component="label"
             role={undefined}
@@ -243,22 +252,16 @@ const AddNewOrganisation = () => {
             tabIndex={-1}
             style={{
               backgroundImage: `url(${profilePic})`,
-              backgroundSize: "contain",
-              backgroundPosition: "center",
-              backgroundRepeat: "no-repeat",
-              marginInline: "0 !important",
+              backgroundSize: "100% 100%",
             }}
             startIcon={!profilePic && <CloudUploadIcon />}
-            className="upload-file-input custom-margin"
+            className="upload-file-input1 "
             sx={{
               textTransform: "unset",
               fontSize: 12,
-              width: {
-                md: "90%",
-                xs: "100%",
-              },
-              height: 200,
-              borderRadius: 3,
+              width: 140,
+              height: 140,
+              borderRadius: 100,
               border: "7px solid white",
               outline: "1px dashed rgba(145, 158, 171, 0.32)",
               backgroundColor: "rgb(244, 246, 248)",
@@ -271,7 +274,7 @@ const AddNewOrganisation = () => {
               position: "relative",
             }}
           >
-            <Box>{!profilePic && "Drag file here or Upload from Device"}</Box>
+            <Box>{!profilePic && "Upload Photo"}</Box>
             <VisuallyHiddenInput
               type="file"
               {...register("image", {
@@ -322,7 +325,6 @@ const AddNewOrganisation = () => {
               </Button>
             </Box>
           )}
-
           <Box
             display={"flex"}
             justifyContent={"center"}

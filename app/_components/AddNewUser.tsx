@@ -285,6 +285,16 @@ export default function AddNewUser({ organisations }: Props) {
                     </Button>
                   </Box>
                 )}
+                <Typography
+                  variant="body1"
+                  fontSize={12}
+                  textAlign={"center"}
+                  margin="0 auto"
+                  color="#979797"
+                >
+                  Allowed *.jpeg, *.jpg, *.png,*.svg <br />
+                  max size of 2M byte
+                </Typography>
               </Grid>
               <Grid
                 item

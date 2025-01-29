@@ -17,6 +17,7 @@ import React, { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { Farm } from "../_typeModels/Farm";
+
 interface InputType {
   name: String;
   specie: String;
@@ -26,6 +27,7 @@ interface InputType {
   conditionFactor1: String;
   conditionFactor2: String;
   farm: String;
+  modelId: number;
 }
 function GrowthModel({ farms }: { farms: Farm[] }) {
   const loggedUser: any = getCookie("logged-user");
@@ -81,7 +83,7 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
         p: 3,
       }}
     >
-      <Stack>
+      <Stack width={"100%"}>
         <Typography
           variant="h6"
           fontWeight={700}
@@ -118,10 +120,11 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
                   />
                 </FormControl>
               </Grid>
+
               <Grid item md={6} xs={12}>
                 <FormControl fullWidth className="form-input" focused>
                   <InputLabel id="feed-supply-select-label5">
-                    Specie *
+                    Species *
                   </InputLabel>
                   <Select
                     labelId="feed-supply-select-label5"

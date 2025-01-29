@@ -839,7 +839,8 @@ export default function ProductionTable({
                             borderBottomColor: "#F5F6F8",
                             borderBottomWidth: 2,
                             fontWeight: 700,
-                            textWrap: "nowrap",
+                            textWrap: "wrap",
+                            wordBreak: "break-all",
                             paddingLeft: {
                               lg: 10,
                               md: 7,
@@ -878,7 +879,7 @@ export default function ProductionTable({
                                   borderBottomLeftRadius: "8px",
                                   padding: "8px 12px",
                                   margin: "8px 0",
-                                  textWrap: "nowrap",
+                                  textWrap: "wrap",
                                 }}
                               >
                                 {unit.productionUnit.name}
@@ -935,7 +936,7 @@ export default function ProductionTable({
                             color: "#555555",
                             fontWeight: 500,
                             pl: 0,
-                            textWrap: "nowrap",
+                            textWrap: "wrap",
                           }}
                         >
                           {farm.units?.map((unit: any, i) => {
@@ -974,7 +975,7 @@ export default function ProductionTable({
                                   backgroundColor: "#F5F6F8",
                                   padding: paddingValue,
                                   margin: "8px 0",
-                                  textWrap: "nowrap",
+                                  textWrap: "wrap",
                                 }}
                               >
                                 {value}
@@ -991,7 +992,7 @@ export default function ProductionTable({
                             fontWeight: 500,
                             pl: 0,
                             p: 0,
-                            textWrap: "nowrap",
+                            textWrap: "wrap",
                           }}
                         >
                           {farm.units.map((unit, i) => {
@@ -1023,7 +1024,7 @@ export default function ProductionTable({
                                   padding: paddingValue,
                                   backgroundColor: "#F5F6F8",
                                   margin: "8px 0",
-                                  textWrap: "nowrap",
+                                  textWrap: "wrap",
                                 }}
                               >
                                 {value}
@@ -1039,7 +1040,7 @@ export default function ProductionTable({
                             color: "#555555",
                             fontWeight: 500,
                             pl: 0,
-                            textWrap: "nowrap",
+                            textWrap: "wrap",
                           }}
                         >
                           {farm.units.map((unit, i) => {
@@ -1082,7 +1083,7 @@ export default function ProductionTable({
                                   backgroundColor: "#F5F6F8",
                                   padding: paddingValue,
                                   margin: "8px 0",
-                                  textWrap: "nowrap",
+                                  textWrap: "wrap",
                                 }}
                               >
                                 {value}
@@ -1098,7 +1099,7 @@ export default function ProductionTable({
                             color: "#555555",
                             fontWeight: 500,
                             pl: 0,
-                            textWrap: "nowrap",
+                            textWrap: "wrap",
                           }}
                         >
                           {farm.units.map((unit, i) => {
@@ -1140,7 +1141,7 @@ export default function ProductionTable({
                                   backgroundColor: "#F5F6F8",
                                   padding: paddingValue,
                                   margin: "8px 0",
-                                  textWrap: "nowrap",
+                                  textWrap: "wrap",
                                 }}
                               >
                                 {value}
@@ -1156,7 +1157,7 @@ export default function ProductionTable({
                             color: "#555555",
                             fontWeight: 500,
                             pl: 0,
-                            textWrap: "nowrap",
+                            textWrap: "wrap",
                           }}
                         >
                           {farm.units.map((unit, i) => {
@@ -1199,7 +1200,7 @@ export default function ProductionTable({
                                   backgroundColor: "#F5F6F8",
                                   padding: paddingValue,
                                   margin: "8px 0",
-                                  textWrap: "nowrap",
+                                  textWrap: "wrap",
                                 }}
                               >
                                 {value}
@@ -1215,7 +1216,7 @@ export default function ProductionTable({
                             color: "#555555",
                             fontWeight: 500,
                             pl: 0,
-                            textWrap: "nowrap",
+                            textWrap: "wrap",
                           }}
                         >
                           {farm.units.map((unit, i) => {
@@ -1258,7 +1259,7 @@ export default function ProductionTable({
                                   backgroundColor: "#F5F6F8",
                                   padding: paddingValue,
                                   margin: "8px 0",
-                                  textWrap: "nowrap",
+                                  textWrap: "wrap",
                                 }}
                               >
                                 {value}
@@ -1274,7 +1275,7 @@ export default function ProductionTable({
                             color: "#555555",
                             fontWeight: 500,
                             pl: 0,
-                            textWrap: "nowrap",
+                            textWrap: "wrap",
                           }}
                         >
                           {farm.units.map((unit, i) => {
@@ -1327,7 +1328,7 @@ export default function ProductionTable({
                                   backgroundColor: "#F5F6F8",
                                   padding: paddingValue,
                                   margin: "8px 0",
-                                  textWrap: "nowrap",
+                                  textWrap: "wrap",
                                 }}
                               >
                                 {value}
@@ -1343,7 +1344,7 @@ export default function ProductionTable({
                             color: "#555555",
                             fontWeight: 500,
                             pl: 0,
-                            textWrap: "nowrap",
+                            textWrap: "wrap",
                           }}
                         >
                           {farm.units.map((unit, i) => {
@@ -1403,7 +1404,7 @@ export default function ProductionTable({
                                   backgroundColor: "#F5F6F8",
                                   padding: paddingValue,
                                   margin: "8px 0",
-                                  textWrap: "nowrap",
+                                  textWrap: "wrap",
                                 }}
                               >
                                 {value}
@@ -1421,7 +1422,7 @@ export default function ProductionTable({
                               color: "#555555",
                               fontWeight: 500,
                               pl: 0,
-                              textWrap: "nowrap",
+                              textWrap: "wrap",
                             }}
                           >
                             {farm.units.map((unit, i) => {
@@ -1436,7 +1437,7 @@ export default function ProductionTable({
                                     padding: "8px 12px 8px 0",
                                     margin: "8px 0",
                                     // marginBottom: "10px",
-                                    textWrap: "nowrap",
+                                    textWrap: "wrap",
                                   }}
                                 >
                                   {Number(unit.stockingLevel) ?? ""}
@@ -1454,7 +1455,7 @@ export default function ProductionTable({
                               color: "#555555",
                               fontWeight: 500,
                               pl: 0,
-                              textWrap: "nowrap",
+                              textWrap: "wrap",
                             }}
                             className="cursor-pointer table-padding"
                           >
@@ -1468,7 +1469,7 @@ export default function ProductionTable({
                                     padding: "6px 12px",
                                     // margin: "5px 0 8px 0",
                                     margin: "8px 0",
-                                    textWrap: "nowrap",
+                                    textWrap: "wrap",
                                   }}
                                   display={"flex"}
                                   gap={1}
