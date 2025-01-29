@@ -81,7 +81,7 @@ const AddNewOrganisation = () => {
 
     if (!hasAdmin) {
       toast.dismiss();
-      toast.error("Please add at least one contact having role Admin.");
+      toast.error("At least one admin is required for this organisation.");
       return;
     }
     if (isApiCallInProgress) return;
