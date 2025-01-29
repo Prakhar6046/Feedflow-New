@@ -113,12 +113,14 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
                     focused
                     {...register("name", { required: true })}
                     error={!!errors.name}
-                    helperText={errors.name ? "This field is required" : ""}
                     sx={{
                       width: "100%",
                     }}
                   />
                 </FormControl>
+                <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                  {errors.conditionFactor1 ? "This field is required" : ""}
+                </Typography>
               </Grid>
 
               <Grid item md={6} xs={12}>
@@ -142,45 +144,35 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
                     </MenuItem>
                   </Select>
                   {errors.specie && (
-                    <FormHelperText sx={{ color: "#d32f2f" }}>
-                      {errors.specie ? "This field is required" : ""}
-                    </FormHelperText>
+                    <FormHelperText sx={{ color: "#d32f2f" }}></FormHelperText>
                   )}
                 </FormControl>
+                <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                  {errors.specie ? "This field is required" : ""}
+                </Typography>
               </Grid>
 
               {/* grid-2 */}
               <Grid item md={6} xs={12}>
-                <TextField
-                  label="Temperature Coefficient *"
-                  type="text"
-                  className="form-input"
-                  focused
-                  {...register("temperatureCoefficient", { required: true })}
-                  error={!!errors.temperatureCoefficient}
-                  helperText={
-                    errors.temperatureCoefficient
-                      ? "This field is required"
-                      : ""
-                  }
-                  sx={{
-                    width: "100%",
-                  }}
-                />
-
-                <Typography
-                  variant="body2"
-                  color="red"
-                  fontSize={13}
-                  mt={0.5}
-                ></Typography>
-
-                <Typography
-                  variant="body2"
-                  color="red"
-                  fontSize={13}
-                  mt={0.5}
-                ></Typography>
+                <FormControl fullWidth className="form-input" focused>
+                  <InputLabel id="feed-supply-select-label5">
+                    Temperature Coefficient *
+                  </InputLabel>
+                  <TextField
+                    label="Temperature Coefficient *"
+                    type="text"
+                    className="form-input"
+                    focused
+                    {...register("name", { required: true })}
+                    error={!!errors.temperatureCoefficient}
+                    sx={{
+                      width: "100%",
+                    }}
+                  />
+                </FormControl>
+                <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                  {errors.conditionFactor1 ? "This field is required" : ""}
+                </Typography>
               </Grid>
 
               {/* grid-3 */}
@@ -191,14 +183,14 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
                   className="form-input"
                   {...register("growthEquationLength", { required: true })}
                   error={!!errors.growthEquationLength}
-                  helperText={
-                    errors.growthEquationLength ? "This field is required" : ""
-                  }
                   focused
                   sx={{
                     width: "100%",
                   }}
                 />
+                <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                  {errors.conditionFactor1 ? "This field is required" : ""}
+                </Typography>
               </Grid>
 
               {/* grid-4 */}
@@ -209,16 +201,14 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
                   className="form-input"
                   {...register("growthEquationBodyWeight", { required: true })}
                   error={!!errors.growthEquationBodyWeight}
-                  helperText={
-                    errors.growthEquationBodyWeight
-                      ? "This field is required"
-                      : ""
-                  }
                   focused
                   sx={{
                     width: "100%",
                   }}
                 />
+                <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                  {errors.conditionFactor1 ? "This field is required" : ""}
+                </Typography>
               </Grid>
 
               {/* grid-5 */}
@@ -229,14 +219,14 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
                   className="form-input"
                   {...register("conditionFactor1", { required: true })}
                   error={!!errors.conditionFactor1}
-                  helperText={
-                    errors.conditionFactor1 ? "This field is required" : ""
-                  }
                   focused
                   sx={{
                     width: "100%",
                   }}
                 />
+                <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                  {errors.conditionFactor1 ? "This field is required" : ""}
+                </Typography>
               </Grid>
 
               {/* grid-6 */}
@@ -251,6 +241,9 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
                     width: "100%",
                   }}
                 />
+                <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                  {errors.conditionFactor1 ? "This field is required" : ""}
+                </Typography>
               </Grid>
               <Grid item md={6} xs={12}>
                 <FormControl fullWidth className="form-input" focused>
@@ -273,11 +266,12 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
                     ))}
                   </Select>
                   {errors.farm && (
-                    <FormHelperText sx={{ color: "#d32f2f" }}>
-                      {errors.specie ? "This field is required" : ""}
-                    </FormHelperText>
+                    <FormHelperText sx={{ color: "#d32f2f" }}></FormHelperText>
                   )}
                 </FormControl>
+                <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                  {errors.specie ? "This field is required" : ""}
+                </Typography>
               </Grid>
             </Grid>
           </Box>
