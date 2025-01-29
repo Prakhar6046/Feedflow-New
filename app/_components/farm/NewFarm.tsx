@@ -1,15 +1,14 @@
 "use client";
-
 import { SingleUser } from "@/app/_typeModels/User";
 import { Box, Divider, Grid, Step, StepLabel, Stepper } from "@mui/material";
 import { getCookie, setCookie } from "cookies-next";
-
 import { useEffect, useState } from "react";
 import AquaFarmWizard from "./AquaFarmWizard";
 import FarmInformation from "./FarmInformation";
 import ProductionUnits from "./ProductionUnits";
 import AllDone from "./AllDone";
 import ProductionParaMeter from "./ProductionParameter";
+import { Farm } from "@/app/_typeModels/Farm";
 
 const steps = [
   {
@@ -30,8 +29,9 @@ const steps = [
 interface Props {
   farmMembers: SingleUser[];
   growthModels: any;
+  farms: Farm[];
 }
-export default function NewFarm({ farmMembers, growthModels }: Props) {
+export default function NewFarm({ farmMembers, growthModels, farms }: Props) {
   const activeStepIndex = Number(getCookie("activeStep"));
   const [activeStep, setActiveStep] = useState<number>(
     activeStepIndex !== 0 ? activeStepIndex : 0
@@ -100,6 +100,7 @@ export default function NewFarm({ farmMembers, growthModels }: Props) {
           <FarmInformation
             setActiveStep={setActiveStep}
             farmMembers={farmMembers}
+            farms={farms}
           />
         )}
         {activeStep === 2 && (

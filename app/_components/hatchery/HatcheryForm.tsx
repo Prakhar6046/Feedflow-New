@@ -106,6 +106,7 @@ function HatcheryForm({
           {...register("hatcheryAltitude", {
             required: true,
             pattern: validationPattern.numbersWithDot,
+            maxLength: 10,
           })}
           // disabled
           sx={{
@@ -146,6 +147,13 @@ function HatcheryForm({
           errors.hatcheryAltitude.type === "pattern" && (
             <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
               {validationMessage.OnlyNumbersWithDot}
+            </Typography>
+          )}
+        {errors &&
+          errors.hatcheryAltitude &&
+          errors.hatcheryAltitude.type === "maxLength" && (
+            <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+              {validationMessage.numberMaxLength}
             </Typography>
           )}
       </Box>

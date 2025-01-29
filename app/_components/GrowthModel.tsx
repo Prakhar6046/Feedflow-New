@@ -16,6 +16,7 @@ import { getCookie } from "cookies-next";
 import React, { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
+import { Farm } from "../_typeModels/Farm";
 interface InputType {
   name: String;
   specie: String;
@@ -24,8 +25,9 @@ interface InputType {
   growthEquationBodyWeight: String;
   conditionFactor1: String;
   conditionFactor2: String;
+  farm: String;
 }
-function GrowthModel() {
+function GrowthModel({ farms }: { farms: Farm[] }) {
   const loggedUser: any = getCookie("logged-user");
   const {
     register,
@@ -34,6 +36,7 @@ function GrowthModel() {
     clearErrors,
     formState: { errors },
   } = useForm<InputType>();
+
   const [isApiCallInProgress, setIsApiCallInProgress] =
     useState<boolean>(false);
   const onSubmit: SubmitHandler<InputType> = async (data) => {
@@ -108,7 +111,7 @@ function GrowthModel() {
                     focused
                     {...register("name", { required: true })}
                     error={!!errors.name}
-                    helperText={errors.name ? "This feild is required" : ""}
+                    helperText={errors.name ? "This field is required" : ""}
                     sx={{
                       width: "100%",
                     }}
@@ -137,7 +140,7 @@ function GrowthModel() {
                   </Select>
                   {errors.specie && (
                     <FormHelperText sx={{ color: "#d32f2f" }}>
-                      {errors.specie ? "This feild is required" : ""}
+                      {errors.specie ? "This field is required" : ""}
                     </FormHelperText>
                   )}
                 </FormControl>
@@ -154,7 +157,7 @@ function GrowthModel() {
                   error={!!errors.temperatureCoefficient}
                   helperText={
                     errors.temperatureCoefficient
-                      ? "This feild is required"
+                      ? "This field is required"
                       : ""
                   }
                   sx={{
@@ -186,7 +189,7 @@ function GrowthModel() {
                   {...register("growthEquationLength", { required: true })}
                   error={!!errors.growthEquationLength}
                   helperText={
-                    errors.growthEquationLength ? "This feild is required" : ""
+                    errors.growthEquationLength ? "This field is required" : ""
                   }
                   focused
                   sx={{
@@ -205,7 +208,7 @@ function GrowthModel() {
                   error={!!errors.growthEquationBodyWeight}
                   helperText={
                     errors.growthEquationBodyWeight
-                      ? "This feild is required"
+                      ? "This field is required"
                       : ""
                   }
                   focused
@@ -224,7 +227,7 @@ function GrowthModel() {
                   {...register("conditionFactor1", { required: true })}
                   error={!!errors.conditionFactor1}
                   helperText={
-                    errors.conditionFactor1 ? "This feild is required" : ""
+                    errors.conditionFactor1 ? "This field is required" : ""
                   }
                   focused
                   sx={{
@@ -245,6 +248,33 @@ function GrowthModel() {
                     width: "100%",
                   }}
                 />
+              </Grid>
+              <Grid item md={6} xs={12}>
+                <FormControl fullWidth className="form-input" focused>
+                  <InputLabel id="farm-select-label5">Farm *</InputLabel>
+                  <Select
+                    labelId="farm-select-label5"
+                    id="farm-select5"
+                    label="Farm *"
+                    {...register("farm", {
+                      required: true,
+                    })}
+                    onChange={(e) => {
+                      clearErrors("farm");
+                    }}
+                  >
+                    {farms?.map((farm: any) => (
+                      <MenuItem key={farm?.id} value={farm.id || null}>
+                        {farm.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                  {errors.farm && (
+                    <FormHelperText sx={{ color: "#d32f2f" }}>
+                      {errors.specie ? "This field is required" : ""}
+                    </FormHelperText>
+                  )}
+                </FormControl>
               </Grid>
             </Grid>
           </Box>

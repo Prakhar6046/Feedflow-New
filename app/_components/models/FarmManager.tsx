@@ -1374,6 +1374,7 @@ const TransferModal: React.FC<Props> = ({
                                   ? false
                                   : true,
                                 pattern: validationPattern.numbersWithDot,
+                                maxLength: 10,
                               })}
                               focused
                             />
@@ -1428,6 +1429,21 @@ const TransferModal: React.FC<Props> = ({
                                 mt={0.5}
                               >
                                 {validationMessage.OnlyNumbersWithDot}
+                              </Typography>
+                            )}
+                          {errors &&
+                            errors.manager &&
+                            errors.manager[idx] &&
+                            errors.manager[idx].meanWeight &&
+                            errors.manager[idx].meanWeight.type ===
+                              "maxLength" && (
+                              <Typography
+                                variant="body2"
+                                color="red"
+                                fontSize={13}
+                                mt={0.5}
+                              >
+                                {validationMessage.numberMaxLength}
                               </Typography>
                             )}
                         </Grid>
@@ -1495,6 +1511,7 @@ const TransferModal: React.FC<Props> = ({
                                     ? false
                                     : true,
                                   pattern: validationPattern.numbersWithDot,
+                                  maxLength: 10,
                                 }
                               )}
                               focused
@@ -1552,6 +1569,21 @@ const TransferModal: React.FC<Props> = ({
                                   {validationMessage.OnlyNumbersWithDot}
                                 </Typography>
                               )}
+                            {errors &&
+                              errors.manager &&
+                              errors.manager[idx] &&
+                              errors.manager[idx].meanLength &&
+                              errors.manager[idx].meanLength.type ===
+                                "maxLength" && (
+                                <Typography
+                                  variant="body2"
+                                  color="red"
+                                  fontSize={13}
+                                  mt={0.5}
+                                >
+                                  {validationMessage.numberMaxLength}
+                                </Typography>
+                              )}
                           </Box>
                         </Grid>
                         {item.field !== "Sample" && (
@@ -1598,6 +1630,7 @@ const TransferModal: React.FC<Props> = ({
                                       ? false
                                       : true,
                                     pattern: validationPattern.numbersWithDot,
+                                    maxLength: 10,
                                   }
                                 )}
                               />
@@ -1658,6 +1691,21 @@ const TransferModal: React.FC<Props> = ({
                                   {validationMessage.OnlyNumbersWithDot}
                                 </Typography>
                               )}
+                            {errors &&
+                              errors.manager &&
+                              errors.manager[idx] &&
+                              errors.manager[idx].stockingDensityKG &&
+                              errors.manager[idx].stockingDensityKG.type ===
+                                "maxLength" && (
+                                <Typography
+                                  variant="body2"
+                                  color="red"
+                                  fontSize={13}
+                                  mt={0.5}
+                                >
+                                  {validationMessage.numberMaxLength}
+                                </Typography>
+                              )}
                           </Grid>
                         )}
                         {item.field !== "Sample" && (
@@ -1693,6 +1741,7 @@ const TransferModal: React.FC<Props> = ({
                                       ? false
                                       : true,
                                     pattern: validationPattern.numbersWithDot,
+                                    maxLength: 10,
                                   }
                                 )}
                                 focused
@@ -1755,6 +1804,21 @@ const TransferModal: React.FC<Props> = ({
                                   mt={0.5}
                                 >
                                   {validationMessage.OnlyNumbersWithDot}
+                                </Typography>
+                              )}
+                            {errors &&
+                              errors.manager &&
+                              errors.manager[idx] &&
+                              errors.manager[idx].stockingDensityNM &&
+                              errors.manager[idx].stockingDensityNM.type ===
+                                "maxLength" && (
+                                <Typography
+                                  variant="body2"
+                                  color="red"
+                                  fontSize={13}
+                                  mt={0.5}
+                                >
+                                  {validationMessage.numberMaxLength}
                                 </Typography>
                               )}
                           </Grid>
@@ -1936,6 +2000,7 @@ const TransferModal: React.FC<Props> = ({
                 className=""
                 type="submit"
                 variant="contained"
+                disabled={watchedFields.length > 1 ? false : true}
                 sx={{
                   background: "#06A19B",
                   fontWeight: "bold",

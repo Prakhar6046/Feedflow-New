@@ -75,7 +75,7 @@ export default function ProductionParaMeter({
   const onSubmit: SubmitHandler<FormData> = (data) => {
     let payload;
     if (
-      isEditFarm &&
+      isEditFarm === "true" &&
       productionParaMeter &&
       productionParaMeter[0]?.YearBasedPredication
     ) {
@@ -325,6 +325,7 @@ export default function ProductionParaMeter({
                               rules={{
                                 pattern:
                                   validationPattern.negativeNumberWithDot,
+                                maxLength: 10,
                               }}
                               control={control}
                               render={({ field }) => (
@@ -361,7 +362,13 @@ export default function ProductionParaMeter({
                                 fontSize={13}
                                 mt={0.5}
                               >
-                                {validationMessage.NegativeNumberWithDot}
+                                {errors?.predictedValues?.[head]?.[year]
+                                  .type === "pattern"
+                                  ? validationMessage.NegativeNumberWithDot
+                                  : errors?.predictedValues?.[head]?.[year]
+                                      .type === "maxLength"
+                                  ? validationMessage.numberMaxLength
+                                  : ""}
                               </Typography>
                             )}
                           </TableCell>
@@ -445,6 +452,7 @@ export default function ProductionParaMeter({
                               rules={{
                                 pattern:
                                   validationPattern.negativeNumberWithDot,
+                                maxLength: 10,
                               }}
                               render={({ field }) => (
                                 <input
@@ -481,7 +489,13 @@ export default function ProductionParaMeter({
                                 fontSize={13}
                                 mt={0.5}
                               >
-                                {validationMessage.NegativeNumberWithDot}
+                                {errors?.idealRange?.[head]?.[val].type ===
+                                "pattern"
+                                  ? validationMessage.NegativeNumberWithDot
+                                  : errors?.idealRange?.[head]?.[val].type ===
+                                    "maxLength"
+                                  ? validationMessage.numberMaxLength
+                                  : ""}
                               </Typography>
                             )}
                           </TableCell>

@@ -726,6 +726,7 @@ const EditOrganisation = ({ organisationId }: Iprops) => {
                   {...register("postCode", {
                     required: true,
                     pattern: validationPattern.onlyNumbersPattern,
+                    maxLength: 10,
                   })}
                   focused
                   sx={{
@@ -755,6 +756,18 @@ const EditOrganisation = ({ organisationId }: Iprops) => {
                       mt={0.5}
                     >
                       {validationMessage.onlyNumbers}
+                    </Typography>
+                  )}
+                {errors &&
+                  errors.postCode &&
+                  errors.postCode.type === "maxLength" && (
+                    <Typography
+                      variant="body2"
+                      color="red"
+                      fontSize={13}
+                      mt={0.5}
+                    >
+                      {validationMessage.numberMaxLength}
                     </Typography>
                   )}
               </Box>

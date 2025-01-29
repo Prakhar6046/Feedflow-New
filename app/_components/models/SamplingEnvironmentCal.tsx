@@ -200,6 +200,7 @@ const SamplingEnvironmentCal: React.FC<Props> = ({ setOpen, open }) => {
                       {...register(`do`, {
                         required: true,
                         pattern: validationPattern.numbersWithDot,
+                        maxLength: 10,
                       })}
                     />
 
@@ -248,6 +249,16 @@ const SamplingEnvironmentCal: React.FC<Props> = ({ setOpen, open }) => {
                       {validationMessage.OnlyNumbersWithDot}
                     </Typography>
                   )}
+                  {errors && errors.do && errors.do.type === "maxLength" && (
+                    <Typography
+                      variant="body2"
+                      color="red"
+                      fontSize={13}
+                      mt={0.5}
+                    >
+                      {validationMessage.numberMaxLength}
+                    </Typography>
+                  )}
                 </Grid>
                 <Grid xs={6} md={3} item>
                   <Box
@@ -264,6 +275,7 @@ const SamplingEnvironmentCal: React.FC<Props> = ({ setOpen, open }) => {
                       {...register(`ammonia`, {
                         required: true,
                         pattern: validationPattern.numbersWithDot,
+                        maxLength: 10,
                       })}
                     />
 
@@ -316,6 +328,18 @@ const SamplingEnvironmentCal: React.FC<Props> = ({ setOpen, open }) => {
                         {validationMessage.OnlyNumbersWithDot}
                       </Typography>
                     )}
+                  {errors &&
+                    errors.ammonia &&
+                    errors.ammonia.type === "maxLength" && (
+                      <Typography
+                        variant="body2"
+                        color="red"
+                        fontSize={13}
+                        mt={0.5}
+                      >
+                        {validationMessage.numberMaxLength}
+                      </Typography>
+                    )}
                 </Grid>
                 <Grid xs={6} md={3} item>
                   <Box
@@ -332,6 +356,7 @@ const SamplingEnvironmentCal: React.FC<Props> = ({ setOpen, open }) => {
                       {...register(`TSs`, {
                         required: true,
                         pattern: validationPattern.numbersWithDot,
+                        maxLength: 10,
                       })}
                     />
 
@@ -378,6 +403,16 @@ const SamplingEnvironmentCal: React.FC<Props> = ({ setOpen, open }) => {
                       mt={0.5}
                     >
                       {validationMessage.OnlyNumbersWithDot}
+                    </Typography>
+                  )}
+                  {errors && errors.TSs && errors.TSs.type === "maxLength" && (
+                    <Typography
+                      variant="body2"
+                      color="red"
+                      fontSize={13}
+                      mt={0.5}
+                    >
+                      {validationMessage.numberMaxLength}
                     </Typography>
                   )}
                 </Grid>

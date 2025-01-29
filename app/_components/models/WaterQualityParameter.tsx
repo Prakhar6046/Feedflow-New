@@ -140,40 +140,42 @@ const WaterQualityParameter: React.FC<Props> = ({
     setIsApiCallInProgress(true);
 
     try {
-      let updatedData = data.water.map((data) => {
-        if (data.date) {
-          return {
-            ...data,
-            date: data.date.format("YYYY-MM-DDTHH:mm:ssZ[Z]"),
-          };
-        } else {
-          return data;
+      if (data.water[1]) {
+        let updatedData = data.water.map((data) => {
+          if (data.date) {
+            return {
+              ...data,
+              date: data.date.format("YYYY-MM-DDTHH:mm:ssZ[Z]"),
+            };
+          } else {
+            return data;
+          }
+        });
+
+        const payload = {
+          waterAvg: updatedData[0],
+          listData: updatedData.filter((_, idx) => idx !== 0),
+        };
+
+        const response = await fetch("/api/production/mange/waterQuality", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        });
+
+        const res = await response.json();
+        if (res.status) {
+          toast.dismiss();
+          toast.success(res.message);
+          setOpen(false);
+          router.push("/dashboard/production");
+          removeLocalItem("productionData");
+          removeLocalItem("formData");
+          reset();
+          router.refresh();
         }
-      });
-
-      const payload = {
-        waterAvg: updatedData[0],
-        listData: updatedData.filter((_, idx) => idx !== 0),
-      };
-
-      const response = await fetch("/api/production/mange/waterQuality", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-
-      const res = await response.json();
-      if (res.status) {
-        toast.dismiss();
-        toast.success(res.message);
-        setOpen(false);
-        router.push("/dashboard/production");
-        removeLocalItem("productionData");
-        removeLocalItem("formData");
-        reset();
-        router.refresh();
       }
     } catch (error) {
       toast.error("Something went wrong. Please try again.");
@@ -673,6 +675,7 @@ const WaterQualityParameter: React.FC<Props> = ({
                             sx={{ width: "100%" }}
                             {...register(`water.${idx}.waterTemp`, {
                               pattern: validationPattern.numbersWithDot,
+                              maxLength: 10,
                             })}
                             focused
                           />
@@ -713,6 +716,20 @@ const WaterQualityParameter: React.FC<Props> = ({
                               {validationMessage.OnlyNumbersWithDot}
                             </Typography>
                           )}
+                        {errors &&
+                          errors.water &&
+                          errors.water[idx] &&
+                          errors.water[idx].waterTemp &&
+                          errors.water[idx].waterTemp.type === "maxLength" && (
+                            <Typography
+                              variant="body2"
+                              color="red"
+                              fontSize={13}
+                              mt={0.5}
+                            >
+                              {validationMessage.numberMaxLength}
+                            </Typography>
+                          )}
                       </Grid>
                       <Grid
                         xs
@@ -736,6 +753,7 @@ const WaterQualityParameter: React.FC<Props> = ({
                             // disabled={idx === 0 ? true : false}
                             {...register(`water.${idx}.DO`, {
                               pattern: validationPattern.numbersWithDot,
+                              maxLength: 10,
                             })}
                             sx={{ width: "100%" }}
                           />
@@ -775,6 +793,20 @@ const WaterQualityParameter: React.FC<Props> = ({
                               {validationMessage.OnlyNumbersWithDot}
                             </Typography>
                           )}
+                        {errors &&
+                          errors.water &&
+                          errors.water[idx] &&
+                          errors.water[idx].DO &&
+                          errors.water[idx].DO.type === "maxLength" && (
+                            <Typography
+                              variant="body2"
+                              color="red"
+                              fontSize={13}
+                              mt={0.5}
+                            >
+                              {validationMessage.numberMaxLength}
+                            </Typography>
+                          )}
                       </Grid>
                       <Grid
                         xs
@@ -799,6 +831,7 @@ const WaterQualityParameter: React.FC<Props> = ({
                             sx={{ width: "100%" }}
                             {...register(`water.${idx}.TSS`, {
                               pattern: validationPattern.numbersWithDot,
+                              maxLength: 10,
                             })}
                           />
 
@@ -837,6 +870,20 @@ const WaterQualityParameter: React.FC<Props> = ({
                               {validationMessage.OnlyNumbersWithDot}
                             </Typography>
                           )}
+                        {errors &&
+                          errors.water &&
+                          errors.water[idx] &&
+                          errors.water[idx].TSS &&
+                          errors.water[idx].TSS.type === "maxLength" && (
+                            <Typography
+                              variant="body2"
+                              color="red"
+                              fontSize={13}
+                              mt={0.5}
+                            >
+                              {validationMessage.numberMaxLength}
+                            </Typography>
+                          )}
                       </Grid>
 
                       <Grid
@@ -862,6 +909,7 @@ const WaterQualityParameter: React.FC<Props> = ({
                             sx={{ width: "100%" }}
                             {...register(`water.${idx}.NH4`, {
                               pattern: validationPattern.numbersWithDot,
+                              maxLength: 10,
                             })}
                           />
 
@@ -899,6 +947,20 @@ const WaterQualityParameter: React.FC<Props> = ({
                               {validationMessage.OnlyNumbersWithDot}
                             </Typography>
                           )}
+                        {errors &&
+                          errors.water &&
+                          errors.water[idx] &&
+                          errors.water[idx].NH4 &&
+                          errors.water[idx].NH4.type === "maxLength" && (
+                            <Typography
+                              variant="body2"
+                              color="red"
+                              fontSize={13}
+                              mt={0.5}
+                            >
+                              {validationMessage.numberMaxLength}
+                            </Typography>
+                          )}
                       </Grid>
                       <Grid
                         xs
@@ -923,6 +985,7 @@ const WaterQualityParameter: React.FC<Props> = ({
                             sx={{ width: "100%" }}
                             {...register(`water.${idx}.NO3`, {
                               pattern: validationPattern.numbersWithDot,
+                              maxLength: 10,
                             })}
                           />
 
@@ -961,6 +1024,20 @@ const WaterQualityParameter: React.FC<Props> = ({
                               {validationMessage.OnlyNumbersWithDot}
                             </Typography>
                           )}
+                        {errors &&
+                          errors.water &&
+                          errors.water[idx] &&
+                          errors.water[idx].NO3 &&
+                          errors.water[idx].NO3.type === "maxLength" && (
+                            <Typography
+                              variant="body2"
+                              color="red"
+                              fontSize={13}
+                              mt={0.5}
+                            >
+                              {validationMessage.numberMaxLength}
+                            </Typography>
+                          )}
                       </Grid>
                       <Grid
                         xs
@@ -985,6 +1062,7 @@ const WaterQualityParameter: React.FC<Props> = ({
                             sx={{ width: "100%" }}
                             {...register(`water.${idx}.NO2`, {
                               pattern: validationPattern.numbersWithDot,
+                              maxLength: 10,
                             })}
                           />
 
@@ -1023,6 +1101,20 @@ const WaterQualityParameter: React.FC<Props> = ({
                               {validationMessage.OnlyNumbersWithDot}
                             </Typography>
                           )}
+                        {errors &&
+                          errors.water &&
+                          errors.water[idx] &&
+                          errors.water[idx].NO2 &&
+                          errors.water[idx].NO2.type === "maxLength" && (
+                            <Typography
+                              variant="body2"
+                              color="red"
+                              fontSize={13}
+                              mt={0.5}
+                            >
+                              {validationMessage.numberMaxLength}
+                            </Typography>
+                          )}
                       </Grid>
                       <Grid
                         xs
@@ -1047,6 +1139,7 @@ const WaterQualityParameter: React.FC<Props> = ({
                             sx={{ width: "100%" }}
                             {...register(`water.${idx}.ph`, {
                               pattern: validationPattern.numbersWithDot,
+                              maxLength: 10,
                             })}
                           />
                         </Box>
@@ -1063,6 +1156,20 @@ const WaterQualityParameter: React.FC<Props> = ({
                               mt={0.5}
                             >
                               {validationMessage.OnlyNumbersWithDot}
+                            </Typography>
+                          )}
+                        {errors &&
+                          errors.water &&
+                          errors.water[idx] &&
+                          errors.water[idx].ph &&
+                          errors.water[idx].ph.type === "maxLength" && (
+                            <Typography
+                              variant="body2"
+                              color="red"
+                              fontSize={13}
+                              mt={0.5}
+                            >
+                              {validationMessage.numberMaxLength}
                             </Typography>
                           )}
                       </Grid>
@@ -1089,6 +1196,7 @@ const WaterQualityParameter: React.FC<Props> = ({
                             sx={{ width: "100%" }}
                             {...register(`water.${idx}.visibility`, {
                               pattern: validationPattern.numbersWithDot,
+                              maxLength: 10,
                             })}
                           />
 
@@ -1125,6 +1233,20 @@ const WaterQualityParameter: React.FC<Props> = ({
                               mt={0.5}
                             >
                               {validationMessage.OnlyNumbersWithDot}
+                            </Typography>
+                          )}
+                        {errors &&
+                          errors.water &&
+                          errors.water[idx] &&
+                          errors.water[idx].visibility &&
+                          errors.water[idx].visibility.type === "maxLength" && (
+                            <Typography
+                              variant="body2"
+                              color="red"
+                              fontSize={13}
+                              mt={0.5}
+                            >
+                              {validationMessage.numberMaxLength}
                             </Typography>
                           )}
                       </Grid>
@@ -1251,6 +1373,7 @@ const WaterQualityParameter: React.FC<Props> = ({
               className=""
               type="submit"
               variant="contained"
+              disabled={watchedFields.length > 1 ? false : true}
               sx={{
                 background: "#06A19B",
                 fontWeight: "bold",

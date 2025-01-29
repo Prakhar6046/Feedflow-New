@@ -32,12 +32,14 @@ interface Props {
   editFarm?: any;
   setActiveStep: (val: number) => void;
   farmMembers: SingleUser[];
+  farms: Farm[];
 }
 
 const FarmInformation: NextPage<Props> = ({
   setActiveStep,
   editFarm,
   farmMembers,
+  farms,
 }: Props) => {
   const dispatch = useAppDispatch();
   const {
@@ -198,6 +200,19 @@ const FarmInformation: NextPage<Props> = ({
               className="form-input"
               {...register("name", {
                 required: true,
+                validate: (value: String) => {
+                  const isUnique = farms.every((val) => {
+                    if (editFarm && val.id === editFarm.id) {
+                      return true;
+                    }
+                    return val.name.toLowerCase() !== value.toLowerCase();
+                  });
+
+                  return (
+                    isUnique ||
+                    "Please enter a unique farm name. The farm name you entered is not available."
+                  );
+                },
               })}
               focused
               sx={{
@@ -207,6 +222,11 @@ const FarmInformation: NextPage<Props> = ({
             {errors && errors.name && errors.name.type === "required" && (
               <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
                 {validationMessage.required}
+              </Typography>
+            )}
+            {errors && errors.name && errors.name.type === "validate" && (
+              <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                {errors?.name.message}
               </Typography>
             )}
           </Box>
@@ -220,6 +240,7 @@ const FarmInformation: NextPage<Props> = ({
                 {...register("farmAltitude", {
                   required: true,
                   pattern: validationPattern.numbersWithDot,
+                  maxLength: 10,
                 })}
                 focused
                 sx={{
@@ -254,6 +275,13 @@ const FarmInformation: NextPage<Props> = ({
                   {validationMessage.onlyNumbers}
                 </Typography>
               )}
+            {errors &&
+              errors.farmAltitude &&
+              errors.farmAltitude.type === "maxLength" && (
+                <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                  {validationMessage.numberMaxLength}
+                </Typography>
+              )}
           </Box>
           <Box mb={2} width={"100%"}>
             <TextField
@@ -263,6 +291,7 @@ const FarmInformation: NextPage<Props> = ({
               {...register("lat", {
                 required: true,
                 pattern: validationPattern.negativeNumberWithDot,
+                maxLength: 10,
               })}
               focused
               sx={{
@@ -280,6 +309,11 @@ const FarmInformation: NextPage<Props> = ({
                 {validationMessage.NegativeNumberWithDot}
               </Typography>
             )}
+            {errors && errors.lat && errors.lat.type === "maxLength" && (
+              <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                {validationMessage.numberMaxLength}
+              </Typography>
+            )}
           </Box>{" "}
           <Box mb={2} width={"100%"}>
             <TextField
@@ -289,6 +323,7 @@ const FarmInformation: NextPage<Props> = ({
               {...register("lng", {
                 required: true,
                 pattern: validationPattern.negativeNumberWithDot,
+                maxLength: 10,
               })}
               focused
               sx={{
@@ -304,6 +339,11 @@ const FarmInformation: NextPage<Props> = ({
             {errors && errors.lng && errors.lng.type === "pattern" && (
               <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
                 {validationMessage.NegativeNumberWithDot}
+              </Typography>
+            )}
+            {errors && errors.lng && errors.lng.type === "pattern" && (
+              <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                {validationMessage.numberMaxLength}
               </Typography>
             )}
           </Box>
@@ -347,7 +387,6 @@ const FarmInformation: NextPage<Props> = ({
           <Box mb={2} width={"100%"}>
             <FormControl fullWidth className="form-input" focused>
               <InputLabel id="feed-supply-select-label1">Manager</InputLabel>
-
               <Controller
                 name="mangerId"
                 control={control}
@@ -357,7 +396,7 @@ const FarmInformation: NextPage<Props> = ({
                     multiple
                     labelId="demo-multiple-name-label1"
                     id="demo-multiple-name"
-                    disabled={isEditFarm ? true : false}
+                    disabled={isEditFarm === "true" ? true : false}
                     label="Manager"
                     value={selectedManagerIds}
                     onChange={handleChange}

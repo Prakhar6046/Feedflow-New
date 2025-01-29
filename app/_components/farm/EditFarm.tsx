@@ -30,8 +30,9 @@ interface Props {
   farmId: String;
   farmMembers: SingleUser[];
   growthModels: any;
+  farms: Farm[];
 }
-const EditFarm = ({ farmId, farmMembers, growthModels }: Props) => {
+const EditFarm = ({ farmId, farmMembers, growthModels, farms }: Props) => {
   const activeStepIndex = Number(getCookie("activeStep"));
   const [activeStep, setActiveStep] = useState<number>(
     activeStepIndex !== 0 ? activeStepIndex : 0
@@ -46,11 +47,6 @@ const EditFarm = ({ farmId, farmMembers, growthModels }: Props) => {
     return res;
   };
 
-  // useEffect(() => {
-  //   if (isEditFarm) {
-  //     setActiveStep(1);
-  //   }
-  // }, [isEditFarm]);
   useEffect(() => {
     setCookie("activeStep", activeStep);
   }, [activeStep]);
@@ -129,6 +125,7 @@ const EditFarm = ({ farmId, farmMembers, growthModels }: Props) => {
             setActiveStep={setActiveStep}
             editFarm={editFarm}
             farmMembers={farmMembers}
+            farms={farms}
           />
         )}
 

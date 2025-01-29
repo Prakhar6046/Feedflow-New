@@ -560,7 +560,7 @@ function EditUser({ userId }: Iprops) {
               </Typography>
               <Box position={"relative"} mb={2}>
                 <TextField
-                  label="Password*"
+                  label="Password"
                   type={showPassword ? "text" : "password"}
                   className="form-input"
                   {...register("password", {

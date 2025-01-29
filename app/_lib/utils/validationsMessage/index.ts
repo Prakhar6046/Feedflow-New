@@ -20,3 +20,4 @@ export const OnlyNumbersWithDot =
   "Input must contain only numbers and a single decimal point.";
 export const NegativeNumberWithDot = "Input must contain only numbers.";
 export const numberWithCommaDot = "Input must contain only numbers.";
+export const numberMaxLength = "Input can have only 10 digits number.";
