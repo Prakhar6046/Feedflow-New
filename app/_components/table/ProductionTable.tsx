@@ -1464,7 +1464,7 @@ export default function ProductionTable({
                                   sx={{
                                     backgroundColor: "#F5F6F8",
                                     borderTopRightRadius: "8px",
-                                    borderTopLeftRadius: "8px",
+
                                     padding: "6px 12px",
                                     // margin: "5px 0 8px 0",
                                     margin: "8px 0",

@@ -14,7 +14,6 @@ import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import * as validationPattern from "@/app/_lib/utils/validationPatterns/index";
 import * as validationMessage from "@/app/_lib/utils/validationsMessage/index";
-
 // import { CloseIcon } from "../theme/overrides/CustomIcons";
 interface InputTypes {
   avgOfMeanLength?: Number;
@@ -70,7 +69,6 @@ const CalculateMeanLength = ({ open, setOpen, setAvgOfMeanLength }: Props) => {
   useEffect(() => {
     let totalMeasurementArr: Array<number> = [];
     let totalLengthsArr: Array<number> = [];
-
     watchFields.map((feild) => {
       if (feild.measurement) {
         totalMeasurementArr.push(Number(feild.measurement));
@@ -79,12 +77,10 @@ const CalculateMeanLength = ({ open, setOpen, setAvgOfMeanLength }: Props) => {
         totalLengthsArr.push(Number(feild.length));
       }
     });
-
     const totalLengths = totalLengthsArr.reduce((acc, val) => {
       return (acc += val);
     }, 0);
     const avgOfMeanLength = totalLengths / totalMeasurementArr.length;
-
     setValue("avgOfMeanLength", avgOfMeanLength);
   }, [
     watchFields.map((field) => field.measurement).join(","),
@@ -123,7 +119,7 @@ const CalculateMeanLength = ({ open, setOpen, setAvgOfMeanLength }: Props) => {
             display={"flex"}
             justifyContent={"center"}
             alignItems={"center"}
-            height={"fit-content"}
+            height={"100%"}
           >
             <Box>
               <Box display="flex" justifyContent="end" padding={2}>
@@ -139,219 +135,170 @@ const CalculateMeanLength = ({ open, setOpen, setAvgOfMeanLength }: Props) => {
                   <CloseIcon />
                 </IconButton>
               </Box>
-              <Stack>
-                {fields?.map((field, idx) => {
-                  return (
+              {fields?.map((field, idx) => {
+                return (
+                  <Stack
+                    key={field.id}
+                    display={"flex"}
+                    direction={"row"}
+                    sx={{
+                      width: "100%",
+                      paddingInline: "20px",
+                      marginBottom: 2,
+                      gap: 1.5,
+                      justifyContent: {
+                        lg: "center",
+                      },
+                    }}
+                  >
                     <Box
-                      key={field.id}
-                      px={2}
+                      position={"relative"}
                       sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                        height: "100%",
-                        position: "relative",
-                        bottom: "10px",
-                        gap: 1.5,
+                        width: {
+                          lg: "100%",
+                          md: "48.4%",
+                          xs: "100%",
+                        },
                       }}
                     >
-                      <Stack>
-                        <Grid container marginTop={2} spacing={2}>
-                          <Grid
-                            item
-                            xs
-                            sx={{
-                              width: "fit-content",
-                              minWidth: 130,
-                            }}
+                      <TextField
+                        label="Measurement *"
+                        type="text"
+                        {...register(`meanlength.${idx}.measurement`, {
+                          required: true,
+                          pattern: validationPattern.numbersWithDot,
+                        })}
+                        focused
+                        className="form-input"
+                        sx={{ width: "100%" }}
+                      />
+                      {errors &&
+                        errors.meanlength &&
+                        errors.meanlength[idx] &&
+                        errors.meanlength[idx].measurement?.type ===
+                          "required" && (
+                          <Typography
+                            variant="body2"
+                            color="red"
+                            fontSize={13}
+                            mt={0.5}
                           >
-                            <TextField
-                              label="Measurement *"
-                              type="text"
-                              {...register(`meanlength.${idx}.measurement`, {
-                                required: true,
-                                pattern: validationPattern.numbersWithDot,
-                                maxLength: 10,
-                              })}
-                              focused
-                              className="form-input"
-                              sx={{ width: "100%" }}
-                            />
-                            {errors &&
-                              errors.meanlength &&
-                              errors.meanlength[idx] &&
-                              errors.meanlength[idx].measurement?.type ===
-                                "required" && (
-                                <Typography
-                                  variant="body2"
-                                  color="red"
-                                  fontSize={13}
-                                  mt={0.5}
-                                >
-                                  {validationMessage.required}
-                                </Typography>
-                              )}
-                            {errors &&
-                              errors.meanlength &&
-                              errors.meanlength[idx] &&
-                              errors.meanlength[idx].measurement?.type ===
-                                "pattern" && (
-                                <Typography
-                                  variant="body2"
-                                  color="red"
-                                  fontSize={13}
-                                  mt={0.5}
-                                >
-                                  {validationMessage.OnlyNumbersWithDot}
-                                </Typography>
-                              )}
-                            {errors &&
-                              errors.meanlength &&
-                              errors.meanlength[idx] &&
-                              errors.meanlength[idx].measurement?.type ===
-                                "maxLength" && (
-                                <Typography
-                                  variant="body2"
-                                  color="red"
-                                  fontSize={13}
-                                  mt={0.5}
-                                >
-                                  {validationMessage.numberMaxLength}
-                                </Typography>
-                              )}
-                          </Grid>
-
-                          <Grid
-                            item
-                            xs
-                            sx={{
-                              width: "fit-content",
-                              minWidth: 130,
-                            }}
+                            {validationMessage.required}
+                          </Typography>
+                        )}
+                      {errors &&
+                        errors.meanlength &&
+                        errors.meanlength[idx] &&
+                        errors.meanlength[idx].measurement?.type ===
+                          "pattern" && (
+                          <Typography
+                            variant="body2"
+                            color="red"
+                            fontSize={13}
+                            mt={0.5}
                           >
-                            <Box position={"relative"}>
-                              <TextField
-                                label="Length *"
-                                type="text"
-                                {...register(`meanlength.${idx}.length`, {
-                                  required: true,
-                                  pattern: validationPattern.numbersWithDot,
-                                  maxLength: 10,
-                                })}
-                                focused
-                                className="form-input"
-                                sx={{ width: "100%" }}
-                              />
-                              <Typography
-                                variant="body2"
-                                color="#555555AC"
-                                sx={{
-                                  position: "absolute",
-                                  right: 6,
-                                  top: "29px",
-                                  transform: "translate(-6px, -50%)",
-                                  backgroundColor: "#fff",
-                                  height: 30,
-                                  display: "grid",
-                                  placeItems: "center",
-                                  zIndex: 1,
-                                  pl: 1,
-                                }}
-                              >
-                                mm
-                              </Typography>
-                              {errors &&
-                                errors.meanlength &&
-                                errors.meanlength[idx] &&
-                                errors.meanlength[idx].length?.type ==
-                                  "required" && (
-                                  <Typography
-                                    variant="body2"
-                                    color="red"
-                                    fontSize={13}
-                                    mt={0.5}
-                                  >
-                                    {validationMessage.required}
-                                  </Typography>
-                                )}
-                              {errors &&
-                                errors.meanlength &&
-                                errors.meanlength[idx] &&
-                                errors.meanlength[idx].length?.type ==
-                                  "pattern" && (
-                                  <Typography
-                                    variant="body2"
-                                    color="red"
-                                    fontSize={13}
-                                    mt={0.5}
-                                  >
-                                    {validationMessage.OnlyNumbersWithDot}
-                                  </Typography>
-                                )}
-                              {errors &&
-                                errors.meanlength &&
-                                errors.meanlength[idx] &&
-                                errors.meanlength[idx].length?.type ==
-                                  "maxLength" && (
-                                  <Typography
-                                    variant="body2"
-                                    color="red"
-                                    fontSize={13}
-                                    mt={0.5}
-                                  >
-                                    {validationMessage.numberMaxLength}
-                                  </Typography>
-                                )}
-                            </Box>
-                          </Grid>
-                        </Grid>
-                      </Stack>
-                      {idx !== 0 && (
-                        <Box
-                          display={"flex"}
-                          alignItems={"center"}
-                          justifyContent={"center"}
-                          position={"relative"}
-                          sx={{
-                            top: "13px",
-                          }}
-                        >
-                          <Box
-                            display={"flex"}
-                            justifyContent={"center"}
-                            alignItems={"center"}
-                            width={50}
-                            sx={{
-                              // visibility: idx === 0 ? "hidden" : "",
-                              cursor: "pointer",
-                              width: {
-                                xs: "auto",
-                              },
-                            }}
-                            onClick={() => remove(idx)}
-                          >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="1.4em"
-                              height="1.4em"
-                              viewBox="0 0 24 24"
-                            >
-                              <g fill="none">
-                                <path d="m12.593 23.258l-.011.002l-.071.035l-.02.004l-.014-.004l-.071-.035q-.016-.005-.024.005l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.017-.018m.265-.113l-.013.002l-.185.093l-.01.01l-.003.011l.018.43l.005.012l.008.007l.201.093q.019.005.029-.008l.004-.014l-.034-.614q-.005-.018-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.614q.001.018.017.024l.015-.002l.201-.093l.01-.008l.004-.011l.017-.43l-.003-.012l-.01-.01z" />
-                                <path
-                                  fill="#ff0000"
-                                  d="M14.28 2a2 2 0 0 1 1.897 1.368L16.72 5H20a1 1 0 1 1 0 2l-.003.071l-.867 12.143A3 3 0 0 1 16.138 22H7.862a3 3 0 0 1-2.992-2.786L4.003 7.07L4 7a1 1 0 0 1 0-2h3.28l.543-1.632A2 2 0 0 1 9.721 2zm3.717 5H6.003l.862 12.071a1 1 0 0 0 .997.929h8.276a1 1 0 0 0 .997-.929zM10 10a1 1 0 0 1 .993.883L11 11v5a1 1 0 0 1-1.993.117L9 16v-5a1 1 0 0 1 1-1m4 0a1 1 0 0 1 1 1v5a1 1 0 1 1-2 0v-5a1 1 0 0 1 1-1m.28-6H9.72l-.333 1h5.226z"
-                                />
-                              </g>
-                            </svg>
-                          </Box>
-                        </Box>
-                      )}
+                            {validationMessage.OnlyNumbersWithDot}
+                          </Typography>
+                        )}
                     </Box>
-                  );
-                })}
-              </Stack>
-
+                    <Box
+                      position={"relative"}
+                      sx={{
+                        width: {
+                          lg: "100%",
+                          md: "48.4%",
+                          xs: "100%",
+                        },
+                      }}
+                    >
+                      <TextField
+                        label="Length *"
+                        type="text"
+                        {...register(`meanlength.${idx}.length`, {
+                          required: true,
+                          pattern: validationPattern.numbersWithDot,
+                        })}
+                        focused
+                        className="form-input"
+                        sx={{ width: "100%" }}
+                      />
+                      <Typography
+                        variant="body2"
+                        color="#555555AC"
+                        sx={{
+                          position: "absolute",
+                          right: 6,
+                          top: "29px",
+                          transform: "translate(-6px, -50%)",
+                          backgroundColor: "#fff",
+                          height: 30,
+                          display: "grid",
+                          placeItems: "center",
+                          zIndex: 1,
+                          pl: 1,
+                        }}
+                      >
+                        mm
+                      </Typography>
+                      {errors &&
+                        errors.meanlength &&
+                        errors.meanlength[idx] &&
+                        errors.meanlength[idx].length?.type == "required" && (
+                          <Typography
+                            variant="body2"
+                            color="red"
+                            fontSize={13}
+                            mt={0.5}
+                          >
+                            {validationMessage.required}
+                          </Typography>
+                        )}
+                      {errors &&
+                        errors.meanlength &&
+                        errors.meanlength[idx] &&
+                        errors.meanlength[idx].length?.type == "pattern" && (
+                          <Typography
+                            variant="body2"
+                            color="red"
+                            fontSize={13}
+                            mt={0.5}
+                          >
+                            {validationMessage.OnlyNumbersWithDot}
+                          </Typography>
+                        )}
+                    </Box>
+                    <Box
+                      display={"flex"}
+                      alignItems={"center"}
+                      justifyContent={"end"}
+                      position={"relative"}
+                      sx={{
+                        visibility: idx === 0 ? "hidden" : "",
+                        cursor: "pointer",
+                        width: {
+                          xs: "auto",
+                        },
+                      }}
+                      onClick={() => remove(idx)}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="1.4em"
+                        height="1.4em"
+                        viewBox="0 0 24 24"
+                      >
+                        <g fill="none">
+                          <path d="m12.593 23.258l-.011.002l-.071.035l-.02.004l-.014-.004l-.071-.035q-.016-.005-.024.005l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.017-.018m.265-.113l-.013.002l-.185.093l-.01.01l-.003.011l.018.43l.005.012l.008.007l.201.093q.019.005.029-.008l.004-.014l-.034-.614q-.005-.018-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.614q.001.018.017.024l.015-.002l.201-.093l.01-.008l.004-.011l.017-.43l-.003-.012l-.01-.01z" />
+                          <path
+                            fill="#ff0000"
+                            d="M14.28 2a2 2 0 0 1 1.897 1.368L16.72 5H20a1 1 0 1 1 0 2l-.003.071l-.867 12.143A3 3 0 0 1 16.138 22H7.862a3 3 0 0 1-2.992-2.786L4.003 7.07L4 7a1 1 0 0 1 0-2h3.28l.543-1.632A2 2 0 0 1 9.721 2zm3.717 5H6.003l.862 12.071a1 1 0 0 0 .997.929h8.276a1 1 0 0 0 .997-.929zM10 10a1 1 0 0 1 .993.883L11 11v5a1 1 0 0 1-1.993.117L9 16v-5a1 1 0 0 1 1-1m4 0a1 1 0 0 1 1 1v5a1 1 0 1 1-2 0v-5a1 1 0 0 1 1-1m.28-6H9.72l-.333 1h5.226z"
+                          />
+                        </g>
+                      </svg>
+                    </Box>
+                  </Stack>
+                );
+              })}
               <Box
                 px={2}
                 mt={3}
@@ -362,14 +309,12 @@ const CalculateMeanLength = ({ open, setOpen, setAvgOfMeanLength }: Props) => {
                 <Typography variant="body1" fontWeight={600}>
                   Mean Length :
                 </Typography>
-
                 <Typography variant="body1">
                   {watch("avgOfMeanLength")
                     ? Number(watch("avgOfMeanLength")).toFixed(2)
                     : 0}
                 </Typography>
               </Box>
-
               <Box
                 display="flex"
                 justifyContent="flex-end"
@@ -399,7 +344,6 @@ const CalculateMeanLength = ({ open, setOpen, setAvgOfMeanLength }: Props) => {
                 >
                   Add Row
                 </Button>
-
                 <Button
                   variant="contained"
                   sx={{
@@ -426,5 +370,4 @@ const CalculateMeanLength = ({ open, setOpen, setAvgOfMeanLength }: Props) => {
     </Modal>
   );
 };
-
 export default CalculateMeanLength;
