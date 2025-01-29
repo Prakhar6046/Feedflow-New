@@ -1,10 +1,12 @@
 import AddNewOrganisation from "@/app/_components/AddNewOrganisation";
 import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
+import { getAllOrganisations, getOrganisations } from "@/app/_lib/action";
 import { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Organisations",
 };
 export default async function Page() {
+  const organisations = await getAllOrganisations();
   return (
     <>
       <BasicBreadcrumbs
@@ -16,7 +18,7 @@ export default async function Page() {
           { name: "New Organisation", link: "/dashboard/organisation/new" },
         ]}
       />
-      <AddNewOrganisation />
+      <AddNewOrganisation organisations={organisations?.data} />
     </>
   );
 }

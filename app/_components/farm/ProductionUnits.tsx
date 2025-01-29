@@ -52,7 +52,6 @@ const unitsTypes = [
   { name: "Circular Tank", formula: "π×r2×D" },
   { name: "D-end Tank", formula: "(2π×r2+(L−r)×W)×D" },
 ];
-
 const ProductionUnits: NextPage<Props> = ({
   setActiveStep,
   editFarm,
@@ -425,7 +424,7 @@ const ProductionUnits: NextPage<Props> = ({
                           name={`productionUnits.${index}.name`} // Dynamic field name
                           control={control}
                           defaultValue="" // Set default value if necessary
-                          render={({ field }) => (
+                          render={({ field, fieldState: { error } }) => (
                             <TextField
                               {...field} // Spread field props
                               label="Production Unit Name *"
@@ -439,33 +438,33 @@ const ProductionUnits: NextPage<Props> = ({
                             />
                           )}
                           rules={{
-                            required: true,
+                            required: "This field is required.",
+                            validate: (value) => {
+                              if (!value.trim()) {
+                                return "Production Unit Name is required.";
+                              }
+                              const isUnique = productionUnits?.every(
+                                (f, i) =>
+                                  i === index ||
+                                  f.name.toLowerCase() !== value.toLowerCase()
+                              );
+                              return (
+                                isUnique ||
+                                "Please enter a unique name. This name is already used in production unit data."
+                              );
+                            },
                           }} // Add validation
                         />
-                        {errors &&
-                          errors.productionUnits &&
-                          errors.productionUnits[index]?.name && (
-                            <Typography
-                              variant="body2"
-                              color="red"
-                              fontSize={13}
-                              mt={0.5}
-                            >
-                              {validationMessage.required}
-                            </Typography>
-                          )}
-                        {/* <TextField
-                          label="Production Unit Name"
-                          type="text"
-                          className="form-input"
-                          {...register(
-                            `productionUnits.${index}.name` as const
-                          )}
-                          sx={{
-                            width: "100%",
-                            minWidth: 150,
-                          }}
-                        /> */}
+                        {errors?.productionUnits?.[index]?.name && (
+                          <Typography
+                            variant="body2"
+                            color="red"
+                            fontSize={13}
+                            mt={0.5}
+                          >
+                            {errors.productionUnits[index].name.message}
+                          </Typography>
+                        )}
                       </TableCell>
 
                       <TableCell
