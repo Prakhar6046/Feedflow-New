@@ -122,7 +122,7 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
                   />
                 </FormControl>
                 <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
-                  {errors.conditionFactor1 ? "This field is required" : ""}
+                  {errors.name ? "This field is required" : ""}
                 </Typography>
               </Grid>
 
@@ -144,7 +144,10 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
                       clearErrors("specie");
                     }}
                   >
-                    <MenuItem value={" Tilapia (Oreochromis Nilotic x Aureus)"}>
+                    <MenuItem
+                      value={" Tilapia (Oreochromis Nilotic x Aureus)"}
+                      key={"Tilapia (Oreochromis Nilotic x Aureus)"}
+                    >
                       Tilapia (Oreochromis Nilotic x Aureus)
                     </MenuItem>
                   </Select>
@@ -168,7 +171,7 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
                     type="text"
                     className="form-input"
                     focused
-                    {...register("name", { required: true })}
+                    {...register("temperatureCoefficient", { required: true })}
                     error={!!errors.temperatureCoefficient}
                     sx={{
                       width: "100%",
@@ -176,7 +179,9 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
                   />
                 </FormControl>
                 <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
-                  {errors.conditionFactor1 ? "This field is required" : ""}
+                  {errors.temperatureCoefficient
+                    ? "This field is required"
+                    : ""}
                 </Typography>
               </Grid>
 
@@ -194,7 +199,7 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
                   }}
                 />
                 <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
-                  {errors.conditionFactor1 ? "This field is required" : ""}
+                  {errors.growthEquationLength ? "This field is required" : ""}
                 </Typography>
               </Grid>
 
@@ -212,7 +217,9 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
                   }}
                 />
                 <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
-                  {errors.conditionFactor1 ? "This field is required" : ""}
+                  {errors.growthEquationBodyWeight
+                    ? "This field is required"
+                    : ""}
                 </Typography>
               </Grid>
 
@@ -246,9 +253,6 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
                     width: "100%",
                   }}
                 />
-                <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
-                  {errors.conditionFactor1 ? "This field is required" : ""}
-                </Typography>
               </Grid>
               {/* <Grid item md={6} xs={12}>
                 <FormControl fullWidth className="form-input" focused>
