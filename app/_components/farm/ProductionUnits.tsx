@@ -39,6 +39,7 @@ import toast from "react-hot-toast";
 import { v4 as uuidv4 } from "uuid";
 import CalculateVolume from "../models/CalculateFarmVolume";
 import ProductionUnitParametersPredicated from "../models/ProductionUnitParametersPredicated";
+import { wrap } from "module";
 interface Props {
   productionParaMeter?: ProductionParaMeterType[];
   growthModels?: any;
@@ -459,6 +460,7 @@ const ProductionUnits: NextPage<Props> = ({
                             color="red"
                             fontSize={13}
                             mt={0.5}
+                            maxWidth={210}
                           >
                             {errors.productionUnits[index].name.message}
                           </Typography>
@@ -492,6 +494,7 @@ const ProductionUnits: NextPage<Props> = ({
                                 {...field} // Spread the field props for value and onChange
                                 sx={{
                                   minWidth: "200px",
+                                  width: "100%",
                                 }}
                                 // sx={{
                                 //   px: {
