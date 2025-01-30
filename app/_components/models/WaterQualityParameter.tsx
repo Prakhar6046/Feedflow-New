@@ -134,6 +134,7 @@ const WaterQualityParameter: React.FC<Props> = ({
     name: "water",
   });
   const watchedFields = watch("water");
+
   const onSubmit: SubmitHandler<InputTypes> = async (data) => {
     // Prevent API call if one is already in progress
     if (isApiCallInProgress) return;
@@ -353,7 +354,7 @@ const WaterQualityParameter: React.FC<Props> = ({
       setFormData(data);
     }
   }, []);
-
+  console.log(watchedFields);
   return (
     <Modal
       open={open}
@@ -1373,7 +1374,20 @@ const WaterQualityParameter: React.FC<Props> = ({
               className=""
               type="submit"
               variant="contained"
-              disabled={watchedFields.length > 1 ? false : true}
+              disabled={
+                watchedFields.length > 1 &&
+                watchedFields[1].waterTemp &&
+                watchedFields[1].DO &&
+                watchedFields[1].TSS &&
+                watchedFields[1].NH4 &&
+                watchedFields[1].NO3 &&
+                watchedFields[1].NO2 &&
+                watchedFields[1].ph &&
+                watchedFields[1].visibility &&
+                watchedFields[1].date
+                  ? false
+                  : true
+              }
               sx={{
                 background: "#06A19B",
                 fontWeight: "bold",

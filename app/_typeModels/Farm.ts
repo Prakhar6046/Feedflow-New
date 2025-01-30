@@ -30,6 +30,7 @@ export interface Farm {
     capacity: string;
     waterflowRate: string;
     id: any;
+    YearBasedPredicationProductionUnit: ProductionParaMeterType[];
   }[];
   production: Production[];
   WaterQualityPredictedParameters: ProductionParaMeterType[];

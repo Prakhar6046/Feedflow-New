@@ -1,0 +1,652 @@
+import { getLocalItem, setLocalItem, Years } from "@/app/_lib/utils";
+import { waterQualityPredictedHead } from "@/app/_lib/utils/tableHeadData";
+import * as validationPattern from "@/app/_lib/utils/validationPatterns/index";
+import * as validationMessage from "@/app/_lib/utils/validationsMessage/index";
+import { GrowthModel, ProductionParaMeterType } from "@/app/_typeModels/Farm";
+import { selectFarm } from "@/lib/features/farm/farmSlice";
+import { useAppSelector } from "@/lib/hooks";
+import {
+  Box,
+  Button,
+  Checkbox,
+  FormControl,
+  FormControlLabel,
+  FormHelperText,
+  Grid,
+  IconButton,
+  InputLabel,
+  MenuItem,
+  Modal,
+  Select,
+  Stack,
+  Typography,
+} from "@mui/material";
+import Paper from "@mui/material/Paper";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import { getCookie } from "cookies-next";
+import { useEffect, useState } from "react";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { CloseIcon } from "../theme/overrides/CustomIcons";
+
+interface Props {
+  productionParaMeter?: ProductionParaMeterType[];
+  editFarm?: any;
+  growthModels: any;
+  setOpen: (open: boolean) => void;
+  open: boolean;
+  selectedUnitId: string;
+}
+interface FormData {
+  predictedValues: Record<string, Record<number, string>>;
+  idealRange: Record<string, { Min: string; Max: string }>;
+  applyToAll: Record<string, boolean>;
+  modelId: number;
+}
+const style = {
+  position: "absolute" as "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 400,
+  bgcolor: "background.paper",
+  boxShadow: 24,
+};
+
+const ProductionUnitParametersPredicated: React.FC<Props> = ({
+  setOpen,
+  open,
+  growthModels,
+  editFarm,
+  productionParaMeter,
+  selectedUnitId,
+}) => {
+  const isEditFarm = getCookie("isEditFarm");
+
+  const farm = useAppSelector(selectFarm);
+
+  const [formProductionParameters, setFormProductionParameters] =
+    useState<any>();
+
+  const {
+    control,
+    handleSubmit,
+    watch,
+    register,
+    setValue,
+    clearErrors,
+    formState: { errors },
+  } = useForm<FormData>({
+    defaultValues: {
+      predictedValues: {},
+    },
+  });
+  const allWatchObject = {
+    predictedValues: watch("predictedValues"),
+    idealRange: watch("idealRange"),
+    modelId: watch("modelId"),
+  };
+  const onSubmit: SubmitHandler<FormData> = (data) => {
+    if (
+      isEditFarm === "true" &&
+      productionParaMeter &&
+      productionParaMeter[0]?.YearBasedPredication
+    ) {
+      const payload = {
+        predictedValues: {
+          "Water Temperature °C": data.predictedValues["Water Temperature °C"],
+          "Dissolved Oxygen (DO) mg/L":
+            data.predictedValues["Dissolved Oxygen (DO) mg/L"],
+          "Total Suspended solids (TSS)":
+            data.predictedValues["Total Suspended solids (TSS)"],
+          "Ammonia (NH₄) mg/L": data.predictedValues["Ammonia (NH₄) mg/L"],
+          "Nitrate (NO₃) mg/L": data.predictedValues["Nitrate (NO₃) mg/L"],
+          "Nitrite (NO₂) mg/L": data.predictedValues["Nitrite (NO₂) mg/L"],
+          pH: data.predictedValues["pH"],
+          "Visibility cm": data.predictedValues["Visibility cm"],
+        },
+
+        modelId: data.modelId,
+
+        idealRange: {
+          "Water Temperature °C": data.idealRange["Water Temperature °C"],
+          "Dissolved Oxygen (DO) mg/L":
+            data.idealRange["Dissolved Oxygen (DO) mg/L"],
+          "Total Suspended solids (TSS)":
+            data.idealRange["Total Suspended solids (TSS)"],
+          "Ammonia (NH₄) mg/L": data.idealRange["Ammonia (NH₄) mg/L"],
+          "Nitrate (NO₃) mg/L": data.idealRange["Nitrate (NO₃) mg/L"],
+          "Nitrite (NO₂) mg/L": data.idealRange["Nitrite (NO₂) mg/L"],
+          ph: data.idealRange["pH"],
+          visibility: data.idealRange["Visibility cm"],
+        },
+      };
+      console.log(payload);
+    }
+
+    // setLocalItem("productionParametes", payload);
+  };
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const formData = getLocalItem("productionParametes");
+      console.log(formData);
+
+      setFormProductionParameters(formData);
+    }
+  }, []);
+  console.log(editFarm?.productionUnits);
+  console.log(selectedUnitId);
+
+  useEffect(() => {
+    if (isEditFarm && editFarm?.productionUnits) {
+      const prediction: any = editFarm.productionUnits.find(
+        (unit: any) => unit.id === selectedUnitId
+      );
+      console.log(prediction);
+
+      // Creating the idealRange object for Min and Max
+      const idealRange = {
+        "Water Temperature °C": {
+          Min: prediction?.idealRange?.waterTemp?.Min || "",
+          Max: prediction?.idealRange?.waterTemp?.Max || "",
+        },
+        "Dissolved Oxygen (DO) mg/L": {
+          Min: prediction?.idealRange?.DO?.Min || "",
+          Max: prediction?.idealRange?.DO?.Max || "",
+        },
+        "Total Suspended solids (TSS)": {
+          Min: prediction?.idealRange?.TSS?.Min || "",
+          Max: prediction?.idealRange?.TSS?.Max || "",
+        },
+        "Ammonia (NH₄) mg/L": {
+          Min: prediction?.idealRange?.NH4?.Min || "",
+          Max: prediction?.idealRange?.NH4?.Max || "",
+        },
+        "Nitrate (NO₃) mg/L": {
+          Min: prediction?.idealRange?.NO3?.Min || "",
+          Max: prediction?.idealRange?.NO3?.Max || "",
+        },
+        "Nitrite (NO₂) mg/L": {
+          Min: prediction?.idealRange?.NO2?.Min || "",
+          Max: prediction?.idealRange?.NO2?.Max || "",
+        },
+        pH: {
+          Min: prediction?.idealRange?.ph?.Min || "",
+          Max: prediction?.idealRange?.ph?.Max || "",
+        },
+        "Visibility cm": {
+          Min: prediction?.idealRange?.visibility?.Min || "",
+          Max: prediction?.idealRange?.visibility?.Max || "",
+        },
+      };
+
+      // Set the values in the form
+      setValue("idealRange", idealRange);
+
+      const predictedValues = {
+        "Water Temperature °C": { ...prediction?.waterTemp },
+        "Dissolved Oxygen (DO) mg/L": { ...prediction?.DO },
+        "Total Suspended solids (TSS)": { ...prediction?.TSS },
+        "Ammonia (NH₄) mg/L": { ...prediction?.NH4 },
+        "Nitrate (NO₃) mg/L": { ...prediction?.NO3 },
+        "Nitrite (NO₂) mg/L": { ...prediction?.NO2 },
+        pH: { ...prediction?.ph },
+        "Visibility cm": { ...prediction?.visibility },
+      };
+
+      setValue("predictedValues", predictedValues);
+      setValue("modelId", prediction?.modelId);
+    }
+  }, [editFarm, isEditFarm, setValue]);
+
+  useEffect(() => {
+    if (formProductionParameters) {
+      setValue("predictedValues", formProductionParameters.predictedValues);
+      setValue("idealRange", formProductionParameters.idealRange);
+      setValue("modelId", formProductionParameters.modelId);
+    }
+  }, [formProductionParameters]);
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+  return (
+    <Modal
+      open={open}
+      onClose={handleClose}
+      aria-labelledby="parent-modal-title"
+      aria-describedby="parent-modal-description"
+      className="modal-positioning"
+      //   onBackdropClick={() => reset()}
+    >
+      <Stack sx={style}>
+        <Box display="flex" justifyContent="flex-end" padding={2}>
+          <IconButton
+            onClick={handleClose}
+            sx={{
+              color: "inherit",
+              background: "transparent",
+              margin: "2",
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+        </Box>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <Paper
+            sx={{
+              width: "100%",
+              overflow: "hidden",
+              borderRadius: "14px",
+              boxShadow: "0px 0px 16px 5px #0000001A",
+            }}
+          >
+            <Grid container spacing={2}>
+              <Grid item lg={9} xs={7}>
+                <Typography
+                  variant="h6"
+                  fontWeight={700}
+                  sx={{
+                    fontSize: {
+                      xl: 18,
+
+                      xs: 12,
+                    },
+                    margin: 2,
+                    textWrap: {
+                      lg: "nowrap",
+                      xs: "wrap",
+                    },
+                  }}
+                >
+                  Water Quality Parameters (Predicted)
+                </Typography>
+                <TableContainer>
+                  <Table aria-label="sticky table">
+                    <TableHead>
+                      <TableRow
+                        sx={{
+                          backgroundColor: "#06a19b",
+                          textAlign: "center",
+                          margin: "0",
+                          padding: "0",
+                        }}
+                      >
+                        <TableCell align="center"></TableCell>
+
+                        {Years.map((year, i) => {
+                          return (
+                            <TableCell
+                              align="center"
+                              sx={{ color: "white" }}
+                              key={i}
+                            >
+                              {year}
+                            </TableCell>
+                          );
+                        })}
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {waterQualityPredictedHead.map((head, i) => (
+                        <TableRow
+                          key={i}
+                          sx={{
+                            "&:last-child td, &:last-child th": { border: 0 },
+                            backgroundColor: "#F5F6F8",
+                            fontWeight: "700",
+                            padding: "0px",
+                            margin: "0px",
+                          }}
+                        >
+                          <TableCell
+                            component="td"
+                            scope="row"
+                            sx={{
+                              margin: "0px",
+                              padding: "8px",
+                              textWrap: "nowrap",
+                            }}
+                          >
+                            {head}
+                          </TableCell>
+                          {Years.map((year: any, index) => (
+                            <TableCell
+                              key={index}
+                              className=" table-border"
+                              sx={{
+                                borderBottomWidth: 2,
+                                borderBottomColor: "#ececec",
+                                margin: "0",
+                                padding: "5px 1px",
+                                textWrap: "nowrap",
+                                textAlign: "center",
+                              }}
+                            >
+                              <Controller
+                                name={`predictedValues.${head}.${year}`}
+                                rules={{
+                                  pattern:
+                                    validationPattern.negativeNumberWithDot,
+                                  maxLength: 10,
+                                }}
+                                control={control}
+                                render={({ field }) => (
+                                  <input
+                                    className="number-items"
+                                    {...field}
+                                    type="text"
+                                    placeholder="0"
+                                    style={{
+                                      maxWidth: "80px",
+                                      padding: "4px 2px",
+                                      border: "none",
+                                      textAlign: "center",
+                                      fontSize: "14px",
+                                      fontWeight: "500",
+                                      color: "#555555",
+                                    }}
+                                    onInput={(e) => {
+                                      const value = e.currentTarget.value;
+                                      const regex = /^-?\d*\.?\d*$/;
+                                      if (!regex.test(value)) {
+                                        e.currentTarget.value =
+                                          field.value || "";
+                                      } else {
+                                        field.onChange(value);
+                                      }
+                                    }}
+                                  />
+                                )}
+                              />
+                              {errors?.predictedValues?.[head]?.[year] && (
+                                <Typography
+                                  variant="body2"
+                                  color="error"
+                                  fontSize={13}
+                                  mt={0.5}
+                                >
+                                  {errors?.predictedValues?.[head]?.[year]
+                                    .type === "pattern"
+                                    ? validationMessage.NegativeNumberWithDot
+                                    : errors?.predictedValues?.[head]?.[year]
+                                        .type === "maxLength"
+                                    ? validationMessage.numberMaxLength
+                                    : ""}
+                                </Typography>
+                              )}
+                            </TableCell>
+                          ))}
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </Grid>
+              {/* grid-2 */}
+              <Grid item lg={2} xs={3}>
+                <Typography
+                  variant="h6"
+                  fontWeight={700}
+                  sx={{
+                    fontSize: {
+                      xl: 18,
+
+                      xs: 12,
+                    },
+                    margin: 2,
+                    textWrap: {
+                      lg: "nowrap",
+                      xs: "wrap",
+                    },
+                  }}
+                >
+                  Ideal Range
+                </Typography>
+                <TableContainer>
+                  <Table aria-label="sticky table">
+                    <TableHead>
+                      <TableRow
+                        sx={{
+                          backgroundColor: "#06a19b",
+                          textAlign: "center",
+                        }}
+                      >
+                        <TableCell
+                          align="center"
+                          sx={{
+                            color: "white",
+                            borderRight: "1px solid #F5F6F8",
+                          }}
+                        >
+                          Min
+                        </TableCell>
+
+                        <TableCell align="center" sx={{ color: "white" }}>
+                          Max
+                        </TableCell>
+                      </TableRow>
+                    </TableHead>
+
+                    <TableBody>
+                      {waterQualityPredictedHead.map((head: any, i) => (
+                        <TableRow
+                          key={i}
+                          sx={{
+                            "&:last-child td, &:last-child th": { border: 0 },
+                            backgroundColor: "#F5F6F8",
+                            fontWeight: "700",
+                          }}
+                        >
+                          {(["Min", "Max"] as const).map((val, index) => (
+                            <TableCell
+                              key={index}
+                              className="table-border"
+                              sx={{
+                                borderBottomWidth: 2,
+                                borderBottomColor: "#ececec",
+                                padding: "5px 1px",
+                                textWrap: "nowrap",
+                                textAlign: "center",
+                              }}
+                            >
+                              <Controller
+                                name={`idealRange.${head}.${val}`}
+                                control={control}
+                                rules={{
+                                  pattern:
+                                    validationPattern.negativeNumberWithDot,
+                                  maxLength: 10,
+                                }}
+                                render={({ field }) => (
+                                  <input
+                                    className="number-items"
+                                    type="text"
+                                    {...field}
+                                    placeholder="0"
+                                    style={{
+                                      maxWidth: "90px",
+                                      padding: "4px 2px",
+                                      textWrap: "nowrap",
+                                      border: "none",
+                                      textAlign: "center",
+                                      fontSize: "14px",
+                                      fontWeight: "500",
+                                      color: "#555555",
+                                    }}
+                                    onInput={(e) => {
+                                      const value = e.currentTarget.value;
+                                      const regex = /^-?\d*\.?\d*$/;
+                                      if (!regex.test(value)) {
+                                        e.currentTarget.value =
+                                          field.value || "";
+                                      } else {
+                                        field.onChange(value);
+                                      }
+                                    }}
+                                  />
+                                )}
+                              />
+                              {errors?.idealRange?.[head]?.[val] && (
+                                <Typography
+                                  variant="body2"
+                                  color="error"
+                                  fontSize={13}
+                                  mt={0.5}
+                                >
+                                  {errors?.idealRange?.[head]?.[val].type ===
+                                  "pattern"
+                                    ? validationMessage.NegativeNumberWithDot
+                                    : errors?.idealRange?.[head]?.[val].type ===
+                                      "maxLength"
+                                    ? validationMessage.numberMaxLength
+                                    : ""}
+                                </Typography>
+                              )}
+                            </TableCell>
+                          ))}
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </Grid>
+              {/* grid-3 */}
+              <Grid item lg={1} xs={2}>
+                <Typography
+                  variant="h6"
+                  fontWeight={700}
+                  minWidth={"70px"}
+                  sx={{
+                    fontSize: {
+                      xl: 18,
+                      xs: 12,
+                    },
+                    margin: "2",
+                  }}
+                >
+                  Apply to all units
+                </Typography>
+                <TableContainer>
+                  <Table aria-label="sticky table">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell
+                          sx={{
+                            borderBottom: "0px",
+                            paddingTop: "40px",
+                          }}
+                        ></TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {waterQualityPredictedHead.map((head, i) => (
+                        <TableRow
+                          key={i}
+                          sx={{
+                            "&:last-child td, &:last-child th": { border: 0 },
+                          }}
+                        >
+                          <TableCell
+                            sx={{
+                              textAlign: "center",
+                              border: "none",
+                              padding: "0px",
+                              display: "flex",
+                              alignItems: "start",
+                            }}
+                          >
+                            <FormControlLabel
+                              label=""
+                              style={{
+                                fontSize: "14px",
+                                fontWeight: "500",
+                                color: "#555555",
+
+                                marginInline: "auto",
+                              }}
+                              control={<Checkbox defaultChecked />}
+                            />
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </Grid>
+            </Grid>
+          </Paper>
+
+          <Box>
+            <Typography variant="subtitle1" fontWeight={500} marginBottom={3}>
+              Growth Parameters
+            </Typography>
+            {/* div-1 */}
+            <Grid item md={6} xs={12}>
+              <FormControl fullWidth className="form-input" focused>
+                <InputLabel id="feed-supply-select-label5">
+                  Growth Model *
+                </InputLabel>
+                <Select
+                  labelId="feed-supply-select-label5"
+                  id="feed-supply-select5"
+                  label="Growth Model *"
+                  {...register("modelId", { required: true })}
+                  value={watch("modelId") || ""}
+                  onChange={(e) => {
+                    setValue("modelId", Number(e.target.value));
+                    clearErrors("modelId");
+                  }}
+                >
+                  {growthModels &&
+                    growthModels?.map((model: GrowthModel) => {
+                      return (
+                        <MenuItem value={model.models.id} key={model.id}>
+                          {model.models.name}
+                        </MenuItem>
+                      );
+                    })}
+                </Select>
+                {errors.modelId && (
+                  <FormHelperText sx={{ color: "#d32f2f" }}>
+                    {errors.modelId ? "Model is required" : ""}
+                  </FormHelperText>
+                )}
+              </FormControl>
+            </Grid>
+          </Box>
+
+          <Box
+            display={"flex"}
+            justifyContent={"flex-end"}
+            alignItems={"center"}
+            gap={3}
+            mt={1}
+          >
+            <Button
+              type="submit"
+              variant="contained"
+              sx={{
+                background: "#06A19B",
+                fontWeight: 600,
+                padding: "6px 16px",
+                width: "fit-content",
+                textTransform: "capitalize",
+                borderRadius: "8px",
+              }}
+            >
+              Save
+            </Button>
+          </Box>
+        </form>
+      </Stack>
+    </Modal>
+  );
+};
+
+export default ProductionUnitParametersPredicated;
