@@ -374,17 +374,6 @@ const ProductionUnits: NextPage<Props> = ({
     setValue("radius", "1");
     setValue("width", "1");
   }, [formProductionUnitsData]);
-  useEffect(() => {
-    if (!productionUnits.length) {
-      append({
-        name: "",
-        capacity: "",
-        type: "",
-        waterflowRate: "",
-        id: uuidv4(),
-      });
-    }
-  }, [productionUnits]);
 
   return (
     <Stack>
@@ -742,7 +731,19 @@ const ProductionUnits: NextPage<Props> = ({
                           pr: 1,
                           position: "relative",
                         }}
-                        onClick={() => remove(index)}
+                        onClick={() =>
+                          index === 0
+                            ? setValue("productionUnits", [
+                                {
+                                  name: "",
+                                  capacity: "",
+                                  type: "",
+                                  waterflowRate: "",
+                                  id: uuidv4(),
+                                },
+                              ])
+                            : remove(index)
+                        }
                       >
                         <Box
                           sx={{
