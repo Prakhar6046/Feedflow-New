@@ -67,14 +67,18 @@ const WaterTempChart = ({
         backgroundColor: "rgba(30, 144, 255, 0.2)", // Light blue fill
         borderColor: "#1E90FF",
         borderWidth: 2,
+        pointBackgroundColor: "#1E90FF", // Fill circle with border color
+        pointRadius: 5, // Increase radius
       },
       {
         // yAxisID: "second",
         label: `Predicted Values`,
-        data: ["1", "2", "34", "55"],
+        data: ["20", "15", "34", "55"],
         backgroundColor: "rgba(255, 165, 0, 0.2)", // Light orange fill
         borderColor: "#FFA500",
         borderWidth: 2,
+        pointBackgroundColor: "#FFA500", // Fill circle with border color
+        pointRadius: 5, // Increase radius
       },
     ],
   };
@@ -440,8 +444,8 @@ const WaterTempChart = ({
           ctx.lineJoin = "round";
           ctx.lineWidth = 5;
           ctx.setLineDash([]);
-          ctx.fillRect(xTooltip, yTooltip, 150, 75);
-          ctx.strokeRect(xTooltip, yTooltip, 150, 75);
+          ctx.fillRect(xTooltip, yTooltip, 150, 60);
+          ctx.strokeRect(xTooltip, yTooltip, 150, 60);
           ctx.closePath();
           ctx.restore();
 
@@ -460,11 +464,11 @@ const WaterTempChart = ({
             yTooltip + 20 // Adjust vertical position
           );
           ctx.fillText(`Real Value: ${yValue}`, xTooltip + 75, yTooltip + 40);
-          ctx.fillText(
-            `Predicted Value: ${yValue}`,
-            xTooltip + 75,
-            yTooltip + 60
-          );
+          // ctx.fillText(
+          //   `Predicted Value: ${yValue}`,
+          //   xTooltip + 75,
+          //   yTooltip + 60
+          // );
           // ctx.fillText("Date       : 1/4/2025", xTooltip + 75, yTooltip + 20);
           // yTooltip + 20+= lineHeight;
           // ctx.fillText("Real Value: 31.90", xTooltip + 75,yTooltip + 20);

@@ -20,6 +20,7 @@ import { useRouter } from "next/navigation";
 import { setLocalItem } from "@/app/_lib/utils";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
+import toast from "react-hot-toast";
 
 type Iprops = {
   productions: Production[];
@@ -96,6 +97,11 @@ function FishHistoryCharts({
     );
   };
   const previewCharts = () => {
+    if (!selectedCharts?.length) {
+      toast.dismiss();
+      toast.error("Please select at least one chart to download.");
+      return;
+    }
     const data = {
       selectedCharts: selectedCharts,
       xAxisData: xAxisData,
@@ -180,7 +186,7 @@ function FishHistoryCharts({
               borderRadius: "8px",
             }}
             onClick={() => {
-              chartOptions.map((chart) => handleCheckboxChange(chart.key));
+              setSelectedCharts(chartOptions.map((chart) => chart.key));
             }}
           >
             Select all charts

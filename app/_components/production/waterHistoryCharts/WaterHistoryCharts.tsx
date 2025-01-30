@@ -1,31 +1,28 @@
-import React, { useEffect, useState } from "react";
-import {
-  Grid,
-  Button,
-  Checkbox,
-  FormControlLabel,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Box,
-} from "@mui/material";
-import Modal from "@mui/material/Modal";
-import { createRoot } from "react-dom/client";
-import jsPDF from "jspdf";
-import html2canvas from "html2canvas";
-import dayjs from "dayjs";
-import WaterTempChart from "../../charts/WaterTempChart";
+import { setLocalItem } from "@/app/_lib/utils";
+import { Farm } from "@/app/_typeModels/Farm";
 import {
   Production,
   WaterManageHistoryGroup,
 } from "@/app/_typeModels/production";
-import { Farm } from "@/app/_typeModels/Farm";
-import { setLocalItem } from "@/app/_lib/utils";
+import {
+  Box,
+  Button,
+  Checkbox,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  FormControlLabel,
+  Grid,
+} from "@mui/material";
+import dayjs from "dayjs";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import WaterTempChart from "../../charts/WaterTempChart";
 
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
+import toast from "react-hot-toast";
 type Iprops = {
   productions: Production[];
   groupedData: WaterManageHistoryGroup;
@@ -92,24 +89,46 @@ function WaterHistoryCharts({
       const farm = farms.find((farm) => farm.id === productions[0]?.fishFarmId);
       setCurrentFarm(farm);
 
-      const createdAtArray = groupedData.units.flatMap(
-        (unit) =>
-          unit.WaterManageHistoryAvgrage?.map((history) =>
-            String(history.createdAt)
-          ) || []
-      );
+      // const createdAtArray = groupedData.units?.flatMap(
+      //   (unit) =>
+      //     unit.waterManageHistory?.map((history) =>
+      //       String(history.currentDate)
+      //     ) || []
+      // );
+      // console.log(createdAtArray);
+      // const diffInDays = dayjs(endDate).diff(dayjs(startDate), "day");
+      // setDateDiff(diffInDays);
+
+      // const startD = new Date(startDate);
+      // startD.setHours(0, 0, 0, 0);
+      // const endD = new Date(endDate);
+      // endD.setHours(0, 0, 0, 0);
+
+      // const filteredTimestamps = createdAtArray.filter((timestamp) => {
+      //   const date = new Date(timestamp);
+      //   date.setHours(0, 0, 0, 0);
+      //   return date >= startD && date <= endD;
+      // });
+
+      // setXAxisData(filteredTimestamps);
+      const createdAtArray = groupedData.units
+        ?.flatMap(
+          (unit) =>
+            unit.waterManageHistory?.map((history) => {
+              const datePart = String(history.currentDate).split("T")[0]; // Extract date before "T"
+              return dayjs(datePart).isValid() ? datePart : null; // Validate the extracted date
+            }) || []
+        )
+        .filter(Boolean); // Remove null values
 
       const diffInDays = dayjs(endDate).diff(dayjs(startDate), "day");
       setDateDiff(diffInDays);
 
-      const startD = new Date(startDate);
-      startD.setHours(0, 0, 0, 0);
-      const endD = new Date(endDate);
-      endD.setHours(0, 0, 0, 0);
+      const startD = dayjs(startDate).startOf("day");
+      const endD = dayjs(endDate).startOf("day");
 
-      const filteredTimestamps = createdAtArray.filter((timestamp) => {
-        const date = new Date(timestamp);
-        date.setHours(0, 0, 0, 0);
+      const filteredTimestamps: any = createdAtArray.filter((timestamp) => {
+        const date = dayjs(timestamp).startOf("day");
         return date >= startD && date <= endD;
       });
 
@@ -125,6 +144,11 @@ function WaterHistoryCharts({
     );
   };
   const previewCharts = () => {
+    if (!selectedCharts?.length) {
+      toast.dismiss();
+      toast.error("Please select at least one chart to download.");
+      return;
+    }
     const data = {
       selectedCharts: selectedCharts,
       xAxisData: xAxisData,
@@ -211,7 +235,7 @@ function WaterHistoryCharts({
               borderRadius: "8px",
             }}
             onClick={() => {
-              chartOptions.map((chart) => handleCheckboxChange(chart.key));
+              setSelectedCharts(chartOptions.map((chart) => chart.key));
             }}
           >
             Select all charts
@@ -263,7 +287,7 @@ function WaterHistoryCharts({
                 xAxisData={xAxisData}
                 ydata={groupedData.units.flatMap(
                   (unit) =>
-                    unit.WaterManageHistoryAvgrage?.map(
+                    unit.waterManageHistory?.map(
                       (history: any) => history[yDataKey]
                     ) || []
                 )}

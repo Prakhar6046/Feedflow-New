@@ -266,7 +266,7 @@ function WaterChartDownloadPreview({
                   xAxisData={chartData?.xAxisData}
                   ydata={chartData?.groupedData.units.flatMap(
                     (unit) =>
-                      unit.WaterManageHistoryAvgrage?.map(
+                      unit.waterManageHistory?.map(
                         (history: any) => history[yDataKey]
                       ) || []
                   )}
@@ -343,7 +343,7 @@ function WaterChartDownloadPreview({
                 <tbody>
                   {chartData?.groupedData.units.flatMap(
                     (unit) =>
-                      unit.WaterManageHistoryAvgrage?.map((history: any) => (
+                      unit.waterManageHistory?.map((history: any) => (
                         <tr key={history.date}>
                           <td
                             style={{
@@ -712,7 +712,7 @@ function WaterChartDownloadPreview({
                             xAxisData={chartData?.xAxisData}
                             ydata={chartData?.groupedData.units.flatMap(
                               (unit) =>
-                                unit.WaterManageHistoryAvgrage?.map(
+                                unit.waterManageHistory?.map(
                                   (history: any) => history[yDataKey]
                                 ) || []
                             )}
@@ -795,44 +795,42 @@ function WaterChartDownloadPreview({
                           <tbody>
                             {chartData?.groupedData.units.flatMap(
                               (unit) =>
-                                unit.WaterManageHistoryAvgrage?.map(
-                                  (history: any) => (
-                                    <tr key={history.date}>
-                                      <td
-                                        style={{
-                                          border: "1px solid #ccc",
-                                          padding: "8px 12px",
-                                        }}
-                                      >
-                                        {history.date}
-                                      </td>
-                                      <td
-                                        style={{
-                                          border: "1px solid #ccc",
-                                          padding: "8px 12px",
-                                        }}
-                                      >
-                                        {history[yDataKey]}
-                                      </td>
-                                      <td
-                                        style={{
-                                          border: "1px solid #ccc",
-                                          padding: "8px 12px",
-                                        }}
-                                      >
-                                        {history.change || ""}
-                                      </td>
-                                      <td
-                                        style={{
-                                          border: "1px solid #ccc",
-                                          padding: "8px 12px",
-                                        }}
-                                      >
-                                        {history.cumulative || ""}
-                                      </td>
-                                    </tr>
-                                  )
-                                ) || []
+                                unit.waterManageHistory?.map((history: any) => (
+                                  <tr key={history.date}>
+                                    <td
+                                      style={{
+                                        border: "1px solid #ccc",
+                                        padding: "8px 12px",
+                                      }}
+                                    >
+                                      {history.date}
+                                    </td>
+                                    <td
+                                      style={{
+                                        border: "1px solid #ccc",
+                                        padding: "8px 12px",
+                                      }}
+                                    >
+                                      {history[yDataKey]}
+                                    </td>
+                                    <td
+                                      style={{
+                                        border: "1px solid #ccc",
+                                        padding: "8px 12px",
+                                      }}
+                                    >
+                                      {history.change || ""}
+                                    </td>
+                                    <td
+                                      style={{
+                                        border: "1px solid #ccc",
+                                        padding: "8px 12px",
+                                      }}
+                                    >
+                                      {history.cumulative || ""}
+                                    </td>
+                                  </tr>
+                                )) || []
                             )}
                           </tbody>
                         </table>
