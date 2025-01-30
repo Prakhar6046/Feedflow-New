@@ -151,8 +151,6 @@ export default function ProductionParaMeter({
   useEffect(() => {
     if (typeof window !== "undefined") {
       const formData = getLocalItem("productionParametes");
-      console.log(formData);
-
       setFormProductionParameters(formData);
     }
   }, []);
@@ -605,7 +603,7 @@ export default function ProductionParaMeter({
               </Select>
               {errors.modelId && (
                 <FormHelperText sx={{ color: "#d32f2f" }}>
-                  {errors.modelId ? "Model is required" : ""}
+                  {errors.modelId ? "This field is required." : ""}
                 </FormHelperText>
               )}
             </FormControl>

@@ -1044,6 +1044,7 @@ const TransferModal: React.FC<Props> = ({
                               type="number"
                               {...register(`manager.${idx}.noOfFish`, {
                                 required: true,
+                                maxLength: 10,
                               })}
                               focused
                               className="form-input"
@@ -1053,15 +1054,20 @@ const TransferModal: React.FC<Props> = ({
                             {errors &&
                               errors.manager &&
                               errors.manager[idx] &&
-                              errors.manager[idx].noOfFish?.type ===
-                                "required" && (
+                              errors.manager[idx].noOfFish && (
                                 <Typography
                                   variant="body2"
                                   color="red"
                                   fontSize={13}
                                   mt={0.5}
                                 >
-                                  {validationMessage.required}
+                                  {errors.manager[idx].noOfFish?.type ===
+                                  "required"
+                                    ? validationMessage.required
+                                    : errors.manager[idx].noOfFish?.type ===
+                                      "maxLength"
+                                    ? validationMessage.numberMaxLength
+                                    : ""}
                                 </Typography>
                               )}
                           </Grid>
@@ -1158,6 +1164,7 @@ const TransferModal: React.FC<Props> = ({
                                 {...register(`manager.${idx}.biomass`, {
                                   required: true,
                                   pattern: /^\d+(\.\d+)?(e[+-]?\d+)?$/,
+                                  maxLength: 10,
                                 })}
                                 onClick={() => handleCheckUnitSelected(idx)}
                                 focused
@@ -1219,6 +1226,21 @@ const TransferModal: React.FC<Props> = ({
                                   {validationMessage.OnlyNumbersWithDot}
                                 </Typography>
                               )}
+                            {errors &&
+                              errors.manager &&
+                              errors.manager[idx] &&
+                              errors.manager[idx].biomass &&
+                              errors.manager[idx].biomass.type ===
+                                "maxLength" && (
+                                <Typography
+                                  variant="body2"
+                                  color="red"
+                                  fontSize={13}
+                                  mt={0.5}
+                                >
+                                  {validationMessage.numberMaxLength}
+                                </Typography>
+                              )}
                           </Grid>
                         )}
                         {watchedFields[idx].field !== "Sample" && (
@@ -1253,6 +1275,7 @@ const TransferModal: React.FC<Props> = ({
                               {...register(`manager.${idx}.count`, {
                                 required: true,
                                 pattern: /^\d+(\.\d+)?(e[+-]?\d+)?$/,
+                                maxLength: 10,
                               })}
                               onClick={() => handleCheckUnitSelected(idx)}
                               focused
@@ -1302,6 +1325,21 @@ const TransferModal: React.FC<Props> = ({
                                   mt={0.5}
                                 >
                                   {validationMessage.OnlyNumbersWithDot}
+                                </Typography>
+                              )}
+                            {errors &&
+                              errors.manager &&
+                              errors.manager[idx] &&
+                              errors.manager[idx].count &&
+                              errors.manager[idx].count.type ===
+                                "maxLength" && (
+                                <Typography
+                                  variant="body2"
+                                  color="red"
+                                  fontSize={13}
+                                  mt={0.5}
+                                >
+                                  {validationMessage.numberMaxLength}
                                 </Typography>
                               )}
                           </Grid>
@@ -1630,7 +1668,6 @@ const TransferModal: React.FC<Props> = ({
                                       ? false
                                       : true,
                                     pattern: validationPattern.numbersWithDot,
-                                    maxLength: 10,
                                   }
                                 )}
                               />
@@ -1691,21 +1728,6 @@ const TransferModal: React.FC<Props> = ({
                                   {validationMessage.OnlyNumbersWithDot}
                                 </Typography>
                               )}
-                            {errors &&
-                              errors.manager &&
-                              errors.manager[idx] &&
-                              errors.manager[idx].stockingDensityKG &&
-                              errors.manager[idx].stockingDensityKG.type ===
-                                "maxLength" && (
-                                <Typography
-                                  variant="body2"
-                                  color="red"
-                                  fontSize={13}
-                                  mt={0.5}
-                                >
-                                  {validationMessage.numberMaxLength}
-                                </Typography>
-                              )}
                           </Grid>
                         )}
                         {item.field !== "Sample" && (
@@ -1741,7 +1763,6 @@ const TransferModal: React.FC<Props> = ({
                                       ? false
                                       : true,
                                     pattern: validationPattern.numbersWithDot,
-                                    maxLength: 10,
                                   }
                                 )}
                                 focused
@@ -1804,21 +1825,6 @@ const TransferModal: React.FC<Props> = ({
                                   mt={0.5}
                                 >
                                   {validationMessage.OnlyNumbersWithDot}
-                                </Typography>
-                              )}
-                            {errors &&
-                              errors.manager &&
-                              errors.manager[idx] &&
-                              errors.manager[idx].stockingDensityNM &&
-                              errors.manager[idx].stockingDensityNM.type ===
-                                "maxLength" && (
-                                <Typography
-                                  variant="body2"
-                                  color="red"
-                                  fontSize={13}
-                                  mt={0.5}
-                                >
-                                  {validationMessage.numberMaxLength}
                                 </Typography>
                               )}
                           </Grid>
