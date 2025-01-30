@@ -602,11 +602,20 @@ export default function ProductionParaMeter({
                   })}
               </Select>
               {errors.modelId && (
-                <FormHelperText sx={{ color: "#d32f2f" }}>
+                <FormHelperText
+                  sx={{ color: "red", fontSize: "13px", mt: "4px" }}
+                >
                   {errors.modelId ? "This field is required." : ""}
                 </FormHelperText>
               )}
             </FormControl>
+
+            <Typography
+              variant="body2"
+              color="red"
+              fontSize={13}
+              mt={0.5}
+            ></Typography>
           </Grid>
         </Box>
 

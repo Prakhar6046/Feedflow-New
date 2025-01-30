@@ -74,17 +74,18 @@ function WaterChartDownloadPreview({
       root.render(
         <div
           style={{
+            maxWidth: "100vw",
             width: "100%",
             height: "100%",
             fontFamily: "Arial, sans-serif",
+            margin: "20px",
           }}
         >
           <div
             style={{
               padding: "12px 20px",
-              background: "white",
               boxShadow: "0 0 3px rgb(6, 161, 155)",
-              borderBottom: "1px solid rgb(6,161,155)",
+              backgroundColor: "rgb(6,161,155)",
               display: "flex",
               alignItems: "center",
               justifyContent: "space-between",
@@ -522,7 +523,7 @@ function WaterChartDownloadPreview({
                   </Box>
                   <Box
                     style={{
-                      padding: "32px 20px",
+                      padding: "32px 30px",
                     }}
                   >
                     <Typography
