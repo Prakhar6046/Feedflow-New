@@ -31,8 +31,15 @@ interface Props {
   farmMembers: SingleUser[];
   growthModels: any;
   farms: Farm[];
+  isEdit?: boolean;
 }
-const EditFarm = ({ farmId, farmMembers, growthModels, farms }: Props) => {
+const EditFarm = ({
+  farmId,
+  farmMembers,
+  growthModels,
+  farms,
+  isEdit,
+}: Props) => {
   const activeStepIndex = Number(getCookie("activeStep"));
   const [activeStep, setActiveStep] = useState<number>(
     activeStepIndex !== 0 ? activeStepIndex : 0
@@ -138,7 +145,11 @@ const EditFarm = ({ farmId, farmMembers, growthModels, farms }: Props) => {
           />
         )}
         {activeStep === 3 && (
-          <ProductionUnits setActiveStep={setActiveStep} editFarm={editFarm} />
+          <ProductionUnits
+            setActiveStep={setActiveStep}
+            editFarm={editFarm}
+            isEdit={isEdit}
+          />
         )}
 
         {activeStep === 4 && <AllDone setActiveStep={setActiveStep} />}

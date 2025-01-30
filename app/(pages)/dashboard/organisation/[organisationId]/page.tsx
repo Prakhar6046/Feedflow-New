@@ -1,10 +1,12 @@
 import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
 import { Metadata } from "next";
 import EditOrganisation from "@/app/_components/organisation/EditOrganisation";
+import { getAllOrganisations } from "@/app/_lib/action";
 export const metadata: Metadata = {
   title: "Edit Organisation",
 };
-const Page = ({ params }: { params: { organisationId: string } }) => {
+const Page = async ({ params }: { params: { organisationId: string } }) => {
+  const organisations = await getAllOrganisations();
   return (
     <>
       <BasicBreadcrumbs
@@ -20,7 +22,10 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
           },
         ]}
       />
-      <EditOrganisation organisationId={params.organisationId} />
+      <EditOrganisation
+        organisationId={params.organisationId}
+        organisations={organisations?.data}
+      />
     </>
   );
 };

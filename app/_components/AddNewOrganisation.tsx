@@ -23,7 +23,10 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import { AddOrganizationFormInputs } from "../_typeModels/Organization";
+import {
+  AddOrganizationFormInputs,
+  SingleOrganisation,
+} from "../_typeModels/Organization";
 import MapComponent from "./farm/MapComponent";
 import HatcheryForm from "./hatchery/HatcheryForm";
 const VisuallyHiddenInput = styled("input")({
@@ -45,8 +48,11 @@ export const OrganisationType = [
   "Testing Facility",
   "Unspecified",
 ];
+interface Props {
+  organisations: SingleOrganisation[];
+}
 export const RoleType = ["Admin", "Member"];
-const AddNewOrganisation = () => {
+const AddNewOrganisation = ({ organisations }: Props) => {
   const [profilePic, setProfilePic] = useState<String>();
   const router = useRouter();
   const [isHatcherySelected, setIsHatcherySelected] = useState<boolean>(false);
@@ -81,7 +87,7 @@ const AddNewOrganisation = () => {
 
     if (!hasAdmin) {
       toast.dismiss();
-      toast.error("Please add at least one contact having role Admin.");
+      toast.error("At least one admin is required for this organisation.");
       return;
     }
     if (isApiCallInProgress) return;
@@ -371,6 +377,15 @@ const AddNewOrganisation = () => {
                 {...register("organisationName", {
                   required: true,
                   pattern: validationPattern.alphabetsNumbersAndSpacesPattern,
+                  validate: (value: String) => {
+                    const isUnique = organisations.every((val) => {
+                      return val.name.toLowerCase() !== value.toLowerCase();
+                    });
+                    return (
+                      isUnique ||
+                      "Please enter a unique name. The name you entered is not available."
+                    );
+                  },
                 })}
                 focused
                 sx={{
@@ -399,6 +414,18 @@ const AddNewOrganisation = () => {
                     mt={0.5}
                   >
                     {validationMessage.OnlyAlphabetsandNumberMessage}
+                  </Typography>
+                )}
+              {errors &&
+                errors.organisationName &&
+                errors.organisationName.type === "validate" && (
+                  <Typography
+                    variant="body2"
+                    color="red"
+                    fontSize={13}
+                    mt={0.5}
+                  >
+                    {errors?.organisationName.message}
                   </Typography>
                 )}
             </Box>

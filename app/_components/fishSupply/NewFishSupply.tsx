@@ -65,10 +65,9 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
     watch,
     formState: { errors },
   } = useForm<FormInputs>({
-    defaultValues: { hatchingDate: null },
+    defaultValues: { hatchingDate: null, organisation: "" },
     mode: "onChange",
   });
-
   const onSubmit: SubmitHandler<FormInputs> = async (data) => {
     // Prevent API call if one is already in progress
     if (isApiCallInProgress) return;
@@ -178,7 +177,7 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
     if (userData && !isEdit) {
       const loggedUserData = JSON.parse(userData);
 
-      setValue("organisation", loggedUserData.id);
+      // setValue("organisation", loggedUserData.id);
       if (loggedUserData?.organisation?.Farm[0]?.id) {
         setValue("fishFarmId", loggedUserData.organisation.Farm[0].id);
       }

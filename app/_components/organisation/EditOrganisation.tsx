@@ -13,7 +13,10 @@ import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
 import MapComponent from "@/app/_components/farm/MapComponent";
 import HatcheryForm from "@/app/_components/hatchery/HatcheryForm";
 import Loader from "@/app/_components/Loader";
-import { AddOrganizationFormInputs } from "@/app/_typeModels/Organization";
+import {
+  AddOrganizationFormInputs,
+  SingleOrganisation,
+} from "@/app/_typeModels/Organization";
 import { selectRole } from "@/lib/features/user/userSlice";
 import { useAppSelector } from "@/lib/hooks";
 import {
@@ -46,8 +49,9 @@ const VisuallyHiddenInput = styled("input")({
 });
 type Iprops = {
   organisationId: string;
+  organisations: SingleOrganisation[];
 };
-const EditOrganisation = ({ organisationId }: Iprops) => {
+const EditOrganisation = ({ organisationId, organisations }: Iprops) => {
   const router = useRouter();
   const [organisationData, setOrganisationData] = useState<any>();
   // const [addressInformation, setAddressInformation] = useState<any>();
@@ -518,6 +522,19 @@ const EditOrganisation = ({ organisationId }: Iprops) => {
                 focused
                 {...register("organisationName", {
                   required: true,
+                  validate: (value: String) => {
+                    const isUnique = organisations.every((val) => {
+                      if (val.id === Number(organisationId)) {
+                        return true;
+                      }
+                      return val.name.toLowerCase() !== value.toLowerCase();
+                    });
+
+                    return (
+                      isUnique ||
+                      "Please enter a unique name. The name you entered is not available."
+                    );
+                  },
                 })}
                 // focused={userData?.data.name ? true : false}
                 // value={userData?.data.name}
@@ -538,6 +555,11 @@ const EditOrganisation = ({ organisationId }: Iprops) => {
                     This field is required.
                   </Typography>
                 )}
+              {errors?.organisationName?.type === "validate" && (
+                <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                  {errors?.organisationName?.message}
+                </Typography>
+              )}
             </Box>
             <Stack
               display={"flex"}

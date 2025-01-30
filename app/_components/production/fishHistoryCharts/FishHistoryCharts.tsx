@@ -130,11 +130,16 @@ function FishHistoryCharts({
           }}
           onClick={() => setIsModalOpen(true)}
         >
-          Select Charts to Download
+          Create report
         </Button>
       </Box>
 
-      <Dialog open={isModalOpen} onClose={() => setIsModalOpen(false)}>
+      <Dialog
+        open={isModalOpen}
+        onClose={() => {
+          setIsModalOpen(false), setSelectedCharts([]);
+        }}
+      >
         <DialogTitle>Select Charts</DialogTitle>
         <DialogContent>
           {chartOptions.map(({ key, title }) => (
@@ -163,17 +168,23 @@ function FishHistoryCharts({
             p: 3,
           }}
         >
-          {/* <Button onClick={() => setIsModalOpen(false)} color="secondary">
-            Cancel
-          </Button>
           <Button
-            onClick={previewCharts}
-            color="primary"
-            disabled={selectedCharts.length === 0}
+            type="button"
+            variant="contained"
+            sx={{
+              background: "#06A19B",
+              fontWeight: 600,
+              padding: "6px 16px",
+              width: "fit-content",
+              textTransform: "capitalize",
+              borderRadius: "8px",
+            }}
+            onClick={() => {
+              chartOptions.map((chart) => handleCheckboxChange(chart.key));
+            }}
           >
-            Download
-          </Button> */}
-
+            Select all charts
+          </Button>
           <Button
             type="button"
             variant="contained"
@@ -192,7 +203,9 @@ function FishHistoryCharts({
 
           <Button
             type="button"
-            onClick={() => setIsModalOpen(false)}
+            onClick={() => {
+              setIsModalOpen(false), setSelectedCharts([]);
+            }}
             variant="contained"
             sx={{
               background: "#fff",

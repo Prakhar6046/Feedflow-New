@@ -14,7 +14,6 @@ import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import * as validationPattern from "@/app/_lib/utils/validationPatterns/index";
 import * as validationMessage from "@/app/_lib/utils/validationsMessage/index";
-
 // import { CloseIcon } from "../theme/overrides/CustomIcons";
 interface InputTypes {
   avgOfMeanLength?: Number;
@@ -70,7 +69,6 @@ const CalculateMeanLength = ({ open, setOpen, setAvgOfMeanLength }: Props) => {
   useEffect(() => {
     let totalMeasurementArr: Array<number> = [];
     let totalLengthsArr: Array<number> = [];
-
     watchFields.map((feild) => {
       if (feild.measurement) {
         totalMeasurementArr.push(Number(feild.measurement));
@@ -79,12 +77,10 @@ const CalculateMeanLength = ({ open, setOpen, setAvgOfMeanLength }: Props) => {
         totalLengthsArr.push(Number(feild.length));
       }
     });
-
     const totalLengths = totalLengthsArr.reduce((acc, val) => {
       return (acc += val);
     }, 0);
     const avgOfMeanLength = totalLengths / totalMeasurementArr.length;
-
     setValue("avgOfMeanLength", avgOfMeanLength);
   }, [
     watchFields.map((field) => field.measurement).join(","),
@@ -139,7 +135,6 @@ const CalculateMeanLength = ({ open, setOpen, setAvgOfMeanLength }: Props) => {
                   <CloseIcon />
                 </IconButton>
               </Box>
-
               {fields?.map((field, idx) => {
                 return (
                   <Stack
@@ -206,7 +201,6 @@ const CalculateMeanLength = ({ open, setOpen, setAvgOfMeanLength }: Props) => {
                           </Typography>
                         )}
                     </Box>
-
                     <Box
                       position={"relative"}
                       sx={{
@@ -273,7 +267,6 @@ const CalculateMeanLength = ({ open, setOpen, setAvgOfMeanLength }: Props) => {
                           </Typography>
                         )}
                     </Box>
-
                     <Box
                       display={"flex"}
                       alignItems={"center"}
@@ -306,7 +299,6 @@ const CalculateMeanLength = ({ open, setOpen, setAvgOfMeanLength }: Props) => {
                   </Stack>
                 );
               })}
-
               <Box
                 px={2}
                 mt={3}
@@ -317,14 +309,12 @@ const CalculateMeanLength = ({ open, setOpen, setAvgOfMeanLength }: Props) => {
                 <Typography variant="body1" fontWeight={600}>
                   Mean Length :
                 </Typography>
-
                 <Typography variant="body1">
                   {watch("avgOfMeanLength")
                     ? Number(watch("avgOfMeanLength")).toFixed(2)
                     : 0}
                 </Typography>
               </Box>
-
               <Box
                 display="flex"
                 justifyContent="flex-end"
@@ -354,7 +344,6 @@ const CalculateMeanLength = ({ open, setOpen, setAvgOfMeanLength }: Props) => {
                 >
                   Add Row
                 </Button>
-
                 <Button
                   variant="contained"
                   sx={{
@@ -381,5 +370,4 @@ const CalculateMeanLength = ({ open, setOpen, setAvgOfMeanLength }: Props) => {
     </Modal>
   );
 };
-
 export default CalculateMeanLength;

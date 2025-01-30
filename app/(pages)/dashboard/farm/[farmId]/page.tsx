@@ -41,6 +41,7 @@ export default async function Page({
         farmMembers={farmMembers.data.users}
         growthModels={growthModels.data}
         farms={farms?.data}
+        isEdit={true}
       />
     </>
   );

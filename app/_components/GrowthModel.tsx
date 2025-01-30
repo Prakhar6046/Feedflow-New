@@ -41,6 +41,7 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
 
   const [isApiCallInProgress, setIsApiCallInProgress] =
     useState<boolean>(false);
+  const [species, setSpecies] = useState("");
   const onSubmit: SubmitHandler<InputType> = async (data) => {
     const user = JSON.parse(loggedUser);
     if (user?.organisationId && data.name) {
@@ -63,6 +64,7 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
           const data = await response.json();
           toast.dismiss();
           toast.success(data.message);
+          setSpecies("");
           reset();
         }
       } catch (error) {
@@ -135,7 +137,9 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
                     {...register("specie", {
                       required: true,
                     })}
+                    value={species}
                     onChange={(e) => {
+                      setSpecies(e.target.value);
                       clearErrors("specie");
                     }}
                   >
