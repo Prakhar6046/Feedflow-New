@@ -77,17 +77,18 @@ function FishChartDownloadPreview({
       root.render(
         <div
           style={{
+            maxWidth: "100vw",
             width: "100%",
             height: "100%",
             fontFamily: "Arial, sans-serif",
+            margin: "auto",
           }}
         >
           <div
             style={{
               padding: "12px 20px",
-              background: "white",
+              backgroundColor: "rgb(6,161,155)",
               boxShadow: "0 0 3px rgb(6, 161, 155)",
-              borderBottom: "1px solid rgb(6,161,155)",
               display: "flex",
               alignItems: "center",
               justifyContent: "space-between",
