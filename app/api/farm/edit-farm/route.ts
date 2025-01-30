@@ -7,7 +7,6 @@ export async function POST(req: NextRequest) {
 
     const { yearBasedPredicationId, modelId, ...productionParameterPayload } =
       body.productionParameter;
-
     // Ensure that the farmAddress contains an id for updating
     if (!body.farmAddress.id) {
       throw new Error("Farm address ID is required for updating.");
@@ -15,6 +14,13 @@ export async function POST(req: NextRequest) {
     if (!yearBasedPredicationId) {
       throw new Error("Year Based Predication ID is required for updating.");
     }
+
+    // const productionParameter = body.productionParameter;
+    const paylaodForProductionParameter = {
+      ...productionParameterPayload.predictedValues,
+      idealRange: productionParameterPayload.idealRange,
+      modelId,
+    };
     // Update the existing farm address
     const updatedFarmAddress = await prisma.farmAddress.update({
       where: { id: body.farmAddress.id },
@@ -38,6 +44,7 @@ export async function POST(req: NextRequest) {
     // Fetch existing production units and productions from the database
     const existingUnits = await prisma.productionUnit.findMany({
       where: { farmId: updatedFarm.id },
+      include: { YearBasedPredicationProductionUnit: true },
     });
 
     const existingProductions = await prisma.production.findMany({
@@ -70,6 +77,36 @@ export async function POST(req: NextRequest) {
         },
       });
       newUnits.push(updatedUnit); // Store the updated or created production unit
+      console.log(unit);
+
+      // Ensure YearBasedPredicationProductionUnit is an array before accessing its first element
+      const predictionUnits = unit.YearBasedPredicationProductionUnit ?? [];
+
+      if (predictionUnits.length > 0 && predictionUnits[0]?.id) {
+        // Extract ID from the first entry
+        const predicationId = predictionUnits[0].id;
+
+        // Update existing YearBasedPredicationProductionUnit
+        await prisma.yearBasedPredicationProductionUnit.upsert({
+          where: { id: predicationId },
+          update: {
+            productionUnitId: updatedUnit?.id,
+            ...paylaodForProductionParameter,
+          },
+          create: {
+            productionUnitId: updatedUnit?.id,
+            ...paylaodForProductionParameter,
+          },
+        });
+      } else {
+        // Create a new YearBasedPredicationProductionUnit if ID does not exist
+        await prisma.yearBasedPredicationProductionUnit.create({
+          data: {
+            productionUnitId: updatedUnit?.id,
+            ...paylaodForProductionParameter,
+          },
+        });
+      }
 
       // Handle production entries corresponding to the production unit
       const correspondingProduction = body.productions.find(
@@ -77,7 +114,6 @@ export async function POST(req: NextRequest) {
       );
 
       // Create or update production based on whether it's found or not
-
       if (correspondingProduction) {
         // Update existing production
         const updatedProduction = await prisma.production.update({
@@ -137,16 +173,16 @@ export async function POST(req: NextRequest) {
       await prisma.production.deleteMany({
         where: { productionUnitId: unit.id },
       });
+
+      unit.YearBasedPredicationProductionUnit.map(async (data) => {
+        await prisma.yearBasedPredicationProductionUnit.delete({
+          where: { id: data.id },
+        });
+      });
       await prisma.productionUnit.delete({
         where: { id: unit.id },
       });
     }
-    // const productionParameter = body.productionParameter;
-    const paylaodForProductionParameter = {
-      ...productionParameterPayload.predictedValues,
-      idealRange: productionParameterPayload.idealRange,
-      modelId,
-    };
 
     const existingPredication = await prisma.yearBasedPredication.findUnique({
       where: { id: yearBasedPredicationId },
@@ -163,7 +199,6 @@ export async function POST(req: NextRequest) {
         data: { ...paylaodForProductionParameter },
       }
     );
-    //
     return NextResponse.json({
       message: "Farm updated successfully",
       data: updatedFarm,

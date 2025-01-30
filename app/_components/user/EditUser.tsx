@@ -416,6 +416,29 @@ function EditUser({ userId }: Iprops) {
                   </Button>
                 </Box>
               )}
+              <Box
+                display={"flex"}
+                justifyContent={"center"}
+                alignItems={"center"}
+                flexDirection={"row"}
+                sx={{
+                  width: {
+                    md: "90%",
+                    xs: "100%",
+                  },
+                }}
+              >
+                <Typography
+                  variant="body1"
+                  fontSize={12}
+                  textAlign={"center"}
+                  margin="0 auto"
+                  color="#979797"
+                >
+                  Allowed *.jpeg, *.jpg, *.png, *.svg <br />
+                  max size of 2M byte
+                </Typography>
+              </Box>
             </Grid>
 
             <Grid

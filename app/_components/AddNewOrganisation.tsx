@@ -23,7 +23,10 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import { AddOrganizationFormInputs } from "../_typeModels/Organization";
+import {
+  AddOrganizationFormInputs,
+  SingleOrganisation,
+} from "../_typeModels/Organization";
 import MapComponent from "./farm/MapComponent";
 import HatcheryForm from "./hatchery/HatcheryForm";
 const VisuallyHiddenInput = styled("input")({
@@ -45,8 +48,11 @@ export const OrganisationType = [
   "Testing Facility",
   "Unspecified",
 ];
+interface Props {
+  organisations: SingleOrganisation[];
+}
 export const RoleType = ["Admin", "Member"];
-const AddNewOrganisation = () => {
+const AddNewOrganisation = ({ organisations }: Props) => {
   const [profilePic, setProfilePic] = useState<String>();
   const router = useRouter();
   const [isHatcherySelected, setIsHatcherySelected] = useState<boolean>(false);
@@ -236,6 +242,15 @@ const AddNewOrganisation = () => {
             },
           }}
         >
+          {" "}
+          <Typography
+            variant="h6"
+            color="rgb(99, 115, 129)"
+            fontSize={14}
+            alignSelf={"flex-start"}
+          >
+            Profile Picture
+          </Typography>
           <Button
             component="label"
             role={undefined}
@@ -243,22 +258,16 @@ const AddNewOrganisation = () => {
             tabIndex={-1}
             style={{
               backgroundImage: `url(${profilePic})`,
-              backgroundSize: "contain",
-              backgroundPosition: "center",
-              backgroundRepeat: "no-repeat",
-              marginInline: "0 !important",
+              backgroundSize: "100% 100%",
             }}
             startIcon={!profilePic && <CloudUploadIcon />}
-            className="upload-file-input custom-margin"
+            className="upload-file-input1 "
             sx={{
               textTransform: "unset",
               fontSize: 12,
-              width: {
-                md: "90%",
-                xs: "100%",
-              },
-              height: 200,
-              borderRadius: 3,
+              width: 140,
+              height: 140,
+              borderRadius: 100,
               border: "7px solid white",
               outline: "1px dashed rgba(145, 158, 171, 0.32)",
               backgroundColor: "rgb(244, 246, 248)",
@@ -271,7 +280,7 @@ const AddNewOrganisation = () => {
               position: "relative",
             }}
           >
-            <Box>{!profilePic && "Drag file here or Upload from Device"}</Box>
+            <Box>{!profilePic && "Upload Photo"}</Box>
             <VisuallyHiddenInput
               type="file"
               {...register("image", {
@@ -322,7 +331,6 @@ const AddNewOrganisation = () => {
               </Button>
             </Box>
           )}
-
           <Box
             display={"flex"}
             justifyContent={"center"}
@@ -369,6 +377,15 @@ const AddNewOrganisation = () => {
                 {...register("organisationName", {
                   required: true,
                   pattern: validationPattern.alphabetsNumbersAndSpacesPattern,
+                  validate: (value: String) => {
+                    const isUnique = organisations.every((val) => {
+                      return val.name.toLowerCase() !== value.toLowerCase();
+                    });
+                    return (
+                      isUnique ||
+                      "Please enter a unique name. The name you entered is not available."
+                    );
+                  },
                 })}
                 focused
                 sx={{
@@ -397,6 +414,18 @@ const AddNewOrganisation = () => {
                     mt={0.5}
                   >
                     {validationMessage.OnlyAlphabetsandNumberMessage}
+                  </Typography>
+                )}
+              {errors &&
+                errors.organisationName &&
+                errors.organisationName.type === "validate" && (
+                  <Typography
+                    variant="body2"
+                    color="red"
+                    fontSize={13}
+                    mt={0.5}
+                  >
+                    {errors?.organisationName.message}
                   </Typography>
                 )}
             </Box>

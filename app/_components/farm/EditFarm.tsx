@@ -149,6 +149,8 @@ const EditFarm = ({
             setActiveStep={setActiveStep}
             editFarm={editFarm}
             isEdit={isEdit}
+            productionParaMeter={editFarm?.WaterQualityPredictedParameters}
+            growthModels={growthModels}
           />
         )}
 

@@ -2052,6 +2052,7 @@ const NutritionalGuarantee = ({
             </Typography>
 
             <Box
+              width={"100%"}
               // display={"flex"}
               // gap={2}
               // alignItems={"center"}
@@ -2068,8 +2069,7 @@ const NutritionalGuarantee = ({
                 })}
                 focused
                 sx={{
-                  width: "100%",
-                  minWidth: 190,
+                  minWidth: 110,
                 }}
               />
 

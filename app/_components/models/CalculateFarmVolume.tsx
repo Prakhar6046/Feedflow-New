@@ -231,7 +231,6 @@ const CalculateVolume2: React.FC<Props> = ({
                 type="text"
                 className="form-input"
                 sx={{
-                  marginBottom: 2,
                   width: "100%",
                 }}
                 focused
@@ -278,7 +277,7 @@ const CalculateVolume2: React.FC<Props> = ({
                 type="text"
                 className="form-input"
                 sx={{
-                  marginBottom: 2,
+                  width: "100%",
                 }}
                 focused
                 {...register("width", {
@@ -324,7 +323,7 @@ const CalculateVolume2: React.FC<Props> = ({
                 type="text"
                 className="form-input"
                 sx={{
-                  marginBottom: 2,
+                  width: "100%",
                 }}
                 focused
                 {...register("depth", {
@@ -372,7 +371,7 @@ const CalculateVolume2: React.FC<Props> = ({
                 type="text"
                 className="form-input"
                 sx={{
-                  marginBottom: 2,
+                  width: "100%",
                 }}
                 focused
                 {...register("area", {
@@ -418,7 +417,7 @@ const CalculateVolume2: React.FC<Props> = ({
                 type="text"
                 className="form-input"
                 sx={{
-                  marginBottom: 2,
+                  width: "100%",
                 }}
                 focused
                 {...register("depth", {
@@ -466,7 +465,6 @@ const CalculateVolume2: React.FC<Props> = ({
                 type="text"
                 className="form-input"
                 sx={{
-                  marginBottom: 2,
                   width: "100%",
                 }}
                 focused
@@ -513,7 +511,7 @@ const CalculateVolume2: React.FC<Props> = ({
                 type="text"
                 className="form-input"
                 sx={{
-                  marginBottom: 2,
+                  width: "100%",
                 }}
                 focused
                 {...register("width", {
@@ -559,7 +557,7 @@ const CalculateVolume2: React.FC<Props> = ({
                 type="text"
                 className="form-input"
                 sx={{
-                  marginBottom: 2,
+                  width: "100%",
                 }}
                 focused
                 {...register("depth", {
@@ -607,7 +605,6 @@ const CalculateVolume2: React.FC<Props> = ({
                 type="text"
                 className="form-input"
                 sx={{
-                  marginBottom: 2,
                   width: "100%",
                 }}
                 focused
@@ -654,7 +651,7 @@ const CalculateVolume2: React.FC<Props> = ({
                 type="text"
                 className="form-input"
                 sx={{
-                  marginBottom: 2,
+                  width: "100%",
                 }}
                 focused
                 {...register("width", {
@@ -700,7 +697,7 @@ const CalculateVolume2: React.FC<Props> = ({
                 type="text"
                 className="form-input"
                 sx={{
-                  marginBottom: 2,
+                  width: "100%",
                 }}
                 focused
                 {...register("height", {
@@ -748,7 +745,6 @@ const CalculateVolume2: React.FC<Props> = ({
                 type="text"
                 className="form-input"
                 sx={{
-                  marginBottom: 2,
                   width: "100%",
                 }}
                 focused
@@ -795,7 +791,7 @@ const CalculateVolume2: React.FC<Props> = ({
                 type="text"
                 className="form-input"
                 sx={{
-                  marginBottom: 2,
+                  width: "100%",
                 }}
                 focused
                 {...register("width", {
@@ -841,7 +837,7 @@ const CalculateVolume2: React.FC<Props> = ({
                 type="text"
                 className="form-input"
                 sx={{
-                  marginBottom: 2,
+                  width: "100%",
                 }}
                 focused
                 {...register("height", {
@@ -889,7 +885,7 @@ const CalculateVolume2: React.FC<Props> = ({
                 type="text"
                 className="form-input"
                 sx={{
-                  marginBottom: 2,
+                  width: "100%",
                 }}
                 focused
                 {...register("radius", {
@@ -935,7 +931,7 @@ const CalculateVolume2: React.FC<Props> = ({
                 type="text"
                 className="form-input"
                 sx={{
-                  marginBottom: 2,
+                  width: "100%",
                 }}
                 focused
                 {...register("depth", {
@@ -983,7 +979,7 @@ const CalculateVolume2: React.FC<Props> = ({
                 type="text"
                 className="form-input"
                 sx={{
-                  marginBottom: 2,
+                  width: "100%",
                 }}
                 focused
                 {...register("radius", {
@@ -1028,7 +1024,6 @@ const CalculateVolume2: React.FC<Props> = ({
                 type="text"
                 className="form-input"
                 sx={{
-                  marginBottom: 2,
                   width: "100%",
                 }}
                 focused
@@ -1075,7 +1070,7 @@ const CalculateVolume2: React.FC<Props> = ({
                 type="text"
                 className="form-input"
                 sx={{
-                  marginBottom: 2,
+                  width: "100%",
                 }}
                 focused
                 {...register("width", {
@@ -1121,7 +1116,7 @@ const CalculateVolume2: React.FC<Props> = ({
                 type="text"
                 className="form-input"
                 sx={{
-                  marginBottom: 2,
+                  width: "100%",
                 }}
                 focused
                 {...register("depth", {

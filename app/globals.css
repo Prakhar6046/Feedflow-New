@@ -363,11 +363,11 @@ body {
     white-space: normal !important;
   }
 } */
-@media only screen and (min-width: 899px) and (max-width: 1024px) {
+/* @media only screen and (min-width: 899px) and (max-width: 1024px) {
   .custom-field > label {
     width: 185px !important;
   }
-}
+} */
 
 .profile-badge > span {
   position: relative;
@@ -423,6 +423,7 @@ body {
     height: 100%;
   }
 }
+
 .form-height {
   height: 100%;
   overflow-y: auto;
