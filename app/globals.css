@@ -216,14 +216,8 @@ body {
 .breadcrumb-links {
   font-size: 14px;
 }
-
-.breadcrumb-links ol li:nth-child(1) {
-  color: #272727;
-  font-weight: 500;
-}
-
-.breadcrumb-links ol li:nth-child(1):hover {
-  text-decoration: underline;
+.nav-links.active-link {
+  color: #06a19b;
 }
 
 /* CSS For Loading Spinner */

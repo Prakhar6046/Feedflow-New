@@ -150,7 +150,13 @@ export default function BasicBreadcrumbs({
             >
               {links.map((link) => {
                 return (
-                  <Link key={link.name} href={link.link} className="nav-links">
+                  <Link
+                    key={link.name}
+                    href={link.link}
+                    className={`nav-links ${
+                      link.link === pathName ? "active-link" : ""
+                    }`}
+                  >
                     {link.name}
                   </Link>
                 );
