@@ -148,9 +148,9 @@ export default function BasicBreadcrumbs({
                 mt: 2,
               }}
             >
-              {links.map((link, i) => {
+              {links.map((link) => {
                 return (
-                  <Link key={i} href={link.link} className="nav-links">
+                  <Link key={link.name} href={link.link} className="nav-links">
                     {link.name}
                   </Link>
                 );
