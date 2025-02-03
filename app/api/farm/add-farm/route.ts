@@ -89,19 +89,14 @@ export async function POST(req: NextRequest) {
     });
 
     console.log(body.productionParamtertsUnitsArray);
-
     await prisma.yearBasedPredicationProductionUnit.createMany({
       data: newProductUnits.flatMap((unit: any) =>
         body.productionParamtertsUnitsArray.map((data: any) => {
-          const payloadForProductionParameterUnits = {
-            ...data.predictedValues,
-            id: data.id,
-            idealRange: data.idealRange,
-          };
-
           return {
             productionUnitId: unit.id,
-            ...payloadForProductionParameterUnits,
+            ...data.predictedValues,
+            idealRange: data.idealRange,
+            unitId: data.id,
           };
         })
       ),

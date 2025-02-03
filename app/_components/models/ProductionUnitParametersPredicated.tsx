@@ -66,6 +66,7 @@ const ProductionUnitParametersPredicated: React.FC<Props> = ({
   selectedUnitId,
 }) => {
   const isEditFarm = getCookie("isEditFarm");
+  console.log(editFarm);
 
   const farm = useAppSelector(selectFarm);
 
@@ -125,12 +126,12 @@ const ProductionUnitParametersPredicated: React.FC<Props> = ({
     };
     updatedData.push(payload);
     setLocalItem("productionParamtertsUnitsArray", updatedData);
+    setOpen(false);
   };
 
   useEffect(() => {
     if (typeof window !== "undefined") {
       const formData = getLocalItem("productionParametes");
-      console.log(formData);
 
       setFormProductionParameters(formData);
     }

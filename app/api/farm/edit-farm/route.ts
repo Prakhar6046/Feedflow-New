@@ -80,33 +80,33 @@ export async function POST(req: NextRequest) {
       console.log(unit);
 
       // Ensure YearBasedPredicationProductionUnit is an array before accessing its first element
-      const predictionUnits = unit.YearBasedPredicationProductionUnit ?? [];
+      // const predictionUnits = unit.YearBasedPredicationProductionUnit ?? [];
 
-      if (predictionUnits.length > 0 && predictionUnits[0]?.id) {
-        // Extract ID from the first entry
-        const predicationId = predictionUnits[0].id;
+      // if (predictionUnits.length > 0 && predictionUnits[0]?.id) {
+      //   // Extract ID from the first entry
+      //   const predicationId = predictionUnits[0].id;
 
-        // Update existing YearBasedPredicationProductionUnit
-        await prisma.yearBasedPredicationProductionUnit.upsert({
-          where: { id: predicationId },
-          update: {
-            productionUnitId: updatedUnit?.id,
-            ...paylaodForProductionParameter,
-          },
-          create: {
-            productionUnitId: updatedUnit?.id,
-            ...paylaodForProductionParameter,
-          },
-        });
-      } else {
-        // Create a new YearBasedPredicationProductionUnit if ID does not exist
-        await prisma.yearBasedPredicationProductionUnit.create({
-          data: {
-            productionUnitId: updatedUnit?.id,
-            ...paylaodForProductionParameter,
-          },
-        });
-      }
+      //   // Update existing YearBasedPredicationProductionUnit
+      //   await prisma.yearBasedPredicationProductionUnit.upsert({
+      //     where: { id: predicationId },
+      //     update: {
+      //       productionUnitId: updatedUnit?.id,
+      //       ...paylaodForProductionParameter,
+      //     },
+      //     create: {
+      //       productionUnitId: updatedUnit?.id,
+      //       ...paylaodForProductionParameter,
+      //     },
+      //   });
+      // } else {
+      //   // Create a new YearBasedPredicationProductionUnit if ID does not exist
+      //   await prisma.yearBasedPredicationProductionUnit.create({
+      //     data: {
+      //       productionUnitId: updatedUnit?.id,
+      //       ...paylaodForProductionParameter,
+      //     },
+      //   });
+      // }
 
       // Handle production entries corresponding to the production unit
       const correspondingProduction = body.productions.find(

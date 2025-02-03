@@ -133,6 +133,7 @@ model Farm {
   FarmManger                      FarmManger[]
   FishManageHistory               FishManageHistory[]
   WaterQualityPredictedParameters WaterQualityPredictedParameters[]
+  FishSupply                      FishSupply[]
 
   @@index([createdAt])
   @@index([updatedAt])
@@ -195,7 +196,8 @@ model FarmAddress {
 }
 
 model YearBasedPredicationProductionUnit {
-  id        String   @id
+  id        String   @id @default(cuid())
+  unitId    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -298,8 +300,8 @@ model FishSupply {
   age               String
   broodstockMale    String?
   broodstockFemale  String?
-  fishFarm          String
-  fishFarmId        String              @default("")
+  fishFarmId        String
+  farm              Farm                @relation(fields: [fishFarmId], references: [id])
   status            String
   productionUnits   String              @default("")
   createdBy         Int? // Optional field, nullable foreign key

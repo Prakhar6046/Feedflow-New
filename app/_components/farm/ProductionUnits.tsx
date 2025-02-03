@@ -406,6 +406,7 @@ const ProductionUnits: NextPage<Props> = ({
       setValue("productionUnits", updatedFields);
     }
   }, [calculatedValue]);
+  console.log("editFarm", editFarm);
 
   useEffect(() => {
     if (
@@ -647,18 +648,6 @@ const ProductionUnits: NextPage<Props> = ({
                                 maxLength: 10,
                               }} // Add validation
                             />
-                            {/* <TextField
-                              label="Capacity *"
-                              type="text"
-                              className="form-input capacity-input"
-                              {...register(
-                                `productionUnits.${index}.capacity` as const,
-                                {
-                                  required: true,
-                                  pattern: validationPattern.numbersWithDot,
-                                }
-                              )}
-                            /> */}
 
                             <Typography
                               variant="body1"

@@ -1,4 +1,5 @@
 import { Dayjs } from "dayjs";
+import { Farm } from "./Farm";
 
 export interface FishSupply {
   id: Number;
@@ -35,4 +36,5 @@ export interface FishSupply {
       }
     ];
   };
+  farm: Farm;
 }

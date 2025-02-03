@@ -39,7 +39,6 @@ interface FormData {
   predictedValues: Record<string, Record<number, string>>;
   idealRange: Record<string, { Min: string; Max: string }>;
   applyToAll: Record<string, boolean>;
-  modelId: number;
   specie: String;
 }
 export default function ProductionParaMeter({
@@ -71,7 +70,6 @@ export default function ProductionParaMeter({
   const allWatchObject = {
     predictedValues: watch("predictedValues"),
     idealRange: watch("idealRange"),
-    modelId: watch("modelId"),
   };
   const onSubmit: SubmitHandler<FormData> = (data) => {
     let payload;
@@ -94,7 +92,6 @@ export default function ProductionParaMeter({
           "Visibility cm": data.predictedValues["Visibility cm"],
         },
 
-        modelId: data.modelId,
         yearBasedPredicationId:
           editFarm?.WaterQualityPredictedParameters[0]?.YearBasedPredication[0]
             .id,
@@ -125,7 +122,6 @@ export default function ProductionParaMeter({
           pH: data.predictedValues["pH"],
           "Visibility cm": data.predictedValues["Visibility cm"],
         },
-        modelId: data.modelId,
         yearBasedPredicationId:
           editFarm?.WaterQualityPredictedParameters[0]?.id,
 
@@ -214,7 +210,6 @@ export default function ProductionParaMeter({
       };
 
       setValue("predictedValues", predictedValues);
-      setValue("modelId", prediction?.modelId);
     }
   }, [productionParaMeter, isEditFarm, setValue]);
 
@@ -222,7 +217,6 @@ export default function ProductionParaMeter({
     if (formProductionParameters) {
       setValue("predictedValues", formProductionParameters.predictedValues);
       setValue("idealRange", formProductionParameters.idealRange);
-      setValue("modelId", formProductionParameters.modelId);
     }
   }, [formProductionParameters]);
 
@@ -570,54 +564,6 @@ export default function ProductionParaMeter({
             </Grid>
           </Grid>
         </Paper>
-
-        <Box mt={7}>
-          <Typography variant="subtitle1" fontWeight={500} marginBottom={3}>
-            Growth Parameters
-          </Typography>
-          {/* div-1 */}
-          <Grid item md={6} xs={12}>
-            <FormControl fullWidth className="form-input" focused>
-              <InputLabel id="feed-supply-select-label5">
-                Growth Model *
-              </InputLabel>
-              <Select
-                labelId="feed-supply-select-label5"
-                id="feed-supply-select5"
-                label="Growth Model *"
-                {...register("modelId", { required: true })}
-                value={watch("modelId") || ""}
-                onChange={(e) => {
-                  setValue("modelId", Number(e.target.value));
-                  clearErrors("modelId");
-                }}
-              >
-                {growthModels &&
-                  growthModels?.map((model: GrowthModel) => {
-                    return (
-                      <MenuItem value={model.models.id} key={model.id}>
-                        {model.models.name}
-                      </MenuItem>
-                    );
-                  })}
-              </Select>
-              {errors.modelId && (
-                <FormHelperText
-                  sx={{ color: "red", fontSize: "13px", mt: "4px" }}
-                >
-                  {errors.modelId ? "This field is required." : ""}
-                </FormHelperText>
-              )}
-            </FormControl>
-
-            <Typography
-              variant="body2"
-              color="red"
-              fontSize={13}
-              mt={0.5}
-            ></Typography>
-          </Grid>
-        </Box>
 
         <Box
           display={"flex"}

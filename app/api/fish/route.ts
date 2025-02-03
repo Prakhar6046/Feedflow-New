@@ -9,7 +9,10 @@ export const GET = async (request: NextRequest) => {
     const query = searchParams.get("query");
 
     const fishSupply = await prisma.fishSupply.findMany({
-      include: { creator: { include: { hatchery: true, Farm: true } } },
+      include: {
+        creator: { include: { hatchery: true, Farm: true } },
+        farm: true,
+      },
       where: {
         ...(role !== "SUPERADMIN" && organisationId
           ? { organisationId: Number(organisationId) }
@@ -21,9 +24,7 @@ export const GET = async (request: NextRequest) => {
                   {
                     status: { contains: query, mode: "insensitive" },
                   },
-                  {
-                    fishFarm: { contains: query, mode: "insensitive" },
-                  },
+
                   {
                     broodstockMale: { contains: query, mode: "insensitive" },
                   },
@@ -111,7 +112,6 @@ export const POST = async (request: NextRequest) => {
       ...body,
       createdBy: isHatcheryExist.id,
       organisationId: Number(body.organisationId),
-      fishFarm: isFarmExist.name,
       batchNumber: `${body.hatchingDate}-${isHatcheryExist.hatchery[0].code}-${
         body.spawningNumber
       }-${isHatcheryExist.hatchery[0]?.fishSpecie.slice(0, 1)}`,
