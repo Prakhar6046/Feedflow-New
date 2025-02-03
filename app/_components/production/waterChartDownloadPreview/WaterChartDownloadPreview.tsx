@@ -53,9 +53,9 @@ function WaterChartDownloadPreview({
   const downloadChartsAsPDF = async () => {
     const pdf = new jsPDF({ orientation: "landscape" });
     const tempContainer = document.createElement("div");
-    tempContainer.style.position = "absolute";
-    tempContainer.style.top = "-9999px";
-    tempContainer.style.left = "-9999px";
+    // tempContainer.style.position = "absolute";
+    // tempContainer.style.top = "-9999px";
+    // tempContainer.style.left = "-9999px";
     document.body.appendChild(tempContainer);
 
     let chartAdded = false;
@@ -68,6 +68,13 @@ function WaterChartDownloadPreview({
       const chartDiv = document.createElement("div");
       chartDiv.style.width = "1200px";
       chartDiv.style.height = "900px";
+      chartDiv.style.display = "flex";
+      chartDiv.style.flexDirection = "column";
+      chartDiv.style.alignItems = "center";
+      chartDiv.style.justifyContent = "space-between";
+      chartDiv.style.padding = "20px";
+      chartDiv.style.boxSizing = "border-box";
+      chartDiv.style.border = "1px solid #ccc";
       tempContainer.appendChild(chartDiv);
 
       const root = createRoot(chartDiv);
@@ -78,7 +85,7 @@ function WaterChartDownloadPreview({
             width: "100%",
             height: "100%",
             fontFamily: "Arial, sans-serif",
-            margin: "20px",
+            margin: "auto",
           }}
         >
           <div

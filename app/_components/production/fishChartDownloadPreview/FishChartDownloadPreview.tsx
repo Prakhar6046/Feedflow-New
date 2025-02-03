@@ -48,9 +48,9 @@ function FishChartDownloadPreview({
   const downloadChartsAsPDF = async () => {
     const pdf = new jsPDF({ orientation: "landscape" });
     const tempContainer = document.createElement("div");
-    tempContainer.style.position = "absolute";
-    tempContainer.style.top = "-9999px";
-    tempContainer.style.left = "-9999px";
+    // tempContainer.style.position = "absolute";
+    // tempContainer.style.top = "-9999px";
+    // tempContainer.style.left = "-9999px";
     document.body.appendChild(tempContainer);
 
     let chartAdded = false;
