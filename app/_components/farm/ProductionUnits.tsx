@@ -68,6 +68,7 @@ const ProductionUnits: NextPage<Props> = ({
   const dispatch = useAppDispatch();
   const isEditFarm = getCookie("isEditFarm");
   const userData: any = getCookie("logged-user");
+
   const [selectedUnit, setSelectedUnit] = React.useState<UnitsTypes>();
   const [open, setopen] = useState<boolean>(false);
   const [openUnitParametersModal, setOpenUnitParametersModal] =
@@ -77,6 +78,8 @@ const ProductionUnits: NextPage<Props> = ({
   const [formProductionUnitsData, setFormProductionUnitsData] = useState<any>();
   const [isApiCallInProgress, setIsApiCallInProgress] =
     useState<boolean>(false);
+  const [productionParamtertsUnitsArray, setProductionParamtertsUnitsArray] =
+    useState<any>([]);
   const {
     register,
     handleSubmit,
@@ -162,6 +165,9 @@ const ProductionUnits: NextPage<Props> = ({
   const onSubmit: SubmitHandler<ProductionUnitsFormTypes> = async (data) => {
     const farmData = getLocalItem("farmData");
     const farmPredictionValues = getLocalItem("productionParametes");
+    const productionParamtertsUnitsArrayLocal = getLocalItem(
+      "productionParamtertsUnitsArray"
+    );
     if (farmData && farmPredictionValues && data) {
       // Prevent API call if one is already in progress
       if (isApiCallInProgress) return;
@@ -210,7 +216,7 @@ const ProductionUnits: NextPage<Props> = ({
                 visibility: farmPredictionValues.idealRange["Visibility cm"],
               },
             },
-
+            productionParamtertsUnitsArray: productionParamtertsUnitsArrayLocal,
             farmAddress: {
               addressLine1: farmData.addressLine1,
               addressLine2: farmData.addressLine2,
@@ -234,6 +240,7 @@ const ProductionUnits: NextPage<Props> = ({
           };
         } else {
           payload = {
+            productionParamtertsUnitsArray: productionParamtertsUnitsArrayLocal,
             productionParameter: {
               ...farmPredictionValues,
               predictedValues: {
@@ -305,13 +312,13 @@ const ProductionUnits: NextPage<Props> = ({
           );
           const responseData = await response.json();
           toast.success(responseData.message);
-
           if (responseData.status) {
             setActiveStep(4);
             deleteCookie("isEditFarm");
             removeLocalItem("farmData");
             removeLocalItem("farmProductionUnits");
             removeLocalItem("productionParametes");
+            removeLocalItem("productionParamtertsUnitsArray");
           }
         } else {
           toast.error("Please fill out the all feilds");
@@ -324,16 +331,69 @@ const ProductionUnits: NextPage<Props> = ({
     }
   };
 
+  const handleRemoveUnit = (
+    item: {
+      name: string;
+      capacity: string;
+      type: string;
+      waterflowRate: string;
+      id: string;
+    },
+    index: number
+  ) => {
+    const productionParamtertsUnitsArrayLocal = getLocalItem(
+      "productionParamtertsUnitsArray"
+    );
+
+    const updatedData = productionParamtertsUnitsArrayLocal.filter(
+      (unit: any) => unit.id !== item.id
+    );
+    if (index === 0) {
+      setValue("productionUnits", [
+        {
+          name: "",
+          capacity: "",
+          type: "",
+          waterflowRate: "",
+          id: uuidv4(),
+        },
+      ]);
+    } else {
+      remove(index);
+    }
+    setLocalItem("productionParamtertsUnitsArray", updatedData);
+
+    index === 0
+      ? setValue("productionUnits", [
+          {
+            name: "",
+            capacity: "",
+            type: "",
+            waterflowRate: "",
+            id: uuidv4(),
+          },
+        ])
+      : remove(index);
+  };
   useEffect(() => {
     if (typeof window !== "undefined") {
       const productionUnit = getLocalItem("farmProductionUnits");
+      const productionParamtertsUnitsArrayLocal = getLocalItem(
+        "productionParamtertsUnitsArray"
+      );
       const farmData = getLocalItem("farmData");
       setFormProductionUnitsData({
         farmData: farmData,
         productionUnitData: productionUnit,
       });
+      if (!productionParamtertsUnitsArrayLocal?.length) {
+        setLocalItem("productionParamtertsUnitsArray", []);
+      }
+
+      setProductionParamtertsUnitsArray(productionParamtertsUnitsArrayLocal);
     }
   }, []);
+
   useEffect(() => {
     if (calculatedValue?.id && calculatedValue.output) {
       const updatedFields = productionUnits.map((field) => {
@@ -734,19 +794,7 @@ const ProductionUnits: NextPage<Props> = ({
                           pr: 1,
                           position: "relative",
                         }}
-                        onClick={() =>
-                          index === 0
-                            ? setValue("productionUnits", [
-                                {
-                                  name: "",
-                                  capacity: "",
-                                  type: "",
-                                  waterflowRate: "",
-                                  id: uuidv4(),
-                                },
-                              ])
-                            : remove(index)
-                        }
+                        onClick={() => handleRemoveUnit(item, index)}
                       >
                         <Box
                           sx={{
@@ -772,47 +820,46 @@ const ProductionUnits: NextPage<Props> = ({
                           </svg>
                         </Box>
                       </TableCell>
-                      {isEdit && (
-                        <TableCell
+
+                      <TableCell
+                        sx={{
+                          border: 0,
+                          pl: 0,
+                          pr: 1,
+                          position: "relative",
+                        }}
+                        onClick={() => {
+                          setOpenUnitParametersModal(true);
+                          setSelectedUnitId(item.id);
+                        }}
+                      >
+                        <Box
                           sx={{
-                            border: 0,
-                            pl: 0,
-                            pr: 1,
-                            position: "relative",
-                          }}
-                          onClick={() => {
-                            setOpenUnitParametersModal(true);
-                            setSelectedUnitId(item.id);
+                            cursor: "pointer",
+                            width: "fit-content",
+                            px: 1,
+                            mt: "16px",
                           }}
                         >
-                          <Box
-                            sx={{
-                              cursor: "pointer",
-                              width: "fit-content",
-                              px: 1,
-                              mt: "16px",
-                            }}
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
                           >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="24"
-                              height="24"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                fill="#06A19B"
-                                fill-rule="evenodd"
-                                d="M18.955 1.25c-.433 0-.83 0-1.152.043c-.356.048-.731.16-1.04.47s-.422.684-.47 1.04c-.043.323-.043.72-.043 1.152v13.09c0 .433 0 .83.043 1.152c.048.356.16.731.47 1.04s.684.422 1.04.47c.323.043.72.043 1.152.043h.09c.433 0 .83 0 1.152-.043c.356-.048.731-.16 1.04-.47s.422-.684.47-1.04c.043-.323.043-.72.043-1.152V3.955c0-.433 0-.83-.043-1.152c-.048-.356-.16-.731-.47-1.04s-.684-.422-1.04-.47c-.323-.043-.72-.043-1.152-.043zm-1.13 1.572l-.002.001l-.001.003l-.005.01a.7.7 0 0 0-.037.167c-.028.21-.03.504-.03.997v13c0 .493.002.787.03.997a.7.7 0 0 0 .042.177l.001.003l.003.001l.003.002l.007.003c.022.009.07.024.167.037c.21.028.504.03.997.03s.787-.002.997-.03a.7.7 0 0 0 .177-.042l.003-.001l.001-.003l.005-.01a.7.7 0 0 0 .037-.167c.028-.21.03-.504.03-.997V4c0-.493-.002-.787-.03-.997a.7.7 0 0 0-.042-.177l-.001-.003l-.003-.001l-.01-.005a.7.7 0 0 0-.167-.037c-.21-.028-.504-.03-.997-.03s-.787.002-.997.03a.7.7 0 0 0-.177.042M11.955 4.25h.09c.433 0 .83 0 1.152.043c.356.048.731.16 1.04.47s.422.684.47 1.04c.043.323.043.72.043 1.152v10.09c0 .433 0 .83-.043 1.152c-.048.356-.16.731-.47 1.04s-.684.422-1.04.47c-.323.043-.72.043-1.152.043h-.09c-.432 0-.83 0-1.152-.043c-.356-.048-.731-.16-1.04-.47s-.422-.684-.47-1.04c-.043-.323-.043-.72-.043-1.152V6.955c0-.433 0-.83.043-1.152c.048-.356.16-.731.47-1.04s.684-.422 1.04-.47c.323-.043.72-.043 1.152-.043m-1.132 1.573l.003-.001l-.003 12.355l-.001-.003l-.005-.01a.7.7 0 0 1-.037-.167c-.028-.21-.03-.504-.03-.997V7c0-.493.002-.787.03-.997a.7.7 0 0 1 .042-.177zm0 12.354l.003-12.355l.003-.002l.007-.003a.7.7 0 0 1 .167-.037c.21-.028.504-.03.997-.03s.787.002.997.03a.7.7 0 0 1 .177.042l.003.001l.001.003l.005.01c.009.022.024.07.037.167c.028.21.03.504.03.997v10c0 .493-.002.787-.03.997a.7.7 0 0 1-.042.177l-.001.003l-.003.001l-.01.005a.7.7 0 0 1-.167.037c-.21.028-.504.03-.997.03s-.787-.002-.997-.03a.7.7 0 0 1-.177-.042zM4.955 8.25c-.433 0-.83 0-1.152.043c-.356.048-.731.16-1.04.47s-.422.684-.47 1.04c-.043.323-.043.72-.043 1.152v6.09c0 .433 0 .83.043 1.152c.048.356.16.731.47 1.04s.684.422 1.04.47c.323.043.72.043 1.152.043h.09c.433 0 .83 0 1.152-.043c.356-.048.731-.16 1.04-.47s.422-.684.47-1.04c.043-.323.043-.72.043-1.152v-6.09c0-.433 0-.83-.043-1.152c-.048-.356-.16-.731-.47-1.04s-.684-.422-1.04-.47c-.323-.043-.72-.043-1.152-.043zm-1.13 1.572l-.002.001l-.001.003l-.005.01a.7.7 0 0 0-.037.167c-.028.21-.03.504-.03.997v6c0 .493.002.787.03.997a.7.7 0 0 0 .042.177v.002l.004.002l.01.005c.022.009.07.024.167.037c.21.028.504.03.997.03s.787-.002.997-.03a.7.7 0 0 0 .177-.042l.003-.001l.001-.003l.002-.004l.003-.006a.7.7 0 0 0 .037-.167c.028-.21.03-.504.03-.997v-6c0-.493-.002-.787-.03-.997a.7.7 0 0 0-.042-.177l-.001-.003l-.003-.001l-.01-.005a.7.7 0 0 0-.167-.037c-.21-.028-.504-.03-.997-.03s-.787.002-.997.03a.7.7 0 0 0-.177.042"
-                                clip-rule="evenodd"
-                              />
-                              <path
-                                fill="#06A19B"
-                                d="M3 21.25a.75.75 0 0 0 0 1.5h18a.75.75 0 0 0 0-1.5z"
-                              />
-                            </svg>
-                          </Box>
-                        </TableCell>
-                      )}
+                            <path
+                              fill="#06A19B"
+                              fill-rule="evenodd"
+                              d="M18.955 1.25c-.433 0-.83 0-1.152.043c-.356.048-.731.16-1.04.47s-.422.684-.47 1.04c-.043.323-.043.72-.043 1.152v13.09c0 .433 0 .83.043 1.152c.048.356.16.731.47 1.04s.684.422 1.04.47c.323.043.72.043 1.152.043h.09c.433 0 .83 0 1.152-.043c.356-.048.731-.16 1.04-.47s.422-.684.47-1.04c.043-.323.043-.72.043-1.152V3.955c0-.433 0-.83-.043-1.152c-.048-.356-.16-.731-.47-1.04s-.684-.422-1.04-.47c-.323-.043-.72-.043-1.152-.043zm-1.13 1.572l-.002.001l-.001.003l-.005.01a.7.7 0 0 0-.037.167c-.028.21-.03.504-.03.997v13c0 .493.002.787.03.997a.7.7 0 0 0 .042.177l.001.003l.003.001l.003.002l.007.003c.022.009.07.024.167.037c.21.028.504.03.997.03s.787-.002.997-.03a.7.7 0 0 0 .177-.042l.003-.001l.001-.003l.005-.01a.7.7 0 0 0 .037-.167c.028-.21.03-.504.03-.997V4c0-.493-.002-.787-.03-.997a.7.7 0 0 0-.042-.177l-.001-.003l-.003-.001l-.01-.005a.7.7 0 0 0-.167-.037c-.21-.028-.504-.03-.997-.03s-.787.002-.997.03a.7.7 0 0 0-.177.042M11.955 4.25h.09c.433 0 .83 0 1.152.043c.356.048.731.16 1.04.47s.422.684.47 1.04c.043.323.043.72.043 1.152v10.09c0 .433 0 .83-.043 1.152c-.048.356-.16.731-.47 1.04s-.684.422-1.04.47c-.323.043-.72.043-1.152.043h-.09c-.432 0-.83 0-1.152-.043c-.356-.048-.731-.16-1.04-.47s-.422-.684-.47-1.04c-.043-.323-.043-.72-.043-1.152V6.955c0-.433 0-.83.043-1.152c.048-.356.16-.731.47-1.04s.684-.422 1.04-.47c.323-.043.72-.043 1.152-.043m-1.132 1.573l.003-.001l-.003 12.355l-.001-.003l-.005-.01a.7.7 0 0 1-.037-.167c-.028-.21-.03-.504-.03-.997V7c0-.493.002-.787.03-.997a.7.7 0 0 1 .042-.177zm0 12.354l.003-12.355l.003-.002l.007-.003a.7.7 0 0 1 .167-.037c.21-.028.504-.03.997-.03s.787.002.997.03a.7.7 0 0 1 .177.042l.003.001l.001.003l.005.01c.009.022.024.07.037.167c.028.21.03.504.03.997v10c0 .493-.002.787-.03.997a.7.7 0 0 1-.042.177l-.001.003l-.003.001l-.01.005a.7.7 0 0 1-.167.037c-.21.028-.504.03-.997.03s-.787-.002-.997-.03a.7.7 0 0 1-.177-.042zM4.955 8.25c-.433 0-.83 0-1.152.043c-.356.048-.731.16-1.04.47s-.422.684-.47 1.04c-.043.323-.043.72-.043 1.152v6.09c0 .433 0 .83.043 1.152c.048.356.16.731.47 1.04s.684.422 1.04.47c.323.043.72.043 1.152.043h.09c.433 0 .83 0 1.152-.043c.356-.048.731-.16 1.04-.47s.422-.684.47-1.04c.043-.323.043-.72.043-1.152v-6.09c0-.433 0-.83-.043-1.152c-.048-.356-.16-.731-.47-1.04s-.684-.422-1.04-.47c-.323-.043-.72-.043-1.152-.043zm-1.13 1.572l-.002.001l-.001.003l-.005.01a.7.7 0 0 0-.037.167c-.028.21-.03.504-.03.997v6c0 .493.002.787.03.997a.7.7 0 0 0 .042.177v.002l.004.002l.01.005c.022.009.07.024.167.037c.21.028.504.03.997.03s.787-.002.997-.03a.7.7 0 0 0 .177-.042l.003-.001l.001-.003l.002-.004l.003-.006a.7.7 0 0 0 .037-.167c.028-.21.03-.504.03-.997v-6c0-.493-.002-.787-.03-.997a.7.7 0 0 0-.042-.177l-.001-.003l-.003-.001l-.01-.005a.7.7 0 0 0-.167-.037c-.21-.028-.504-.03-.997-.03s-.787.002-.997.03a.7.7 0 0 0-.177.042"
+                              clip-rule="evenodd"
+                            />
+                            <path
+                              fill="#06A19B"
+                              d="M3 21.25a.75.75 0 0 0 0 1.5h18a.75.75 0 0 0 0-1.5z"
+                            />
+                          </svg>
+                        </Box>
+                      </TableCell>
                     </TableRow>
                   </TableBody>
                 </Table>

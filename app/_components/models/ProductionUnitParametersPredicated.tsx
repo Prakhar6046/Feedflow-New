@@ -90,45 +90,41 @@ const ProductionUnitParametersPredicated: React.FC<Props> = ({
     idealRange: watch("idealRange"),
     modelId: watch("modelId"),
   };
+
   const onSubmit: SubmitHandler<FormData> = (data) => {
-    if (
-      isEditFarm === "true" &&
-      productionParaMeter &&
-      productionParaMeter[0]?.YearBasedPredication
-    ) {
-      const payload = {
-        predictedValues: {
-          "Water Temperature °C": data.predictedValues["Water Temperature °C"],
-          "Dissolved Oxygen (DO) mg/L":
-            data.predictedValues["Dissolved Oxygen (DO) mg/L"],
-          "Total Suspended solids (TSS)":
-            data.predictedValues["Total Suspended solids (TSS)"],
-          "Ammonia (NH₄) mg/L": data.predictedValues["Ammonia (NH₄) mg/L"],
-          "Nitrate (NO₃) mg/L": data.predictedValues["Nitrate (NO₃) mg/L"],
-          "Nitrite (NO₂) mg/L": data.predictedValues["Nitrite (NO₂) mg/L"],
-          pH: data.predictedValues["pH"],
-          "Visibility cm": data.predictedValues["Visibility cm"],
-        },
+    const productionParamtertsUnitsArray = getLocalItem(
+      "productionParamtertsUnitsArray"
+    );
 
-        modelId: data.modelId,
+    const updatedData = productionParamtertsUnitsArray.filter(
+      (data: any) => data.id !== selectedUnitId
+    );
 
-        idealRange: {
-          "Water Temperature °C": data.idealRange["Water Temperature °C"],
-          "Dissolved Oxygen (DO) mg/L":
-            data.idealRange["Dissolved Oxygen (DO) mg/L"],
-          "Total Suspended solids (TSS)":
-            data.idealRange["Total Suspended solids (TSS)"],
-          "Ammonia (NH₄) mg/L": data.idealRange["Ammonia (NH₄) mg/L"],
-          "Nitrate (NO₃) mg/L": data.idealRange["Nitrate (NO₃) mg/L"],
-          "Nitrite (NO₂) mg/L": data.idealRange["Nitrite (NO₂) mg/L"],
-          ph: data.idealRange["pH"],
-          visibility: data.idealRange["Visibility cm"],
-        },
-      };
-      console.log(payload);
-    }
-
-    // setLocalItem("productionParametes", payload);
+    const payload = {
+      id: selectedUnitId,
+      predictedValues: {
+        waterTemp: data.predictedValues["Water Temperature °C"],
+        DO: data.predictedValues["Dissolved Oxygen (DO) mg/L"],
+        TSS: data.predictedValues["Total Suspended solids (TSS)"],
+        NH4: data.predictedValues["Ammonia (NH₄) mg/L"],
+        NO3: data.predictedValues["Nitrate (NO₃) mg/L"],
+        NO2: data.predictedValues["Nitrite (NO₂) mg/L"],
+        ph: data.predictedValues["pH"],
+        visibility: data.predictedValues["Visibility cm"],
+      },
+      idealRange: {
+        waterTemp: data.idealRange["Water Temperature °C"],
+        DO: data.idealRange["Dissolved Oxygen (DO) mg/L"],
+        TSS: data.idealRange["Total Suspended solids (TSS)"],
+        NH4: data.idealRange["Ammonia (NH₄) mg/L"],
+        NO3: data.idealRange["Nitrate (NO₃) mg/L"],
+        NO2: data.idealRange["Nitrite (NO₂) mg/L"],
+        ph: data.idealRange["pH"],
+        visibility: data.idealRange["Visibility cm"],
+      },
+    };
+    updatedData.push(payload);
+    setLocalItem("productionParamtertsUnitsArray", updatedData);
   };
 
   useEffect(() => {
@@ -581,45 +577,6 @@ const ProductionUnitParametersPredicated: React.FC<Props> = ({
               </Grid>
             </Grid>
           </Paper>
-
-          <Box>
-            <Typography variant="subtitle1" fontWeight={500} marginBottom={3}>
-              Growth Parameters
-            </Typography>
-            {/* div-1 */}
-            <Grid item md={6} xs={12}>
-              <FormControl fullWidth className="form-input" focused>
-                <InputLabel id="feed-supply-select-label5">
-                  Growth Model *
-                </InputLabel>
-                <Select
-                  labelId="feed-supply-select-label5"
-                  id="feed-supply-select5"
-                  label="Growth Model *"
-                  {...register("modelId", { required: true })}
-                  value={watch("modelId") || ""}
-                  onChange={(e) => {
-                    setValue("modelId", Number(e.target.value));
-                    clearErrors("modelId");
-                  }}
-                >
-                  {growthModels &&
-                    growthModels?.map((model: GrowthModel) => {
-                      return (
-                        <MenuItem value={model.models.id} key={model.id}>
-                          {model.models.name}
-                        </MenuItem>
-                      );
-                    })}
-                </Select>
-                {errors.modelId && (
-                  <FormHelperText sx={{ color: "#d32f2f" }}>
-                    {errors.modelId ? "Model is required" : ""}
-                  </FormHelperText>
-                )}
-              </FormControl>
-            </Grid>
-          </Box>
 
           <Box
             display={"flex"}

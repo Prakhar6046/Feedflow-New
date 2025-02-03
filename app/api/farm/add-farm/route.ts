@@ -7,7 +7,12 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
 
     const productionParameter = body.productionParameter;
-    if (!productionParameter || !body.farmAddress || !body.productionUnits) {
+    if (
+      !productionParameter ||
+      !body.farmAddress ||
+      !body.productionUnits ||
+      !body.productionParamtertsUnitsArray
+    ) {
       return NextResponse.json(
         { error: "All required payload missing or invalid" },
         { status: 404 }
@@ -72,8 +77,8 @@ export async function POST(req: NextRequest) {
     //Creating production parameter
     const paylaodForProductionParameter = {
       ...productionParameter.predictedValues,
+      id: productionParameter.id,
       idealRange: productionParameter.idealRange,
-      modelId: productionParameter.modelId,
     };
 
     await prisma.waterQualityPredictedParameters.create({
@@ -83,12 +88,25 @@ export async function POST(req: NextRequest) {
       },
     });
 
+    console.log(body.productionParamtertsUnitsArray);
+
     await prisma.yearBasedPredicationProductionUnit.createMany({
-      data: newProductUnits.map((unit: any) => ({
-        productionUnitId: unit.id,
-        ...paylaodForProductionParameter,
-      })),
+      data: newProductUnits.flatMap((unit: any) =>
+        body.productionParamtertsUnitsArray.map((data: any) => {
+          const payloadForProductionParameterUnits = {
+            ...data.predictedValues,
+            id: data.id,
+            idealRange: data.idealRange,
+          };
+
+          return {
+            productionUnitId: unit.id,
+            ...payloadForProductionParameterUnits,
+          };
+        })
+      ),
     });
+
     return NextResponse.json({
       message: "Farm created successfully",
       data: "farm",
