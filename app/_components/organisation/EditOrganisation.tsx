@@ -384,12 +384,7 @@ const EditOrganisation = ({ organisationId, organisations }: Iprops) => {
             />
           </Button>
           {profilePic && (
-            <Box
-              display={"flex"}
-              gap="10px"
-              alignItems={"center"}
-              justifyContent={"center"}
-            >
+            <Box display={"flex"} gap="10px" alignItems={"center"} mt={"8px"}>
               <Button
                 component="label"
                 variant="contained"

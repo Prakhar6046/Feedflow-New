@@ -289,6 +289,7 @@ export default function FishSupplyTable({ tableData, fishSupply }: Props) {
                         maxWidth: 250,
                         wordBreak: "break-all",
                         pr: 2,
+                        textWrap: "nowrap",
                         paddingLeft: {
                           lg: 10,
                           md: 7,
@@ -306,6 +307,7 @@ export default function FishSupplyTable({ tableData, fishSupply }: Props) {
                         borderBottomWidth: 2,
                         color: "#06A198",
                         fontWeight: 500,
+                        textWrap: "nowrap",
                         p: 0,
                       }}
                     >
@@ -327,6 +329,7 @@ export default function FishSupplyTable({ tableData, fishSupply }: Props) {
                         borderBottomWidth: 2,
                         color: "#555555",
                         fontWeight: 500,
+                        textWrap: "nowrap",
                       }}
                     >
                       <Box
@@ -396,6 +399,7 @@ export default function FishSupplyTable({ tableData, fishSupply }: Props) {
                         borderBottomWidth: 2,
                         color: "#555555",
                         fontWeight: 500,
+                        textWrap: "nowrap",
                       }}
                     >
                       {fish?.spawningDate}
@@ -406,6 +410,7 @@ export default function FishSupplyTable({ tableData, fishSupply }: Props) {
                         borderBottomWidth: 2,
                         color: "#555555",
                         fontWeight: 500,
+                        textWrap: "nowrap",
                       }}
                     >
                       {fish.hatchingDate}
@@ -416,6 +421,7 @@ export default function FishSupplyTable({ tableData, fishSupply }: Props) {
                         borderBottomWidth: 2,
                         color: "#555555",
                         fontWeight: 500,
+                        textWrap: "nowrap",
                       }}
                     >
                       {fish.status === "Harvested" ? "N/A" : fish.age}
@@ -426,6 +432,7 @@ export default function FishSupplyTable({ tableData, fishSupply }: Props) {
                         borderBottomWidth: 2,
                         color: "#555555",
                         fontWeight: 500,
+                        textWrap: "nowrap",
                       }}
                     >
                       {fish?.creator?.hatchery[0]?.name}
@@ -436,6 +443,7 @@ export default function FishSupplyTable({ tableData, fishSupply }: Props) {
                         borderBottomWidth: 2,
                         color: "#555555",
                         fontWeight: 500,
+                        textWrap: "nowrap",
                       }}
                     >
                       {fish.fishFarm}
@@ -446,6 +454,7 @@ export default function FishSupplyTable({ tableData, fishSupply }: Props) {
                         borderBottomWidth: 2,
                         color: "#555555",
                         fontWeight: 500,
+                        textWrap: "nowrap",
                       }}
                     >
                       {fish.status}
@@ -458,6 +467,7 @@ export default function FishSupplyTable({ tableData, fishSupply }: Props) {
                           borderBottomWidth: 2,
                           color: "#555555",
                           fontWeight: 500,
+                          textWrap: "nowrap",
                         }}
                         className="cursor-pointer"
                       >

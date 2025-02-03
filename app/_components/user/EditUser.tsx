@@ -265,7 +265,8 @@ function EditUser({ userId }: Iprops) {
           <Grid container>
             <Grid
               item
-              md={3}
+              xl={3}
+              md={5}
               xs={12}
               sx={{
                 display: "flex",

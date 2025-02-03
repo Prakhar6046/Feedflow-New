@@ -1836,6 +1836,7 @@ const NutritionalGuarantee = ({
                     focused
                     sx={{
                       width: "100%",
+                      minWidth: 110,
                     }}
                   />
 
@@ -2069,7 +2070,7 @@ const NutritionalGuarantee = ({
                 })}
                 focused
                 sx={{
-                  minWidth: 110,
+                  width: "100%",
                 }}
               />
 
