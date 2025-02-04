@@ -47,6 +47,7 @@
     "next-auth": "^4.24.7",
     "next-connect": "^1.0.0",
     "nodemailer": "^6.9.14",
+    "primereact": "^10.9.2",
     "react": "^18",
     "react-chartjs-2": "^5.2.0",
     "react-dom": "^18",

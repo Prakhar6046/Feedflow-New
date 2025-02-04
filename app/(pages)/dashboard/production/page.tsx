@@ -32,7 +32,6 @@ export default async function Page({
     noFilter: false,
   });
   const batches = await getBatches({});
-
   return (
     <>
       <BasicBreadcrumbs

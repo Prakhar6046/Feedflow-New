@@ -1,6 +1,7 @@
 "use client";
 import TransferModal from "@/app/_components/models/FarmManager";
 import {
+  averagesDropdown,
   getLocalItem,
   ProductionSortTables,
   setLocalItem,
@@ -65,7 +66,6 @@ export default function ProductionTable({
   const isWater = searchParams.get("isWater");
   const [production, setProduction] = useState<any>();
   const loggedUser: any = getCookie("logged-user");
-
   const [selectedView, setSelectedView] = useState<string>();
   const [selectedProduction, setSelectedProduction] = useState<any>(
     production ?? null
@@ -97,10 +97,12 @@ export default function ProductionTable({
     useState<{ id: string; option: string }[]>();
   const [selectedDropDownYears, setSelectedDropDownYears] = useState<
     Array<number>
-  >([]);
-  const [selectedAverage, setSelectedAverage] = useState("");
-  const [startMonth, setStartMonth] = useState<number>();
-  const [endMonth, setEndMonth] = useState<number>();
+  >([new Date().getFullYear()]);
+  const [selectedAverage, setSelectedAverage] = useState(averagesDropdown[0]);
+  const [startMonth, setStartMonth] = useState<number>(
+    new Date().getMonth() + 1
+  );
+  const [endMonth, setEndMonth] = useState<number>(new Date().getMonth() + 1);
 
   const [allFarms, setAllFarms] = useState<{ id: string; option: string }[]>(
     []
@@ -108,46 +110,6 @@ export default function ProductionTable({
   const [allUnits, setAllUnits] = useState<{ id: string; option: string }[]>(
     []
   );
-
-  const handleChange = (event: any, isFarmChange: boolean) => {
-    const {
-      target: { value },
-    } = event;
-
-    if (isFarmChange) {
-      if (value.includes("All farms")) {
-        setSelectedDropDownfarms(allFarms);
-      } else {
-        const wasAllFarmsSelected = selectedDropDownfarms?.some(
-          (farm) => farm?.option === "All farms"
-        );
-
-        if (wasAllFarmsSelected) {
-          setSelectedDropDownfarms([]);
-        } else {
-          setSelectedDropDownfarms(
-            allFarms?.filter((farm) => value.includes(farm.option))
-          );
-        }
-      }
-    } else {
-      if (value.includes("All units")) {
-        setSelectedDropDownUnits(allUnits);
-      } else {
-        const wasAllFarmsSelected = selectedDropDownUnits?.some(
-          (unit) => unit?.option === "All units"
-        );
-
-        if (wasAllFarmsSelected) {
-          setSelectedDropDownUnits([]);
-        } else {
-          setSelectedDropDownUnits(
-            allUnits.filter((unit) => value.includes(unit.option))
-          );
-        }
-      }
-    }
-  };
 
   const handleFishManageHistory = (unit: any) => {
     if (selectedView == "fish") {
@@ -396,16 +358,16 @@ export default function ProductionTable({
   useEffect(() => {
     router.refresh();
   }, [router]);
-
   useEffect(() => {
     if (farms) {
       let customFarms: any = farms.map((farm) => {
-        return { id: farm.id, option: farm.name };
+        return { option: farm.name, id: farm.id };
       });
-      customFarms.unshift({ id: "0", option: "All farms" });
+      // customFarms.unshift({ code: "0", option: "All farms" });
       setAllFarms(customFarms);
     }
   }, [farms]);
+
   useEffect(() => {
     if (selectedDropDownfarms) {
       const getProductionUnits = (
@@ -428,12 +390,12 @@ export default function ProductionTable({
       };
       const result = getProductionUnits(selectedDropDownfarms, farms);
       let customUnits = result.flatMap((farm) =>
-        farm.productionUnits.map((unit) => ({
+        farm?.productionUnits.map((unit) => ({
           id: unit.id,
           option: unit.name,
         }))
       );
-      customUnits.unshift({ id: "0", option: "All units" });
+      // customUnits.unshift({ id: "0", option: "All units" });
       setAllUnits(customUnits);
     }
   }, [selectedDropDownfarms]);
@@ -447,8 +409,9 @@ export default function ProductionTable({
     ) => {
       if (!selectedFarms?.length) return data;
       const selectedFarmIds = selectedFarms?.map(
-        (farm: { id: string; option: string }) => farm?.id
+        (farm: { option: string; id: string }) => farm?.id
       );
+      console.log(selectedFarmIds);
       return data
         .map((farm) => ({
           ...farm,
@@ -719,7 +682,6 @@ export default function ProductionTable({
 
     // Apply averages
     const processedData = calculateAverages(filteredData, selectedAverage);
-    console.log(processedData);
 
     setProductionData(processedData);
   }, [
@@ -775,7 +737,6 @@ export default function ProductionTable({
         <ProductionManagerFilter
           allFarms={allFarms}
           allUnits={allUnits}
-          handleChange={handleChange}
           handleYearChange={handleYearChange}
           selectedAverage={selectedAverage}
           selectedDropDownUnits={
@@ -787,6 +748,8 @@ export default function ProductionTable({
           selectedDropDownfarms={
             selectedDropDownfarms ? selectedDropDownfarms : []
           }
+          setSelectedDropDownfarms={setSelectedDropDownfarms}
+          setSelectedDropDownUnits={setSelectedDropDownUnits}
           setEndMonth={setEndMonth}
           setStartMonth={setStartMonth}
           setSelectedAverage={setSelectedAverage}
@@ -862,6 +825,9 @@ export default function ProductionTable({
                           }}
                         >
                           {farm.units.map((unit, i) => {
+                            const isDisabled = Object.values(unit).some(
+                              (value) => value === null
+                            );
                             return (
                               <Typography
                                 key={i}
@@ -893,6 +859,7 @@ export default function ProductionTable({
                                       onClick={() =>
                                         handleFishManageHistory(unit)
                                       }
+                                      // disabled={isDisabled}
                                       className=""
                                       type="button"
                                       variant="contained"

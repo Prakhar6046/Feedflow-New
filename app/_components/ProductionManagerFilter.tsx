@@ -9,23 +9,28 @@ import {
   OutlinedInput,
   Select,
 } from "@mui/material";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { averagesDropdown, months } from "../_lib/utils";
 import dayjs from "dayjs";
+import { MultiSelect } from "primereact/multiselect";
+
+import "primereact/resources/primereact.css";
+import "primereact/resources/themes/lara-light-indigo/theme.css";
 interface Props {
   selectedAverage: String;
   setSelectedAverage: (val: any) => void;
   selectedDropDownfarms: { id: string; option: string }[] | [];
-  allFarms: { id: string; option: string }[];
-  allUnits: { id: string; option: string }[];
+  allFarms: { option: string; id: string }[];
+  allUnits: { option: string; id: string }[];
   selectedDropDownUnits: { id: string; option: string }[] | [];
   selectedDropDownYears: Array<number> | [] | any;
   setEndMonth: (val: number) => void;
   setStartMonth: (val: number) => void;
   handleYearChange: (e: any) => void;
-  handleChange: (e: any, isFarmChange: boolean) => void;
   startMonth: number;
   endMonth: number;
+  setSelectedDropDownfarms: any;
+  setSelectedDropDownUnits: any;
 }
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -48,19 +53,29 @@ function ProductionManagerFilter({
   setEndMonth,
   setStartMonth,
   handleYearChange,
-  handleChange,
   startMonth,
   endMonth,
+  setSelectedDropDownfarms,
+  setSelectedDropDownUnits,
 }: Props) {
   const currentYear = dayjs().year();
   const years = Array.from({ length: 6 }, (_, i) => currentYear - i);
+  const [farms, setFarms] = useState<any>([]);
+  const [units, setUnits] = useState<any>([]);
+  useEffect(() => {
+    if (allFarms || allUnits) {
+      setFarms(allFarms);
+      setUnits(allUnits);
+    }
+  }, [allFarms, allUnits]);
   return (
     <Grid container spacing={2} mt={1}>
       <Grid
         item
         lg={2}
         md={4}
-        sm={6} xs={12}
+        sm={6}
+        xs={12}
         sx={{
           width: "fit-content",
 
@@ -70,7 +85,7 @@ function ProductionManagerFilter({
         <Box sx={{ width: "100%" }}>
           <FormControl fullWidth className="form-input selected" focused>
             <InputLabel id="demo-simple-select-label-1">Farms</InputLabel>
-            <Select
+            {/* <Select
               labelId="demo-simple-select-label-1"
               id="demo-simple-select"
               label="Farms"
@@ -92,7 +107,17 @@ function ProductionManagerFilter({
                   <ListItemText primary={farm.option} />
                 </MenuItem>
               ))}
-            </Select>
+            </Select> */}
+            <MultiSelect
+              value={selectedDropDownfarms}
+              onChange={(e) => setSelectedDropDownfarms(e.value)}
+              options={farms}
+              optionLabel="option"
+              display="chip"
+              placeholder="Select Farms"
+              maxSelectedLabels={3}
+              className="w-full md:w-20rem"
+            />
           </FormControl>
         </Box>
       </Grid>
@@ -100,7 +125,8 @@ function ProductionManagerFilter({
         item
         lg={2}
         md={4}
-        sm={6} xs={12}
+        sm={6}
+        xs={12}
         sx={{
           width: "fit-content",
 
@@ -110,12 +136,13 @@ function ProductionManagerFilter({
         <Box sx={{ width: "100%" }}>
           <FormControl
             fullWidth
-            className={`form-input ${selectedDropDownfarms?.length >= 1 && "selected"
-              }`}
+            className={`form-input ${
+              selectedDropDownfarms?.length >= 1 && "selected"
+            }`}
             focused
           >
             <InputLabel id="demo-simple-select-label">Units</InputLabel>
-            <Select
+            {/* <Select
               labelId="demo-simple-select-label"
               id="demo-simple-select"
               label="Units"
@@ -137,7 +164,17 @@ function ProductionManagerFilter({
                   <ListItemText primary={unit.option} />
                 </MenuItem>
               ))}
-            </Select>
+            </Select> */}
+            <MultiSelect
+              value={selectedDropDownUnits}
+              onChange={(e) => setSelectedDropDownUnits(e.value)}
+              options={units}
+              optionLabel="option"
+              display="chip"
+              placeholder="Select Units"
+              maxSelectedLabels={3}
+              className="w-full md:w-20rem"
+            />
           </FormControl>
         </Box>
       </Grid>
@@ -145,7 +182,8 @@ function ProductionManagerFilter({
         item
         lg={2}
         md={4}
-        sm={6} xs={12}
+        sm={6}
+        xs={12}
         sx={{
           width: "fit-content",
 
@@ -155,10 +193,11 @@ function ProductionManagerFilter({
         <Box sx={{ width: "100%" }}>
           <FormControl
             fullWidth
-            className={`form-input ${selectedDropDownfarms?.length &&
+            className={`form-input ${
+              selectedDropDownfarms?.length &&
               selectedDropDownUnits?.length &&
               "selected"
-              }`}
+            }`}
             focused
           >
             <InputLabel id="demo-simple-select-label-1">Select Year</InputLabel>
@@ -167,11 +206,11 @@ function ProductionManagerFilter({
               id="demo-simple-select"
               label="Select Year"
               multiple
-              disabled={
-                selectedDropDownfarms?.length && selectedDropDownUnits?.length
-                  ? false
-                  : true
-              }
+              // disabled={
+              //   selectedDropDownfarms?.length && selectedDropDownUnits?.length
+              //     ? false
+              //     : true
+              // }
               value={selectedDropDownYears}
               onChange={(e) => handleYearChange(e)}
               input={<OutlinedInput label="Select Year" />}
@@ -192,7 +231,8 @@ function ProductionManagerFilter({
         item
         lg={2}
         md={4}
-        sm={6} xs={12}
+        sm={6}
+        xs={12}
         sx={{
           width: "fit-content",
 
@@ -202,11 +242,12 @@ function ProductionManagerFilter({
         <Box sx={{ width: "100%" }}>
           <FormControl
             fullWidth
-            className={`form-input ${selectedDropDownfarms?.length &&
+            className={`form-input ${
+              selectedDropDownfarms?.length &&
               selectedDropDownUnits?.length &&
               selectedDropDownYears?.length &&
               "selected"
-              }`}
+            }`}
             focused
           >
             <InputLabel id="demo-simple-select-label">Start month</InputLabel>
@@ -214,13 +255,14 @@ function ProductionManagerFilter({
               labelId="demo-simple-select-label"
               id="demo-simple-select"
               label="Start month"
-              disabled={
-                selectedDropDownfarms?.length &&
-                  selectedDropDownUnits?.length &&
-                  selectedDropDownYears?.length
-                  ? false
-                  : true
-              }
+              value={startMonth}
+              // disabled={
+              //   selectedDropDownfarms?.length &&
+              //   selectedDropDownUnits?.length &&
+              //   selectedDropDownYears?.length
+              //     ? false
+              //     : true
+              // }
               onChange={(e) => setStartMonth(Number(e.target.value))}
             >
               {months.map((month) => (
@@ -236,7 +278,8 @@ function ProductionManagerFilter({
         item
         lg={2}
         md={4}
-        sm={6} xs={12}
+        sm={6}
+        xs={12}
         sx={{
           width: "fit-content",
 
@@ -246,12 +289,13 @@ function ProductionManagerFilter({
         <Box sx={{ width: "100%" }}>
           <FormControl
             fullWidth
-            className={`form-input ${selectedDropDownfarms?.length &&
+            className={`form-input ${
+              selectedDropDownfarms?.length &&
               selectedDropDownUnits?.length &&
               selectedDropDownYears?.length &&
               startMonth &&
               "selected"
-              }`}
+            }`}
             focused
           >
             <InputLabel id="demo-simple-select-label">End month</InputLabel>
@@ -259,14 +303,15 @@ function ProductionManagerFilter({
               labelId="demo-simple-select-label"
               id="demo-simple-select"
               label="End month"
-              disabled={
-                selectedDropDownfarms?.length &&
-                  selectedDropDownUnits?.length &&
-                  selectedDropDownYears?.length &&
-                  startMonth
-                  ? false
-                  : true
-              }
+              // disabled={
+              //   selectedDropDownfarms?.length &&
+              //   selectedDropDownUnits?.length &&
+              //   selectedDropDownYears?.length &&
+              //   startMonth
+              //     ? false
+              //     : true
+              // }
+              value={endMonth}
               onChange={(e) => setEndMonth(Number(e.target.value))}
             >
               {months.map((month) => (
@@ -286,7 +331,8 @@ function ProductionManagerFilter({
         item
         lg={2}
         md={4}
-        sm={6} xs={12}
+        sm={6}
+        xs={12}
         sx={{
           width: "fit-content",
 
@@ -296,13 +342,14 @@ function ProductionManagerFilter({
         <Box sx={{ width: "100%" }}>
           <FormControl
             fullWidth
-            className={`form-input ${selectedDropDownfarms?.length &&
+            className={`form-input ${
+              selectedDropDownfarms?.length &&
               selectedDropDownUnits?.length &&
               selectedDropDownYears?.length &&
               startMonth &&
               endMonth &&
               "selected"
-              }`}
+            }`}
             focused
           >
             <InputLabel id="demo-simple-select-label">Averages</InputLabel>
@@ -313,10 +360,10 @@ function ProductionManagerFilter({
               value={selectedAverage}
               disabled={
                 selectedDropDownfarms &&
-                  selectedDropDownUnits &&
-                  selectedDropDownYears &&
-                  startMonth &&
-                  endMonth
+                selectedDropDownUnits &&
+                selectedDropDownYears &&
+                startMonth &&
+                endMonth
                   ? false
                   : true
               }
