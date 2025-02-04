@@ -364,7 +364,15 @@ const WaterManageHistoryTable: React.FC<Props> = ({
               }}
             >
               <Tab label="List" value="list" className="tab-item" />
-              <Tab label="Graph" value="graph" className="tab-item" />
+              <Tab
+                label="Graph"
+                value="graph"
+                className="tab-item"
+                disabled={
+                  waterHistoryData?.units[0]?.WaterManageHistoryAvgrage
+                    ?.length === 0
+                }
+              />
             </TabList>
           </Grid>
           {/*hISTORY-CHART*/}
@@ -473,6 +481,10 @@ const WaterManageHistoryTable: React.FC<Props> = ({
                         scope="row"
                       >
                         {waterHistoryData?.units?.map((unit, i) => {
+                          const isDisabled =
+                            waterHistoryData?.units[0]
+                              ?.WaterManageHistoryAvgrage?.length === 0;
+
                           return (
                             <Typography
                               key={i}
@@ -500,6 +512,7 @@ const WaterManageHistoryTable: React.FC<Props> = ({
                                       setIsWaterSampleHistory(true)
                                     }
                                     className=""
+                                    disabled={isDisabled}
                                     type="button"
                                     variant="contained"
                                     style={{

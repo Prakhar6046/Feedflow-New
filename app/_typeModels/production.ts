@@ -144,6 +144,8 @@ export interface FarmGroup {
     yearlyAveragesWater?: MonthyWaterAverage;
     allTimeAveragesWater?: MonthyWaterAverage;
     individualAveragesWater?: MonthyWaterAverage;
+    WaterManageHistoryAvgrage: any;
+    fishManageHistory: any;
     biomass: String;
     fishCount: String;
     batchNumberId: Number;

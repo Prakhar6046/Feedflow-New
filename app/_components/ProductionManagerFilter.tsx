@@ -7,6 +7,7 @@ import {
   ListItemText,
   MenuItem,
   OutlinedInput,
+  Button,
   Select,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
@@ -31,6 +32,7 @@ interface Props {
   endMonth: number;
   setSelectedDropDownfarms: any;
   setSelectedDropDownUnits: any;
+  handleResetFilters: () => void;
 }
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -57,6 +59,7 @@ function ProductionManagerFilter({
   endMonth,
   setSelectedDropDownfarms,
   setSelectedDropDownUnits,
+  handleResetFilters,
 }: Props) {
   const currentYear = dayjs().year();
   const years = Array.from({ length: 6 }, (_, i) => currentYear - i);
@@ -378,6 +381,39 @@ function ProductionManagerFilter({
               })}
             </Select>
           </FormControl>
+        </Box>
+      </Grid>
+      <Grid
+        item
+        lg={2}
+        md={4}
+        sm={6}
+        xs={12}
+        sx={{
+          width: "fit-content",
+
+          paddingTop: "8px",
+        }}
+      >
+        <Box sx={{ width: "100%" }}>
+          <Button
+            id="basic-button"
+            className=""
+            type="button"
+            variant="contained"
+            onClick={handleResetFilters}
+            sx={{
+              background: "#06A19B",
+              fontWeight: "bold",
+              paddingX: 1,
+              paddingY: 0.25,
+              borderRadius: "8px",
+              alignItems: "center",
+              minWidth: "fit-content",
+            }}
+          >
+            Reset Filters
+          </Button>
         </Box>
       </Grid>
       {/* <Grid

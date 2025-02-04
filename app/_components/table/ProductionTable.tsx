@@ -145,6 +145,14 @@ export default function ProductionTable({
     setLocalItem("productionData", selectedProd);
     setSelectedProduction(selectedProd);
   };
+  const handleResetFilters = () => {
+    setSelectedDropDownfarms([]);
+    setSelectedDropDownUnits([]);
+    setSelectedDropDownYears([new Date().getFullYear()]);
+    setSelectedAverage(averagesDropdown[0]);
+    setStartMonth(new Date().getMonth() + 1);
+    setEndMonth(new Date().getMonth() + 1);
+  };
   const handleYearChange = (event: any) => {
     const {
       target: { value },
@@ -739,6 +747,7 @@ export default function ProductionTable({
           allUnits={allUnits}
           handleYearChange={handleYearChange}
           selectedAverage={selectedAverage}
+          handleResetFilters={handleResetFilters}
           selectedDropDownUnits={
             selectedDropDownUnits ? selectedDropDownUnits : []
           }
@@ -825,9 +834,12 @@ export default function ProductionTable({
                           }}
                         >
                           {farm.units.map((unit, i) => {
-                            const isDisabled = Object.values(unit).some(
-                              (value) => value === null
-                            );
+                            const isDisabled =
+                              selectedView === "water"
+                                ? unit?.WaterManageHistoryAvgrage?.length == 0
+                                : selectedView === "fish"
+                                ? unit?.fishManageHistory?.length === 0
+                                : false;
                             return (
                               <Typography
                                 key={i}
@@ -859,7 +871,7 @@ export default function ProductionTable({
                                       onClick={() =>
                                         handleFishManageHistory(unit)
                                       }
-                                      // disabled={isDisabled}
+                                      disabled={isDisabled}
                                       className=""
                                       type="button"
                                       variant="contained"
