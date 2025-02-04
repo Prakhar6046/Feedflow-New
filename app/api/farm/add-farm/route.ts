@@ -57,7 +57,8 @@ export async function POST(req: NextRequest) {
           type: unit.type,
           capacity: unit.capacity,
           waterflowRate: unit.waterflowRate,
-          farmId: farm.id, // Associate each production unit with the created farm
+          farmId: farm.id,
+          // Associate each production unit with the created farm
         },
       });
       newProductUnits.push(newUnit); // Store each created production unit

@@ -39,7 +39,6 @@ import toast from "react-hot-toast";
 import { v4 as uuidv4 } from "uuid";
 import CalculateVolume from "../models/CalculateFarmVolume";
 import ProductionUnitParametersPredicated from "../models/ProductionUnitParametersPredicated";
-import { wrap } from "module";
 interface Props {
   productionParaMeter?: ProductionParaMeterType[];
   growthModels?: any;
@@ -74,6 +73,7 @@ const ProductionUnits: NextPage<Props> = ({
   const [openUnitParametersModal, setOpenUnitParametersModal] =
     useState<boolean>(false);
   const [selectedUnitId, setSelectedUnitId] = useState<string>("");
+  const [updatedUnits, setUpdatedUnits] = useState<any>();
   const [calculatedValue, setCalculatedValue] = useState<CalculateType>();
   const [formProductionUnitsData, setFormProductionUnitsData] = useState<any>();
   const [isApiCallInProgress, setIsApiCallInProgress] =
@@ -294,35 +294,36 @@ const ProductionUnits: NextPage<Props> = ({
             userId: loggedUserData.id,
           };
         }
+        console.log(payload);
 
-        if (Object.keys(payload).length && payload.name) {
-          const response = await fetch(
-            `${
-              isEditFarm === "true"
-                ? "/api/farm/edit-farm"
-                : "/api/farm/add-farm"
-            }`,
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify(payload),
-            }
-          );
-          const responseData = await response.json();
-          toast.success(responseData.message);
-          if (responseData.status) {
-            setActiveStep(4);
-            deleteCookie("isEditFarm");
-            removeLocalItem("farmData");
-            removeLocalItem("farmProductionUnits");
-            removeLocalItem("productionParametes");
-            removeLocalItem("productionParamtertsUnitsArray");
-          }
-        } else {
-          toast.error("Please fill out the all feilds");
-        }
+        // if (Object.keys(payload).length && payload.name) {
+        //   const response = await fetch(
+        //     `${
+        //       isEditFarm === "true"
+        //         ? "/api/farm/edit-farm"
+        //         : "/api/farm/add-farm"
+        //     }`,
+        //     {
+        //       method: "POST",
+        //       headers: {
+        //         "Content-Type": "application/json",
+        //       },
+        //       body: JSON.stringify(payload),
+        //     }
+        //   );
+        //   const responseData = await response.json();
+        //   toast.success(responseData.message);
+        //   if (responseData.status) {
+        //     setActiveStep(4);
+        //     deleteCookie("isEditFarm");
+        //     removeLocalItem("farmData");
+        //     removeLocalItem("farmProductionUnits");
+        //     removeLocalItem("productionParametes");
+        //     removeLocalItem("productionParamtertsUnitsArray");
+        //   }
+        // } else {
+        //   toast.error("Please fill out the all feilds");
+        // }
       } catch (error) {
         toast.error("Something went wrong. Please try again.");
       } finally {
@@ -406,7 +407,6 @@ const ProductionUnits: NextPage<Props> = ({
       setValue("productionUnits", updatedFields);
     }
   }, [calculatedValue]);
-  console.log("editFarm", editFarm);
 
   useEffect(() => {
     if (
@@ -436,6 +436,17 @@ const ProductionUnits: NextPage<Props> = ({
     setValue("radius", "1");
     setValue("width", "1");
   }, [formProductionUnitsData]);
+
+  useEffect(() => {
+    if (productionUnits && fields) {
+      const updatedproductionUnits = productionUnits.map((unit, i) => {
+        return { ...unit, unitId: fields[i].id };
+      });
+      setUpdatedUnits(updatedproductionUnits);
+    }
+  }, [fields, productionUnits]);
+
+  console.log("updatedUnits", updatedUnits);
 
   return (
     <Stack>
@@ -557,13 +568,6 @@ const ProductionUnits: NextPage<Props> = ({
                                   minWidth: "200px",
                                   width: "100%",
                                 }}
-                                // sx={{
-                                //   px: {
-                                //     xl: 10,
-                                //     md: 5,
-                                //     xs: 3,
-                                //   },
-                                // }}
                               >
                                 {unitsTypes.map((unit, i) => (
                                   <MenuItem value={unit.name} key={i}>
@@ -588,31 +592,6 @@ const ProductionUnits: NextPage<Props> = ({
                                 {validationMessage.required}
                               </Typography>
                             )}
-                          {/* <Select
-                            labelId="demo-simple-select-label"
-                            id="demo-simple-select"
-                            value={fields[index]?.type || ""}
-                            {...register(
-                              `productionUnits.${index}.type` as const,
-                              { onChange: (e) => handleChange(e, item) }
-                            )}
-                            label="Production Unit Type"
-                            sx={{
-                              px: {
-                                xl: 10,
-                                md: 5,
-                                xs: 3,
-                              },
-                            }}
-                          >
-                            {unitsTypes.map((unit, i) => {
-                              return (
-                                <MenuItem value={unit.name} key={i}>
-                                  {unit.name}
-                                </MenuItem>
-                              );
-                            })}
-                          </Select> */}
                         </FormControl>
                       </TableCell>
 
@@ -818,6 +797,7 @@ const ProductionUnits: NextPage<Props> = ({
                           position: "relative",
                         }}
                         onClick={() => {
+                          console.log("item", item);
                           setOpenUnitParametersModal(true);
                           setSelectedUnitId(item.id);
                         }}
@@ -930,7 +910,6 @@ const ProductionUnits: NextPage<Props> = ({
         </Box>
       </form>
       <ProductionUnitParametersPredicated
-        growthModels={growthModels}
         editFarm={editFarm}
         productionParaMeter={productionParaMeter}
         open={openUnitParametersModal}

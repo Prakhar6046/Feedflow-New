@@ -52,6 +52,7 @@ export interface ProductionUnitsFormTypes {
     capacity: string;
     waterflowRate: string;
     id: any;
+    unitId?: string;
   }[];
   area: string;
   depth: string;

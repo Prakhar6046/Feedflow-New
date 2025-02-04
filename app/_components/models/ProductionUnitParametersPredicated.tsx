@@ -36,7 +36,6 @@ import { CloseIcon } from "../theme/overrides/CustomIcons";
 interface Props {
   productionParaMeter?: ProductionParaMeterType[];
   editFarm?: any;
-  growthModels: any;
   setOpen: (open: boolean) => void;
   open: boolean;
   selectedUnitId: string;
@@ -60,13 +59,11 @@ const style = {
 const ProductionUnitParametersPredicated: React.FC<Props> = ({
   setOpen,
   open,
-  growthModels,
   editFarm,
   productionParaMeter,
   selectedUnitId,
 }) => {
   const isEditFarm = getCookie("isEditFarm");
-  console.log(editFarm);
 
   const farm = useAppSelector(selectFarm);
 
