@@ -296,34 +296,34 @@ const ProductionUnits: NextPage<Props> = ({
         }
         console.log(payload);
 
-        // if (Object.keys(payload).length && payload.name) {
-        //   const response = await fetch(
-        //     `${
-        //       isEditFarm === "true"
-        //         ? "/api/farm/edit-farm"
-        //         : "/api/farm/add-farm"
-        //     }`,
-        //     {
-        //       method: "POST",
-        //       headers: {
-        //         "Content-Type": "application/json",
-        //       },
-        //       body: JSON.stringify(payload),
-        //     }
-        //   );
-        //   const responseData = await response.json();
-        //   toast.success(responseData.message);
-        //   if (responseData.status) {
-        //     setActiveStep(4);
-        //     deleteCookie("isEditFarm");
-        //     removeLocalItem("farmData");
-        //     removeLocalItem("farmProductionUnits");
-        //     removeLocalItem("productionParametes");
-        //     removeLocalItem("productionParamtertsUnitsArray");
-        //   }
-        // } else {
-        //   toast.error("Please fill out the all feilds");
-        // }
+        if (Object.keys(payload).length && payload.name) {
+          const response = await fetch(
+            `${
+              isEditFarm === "true"
+                ? "/api/farm/edit-farm"
+                : "/api/farm/add-farm"
+            }`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(payload),
+            }
+          );
+          const responseData = await response.json();
+          toast.success(responseData.message);
+          if (responseData.status) {
+            setActiveStep(4);
+            deleteCookie("isEditFarm");
+            removeLocalItem("farmData");
+            removeLocalItem("farmProductionUnits");
+            removeLocalItem("productionParametes");
+            removeLocalItem("productionParamtertsUnitsArray");
+          }
+        } else {
+          toast.error("Please fill out the all feilds");
+        }
       } catch (error) {
         toast.error("Something went wrong. Please try again.");
       } finally {
