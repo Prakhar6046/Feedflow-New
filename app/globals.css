@@ -646,25 +646,3 @@ label {
 .selected input {
   cursor: not-allowed !important;
 }
-
-/* table > tr > td {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  background-color: red !important;
-  max-width: 150px;
-} */
-
-table tr td {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  width: 90px;
-}
-
-table tr td h6 {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  width: 150px;
-}
