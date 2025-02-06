@@ -197,7 +197,6 @@ model FarmAddress {
 
 model YearBasedPredicationProductionUnit {
   id        String   @id @default(cuid())
-  unitId    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -224,7 +223,6 @@ model ProductionUnit {
   type                               String
   capacity                           String
   waterflowRate                      String
-  unitId                             String?
   createdAt                          DateTime                             @default(now())
   updatedAt                          DateTime                             @updatedAt
   Farm                               Farm?                                @relation(fields: [farmId], references: [id])
