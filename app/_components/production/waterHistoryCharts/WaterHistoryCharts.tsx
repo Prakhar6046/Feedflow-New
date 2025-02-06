@@ -146,7 +146,7 @@ function WaterHistoryCharts({
   const previewCharts = () => {
     if (!selectedCharts?.length) {
       toast.dismiss();
-      toast.error("Please select at least one chart to download.");
+      toast.error("Please select at least one chart to preview.");
       return;
     }
     const data = {

@@ -485,7 +485,7 @@ const TransferModal: React.FC<Props> = ({
           }
         }
         const farm = farms
-          .find((f) => f.id === selectedFarm)
+          ?.find((f) => f.id === selectedFarm)
           ?.productionUnits?.find((unit) => unit.id === field.productionUnit);
         if (farm && farm.capacity) {
           const regex = validationPattern.numbersWithDot;
@@ -1957,7 +1957,7 @@ const TransferModal: React.FC<Props> = ({
                   "aria-labelledby": "basic-button",
                 }}
               >
-                {productionMangeFields.map((field, i) => {
+                {productionMangeFields?.map((field, i) => {
                   return (
                     <MenuItem
                       onClick={() => handleCloseAnchor(field)}

@@ -122,7 +122,7 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
                   />
                 </FormControl>
                 <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
-                  {errors.name ? "This field is required" : ""}
+                  {errors.name ? "This field is required." : ""}
                 </Typography>
               </Grid>
 
@@ -156,7 +156,7 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
                   )}
                 </FormControl>
                 <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
-                  {errors.specie ? "This field is required" : ""}
+                  {errors.specie ? "This field is required." : ""}
                 </Typography>
               </Grid>
 
@@ -180,7 +180,7 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
                 </FormControl>
                 <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
                   {errors.temperatureCoefficient
-                    ? "This field is required"
+                    ? "This field is required."
                     : ""}
                 </Typography>
               </Grid>
@@ -199,7 +199,7 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
                   }}
                 />
                 <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
-                  {errors.growthEquationLength ? "This field is required" : ""}
+                  {errors.growthEquationLength ? "This field is required." : ""}
                 </Typography>
               </Grid>
 
@@ -218,7 +218,7 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
                 />
                 <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
                   {errors.growthEquationBodyWeight
-                    ? "This field is required"
+                    ? "This field is required."
                     : ""}
                 </Typography>
               </Grid>
@@ -237,7 +237,7 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
                   }}
                 />
                 <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
-                  {errors.conditionFactor1 ? "This field is required" : ""}
+                  {errors.conditionFactor1 ? "This field is required." : ""}
                 </Typography>
               </Grid>
 

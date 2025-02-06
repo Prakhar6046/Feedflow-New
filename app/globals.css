@@ -192,6 +192,9 @@ body {
   background: rgba(6, 161, 155, 0.1);
   border-radius: 8px;
 }
+.nav-links:hover {
+  color: #0e848e;
+}
 
 .nav-links .active span {
   color: #0e848e;

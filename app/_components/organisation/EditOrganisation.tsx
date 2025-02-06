@@ -36,6 +36,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
+import { deleteImage, handleUpload } from "@/app/_lib/utils";
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
   clipPath: "inset(50%)",
@@ -168,65 +169,11 @@ const EditOrganisation = ({ organisationId, organisations }: Iprops) => {
         lastContact.email &&
         lastContact.phone
       ) {
-        setcontactError("");
         append({ name: "", role: "", email: "", phone: "" });
       } else {
-        setcontactError("Please fill previous contact details.");
+        toast.dismiss();
+        toast.error("Please fill previous contact details.");
       }
-    }
-  };
-  const handleUpload = async (imagePath: FileList) => {
-    const file = imagePath[0];
-    const allowedTypes = ["image/jpeg", "image/png", "image/svg+xml"];
-    if (!allowedTypes.includes(file?.type)) {
-      toast.dismiss();
-      toast.error(
-        "Invalid file type. Please upload an image in .jpg, .jpeg, .png or.svg format."
-      );
-      return;
-    }
-    // Validate file size
-    const maxSizeInMB = 2;
-    const maxSizeInBytes = maxSizeInMB * 1024 * 1024;
-    if (file.size > maxSizeInBytes) {
-      toast.dismiss();
-      toast.error(
-        `File size exceeds ${maxSizeInMB}MB. Please upload a smaller file.`
-      );
-      return;
-    }
-    const formData = new FormData();
-    formData.append("image", imagePath[0]);
-    // formData.append("organisationId", params.organisationId);
-    const oldImageName = profilePic?.split("/").pop()?.split(".")[0];
-
-    formData.append("oldImageName", oldImageName || "");
-
-    const response = await fetch(`/api/profile-pic/upload/new`, {
-      method: "POST",
-      body: formData,
-    });
-
-    if (response.ok) {
-      const profile = await response.json();
-      setProfilePic(profile.data.url);
-    }
-  };
-  const deleteImage = async () => {
-    const payload = {
-      id: organisationData?.id,
-      type: "organisation",
-      image: organisationData?.image,
-    };
-    const response = await fetch(`/api/profile-pic/delete`, {
-      method: "DELETE",
-      body: JSON.stringify(payload),
-    });
-    if (response.ok) {
-      const data = await response.json();
-      setProfilePic("");
-      toast.dismiss();
-      toast.success("Image delete successfully");
     }
   };
   useEffect(() => {
@@ -343,7 +290,7 @@ const EditOrganisation = ({ organisationId, organisations }: Iprops) => {
             fontSize={14}
             alignSelf={"flex-start"}
           >
-            Profile Pictures
+            Profile Picture
           </Typography>
           <Button
             component="label"
@@ -378,7 +325,8 @@ const EditOrganisation = ({ organisationId, organisations }: Iprops) => {
             <VisuallyHiddenInput
               type="file"
               {...register("image", {
-                onChange: (e) => handleUpload(e.target.files),
+                onChange: (e) =>
+                  handleUpload(e.target.files, profilePic, setProfilePic),
               })}
               accept=".jpg,.jpeg,.png,.svg"
             />
@@ -418,7 +366,8 @@ const EditOrganisation = ({ organisationId, organisations }: Iprops) => {
                 <VisuallyHiddenInput
                   type="file"
                   {...register("image", {
-                    onChange: (e) => handleUpload(e.target.files),
+                    onChange: (e) =>
+                      handleUpload(e.target.files, profilePic, setProfilePic),
                   })}
                   accept=".jpg,.jpeg,.png,.svg"
                 />
@@ -428,7 +377,16 @@ const EditOrganisation = ({ organisationId, organisations }: Iprops) => {
               <Button
                 type="button"
                 variant="contained"
-                onClick={() => deleteImage()}
+                onClick={() =>
+                  deleteImage(
+                    {
+                      id: organisationData?.id,
+                      type: "organisation",
+                      image: organisationData?.image,
+                    },
+                    setProfilePic
+                  )
+                }
                 sx={{
                   background: "#D71818",
                   fontWeight: 600,

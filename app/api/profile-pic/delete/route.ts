@@ -9,29 +9,22 @@ export const DELETE = async (request: NextRequest) => {
     const id = Number(body.id);
     const type = body.type;
     const public_id = body.image;
-
-    if (!id || !type) {
-      return new NextResponse(
-        JSON.stringify({ message: "Missing or invalid id and type" })
-      );
-    }
     if (!public_id) {
       return new NextResponse(
         JSON.stringify({ message: "Missing or invalid image name" })
       );
     }
-    if (type === "user") {
+    if (type === "user" && id) {
       await prisma.user.update({
         where: { id },
         data: { image: null, imageUrl: null },
       });
-    } else {
+    } else if (id) {
       await prisma.organisation.update({
         where: { id },
         data: { image: null, imageUrl: null },
       });
     }
-
     if (public_id && public_id !== "") {
       try {
         await cloudinary.uploader.destroy(public_id);
@@ -40,7 +33,6 @@ export const DELETE = async (request: NextRequest) => {
         console.error(`Error deleting image: ${err.message}`);
       }
     }
-
     return new NextResponse(
       JSON.stringify({ message: "Image delete successfully", status: true }),
       {
@@ -49,7 +41,6 @@ export const DELETE = async (request: NextRequest) => {
     );
   } catch (error) {
     console.log(error);
-
     return new NextResponse(JSON.stringify({ error, status: false }), {
       status: 500,
     });

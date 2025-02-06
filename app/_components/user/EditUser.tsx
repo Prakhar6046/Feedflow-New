@@ -1,5 +1,6 @@
 "use client";
 import Loader from "@/app/_components/Loader";
+import { deleteImage, handleUpload } from "@/app/_lib/utils";
 import * as validationPattern from "@/app/_lib/utils/validationPatterns/index";
 import * as validationMessage from "@/app/_lib/utils/validationsMessage/index";
 import { SingleUser, UserEditFormInputs } from "@/app/_typeModels/User";
@@ -154,66 +155,6 @@ function EditUser({ userId }: Iprops) {
     }
   };
 
-  const handleUpload = async (imagePath: FileList) => {
-    const file = imagePath[0];
-    const allowedTypes = ["image/jpeg", "image/png", "image/svg+xml"];
-    if (!allowedTypes.includes(file?.type)) {
-      toast.dismiss();
-      toast.error(
-        "Invalid file type. Please upload an image in .jpg, .jpeg, .png or.svg format."
-      );
-      return;
-    }
-    // Validate file size
-    const maxSizeInMB = 2;
-    const maxSizeInBytes = maxSizeInMB * 1024 * 1024;
-    if (file.size > maxSizeInBytes) {
-      toast.dismiss();
-      toast.error(
-        `File size exceeds ${maxSizeInMB}MB. Please upload a smaller file.`
-      );
-      return;
-    }
-    const formData = new FormData();
-    formData.append("image", imagePath[0]);
-    // formData.append("userId", params.userId);
-    // const old: any = profilePic?.split("/");
-
-    // formData.append("oldImageName", old ? old[old?.length - 1] : "");
-    const oldImageName = profilePic?.split("/").pop()?.split(".")[0];
-
-    formData.append("oldImageName", oldImageName || "");
-    const response = await fetch(`/api/profile-pic/upload/new`, {
-      method: "POST",
-      body: formData,
-    });
-
-    if (response.ok) {
-      const updatedUser = await response.json();
-      setProfilePic(updatedUser.data.url);
-
-      // toast.success(updatedUser.message);
-      // resetField("confirmPassword");
-      // resetField("password");
-    }
-  };
-  const deleteImage = async () => {
-    const payload = {
-      id: userData?.data?.id,
-      type: "user",
-      image: userData?.data?.image,
-    };
-    const response = await fetch(`/api/profile-pic/delete`, {
-      method: "DELETE",
-      body: JSON.stringify(payload),
-    });
-    if (response.ok) {
-      const data = await response.json();
-      setProfilePic("");
-      toast.dismiss();
-      toast.success("Image delete successfully");
-    }
-  };
   useEffect(() => {
     if (userId) {
       const user = async () => {
@@ -320,7 +261,8 @@ function EditUser({ userId }: Iprops) {
                 <VisuallyHiddenInput
                   type="file"
                   {...register("image", {
-                    onChange: (e) => handleUpload(e.target.files),
+                    onChange: (e) =>
+                      handleUpload(e.target.files, profilePic, setProfilePic),
                   })}
                   accept=".jpg,.jpeg,.png,.svg"
                 />
@@ -365,7 +307,12 @@ function EditUser({ userId }: Iprops) {
                     <VisuallyHiddenInput
                       type="file"
                       {...register("image", {
-                        onChange: (e) => handleUpload(e.target.files),
+                        onChange: (e) =>
+                          handleUpload(
+                            e.target.files,
+                            profilePic,
+                            setProfilePic
+                          ),
                       })}
                       accept=".jpg,.jpeg,.png,.svg"
                     />
@@ -375,7 +322,16 @@ function EditUser({ userId }: Iprops) {
                   <Button
                     type="button"
                     variant="contained"
-                    onClick={() => deleteImage()}
+                    onClick={() =>
+                      deleteImage(
+                        {
+                          id: userData?.data?.id,
+                          type: "user",
+                          image: userData?.data?.image,
+                        },
+                        setProfilePic
+                      )
+                    }
                     sx={{
                       background: "#D71818",
                       fontWeight: 600,
@@ -555,12 +511,12 @@ function EditUser({ userId }: Iprops) {
                 }}
               />
               {/* )} */}
-              <Divider
+              {/* <Divider
                 sx={{
                   borderColor: "#979797",
                   my: 1,
                 }}
-              />
+              /> */}
               <Typography
                 variant="subtitle1"
                 color="black"

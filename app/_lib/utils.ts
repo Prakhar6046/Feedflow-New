@@ -1,3 +1,4 @@
+import toast from "react-hot-toast";
 import { FarmGroup } from "../_typeModels/production";
 
 export const readableDate = (date: any) => {
@@ -442,3 +443,64 @@ export const averagesDropdown = [
   "All-time average",
   "Individual average",
 ];
+export const deleteImage = async (
+  payload: {
+    id?: Number | undefined;
+    type?: String | undefined;
+    image: String | undefined;
+  },
+  setProfilePic: (val: string) => void
+) => {
+  const response = await fetch(`/api/profile-pic/delete`, {
+    method: "DELETE",
+    body: JSON.stringify(payload),
+  });
+  if (response.ok) {
+    setProfilePic("");
+    toast.dismiss();
+    toast.success("Image delete successfully");
+  }
+};
+export const handleUpload = async (
+  imagePath: FileList,
+  profilePic: String | undefined,
+  setProfilePic: (val: string) => void
+) => {
+  const file = imagePath[0];
+  const allowedTypes = ["image/jpeg", "image/png", "image/svg+xml"];
+  if (!allowedTypes.includes(file?.type)) {
+    toast.dismiss();
+    toast.error(
+      "Invalid file type. Please upload an image in .jpg, .jpeg, .png or.svg format."
+    );
+    return;
+  }
+  // Validate file size
+  const maxSizeInMB = 2;
+  const maxSizeInBytes = maxSizeInMB * 1024 * 1024;
+  if (file.size > maxSizeInBytes) {
+    toast.dismiss();
+    toast.error(
+      `File size exceeds ${maxSizeInMB}MB. Please upload a smaller file.`
+    );
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append("image", imagePath[0]);
+  const oldImageName = profilePic?.split("/").pop()?.split(".")[0];
+
+  formData.append("oldImageName", oldImageName || "");
+
+  const response = await fetch(`/api/profile-pic/upload/new`, {
+    method: "POST",
+    body: formData,
+  });
+
+  if (response.ok) {
+    const profileData = await response.json();
+    setProfilePic(profileData.data.url);
+    toast.dismiss();
+    toast.success("Profile photo successfully uploaded");
+  }
+};
