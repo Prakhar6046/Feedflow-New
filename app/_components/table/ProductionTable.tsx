@@ -914,7 +914,7 @@ export default function ProductionTable({
                             color: "#555555",
                             fontWeight: 500,
                             pl: 0,
-                            textWrap: "nowrap",
+                            textWrap: "wrap",
                           }}
                         >
                           {farm.units?.map((unit: any, i) => {
@@ -970,7 +970,7 @@ export default function ProductionTable({
                             fontWeight: 500,
                             pl: 0,
                             p: 0,
-                            textWrap: "nowrap",
+                            textWrap: "wrap",
                           }}
                         >
                           {farm.units.map((unit, i) => {
@@ -1018,7 +1018,7 @@ export default function ProductionTable({
                             color: "#555555",
                             fontWeight: 500,
                             pl: 0,
-                            textWrap: "nowrap",
+                            textWrap: "wrap",
                           }}
                         >
                           {farm.units.map((unit, i) => {
@@ -1447,7 +1447,7 @@ export default function ProductionTable({
                                     padding: "6px 12px",
                                     // margin: "5px 0 8px 0",
                                     margin: "8px 0",
-                                    textWrap: "nowrap",
+                                    textWrap: "wrap",
                                   }}
                                   display={"flex"}
                                   gap={1}

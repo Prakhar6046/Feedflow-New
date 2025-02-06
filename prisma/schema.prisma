@@ -46,7 +46,7 @@ model Organisation {
   id               Int      @id @default(autoincrement())
   image            String?
   imageUrl         String?
-  name             String
+  name             String   @unique
   // contactNumber    String
   // contactPerson    String
   organisationCode String   @default("")
@@ -111,7 +111,7 @@ model Contact {
 
 model Farm {
   id             String        @id @default(cuid())
-  name           String
+  name           String        @unique
   farmAltitude   String
   farmAddressId  String?       @unique
   lat            String?
@@ -197,7 +197,6 @@ model FarmAddress {
 
 model YearBasedPredicationProductionUnit {
   id        String   @id @default(cuid())
-  unitId    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -211,8 +210,8 @@ model YearBasedPredicationProductionUnit {
   visibility Json?
   idealRange Json?
 
-  productionUnitId String
-  ProductionUnit   ProductionUnit @relation(fields: [productionUnitId], references: [id])
+  productionUnitName String
+  ProductionUnit     ProductionUnit @relation(fields: [productionUnitName], references: [name])
 
   @@index([createdAt])
   @@index([updatedAt])
@@ -220,11 +219,10 @@ model YearBasedPredicationProductionUnit {
 
 model ProductionUnit {
   id                                 String                               @id @default(cuid())
-  name                               String
+  name                               String                               @unique
   type                               String
   capacity                           String
   waterflowRate                      String
-  unitId                             String?
   createdAt                          DateTime                             @default(now())
   updatedAt                          DateTime                             @updatedAt
   Farm                               Farm?                                @relation(fields: [farmId], references: [id])
