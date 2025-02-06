@@ -210,8 +210,8 @@ model YearBasedPredicationProductionUnit {
   visibility Json?
   idealRange Json?
 
-  productionUnitName String
-  ProductionUnit     ProductionUnit @relation(fields: [productionUnitName], references: [name])
+  productionUnitId String
+  ProductionUnit   ProductionUnit @relation(fields: [productionUnitId], references: [id])
 
   @@index([createdAt])
   @@index([updatedAt])
@@ -219,7 +219,7 @@ model YearBasedPredicationProductionUnit {
 
 model ProductionUnit {
   id                                 String                               @id @default(cuid())
-  name                               String                               @unique
+  name                               String
   type                               String
   capacity                           String
   waterflowRate                      String
