@@ -41,6 +41,8 @@ const AccountPopover = () => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const [loggedUserData, setLoggedUserData] = useState<LoggedUser>();
+  const [userData, setUserData] = useState<LoggedUser>();
+  const [loading, setLoading] = useState<boolean>(false);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -70,7 +72,24 @@ const AccountPopover = () => {
       setLoggedUserData(JSON.parse(loggedUser));
     }
   }, [loggedUser]);
-
+  useEffect(() => {
+    if (!loggedUserData) return;
+    setLoading(true);
+    const getUser = async () => {
+      try {
+        const response = await fetch(`/api/users/${loggedUserData.id}`, {
+          method: "GET",
+        });
+        const data = await response.json();
+        setUserData(data.data);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+        setLoading(false);
+      }
+    };
+    getUser();
+  }, [loggedUserData, router]);
   return (
     <React.Fragment>
       <Box sx={{ display: "flex", alignItems: "center", textAlign: "center" }}>
@@ -82,13 +101,13 @@ const AccountPopover = () => {
             aria-haspopup="true"
             aria-expanded={open ? "true" : undefined}
           >
-            {loggedUserData?.imageUrl ? (
+            {userData?.imageUrl ? (
               <Box
                 borderRadius={100}
                 width={40}
                 height={40}
                 style={{
-                  backgroundImage: `url(${loggedUserData?.imageUrl})`,
+                  backgroundImage: `url(${userData?.imageUrl})`,
                   backgroundSize: "contain",
                   backgroundPosition: "center",
                   backgroundRepeat: "no-repeat",
@@ -153,18 +172,18 @@ const AccountPopover = () => {
             gap={3}
           >
             <Typography variant="subtitle2" fontWeight={600}>
-              {loggedUserData ? loggedUserData?.name : "Demo"}
+              {userData ? userData?.name : "Demo"}
             </Typography>
             <Badge
-              badgeContent={loggedUserData ? loggedUserData?.role : ""}
+              badgeContent={userData ? userData?.role : ""}
               color="primary"
               className="profile-badge"
             ></Badge>
           </Stack>
           <Typography variant="body2" fontSize={13} fontWeight={400} mt={0.3}>
-            {loggedUserData ? loggedUserData?.email : "Demo"}
+            {userData ? userData?.email : "Demo"}
           </Typography>
-          {loggedUserData?.role !== "SUPERADMIN" && (
+          {userData?.role !== "SUPERADMIN" && (
             <Typography
               variant="body2"
               fontSize={12}
@@ -172,7 +191,7 @@ const AccountPopover = () => {
               fontWeight={600}
               mt={0.5}
             >
-              {loggedUserData ? loggedUserData?.organisationType : ""}
+              {userData ? userData?.organisationType : ""}
             </Typography>
           )}
         </Box>

@@ -25,6 +25,10 @@ import {
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { Dayjs } from "dayjs";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import {
@@ -34,13 +38,9 @@ import {
   useForm,
 } from "react-hook-form";
 import toast from "react-hot-toast";
-import Confirmation from "./Confirmation";
-import CalculateMeanWeigth from "./CalculateMeanWeigth";
 import CalculateMeanLength from "./CalculateMeanLength";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { Dayjs } from "dayjs";
+import CalculateMeanWeigth from "./CalculateMeanWeigth";
+import Confirmation from "./Confirmation";
 const style = {
   position: "absolute" as "absolute",
   top: "50%",
@@ -108,7 +108,7 @@ const TransferModal: React.FC<Props> = ({
   const [selectedMeanLengthId, setSelectedMeanLengthId] = useState<String>("");
   const [isApiCallInProgress, setIsApiCallInProgress] =
     useState<boolean>(false);
-
+  const [currentInput, setCurrentInput] = useState("");
   const {
     register,
     setValue,
@@ -309,13 +309,13 @@ const TransferModal: React.FC<Props> = ({
       removeLocalItem("transferformData");
     }
   };
-  const handleCheckUnitSelected = (idx: number) => {
+  const handleCheckUnitSelected = (idx: number, inputName: string) => {
+    setCurrentInput(inputName);
     if (!watchedFields[idx].productionUnit) {
       toast.dismiss();
       toast.error("Please select production unit first");
     }
   };
-
   useEffect(() => {
     if (typeof window !== "undefined") {
       const data = getLocalItem("transferformData");
@@ -433,12 +433,20 @@ const TransferModal: React.FC<Props> = ({
 
           const currentBiomass = Number(field.biomass) || 0; // Convert to number
           const currentCount = Number(field.count) || 0; // Convert to number
-          if (field.field !== "Stock" && currentBiomass > updatedBiomass) {
+          if (
+            field.field !== "Stock" &&
+            currentBiomass > updatedBiomass &&
+            currentInput === "biomass"
+          ) {
             toast.dismiss();
             toast.error(`Please enter a value lower than ${updatedBiomass}`);
             setIsEnteredBiomassGreater(true);
           }
-          if (field.field !== "Stock" && currentCount > updatedCount) {
+          if (
+            field.field !== "Stock" &&
+            currentCount > updatedCount &&
+            currentInput === "fishCount"
+          ) {
             toast.dismiss();
             toast.error(`Please enter a value lower than ${updatedCount}`);
             setIsEnteredFishCountGreater(true);
@@ -1166,7 +1174,9 @@ const TransferModal: React.FC<Props> = ({
                                   pattern: /^\d+(\.\d+)?(e[+-]?\d+)?$/,
                                   maxLength: 10,
                                 })}
-                                onClick={() => handleCheckUnitSelected(idx)}
+                                onClick={() =>
+                                  handleCheckUnitSelected(idx, "biomass")
+                                }
                                 focused
                               />
 
@@ -1277,7 +1287,9 @@ const TransferModal: React.FC<Props> = ({
                                 pattern: /^\d+(\.\d+)?(e[+-]?\d+)?$/,
                                 maxLength: 10,
                               })}
-                              onClick={() => handleCheckUnitSelected(idx)}
+                              onClick={() =>
+                                handleCheckUnitSelected(idx, "fishCount")
+                              }
                               focused
                             />
                             <Typography
