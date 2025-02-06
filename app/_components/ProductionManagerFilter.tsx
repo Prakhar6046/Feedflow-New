@@ -17,6 +17,8 @@ import { MultiSelect } from "primereact/multiselect";
 
 import "primereact/resources/primereact.css";
 import "primereact/resources/themes/lara-light-indigo/theme.css";
+import { Padding } from "@mui/icons-material";
+import { red } from "@mui/material/colors";
 interface Props {
   selectedAverage: String;
   setSelectedAverage: (val: any) => void;
@@ -72,6 +74,26 @@ function ProductionManagerFilter({
     }
   }, [allFarms, allUnits]);
   return (
+    <Box><Button
+    id="basic-button"
+    className=""
+    type="button"
+    variant="contained"
+    onClick={handleResetFilters}
+sx={{
+      background: "#06A19B",
+      fontWeight: "bold",
+      padding: "8px 20px",
+      width: 'fit-content',
+      textTransform: "capitalize",
+      borderRadius: "8px",
+      display:"flex",
+      marginLeft:"auto",
+      marginTop:1
+    }}
+  >
+    Reset Filters
+  </Button>
     <Grid container spacing={2} mt={1}>
       <Grid
         item
@@ -81,13 +103,17 @@ function ProductionManagerFilter({
         xs={12}
         sx={{
           width: "fit-content",
-
           paddingTop: "8px",
         }}
       >
         <Box sx={{ width: "100%" }}>
           <FormControl fullWidth className="form-input selected" focused>
-            <InputLabel id="demo-simple-select-label-1">Farms</InputLabel>
+            <InputLabel
+              id="demo-simple-select-label-1 "
+              className="custom-input"
+            >
+              Farms
+            </InputLabel>
             {/* <Select
               labelId="demo-simple-select-label-1"
               id="demo-simple-select"
@@ -118,8 +144,19 @@ function ProductionManagerFilter({
               optionLabel="option"
               display="chip"
               placeholder="Select Farms"
+              dropdownIcon={
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="10"
+                  height="10"
+                  viewBox="0 0 15 15"
+                >
+                  <path fill="currentColor" d="M7.5 12L0 4h15z" />
+                </svg>
+              } // Custom dropdown icon
               maxSelectedLabels={3}
-              className="w-full md:w-20rem"
+              // Custom icon
+              className="w-full md:w-20rem custom-select"
             />
           </FormControl>
         </Box>
@@ -144,7 +181,9 @@ function ProductionManagerFilter({
             }`}
             focused
           >
-            <InputLabel id="demo-simple-select-label">Units</InputLabel>
+            <InputLabel id="demo-simple-select-label" className="custom-input">
+              Units
+            </InputLabel>
             {/* <Select
               labelId="demo-simple-select-label"
               id="demo-simple-select"
@@ -176,7 +215,17 @@ function ProductionManagerFilter({
               display="chip"
               placeholder="Select Units"
               maxSelectedLabels={3}
-              className="w-full md:w-20rem"
+              dropdownIcon={
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="10"
+                  height="10"
+                  viewBox="0 0 15 15"
+                >
+                  <path fill="currentColor" d="M7.5 12L0 4h15z" />
+                </svg>
+              } // Custom dropdown icon
+              className="w-full md:w-20rem custom-select"
             />
           </FormControl>
         </Box>
@@ -382,8 +431,9 @@ function ProductionManagerFilter({
             </Select>
           </FormControl>
         </Box>
+        
       </Grid>
-      <Grid
+      {/* <Grid
         item
         lg={2}
         md={4}
@@ -402,32 +452,31 @@ function ProductionManagerFilter({
             type="button"
             variant="contained"
             onClick={handleResetFilters}
-            sx={{
+       sx={{
               background: "#06A19B",
               fontWeight: "bold",
-              paddingX: 1,
-              paddingY: 0.25,
+              padding: "8px 20px",
+              width: 'fit-content',
+              textTransform: "capitalize",
               borderRadius: "8px",
-              alignItems: "center",
-              minWidth: "fit-content",
             }}
           >
             Reset Filters
           </Button>
         </Box>
-      </Grid>
+      </Grid> */}
       {/* <Grid
         item
      lg={2}
         sx={{
           width: "fit-content",
-         
           paddingTop: "8px",
         }}
       >
         <Box sx={{ width: "100%" }}>Clear</Box>
       </Grid> */}
     </Grid>
+    </Box>
   );
 }
 

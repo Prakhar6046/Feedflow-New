@@ -649,3 +649,60 @@ label {
 .selected input {
   cursor: not-allowed !important;
 }
+
+/* new css */
+.custom-select {
+  padding: 13.5px 0px 16.5px 14px;
+  border-color: #979797 !important;
+}
+.custom-input {
+  background-color: white !important;
+  padding: 0px 5px;
+}
+.p-multiselect:not(.p-disabled).p-focus {
+  box-shadow: none !important;
+}
+.p-multiselect-item,
+.p-multiselect-header {
+  padding: 15px;
+}
+.p-multiselect-item span {
+  margin-left: 8px;
+}
+.p-multiselect-panel
+  .p-multiselect-items
+  .p-multiselect-item.p-highlight.p-focus,
+.p-multiselect-panel .p-multiselect-items .p-multiselect-item.p-highlight {
+  background-color: rgba(25, 118, 210, 0.08) !important;
+}
+.p-multiselect-panel
+  .p-multiselect-items
+  .p-multiselect-item.p-highlight.p-focus
+  span,
+.p-multiselect-panel .p-multiselect-items .p-multiselect-item.p-highlight {
+  color: black !important;
+}
+
+/* for check box */
+.p-checkbox-box{
+  border-radius: 2px !important;
+  height: 18px;
+  width: 18px;
+}
+
+.p-checkbox.p-highlight .p-checkbox-box {
+  background-color: #1976d2 !important;
+  border-color: #1976d2 !important;
+  border-radius: 2px;
+}
+.p-checkbox:not(.p-disabled):has(.p-checkbox-input:hover) .p-checkbox-box {
+  border-color: #1976d2 !important;
+}
+
+/* for token */
+.p-multiselect-token {
+  padding: 0px 10px !important;
+}
+.p-multiselect-token span {
+  margin-right: 5px;
+}
