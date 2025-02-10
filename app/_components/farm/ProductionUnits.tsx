@@ -72,8 +72,7 @@ const ProductionUnits: NextPage<Props> = ({
   const [open, setopen] = useState<boolean>(false);
   const [openUnitParametersModal, setOpenUnitParametersModal] =
     useState<boolean>(false);
-  const [selectedUnitId, setSelectedUnitId] = useState<string>("");
-  const [updatedUnits, setUpdatedUnits] = useState<any>();
+  const [selectedUnitName, setSelectedUnitName] = useState<string>("");
   const [calculatedValue, setCalculatedValue] = useState<CalculateType>();
   const [formProductionUnitsData, setFormProductionUnitsData] = useState<any>();
   const [isApiCallInProgress, setIsApiCallInProgress] =
@@ -176,6 +175,40 @@ const ProductionUnits: NextPage<Props> = ({
       try {
         const loggedUserData = JSON.parse(userData);
         let payload;
+        const filteredProductionUnits =
+          productionParamtertsUnitsArrayLocal.filter(
+            (unit: {
+              unitName: string;
+              predictedValues: any;
+              idealRange: any;
+            }) =>
+              data.productionUnits.some(
+                (param: any) => param.name === unit.unitName
+              )
+          );
+        console.log(editFarm);
+        console.log(filteredProductionUnits);
+        const updatedProductionUnits = filteredProductionUnits.map(
+          (filteredUnit: any) => {
+            const matchedUnit = editFarm.productionUnits.find(
+              (unit: any) => unit.name === filteredUnit.unitName
+            );
+            console.log("matchedUnit", matchedUnit);
+
+            if (matchedUnit) {
+              return {
+                ...filteredUnit,
+                id: matchedUnit.YearBasedPredicationProductionUnit[0].id,
+                // type: matchedUnit.type,
+                // capacity: matchedUnit.capacity,
+                // waterflowRate: matchedUnit.waterflowRate,
+                // farmId: matchedUnit.farmId,
+              };
+            }
+            return filteredUnit;
+          }
+        );
+
         if (
           isEditFarm === "true" &&
           editFarm?.farmAddress?.id &&
@@ -216,7 +249,7 @@ const ProductionUnits: NextPage<Props> = ({
                 visibility: farmPredictionValues.idealRange["Visibility cm"],
               },
             },
-            productionParamtertsUnitsArray: productionParamtertsUnitsArrayLocal,
+            productionParamtertsUnitsArray: updatedProductionUnits,
             farmAddress: {
               addressLine1: farmData.addressLine1,
               addressLine2: farmData.addressLine2,
@@ -240,7 +273,7 @@ const ProductionUnits: NextPage<Props> = ({
           };
         } else {
           payload = {
-            productionParamtertsUnitsArray: productionParamtertsUnitsArrayLocal,
+            productionParamtertsUnitsArray: updatedProductionUnits,
             productionParameter: {
               ...farmPredictionValues,
               predictedValues: {
@@ -294,6 +327,7 @@ const ProductionUnits: NextPage<Props> = ({
             userId: loggedUserData.id,
           };
         }
+
         console.log(payload);
 
         if (Object.keys(payload).length && payload.name) {
@@ -342,14 +376,7 @@ const ProductionUnits: NextPage<Props> = ({
     },
     index: number
   ) => {
-    const productionParamtertsUnitsArrayLocal = getLocalItem(
-      "productionParamtertsUnitsArray"
-    );
-
-    const updatedData = productionParamtertsUnitsArrayLocal.filter(
-      (unit: any) => unit.id !== item.id
-    );
-    if (index === 0) {
+    if (fields?.length === 1 && index === 0) {
       setValue("productionUnits", [
         {
           name: "",
@@ -362,19 +389,6 @@ const ProductionUnits: NextPage<Props> = ({
     } else {
       remove(index);
     }
-    setLocalItem("productionParamtertsUnitsArray", updatedData);
-
-    index === 0
-      ? setValue("productionUnits", [
-          {
-            name: "",
-            capacity: "",
-            type: "",
-            waterflowRate: "",
-            id: uuidv4(),
-          },
-        ])
-      : remove(index);
   };
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -436,17 +450,6 @@ const ProductionUnits: NextPage<Props> = ({
     setValue("radius", "1");
     setValue("width", "1");
   }, [formProductionUnitsData]);
-
-  useEffect(() => {
-    if (productionUnits && fields) {
-      const updatedproductionUnits = productionUnits.map((unit, i) => {
-        return { ...unit, unitId: fields[i].id };
-      });
-      setUpdatedUnits(updatedproductionUnits);
-    }
-  }, [fields, productionUnits]);
-
-  console.log("updatedUnits", updatedUnits);
 
   return (
     <Stack>
@@ -799,7 +802,7 @@ const ProductionUnits: NextPage<Props> = ({
                         onClick={() => {
                           console.log("item", item);
                           setOpenUnitParametersModal(true);
-                          setSelectedUnitId(item.id);
+                          setSelectedUnitName(productionUnits[index].name);
                         }}
                       >
                         <Box
@@ -914,7 +917,7 @@ const ProductionUnits: NextPage<Props> = ({
         productionParaMeter={productionParaMeter}
         open={openUnitParametersModal}
         setOpen={setOpenUnitParametersModal}
-        selectedUnitId={selectedUnitId}
+        selectedUnitName={selectedUnitName}
       />
       <CalculateVolume
         open={open}

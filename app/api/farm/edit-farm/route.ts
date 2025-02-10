@@ -77,36 +77,27 @@ export async function POST(req: NextRequest) {
         },
       });
       newUnits.push(updatedUnit); // Store the updated or created production unit
-      console.log(unit);
 
-      // Ensure YearBasedPredicationProductionUnit is an array before accessing its first element
-      // const predictionUnits = unit.YearBasedPredicationProductionUnit ?? [];
+      for (const existingPredictionUnit of body.productionParamtertsUnitsArray ||
+        []) {
+        if (unit.name === existingPredictionUnit.unitName) {
+          const { id, unitName, idealRange, ...rest } = existingPredictionUnit;
 
-      // if (predictionUnits.length > 0 && predictionUnits[0]?.id) {
-      //   // Extract ID from the first entry
-      //   const predicationId = predictionUnits[0].id;
-
-      //   // Update existing YearBasedPredicationProductionUnit
-      //   await prisma.yearBasedPredicationProductionUnit.upsert({
-      //     where: { id: predicationId },
-      //     update: {
-      //       productionUnitId: updatedUnit?.id,
-      //       ...paylaodForProductionParameter,
-      //     },
-      //     create: {
-      //       productionUnitId: updatedUnit?.id,
-      //       ...paylaodForProductionParameter,
-      //     },
-      //   });
-      // } else {
-      //   // Create a new YearBasedPredicationProductionUnit if ID does not exist
-      //   await prisma.yearBasedPredicationProductionUnit.create({
-      //     data: {
-      //       productionUnitId: updatedUnit?.id,
-      //       ...paylaodForProductionParameter,
-      //     },
-      //   });
-      // }
+          await prisma.yearBasedPredicationProductionUnit.upsert({
+            where: { id: id || "", productionUnitId: unit.id || "" },
+            update: {
+              ...rest.predictedValues,
+              idealRange,
+            },
+            create: {
+              productionUnitId: updatedUnit.id,
+              ...(rest.predictedValues && idealRange
+                ? { ...rest.predictedValues, idealRange }
+                : { ...paylaodForProductionParameter }),
+            },
+          });
+        }
+      }
 
       // Handle production entries corresponding to the production unit
       const correspondingProduction = body.productions.find(
@@ -160,8 +151,6 @@ export async function POST(req: NextRequest) {
         newProductions.push(newProduction); // Store the newly created production
       }
     }
-
-    // === Handle Deletion Logic for Both Production Units and Productions ===
 
     // Delete units that are no longer present in the updated list
     const unitsToDelete = existingUnits.filter(

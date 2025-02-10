@@ -1,11 +1,13 @@
 import { InvitationEmail } from "@/app/_lib/emailTemplate/invitationEmail";
 import prisma from "@/prisma/prisma";
+import { Prisma } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
-  try {
-    const body = await req.json();
+  const body = await req.json();
+  console.log(body);
 
+  try {
     const productionParameter = body.productionParameter;
     if (
       !productionParameter ||
@@ -78,7 +80,6 @@ export async function POST(req: NextRequest) {
     //Creating production parameter
     const paylaodForProductionParameter = {
       ...productionParameter.predictedValues,
-      id: productionParameter.id,
       idealRange: productionParameter.idealRange,
     };
 
@@ -89,17 +90,20 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    console.log(body.productionParamtertsUnitsArray);
     await prisma.yearBasedPredicationProductionUnit.createMany({
       data: newProductUnits.flatMap((unit: any) =>
-        body.productionParamtertsUnitsArray.map((data: any) => {
-          return {
-            productionUnitId: unit.id,
-            ...data.predictedValues,
-            idealRange: data.idealRange,
-            unitId: data.id,
-          };
-        })
+        body.productionParamtertsUnitsArray
+          .map((data: any) => {
+            if (unit.name === data.unitName) {
+              return {
+                productionUnitId: unit.id,
+                ...data.predictedValues,
+                idealRange: data.idealRange,
+              };
+            }
+            return null;
+          })
+          .filter((entry: any) => entry !== null)
       ),
     });
 
@@ -108,11 +112,25 @@ export async function POST(req: NextRequest) {
       data: "farm",
       status: true,
     });
-  } catch (error) {
-    console.error(error);
-    return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 }
-    );
+  } catch (error: unknown) {
+    console.error("Error:", error);
+
+    let errorMessage = "An unexpected error occurred";
+    let statusCode = 500;
+
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === "P2002") {
+        errorMessage = `Farm with name "${body.name}" already exists.`;
+        statusCode = 409;
+      }
+    } else if (error instanceof Error) {
+      errorMessage = error.message;
+    } else if (typeof error === "string") {
+      errorMessage = error;
+    } else if (typeof error === "object" && error !== null) {
+      errorMessage = JSON.stringify(error);
+    }
+
+    return NextResponse.json({ error: errorMessage }, { status: statusCode });
   }
 }

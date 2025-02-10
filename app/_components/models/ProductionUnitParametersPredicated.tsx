@@ -38,7 +38,7 @@ interface Props {
   editFarm?: any;
   setOpen: (open: boolean) => void;
   open: boolean;
-  selectedUnitId: string;
+  selectedUnitName: string;
 }
 interface FormData {
   predictedValues: Record<string, Record<number, string>>;
@@ -61,7 +61,7 @@ const ProductionUnitParametersPredicated: React.FC<Props> = ({
   open,
   editFarm,
   productionParaMeter,
-  selectedUnitId,
+  selectedUnitName,
 }) => {
   const isEditFarm = getCookie("isEditFarm");
 
@@ -95,11 +95,11 @@ const ProductionUnitParametersPredicated: React.FC<Props> = ({
     );
 
     const updatedData = productionParamtertsUnitsArray.filter(
-      (data: any) => data.id !== selectedUnitId
+      (data: any) => data.unitName !== selectedUnitName
     );
 
     const payload = {
-      id: selectedUnitId,
+      unitName: selectedUnitName,
       predictedValues: {
         waterTemp: data.predictedValues["Water Temperature °C"],
         DO: data.predictedValues["Dissolved Oxygen (DO) mg/L"],
@@ -121,6 +121,7 @@ const ProductionUnitParametersPredicated: React.FC<Props> = ({
         visibility: data.idealRange["Visibility cm"],
       },
     };
+
     updatedData.push(payload);
     setLocalItem("productionParamtertsUnitsArray", updatedData);
     setOpen(false);
@@ -132,79 +133,80 @@ const ProductionUnitParametersPredicated: React.FC<Props> = ({
 
       setFormProductionParameters(formData);
     }
-  }, []);
-  console.log(editFarm?.productionUnits);
-  console.log(selectedUnitId);
-
-  useEffect(() => {
-    if (isEditFarm && editFarm?.productionUnits) {
-      const prediction: any = editFarm.productionUnits.find(
-        (unit: any) => unit.id === selectedUnitId
-      );
-      console.log(prediction);
-
-      // Creating the idealRange object for Min and Max
-      const idealRange = {
-        "Water Temperature °C": {
-          Min: prediction?.idealRange?.waterTemp?.Min || "",
-          Max: prediction?.idealRange?.waterTemp?.Max || "",
-        },
-        "Dissolved Oxygen (DO) mg/L": {
-          Min: prediction?.idealRange?.DO?.Min || "",
-          Max: prediction?.idealRange?.DO?.Max || "",
-        },
-        "Total Suspended solids (TSS)": {
-          Min: prediction?.idealRange?.TSS?.Min || "",
-          Max: prediction?.idealRange?.TSS?.Max || "",
-        },
-        "Ammonia (NH₄) mg/L": {
-          Min: prediction?.idealRange?.NH4?.Min || "",
-          Max: prediction?.idealRange?.NH4?.Max || "",
-        },
-        "Nitrate (NO₃) mg/L": {
-          Min: prediction?.idealRange?.NO3?.Min || "",
-          Max: prediction?.idealRange?.NO3?.Max || "",
-        },
-        "Nitrite (NO₂) mg/L": {
-          Min: prediction?.idealRange?.NO2?.Min || "",
-          Max: prediction?.idealRange?.NO2?.Max || "",
-        },
-        pH: {
-          Min: prediction?.idealRange?.ph?.Min || "",
-          Max: prediction?.idealRange?.ph?.Max || "",
-        },
-        "Visibility cm": {
-          Min: prediction?.idealRange?.visibility?.Min || "",
-          Max: prediction?.idealRange?.visibility?.Max || "",
-        },
-      };
-
-      // Set the values in the form
-      setValue("idealRange", idealRange);
-
-      const predictedValues = {
-        "Water Temperature °C": { ...prediction?.waterTemp },
-        "Dissolved Oxygen (DO) mg/L": { ...prediction?.DO },
-        "Total Suspended solids (TSS)": { ...prediction?.TSS },
-        "Ammonia (NH₄) mg/L": { ...prediction?.NH4 },
-        "Nitrate (NO₃) mg/L": { ...prediction?.NO3 },
-        "Nitrite (NO₂) mg/L": { ...prediction?.NO2 },
-        pH: { ...prediction?.ph },
-        "Visibility cm": { ...prediction?.visibility },
-      };
-
-      setValue("predictedValues", predictedValues);
-      setValue("modelId", prediction?.modelId);
-    }
-  }, [editFarm, isEditFarm, setValue]);
-
-  useEffect(() => {
     if (formProductionParameters) {
       setValue("predictedValues", formProductionParameters.predictedValues);
       setValue("idealRange", formProductionParameters.idealRange);
       setValue("modelId", formProductionParameters.modelId);
     }
-  }, [formProductionParameters]);
+  }, []);
+  console.log(isEditFarm);
+
+  useEffect(() => {
+    if (isEditFarm && editFarm) {
+      console.log(editFarm);
+
+      editFarm?.productionUnits.map((unit: any, i: number) => {
+        if (
+          unit.name === selectedUnitName &&
+          unit.id ===
+            unit.YearBasedPredicationProductionUnit[0]?.productionUnitId
+        ) {
+          // Creating the idealRange object for Min and Max
+          const prediction = unit.YearBasedPredicationProductionUnit[0];
+          const idealRange = {
+            "Water Temperature °C": {
+              Min: prediction?.idealRange?.waterTemp?.Min || "",
+              Max: prediction?.idealRange?.waterTemp?.Max || "",
+            },
+            "Dissolved Oxygen (DO) mg/L": {
+              Min: prediction?.idealRange?.DO?.Min || "",
+              Max: prediction?.idealRange?.DO?.Max || "",
+            },
+            "Total Suspended solids (TSS)": {
+              Min: prediction?.idealRange?.TSS?.Min || "",
+              Max: prediction?.idealRange?.TSS?.Max || "",
+            },
+            "Ammonia (NH₄) mg/L": {
+              Min: prediction?.idealRange?.NH4?.Min || "",
+              Max: prediction?.idealRange?.NH4?.Max || "",
+            },
+            "Nitrate (NO₃) mg/L": {
+              Min: prediction?.idealRange?.NO3?.Min || "",
+              Max: prediction?.idealRange?.NO3?.Max || "",
+            },
+            "Nitrite (NO₂) mg/L": {
+              Min: prediction?.idealRange?.NO2?.Min || "",
+              Max: prediction?.idealRange?.NO2?.Max || "",
+            },
+            pH: {
+              Min: prediction?.idealRange?.ph?.Min || "",
+              Max: prediction?.idealRange?.ph?.Max || "",
+            },
+            "Visibility cm": {
+              Min: prediction?.idealRange?.visibility?.Min || "",
+              Max: prediction?.idealRange?.visibility?.Max || "",
+            },
+          };
+
+          // Set the values in the form
+          setValue("idealRange", idealRange);
+
+          const predictedValues = {
+            "Water Temperature °C": { ...prediction?.waterTemp },
+            "Dissolved Oxygen (DO) mg/L": { ...prediction?.DO },
+            "Total Suspended solids (TSS)": { ...prediction?.TSS },
+            "Ammonia (NH₄) mg/L": { ...prediction?.NH4 },
+            "Nitrate (NO₃) mg/L": { ...prediction?.NO3 },
+            "Nitrite (NO₂) mg/L": { ...prediction?.NO2 },
+            pH: { ...prediction?.ph },
+            "Visibility cm": { ...prediction?.visibility },
+          };
+
+          setValue("predictedValues", predictedValues);
+        }
+      });
+    }
+  }, [editFarm, isEditFarm, setValue, selectedUnitName]);
 
   const handleClose = () => {
     setOpen(false);
