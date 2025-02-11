@@ -204,6 +204,15 @@ const ProductionUnitParametersPredicated: React.FC<Props> = ({
           };
 
           setValue("predictedValues", predictedValues);
+        } else {
+          if (formProductionParameters) {
+            setValue(
+              "predictedValues",
+              formProductionParameters.predictedValues
+            );
+            setValue("idealRange", formProductionParameters.idealRange);
+            setValue("modelId", formProductionParameters.modelId);
+          }
         }
       });
     }
