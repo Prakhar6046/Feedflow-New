@@ -354,7 +354,6 @@ const WaterQualityParameter: React.FC<Props> = ({
       setFormData(data);
     }
   }, []);
-  console.log(watchedFields);
   return (
     <Modal
       open={open}

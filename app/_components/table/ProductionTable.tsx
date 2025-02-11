@@ -419,7 +419,6 @@ export default function ProductionTable({
       const selectedFarmIds = selectedFarms?.map(
         (farm: { option: string; id: string }) => farm?.id
       );
-      console.log(selectedFarmIds);
       return data
         .map((farm) => ({
           ...farm,

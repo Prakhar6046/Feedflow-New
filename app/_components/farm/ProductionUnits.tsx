@@ -186,19 +186,16 @@ const ProductionUnits: NextPage<Props> = ({
                 (param: any) => param.name === unit.unitName
               )
           );
-        console.log(editFarm);
-        console.log(filteredProductionUnits);
         const updatedProductionUnits = filteredProductionUnits.map(
           (filteredUnit: any) => {
             const matchedUnit = editFarm.productionUnits.find(
               (unit: any) => unit.name === filteredUnit.unitName
             );
-            console.log("matchedUnit", matchedUnit);
 
             if (matchedUnit) {
               return {
                 ...filteredUnit,
-                id: matchedUnit.YearBasedPredicationProductionUnit[0].id,
+                id: matchedUnit.YearBasedPredicationProductionUnit[0]?.id,
                 // type: matchedUnit.type,
                 // capacity: matchedUnit.capacity,
                 // waterflowRate: matchedUnit.waterflowRate,
@@ -328,8 +325,6 @@ const ProductionUnits: NextPage<Props> = ({
           };
         }
 
-        console.log(payload);
-
         if (Object.keys(payload).length && payload.name) {
           const response = await fetch(
             `${
@@ -359,6 +354,8 @@ const ProductionUnits: NextPage<Props> = ({
           toast.error("Please fill out the all feilds");
         }
       } catch (error) {
+        console.log(error);
+
         toast.error("Something went wrong. Please try again.");
       } finally {
         setIsApiCallInProgress(false);
@@ -765,7 +762,6 @@ const ProductionUnits: NextPage<Props> = ({
                           position: "relative",
                         }}
                         onClick={() => {
-                          console.log("item", item);
                           setOpenUnitParametersModal(true);
                           setSelectedUnitName(productionUnits[index].name);
                         }}

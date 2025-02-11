@@ -135,17 +135,15 @@ const ProductionUnitParametersPredicated: React.FC<Props> = ({
     }
   }, []);
   useEffect(() => {
-    if (formProductionParameters) {
+    if (!selectedUnitName && formProductionParameters) {
       setValue("predictedValues", formProductionParameters.predictedValues);
       setValue("idealRange", formProductionParameters.idealRange);
       setValue("modelId", formProductionParameters.modelId);
     }
-  }, [formProductionParameters]);
+  }, [formProductionParameters, selectedUnitName]);
 
   useEffect(() => {
     if (isEditFarm && editFarm) {
-      console.log(editFarm);
-
       editFarm?.productionUnits.map((unit: any, i: number) => {
         if (
           unit.name === selectedUnitName &&
@@ -204,15 +202,6 @@ const ProductionUnitParametersPredicated: React.FC<Props> = ({
           };
 
           setValue("predictedValues", predictedValues);
-        } else {
-          if (formProductionParameters) {
-            setValue(
-              "predictedValues",
-              formProductionParameters.predictedValues
-            );
-            setValue("idealRange", formProductionParameters.idealRange);
-            setValue("modelId", formProductionParameters.modelId);
-          }
         }
       });
     }
@@ -228,7 +217,6 @@ const ProductionUnitParametersPredicated: React.FC<Props> = ({
       aria-labelledby="parent-modal-title"
       aria-describedby="parent-modal-description"
       className="modal-positioning"
-      //   onBackdropClick={() => reset()}
     >
       <Stack sx={style}>
         <Box display="flex" justifyContent="flex-end" padding={2}>
