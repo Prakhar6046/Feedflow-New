@@ -133,13 +133,14 @@ const ProductionUnitParametersPredicated: React.FC<Props> = ({
 
       setFormProductionParameters(formData);
     }
+  }, []);
+  useEffect(() => {
     if (formProductionParameters) {
       setValue("predictedValues", formProductionParameters.predictedValues);
       setValue("idealRange", formProductionParameters.idealRange);
       setValue("modelId", formProductionParameters.modelId);
     }
-  }, []);
-  console.log(isEditFarm);
+  }, [formProductionParameters]);
 
   useEffect(() => {
     if (isEditFarm && editFarm) {
