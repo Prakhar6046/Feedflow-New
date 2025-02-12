@@ -335,6 +335,7 @@ export default function ProductionParaMeter({
                                     fontSize: "14px",
                                     fontWeight: "500",
                                     color: "#555555",
+                                    position: "sticky",
                                   }}
                                   onInput={(e) => {
                                     const value = e.currentTarget.value;
@@ -354,6 +355,12 @@ export default function ProductionParaMeter({
                                 color="error"
                                 fontSize={13}
                                 mt={0.5}
+                                style={{
+                                  width: "100px",
+                                  textWrap: "wrap",
+                                  overflow: "hidden",
+                                  textOverflow: "ellipsis",
+                                }}
                               >
                                 {errors?.predictedValues?.[head]?.[year]
                                   .type === "pattern"
@@ -481,6 +488,10 @@ export default function ProductionParaMeter({
                                 color="error"
                                 fontSize={13}
                                 mt={0.5}
+                                style={{
+                                  width: "100px",
+                                  textWrap: "wrap",
+                                }}
                               >
                                 {errors?.idealRange?.[head]?.[val].type ===
                                 "pattern"

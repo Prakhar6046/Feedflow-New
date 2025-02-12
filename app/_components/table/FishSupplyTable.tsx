@@ -507,7 +507,7 @@ export default function FishSupplyTable({ tableData, fishSupply }: Props) {
                           }}
                           sx={{
                             position: "absolute",
-                            left: "-1px",
+                            left: "-10px",
                           }}
                         >
                           <MenuItem onClick={handleEdit}>

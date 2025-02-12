@@ -272,7 +272,7 @@ function EditUser({ userId }: Iprops) {
                   display={"flex"}
                   gap="10px"
                   alignItems={"center"}
-                  mt={"8px"}
+                  my={"10px"}
                 >
                   <Button
                     component="label"

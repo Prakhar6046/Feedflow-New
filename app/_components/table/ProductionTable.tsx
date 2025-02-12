@@ -871,7 +871,6 @@ export default function ProductionTable({
                                         handleFishManageHistory(unit)
                                       }
                                       disabled={isDisabled}
-                                      className=""
                                       type="button"
                                       variant="contained"
                                       style={{
