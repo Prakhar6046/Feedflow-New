@@ -278,11 +278,10 @@ const EditOrganisation = ({ organisationId, organisations }: Iprops) => {
             display: "flex",
             flexDirection: "column",
             justifyContent: "flex-start",
-            gap: {
-              // sm: 5,
-              // xs: 3,
+            gap: 3,
+            alignItems: {
+              xs: "center",
             },
-            alignItems: "center",
           }}
         >
           <Typography
@@ -333,7 +332,7 @@ const EditOrganisation = ({ organisationId, organisations }: Iprops) => {
             />
           </Button>
           {profilePic && (
-            <Box display={"flex"} gap="10px" alignItems={"center"} mt={"8px"}>
+            <Box display={"flex"} gap="10px" alignItems={"center"} mt={"2px"}>
               <Button
                 component="label"
                 variant="contained"

@@ -520,6 +520,10 @@ const ProductionUnitParametersPredicated: React.FC<Props> = ({
                                   color="error"
                                   fontSize={13}
                                   mt={0.5}
+                                  style={{
+                                    width: "175px",
+                                    textWrap: "wrap",
+                                  }}
                                 >
                                   {errors?.idealRange?.[head]?.[val].type ===
                                   "pattern"

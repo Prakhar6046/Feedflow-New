@@ -386,7 +386,7 @@ export default function FeedTable({ feeds }: Props) {
                           }}
                           sx={{
                             position: "absolute",
-                            left: "-10px",
+                            left: "-1px",
                           }}
                         >
                           <MenuItem onClick={handleEdit}>
