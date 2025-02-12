@@ -15,8 +15,11 @@ export const GET = async (request: NextRequest) => {
       include: {
         farm: true,
         organisation: true,
-        productionUnit: true,
+        productionUnit: {
+          include: { YearBasedPredicationProductionUnit: true },
+        },
         fishSupply: true,
+
         WaterManageHistory: {
           orderBy: {
             id: "asc",
