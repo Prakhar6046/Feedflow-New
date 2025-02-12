@@ -37,9 +37,9 @@ export default async function Page({
         ]}
       />
       <EditFarm
-        farmId={params.farmId}
-        farmMembers={farmMembers.data.users}
-        growthModels={growthModels.data}
+        farmId={params?.farmId}
+        farmMembers={farmMembers?.data?.users}
+        growthModels={growthModels?.data}
         farms={farms?.data}
         isEdit={true}
       />

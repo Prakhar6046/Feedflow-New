@@ -19,8 +19,8 @@ export default async function Page({
   const user = JSON.parse(loggedUser);
 
   const farms = await getFarms({
-    role: user.role,
-    organisationId: user.organisationId,
+    role: user?.role,
+    organisationId: user?.organisationId,
     query,
     noFilter: false,
   });
@@ -29,7 +29,7 @@ export default async function Page({
     <>
       <BasicBreadcrumbs
         heading={"Farm"}
-        buttonName={user.role !== "MEMBER" ? "Add Farm" : ""}
+        buttonName={user?.role !== "MEMBER" ? "Add Farm" : ""}
         isTable={true}
         refetch="farm"
         buttonRoute="/dashboard/farm/newFarm"
