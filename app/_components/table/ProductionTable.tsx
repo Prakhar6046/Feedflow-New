@@ -146,7 +146,7 @@ export default function ProductionTable({
     setSelectedProduction(selectedProd);
   };
   const handleResetFilters = () => {
-    setSelectedDropDownfarms([]);
+    setSelectedDropDownfarms(allFarms);
     setSelectedDropDownUnits([]);
     setSelectedDropDownYears([new Date().getFullYear()]);
     setSelectedAverage(averagesDropdown[0]);
@@ -373,9 +373,9 @@ export default function ProductionTable({
       });
       // customFarms.unshift({ code: "0", option: "All farms" });
       setAllFarms(customFarms);
+      setSelectedDropDownfarms(customFarms);
     }
   }, [farms]);
-
   useEffect(() => {
     if (selectedDropDownfarms) {
       const getProductionUnits = (
@@ -405,9 +405,9 @@ export default function ProductionTable({
       );
       // customUnits.unshift({ id: "0", option: "All units" });
       setAllUnits(customUnits);
+      setSelectedDropDownUnits(customUnits);
     }
   }, [selectedDropDownfarms]);
-
   useEffect(() => {
     if (!groupedData || !groupedData.length) return;
     // Utility: Filter by farms
