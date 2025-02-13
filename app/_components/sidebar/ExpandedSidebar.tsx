@@ -622,7 +622,7 @@ const ExpandedSidebar = () => {
               </ListItemButton>
             </ListItem>
           </Link>
-
+          {loggedUserData?.role === "SUPERADMIN" && (
           <Link
             href={"/dashboard/growthModel"}
             className="nav-links"
@@ -685,7 +685,7 @@ const ExpandedSidebar = () => {
               </ListItemButton>
             </ListItem>
           </Link>
-
+          )}
           <Typography
             variant="body1"
             fontSize={12}

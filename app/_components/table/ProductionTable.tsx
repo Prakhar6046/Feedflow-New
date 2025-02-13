@@ -1,6 +1,11 @@
 "use client";
 import TransferModal from "@/app/_components/models/FarmManager";
-import { averagesDropdown, getLocalItem, setLocalItem } from "@/app/_lib/utils";
+import {
+  averagesDropdown,
+  getLocalItem,
+  ProductionSortTables,
+  setLocalItem,
+} from "@/app/_lib/utils";
 import {
   farmManagerFishHead,
   farmManagerFishHeadMember,
@@ -8,9 +13,14 @@ import {
   farmManagerWaterHeadMember,
 } from "@/app/_lib/utils/tableHeadData";
 import { Farm } from "@/app/_typeModels/Farm";
-import { FarmGroup, Production } from "@/app/_typeModels/production";
+import {
+  FarmGroup,
+  MonthyFishAverage,
+  Production,
+} from "@/app/_typeModels/production";
+import { breadcrumsAction } from "@/lib/features/breadcrum/breadcrumSlice";
 import { selectRole } from "@/lib/features/user/userSlice";
-import { useAppSelector } from "@/lib/hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import {
   Box,
   Button,
@@ -18,6 +28,7 @@ import {
   FormControlLabel,
   Radio,
   RadioGroup,
+  TableSortLabel,
   Tooltip,
   Typography,
 } from "@mui/material";
@@ -29,7 +40,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import { getCookie, setCookie } from "cookies-next";
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import WaterQualityParameter from "../models/WaterQualityParameter";
 import ProductionManagerFilter from "../ProductionManagerFilter";
@@ -47,6 +58,8 @@ export default function ProductionTable({
   batches,
 }: Props) {
   const router = useRouter();
+  const dispatch = useAppDispatch();
+  const pathName = usePathname();
   const role = useAppSelector(selectRole);
   const searchParams = useSearchParams();
   const isFish = searchParams.get("isFish");
@@ -75,6 +88,9 @@ export default function ProductionTable({
     isWater ? true : false
   );
   const [productionData, setProductionData] = useState<FarmGroup[]>();
+  const [order, setOrder] = React.useState("asc");
+  const [orderBy, setOrderBy] = React.useState("Farm");
+  const [sortDataFromLocal, setSortDataFromLocal] = React.useState<any>("");
   const [selectedDropDownfarms, setSelectedDropDownfarms] =
     useState<{ id: string; option: string }[]>();
   const [selectedDropDownUnits, setSelectedDropDownUnits] =
@@ -148,30 +164,92 @@ export default function ProductionTable({
 
   const open = Boolean(anchorEl);
 
-  // const handleRequestSort = (
-  //   _: React.MouseEvent<HTMLButtonElement> | null,
-  //   property: string
-  // ) => {
-  //   const isAsc = orderBy === property && order === "asc";
-  //   setOrder(isAsc ? "desc" : "asc");
-  //   setOrderBy(property);
-  //   dispatch(
-  //     breadcrumsAction.handleSort({
-  //       direction: isAsc ? "desc" : "asc",
-  //       column: property,
-  //     })
-  //   );
-  //   if (groupedData && selectedView) {
-  //     const sortedData = ProductionSortTables(
-  //       groupedData,
-  //       order,
-  //       property,
-  //       selectedView,
-  //       false
-  //     );
-  //     setProductionData(sortedData);
-  //   }
-  // };
+  function EnhancedTableHead(data: any) {
+    const { order, orderBy, onRequestSort } = data;
+    const createSortHandler =
+      (property: string) => (event: React.MouseEvent<HTMLButtonElement>) => {
+        onRequestSort(event, property);
+      };
+
+    return (
+      <TableHead
+        className="prod-action"
+        sx={{
+          textWrap: "nowrap",
+        }}
+      >
+        <TableRow>
+          {tableHead?.map((headCell: any, idx: number, headCells: any) => (
+            <TableCell
+              key={headCell.id}
+              sortDirection={
+                idx === headCells.length - 1
+                  ? false
+                  : orderBy === headCell.id
+                  ? order
+                  : false
+              }
+              // align="center"
+              sx={{
+                borderBottom: 0,
+                color: "#67737F",
+                background: "#F5F6F8",
+                fontSize: {
+                  md: 16,
+                  xs: 14,
+                },
+                fontWeight: 600,
+                paddingLeft: {
+                  lg: idx === 0 ? 10 : 0,
+                  md: idx === 0 ? 7 : 0,
+                  xs: idx === 0 ? 4 : 0,
+                },
+              }}
+            >
+              {idx === headCells.length - 1 ||
+              (selectedView === "fish" && idx === 2) ||
+              (selectedView === "fish" && idx === 3) ? (
+                headCell.label
+              ) : (
+                <TableSortLabel
+                  active={orderBy === headCell.id}
+                  direction={orderBy === headCell.id ? order : "asc"}
+                  onClick={createSortHandler(headCell.id)}
+                >
+                  {headCell.label}
+                </TableSortLabel>
+              )}
+            </TableCell>
+          ))}
+        </TableRow>
+      </TableHead>
+    );
+  }
+
+  const handleRequestSort = (
+    _: React.MouseEvent<HTMLButtonElement> | null,
+    property: string
+  ) => {
+    const isAsc = orderBy === property && order === "asc";
+    setOrder(isAsc ? "desc" : "asc");
+    setOrderBy(property);
+    dispatch(
+      breadcrumsAction.handleSort({
+        direction: isAsc ? "desc" : "asc",
+        column: property,
+      })
+    );
+    if (groupedData && selectedView) {
+      const sortedData = ProductionSortTables(
+        groupedData,
+        order,
+        property,
+        selectedView,
+        false
+      );
+      setProductionData(sortedData);
+    }
+  };
 
   const handleTableView = (value: string) => {
     setSelectedView(value);
@@ -226,6 +304,11 @@ export default function ProductionTable({
     return result;
   }, []);
   useEffect(() => {
+    if (pathName) {
+      setSortDataFromLocal(getLocalItem(pathName));
+    }
+  }, [pathName]);
+  useEffect(() => {
     const selectView = getCookie("productionCurrentView");
     if (selectView) {
       setSelectedView(selectView);
@@ -233,6 +316,24 @@ export default function ProductionTable({
       setCookie("productionCurrentView", "fish");
     }
   }, [getCookie("productionCurrentView")]);
+
+  useEffect(() => {
+    if (sortDataFromLocal) {
+      const data = sortDataFromLocal;
+      setOrder(data.direction);
+      setOrderBy(data.column);
+      if (groupedData) {
+        const sortedData = ProductionSortTables(
+          groupedData,
+          data.direction,
+          data.column,
+          selectedView,
+          true
+        );
+        setProductionData(sortedData);
+      }
+    }
+  }, [sortDataFromLocal]);
 
   useEffect(() => {
     const user = JSON.parse(loggedUser);
@@ -258,7 +359,7 @@ export default function ProductionTable({
         setProduction(storedData);
       }
     }
-    if (groupedData) {
+    if (groupedData && !sortDataFromLocal) {
       setProductionData(groupedData);
     }
   }, []);
@@ -679,48 +780,19 @@ export default function ProductionTable({
             }}
           >
             <Table stickyHeader aria-label="sticky table">
-              {/* <TableHead
+              <TableHead
                 sx={{
                   textAlign: "center",
                   textWrap: "nowrap",
                 }}
               >
                 <TableRow></TableRow>
-              </TableHead> */}
-              <TableHead
-                className="prod-action"
-                sx={{
-                  textWrap: "nowrap",
-                }}
-              >
-                <TableRow>
-                  {tableHead?.map(
-                    (headCell: any, idx: number, headCells: any) => (
-                      <TableCell
-                        key={headCell.id}
-                        // align="center"
-                        sx={{
-                          borderBottom: 0,
-                          color: "#67737F",
-                          background: "#F5F6F8",
-                          fontSize: {
-                            md: 16,
-                            xs: 14,
-                          },
-                          fontWeight: 600,
-                          paddingLeft: {
-                            lg: idx === 0 ? 10 : 0,
-                            md: idx === 0 ? 7 : 0,
-                            xs: idx === 0 ? 4 : 0,
-                          },
-                        }}
-                      >
-                        {headCell.label}
-                      </TableCell>
-                    )
-                  )}
-                </TableRow>
               </TableHead>
+              <EnhancedTableHead
+                order={order}
+                orderBy={orderBy}
+                onRequestSort={handleRequestSort}
+              />
               <TableBody>
                 {productionData && productionData?.length > 0 ? (
                   productionData?.map((farm: FarmGroup, i: number) => {
