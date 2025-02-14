@@ -100,7 +100,7 @@ export default function ProductionTable({
     isWater ? true : false
   );
   const handleClickTest = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorE2(event.currentTarget);
+    setAnchorE2(event.currentTarget as HTMLButtonElement);
   };
   const [productionData, setProductionData] = useState<FarmGroup[]>();
   const [order, setOrder] = React.useState("asc");

@@ -1,4 +1,4 @@
-import { setLocalItem } from "@/app/_lib/utils";
+import { getChartPredictedValues, setLocalItem } from "@/app/_lib/utils";
 import { Farm } from "@/app/_typeModels/Farm";
 import {
   Production,
@@ -139,40 +139,7 @@ function WaterHistoryCharts({
     router.push(`/dashboard/production/water/${waterId}/chartPreview`);
   };
   useEffect(() => {
-    const predictionUnit =
-      productions?.[0]?.productionUnit?.YearBasedPredicationProductionUnit?.[0];
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-    const startMonth = start.getMonth();
-    const endMonth = end.getMonth();
-    const monthMap: any = {
-      0: "Jan",
-      1: "Feb",
-      2: "Mar",
-      3: "Apr",
-      4: "May",
-      5: "Jun",
-      6: "Jul",
-      7: "Aug",
-      8: "Sep",
-      9: "Oct",
-      10: "Nov",
-      11: "Dec",
-    };
-
-    const selectedMonths = Object.keys(monthMap)
-      .map(Number)
-      .filter((month: number) => month >= startMonth && month <= endMonth)
-      .map((month: number) => monthMap[month]);
-    const filteredValues = Object.entries(predictionUnit).map(
-      ([key, value]: any) => {
-        const selectedData = selectedMonths
-          .map((month) => value?.[month])
-          .filter((val) => val !== undefined);
-        return selectedData.length > 0 ? { key, values: selectedData } : null;
-      }
-    );
-    const result = filteredValues.filter(Boolean);
+    const result = getChartPredictedValues(productions, startDate, endDate);
     if (result) {
       setPredictedData(result);
     }
