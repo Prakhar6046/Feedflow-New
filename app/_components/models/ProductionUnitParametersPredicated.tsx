@@ -39,6 +39,7 @@ interface Props {
   setOpen: (open: boolean) => void;
   open: boolean;
   selectedUnitName: string;
+  setSelectedUnitName: (val: string) => void;
 }
 interface FormData {
   predictedValues: Record<string, Record<number, string>>;
@@ -63,6 +64,7 @@ const ProductionUnitParametersPredicated: React.FC<Props> = ({
   editFarm,
   productionParaMeter,
   selectedUnitName,
+  setSelectedUnitName,
 }) => {
   const isEditFarm = getCookie("isEditFarm");
 
@@ -126,6 +128,7 @@ const ProductionUnitParametersPredicated: React.FC<Props> = ({
     updatedData.push(payload);
     setLocalItem("productionParamtertsUnitsArray", updatedData);
     setOpen(false);
+    setSelectedUnitName("");
   };
 
   useEffect(() => {
@@ -144,7 +147,18 @@ const ProductionUnitParametersPredicated: React.FC<Props> = ({
   }, [formProductionParameters, selectedUnitName]);
 
   useEffect(() => {
-    if (isEditFarm && editFarm) {
+    const productionParamtertsUnitsArray = getLocalItem(
+      "productionParamtertsUnitsArray"
+    );
+    const currentUnit = productionParamtertsUnitsArray?.find(
+      (val: any) => val.unitName === selectedUnitName
+    );
+    if (
+      isEditFarm &&
+      editFarm &&
+      !productionParamtertsUnitsArray &&
+      !currentUnit
+    ) {
       editFarm?.productionUnits.map((unit: any, i: number) => {
         if (
           unit.name === selectedUnitName &&
@@ -205,19 +219,73 @@ const ProductionUnitParametersPredicated: React.FC<Props> = ({
           setValue("predictedValues", predictedValues);
         }
       });
+    } else if (productionParamtertsUnitsArray?.length && currentUnit) {
+      const idealRange = {
+        "Water Temperature °C": {
+          Min: currentUnit?.idealRange?.waterTemp?.Min || "",
+          Max: currentUnit?.idealRange?.waterTemp?.Max || "",
+        },
+        "Dissolved Oxygen (DO) mg/L": {
+          Min: currentUnit?.idealRange?.DO?.Min || "",
+          Max: currentUnit?.idealRange?.DO?.Max || "",
+        },
+        "Total Suspended solids (TSS)": {
+          Min: currentUnit?.idealRange?.TSS?.Min || "",
+          Max: currentUnit?.idealRange?.TSS?.Max || "",
+        },
+        "Ammonia (NH₄) mg/L": {
+          Min: currentUnit?.idealRange?.NH4?.Min || "",
+          Max: currentUnit?.idealRange?.NH4?.Max || "",
+        },
+        "Nitrate (NO₃) mg/L": {
+          Min: currentUnit?.idealRange?.NO3?.Min || "",
+          Max: currentUnit?.idealRange?.NO3?.Max || "",
+        },
+        "Nitrite (NO₂) mg/L": {
+          Min: currentUnit?.idealRange?.NO2?.Min || "",
+          Max: currentUnit?.idealRange?.NO2?.Max || "",
+        },
+        pH: {
+          Min: currentUnit?.idealRange?.ph?.Min || "",
+          Max: currentUnit?.idealRange?.ph?.Max || "",
+        },
+        "Visibility cm": {
+          Min: currentUnit?.idealRange?.visibility?.Min || "",
+          Max: currentUnit?.idealRange?.visibility?.Max || "",
+        },
+      };
+      // Set the values in the form
+      setValue("idealRange", idealRange);
+      const predictedValues = {
+        "Water Temperature °C": { ...currentUnit?.predictedValues?.waterTemp },
+        "Dissolved Oxygen (DO) mg/L": { ...currentUnit?.predictedValues?.DO },
+        "Total Suspended solids (TSS)": {
+          ...currentUnit?.predictedValues?.TSS,
+        },
+        "Ammonia (NH₄) mg/L": { ...currentUnit?.predictedValues?.NH4 },
+        "Nitrate (NO₃) mg/L": { ...currentUnit?.predictedValues?.NO3 },
+        "Nitrite (NO₂) mg/L": { ...currentUnit?.predictedValues?.NO2 },
+        pH: { ...currentUnit?.predictedValues?.ph },
+        "Visibility cm": { ...currentUnit?.predictedValues?.visibility },
+      };
+      setValue("predictedValues", predictedValues);
     }
   }, [editFarm, isEditFarm, setValue, selectedUnitName]);
 
   const handleClose = () => {
     setOpen(false);
+    setSelectedUnitName("");
   };
   return (
     <Modal
       open={open}
-      onClose={handleClose}
+      // onClose={handleClose}
       aria-labelledby="parent-modal-title"
       aria-describedby="parent-modal-description"
       className="modal-positioning"
+      BackdropProps={{
+        onClick: (event) => event.stopPropagation(), // Prevents closing on backdrop click
+      }}
     >
       <Stack sx={style}>
         <Box display="flex" justifyContent="flex-end" padding={2}>

@@ -248,8 +248,6 @@ export default function ProductionTable({
       </TableHead>
     );
   }
-  console.log(breakpoint);
-
   const handleRequestSort = (
     _: React.MouseEvent<HTMLButtonElement> | null,
     property: string
