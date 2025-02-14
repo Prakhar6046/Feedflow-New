@@ -922,6 +922,7 @@ const ProductionUnits: NextPage<Props> = ({
         open={openUnitParametersModal}
         setOpen={setOpenUnitParametersModal}
         selectedUnitName={selectedUnitName}
+        setSelectedUnitName={setSelectedUnitName}
       />
       <CalculateVolume
         open={open}

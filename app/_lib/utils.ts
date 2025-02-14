@@ -210,7 +210,6 @@ export const getCurrentMonth = () => {
   const currentMonth = new Date().getMonth();
   return Years[currentMonth];
 };
-
 export const ProductionSortTables = (
   groupedData: FarmGroup[],
   order: string,
@@ -435,7 +434,6 @@ export const ProductionSortTables = (
     }
   }
 };
-
 export const averagesDropdown = [
   "Lastest sample average",
   "Monthly average",

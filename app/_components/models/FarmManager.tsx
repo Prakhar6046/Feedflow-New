@@ -694,9 +694,11 @@ const TransferModal: React.FC<Props> = ({
                                     },
                                   }}
                                   {...register(`manager.${idx}.fishFarm`, {
-                                    required: watch(`manager.${idx}.fishFarm`)
-                                      ? false
-                                      : true,
+                                    required:
+                                      watch(`manager.${idx}.fishFarm`) &&
+                                      idx !== 0
+                                        ? false
+                                        : true,
                                   })}
                                   onChange={(e) => {
                                     const selectedFishFarm = e.target.value;
@@ -729,6 +731,7 @@ const TransferModal: React.FC<Props> = ({
                                 {errors &&
                                   errors?.manager &&
                                   errors?.manager[idx] &&
+                                  idx !== 0 &&
                                   errors?.manager[idx].fishFarm &&
                                   errors?.manager[idx].fishFarm.type ===
                                     "required" && (
@@ -808,11 +811,12 @@ const TransferModal: React.FC<Props> = ({
                                   {...register(
                                     `manager.${idx}.productionUnit`,
                                     {
-                                      required: watch(
-                                        `manager.${idx}.productionUnit`
-                                      )
-                                        ? false
-                                        : true,
+                                      required:
+                                        watch(
+                                          `manager.${idx}.productionUnit`
+                                        ) && idx !== 0
+                                          ? false
+                                          : true,
                                       onChange: (e) =>
                                         item.field === "Stock" &&
                                         setValue(
@@ -864,6 +868,7 @@ const TransferModal: React.FC<Props> = ({
                                 </Select>
                                 {errors &&
                                   !watch(`manager.${idx}.productionUnit`) &&
+                                  idx !== 0 &&
                                   errors?.manager &&
                                   errors?.manager[idx] &&
                                   errors?.manager[idx].productionUnit && (
@@ -927,11 +932,11 @@ const TransferModal: React.FC<Props> = ({
                                     },
                                   }}
                                   {...register(`manager.${idx}.batchNumber`, {
-                                    required: watch(
-                                      `manager.${idx}.batchNumber`
-                                    )
-                                      ? false
-                                      : true,
+                                    required:
+                                      watch(`manager.${idx}.batchNumber`) &&
+                                      idx !== 0
+                                        ? false
+                                        : true,
                                     onChange: (e) =>
                                       item.field === "Stock" &&
                                       setValue(
@@ -966,6 +971,7 @@ const TransferModal: React.FC<Props> = ({
 
                                 {errors &&
                                   !watch(`manager.${idx}.batchNumber`) &&
+                                  idx !== 0 &&
                                   errors.manager &&
                                   errors.manager[idx] &&
                                   errors.manager[idx].batchNumber && (
@@ -1420,9 +1426,11 @@ const TransferModal: React.FC<Props> = ({
                                 input: { readOnly: idx === 0 ? true : false },
                               }}
                               {...register(`manager.${idx}.meanWeight`, {
-                                required: watch(`manager.${idx}.meanWeight`)
-                                  ? false
-                                  : true,
+                                required:
+                                  watch(`manager.${idx}.meanWeight`) &&
+                                  idx !== 0
+                                    ? false
+                                    : true,
                                 pattern: validationPattern.numbersWithDot,
                                 maxLength: 10,
                               })}
@@ -1452,6 +1460,7 @@ const TransferModal: React.FC<Props> = ({
                           )}
                           {errors &&
                             !watch(`manager.${idx}.meanWeight`) &&
+                            idx !== 0 &&
                             errors.manager &&
                             errors.manager[idx] &&
                             errors.manager[idx].meanWeight &&
@@ -1557,9 +1566,11 @@ const TransferModal: React.FC<Props> = ({
                               {...register(
                                 `manager.${idx}.meanLength` as const,
                                 {
-                                  required: watch(`manager.${idx}.meanLength`)
-                                    ? false
-                                    : true,
+                                  required:
+                                    watch(`manager.${idx}.meanLength`) &&
+                                    idx !== 0
+                                      ? false
+                                      : true,
                                   pattern: validationPattern.numbersWithDot,
                                   maxLength: 10,
                                 }
@@ -1590,6 +1601,7 @@ const TransferModal: React.FC<Props> = ({
 
                             {errors &&
                               !watch(`manager.${idx}.meanLength`) &&
+                              idx !== 0 &&
                               errors.manager &&
                               errors.manager[idx] &&
                               errors.manager[idx].meanLength &&

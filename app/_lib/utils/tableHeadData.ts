@@ -388,7 +388,7 @@ export const fishManageHistoryHead = [
     id: "Batch #",
     numeric: false,
     disablePadding: true,
-    label: "Batch #",
+    label: "B#",
   },
   {
     id: "Age",
@@ -448,12 +448,14 @@ export const farmManagerFishHead = [
     numeric: false,
     disablePadding: true,
     label: "Farm",
+    smallLabel:"Farm"
   },
   {
     id: "unit",
     numeric: false,
     disablePadding: true,
     label: "Unit",
+    smallLabel:"Unit"
   },
 
   {
@@ -461,57 +463,66 @@ export const farmManagerFishHead = [
     numeric: false,
     disablePadding: true,
     label: "Batch #",
+    smallLabel:"B#"
   },
   {
     id: "Age",
     numeric: false,
     disablePadding: true,
     label: "Age",
+    smallLabel:"Age"
   },
   {
     id: "Fish",
     numeric: false,
     disablePadding: true,
-    label: "Fish (n)",
+    label: "Fish",
+    smallLabel:"F"
   },
 
   {
     id: "Biomass",
     numeric: true,
     disablePadding: true,
-    label: "Biomass (Kg)",
+    label: "Biomass",
+    smallLabel:"B.M"
   },
 
   {
     id: "Mean weight",
     numeric: false,
     disablePadding: true,
-    label: "Mean weight (g)",
+    label: "Mean weight",
+    smallLabel:"M.W"
   },
   {
     id: "Mean length",
     numeric: false,
     disablePadding: true,
-    label: "Mean length (mm)",
+    label: "Mean length",
+     smallLabel:"M.l"
   },
   {
     id: "Stocking Density",
     numeric: false,
     disablePadding: true,
-    label: `Stocking density (kg/${"m\u00B3"})`,
+    label: `Stocking Density(kg/m³)`,
+     smallLabel:"S.D"
   },
 
   {
     id: "Stocking density",
     numeric: false,
     disablePadding: true,
-    label: `Stocking density (n/${"m\u00B3"})`,
+    label: `Stocking density (n/m³)`,
+     smallLabel:"S.D"
   },
   {
     id: "Stocking level",
     numeric: false,
     disablePadding: true,
     label: "Stocking level",
+     smallLabel:"S.L"
   },
 
   {
@@ -519,6 +530,7 @@ export const farmManagerFishHead = [
     numeric: false,
     disablePadding: true,
     label: "Manage",
+     smallLabel:"M"
   },
 ];
 export const farmManagerFishHeadMember = [
@@ -527,31 +539,37 @@ export const farmManagerFishHeadMember = [
     numeric: false,
     disablePadding: true,
     label: "Farm",
+    smallLabel:"Farm"
   },
   {
     id: "unit",
     numeric: false,
     disablePadding: true,
     label: "Unit",
+    smallLabel:"Unit"
   },
 
   {
     id: "Batch #",
     numeric: false,
     disablePadding: true,
-    label: "Batch #",
+    label: "Batch",
+    smallLabel:"B#"
+    
   },
   {
     id: "Age",
     numeric: false,
     disablePadding: true,
     label: "Age",
+    smallLabel:"Age"
   },
   {
     id: "Fish",
     numeric: false,
     disablePadding: true,
     label: "Fish (n)",
+    smallLabel:"F"
   },
 
   {
@@ -559,6 +577,7 @@ export const farmManagerFishHeadMember = [
     numeric: true,
     disablePadding: true,
     label: "Biomass (Kg)",
+    smallLabel:"B()"
   },
 
   {
@@ -566,18 +585,21 @@ export const farmManagerFishHeadMember = [
     numeric: false,
     disablePadding: true,
     label: "Mean weight (g)",
+    smallLabel:"M.w"
   },
   {
     id: "Mean length",
     numeric: false,
     disablePadding: true,
     label: "Mean length (mm)",
+    smallLabel:"M.L"
   },
   {
     id: "Stocking Density",
     numeric: false,
     disablePadding: true,
     label: `Stocking density (kg/${"m\u00B3"})`,
+    smallLabel:"S.D"
   },
 
   {
@@ -585,12 +607,14 @@ export const farmManagerFishHeadMember = [
     numeric: false,
     disablePadding: true,
     label: `Stocking density (n/${"m\u00B3"})`,
+    smallLabel:"S.D"
   },
   {
     id: "Stocking level",
     numeric: false,
     disablePadding: true,
     label: "Stocking level",
+    smallLabel:"S.L"
   },
 ];
 export const farmManagerWaterHead = [
@@ -599,12 +623,14 @@ export const farmManagerWaterHead = [
     numeric: false,
     disablePadding: true,
     label: "Farm",
+     smallLabel:"Farm"
   },
   {
     id: "unit",
     numeric: false,
     disablePadding: true,
     label: "Unit",
+    smallLabel:"Unit"
   },
 
   {
@@ -612,18 +638,21 @@ export const farmManagerWaterHead = [
     numeric: false,
     disablePadding: true,
     label: "Water Temp",
+        smallLabel:"W.T"
   },
   {
     id: "Dissolved oxygen",
     numeric: false,
     disablePadding: true,
     label: "Dissolved oxygen",
+     smallLabel:"D.O"
   },
   {
     id: "tss",
     numeric: false,
     disablePadding: true,
     label: "Total Suspened Solids(TSS)",
+      smallLabel:"T.S.S"
   },
 
   {
@@ -631,6 +660,7 @@ export const farmManagerWaterHead = [
     numeric: true,
     disablePadding: true,
     label: "Ammonia (NH₄)",
+     smallLabel:"NH₄"
   },
 
   {
@@ -638,18 +668,21 @@ export const farmManagerWaterHead = [
     numeric: false,
     disablePadding: true,
     label: "Nitrate (NO₃⁻)",
+    smallLabel:"NO₃⁻"
   },
   {
     id: "no2",
     numeric: false,
     disablePadding: true,
     label: "Nitrite (NO₂⁻)",
+    smallLabel:"NO₂⁻"
   },
   {
     id: "ph",
     numeric: false,
     disablePadding: true,
     label: "pH",
+    smallLabel:"pH"
   },
 
   {
@@ -657,6 +690,7 @@ export const farmManagerWaterHead = [
     numeric: false,
     disablePadding: true,
     label: "Visibility",
+    smallLabel:"V"
   },
 
   {
@@ -664,6 +698,7 @@ export const farmManagerWaterHead = [
     numeric: false,
     disablePadding: true,
     label: "Manage",
+    smallLabel:"M"
   },
 ];
 export const farmManagerWaterHeadMember = [
@@ -672,12 +707,14 @@ export const farmManagerWaterHeadMember = [
     numeric: false,
     disablePadding: true,
     label: "Farm",
+    smallLabel:"Farm"
   },
   {
     id: "unit",
     numeric: false,
     disablePadding: true,
     label: "Unit",
+    smallLabel:"Unit"
   },
 
   {
@@ -685,18 +722,21 @@ export const farmManagerWaterHeadMember = [
     numeric: false,
     disablePadding: true,
     label: "Water Temp",
+    smallLabel:"W.T"
   },
   {
     id: "Dissolved oxygen",
     numeric: false,
     disablePadding: true,
     label: "Dissolved oxygen",
+    smallLabel:"D.O"
   },
   {
     id: "tss",
     numeric: false,
     disablePadding: true,
     label: "Total Suspened Solids(TSS)",
+    smallLabel:"T.T.S"
   },
 
   {
@@ -704,6 +744,7 @@ export const farmManagerWaterHeadMember = [
     numeric: true,
     disablePadding: true,
     label: "Ammonia (NH₄)",
+    smallLabel:"A"
   },
 
   {
@@ -711,18 +752,21 @@ export const farmManagerWaterHeadMember = [
     numeric: false,
     disablePadding: true,
     label: "Nitrate (NO₃⁻)",
+     smallLabel:"N"
   },
   {
     id: "no2",
     numeric: false,
     disablePadding: true,
     label: "Nitrite (NO₂⁻)",
+    smallLabel:"N"
   },
   {
     id: "ph",
     numeric: false,
     disablePadding: true,
     label: "pH",
+    smallLabel:"pH"
   },
 
   {
@@ -730,8 +774,17 @@ export const farmManagerWaterHeadMember = [
     numeric: false,
     disablePadding: true,
     label: "Visibility",
+    smallLabel:"V"
   },
 ];
+
+
+
+
+
+
+
+
 export const waterManageHistoryHead = [
   {
     id: "unit",

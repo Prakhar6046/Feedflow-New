@@ -213,20 +213,22 @@ const FarmInformation: NextPage<Props> = ({
                     "Please enter a unique farm name. The farm name you entered is not available."
                   );
                 },
+                maxLength: {
+                  value: 20,
+                  message: "Input can contain a maximum of 20 characters.",
+                },
               })}
               focused
               sx={{
                 width: "100%",
               }}
             />
-            {errors && errors.name && errors.name.type === "required" && (
+
+            {errors && errors.name && errors.name && (
               <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
-                {validationMessage.required}
-              </Typography>
-            )}
-            {errors && errors.name && errors.name.type === "validate" && (
-              <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
-                {errors?.name.message}
+                {errors.name.type === "required"
+                  ? validationMessage.required
+                  : errors?.name.message}
               </Typography>
             )}
           </Box>

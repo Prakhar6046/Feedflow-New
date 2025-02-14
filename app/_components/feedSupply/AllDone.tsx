@@ -6,9 +6,10 @@ import { useRouter } from "next/navigation";
 
 interface Props {
   setActiveStep: (val: number) => void;
+  isEdit: boolean | undefined;
 }
 
-const AllDone: NextPage<Props> = ({ setActiveStep }) => {
+const AllDone: NextPage<Props> = ({ setActiveStep, isEdit }) => {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const handleClick = () => {
@@ -122,7 +123,11 @@ const AllDone: NextPage<Props> = ({ setActiveStep }) => {
                 },
               }}
             >
-              {`  You've now successfully added production unit(s) to your
+              {`  You've now successfully ${
+                isEdit
+                  ? "edited production unit(s) in"
+                  : "added production unit(s) to"
+              } your
           farm. The next step is to assign a`}
               <span
                 style={{

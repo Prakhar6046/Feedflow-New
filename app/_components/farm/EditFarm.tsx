@@ -154,7 +154,9 @@ const EditFarm = ({
           />
         )}
 
-        {activeStep === 4 && <AllDone setActiveStep={setActiveStep} />}
+        {activeStep === 4 && (
+          <AllDone setActiveStep={setActiveStep} isEdit={isEdit} />
+        )}
       </Grid>
     </Grid>
   );

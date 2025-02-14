@@ -37,6 +37,7 @@ interface Iprops {
   startDate: string;
   endDate: string;
   dateDiff: number;
+  predictedValues: any;
 }
 const WaterTempChart = ({
   xAxisData,
@@ -47,6 +48,7 @@ const WaterTempChart = ({
   startDate,
   endDate,
   dateDiff,
+  predictedValues,
 }: Iprops) => {
   const chartRef = useRef<Chart | any>(null);
   const getUnit = (diff: number): any => {
@@ -56,7 +58,6 @@ const WaterTempChart = ({
     if (diff <= 365) return "month"; // Use monthly granularity for up to a year
     return "year"; // Use yearly granularity for over a year
   };
-
   const data = {
     labels: xAxisData?.map((date) => new Date(date)),
     datasets: [
@@ -73,7 +74,7 @@ const WaterTempChart = ({
       {
         // yAxisID: "second",
         label: `Predicted Values`,
-        data: ["20", "15", "34", "55"],
+        data: predictedValues || ["20", "15", "34", "55"],
         backgroundColor: "rgba(255, 165, 0, 0.2)", // Light orange fill
         borderColor: "#FFA500",
         borderWidth: 2,
@@ -97,8 +98,19 @@ const WaterTempChart = ({
         display: true,
       },
       tooltip: {
-        enabled: true,
+        callbacks: {
+          label: function (tooltipItem) {
+            if (tooltipItem.datasetIndex === 1) {
+              return "";
+            }
+            return `${tooltipItem.dataset.label}: ${tooltipItem.raw}`;
+          },
+        },
+        filter: function (tooltipItem) {
+          return tooltipItem.datasetIndex !== 1;
+        },
       },
+
       title: {
         display: true,
         text: title,

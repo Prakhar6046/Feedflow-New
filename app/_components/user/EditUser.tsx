@@ -226,7 +226,7 @@ function EditUser({ userId }: Iprops) {
                 fontSize={14}
                 alignSelf={"flex-start"}
               >
-                Profile Pictures
+                Profile Picture
               </Typography>
               <Button
                 component="label"

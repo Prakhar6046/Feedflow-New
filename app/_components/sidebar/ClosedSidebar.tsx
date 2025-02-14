@@ -15,12 +15,16 @@ import { sidebarAction } from "@/lib/features/sidebar/sidebarSlice";
 import Logo from "@/public/static/img/logo.svg";
 import { farmAction } from "@/lib/features/farm/farmSlice";
 import SampleIcon from "@/public/static/img/ic-sample.svg";
-import { setCookie } from "cookies-next";
+import { getCookie, setCookie } from "cookies-next";
+import { LoggedUser } from "../AccountPopover";
 
 function ClosedSidebar() {
   const router = useRouter();
+  const loggedUser: any = getCookie("logged-user");
   const pathName = usePathname();
   const [activePage, setActivePage] = useState<String>("");
+    const [loggedUserData, setLoggedUserData] = useState<LoggedUser>();
+  
 
   const dispatch = useAppDispatch();
   useEffect(() => {
@@ -28,7 +32,11 @@ function ClosedSidebar() {
       setActivePage(pathName);
     }
   }, [pathName]);
-
+useEffect(() => {
+    if (loggedUser) {
+      setLoggedUserData(JSON.parse(loggedUser));
+    }
+  }, [loggedUser]);
   return (
     <Stack
       className="sidebar"
@@ -481,6 +489,7 @@ function ClosedSidebar() {
               </ListItemButton>
             </ListItem>
           </Link>
+          {loggedUserData?.role === "SUPERADMIN" && (
           <Link href={"/dashboard/growthModel"} className="nav-links">
             <ListItem
               sx={{
@@ -537,7 +546,7 @@ function ClosedSidebar() {
                 </ListItemText>
               </ListItemButton>
             </ListItem>
-          </Link>
+          </Link>)}
           <Divider
             sx={{
               my: 1.5,
