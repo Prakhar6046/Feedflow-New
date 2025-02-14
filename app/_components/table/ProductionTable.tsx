@@ -1,4 +1,5 @@
 "use client";
+
 import TransferModal from "@/app/_components/models/FarmManager";
 import {
   averagesDropdown,
@@ -26,6 +27,9 @@ import {
   Button,
   FormControl,
   FormControlLabel,
+  ListItemIcon,
+  Menu,
+  MenuItem,
   Radio,
   RadioGroup,
   TableSortLabel,
@@ -44,6 +48,9 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import WaterQualityParameter from "../models/WaterQualityParameter";
 import ProductionManagerFilter from "../ProductionManagerFilter";
+import Test from "../models/Test";
+import { Margin, Padding } from "@mui/icons-material";
+import { useBreakpoint } from "@/app/hooks/useBreakPoint";
 
 interface Props {
   productions: Production[];
@@ -58,6 +65,7 @@ export default function ProductionTable({
   batches,
 }: Props) {
   const router = useRouter();
+  const breakpoint = useBreakpoint();
   const dispatch = useAppDispatch();
   const pathName = usePathname();
   const role = useAppSelector(selectRole);
@@ -81,12 +89,19 @@ export default function ProductionTable({
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null
   );
+  const [anchorE2, setAnchorE2] = React.useState<HTMLButtonElement | null>(
+    null
+  );
+  const [test, setTest] = useState<boolean>(false);
   const [openTransferModal, setOpenTransferModal] = useState<boolean>(
     isFish ? true : false
   );
   const [openWaterQualityModal, setOpenWaterQualityModal] = useState<boolean>(
     isWater ? true : false
   );
+  const handleClickTest = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorE2(event.currentTarget);
+  };
   const [productionData, setProductionData] = useState<FarmGroup[]>();
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("Farm");
@@ -110,7 +125,10 @@ export default function ProductionTable({
   const [allUnits, setAllUnits] = useState<{ id: string; option: string }[]>(
     []
   );
-
+  const handleClose = () => {
+    setAnchorEl(null);
+    setAnchorE2(null);
+  };
   const handleFishManageHistory = (unit: any) => {
     if (selectedView == "fish") {
       router.push(`/dashboard/production/fish/${unit.productionUnit.id}`);
@@ -163,6 +181,7 @@ export default function ProductionTable({
   };
 
   const open = Boolean(anchorEl);
+  const open2 = Boolean(anchorE2);
 
   function EnhancedTableHead(data: any) {
     const { order, orderBy, onRequestSort } = data;
@@ -201,22 +220,26 @@ export default function ProductionTable({
                 fontWeight: 600,
                 paddingLeft: {
                   lg: idx === 0 ? 10 : 0,
-                  md: idx === 0 ? 7 : 0,
-                  xs: idx === 0 ? 4 : 0,
+                  md: idx === 0 ? 3 : 0,
+                  xs: idx === 0 ? 3 : 0,
                 },
               }}
             >
               {idx === headCells.length - 1 ||
               (selectedView === "fish" && idx === 2) ||
               (selectedView === "fish" && idx === 3) ? (
-                headCell.label
+                breakpoint === "lg" ? (
+                  headCell.smallLabel
+                ) : (
+                  headCell.label
+                )
               ) : (
                 <TableSortLabel
                   active={orderBy === headCell.id}
                   direction={orderBy === headCell.id ? order : "asc"}
                   onClick={createSortHandler(headCell.id)}
                 >
-                  {headCell.label}
+                  {breakpoint === "lg" ? headCell.smallLabel : headCell.label}
                 </TableSortLabel>
               )}
             </TableCell>
@@ -225,6 +248,7 @@ export default function ProductionTable({
       </TableHead>
     );
   }
+  console.log(breakpoint);
 
   const handleRequestSort = (
     _: React.MouseEvent<HTMLButtonElement> | null,
@@ -791,6 +815,9 @@ export default function ProductionTable({
               <EnhancedTableHead
                 order={order}
                 orderBy={orderBy}
+                sx={{
+                  backgroundColor: "red",
+                }}
                 onRequestSort={handleRequestSort}
               />
               <TableBody>
@@ -806,6 +833,7 @@ export default function ProductionTable({
                         <TableCell
                           sx={{
                             color: "#555555",
+                            paddingRight: "20px",
                             maxWidth: 250,
                             borderBottomColor: "#F5F6F8",
                             borderBottomWidth: 2,
@@ -813,13 +841,104 @@ export default function ProductionTable({
                             textWrap: "nowrap",
                             paddingLeft: {
                               lg: 10,
-                              md: 7,
-                              xs: 4,
+                              md: 3,
+                              xs: 3,
                             },
                             pr: 2,
                           }}
                         >
-                          {farm.farm ?? ""}
+                          <Box sx={{ display: "flex", alignItems: "center" }}>
+                            {farm.farm ?? ""}
+                            <h3 onClick={handleClickTest}>
+                              {" "}
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="1.1em"
+                                style={{
+                                  marginLeft: "10px",
+                                  marginTop: "10px",
+                                }}
+                                height="1.1em"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  fill="currentColor"
+                                  d="M7.5 12L0 4h15z"
+                                ></path>
+                              </svg>
+                            </h3>
+                          </Box>
+
+                          <Menu
+                            anchorEl={anchorE2}
+                            id="account-menu"
+                            open={open2}
+                            onClose={handleClose}
+                            onClick={handleClose}
+                            className="profile-dropdown"
+                            slotProps={{
+                              paper: {
+                                elevation: 0,
+                                sx: {
+                                  overflow: "visible",
+                                  filter:
+                                    "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
+                                  mt: 1.5,
+                                  "& .MuiAvatar-root": {
+                                    width: 32,
+                                    height: 32,
+                                    ml: -0.5,
+                                    mr: 1,
+                                  },
+                                  "&::before": {
+                                    content: '""',
+                                    display: "block",
+                                    position: "absolute",
+                                    top: 0,
+                                    right: 14,
+                                    width: 10,
+                                    height: 10,
+                                    bgcolor: "background.paper",
+                                    transform: "translateY(-50%) rotate(45deg)",
+                                    zIndex: 0,
+                                  },
+                                },
+                              },
+                            }}
+                            transformOrigin={{
+                              horizontal: "right",
+                              vertical: "top",
+                            }}
+                            anchorOrigin={{
+                              horizontal: "right",
+                              vertical: "bottom",
+                            }}
+                          >
+                            <MenuItem
+                              onClick={() => {
+                                setAnchorE2(null), setTest(true);
+                              }}
+                              sx={{
+                                fontSize: 14,
+                                fontWeight: 500,
+                              }}
+                            >
+                              <ListItemIcon>
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  width="1.1em"
+                                  height="1.1em"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    fill="currentColor"
+                                    d="M9 2.458v2.124A8.003 8.003 0 0 0 12 20a8 8 0 0 0 7.419-5h2.123c-1.274 4.057-5.064 7-9.542 7c-5.523 0-10-4.477-10-10c0-4.478 2.943-8.268 7-9.542M12 2c5.523 0 10 4.477 10 10q0 .507-.05 1H11V2.05Q11.493 2 12 2m1 2.062V11h6.938A8.004 8.004 0 0 0 13 4.062"
+                                  />
+                                </svg>
+                              </ListItemIcon>
+                              Dashboard
+                            </MenuItem>
+                          </Menu>
                         </TableCell>
                         <TableCell
                           className="table-padding"
@@ -935,7 +1054,7 @@ export default function ProductionTable({
                                       unit.individualAveragesWater?.waterTemp
                                     ) || ""
                                   : unit.waterTemp ?? ""
-                                : unit?.fishSupply?.batchNumber;
+                                : unit?.fishSupply?.batchNumber.length;
 
                             // Calculate padding based on whether a value exists
                             const paddingValue = value
@@ -1478,6 +1597,7 @@ export default function ProductionTable({
                                           borderRadius: "8px",
                                           alignItems: "center",
                                           minWidth: "fit-content",
+                                          margin: "auto",
                                         }}
                                       >
                                         <svg
@@ -1524,6 +1644,7 @@ export default function ProductionTable({
                                           borderRadius: "8px",
                                           alignItems: "center",
                                           minWidth: "fit-content",
+                                          margin: "auto",
                                         }}
                                       >
                                         <svg
@@ -1564,6 +1685,7 @@ export default function ProductionTable({
           batches={batches}
           productions={productions}
         />
+        <Test open={test} setOpen={setTest} />
         <WaterQualityParameter
           open={openWaterQualityModal}
           setOpen={setOpenWaterQualityModal}

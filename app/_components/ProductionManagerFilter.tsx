@@ -75,30 +75,11 @@ function ProductionManagerFilter({
   }, [allFarms, allUnits]);
   return (
     <Box>
-      <Button
-        id="basic-button"
-        className=""
-        type="button"
-        variant="contained"
-        onClick={handleResetFilters}
-        sx={{
-          background: "#06A19B",
-          fontWeight: "bold",
-          padding: "8px 20px",
-          width: "fit-content",
-          textTransform: "capitalize",
-          borderRadius: "8px",
-          display: "flex",
-          marginLeft: "auto",
-          marginTop: 1,
-        }}
-      >
-        Reset Filters
-      </Button>
       <Grid container spacing={2} mt={1}>
         <Grid
           item
-          lg={2}
+          xl={2}
+          lg={4}
           md={4}
           sm={6}
           xs={12}
@@ -115,7 +96,6 @@ function ProductionManagerFilter({
               >
                 Farms
               </InputLabel>
-
               <MultiSelect
                 value={selectedDropDownfarms}
                 onChange={(e) => setSelectedDropDownfarms(e.value)}
@@ -132,8 +112,9 @@ function ProductionManagerFilter({
                   >
                     <path fill="currentColor" d="M7.5 12L0 4h15z" />
                   </svg>
-                }
+                } // Custom dropdown icon
                 maxSelectedLabels={3}
+                // Custom icon
                 className="w-full md:w-20rem custom-select"
               />
             </FormControl>
@@ -141,13 +122,13 @@ function ProductionManagerFilter({
         </Grid>
         <Grid
           item
-          lg={2}
+          xl={2}
+          lg={4}
           md={4}
           sm={6}
           xs={12}
           sx={{
             width: "fit-content",
-
             paddingTop: "8px",
           }}
         >
@@ -165,7 +146,29 @@ function ProductionManagerFilter({
               >
                 Units
               </InputLabel>
-
+              {/* <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              label="Units"
+              multiple
+              disabled={selectedDropDownfarms?.length >= 1 ? false : true}
+              value={selectedDropDownUnits?.map((unit: any) => unit?.option)}
+              onChange={(e) => handleChange(e, false)}
+              input={<OutlinedInput label="Units" />}
+              renderValue={(selected) => selected.join(", ")}
+              MenuProps={MenuProps}
+            >
+              {allUnits.map((unit: any) => (
+                <MenuItem key={unit.id} value={unit.option}>
+                  <Checkbox
+                    checked={selectedDropDownUnits?.some(
+                      (selected: any) => selected?.option === unit.option
+                    )}
+                  />
+                  <ListItemText primary={unit.option} />
+                </MenuItem>
+              ))}
+            </Select> */}
               <MultiSelect
                 value={selectedDropDownUnits}
                 onChange={(e) => setSelectedDropDownUnits(e.value)}
@@ -189,7 +192,7 @@ function ProductionManagerFilter({
             </FormControl>
           </Box>
         </Grid>
-        <Grid
+        {/* <Grid
           item
           lg={2}
           md={4}
@@ -200,149 +203,11 @@ function ProductionManagerFilter({
 
             paddingTop: "8px",
           }}
-        >
-          <Box sx={{ width: "100%" }}>
-            <FormControl
-              fullWidth
-              className={`form-input ${
-                selectedDropDownfarms?.length &&
-                selectedDropDownUnits?.length &&
-                "selected"
-              }`}
-              focused
-            >
-              <InputLabel id="demo-simple-select-label-1">
-                Select Year
-              </InputLabel>
-              <Select
-                labelId="demo-simple-select-label-1"
-                id="demo-simple-select"
-                label="Select Year"
-                multiple
-                // disabled={
-                //   selectedDropDownfarms?.length && selectedDropDownUnits?.length
-                //     ? false
-                //     : true
-                // }
-                value={selectedDropDownYears}
-                onChange={(e) => handleYearChange(e)}
-                input={<OutlinedInput label="Select Year" />}
-                renderValue={(selected) => selected.join(", ")}
-                MenuProps={MenuProps}
-              >
-                {years.map((year) => (
-                  <MenuItem key={year} value={year}>
-                    <Checkbox checked={selectedDropDownYears?.includes(year)} />
-                    <ListItemText primary={year} />
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Box>
-        </Grid>
+        ></Grid> */}
         <Grid
           item
-          lg={2}
-          md={4}
-          sm={6}
-          xs={12}
-          sx={{
-            width: "fit-content",
-
-            paddingTop: "8px",
-          }}
-        >
-          <Box sx={{ width: "100%" }}>
-            <FormControl
-              fullWidth
-              className={`form-input ${
-                selectedDropDownfarms?.length &&
-                selectedDropDownUnits?.length &&
-                selectedDropDownYears?.length &&
-                "selected"
-              }`}
-              focused
-            >
-              <InputLabel id="demo-simple-select-label">Start month</InputLabel>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                label="Start month"
-                value={startMonth}
-                // disabled={
-                //   selectedDropDownfarms?.length &&
-                //   selectedDropDownUnits?.length &&
-                //   selectedDropDownYears?.length
-                //     ? false
-                //     : true
-                // }
-                onChange={(e) => setStartMonth(Number(e.target.value))}
-              >
-                {months.map((month) => (
-                  <MenuItem value={month.id} key={month.id}>
-                    {month.name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Box>
-        </Grid>
-        <Grid
-          item
-          lg={2}
-          md={4}
-          sm={6}
-          xs={12}
-          sx={{
-            width: "fit-content",
-
-            paddingTop: "8px",
-          }}
-        >
-          <Box sx={{ width: "100%" }}>
-            <FormControl
-              fullWidth
-              className={`form-input ${
-                selectedDropDownfarms?.length &&
-                selectedDropDownUnits?.length &&
-                selectedDropDownYears?.length &&
-                startMonth &&
-                "selected"
-              }`}
-              focused
-            >
-              <InputLabel id="demo-simple-select-label">End month</InputLabel>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                label="End month"
-                // disabled={
-                //   selectedDropDownfarms?.length &&
-                //   selectedDropDownUnits?.length &&
-                //   selectedDropDownYears?.length &&
-                //   startMonth
-                //     ? false
-                //     : true
-                // }
-                value={endMonth}
-                onChange={(e) => setEndMonth(Number(e.target.value))}
-              >
-                {months.map((month) => (
-                  <MenuItem
-                    value={month.id}
-                    key={month.id}
-                    disabled={startMonth >= month.id ? true : false}
-                  >
-                    {month.name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Box>
-        </Grid>
-        <Grid
-          item
-          lg={2}
+          xl={2}
+          lg={4}
           md={4}
           sm={6}
           xs={12}
@@ -393,38 +258,203 @@ function ProductionManagerFilter({
             </FormControl>
           </Box>
         </Grid>
-        {/* <Grid
-        item
-        lg={2}
-        md={4}
-        sm={6}
-        xs={12}
-        sx={{
-          width: "fit-content",
+        <Grid
+          item
+          xl={3}
+          lg={6}
+          sm={6}
+          xs={12}
+          sx={{
+            width: "fit-content",
 
-          paddingTop: "8px",
-        }}
-      >
-        <Box sx={{ width: "100%" }}>
-          <Button
-            id="basic-button"
-            className=""
-            type="button"
-            variant="contained"
-            onClick={handleResetFilters}
-       sx={{
-              background: "#06A19B",
-              fontWeight: "bold",
-              padding: "8px 20px",
-              width: 'fit-content',
-              textTransform: "capitalize",
-              borderRadius: "8px",
-            }}
-          >
-            Reset Filters
-          </Button>
-        </Box>
-      </Grid> */}
+            paddingTop: "8px",
+          }}
+        >
+          <Grid container spacing={2}>
+            <Grid item xs={4}>
+              <Box sx={{ width: "100%" }}>
+                <FormControl
+                  fullWidth
+                  className={`form-input ${
+                    selectedDropDownfarms?.length &&
+                    selectedDropDownUnits?.length &&
+                    "selected"
+                  }`}
+                  focused
+                >
+                  <InputLabel id="demo-simple-select-label-1">
+                    Select Year
+                  </InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label-1"
+                    id="demo-simple-select"
+                    label="Select Year"
+                    multiple
+                    // disabled={
+                    //   selectedDropDownfarms?.length && selectedDropDownUnits?.length
+                    //     ? false
+                    //     : true
+                    // }
+                    value={selectedDropDownYears}
+                    onChange={(e) => handleYearChange(e)}
+                    input={<OutlinedInput label="Select Year" />}
+                    renderValue={(selected) => selected.join(", ")}
+                    MenuProps={MenuProps}
+                  >
+                    {years.map((year) => (
+                      <MenuItem key={year} value={year}>
+                        <Checkbox
+                          checked={selectedDropDownYears?.includes(year)}
+                        />
+                        <ListItemText primary={year} />
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Box>
+            </Grid>
+            <Grid item xs={4}>
+              <Box sx={{ width: "100%" }}>
+                <FormControl
+                  fullWidth
+                  className={`form-input ${
+                    selectedDropDownfarms?.length &&
+                    selectedDropDownUnits?.length &&
+                    selectedDropDownYears?.length &&
+                    "selected"
+                  }`}
+                  focused
+                >
+                  <InputLabel id="demo-simple-select-label">
+                    Start month
+                  </InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    label="Start month"
+                    value={startMonth}
+                    // disabled={
+                    //   selectedDropDownfarms?.length &&
+                    //   selectedDropDownUnits?.length &&
+                    //   selectedDropDownYears?.length
+                    //     ? false
+                    //     : true
+                    // }
+                    onChange={(e) => setStartMonth(Number(e.target.value))}
+                  >
+                    {months.map((month) => (
+                      <MenuItem value={month.id} key={month.id}>
+                        {month.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Box>
+            </Grid>
+            <Grid item xs={4}>
+              <Box sx={{ width: "100%" }}>
+                <FormControl
+                  fullWidth
+                  className={`form-input ${
+                    selectedDropDownfarms?.length &&
+                    selectedDropDownUnits?.length &&
+                    selectedDropDownYears?.length &&
+                    startMonth &&
+                    "selected"
+                  }`}
+                  focused
+                >
+                  <InputLabel id="demo-simple-select-label">
+                    End month
+                  </InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    label="End month"
+                    // disabled={
+                    //   selectedDropDownfarms?.length &&
+                    //   selectedDropDownUnits?.length &&
+                    //   selectedDropDownYears?.length &&
+                    //   startMonth
+                    //     ? false
+                    //     : true
+                    // }
+                    value={endMonth}
+                    onChange={(e) => setEndMonth(Number(e.target.value))}
+                  >
+                    {months.map((month) => (
+                      <MenuItem
+                        value={month.id}
+                        key={month.id}
+                        disabled={startMonth >= month.id ? true : false}
+                      >
+                        {month.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Box>
+            </Grid>
+          </Grid>
+        </Grid>
+
+        <Grid
+          item
+          xl={3}
+          md={6}
+          lg={6}
+          xs={12}
+          sx={{
+            width: "fit-content",
+
+            paddingTop: "8px",
+          }}
+        >
+          <Box sx={{ display: "flex", gap: "10px" }}>
+            <Button
+              id="basic-button"
+              className=""
+              type="button"
+              variant="contained"
+              onClick={handleResetFilters}
+              sx={{
+                background: "#06A19B",
+                fontWeight: "bold",
+                padding: "8px 20px",
+                width: "fit-content",
+                textTransform: "capitalize",
+                borderRadius: "8px",
+                display: "flex",
+
+                marginTop: 1,
+              }}
+            >
+              Reset Filters
+            </Button>
+            <Button
+              id="basic-button"
+              className=""
+              type="button"
+              variant="contained"
+              // onClick={handleResetFilters}
+              sx={{
+                border: "2px solid #06A19B",
+                background: "transparent",
+                fontWeight: "bold",
+                padding: "8px 20px",
+                width: "fit-content",
+                textTransform: "capitalize",
+                borderRadius: "8px",
+                display: "flex",
+                color: "#06A19B",
+                marginTop: 1,
+              }}
+            >
+              Take screenshot
+            </Button>
+          </Box>
+        </Grid>
+
         {/* <Grid
         item
      lg={2}

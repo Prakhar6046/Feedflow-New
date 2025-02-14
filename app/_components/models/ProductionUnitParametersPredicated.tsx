@@ -54,6 +54,7 @@ const style = {
   width: 400,
   bgcolor: "background.paper",
   boxShadow: 24,
+  padding: "5px 25px",
 };
 
 const ProductionUnitParametersPredicated: React.FC<Props> = ({
@@ -258,7 +259,7 @@ const ProductionUnitParametersPredicated: React.FC<Props> = ({
                     },
                   }}
                 >
-                  Water Quality Parameters (Predicted)
+                  Water Quality Paramete (Predicted)
                 </Typography>
                 <TableContainer>
                   <Table aria-label="sticky table">
