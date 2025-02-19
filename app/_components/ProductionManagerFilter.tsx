@@ -9,6 +9,13 @@ import {
   OutlinedInput,
   Button,
   Select,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  RadioGroup,
+  FormControlLabel,
+  Radio,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { averagesDropdown, months } from "../_lib/utils";
@@ -19,6 +26,7 @@ import "primereact/resources/primereact.css";
 import "primereact/resources/themes/lara-light-indigo/theme.css";
 import { Padding } from "@mui/icons-material";
 import { red } from "@mui/material/colors";
+import { display } from "html2canvas/dist/types/css/property-descriptors/display";
 interface Props {
   selectedAverage: String;
   setSelectedAverage: (val: any) => void;
@@ -63,6 +71,8 @@ function ProductionManagerFilter({
   setSelectedDropDownUnits,
   handleResetFilters,
 }: Props) {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpenNext, setIsModalOpenNext] = useState(false);
   const currentYear = dayjs().year();
   const years = Array.from({ length: 6 }, (_, i) => currentYear - i);
   const [farms, setFarms] = useState<any>([]);
@@ -227,7 +237,7 @@ function ProductionManagerFilter({
             paddingTop: "8px",
           }}
         ></Grid> */}
-           <Grid
+        <Grid
           item
           xl={2}
           lg={4}
@@ -420,7 +430,7 @@ function ProductionManagerFilter({
             </Grid>
           </Grid>
         </Grid>
-     
+
         <Grid
           item
           xl={3}
@@ -432,51 +442,51 @@ function ProductionManagerFilter({
 
             paddingTop: "8px",
           }}
-        > 
-        <Box sx={{display:"flex", gap:"10px"}}>
-          <Button
-            id="basic-button"
-            className=""
-            type="button"
-            variant="contained"
-            onClick={handleResetFilters}
-            sx={{
-              background: "#06A19B",
-              fontWeight: "bold",
-              padding: "8px 20px",
-              width: "fit-content",
-              textTransform: "capitalize",
-              borderRadius: "8px",
-              display: "flex",
+        >
+          <Box sx={{ display: "flex", gap: "10px" }}>
+            <Button
+              id="basic-button"
+              className=""
+              type="button"
+              variant="contained"
+              onClick={handleResetFilters}
+              sx={{
+                background: "#06A19B",
+                fontWeight: "bold",
+                padding: "8px 20px",
+                width: "fit-content",
+                textTransform: "capitalize",
+                borderRadius: "8px",
+                display: "flex",
 
-              marginTop: 1,
-            }}
-          >
-            Reset Filters
-          </Button>
-          <Button
-            id="basic-button"
-            className=""
-            type="button"
-            variant="contained"
-            onClick={handleResetFilters}
-            sx={{
-              background: "#06A19B",
-              fontWeight: "bold",
-              padding: "8px 20px",
-              width: "fit-content",
-              textTransform: "capitalize",
-              borderRadius: "8px",
-              display: "flex",
+                marginTop: 1,
+              }}
+            >
+              Reset Filters
+            </Button>
+            <Button
+              id="basic-button"
+              className=""
+              type="button"
+              variant="contained"
+              onClick={() => setIsModalOpen(true)}
+              sx={{
+                background: "#06A19B",
+                fontWeight: "bold",
+                padding: "8px 20px",
+                width: "fit-content",
+                textTransform: "capitalize",
+                borderRadius: "8px",
+                display: "flex",
 
-              marginTop: 1,
-            }}
-          >
-            Take screenshot
-          </Button>
+                marginTop: 1,
+              }}
+            >
+              Take screenshot
+            </Button>
           </Box>
         </Grid>
-        
+
         {/* <Grid
         item
      lg={2}
@@ -488,6 +498,221 @@ function ProductionManagerFilter({
         <Box sx={{ width: "100%" }}>Clear</Box>
       </Grid> */}
       </Grid>
+      <Dialog
+        open={isModalOpen}
+        onClose={() => {
+          setIsModalOpen(false);
+        }}
+      >
+        <DialogTitle>Select farms</DialogTitle>
+        <DialogContent>
+          <Grid container>
+            <Grid item xs={3}>
+              <FormControl>
+                <RadioGroup
+                  aria-labelledby="demo-radio-buttons-group-label"
+                  value={"fish"}
+                  name="radio-buttons-group"
+                  //    onChange={(e) => {
+                  //      handleTableView(e.target.value);
+                  //    }}
+                  className="ic-radio"
+                  sx={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    flexWrap: "nowrap",
+                  }}
+                >
+                  <FormControlLabel
+                    value="fish"
+                    control={<Radio />}
+                    label="Farm1"
+                    className="input-btn"
+                  />
+                </RadioGroup>
+              </FormControl>
+            </Grid>
+            <Grid item xs={3}>
+              <FormControl>
+                <RadioGroup
+                  aria-labelledby="demo-radio-buttons-group-label"
+                  value={"fish"}
+                  name="radio-buttons-group"
+                  //    onChange={(e) => {
+                  //      handleTableView(e.target.value);
+                  //    }}
+                  className="ic-radio"
+                  sx={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    flexWrap: "nowrap",
+                  }}
+                >
+                  <FormControlLabel
+                    value="fish"
+                    control={<Radio />}
+                    label="Farm2"
+                    className="input-btn"
+                  />
+                </RadioGroup>
+              </FormControl>
+            </Grid>
+            <Grid item xs={3}>
+              <FormControl>
+                <RadioGroup
+                  aria-labelledby="demo-radio-buttons-group-label"
+                  value={"fish"}
+                  name="radio-buttons-group"
+                  //    onChange={(e) => {
+                  //      handleTableView(e.target.value);
+                  //    }}
+                  className="ic-radio"
+                  sx={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    flexWrap: "nowrap",
+                  }}
+                >
+                  <FormControlLabel
+                    value="fish"
+                    control={<Radio />}
+                    label="Farm3"
+                    className="input-btn"
+                  />
+                </RadioGroup>
+              </FormControl>
+            </Grid>
+            <Grid item xs={3}>
+              <FormControl>
+                <RadioGroup
+                  aria-labelledby="demo-radio-buttons-group-label"
+                  value={"fish"}
+                  name="radio-buttons-group"
+                  //    onChange={(e) => {
+                  //      handleTableView(e.target.value);
+                  //    }}
+                  className="ic-radio"
+                  sx={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    flexWrap: "nowrap",
+                  }}
+                >
+                  <FormControlLabel
+                    value="fish"
+                    control={<Radio />}
+                    label="Farm4"
+                    className="input-btn"
+                  />
+                </RadioGroup>
+              </FormControl>
+            </Grid>
+          </Grid>
+        </DialogContent>
+        <DialogActions
+          sx={{
+            p: 3,
+          }}
+        >
+          <Button
+            type="button"
+            variant="contained"
+            onClick={() => setIsModalOpenNext(true)}
+            sx={{
+              background: "#06A19B",
+              fontWeight: 600,
+              padding: "6px 16px",
+              width: "fit-content",
+              textTransform: "capitalize",
+              borderRadius: "8px",
+            }}
+          >
+            Next
+          </Button>
+
+          <Button
+            type="button"
+            onClick={() => {
+              setIsModalOpen(false);
+            }}
+            variant="contained"
+            sx={{
+              background: "#fff",
+              color: "#06A19B",
+              fontWeight: 600,
+              padding: "6px 16px",
+              width: "fit-content",
+              textTransform: "capitalize",
+              borderRadius: "8px",
+              border: "1px solid #06A19B",
+            }}
+          >
+            Cancel
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Next modal for select units*/}
+
+      <Dialog
+        open={isModalOpenNext}
+        onClose={() => {
+          setIsModalOpenNext(false);
+        }}
+      >
+        <DialogTitle>Select </DialogTitle>
+        <DialogContent>
+          <Grid container>
+            <Grid item xs={12}>
+              <Box sx={{ display: "flex" }}>Farm one </Box>
+            </Grid>
+          </Grid>
+        </DialogContent>
+        <DialogActions
+          sx={{
+            p: 3,
+          }}
+        >
+          <Button
+            type="button"
+            variant="contained"
+            sx={{
+              background: "#06A19B",
+              fontWeight: 600,
+              padding: "6px 16px",
+              width: "fit-content",
+              textTransform: "capitalize",
+              borderRadius: "8px",
+            }}
+          >
+            finish
+          </Button>
+
+          <Button
+            type="button"
+            onClick={() => {
+              setIsModalOpenNext(false);
+            }}
+            variant="contained"
+            sx={{
+              background: "#fff",
+              color: "#06A19B",
+              fontWeight: 600,
+              padding: "6px 16px",
+              width: "fit-content",
+              textTransform: "capitalize",
+              borderRadius: "8px",
+              border: "1px solid #06A19B",
+            }}
+          >
+            Cancel
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }

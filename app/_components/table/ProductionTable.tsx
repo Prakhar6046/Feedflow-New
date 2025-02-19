@@ -19,9 +19,6 @@ import {
   MonthyFishAverage,
   Production,
 } from "@/app/_typeModels/production";
-import { breadcrumsAction } from "@/lib/features/breadcrum/breadcrumSlice";
-import { selectRole } from "@/lib/features/user/userSlice";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import {
   Box,
   Button,
@@ -35,7 +32,15 @@ import {
   TableSortLabel,
   Tooltip,
   Typography,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
 } from "@mui/material";
+import { breadcrumsAction } from "@/lib/features/breadcrum/breadcrumSlice";
+import { selectRole } from "@/lib/features/user/userSlice";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -117,6 +122,7 @@ export default function ProductionTable({
   const [startMonth, setStartMonth] = useState<number>(
     new Date().getMonth() + 1
   );
+
   const [endMonth, setEndMonth] = useState<number>(new Date().getMonth() + 1);
 
   const [allFarms, setAllFarms] = useState<{ id: string; option: string }[]>(
@@ -248,7 +254,7 @@ export default function ProductionTable({
       </TableHead>
     );
   }
-console.log(breakpoint);
+  console.log(breakpoint);
 
   const handleRequestSort = (
     _: React.MouseEvent<HTMLButtonElement> | null,
@@ -848,17 +854,19 @@ console.log(breakpoint);
                             pr: 2,
                           }}
                         >
-                          <Box sx={{ display: "flex", alignItems:"center" }}>
+                          <Box sx={{ display: "flex", alignItems: "center" }}>
                             {farm.farm ?? ""}
-                            <h3  onClick={handleClickTest}>
+                            <h3 onClick={handleClickTest}>
                               {" "}
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 width="1.1em"
-                                style={{marginLeft:"10px", marginTop:"10px"}}
+                                style={{
+                                  marginLeft: "10px",
+                                  marginTop: "10px",
+                                }}
                                 height="1.1em"
                                 viewBox="0 0 24 24"
-                                
                               >
                                 <path
                                   fill="currentColor"
@@ -931,11 +939,60 @@ console.log(breakpoint);
                                 >
                                   <path
                                     fill="currentColor"
-                                    d="M9 2.458v2.124A8.003 8.003 0 0 0 12 20a8 8 0 0 0 7.419-5h2.123c-1.274 4.057-5.064 7-9.542 7c-5.523 0-10-4.477-10-10c0-4.478 2.943-8.268 7-9.542M12 2c5.523 0 10 4.477 10 10q0 .507-.05 1H11V2.05Q11.493 2 12 2m1 2.062V11h6.938A8.004 8.004 0 0 0 13 4.062"
+                                    d="M6.008 12h-.01M11 16.042c.463.153.908.329 1.31.61m0 0A3.95 3.95 0 0 1 14 19.885a.117.117 0 0 1-.118.116c-2.917-.013-4.224-.507-4.773-1.322L8 16.857c-2.492-.503-4.782-2.094-6-4.774c3-6.597 12.5-6.597 15.5 0m-5.19 4.57c2.17-.66 4.105-2.184 5.19-4.57m-5.19-4.569A3.95 3.95 0 0 0 14 4.282c0-.826-4.308.342-4.89 1.206L8 7.31m9.5 4.773c.333-.66 2.1-2.969 4.5-2.969c-.833.825-2.2 3.959-1 5.938c-1.2 0-3-2.309-3.5-2.969"
+                                    color="currentColor"
                                   />
                                 </svg>
                               </ListItemIcon>
-                              Dashboard
+                              Fish N
+                            </MenuItem>
+                            <MenuItem
+                              onClick={() => {
+                                setAnchorE2(null), setTest(true);
+                              }}
+                              sx={{
+                                fontSize: 14,
+                                fontWeight: 500,
+                              }}
+                            >
+                              <ListItemIcon>
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  width="1.1em"
+                                  height="1.1em"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    fill="currentColor"
+                                    d="M21 11.11V5a2 2 0 0 0-2-2h-4.18C14.4 1.84 13.3 1 12 1s-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14a2 2 0 0 0 2 2h6.11c1.26 1.24 2.98 2 4.89 2c3.87 0 7-3.13 7-7c0-1.91-.76-3.63-2-4.89M12 3c.55 0 1 .45 1 1s-.45 1-1 1s-1-.45-1-1s.45-1 1-1M5 19V5h2v2h10V5h2v4.68c-.91-.43-1.92-.68-3-.68H7v2h4.1c-.6.57-1.06 1.25-1.42 2H7v2h2.08c-.05.33-.08.66-.08 1c0 1.08.25 2.09.68 3zm11 2c-2.76 0-5-2.24-5-5s2.24-5 5-5s5 2.24 5 5s-2.24 5-5 5m.5-4.75l2.86 1.69l-.75 1.22L15 17v-5h1.5z"
+                                  />
+                                </svg>
+                              </ListItemIcon>
+                              History
+                            </MenuItem>
+                            <MenuItem
+                              onClick={() => {
+                                setAnchorE2(null), setTest(true);
+                              }}
+                              sx={{
+                                fontSize: 14,
+                                fontWeight: 500,
+                              }}
+                            >
+                              <ListItemIcon>
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  width="1.1em"
+                                  height="1.1em"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    fill="currentColor"
+                                    d="M21 11.11V5a2 2 0 0 0-2-2h-4.18C14.4 1.84 13.3 1 12 1s-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14a2 2 0 0 0 2 2h6.11c1.26 1.24 2.98 2 4.89 2c3.87 0 7-3.13 7-7c0-1.91-.76-3.63-2-4.89M12 3c.55 0 1 .45 1 1s-.45 1-1 1s-1-.45-1-1s.45-1 1-1M5 19V5h2v2h10V5h2v4.68c-.91-.43-1.92-.68-3-.68H7v2h4.1c-.6.57-1.06 1.25-1.42 2H7v2h2.08c-.05.33-.08.66-.08 1c0 1.08.25 2.09.68 3zm11 2c-2.76 0-5-2.24-5-5s2.24-5 5-5s5 2.24 5 5s-2.24 5-5 5m.5-4.75l2.86 1.69l-.75 1.22L15 17v-5h1.5z"
+                                  />
+                                </svg>
+                              </ListItemIcon>
+                              Create report
                             </MenuItem>
                           </Menu>
                         </TableCell>
@@ -1655,12 +1712,41 @@ console.log(breakpoint);
                                         >
                                           <path
                                             fill="currentColor"
-                                            d="M12.275 19q.3-.025.513-.238T13 18.25q0-.35-.225-.562T12.2 17.5q-1.025.075-2.175-.562t-1.45-2.313q-.05-.275-.262-.45T7.825 14q-.35 0-.575.263t-.15.612q.425 2.275 2 3.25t3.175.875M12 22q-3.425 0-5.712-2.35T4 13.8q0-2.5 1.988-5.437T12 2q4.025 3.425 6.013 6.363T20 13.8q0 3.5-2.287 5.85T12 22m0-2q2.6 0 4.3-1.763T18 13.8q0-1.825-1.513-4.125T12 4.65Q9.025 7.375 7.513 9.675T6 13.8q0 2.675 1.7 4.438T12 20m0-8"
+                                            d="m12.593 23.258l-.011.002l-.071.035l-.02.004l-.014-.004l-.071-.035q-.016-.005-.024.005l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.017-.018m.265-.113l-.013.002l-.185.093l-.01.01l-.003.011l.018.43l.005.012l.008.007l.201.093q.019.005.029-.008l.004-.014l-.034-.614q-.005-.018-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.614q.001.018.017.024l.015-.002l.201-.093l.01-.008l.004-.011l.017-.43l-.003-.012l-.01-.01z"
+                                          />
+                                          <path
+                                            fill="currentColor"
+                                            d="M12 17a2 2 0 1 1 0 4a2 2 0 0 1 0-4m0-7a2 2 0 1 1 0 4a2 2 0 0 1 0-4m0-7a2 2 0 1 1 0 4a2 2 0 0 1 0-4"
                                           />
                                         </svg>
                                       </Button>
                                     </Tooltip>
                                   )}
+                                  <Box
+                                    sx={{
+                                      display: "flex",
+                                      alignItems: "center",
+                                    }}
+                                  >
+                                    <h3 onClick={handleClickTest}>
+                                      {" "}
+                                      <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="1.1em"
+                                        style={{
+                                          marginLeft: "10px",
+                                          marginTop: "10px",
+                                        }}
+                                        height="1.1em"
+                                        viewBox="0 0 24 24"
+                                      >
+                                        <path
+                                          fill="currentColor"
+                                          d="M14 18a2 2 0 1 1-4 0a2 2 0 0 1 4 0m0-6a2 2 0 1 1-4 0a2 2 0 0 1 4 0m-2-4a2 2 0 1 0 0-4a2 2 0 0 0 0 4"
+                                        />
+                                      </svg>
+                                    </h3>
+                                  </Box>
                                 </Box>
                               );
                             })}
