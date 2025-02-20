@@ -1,4 +1,4 @@
-import { setLocalItem } from "@/app/_lib/utils";
+import { getChartPredictedValues, setLocalItem } from "@/app/_lib/utils";
 import { Farm } from "@/app/_typeModels/Farm";
 import {
   Production,
@@ -54,6 +54,7 @@ function WaterHistoryCharts({
   const [currentFarm, setCurrentFarm] = useState<Farm | undefined>();
   const [selectedCharts, setSelectedCharts] = useState<string[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [predictedData, setPredictedData] = useState<any>(null);
 
   type IdealRangeKeys =
     | "DO"
@@ -83,43 +84,19 @@ function WaterHistoryCharts({
     { key: "ph", yDataKey: "ph", title: "PH" },
     { key: "visibility", yDataKey: "visibility", title: "Visibility" },
   ];
-
   useEffect(() => {
     if (groupedData?.units && farms) {
       const farm = farms.find((farm) => farm.id === productions[0]?.fishFarmId);
       setCurrentFarm(farm);
-
-      // const createdAtArray = groupedData.units?.flatMap(
-      //   (unit) =>
-      //     unit.waterManageHistory?.map((history) =>
-      //       String(history.currentDate)
-      //     ) || []
-      // );
-      // console.log(createdAtArray);
-      // const diffInDays = dayjs(endDate).diff(dayjs(startDate), "day");
-      // setDateDiff(diffInDays);
-
-      // const startD = new Date(startDate);
-      // startD.setHours(0, 0, 0, 0);
-      // const endD = new Date(endDate);
-      // endD.setHours(0, 0, 0, 0);
-
-      // const filteredTimestamps = createdAtArray.filter((timestamp) => {
-      //   const date = new Date(timestamp);
-      //   date.setHours(0, 0, 0, 0);
-      //   return date >= startD && date <= endD;
-      // });
-
-      // setXAxisData(filteredTimestamps);
       const createdAtArray = groupedData.units
         ?.flatMap(
           (unit) =>
             unit.waterManageHistory?.map((history) => {
-              const datePart = String(history.currentDate).split("T")[0]; // Extract date before "T"
-              return dayjs(datePart).isValid() ? datePart : null; // Validate the extracted date
+              const datePart = String(history.currentDate).split("T")[0];
+              return dayjs(datePart).isValid() ? datePart : null;
             }) || []
         )
-        .filter(Boolean); // Remove null values
+        .filter(Boolean);
 
       const diffInDays = dayjs(endDate).diff(dayjs(startDate), "day");
       setDateDiff(diffInDays);
@@ -161,7 +138,12 @@ function WaterHistoryCharts({
     setLocalItem("waterPreviewData", data);
     router.push(`/dashboard/production/water/${waterId}/chartPreview`);
   };
-
+  useEffect(() => {
+    const result = getChartPredictedValues(productions, startDate, endDate);
+    if (result) {
+      setPredictedData(result);
+    }
+  }, [productions, startDate, endDate]);
   return (
     <div>
       <Box
@@ -291,6 +273,12 @@ function WaterHistoryCharts({
                       (history: any) => history[yDataKey]
                     ) || []
                 )}
+                predictedValues={
+                  predictedData?.find(
+                    (val: { key: string; values: string[] }) =>
+                      val.key === yDataKey
+                  )?.values || []
+                }
                 maxVal={
                   currentFarm?.WaterQualityPredictedParameters[0]
                     ?.YearBasedPredication[0]?.idealRange[yDataKey]?.Max

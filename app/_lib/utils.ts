@@ -1,5 +1,5 @@
 import toast from "react-hot-toast";
-import { FarmGroup } from "../_typeModels/production";
+import { FarmGroup, Production } from "../_typeModels/production";
 
 export const readableDate = (date: any) => {
   return new Date(date).toLocaleString("en-US", {
@@ -210,7 +210,6 @@ export const getCurrentMonth = () => {
   const currentMonth = new Date().getMonth();
   return Years[currentMonth];
 };
-
 export const ProductionSortTables = (
   groupedData: FarmGroup[],
   order: string,
@@ -435,7 +434,6 @@ export const ProductionSortTables = (
     }
   }
 };
-
 export const averagesDropdown = [
   "Lastest sample average",
   "Monthly average",
@@ -503,4 +501,45 @@ export const handleUpload = async (
     toast.dismiss();
     toast.success("Profile photo successfully uploaded");
   }
+};
+export const getChartPredictedValues = (
+  productions: Production[],
+  startDate: string,
+  endDate: string
+) => {
+  const predictionUnit =
+    productions?.[0]?.productionUnit?.YearBasedPredicationProductionUnit?.[0];
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+  const startMonth = start.getMonth();
+  const endMonth = end.getMonth();
+  const monthMap: any = {
+    0: "Jan",
+    1: "Feb",
+    2: "Mar",
+    3: "Apr",
+    4: "May",
+    5: "Jun",
+    6: "Jul",
+    7: "Aug",
+    8: "Sep",
+    9: "Oct",
+    10: "Nov",
+    11: "Dec",
+  };
+
+  const selectedMonths = Object.keys(monthMap)
+    .map(Number)
+    .filter((month: number) => month >= startMonth && month <= endMonth)
+    .map((month: number) => monthMap[month]);
+  const filteredValues = Object.entries(predictionUnit).map(
+    ([key, value]: any) => {
+      const selectedData = selectedMonths
+        .map((month) => value?.[month])
+        .filter((val) => val !== undefined);
+      return selectedData.length > 0 ? { key, values: selectedData } : null;
+    }
+  );
+  const result = filteredValues.filter(Boolean);
+  return result;
 };

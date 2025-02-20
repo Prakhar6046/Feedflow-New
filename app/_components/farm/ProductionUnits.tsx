@@ -72,8 +72,7 @@ const ProductionUnits: NextPage<Props> = ({
   const [open, setopen] = useState<boolean>(false);
   const [openUnitParametersModal, setOpenUnitParametersModal] =
     useState<boolean>(false);
-  const [selectedUnitId, setSelectedUnitId] = useState<string>("");
-  const [updatedUnits, setUpdatedUnits] = useState<any>();
+  const [selectedUnitName, setSelectedUnitName] = useState<string>("");
   const [calculatedValue, setCalculatedValue] = useState<CalculateType>();
   const [formProductionUnitsData, setFormProductionUnitsData] = useState<any>();
   const [isApiCallInProgress, setIsApiCallInProgress] =
@@ -176,6 +175,33 @@ const ProductionUnits: NextPage<Props> = ({
       try {
         const loggedUserData = JSON.parse(userData);
         let payload;
+        const filteredProductionUnits =
+          productionParamtertsUnitsArrayLocal.filter(
+            (unit: {
+              unitName: string;
+              predictedValues: any;
+              idealRange: any;
+            }) =>
+              data.productionUnits.some(
+                (param: any) => param.name === unit.unitName
+              )
+          );
+        const updatedProductionUnits = filteredProductionUnits.map(
+          (filteredUnit: any) => {
+            const matchedUnit = editFarm?.productionUnits?.find(
+              (unit: any) => unit.name === filteredUnit.unitName
+            );
+
+            if (matchedUnit) {
+              return {
+                ...filteredUnit,
+                id: matchedUnit.YearBasedPredicationProductionUnit[0]?.id,
+              };
+            }
+            return filteredUnit;
+          }
+        );
+
         if (
           isEditFarm === "true" &&
           editFarm?.farmAddress?.id &&
@@ -216,7 +242,7 @@ const ProductionUnits: NextPage<Props> = ({
                 visibility: farmPredictionValues.idealRange["Visibility cm"],
               },
             },
-            productionParamtertsUnitsArray: productionParamtertsUnitsArrayLocal,
+            productionParamtertsUnitsArray: updatedProductionUnits,
             farmAddress: {
               addressLine1: farmData.addressLine1,
               addressLine2: farmData.addressLine2,
@@ -240,7 +266,7 @@ const ProductionUnits: NextPage<Props> = ({
           };
         } else {
           payload = {
-            productionParamtertsUnitsArray: productionParamtertsUnitsArrayLocal,
+            productionParamtertsUnitsArray: updatedProductionUnits,
             productionParameter: {
               ...farmPredictionValues,
               predictedValues: {
@@ -294,7 +320,6 @@ const ProductionUnits: NextPage<Props> = ({
             userId: loggedUserData.id,
           };
         }
-        console.log(payload);
 
         if (Object.keys(payload).length && payload.name) {
           const response = await fetch(
@@ -325,6 +350,8 @@ const ProductionUnits: NextPage<Props> = ({
           toast.error("Please fill out the all feilds");
         }
       } catch (error) {
+        console.log(error);
+
         toast.error("Something went wrong. Please try again.");
       } finally {
         setIsApiCallInProgress(false);
@@ -342,14 +369,7 @@ const ProductionUnits: NextPage<Props> = ({
     },
     index: number
   ) => {
-    const productionParamtertsUnitsArrayLocal = getLocalItem(
-      "productionParamtertsUnitsArray"
-    );
-
-    const updatedData = productionParamtertsUnitsArrayLocal.filter(
-      (unit: any) => unit.id !== item.id
-    );
-    if (index === 0) {
+    if (fields?.length === 1 && index === 0) {
       setValue("productionUnits", [
         {
           name: "",
@@ -362,19 +382,6 @@ const ProductionUnits: NextPage<Props> = ({
     } else {
       remove(index);
     }
-    setLocalItem("productionParamtertsUnitsArray", updatedData);
-
-    index === 0
-      ? setValue("productionUnits", [
-          {
-            name: "",
-            capacity: "",
-            type: "",
-            waterflowRate: "",
-            id: uuidv4(),
-          },
-        ])
-      : remove(index);
   };
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -436,17 +443,6 @@ const ProductionUnits: NextPage<Props> = ({
     setValue("radius", "1");
     setValue("width", "1");
   }, [formProductionUnitsData]);
-
-  useEffect(() => {
-    if (productionUnits && fields) {
-      const updatedproductionUnits = productionUnits.map((unit, i) => {
-        return { ...unit, unitId: fields[i].id };
-      });
-      setUpdatedUnits(updatedproductionUnits);
-    }
-  }, [fields, productionUnits]);
-
-  console.log("updatedUnits", updatedUnits);
 
   return (
     <Stack>
@@ -754,7 +750,59 @@ const ProductionUnits: NextPage<Props> = ({
                           </Typography>
                         )}
                       </TableCell>
-
+                      <TableCell
+                        sx={{
+                          border: 0,
+                          pl: 0,
+                          pr: 1,
+                          position: "relative",
+                        }}
+                        onClick={() => {
+                          if (productionUnits[index]?.name) {
+                            toast.dismiss();
+                            setOpenUnitParametersModal(true);
+                            setSelectedUnitName(productionUnits[index].name);
+                          } else {
+                            toast.dismiss();
+                            toast.error("Please enter unit name first");
+                          }
+                        }}
+                      >
+                        <Box
+                          sx={{
+                            cursor: "pointer",
+                            width: "fit-content",
+                            px: 1,
+                            mt: "16px",
+                          }}
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              fill={`${
+                                productionUnits[index]?.name
+                                  ? "#06A19B"
+                                  : "#808080"
+                              }`}
+                              fill-rule="evenodd"
+                              d="M18.955 1.25c-.433 0-.83 0-1.152.043c-.356.048-.731.16-1.04.47s-.422.684-.47 1.04c-.043.323-.043.72-.043 1.152v13.09c0 .433 0 .83.043 1.152c.048.356.16.731.47 1.04s.684.422 1.04.47c.323.043.72.043 1.152.043h.09c.433 0 .83 0 1.152-.043c.356-.048.731-.16 1.04-.47s.422-.684.47-1.04c.043-.323.043-.72.043-1.152V3.955c0-.433 0-.83-.043-1.152c-.048-.356-.16-.731-.47-1.04s-.684-.422-1.04-.47c-.323-.043-.72-.043-1.152-.043zm-1.13 1.572l-.002.001l-.001.003l-.005.01a.7.7 0 0 0-.037.167c-.028.21-.03.504-.03.997v13c0 .493.002.787.03.997a.7.7 0 0 0 .042.177l.001.003l.003.001l.003.002l.007.003c.022.009.07.024.167.037c.21.028.504.03.997.03s.787-.002.997-.03a.7.7 0 0 0 .177-.042l.003-.001l.001-.003l.005-.01a.7.7 0 0 0 .037-.167c.028-.21.03-.504.03-.997V4c0-.493-.002-.787-.03-.997a.7.7 0 0 0-.042-.177l-.001-.003l-.003-.001l-.01-.005a.7.7 0 0 0-.167-.037c-.21-.028-.504-.03-.997-.03s-.787.002-.997.03a.7.7 0 0 0-.177.042M11.955 4.25h.09c.433 0 .83 0 1.152.043c.356.048.731.16 1.04.47s.422.684.47 1.04c.043.323.043.72.043 1.152v10.09c0 .433 0 .83-.043 1.152c-.048.356-.16.731-.47 1.04s-.684.422-1.04.47c-.323.043-.72.043-1.152.043h-.09c-.432 0-.83 0-1.152-.043c-.356-.048-.731-.16-1.04-.47s-.422-.684-.47-1.04c-.043-.323-.043-.72-.043-1.152V6.955c0-.433 0-.83.043-1.152c.048-.356.16-.731.47-1.04s.684-.422 1.04-.47c.323-.043.72-.043 1.152-.043m-1.132 1.573l.003-.001l-.003 12.355l-.001-.003l-.005-.01a.7.7 0 0 1-.037-.167c-.028-.21-.03-.504-.03-.997V7c0-.493.002-.787.03-.997a.7.7 0 0 1 .042-.177zm0 12.354l.003-12.355l.003-.002l.007-.003a.7.7 0 0 1 .167-.037c.21-.028.504-.03.997-.03s.787.002.997.03a.7.7 0 0 1 .177.042l.003.001l.001.003l.005.01c.009.022.024.07.037.167c.028.21.03.504.03.997v10c0 .493-.002.787-.03.997a.7.7 0 0 1-.042.177l-.001.003l-.003.001l-.01.005a.7.7 0 0 1-.167.037c-.21.028-.504.03-.997.03s-.787-.002-.997-.03a.7.7 0 0 1-.177-.042zM4.955 8.25c-.433 0-.83 0-1.152.043c-.356.048-.731.16-1.04.47s-.422.684-.47 1.04c-.043.323-.043.72-.043 1.152v6.09c0 .433 0 .83.043 1.152c.048.356.16.731.47 1.04s.684.422 1.04.47c.323.043.72.043 1.152.043h.09c.433 0 .83 0 1.152-.043c.356-.048.731-.16 1.04-.47s.422-.684.47-1.04c.043-.323.043-.72.043-1.152v-6.09c0-.433 0-.83-.043-1.152c-.048-.356-.16-.731-.47-1.04s-.684-.422-1.04-.47c-.323-.043-.72-.043-1.152-.043zm-1.13 1.572l-.002.001l-.001.003l-.005.01a.7.7 0 0 0-.037.167c-.028.21-.03.504-.03.997v6c0 .493.002.787.03.997a.7.7 0 0 0 .042.177v.002l.004.002l.01.005c.022.009.07.024.167.037c.21.028.504.03.997.03s.787-.002.997-.03a.7.7 0 0 0 .177-.042l.003-.001l.001-.003l.002-.004l.003-.006a.7.7 0 0 0 .037-.167c.028-.21.03-.504.03-.997v-6c0-.493-.002-.787-.03-.997a.7.7 0 0 0-.042-.177l-.001-.003l-.003-.001l-.01-.005a.7.7 0 0 0-.167-.037c-.21-.028-.504-.03-.997-.03s-.787.002-.997.03a.7.7 0 0 0-.177.042"
+                              clip-rule="evenodd"
+                            />
+                            <path
+                              fill={`${
+                                productionUnits[index]?.name
+                                  ? "#06A19B"
+                                  : "#808080"
+                              }`}
+                              d="M3 21.25a.75.75 0 0 0 0 1.5h18a.75.75 0 0 0 0-1.5z"
+                            />
+                          </svg>
+                        </Box>
+                      </TableCell>
                       <TableCell
                         sx={{
                           border: 0,
@@ -785,47 +833,6 @@ const ProductionUnits: NextPage<Props> = ({
                                 d="M14.28 2a2 2 0 0 1 1.897 1.368L16.72 5H20a1 1 0 1 1 0 2l-.003.071l-.867 12.143A3 3 0 0 1 16.138 22H7.862a3 3 0 0 1-2.992-2.786L4.003 7.07L4 7a1 1 0 0 1 0-2h3.28l.543-1.632A2 2 0 0 1 9.721 2zm3.717 5H6.003l.862 12.071a1 1 0 0 0 .997.929h8.276a1 1 0 0 0 .997-.929zM10 10a1 1 0 0 1 .993.883L11 11v5a1 1 0 0 1-1.993.117L9 16v-5a1 1 0 0 1 1-1m4 0a1 1 0 0 1 1 1v5a1 1 0 1 1-2 0v-5a1 1 0 0 1 1-1m.28-6H9.72l-.333 1h5.226z"
                               />
                             </g>
-                          </svg>
-                        </Box>
-                      </TableCell>
-
-                      <TableCell
-                        sx={{
-                          border: 0,
-                          pl: 0,
-                          pr: 1,
-                          position: "relative",
-                        }}
-                        onClick={() => {
-                          console.log("item", item);
-                          setOpenUnitParametersModal(true);
-                          setSelectedUnitId(item.id);
-                        }}
-                      >
-                        <Box
-                          sx={{
-                            cursor: "pointer",
-                            width: "fit-content",
-                            px: 1,
-                            mt: "16px",
-                          }}
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              fill="#06A19B"
-                              fill-rule="evenodd"
-                              d="M18.955 1.25c-.433 0-.83 0-1.152.043c-.356.048-.731.16-1.04.47s-.422.684-.47 1.04c-.043.323-.043.72-.043 1.152v13.09c0 .433 0 .83.043 1.152c.048.356.16.731.47 1.04s.684.422 1.04.47c.323.043.72.043 1.152.043h.09c.433 0 .83 0 1.152-.043c.356-.048.731-.16 1.04-.47s.422-.684.47-1.04c.043-.323.043-.72.043-1.152V3.955c0-.433 0-.83-.043-1.152c-.048-.356-.16-.731-.47-1.04s-.684-.422-1.04-.47c-.323-.043-.72-.043-1.152-.043zm-1.13 1.572l-.002.001l-.001.003l-.005.01a.7.7 0 0 0-.037.167c-.028.21-.03.504-.03.997v13c0 .493.002.787.03.997a.7.7 0 0 0 .042.177l.001.003l.003.001l.003.002l.007.003c.022.009.07.024.167.037c.21.028.504.03.997.03s.787-.002.997-.03a.7.7 0 0 0 .177-.042l.003-.001l.001-.003l.005-.01a.7.7 0 0 0 .037-.167c.028-.21.03-.504.03-.997V4c0-.493-.002-.787-.03-.997a.7.7 0 0 0-.042-.177l-.001-.003l-.003-.001l-.01-.005a.7.7 0 0 0-.167-.037c-.21-.028-.504-.03-.997-.03s-.787.002-.997.03a.7.7 0 0 0-.177.042M11.955 4.25h.09c.433 0 .83 0 1.152.043c.356.048.731.16 1.04.47s.422.684.47 1.04c.043.323.043.72.043 1.152v10.09c0 .433 0 .83-.043 1.152c-.048.356-.16.731-.47 1.04s-.684.422-1.04.47c-.323.043-.72.043-1.152.043h-.09c-.432 0-.83 0-1.152-.043c-.356-.048-.731-.16-1.04-.47s-.422-.684-.47-1.04c-.043-.323-.043-.72-.043-1.152V6.955c0-.433 0-.83.043-1.152c.048-.356.16-.731.47-1.04s.684-.422 1.04-.47c.323-.043.72-.043 1.152-.043m-1.132 1.573l.003-.001l-.003 12.355l-.001-.003l-.005-.01a.7.7 0 0 1-.037-.167c-.028-.21-.03-.504-.03-.997V7c0-.493.002-.787.03-.997a.7.7 0 0 1 .042-.177zm0 12.354l.003-12.355l.003-.002l.007-.003a.7.7 0 0 1 .167-.037c.21-.028.504-.03.997-.03s.787.002.997.03a.7.7 0 0 1 .177.042l.003.001l.001.003l.005.01c.009.022.024.07.037.167c.028.21.03.504.03.997v10c0 .493-.002.787-.03.997a.7.7 0 0 1-.042.177l-.001.003l-.003.001l-.01.005a.7.7 0 0 1-.167.037c-.21.028-.504.03-.997.03s-.787-.002-.997-.03a.7.7 0 0 1-.177-.042zM4.955 8.25c-.433 0-.83 0-1.152.043c-.356.048-.731.16-1.04.47s-.422.684-.47 1.04c-.043.323-.043.72-.043 1.152v6.09c0 .433 0 .83.043 1.152c.048.356.16.731.47 1.04s.684.422 1.04.47c.323.043.72.043 1.152.043h.09c.433 0 .83 0 1.152-.043c.356-.048.731-.16 1.04-.47s.422-.684.47-1.04c.043-.323.043-.72.043-1.152v-6.09c0-.433 0-.83-.043-1.152c-.048-.356-.16-.731-.47-1.04s-.684-.422-1.04-.47c-.323-.043-.72-.043-1.152-.043zm-1.13 1.572l-.002.001l-.001.003l-.005.01a.7.7 0 0 0-.037.167c-.028.21-.03.504-.03.997v6c0 .493.002.787.03.997a.7.7 0 0 0 .042.177v.002l.004.002l.01.005c.022.009.07.024.167.037c.21.028.504.03.997.03s.787-.002.997-.03a.7.7 0 0 0 .177-.042l.003-.001l.001-.003l.002-.004l.003-.006a.7.7 0 0 0 .037-.167c.028-.21.03-.504.03-.997v-6c0-.493-.002-.787-.03-.997a.7.7 0 0 0-.042-.177l-.001-.003l-.003-.001l-.01-.005a.7.7 0 0 0-.167-.037c-.21-.028-.504-.03-.997-.03s-.787.002-.997.03a.7.7 0 0 0-.177.042"
-                              clip-rule="evenodd"
-                            />
-                            <path
-                              fill="#06A19B"
-                              d="M3 21.25a.75.75 0 0 0 0 1.5h18a.75.75 0 0 0 0-1.5z"
-                            />
                           </svg>
                         </Box>
                       </TableCell>
@@ -914,7 +921,8 @@ const ProductionUnits: NextPage<Props> = ({
         productionParaMeter={productionParaMeter}
         open={openUnitParametersModal}
         setOpen={setOpenUnitParametersModal}
-        selectedUnitId={selectedUnitId}
+        selectedUnitName={selectedUnitName}
+        setSelectedUnitName={setSelectedUnitName}
       />
       <CalculateVolume
         open={open}

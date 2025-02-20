@@ -111,6 +111,7 @@ export default function ProductionTable({
   );
   const handleClickTest = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorE3(event.currentTarget);
+    setAnchorE2(event.currentTarget as HTMLButtonElement);
   };
   const [productionData, setProductionData] = useState<FarmGroup[]>();
   const [order, setOrder] = React.useState("asc");
@@ -176,7 +177,7 @@ export default function ProductionTable({
     setSelectedProduction(selectedProd);
   };
   const handleResetFilters = () => {
-    setSelectedDropDownfarms([]);
+    setSelectedDropDownfarms(allFarms);
     setSelectedDropDownUnits([]);
     setSelectedDropDownYears([new Date().getFullYear()]);
     setSelectedAverage(averagesDropdown[0]);
@@ -261,8 +262,6 @@ export default function ProductionTable({
       </TableHead>
     );
   }
-  console.log(breakpoint);
-
   const handleRequestSort = (
     _: React.MouseEvent<HTMLButtonElement> | null,
     property: string
@@ -410,9 +409,9 @@ export default function ProductionTable({
       });
       // customFarms.unshift({ code: "0", option: "All farms" });
       setAllFarms(customFarms);
+      setSelectedDropDownfarms(customFarms);
     }
   }, [farms]);
-
   useEffect(() => {
     if (selectedDropDownfarms) {
       const getProductionUnits = (
@@ -442,9 +441,9 @@ export default function ProductionTable({
       );
       // customUnits.unshift({ id: "0", option: "All units" });
       setAllUnits(customUnits);
+      setSelectedDropDownUnits(customUnits);
     }
   }, [selectedDropDownfarms]);
-
   useEffect(() => {
     if (!groupedData || !groupedData.length) return;
     // Utility: Filter by farms
@@ -456,7 +455,6 @@ export default function ProductionTable({
       const selectedFarmIds = selectedFarms?.map(
         (farm: { option: string; id: string }) => farm?.id
       );
-      console.log(selectedFarmIds);
       return data
         .map((farm) => ({
           ...farm,
@@ -875,6 +873,8 @@ export default function ProductionTable({
                                 boxShadow: "none",
                               }}
                             >
+                            <h3 onClick={handleClickTest}>
+                              {" "}
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 width="1.1em"
@@ -1027,7 +1027,6 @@ export default function ProductionTable({
                                         handleFishManageHistory(unit)
                                       }
                                       disabled={isDisabled}
-                                      className=""
                                       type="button"
                                       variant="contained"
                                       style={{

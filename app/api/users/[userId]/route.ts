@@ -2,10 +2,7 @@ import prisma from "@/prisma/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 export const GET = async (request: NextRequest, context: { params: any }) => {
-  //   const { searchParams } = new URL(request.url);
-  //   console.log(searchParams);
   const userId = context.params.userId;
-  //   const userId = searchParams.get("userId");
   if (!userId) {
     return new NextResponse(
       JSON.stringify({ message: "Invalid or missing userId" }),

@@ -413,13 +413,10 @@ export default function BasicTable({ organisations, userRole }: Props) {
                           MenuListProps={{
                             "aria-labelledby": "basic-button",
                           }}
-                          sx={
-                            {
-                              // position: "absolute",
-                              // left: "-10px",
-                              // top: "-7px",
-                            }
-                          }
+                          sx={{
+                            position: "absolute",
+                            left: "-10px",
+                          }}
                         >
                           <MenuItem onClick={handleEdit}>
                             <Stack

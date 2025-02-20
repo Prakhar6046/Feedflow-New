@@ -1,5 +1,9 @@
 "use client";
-import { getLocalItem, removeLocalItem } from "@/app/_lib/utils";
+import {
+  getChartPredictedValues,
+  getLocalItem,
+  removeLocalItem,
+} from "@/app/_lib/utils";
 import { Farm } from "@/app/_typeModels/Farm";
 import {
   Production,
@@ -32,6 +36,7 @@ function WaterChartDownloadPreview({
 }) {
   const router = useRouter();
   const [chartData, setChartData] = useState<ChartDataType>();
+  const [predictedData, setPredictedData] = useState<any>(null);
   const chartOptions: {
     key: string;
     yDataKey: IdealRangeKeys;
@@ -50,6 +55,18 @@ function WaterChartDownloadPreview({
     { key: "ph", yDataKey: "ph", title: "PH" },
     { key: "visibility", yDataKey: "visibility", title: "Visibility" },
   ];
+  useEffect(() => {
+    if (chartData) {
+      const result = getChartPredictedValues(
+        productions,
+        chartData?.startDate,
+        chartData?.endDate
+      );
+      if (result) {
+        setPredictedData(result);
+      }
+    }
+  }, [productions, chartData]);
   const downloadChartsAsPDF = async () => {
     const pdf = new jsPDF({ orientation: "landscape" });
     const tempContainer = document.createElement("div");
@@ -285,6 +302,12 @@ function WaterChartDownloadPreview({
                   minVal={
                     chartData?.currentFarm?.WaterQualityPredictedParameters[0]
                       ?.YearBasedPredication[0]?.idealRange[yDataKey]?.Min
+                  }
+                  predictedValues={
+                    predictedData?.find(
+                      (val: { key: string; values: string[] }) =>
+                        val.key === yDataKey
+                    )?.values || []
                   }
                   startDate={chartData?.startDate}
                   endDate={chartData?.endDate}
@@ -724,6 +747,12 @@ function WaterChartDownloadPreview({
                                   (history: any) => history[yDataKey]
                                 ) || []
                             )}
+                            predictedValues={
+                              predictedData?.find(
+                                (val: { key: string; values: string[] }) =>
+                                  val.key === yDataKey
+                              )?.values || []
+                            }
                             maxVal={
                               chartData?.currentFarm
                                 ?.WaterQualityPredictedParameters[0]

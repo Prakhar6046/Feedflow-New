@@ -249,8 +249,6 @@ export default function FishSupplyTable({ tableData, fishSupply }: Props) {
   useEffect(() => {
     router.refresh();
   }, [router]);
-  console.log(sortedFishSupply);
-  console.log(fishSupply);
 
   return (
     <Paper
@@ -509,7 +507,7 @@ export default function FishSupplyTable({ tableData, fishSupply }: Props) {
                           }}
                           sx={{
                             position: "absolute",
-                            left: "-1px",
+                            left: "-10px",
                           }}
                         >
                           <MenuItem onClick={handleEdit}>

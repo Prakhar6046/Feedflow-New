@@ -106,29 +106,6 @@ function ProductionManagerFilter({
               >
                 Farms
               </InputLabel>
-              {/* <Select
-              labelId="demo-simple-select-label-1"
-              id="demo-simple-select"
-              label="Farms"
-              multiple
-              sx={{ color: "black" }}
-              value={selectedDropDownfarms?.map((farm: any) => farm.option)}
-              onChange={(e) => handleChange(e, true)}
-              input={<OutlinedInput label="Farms" />}
-              renderValue={(selected) => selected.join(", ")}
-              MenuProps={MenuProps}
-            >
-              {allFarms?.map((farm: any) => (
-                <MenuItem key={farm.id} value={farm.option}>
-                  <Checkbox
-                    checked={selectedDropDownfarms?.some(
-                      (selected: any) => selected.option === farm.option
-                    )}
-                  />
-                  <ListItemText primary={farm.option} />
-                </MenuItem>
-              ))}
-            </Select> */}
               <MultiSelect
                 value={selectedDropDownfarms}
                 onChange={(e) => setSelectedDropDownfarms(e.value)}
@@ -471,14 +448,15 @@ function ProductionManagerFilter({
               variant="contained"
               onClick={() => setIsModalOpen(true)}
               sx={{
-                background: "#06A19B",
+                border: "2px solid #06A19B",
+                background: "transparent",
                 fontWeight: "bold",
                 padding: "8px 20px",
                 width: "fit-content",
                 textTransform: "capitalize",
                 borderRadius: "8px",
                 display: "flex",
-
+                color: "#06A19B",
                 marginTop: 1,
               }}
             >

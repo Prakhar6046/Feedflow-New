@@ -35,6 +35,7 @@ export interface Production {
   ph: String;
   visibility: String;
   productionUnit: {
+    YearBasedPredicationProductionUnit?: any;
     id: String;
     name: String;
     type: String;

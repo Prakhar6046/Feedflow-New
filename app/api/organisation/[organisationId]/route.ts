@@ -154,6 +154,23 @@ export async function PUT(req: NextRequest, context: { params: any }) {
       }
     }
 
+    //deleting contact
+    const existingContacts = await prisma.contact.findMany({
+      where: { organisationId: Number(organisationId) },
+      select: { id: true },
+    });
+
+    const updatedContactIds = contactsData.map((contact: any) => contact.id);
+    const contactsToDelete = existingContacts
+      .filter((contact) => !updatedContactIds.includes(contact.id))
+      .map((contact) => contact.id);
+
+    // Delete the removed contacts
+    if (contactsToDelete.length > 0) {
+      await prisma.contact.deleteMany({
+        where: { id: { in: contactsToDelete } },
+      });
+    }
     // Update organisation details
     const updatedOrganisation = await prisma.organisation.update({
       where: { id: Number(organisationId) },
