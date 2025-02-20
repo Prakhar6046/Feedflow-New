@@ -36,6 +36,7 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  Stack,
 } from "@mui/material";
 import { breadcrumsAction } from "@/lib/features/breadcrum/breadcrumSlice";
 import { selectRole } from "@/lib/features/user/userSlice";
@@ -97,7 +98,11 @@ export default function ProductionTable({
   const [anchorE2, setAnchorE2] = React.useState<HTMLButtonElement | null>(
     null
   );
+  const [anchorE3, setAnchorE3] = React.useState<HTMLButtonElement | null>(
+    null
+  );
   const [test, setTest] = useState<boolean>(false);
+
   const [openTransferModal, setOpenTransferModal] = useState<boolean>(
     isFish ? true : false
   );
@@ -105,7 +110,7 @@ export default function ProductionTable({
     isWater ? true : false
   );
   const handleClickTest = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorE2(event.currentTarget);
+    setAnchorE3(event.currentTarget);
   };
   const [productionData, setProductionData] = useState<FarmGroup[]>();
   const [order, setOrder] = React.useState("asc");
@@ -134,6 +139,7 @@ export default function ProductionTable({
   const handleClose = () => {
     setAnchorEl(null);
     setAnchorE2(null);
+    setAnchorE3(null);
   };
   const handleFishManageHistory = (unit: any) => {
     if (selectedView == "fish") {
@@ -188,6 +194,7 @@ export default function ProductionTable({
 
   const open = Boolean(anchorEl);
   const open2 = Boolean(anchorE2);
+  const open3 = Boolean(anchorE3);
 
   function EnhancedTableHead(data: any) {
     const { order, orderBy, onRequestSort } = data;
@@ -856,8 +863,18 @@ export default function ProductionTable({
                         >
                           <Box sx={{ display: "flex", alignItems: "center" }}>
                             {farm.farm ?? ""}
-                            <h3 onClick={handleClickTest}>
-                              {" "}
+                            {/* <Button
+                              id="basic-data"
+                              aria-controls={open ? "basic-list" : undefined}
+                              aria-haspopup="true"
+                              aria-expanded={open ? "true" : undefined}
+                              className="table-edit-option"
+                              sx={{
+                                background: "red",
+                                color: "#555555",
+                                boxShadow: "none",
+                              }}
+                            >
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 width="1.1em"
@@ -868,62 +885,24 @@ export default function ProductionTable({
                                 height="1.1em"
                                 viewBox="0 0 24 24"
                               >
-                                <path
-                                  fill="currentColor"
-                                  d="M7.5 12L0 4h15z"
-                                ></path>
+                                <path fill="currentColor" d="M7.5 12L0 4h15z" />
                               </svg>
-                            </h3>
+                            </Button> */}
                           </Box>
 
                           <Menu
-                            anchorEl={anchorE2}
-                            id="account-menu"
-                            open={open2}
+                            id="basic-list"
+                            className="table-edit-farm-menu profile-dropdown"
+                            anchorEl={anchorE3}
+                            open={open3}
                             onClose={handleClose}
-                            onClick={handleClose}
-                            className="profile-dropdown"
-                            slotProps={{
-                              paper: {
-                                elevation: 0,
-                                sx: {
-                                  overflow: "visible",
-                                  filter:
-                                    "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
-                                  mt: 1.5,
-                                  "& .MuiAvatar-root": {
-                                    width: 32,
-                                    height: 32,
-                                    ml: -0.5,
-                                    mr: 1,
-                                  },
-                                  "&::before": {
-                                    content: '""',
-                                    display: "block",
-                                    position: "absolute",
-                                    top: 0,
-                                    right: 14,
-                                    width: 10,
-                                    height: 10,
-                                    bgcolor: "background.paper",
-                                    transform: "translateY(-50%) rotate(45deg)",
-                                    zIndex: 0,
-                                  },
-                                },
-                              },
-                            }}
-                            transformOrigin={{
-                              horizontal: "right",
-                              vertical: "top",
-                            }}
-                            anchorOrigin={{
-                              horizontal: "right",
-                              vertical: "bottom",
+                            MenuListProps={{
+                              "aria-labelledby": "basic-button",
                             }}
                           >
                             <MenuItem
                               onClick={() => {
-                                setAnchorE2(null), setTest(true);
+                                setAnchorE3(null), setTest(true);
                               }}
                               sx={{
                                 fontSize: 14,
@@ -940,15 +919,15 @@ export default function ProductionTable({
                                   <path
                                     fill="currentColor"
                                     d="M6.008 12h-.01M11 16.042c.463.153.908.329 1.31.61m0 0A3.95 3.95 0 0 1 14 19.885a.117.117 0 0 1-.118.116c-2.917-.013-4.224-.507-4.773-1.322L8 16.857c-2.492-.503-4.782-2.094-6-4.774c3-6.597 12.5-6.597 15.5 0m-5.19 4.57c2.17-.66 4.105-2.184 5.19-4.57m-5.19-4.569A3.95 3.95 0 0 0 14 4.282c0-.826-4.308.342-4.89 1.206L8 7.31m9.5 4.773c.333-.66 2.1-2.969 4.5-2.969c-.833.825-2.2 3.959-1 5.938c-1.2 0-3-2.309-3.5-2.969"
-                                    color="currentColor"
                                   />
                                 </svg>
                               </ListItemIcon>
                               Fish N
                             </MenuItem>
+
                             <MenuItem
                               onClick={() => {
-                                setAnchorE2(null), setTest(true);
+                                setAnchorE3(null), setTest(true);
                               }}
                               sx={{
                                 fontSize: 14,
@@ -970,9 +949,10 @@ export default function ProductionTable({
                               </ListItemIcon>
                               History
                             </MenuItem>
+
                             <MenuItem
                               onClick={() => {
-                                setAnchorE2(null), setTest(true);
+                                setAnchorE3(null), setTest(true);
                               }}
                               sx={{
                                 fontSize: 14,
@@ -996,6 +976,7 @@ export default function ProductionTable({
                             </MenuItem>
                           </Menu>
                         </TableCell>
+
                         <TableCell
                           className="table-padding"
                           sx={{
@@ -1706,18 +1687,19 @@ export default function ProductionTable({
                                       >
                                         <svg
                                           xmlns="http://www.w3.org/2000/svg"
-                                          width="18px"
-                                          height="22.5px"
+                                          width="22px"
+                                          height="22px"
                                           viewBox="0 0 24 24"
                                         >
                                           <path
-                                            fill="currentColor"
-                                            d="m12.593 23.258l-.011.002l-.071.035l-.02.004l-.014-.004l-.071-.035q-.016-.005-.024.005l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.017-.018m.265-.113l-.013.002l-.185.093l-.01.01l-.003.011l.018.43l.005.012l.008.007l.201.093q.019.005.029-.008l.004-.014l-.034-.614q-.005-.018-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.614q.001.018.017.024l.015-.002l.201-.093l.01-.008l.004-.011l.017-.43l-.003-.012l-.01-.01z"
-                                          />
-                                          <path
-                                            fill="currentColor"
-                                            d="M12 17a2 2 0 1 1 0 4a2 2 0 0 1 0-4m0-7a2 2 0 1 1 0 4a2 2 0 0 1 0-4m0-7a2 2 0 1 1 0 4a2 2 0 0 1 0-4"
-                                          />
+                                            fill="none"
+                                            d="M6.008 12h-.01M11 16.042c.463.153.908.329 1.31.61m0 0A3.95 3.95 0 0 1 14 19.885a.117.117 0 0 1-.118.116c-2.917-.013-4.224-.507-4.773-1.322L8 16.857c-2.492-.503-4.782-2.094-6-4.774c3-6.597 12.5-6.597 15.5 0m-5.19 4.57c2.17-.66 4.105-2.184 5.19-4.57m-5.19-4.569A3.95 3.95 0 0 0 14 4.282c0-.826-4.308.342-4.89 1.206L8 7.31m9.5 4.773c.333-.66 2.1-2.969 4.5-2.969c-.833.825-2.2 3.959-1 5.938c-1.2 0-3-2.309-3.5-2.969"
+                                            stroke="currentColor"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            stroke-width="1"
+                                            color="currentColor"
+                                          ></path>
                                         </svg>
                                       </Button>
                                     </Tooltip>
@@ -1728,7 +1710,7 @@ export default function ProductionTable({
                                       alignItems: "center",
                                     }}
                                   >
-                                    <h3 onClick={handleClickTest}>
+                                    <Button onClick={handleClickTest}>
                                       {" "}
                                       <svg
                                         xmlns="http://www.w3.org/2000/svg"
@@ -1745,7 +1727,7 @@ export default function ProductionTable({
                                           d="M14 18a2 2 0 1 1-4 0a2 2 0 0 1 4 0m0-6a2 2 0 1 1-4 0a2 2 0 0 1 4 0m-2-4a2 2 0 1 0 0-4a2 2 0 0 0 0 4"
                                         />
                                       </svg>
-                                    </h3>
+                                    </Button>
                                   </Box>
                                 </Box>
                               );

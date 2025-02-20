@@ -76,25 +76,28 @@ body {
   width: 150px;
   transform: translate(-153px, -35px) !important;
 }
+
+.profile-dropdown div:nth-child(3) {
+  width: auto;
+}
 /* CSS For User Profile Dropdown  */
-.profile-dropdown
+/* .profile-dropdown
   .css-g0cb43-MuiButtonBase-root-MuiMenuItem-root
   .MuiListItemIcon-root {
-  min-width: 30px;
-}
-
-.profile-dropdown .css-qehfkt-MuiPaper-root-MuiPopover-paper-MuiMenu-paper {
-  border-radius: 14px;
-  top: 75px !important;
+  min-width: 100px;
 }
 
 .profile-dropdown
   .css-qehfkt-MuiPaper-root-MuiPopover-paper-MuiMenu-paper::before {
   display: none;
+  box-shadow: none !important;
 }
 
 .profile-dropdown .css-99wn1p-MuiList-root-MuiMenu-list {
   padding: 8px;
+}
+.profile-dropdown .css-17bbogt-MuiButtonBase-root-MuiMenuItem-root {
+  padding-left: 8px;
 }
 
 .profile-dropdown .css-g0cb43-MuiButtonBase-root-MuiMenuItem-root {
@@ -107,8 +110,16 @@ body {
 
 .profile-dropdown .css-1mi6xpr-MuiTypography-root {
   line-height: 1;
+} */
+.profile-dropdown div:nth-child(3) {
+  border-radius: 8px;
+  box-shadow: 1px 1px 5px rgba(151, 151, 151, 0.03);
+  width: auto;
+  transform: translate(-76px, -48px) !important;
 }
-
+.css-xo0viq-MuiPaper-root-MuiPopover-paper-MuiMenu-paper::before {
+  height: 0px !important;
+}
 /* CSS For Search Filter Input  */
 .search-filter input {
   padding: 8.5px 14px 8.5px 36px;
@@ -684,7 +695,7 @@ label {
 }
 
 /* for check box */
-.p-checkbox-box{
+.p-checkbox-box {
   border-radius: 2px !important;
   height: 18px;
   width: 18px;
