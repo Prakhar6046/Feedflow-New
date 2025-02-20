@@ -57,6 +57,7 @@ import ProductionManagerFilter from "../ProductionManagerFilter";
 import Test from "../models/Test";
 import { Margin, Padding } from "@mui/icons-material";
 import { useBreakpoint } from "@/app/hooks/useBreakPoint";
+import { red } from "@mui/material/colors";
 
 interface Props {
   productions: Production[];
@@ -1706,17 +1707,22 @@ export default function ProductionTable({
                                   <Box
                                     sx={{
                                       display: "flex",
+                                      textAlign:"center",
                                       alignItems: "center",
+                                      justifyContent:"center"
                                     }}
                                   >
-                                    <Button onClick={handleClickTest}>
+                                    <Button
+                                      onClick={handleClickTest}
+                                      className="table-edit-option"
+                                      
+                                    >
                                       {" "}
                                       <svg
                                         xmlns="http://www.w3.org/2000/svg"
                                         width="1.1em"
                                         style={{
-                                          marginLeft: "10px",
-                                          marginTop: "10px",
+                                          color: "gray",
                                         }}
                                         height="1.1em"
                                         viewBox="0 0 24 24"
