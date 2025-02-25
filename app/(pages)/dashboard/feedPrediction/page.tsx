@@ -200,6 +200,7 @@ import {
   Paper,
 } from "@mui/material";
 import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
+import FishGrowthChart from "@/app/_components/charts/FishGrowthChart";
 
 const Page: NextPage = () => {
   const [data, setData] = useState<any[]>([]);
@@ -422,6 +423,12 @@ const Page: NextPage = () => {
           </TableBody>
         </Table>
       </TableContainer>
+      <div className="mb-5">
+        <FishGrowthChart
+          xAxisData={data?.map((value) => value.date) || []}
+          yData={data?.map((value) => value.fishWeight) || []}
+        />
+      </div>
     </>
   );
 };

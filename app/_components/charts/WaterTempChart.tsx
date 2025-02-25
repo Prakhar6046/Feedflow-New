@@ -141,7 +141,7 @@ const WaterTempChart = ({
         suggestedMin: startDate,
       },
       y: {
-        // suggestedMax: maxVal && Number(maxVal) * 2,
+        suggestedMax: maxVal && Number(maxVal) * 2,
         suggestedMin: 0,
         title: { display: true, text: title },
         grid: { display: true },

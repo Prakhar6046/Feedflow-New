@@ -43,6 +43,7 @@ interface Props {
   setSelectedDropDownfarms: any;
   setSelectedDropDownUnits: any;
   handleResetFilters: () => void;
+  captureScreenshot: () => void;
 }
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -70,6 +71,7 @@ function ProductionManagerFilter({
   setSelectedDropDownfarms,
   setSelectedDropDownUnits,
   handleResetFilters,
+  captureScreenshot,
 }: Props) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalOpenNext, setIsModalOpenNext] = useState(false);
@@ -446,7 +448,7 @@ function ProductionManagerFilter({
               className=""
               type="button"
               variant="contained"
-              onClick={() => setIsModalOpen(true)}
+              onClick={captureScreenshot}
               sx={{
                 border: "2px solid #06A19B",
                 background: "transparent",
