@@ -1,32 +1,31 @@
+import Menu from "@mui/material/Menu";
 import {
   Box,
+  Button,
   Checkbox,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   FormControl,
+  FormControlLabel,
   Grid,
   InputLabel,
   ListItemText,
   MenuItem,
   OutlinedInput,
-  Button,
-  Select,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  RadioGroup,
-  FormControlLabel,
   Radio,
+  RadioGroup,
+  Select,
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
-import { averagesDropdown, months } from "../_lib/utils";
 import dayjs from "dayjs";
 import { MultiSelect } from "primereact/multiselect";
-
 import "primereact/resources/primereact.css";
 import "primereact/resources/themes/lara-light-indigo/theme.css";
-import { Padding } from "@mui/icons-material";
+import React, { useEffect, useState } from "react";
+import { averagesDropdown, months } from "../_lib/utils";
 import { red } from "@mui/material/colors";
-import { display } from "html2canvas/dist/types/css/property-descriptors/display";
+import { color } from "framer-motion";
 interface Props {
   selectedAverage: String;
   setSelectedAverage: (val: any) => void;
@@ -44,6 +43,7 @@ interface Props {
   setSelectedDropDownUnits: any;
   handleResetFilters: () => void;
 }
+
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {
@@ -71,6 +71,15 @@ function ProductionManagerFilter({
   setSelectedDropDownUnits,
   handleResetFilters,
 }: Props) {
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const open4 = Boolean(anchorEl);
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget); // This ensures anchorEl is an HTMLElement
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalOpenNext, setIsModalOpenNext] = useState(false);
   const currentYear = dayjs().year();
@@ -276,7 +285,6 @@ function ProductionManagerFilter({
           xs={12}
           sx={{
             width: "fit-content",
-
             paddingTop: "8px",
           }}
         >
@@ -441,12 +449,12 @@ function ProductionManagerFilter({
             >
               Reset Filters
             </Button>
-            <Button
+            {/* <Button
               id="basic-button"
               className=""
               type="button"
               variant="contained"
-              onClick={() => setIsModalOpen(true)}
+              // onClick={() => setIsModalOpen(true)}
               sx={{
                 border: "2px solid #06A19B",
                 background: "transparent",
@@ -461,7 +469,32 @@ function ProductionManagerFilter({
               }}
             >
               Take screenshot
+            </Button> */}
+            <Button
+              sx={{ backgroundColor: red }}
+              id="basic-buttonnew"
+              aria-controls={open4 ? "basic-menu" : undefined}
+              aria-haspopup="true"
+              aria-expanded={open4 ? "true" : undefined}
+              onClick={handleClick}
+            >
+              Create report
             </Button>
+            <Menu
+              id="basic-menunew"
+              anchorEl={anchorEl}
+              open={open4}
+              onClose={handleClose}
+              MenuListProps={{
+                "aria-labelledby": "basic-button",
+              }}
+            >
+              <MenuItem>Take screenshot</MenuItem>
+              <MenuItem onClick={() => setIsModalOpen(true)}>
+                Create all report
+              </MenuItem>
+              {/* <MenuItem onClick={handleClose}>Logout</MenuItem> */}
+            </Menu>
           </Box>
         </Grid>
 

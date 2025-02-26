@@ -1707,15 +1707,12 @@ export default function ProductionTable({
                                   <Box
                                     sx={{
                                       display: "flex",
-                                      textAlign:"center",
                                       alignItems: "center",
-                                      justifyContent:"center"
                                     }}
                                   >
                                     <Button
                                       onClick={handleClickTest}
                                       className="table-edit-option"
-                                      
                                     >
                                       {" "}
                                       <svg
