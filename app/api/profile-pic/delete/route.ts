@@ -27,7 +27,6 @@ export const DELETE = async (request: NextRequest) => {
     if (public_id && public_id !== "") {
       try {
         await cloudinary.uploader.destroy(public_id);
-        console.log(`Deleted image: ${public_id}`);
       } catch (err: any) {
         console.error(`Error deleting image: ${err.message}`);
       }
@@ -39,7 +38,6 @@ export const DELETE = async (request: NextRequest) => {
       }
     );
   } catch (error) {
-    console.log(error);
     return new NextResponse(JSON.stringify({ error, status: false }), {
       status: 500,
     });
