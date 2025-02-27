@@ -33,15 +33,14 @@ export default async function Page() {
                 p: 3,
             }}>
                 <Grid container>
-                    <Grid item xs={3}>
-                        <Box mb={3} sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", columnGap: 5, rowGap: 1, flexWrap: "wrap", pb: 0.5, borderBottom: "1px solid #E0E0E0" }}>
+                    <Grid item xl={3} lg={4} md={5} xs={6}>
+                        <Box mb={3} sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", columnGap: 3, rowGap: 1, flexWrap: "wrap", pb: 0.5, borderBottom: "1px solid #E0E0E0" }}>
 
                             <Typography
                                 variant="h6"
                                 fontWeight={600}
                                 sx={{
                                     fontSize: {
-                                        md: 20,
                                         xs: 18,
                                     },
                                 }}
@@ -58,7 +57,7 @@ export default async function Page() {
                             />
                         </Box>
 
-                        <Grid container rowSpacing={2} columnSpacing={4}>
+                        <Grid container spacing={3}>
                             <Grid item xs={12}>
                                 <FormControlLabel
                                     value="farm1"
@@ -136,15 +135,14 @@ export default async function Page() {
                     <Grid item xs={1} sx={{ display: "flex", justifyContent: "center", alignItems: "center" }} >
                         <Divider orientation="vertical" variant="middle" />
                     </Grid>
-                    <Grid item xs={8}>
-                        <Box mb={3} sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", columnGap: 5, rowGap: 1, flexWrap: "wrap", borderBottom: "1px solid #E0E0E0", pb: 0.5 }}>
+                    <Grid item xl={8} lg={7} md={6} xs={5}>
+                        <Box mb={3} sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", columnGap: 3, rowGap: 1, flexWrap: "wrap", borderBottom: "1px solid #E0E0E0", pb: 0.5 }}>
 
                             <Typography
                                 variant="h6"
                                 fontWeight={600}
                                 sx={{
                                     fontSize: {
-                                        md: 20,
                                         xs: 18,
                                     },
                                 }}
