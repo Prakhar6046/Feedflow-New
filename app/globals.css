@@ -51,6 +51,7 @@ body {
 .table-edit-menu ul {
   padding: 0;
 }
+
 .table-edit-menu-item div:nth-child(3) {
   border-radius: 8px;
   box-shadow: 1px 1px 5px rgba(151, 151, 151, 0.03);
@@ -719,18 +720,6 @@ label {
 }
 
 /* 27/02 */
-/* .test input {
-  background: red !important;
-}
-
-.radoo svg path {
-  fill: red !important;
-}
-
-.radoo svg {
-  fill: #00ff00 !important;
-} */
-
 .custom-checkbox > span {
   padding-block: 0 !important;
   white-space: nowrap !important;
