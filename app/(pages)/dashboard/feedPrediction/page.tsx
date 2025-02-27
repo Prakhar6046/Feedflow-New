@@ -53,8 +53,6 @@ const Page: NextPage = () => {
     }
 
     for (let day = 0; day <= 150; day += 7) {
-      console.log("prevWeight", prevWeight);
-
       const FBW = calculateFW(prevWeight, 0.35, 0.16, [T], [7]);
 
       // Update number of fish dynamically

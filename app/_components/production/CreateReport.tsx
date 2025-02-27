@@ -14,8 +14,6 @@ interface Props {
   productions: Production[];
 }
 function CreateReport({ productions }: Props) {
-  console.log(productions);
-
   return (
     <Stack
       sx={{
