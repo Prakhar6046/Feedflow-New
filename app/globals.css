@@ -717,3 +717,25 @@ label {
 .p-multiselect-token span {
   margin-right: 5px;
 }
+
+/* 27/02 */
+/* .test input {
+  background: red !important;
+}
+
+.radoo svg path {
+  fill: red !important;
+}
+
+.radoo svg {
+  fill: #00ff00 !important;
+} */
+
+.custom-checkbox > span {
+  padding-block: 0 !important;
+  white-space: nowrap !important;
+}
+
+.custom-checkbox svg {
+  font-size: 1.2rem;
+}

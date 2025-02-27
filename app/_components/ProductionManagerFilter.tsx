@@ -26,6 +26,7 @@ import React, { useEffect, useState } from "react";
 import { averagesDropdown, months } from "../_lib/utils";
 import { red } from "@mui/material/colors";
 import { color } from "framer-motion";
+import { useRouter } from "next/navigation";
 interface Props {
   selectedAverage: String;
   setSelectedAverage: (val: any) => void;
@@ -71,6 +72,7 @@ function ProductionManagerFilter({
   setSelectedDropDownUnits,
   handleResetFilters,
 }: Props) {
+  const router = useRouter()
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open4 = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -498,7 +500,7 @@ function ProductionManagerFilter({
               }}
             >
               <MenuItem>Take screenshot</MenuItem>
-              <MenuItem onClick={() => setIsModalOpen(true)}>
+              <MenuItem onClick={() => router.push("/dashboard/production/createReport")}>
                 Create all report
               </MenuItem>
               {/* <MenuItem onClick={handleClose}>Logout</MenuItem> */}
