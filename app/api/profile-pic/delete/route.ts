@@ -5,7 +5,6 @@ import { NextRequest, NextResponse } from "next/server";
 export const DELETE = async (request: NextRequest) => {
   try {
     const body = await request.json();
-    console.log("payload", body);
     const id = Number(body.id);
     const type = body.type;
     const public_id = body.image;
