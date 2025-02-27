@@ -350,8 +350,6 @@ const ProductionUnits: NextPage<Props> = ({
           toast.error("Please fill out the all feilds");
         }
       } catch (error) {
-        console.log(error);
-
         toast.error("Something went wrong. Please try again.");
       } finally {
         setIsApiCallInProgress(false);
