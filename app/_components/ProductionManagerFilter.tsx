@@ -43,6 +43,7 @@ interface Props {
   setSelectedDropDownfarms: any;
   setSelectedDropDownUnits: any;
   handleResetFilters: () => void;
+  captureScreenshot: () => void;
 }
 
 const ITEM_HEIGHT = 48;
@@ -71,8 +72,9 @@ function ProductionManagerFilter({
   setSelectedDropDownfarms,
   setSelectedDropDownUnits,
   handleResetFilters,
+  captureScreenshot,
 }: Props) {
-  const router = useRouter()
+  const router = useRouter();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open4 = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -156,8 +158,9 @@ function ProductionManagerFilter({
           <Box sx={{ width: "100%" }}>
             <FormControl
               fullWidth
-              className={`form-input ${selectedDropDownfarms?.length >= 1 && "selected"
-                }`}
+              className={`form-input ${
+                selectedDropDownfarms?.length >= 1 && "selected"
+              }`}
               focused
             >
               <InputLabel
@@ -240,13 +243,14 @@ function ProductionManagerFilter({
           <Box sx={{ width: "100%" }}>
             <FormControl
               fullWidth
-              className={`form-input ${selectedDropDownfarms?.length &&
+              className={`form-input ${
+                selectedDropDownfarms?.length &&
                 selectedDropDownUnits?.length &&
                 selectedDropDownYears?.length &&
                 startMonth &&
                 endMonth &&
                 "selected"
-                }`}
+              }`}
               focused
             >
               <InputLabel id="demo-simple-select-label">Averages</InputLabel>
@@ -257,10 +261,10 @@ function ProductionManagerFilter({
                 value={selectedAverage}
                 disabled={
                   selectedDropDownfarms &&
-                    selectedDropDownUnits &&
-                    selectedDropDownYears &&
-                    startMonth &&
-                    endMonth
+                  selectedDropDownUnits &&
+                  selectedDropDownYears &&
+                  startMonth &&
+                  endMonth
                     ? false
                     : true
                 }
@@ -293,10 +297,11 @@ function ProductionManagerFilter({
               <Box sx={{ width: "100%" }}>
                 <FormControl
                   fullWidth
-                  className={`form-input ${selectedDropDownfarms?.length &&
+                  className={`form-input ${
+                    selectedDropDownfarms?.length &&
                     selectedDropDownUnits?.length &&
                     "selected"
-                    }`}
+                  }`}
                   focused
                 >
                   <InputLabel id="demo-simple-select-label-1">
@@ -334,11 +339,12 @@ function ProductionManagerFilter({
               <Box sx={{ width: "100%" }}>
                 <FormControl
                   fullWidth
-                  className={`form-input ${selectedDropDownfarms?.length &&
+                  className={`form-input ${
+                    selectedDropDownfarms?.length &&
                     selectedDropDownUnits?.length &&
                     selectedDropDownYears?.length &&
                     "selected"
-                    }`}
+                  }`}
                   focused
                 >
                   <InputLabel id="demo-simple-select-label">
@@ -371,12 +377,13 @@ function ProductionManagerFilter({
               <Box sx={{ width: "100%" }}>
                 <FormControl
                   fullWidth
-                  className={`form-input ${selectedDropDownfarms?.length &&
+                  className={`form-input ${
+                    selectedDropDownfarms?.length &&
                     selectedDropDownUnits?.length &&
                     selectedDropDownYears?.length &&
                     startMonth &&
                     "selected"
-                    }`}
+                  }`}
                   focused
                 >
                   <InputLabel id="demo-simple-select-label">
@@ -442,33 +449,13 @@ function ProductionManagerFilter({
                 border: "1px solid #06A19B",
                 boxShadow: "none",
                 "&:hover": {
-                  boxShadow: "none"
-                }
+                  boxShadow: "none",
+                },
               }}
             >
               Reset Filters
             </Button>
-            {/* <Button
-              id="basic-button"
-              className=""
-              type="button"
-              variant="contained"
-              // onClick={() => setIsModalOpen(true)}
-              sx={{
-                border: "2px solid #06A19B",
-                background: "transparent",
-                fontWeight: "bold",
-                padding: "8px 20px",
-                width: "fit-content",
-                textTransform: "capitalize",
-                borderRadius: "8px",
-                display: "flex",
-                color: "#06A19B",
-                marginTop: 1,
-              }}
-            >
-              Take screenshot
-            </Button> */}
+
             <Button
               sx={{
                 background: "#06A19B",
@@ -496,11 +483,15 @@ function ProductionManagerFilter({
                 "aria-labelledby": "basic-button",
               }}
               sx={{
-                borderRadius: "26px"
+                borderRadius: "26px",
               }}
             >
-              <MenuItem>Take screenshot</MenuItem>
-              <MenuItem onClick={() => router.push("/dashboard/production/createReport")}>
+              <MenuItem onClick={captureScreenshot}>Take screenshot</MenuItem>
+              <MenuItem
+                onClick={() =>
+                  router.push("/dashboard/production/createReport")
+                }
+              >
                 Create all report
               </MenuItem>
               {/* <MenuItem onClick={handleClose}>Logout</MenuItem> */}
