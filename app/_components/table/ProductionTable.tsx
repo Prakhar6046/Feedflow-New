@@ -116,6 +116,7 @@ export default function ProductionTable({
   const [startMonth, setStartMonth] = useState<number>(
     new Date().getMonth() + 1
   );
+  console.log(selectedProduction);
 
   const [endMonth, setEndMonth] = useState<number>(new Date().getMonth() + 1);
 
@@ -1046,7 +1047,6 @@ export default function ProductionTable({
       }
     }
   }, [selectedView]);
-
   useEffect(() => {
     if (typeof window !== "undefined") {
       const storedData = getLocalItem("productionData");
@@ -2185,7 +2185,6 @@ export default function ProductionTable({
                                   <MenuItem
                                     onClick={() => {
                                       handleFishManageHistory(selectedFarm);
-
                                       setAnchorEl(null);
                                     }}
                                   >
@@ -2275,7 +2274,14 @@ export default function ProductionTable({
         batches={batches}
         productions={productions}
       />
-      <Test open={test} setOpen={setTest} />
+      <Test
+        open={test}
+        setOpen={setTest}
+        selectedView={selectedView}
+        productions={productions}
+        selectedFarm={selectedFarm}
+      />
+
       <WaterQualityParameter
         open={openWaterQualityModal}
         setOpen={setOpenWaterQualityModal}

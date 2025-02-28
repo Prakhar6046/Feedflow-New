@@ -56,7 +56,10 @@ function WaterChartDownloadPreview({
     { key: "visibility", yDataKey: "visibility", title: "Visibility" },
   ];
   useEffect(() => {
-    if (chartData) {
+    console.log("chart", chartData);
+    console.log(productions);
+
+    if (chartData && productions) {
       const result = getChartPredictedValues(
         productions,
         chartData?.startDate,

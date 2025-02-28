@@ -170,6 +170,8 @@ const FishManageHistoryTable: React.FC<Props> = ({
     }, []);
     return filteredFarm[0] ?? null;
   }, [productions]);
+  console.log("history", groupedData);
+
   const handleRequestSort = (
     _: React.MouseEvent<HTMLButtonElement> | null,
     property: string
