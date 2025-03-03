@@ -13,7 +13,7 @@ export const GET = async (request: NextRequest) => {
   try {
     const productions = await prisma.production.findMany({
       include: {
-        farm: true,
+        farm: {include:{productionUnits:true}},
         organisation: true,
         productionUnit: {
           include: { YearBasedPredicationProductionUnit: true },

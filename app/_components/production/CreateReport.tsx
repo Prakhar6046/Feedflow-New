@@ -10,10 +10,48 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
+import { useEffect, useState } from "react";
 interface Props {
   productions: Production[];
 }
 function CreateReport({ productions }: Props) {
+  const [selectedFarms, setSelectedFarms] = useState([]);
+  const [extractedData, setExtratedData] = useState([]);
+  console.log("====================================");
+  console.log(extractedData);
+  console.log("====================================");
+  const allFarmIds = productions.map((prod) => prod.farm.id);
+  const allSelected = selectedFarms.length === allFarmIds.length;
+  const handleFarmChange = (farmId) => {
+    setSelectedFarms((prev) =>
+      prev.includes(farmId)
+        ? prev.filter((id) => id !== farmId)
+        : [...prev, farmId]
+    );
+  };
+  const handleSelectAll = () => {
+    setSelectedFarms(allSelected ? [] : allFarmIds);
+  };
+  useEffect(() => {
+    if (productions) {
+      const getSelectedFarmsData = () => {
+        return productions
+          .filter((prod) => selectedFarms?.includes(prod.farm.id)) // Filter selected farms
+          .map((prod) => ({
+            farm: prod.farm.name,
+            units: prod.farm.productionUnits.map((unit) => ({
+              id: unit.id,
+              name: unit.name,
+              type: unit.type,
+              capacity: unit.capacity,
+              waterflowRate: unit.waterflowRate,
+            })),
+          }));
+      };
+      const units = getSelectedFarmsData();
+      setExtratedData(units);
+    }
+  }, [selectedFarms]);
   return (
     <Stack
       sx={{
@@ -51,13 +89,15 @@ function CreateReport({ productions }: Props) {
               Select Farms
             </Typography>
 
-            {/* <FormControlLabel
+            <FormControlLabel
               value="selectAllFarms"
-              control={<Checkbox />}
+              control={
+                <Checkbox checked={allSelected} onChange={handleSelectAll} />
+              }
               label="Select All"
               labelPlacement="end"
               className="custom-checkbox"
-            /> */}
+            />
           </Box>
 
           <Grid container spacing={3}>
@@ -66,7 +106,12 @@ function CreateReport({ productions }: Props) {
                 <Grid item xs={12} key={String(production.id)}>
                   <FormControlLabel
                     value="farm1"
-                    control={<Checkbox />}
+                    control={
+                      <Checkbox
+                        checked={selectedFarms.includes(production.farm.id)}
+                        onChange={() => handleFarmChange(production.farm.id)}
+                      />
+                    }
                     label={production?.farm?.name}
                     labelPlacement="end"
                     className="custom-checkbox"
@@ -113,89 +158,56 @@ function CreateReport({ productions }: Props) {
               Select Units
             </Typography>
 
-            <FormControlLabel
-              value="selectAllFarms"
-              control={<Checkbox />}
-              label="Select All"
-              labelPlacement="end"
-              className="custom-checkbox"
-            />
+            
           </Box>
+          {extractedData?.map((farm) => (
+            <Grid container rowSpacing={2} columnSpacing={4}>
+              <Box
+                mb={3}
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  columnGap: 3,
+                  rowGap: 1,
+                  flexWrap: "wrap",
+                  borderBottom: "1px solid #E0E0E0",
+                  pb: 0.5,
+                }}
+              >
+                <Typography
+                  variant="h6"
+                  fontWeight={600}
+                  sx={{
+                    fontSize: {
+                      xs: 18,
+                    },
+                  }}
+                >
+                  {`Units (${farm.farm})`}
+                </Typography>
 
-          <Grid container rowSpacing={2} columnSpacing={4}>
-            <Grid item xs={"auto"}>
-              <FormControlLabel
-                value="farm1"
-                control={<Checkbox />}
-                label="Farm 1"
-                labelPlacement="end"
-                className="custom-checkbox"
-              />
+                <FormControlLabel
+                  value="selectAllFarms"
+                  control={<Checkbox />}
+                  label="Select All"
+                  labelPlacement="end"
+                  className="custom-checkbox"
+                />
+              </Box>
+              {farm.units.map((unit) => (
+                <Grid item xs={"auto"}>
+                  <FormControlLabel
+                    value={unit.name}
+                    control={<Checkbox />}
+                    label={unit.name}
+                    labelPlacement="end"
+                    className="custom-checkbox"
+                  />
+                </Grid>
+              ))}
             </Grid>
-            <Grid item xs={"auto"}>
-              <FormControlLabel
-                value="farm1"
-                control={<Checkbox />}
-                label="Farm 1"
-                labelPlacement="end"
-                className="custom-checkbox"
-              />
-            </Grid>
-            <Grid item xs={"auto"}>
-              <FormControlLabel
-                value="farm1"
-                control={<Checkbox />}
-                label="Farm 1"
-                labelPlacement="end"
-                className="custom-checkbox"
-              />
-            </Grid>
-            <Grid item xs={"auto"}>
-              <FormControlLabel
-                value="farm1"
-                control={<Checkbox />}
-                label="Farm 1"
-                labelPlacement="end"
-                className="custom-checkbox"
-              />
-            </Grid>
-            <Grid item xs={"auto"}>
-              <FormControlLabel
-                value="farm1"
-                control={<Checkbox />}
-                label="Farm 1"
-                labelPlacement="end"
-                className="custom-checkbox"
-              />
-            </Grid>
-            <Grid item xs={"auto"}>
-              <FormControlLabel
-                value="farm1"
-                control={<Checkbox />}
-                label="Farm 1"
-                labelPlacement="end"
-                className="custom-checkbox"
-              />
-            </Grid>
-            <Grid item xs={"auto"}>
-              <FormControlLabel
-                value="farm1"
-                control={<Checkbox />}
-                label="Farm 1"
-                labelPlacement="end"
-                className="custom-checkbox"
-              />
-            </Grid>
-            <Grid item xs={"auto"}>
-              <FormControlLabel
-                value="farm1"
-                control={<Checkbox />}
-                label="Farm 1"
-                labelPlacement="end"
-                className="custom-checkbox"
-              />
-            </Grid>
-          </Grid>
+          ))}
         </Grid>
       </Grid>
 
