@@ -51,13 +51,13 @@ function CreateReport({ productions }: Props) {
               Select Farms
             </Typography>
 
-            {/* <FormControlLabel
+            <FormControlLabel
               value="selectAllFarms"
               control={<Checkbox />}
               label="Select All"
               labelPlacement="end"
               className="custom-checkbox"
-            /> */}
+            />
           </Box>
 
           <Grid container spacing={3}>
@@ -88,6 +88,7 @@ function CreateReport({ productions }: Props) {
           <Divider orientation="vertical" variant="middle" />
         </Grid>
         <Grid item xl={8} lg={7} md={6} xs={5}>
+
           <Box
             mb={3}
             sx={{
@@ -122,80 +123,549 @@ function CreateReport({ productions }: Props) {
             />
           </Box>
 
-          <Grid container rowSpacing={2} columnSpacing={4}>
-            <Grid item xs={"auto"}>
-              <FormControlLabel
-                value="farm1"
-                control={<Checkbox />}
-                label="Farm 1"
-                labelPlacement="end"
-                className="custom-checkbox"
-              />
+          <Stack sx={{
+            maxHeight: "600px",
+            overflowY: "auto",
+          }}>
+            <Grid container rowSpacing={2} columnSpacing={4}>
+              <Grid item xs={12}>
+                <Box mt={1.5}
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    columnGap: 3,
+                    rowGap: 1,
+                    flexWrap: "wrap",
+                    borderBottom: "1px solid #E0E0E0",
+                    pb: 0.5,
+                  }}
+                >
+                  <Typography
+                    variant="h6"
+                    fontWeight={600}
+                    sx={{
+                      fontSize: {
+                        xs: 16,
+                      },
+                    }}
+                  >
+                    Farm 1
+                  </Typography>
+
+                  <FormControlLabel
+                    value="selectAllFarms"
+                    control={<Checkbox />}
+                    label="Select All"
+                    labelPlacement="end"
+                    className="custom-checkbox"
+                  />
+                </Box>
+              </Grid>
+              <Grid item xs={"auto"}>
+                <FormControlLabel
+                  value="farm1"
+                  control={<Checkbox />}
+                  label="Farm 1"
+                  labelPlacement="end"
+                  className="custom-checkbox"
+                />
+              </Grid>
+              <Grid item xs={"auto"}>
+                <FormControlLabel
+                  value="farm1"
+                  control={<Checkbox />}
+                  label="Farm 1"
+                  labelPlacement="end"
+                  className="custom-checkbox"
+                />
+              </Grid>
+              <Grid item xs={"auto"}>
+                <FormControlLabel
+                  value="farm1"
+                  control={<Checkbox />}
+                  label="Farm 1"
+                  labelPlacement="end"
+                  className="custom-checkbox"
+                />
+              </Grid>
+              <Grid item xs={"auto"}>
+                <FormControlLabel
+                  value="farm1"
+                  control={<Checkbox />}
+                  label="Farm 1"
+                  labelPlacement="end"
+                  className="custom-checkbox"
+                />
+              </Grid>
+              <Grid item xs={"auto"}>
+                <FormControlLabel
+                  value="farm1"
+                  control={<Checkbox />}
+                  label="Farm 1"
+                  labelPlacement="end"
+                  className="custom-checkbox"
+                />
+              </Grid>
+              <Grid item xs={"auto"}>
+                <FormControlLabel
+                  value="farm1"
+                  control={<Checkbox />}
+                  label="Farm 1"
+                  labelPlacement="end"
+                  className="custom-checkbox"
+                />
+              </Grid>
+              <Grid item xs={"auto"}>
+                <FormControlLabel
+                  value="farm1"
+                  control={<Checkbox />}
+                  label="Farm 1"
+                  labelPlacement="end"
+                  className="custom-checkbox"
+                />
+              </Grid>
+              <Grid item xs={"auto"}>
+                <FormControlLabel
+                  value="farm1"
+                  control={<Checkbox />}
+                  label="Farm 1"
+                  labelPlacement="end"
+                  className="custom-checkbox"
+                />
+              </Grid>
             </Grid>
-            <Grid item xs={"auto"}>
-              <FormControlLabel
-                value="farm1"
-                control={<Checkbox />}
-                label="Farm 1"
-                labelPlacement="end"
-                className="custom-checkbox"
-              />
+
+            <Grid container rowSpacing={2} columnSpacing={4}>
+              <Grid item xs={12}>
+                <Box mt={3}
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    columnGap: 3,
+                    rowGap: 1,
+                    flexWrap: "wrap",
+                    borderBottom: "1px solid #E0E0E0",
+                    pb: 0.5,
+                  }}
+                >
+                  <Typography
+                    variant="h6"
+                    fontWeight={600}
+                    sx={{
+                      fontSize: {
+                        xs: 16,
+                      },
+                    }}
+                  >
+                    Farm 2
+                  </Typography>
+
+                  <FormControlLabel
+                    value="selectAllFarms"
+                    control={<Checkbox />}
+                    label="Select All"
+                    labelPlacement="end"
+                    className="custom-checkbox"
+                  />
+                </Box>
+              </Grid>
+              <Grid item xs={"auto"}>
+                <FormControlLabel
+                  value="farm1"
+                  control={<Checkbox />}
+                  label="Farm 1"
+                  labelPlacement="end"
+                  className="custom-checkbox"
+                />
+              </Grid>
+              <Grid item xs={"auto"}>
+                <FormControlLabel
+                  value="farm1"
+                  control={<Checkbox />}
+                  label="Farm 1"
+                  labelPlacement="end"
+                  className="custom-checkbox"
+                />
+              </Grid>
             </Grid>
-            <Grid item xs={"auto"}>
-              <FormControlLabel
-                value="farm1"
-                control={<Checkbox />}
-                label="Farm 1"
-                labelPlacement="end"
-                className="custom-checkbox"
-              />
+
+            <Grid container rowSpacing={2} columnSpacing={4}>
+              <Grid item xs={12}>
+                <Box mt={3}
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    columnGap: 3,
+                    rowGap: 1,
+                    flexWrap: "wrap",
+                    borderBottom: "1px solid #E0E0E0",
+                    pb: 0.5,
+                  }}
+                >
+                  <Typography
+                    variant="h6"
+                    fontWeight={600}
+                    sx={{
+                      fontSize: {
+                        xs: 16,
+                      },
+                    }}
+                  >
+                    Farm 3
+                  </Typography>
+
+                  <FormControlLabel
+                    value="selectAllFarms"
+                    control={<Checkbox />}
+                    label="Select All"
+                    labelPlacement="end"
+                    className="custom-checkbox"
+                  />
+                </Box>
+              </Grid>
+              <Grid item xs={"auto"}>
+                <FormControlLabel
+                  value="farm1"
+                  control={<Checkbox />}
+                  label="Farm 1"
+                  labelPlacement="end"
+                  className="custom-checkbox"
+                />
+              </Grid>
+              <Grid item xs={"auto"}>
+                <FormControlLabel
+                  value="farm1"
+                  control={<Checkbox />}
+                  label="Farm 1"
+                  labelPlacement="end"
+                  className="custom-checkbox"
+                />
+              </Grid>
+              <Grid item xs={"auto"}>
+                <FormControlLabel
+                  value="farm1"
+                  control={<Checkbox />}
+                  label="Farm 1"
+                  labelPlacement="end"
+                  className="custom-checkbox"
+                />
+              </Grid>
+              <Grid item xs={"auto"}>
+                <FormControlLabel
+                  value="farm1"
+                  control={<Checkbox />}
+                  label="Farm 1"
+                  labelPlacement="end"
+                  className="custom-checkbox"
+                />
+              </Grid>
+              <Grid item xs={"auto"}>
+                <FormControlLabel
+                  value="farm1"
+                  control={<Checkbox />}
+                  label="Farm 1"
+                  labelPlacement="end"
+                  className="custom-checkbox"
+                />
+              </Grid>
             </Grid>
-            <Grid item xs={"auto"}>
-              <FormControlLabel
-                value="farm1"
-                control={<Checkbox />}
-                label="Farm 1"
-                labelPlacement="end"
-                className="custom-checkbox"
-              />
+
+            <Grid container rowSpacing={2} columnSpacing={4}>
+              <Grid item xs={12}>
+                <Box mt={3}
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    columnGap: 3,
+                    rowGap: 1,
+                    flexWrap: "wrap",
+                    borderBottom: "1px solid #E0E0E0",
+                    pb: 0.5,
+                  }}
+                >
+                  <Typography
+                    variant="h6"
+                    fontWeight={600}
+                    sx={{
+                      fontSize: {
+                        xs: 16,
+                      },
+                    }}
+                  >
+                    Farm 4
+                  </Typography>
+
+                  <FormControlLabel
+                    value="selectAllFarms"
+                    control={<Checkbox />}
+                    label="Select All"
+                    labelPlacement="end"
+                    className="custom-checkbox"
+                  />
+                </Box>
+              </Grid>
+              <Grid item xs={"auto"}>
+                <FormControlLabel
+                  value="farm1"
+                  control={<Checkbox />}
+                  label="Farm 1"
+                  labelPlacement="end"
+                  className="custom-checkbox"
+                />
+              </Grid>
+              <Grid item xs={"auto"}>
+                <FormControlLabel
+                  value="farm1"
+                  control={<Checkbox />}
+                  label="Farm 1"
+                  labelPlacement="end"
+                  className="custom-checkbox"
+                />
+              </Grid>
+              <Grid item xs={"auto"}>
+                <FormControlLabel
+                  value="farm1"
+                  control={<Checkbox />}
+                  label="Farm 1"
+                  labelPlacement="end"
+                  className="custom-checkbox"
+                />
+              </Grid>
+              <Grid item xs={"auto"}>
+                <FormControlLabel
+                  value="farm1"
+                  control={<Checkbox />}
+                  label="Farm 1"
+                  labelPlacement="end"
+                  className="custom-checkbox"
+                />
+              </Grid>
+              <Grid item xs={"auto"}>
+                <FormControlLabel
+                  value="farm1"
+                  control={<Checkbox />}
+                  label="Farm 1"
+                  labelPlacement="end"
+                  className="custom-checkbox"
+                />
+              </Grid>
             </Grid>
-            <Grid item xs={"auto"}>
-              <FormControlLabel
-                value="farm1"
-                control={<Checkbox />}
-                label="Farm 1"
-                labelPlacement="end"
-                className="custom-checkbox"
-              />
+
+            <Grid container rowSpacing={2} columnSpacing={4}>
+              <Grid item xs={12}>
+                <Box mt={3}
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    columnGap: 3,
+                    rowGap: 1,
+                    flexWrap: "wrap",
+                    borderBottom: "1px solid #E0E0E0",
+                    pb: 0.5,
+                  }}
+                >
+                  <Typography
+                    variant="h6"
+                    fontWeight={600}
+                    sx={{
+                      fontSize: {
+                        xs: 16,
+                      },
+                    }}
+                  >
+                    Farm 5
+                  </Typography>
+
+                  <FormControlLabel
+                    value="selectAllFarms"
+                    control={<Checkbox />}
+                    label="Select All"
+                    labelPlacement="end"
+                    className="custom-checkbox"
+                  />
+                </Box>
+              </Grid>
+              <Grid item xs={"auto"}>
+                <FormControlLabel
+                  value="farm1"
+                  control={<Checkbox />}
+                  label="Farm 1"
+                  labelPlacement="end"
+                  className="custom-checkbox"
+                />
+              </Grid>
             </Grid>
-            <Grid item xs={"auto"}>
-              <FormControlLabel
-                value="farm1"
-                control={<Checkbox />}
-                label="Farm 1"
-                labelPlacement="end"
-                className="custom-checkbox"
-              />
+
+            <Grid container rowSpacing={2} columnSpacing={4}>
+              <Grid item xs={12}>
+                <Box mt={3}
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    columnGap: 3,
+                    rowGap: 1,
+                    flexWrap: "wrap",
+                    borderBottom: "1px solid #E0E0E0",
+                    pb: 0.5,
+                  }}
+                >
+                  <Typography
+                    variant="h6"
+                    fontWeight={600}
+                    sx={{
+                      fontSize: {
+                        xs: 16,
+                      },
+                    }}
+                  >
+                    Farm 6
+                  </Typography>
+
+                  <FormControlLabel
+                    value="selectAllFarms"
+                    control={<Checkbox />}
+                    label="Select All"
+                    labelPlacement="end"
+                    className="custom-checkbox"
+                  />
+                </Box>
+              </Grid>
+              <Grid item xs={"auto"}>
+                <FormControlLabel
+                  value="farm1"
+                  control={<Checkbox />}
+                  label="Farm 1"
+                  labelPlacement="end"
+                  className="custom-checkbox"
+                />
+              </Grid>
+              <Grid item xs={"auto"}>
+                <FormControlLabel
+                  value="farm1"
+                  control={<Checkbox />}
+                  label="Farm 1"
+                  labelPlacement="end"
+                  className="custom-checkbox"
+                />
+              </Grid>
+              <Grid item xs={"auto"}>
+                <FormControlLabel
+                  value="farm1"
+                  control={<Checkbox />}
+                  label="Farm 1"
+                  labelPlacement="end"
+                  className="custom-checkbox"
+                />
+              </Grid>
+              <Grid item xs={"auto"}>
+                <FormControlLabel
+                  value="farm1"
+                  control={<Checkbox />}
+                  label="Farm 1"
+                  labelPlacement="end"
+                  className="custom-checkbox"
+                />
+              </Grid>
+              <Grid item xs={"auto"}>
+                <FormControlLabel
+                  value="farm1"
+                  control={<Checkbox />}
+                  label="Farm 1"
+                  labelPlacement="end"
+                  className="custom-checkbox"
+                />
+              </Grid>
             </Grid>
-            <Grid item xs={"auto"}>
-              <FormControlLabel
-                value="farm1"
-                control={<Checkbox />}
-                label="Farm 1"
-                labelPlacement="end"
-                className="custom-checkbox"
-              />
+
+            <Grid container rowSpacing={2} columnSpacing={4}>
+              <Grid item xs={12}>
+                <Box mt={3}
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    columnGap: 3,
+                    rowGap: 1,
+                    flexWrap: "wrap",
+                    borderBottom: "1px solid #E0E0E0",
+                    pb: 0.5,
+                  }}
+                >
+                  <Typography
+                    variant="h6"
+                    fontWeight={600}
+                    sx={{
+                      fontSize: {
+                        xs: 16,
+                      },
+                    }}
+                  >
+                    Farm 7
+                  </Typography>
+
+                  <FormControlLabel
+                    value="selectAllFarms"
+                    control={<Checkbox />}
+                    label="Select All"
+                    labelPlacement="end"
+                    className="custom-checkbox"
+                  />
+                </Box>
+              </Grid>
+              <Grid item xs={"auto"}>
+                <FormControlLabel
+                  value="farm1"
+                  control={<Checkbox />}
+                  label="Farm 1"
+                  labelPlacement="end"
+                  className="custom-checkbox"
+                />
+              </Grid>
+              <Grid item xs={"auto"}>
+                <FormControlLabel
+                  value="farm1"
+                  control={<Checkbox />}
+                  label="Farm 1"
+                  labelPlacement="end"
+                  className="custom-checkbox"
+                />
+              </Grid>
+              <Grid item xs={"auto"}>
+                <FormControlLabel
+                  value="farm1"
+                  control={<Checkbox />}
+                  label="Farm 1"
+                  labelPlacement="end"
+                  className="custom-checkbox"
+                />
+              </Grid>
+              <Grid item xs={"auto"}>
+                <FormControlLabel
+                  value="farm1"
+                  control={<Checkbox />}
+                  label="Farm 1"
+                  labelPlacement="end"
+                  className="custom-checkbox"
+                />
+              </Grid>
+              <Grid item xs={"auto"}>
+                <FormControlLabel
+                  value="farm1"
+                  control={<Checkbox />}
+                  label="Farm 1"
+                  labelPlacement="end"
+                  className="custom-checkbox"
+                />
+              </Grid>
             </Grid>
-            <Grid item xs={"auto"}>
-              <FormControlLabel
-                value="farm1"
-                control={<Checkbox />}
-                label="Farm 1"
-                labelPlacement="end"
-                className="custom-checkbox"
-              />
-            </Grid>
-          </Grid>
+          </Stack>
+
         </Grid>
       </Grid>
 
