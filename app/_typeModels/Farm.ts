@@ -29,6 +29,7 @@ export interface Farm {
     type: string;
     capacity: string;
     waterflowRate: string;
+    farmId: string;
     id: any;
     YearBasedPredicationProductionUnit: ProductionParaMeterType[];
   }[];

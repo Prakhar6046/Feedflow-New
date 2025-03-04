@@ -19,6 +19,7 @@ import { createRoot } from "react-dom/client";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import { useRouter } from "next/navigation";
+import Loader from "../../Loader";
 
 type ChartDataType = {
   selectedCharts: string[];
@@ -37,6 +38,7 @@ function WaterChartDownloadPreview({
   const router = useRouter();
   const [chartData, setChartData] = useState<ChartDataType>();
   const [predictedData, setPredictedData] = useState<any>(null);
+  const [isReportDownload, setIsReportDownload] = useState<boolean>(false);
   const chartOptions: {
     key: string;
     yDataKey: IdealRangeKeys;
@@ -71,6 +73,7 @@ function WaterChartDownloadPreview({
     }
   }, [productions, chartData]);
   const downloadChartsAsPDF = async () => {
+    setIsReportDownload(true);
     const pdf = new jsPDF({ orientation: "landscape" });
     const tempContainer = document.createElement("div");
     // tempContainer.style.position = "absolute";
@@ -443,6 +446,7 @@ function WaterChartDownloadPreview({
 
     if (!chartAdded) {
       alert("No charts selected for download.");
+      setIsReportDownload(false);
       return;
     }
     const fileName = `water_report_${new Date()
@@ -453,6 +457,7 @@ function WaterChartDownloadPreview({
       })
       .replace(/[\s,\/]+/g, "_")}.pdf`;
     pdf.save(fileName);
+    setIsReportDownload(false);
     // removeLocalItem("waterPreviewData");
     // router.push("/dashboard/production");
   };
@@ -462,6 +467,9 @@ function WaterChartDownloadPreview({
       setChartData(data);
     }
   }, []);
+  if (isReportDownload) {
+    return <Loader />;
+  }
   return (
     <Stack style={{ padding: "20px" }}>
       <Box

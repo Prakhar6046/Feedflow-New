@@ -1,50 +1,174 @@
 "use client";
+import { setLocalItem } from "@/app/_lib/utils";
+import { Farm, ProductionParaMeterType } from "@/app/_typeModels/Farm";
 import { Production } from "@/app/_typeModels/production";
 import {
   Box,
   Button,
   Checkbox,
   Divider,
+  FormControl,
   FormControlLabel,
   Grid,
+  Radio,
+  RadioGroup,
   Stack,
   Typography,
 } from "@mui/material";
-import { useEffect, useState } from "react";
+import { group } from "console";
+import { setCookie } from "cookies-next";
+import dayjs from "dayjs";
+import { useRouter } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
 interface Props {
-  productions: Production[];
+  farms: Farm[];
+  productions: any;
 }
-function CreateReport({ productions }: Props) {
-  const [selectedFarms, setSelectedFarms] = useState([]);
-  const [extractedData, setExtratedData] = useState([]);
-  console.log("====================================");
-  console.log(extractedData);
-  console.log("====================================");
-  const allFarmIds = productions.map((prod) => prod.farm.id);
-  const allSelected = selectedFarms.length === allFarmIds.length;
-  const handleFarmChange = (farmId) => {
+interface SelectedFarms {
+  farm: String | undefined;
+  units: {
+    id: String;
+    name: String;
+    farmId: String;
+    YearBasedPredicationProductionUnit: ProductionParaMeterType[];
+  }[];
+}
+const fishUnits = [
+  "Fish Count",
+  "Biomass",
+  "Mean Weight",
+  "Mean Length",
+  "Stocking density (kg/m³)",
+  "Stocking density (n/m³)",
+];
+const waterUnits = [
+  "waterTempChart",
+  "dissolvedOxgChart",
+  "TSS",
+  "ammonia",
+  "nitrate",
+  "nitrite",
+  "ph",
+  "visibility",
+];
+function CreateReport({ farms, productions }: Props) {
+  const router = useRouter();
+  const [selectedUnits, setSelectedUnits] = useState<String[]>([]);
+  const [selectedView, setSelectedView] = useState<string>("fish");
+  const startDate = dayjs().startOf("month").format();
+  const endDate = dayjs().format();
+  const [xAxisData, setXAxisData] = useState<string[]>([]);
+  const [selectedFarms, setSelectedFarms] = useState<(String | undefined)[]>(
+    []
+  );
+  const [extractedData, setExtratedData] = useState<SelectedFarms[]>([]);
+  const allFarmIds = farms?.map((prod) => prod.id);
+  const allSelected = selectedFarms.length === allFarmIds?.length;
+  const groupedData: any = useMemo(() => {
+    const filteredFarm = productions?.reduce((result: any, item: any) => {
+      // Find or create a farm group
+      let farmGroup: any = result.find(
+        (group: any) => group.farm === item.farm.name
+      );
+      if (!farmGroup) {
+        farmGroup = { farm: item.productionUnit.name, units: [] };
+        result.push(farmGroup);
+      }
+
+      // Add the current production unit and all related data to the group
+      farmGroup.units.push({
+        id: item.id,
+        productionUnit: item.productionUnit,
+        fishSupply: item.fishSupply,
+        organisation: item.organisation,
+        farm: item.farm,
+        biomass: item.biomass,
+        fishCount: item.fishCount,
+        batchNumberId: item.batchNumberId,
+        age: item.age,
+        meanLength: item.meanLength,
+        meanWeight: item.meanWeight,
+        stockingDensityKG: item.stockingDensityKG,
+        stockingDensityNM: item.stockingDensityNM,
+        stockingLevel: item.stockingLevel,
+        createdBy: item.createdBy,
+        updatedBy: item.updatedBy,
+        createdAt: item.createdAt,
+        updatedAt: item.updatedAt,
+        isManager: item.isManager,
+        field: item.field,
+        fishManageHistory: item.FishManageHistory,
+        waterTemp: item.waterTemp,
+        DO: item.DO,
+        TSS: item.TSS,
+        NH4: item.NH4,
+        NO3: item.NO3,
+        NO2: item.NO2,
+        ph: item.ph,
+        visibility: item.visibility,
+        waterManageHistory: item.WaterManageHistory,
+      });
+
+      return result;
+    }, []);
+    return filteredFarm ?? [];
+  }, [productions]);
+  const handleFarmChange = (farmId: String | undefined) => {
     setSelectedFarms((prev) =>
       prev.includes(farmId)
         ? prev.filter((id) => id !== farmId)
         : [...prev, farmId]
     );
   };
+  const handleUnitSelection = (unitId: String) => {
+    setSelectedUnits((prev) =>
+      prev.includes(unitId)
+        ? prev.filter((id) => id !== unitId)
+        : [...prev, unitId]
+    );
+  };
+
+  const handleSelectAllUnits = (unitIds: String[]) => {
+    setSelectedUnits((prev) =>
+      unitIds.every((id) => prev.includes(id))
+        ? prev.filter((id) => !unitIds.includes(id))
+        : [...prev, ...unitIds.filter((id) => !prev.includes(id))]
+    );
+  };
   const handleSelectAll = () => {
     setSelectedFarms(allSelected ? [] : allFarmIds);
   };
+  const handlePreview = () => {
+    setCookie("selectedUnits", JSON.stringify(selectedUnits));
+    const data = {
+      selectedCharts: selectedView === "water" ? waterUnits : fishUnits,
+      xAxisData: xAxisData,
+      groupedData: groupedData,
+      startDate: startDate,
+      endDate: endDate,
+      dateDiff: dayjs(endDate).diff(dayjs(startDate), "day"),
+    };
+    if (selectedView === "water") {
+      setLocalItem("waterPreviewData", data);
+      router.push("/dashboard/production/water/reportPreview");
+    } else {
+      setLocalItem("fishPreviewData", data);
+      router.push("/dashboard/production/fish/reportPreview");
+    }
+  };
   useEffect(() => {
-    if (productions) {
+    if (farms) {
       const getSelectedFarmsData = () => {
-        return productions
-          .filter((prod) => selectedFarms?.includes(prod.farm.id)) // Filter selected farms
-          .map((prod) => ({
-            farm: prod.farm.name,
-            units: prod.farm.productionUnits.map((unit) => ({
+        return farms
+          .filter((farm) => selectedFarms?.includes(farm.id)) // Filter selected farms
+          .map((val) => ({
+            farm: val.name,
+            units: val?.productionUnits?.map((unit) => ({
               id: unit.id,
               name: unit.name,
-              type: unit.type,
-              capacity: unit.capacity,
-              waterflowRate: unit.waterflowRate,
+              farmId: unit.farmId,
+              YearBasedPredicationProductionUnit:
+                unit.YearBasedPredicationProductionUnit,
             })),
           }));
       };
@@ -52,6 +176,36 @@ function CreateReport({ productions }: Props) {
       setExtratedData(units);
     }
   }, [selectedFarms]);
+  useEffect(() => {
+    if (groupedData?.length) {
+      let createdAtArray;
+      if (selectedView === "water") {
+        createdAtArray = groupedData?.flatMap((group: any) =>
+          group.units
+            ?.flatMap(
+              (unit: any) =>
+                unit.waterManageHistory?.map((history: any) => {
+                  const datePart = String(history.currentDate).split("T")[0];
+                  return dayjs(datePart).isValid() ? datePart : null;
+                }) || []
+            )
+            .filter(Boolean)
+        );
+      } else {
+        createdAtArray = groupedData?.flatMap(
+          (group: any) =>
+            group?.units?.flatMap(
+              (unit: any) =>
+                unit.fishManageHistory?.map(
+                  (history: any) => history.createdAt
+                ) || []
+            ) || []
+        );
+      }
+
+      setXAxisData(createdAtArray);
+    }
+  }, [productions, groupedData]);
   return (
     <Stack
       sx={{
@@ -62,6 +216,43 @@ function CreateReport({ productions }: Props) {
         p: 3,
       }}
     >
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "flex-end",
+        }}
+      >
+        <FormControl>
+          <RadioGroup
+            aria-labelledby="demo-radio-buttons-group-label"
+            value={selectedView ? selectedView : "fish"}
+            name="radio-buttons-group"
+            onChange={(e) => {
+              setSelectedView(e.target.value);
+            }}
+            className="ic-radio"
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              flexWrap: "nowrap",
+            }}
+          >
+            <FormControlLabel
+              value="fish"
+              control={<Radio />}
+              label="Fish"
+              className="input-btn"
+            />
+            <FormControlLabel
+              value="water"
+              control={<Radio />}
+              label="Water"
+              className="input-btn"
+            />
+          </RadioGroup>
+        </FormControl>
+      </Box>
       <Grid container>
         <Grid item xl={3} lg={4} md={5} xs={6}>
           <Box
@@ -101,18 +292,18 @@ function CreateReport({ productions }: Props) {
           </Box>
 
           <Grid container spacing={3}>
-            {productions.map((production) => {
+            {farms?.map((farm: Farm) => {
               return (
-                <Grid item xs={12} key={String(production.id)}>
+                <Grid item xs={12} key={String(farm.id)}>
                   <FormControlLabel
-                    value="farm1"
+                    value={farm.name}
                     control={
                       <Checkbox
-                        checked={selectedFarms.includes(production.farm.id)}
-                        onChange={() => handleFarmChange(production.farm.id)}
+                        checked={selectedFarms.includes(farm.id)}
+                        onChange={() => handleFarmChange(farm.id)}
                       />
                     }
-                    label={production?.farm?.name}
+                    label={farm.name}
                     labelPlacement="end"
                     className="custom-checkbox"
                   />
@@ -157,10 +348,8 @@ function CreateReport({ productions }: Props) {
             >
               Select Units
             </Typography>
-
-            
           </Box>
-          {extractedData?.map((farm) => (
+          {/* {extractedData?.map((farm) => (
             <Grid container rowSpacing={2} columnSpacing={4}>
               <Box
                 mb={3}
@@ -207,7 +396,71 @@ function CreateReport({ productions }: Props) {
                 </Grid>
               ))}
             </Grid>
-          ))}
+          ))} */}
+          {extractedData?.map((farm, index) => {
+            const allUnitIds = farm.units.map((unit) => unit.id);
+            const isAllSelected = allUnitIds.every((id) =>
+              selectedUnits.includes(id)
+            );
+
+            return (
+              <Grid container key={index} rowSpacing={2} columnSpacing={4}>
+                <Box
+                  mb={3}
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    columnGap: 3,
+                    rowGap: 1,
+                    flexWrap: "wrap",
+                    borderBottom: "1px solid #E0E0E0",
+                    pb: 0.5,
+                  }}
+                >
+                  <Typography
+                    variant="h6"
+                    fontWeight={600}
+                    sx={{
+                      fontSize: {
+                        xs: 18,
+                      },
+                    }}
+                  >
+                    {`Units (${farm.farm})`}
+                  </Typography>
+
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={isAllSelected}
+                        onChange={() => handleSelectAllUnits(allUnitIds)}
+                      />
+                    }
+                    label="Select All"
+                    labelPlacement="end"
+                    className="custom-checkbox"
+                  />
+                </Box>
+
+                {farm.units.map((unit, idx) => (
+                  <Grid item xs={"auto"} key={idx}>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={selectedUnits.includes(unit.id)}
+                          onChange={() => handleUnitSelection(unit.id)}
+                        />
+                      }
+                      label={unit.name}
+                      labelPlacement="end"
+                      className="custom-checkbox"
+                    />
+                  </Grid>
+                ))}
+              </Grid>
+            );
+          })}
         </Grid>
       </Grid>
 
@@ -231,22 +484,10 @@ function CreateReport({ productions }: Props) {
             borderRadius: "8px",
             border: "1px solid #06A19B",
           }}
+          disabled={selectedUnits?.length === 0}
+          onClick={handlePreview}
         >
           Preview
-        </Button>
-        <Button
-          type="submit"
-          variant="contained"
-          sx={{
-            background: "#06A19B",
-            fontWeight: 600,
-            padding: "6px 16px",
-            width: "fit-content",
-            textTransform: "capitalize",
-            borderRadius: "8px",
-          }}
-        >
-          Save
         </Button>
       </Box>
     </Stack>

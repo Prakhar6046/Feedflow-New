@@ -12,6 +12,7 @@ import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import { createRoot } from "react-dom/client";
 import { useRouter } from "next/navigation";
+import Loader from "../../Loader";
 type ChartDataType = {
   selectedCharts: string[];
   xAxisData: string[];
@@ -27,6 +28,7 @@ function FishChartDownloadPreview({
   productions: Production[];
 }) {
   const router = useRouter();
+  const [isReportDownload, setIsReportDownload] = useState<boolean>(false);
   const [chartData, setChartData] = useState<ChartDataType>();
   const chartOptions = [
     { key: "Fish Count", yDataKey: "fishCount", title: "Fish Count" },
@@ -46,6 +48,7 @@ function FishChartDownloadPreview({
   ];
 
   const downloadChartsAsPDF = async () => {
+    setIsReportDownload(true);
     const pdf = new jsPDF({ orientation: "landscape" });
     const tempContainer = document.createElement("div");
     // tempContainer.style.position = "absolute";
@@ -407,6 +410,7 @@ function FishChartDownloadPreview({
 
     if (!chartAdded) {
       alert("No charts selected for download.");
+      setIsReportDownload(false);
       return;
     }
 
@@ -418,6 +422,7 @@ function FishChartDownloadPreview({
       })
       .replace(/[\s,\/]+/g, "_")}.pdf`;
     pdf.save(fileName);
+    setIsReportDownload(false);
     // removeLocalItem("fishPreviewData");
     // router.push("/dashboard/production");
   };
@@ -427,6 +432,9 @@ function FishChartDownloadPreview({
       setChartData(data);
     }
   }, []);
+  if (isReportDownload) {
+    return <Loader />;
+  }
   return (
     <Stack style={{ padding: "20px" }}>
       <Box

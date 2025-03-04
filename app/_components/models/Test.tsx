@@ -56,7 +56,6 @@ const Test: React.FC<Props> = ({
 }) => {
   const router = useRouter();
   const startDate = dayjs().startOf("month").format();
-
   const endDate = dayjs().format();
   const [xAxisData, setXAxisData] = useState<string[]>([]);
   const unitOptions =

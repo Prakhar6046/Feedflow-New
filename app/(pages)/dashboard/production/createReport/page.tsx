@@ -1,16 +1,6 @@
 import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
 import CreateReport from "@/app/_components/production/CreateReport";
-import { getProductions } from "@/app/_lib/action";
-import {
-  Box,
-  Button,
-  Checkbox,
-  Divider,
-  FormControlLabel,
-  Grid,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { getFarms, getProductions } from "@/app/_lib/action";
 import { getCookie } from "cookies-next";
 import { Metadata } from "next";
 import { cookies } from "next/headers";
@@ -20,6 +10,12 @@ export const metadata: Metadata = {
 export default async function Page() {
   const loggedUser: any = getCookie("logged-user", { cookies });
   const user = JSON.parse(loggedUser);
+  const farms = await getFarms({
+    role: user?.role,
+    organisationId: user?.organisationId,
+    query: "",
+    noFilter: false,
+  });
   const productions = await getProductions({
     role: user.role,
     organisationId: user.organisationId,
@@ -27,7 +23,6 @@ export default async function Page() {
     noFilter: false,
     userId: user.id,
   });
-
   return (
     <>
       <BasicBreadcrumbs
@@ -43,7 +38,7 @@ export default async function Page() {
         ]}
         hideSearchInput
       />
-      <CreateReport productions={productions.data} />
+      <CreateReport farms={farms.data} productions={productions.data} />
     </>
   );
 }
