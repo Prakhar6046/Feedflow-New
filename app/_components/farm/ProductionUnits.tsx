@@ -39,6 +39,7 @@ import toast from "react-hot-toast";
 import { v4 as uuidv4 } from "uuid";
 import CalculateVolume from "../models/CalculateFarmVolume";
 import ProductionUnitParametersPredicated from "../models/ProductionUnitParametersPredicated";
+import { useRouter } from "next/navigation";
 interface Props {
   productionParaMeter?: ProductionParaMeterType[];
   growthModels?: any;
@@ -67,7 +68,7 @@ const ProductionUnits: NextPage<Props> = ({
   const dispatch = useAppDispatch();
   const isEditFarm = getCookie("isEditFarm");
   const userData: any = getCookie("logged-user");
-
+  const router = useRouter();
   const [selectedUnit, setSelectedUnit] = React.useState<UnitsTypes>();
   const [open, setopen] = useState<boolean>(false);
   const [openUnitParametersModal, setOpenUnitParametersModal] =
@@ -384,6 +385,7 @@ const ProductionUnits: NextPage<Props> = ({
     }
   };
   useEffect(() => {
+    router.refresh();
     if (typeof window !== "undefined") {
       const productionUnit = getLocalItem("farmProductionUnits");
       const productionParamtertsUnitsArrayLocal = getLocalItem(

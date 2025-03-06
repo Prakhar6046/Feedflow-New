@@ -169,29 +169,7 @@ function ProductionManagerFilter({
               >
                 Units
               </InputLabel>
-              {/* <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              label="Units"
-              multiple
-              disabled={selectedDropDownfarms?.length >= 1 ? false : true}
-              value={selectedDropDownUnits?.map((unit: any) => unit?.option)}
-              onChange={(e) => handleChange(e, false)}
-              input={<OutlinedInput label="Units" />}
-              renderValue={(selected) => selected.join(", ")}
-              MenuProps={MenuProps}
-            >
-              {allUnits.map((unit: any) => (
-                <MenuItem key={unit.id} value={unit.option}>
-                  <Checkbox
-                    checked={selectedDropDownUnits?.some(
-                      (selected: any) => selected?.option === unit.option
-                    )}
-                  />
-                  <ListItemText primary={unit.option} />
-                </MenuItem>
-              ))}
-            </Select> */}
+
               <MultiSelect
                 value={selectedDropDownUnits}
                 onChange={(e) => setSelectedDropDownUnits(e.value)}
@@ -215,18 +193,7 @@ function ProductionManagerFilter({
             </FormControl>
           </Box>
         </Grid>
-        {/* <Grid
-          item
-          lg={2}
-          md={4}
-          sm={6}
-          xs={12}
-          sx={{
-            width: "fit-content",
 
-            paddingTop: "8px",
-          }}
-        ></Grid> */}
         <Grid
           item
           xl={2}
@@ -312,11 +279,6 @@ function ProductionManagerFilter({
                     id="demo-simple-select"
                     label="Select Year"
                     multiple
-                    // disabled={
-                    //   selectedDropDownfarms?.length && selectedDropDownUnits?.length
-                    //     ? false
-                    //     : true
-                    // }
                     value={selectedDropDownYears}
                     onChange={(e) => handleYearChange(e)}
                     input={<OutlinedInput label="Select Year" />}
@@ -355,13 +317,6 @@ function ProductionManagerFilter({
                     id="demo-simple-select"
                     label="Start month"
                     value={startMonth}
-                    // disabled={
-                    //   selectedDropDownfarms?.length &&
-                    //   selectedDropDownUnits?.length &&
-                    //   selectedDropDownYears?.length
-                    //     ? false
-                    //     : true
-                    // }
                     onChange={(e) => setStartMonth(Number(e.target.value))}
                   >
                     {months.map((month) => (
@@ -393,14 +348,6 @@ function ProductionManagerFilter({
                     labelId="demo-simple-select-label"
                     id="demo-simple-select"
                     label="End month"
-                    // disabled={
-                    //   selectedDropDownfarms?.length &&
-                    //   selectedDropDownUnits?.length &&
-                    //   selectedDropDownYears?.length &&
-                    //   startMonth
-                    //     ? false
-                    //     : true
-                    // }
                     value={endMonth}
                     onChange={(e) => setEndMonth(Number(e.target.value))}
                   >
@@ -494,21 +441,9 @@ function ProductionManagerFilter({
               >
                 Create all report
               </MenuItem>
-              {/* <MenuItem onClick={handleClose}>Logout</MenuItem> */}
             </Menu>
           </Box>
         </Grid>
-
-        {/* <Grid
-        item
-     lg={2}
-        sx={{
-          width: "fit-content",
-          paddingTop: "8px",
-        }}
-      >
-        <Box sx={{ width: "100%" }}>Clear</Box>
-      </Grid> */}
       </Grid>
       <Dialog
         open={isModalOpen}
