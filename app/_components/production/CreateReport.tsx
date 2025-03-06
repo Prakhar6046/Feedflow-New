@@ -27,7 +27,7 @@ function CreateReport({ productions }: Props) {
       <Grid container>
         <Grid item xl={3} lg={4} md={5} xs={6}>
           <Box
-            mb={3}
+            // mb={3}
             sx={{
               display: "flex",
               justifyContent: "space-between",
@@ -60,7 +60,15 @@ function CreateReport({ productions }: Props) {
             />
           </Box>
 
-          <Grid container spacing={3}>
+          <Grid
+            container
+            spacing={3}
+            sx={{
+              maxHeight: "600px",
+              overflowY: "auto",
+              mt: 3.5,
+            }}
+          >
             {productions.map((production) => {
               return (
                 <Grid item xs={12} key={String(production.id)}>
@@ -88,7 +96,6 @@ function CreateReport({ productions }: Props) {
           <Divider orientation="vertical" variant="middle" />
         </Grid>
         <Grid item xl={8} lg={7} md={6} xs={5}>
-
           <Box
             mb={3}
             sx={{
@@ -123,13 +130,16 @@ function CreateReport({ productions }: Props) {
             />
           </Box>
 
-          <Stack sx={{
-            maxHeight: "600px",
-            overflowY: "auto",
-          }}>
+          <Stack
+            sx={{
+              maxHeight: "600px",
+              overflowY: "auto",
+            }}
+          >
             <Grid container rowSpacing={2} columnSpacing={4}>
               <Grid item xs={12}>
-                <Box mt={1.5}
+                <Box
+                  mt={1.5}
                   sx={{
                     display: "flex",
                     justifyContent: "space-between",
@@ -238,7 +248,8 @@ function CreateReport({ productions }: Props) {
 
             <Grid container rowSpacing={2} columnSpacing={4}>
               <Grid item xs={12}>
-                <Box mt={3}
+                <Box
+                  mt={3}
                   sx={{
                     display: "flex",
                     justifyContent: "space-between",
@@ -293,7 +304,8 @@ function CreateReport({ productions }: Props) {
 
             <Grid container rowSpacing={2} columnSpacing={4}>
               <Grid item xs={12}>
-                <Box mt={3}
+                <Box
+                  mt={3}
                   sx={{
                     display: "flex",
                     justifyContent: "space-between",
@@ -375,7 +387,8 @@ function CreateReport({ productions }: Props) {
 
             <Grid container rowSpacing={2} columnSpacing={4}>
               <Grid item xs={12}>
-                <Box mt={3}
+                <Box
+                  mt={3}
                   sx={{
                     display: "flex",
                     justifyContent: "space-between",
@@ -457,7 +470,8 @@ function CreateReport({ productions }: Props) {
 
             <Grid container rowSpacing={2} columnSpacing={4}>
               <Grid item xs={12}>
-                <Box mt={3}
+                <Box
+                  mt={3}
                   sx={{
                     display: "flex",
                     justifyContent: "space-between",
@@ -503,7 +517,8 @@ function CreateReport({ productions }: Props) {
 
             <Grid container rowSpacing={2} columnSpacing={4}>
               <Grid item xs={12}>
-                <Box mt={3}
+                <Box
+                  mt={3}
                   sx={{
                     display: "flex",
                     justifyContent: "space-between",
@@ -585,7 +600,8 @@ function CreateReport({ productions }: Props) {
 
             <Grid container rowSpacing={2} columnSpacing={4}>
               <Grid item xs={12}>
-                <Box mt={3}
+                <Box
+                  mt={3}
                   sx={{
                     display: "flex",
                     justifyContent: "space-between",
@@ -665,7 +681,6 @@ function CreateReport({ productions }: Props) {
               </Grid>
             </Grid>
           </Stack>
-
         </Grid>
       </Grid>
 
