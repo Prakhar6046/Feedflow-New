@@ -437,8 +437,8 @@ function CreateReport({ farms, productions }: Props) {
                   );
                 })
               ) : (
-                <Grid container rowSpacing={2} columnSpacing={4}>
-                  <Grid item xs={12}>
+                <Grid container rowSpacing={2} columnSpacing={4} alignItems={"center"} justifyContent={"center"} height={450}>
+                  <Grid item xs="auto">
                     <Box
                       mt={1.5}
                       sx={{
