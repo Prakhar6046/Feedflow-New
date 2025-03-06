@@ -113,10 +113,7 @@ export default function ProductionTable({
     Array<number>
   >([new Date().getFullYear()]);
   const [selectedAverage, setSelectedAverage] = useState(averagesDropdown[0]);
-  const [startMonth, setStartMonth] = useState<number>(
-    new Date().getMonth() + 1
-  );
-  console.log(selectedProduction);
+  const [startMonth, setStartMonth] = useState<number>(1);
 
   const [endMonth, setEndMonth] = useState<number>(new Date().getMonth() + 1);
 
