@@ -484,7 +484,7 @@ function FishReportPreview({ productions }: { productions: Production[] }) {
       <Grid container>
         <Grid item xs>
           {productions?.map((prodUnit) => (
-            <Box>
+            <Box key={Number(prodUnit.id)}>
               {chartData?.selectedCharts?.map((key: string) => {
                 const chartOption = chartOptions.find(
                   (option) => option.key === key

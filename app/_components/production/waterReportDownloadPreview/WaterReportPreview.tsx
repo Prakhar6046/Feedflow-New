@@ -1,26 +1,19 @@
 "use client";
-import {
-  getChartPredictedValues,
-  getLocalItem,
-  removeLocalItem,
-} from "@/app/_lib/utils";
+import { getFullYear, getLocalItem } from "@/app/_lib/utils";
 import { Farm } from "@/app/_typeModels/Farm";
 import {
   Production,
   WaterManageHistoryGroup,
 } from "@/app/_typeModels/production";
-import { useEffect, useState } from "react";
-import { IdealRangeKeys } from "../waterHistoryCharts/WaterHistoryCharts";
-import WaterTempChart from "../../charts/WaterTempChart";
-import { Box, Grid, Stack, Typography, Button } from "@mui/material";
-import { BorderBottom, Padding } from "@mui/icons-material";
-import Modal from "@mui/material/Modal";
-import { createRoot } from "react-dom/client";
-import jsPDF from "jspdf";
+import { Box, Button, Grid, Stack, Typography } from "@mui/material";
 import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { createRoot } from "react-dom/client";
+import WaterTempChart from "../../charts/WaterTempChart";
 import Loader from "../../Loader";
-
+import { IdealRangeKeys } from "../waterHistoryCharts/WaterHistoryCharts";
 type ChartDataType = {
   selectedCharts: string[];
   xAxisData: string[];
@@ -414,14 +407,14 @@ function WaterReportPreview({ productions }: { productions: Production[] }) {
                       .flatMap(
                         (unit) =>
                           unit.waterManageHistory?.map((history: any) => (
-                            <tr key={history.date}>
+                            <tr key={history.currentDate}>
                               <td
                                 style={{
                                   border: "1px solid #ccc",
                                   padding: "8px 12px",
                                 }}
                               >
-                                {history.date}
+                                {getFullYear(history?.currentDate)}
                               </td>
                               <td
                                 style={{
@@ -533,7 +526,7 @@ function WaterReportPreview({ productions }: { productions: Production[] }) {
       <Grid container>
         <Grid item xs>
           {productions?.map((prodUnit) => (
-            <Box>
+            <Box key={Number(prodUnit.id)}>
               {chartData?.selectedCharts?.map((key: string) => {
                 const chartOption = chartOptions.find(
                   (option) => option.key === key
@@ -910,14 +903,14 @@ function WaterReportPreview({ productions }: { productions: Production[] }) {
                                   (unit) =>
                                     unit.waterManageHistory?.map(
                                       (history: any) => (
-                                        <tr key={history.date}>
+                                        <tr key={history.currentDate}>
                                           <td
                                             style={{
                                               border: "1px solid #ccc",
                                               padding: "8px 12px",
                                             }}
                                           >
-                                            {history.date}
+                                            {getFullYear(history?.currentDate)}
                                           </td>
                                           <td
                                             style={{

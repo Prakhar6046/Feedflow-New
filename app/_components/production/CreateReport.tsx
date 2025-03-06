@@ -1,7 +1,6 @@
 "use client";
 import { setLocalItem } from "@/app/_lib/utils";
 import { Farm, ProductionParaMeterType } from "@/app/_typeModels/Farm";
-import { Production } from "@/app/_typeModels/production";
 import {
   Box,
   Button,
@@ -15,7 +14,6 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import { group } from "console";
 import { setCookie } from "cookies-next";
 import dayjs from "dayjs";
 import { useRouter } from "next/navigation";
@@ -172,7 +170,7 @@ function CreateReport({ farms, productions }: Props) {
             })),
           }));
       };
-      const units = getSelectedFarmsData();
+      const units: any = getSelectedFarmsData();
       setExtratedData(units);
     }
   }, [selectedFarms]);
@@ -206,7 +204,6 @@ function CreateReport({ farms, productions }: Props) {
       setXAxisData(createdAtArray);
     }
   }, [productions, groupedData]);
-  console.log(farms);
 
   return (
     <>
@@ -366,71 +363,99 @@ function CreateReport({ farms, productions }: Props) {
                 overflowY: "auto",
               }}
             >
-              {extractedData?.map((farm, index) => {
-                const allUnitIds = farm.units.map((unit) => unit.id);
-                const isAllSelected = allUnitIds.every((id) =>
-                  selectedUnits.includes(id)
-                );
+              {allSelected && extractedData ? (
+                extractedData?.map((farm, index) => {
+                  const allUnitIds = farm.units.map((unit) => unit.id);
+                  const isAllSelected = allUnitIds.every((id) =>
+                    selectedUnits.includes(id)
+                  );
 
-                return (
-                  <Grid container key={index} rowSpacing={2} columnSpacing={4}>
-                    <Grid item xs={12}>
-                      <Box
-                        mt={1.5}
-                        sx={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          alignItems: "center",
-                          columnGap: 3,
-                          rowGap: 1,
-                          flexWrap: "wrap",
-                          borderBottom: "1px solid #E0E0E0",
-                          pb: 0.5,
-                        }}
-                      >
-                        <Typography
-                          variant="h6"
-                          fontWeight={600}
+                  return (
+                    <Grid
+                      container
+                      key={index}
+                      rowSpacing={2}
+                      columnSpacing={4}
+                    >
+                      <Grid item xs={12}>
+                        <Box
+                          mt={1.5}
                           sx={{
-                            fontSize: {
-                              xs: 16,
-                            },
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            columnGap: 3,
+                            rowGap: 1,
+                            flexWrap: "wrap",
+                            borderBottom: "1px solid #E0E0E0",
+                            pb: 0.5,
                           }}
                         >
-                          {farm?.farm}
-                        </Typography>
+                          <Typography
+                            variant="h6"
+                            fontWeight={600}
+                            sx={{
+                              fontSize: {
+                                xs: 16,
+                              },
+                            }}
+                          >
+                            {farm?.farm}
+                          </Typography>
 
-                        <FormControlLabel
-                          control={
-                            <Checkbox
-                              checked={isAllSelected}
-                              onChange={() => handleSelectAllUnits(allUnitIds)}
-                            />
-                          }
-                          label="Select All"
-                          labelPlacement="end"
-                          className="custom-checkbox"
-                        />
-                      </Box>
-                    </Grid>
-                    {farm.units.map((unit) => (
-                      <Grid item xs={"auto"} key={Number(unit.id)}>
-                        <FormControlLabel
-                          control={
-                            <Checkbox
-                              checked={selectedUnits.includes(unit.id)}
-                              onChange={() => handleUnitSelection(unit.id)}
-                            />
-                          }
-                          label={unit.name}
-                          labelPlacement="end"
-                          className="custom-checkbox"
-                        />
+                          <FormControlLabel
+                            control={
+                              <Checkbox
+                                checked={isAllSelected}
+                                onChange={() =>
+                                  handleSelectAllUnits(allUnitIds)
+                                }
+                              />
+                            }
+                            label="Select All"
+                            labelPlacement="end"
+                            className="custom-checkbox"
+                          />
+                        </Box>
                       </Grid>
-                    ))}
+                      {farm.units.map((unit) => (
+                        <Grid item xs={"auto"} key={Number(unit.id)}>
+                          <FormControlLabel
+                            control={
+                              <Checkbox
+                                checked={selectedUnits.includes(unit.id)}
+                                onChange={() => handleUnitSelection(unit.id)}
+                              />
+                            }
+                            label={unit.name}
+                            labelPlacement="end"
+                            className="custom-checkbox"
+                          />
+                        </Grid>
+                      ))}
+                    </Grid>
+                  );
+                })
+              ) : (
+                <Grid container rowSpacing={2} columnSpacing={4}>
+                  <Grid item xs={12}>
+                    <Box
+                      mt={1.5}
+                      sx={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        columnGap: 3,
+                        rowGap: 1,
+                        flexWrap: "wrap",
+                        pb: 0.5,
+                      }}
+                    >
+                      Please select farms to view the units.
+                    </Box>
                   </Grid>
-                );
-              })}
+                </Grid>
+              )}
             </Stack>
           </Grid>
         </Grid>

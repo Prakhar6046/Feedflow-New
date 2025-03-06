@@ -21,7 +21,7 @@ export const GET = async (request: NextRequest) => {
         },
       },
       orderBy: {
-        createdAt: "desc", // Sort by createdAt in descending order
+        createdAt: "desc",
       },
       where: {
         ...(filter === "true"
