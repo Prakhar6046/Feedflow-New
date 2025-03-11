@@ -44,6 +44,7 @@ interface Props {
   setSelectedDropDownUnits: any;
   handleResetFilters: () => void;
   captureScreenshot: () => void;
+  createXlsxFile: (e: React.MouseEvent<HTMLSpanElement, MouseEvent>) => void;
 }
 
 const ITEM_HEIGHT = 48;
@@ -73,6 +74,7 @@ function ProductionManagerFilter({
   setSelectedDropDownUnits,
   handleResetFilters,
   captureScreenshot,
+  createXlsxFile,
 }: Props) {
   const router = useRouter();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -442,6 +444,28 @@ function ProductionManagerFilter({
                 Create all report
               </MenuItem>
             </Menu>
+            <Button
+              id="basic-button"
+              type="button"
+              variant="contained"
+              onClick={(e) => createXlsxFile(e)}
+              sx={{
+                background: "#fff",
+                color: "#06A19B",
+                fontWeight: 600,
+                padding: "6px 16px",
+                width: "fit-content",
+                textTransform: "capitalize",
+                borderRadius: "8px",
+                border: "1px solid #06A19B",
+                boxShadow: "none",
+                "&:hover": {
+                  boxShadow: "none",
+                },
+              }}
+            >
+              Create .xlsx File
+            </Button>
           </Box>
         </Grid>
       </Grid>

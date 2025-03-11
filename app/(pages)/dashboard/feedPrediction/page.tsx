@@ -9,9 +9,11 @@ import {
   TableHead,
   TableRow,
   Paper,
+  Button,
 } from "@mui/material";
 import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
 import FishGrowthChart from "@/app/_components/charts/FishGrowthChart";
+import { exportFeedPredictionToXlsx } from "@/app/_lib/utils";
 
 const Page: NextPage = () => {
   const [data, setData] = useState<any[]>([]);
@@ -104,6 +106,29 @@ const Page: NextPage = () => {
         heading={"Thermal growth coefficient Demo"}
         hideSearchInput={true}
       />
+      <Button
+        id="basic-button"
+        type="button"
+        variant="contained"
+        onClick={(e) => exportFeedPredictionToXlsx(e, data)}
+        sx={{
+          background: "#fff",
+          color: "#06A19B",
+          fontWeight: 600,
+          padding: "6px 16px",
+          width: "fit-content",
+          textTransform: "capitalize",
+          borderRadius: "8px",
+          border: "1px solid #06A19B",
+          marginBottom: "10px",
+          boxShadow: "none",
+          "&:hover": {
+            boxShadow: "none",
+          },
+        }}
+      >
+        Create .xlsx File
+      </Button>
       <div className="p-4">
         <label htmlFor="fishweight">Fish Weight (g)</label>
         <input

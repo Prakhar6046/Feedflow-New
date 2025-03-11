@@ -1,6 +1,7 @@
 import toast from "react-hot-toast";
 import { FarmGroup, Production } from "../_typeModels/production";
-
+import ExcelJS from "exceljs";
+import { saveAs } from "file-saver";
 export const readableDate = (date: any) => {
   return new Date(date).toLocaleString("en-US", {
     dateStyle: "medium",
@@ -559,4 +560,276 @@ export const getFullYear = (inputDate: string) => {
   const day = String(date.getDate()).padStart(2, "0");
 
   return `${year}-${month}-${day}`;
+};
+export const exportProductionTableToXlsx = async (
+  e: React.MouseEvent<HTMLSpanElement, MouseEvent>,
+  view: string | undefined,
+  headersData: string[],
+  data: any
+) => {
+  e.preventDefault();
+  const workbook = new ExcelJS.Workbook();
+  const worksheet = workbook.addWorksheet("data");
+  const headers = headersData;
+  worksheet.addRow(headers);
+  if (!data) {
+    return;
+  }
+  data.forEach((val: FarmGroup) => {
+    const units =
+      val.units
+        ?.map((unit) => unit?.productionUnit?.name)
+        .filter(Boolean)
+        .join(", ") || "";
+
+    const waterTemps =
+      val.units
+        ?.map((unit) => (unit?.waterTemp ? unit.waterTemp : null))
+        .filter(Boolean)
+        .join(", ") || "";
+
+    const batchNumbers =
+      val.units
+        ?.map((unit) =>
+          unit?.fishSupply?.batchNumber ? unit.fishSupply.batchNumber : null
+        )
+        .filter(Boolean)
+        .join(", ") || "";
+
+    const DO =
+      val.units
+        ?.map((unit) => (unit?.DO ? unit.DO : null))
+        .filter(Boolean)
+        .join(", ") || "";
+
+    const age =
+      val.units
+        ?.map((unit) => (unit?.fishSupply?.age ? unit.fishSupply.age : null))
+        .filter(Boolean)
+        .join(", ") || "";
+    const fishCount =
+      val.units
+        ?.map((unit) => (unit.fishCount ? unit.fishCount : null))
+        .filter(Boolean)
+        .join(", ") || "";
+    const TSS =
+      val.units
+        ?.map((unit) => (unit.TSS ? unit.TSS : null))
+        .filter(Boolean)
+        .join(", ") || "";
+    const NH4 =
+      val.units
+        ?.map((unit) => (unit.NH4 ? unit.NH4 : null))
+        .filter(Boolean)
+        .join(", ") || "";
+    const biomass =
+      val.units
+        ?.map((unit) => (unit.biomass ? unit.biomass : null))
+        .filter(Boolean)
+        .join(", ") || "";
+    const NO3 =
+      val.units
+        ?.map((unit) => (unit.NO3 ? unit.NO3 : null))
+        .filter(Boolean)
+        .join(", ") || "";
+    const meanWeight =
+      val.units
+        ?.map((unit) => (unit.meanWeight ? unit.meanWeight : null))
+        .filter(Boolean)
+        .join(", ") || "";
+    const NO2 =
+      val.units
+        ?.map((unit) => (unit.NO2 ? unit.NO2 : null))
+        .filter(Boolean)
+        .join(", ") || "";
+    const meanLength =
+      val.units
+        ?.map((unit) => (unit.meanLength ? unit.meanLength : null))
+        .filter(Boolean)
+        .join(", ") || "";
+    const ph =
+      val.units
+        ?.map((unit) => (unit.NO2 ? unit.NO2 : null))
+        .filter(Boolean)
+        .join(", ") || "";
+    const stockingDensityKG =
+      val.units
+        ?.map((unit) =>
+          unit.stockingDensityKG
+            ? Number(unit.stockingDensityKG || 0).toFixed(2)
+            : null
+        )
+        .filter(Boolean)
+        .join(", ") || "";
+    const visibility =
+      val.units
+        ?.map((unit) => (unit.visibility ? unit.visibility : null))
+        .filter(Boolean)
+        .join(", ") || "";
+    const stockingDensityNM =
+      val.units
+        ?.map((unit) =>
+          unit.stockingDensityNM
+            ? Number(unit.stockingDensityNM || 0).toFixed(2)
+            : null
+        )
+        .filter(Boolean)
+        .join(", ") || "";
+    const stockingLevel =
+      val.units
+        ?.map((unit) => (unit.stockingLevel ? unit.stockingLevel : null))
+        .filter(Boolean)
+        .join(", ") || "";
+
+    worksheet.addRow([
+      val.farm ?? "",
+      units,
+      view === "water" ? waterTemps : batchNumbers,
+      view === "water" ? DO : age,
+      view === "water" ? TSS : fishCount,
+      view === "water" ? NH4 : biomass,
+      view === "water" ? NO3 : meanWeight,
+      view === "water" ? NO2 : meanLength,
+      view === "water" ? ph : stockingDensityKG,
+      view === "water" ? visibility : stockingDensityNM,
+      ...(view !== "water" ? [stockingLevel] : []),
+    ]);
+  });
+
+  worksheet.columns = [
+    { width: 15 },
+    { width: 30 },
+    { width: 30 },
+    { width: 15 },
+    { width: 15 },
+    { width: 15 },
+    { width: 15 },
+    { width: 15 },
+    { width: 15 },
+    { width: 15 },
+    { width: 15 },
+  ];
+  worksheet.eachRow((row, rowNumber) => {
+    row.eachCell((cell) => {
+      cell.alignment = { horizontal: "left", vertical: "middle" };
+      cell.border = {
+        top: { style: "thin" },
+        left: { style: "thin" },
+        bottom: { style: "thin" },
+        right: { style: "thin" },
+      };
+
+      if (rowNumber === 1) {
+        cell.font = { bold: true, color: { argb: "FFFFFFFF" } };
+        cell.fill = {
+          type: "pattern",
+          pattern: "solid",
+          fgColor: { argb: "FF4F81BD" },
+        };
+      }
+    });
+  });
+
+  const buffer = await workbook.xlsx.writeBuffer();
+  const blob = new Blob([buffer], {
+    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  });
+  let fileName = view === "water" ? "water_report" : "fish_report";
+  saveAs(blob, `${fileName}.xlsx`);
+};
+export const exportFeedPredictionToXlsx = async (
+  e: React.MouseEvent<HTMLSpanElement, MouseEvent>,
+  data: any
+) => {
+  e.preventDefault();
+  if (!data) {
+    return;
+  }
+  const workbook = new ExcelJS.Workbook();
+  const worksheet = workbook.addWorksheet("feedPrediction");
+  const headers = [
+    "Date",
+    "Days",
+    "Water Temp",
+    "Fish Weight (g)",
+    "Number of Fish",
+    "Biomass (kg)",
+    "Stocking Density",
+    "Stocking Density Kg/m3",
+    "Feed Phase",
+    "Feed Protein (%)",
+    "Feed DE (MJ/kg)",
+    "Feed Price ($)",
+    "Growth (g)",
+    "Est. FCR",
+    "Partitioned FCR",
+    "Feed Intake (g)",
+  ];
+  // Add headers to the sheet
+  worksheet.addRow(headers);
+  // Convert data into an array of rows
+  data.forEach((row: any) => {
+    worksheet.addRow([
+      row.date,
+      row.days,
+      row.waterTemp,
+      row.fishWeight,
+      row.numberOfFish,
+      row.biomass,
+      row.stockingDensityNM3,
+      row.stockingDensityKg,
+      row.feedPhase,
+      row.feedProtein,
+      row.feedDE,
+      row.feedPrice,
+      row.growth,
+      row.estimatedFCR,
+      row.partitionedFCR,
+      row.feedIntake,
+    ]);
+  });
+  worksheet.columns = [
+    { width: 15 },
+    { width: 15 },
+    { width: 15 },
+    { width: 15 },
+    { width: 15 },
+    { width: 15 },
+    { width: 15 },
+    { width: 15 },
+    { width: 15 },
+    { width: 15 },
+    { width: 15 },
+    { width: 15 },
+    { width: 15 },
+    { width: 15 },
+    { width: 15 },
+    { width: 15 },
+  ];
+  worksheet.eachRow((row, rowNumber) => {
+    row.eachCell((cell) => {
+      cell.alignment = { horizontal: "left", vertical: "middle" };
+      cell.border = {
+        top: { style: "thin" },
+        left: { style: "thin" },
+        bottom: { style: "thin" },
+        right: { style: "thin" },
+      };
+
+      if (rowNumber === 1) {
+        cell.font = { bold: true, color: { argb: "FFFFFFFF" } };
+        cell.fill = {
+          type: "pattern",
+          pattern: "solid",
+          fgColor: { argb: "FF4F81BD" },
+        };
+      }
+    });
+  });
+
+  const buffer = await workbook.xlsx.writeBuffer();
+  const blob = new Blob([buffer], {
+    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  });
+  saveAs(blob, `feedPrediction.xlsx`);
 };
