@@ -833,3 +833,21 @@ export const exportFeedPredictionToXlsx = async (
   });
   saveAs(blob, `feedPrediction.xlsx`);
 };
+export const FeedPredictionHead = [
+  "Date",
+  "Days",
+  "Water Temp",
+  "Fish Weight (g)",
+  "Number of Fish",
+  "Biomass (kg)",
+  "Stocking Density",
+  "Stocking Density Kg/m3",
+  "Feed Phase",
+  "Feed Protein (%)",
+  "Feed DE (MJ/kg)",
+  "Feed Price ($)",
+  "Growth (g)",
+  "Est. FCR",
+  "Partitioned FCR",
+  "Feed Intake (g)",
+];
