@@ -1,6 +1,7 @@
 "use client";
 import {
   getChartPredictedValues,
+  getFullYear,
   getLocalItem,
   removeLocalItem,
 } from "@/app/_lib/utils";
@@ -58,9 +59,6 @@ function WaterChartDownloadPreview({
     { key: "visibility", yDataKey: "visibility", title: "Visibility" },
   ];
   useEffect(() => {
-    console.log("chart", chartData);
-    console.log(productions);
-
     if (chartData && productions) {
       const result = getChartPredictedValues(
         productions,
@@ -381,14 +379,14 @@ function WaterChartDownloadPreview({
                   {chartData?.groupedData.units.flatMap(
                     (unit) =>
                       unit.waterManageHistory?.map((history: any) => (
-                        <tr key={history.date}>
+                        <tr key={history.currentDate}>
                           <td
                             style={{
                               border: "1px solid #ccc",
                               padding: "8px 12px",
                             }}
                           >
-                            {history.date}
+                            {getFullYear(history?.currentDate)}
                           </td>
                           <td
                             style={{
@@ -844,14 +842,14 @@ function WaterChartDownloadPreview({
                             {chartData?.groupedData.units.flatMap(
                               (unit) =>
                                 unit.waterManageHistory?.map((history: any) => (
-                                  <tr key={history.date}>
+                                  <tr key={history.currentDate}>
                                     <td
                                       style={{
                                         border: "1px solid #ccc",
                                         padding: "8px 12px",
                                       }}
                                     >
-                                      {history.date}
+                                      {getFullYear(history?.currentDate)}
                                     </td>
                                     <td
                                       style={{

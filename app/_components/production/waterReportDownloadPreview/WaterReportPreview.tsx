@@ -14,6 +14,7 @@ import { createRoot } from "react-dom/client";
 import WaterTempChart from "../../charts/WaterTempChart";
 import Loader from "../../Loader";
 import { IdealRangeKeys } from "../waterHistoryCharts/WaterHistoryCharts";
+import dayjs from "dayjs";
 type ChartDataType = {
   selectedCharts: string[];
   xAxisData: string[];
@@ -24,11 +25,8 @@ type ChartDataType = {
   dateDiff: number;
 };
 function WaterReportPreview({ productions }: { productions: Production[] }) {
-  console.log(productions);
-
   const router = useRouter();
   const [chartData, setChartData] = useState<ChartDataType>();
-  const [predictedData, setPredictedData] = useState<any>(null);
   const [isReportDownload, setIsReportDownload] = useState<boolean>(false);
   const chartOptions: {
     key: string;
@@ -48,21 +46,6 @@ function WaterReportPreview({ productions }: { productions: Production[] }) {
     { key: "ph", yDataKey: "ph", title: "PH" },
     { key: "visibility", yDataKey: "visibility", title: "Visibility" },
   ];
-  useEffect(() => {
-    console.log("chart", chartData);
-    console.log(productions);
-
-    if (chartData && productions) {
-      // const result = getChartPredictedValues(
-      //   productions,
-      //   chartData?.startDate,
-      //   chartData?.endDate
-      // );
-      // if (result) {
-      //   setPredictedData(result);
-      // }
-    }
-  }, [productions, chartData]);
   const downloadChartsAsPDF = async () => {
     setIsReportDownload(true);
     const pdf = new jsPDF({ orientation: "landscape" });
@@ -131,7 +114,6 @@ function WaterReportPreview({ productions }: { productions: Production[] }) {
                   }}
                 >
                   {prodUnit.productionUnit?.name} {prodUnit.farm?.name} <br />
-                  <span>2025/01/23 to 2025/01/23</span>
                 </p>
               </div>
             </div>
@@ -326,12 +308,41 @@ function WaterReportPreview({ productions }: { productions: Production[] }) {
                         yDataKey
                       ]?.Min
                     }
-                    predictedValues={
-                      predictedData?.find(
-                        (val: { key: string; values: string[] }) =>
-                          val.key === yDataKey
-                      )?.values || []
-                    }
+                    predictedValues={(() => {
+                      const predictionUnit =
+                        prodUnit?.productionUnit
+                          ?.YearBasedPredicationProductionUnit?.[0];
+
+                      if (!predictionUnit) return [];
+
+                      const currentMonth = dayjs().month();
+
+                      const monthMap: Record<number, string> = {
+                        0: "Jan",
+                        1: "Feb",
+                        2: "Mar",
+                        3: "Apr",
+                        4: "May",
+                        5: "Jun",
+                        6: "Jul",
+                        7: "Aug",
+                        8: "Sep",
+                        9: "Oct",
+                        10: "Nov",
+                        11: "Dec",
+                      };
+
+                      const selectedMonths = Object.keys(monthMap)
+                        .map(Number)
+                        .filter((month) => month <= currentMonth)
+                        .map((month) => monthMap[month]);
+
+                      const predictedArray = selectedMonths.map(
+                        (month) => predictionUnit?.[yDataKey]?.[month]
+                      );
+
+                      return predictedArray.filter((val) => val !== undefined);
+                    })()}
                     startDate={chartData?.startDate}
                     endDate={chartData?.endDate}
                     dateDiff={chartData?.dateDiff || 1}
@@ -586,7 +597,7 @@ function WaterReportPreview({ productions }: { productions: Production[] }) {
                         >
                           {prodUnit.productionUnit?.name} {prodUnit.farm?.name}{" "}
                           <br />
-                          <span>2025/01/23 to 2025/01/23</span>
+                          {/* <span>2025/01/23 to 2025/01/23</span> */}
                         </Box>
                       </Typography>
                     </Box>
@@ -780,12 +791,6 @@ function WaterReportPreview({ productions }: { productions: Production[] }) {
                             <WaterTempChart
                               key={key}
                               xAxisData={chartData?.xAxisData}
-                              // ydata={chartData?.groupedData.units.flatMap(
-                              //   (unit) =>
-                              //     unit.waterManageHistory?.map(
-                              //       (history: any) => history[yDataKey]
-                              //     ) || []
-                              // )}
                               ydata={
                                 chartData?.groupedData
                                   ?.find((group) =>
@@ -817,12 +822,43 @@ function WaterReportPreview({ productions }: { productions: Production[] }) {
                                   ?.YearBasedPredicationProductionUnit[0]
                                   ?.idealRange[yDataKey]?.Min
                               }
-                              predictedValues={
-                                predictedData?.find(
-                                  (val: { key: string; values: string[] }) =>
-                                    val.key === yDataKey
-                                )?.values || []
-                              }
+                              predictedValues={(() => {
+                                const predictionUnit =
+                                  prodUnit?.productionUnit
+                                    ?.YearBasedPredicationProductionUnit?.[0];
+
+                                if (!predictionUnit) return [];
+
+                                const currentMonth = dayjs().month();
+
+                                const monthMap: Record<number, string> = {
+                                  0: "Jan",
+                                  1: "Feb",
+                                  2: "Mar",
+                                  3: "Apr",
+                                  4: "May",
+                                  5: "Jun",
+                                  6: "Jul",
+                                  7: "Aug",
+                                  8: "Sep",
+                                  9: "Oct",
+                                  10: "Nov",
+                                  11: "Dec",
+                                };
+
+                                const selectedMonths = Object.keys(monthMap)
+                                  .map(Number)
+                                  .filter((month) => month <= currentMonth)
+                                  .map((month) => monthMap[month]);
+
+                                const predictedArray = selectedMonths.map(
+                                  (month) => predictionUnit?.[yDataKey]?.[month]
+                                );
+
+                                return predictedArray.filter(
+                                  (val) => val !== undefined
+                                );
+                              })()}
                               startDate={chartData?.startDate}
                               endDate={chartData?.endDate}
                               dateDiff={chartData?.dateDiff || 1}

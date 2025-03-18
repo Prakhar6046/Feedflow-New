@@ -18,12 +18,14 @@ import jsPDF from "jspdf";
 import { createRoot } from "react-dom/client";
 import html2canvas from "html2canvas";
 import { FeedPredictionHead } from "@/app/_lib/utils";
+import Loader from "@/app/_components/Loader";
 const Page: NextPage = () => {
   const [data, setData] = useState<any[]>([]);
   const [fishWeight, setFishWeight] = useState(0.2);
   const [numberOfFish, setNumberOfFish] = useState(4000);
   const [volume, setVolume] = useState(480);
   const [waterTemp, setWaterTemp] = useState(27);
+  const [loading, setLoading] = useState(false);
 
   function calculateFBW() {
     const IBW = fishWeight;
@@ -97,6 +99,7 @@ const Page: NextPage = () => {
     setData(newData);
   }
   const CreateFeedPredictionPDF = async () => {
+    setLoading(true);
     const pdf = new jsPDF({ orientation: "landscape" });
     const tempContainer = document.createElement("div");
     document.body.appendChild(tempContainer);
@@ -338,13 +341,16 @@ const Page: NextPage = () => {
     tempContainer.removeChild(chartDiv);
     document.body.removeChild(tempContainer);
     pdf.save("feed_pdf.pdf");
+    setLoading(false);
   };
   useEffect(() => {
     if (numberOfFish && volume && waterTemp && fishWeight) {
       calculateFBW();
     }
   }, [fishWeight, numberOfFish, volume, waterTemp]);
-
+  if (loading) {
+    return <Loader />;
+  }
   return (
     <>
       <BasicBreadcrumbs
