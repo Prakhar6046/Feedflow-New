@@ -728,3 +728,32 @@ label {
 .custom-checkbox svg {
   font-size: 1.2rem;
 }
+
+/* 19/03 */
+.production-tabs button.Mui-selected {
+  background: #fff;
+  color: #06a19b;
+  border-radius: 6px;
+}
+
+.production-tabs button {
+  color: #fff;
+  min-height: 32px;
+  padding: 10px 16px;
+  text-transform: capitalize;
+  letter-spacing: 1px;
+  font-weight: 600;
+}
+
+.production-tabs {
+  background: #06a19b;
+  color: #fff;
+  width: fit-content;
+  padding: 6px;
+  border-radius: 8px;
+}
+
+.production-tabs > div > span {
+  display: none !important;
+  background-color: #fff;
+}
