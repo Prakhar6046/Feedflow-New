@@ -1,4 +1,3 @@
-import Menu from "@mui/material/Menu";
 import {
   Box,
   Button,
@@ -17,17 +16,14 @@ import {
   Radio,
   RadioGroup,
   Select,
-  Tooltip,
 } from "@mui/material";
 import dayjs from "dayjs";
+import { useRouter } from "next/navigation";
 import { MultiSelect } from "primereact/multiselect";
 import "primereact/resources/primereact.css";
 import "primereact/resources/themes/lara-light-indigo/theme.css";
 import React, { useEffect, useState } from "react";
 import { averagesDropdown, months } from "../_lib/utils";
-import { red } from "@mui/material/colors";
-import { color } from "framer-motion";
-import { useRouter } from "next/navigation";
 interface Props {
   selectedAverage: String;
   setSelectedAverage: (val: any) => void;
@@ -44,7 +40,6 @@ interface Props {
   setSelectedDropDownfarms: any;
   setSelectedDropDownUnits: any;
   handleResetFilters: () => void;
-  captureScreenshot: () => void;
 }
 
 const ITEM_HEIGHT = 48;
@@ -73,7 +68,6 @@ function ProductionManagerFilter({
   setSelectedDropDownfarms,
   setSelectedDropDownUnits,
   handleResetFilters,
-  captureScreenshot,
 }: Props) {
   const router = useRouter();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -159,8 +153,9 @@ function ProductionManagerFilter({
           <Box sx={{ width: "100%" }}>
             <FormControl
               fullWidth
-              className={`form-input ${selectedDropDownfarms?.length >= 1 && "selected"
-                }`}
+              className={`form-input ${
+                selectedDropDownfarms?.length >= 1 && "selected"
+              }`}
               focused
             >
               <InputLabel
@@ -210,13 +205,14 @@ function ProductionManagerFilter({
           <Box sx={{ width: "100%" }}>
             <FormControl
               fullWidth
-              className={`form-input ${selectedDropDownfarms?.length &&
+              className={`form-input ${
+                selectedDropDownfarms?.length &&
                 selectedDropDownUnits?.length &&
                 selectedDropDownYears?.length &&
                 startMonth &&
                 endMonth &&
                 "selected"
-                }`}
+              }`}
               focused
             >
               <InputLabel id="demo-simple-select-label">Averages</InputLabel>
@@ -227,10 +223,10 @@ function ProductionManagerFilter({
                 value={selectedAverage}
                 disabled={
                   selectedDropDownfarms &&
-                    selectedDropDownUnits &&
-                    selectedDropDownYears &&
-                    startMonth &&
-                    endMonth
+                  selectedDropDownUnits &&
+                  selectedDropDownYears &&
+                  startMonth &&
+                  endMonth
                     ? false
                     : true
                 }
@@ -263,10 +259,11 @@ function ProductionManagerFilter({
               <Box sx={{ width: "100%" }}>
                 <FormControl
                   fullWidth
-                  className={`form-input ${selectedDropDownfarms?.length &&
+                  className={`form-input ${
+                    selectedDropDownfarms?.length &&
                     selectedDropDownUnits?.length &&
                     "selected"
-                    }`}
+                  }`}
                   focused
                 >
                   <InputLabel id="demo-simple-select-label-1">
@@ -299,11 +296,12 @@ function ProductionManagerFilter({
               <Box sx={{ width: "100%" }}>
                 <FormControl
                   fullWidth
-                  className={`form-input ${selectedDropDownfarms?.length &&
+                  className={`form-input ${
+                    selectedDropDownfarms?.length &&
                     selectedDropDownUnits?.length &&
                     selectedDropDownYears?.length &&
                     "selected"
-                    }`}
+                  }`}
                   focused
                 >
                   <InputLabel id="demo-simple-select-label">
@@ -329,12 +327,13 @@ function ProductionManagerFilter({
               <Box sx={{ width: "100%" }}>
                 <FormControl
                   fullWidth
-                  className={`form-input ${selectedDropDownfarms?.length &&
+                  className={`form-input ${
+                    selectedDropDownfarms?.length &&
                     selectedDropDownUnits?.length &&
                     selectedDropDownYears?.length &&
                     startMonth &&
                     "selected"
-                    }`}
+                  }`}
                   focused
                 >
                   <InputLabel id="demo-simple-select-label">
@@ -373,7 +372,14 @@ function ProductionManagerFilter({
             paddingTop: "8px",
           }}
         >
-          <Box sx={{ display: "flex", gap: "10px", mt: 1, justifyContent: "start" }}>
+          <Box
+            sx={{
+              display: "flex",
+              gap: "10px",
+              mt: 1,
+              justifyContent: "start",
+            }}
+          >
             <Button
               id="basic-button"
               type="button"
@@ -414,31 +420,11 @@ function ProductionManagerFilter({
                   boxShadow: "none",
                 },
               }}
+              onClick={() => router.push("/dashboard/feedPrediction")}
             >
               Feed Prediction
             </Button>
 
-            <Button
-              id="basic-button"
-              type="button"
-              variant="contained"
-              sx={{
-                background: "#fff",
-                color: "#06A19B",
-                fontWeight: 600,
-                padding: "6px 16px",
-                width: "fit-content",
-                textTransform: "capitalize",
-                borderRadius: "8px",
-                border: "1px solid #06A19B",
-                boxShadow: "none",
-                "&:hover": {
-                  boxShadow: "none",
-                },
-              }}
-            >
-              Capture Feeding
-            </Button>
             {/* <Button
               sx={{
                 background: "#06A19B",
