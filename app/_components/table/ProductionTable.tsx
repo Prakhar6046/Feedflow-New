@@ -2,6 +2,7 @@
 import TransferModal from "@/app/_components/models/FarmManager";
 import {
   averagesDropdown,
+  exportProductionTableToXlsx,
   getLocalItem,
   ProductionSortTables,
   setLocalItem,
@@ -950,7 +951,14 @@ export default function ProductionTable({
     setCookie("productionCurrentView", value);
     router.refresh();
   };
-
+  const CreateXlsxReport = (
+    e: React.MouseEvent<HTMLSpanElement, MouseEvent>
+  ) => {
+    const headers: any = tableHead
+      ?.slice(0, -1)
+      .map((headCell: any) => headCell.label);
+    exportProductionTableToXlsx(e, selectedView, headers, productionData);
+  };
   const groupedData: FarmGroup[] = productions?.reduce((result: any, item) => {
     // Find or create a farm group
     let farmGroup: any = result.find(
@@ -1528,6 +1536,7 @@ export default function ProductionTable({
             setSelectedAverage={setSelectedAverage}
             startMonth={Number(startMonth)}
             endMonth={Number(endMonth)}
+            createXlsxFile={CreateXlsxReport}
           />
         </TabContext>
       </Box>

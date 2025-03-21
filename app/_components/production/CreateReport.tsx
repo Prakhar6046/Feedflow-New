@@ -1,5 +1,5 @@
 "use client";
-import { setLocalItem } from "@/app/_lib/utils";
+import { getFullYear, setLocalItem } from "@/app/_lib/utils";
 import { Farm, ProductionParaMeterType } from "@/app/_typeModels/Farm";
 import {
   Box,
@@ -183,8 +183,7 @@ function CreateReport({ farms, productions }: Props) {
             ?.flatMap(
               (unit: any) =>
                 unit.waterManageHistory?.map((history: any) => {
-                  const datePart = String(history.currentDate).split("T")[0];
-                  return dayjs(datePart).isValid() ? datePart : null;
+                  getFullYear(history?.currentDate);
                 }) || []
             )
             .filter(Boolean)
@@ -363,7 +362,7 @@ function CreateReport({ farms, productions }: Props) {
                 overflowY: "auto",
               }}
             >
-              {allSelected && extractedData ? (
+              {selectedFarms?.length && extractedData ? (
                 extractedData?.map((farm, index) => {
                   const allUnitIds = farm.units.map((unit) => unit.id);
                   const isAllSelected = allUnitIds.every((id) =>
@@ -437,8 +436,15 @@ function CreateReport({ farms, productions }: Props) {
                   );
                 })
               ) : (
-                <Grid container rowSpacing={2} columnSpacing={4}>
-                  <Grid item xs={12}>
+                <Grid
+                  container
+                  rowSpacing={2}
+                  columnSpacing={4}
+                  alignItems={"center"}
+                  justifyContent={"center"}
+                  height={450}
+                >
+                  <Grid item xs="auto">
                     <Box
                       mt={1.5}
                       sx={{
