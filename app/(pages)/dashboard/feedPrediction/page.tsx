@@ -58,10 +58,24 @@ const Page: NextPage = () => {
       // Apply the formula
       return Math.pow(Math.pow(IBW, b) + (TGC / 100) * sum_td, 1 / b);
     }
-
+    function calculateTGC(IBW: number, T: number) {
+      return -0.003 * IBW + 0.001705 * Math.log(T - 11.25) * T;
+    }
+    function calculateFCR(IBW: number, DE: number) {
+      return (0.00643 * IBW + 13) / (DE / 1.03);
+    }
+    function calculateFormula(IBW: number, TGC: number, FCR: number) {
+      return (Math.pow(Math.cbrt(IBW) + TGC, 3) / IBW - 1) * FCR * 100;
+    }
     for (let day = 0; day <= 150; day += 7) {
       const FBW = calculateFW(prevWeight, 0.35, 0.16, [T], [7]);
 
+      const IBW = 0.02;
+      const TGC = calculateTGC(0.02, 27);
+      const FCR = calculateFCR(0.02, 18.099669);
+
+      const result = calculateFormula(IBW, TGC, FCR);
+      console.log(result);
       // Update number of fish dynamically
       prevNumberOfFish = calculateNoOfFish(prevNumberOfFish, day);
 
@@ -357,6 +371,7 @@ const Page: NextPage = () => {
         heading={"Thermal growth coefficient Demo"}
         hideSearchInput={true}
       />
+
       <Button
         id="basic-button"
         type="button"

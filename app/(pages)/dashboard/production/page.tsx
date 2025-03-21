@@ -1,6 +1,5 @@
 import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
 import ProductionTable from "@/app/_components/table/ProductionTable";
-import Typography from "@/app/_components/theme/overrides/Typography";
 import { getBatches, getFarms, getProductions } from "@/app/_lib/action";
 import { getCookie } from "cookies-next";
 import { Metadata } from "next";

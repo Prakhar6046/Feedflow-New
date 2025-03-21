@@ -1,6 +1,4 @@
 "use client";
-import BasicTable from "@/app/_components/BasicTable";
-import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
 import Header from "@/app/_components/Header";
 import Sidebar from "@/app/_components/Sidebar";
 import { selectSwitchSidebar } from "@/lib/features/sidebar/sidebarSlice";

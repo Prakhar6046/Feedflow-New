@@ -12,6 +12,8 @@ import {
   farmManagerFishHeadMember,
   farmManagerWaterHead,
   farmManagerWaterHeadMember,
+  feedingHead,
+  feedingHeadMember,
 } from "@/app/_lib/utils/tableHeadData";
 import { Farm } from "@/app/_typeModels/Farm";
 import { FarmGroup, Production } from "@/app/_typeModels/production";
@@ -53,7 +55,6 @@ import ProductionManagerFilter from "../ProductionManagerFilter";
 
 interface Props {
   productions: Production[];
-  tableData?: any;
   farms: Farm[];
   batches: { batchNumber: String; id: Number }[];
 }
@@ -872,50 +873,52 @@ export default function ProductionTable({
       >
         <TableRow>
           {tableHead?.map((headCell: any, idx: number, headCells: any) => (
-            <TableCell
-              key={headCell.id}
-              sortDirection={
-                idx === headCells.length - 1
-                  ? false
-                  : orderBy === headCell.id
-                  ? order
-                  : false
-              }
-              // align="center"
-              sx={{
-                borderBottom: 0,
-                color: "#67737F",
-                background: "#F5F6F8",
-                fontSize: {
-                  md: 16,
-                  xs: 14,
-                },
-                fontWeight: 600,
-                paddingLeft: {
-                  lg: idx === 0 ? 10 : 0,
-                  md: idx === 0 ? 3 : 0,
-                  xs: idx === 0 ? 3 : 0,
-                },
-              }}
-            >
-              {idx === headCells.length - 1 ||
-              (selectedView === "fish" && idx === 2) ||
-              (selectedView === "fish" && idx === 3) ? (
-                breakpoint === "lg" ? (
-                  headCell.smallLabel
+            <Tooltip key={headCell.id} title={headCell.label}>
+              <TableCell
+                key={headCell.id}
+                sortDirection={
+                  idx === headCells.length - 1
+                    ? false
+                    : orderBy === headCell.id
+                    ? order
+                    : false
+                }
+                // align="center"
+                sx={{
+                  borderBottom: 0,
+                  color: "#67737F",
+                  background: "#F5F6F8",
+                  fontSize: {
+                    md: 16,
+                    xs: 14,
+                  },
+                  fontWeight: 600,
+                  paddingLeft: {
+                    lg: idx === 0 ? 10 : 0,
+                    md: idx === 0 ? 3 : 0,
+                    xs: idx === 0 ? 3 : 0,
+                  },
+                }}
+              >
+                {idx === headCells.length - 1 ||
+                (selectedView === "fish" && idx === 2) ||
+                (selectedView === "fish" && idx === 3) ? (
+                  breakpoint === "lg" ? (
+                    headCell.smallLabel
+                  ) : (
+                    headCell.label
+                  )
                 ) : (
-                  headCell.label
-                )
-              ) : (
-                <TableSortLabel
-                  active={orderBy === headCell.id}
-                  direction={orderBy === headCell.id ? order : "asc"}
-                  onClick={createSortHandler(headCell.id)}
-                >
-                  {breakpoint === "lg" ? headCell.smallLabel : headCell.label}
-                </TableSortLabel>
-              )}
-            </TableCell>
+                  <TableSortLabel
+                    active={orderBy === headCell.id}
+                    direction={orderBy === headCell.id ? order : "asc"}
+                    onClick={createSortHandler(headCell.id)}
+                  >
+                    {breakpoint === "lg" ? headCell.smallLabel : headCell.label}
+                  </TableSortLabel>
+                )}
+              </TableCell>
+            </Tooltip>
           ))}
         </TableRow>
       </TableHead>
@@ -946,11 +949,6 @@ export default function ProductionTable({
     }
   };
 
-  const handleTableView = (value: string) => {
-    setSelectedView(value);
-    setCookie("productionCurrentView", value);
-    router.refresh();
-  };
   const CreateXlsxReport = (
     e: React.MouseEvent<HTMLSpanElement, MouseEvent>
   ) => {
@@ -1008,8 +1006,9 @@ export default function ProductionTable({
 
   const handleChange = (event: any, newValue: string) => {
     setSelectedView(newValue);
+    setCookie("productionCurrentView", newValue);
+    router.refresh();
   };
-  console.log(selectedView);
 
   useEffect(() => {
     if (pathName) {
@@ -1051,11 +1050,17 @@ export default function ProductionTable({
       } else {
         setTableHead(farmManagerFishHeadMember);
       }
-    } else {
+    } else if (selectedView === "water") {
       if (user.role !== "MEMBER") {
         setTableHead(farmManagerWaterHead);
       } else {
         setTableHead(farmManagerWaterHeadMember);
+      }
+    } else {
+      if (user.role !== "MEMBER") {
+        setTableHead(feedingHead);
+      } else {
+        setTableHead(feedingHeadMember);
       }
     }
   }, [selectedView]);
@@ -1436,7 +1441,7 @@ export default function ProductionTable({
                 aria-label="lab API tabs example"
                 className="production-tabs"
               >
-                <Tab label="Farm" value="fish" />
+                <Tab label="Fish" value="fish" />
                 <Tab label="Water" value="water" />
                 <Tab label="Feeding" value="feeding" />
               </TabList>
@@ -1537,6 +1542,7 @@ export default function ProductionTable({
             startMonth={Number(startMonth)}
             endMonth={Number(endMonth)}
             createXlsxFile={CreateXlsxReport}
+            selectedView={selectedView}
           />
         </TabContext>
       </Box>
@@ -2118,7 +2124,39 @@ export default function ProductionTable({
                           );
                         })}
                       </TableCell>
-
+                      {selectedView !== "water" && (
+                        <TableCell
+                          className="table-padding"
+                          sx={{
+                            borderBottomColor: "#ececec",
+                            borderBottomWidth: 2,
+                            color: "#555555",
+                            fontWeight: 500,
+                            pl: 0,
+                            textWrap: "nowrap",
+                          }}
+                        >
+                          {farm.units.map((unit, i) => {
+                            return (
+                              <Typography
+                                key={i}
+                                variant="h6"
+                                sx={{
+                                  fontWeight: 500,
+                                  fontSize: 14,
+                                  backgroundColor: "#F5F6F8",
+                                  padding: "8px 12px 8px 0",
+                                  margin: "8px 0",
+                                  // marginBottom: "10px",
+                                  textWrap: "nowrap",
+                                }}
+                              >
+                                {Number(unit.stockingLevel) ?? ""}
+                              </Typography>
+                            );
+                          })}
+                        </TableCell>
+                      )}
                       {selectedView !== "water" && (
                         <TableCell
                           className="table-padding"
@@ -2221,46 +2259,90 @@ export default function ProductionTable({
                                     left: "-10px",
                                   }}
                                 >
-                                  <MenuItem
-                                    onClick={(e: any) => {
-                                      handleClick(
-                                        e,
-                                        selectedFarm,
-                                        selectedView === "fish" ? true : false
-                                      );
-                                      setAnchorEl(null);
-                                    }}
-                                  >
-                                    <Stack
-                                      display="flex"
-                                      gap={1.2}
-                                      alignItems="center"
-                                      direction="row"
-                                    >
-                                      <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="1.1em"
-                                        height="1.1em"
-                                        viewBox="0 0 24 24"
+                                  {selectedView !== "feeding" ? (
+                                    <>
+                                      <MenuItem
+                                        onClick={(e: any) => {
+                                          handleClick(
+                                            e,
+                                            selectedFarm,
+                                            selectedView === "fish"
+                                              ? true
+                                              : false
+                                          );
+                                          setAnchorEl(null);
+                                        }}
                                       >
-                                        <path
-                                          fill="currentColor"
-                                          d="M6.008 12h-.01M11 16.042c.463.153.908.329 1.31.61m0 0A3.95 3.95 0 0 1 14 19.885a.117.117 0 0 1-.118.116c-2.917-.013-4.224-.507-4.773-1.322L8 16.857c-2.492-.503-4.782-2.094-6-4.774c3-6.597 12.5-6.597 15.5 0m-5.19 4.57c2.17-.66 4.105-2.184 5.19-4.57m-5.19-4.569A3.95 3.95 0 0 0 14 4.282c0-.826-4.308.342-4.89 1.206L8 7.31m9.5 4.773c.333-.66 2.1-2.969 4.5-2.969c-.833.825-2.2 3.959-1 5.938c-1.2 0-3-2.309-3.5-2.969"
-                                        />
-                                      </svg>
+                                        <Stack
+                                          display="flex"
+                                          gap={1.2}
+                                          alignItems="center"
+                                          direction="row"
+                                        >
+                                          <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            width="1.1em"
+                                            height="1.1em"
+                                            viewBox="0 0 24 24"
+                                          >
+                                            <path
+                                              fill="currentColor"
+                                              d="M6.008 12h-.01M11 16.042c.463.153.908.329 1.31.61m0 0A3.95 3.95 0 0 1 14 19.885a.117.117 0 0 1-.118.116c-2.917-.013-4.224-.507-4.773-1.322L8 16.857c-2.492-.503-4.782-2.094-6-4.774c3-6.597 12.5-6.597 15.5 0m-5.19 4.57c2.17-.66 4.105-2.184 5.19-4.57m-5.19-4.569A3.95 3.95 0 0 0 14 4.282c0-.826-4.308.342-4.89 1.206L8 7.31m9.5 4.773c.333-.66 2.1-2.969 4.5-2.969c-.833.825-2.2 3.959-1 5.938c-1.2 0-3-2.309-3.5-2.969"
+                                            />
+                                          </svg>
 
-                                      <Typography variant="subtitle2">
-                                        Manage
-                                      </Typography>
-                                    </Stack>
-                                  </MenuItem>
+                                          <Typography variant="subtitle2">
+                                            Manage
+                                          </Typography>
+                                        </Stack>
+                                      </MenuItem>
 
-                                  <Divider
-                                    sx={{
-                                      borderColor: "#9797971A",
-                                      my: 0.5,
-                                    }}
-                                  />
+                                      <Divider
+                                        sx={{
+                                          borderColor: "#9797971A",
+                                          my: 0.5,
+                                        }}
+                                      />
+                                    </>
+                                  ) : (
+                                    <>
+                                      <MenuItem
+                                        onClick={(e: any) => {
+                                          setAnchorEl(null);
+                                        }}
+                                      >
+                                        <Stack
+                                          display="flex"
+                                          gap={1.2}
+                                          alignItems="center"
+                                          direction="row"
+                                        >
+                                          <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            width="1.1em"
+                                            height="1.1em"
+                                            viewBox="0 0 24 24"
+                                          >
+                                            <path
+                                              fill="currentColor"
+                                              d="M6.008 12h-.01M11 16.042c.463.153.908.329 1.31.61m0 0A3.95 3.95 0 0 1 14 19.885a.117.117 0 0 1-.118.116c-2.917-.013-4.224-.507-4.773-1.322L8 16.857c-2.492-.503-4.782-2.094-6-4.774c3-6.597 12.5-6.597 15.5 0m-5.19 4.57c2.17-.66 4.105-2.184 5.19-4.57m-5.19-4.569A3.95 3.95 0 0 0 14 4.282c0-.826-4.308.342-4.89 1.206L8 7.31m9.5 4.773c.333-.66 2.1-2.969 4.5-2.969c-.833.825-2.2 3.959-1 5.938c-1.2 0-3-2.309-3.5-2.969"
+                                            />
+                                          </svg>
+
+                                          <Typography variant="subtitle2">
+                                            Capture Feeding
+                                          </Typography>
+                                        </Stack>
+                                      </MenuItem>
+                                      <Divider
+                                        sx={{
+                                          borderColor: "#9797971A",
+                                          my: 0.5,
+                                        }}
+                                      />
+                                    </>
+                                  )}
+
                                   <MenuItem
                                     onClick={() => {
                                       handleFishManageHistory(selectedFarm);

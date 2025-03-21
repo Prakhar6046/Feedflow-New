@@ -1,9 +1,6 @@
 import prisma from "@/prisma/prisma";
-import { NextRequest, NextResponse } from "next/server";
-import jwt from "jsonwebtoken";
-import { cookies } from "next/headers";
 import bcrypt from "bcryptjs";
-import { setCookie } from "cookies-next";
+import { NextRequest, NextResponse } from "next/server";
 const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key";
 export async function POST(req: NextRequest) {
   try {

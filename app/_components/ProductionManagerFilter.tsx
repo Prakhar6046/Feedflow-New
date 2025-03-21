@@ -25,6 +25,7 @@ import "primereact/resources/themes/lara-light-indigo/theme.css";
 import React, { useEffect, useState } from "react";
 import { averagesDropdown, months } from "../_lib/utils";
 interface Props {
+  selectedView: string | undefined;
   selectedAverage: String;
   setSelectedAverage: (val: any) => void;
   selectedDropDownfarms: { id: string; option: string }[] | [];
@@ -54,6 +55,7 @@ const MenuProps = {
   },
 };
 function ProductionManagerFilter({
+  selectedView,
   selectedAverage,
   setSelectedAverage,
   selectedDropDownfarms,
@@ -69,14 +71,13 @@ function ProductionManagerFilter({
   setSelectedDropDownfarms,
   setSelectedDropDownUnits,
   handleResetFilters,
-
   createXlsxFile,
 }: Props) {
   const router = useRouter();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open4 = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget); // This ensures anchorEl is an HTMLElement
+    setAnchorEl(event.currentTarget);
   };
 
   const handleClose = () => {
@@ -185,7 +186,7 @@ function ProductionManagerFilter({
                   >
                     <path fill="currentColor" d="M7.5 12L0 4h15z" />
                   </svg>
-                } // Custom dropdown icon
+                }
                 className="w-full md:w-20rem custom-select"
               />
             </FormControl>
@@ -405,28 +406,29 @@ function ProductionManagerFilter({
             >
               Reset Filters
             </Button>
-
-            <Button
-              id="basic-button"
-              type="button"
-              variant="contained"
-              sx={{
-                background: "#06A19B",
-                fontWeight: 600,
-                padding: "6px 16px",
-                width: "fit-content",
-                textTransform: "capitalize",
-                borderRadius: "8px",
-                color: "white",
-                boxShadow: "none",
-                "&:hover": {
+            {selectedView === "feeding" && (
+              <Button
+                id="basic-button"
+                type="button"
+                variant="contained"
+                sx={{
+                  background: "#06A19B",
+                  fontWeight: 600,
+                  padding: "6px 16px",
+                  width: "fit-content",
+                  textTransform: "capitalize",
+                  borderRadius: "8px",
+                  color: "white",
                   boxShadow: "none",
-                },
-              }}
-              onClick={() => router.push("/dashboard/feedPrediction")}
-            >
-              Feed Prediction
-            </Button>
+                  "&:hover": {
+                    boxShadow: "none",
+                  },
+                }}
+                onClick={() => router.push("/dashboard/feedPrediction")}
+              >
+                Feed Prediction
+              </Button>
+            )}
 
             {/* <Button
               sx={{

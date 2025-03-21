@@ -24,6 +24,7 @@ export const getOrganisations = async (payload: {
     return error;
   }
 };
+
 export const getAllOrganisations = async () => {
   try {
     const data = await fetch(`${process.env.BASE_URL}/api/organisation/all`, {

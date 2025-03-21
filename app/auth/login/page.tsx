@@ -1,31 +1,30 @@
 "use client";
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { userAction } from "@/lib/features/user/userSlice";
+import { useAppDispatch } from "@/lib/hooks";
+import EyeClosed from "@/public/static/img/icons/ic-eye-closed.svg";
+import EyeOpened from "@/public/static/img/icons/ic-eye-open.svg";
+import logo from "@/public/static/img/logo-bigone.jpg";
 import { Box, Button, Stack, TextField, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid";
-import logo from "@/public/static/img/logo-bigone.jpg";
+import { setCookie } from "cookies-next";
 import Image from "next/image";
 import Link from "next/link";
-import { hashPassword } from "@/app/_lib/hash";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
-import EyeOpened from "@/public/static/img/icons/ic-eye-open.svg";
-import EyeClosed from "@/public/static/img/icons/ic-eye-closed.svg";
-import { useAppDispatch } from "@/lib/hooks";
-import { userAction } from "@/lib/features/user/userSlice";
-import { setCookie } from "cookies-next";
 export default function Page() {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const [email, setEmail] = useState("abhishek.choudhary@ensuesoft.com");
-  const [password, setPassword] = useState("12345678");
+  const [email, setEmail] = useState<string>(
+    "abhishek.choudhary@ensuesoft.com"
+  );
+  const [password, setPassword] = useState<string>("12345678");
   const [showPassword, setShowPassword] = useState<boolean>(false);
-
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Prevent API call if one is already in progress
     if (loading) return;
 
     setLoading(true);
