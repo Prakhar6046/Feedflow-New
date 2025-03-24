@@ -55,7 +55,7 @@ body {
 .table-edit-menu-item div:nth-child(3) {
   border-radius: 8px;
   box-shadow: 1px 1px 5px rgba(151, 151, 151, 0.03);
-  width: 150px;
+  width: fit-content;
   transform: translate(64px, -70px) !important;
 }
 .table-edit-sample-item div:nth-child(3) {
@@ -68,13 +68,13 @@ body {
 .table-edit-menu div:nth-child(3) {
   border-radius: 8px;
   box-shadow: 1px 1px 5px rgba(151, 151, 151, 0.03);
-  width: 150px;
+  width: fit-content;
   transform: translate(-140px, -35px) !important;
 }
 .table-edit-farm-menu div:nth-child(3) {
   border-radius: 8px;
   box-shadow: 1px 1px 5px rgba(151, 151, 151, 0.03);
-  width: 150px;
+  width: fit-content;
   transform: translate(-153px, -35px) !important;
 }
 
@@ -356,7 +356,7 @@ body {
   .custom-field > label {
     overflow: hidden;
     text-overflow: ellipsis;
-    width: 150px;
+    width: fit-content;
     white-space: nowrap;
   }
 
@@ -756,4 +756,10 @@ label {
 .production-tabs > div > span {
   display: none !important;
   background-color: #fff;
+}
+
+.active-tab {
+  background: #fff !important;
+  color: #06a19b !important;
+  border-radius: 6px !important;
 }

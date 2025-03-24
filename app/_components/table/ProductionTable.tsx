@@ -286,20 +286,20 @@ export default function ProductionTable({
                             selectedView === "water"
                               ? selectedAverage === "Monthly average"
                                 ? String(
-                                    unit.monthlyAveragesWater?.waterTemp
-                                  ) || ""
+                                  unit.monthlyAveragesWater?.waterTemp
+                                ) || ""
                                 : selectedAverage === "Yearly average"
-                                ? String(unit.yearlyAveragesWater?.waterTemp) ||
+                                  ? String(unit.yearlyAveragesWater?.waterTemp) ||
                                   ""
-                                : selectedAverage === "All-time average"
-                                ? String(
-                                    unit.allTimeAveragesWater?.waterTemp
-                                  ) || ""
-                                : selectedAverage === "Individual average"
-                                ? String(
-                                    unit.individualAveragesWater?.waterTemp
-                                  ) || ""
-                                : unit.waterTemp ?? ""
+                                  : selectedAverage === "All-time average"
+                                    ? String(
+                                      unit.allTimeAveragesWater?.waterTemp
+                                    ) || ""
+                                    : selectedAverage === "Individual average"
+                                      ? String(
+                                        unit.individualAveragesWater?.waterTemp
+                                      ) || ""
+                                      : unit.waterTemp ?? ""
                               : unit?.fishSupply?.batchNumber.length;
 
                           // Calculate padding based on whether a value exists
@@ -342,12 +342,12 @@ export default function ProductionTable({
                               ? selectedAverage === "Monthly average"
                                 ? String(unit.monthlyAveragesWater?.DO) || ""
                                 : selectedAverage === "Yearly average"
-                                ? String(unit.yearlyAveragesWater?.DO) || ""
-                                : selectedAverage === "All-time average"
-                                ? String(unit.allTimeAveragesWater?.DO) || ""
-                                : selectedAverage === "Individual average"
-                                ? String(unit.individualAveragesWater?.DO) || ""
-                                : unit.DO ?? ""
+                                  ? String(unit.yearlyAveragesWater?.DO) || ""
+                                  : selectedAverage === "All-time average"
+                                    ? String(unit.allTimeAveragesWater?.DO) || ""
+                                    : selectedAverage === "Individual average"
+                                      ? String(unit.individualAveragesWater?.DO) || ""
+                                      : unit.DO ?? ""
                               : unit?.fishSupply?.age;
 
                           // Calculate padding based on whether a value exists
@@ -390,22 +390,22 @@ export default function ProductionTable({
                               ? selectedAverage === "Monthly average"
                                 ? String(unit.monthlyAveragesWater?.TSS) || ""
                                 : selectedAverage === "Yearly average"
-                                ? String(unit.yearlyAveragesWater?.TSS) || ""
-                                : selectedAverage === "All-time average"
-                                ? String(unit.allTimeAveragesWater?.TSS) || ""
-                                : selectedAverage === "Individual average"
-                                ? String(unit.individualAveragesWater?.TSS) ||
-                                  ""
-                                : unit.TSS ?? ""
+                                  ? String(unit.yearlyAveragesWater?.TSS) || ""
+                                  : selectedAverage === "All-time average"
+                                    ? String(unit.allTimeAveragesWater?.TSS) || ""
+                                    : selectedAverage === "Individual average"
+                                      ? String(unit.individualAveragesWater?.TSS) ||
+                                      ""
+                                      : unit.TSS ?? ""
                               : selectedAverage === "Monthly average"
-                              ? String(unit.monthlyAverages?.fishCount) || ""
-                              : selectedAverage === "Yearly average"
-                              ? String(unit.yearlyAverages?.fishCount) || ""
-                              : selectedAverage === "All-time average"
-                              ? String(unit.allTimeAverages?.fishCount) || ""
-                              : selectedAverage === "Individual average"
-                              ? String(unit.individualAverages?.fishCount) || ""
-                              : unit?.fishCount ?? "";
+                                ? String(unit.monthlyAverages?.fishCount) || ""
+                                : selectedAverage === "Yearly average"
+                                  ? String(unit.yearlyAverages?.fishCount) || ""
+                                  : selectedAverage === "All-time average"
+                                    ? String(unit.allTimeAverages?.fishCount) || ""
+                                    : selectedAverage === "Individual average"
+                                      ? String(unit.individualAverages?.fishCount) || ""
+                                      : unit?.fishCount ?? "";
 
                           // Calculate padding based on whether a value exists
                           const paddingValue = value
@@ -448,22 +448,22 @@ export default function ProductionTable({
                               ? selectedAverage === "Monthly average"
                                 ? String(unit.monthlyAveragesWater?.NH4) || ""
                                 : selectedAverage === "Yearly average"
-                                ? String(unit.yearlyAveragesWater?.NH4) || ""
-                                : selectedAverage === "All-time average"
-                                ? String(unit.allTimeAveragesWater?.NH4) || ""
-                                : selectedAverage === "Individual average"
-                                ? String(unit.individualAveragesWater?.NH4) ||
-                                  ""
-                                : unit.NH4 ?? ""
+                                  ? String(unit.yearlyAveragesWater?.NH4) || ""
+                                  : selectedAverage === "All-time average"
+                                    ? String(unit.allTimeAveragesWater?.NH4) || ""
+                                    : selectedAverage === "Individual average"
+                                      ? String(unit.individualAveragesWater?.NH4) ||
+                                      ""
+                                      : unit.NH4 ?? ""
                               : selectedAverage === "Monthly average"
-                              ? String(unit.monthlyAverages?.biomass) || ""
-                              : selectedAverage === "Yearly average"
-                              ? String(unit.yearlyAverages?.biomass) || ""
-                              : selectedAverage === "All-time average"
-                              ? String(unit.allTimeAverages?.biomass) || ""
-                              : selectedAverage === "Individual average"
-                              ? String(unit.individualAverages?.biomass) || ""
-                              : unit.biomass ?? "";
+                                ? String(unit.monthlyAverages?.biomass) || ""
+                                : selectedAverage === "Yearly average"
+                                  ? String(unit.yearlyAverages?.biomass) || ""
+                                  : selectedAverage === "All-time average"
+                                    ? String(unit.allTimeAverages?.biomass) || ""
+                                    : selectedAverage === "Individual average"
+                                      ? String(unit.individualAverages?.biomass) || ""
+                                      : unit.biomass ?? "";
 
                           // Calculate padding based on whether a value exists
                           const paddingValue = value
@@ -506,23 +506,23 @@ export default function ProductionTable({
                               ? selectedAverage === "Monthly average"
                                 ? String(unit.monthlyAveragesWater?.NO3) || ""
                                 : selectedAverage === "Yearly average"
-                                ? String(unit.yearlyAveragesWater?.NO3) || ""
-                                : selectedAverage === "All-time average"
-                                ? String(unit.allTimeAveragesWater?.NO3) || ""
-                                : selectedAverage === "Individual average"
-                                ? String(unit.individualAveragesWater?.NO3) ||
-                                  ""
-                                : unit.NO3 ?? ""
+                                  ? String(unit.yearlyAveragesWater?.NO3) || ""
+                                  : selectedAverage === "All-time average"
+                                    ? String(unit.allTimeAveragesWater?.NO3) || ""
+                                    : selectedAverage === "Individual average"
+                                      ? String(unit.individualAveragesWater?.NO3) ||
+                                      ""
+                                      : unit.NO3 ?? ""
                               : selectedAverage === "Monthly average"
-                              ? String(unit.monthlyAverages?.meanWeight) || ""
-                              : selectedAverage === "Yearly average"
-                              ? String(unit.yearlyAverages?.meanWeight) || ""
-                              : selectedAverage === "All-time average"
-                              ? String(unit.allTimeAverages?.meanWeight) || ""
-                              : selectedAverage === "Individual average"
-                              ? String(unit.individualAverages?.meanWeight) ||
-                                ""
-                              : unit.meanWeight ?? "";
+                                ? String(unit.monthlyAverages?.meanWeight) || ""
+                                : selectedAverage === "Yearly average"
+                                  ? String(unit.yearlyAverages?.meanWeight) || ""
+                                  : selectedAverage === "All-time average"
+                                    ? String(unit.allTimeAverages?.meanWeight) || ""
+                                    : selectedAverage === "Individual average"
+                                      ? String(unit.individualAverages?.meanWeight) ||
+                                      ""
+                                      : unit.meanWeight ?? "";
 
                           // Calculate padding based on whether a value exists
                           const paddingValue = value
@@ -566,23 +566,23 @@ export default function ProductionTable({
                               ? selectedAverage === "Monthly average"
                                 ? String(unit.monthlyAveragesWater?.NO2) || ""
                                 : selectedAverage === "Yearly average"
-                                ? String(unit.yearlyAveragesWater?.NO2) || ""
-                                : selectedAverage === "All-time average"
-                                ? String(unit.allTimeAveragesWater?.NO2) || ""
-                                : selectedAverage === "Individual average"
-                                ? String(unit.individualAveragesWater?.NO2) ||
-                                  ""
-                                : unit.NO2 ?? ""
+                                  ? String(unit.yearlyAveragesWater?.NO2) || ""
+                                  : selectedAverage === "All-time average"
+                                    ? String(unit.allTimeAveragesWater?.NO2) || ""
+                                    : selectedAverage === "Individual average"
+                                      ? String(unit.individualAveragesWater?.NO2) ||
+                                      ""
+                                      : unit.NO2 ?? ""
                               : selectedAverage === "Monthly average"
-                              ? String(unit.monthlyAverages?.meanLength) || ""
-                              : selectedAverage === "Yearly average"
-                              ? String(unit.yearlyAverages?.meanLength) || ""
-                              : selectedAverage === "All-time average"
-                              ? String(unit.allTimeAverages?.meanLength) || ""
-                              : selectedAverage === "Individual average"
-                              ? String(unit.individualAverages?.meanLength) ||
-                                ""
-                              : unit.meanLength ?? "";
+                                ? String(unit.monthlyAverages?.meanLength) || ""
+                                : selectedAverage === "Yearly average"
+                                  ? String(unit.yearlyAverages?.meanLength) || ""
+                                  : selectedAverage === "All-time average"
+                                    ? String(unit.allTimeAverages?.meanLength) || ""
+                                    : selectedAverage === "Individual average"
+                                      ? String(unit.individualAverages?.meanLength) ||
+                                      ""
+                                      : unit.meanLength ?? "";
 
                           // Calculate padding based on whether a value exists
                           const paddingValue = value
@@ -625,30 +625,30 @@ export default function ProductionTable({
                               ? selectedAverage === "Monthly average"
                                 ? String(unit.monthlyAveragesWater?.ph) || ""
                                 : selectedAverage === "Yearly average"
-                                ? String(unit.yearlyAveragesWater?.ph) || ""
-                                : selectedAverage === "All-time average"
-                                ? String(unit.allTimeAveragesWater?.ph) || ""
-                                : selectedAverage === "Individual average"
-                                ? String(unit.individualAveragesWater?.ph) || ""
-                                : unit.ph ?? ""
+                                  ? String(unit.yearlyAveragesWater?.ph) || ""
+                                  : selectedAverage === "All-time average"
+                                    ? String(unit.allTimeAveragesWater?.ph) || ""
+                                    : selectedAverage === "Individual average"
+                                      ? String(unit.individualAveragesWater?.ph) || ""
+                                      : unit.ph ?? ""
                               : selectedAverage === "Monthly average"
-                              ? Number(
+                                ? Number(
                                   unit.monthlyAverages?.stockingDensityKG || 0
                                 ).toFixed(2)
-                              : selectedAverage === "Yearly average"
-                              ? Number(
-                                  unit.yearlyAverages?.stockingDensityKG || 0
-                                ).toFixed(2)
-                              : selectedAverage === "All-time average"
-                              ? Number(
-                                  unit.allTimeAverages?.stockingDensityKG || 0
-                                ).toFixed(2)
-                              : selectedAverage === "Individual average"
-                              ? Number(
-                                  unit.individualAverages?.stockingDensityKG ||
-                                    0
-                                ).toFixed(2)
-                              : Number(unit.stockingDensityKG || 0).toFixed(2);
+                                : selectedAverage === "Yearly average"
+                                  ? Number(
+                                    unit.yearlyAverages?.stockingDensityKG || 0
+                                  ).toFixed(2)
+                                  : selectedAverage === "All-time average"
+                                    ? Number(
+                                      unit.allTimeAverages?.stockingDensityKG || 0
+                                    ).toFixed(2)
+                                    : selectedAverage === "Individual average"
+                                      ? Number(
+                                        unit.individualAverages?.stockingDensityKG ||
+                                        0
+                                      ).toFixed(2)
+                                      : Number(unit.stockingDensityKG || 0).toFixed(2);
 
                           // Calculate padding based on whether a value exists
                           const paddingValue = value
@@ -690,39 +690,39 @@ export default function ProductionTable({
                             selectedView === "water"
                               ? selectedAverage === "Monthly average"
                                 ? String(
-                                    unit.monthlyAveragesWater?.visibility
-                                  ) || ""
+                                  unit.monthlyAveragesWater?.visibility
+                                ) || ""
                                 : selectedAverage === "Yearly average"
-                                ? String(
+                                  ? String(
                                     unit.yearlyAveragesWater?.visibility
                                   ) || ""
-                                : selectedAverage === "All-time average"
-                                ? String(
-                                    unit.allTimeAveragesWater?.visibility
-                                  ) || ""
-                                : selectedAverage === "Individual average"
-                                ? String(
-                                    unit.individualAveragesWater?.visibility
-                                  ) || ""
-                                : unit.visibility ?? ""
+                                  : selectedAverage === "All-time average"
+                                    ? String(
+                                      unit.allTimeAveragesWater?.visibility
+                                    ) || ""
+                                    : selectedAverage === "Individual average"
+                                      ? String(
+                                        unit.individualAveragesWater?.visibility
+                                      ) || ""
+                                      : unit.visibility ?? ""
                               : selectedAverage === "Monthly average"
-                              ? Number(
+                                ? Number(
                                   unit.monthlyAverages?.stockingDensityNM || 0
                                 ).toFixed(2)
-                              : selectedAverage === "Yearly average"
-                              ? Number(
-                                  unit.yearlyAverages?.stockingDensityNM || 0
-                                ).toFixed(2)
-                              : selectedAverage === "All-time average"
-                              ? Number(
-                                  unit.allTimeAverages?.stockingDensityNM || 0
-                                ).toFixed(2)
-                              : selectedAverage === "Individual average"
-                              ? Number(
-                                  unit.individualAverages?.stockingDensityNM ||
-                                    0
-                                ).toFixed(2)
-                              : Number(unit.stockingDensityNM || 0).toFixed(2);
+                                : selectedAverage === "Yearly average"
+                                  ? Number(
+                                    unit.yearlyAverages?.stockingDensityNM || 0
+                                  ).toFixed(2)
+                                  : selectedAverage === "All-time average"
+                                    ? Number(
+                                      unit.allTimeAverages?.stockingDensityNM || 0
+                                    ).toFixed(2)
+                                    : selectedAverage === "Individual average"
+                                      ? Number(
+                                        unit.individualAverages?.stockingDensityNM ||
+                                        0
+                                      ).toFixed(2)
+                                      : Number(unit.stockingDensityNM || 0).toFixed(2);
 
                           // Calculate padding based on whether a value exists
                           const paddingValue = value
@@ -797,15 +797,14 @@ export default function ProductionTable({
     const imgData = canvas.toDataURL("image/png");
     const link = document.createElement("a");
     link.href = imgData;
-    link.download = `${
-      selectedView === "fish" ? "Fish" : "Water"
-    } Report ${new Date()
-      .toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      })
-      .replace(/[\s,\/]+/g, "_")}.png`;
+    link.download = `${selectedView === "fish" ? "Fish" : "Water"
+      } Report ${new Date()
+        .toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        })
+        .replace(/[\s,\/]+/g, "_")}.png`;
     link.click();
     root.unmount();
     tempContainer.removeChild(chartDiv);
@@ -880,8 +879,8 @@ export default function ProductionTable({
                   idx === headCells.length - 1
                     ? false
                     : orderBy === headCell.id
-                    ? order
-                    : false
+                      ? order
+                      : false
                 }
                 // align="center"
                 sx={{
@@ -901,8 +900,8 @@ export default function ProductionTable({
                 }}
               >
                 {idx === headCells.length - 1 ||
-                (selectedView === "fish" && idx === 2) ||
-                (selectedView === "fish" && idx === 3) ? (
+                  (selectedView === "fish" && idx === 2) ||
+                  (selectedView === "fish" && idx === 3) ? (
                   breakpoint === "lg" ? (
                     headCell.smallLabel
                   ) : (
@@ -1417,12 +1416,13 @@ export default function ProductionTable({
   }
   return (
     <>
-      <Box sx={{ width: "100%", typography: "body1" }}>
+      <Box sx={{ width: "100%", typography: "body1", mt: 5 }}>
         <TabContext value={value}>
           <Stack
             display={"flex"}
             rowGap={2}
             columnGap={5}
+            mb={2}
             justifyContent={"space-between"}
             sx={{
               flexDirection: {
@@ -1441,7 +1441,7 @@ export default function ProductionTable({
                 aria-label="lab API tabs example"
                 className="production-tabs"
               >
-                <Tab label="Fish" value="fish" />
+                <Tab label="Fish" value="fish" className="active-tab" />
                 <Tab label="Water" value="water" />
                 <Tab label="Feeding" value="feeding" />
               </TabList>
@@ -1664,20 +1664,20 @@ export default function ProductionTable({
                             selectedView === "water"
                               ? selectedAverage === "Monthly average"
                                 ? String(
-                                    unit.monthlyAveragesWater?.waterTemp
-                                  ) || ""
+                                  unit.monthlyAveragesWater?.waterTemp
+                                ) || ""
                                 : selectedAverage === "Yearly average"
-                                ? String(unit.yearlyAveragesWater?.waterTemp) ||
+                                  ? String(unit.yearlyAveragesWater?.waterTemp) ||
                                   ""
-                                : selectedAverage === "All-time average"
-                                ? String(
-                                    unit.allTimeAveragesWater?.waterTemp
-                                  ) || ""
-                                : selectedAverage === "Individual average"
-                                ? String(
-                                    unit.individualAveragesWater?.waterTemp
-                                  ) || ""
-                                : unit.waterTemp ?? ""
+                                  : selectedAverage === "All-time average"
+                                    ? String(
+                                      unit.allTimeAveragesWater?.waterTemp
+                                    ) || ""
+                                    : selectedAverage === "Individual average"
+                                      ? String(
+                                        unit.individualAveragesWater?.waterTemp
+                                      ) || ""
+                                      : unit.waterTemp ?? ""
                               : unit?.fishSupply?.batchNumber;
 
                           // Calculate padding based on whether a value exists
@@ -1720,12 +1720,12 @@ export default function ProductionTable({
                               ? selectedAverage === "Monthly average"
                                 ? String(unit.monthlyAveragesWater?.DO) || ""
                                 : selectedAverage === "Yearly average"
-                                ? String(unit.yearlyAveragesWater?.DO) || ""
-                                : selectedAverage === "All-time average"
-                                ? String(unit.allTimeAveragesWater?.DO) || ""
-                                : selectedAverage === "Individual average"
-                                ? String(unit.individualAveragesWater?.DO) || ""
-                                : unit.DO ?? ""
+                                  ? String(unit.yearlyAveragesWater?.DO) || ""
+                                  : selectedAverage === "All-time average"
+                                    ? String(unit.allTimeAveragesWater?.DO) || ""
+                                    : selectedAverage === "Individual average"
+                                      ? String(unit.individualAveragesWater?.DO) || ""
+                                      : unit.DO ?? ""
                               : unit?.fishSupply?.age;
 
                           // Calculate padding based on whether a value exists
@@ -1768,22 +1768,22 @@ export default function ProductionTable({
                               ? selectedAverage === "Monthly average"
                                 ? String(unit.monthlyAveragesWater?.TSS) || ""
                                 : selectedAverage === "Yearly average"
-                                ? String(unit.yearlyAveragesWater?.TSS) || ""
-                                : selectedAverage === "All-time average"
-                                ? String(unit.allTimeAveragesWater?.TSS) || ""
-                                : selectedAverage === "Individual average"
-                                ? String(unit.individualAveragesWater?.TSS) ||
-                                  ""
-                                : unit.TSS ?? ""
+                                  ? String(unit.yearlyAveragesWater?.TSS) || ""
+                                  : selectedAverage === "All-time average"
+                                    ? String(unit.allTimeAveragesWater?.TSS) || ""
+                                    : selectedAverage === "Individual average"
+                                      ? String(unit.individualAveragesWater?.TSS) ||
+                                      ""
+                                      : unit.TSS ?? ""
                               : selectedAverage === "Monthly average"
-                              ? String(unit.monthlyAverages?.fishCount) || ""
-                              : selectedAverage === "Yearly average"
-                              ? String(unit.yearlyAverages?.fishCount) || ""
-                              : selectedAverage === "All-time average"
-                              ? String(unit.allTimeAverages?.fishCount) || ""
-                              : selectedAverage === "Individual average"
-                              ? String(unit.individualAverages?.fishCount) || ""
-                              : unit?.fishCount ?? "";
+                                ? String(unit.monthlyAverages?.fishCount) || ""
+                                : selectedAverage === "Yearly average"
+                                  ? String(unit.yearlyAverages?.fishCount) || ""
+                                  : selectedAverage === "All-time average"
+                                    ? String(unit.allTimeAverages?.fishCount) || ""
+                                    : selectedAverage === "Individual average"
+                                      ? String(unit.individualAverages?.fishCount) || ""
+                                      : unit?.fishCount ?? "";
 
                           // Calculate padding based on whether a value exists
                           const paddingValue = value
@@ -1826,22 +1826,22 @@ export default function ProductionTable({
                               ? selectedAverage === "Monthly average"
                                 ? String(unit.monthlyAveragesWater?.NH4) || ""
                                 : selectedAverage === "Yearly average"
-                                ? String(unit.yearlyAveragesWater?.NH4) || ""
-                                : selectedAverage === "All-time average"
-                                ? String(unit.allTimeAveragesWater?.NH4) || ""
-                                : selectedAverage === "Individual average"
-                                ? String(unit.individualAveragesWater?.NH4) ||
-                                  ""
-                                : unit.NH4 ?? ""
+                                  ? String(unit.yearlyAveragesWater?.NH4) || ""
+                                  : selectedAverage === "All-time average"
+                                    ? String(unit.allTimeAveragesWater?.NH4) || ""
+                                    : selectedAverage === "Individual average"
+                                      ? String(unit.individualAveragesWater?.NH4) ||
+                                      ""
+                                      : unit.NH4 ?? ""
                               : selectedAverage === "Monthly average"
-                              ? String(unit.monthlyAverages?.biomass) || ""
-                              : selectedAverage === "Yearly average"
-                              ? String(unit.yearlyAverages?.biomass) || ""
-                              : selectedAverage === "All-time average"
-                              ? String(unit.allTimeAverages?.biomass) || ""
-                              : selectedAverage === "Individual average"
-                              ? String(unit.individualAverages?.biomass) || ""
-                              : unit.biomass ?? "";
+                                ? String(unit.monthlyAverages?.biomass) || ""
+                                : selectedAverage === "Yearly average"
+                                  ? String(unit.yearlyAverages?.biomass) || ""
+                                  : selectedAverage === "All-time average"
+                                    ? String(unit.allTimeAverages?.biomass) || ""
+                                    : selectedAverage === "Individual average"
+                                      ? String(unit.individualAverages?.biomass) || ""
+                                      : unit.biomass ?? "";
 
                           // Calculate padding based on whether a value exists
                           const paddingValue = value
@@ -1884,23 +1884,23 @@ export default function ProductionTable({
                               ? selectedAverage === "Monthly average"
                                 ? String(unit.monthlyAveragesWater?.NO3) || ""
                                 : selectedAverage === "Yearly average"
-                                ? String(unit.yearlyAveragesWater?.NO3) || ""
-                                : selectedAverage === "All-time average"
-                                ? String(unit.allTimeAveragesWater?.NO3) || ""
-                                : selectedAverage === "Individual average"
-                                ? String(unit.individualAveragesWater?.NO3) ||
-                                  ""
-                                : unit.NO3 ?? ""
+                                  ? String(unit.yearlyAveragesWater?.NO3) || ""
+                                  : selectedAverage === "All-time average"
+                                    ? String(unit.allTimeAveragesWater?.NO3) || ""
+                                    : selectedAverage === "Individual average"
+                                      ? String(unit.individualAveragesWater?.NO3) ||
+                                      ""
+                                      : unit.NO3 ?? ""
                               : selectedAverage === "Monthly average"
-                              ? String(unit.monthlyAverages?.meanWeight) || ""
-                              : selectedAverage === "Yearly average"
-                              ? String(unit.yearlyAverages?.meanWeight) || ""
-                              : selectedAverage === "All-time average"
-                              ? String(unit.allTimeAverages?.meanWeight) || ""
-                              : selectedAverage === "Individual average"
-                              ? String(unit.individualAverages?.meanWeight) ||
-                                ""
-                              : unit.meanWeight ?? "";
+                                ? String(unit.monthlyAverages?.meanWeight) || ""
+                                : selectedAverage === "Yearly average"
+                                  ? String(unit.yearlyAverages?.meanWeight) || ""
+                                  : selectedAverage === "All-time average"
+                                    ? String(unit.allTimeAverages?.meanWeight) || ""
+                                    : selectedAverage === "Individual average"
+                                      ? String(unit.individualAverages?.meanWeight) ||
+                                      ""
+                                      : unit.meanWeight ?? "";
 
                           // Calculate padding based on whether a value exists
                           const paddingValue = value
@@ -1943,23 +1943,23 @@ export default function ProductionTable({
                               ? selectedAverage === "Monthly average"
                                 ? String(unit.monthlyAveragesWater?.NO2) || ""
                                 : selectedAverage === "Yearly average"
-                                ? String(unit.yearlyAveragesWater?.NO2) || ""
-                                : selectedAverage === "All-time average"
-                                ? String(unit.allTimeAveragesWater?.NO2) || ""
-                                : selectedAverage === "Individual average"
-                                ? String(unit.individualAveragesWater?.NO2) ||
-                                  ""
-                                : unit.NO2 ?? ""
+                                  ? String(unit.yearlyAveragesWater?.NO2) || ""
+                                  : selectedAverage === "All-time average"
+                                    ? String(unit.allTimeAveragesWater?.NO2) || ""
+                                    : selectedAverage === "Individual average"
+                                      ? String(unit.individualAveragesWater?.NO2) ||
+                                      ""
+                                      : unit.NO2 ?? ""
                               : selectedAverage === "Monthly average"
-                              ? String(unit.monthlyAverages?.meanLength) || ""
-                              : selectedAverage === "Yearly average"
-                              ? String(unit.yearlyAverages?.meanLength) || ""
-                              : selectedAverage === "All-time average"
-                              ? String(unit.allTimeAverages?.meanLength) || ""
-                              : selectedAverage === "Individual average"
-                              ? String(unit.individualAverages?.meanLength) ||
-                                ""
-                              : unit.meanLength ?? "";
+                                ? String(unit.monthlyAverages?.meanLength) || ""
+                                : selectedAverage === "Yearly average"
+                                  ? String(unit.yearlyAverages?.meanLength) || ""
+                                  : selectedAverage === "All-time average"
+                                    ? String(unit.allTimeAverages?.meanLength) || ""
+                                    : selectedAverage === "Individual average"
+                                      ? String(unit.individualAverages?.meanLength) ||
+                                      ""
+                                      : unit.meanLength ?? "";
 
                           // Calculate padding based on whether a value exists
                           const paddingValue = value
@@ -2002,30 +2002,30 @@ export default function ProductionTable({
                               ? selectedAverage === "Monthly average"
                                 ? String(unit.monthlyAveragesWater?.ph) || ""
                                 : selectedAverage === "Yearly average"
-                                ? String(unit.yearlyAveragesWater?.ph) || ""
-                                : selectedAverage === "All-time average"
-                                ? String(unit.allTimeAveragesWater?.ph) || ""
-                                : selectedAverage === "Individual average"
-                                ? String(unit.individualAveragesWater?.ph) || ""
-                                : unit.ph ?? ""
+                                  ? String(unit.yearlyAveragesWater?.ph) || ""
+                                  : selectedAverage === "All-time average"
+                                    ? String(unit.allTimeAveragesWater?.ph) || ""
+                                    : selectedAverage === "Individual average"
+                                      ? String(unit.individualAveragesWater?.ph) || ""
+                                      : unit.ph ?? ""
                               : selectedAverage === "Monthly average"
-                              ? Number(
+                                ? Number(
                                   unit.monthlyAverages?.stockingDensityKG || 0
                                 ).toFixed(2)
-                              : selectedAverage === "Yearly average"
-                              ? Number(
-                                  unit.yearlyAverages?.stockingDensityKG || 0
-                                ).toFixed(2)
-                              : selectedAverage === "All-time average"
-                              ? Number(
-                                  unit.allTimeAverages?.stockingDensityKG || 0
-                                ).toFixed(2)
-                              : selectedAverage === "Individual average"
-                              ? Number(
-                                  unit.individualAverages?.stockingDensityKG ||
-                                    0
-                                ).toFixed(2)
-                              : Number(unit.stockingDensityKG || 0).toFixed(2);
+                                : selectedAverage === "Yearly average"
+                                  ? Number(
+                                    unit.yearlyAverages?.stockingDensityKG || 0
+                                  ).toFixed(2)
+                                  : selectedAverage === "All-time average"
+                                    ? Number(
+                                      unit.allTimeAverages?.stockingDensityKG || 0
+                                    ).toFixed(2)
+                                    : selectedAverage === "Individual average"
+                                      ? Number(
+                                        unit.individualAverages?.stockingDensityKG ||
+                                        0
+                                      ).toFixed(2)
+                                      : Number(unit.stockingDensityKG || 0).toFixed(2);
 
                           // Calculate padding based on whether a value exists
                           const paddingValue = value
@@ -2067,39 +2067,39 @@ export default function ProductionTable({
                             selectedView === "water"
                               ? selectedAverage === "Monthly average"
                                 ? String(
-                                    unit.monthlyAveragesWater?.visibility
-                                  ) || ""
+                                  unit.monthlyAveragesWater?.visibility
+                                ) || ""
                                 : selectedAverage === "Yearly average"
-                                ? String(
+                                  ? String(
                                     unit.yearlyAveragesWater?.visibility
                                   ) || ""
-                                : selectedAverage === "All-time average"
-                                ? String(
-                                    unit.allTimeAveragesWater?.visibility
-                                  ) || ""
-                                : selectedAverage === "Individual average"
-                                ? String(
-                                    unit.individualAveragesWater?.visibility
-                                  ) || ""
-                                : unit.visibility ?? ""
+                                  : selectedAverage === "All-time average"
+                                    ? String(
+                                      unit.allTimeAveragesWater?.visibility
+                                    ) || ""
+                                    : selectedAverage === "Individual average"
+                                      ? String(
+                                        unit.individualAveragesWater?.visibility
+                                      ) || ""
+                                      : unit.visibility ?? ""
                               : selectedAverage === "Monthly average"
-                              ? Number(
+                                ? Number(
                                   unit.monthlyAverages?.stockingDensityNM || 0
                                 ).toFixed(2)
-                              : selectedAverage === "Yearly average"
-                              ? Number(
-                                  unit.yearlyAverages?.stockingDensityNM || 0
-                                ).toFixed(2)
-                              : selectedAverage === "All-time average"
-                              ? Number(
-                                  unit.allTimeAverages?.stockingDensityNM || 0
-                                ).toFixed(2)
-                              : selectedAverage === "Individual average"
-                              ? Number(
-                                  unit.individualAverages?.stockingDensityNM ||
-                                    0
-                                ).toFixed(2)
-                              : Number(unit.stockingDensityNM || 0).toFixed(2);
+                                : selectedAverage === "Yearly average"
+                                  ? Number(
+                                    unit.yearlyAverages?.stockingDensityNM || 0
+                                  ).toFixed(2)
+                                  : selectedAverage === "All-time average"
+                                    ? Number(
+                                      unit.allTimeAverages?.stockingDensityNM || 0
+                                    ).toFixed(2)
+                                    : selectedAverage === "Individual average"
+                                      ? Number(
+                                        unit.individualAverages?.stockingDensityNM ||
+                                        0
+                                      ).toFixed(2)
+                                      : Number(unit.stockingDensityNM || 0).toFixed(2);
 
                           // Calculate padding based on whether a value exists
                           const paddingValue = value
@@ -2279,17 +2279,7 @@ export default function ProductionTable({
                                           alignItems="center"
                                           direction="row"
                                         >
-                                          <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            width="1.1em"
-                                            height="1.1em"
-                                            viewBox="0 0 24 24"
-                                          >
-                                            <path
-                                              fill="currentColor"
-                                              d="M6.008 12h-.01M11 16.042c.463.153.908.329 1.31.61m0 0A3.95 3.95 0 0 1 14 19.885a.117.117 0 0 1-.118.116c-2.917-.013-4.224-.507-4.773-1.322L8 16.857c-2.492-.503-4.782-2.094-6-4.774c3-6.597 12.5-6.597 15.5 0m-5.19 4.57c2.17-.66 4.105-2.184 5.19-4.57m-5.19-4.569A3.95 3.95 0 0 0 14 4.282c0-.826-4.308.342-4.89 1.206L8 7.31m9.5 4.773c.333-.66 2.1-2.969 4.5-2.969c-.833.825-2.2 3.959-1 5.938c-1.2 0-3-2.309-3.5-2.969"
-                                            />
-                                          </svg>
+                                          <svg xmlns="http://www.w3.org/2000/svg" width="1.25em" height="1.25em" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6.008 12h-.01M11 16.042c.463.153.908.329 1.31.61m0 0A3.95 3.95 0 0 1 14 19.885a.117.117 0 0 1-.118.116c-2.917-.013-4.224-.507-4.773-1.322L8 16.857c-2.492-.503-4.782-2.094-6-4.774c3-6.597 12.5-6.597 15.5 0m-5.19 4.57c2.17-.66 4.105-2.184 5.19-4.57m-5.19-4.569A3.95 3.95 0 0 0 14 4.282c0-.826-4.308.342-4.89 1.206L8 7.31m9.5 4.773c.333-.66 2.1-2.969 4.5-2.969c-.833.825-2.2 3.959-1 5.938c-1.2 0-3-2.309-3.5-2.969" color="currentColor" /></svg>
 
                                           <Typography variant="subtitle2">
                                             Manage
@@ -2317,16 +2307,8 @@ export default function ProductionTable({
                                           alignItems="center"
                                           direction="row"
                                         >
-                                          <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            width="1.1em"
-                                            height="1.1em"
-                                            viewBox="0 0 24 24"
-                                          >
-                                            <path
-                                              fill="currentColor"
-                                              d="M6.008 12h-.01M11 16.042c.463.153.908.329 1.31.61m0 0A3.95 3.95 0 0 1 14 19.885a.117.117 0 0 1-.118.116c-2.917-.013-4.224-.507-4.773-1.322L8 16.857c-2.492-.503-4.782-2.094-6-4.774c3-6.597 12.5-6.597 15.5 0m-5.19 4.57c2.17-.66 4.105-2.184 5.19-4.57m-5.19-4.569A3.95 3.95 0 0 0 14 4.282c0-.826-4.308.342-4.89 1.206L8 7.31m9.5 4.773c.333-.66 2.1-2.969 4.5-2.969c-.833.825-2.2 3.959-1 5.938c-1.2 0-3-2.309-3.5-2.969"
-                                            />
+                                          <svg xmlns="http://www.w3.org/2000/svg" width="1.1em" height="1.1em" viewBox="0 0 24 24">
+                                            <path fill="currentColor" d="M8 3a1 1 0 0 1 .117 1.993L8 5H6a1 1 0 0 0-.993.883L5 6v2a1 1 0 0 1-1.993.117L3 8V6a3 3 0 0 1 2.824-2.995L6 3zM4 15a1 1 0 0 1 .993.883L5 16v2a1 1 0 0 0 .883.993L6 19h2a1 1 0 0 1 .117 1.993L8 21H6a3 3 0 0 1-2.995-2.824L3 18v-2a1 1 0 0 1 1-1M18 3a3 3 0 0 1 2.995 2.824L21 6v2a1 1 0 0 1-1.993.117L19 8V6a1 1 0 0 0-.883-.993L18 5h-2a1 1 0 0 1-.117-1.993L16 3zm2 12a1 1 0 0 1 .993.883L21 16v2a3 3 0 0 1-2.824 2.995L18 21h-2a1 1 0 0 1-.117-1.993L16 19h2a1 1 0 0 0 .993-.883L19 18v-2a1 1 0 0 1 1-1m-8-7a4 4 0 1 1-3.995 4.2L8 12l.005-.2A4 4 0 0 1 12 8" />
                                           </svg>
 
                                           <Typography variant="subtitle2">
@@ -2357,8 +2339,8 @@ export default function ProductionTable({
                                     >
                                       <svg
                                         xmlns="http://www.w3.org/2000/svg"
-                                        width="1.1em"
-                                        height="1.1em"
+                                        width="1.05em"
+                                        height="1.05em"
                                         viewBox="0 0 24 24"
                                       >
                                         <path
@@ -2367,7 +2349,7 @@ export default function ProductionTable({
                                         />
                                       </svg>
 
-                                      <Typography variant="subtitle2">
+                                      <Typography variant="subtitle2" ml={0.35}>
                                         History
                                       </Typography>
                                     </Stack>
@@ -2393,19 +2375,9 @@ export default function ProductionTable({
                                       alignItems="center"
                                       direction="row"
                                     >
-                                      <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="1.1em"
-                                        height="1.1em"
-                                        viewBox="0 0 24 24"
-                                      >
-                                        <path
-                                          fill="currentColor"
-                                          d="M21 11.11V5a2 2 0 0 0-2-2h-4.18C14.4 1.84 13.3 1 12 1s-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14a2 2 0 0 0 2 2h6.11c1.26 1.24 2.98 2 4.89 2c3.87 0 7-3.13 7-7c0-1.91-.76-3.63-2-4.89M12 3c.55 0 1 .45 1 1s-.45 1-1 1s-1-.45-1-1s.45-1 1-1M5 19V5h2v2h10V5h2v4.68c-.91-.43-1.92-.68-3-.68H7v2h4.1c-.6.57-1.06 1.25-1.42 2H7v2h2.08c-.05.33-.08.66-.08 1c0 1.08.25 2.09.68 3zm11 2c-2.76 0-5-2.24-5-5s2.24-5 5-5s5 2.24 5 5s-2.24 5-5 5m.5-4.75l2.86 1.69l-.75 1.22L15 17v-5h1.5z"
-                                        />
-                                      </svg>
+                                      <svg xmlns="http://www.w3.org/2000/svg" width="1.1em" height="1.1em" viewBox="0 0 24 24"><path fill="currentColor" d="M13 19c0 .34.04.67.09 1H4a2 2 0 0 1-2-2V6c0-1.11.89-2 2-2h6l2 2h8a2 2 0 0 1 2 2v5.81c-.61-.35-1.28-.59-2-.72V8H4v10h9.09c-.05.33-.09.66-.09 1m7-1v-3h-2v3h-3v2h3v3h2v-3h3v-2z" /></svg>
 
-                                      <Typography variant="subtitle2">
+                                      <Typography variant="subtitle2" ml={0.35}>
                                         Create Report
                                       </Typography>
                                     </Stack>
