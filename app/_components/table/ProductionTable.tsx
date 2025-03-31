@@ -2227,7 +2227,6 @@ export default function ProductionTable({
                                   backgroundColor: "#F5F6F8",
                                   padding: "8px 12px 8px 0",
                                   margin: "8px 0",
-                                  // marginBottom: "10px",
                                   textWrap: "nowrap",
                                 }}
                               >
