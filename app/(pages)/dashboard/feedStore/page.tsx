@@ -268,11 +268,8 @@ const Page: NextPage<Props> = ({}) => {
 
         <Grid item xs={12}>
           <TabContext value={"farm1"}>
-            {/* value={value} */}
-
             <Box mb={2}>
               <TabList
-                // onChange={handleChange}
                 aria-label="lab API tabs example"
                 className="production-tabs"
               >
