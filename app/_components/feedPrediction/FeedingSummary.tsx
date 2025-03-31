@@ -1,30 +1,12 @@
+"use clinet";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
-import {
-  Box,
-  Button,
-  FormControl,
-  Grid,
-  InputLabel,
-  Select,
-  Stack,
-  Tab,
-  TextField,
-  Typography,
-} from "@mui/material";
-import { NextPage } from "next";
+import { Box, Grid, Stack, Tab, Typography } from "@mui/material";
+import React from "react";
 
-interface Props {}
-
-const Page: NextPage<Props> = ({}) => {
+function FeedingSummary() {
   return (
-    // <div>Feed Store Coming Soon...</div>
-    <>
-      <h4>
-        Add Farm & Unit Input with Reset Filter Button + Add one Generate Button
-        Here
-      </h4>
-
+    <Stack>
       <Grid container columnSpacing={10} rowSpacing={5}>
         <Grid item xs={6}>
           <Box>
@@ -267,7 +249,7 @@ const Page: NextPage<Props> = ({}) => {
         </Grid>
 
         <Grid item xs={12}>
-          <TabContext>
+          <TabContext value={"farm1"}>
             {/* value={value} */}
 
             <Box mb={2}>
@@ -387,167 +369,8 @@ const Page: NextPage<Props> = ({}) => {
           </Box>
         </Grid>
       </Grid>
-
-      <h4>Add Table Here</h4>
-
-      {/* ADHOC */}
-
-      <Stack mt={5}>
-        <Typography variant="h6" color="#637381" fontSize={16} mb={3.5}>
-          Please fill the form to make new projection.
-        </Typography>
-
-        <form>
-          <Grid container spacing={3} alignItems={"center"}>
-            <Grid item lg={3} md={4} sm={6} xs={12}>
-              <FormControl className="form-input" fullWidth focused>
-                <InputLabel id="demo-simple-select-label">
-                  Fish Type *
-                </InputLabel>
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  label="Fish Type *"
-                >
-                  {/* {OrganisationType.map((organisation, i) => {
-                return (
-                  <MenuItem value={organisation} key={i}>
-                    {organisation}
-                  </MenuItem>
-                );
-              })} */}
-                </Select>
-              </FormControl>
-            </Grid>
-
-            <Grid item lg={3} md={4} sm={6} xs={12}>
-              <TextField
-                label="Farm *"
-                type="text"
-                className="form-input"
-                focused
-                sx={{
-                  width: "100%",
-                }}
-              />
-            </Grid>
-
-            <Grid item lg={3} md={4} sm={6} xs={12}>
-              <TextField
-                label="Pond *"
-                type="text"
-                className="form-input"
-                focused
-                sx={{
-                  width: "100%",
-                }}
-              />
-            </Grid>
-
-            <Grid item lg={3} md={4} sm={6} xs={12}>
-              <h4>Add Start Date Input Here</h4>
-            </Grid>
-
-            <Grid item lg={3} md={4} sm={6} xs={12}>
-              <TextField
-                label="Growth Period *"
-                type="text"
-                className="form-input"
-                focused
-                sx={{
-                  width: "100%",
-                }}
-              />
-            </Grid>
-
-            <Grid item lg={3} md={4} sm={6} xs={12}>
-              <Box position={"relative"}>
-                <TextField
-                  label="Temperature *"
-                  type="text"
-                  className="form-input"
-                  focused
-                  sx={{
-                    width: "100%",
-                  }}
-                />
-                <Typography
-                  variant="body1"
-                  color="#555555AC"
-                  sx={{
-                    position: "absolute",
-                    right: 13,
-                    top: "30%",
-                    backgroundColor: "white",
-                    paddingInline: "5px",
-                  }}
-                >
-                  °C
-                </Typography>
-              </Box>
-            </Grid>
-
-            <Grid item lg={3} md={4} sm={6} xs={12}>
-              <Box position={"relative"}>
-                <TextField
-                  label="Fish Weight *"
-                  type="text"
-                  className="form-input"
-                  focused
-                  sx={{
-                    width: "100%",
-                  }}
-                />
-                <Typography
-                  variant="body1"
-                  color="#555555AC"
-                  sx={{
-                    position: "absolute",
-                    right: 13,
-                    top: "30%",
-                    backgroundColor: "white",
-                    paddingInline: "5px",
-                  }}
-                >
-                  g
-                </Typography>
-              </Box>
-            </Grid>
-
-            <Grid item lg={3} md={4} sm={6} xs={12}>
-              <TextField
-                label="Fish Amount *"
-                type="text"
-                className="form-input"
-                focused
-                sx={{
-                  width: "100%",
-                }}
-              />
-            </Grid>
-          </Grid>
-
-          <Button
-            type="submit"
-            variant="contained"
-            sx={{
-              background: "#06A19B",
-              fontWeight: 600,
-              padding: "6px 16px",
-              width: "fit-content",
-              textTransform: "capitalize",
-              borderRadius: "8px",
-              marginLeft: "auto",
-              display: "block",
-              marginTop: 3,
-            }}
-          >
-            Save Changes
-          </Button>
-        </form>
-      </Stack>
-    </>
+    </Stack>
   );
-};
+}
 
-export default Page;
+export default FeedingSummary;

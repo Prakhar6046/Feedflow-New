@@ -1,117 +1,24 @@
 "use client";
-import { NextPage } from "next";
-import { useEffect, useState } from "react";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  Button,
-} from "@mui/material";
 import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
-import FishGrowthChart from "@/app/_components/charts/FishGrowthChart";
-import { exportFeedPredictionToXlsx } from "@/app/_lib/utils";
-import jsPDF from "jspdf";
-import { createRoot } from "react-dom/client";
+import AdHoc from "@/app/_components/feedPrediction/AdHoc";
+import FeedingPlan from "@/app/_components/feedPrediction/FeedingPlan";
+import FeedingSummary from "@/app/_components/feedPrediction/FeedingSummary";
+import {
+  exportFeedPredictionToXlsx,
+  FeedPredictionHead,
+} from "@/app/_lib/utils";
+import TabContext from "@mui/lab/TabContext";
+import TabList from "@mui/lab/TabList";
+import { Box, Button, Stack, Tab } from "@mui/material";
 import html2canvas from "html2canvas";
-import { FeedPredictionHead } from "@/app/_lib/utils";
-import Loader from "@/app/_components/Loader";
+import jsPDF from "jspdf";
+import { NextPage } from "next";
+import { useState } from "react";
+import { createRoot } from "react-dom/client";
 const Page: NextPage = () => {
   const [data, setData] = useState<any[]>([]);
-  const [fishWeight, setFishWeight] = useState(0.2);
-  const [numberOfFish, setNumberOfFish] = useState(4000);
-  const [volume, setVolume] = useState(480);
-  const [waterTemp, setWaterTemp] = useState(27);
   const [loading, setLoading] = useState(false);
-
-  function calculateFBW() {
-    const IBW = fishWeight;
-    const T = waterTemp;
-    let prevWeight = IBW;
-    let prevNumberOfFish = numberOfFish; // Initial number of fish
-    let newData = [];
-
-    function calculateNoOfFish(noOfFish: number, days: number) {
-      return Math.round(noOfFish * (1 - (Math.pow(0.05 / 100 + 1, days) - 1)));
-    }
-
-    function calculateFW(
-      IBW: number,
-      b: number,
-      TGC: number,
-      tValues: number[],
-      dValues: number[]
-    ) {
-      if (tValues.length !== dValues.length) {
-        throw new Error("tValues and dValues must have the same length");
-      }
-
-      // Compute summation of t * d
-      let sum_td = tValues.reduce(
-        (sum, t, index) => sum + t * dValues[index],
-        0
-      );
-
-      // Apply the formula
-      return Math.pow(Math.pow(IBW, b) + (TGC / 100) * sum_td, 1 / b);
-    }
-    function calculateTGC(IBW: number, T: number) {
-      return -0.003 * IBW + 0.001705 * Math.log(T - 11.25) * T;
-    }
-    function calculateFCR(IBW: number, DE: number) {
-      return (0.00643 * IBW + 13) / (DE / 1.03);
-    }
-    function calculateFormula(IBW: number, TGC: number, FCR: number) {
-      return (Math.pow(Math.cbrt(IBW) + TGC, 3) / IBW - 1) * FCR * 100;
-    }
-    for (let day = 0; day <= 150; day += 7) {
-      const FBW = calculateFW(prevWeight, 0.35, 0.16, [T], [7]);
-
-      const IBW = 0.02;
-      const TGC = calculateTGC(0.02, 27);
-      const FCR = calculateFCR(0.02, 18.099669);
-
-      const result = calculateFormula(IBW, TGC, FCR);
-      console.log(result);
-      // Update number of fish dynamically
-      prevNumberOfFish = calculateNoOfFish(prevNumberOfFish, day);
-
-      // 🔹 **Fixed: Use updated `prevNumberOfFish` for biomass calculation**
-      const biomass = (prevWeight * prevNumberOfFish) / 1000;
-
-      // 🔹 **Fixed: Use `prevNumberOfFish` in stocking density calculations**
-      const stockingDensityNM3 = prevNumberOfFish / volume;
-      const stockingDensityKg = biomass / volume;
-
-      // New day's data
-      const newRow = {
-        date: `Day ${day}`,
-        days: day,
-        waterTemp: T,
-        fishWeight: prevWeight.toFixed(2),
-        numberOfFish: prevNumberOfFish,
-        biomass: biomass.toFixed(2),
-        stockingDensityNM3: stockingDensityNM3.toFixed(2),
-        stockingDensityKg: stockingDensityKg.toFixed(2),
-        feedPhase: "Tilapia Starter (2mm)",
-        feedProtein: 36,
-        feedDE: 13.22,
-        feedPrice: 1550,
-        growth: (FBW - prevWeight).toFixed(2),
-        estimatedFCR: 1.21,
-        partitionedFCR: 0.0,
-        feedIntake: 0,
-      };
-
-      // Store new data
-      newData.push(newRow);
-      prevWeight = FBW; // Update weight for next day
-    }
-    setData(newData);
-  }
+  const [selectedFeeding, setSelectedFeeding] = useState<string>("feedingPlan");
   const CreateFeedPredictionPDF = async () => {
     setLoading(true);
     const pdf = new jsPDF({ orientation: "landscape" });
@@ -357,21 +264,63 @@ const Page: NextPage = () => {
     pdf.save("feed_pdf.pdf");
     setLoading(false);
   };
-  useEffect(() => {
-    if (numberOfFish && volume && waterTemp && fishWeight) {
-      calculateFBW();
-    }
-  }, [fishWeight, numberOfFish, volume, waterTemp]);
-  if (loading) {
-    return <Loader />;
-  }
+  const handleChange = (event: any, newValue: string) => {
+    setSelectedFeeding(newValue);
+  };
+
   return (
     <>
       <BasicBreadcrumbs
         heading={"Thermal growth coefficient Demo"}
         hideSearchInput={true}
       />
-
+      <TabContext value={String(selectedFeeding)}>
+        <Stack
+          display={"flex"}
+          rowGap={2}
+          columnGap={5}
+          mb={2}
+          justifyContent={"space-between"}
+          sx={{
+            flexDirection: {
+              md: "row",
+              xs: "column",
+            },
+            alignItems: {
+              md: "center",
+              xs: "start",
+            },
+          }}
+        >
+          <Box>
+            <TabList
+              onChange={handleChange}
+              aria-label="lab API tabs example"
+              className=" production-tabs"
+            >
+              <Tab
+                label="Feeding Plan"
+                value="feedingPlan"
+                className={
+                  selectedFeeding === "feedingPlan" ? "active-tab" : ""
+                }
+              />
+              <Tab
+                label="Feeding Summary"
+                value="feedingSummary"
+                className={
+                  selectedFeeding === "feedingSummary" ? "active-tab" : ""
+                }
+              />
+              <Tab
+                label="Adhoc"
+                value="adhoc"
+                className={selectedFeeding === "adhoc" ? "active-tab" : ""}
+              />
+            </TabList>
+          </Box>
+        </Stack>
+      </TabContext>
       <Button
         id="basic-button"
         type="button"
@@ -418,96 +367,13 @@ const Page: NextPage = () => {
       >
         Create PDF
       </Button>
-      <div className="p-4">
-        <label htmlFor="fishweight">Fish Weight (g)</label>
-        <input
-          type="number"
-          id="fishweight"
-          value={fishWeight}
-          onChange={(e) => setFishWeight(Number(e.target.value))}
-          className="border p-2 rounded w-full"
-        />
-
-        <label htmlFor="numberOfFish">Number Of Fish</label>
-        <input
-          type="number"
-          id="numberOfFish"
-          value={numberOfFish}
-          onChange={(e) => setNumberOfFish(Number(e.target.value))}
-          className="border p-2 rounded w-full"
-        />
-
-        <label htmlFor="volume">Volume</label>
-        <input
-          type="number"
-          id="volume"
-          value={volume}
-          onChange={(e) => setVolume(Number(e.target.value))}
-          className="border p-2 rounded w-full"
-        />
-
-        <label htmlFor="watertemp">Water Temp (°C)</label>
-        <input
-          type="number"
-          id="watertemp"
-          value={waterTemp}
-          onChange={(e) => setWaterTemp(Number(e.target.value))}
-          className="border p-2 rounded w-full"
-        />
-      </div>
-
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Date</TableCell>
-              <TableCell>Days</TableCell>
-              <TableCell>Water Temp</TableCell>
-              <TableCell>Fish Weight (g)</TableCell>
-              <TableCell>Number of Fish</TableCell>
-              <TableCell>Biomass (kg)</TableCell>
-              <TableCell>Stocking Density</TableCell>
-              <TableCell>Stocking Density Kg/m3</TableCell>
-              <TableCell>Feed Phase</TableCell>
-              <TableCell>Feed Protein (%)</TableCell>
-              <TableCell>Feed DE (MJ/kg)</TableCell>
-              <TableCell>Feed Price ($)</TableCell>
-              <TableCell>Growth (g)</TableCell>
-              <TableCell>Est. FCR</TableCell>
-              <TableCell>Partitioned FCR</TableCell>
-              <TableCell>Feed Intake (g)</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {data.map((row, index) => (
-              <TableRow key={index}>
-                <TableCell>{row.date}</TableCell>
-                <TableCell>{row.days}</TableCell>
-                <TableCell>{row.waterTemp}</TableCell>
-                <TableCell>{row.fishWeight}</TableCell>
-                <TableCell>{row.numberOfFish}</TableCell>
-                <TableCell>{row.biomass}</TableCell>
-                <TableCell>{row.stockingDensityNM3}</TableCell>
-                <TableCell>{row.stockingDensityKg}</TableCell>
-                <TableCell>{row.feedPhase}</TableCell>
-                <TableCell>{row.feedProtein}</TableCell>
-                <TableCell>{row.feedDE}</TableCell>
-                <TableCell>{row.feedPrice}</TableCell>
-                <TableCell>{row.growth}</TableCell>
-                <TableCell>{row.estimatedFCR}</TableCell>
-                <TableCell>{row.partitionedFCR}</TableCell>
-                <TableCell>{row.feedIntake}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <div className="mb-5">
-        <FishGrowthChart
-          xAxisData={data?.map((value) => value.date) || []}
-          yData={data?.map((value) => value.fishWeight) || []}
-        />
-      </div>
+      {selectedFeeding === "feedingPlan" ? (
+        <FeedingPlan />
+      ) : selectedFeeding === "feedingSummary" ? (
+        <FeedingSummary />
+      ) : (
+        <AdHoc />
+      )}
     </>
   );
 };
