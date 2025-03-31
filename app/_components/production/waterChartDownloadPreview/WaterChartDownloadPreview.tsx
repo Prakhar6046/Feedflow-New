@@ -21,6 +21,7 @@ import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import { useRouter } from "next/navigation";
 import Loader from "../../Loader";
+import dayjs from "dayjs";
 
 type ChartDataType = {
   selectedCharts: string[];
@@ -139,7 +140,10 @@ function WaterChartDownloadPreview({
               >
                 {productions[0]?.productionUnit?.name}{" "}
                 {productions[0]?.farm?.name} <br />
-                <span>2025/01/23 to 2025/01/23</span>
+                <span>
+                  {dayjs(chartData?.startDate).format("YYYY/MM/DD")} to
+                  {` ${dayjs(chartData?.endDate).format("YYYY/MM/DD")}`}
+                </span>
               </p>
             </div>
           </div>
@@ -360,61 +364,56 @@ function WaterChartDownloadPreview({
                         background: "#efefef",
                       }}
                     >
-                      Change
-                    </th>
-                    <th
-                      style={{
-                        border: "1px solid #ccc",
-                        padding: "8px 12px",
-                        textAlign: "left",
-                        borderTopRightRadius: "8px",
-                        background: "#efefef",
-                      }}
-                    >
-                      Cumulative
+                      Predicted Value
                     </th>
                   </tr>
                 </thead>
                 <tbody>
-                  {chartData?.groupedData.units.flatMap(
-                    (unit) =>
-                      unit.waterManageHistory?.map((history: any) => (
-                        <tr key={history.currentDate}>
-                          <td
-                            style={{
-                              border: "1px solid #ccc",
-                              padding: "8px 12px",
-                            }}
-                          >
-                            {getFullYear(history?.currentDate)}
-                          </td>
-                          <td
-                            style={{
-                              border: "1px solid #ccc",
-                              padding: "8px 12px",
-                            }}
-                          >
-                            {history[yDataKey]}
-                          </td>
-                          <td
-                            style={{
-                              border: "1px solid #ccc",
-                              padding: "8px 12px",
-                            }}
-                          >
-                            {history.change || ""}
-                          </td>
-                          <td
-                            style={{
-                              border: "1px solid #ccc",
-                              padding: "8px 12px",
-                            }}
-                          >
-                            {history.cumulative || ""}
-                          </td>
-                        </tr>
-                      )) || []
-                  )}
+                  {chartData?.groupedData.units.flatMap((unit) => {
+                    return (
+                      unit.waterManageHistory?.map((history: any) => {
+                        const dateString: any = getFullYear(
+                          history?.currentDate
+                        );
+                        const date = dayjs(dateString);
+                        const month = date.format("MMM");
+                        const predictions =
+                          productions[0]?.productionUnit
+                            ?.YearBasedPredicationProductionUnit?.[0] || {};
+                        const predictedValue =
+                          predictions?.[yDataKey]?.[month] || "";
+
+                        return (
+                          <tr key={history.currentDate}>
+                            <td
+                              style={{
+                                border: "1px solid #ccc",
+                                padding: "8px 12px",
+                              }}
+                            >
+                              {getFullYear(history?.currentDate)}
+                            </td>
+                            <td
+                              style={{
+                                border: "1px solid #ccc",
+                                padding: "8px 12px",
+                              }}
+                            >
+                              {history[yDataKey]}
+                            </td>
+                            <td
+                              style={{
+                                border: "1px solid #ccc",
+                                padding: "8px 12px",
+                              }}
+                            >
+                              {predictedValue}
+                            </td>
+                          </tr>
+                        );
+                      }) || []
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
@@ -465,8 +464,20 @@ function WaterChartDownloadPreview({
       setChartData(data);
     }
   }, []);
+  console.log(
+    "productions",
+    productions,
+    predictedData,
+    chartData?.startDate,
+    chartData?.endDate
+  );
+
   if (isReportDownload) {
-    return <Loader />;
+    return (
+      <div className="overflow-hidden">
+        <Loader />
+      </div>
+    );
   }
   return (
     <Stack style={{ padding: "20px" }}>
@@ -556,7 +567,10 @@ function WaterChartDownloadPreview({
                       >
                         {productions[0]?.productionUnit?.name}{" "}
                         {productions[0]?.farm?.name} <br />
-                        <span>2025/01/23 to 2025/01/23</span>
+                        <span>
+                          {dayjs(chartData?.startDate).format("YYYY/MM/DD")} to
+                          {` ${dayjs(chartData?.endDate).format("YYYY/MM/DD")}`}
+                        </span>
                       </Box>
                     </Typography>
                   </Box>
@@ -823,61 +837,70 @@ function WaterChartDownloadPreview({
                                   background: "#efefef",
                                 }}
                               >
-                                Change
-                              </th>
-                              <th
-                                style={{
-                                  border: "1px solid #ccc",
-                                  padding: "8px 12px",
-                                  textAlign: "left",
-                                  borderTopRightRadius: "8px",
-                                  background: "#efefef",
-                                }}
-                              >
-                                Cumulative
+                                Predicted Value
                               </th>
                             </tr>
                           </thead>
                           <tbody>
-                            {chartData?.groupedData.units.flatMap(
-                              (unit) =>
-                                unit.waterManageHistory?.map((history: any) => (
-                                  <tr key={history.currentDate}>
-                                    <td
-                                      style={{
-                                        border: "1px solid #ccc",
-                                        padding: "8px 12px",
-                                      }}
-                                    >
-                                      {getFullYear(history?.currentDate)}
-                                    </td>
-                                    <td
-                                      style={{
-                                        border: "1px solid #ccc",
-                                        padding: "8px 12px",
-                                      }}
-                                    >
-                                      {history[yDataKey]}
-                                    </td>
-                                    <td
-                                      style={{
-                                        border: "1px solid #ccc",
-                                        padding: "8px 12px",
-                                      }}
-                                    >
-                                      {history.change || ""}
-                                    </td>
-                                    <td
-                                      style={{
-                                        border: "1px solid #ccc",
-                                        padding: "8px 12px",
-                                      }}
-                                    >
-                                      {history.cumulative || ""}
-                                    </td>
-                                  </tr>
-                                )) || []
-                            )}
+                            {chartData?.groupedData.units.flatMap((unit) => {
+                              return (
+                                unit.waterManageHistory
+                                  ?.filter((value: any) => {
+                                    const dateString: any = getFullYear(
+                                      value?.currentDate
+                                    );
+                                    const date = dayjs(dateString);
+                                    return (
+                                      date.unix() >=
+                                        dayjs(chartData.startDate).unix() &&
+                                      date.unix() <=
+                                        dayjs(chartData.endDate).unix()
+                                    );
+                                  })
+                                  ?.map((history: any) => {
+                                    const dateString: any = getFullYear(
+                                      history?.currentDate
+                                    );
+                                    const date = dayjs(dateString);
+                                    const month = date.format("MMM");
+                                    const predictions =
+                                      productions[0]?.productionUnit
+                                        ?.YearBasedPredicationProductionUnit?.[0] ||
+                                      {};
+                                    const predictedValue =
+                                      predictions?.[yDataKey]?.[month] || "";
+
+                                    return (
+                                      <tr key={history.currentDate}>
+                                        <td
+                                          style={{
+                                            border: "1px solid #ccc",
+                                            padding: "8px 12px",
+                                          }}
+                                        >
+                                          {getFullYear(history?.currentDate)}
+                                        </td>
+                                        <td
+                                          style={{
+                                            border: "1px solid #ccc",
+                                            padding: "8px 12px",
+                                          }}
+                                        >
+                                          {history[yDataKey]}
+                                        </td>
+                                        <td
+                                          style={{
+                                            border: "1px solid #ccc",
+                                            padding: "8px 12px",
+                                          }}
+                                        >
+                                          {predictedValue}
+                                        </td>
+                                      </tr>
+                                    );
+                                  }) || []
+                              );
+                            })}
                           </tbody>
                         </table>
                       </Grid>

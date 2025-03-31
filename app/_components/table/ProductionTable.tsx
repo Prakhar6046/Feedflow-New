@@ -53,6 +53,16 @@ import Test from "../models/Test";
 import WaterQualityParameter from "../models/WaterQualityParameter";
 import ProductionManagerFilter from "../ProductionManagerFilter";
 import AddFeedFed from "../models/AddFeedFed";
+import {
+  commonFilterAction,
+  selectAllFarms,
+  selectDropDownYears,
+  selectEndMonth,
+  selectSelectedAverage,
+  selectSelectedFarms,
+  selectSelectedUnits,
+  selectStartMonth,
+} from "@/lib/features/commonFilters/commonFilters";
 
 interface Props {
   productions: Production[];
@@ -109,24 +119,31 @@ export default function ProductionTable({
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("Farm");
   const [sortDataFromLocal, setSortDataFromLocal] = React.useState<any>("");
-  const [selectedDropDownfarms, setSelectedDropDownfarms] =
-    useState<{ id: string; option: string }[]>();
-  const [selectedDropDownUnits, setSelectedDropDownUnits] =
-    useState<{ id: string; option: string }[]>();
-  const [selectedDropDownYears, setSelectedDropDownYears] = useState<
-    Array<number>
-  >([new Date().getFullYear()]);
-  const [selectedAverage, setSelectedAverage] = useState(averagesDropdown[0]);
-  const [startMonth, setStartMonth] = useState<number>(1);
+  const selectedDropDownfarms = useAppSelector(selectSelectedFarms);
+  const selectedDropDownUnits = useAppSelector(selectSelectedUnits);
+  const selectedDropDownYears = useAppSelector(selectDropDownYears);
+  const selectedAverage = useAppSelector(selectSelectedAverage);
+  const startMonth = useAppSelector(selectStartMonth);
+  const endMonth = useAppSelector(selectEndMonth);
+  const allFarms = useAppSelector(selectAllFarms);
+  // const [selectedDropDownfarms, setSelectedDropDownfarms] =
+  //   useState<{ id: string; option: string }[]>();
+  // const [selectedDropDownUnits, setSelectedDropDownUnits] =
+  //   useState<{ id: string; option: string }[]>();
+  // const [selectedDropDownYears, setSelectedDropDownYears] = useState<
+  //   Array<number>
+  // >([new Date().getFullYear()]);
+  // const [selectedAverage, setSelectedAverage] = useState(averagesDropdown[0]);
+  // const [startMonth, setStartMonth] = useState<number>(1);
 
-  const [endMonth, setEndMonth] = useState<number>(new Date().getMonth() + 1);
+  // const [endMonth, setEndMonth] = useState<number>(new Date().getMonth() + 1);
 
-  const [allFarms, setAllFarms] = useState<{ id: string; option: string }[]>(
-    []
-  );
-  const [allUnits, setAllUnits] = useState<{ id: string; option: string }[]>(
-    []
-  );
+  // const [allFarms, setAllFarms] = useState<{ id: string; option: string }[]>(
+  //   []
+  // );
+  // const [allUnits, setAllUnits] = useState<{ id: string; option: string }[]>(
+  //   []
+  // );
   const handleClose = () => {
     setAnchorEl(null);
   };
@@ -840,21 +857,23 @@ export default function ProductionTable({
     setSelectedProduction(selectedProd);
   };
   const handleResetFilters = () => {
-    setSelectedDropDownfarms(allFarms);
-    setSelectedDropDownUnits([]);
-    setSelectedDropDownYears([new Date().getFullYear()]);
-    setSelectedAverage(averagesDropdown[0]);
-    setStartMonth(new Date().getMonth() + 1);
-    setEndMonth(new Date().getMonth() + 1);
-  };
-  const handleYearChange = (event: any) => {
-    const {
-      target: { value },
-    } = event;
-    setSelectedDropDownYears(
-      typeof value === "string" ? value.split(",") : value
+    dispatch(commonFilterAction.setSelectedDropDownfarms(allFarms));
+    dispatch(commonFilterAction.setSelectedDropDownUnits([]));
+    dispatch(
+      commonFilterAction.setSelectedDropDownYears([new Date().getFullYear()])
     );
+    dispatch(commonFilterAction.setSelectedAverage(averagesDropdown[0]));
+    dispatch(commonFilterAction.setStartMonth(new Date().getMonth() + 1));
+    dispatch(commonFilterAction.setEndMonth(new Date().getMonth() + 1));
   };
+  // const handleYearChange = (event: any) => {
+  //   const {
+  //     target: { value },
+  //   } = event;
+  //   setSelectedDropDownYears(
+  //     typeof value === "string" ? value.split(",") : value
+  //   );
+  // };
 
   const open = Boolean(anchorEl);
 
@@ -1079,16 +1098,16 @@ export default function ProductionTable({
   useEffect(() => {
     router.refresh();
   }, [router]);
-  useEffect(() => {
-    if (farms) {
-      let customFarms: any = farms.map((farm) => {
-        return { option: farm.name, id: farm.id };
-      });
-      // customFarms.unshift({ code: "0", option: "All farms" });
-      setAllFarms(customFarms);
-      setSelectedDropDownfarms(customFarms);
-    }
-  }, [farms]);
+  // useEffect(() => {
+  //   if (farms) {
+  //     let customFarms: any = farms.map((farm) => {
+  //       return { option: farm.name, id: farm.id };
+  //     });
+  //     // customFarms.unshift({ code: "0", option: "All farms" });
+  //     setAllFarms(customFarms);
+  //     setSelectedDropDownfarms(customFarms);
+  //   }
+  // }, [farms]);
   useEffect(() => {
     if (selectedDropDownfarms) {
       const getProductionUnits = (
@@ -1117,8 +1136,9 @@ export default function ProductionTable({
         }))
       );
       // customUnits.unshift({ id: "0", option: "All units" });
-      setAllUnits(customUnits);
-      setSelectedDropDownUnits(customUnits);
+      // setAllUnits(customUnits);
+      dispatch(commonFilterAction.setAllUnits(customUnits));
+      dispatch(commonFilterAction.setSelectedDropDownUnits(customUnits));
     }
   }, [selectedDropDownfarms]);
   useEffect(() => {
@@ -1534,29 +1554,30 @@ export default function ProductionTable({
             </Box>
           </Stack>
           <ProductionManagerFilter
-            allFarms={allFarms}
-            allUnits={allUnits}
-            handleYearChange={handleYearChange}
-            selectedAverage={selectedAverage}
+            // allFarms={allFarms}
+            // allUnits={allUnits}
+            // handleYearChange={handleYearChange}
+            // selectedAverage={selectedAverage}
             handleResetFilters={handleResetFilters}
-            selectedDropDownUnits={
-              selectedDropDownUnits ? selectedDropDownUnits : []
-            }
-            selectedDropDownYears={
-              selectedDropDownYears ? selectedDropDownYears : []
-            }
-            selectedDropDownfarms={
-              selectedDropDownfarms ? selectedDropDownfarms : []
-            }
-            setSelectedDropDownfarms={setSelectedDropDownfarms}
-            setSelectedDropDownUnits={setSelectedDropDownUnits}
-            setEndMonth={setEndMonth}
-            setStartMonth={setStartMonth}
-            setSelectedAverage={setSelectedAverage}
-            startMonth={Number(startMonth)}
-            endMonth={Number(endMonth)}
-            createXlsxFile={CreateXlsxReport}
+            // selectedDropDownUnits={
+            //   selectedDropDownUnits ? selectedDropDownUnits : []
+            // }
+            // selectedDropDownYears={
+            //   selectedDropDownYears ? selectedDropDownYears : []
+            // }
+            // selectedDropDownfarms={
+            //   selectedDropDownfarms ? selectedDropDownfarms : []
+            // }
+            // setSelectedDropDownfarms={setSelectedDropDownfarms}
+            // setSelectedDropDownUnits={setSelectedDropDownUnits}
+            // setEndMonth={setEndMonth}
+            // setStartMonth={setStartMonth}
+            // setSelectedAverage={setSelectedAverage}
+            // startMonth={Number(startMonth)}
+            // endMonth={Number(endMonth)}
+            // createXlsxFile={CreateXlsxReport}
             selectedView={selectedView}
+            farmsList={farms}
           />
         </TabContext>
       </Box>

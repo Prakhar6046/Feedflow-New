@@ -390,18 +390,7 @@ function WaterReportPreview({ productions }: { productions: Production[] }) {
                           background: "#efefef",
                         }}
                       >
-                        Change
-                      </th>
-                      <th
-                        style={{
-                          border: "1px solid #ccc",
-                          padding: "8px 12px",
-                          textAlign: "left",
-                          borderTopRightRadius: "8px",
-                          background: "#efefef",
-                        }}
-                      >
-                        Cumulative
+                        Predicted Value
                       </th>
                     </tr>
                   </thead>
@@ -416,43 +405,49 @@ function WaterReportPreview({ productions }: { productions: Production[] }) {
                         (unit: any) => unit?.farm?.id === prodUnit.fishFarmId
                       )
                       .flatMap(
-                        (unit) =>
-                          unit.waterManageHistory?.map((history: any) => (
-                            <tr key={history.currentDate}>
-                              <td
-                                style={{
-                                  border: "1px solid #ccc",
-                                  padding: "8px 12px",
-                                }}
-                              >
-                                {getFullYear(history?.currentDate)}
-                              </td>
-                              <td
-                                style={{
-                                  border: "1px solid #ccc",
-                                  padding: "8px 12px",
-                                }}
-                              >
-                                {history[yDataKey]}
-                              </td>
-                              <td
-                                style={{
-                                  border: "1px solid #ccc",
-                                  padding: "8px 12px",
-                                }}
-                              >
-                                {history.change || ""}
-                              </td>
-                              <td
-                                style={{
-                                  border: "1px solid #ccc",
-                                  padding: "8px 12px",
-                                }}
-                              >
-                                {history.cumulative || ""}
-                              </td>
-                            </tr>
-                          )) || []
+                        (unit: any) =>
+                          unit.waterManageHistory?.map((history: any) => {
+                            const dateString: any = getFullYear(
+                              history?.currentDate
+                            );
+                            const date = dayjs(dateString);
+                            const month = date.format("MMM");
+                            console.log(unit);
+
+                            const predictions =
+                              unit?.productionUnit
+                                ?.YearBasedPredicationProductionUnit?.[0] || {};
+                            const predictedValue =
+                              predictions?.[yDataKey]?.[month] || "";
+                            return (
+                              <tr key={history.currentDate}>
+                                <td
+                                  style={{
+                                    border: "1px solid #ccc",
+                                    padding: "8px 12px",
+                                  }}
+                                >
+                                  {getFullYear(history?.currentDate)}
+                                </td>
+                                <td
+                                  style={{
+                                    border: "1px solid #ccc",
+                                    padding: "8px 12px",
+                                  }}
+                                >
+                                  {history[yDataKey]}
+                                </td>
+                                <td
+                                  style={{
+                                    border: "1px solid #ccc",
+                                    padding: "8px 12px",
+                                  }}
+                                >
+                                  {predictedValue || ""}
+                                </td>
+                              </tr>
+                            );
+                          }) || []
                       )}
                   </tbody>
                 </table>
@@ -908,18 +903,7 @@ function WaterReportPreview({ productions }: { productions: Production[] }) {
                                     background: "#efefef",
                                   }}
                                 >
-                                  Change
-                                </th>
-                                <th
-                                  style={{
-                                    border: "1px solid #ccc",
-                                    padding: "8px 12px",
-                                    textAlign: "left",
-                                    borderTopRightRadius: "8px",
-                                    background: "#efefef",
-                                  }}
-                                >
-                                  Cumulative
+                                  Predicted Value
                                 </th>
                               </tr>
                             </thead>
@@ -936,44 +920,54 @@ function WaterReportPreview({ productions }: { productions: Production[] }) {
                                     unit?.farm?.id === prodUnit.fishFarmId
                                 )
                                 .flatMap(
-                                  (unit) =>
+                                  (unit: any) =>
                                     unit.waterManageHistory?.map(
-                                      (history: any) => (
-                                        <tr key={history.currentDate}>
-                                          <td
-                                            style={{
-                                              border: "1px solid #ccc",
-                                              padding: "8px 12px",
-                                            }}
-                                          >
-                                            {getFullYear(history?.currentDate)}
-                                          </td>
-                                          <td
-                                            style={{
-                                              border: "1px solid #ccc",
-                                              padding: "8px 12px",
-                                            }}
-                                          >
-                                            {history[yDataKey]}
-                                          </td>
-                                          <td
-                                            style={{
-                                              border: "1px solid #ccc",
-                                              padding: "8px 12px",
-                                            }}
-                                          >
-                                            {history.change || ""}
-                                          </td>
-                                          <td
-                                            style={{
-                                              border: "1px solid #ccc",
-                                              padding: "8px 12px",
-                                            }}
-                                          >
-                                            {history.cumulative || ""}
-                                          </td>
-                                        </tr>
-                                      )
+                                      (history: any) => {
+                                        const dateString: any = getFullYear(
+                                          history?.currentDate
+                                        );
+                                        const date = dayjs(dateString);
+                                        const month = date.format("MMM");
+                                        console.log(unit);
+
+                                        const predictions =
+                                          unit?.productionUnit
+                                            ?.YearBasedPredicationProductionUnit?.[0] ||
+                                          {};
+                                        const predictedValue =
+                                          predictions?.[yDataKey]?.[month] ||
+                                          "";
+                                        return (
+                                          <tr key={history.currentDate}>
+                                            <td
+                                              style={{
+                                                border: "1px solid #ccc",
+                                                padding: "8px 12px",
+                                              }}
+                                            >
+                                              {getFullYear(
+                                                history?.currentDate
+                                              )}
+                                            </td>
+                                            <td
+                                              style={{
+                                                border: "1px solid #ccc",
+                                                padding: "8px 12px",
+                                              }}
+                                            >
+                                              {history[yDataKey]}
+                                            </td>
+                                            <td
+                                              style={{
+                                                border: "1px solid #ccc",
+                                                padding: "8px 12px",
+                                              }}
+                                            >
+                                              {predictedValue || ""}
+                                            </td>
+                                          </tr>
+                                        );
+                                      }
                                     ) || []
                                 )}
                             </tbody>

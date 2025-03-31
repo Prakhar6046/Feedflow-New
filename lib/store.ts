@@ -5,6 +5,7 @@ import { SidebarReducer } from "./features/sidebar/sidebarSlice";
 import { FarmReducer } from "./features/farm/farmSlice";
 import { FeedReducer } from "./features/feed/feedSlice";
 import { BreadcrumReducer } from "./features/breadcrum/breadcrumSlice";
+import { commonFilterReducer } from "./features/commonFilters/commonFilters";
 
 export const makeStore = () => {
   return configureStore({
@@ -15,6 +16,7 @@ export const makeStore = () => {
       farm: FarmReducer,
       feed: FeedReducer,
       breadcrum: BreadcrumReducer,
+      commonFilter: commonFilterReducer,
     },
   });
 };

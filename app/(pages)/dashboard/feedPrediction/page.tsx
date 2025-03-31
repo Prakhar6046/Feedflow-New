@@ -15,6 +15,8 @@ import jsPDF from "jspdf";
 import { NextPage } from "next";
 import { useState } from "react";
 import { createRoot } from "react-dom/client";
+import Loader from "@/app/_components/Loader";
+import ProductionManagerFilter from "@/app/_components/ProductionManagerFilter";
 const Page: NextPage = () => {
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
@@ -321,6 +323,32 @@ const Page: NextPage = () => {
           </Box>
         </Stack>
       </TabContext>
+      {/* <ProductionManagerFilter
+        // allFarms={allFarms}
+        // allUnits={allUnits}
+        // handleYearChange={handleYearChange}
+        // selectedAverage={selectedAverage}
+        handleResetFilters={handleResetFilters}
+        // selectedDropDownUnits={
+        //   selectedDropDownUnits ? selectedDropDownUnits : []
+        // }
+        // selectedDropDownYears={
+        //   selectedDropDownYears ? selectedDropDownYears : []
+        // }
+        // selectedDropDownfarms={
+        //   selectedDropDownfarms ? selectedDropDownfarms : []
+        // }
+        // setSelectedDropDownfarms={setSelectedDropDownfarms}
+        // setSelectedDropDownUnits={setSelectedDropDownUnits}
+        // setEndMonth={setEndMonth}
+        // setStartMonth={setStartMonth}
+        // setSelectedAverage={setSelectedAverage}
+        // startMonth={Number(startMonth)}
+        // endMonth={Number(endMonth)}
+        // createXlsxFile={CreateXlsxReport}
+        selectedView={"feed prediction"}
+        farmsList={farms}
+      /> */}
       <Button
         id="basic-button"
         type="button"

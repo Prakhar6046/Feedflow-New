@@ -24,24 +24,36 @@ import "primereact/resources/primereact.css";
 import "primereact/resources/themes/lara-light-indigo/theme.css";
 import React, { useEffect, useState } from "react";
 import { averagesDropdown, months } from "../_lib/utils";
+import { Farm } from "../_typeModels/Farm";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import {
+  commonFilterAction,
+  selectAllFarms,
+  selectAllUnits,
+  selectDropDownYears,
+  selectEndMonth,
+  selectSelectedAverage,
+  selectSelectedFarms,
+  selectSelectedUnits,
+  selectStartMonth,
+} from "@/lib/features/commonFilters/commonFilters";
 interface Props {
   selectedView: string | undefined;
-  selectedAverage: String;
-  setSelectedAverage: (val: any) => void;
-  selectedDropDownfarms: { id: string; option: string }[] | [];
-  allFarms: { option: string; id: string }[];
-  allUnits: { option: string; id: string }[];
-  selectedDropDownUnits: { id: string; option: string }[] | [];
-  selectedDropDownYears: Array<number> | [] | any;
-  setEndMonth: (val: number) => void;
-  setStartMonth: (val: number) => void;
-  handleYearChange: (e: any) => void;
-  startMonth: number;
-  endMonth: number;
-  setSelectedDropDownfarms: any;
-  setSelectedDropDownUnits: any;
+  // selectedAverage: String;
+  // setSelectedAverage: (val: any) => void;
+  // selectedDropDownfarms: { id: string; option: string }[] | [];
+  // selectedDropDownUnits: { id: string; option: string }[] | [];
+  // selectedDropDownYears: Array<number> | [] | any;
+  // setEndMonth: (val: number) => void;
+  // setStartMonth: (val: number) => void;
+  // handleYearChange: (e: any) => void;
+  // startMonth: number;
+  // endMonth: number;
+  // setSelectedDropDownfarms: any;
+  // setSelectedDropDownUnits: any;
   handleResetFilters: () => void;
-  createXlsxFile: (e: React.MouseEvent<HTMLSpanElement, MouseEvent>) => void;
+  // createXlsxFile: (e: React.MouseEvent<HTMLSpanElement, MouseEvent>) => void;
+  farmsList: Farm[];
 }
 
 const ITEM_HEIGHT = 48;
@@ -56,24 +68,34 @@ const MenuProps = {
 };
 function ProductionManagerFilter({
   selectedView,
-  selectedAverage,
-  setSelectedAverage,
-  selectedDropDownfarms,
-  allFarms,
-  selectedDropDownUnits,
-  allUnits,
-  selectedDropDownYears,
-  setEndMonth,
-  setStartMonth,
-  handleYearChange,
-  startMonth,
-  endMonth,
-  setSelectedDropDownfarms,
-  setSelectedDropDownUnits,
+  // selectedAverage,
+  // setSelectedAverage,
+  // selectedDropDownfarms,
+  // allFarms,
+  // selectedDropDownUnits,
+  // allUnits,
+  // selectedDropDownYears,
+  // setEndMonth,
+  // setStartMonth,
+  // handleYearChange,
+  // startMonth,
+  // endMonth,
+  // setSelectedDropDownfarms,
+  // setSelectedDropDownUnits,
   handleResetFilters,
-  createXlsxFile,
+  // createXlsxFile,
+  farmsList,
 }: Props) {
   const router = useRouter();
+  const dispatch = useAppDispatch();
+  const allFarms = useAppSelector(selectAllFarms);
+  const allUnits = useAppSelector(selectAllUnits);
+  const selectedDropDownfarms = useAppSelector(selectSelectedFarms);
+  const selectedDropDownUnits = useAppSelector(selectSelectedUnits);
+  const selectedDropDownYears = useAppSelector(selectDropDownYears);
+  const startMonth = useAppSelector(selectStartMonth);
+  const endMonth = useAppSelector(selectEndMonth);
+  const selectedAverage = useAppSelector(selectSelectedAverage);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open4 = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -95,6 +117,16 @@ function ProductionManagerFilter({
       setUnits(allUnits);
     }
   }, [allFarms, allUnits]);
+  useEffect(() => {
+    if (farmsList) {
+      let customFarms: any = farmsList.map((farm: Farm) => {
+        return { option: farm.name, id: farm.id };
+      });
+      // customFarms.unshift({ code: "0", option: "All farms" });
+      dispatch(commonFilterAction.setAllFarms(customFarms));
+      dispatch(commonFilterAction.setSelectedDropDownfarms(customFarms));
+    }
+  }, [farmsList]);
   return (
     <Box>
       <Grid container spacing={2} mt={1}>
@@ -120,7 +152,9 @@ function ProductionManagerFilter({
               </InputLabel>
               <MultiSelect
                 value={selectedDropDownfarms}
-                onChange={(e) => setSelectedDropDownfarms(e.value)}
+                onChange={(e) =>
+                  dispatch(commonFilterAction.setSelectedDropDownfarms(e.value))
+                }
                 options={farms}
                 optionLabel="option"
                 display="chip"
@@ -171,7 +205,9 @@ function ProductionManagerFilter({
 
               <MultiSelect
                 value={selectedDropDownUnits}
-                onChange={(e) => setSelectedDropDownUnits(e.value)}
+                onChange={(e) =>
+                  dispatch(commonFilterAction.setSelectedDropDownUnits(e.value))
+                }
                 options={units}
                 optionLabel="option"
                 display="chip"
@@ -234,7 +270,11 @@ function ProductionManagerFilter({
                     ? false
                     : true
                 }
-                onChange={(e) => setSelectedAverage(e.target.value)}
+                onChange={(e) =>
+                  dispatch(
+                    commonFilterAction.setSelectedAverage(e.target.value)
+                  )
+                }
               >
                 {averagesDropdown.map((data, i) => {
                   return (
@@ -279,7 +319,11 @@ function ProductionManagerFilter({
                     label="Select Year"
                     multiple
                     value={selectedDropDownYears}
-                    onChange={(e) => handleYearChange(e)}
+                    onChange={(e) =>
+                      dispatch(
+                        commonFilterAction.handleYearChange(e.target.value)
+                      )
+                    }
                     input={<OutlinedInput label="Select Year" />}
                     renderValue={(selected) => selected.join(", ")}
                     MenuProps={MenuProps}
@@ -316,7 +360,11 @@ function ProductionManagerFilter({
                     id="demo-simple-select"
                     label="Start month"
                     value={startMonth}
-                    onChange={(e) => setStartMonth(Number(e.target.value))}
+                    onChange={(e) =>
+                      dispatch(
+                        commonFilterAction.setStartMonth(Number(e.target.value))
+                      )
+                    }
                   >
                     {months.map((month) => (
                       <MenuItem value={month.id} key={month.id}>
@@ -348,7 +396,11 @@ function ProductionManagerFilter({
                     id="demo-simple-select"
                     label="End month"
                     value={endMonth}
-                    onChange={(e) => setEndMonth(Number(e.target.value))}
+                    onChange={(e) =>
+                      dispatch(
+                        commonFilterAction.setEndMonth(Number(e.target.value))
+                      )
+                    }
                   >
                     {months.map((month) => (
                       <MenuItem
