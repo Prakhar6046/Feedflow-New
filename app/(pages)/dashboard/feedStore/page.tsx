@@ -267,7 +267,7 @@ const Page: NextPage<Props> = ({}) => {
         </Grid>
 
         <Grid item xs={12}>
-          <TabContext>
+          <TabContext value={"farm1"}>
             {/* value={value} */}
 
             <Box mb={2}>
