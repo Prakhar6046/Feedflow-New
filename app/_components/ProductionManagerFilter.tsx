@@ -37,23 +37,12 @@ import {
   selectSelectedUnits,
   selectStartMonth,
 } from "@/lib/features/commonFilters/commonFilters";
+import { FarmGroup } from "../_typeModels/production";
 interface Props {
-  selectedView: string | undefined;
-  // selectedAverage: String;
-  // setSelectedAverage: (val: any) => void;
-  // selectedDropDownfarms: { id: string; option: string }[] | [];
-  // selectedDropDownUnits: { id: string; option: string }[] | [];
-  // selectedDropDownYears: Array<number> | [] | any;
-  // setEndMonth: (val: number) => void;
-  // setStartMonth: (val: number) => void;
-  // handleYearChange: (e: any) => void;
-  // startMonth: number;
-  // endMonth: number;
-  // setSelectedDropDownfarms: any;
-  // setSelectedDropDownUnits: any;
-  handleResetFilters: () => void;
-  // createXlsxFile: (e: React.MouseEvent<HTMLSpanElement, MouseEvent>) => void;
+  selectedView?: string | undefined;
   farmsList: Farm[];
+  groupedData: FarmGroup[];
+  setProductionData: (val: FarmGroup[]) => void;
 }
 
 const ITEM_HEIGHT = 48;
@@ -68,23 +57,9 @@ const MenuProps = {
 };
 function ProductionManagerFilter({
   selectedView,
-  // selectedAverage,
-  // setSelectedAverage,
-  // selectedDropDownfarms,
-  // allFarms,
-  // selectedDropDownUnits,
-  // allUnits,
-  // selectedDropDownYears,
-  // setEndMonth,
-  // setStartMonth,
-  // handleYearChange,
-  // startMonth,
-  // endMonth,
-  // setSelectedDropDownfarms,
-  // setSelectedDropDownUnits,
-  handleResetFilters,
-  // createXlsxFile,
   farmsList,
+  groupedData,
+  setProductionData,
 }: Props) {
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -97,26 +72,350 @@ function ProductionManagerFilter({
   const endMonth = useAppSelector(selectEndMonth);
   const selectedAverage = useAppSelector(selectSelectedAverage);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const open4 = Boolean(anchorEl);
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalOpenNext, setIsModalOpenNext] = useState(false);
   const currentYear = dayjs().year();
   const years = Array.from({ length: 6 }, (_, i) => currentYear - i);
   const [farms, setFarms] = useState<any>([]);
   const [units, setUnits] = useState<any>([]);
+  const handleResetFilters = () => {
+    dispatch(commonFilterAction.setSelectedDropDownfarms(allFarms));
+    dispatch(commonFilterAction.setSelectedDropDownUnits([]));
+    dispatch(
+      commonFilterAction.setSelectedDropDownYears([new Date().getFullYear()])
+    );
+    dispatch(commonFilterAction.setSelectedAverage(averagesDropdown[0]));
+    dispatch(commonFilterAction.setStartMonth(new Date().getMonth() + 1));
+    dispatch(commonFilterAction.setEndMonth(new Date().getMonth() + 1));
+  };
   useEffect(() => {
     if (allFarms || allUnits) {
       setFarms(allFarms);
       setUnits(allUnits);
     }
   }, [allFarms, allUnits]);
+  useEffect(() => {
+    if (selectedDropDownfarms) {
+      const getProductionUnits = (
+        dynamicFarms: {
+          id: string;
+          option: string;
+        }[],
+        detailedFarms: Farm[]
+      ) => {
+        return dynamicFarms.map((dynamicFarm) => {
+          const matchedFarm = detailedFarms.find(
+            (farm) => farm.id === dynamicFarm.id
+          );
+          return {
+            farmId: dynamicFarm.id,
+            option: dynamicFarm.option,
+            productionUnits: matchedFarm?.productionUnits || [],
+          };
+        });
+      };
+      const result = getProductionUnits(selectedDropDownfarms, farmsList);
+      let customUnits = result.flatMap((farm) =>
+        farm?.productionUnits.map((unit) => ({
+          id: unit.id,
+          option: unit.name,
+        }))
+      );
+      dispatch(commonFilterAction.setAllUnits(customUnits));
+      dispatch(commonFilterAction.setSelectedDropDownUnits(customUnits));
+    }
+  }, [selectedDropDownfarms]);
+  useEffect(() => {
+    if (!groupedData || !groupedData.length) return;
+    // Utility: Filter by farms
+    const filterByFarms = (
+      data: FarmGroup[],
+      selectedFarms: { id: string; option: string }[] | any
+    ) => {
+      if (!selectedFarms?.length) return data;
+      const selectedFarmIds = selectedFarms?.map(
+        (farm: { option: string; id: string }) => farm?.id
+      );
+      return data
+        .map((farm) => ({
+          ...farm,
+          units: farm.units.filter((unit: any) =>
+            selectedFarmIds.includes(unit.farm?.id)
+          ),
+        }))
+        .filter((farm) => farm.units.length > 0);
+    };
+
+    // Utility: Filter by units
+    const filterByUnits = (
+      data: FarmGroup[],
+      selectedUnits: { id: string; option: string }[] | any
+    ) => {
+      if (!selectedUnits?.length) return data;
+      const selectedUnitIds = selectedUnits?.map(
+        (unit: { id: string; option: string }) => unit?.id
+      );
+      return data
+        .map((farm) => ({
+          ...farm,
+          units: farm.units.filter((unit) =>
+            selectedUnitIds.includes(unit.productionUnit?.id)
+          ),
+        }))
+        .filter((farm) => farm.units.length > 0);
+    };
+
+    // Utility: Filter by years
+    const filterByYears = (data: FarmGroup[], selectedYears: Array<number>) => {
+      if (!selectedYears?.length) return data;
+      return data
+        .map((farm) => ({
+          ...farm,
+          units: farm.units.filter((unit: any) =>
+            selectedYears?.includes(new Date(unit.createdAt).getFullYear())
+          ),
+        }))
+        .filter((farm) => farm.units.length > 0);
+    };
+
+    // Utility: Filter by months
+    const filterByMonths = (
+      data: FarmGroup[],
+      years: Array<number>,
+      startMonth: number,
+      endMonth: number
+    ) => {
+      if (!years.length || !startMonth || !endMonth) return data;
+
+      const startDates = years.map(
+        (year) => new Date(`${year}-${String(startMonth).padStart(2, "0")}-01`)
+      );
+      const endDates = years.map((year) => {
+        const end = new Date(`${year}-${String(endMonth).padStart(2, "0")}-01`);
+        end.setMonth(end.getMonth() + 1); // Include the end of the month
+        return end;
+      });
+
+      return data
+        .map((farm) => ({
+          ...farm,
+          units: farm.units.filter((unit: any) => {
+            const createdAt = new Date(unit.createdAt);
+            return startDates.some(
+              (start, index) =>
+                createdAt >= start && createdAt < endDates[index]
+            );
+          }),
+        }))
+        .filter((farm) => farm.units.length > 0);
+    };
+
+    // Utility: Calculate averages
+    const calculateAverages = (data: FarmGroup[], type: string) => {
+      const calculateIndividualAverages = (history: any, fields: any) => {
+        const totals = fields.reduce((acc: any, field: any) => {
+          acc[field] = 0;
+          return acc;
+        }, {});
+        let count = 0;
+
+        history.forEach((entry: any) => {
+          fields.forEach((field: any) => {
+            totals[field] += parseFloat(entry[field]) || 0;
+          });
+          count += 1;
+        });
+
+        return fields.reduce((averages: any, field: any) => {
+          averages[field] = count > 0 ? totals[field] / count : 0;
+          return averages;
+        }, {});
+      };
+
+      switch (type) {
+        case "Monthly average":
+          return data.map((farm) => ({
+            ...farm,
+            units: farm.units.map((unit: any) => ({
+              ...unit,
+              monthlyAverages: calculateIndividualAverages(
+                unit.fishManageHistory.filter((entry: any) => {
+                  const createdAt = new Date(entry.createdAt);
+                  return (
+                    createdAt.getMonth() + 1 >= Number(startMonth) &&
+                    createdAt.getMonth() + 1 <= Number(endMonth) &&
+                    selectedDropDownYears.includes(createdAt.getFullYear())
+                  );
+                }),
+                [
+                  "biomass",
+                  "fishCount",
+                  "meanLength",
+                  "meanWeight",
+                  "stockingDensityKG",
+                  "stockingDensityNM",
+                ]
+              ),
+
+              monthlyAveragesWater: calculateIndividualAverages(
+                unit.WaterManageHistoryAvgrage.filter((entry: any) => {
+                  const createdAt = new Date(entry.createdAt);
+                  return (
+                    createdAt.getMonth() + 1 >= Number(startMonth) &&
+                    createdAt.getMonth() + 1 <= Number(endMonth) &&
+                    selectedDropDownYears.includes(createdAt.getFullYear())
+                  );
+                }),
+
+                [
+                  "DO",
+                  "NH4",
+                  "NO2",
+                  "NO3",
+                  "TSS",
+                  "ph",
+                  "visibility",
+                  "waterTemp",
+                ]
+              ),
+            })),
+          }));
+
+        case "Yearly average":
+          return data.map((farm) => ({
+            ...farm,
+            units: farm.units.map((unit: any) => ({
+              ...unit,
+              yearlyAverages: calculateIndividualAverages(
+                unit.fishManageHistory.filter((entry: any) => {
+                  const createdAt = new Date(entry.createdAt);
+                  return selectedDropDownYears.includes(
+                    createdAt.getFullYear()
+                  );
+                }),
+                [
+                  "biomass",
+                  "fishCount",
+                  "meanLength",
+                  "meanWeight",
+                  "stockingDensityKG",
+                  "stockingDensityNM",
+                ]
+              ),
+              yearlyAveragesWater: calculateIndividualAverages(
+                unit.WaterManageHistoryAvgrage.filter((entry: any) => {
+                  const createdAt = new Date(entry.createdAt);
+                  return selectedDropDownYears.includes(
+                    createdAt.getFullYear()
+                  );
+                }),
+                [
+                  "DO",
+                  "NH4",
+                  "NO2",
+                  "NO3",
+                  "TSS",
+                  "ph",
+                  "visibility",
+                  "waterTemp",
+                ]
+              ),
+            })),
+          }));
+
+        case "All-time average":
+          return data.map((farm) => ({
+            ...farm,
+            units: farm.units.map((unit: any) => ({
+              ...unit,
+              allTimeAverages: calculateIndividualAverages(
+                unit.fishManageHistory || [],
+                [
+                  "biomass",
+                  "fishCount",
+                  "meanLength",
+                  "meanWeight",
+                  "stockingDensityKG",
+                  "stockingDensityNM",
+                ]
+              ),
+              allTimeAveragesWater: calculateIndividualAverages(
+                unit.WaterManageHistoryAvgrage || [],
+                [
+                  "DO",
+                  "NH4",
+                  "NO2",
+                  "NO3",
+                  "TSS",
+                  "ph",
+                  "visibility",
+                  "waterTemp",
+                ]
+              ),
+            })),
+          }));
+
+        case "Individual average":
+          return data.map((farm) => ({
+            ...farm,
+            units: farm.units.map((unit: any) => ({
+              ...unit,
+              individualAverages: calculateIndividualAverages(
+                unit.fishManageHistory || [],
+                [
+                  "biomass",
+                  "fishCount",
+                  "meanLength",
+                  "meanWeight",
+                  "stockingDensityKG",
+                  "stockingDensityNM",
+                ]
+              ),
+              individualAveragesWater: calculateIndividualAverages(
+                unit.WaterManageHistoryAvgrage || [],
+                [
+                  "DO",
+                  "NH4",
+                  "NO2",
+                  "NO3",
+                  "TSS",
+                  "ph",
+                  "visibility",
+                  "waterTemp",
+                ]
+              ),
+            })),
+          }));
+
+        default:
+          return data;
+      }
+    };
+
+    // Apply filters sequentially
+    let filteredData = groupedData;
+    filteredData = filterByFarms(filteredData, selectedDropDownfarms);
+    filteredData = filterByUnits(filteredData, selectedDropDownUnits);
+    filteredData = filterByYears(filteredData, selectedDropDownYears);
+    filteredData = filterByMonths(
+      filteredData,
+      selectedDropDownYears,
+      Number(startMonth),
+      Number(endMonth)
+    );
+
+    // Apply averages
+    const processedData = calculateAverages(filteredData, selectedAverage);
+
+    setProductionData(processedData);
+  }, [
+    selectedDropDownfarms,
+    selectedDropDownUnits,
+    selectedDropDownYears,
+    startMonth,
+    endMonth,
+    selectedAverage,
+  ]);
   useEffect(() => {
     if (farmsList) {
       let customFarms: any = farmsList.map((farm: Farm) => {
