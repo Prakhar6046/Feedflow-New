@@ -1,5 +1,5 @@
 "use client";
-import { getLocalItem, removeLocalItem } from "@/app/_lib/utils";
+import { getFullYear, getLocalItem, removeLocalItem } from "@/app/_lib/utils";
 import { Farm } from "@/app/_typeModels/Farm";
 import {
   FishManageHistoryGroup,
@@ -13,6 +13,7 @@ import html2canvas from "html2canvas";
 import { createRoot } from "react-dom/client";
 import { useRouter } from "next/navigation";
 import Loader from "../../Loader";
+import dayjs from "dayjs";
 type ChartDataType = {
   selectedCharts: string[];
   xAxisData: string[];
@@ -117,7 +118,10 @@ function FishChartDownloadPreview({
               >
                 {productions[0]?.productionUnit?.name}{" "}
                 {productions[0]?.farm?.name} <br />
-                <span>2025/01/23 to 2025/01/23</span>
+                <span>
+                  {dayjs(chartData?.startDate).format("YYYY/MM/DD")} to
+                  {` ${dayjs(chartData?.endDate).format("YYYY/MM/DD")}`}
+                </span>
               </p>
             </div>
           </div>
@@ -340,45 +344,57 @@ function FishChartDownloadPreview({
                   </tr>
                 </thead>
                 <tbody>
-                  {chartData?.groupedData.units.flatMap(
-                    (unit) =>
-                      unit.fishManageHistory?.map((history: any) => (
-                        <tr key={history.date}>
-                          <td
-                            style={{
-                              border: "1px solid #ccc",
-                              padding: "8px 12px",
-                            }}
-                          >
-                            {history.date}
-                          </td>
-                          <td
-                            style={{
-                              border: "1px solid #ccc",
-                              padding: "8px 12px",
-                            }}
-                          >
-                            {history[yDataKey]}
-                          </td>
-                          <td
-                            style={{
-                              border: "1px solid #ccc",
-                              padding: "8px 12px",
-                            }}
-                          >
-                            {history.change || ""}
-                          </td>
-                          <td
-                            style={{
-                              border: "1px solid #ccc",
-                              padding: "8px 12px",
-                            }}
-                          >
-                            {history.cumulative || ""}
-                          </td>
-                        </tr>
-                      )) || []
-                  )}
+                  {chartData?.groupedData.units.flatMap((unit) => {
+                    return (
+                      unit.fishManageHistory
+                        ?.filter((value: any) => {
+                          const dateString: any = getFullYear(value?.createdAt);
+                          const date = dayjs(dateString);
+                          return (
+                            date.unix() >= dayjs(chartData.startDate).unix() &&
+                            date.unix() <= dayjs(chartData.endDate).unix()
+                          );
+                        })
+                        .map((history: any) => {
+                          return (
+                            <tr key={history.date}>
+                              <td
+                                style={{
+                                  border: "1px solid #ccc",
+                                  padding: "8px 12px",
+                                }}
+                              >
+                                {getFullYear(history?.createdAt)}
+                              </td>
+                              <td
+                                style={{
+                                  border: "1px solid #ccc",
+                                  padding: "8px 12px",
+                                }}
+                              >
+                                {history[yDataKey]}
+                              </td>
+                              <td
+                                style={{
+                                  border: "1px solid #ccc",
+                                  padding: "8px 12px",
+                                }}
+                              >
+                                {history.change || ""}
+                              </td>
+                              <td
+                                style={{
+                                  border: "1px solid #ccc",
+                                  padding: "8px 12px",
+                                }}
+                              >
+                                {history.cumulative || ""}
+                              </td>
+                            </tr>
+                          );
+                        }) || []
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
@@ -432,8 +448,35 @@ function FishChartDownloadPreview({
       setChartData(data);
     }
   }, []);
+  useEffect(() => {
+    if (isReportDownload) {
+      document.body.style.position = "fixed";
+      document.body.style.width = "100%";
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.position = "";
+      document.body.style.width = "";
+      document.body.style.overflow = "";
+    }
+
+    return () => {
+      document.body.style.position = "";
+      document.body.style.width = "";
+      document.body.style.overflow = "";
+    };
+  }, [isReportDownload]);
   if (isReportDownload) {
-    return <Loader />;
+    return (
+      <Box
+        sx={{
+          position: "absolute",
+          width: "100%",
+          height: "100%",
+        }}
+      >
+        <Loader />
+      </Box>
+    );
   }
   return (
     <Stack style={{ padding: "20px" }}>
@@ -524,7 +567,10 @@ function FishChartDownloadPreview({
                       >
                         {productions[0]?.productionUnit?.name}{" "}
                         {productions[0]?.farm?.name} <br />
-                        <span>2025/01/23 to 2025/01/23</span>
+                        <span>
+                          {dayjs(chartData?.startDate).format("YYYY/MM/DD")} to
+                          {` ${dayjs(chartData?.endDate).format("YYYY/MM/DD")}`}
+                        </span>
                       </Box>
                     </Typography>
                   </Box>
@@ -796,45 +842,62 @@ function FishChartDownloadPreview({
                             </tr>
                           </thead>
                           <tbody>
-                            {chartData?.groupedData.units.flatMap(
-                              (unit) =>
-                                unit.fishManageHistory?.map((history: any) => (
-                                  <tr key={history.date}>
-                                    <td
-                                      style={{
-                                        border: "1px solid #ccc",
-                                        padding: "8px 12px",
-                                      }}
-                                    >
-                                      {history.date}
-                                    </td>
-                                    <td
-                                      style={{
-                                        border: "1px solid #ccc",
-                                        padding: "8px 12px",
-                                      }}
-                                    >
-                                      {history[yDataKey]}
-                                    </td>
-                                    <td
-                                      style={{
-                                        border: "1px solid #ccc",
-                                        padding: "8px 12px",
-                                      }}
-                                    >
-                                      {history.change || ""}
-                                    </td>
-                                    <td
-                                      style={{
-                                        border: "1px solid #ccc",
-                                        padding: "8px 12px",
-                                      }}
-                                    >
-                                      {history.cumulative || ""}
-                                    </td>
-                                  </tr>
-                                )) || []
-                            )}
+                            {chartData?.groupedData.units.flatMap((unit) => {
+                              return (
+                                unit.fishManageHistory
+                                  ?.filter((value: any) => {
+                                    const dateString: any = getFullYear(
+                                      value?.createdAt
+                                    );
+
+                                    const date = dayjs(dateString);
+                                    return (
+                                      date.unix() >=
+                                        dayjs(chartData.startDate).unix() &&
+                                      date.unix() <=
+                                        dayjs(chartData.endDate).unix()
+                                    );
+                                  })
+                                  .map((history: any) => {
+                                    return (
+                                      <tr key={history.date}>
+                                        <td
+                                          style={{
+                                            border: "1px solid #ccc",
+                                            padding: "8px 12px",
+                                          }}
+                                        >
+                                          {getFullYear(history?.createdAt)}
+                                        </td>
+                                        <td
+                                          style={{
+                                            border: "1px solid #ccc",
+                                            padding: "8px 12px",
+                                          }}
+                                        >
+                                          {history[yDataKey]}
+                                        </td>
+                                        <td
+                                          style={{
+                                            border: "1px solid #ccc",
+                                            padding: "8px 12px",
+                                          }}
+                                        >
+                                          {history.change || ""}
+                                        </td>
+                                        <td
+                                          style={{
+                                            border: "1px solid #ccc",
+                                            padding: "8px 12px",
+                                          }}
+                                        >
+                                          {history.cumulative || ""}
+                                        </td>
+                                      </tr>
+                                    );
+                                  }) || []
+                              );
+                            })}
                           </tbody>
                         </table>
                       </Grid>

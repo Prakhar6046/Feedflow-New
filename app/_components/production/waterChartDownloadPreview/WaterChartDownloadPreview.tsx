@@ -371,47 +371,58 @@ function WaterChartDownloadPreview({
                 <tbody>
                   {chartData?.groupedData.units.flatMap((unit) => {
                     return (
-                      unit.waterManageHistory?.map((history: any) => {
-                        const dateString: any = getFullYear(
-                          history?.currentDate
-                        );
-                        const date = dayjs(dateString);
-                        const month = date.format("MMM");
-                        const predictions =
-                          productions[0]?.productionUnit
-                            ?.YearBasedPredicationProductionUnit?.[0] || {};
-                        const predictedValue =
-                          predictions?.[yDataKey]?.[month] || "";
+                      unit.waterManageHistory
+                        ?.filter((value: any) => {
+                          const dateString: any = getFullYear(
+                            value?.currentDate
+                          );
+                          const date = dayjs(dateString);
+                          return (
+                            date.unix() >= dayjs(chartData.startDate).unix() &&
+                            date.unix() <= dayjs(chartData.endDate).unix()
+                          );
+                        })
+                        ?.map((history: any) => {
+                          const dateString: any = getFullYear(
+                            history?.currentDate
+                          );
+                          const date = dayjs(dateString);
+                          const month = date.format("MMM");
+                          const predictions =
+                            productions[0]?.productionUnit
+                              ?.YearBasedPredicationProductionUnit?.[0] || {};
+                          const predictedValue =
+                            predictions?.[yDataKey]?.[month] || "";
 
-                        return (
-                          <tr key={history.currentDate}>
-                            <td
-                              style={{
-                                border: "1px solid #ccc",
-                                padding: "8px 12px",
-                              }}
-                            >
-                              {getFullYear(history?.currentDate)}
-                            </td>
-                            <td
-                              style={{
-                                border: "1px solid #ccc",
-                                padding: "8px 12px",
-                              }}
-                            >
-                              {history[yDataKey]}
-                            </td>
-                            <td
-                              style={{
-                                border: "1px solid #ccc",
-                                padding: "8px 12px",
-                              }}
-                            >
-                              {predictedValue}
-                            </td>
-                          </tr>
-                        );
-                      }) || []
+                          return (
+                            <tr key={history.currentDate}>
+                              <td
+                                style={{
+                                  border: "1px solid #ccc",
+                                  padding: "8px 12px",
+                                }}
+                              >
+                                {getFullYear(history?.currentDate)}
+                              </td>
+                              <td
+                                style={{
+                                  border: "1px solid #ccc",
+                                  padding: "8px 12px",
+                                }}
+                              >
+                                {history[yDataKey]}
+                              </td>
+                              <td
+                                style={{
+                                  border: "1px solid #ccc",
+                                  padding: "8px 12px",
+                                }}
+                              >
+                                {predictedValue}
+                              </td>
+                            </tr>
+                          );
+                        }) || []
                     );
                   })}
                 </tbody>
@@ -464,19 +475,34 @@ function WaterChartDownloadPreview({
       setChartData(data);
     }
   }, []);
-  console.log(
-    "productions",
-    productions,
-    predictedData,
-    chartData?.startDate,
-    chartData?.endDate
-  );
+  useEffect(() => {
+    if (isReportDownload) {
+      document.body.style.position = "fixed";
+      document.body.style.width = "100%";
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.position = "";
+      document.body.style.width = "";
+      document.body.style.overflow = "";
+    }
 
+    return () => {
+      document.body.style.position = "";
+      document.body.style.width = "";
+      document.body.style.overflow = "";
+    };
+  }, [isReportDownload]);
   if (isReportDownload) {
     return (
-      <div className="overflow-hidden">
+      <Box
+        sx={{
+          position: "absolute",
+          width: "100%",
+          height: "100%",
+        }}
+      >
         <Loader />
-      </div>
+      </Box>
     );
   }
   return (

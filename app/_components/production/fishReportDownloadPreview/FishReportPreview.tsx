@@ -1,5 +1,5 @@
 "use client";
-import { getLocalItem, removeLocalItem } from "@/app/_lib/utils";
+import { getFullYear, getLocalItem, removeLocalItem } from "@/app/_lib/utils";
 import { Farm } from "@/app/_typeModels/Farm";
 import {
   FishManageHistoryGroup,
@@ -110,7 +110,7 @@ function FishReportPreview({ productions }: { productions: Production[] }) {
                   }}
                 >
                   {prodUnit?.productionUnit?.name} {prodUnit?.farm?.name} <br />
-                  <span>2025/01/23 to 2025/01/23</span>
+                  {/* <span>2025/01/23 to 2025/01/23</span> */}
                 </p>
               </div>
             </div>
@@ -368,7 +368,7 @@ function FishReportPreview({ productions }: { productions: Production[] }) {
                                   padding: "8px 12px",
                                 }}
                               >
-                                {history.date}
+                                {getFullYear(history?.createdAt)}
                               </td>
                               <td
                                 style={{
@@ -451,8 +451,35 @@ function FishReportPreview({ productions }: { productions: Production[] }) {
       setChartData(data);
     }
   }, []);
+  useEffect(() => {
+    if (isReportDownload) {
+      document.body.style.position = "fixed";
+      document.body.style.width = "100%";
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.position = "";
+      document.body.style.width = "";
+      document.body.style.overflow = "";
+    }
+
+    return () => {
+      document.body.style.position = "";
+      document.body.style.width = "";
+      document.body.style.overflow = "";
+    };
+  }, [isReportDownload]);
   if (isReportDownload) {
-    return <Loader />;
+    return (
+      <Box
+        sx={{
+          position: "absolute",
+          width: "100%",
+          height: "100%",
+        }}
+      >
+        <Loader />
+      </Box>
+    );
   }
   return (
     <Stack style={{ padding: "20px" }}>
@@ -544,7 +571,7 @@ function FishReportPreview({ productions }: { productions: Production[] }) {
                         >
                           {prodUnit?.productionUnit?.name}{" "}
                           {prodUnit?.farm?.name} <br />
-                          <span>2025/01/23 to 2025/01/23</span>
+                          {/* <span>2025/01/23 to 2025/01/23</span> */}
                         </Box>
                       </Typography>
                     </Box>
@@ -853,7 +880,7 @@ function FishReportPreview({ productions }: { productions: Production[] }) {
                                               padding: "8px 12px",
                                             }}
                                           >
-                                            {history.date}
+                                            {getFullYear(history?.createdAt)}
                                           </td>
                                           <td
                                             style={{

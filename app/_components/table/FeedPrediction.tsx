@@ -329,6 +329,36 @@ const FeedPredictionTable = ({ farms, productions }: Props) => {
       setProductionData(groupedData);
     }
   }, []);
+  useEffect(() => {
+    if (loading) {
+      document.body.style.position = "fixed";
+      document.body.style.width = "100%";
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.position = "";
+      document.body.style.width = "";
+      document.body.style.overflow = "";
+    }
+
+    return () => {
+      document.body.style.position = "";
+      document.body.style.width = "";
+      document.body.style.overflow = "";
+    };
+  }, [loading]);
+  if (loading) {
+    return (
+      <Box
+        sx={{
+          position: "absolute",
+          width: "100%",
+          height: "100%",
+        }}
+      >
+        <Loader />
+      </Box>
+    );
+  }
   return (
     <>
       <TabContext value={String(selectedFeeding)}>
