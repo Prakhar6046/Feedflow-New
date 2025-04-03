@@ -38,9 +38,7 @@ const AddFeedFed: React.FC<Props> = ({ setOpen, open, selectedProduction }) => {
 
   const handleClose = () => setOpen(false);
 
-  const onSubmit: SubmitHandler<FormInputs> = async (data) => {
-    console.log(data);
-  };
+  const onSubmit: SubmitHandler<FormInputs> = async (data) => {};
 
   useEffect(() => {
     if (selectedProduction) {

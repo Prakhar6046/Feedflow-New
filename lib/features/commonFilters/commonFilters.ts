@@ -28,7 +28,6 @@ const commonFilterSlice = createSlice({
       state.selectedDropDownfarms = action.payload;
     },
     setSelectedDropDownUnits: (state, action) => {
-      debugger;
       state.selectedDropDownUnits = action.payload;
     },
     setSelectedDropDownYears: (state, action) => {

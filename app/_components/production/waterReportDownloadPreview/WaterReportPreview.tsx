@@ -412,7 +412,6 @@ function WaterReportPreview({ productions }: { productions: Production[] }) {
                             );
                             const date = dayjs(dateString);
                             const month = date.format("MMM");
-                            console.log(unit);
 
                             const predictions =
                               unit?.productionUnit
@@ -955,7 +954,6 @@ function WaterReportPreview({ productions }: { productions: Production[] }) {
                                         );
                                         const date = dayjs(dateString);
                                         const month = date.format("MMM");
-                                        console.log(unit);
 
                                         const predictions =
                                           unit?.productionUnit

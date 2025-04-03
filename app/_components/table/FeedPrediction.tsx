@@ -346,6 +346,7 @@ const FeedPredictionTable = ({ farms, productions }: Props) => {
       document.body.style.overflow = "";
     };
   }, [loading]);
+
   if (loading) {
     return (
       <Box

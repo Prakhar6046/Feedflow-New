@@ -33,8 +33,6 @@ interface Props {
   farms: Farm[];
 }
 export default function FarmTable({ farms }: Props) {
-  console.log(farms);
-
   const router = useRouter();
   const pathName = usePathname();
   const dispatch = useAppDispatch();

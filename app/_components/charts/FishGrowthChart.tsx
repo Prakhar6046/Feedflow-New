@@ -21,8 +21,8 @@ ChartJS.register(
   Tooltip
 );
 interface IProps {
-  xAxisData: string[];
-  yData: string[];
+  xAxisData: (string | undefined)[];
+  yData: (string | undefined)[];
 }
 const FishGrowthChart = ({ xAxisData, yData }: IProps) => {
   const chartRef = useRef(null);
