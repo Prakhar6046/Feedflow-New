@@ -25,6 +25,7 @@ import { useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import FishGrowthChart from "../charts/FishGrowthChart";
 import Loader from "../Loader";
+import { calculateFishGrowth } from "@/app/_lib/utils";
 interface FormInputs {
   fishWeight: number;
   numberOfFishs: number;
@@ -81,144 +82,21 @@ function AdHoc() {
     },
     mode: "onChange",
   });
-  function calculateFBW(
-    fishWeight: number,
-    temp: number,
-    numberOfFishs: number,
-    expectedWaste: number,
-    period: number,
-    startDate: string
-  ) {
-    const IBW = fishWeight;
-    const T = temp;
-    let prevWeight = IBW;
-    let prevNumberOfFish = numberOfFishs;
-    let prevFishSize = IBW;
-    let prevGrowth = 0;
-    let newData = [];
-    function calculateNoOfFish(noOfFish: number, days: number) {
-      return (
-        noOfFish *
-        (1 - (Math.pow(expectedWaste / 100 + timeInterval, days) - 1))
-      );
-    }
-
-    function calculateFCRDE(fishWeight: number, de: number): number {
-      return (0.00643 * fishWeight + 13) / (de / 1.03);
-    }
-
-    function calculateFeedingRate(fishSize: number, de: number): number {
-      const power1 = Math.pow(fishSize, 0.33333);
-      const logPart = -0.003206 + 0.001705 * Math.log(waterTemp - 11.25);
-      const power2 = Math.pow(power1 + logPart * waterTemp, 3);
-      const fraction = power2 / fishSize - 1;
-      const part2 = (0.00643 * fishSize + 13) / (de / 1.03);
-
-      return fraction * part2 * 100;
-    }
-
-    function calculateFW(
-      IBW: number,
-      b: number,
-      TGC: number,
-      tValues: number[],
-      dValues: number[]
-    ) {
-      if (tValues.length !== dValues.length) {
-        throw new Error("tValues and dValues must have the same length");
-      }
-
-      // Compute summation of t * d
-      let sum_td = tValues.reduce(
-        (sum, t, index) => sum + t * dValues[index],
-        0
-      );
-
-      // Apply the formula
-      return Math.pow(Math.pow(IBW, b) + (TGC / 100) * sum_td, 1 / b);
-    }
-
-    function calculateGrowth(fcr: number, feedIntake: number, day: number) {
-      return fcr * feedIntake * day;
-    }
-    function calculateDate(date: string, day: number) {
-      return dayjs(date, "YYYY-MM-DD").add(day, "day").format("DD-MM-YYYY");
-    }
-    // Loop through the days and calculate values
-    for (let day = 1; day <= period; day += 1) {
-      const FBW = calculateFW(prevWeight, 0.35, 0.16, [T], [7]);
-      prevNumberOfFish =
-        day !== 1 ? calculateNoOfFish(prevNumberOfFish, 1) : prevNumberOfFish;
-
-      const estfcr = Math.floor(calculateFCRDE(prevWeight, DE) * 100) / 100;
-      let fishSize =
-        day === 1
-          ? prevFishSize
-          : Number((prevFishSize + prevGrowth).toFixed(3));
-
-      let prevFeedingRate = parseFloat(
-        calculateFeedingRate(
-          Number(parseFloat(String(fishSize)).toFixed(3)),
-          DE
-        ).toFixed(3)
-      );
-      let prevFeedIntake = (
-        (Number(prevFeedingRate.toFixed(2)) * fishSize) /
-        100
-      ).toFixed(3);
-
-      const growth = parseFloat(
-        calculateGrowth(estfcr, Number(prevFeedIntake), 1).toFixed(3)
-      );
-
-      const newRow = {
-        date: calculateDate(startDate, day),
-        days: day,
-        averageProjectedTemp: T,
-        numberOfFish: Math.round(prevNumberOfFish),
-        expectedWaste,
-        fishSize: fishSize.toFixed(3),
-        growth,
-        feedType:
-          prevWeight >= 50
-            ? "Tilapia Starter #3"
-            : prevWeight >= 25
-            ? "Tilapia Starter #2"
-            : "Tilapia Starter #1",
-        feedSize: prevWeight >= 50 ? "#3" : prevWeight >= 25 ? "#2" : "#1",
-        feedProtein: 400,
-        feedDE: 13.47,
-        feedPrice: 32,
-        estimatedFCR: estfcr,
-        feedIntake: prevFeedIntake,
-        partitionedFCR: 0.0,
-        feedingRate: prevFeedingRate.toFixed(2),
-        feedCost: 49409,
-      };
-
-      // Store new data
-      newData.push(newRow);
-      prevFishSize = fishSize;
-      prevGrowth = growth;
-      prevWeight = FBW;
-      prevFeedIntake = prevFeedIntake;
-      prevFeedingRate = prevFeedingRate;
-    }
-    setData(newData);
-  }
 
   const onSubmit: SubmitHandler<FormInputs> = (data) => {
     const formattedDate = dayjs(data.startDate).format("YYYY-MM-DD");
     if (data) {
-      setData([]);
-      calculateFBW(
+      const fishGrowthData = calculateFishGrowth(
         Number(data.fishWeight),
         Number(data.temp),
         Number(data.numberOfFishs),
         Number(data.expectedWaste),
         Number(data.period),
-        formattedDate
+        formattedDate,
+        1,
+        1
       );
+      setData(fishGrowthData);
     }
   };
 
