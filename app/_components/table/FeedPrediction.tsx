@@ -463,7 +463,7 @@ const FeedPredictionTable = ({ farms, productions }: Props) => {
         Create PDF
       </Button>
       {selectedFeeding === "feedingPlan" ? (
-        <FeedingPlan />
+        <FeedingPlan productionData={productionData} />
       ) : selectedFeeding === "feedingSummary" ? (
         <FeedingSummary />
       ) : (
