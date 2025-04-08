@@ -852,7 +852,10 @@ export const FeedPredictionHead = [
   "Partitioned FCR",
   "Feed Intake (g)",
 ];
+<<<<<<< HEAD
 
+=======
+>>>>>>> develop
 export function calculateFishGrowth(
   fishWeight: number,
   temp: number,

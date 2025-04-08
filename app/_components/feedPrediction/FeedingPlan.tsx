@@ -1,6 +1,9 @@
 "use clinet";
+import { calculateFishGrowth } from "@/app/_lib/utils";
+import { FarmGroup } from "@/app/_typeModels/production";
 import {
   Box,
+  Button,
   FormControl,
   Grid,
   InputLabel,
@@ -13,12 +16,28 @@ import {
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { Dayjs } from "dayjs";
-import React from "react";
-import { Controller, useForm } from "react-hook-form";
+import dayjs, { Dayjs } from "dayjs";
+import React, { useState } from "react";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { FishFeedingData } from "./AdHoc";
+import FishGrowthTable from "../table/FishGrowthTable";
+interface Props {
+  productionData: FarmGroup[] | undefined;
+}
 interface FormInputs {
-  startDate: Dayjs | null;
+  startDate: string;
   timeInterval: number;
+  period: number;
+  expectedWaste: number;
+  fishWeight: number;
+}
+export interface FarmsFishGrowth {
+  farm: string;
+  unit: string;
+  fishGrowthData: FishFeedingData[];
+}
+interface Fish {
+  data: FarmsFishGrowth[];
 }
 const timeIntervalOptions = [
   { id: 1, label: "Daily", value: 1 },
@@ -26,7 +45,8 @@ const timeIntervalOptions = [
   { id: 3, label: "Bi-Weekly", value: 14 },
   { id: 4, label: "Monthly", value: 30 },
 ];
-function FeedingPlan() {
+function FeedingPlan({ productionData }: Props) {
+  const [data, setData] = useState<Fish[]>();
   const {
     register,
     handleSubmit,
@@ -35,13 +55,73 @@ function FeedingPlan() {
     watch,
     formState: { errors },
   } = useForm<FormInputs>({
-    defaultValues: { startDate: null, timeInterval: 1 },
+    defaultValues: {
+      fishWeight: 2,
+      startDate: dayjs().format("YYYY-MM-DD"),
+      timeInterval: 1,
+      period: 30,
+      expectedWaste: 0.05,
+    },
     mode: "onChange",
   });
+  const onSubmit: SubmitHandler<FormInputs> = (data) => {
+    // console.log(productionData);
+    const formattedDate = dayjs(data.startDate).format("YYYY-MM-DD");
+    const fishGrowthData = productionData?.map((production) =>
+      production.units.map((unit) => {
+        return {
+          farm: production.farm,
+          unit: unit.productionUnit.name,
+          fishGrowthData: calculateFishGrowth(
+            Number(data.fishWeight),
+            Number(unit.waterTemp),
+            Number(unit.fishCount),
+            Number(data.expectedWaste),
+            Number(data.period),
+            formattedDate,
+            data.timeInterval,
+            13.47
+          ),
+        };
+      })
+    );
+    // setData([...fishGrowthData]);
+
+    // console.log(data);
+  };
+  console.log(data);
+
   return (
     <Stack>
-      <form>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <Grid container spacing={3} mt={2} mb={5} alignItems={"center"}>
+          <Grid item lg={3} md={4} sm={6} xs={12}>
+            <Box position={"relative"}>
+              <TextField
+                label="Fish Weight *"
+                type="text"
+                {...register("fishWeight")}
+                className="form-input"
+                focused
+                sx={{
+                  width: "100%",
+                }}
+              />
+              <Typography
+                variant="body1"
+                color="#555555AC"
+                sx={{
+                  position: "absolute",
+                  right: 13,
+                  top: "30%",
+                  backgroundColor: "white",
+                  paddingInline: "5px",
+                }}
+              >
+                g
+              </Typography>
+            </Box>
+          </Grid>
           <Grid item lg={3} md={4} sm={6} xs={12}>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <Controller
@@ -54,23 +134,23 @@ function FeedingPlan() {
                       {...field}
                       label="Start Date * "
                       className="form-input"
-                      sx={{
-                        width: "100%",
+                      sx={{ width: "100%" }}
+                      onChange={(date) => {
+                        if (date && date.isValid()) {
+                          const formattedDate = date.format("YYYY-MM-DD");
+                          field.onChange(formattedDate);
+                          setValue("startDate", formattedDate);
+                        } else {
+                          field.onChange(null);
+                          setValue("startDate", "");
+                        }
                       }}
-                      //   defaultValue={1}
-                      // onChange={(date) => {
-                      //   if (date && date.isValid()) {
-                      //     field.onChange(date); // Set a valid Dayjs date
-                      //     setValue("hatchingDate", date);
-                      //   } else {
-                      //     field.onChange(null); // Clear the field if date is invalid
-                      //   }
-                      // }}
                       slotProps={{
                         textField: { focused: true },
                       }}
-                      value={field.value || null}
+                      value={field.value ? dayjs(field.value) : null} // Ensure correct rendering
                     />
+
                     {error && (
                       <Typography
                         variant="body2"
@@ -90,6 +170,7 @@ function FeedingPlan() {
             <Box position={"relative"}>
               <TextField
                 label="Period *"
+                {...register("period")}
                 type="text"
                 className="form-input"
                 focused
@@ -117,19 +198,20 @@ function FeedingPlan() {
               <InputLabel id="demo-simple-select-label">
                 Time Interval *
               </InputLabel>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                label="Time Interval *"
-              >
-                {timeIntervalOptions.map((option) => {
-                  return (
-                    <MenuItem value={option.value} key={option.id}>
-                      {option.label}
-                    </MenuItem>
-                  );
-                })}
-              </Select>
+              <Controller
+                name="timeInterval"
+                control={control}
+                defaultValue={1}
+                render={({ field }) => (
+                  <Select {...field} label="Time Interval *">
+                    {timeIntervalOptions.map((option) => (
+                      <MenuItem value={option.value} key={option.id}>
+                        {option.label}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                )}
+              />
             </FormControl>
           </Grid>
           <Grid item lg={3} md={4} sm={6} xs={12}>
@@ -137,6 +219,7 @@ function FeedingPlan() {
               <TextField
                 label="Expected Waste Factory *"
                 type="text"
+                {...register("expectedWaste")}
                 className="form-input"
                 focused
                 sx={{
@@ -159,7 +242,39 @@ function FeedingPlan() {
             </Box>
           </Grid>
         </Grid>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "end",
+          }}
+        >
+          <Button
+            type="submit"
+            variant="contained"
+            sx={{
+              background: "#06A19B",
+              fontWeight: 600,
+              padding: "6px 16px",
+              width: "fit-content",
+              textTransform: "capitalize",
+              borderRadius: "8px",
+              marginLeft: "auto",
+              display: "block",
+              my: 3,
+            }}
+          >
+            Generate
+          </Button>
+        </Box>
       </form>
+
+      {/* {data?.map((farm, i) =>
+        farm?.data.map((growth) => {
+          {
+            return <FishGrowthTable data={growth.fishGrowthData} key={i} />;
+          }
+        })
+      )} */}
     </Stack>
   );
 }

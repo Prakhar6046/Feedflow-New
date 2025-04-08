@@ -1,31 +1,15 @@
 "use client";
-import {
-  Box,
-  Button,
-  FormControl,
-  Grid,
-  InputLabel,
-  Paper,
-  Select,
-  Stack,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { calculateFishGrowth } from "@/app/_lib/utils";
+import { Box, Button, Grid, Stack, TextField, Typography } from "@mui/material";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import dayjs, { Dayjs } from "dayjs";
+import dayjs from "dayjs";
 import { useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import FishGrowthChart from "../charts/FishGrowthChart";
 import Loader from "../Loader";
-import { calculateFishGrowth } from "@/app/_lib/utils";
+import FishGrowthTable from "../table/FishGrowthTable";
 interface FormInputs {
   fishWeight: number;
   numberOfFishs: number;
@@ -34,7 +18,7 @@ interface FormInputs {
   period: number;
   expectedWaste: number;
 }
-interface FishFeedingData {
+export interface FishFeedingData {
   averageProjectedTemp: number;
   date?: string;
   days?: number;
@@ -55,15 +39,9 @@ interface FishFeedingData {
 }
 
 function AdHoc() {
-  const [numberOfFish, setNumberOfFish] = useState<number>(7500);
-  const [fishWeight, setFishWeight] = useState<number>(2);
   const [data, setData] = useState<FishFeedingData[]>();
-  const [waterTemp, setWaterTemp] = useState<number>(24);
   const [loading, setLoading] = useState(false);
-  const [timeInterval, setTimeInterval] = useState<number>(1);
-  const [startDate, setStartDate] = useState();
-  const [wasteFator, setWasteFator] = useState<number>(3);
-  const [DE, setDE] = useState<number>(13.47);
+
   const {
     register,
     handleSubmit,
@@ -86,27 +64,21 @@ function AdHoc() {
   const onSubmit: SubmitHandler<FormInputs> = (data) => {
     const formattedDate = dayjs(data.startDate).format("YYYY-MM-DD");
     if (data) {
-      const fishGrowthData = calculateFishGrowth(
-        Number(data.fishWeight),
-        Number(data.temp),
-        Number(data.numberOfFishs),
-        Number(data.expectedWaste),
-        Number(data.period),
-        formattedDate,
-        1,
-        1
+      setData(
+        calculateFishGrowth(
+          Number(data.fishWeight),
+          Number(data.temp),
+          Number(data.numberOfFishs),
+          Number(data.expectedWaste),
+          Number(data.period),
+          formattedDate,
+          1,
+          13.47
+        )
       );
-      setData(fishGrowthData);
     }
   };
 
-  // useEffect(() => {
-  //   if (numberOfFish && waterTemp && fishWeight) {
-  //     console.log("run");
-
-  //     calculateFBW();
-  //   }
-  // }, [fishWeight, numberOfFish, waterTemp]);
   if (loading) {
     return <Loader />;
   }
@@ -340,42 +312,7 @@ function AdHoc() {
           </Button>
         </Box>
       </form>
-      {data && (
-        <TableContainer component={Paper}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>Date</TableCell>
-                <TableCell>Temp(c)</TableCell>
-                <TableCell>Number of Fish</TableCell>
-                <TableCell>Fish Size(g)</TableCell>
-                <TableCell>Growth(g)</TableCell>
-                <TableCell>Feed Type</TableCell>
-                <TableCell>Feed Size</TableCell>
-                <TableCell>Est. FCR</TableCell>
-                <TableCell>Feed Intake (g)</TableCell>
-                <TableCell>Feeding Rate</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {data?.map((row, index) => (
-                <TableRow key={index}>
-                  <TableCell>{row.date}</TableCell>
-                  <TableCell>{row.averageProjectedTemp}</TableCell>
-                  <TableCell>{row.numberOfFish}</TableCell>
-                  <TableCell>{row.fishSize}</TableCell>
-                  <TableCell>{row.growth}</TableCell>
-                  <TableCell>{row.feedType}</TableCell>
-                  <TableCell>{row.feedSize}</TableCell>
-                  <TableCell>{row.estimatedFCR}</TableCell>
-                  <TableCell>{row.feedIntake}</TableCell>
-                  <TableCell>{row.feedingRate}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      )}
+      {data && <FishGrowthTable data={data} />}
 
       {data && (
         <div className="mb-5">
