@@ -38,6 +38,10 @@ import {
   selectStartMonth,
 } from "@/lib/features/commonFilters/commonFilters";
 import { FarmGroup } from "../_typeModels/production";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 interface Props {
   selectedView?: string | undefined;
   farmsList: Farm[];
@@ -63,6 +67,10 @@ function ProductionManagerFilter({
 }: Props) {
   const router = useRouter();
   const dispatch = useAppDispatch();
+  const [startDate, setStartDate] = useState<string>(
+    dayjs().subtract(2, "weeks").format()
+  );
+  const [endDate, setEndDate] = useState<string>(dayjs().format());
   const allFarms = useAppSelector(selectAllFarms);
   const allUnits = useAppSelector(selectAllUnits);
   const selectedDropDownfarms = useAppSelector(selectSelectedFarms);
@@ -475,6 +483,7 @@ function ProductionManagerFilter({
             </FormControl>
           </Box>
         </Grid>
+
         <Grid
           item
           xl={2}
@@ -586,10 +595,12 @@ function ProductionManagerFilter({
             </FormControl>
           </Box>
         </Grid>
+
         <Grid
           item
-          xl={3}
-          lg={6}
+          xl={2}
+          lg={4}
+          md={4}
           sm={6}
           xs={12}
           sx={{
@@ -597,8 +608,8 @@ function ProductionManagerFilter({
             paddingTop: "8px",
           }}
         >
-          <Grid container spacing={2}>
-            <Grid item xs={4}>
+          <Grid container>
+            <Grid item xs>
               <Box sx={{ width: "100%" }}>
                 <FormControl
                   fullWidth
@@ -639,42 +650,7 @@ function ProductionManagerFilter({
                 </FormControl>
               </Box>
             </Grid>
-            <Grid item xs={4}>
-              <Box sx={{ width: "100%" }}>
-                <FormControl
-                  fullWidth
-                  className={`form-input ${
-                    selectedDropDownfarms?.length &&
-                    selectedDropDownUnits?.length &&
-                    selectedDropDownYears?.length &&
-                    "selected"
-                  }`}
-                  focused
-                >
-                  <InputLabel id="demo-simple-select-label">
-                    Start month
-                  </InputLabel>
-                  <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    label="Start month"
-                    value={startMonth}
-                    onChange={(e) =>
-                      dispatch(
-                        commonFilterAction.setStartMonth(Number(e.target.value))
-                      )
-                    }
-                  >
-                    {months.map((month) => (
-                      <MenuItem value={month.id} key={month.id}>
-                        {month.name}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Box>
-            </Grid>
-            <Grid item xs={4}>
+            {/* <Grid item xs={4}>
               <Box sx={{ width: "100%" }}>
                 <FormControl
                   fullWidth
@@ -713,8 +689,88 @@ function ProductionManagerFilter({
                   </Select>
                 </FormControl>
               </Box>
-            </Grid>
+            </Grid> */}
           </Grid>
+        </Grid>
+
+        <Grid
+          item
+          xs
+          sx={{
+            pt: 0,
+          }}
+        >
+          <Box sx={{ width: "100%" }}>
+            <FormControl
+              fullWidth
+              className={`form-input ${
+                selectedDropDownfarms?.length &&
+                selectedDropDownUnits?.length &&
+                selectedDropDownYears?.length &&
+                "selected"
+              }`}
+              focused
+            >
+              {/* <InputLabel id="demo-simple-select-label">
+                    Start month
+                  </InputLabel> */}
+              {/* <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    label="Start month"
+                    value={startMonth}
+                    onChange={(e) =>
+                      dispatch(
+                        commonFilterAction.setStartMonth(Number(e.target.value))
+                      )
+                    }
+                  >
+                    {months.map((month) => (
+                      <MenuItem value={month.id} key={month.id}>
+                        {month.name}
+                      </MenuItem>
+                    ))}
+                  </Select> */}
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DemoContainer
+                  sx={{
+                    display: "flex",
+                    flexDirection: "row",
+                    gap: 3,
+                    alignItems: "center",
+                    margin: "0",
+                  }}
+                  components={["DatePicker"]}
+                >
+                  <DatePicker
+                    label="Start Date"
+                    className="date-picker"
+                    value={dayjs(startDate)}
+                    onChange={(value) => {
+                      const isoDate = value?.toISOString();
+                      if (isoDate) setStartDate(isoDate);
+                    }}
+                    maxDate={dayjs(endDate)}
+                  />
+                  <DatePicker
+                    label="End Date"
+                    value={dayjs(endDate)}
+                    onChange={(value) => {
+                      const isoDate = value?.toISOString();
+                      if (isoDate) setEndDate(isoDate);
+                    }}
+                    sx={{
+                      marginTop: "0",
+
+                      borderRadius: "6px",
+                    }}
+                    className="date-picker"
+                    maxDate={dayjs()}
+                  />
+                </DemoContainer>
+              </LocalizationProvider>
+            </FormControl>
+          </Box>
         </Grid>
 
         <Grid
