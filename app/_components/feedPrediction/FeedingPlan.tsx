@@ -1,6 +1,9 @@
 "use clinet";
 import { calculateFishGrowth } from "@/app/_lib/utils";
 import { FarmGroup } from "@/app/_typeModels/production";
+import TabContext from "@mui/lab/TabContext";
+import TabList from "@mui/lab/TabList";
+import TabPanel from "@mui/lab/TabPanel";
 import {
   Box,
   Button,
@@ -10,19 +13,24 @@ import {
   MenuItem,
   Select,
   Stack,
+  Tab,
   TextField,
   Typography,
 } from "@mui/material";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import dayjs, { Dayjs } from "dayjs";
-import React, { useState } from "react";
+import dayjs from "dayjs";
+import React, { useEffect, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { FishFeedingData } from "./AdHoc";
 import FishGrowthTable from "../table/FishGrowthTable";
+import { FishFeedingData } from "./AdHoc";
+import { useAppDispatch } from "@/lib/hooks";
+import { feedPredictionAction } from "@/lib/features/feedPrediction/feedPredictionSlice";
+
 interface Props {
   productionData: FarmGroup[] | undefined;
+  startDate: string;
+  endDate: string;
+  data: FarmsFishGrowth[][];
+  setData: (val: FarmsFishGrowth[][]) => void;
 }
 interface FormInputs {
   startDate: string;
@@ -36,17 +44,29 @@ export interface FarmsFishGrowth {
   unit: string;
   fishGrowthData: FishFeedingData[];
 }
-interface Fish {
-  data: FarmsFishGrowth[];
-}
 const timeIntervalOptions = [
   { id: 1, label: "Daily", value: 1 },
   { id: 2, label: "Weekly", value: 7 },
   { id: 3, label: "Bi-Weekly", value: 14 },
   { id: 4, label: "Monthly", value: 30 },
 ];
-function FeedingPlan({ productionData }: Props) {
-  const [data, setData] = useState<Fish[]>();
+function FeedingPlan({
+  productionData,
+  startDate,
+  endDate,
+  data,
+  setData,
+}: Props) {
+  const dispatch = useAppDispatch();
+  const [flatData, setFlatData] = useState<FarmsFishGrowth[]>([]);
+
+  // Set initial value as the first farm name
+  const [currentTab, setCurrentTab] = useState("");
+
+  const handleChange = (_event: React.SyntheticEvent, newValue: string) => {
+    setCurrentTab(newValue);
+    dispatch(feedPredictionAction.setFarmTab(newValue));
+  };
   const {
     register,
     handleSubmit,
@@ -57,17 +77,17 @@ function FeedingPlan({ productionData }: Props) {
   } = useForm<FormInputs>({
     defaultValues: {
       fishWeight: 2,
-      startDate: dayjs().format("YYYY-MM-DD"),
+      // startDate: dayjs().format("YYYY-MM-DD"),
       timeInterval: 1,
-      period: 30,
+      // period: 30,
       expectedWaste: 0.05,
     },
     mode: "onChange",
   });
   const onSubmit: SubmitHandler<FormInputs> = (data) => {
-    // console.log(productionData);
-    const formattedDate = dayjs(data.startDate).format("YYYY-MM-DD");
-    const fishGrowthData = productionData?.map((production) =>
+    const formattedDate = dayjs(startDate).format("YYYY-MM-DD");
+    const diffInDays = dayjs(endDate).diff(dayjs(startDate), "day");
+    const fishGrowthData: any = productionData?.map((production) =>
       production.units.map((unit) => {
         return {
           farm: production.farm,
@@ -77,7 +97,7 @@ function FeedingPlan({ productionData }: Props) {
             Number(unit.waterTemp),
             Number(unit.fishCount),
             Number(data.expectedWaste),
-            Number(data.period),
+            Number(diffInDays),
             formattedDate,
             data.timeInterval,
             13.47
@@ -85,11 +105,23 @@ function FeedingPlan({ productionData }: Props) {
         };
       })
     );
-    // setData([...fishGrowthData]);
-
-    // console.log(data);
+    if (fishGrowthData?.length) {
+      setData([...fishGrowthData]);
+    }
   };
-  console.log(data);
+  useEffect(() => {
+    if (!data?.length) return;
+    const flattened = data.flat();
+    setFlatData(flattened);
+    if (flattened.length > 0) {
+      setCurrentTab(`${flattened[0].farm}/${flattened[0].unit}`);
+      dispatch(
+        feedPredictionAction.setFarmTab(
+          `${flattened[0].farm}/${flattened[0].unit}`
+        )
+      );
+    }
+  }, [data]);
 
   return (
     <Stack>
@@ -122,7 +154,7 @@ function FeedingPlan({ productionData }: Props) {
               </Typography>
             </Box>
           </Grid>
-          <Grid item lg={3} md={4} sm={6} xs={12}>
+          {/* <Grid item lg={3} md={4} sm={6} xs={12}>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <Controller
                 name="startDate"
@@ -192,7 +224,7 @@ function FeedingPlan({ productionData }: Props) {
                 days
               </Typography>
             </Box>
-          </Grid>
+          </Grid> */}
           <Grid item lg={3} md={4} sm={6} xs={12}>
             <FormControl className="form-input" fullWidth focused>
               <InputLabel id="demo-simple-select-label">
@@ -267,9 +299,466 @@ function FeedingPlan({ productionData }: Props) {
           </Button>
         </Box>
       </form>
+      {flatData?.length !== 0 && (
+        <Grid item xs={12}>
+          <TabContext value={currentTab}>
+            <Box mb={2}>
+              <TabList
+                onChange={handleChange}
+                aria-label="farm tabs"
+                className="production-tabs"
+              >
+                {flatData.map((growth, index) => (
+                  <Tab
+                    key={index}
+                    label={`${growth.farm}/${growth.unit}`}
+                    value={`${growth.farm}/${growth.unit}`}
+                  />
+                ))}
+              </TabList>
+            </Box>
+
+            {flatData
+              .filter((val) => `${val.farm}/${val.unit}` === currentTab)
+              .map((growth, index) => {
+                console.log(growth);
+
+                return (
+                  <TabPanel key={index} value={`${growth.farm}/${growth.unit}`}>
+                    <Box
+                      sx={{
+                        width: "100%",
+                      }}
+                    >
+                      <Box
+                        sx={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                        }}
+                      >
+                        <Box>
+                          <Typography
+                            variant="h6"
+                            fontWeight={700}
+                            sx={{
+                              fontSize: {
+                                md: 24,
+                                xs: 20,
+                              },
+                              my: 1.5,
+                              pb: 1,
+                            }}
+                            borderBottom={"1px solid black"}
+                          >
+                            Overall Summary:
+                          </Typography>
+
+                          <Stack>
+                            <Box
+                              display={"flex"}
+                              alignItems={"center"}
+                              gap={1}
+                              mb={0.75}
+                            >
+                              <Typography
+                                variant="body1"
+                                color="#000"
+                                fontWeight={600}
+                                sx={{
+                                  fontSize: {
+                                    xs: 16,
+                                  },
+                                }}
+                              >
+                                Total biomass growth (kg)
+                              </Typography>
+
+                              <Typography
+                                variant="body2"
+                                color="#555555AC"
+                                sx={{
+                                  fontSize: {
+                                    md: 16,
+                                    xs: 14,
+                                  },
+                                }}
+                              >
+                                value
+                              </Typography>
+                            </Box>
+
+                            <Box
+                              display={"flex"}
+                              alignItems={"center"}
+                              gap={1}
+                              mb={0.75}
+                            >
+                              <Typography
+                                variant="body1"
+                                color="#000"
+                                fontWeight={600}
+                                sx={{
+                                  fontSize: {
+                                    xs: 16,
+                                  },
+                                }}
+                              >
+                                Final Farm/unit Biomass
+                              </Typography>
+
+                              <Typography
+                                variant="body2"
+                                color="#555555AC"
+                                sx={{
+                                  fontSize: {
+                                    md: 16,
+                                    xs: 14,
+                                  },
+                                }}
+                              >
+                                val
+                              </Typography>
+                            </Box>
+
+                            <Box
+                              display={"flex"}
+                              alignItems={"center"}
+                              gap={1}
+                              mb={0.75}
+                            >
+                              <Typography
+                                variant="body1"
+                                color="#000"
+                                fontWeight={600}
+                                sx={{
+                                  fontSize: {
+                                    xs: 16,
+                                  },
+                                }}
+                              >
+                                Total feed usage (kg)
+                              </Typography>
+
+                              <Typography
+                                variant="body2"
+                                color="#555555AC"
+                                sx={{
+                                  fontSize: {
+                                    md: 16,
+                                    xs: 14,
+                                  },
+                                }}
+                              >
+                                value
+                              </Typography>
+                            </Box>
+                            <Box
+                              display={"flex"}
+                              alignItems={"center"}
+                              gap={1}
+                              mb={0.75}
+                            >
+                              <Typography
+                                variant="body1"
+                                color="#000"
+                                fontWeight={600}
+                                sx={{
+                                  fontSize: {
+                                    xs: 16,
+                                  },
+                                }}
+                              >
+                                <Box
+                                  display={"flex"}
+                                  alignItems={"center"}
+                                  gap={1}
+                                  mb={0.75}
+                                >
+                                  <Typography
+                                    variant="body1"
+                                    color="#000"
+                                    fontWeight={600}
+                                    sx={{
+                                      fontSize: {
+                                        xs: 16,
+                                      },
+                                    }}
+                                  >
+                                    Total feed cost ()
+                                  </Typography>
+
+                                  <Typography
+                                    variant="body2"
+                                    color="#555555AC"
+                                    sx={{
+                                      fontSize: {
+                                        md: 16,
+                                        xs: 14,
+                                      },
+                                    }}
+                                  >
+                                    value
+                                  </Typography>
+                                </Box>
+                              </Typography>
+                            </Box>
+                          </Stack>
+                        </Box>
+                        <Box>
+                          <Typography
+                            variant="h6"
+                            fontWeight={700}
+                            sx={{
+                              fontSize: {
+                                md: 24,
+                                xs: 20,
+                              },
+                              my: 1.5,
+                              pb: 1,
+                            }}
+                            borderBottom={"1px solid black"}
+                          >
+                            Feed Usage(all farms/units)
+                          </Typography>
+
+                          <Stack>
+                            <Box
+                              display={"flex"}
+                              alignItems={"center"}
+                              gap={1}
+                              mb={0.75}
+                            >
+                              <Typography
+                                variant="body1"
+                                color="#000"
+                                fontWeight={600}
+                                sx={{
+                                  fontSize: {
+                                    xs: 16,
+                                  },
+                                }}
+                              >
+                                SAF Start #0 (kg)-
+                              </Typography>
+
+                              <Typography
+                                variant="body2"
+                                color="#555555AC"
+                                sx={{
+                                  fontSize: {
+                                    md: 16,
+                                    xs: 14,
+                                  },
+                                }}
+                              >
+                                __ Kg
+                              </Typography>
+                            </Box>
+
+                            <Box
+                              display={"flex"}
+                              alignItems={"center"}
+                              gap={1}
+                              mb={0.75}
+                            >
+                              <Typography
+                                variant="body1"
+                                color="#000"
+                                fontWeight={600}
+                                sx={{
+                                  fontSize: {
+                                    xs: 16,
+                                  },
+                                }}
+                              >
+                                SAF Starter #1 (kg)-
+                              </Typography>
+
+                              <Typography
+                                variant="body2"
+                                color="#555555AC"
+                                sx={{
+                                  fontSize: {
+                                    md: 16,
+                                    xs: 14,
+                                  },
+                                }}
+                              >
+                                __ Kg
+                              </Typography>
+                            </Box>
+
+                            <Box
+                              display={"flex"}
+                              alignItems={"center"}
+                              gap={1}
+                              mb={0.75}
+                            >
+                              <Typography
+                                variant="body1"
+                                color="#000"
+                                fontWeight={600}
+                                sx={{
+                                  fontSize: {
+                                    xs: 16,
+                                  },
+                                }}
+                              >
+                                Grower 2mm -
+                              </Typography>
+
+                              <Typography
+                                variant="body2"
+                                color="#555555AC"
+                                sx={{
+                                  fontSize: {
+                                    md: 16,
+                                    xs: 14,
+                                  },
+                                }}
+                              >
+                                __
+                              </Typography>
+                            </Box>
+                          </Stack>
+                        </Box>
+                        <Box>
+                          <Typography
+                            variant="h6"
+                            fontWeight={700}
+                            sx={{
+                              fontSize: {
+                                md: 24,
+                                xs: 20,
+                              },
+                              my: 1.5,
+                              pb: 1,
+                            }}
+                            borderBottom={"1px solid black"}
+                          >
+                            Feed Usage(Farm 1)
+                          </Typography>
+
+                          <Stack>
+                            <Box
+                              display={"flex"}
+                              alignItems={"center"}
+                              gap={1}
+                              mb={0.75}
+                            >
+                              <Typography
+                                variant="body1"
+                                color="#000"
+                                fontWeight={600}
+                                sx={{
+                                  fontSize: {
+                                    xs: 16,
+                                  },
+                                }}
+                              >
+                                SAF Start #0 -
+                              </Typography>
+
+                              <Typography
+                                variant="body2"
+                                color="#555555AC"
+                                sx={{
+                                  fontSize: {
+                                    md: 16,
+                                    xs: 14,
+                                  },
+                                }}
+                              >
+                                __ Kg
+                              </Typography>
+                            </Box>
+
+                            <Box
+                              display={"flex"}
+                              alignItems={"center"}
+                              gap={1}
+                              mb={0.75}
+                            >
+                              <Typography
+                                variant="body1"
+                                color="#000"
+                                fontWeight={600}
+                                sx={{
+                                  fontSize: {
+                                    xs: 16,
+                                  },
+                                }}
+                              >
+                                SAF Starter #1 -
+                              </Typography>
+
+                              <Typography
+                                variant="body2"
+                                color="#555555AC"
+                                sx={{
+                                  fontSize: {
+                                    md: 16,
+                                    xs: 14,
+                                  },
+                                }}
+                              >
+                                __ Kg
+                              </Typography>
+                            </Box>
+
+                            <Box
+                              display={"flex"}
+                              alignItems={"center"}
+                              gap={1}
+                              mb={0.75}
+                            >
+                              <Typography
+                                variant="body1"
+                                color="#000"
+                                fontWeight={600}
+                                sx={{
+                                  fontSize: {
+                                    xs: 16,
+                                  },
+                                }}
+                              >
+                                Grower 2mm -
+                              </Typography>
+
+                              <Typography
+                                variant="body2"
+                                color="#555555AC"
+                                sx={{
+                                  fontSize: {
+                                    md: 16,
+                                    xs: 14,
+                                  },
+                                }}
+                              >
+                                __
+                              </Typography>
+                            </Box>
+                          </Stack>
+                        </Box>
+                      </Box>
+                      <Box>
+                        <FishGrowthTable
+                          data={growth.fishGrowthData}
+                          key={index}
+                        />
+                      </Box>
+                    </Box>
+                  </TabPanel>
+                );
+              })}
+          </TabContext>
+        </Grid>
+      )}
 
       {/* {data?.map((farm, i) =>
-        farm?.data.map((growth) => {
+        farm?.map((growth) => {
+          console.log("growth", growth);
+
           {
             return <FishGrowthTable data={growth.fishGrowthData} key={i} />;
           }

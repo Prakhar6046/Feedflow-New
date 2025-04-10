@@ -740,73 +740,81 @@ export const exportProductionTableToXlsx = async (
 };
 export const exportFeedPredictionToXlsx = async (
   e: React.MouseEvent<HTMLSpanElement, MouseEvent>,
-  data: any
+  headerData: string[],
+  data: any,
+  fileName: string
 ) => {
   e.preventDefault();
-  if (!data) {
+  if (!data?.length) {
     return;
   }
   const workbook = new ExcelJS.Workbook();
   const worksheet = workbook.addWorksheet("feedPrediction");
-  const headers = [
-    "Date",
-    "Days",
-    "Water Temp",
-    "Fish Weight (g)",
-    "Number of Fish",
-    "Biomass (kg)",
-    "Stocking Density",
-    "Stocking Density Kg/m3",
-    "Feed Phase",
-    "Feed Protein (%)",
-    "Feed DE (MJ/kg)",
-    "Feed Price ($)",
-    "Growth (g)",
-    "Est. FCR",
-    "Partitioned FCR",
-    "Feed Intake (g)",
-  ];
+  const headers = headerData
+    ? headerData
+    : [
+        "Date",
+        "Days",
+        "Water Temp",
+        "Fish Weight (g)",
+        "Number of Fish",
+        "Biomass (kg)",
+        "Stocking Density",
+        "Stocking Density Kg/m3",
+        "Feed Phase",
+        "Feed Protein (%)",
+        "Feed DE (MJ/kg)",
+        "Feed Price ($)",
+        "Growth (g)",
+        "Est. FCR",
+        "Partitioned FCR",
+        "Feed Intake (g)",
+      ];
   // Add headers to the sheet
   worksheet.addRow(headers);
   // Convert data into an array of rows
+  // data.forEach((row: any) => {
+  //   worksheet.addRow([
+  //     row.date,
+  //     row.days,
+  //     row.waterTemp,
+  //     row.fishWeight,
+  //     row.numberOfFish,
+  //     row.biomass,
+  //     row.stockingDensityNM3,
+  //     row.stockingDensityKg,
+  //     row.feedPhase,
+  //     row.feedProtein,
+  //     row.feedDE,
+  //     row.feedPrice,
+  //     row.growth,
+  //     row.estimatedFCR,
+  //     row.partitionedFCR,
+  //     row.feedIntake,
+  //   ]);
+  // });
   data.forEach((row: any) => {
-    worksheet.addRow([
-      row.date,
-      row.days,
-      row.waterTemp,
-      row.fishWeight,
-      row.numberOfFish,
-      row.biomass,
-      row.stockingDensityNM3,
-      row.stockingDensityKg,
-      row.feedPhase,
-      row.feedProtein,
-      row.feedDE,
-      row.feedPrice,
-      row.growth,
-      row.estimatedFCR,
-      row.partitionedFCR,
-      row.feedIntake,
-    ]);
+    worksheet.addRow(Object.values(row));
   });
-  worksheet.columns = [
-    { width: 15 },
-    { width: 15 },
-    { width: 15 },
-    { width: 15 },
-    { width: 15 },
-    { width: 15 },
-    { width: 15 },
-    { width: 15 },
-    { width: 15 },
-    { width: 15 },
-    { width: 15 },
-    { width: 15 },
-    { width: 15 },
-    { width: 15 },
-    { width: 15 },
-    { width: 15 },
-  ];
+  // worksheet.columns = [
+  //   { width: 15 },
+  //   { width: 15 },
+  //   { width: 15 },
+  //   { width: 15 },
+  //   { width: 15 },
+  //   { width: 15 },
+  //   { width: 15 },
+  //   { width: 15 },
+  //   { width: 15 },
+  //   { width: 15 },
+  //   { width: 15 },
+  //   { width: 15 },
+  //   { width: 15 },
+  //   { width: 15 },
+  //   { width: 15 },
+  //   { width: 15 },
+  // ];
+  worksheet.columns = headers.map(() => ({ width: 15 }));
   worksheet.eachRow((row, rowNumber) => {
     row.eachCell((cell) => {
       cell.alignment = { horizontal: "left", vertical: "middle" };
@@ -832,7 +840,7 @@ export const exportFeedPredictionToXlsx = async (
   const blob = new Blob([buffer], {
     type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
   });
-  saveAs(blob, `feedPrediction.xlsx`);
+  saveAs(blob, `${fileName}.xlsx`);
 };
 export const FeedPredictionHead = [
   "Date",
@@ -852,6 +860,18 @@ export const FeedPredictionHead = [
   "Partitioned FCR",
   "Feed Intake (g)",
 ];
+export const CommonFeedPredictionHead = [
+  "Date",
+  "Temp(c)",
+  "Number of Fish",
+  "Fish Size(g)",
+  "Growth(g)",
+  "Feed Type",
+  "Feed Size",
+  "Est. FCR",
+  "Feed Intake (g)",
+  "Feeding Rate",
+];
 
 export function calculateFishGrowth(
   fishWeight: number,
@@ -863,6 +883,8 @@ export function calculateFishGrowth(
   timeInterval: number,
   DE: number
 ) {
+  console.log(period, startDate);
+
   const IBW = fishWeight;
   const T = temp;
   let prevWeight = IBW;

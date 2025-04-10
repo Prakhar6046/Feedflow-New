@@ -719,7 +719,6 @@ function ProductionManagerFilter({
                       }}
                       sx={{
                         marginTop: "0",
-
                         borderRadius: "6px",
                       }}
                       className="date-picker"

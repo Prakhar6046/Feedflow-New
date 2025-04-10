@@ -10,6 +10,7 @@ import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import FishGrowthChart from "../charts/FishGrowthChart";
 import Loader from "../Loader";
 import FishGrowthTable from "../table/FishGrowthTable";
+import { exportFeedPredictionToXlsx } from "@/app/_lib/utils";
 interface FormInputs {
   fishWeight: number;
   numberOfFishs: number;
@@ -19,27 +20,31 @@ interface FormInputs {
   expectedWaste: number;
 }
 export interface FishFeedingData {
+  date: string;
+  days: number;
   averageProjectedTemp: number;
-  date?: string;
-  days?: number;
-  estimatedFCR?: number;
-  feedCost?: number;
-  feedDE?: number;
-  feedIntake?: string;
-  feedPrice?: number;
-  feedProtein?: number;
-  feedSize?: string;
-  feedType?: string;
-  feedingRate?: string;
-  fishSize?: string;
-  growth?: number;
-  moralityRate?: number;
-  numberOfFish?: number;
-  partitionedFCR?: number;
+  estimatedFCR: number;
+  expectedWaste: number;
+  feedCost: number;
+  feedDE: number;
+  feedIntake: string;
+  feedPrice: number;
+  feedProtein: number;
+  feedSize: string;
+  feedType: string;
+  feedingRate: string;
+  fishSize: string;
+  growth: number;
+  numberOfFish: number;
+  partitionedFCR: number;
 }
+type Iprops = {
+  data: FishFeedingData[];
+  setData: (val: FishFeedingData[]) => void;
+};
 
-function AdHoc() {
-  const [data, setData] = useState<FishFeedingData[]>();
+function AdHoc({ data, setData }: Iprops) {
+  // const [data, setData] = useState<FishFeedingData[]>();
   const [loading, setLoading] = useState(false);
 
   const {
@@ -312,9 +317,9 @@ function AdHoc() {
           </Button>
         </Box>
       </form>
-      {data && <FishGrowthTable data={data} />}
+      {data?.length !== 0 && <FishGrowthTable data={data} />}
 
-      {data && (
+      {data?.length !== 0 && (
         <div className="mb-5">
           <FishGrowthChart
             xAxisData={data?.map((value) => value?.date) || []}
