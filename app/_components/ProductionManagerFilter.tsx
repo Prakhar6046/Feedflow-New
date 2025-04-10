@@ -31,11 +31,11 @@ import {
   selectAllFarms,
   selectAllUnits,
   selectDropDownYears,
-  selectEndMonth,
+  selectEndDate,
   selectSelectedAverage,
   selectSelectedFarms,
   selectSelectedUnits,
-  selectStartMonth,
+  selectStartDate,
 } from "@/lib/features/commonFilters/commonFilters";
 import { FarmGroup } from "../_typeModels/production";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
@@ -67,17 +67,13 @@ function ProductionManagerFilter({
 }: Props) {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const [startDate, setStartDate] = useState<string>(
-    dayjs().subtract(2, "weeks").format()
-  );
-  const [endDate, setEndDate] = useState<string>(dayjs().format());
   const allFarms = useAppSelector(selectAllFarms);
   const allUnits = useAppSelector(selectAllUnits);
   const selectedDropDownfarms = useAppSelector(selectSelectedFarms);
   const selectedDropDownUnits = useAppSelector(selectSelectedUnits);
   const selectedDropDownYears = useAppSelector(selectDropDownYears);
-  const startMonth = useAppSelector(selectStartMonth);
-  const endMonth = useAppSelector(selectEndMonth);
+  const startDate = useAppSelector(selectStartDate);
+  const endDate = useAppSelector(selectEndDate);
   const selectedAverage = useAppSelector(selectSelectedAverage);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -86,6 +82,9 @@ function ProductionManagerFilter({
   const years = Array.from({ length: 6 }, (_, i) => currentYear - i);
   const [farms, setFarms] = useState<any>([]);
   const [units, setUnits] = useState<any>([]);
+  console.log(selectedDropDownUnits);
+  console.log(allUnits);
+
   const handleResetFilters = () => {
     dispatch(commonFilterAction.setSelectedDropDownfarms(allFarms));
     dispatch(commonFilterAction.setSelectedDropDownUnits([]));
@@ -93,8 +92,8 @@ function ProductionManagerFilter({
       commonFilterAction.setSelectedDropDownYears([new Date().getFullYear()])
     );
     dispatch(commonFilterAction.setSelectedAverage(averagesDropdown[0]));
-    dispatch(commonFilterAction.setStartMonth(new Date().getMonth() + 1));
-    dispatch(commonFilterAction.setEndMonth(new Date().getMonth() + 1));
+    dispatch(commonFilterAction.setStartDate(dayjs().startOf("year").format()));
+    dispatch(commonFilterAction.setEndDate(dayjs().format()));
   };
   useEffect(() => {
     if (allFarms || allUnits) {
@@ -174,17 +173,17 @@ function ProductionManagerFilter({
     };
 
     // Utility: Filter by years
-    const filterByYears = (data: FarmGroup[], selectedYears: Array<number>) => {
-      if (!selectedYears?.length) return data;
-      return data
-        .map((farm) => ({
-          ...farm,
-          units: farm.units.filter((unit: any) =>
-            selectedYears?.includes(new Date(unit.createdAt).getFullYear())
-          ),
-        }))
-        .filter((farm) => farm.units.length > 0);
-    };
+    // const filterByYears = (data: FarmGroup[], selectedYears: Array<number>) => {
+    //   if (!selectedYears?.length) return data;
+    //   return data
+    //     .map((farm) => ({
+    //       ...farm,
+    //       units: farm.units.filter((unit: any) =>
+    //         selectedYears?.includes(new Date(unit.createdAt).getFullYear())
+    //       ),
+    //     }))
+    //     .filter((farm) => farm.units.length > 0);
+    // };
 
     // Utility: Filter by months
     const filterByMonths = (
@@ -217,7 +216,22 @@ function ProductionManagerFilter({
         }))
         .filter((farm) => farm.units.length > 0);
     };
+    const filterByDates = (data: FarmGroup[], startDate: any, endDate: any) => {
+      if (!startDate || !endDate) return data;
+      const start = dayjs(startDate).format("YYYY-MM-DD");
+      const end = dayjs(endDate).format("YYYY-MM-DD");
+      console.log("startDate", start);
 
+      return data
+        .map((farm) => ({
+          ...farm,
+          units: farm.units.filter((unit: any) => {
+            const created = dayjs(unit.createdAt).format("YYYY-MM-DD");
+            return created >= start && created <= end;
+          }),
+        }))
+        .filter((farm) => farm.units.length > 0);
+    };
     // Utility: Calculate averages
     const calculateAverages = (data: FarmGroup[], type: string) => {
       const calculateIndividualAverages = (history: any, fields: any) => {
@@ -249,6 +263,8 @@ function ProductionManagerFilter({
               monthlyAverages: calculateIndividualAverages(
                 unit.fishManageHistory.filter((entry: any) => {
                   const createdAt = new Date(entry.createdAt);
+                  const startMonth = dayjs(startDate).month() + 1;
+                  const endMonth = dayjs(endDate).month() + 1;
                   return (
                     createdAt.getMonth() + 1 >= Number(startMonth) &&
                     createdAt.getMonth() + 1 <= Number(endMonth) &&
@@ -268,6 +284,8 @@ function ProductionManagerFilter({
               monthlyAveragesWater: calculateIndividualAverages(
                 unit.WaterManageHistoryAvgrage.filter((entry: any) => {
                   const createdAt = new Date(entry.createdAt);
+                  const startMonth = dayjs(startDate).month() + 1;
+                  const endMonth = dayjs(endDate).month() + 1;
                   return (
                     createdAt.getMonth() + 1 >= Number(startMonth) &&
                     createdAt.getMonth() + 1 <= Number(endMonth) &&
@@ -404,13 +422,14 @@ function ProductionManagerFilter({
     let filteredData = groupedData;
     filteredData = filterByFarms(filteredData, selectedDropDownfarms);
     filteredData = filterByUnits(filteredData, selectedDropDownUnits);
-    filteredData = filterByYears(filteredData, selectedDropDownYears);
-    filteredData = filterByMonths(
-      filteredData,
-      selectedDropDownYears,
-      Number(startMonth),
-      Number(endMonth)
-    );
+    // filteredData = filterByYears(filteredData, selectedDropDownYears);
+    // filteredData = filterByMonths(
+    //   filteredData,
+    //   selectedDropDownYears,
+    //   startDate,
+    //   endDate
+    // );
+    filteredData = filterByDates(filteredData, startDate, endDate);
 
     // Apply averages
     const processedData = calculateAverages(filteredData, selectedAverage);
@@ -420,8 +439,8 @@ function ProductionManagerFilter({
     selectedDropDownfarms,
     selectedDropDownUnits,
     selectedDropDownYears,
-    startMonth,
-    endMonth,
+    startDate,
+    endDate,
     selectedAverage,
   ]);
   useEffect(() => {
@@ -556,9 +575,9 @@ function ProductionManagerFilter({
               className={`form-input ${
                 selectedDropDownfarms?.length &&
                 selectedDropDownUnits?.length &&
-                selectedDropDownYears?.length &&
-                startMonth &&
-                endMonth &&
+                // selectedDropDownYears?.length &&
+                startDate &&
+                endDate &&
                 "selected"
               }`}
               focused
@@ -573,8 +592,8 @@ function ProductionManagerFilter({
                   selectedDropDownfarms &&
                   selectedDropDownUnits &&
                   selectedDropDownYears &&
-                  startMonth &&
-                  endMonth
+                  startDate &&
+                  endDate
                     ? false
                     : true
                 }
@@ -609,7 +628,7 @@ function ProductionManagerFilter({
           }}
         >
           <Grid container>
-            <Grid item xs>
+            {/* <Grid item xs>
               <Box sx={{ width: "100%" }}>
                 <FormControl
                   fullWidth
@@ -649,51 +668,72 @@ function ProductionManagerFilter({
                   </Select>
                 </FormControl>
               </Box>
-            </Grid>
-            {/* <Grid item xs={4}>
+            </Grid> */}
+            <Grid item xs={4}>
               <Box sx={{ width: "100%" }}>
                 <FormControl
                   fullWidth
                   className={`form-input ${
                     selectedDropDownfarms?.length &&
                     selectedDropDownUnits?.length &&
-                    selectedDropDownYears?.length &&
-                    startMonth &&
                     "selected"
                   }`}
                   focused
                 >
-                  <InputLabel id="demo-simple-select-label">
-                    End month
-                  </InputLabel>
-                  <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    label="End month"
-                    value={endMonth}
-                    onChange={(e) =>
-                      dispatch(
-                        commonFilterAction.setEndMonth(Number(e.target.value))
-                      )
-                    }
-                  >
-                    {months.map((month) => (
-                      <MenuItem
-                        value={month.id}
-                        key={month.id}
-                        disabled={startMonth >= month.id ? true : false}
-                      >
-                        {month.name}
-                      </MenuItem>
-                    ))}
-                  </Select>
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DatePicker
+                      label="Start Date"
+                      className="date-picker"
+                      value={dayjs(startDate)}
+                      onChange={(value) => {
+                        const isoDate = value?.toISOString();
+                        if (isoDate)
+                          dispatch(commonFilterAction.setStartDate(isoDate));
+                      }}
+                      maxDate={dayjs(endDate)}
+                    />
+                  </LocalizationProvider>
                 </FormControl>
               </Box>
-            </Grid> */}
+            </Grid>
+            <Grid item xs={4}>
+              <Box sx={{ width: "100%" }}>
+                <FormControl
+                  fullWidth
+                  className={`form-input ${
+                    selectedDropDownfarms?.length &&
+                    selectedDropDownUnits?.length &&
+                    startDate &&
+                    "selected"
+                  }`}
+                  focused
+                >
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DatePicker
+                      label="End Date"
+                      value={dayjs(endDate)}
+                      onChange={(value) => {
+                        const isoDate = value?.toISOString();
+                        if (isoDate)
+                          dispatch(commonFilterAction.setEndDate(isoDate));
+                      }}
+                      sx={{
+                        marginTop: "0",
+
+                        borderRadius: "6px",
+                      }}
+                      className="date-picker"
+                      minDate={dayjs(startDate)}
+                      maxDate={dayjs()}
+                    />
+                  </LocalizationProvider>
+                </FormControl>
+              </Box>
+            </Grid>
           </Grid>
         </Grid>
 
-        <Grid
+        {/* <Grid
           item
           xs
           sx={{
@@ -711,26 +751,6 @@ function ProductionManagerFilter({
               }`}
               focused
             >
-              {/* <InputLabel id="demo-simple-select-label">
-                    Start month
-                  </InputLabel> */}
-              {/* <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    label="Start month"
-                    value={startMonth}
-                    onChange={(e) =>
-                      dispatch(
-                        commonFilterAction.setStartMonth(Number(e.target.value))
-                      )
-                    }
-                  >
-                    {months.map((month) => (
-                      <MenuItem value={month.id} key={month.id}>
-                        {month.name}
-                      </MenuItem>
-                    ))}
-                  </Select> */}
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DemoContainer
                   sx={{
@@ -748,7 +768,8 @@ function ProductionManagerFilter({
                     value={dayjs(startDate)}
                     onChange={(value) => {
                       const isoDate = value?.toISOString();
-                      if (isoDate) setStartDate(isoDate);
+                      if (isoDate)
+                        dispatch(commonFilterAction.setStartDate(isoDate));
                     }}
                     maxDate={dayjs(endDate)}
                   />
@@ -757,7 +778,8 @@ function ProductionManagerFilter({
                     value={dayjs(endDate)}
                     onChange={(value) => {
                       const isoDate = value?.toISOString();
-                      if (isoDate) setEndDate(isoDate);
+                      if (isoDate)
+                        dispatch(commonFilterAction.setEndDate(isoDate));
                     }}
                     sx={{
                       marginTop: "0",
@@ -765,13 +787,14 @@ function ProductionManagerFilter({
                       borderRadius: "6px",
                     }}
                     className="date-picker"
+                    minDate={dayjs(startDate)}
                     maxDate={dayjs()}
                   />
                 </DemoContainer>
               </LocalizationProvider>
             </FormControl>
           </Box>
-        </Grid>
+        </Grid> */}
 
         <Grid
           item

@@ -2,12 +2,13 @@ import { averagesDropdown } from "@/app/_lib/utils";
 import { BreadcrumInitialState, Sort } from "@/app/_typeModels/breadcrum";
 import { RootState } from "@/lib/store";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import dayjs from "dayjs";
 
 const initialState: any = {
   allFarms: [],
   allUnits: [],
-  startMonth: 1,
-  endMonth: new Date().getMonth() + 1,
+  startDate: dayjs().startOf("year").format(),
+  endDate: dayjs().format(),
   selectedDropDownYears: [new Date().getFullYear()],
   selectedDropDownfarms: [],
   selectedDropDownUnits: [],
@@ -41,11 +42,13 @@ const commonFilterSlice = createSlice({
     setSelectedAverage: (state, action) => {
       state.selectedAverage = action.payload;
     },
-    setStartMonth: (state, action) => {
-      state.startMonth = action.payload;
+    setStartDate: (state, action) => {
+      console.log(action.payload);
+
+      state.startDate = action.payload;
     },
-    setEndMonth: (state, action) => {
-      state.endMonth = action.payload;
+    setEndDate: (state, action) => {
+      state.endDate = action.payload;
     },
   },
 });
@@ -63,8 +66,7 @@ export const selectDropDownYears = (state: RootState) =>
   state.commonFilter.selectedDropDownYears;
 export const selectSelectedAverage = (state: RootState) =>
   state.commonFilter.selectedAverage;
-export const selectStartMonth = (state: RootState) =>
-  Number(state.commonFilter.startMonth);
-export const selectEndMonth = (state: RootState) =>
-  Number(state.commonFilter.endMonth);
+export const selectStartDate = (state: RootState) =>
+  state.commonFilter.startDate;
+export const selectEndDate = (state: RootState) => state.commonFilter.endDate;
 export const commonFilterReducer = commonFilterSlice.reducer;
