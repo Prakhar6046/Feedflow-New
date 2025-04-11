@@ -1,6 +1,6 @@
 "use client";
 import { calculateFishGrowth } from "@/app/_lib/utils";
-import { Box, Button, Grid, Stack, TextField, Typography } from "@mui/material";
+import { Box, Button, FormControl, Grid, InputLabel, MenuItem, Select, Stack, TextField, Typography } from "@mui/material";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -87,9 +87,247 @@ function AdHoc() {
       <form onSubmit={handleSubmit(onSubmit)}>
         <Grid container spacing={3} mt={2} mb={5} alignItems={"center"}>
           <Grid item lg={3} md={4} sm={6} xs={12}>
+            <TextField
+              label="Farm *"
+              type="text"
+              // {...register("fishWeight")}
+              className="form-input"
+              focused
+              sx={{
+                width: "100%",
+              }}
+            />
+          </Grid>
+
+          <Grid item lg={3} md={4} sm={6} xs={12}>
+            <TextField
+              label="Unit *"
+              type="text"
+              // {...register("fishWeight")}
+              className="form-input"
+              focused
+              sx={{
+                width: "100%",
+              }}
+            />
+          </Grid>
+
+          <Grid item lg={3} md={4} sm={6} xs={12}>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <Controller
+                name="startDate"
+                control={control}
+                rules={{ required: "This field is required." }}
+                render={({ field, fieldState: { error } }) => (
+                  <>
+                    <DatePicker
+                      {...field}
+                      label="Start Date * "
+                      className="form-input"
+                      sx={{ width: "100%" }}
+                      onChange={(date) => {
+                        if (date && date.isValid()) {
+                          const formattedDate = date.format("YYYY-MM-DD");
+                          field.onChange(formattedDate);
+                          setValue("startDate", formattedDate);
+                        } else {
+                          field.onChange(null);
+                          setValue("startDate", "");
+                        }
+                      }}
+                      slotProps={{
+                        textField: { focused: true },
+                      }}
+                      value={field.value ? dayjs(field.value) : null} // Ensure correct rendering
+                    />
+
+                    {error && (
+                      <Typography
+                        variant="body2"
+                        color="red"
+                        fontSize={13}
+                        mt={0.5}
+                      >
+                        {error.message}
+                      </Typography>
+                    )}
+                  </>
+                )}
+              />
+            </LocalizationProvider>
+          </Grid>
+
+          <Grid item lg={3} md={4} sm={6} xs={12}>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <Controller
+                name="startDate"
+                control={control}
+                rules={{ required: "This field is required." }}
+                render={({ field, fieldState: { error } }) => (
+                  <>
+                    <DatePicker
+                      {...field}
+                      label="End Date * "
+                      className="form-input"
+                      sx={{ width: "100%" }}
+                      onChange={(date) => {
+                        if (date && date.isValid()) {
+                          const formattedDate = date.format("YYYY-MM-DD");
+                          field.onChange(formattedDate);
+                          setValue("startDate", formattedDate);
+                        } else {
+                          field.onChange(null);
+                          setValue("startDate", "");
+                        }
+                      }}
+                      slotProps={{
+                        textField: { focused: true },
+                      }}
+                      value={field.value ? dayjs(field.value) : null} // Ensure correct rendering
+                    />
+
+                    {error && (
+                      <Typography
+                        variant="body2"
+                        color="red"
+                        fontSize={13}
+                        mt={0.5}
+                      >
+                        {error.message}
+                      </Typography>
+                    )}
+                  </>
+                )}
+              />
+            </LocalizationProvider>
+          </Grid>
+
+          <Grid item lg={3} md={4} sm={6} xs={12}>
             <Box position={"relative"}>
               <TextField
-                label="Fish Weight *"
+                label="Period *"
+                type="text"
+                {...register("period")}
+                className="form-input"
+                focused
+                sx={{
+                  width: "100%",
+                }}
+              />
+              <Typography
+                variant="body1"
+                color="#555555AC"
+                sx={{
+                  position: "absolute",
+                  right: 13,
+                  top: "30%",
+                  backgroundColor: "white",
+                  paddingInline: "5px",
+                }}
+              >
+                days
+              </Typography>
+            </Box>
+          </Grid>
+
+          <Grid item lg={3} md={4} sm={6} xs={12}>
+            <FormControl className="form-input" fullWidth focused>
+              <InputLabel id="demo-simple-select-label">
+                Time Interval *
+              </InputLabel>
+              {/* <Controller
+                name="timeInterval"
+                control={control}
+                defaultValue={1}
+                render={({ field }) => (
+                  <Select {...field} label="Time Interval *">
+                    {timeIntervalOptions.map((option) => (
+                      <MenuItem value={option.value} key={option.id}>
+                        {option.label}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                )}
+              /> */}
+            </FormControl>
+          </Grid>
+
+          <Grid item lg={3} md={4} sm={6} xs={12}>
+            <FormControl className="form-input" fullWidth focused>
+              <InputLabel id="demo-simple-select-label">
+                Temperature Selection *
+              </InputLabel>
+              {/* <Controller
+                name="timeInterval"
+                control={control}
+                defaultValue={1}
+                render={({ field }) => (
+                  <Select {...field} label="Time Interval *">
+                    {timeIntervalOptions.map((option) => (
+                      <MenuItem value={option.value} key={option.id}>
+                        {option.label}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                )}
+              /> */}
+            </FormControl>
+          </Grid>
+
+          <Grid item lg={3} md={4} sm={6} xs={12}>
+            <Box position={"relative"}>
+              <TextField
+                label="Average Temperature *"
+                type="text"
+                {...register("temp")}
+                className="form-input"
+                focused
+                sx={{
+                  width: "100%",
+                }}
+              />
+              <Typography
+                variant="body1"
+                color="#555555AC"
+                sx={{
+                  position: "absolute",
+                  right: 13,
+                  top: "30%",
+                  backgroundColor: "white",
+                  paddingInline: "5px",
+                }}
+              >
+                °C
+              </Typography>
+            </Box>
+          </Grid>
+
+          <Grid item lg={3} md={4} sm={6} xs={12}>
+            <FormControl className="form-input" fullWidth focused>
+              <InputLabel id="demo-simple-select-label">
+                Fish Weight Selection *
+              </InputLabel>
+              {/* <Controller
+                name="timeInterval"
+                control={control}
+                defaultValue={1}
+                render={({ field }) => (
+                  <Select {...field} label="Time Interval *">
+                    {timeIntervalOptions.map((option) => (
+                      <MenuItem value={option.value} key={option.id}>
+                        {option.label}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                )}
+              /> */}
+            </FormControl>
+          </Grid>
+
+          <Grid item lg={3} md={4} sm={6} xs={12}>
+            <Box position={"relative"}>
+              <TextField
+                label="Average Fish Weight *"
                 type="text"
                 {...register("fishWeight")}
                 className="form-input"
@@ -113,10 +351,11 @@ function AdHoc() {
               </Typography>
             </Box>
           </Grid>
+
           <Grid item lg={3} md={4} sm={6} xs={12}>
             <Box position={"relative"}>
               <TextField
-                label="Number Of fish *"
+                label="Total Number Of Fish *"
                 type="text"
                 {...register("numberOfFishs")}
                 className="form-input"
@@ -140,7 +379,9 @@ function AdHoc() {
               </Typography> */}
             </Box>
           </Grid>
-          <Grid item lg={3} md={4} sm={6} xs={12}>
+
+
+          {/* <Grid item lg={3} md={4} sm={6} xs={12}>
             <Box position={"relative"}>
               <TextField
                 label="Temp *"
@@ -237,7 +478,7 @@ function AdHoc() {
                 days
               </Typography>
             </Box>
-          </Grid>
+          </Grid> */}
           {/* <Grid item lg={3} md={4} sm={6} xs={12}>
             <FormControl className="form-input" fullWidth focused>
               <InputLabel id="demo-simple-select-label">
@@ -258,7 +499,7 @@ function AdHoc() {
               </Select>
             </FormControl>
           </Grid> */}
-          <Grid item lg={3} md={4} sm={6} xs={12}>
+          {/* <Grid item lg={3} md={4} sm={6} xs={12}>
             <Box position={"relative"}>
               <TextField
                 label="Expected Waste Factory *"
@@ -284,7 +525,9 @@ function AdHoc() {
                 %
               </Typography>
             </Box>
-          </Grid>
+          </Grid> */}
+
+
         </Grid>
 
         <Box
@@ -322,6 +565,83 @@ function AdHoc() {
           />
         </div>
       )}
+
+
+      <Grid container spacing={3} mt={2} mb={5} alignItems={"center"}>
+        <Grid item lg={3} md={4} sm={6} xs={12}>
+          <Box position={"relative"}>
+            <TextField
+              label="Adjustment Factor *"
+              type="text"
+              // {...register("period")}
+              className="form-input"
+              focused
+              sx={{
+                width: "100%",
+              }}
+            />
+            <Typography
+              variant="body1"
+              color="#555555AC"
+              sx={{
+                position: "absolute",
+                right: 13,
+                top: "30%",
+                backgroundColor: "white",
+                paddingInline: "5px",
+              }}
+            >
+              %
+            </Typography>
+          </Box>
+        </Grid>
+
+        <Grid item lg={3} md={4} sm={6} xs={12}>
+          <Button
+            id="basic-button"
+            type="button"
+            variant="contained"
+            sx={{
+              background: "#fff",
+              color: "#06A19B",
+              fontWeight: 600,
+              padding: "6px 16px",
+              width: "fit-content",
+              textTransform: "capitalize",
+              borderRadius: "8px",
+              border: "1px solid #06A19B",
+              boxShadow: "none",
+              "&:hover": {
+                boxShadow: "none",
+              },
+            }}
+          >
+            Reset Filters
+          </Button>
+
+          <Button
+            id="basic-button"
+            type="button"
+            variant="contained"
+            sx={{
+              background: "#06A19B",
+              fontWeight: 600,
+              padding: "6px 16px",
+              width: "fit-content",
+              textTransform: "capitalize",
+              borderRadius: "8px",
+              color: "white",
+              boxShadow: "none",
+              ml: 2,
+              "&:hover": {
+                boxShadow: "none",
+              },
+            }}
+          >
+            Add one dropdown here
+          </Button>
+        </Grid>
+      </Grid>
     </Stack>
   );
 }
