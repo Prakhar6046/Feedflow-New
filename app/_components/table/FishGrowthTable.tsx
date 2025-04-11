@@ -14,7 +14,12 @@ interface Props {
 }
 function FishGrowthTable({ data }: Props) {
   return (
-    <TableContainer component={Paper}>
+    <TableContainer
+      component={Paper}
+      sx={{
+        mb: 5,
+      }}
+    >
       <Table>
         <TableHead>
           <TableRow>

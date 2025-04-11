@@ -50,6 +50,14 @@ const commonFilterSlice = createSlice({
     setEndDate: (state, action) => {
       state.endDate = action.payload;
     },
+    handleResetFilters: (state) => {
+      state.selectedDropDownfarms = state.allFarms;
+      state.selectedDropDownUnits = [];
+      state.selectedDropDownYears = [new Date().getFullYear()];
+      state.selectedAverage = averagesDropdown[0];
+      state.startDate = dayjs().startOf("year").format();
+      state.endDate = dayjs().format();
+    },
   },
 });
 

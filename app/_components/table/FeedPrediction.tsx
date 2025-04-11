@@ -42,249 +42,6 @@ const FeedPredictionTable = ({ farms, productions }: Props) => {
   const [loading, setLoading] = useState(false);
   const [selectedFeeding, setSelectedFeeding] = useState<string>("feedingPlan");
   const [productionData, setProductionData] = useState<FarmGroup[]>();
-  // const CreateFeedPredictionPDF = async () => {
-  //   let data;
-  //   if (selectedFeeding === "adhoc") {
-  //     if (!adHocData.length) {
-  //       return;
-  //     }
-  //     data = adHocData?.map((val) => {
-  //       return {
-  //         date: val.date,
-  //         teamp: val.averageProjectedTemp,
-  //         noOfFish: val.numberOfFish,
-  //         fishSize: val.fishSize,
-  //         growth: val.growth,
-  //         feedType: val.feedType,
-  //         feedSize: val.feedSize,
-  //         estimatedFCR: val.estimatedFCR,
-  //         feedIntake: val.feedIntake,
-  //         feedingRate: val.feedingRate,
-  //       };
-  //     });
-  //   } else if (selectedFeeding === "feedingPlan") {
-  //     if (!feedPlanData?.length && !currentFarmTab) {
-  //       return;
-  //     }
-  //     data = feedPlanData?.flatMap((farm) =>
-  //       farm
-  //         ?.filter((val) => `${val.farm}/${val.unit}` === currentFarmTab)
-  //         .flatMap((growth: any) =>
-  //           growth.fishGrowthData.map((val: any) => ({
-  //             date: val.date,
-  //             teamp: val.averageProjectedTemp,
-  //             noOfFish: val.numberOfFish,
-  //             fishSize: val.fishSize,
-  //             growth: val.growth,
-  //             feedType: val.feedType,
-  //             feedSize: val.feedSize,
-  //             estimatedFCR: val.estimatedFCR,
-  //             feedIntake: val.feedIntake,
-  //             feedingRate: val.feedingRate,
-  //           }))
-  //         )
-  //     );
-  //   }
-  //   setLoading(true);
-  //   const pdf = new jsPDF({ orientation: "landscape" });
-  //   const tempContainer = document.createElement("div");
-  //   document.body.appendChild(tempContainer);
-  //   const chartDiv = document.createElement("div");
-  //   tempContainer.appendChild(chartDiv);
-  //   const root = createRoot(chartDiv);
-  //   let chartAdded = false;
-  //   root.render(
-  //     <div
-  //       style={{
-  //         maxWidth: "100vw",
-  //         width: "100%",
-  //         height: "100%",
-  //         fontFamily: "Arial, sans-serif",
-  //         margin: "auto",
-  //       }}
-  //     >
-  //       <div
-  //         style={{
-  //           padding: "12px 20px",
-  //           backgroundColor: "rgb(6,161,155)",
-  //           boxShadow: "0 0 3px rgb(6, 161, 155)",
-  //           display: "flex",
-  //           alignItems: "center",
-  //           justifyContent: "space-between",
-  //         }}
-  //       >
-  //         <img src="/static/img/logo-bigone.jpg" alt="Logo" width={200} />
-  //         <div>
-  //           <h6
-  //             style={{
-  //               marginBottom: "4px",
-  //               fontSize: "16px",
-  //               color: "white",
-  //             }}
-  //           >
-  //             Feed Prediction Report
-  //           </h6>
-  //         </div>
-  //       </div>
-  //       <div
-  //         style={{
-  //           width: "100%",
-  //           marginBottom: "20px",
-  //           display: "flex",
-  //           alignItems: "start",
-  //         }}
-  //       >
-  //         <div
-  //           style={{
-  //             width: "100%",
-  //             marginBottom: "20px",
-  //             display: "flex",
-  //           }}
-  //         >
-  //           <table
-  //             style={{
-  //               width: "100%",
-  //               borderCollapse: "collapse",
-  //               fontSize: "12px",
-  //               color: "#333",
-  //               marginTop: "16px",
-  //             }}
-  //           >
-  //             <thead>
-  //               <tr>
-  //                 {CommonFeedPredictionHead?.map(
-  //                   (head: string, idx: number) => (
-  //                     <th
-  //                       key={idx}
-  //                       style={{
-  //                         border: "1px solid #ccc",
-  //                         padding: "8px 12px",
-  //                         textAlign: "left",
-  //                         borderTopLeftRadius:
-  //                           idx === FeedPredictionHead.length - 1
-  //                             ? "8px"
-  //                             : "0px",
-  //                         background: "#efefef",
-  //                       }}
-  //                     >
-  //                       {head}
-  //                     </th>
-  //                   )
-  //                 )}
-  //               </tr>
-  //             </thead>
-  //             <tbody>
-  //               {data?.map((row: any, index: number) => (
-  //                 <tr key={index}>
-  //                   <td
-  //                     style={{
-  //                       border: "1px solid #ccc",
-  //                       padding: "8px 12px",
-  //                     }}
-  //                   >
-  //                     {row.date}
-  //                   </td>
-  //                   <td
-  //                     style={{
-  //                       border: "1px solid #ccc",
-  //                       padding: "8px 12px",
-  //                     }}
-  //                   >
-  //                     {row.averageProjectedTemp}
-  //                   </td>
-  //                   <td
-  //                     style={{
-  //                       border: "1px solid #ccc",
-  //                       padding: "8px 12px",
-  //                     }}
-  //                   >
-  //                     {row.numberOfFish}
-  //                   </td>
-  //                   <td
-  //                     style={{
-  //                       border: "1px solid #ccc",
-  //                       padding: "8px 12px",
-  //                     }}
-  //                   >
-  //                     {row.fishSize}
-  //                   </td>
-  //                   <td
-  //                     style={{
-  //                       border: "1px solid #ccc",
-  //                       padding: "8px 12px",
-  //                     }}
-  //                   >
-  //                     {row.growth}
-  //                   </td>
-  //                   <td
-  //                     style={{
-  //                       border: "1px solid #ccc",
-  //                       padding: "8px 12px",
-  //                     }}
-  //                   >
-  //                     {row.feedType}
-  //                   </td>
-  //                   <td
-  //                     style={{
-  //                       border: "1px solid #ccc",
-  //                       padding: "8px 12px",
-  //                     }}
-  //                   >
-  //                     {row.feedSize}
-  //                   </td>
-  //                   <td
-  //                     style={{
-  //                       border: "1px solid #ccc",
-  //                       padding: "8px 12px",
-  //                     }}
-  //                   >
-  //                     {row.estimatedFCR}
-  //                   </td>
-  //                   <td
-  //                     style={{
-  //                       border: "1px solid #ccc",
-  //                       padding: "8px 12px",
-  //                     }}
-  //                   >
-  //                     {row.feedIntake}
-  //                   </td>
-  //                   <td
-  //                     style={{
-  //                       border: "1px solid #ccc",
-  //                       padding: "8px 12px",
-  //                     }}
-  //                   >
-  //                     {row.feedingRate}
-  //                   </td>
-  //                 </tr>
-  //               ))}
-  //             </tbody>
-  //           </table>
-  //         </div>
-  //       </div>
-  //     </div>
-  //   );
-  //   // Wait for rendering to complete
-  //   await new Promise((resolve) => setTimeout(resolve, 800));
-
-  //   // Capture as image
-  //   const canvas = await html2canvas(chartDiv);
-  //   const imgData = canvas.toDataURL("image/png");
-
-  //   const imgProps = pdf.getImageProperties(imgData);
-  //   const pdfWidth = pdf.internal.pageSize.getWidth();
-  //   const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-  //   if (chartAdded) pdf.addPage();
-  //   pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-
-  //   chartAdded = true;
-
-  //   root.unmount();
-  //   tempContainer.removeChild(chartDiv);
-  //   document.body.removeChild(tempContainer);
-  //   pdf.save("feed_pdf.pdf");
-  //   setLoading(false);
-  // };
   const CreateFeedPredictionPDF = async () => {
     let data;
     if (selectedFeeding === "adhoc") {
@@ -713,13 +470,13 @@ const FeedPredictionTable = ({ farms, productions }: Props) => {
                   selectedFeeding === "feedingPlan" ? "active-tab" : ""
                 }
               />
-              <Tab
+              {/* <Tab
                 label="Feeding Summary"
                 value="feedingSummary"
                 className={
                   selectedFeeding === "feedingSummary" ? "active-tab" : ""
                 }
-              />
+              /> */}
               <Tab
                 label="Adhoc"
                 value="adhoc"
@@ -734,6 +491,7 @@ const FeedPredictionTable = ({ farms, productions }: Props) => {
           farmsList={farms}
           groupedData={groupedData}
           setProductionData={setProductionData}
+          reset={false}
         />
       )}
       <Button
@@ -751,6 +509,7 @@ const FeedPredictionTable = ({ farms, productions }: Props) => {
           borderRadius: "8px",
           border: "1px solid #06A19B",
           marginBottom: "10px",
+          marginTop: "10px",
           boxShadow: "none",
           "&:hover": {
             boxShadow: "none",
@@ -759,6 +518,7 @@ const FeedPredictionTable = ({ farms, productions }: Props) => {
       >
         Create .xlsx File
       </Button>
+      {/* 
       <Button
         id="basic-button"
         type="button"
@@ -781,7 +541,7 @@ const FeedPredictionTable = ({ farms, productions }: Props) => {
         }}
       >
         Create PDF
-      </Button>
+      </Button> */}
       {selectedFeeding === "feedingPlan" ? (
         <FeedingPlan
           productionData={productionData}

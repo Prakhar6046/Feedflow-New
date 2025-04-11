@@ -1048,8 +1048,35 @@ export default function ProductionTable({
     router.refresh();
   }, [router]);
 
+  useEffect(() => {
+    if (isReportDownload) {
+      document.body.style.position = "fixed";
+      document.body.style.width = "100%";
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.position = "";
+      document.body.style.width = "";
+      document.body.style.overflow = "";
+    }
+
+    return () => {
+      document.body.style.position = "";
+      document.body.style.width = "";
+      document.body.style.overflow = "";
+    };
+  }, [isReportDownload]);
   if (isReportDownload) {
-    return <Loader />;
+    return (
+      <Box
+        sx={{
+          position: "absolute",
+          width: "100%",
+          height: "100%",
+        }}
+      >
+        <Loader />
+      </Box>
+    );
   }
   return (
     <>
@@ -1173,6 +1200,7 @@ export default function ProductionTable({
             farmsList={farms}
             groupedData={groupedData}
             setProductionData={setProductionData}
+            reset={true}
           />
         </TabContext>
       </Box>

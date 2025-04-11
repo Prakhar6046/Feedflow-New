@@ -47,6 +47,7 @@ interface Props {
   farmsList: Farm[];
   groupedData: FarmGroup[];
   setProductionData: (val: FarmGroup[]) => void;
+  reset: boolean;
 }
 
 const ITEM_HEIGHT = 48;
@@ -64,6 +65,7 @@ function ProductionManagerFilter({
   farmsList,
   groupedData,
   setProductionData,
+  reset,
 }: Props) {
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -85,16 +87,16 @@ function ProductionManagerFilter({
   console.log(selectedDropDownUnits);
   console.log(allUnits);
 
-  const handleResetFilters = () => {
-    dispatch(commonFilterAction.setSelectedDropDownfarms(allFarms));
-    dispatch(commonFilterAction.setSelectedDropDownUnits([]));
-    dispatch(
-      commonFilterAction.setSelectedDropDownYears([new Date().getFullYear()])
-    );
-    dispatch(commonFilterAction.setSelectedAverage(averagesDropdown[0]));
-    dispatch(commonFilterAction.setStartDate(dayjs().startOf("year").format()));
-    dispatch(commonFilterAction.setEndDate(dayjs().format()));
-  };
+  // const handleResetFilters = () => {
+  //   dispatch(commonFilterAction.setSelectedDropDownfarms(allFarms));
+  //   dispatch(commonFilterAction.setSelectedDropDownUnits([]));
+  //   dispatch(
+  //     commonFilterAction.setSelectedDropDownYears([new Date().getFullYear()])
+  //   );
+  //   dispatch(commonFilterAction.setSelectedAverage(averagesDropdown[0]));
+  //   dispatch(commonFilterAction.setStartDate(dayjs().startOf("year").format()));
+  //   dispatch(commonFilterAction.setEndDate(dayjs().format()));
+  // };
   useEffect(() => {
     if (allFarms || allUnits) {
       setFarms(allFarms);
@@ -813,28 +815,32 @@ function ProductionManagerFilter({
               justifyContent: "start",
             }}
           >
-            <Button
-              id="basic-button"
-              type="button"
-              variant="contained"
-              onClick={handleResetFilters}
-              sx={{
-                background: "#fff",
-                color: "#06A19B",
-                fontWeight: 600,
-                padding: "6px 16px",
-                width: "fit-content",
-                textTransform: "capitalize",
-                borderRadius: "8px",
-                border: "1px solid #06A19B",
-                boxShadow: "none",
-                "&:hover": {
+            {reset && (
+              <Button
+                id="basic-button"
+                type="button"
+                variant="contained"
+                onClick={() =>
+                  dispatch(commonFilterAction.handleResetFilters())
+                }
+                sx={{
+                  background: "#fff",
+                  color: "#06A19B",
+                  fontWeight: 600,
+                  padding: "6px 16px",
+                  width: "fit-content",
+                  textTransform: "capitalize",
+                  borderRadius: "8px",
+                  border: "1px solid #06A19B",
                   boxShadow: "none",
-                },
-              }}
-            >
-              Reset Filters
-            </Button>
+                  "&:hover": {
+                    boxShadow: "none",
+                  },
+                }}
+              >
+                Reset Filters
+              </Button>
+            )}
             {selectedView === "feeding" && (
               <Button
                 id="basic-button"
