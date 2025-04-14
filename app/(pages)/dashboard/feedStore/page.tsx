@@ -1,3 +1,4 @@
+import { commonFilterAction } from "@/lib/features/commonFilters/commonFilters";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import {
@@ -10,520 +11,319 @@ import {
   Stack,
   Tab,
   TextField,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import { NextPage } from "next";
+import { MultiSelect } from "primereact/multiselect";
+import React from "react";
 
-interface Props {}
+interface Props { }
 
-const Page: NextPage<Props> = ({}) => {
+const Page: NextPage<Props> = ({ }) => {
   return (
     // <div>Feed Store Coming Soon...</div>
     <>
-      <h4>
-        Add Farm & Unit Input with Reset Filter Button + Add one Generate Button
-        Here
-      </h4>
+      <Box>
+        <Button
+          type="submit"
+          variant="contained"
+          sx={{
+            background: "#06A19B",
+            fontWeight: 600,
+            padding: "6px 16px",
+            width: "fit-content",
+            textTransform: "capitalize",
+            borderRadius: "8px",
+            mr: 2
+          }}
+        >
+          Save
+        </Button>
 
-      <Grid container columnSpacing={10} rowSpacing={5}>
-        <Grid item xs={6}>
-          <Box>
-            <Typography
-              variant="h6"
-              fontWeight={700}
-              sx={{
-                fontSize: {
-                  md: 24,
-                  xs: 20,
-                },
-                my: 1.5,
-                pb: 1,
-              }}
-              borderBottom={"1px solid black"}
-            >
-              Overall Summary
-            </Typography>
+        <Button
+          type="submit"
+          variant="contained"
+          sx={{
+            background: "#fff",
+            color: "#06A19B",
+            fontWeight: 600,
+            padding: "6px 16px",
+            width: "fit-content",
+            textTransform: "capitalize",
+            borderRadius: "8px",
+            border: "1px solid #06A19B",
+          }}
+        >
+          Add dropdown here
+          {/* <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="1em"
+            height="1em"
+            viewBox="0 0 16 16"
+          >
+            <path
+              fill="currentColor"
+              d="M9.5 13a1.5 1.5 0 1 1-3 0a1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0a1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0a1.5 1.5 0 0 1 3 0"
+            />
+          </svg> */}
+        </Button>
+      </Box>
 
-            <Stack>
-              <Box display={"flex"} alignItems={"center"} gap={1} mb={0.75}>
-                <Typography
-                  variant="body1"
-                  color="#000"
-                  fontWeight={600}
-                  sx={{
-                    fontSize: {
-                      xs: 16,
-                    },
-                  }}
+      <Box mb={5}>
+        <Grid container spacing={2} mt={1}>
+          {/* <Grid
+            item
+            xl={2}
+            lg={4}
+            md={4}
+            sm={6}
+            xs={12}
+          >
+            <Box sx={{ width: "100%" }}>
+              <FormControl fullWidth className="form-input selected" focused>
+                <InputLabel
+                  id="demo-simple-select-label-1 "
+                  className="custom-input"
                 >
-                  Total Biomass Growth -
-                </Typography>
-
-                <Typography
-                  variant="body2"
-                  color="#555555AC"
-                  sx={{
-                    fontSize: {
-                      md: 16,
-                      xs: 14,
-                    },
-                  }}
-                >
-                  __ Kg
-                </Typography>
-              </Box>
-
-              <Box display={"flex"} alignItems={"center"} gap={1} mb={0.75}>
-                <Typography
-                  variant="body1"
-                  color="#000"
-                  fontWeight={600}
-                  sx={{
-                    fontSize: {
-                      xs: 16,
-                    },
-                  }}
-                >
-                  Final Farm/Unit Biomass -
-                </Typography>
-
-                <Typography
-                  variant="body2"
-                  color="#555555AC"
-                  sx={{
-                    fontSize: {
-                      md: 16,
-                      xs: 14,
-                    },
-                  }}
-                >
-                  __
-                </Typography>
-              </Box>
-
-              <Box display={"flex"} alignItems={"center"} gap={1} mb={0.75}>
-                <Typography
-                  variant="body1"
-                  color="#000"
-                  fontWeight={600}
-                  sx={{
-                    fontSize: {
-                      xs: 16,
-                    },
-                  }}
-                >
-                  Total Feed Usage -
-                </Typography>
-
-                <Typography
-                  variant="body2"
-                  color="#555555AC"
-                  sx={{
-                    fontSize: {
-                      md: 16,
-                      xs: 14,
-                    },
-                  }}
-                >
-                  __ Kg
-                </Typography>
-              </Box>
-
-              <Box display={"flex"} alignItems={"center"} gap={1} mb={0.75}>
-                <Typography
-                  variant="body1"
-                  color="#000"
-                  fontWeight={600}
-                  sx={{
-                    fontSize: {
-                      xs: 16,
-                    },
-                  }}
-                >
-                  Total Feed Cost -
-                </Typography>
-
-                <Typography
-                  variant="body2"
-                  color="#555555AC"
-                  sx={{
-                    fontSize: {
-                      md: 16,
-                      xs: 14,
-                    },
-                  }}
-                >
-                  __
-                </Typography>
-              </Box>
-            </Stack>
-          </Box>
-        </Grid>
-
-        <Grid item xs={6}>
-          <Box>
-            <Typography
-              variant="h6"
-              fontWeight={700}
-              sx={{
-                fontSize: {
-                  md: 24,
-                  xs: 20,
-                },
-                my: 1.5,
-                pb: 1,
-              }}
-              borderBottom={"1px solid black"}
-            >
-              Feed Usage(All Farms/Units)
-            </Typography>
-
-            <Stack>
-              <Box display={"flex"} alignItems={"center"} gap={1} mb={0.75}>
-                <Typography
-                  variant="body1"
-                  color="#000"
-                  fontWeight={600}
-                  sx={{
-                    fontSize: {
-                      xs: 16,
-                    },
-                  }}
-                >
-                  SAF Start #0 -
-                </Typography>
-
-                <Typography
-                  variant="body2"
-                  color="#555555AC"
-                  sx={{
-                    fontSize: {
-                      md: 16,
-                      xs: 14,
-                    },
-                  }}
-                >
-                  __ Kg
-                </Typography>
-              </Box>
-
-              <Box display={"flex"} alignItems={"center"} gap={1} mb={0.75}>
-                <Typography
-                  variant="body1"
-                  color="#000"
-                  fontWeight={600}
-                  sx={{
-                    fontSize: {
-                      xs: 16,
-                    },
-                  }}
-                >
-                  SAF Starter #1 -
-                </Typography>
-
-                <Typography
-                  variant="body2"
-                  color="#555555AC"
-                  sx={{
-                    fontSize: {
-                      md: 16,
-                      xs: 14,
-                    },
-                  }}
-                >
-                  __ Kg
-                </Typography>
-              </Box>
-
-              <Box display={"flex"} alignItems={"center"} gap={1} mb={0.75}>
-                <Typography
-                  variant="body1"
-                  color="#000"
-                  fontWeight={600}
-                  sx={{
-                    fontSize: {
-                      xs: 16,
-                    },
-                  }}
-                >
-                  Grower 2mm -
-                </Typography>
-
-                <Typography
-                  variant="body2"
-                  color="#555555AC"
-                  sx={{
-                    fontSize: {
-                      md: 16,
-                      xs: 14,
-                    },
-                  }}
-                >
-                  __
-                </Typography>
-              </Box>
-            </Stack>
-          </Box>
-        </Grid>
-
-        <Grid item xs={12}>
-          <TabContext value={"farm1"}>
-            <Box mb={2}>
-              <TabList
-                aria-label="lab API tabs example"
-                className="production-tabs"
-              >
-                <Tab label="Farm 1" value="farm1" className="active-tab" />
-                <Tab label="Farm 2" value="farm2" />
-              </TabList>
-            </Box>
-          </TabContext>
-
-          <Box>
-            <Typography
-              variant="h6"
-              fontWeight={700}
-              sx={{
-                fontSize: {
-                  md: 24,
-                  xs: 20,
-                },
-                my: 1.5,
-                pb: 1,
-              }}
-              borderBottom={"1px solid black"}
-            >
-              Feed Usage(Farm 1)
-            </Typography>
-
-            <Stack>
-              <Box display={"flex"} alignItems={"center"} gap={1} mb={0.75}>
-                <Typography
-                  variant="body1"
-                  color="#000"
-                  fontWeight={600}
-                  sx={{
-                    fontSize: {
-                      xs: 16,
-                    },
-                  }}
-                >
-                  SAF Start #0 -
-                </Typography>
-
-                <Typography
-                  variant="body2"
-                  color="#555555AC"
-                  sx={{
-                    fontSize: {
-                      md: 16,
-                      xs: 14,
-                    },
-                  }}
-                >
-                  __ Kg
-                </Typography>
-              </Box>
-
-              <Box display={"flex"} alignItems={"center"} gap={1} mb={0.75}>
-                <Typography
-                  variant="body1"
-                  color="#000"
-                  fontWeight={600}
-                  sx={{
-                    fontSize: {
-                      xs: 16,
-                    },
-                  }}
-                >
-                  SAF Starter #1 -
-                </Typography>
-
-                <Typography
-                  variant="body2"
-                  color="#555555AC"
-                  sx={{
-                    fontSize: {
-                      md: 16,
-                      xs: 14,
-                    },
-                  }}
-                >
-                  __ Kg
-                </Typography>
-              </Box>
-
-              <Box display={"flex"} alignItems={"center"} gap={1} mb={0.75}>
-                <Typography
-                  variant="body1"
-                  color="#000"
-                  fontWeight={600}
-                  sx={{
-                    fontSize: {
-                      xs: 16,
-                    },
-                  }}
-                >
-                  Grower 2mm -
-                </Typography>
-
-                <Typography
-                  variant="body2"
-                  color="#555555AC"
-                  sx={{
-                    fontSize: {
-                      md: 16,
-                      xs: 14,
-                    },
-                  }}
-                >
-                  __
-                </Typography>
-              </Box>
-            </Stack>
-          </Box>
-        </Grid>
-      </Grid>
-
-      <h4>Add Table Here</h4>
-
-      {/* ADHOC */}
-
-      <Stack mt={5}>
-        <Typography variant="h6" color="#637381" fontSize={16} mb={3.5}>
-          Please fill the form to make new projection.
-        </Typography>
-
-        <form>
-          <Grid container spacing={3} alignItems={"center"}>
-            <Grid item lg={3} md={4} sm={6} xs={12}>
-              <FormControl className="form-input" fullWidth focused>
-                <InputLabel id="demo-simple-select-label">
-                  Fish Type *
+                  Farms
                 </InputLabel>
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  label="Fish Type *"
-                >
-                  {/* {OrganisationType.map((organisation, i) => {
-                return (
-                  <MenuItem value={organisation} key={i}>
-                    {organisation}
-                  </MenuItem>
-                );
-              })} */}
-                </Select>
+                <MultiSelect
+                  value={selectedDropDownfarms}
+                  onChange={(e) =>
+                    dispatch(commonFilterAction.setSelectedDropDownfarms(e.value))
+                  }
+                  options={farms}
+                  optionLabel="option"
+                  display="chip"
+                  placeholder="Select Farms"
+                  dropdownIcon={
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="10"
+                      height="10"
+                      viewBox="0 0 15 15"
+                    >
+                      <path fill="currentColor" d="M7.5 12L0 4h15z" />
+                    </svg>
+                  } // Custom dropdown icon
+                  maxSelectedLabels={3}
+                  // Custom icon
+                  className="w-full md:w-20rem custom-select"
+                />
               </FormControl>
-            </Grid>
-
-            <Grid item lg={3} md={4} sm={6} xs={12}>
-              <TextField
-                label="Farm *"
-                type="text"
-                className="form-input"
-                focused
-                sx={{
-                  width: "100%",
-                }}
-              />
-            </Grid>
-
-            <Grid item lg={3} md={4} sm={6} xs={12}>
-              <TextField
-                label="Pond *"
-                type="text"
-                className="form-input"
-                focused
-                sx={{
-                  width: "100%",
-                }}
-              />
-            </Grid>
-
-            <Grid item lg={3} md={4} sm={6} xs={12}>
-              <h4>Add Start Date Input Here</h4>
-            </Grid>
-
-            <Grid item lg={3} md={4} sm={6} xs={12}>
-              <TextField
-                label="Growth Period *"
-                type="text"
-                className="form-input"
-                focused
-                sx={{
-                  width: "100%",
-                }}
-              />
-            </Grid>
-
-            <Grid item lg={3} md={4} sm={6} xs={12}>
-              <Box position={"relative"}>
-                <TextField
-                  label="Temperature *"
-                  type="text"
-                  className="form-input"
-                  focused
-                  sx={{
-                    width: "100%",
-                  }}
-                />
-                <Typography
-                  variant="body1"
-                  color="#555555AC"
-                  sx={{
-                    position: "absolute",
-                    right: 13,
-                    top: "30%",
-                    backgroundColor: "white",
-                    paddingInline: "5px",
-                  }}
-                >
-                  °C
-                </Typography>
-              </Box>
-            </Grid>
-
-            <Grid item lg={3} md={4} sm={6} xs={12}>
-              <Box position={"relative"}>
-                <TextField
-                  label="Fish Weight *"
-                  type="text"
-                  className="form-input"
-                  focused
-                  sx={{
-                    width: "100%",
-                  }}
-                />
-                <Typography
-                  variant="body1"
-                  color="#555555AC"
-                  sx={{
-                    position: "absolute",
-                    right: 13,
-                    top: "30%",
-                    backgroundColor: "white",
-                    paddingInline: "5px",
-                  }}
-                >
-                  g
-                </Typography>
-              </Box>
-            </Grid>
-
-            <Grid item lg={3} md={4} sm={6} xs={12}>
-              <TextField
-                label="Fish Amount *"
-                type="text"
-                className="form-input"
-                focused
-                sx={{
-                  width: "100%",
-                }}
-              />
-            </Grid>
+            </Box>
           </Grid>
 
+          <Grid
+            item
+            xl={2}
+            lg={4}
+            md={4}
+            sm={6}
+            xs={12}
+          >
+            <Box sx={{ width: "100%" }}>
+              <FormControl
+                fullWidth
+                className={`form-input ${selectedDropDownfarms?.length >= 1 && "selected"
+                  }`}
+                focused
+              >
+                <InputLabel
+                  id="demo-simple-select-label"
+                  className="custom-input"
+                >
+                  Units
+                </InputLabel>
+
+                <MultiSelect
+                  value={selectedDropDownUnits}
+                  onChange={(e) =>
+                    dispatch(commonFilterAction.setSelectedDropDownUnits(e.value))
+                  }
+                  options={units}
+                  optionLabel="option"
+                  display="chip"
+                  placeholder="Select Units"
+                  maxSelectedLabels={3}
+                  dropdownIcon={
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="10"
+                      height="10"
+                      viewBox="0 0 15 15"
+                    >
+                      <path fill="currentColor" d="M7.5 12L0 4h15z" />
+                    </svg>
+                  }
+                  className="w-full md:w-20rem custom-select"
+                />
+              </FormControl>
+            </Box>
+          </Grid> */}
+
+          <Grid item
+            xl={2}
+            lg={4}
+            md={4}
+            sm={6}
+            xs={12}
+          >
+
+            <TextField
+              label="Generated By *"
+              type="text"
+              // {...register("temp", {
+              //   required: true,
+              //   pattern: ValidationPatterns.numbersWithDot,
+              // })}
+              className="form-input"
+              focused
+              sx={{
+                width: "100%",
+              }}
+            />
+          </Grid>
+
+          <Grid item
+            xl={2}
+            lg={4}
+            md={4}
+            sm={6}
+            xs={12}
+          >
+
+            Added Date input with label of Generated On
+          </Grid>
+
+          <Grid item
+            xl={2}
+            lg={4}
+            md={4}
+            sm={6}
+            xs={12}
+          >
+
+            Added Date input with label of Start Date
+          </Grid>
+
+          <Grid item
+            xl={2}
+            lg={4}
+            md={4}
+            sm={6}
+            xs={12}
+          >
+
+            Added Date input with label of End Date
+          </Grid>
+
+          <Grid item
+            xl={2}
+            lg={4}
+            md={4}
+            sm={6}
+            xs={12}
+          >
+
+            <Box position={"relative"}>
+              <TextField
+                label="Peroid *"
+                type="text"
+                // {...register("temp", {
+                //   required: true,
+                //   pattern: ValidationPatterns.numbersWithDot,
+                // })}
+                className="form-input"
+                focused
+                sx={{
+                  width: "100%",
+                }}
+              />
+              <Typography
+                variant="body1"
+                color="#555555AC"
+                sx={{
+                  position: "absolute",
+                  right: 13,
+                  top: "30%",
+                  backgroundColor: "white",
+                  paddingInline: "5px",
+                }}
+              >
+                days
+              </Typography>
+            </Box>
+          </Grid>
+        </Grid>
+      </Box>
+
+
+      <Grid container spacing={2} justifyContent={"space-between"} alignItems={"center"} mb={5}>
+        <Grid item xs="auto" sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: 2
+        }}>
+          <Box position={"relative"}>
+            <TextField
+              label="Adjust *"
+              type="text"
+              // {...register("temp", {
+              //   required: true,
+              //   pattern: ValidationPatterns.numbersWithDot,
+              // })}
+              className="form-input"
+              focused
+              sx={{
+                width: "100%",
+              }}
+            />
+            <Typography
+              variant="body1"
+              color="#555555AC"
+              sx={{
+                position: "absolute",
+                right: 13,
+                top: "30%",
+                backgroundColor: "white",
+                paddingInline: "5px",
+              }}
+            >
+              %
+            </Typography>
+          </Box>
+
+          <Tooltip title="Re calculate">
+            <Button
+              type="submit"
+              variant="contained"
+              sx={{
+                background: "#fff",
+                color: "#06A19B",
+                fontWeight: 600,
+                width: "fit-content",
+                padding: "6px",
+                textTransform: "capitalize",
+                borderRadius: "4px",
+                border: "1px solid #06A19B",
+                boxShadow: "none",
+                "&:hover": {
+                  boxShadow: "none",
+                },
+                minWidth: "fit-content"
+              }}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 20 20">
+                <path fill="currentColor" d="M7 12a1 1 0 1 0 0-2a1 1 0 0 0 0 2m0 3a1 1 0 1 0 0-2a1 1 0 0 0 0 2m2.627-3.072a5.5 5.5 0 0 1 1.178-1.522A.998.998 0 0 0 9 11a1 1 0 0 0 .627.928M6.5 17h3.11q.279.538.663 1H6.5A2.5 2.5 0 0 1 4 15.5v-11A2.5 2.5 0 0 1 6.5 2h7A2.5 2.5 0 0 1 16 4.5v4.688a5.5 5.5 0 0 0-1-.185V4.5A1.5 1.5 0 0 0 13.5 3h-7A1.5 1.5 0 0 0 5 4.5v11A1.5 1.5 0 0 0 6.5 17M6 5.5A1.5 1.5 0 0 1 7.5 4h5A1.5 1.5 0 0 1 14 5.5v1A1.5 1.5 0 0 1 12.5 8h-5A1.5 1.5 0 0 1 6 6.5zM7.5 5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h5a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zm10 7.48a.5.5 0 0 0 .5-.5v-2a.5.5 0 0 0-1 0v.758a4.5 4.5 0 1 0 2 3.742a.5.5 0 1 0-1 0a3.5 3.5 0 1 1-1.696-3H15.5a.5.5 0 1 0 0 1z" />
+              </svg>
+            </Button>
+          </Tooltip>
+        </Grid >
+
+
+        <Grid item xs="auto">
           <Button
             type="submit"
             variant="contained"
@@ -534,15 +334,102 @@ const Page: NextPage<Props> = ({}) => {
               width: "fit-content",
               textTransform: "capitalize",
               borderRadius: "8px",
-              marginLeft: "auto",
-              display: "block",
-              marginTop: 3,
+              mr: 2
             }}
           >
-            Save Changes
+            Save
           </Button>
-        </form>
-      </Stack>
+
+          <Button
+            type="submit"
+            variant="contained"
+            sx={{
+              background: "#fff",
+              color: "#06A19B",
+              fontWeight: 600,
+              padding: "6px 16px",
+              width: "fit-content",
+              textTransform: "capitalize",
+              borderRadius: "8px",
+              border: "1px solid #06A19B",
+            }}
+          >
+            Add Dropdown Here
+          </Button>
+
+        </Grid>
+      </Grid>
+
+      <Grid container spacing={2} justifyContent={"space-between"} alignItems={"center"}>
+        <Grid item xs={6}>
+          <Typography variant="h6" component={"h6"} fontWeight={600}>Fish Growth</Typography>
+
+          Add Graph Here
+
+          <Box>
+
+            <Button
+              type="submit"
+              variant="contained"
+              sx={{
+                background: "#fff",
+                color: "#06A19B",
+                fontWeight: 600,
+                padding: "6px 16px",
+                width: "fit-content",
+                textTransform: "capitalize",
+                borderRadius: "8px",
+                border: "1px solid #06A19B",
+              }}
+            >
+              Add dropdown here
+            </Button>
+          </Box>
+        </Grid>
+
+        <Grid item xs={6}>
+          <Typography variant="h6" component={"h6"} fontWeight={600}>Feed Requirement</Typography>
+
+          Add Graph Here
+
+          <Box>
+            <Button
+              type="submit"
+              variant="contained"
+              sx={{
+                background: "#06A19B",
+                color: "#fff",
+                fontWeight: 600,
+                padding: "6px 16px",
+                width: "fit-content",
+                textTransform: "capitalize",
+                borderRadius: "8px",
+                border: "1px solid #06A19B",
+                mr: 2
+              }}
+            >
+              Order Feed
+            </Button>
+
+            <Button
+              type="submit"
+              variant="contained"
+              sx={{
+                background: "#fff",
+                color: "#06A19B",
+                fontWeight: 600,
+                padding: "6px 16px",
+                width: "fit-content",
+                textTransform: "capitalize",
+                borderRadius: "8px",
+                border: "1px solid #06A19B",
+              }}
+            >
+              Add dropdown here
+            </Button>
+          </Box>
+        </Grid>
+      </Grid>
     </>
   );
 };

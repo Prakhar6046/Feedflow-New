@@ -520,9 +520,8 @@ function ProductionManagerFilter({
           <Box sx={{ width: "100%" }}>
             <FormControl
               fullWidth
-              className={`form-input ${
-                selectedDropDownfarms?.length >= 1 && "selected"
-              }`}
+              className={`form-input ${selectedDropDownfarms?.length >= 1 && "selected"
+                }`}
               focused
             >
               <InputLabel
@@ -567,21 +566,19 @@ function ProductionManagerFilter({
           xs={12}
           sx={{
             width: "fit-content",
-
             paddingTop: "8px",
           }}
         >
           <Box sx={{ width: "100%" }}>
             <FormControl
               fullWidth
-              className={`form-input ${
-                selectedDropDownfarms?.length &&
+              className={`form-input ${selectedDropDownfarms?.length &&
                 selectedDropDownUnits?.length &&
                 // selectedDropDownYears?.length &&
                 startDate &&
                 endDate &&
                 "selected"
-              }`}
+                }`}
               focused
             >
               <InputLabel id="demo-simple-select-label">Averages</InputLabel>
@@ -592,10 +589,10 @@ function ProductionManagerFilter({
                 value={selectedAverage}
                 disabled={
                   selectedDropDownfarms &&
-                  selectedDropDownUnits &&
-                  selectedDropDownYears &&
-                  startDate &&
-                  endDate
+                    selectedDropDownUnits &&
+                    selectedDropDownYears &&
+                    startDate &&
+                    endDate
                     ? false
                     : true
                 }
@@ -617,7 +614,88 @@ function ProductionManagerFilter({
           </Box>
         </Grid>
 
-        <Grid
+        <Grid item
+          xl={2}
+          lg={4}
+          md={4}
+          sm={6}
+          xs={12}
+          sx={{
+            width: "fit-content",
+            paddingTop: "8px",
+          }}>
+          <Box sx={{ width: "100%" }}>
+            <FormControl
+              fullWidth
+              className={`form-input ${selectedDropDownfarms?.length &&
+                selectedDropDownUnits?.length &&
+                "selected"
+                }`}
+              focused
+            >
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DatePicker
+                  label="Start Date"
+                  className="date-picker"
+                  value={dayjs(startDate)}
+                  onChange={(value) => {
+                    const isoDate = value?.toISOString();
+                    if (isoDate)
+                      dispatch(commonFilterAction.setStartDate(isoDate));
+                  }}
+                  maxDate={dayjs(endDate)}
+                />
+              </LocalizationProvider>
+            </FormControl>
+          </Box>
+        </Grid>
+
+        <Grid item
+          xl={2}
+          lg={4}
+          md={4}
+          sm={6}
+          xs={12}
+          sx={{
+            width: "fit-content",
+
+            paddingTop: "8px",
+          }}>
+          <Box sx={{ width: "100%" }}>
+            <FormControl
+              fullWidth
+              className={`form-input ${selectedDropDownfarms?.length &&
+                selectedDropDownUnits?.length &&
+                startDate &&
+                "selected"
+                }`}
+              focused
+            >
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DatePicker
+                  label="End Date"
+                  value={dayjs(endDate)}
+                  onChange={(value) => {
+                    const isoDate = value?.toISOString();
+                    if (isoDate)
+                      dispatch(commonFilterAction.setEndDate(isoDate));
+                  }}
+                  sx={{
+                    marginTop: "0",
+                    borderRadius: "6px",
+                  }}
+                  className="date-picker"
+                  minDate={dayjs(startDate)}
+                  maxDate={dayjs()}
+                />
+              </LocalizationProvider>
+            </FormControl>
+          </Box>
+        </Grid>
+
+
+
+        {/* <Grid
           item
           xl={2}
           lg={4}
@@ -630,15 +708,14 @@ function ProductionManagerFilter({
           }}
         >
           <Grid container>
-            {/* <Grid item xs>
+            <Grid item xs>
               <Box sx={{ width: "100%" }}>
                 <FormControl
                   fullWidth
-                  className={`form-input ${
-                    selectedDropDownfarms?.length &&
+                  className={`form-input ${selectedDropDownfarms?.length &&
                     selectedDropDownUnits?.length &&
                     "selected"
-                  }`}
+                    }`}
                   focused
                 >
                   <InputLabel id="demo-simple-select-label-1">
@@ -670,69 +747,10 @@ function ProductionManagerFilter({
                   </Select>
                 </FormControl>
               </Box>
-            </Grid> */}
-            <Grid item xs={4}>
-              <Box sx={{ width: "100%" }}>
-                <FormControl
-                  fullWidth
-                  className={`form-input ${
-                    selectedDropDownfarms?.length &&
-                    selectedDropDownUnits?.length &&
-                    "selected"
-                  }`}
-                  focused
-                >
-                  <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <DatePicker
-                      label="Start Date"
-                      className="date-picker"
-                      value={dayjs(startDate)}
-                      onChange={(value) => {
-                        const isoDate = value?.toISOString();
-                        if (isoDate)
-                          dispatch(commonFilterAction.setStartDate(isoDate));
-                      }}
-                      maxDate={dayjs(endDate)}
-                    />
-                  </LocalizationProvider>
-                </FormControl>
-              </Box>
             </Grid>
-            <Grid item xs={4}>
-              <Box sx={{ width: "100%" }}>
-                <FormControl
-                  fullWidth
-                  className={`form-input ${
-                    selectedDropDownfarms?.length &&
-                    selectedDropDownUnits?.length &&
-                    startDate &&
-                    "selected"
-                  }`}
-                  focused
-                >
-                  <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <DatePicker
-                      label="End Date"
-                      value={dayjs(endDate)}
-                      onChange={(value) => {
-                        const isoDate = value?.toISOString();
-                        if (isoDate)
-                          dispatch(commonFilterAction.setEndDate(isoDate));
-                      }}
-                      sx={{
-                        marginTop: "0",
-                        borderRadius: "6px",
-                      }}
-                      className="date-picker"
-                      minDate={dayjs(startDate)}
-                      maxDate={dayjs()}
-                    />
-                  </LocalizationProvider>
-                </FormControl>
-              </Box>
-            </Grid>
+
           </Grid>
-        </Grid>
+        </Grid> */}
 
         {/* <Grid
           item
@@ -799,9 +817,7 @@ function ProductionManagerFilter({
 
         <Grid
           item
-          xl={3}
-          lg={6}
-          xs={12}
+          xs
           sx={{
             width: "fit-content",
             paddingTop: "8px",

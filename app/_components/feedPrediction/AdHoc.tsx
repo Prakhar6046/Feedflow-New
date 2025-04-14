@@ -116,7 +116,7 @@ function AdHoc({ data, setData }: Iprops) {
   return (
     <Stack>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Grid container spacing={3} mt={2} mb={5} alignItems={"center"}>
+        <Grid container spacing={3} mt={2} mb={5} alignItems={"start"}>
           <Grid item lg={3} md={4} sm={6} xs={12}>
             <TextField
               label="Farm *"
@@ -337,8 +337,8 @@ function AdHoc({ data, setData }: Iprops) {
                 {errors.temp.type === "required"
                   ? ValidationMessages.required
                   : errors.temp.type === "pattern"
-                  ? ValidationMessages.OnlyNumbersWithDot
-                  : ""}
+                    ? ValidationMessages.OnlyNumbersWithDot
+                    : ""}
               </Typography>
             )}
           </Grid>
@@ -377,8 +377,8 @@ function AdHoc({ data, setData }: Iprops) {
                 {errors.fishWeight.type === "required"
                   ? ValidationMessages.required
                   : errors.fishWeight.type === "pattern"
-                  ? ValidationMessages.OnlyNumbersWithDot
-                  : ""}
+                    ? ValidationMessages.OnlyNumbersWithDot
+                    : ""}
               </Typography>
             )}
           </Grid>
@@ -417,8 +417,8 @@ function AdHoc({ data, setData }: Iprops) {
                 {errors.numberOfFishs.type === "required"
                   ? ValidationMessages.required
                   : errors.numberOfFishs.type === "pattern"
-                  ? ValidationMessages.OnlyNumbersWithDot
-                  : ""}
+                    ? ValidationMessages.OnlyNumbersWithDot
+                    : ""}
               </Typography>
             )}
           </Grid>
@@ -458,8 +458,8 @@ function AdHoc({ data, setData }: Iprops) {
                 {errors.adjustmentFactor.type === "required"
                   ? ValidationMessages.required
                   : errors.adjustmentFactor.type === "pattern"
-                  ? ValidationMessages.OnlyNumbersWithDot
-                  : ""}
+                    ? ValidationMessages.OnlyNumbersWithDot
+                    : ""}
               </Typography>
             )}
           </Grid>
