@@ -2,7 +2,11 @@
 import {
   calculateFishGrowth,
   CommonFeedPredictionHead,
+  exportFeedPredictionToXlsx,
+  FeedPredictionHead,
 } from "@/app/_lib/utils";
+import * as ValidationPatterns from "@/app/_lib/utils/validationPatterns";
+import * as ValidationMessages from "@/app/_lib/utils/validationsMessage";
 import {
   Box,
   Button,
@@ -19,15 +23,13 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import dayjs from "dayjs";
-import { useState } from "react";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
+import { useEffect, useState } from "react";
+import { createRoot } from "react-dom/client";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import FishGrowthChart from "../charts/FishGrowthChart";
 import Loader from "../Loader";
 import FishGrowthTable from "../table/FishGrowthTable";
-import { exportFeedPredictionToXlsx } from "@/app/_lib/utils";
-import * as ValidationMessages from "@/app/_lib/utils/validationsMessage";
-import * as ValidationPatterns from "@/app/_lib/utils/validationPatterns";
-import { farmAction } from "@/lib/features/farm/farmSlice";
 import { timeIntervalOptions } from "./FeedingPlan";
 interface FormInputs {
   farm: string;
@@ -67,7 +69,6 @@ type Iprops = {
 
 function AdHoc({ data, setData }: Iprops) {
   const [loading, setLoading] = useState(false);
-
   const {
     register,
     handleSubmit,
@@ -110,8 +111,292 @@ function AdHoc({ data, setData }: Iprops) {
     reset();
     setData([]);
   };
+  const CreateFeedPredictionPDF = async () => {
+    if (!data.length) {
+      return;
+    }
+    const formatedData = data?.map((val) => {
+      return {
+        date: val.date,
+        teamp: val.averageProjectedTemp,
+        noOfFish: val.numberOfFish,
+        fishSize: val.fishSize,
+        growth: val.growth,
+        feedType: val.feedType,
+        feedSize: val.feedSize,
+        estimatedFCR: val.estimatedFCR,
+        feedIntake: val.feedIntake,
+        feedingRate: val.feedingRate,
+      };
+    });
+
+    setLoading(true);
+    const chunkArray = <T,>(arr: any, chunkSize: number): T[][] => {
+      const results: T[][] = [];
+      for (let i = 0; i < arr.length; i += chunkSize) {
+        results.push(arr.slice(i, i + chunkSize));
+      }
+      return results;
+    };
+    const pdf = new jsPDF({ orientation: "landscape" });
+    const chunks = chunkArray(formatedData, 20);
+
+    for (let i = 0; i < chunks.length; i++) {
+      const tempContainer = document.createElement("div");
+      document.body.appendChild(tempContainer);
+      const chartDiv = document.createElement("div");
+      tempContainer.appendChild(chartDiv);
+      const root = createRoot(chartDiv);
+
+      const currentChunk = chunks[i];
+
+      root.render(
+        <div
+          style={{
+            maxWidth: "100vw",
+            width: "100%",
+            height: "100%",
+            fontFamily: "Arial, sans-serif",
+            margin: "auto",
+          }}
+        >
+          <div
+            style={{
+              padding: "12px 20px",
+              backgroundColor: "rgb(6,161,155)",
+              boxShadow: "0 0 3px rgb(6, 161, 155)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <img src="/static/img/logo-bigone.jpg" alt="Logo" width={200} />
+            <div>
+              <h6
+                style={{
+                  marginBottom: "4px",
+                  fontSize: "16px",
+                  color: "white",
+                }}
+              >
+                Feed Prediction Report
+              </h6>
+            </div>
+          </div>
+          <div
+            style={{
+              width: "100%",
+              marginBottom: "20px",
+              display: "flex",
+              alignItems: "start",
+            }}
+          >
+            <div
+              style={{
+                width: "100%",
+                margin: "20px",
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              <table
+                style={{
+                  width: "100%",
+                  borderCollapse: "collapse",
+                  fontSize: "12px",
+                  color: "#333",
+                  marginTop: "16px",
+                }}
+              >
+                <thead>
+                  <tr>
+                    {CommonFeedPredictionHead?.map(
+                      (head: string, idx: number) => (
+                        <th
+                          key={idx}
+                          style={{
+                            border: "1px solid #ccc",
+                            padding: "8px 12px",
+                            textAlign: "left",
+                            borderTopLeftRadius:
+                              idx === FeedPredictionHead.length - 1
+                                ? "8px"
+                                : "0px",
+                            background: "#efefef",
+                          }}
+                        >
+                          {head}
+                        </th>
+                      )
+                    )}
+                  </tr>
+                </thead>
+                <tbody>
+                  {currentChunk?.map((row: any, index: number) => (
+                    <tr key={index}>
+                      <td
+                        style={{
+                          border: "1px solid #ccc",
+                          padding: "8px 12px",
+                        }}
+                      >
+                        {row.date}
+                      </td>
+                      <td
+                        style={{
+                          border: "1px solid #ccc",
+                          padding: "8px 12px",
+                        }}
+                      >
+                        {row.averageProjectedTemp}
+                      </td>
+                      <td
+                        style={{
+                          border: "1px solid #ccc",
+                          padding: "8px 12px",
+                        }}
+                      >
+                        {row.numberOfFish}
+                      </td>
+                      <td
+                        style={{
+                          border: "1px solid #ccc",
+                          padding: "8px 12px",
+                        }}
+                      >
+                        {row.fishSize}
+                      </td>
+                      <td
+                        style={{
+                          border: "1px solid #ccc",
+                          padding: "8px 12px",
+                        }}
+                      >
+                        {row.growth}
+                      </td>
+                      <td
+                        style={{
+                          border: "1px solid #ccc",
+                          padding: "8px 12px",
+                        }}
+                      >
+                        {row.feedType}
+                      </td>
+                      <td
+                        style={{
+                          border: "1px solid #ccc",
+                          padding: "8px 12px",
+                        }}
+                      >
+                        {row.feedSize}
+                      </td>
+                      <td
+                        style={{
+                          border: "1px solid #ccc",
+                          padding: "8px 12px",
+                        }}
+                      >
+                        {row.estimatedFCR}
+                      </td>
+                      <td
+                        style={{
+                          border: "1px solid #ccc",
+                          padding: "8px 12px",
+                        }}
+                      >
+                        {row.feedIntake}
+                      </td>
+                      <td
+                        style={{
+                          border: "1px solid #ccc",
+                          padding: "8px 12px",
+                        }}
+                      >
+                        {row.feedingRate}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      );
+
+      await new Promise((resolve) => setTimeout(resolve, 800));
+
+      const canvas = await html2canvas(chartDiv);
+      const imgData = canvas.toDataURL("image/png");
+      const imgProps = pdf.getImageProperties(imgData);
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+      if (i > 0) pdf.addPage();
+      pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+
+      root.unmount();
+      tempContainer.remove();
+    }
+
+    pdf.save(`ad_hoc_data.pdf`);
+    setLoading(false);
+  };
+  const createxlsxFile = (e: React.MouseEvent<HTMLSpanElement, MouseEvent>) => {
+    if (!data.length) {
+      return;
+    }
+    const formatedData = data?.map((val) => {
+      return {
+        date: val.date,
+        teamp: val.averageProjectedTemp,
+        noOfFish: val.numberOfFish,
+        fishSize: val.fishSize,
+        growth: val.growth,
+        feedType: val.feedType,
+        feedSize: val.feedSize,
+        estimatedFCR: val.estimatedFCR,
+        feedIntake: val.feedIntake,
+        feedingRate: val.feedingRate,
+      };
+    });
+    exportFeedPredictionToXlsx(
+      e,
+      CommonFeedPredictionHead,
+      formatedData,
+      "ad_Hoc_Data"
+    );
+  };
+
+  useEffect(() => {
+    if (loading) {
+      document.body.style.position = "fixed";
+      document.body.style.width = "100%";
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.position = "";
+      document.body.style.width = "";
+      document.body.style.overflow = "";
+    }
+
+    return () => {
+      document.body.style.position = "";
+      document.body.style.width = "";
+      document.body.style.overflow = "";
+    };
+  }, [loading]);
+
   if (loading) {
-    return <Loader />;
+    return (
+      <Box
+        sx={{
+          position: "absolute",
+          width: "100%",
+          height: "100%",
+        }}
+      >
+        <Loader />
+      </Box>
+    );
   }
   return (
     <Stack>
@@ -337,8 +622,8 @@ function AdHoc({ data, setData }: Iprops) {
                 {errors.temp.type === "required"
                   ? ValidationMessages.required
                   : errors.temp.type === "pattern"
-                    ? ValidationMessages.OnlyNumbersWithDot
-                    : ""}
+                  ? ValidationMessages.OnlyNumbersWithDot
+                  : ""}
               </Typography>
             )}
           </Grid>
@@ -377,8 +662,8 @@ function AdHoc({ data, setData }: Iprops) {
                 {errors.fishWeight.type === "required"
                   ? ValidationMessages.required
                   : errors.fishWeight.type === "pattern"
-                    ? ValidationMessages.OnlyNumbersWithDot
-                    : ""}
+                  ? ValidationMessages.OnlyNumbersWithDot
+                  : ""}
               </Typography>
             )}
           </Grid>
@@ -417,8 +702,8 @@ function AdHoc({ data, setData }: Iprops) {
                 {errors.numberOfFishs.type === "required"
                   ? ValidationMessages.required
                   : errors.numberOfFishs.type === "pattern"
-                    ? ValidationMessages.OnlyNumbersWithDot
-                    : ""}
+                  ? ValidationMessages.OnlyNumbersWithDot
+                  : ""}
               </Typography>
             )}
           </Grid>
@@ -458,8 +743,8 @@ function AdHoc({ data, setData }: Iprops) {
                 {errors.adjustmentFactor.type === "required"
                   ? ValidationMessages.required
                   : errors.adjustmentFactor.type === "pattern"
-                    ? ValidationMessages.OnlyNumbersWithDot
-                    : ""}
+                  ? ValidationMessages.OnlyNumbersWithDot
+                  : ""}
               </Typography>
             )}
           </Grid>
@@ -638,6 +923,57 @@ function AdHoc({ data, setData }: Iprops) {
       {data?.length !== 0 && (
         <Box>
           <Grid container spacing={3} mt={2} mb={5} alignItems={"flex-end"}>
+            <Grid item lg={3} md={4} sm={6} xs={12}>
+              <Button
+                id="basic-button"
+                type="button"
+                variant="contained"
+                onClick={(e) => createxlsxFile(e)}
+                sx={{
+                  background: "#fff",
+                  color: "#06A19B",
+                  fontWeight: 600,
+                  padding: "6px 16px",
+                  width: "fit-content",
+                  textTransform: "capitalize",
+                  borderRadius: "8px",
+                  border: "1px solid #06A19B",
+                  marginBottom: "10px",
+                  marginTop: "10px",
+                  boxShadow: "none",
+                  "&:hover": {
+                    boxShadow: "none",
+                  },
+                }}
+              >
+                Create .xlsx File
+              </Button>
+            </Grid>
+            <Grid item lg={3} md={4} sm={6} xs={12}>
+              <Button
+                id="basic-button"
+                type="button"
+                variant="contained"
+                onClick={CreateFeedPredictionPDF}
+                sx={{
+                  background: "#fff",
+                  color: "#06A19B",
+                  fontWeight: 600,
+                  padding: "6px 16px",
+                  width: "fit-content",
+                  textTransform: "capitalize",
+                  borderRadius: "8px",
+                  border: "1px solid #06A19B",
+                  marginBottom: "10px",
+                  boxShadow: "none",
+                  "&:hover": {
+                    boxShadow: "none",
+                  },
+                }}
+              >
+                Create PDF
+              </Button>
+            </Grid>
             <Grid item lg={3} md={4} sm={6} xs={12}>
               <Button
                 id="basic-button"

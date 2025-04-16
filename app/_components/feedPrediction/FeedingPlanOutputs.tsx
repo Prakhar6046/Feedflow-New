@@ -1,12 +1,11 @@
 "use clinet";
 import {
   calculateFishGrowth,
+  CommonFeedPredictionHead,
+  exportFeedPredictionToXlsx,
   getLocalItem,
-  setLocalItem,
 } from "@/app/_lib/utils";
 import { FarmGroup } from "@/app/_typeModels/production";
-import { commonFilterAction } from "@/lib/features/commonFilters/commonFilters";
-import { feedPredictionAction } from "@/lib/features/feedPrediction/feedPredictionSlice";
 import { useAppDispatch } from "@/lib/hooks";
 import {
   Box,
@@ -18,26 +17,23 @@ import {
   Select,
   Stack,
   TextField,
-  Tooltip,
   Typography,
 } from "@mui/material";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import dayjs from "dayjs";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 import React, { useEffect, useState } from "react";
-import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { FishFeedingData } from "./AdHoc";
-import FishGrowthTable from "../table/FishGrowthTable";
+import { createRoot } from "react-dom/client";
+import { Controller, useForm } from "react-hook-form";
 import FishGrowthChart from "../charts/FishGrowthChart";
+import FishGrowthTable from "../table/FishGrowthTable";
+import { FishFeedingData } from "./AdHoc";
+import Loader from "../Loader";
+// import MenuItem from "@mui/material/MenuItem";
 
-interface Props {
-  productionData: FarmGroup[] | undefined;
-  startDate: string;
-  endDate: string;
-  data: FarmsFishGrowth[][];
-  setData: (val: FarmsFishGrowth[][]) => void;
-}
 interface FormInputs {
   startDate: string;
   timeInterval: number;
@@ -51,6 +47,8 @@ interface FormInputs {
 export interface FarmsFishGrowth {
   farm: string;
   unit: string;
+  farmId: string;
+  unitId: number;
   fishGrowthData: FishFeedingData[];
 }
 export const timeIntervalOptions = [
@@ -68,6 +66,16 @@ export const tempSelectionOptions = [
 ];
 function FeedingPlanOutput() {
   const dispatch = useAppDispatch();
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+  const [loading, setLoading] = useState(false);
+
   const [farmOption, setFarmOptions] = useState<any[]>([]);
   const [unitOption, setUnitOptions] = useState<any[]>([]);
   const [startDate, setStartDate] = useState<string | null>(
@@ -83,6 +91,284 @@ function FeedingPlanOutput() {
     register,
     formState: { errors },
   } = useForm();
+  const createxlsxFile = (e: React.MouseEvent<HTMLSpanElement, MouseEvent>) => {
+    if (!flatData.length) {
+      return;
+    }
+    const formatedData = flatData
+      ?.filter(
+        (val) => val.farmId == watch("farms") && val.unitId == watch("units")
+      )
+      .flatMap((growth: any) =>
+        growth.fishGrowthData.map((val: any) => ({
+          date: val.date,
+          teamp: val.averageProjectedTemp,
+          noOfFish: val.numberOfFish,
+          fishSize: val.fishSize,
+          growth: val.growth,
+          feedType: val.feedType,
+          feedSize: val.feedSize,
+          estimatedFCR: val.estimatedFCR,
+          feedIntake: val.feedIntake,
+          feedingRate: val.feedingRate,
+        }))
+      );
+    exportFeedPredictionToXlsx(
+      e,
+      CommonFeedPredictionHead,
+      formatedData,
+      "feeding_plan_Data"
+    );
+  };
+  const CreateFeedPredictionPDF = async (type: "table" | "graph") => {
+    if (!flatData.length) {
+      return;
+    }
+    const formatedData = flatData
+      ?.filter(
+        (val) => val.farmId == watch("farms") && val.unitId == watch("units")
+      )
+      .flatMap((growth: any) =>
+        growth.fishGrowthData.map((val: any) => ({
+          date: val.date,
+          teamp: val.averageProjectedTemp,
+          noOfFish: val.numberOfFish,
+          fishSize: val.fishSize,
+          growth: val.growth,
+          feedType: val.feedType,
+          feedSize: val.feedSize,
+          estimatedFCR: val.estimatedFCR,
+          feedIntake: val.feedIntake,
+          feedingRate: val.feedingRate,
+          farmName: growth.farm,
+          unitName: growth.unit,
+        }))
+      );
+    console.log("formated data", formatedData);
+
+    setLoading(true);
+    const chunkArray = <T,>(arr: any, chunkSize: number): T[][] => {
+      const results: T[][] = [];
+      for (let i = 0; i < arr.length; i += chunkSize) {
+        results.push(arr.slice(i, i + chunkSize));
+      }
+      return results;
+    };
+    const pdf = new jsPDF({ orientation: "landscape" });
+    const chunks = chunkArray(formatedData, 20);
+
+    for (let i = 0; i < (type === "table" ? chunks.length : 1); i++) {
+      const tempContainer = document.createElement("div");
+      document.body.appendChild(tempContainer);
+      const chartDiv = document.createElement("div");
+      tempContainer.appendChild(chartDiv);
+      const root = createRoot(chartDiv);
+
+      const currentChunk = chunks[i];
+
+      root.render(
+        <div
+          style={{
+            maxWidth: "100vw",
+            width: "100%",
+            height: "100%",
+            fontFamily: "Arial, sans-serif",
+            margin: "auto",
+          }}
+        >
+          <div
+            style={{
+              padding: "12px 20px",
+              backgroundColor: "rgb(6,161,155)",
+              boxShadow: "0 0 3px rgb(6, 161, 155)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <img src="/static/img/logo-bigone.jpg" alt="Logo" width={200} />
+            <div>
+              <h6
+                style={{
+                  marginBottom: "4px",
+                  fontSize: "16px",
+                  color: "white",
+                }}
+              >
+                Feeding Plan Report
+              </h6>
+            </div>
+          </div>
+
+          {type === "table" ? (
+            <div
+              style={{
+                width: "100%",
+                marginBottom: "20px",
+                display: "flex",
+                alignItems: "start",
+              }}
+            >
+              <div
+                style={{
+                  width: "100%",
+                  margin: "20px",
+                  display: "flex",
+                  alignItems: "center",
+                }}
+              >
+                <table
+                  style={{
+                    width: "100%",
+                    borderCollapse: "collapse",
+                    fontSize: "12px",
+                    color: "#333",
+                    marginTop: "16px",
+                  }}
+                >
+                  <thead>
+                    <tr>
+                      {CommonFeedPredictionHead?.map(
+                        (head: string, idx: number) => (
+                          <th
+                            key={idx}
+                            style={{
+                              border: "1px solid #ccc",
+                              padding: "8px 12px",
+                              textAlign: "left",
+                              borderTopLeftRadius:
+                                idx === CommonFeedPredictionHead.length - 1
+                                  ? "8px"
+                                  : "0px",
+                              background: "#efefef",
+                            }}
+                          >
+                            {head}
+                          </th>
+                        )
+                      )}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {currentChunk?.map((row: any, index: number) => (
+                      <tr key={index}>
+                        <td
+                          style={{
+                            border: "1px solid #ccc",
+                            padding: "8px 12px",
+                          }}
+                        >
+                          {row.date}
+                        </td>
+                        <td
+                          style={{
+                            border: "1px solid #ccc",
+                            padding: "8px 12px",
+                          }}
+                        >
+                          {row.averageProjectedTemp}
+                        </td>
+                        <td
+                          style={{
+                            border: "1px solid #ccc",
+                            padding: "8px 12px",
+                          }}
+                        >
+                          {row.numberOfFish}
+                        </td>
+                        <td
+                          style={{
+                            border: "1px solid #ccc",
+                            padding: "8px 12px",
+                          }}
+                        >
+                          {row.fishSize}
+                        </td>
+                        <td
+                          style={{
+                            border: "1px solid #ccc",
+                            padding: "8px 12px",
+                          }}
+                        >
+                          {row.growth}
+                        </td>
+                        <td
+                          style={{
+                            border: "1px solid #ccc",
+                            padding: "8px 12px",
+                          }}
+                        >
+                          {row.feedType}
+                        </td>
+                        <td
+                          style={{
+                            border: "1px solid #ccc",
+                            padding: "8px 12px",
+                          }}
+                        >
+                          {row.feedSize}
+                        </td>
+                        <td
+                          style={{
+                            border: "1px solid #ccc",
+                            padding: "8px 12px",
+                          }}
+                        >
+                          {row.estimatedFCR}
+                        </td>
+                        <td
+                          style={{
+                            border: "1px solid #ccc",
+                            padding: "8px 12px",
+                          }}
+                        >
+                          {row.feedIntake}
+                        </td>
+                        <td
+                          style={{
+                            border: "1px solid #ccc",
+                            padding: "8px 12px",
+                          }}
+                        >
+                          {row.feedingRate}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          ) : (
+            <div style={{ width: "100%", padding: "20px" }}>
+              <FishGrowthChart
+                xAxisData={formatedData?.map((value) => value?.date) || []}
+                yData={formatedData?.map((value) => value?.fishSize) || []}
+                graphTitle={`Farm: ${formatedData[0].farmName} Unit: ${formatedData[0].unitName}`}
+              />
+            </div>
+          )}
+        </div>
+      );
+
+      await new Promise((resolve) => setTimeout(resolve, 800));
+
+      const canvas = await html2canvas(chartDiv);
+      const imgData = canvas.toDataURL("image/png");
+      const imgProps = pdf.getImageProperties(imgData);
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+      if (i > 0) pdf.addPage();
+      pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+
+      root.unmount();
+      tempContainer.remove();
+    }
+
+    pdf.save(`feeding_plan_${type}.pdf`);
+    setLoading(false);
+  };
+
   useEffect(() => {
     const selectedFarm = watch("farms");
 
@@ -131,42 +417,73 @@ function FeedingPlanOutput() {
       setFarmOptions(customFarms);
       setValue("adjustmentFactor", data.adjustmentFactor);
       setFomData(data);
-      const fishGrowthData: any = data?.productionData?.map((production) =>
-        production.units.map((unit) => {
-          console.log(unit);
-          const formattedDate = dayjs(startDate).format("YYYY-MM-DD");
-          const diffInDays = dayjs(endDate).diff(dayjs(startDate), "day");
-          return {
-            farm: production.farm,
-            farmId: unit?.farm?.id,
-            unitId: unit.id,
-            unit: unit.productionUnit.name,
-            fishGrowthData: calculateFishGrowth(
-              Number(data?.fishWeight),
-              data?.tempSelection === "default"
-                ? Number(unit?.waterTemp)
-                : Number(data?.temp),
-              Number(unit.fishCount),
-              Number(data.adjustmentFactor),
-              Number(diffInDays),
-              formattedDate,
-              data?.timeInterval,
-              13.47
-            ),
-          };
-        })
+      const fishGrowthData: any = data?.productionData?.map(
+        (production: FarmGroup) =>
+          production.units.map((unit: any) => {
+            const formattedDate = dayjs(data?.startDate).format("YYYY-MM-DD");
+            const diffInDays = dayjs(data?.endDate).diff(
+              dayjs(data?.startDate),
+              "day"
+            );
+            return {
+              farm: production.farm,
+              farmId: unit?.farm?.id,
+              unitId: unit.id,
+              unit: unit.productionUnit.name,
+              fishGrowthData: calculateFishGrowth(
+                Number(data?.fishWeight ?? 0),
+                data?.tempSelection === "default"
+                  ? Number(unit?.waterTemp ?? 0)
+                  : Number(data?.temp),
+                Number(unit.fishCount ?? 0),
+                Number(data.adjustmentFactor),
+                Number(diffInDays),
+                formattedDate,
+                data?.timeInterval,
+                13.47
+              ),
+            };
+          })
       );
       if (fishGrowthData?.length) {
         setFlatData([...fishGrowthData].flat());
       }
     }
   }, []);
-  console.log(flatData);
-  console.log(watch("farms"), watch("units"));
+  useEffect(() => {
+    if (loading) {
+      document.body.style.position = "fixed";
+      document.body.style.width = "100%";
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.position = "";
+      document.body.style.width = "";
+      document.body.style.overflow = "";
+    }
 
+    return () => {
+      document.body.style.position = "";
+      document.body.style.width = "";
+      document.body.style.overflow = "";
+    };
+  }, [loading]);
+
+  if (loading) {
+    return (
+      <Box
+        sx={{
+          position: "absolute",
+          width: "100%",
+          height: "100%",
+        }}
+      >
+        <Loader />
+      </Box>
+    );
+  }
   return (
     <Stack>
-      <Box>
+      {/* <Box>
         <Button
           type="submit"
           variant="contained"
@@ -198,19 +515,8 @@ function FeedingPlanOutput() {
           }}
         >
           Add dropdown here
-          {/* <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="1em"
-                  height="1em"
-                  viewBox="0 0 16 16"
-                >
-                  <path
-                    fill="currentColor"
-                    d="M9.5 13a1.5 1.5 0 1 1-3 0a1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0a1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0a1.5 1.5 0 0 1 3 0"
-                  />
-                </svg> */}
         </Button>
-      </Box>
+      </Box> */}
 
       <Box mb={5}>
         <Grid container spacing={2} mt={1}>
@@ -264,7 +570,7 @@ function FeedingPlanOutput() {
           </Grid>
           <Grid item xl={2} lg={4} md={4} sm={6} xs={12}>
             <TextField
-              label="Generated By *"
+              label="Generated By"
               type="text"
               // {...register("temp", {
               //   required: true,
@@ -280,7 +586,7 @@ function FeedingPlanOutput() {
           <Grid item xl={2} lg={4} md={4} sm={6} xs={12}>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker
-                label="Generated By"
+                label="Generated On"
                 className="date-picker"
                 value={dayjs()} // sets today's date
                 disabled
@@ -293,6 +599,7 @@ function FeedingPlanOutput() {
               <DatePicker
                 label="Start Date"
                 className="date-picker"
+                disabled
                 value={dayjs(startDate)}
                 onChange={(value) => {
                   const isoDate = value?.toISOString();
@@ -308,6 +615,7 @@ function FeedingPlanOutput() {
               <DatePicker
                 label="End Date"
                 value={dayjs(endDate)}
+                disabled
                 onChange={(value) => {
                   const isoDate = value?.toISOString();
                   if (isoDate) setEndDate(isoDate);
@@ -345,6 +653,7 @@ function FeedingPlanOutput() {
             <Box position={"relative"}>
               <TextField
                 label="Adjustment Factor *"
+                disabled
                 type="text"
                 {...register("adjustmentFactor", {
                   required: true,
@@ -381,7 +690,7 @@ function FeedingPlanOutput() {
             </Typography>
           )} */}
 
-          <Tooltip title="Re calculate">
+          {/* <Tooltip title="Re calculate">
             <Button
               type="submit"
               variant="contained"
@@ -413,43 +722,9 @@ function FeedingPlanOutput() {
                 />
               </svg>
             </Button>
-          </Tooltip>
+          </Tooltip> */}
         </Grid>
 
-        <Grid item xs="auto">
-          <Button
-            type="submit"
-            variant="contained"
-            sx={{
-              background: "#06A19B",
-              fontWeight: 600,
-              padding: "6px 16px",
-              width: "fit-content",
-              textTransform: "capitalize",
-              borderRadius: "8px",
-              mr: 2,
-            }}
-          >
-            Save
-          </Button>
-
-          <Button
-            type="submit"
-            variant="contained"
-            sx={{
-              background: "#fff",
-              color: "#06A19B",
-              fontWeight: 600,
-              padding: "6px 16px",
-              width: "fit-content",
-              textTransform: "capitalize",
-              borderRadius: "8px",
-              border: "1px solid #06A19B",
-            }}
-          >
-            Add Dropdown Here
-          </Button>
-        </Grid>
         {flatData
           .filter(
             (val) =>
@@ -463,6 +738,80 @@ function FeedingPlanOutput() {
                   width: "100%",
                 }}
               >
+                <Grid
+                  item
+                  xs="auto"
+                  spacing={2}
+                  justifyContent={"flex-end"}
+                  alignItems={"center"}
+                  sx={{
+                    mb: "20px",
+                  }}
+                >
+                  {/* <Button
+              id="demo-positioned-button"
+              aria-controls={open ? "demo-positioned-menu" : undefined}
+              aria-haspopup="true"
+              aria-expanded={open ? "true" : undefined}
+              onClick={handleClick}
+            >
+              Dashboard
+            </Button>
+            <Menu
+              id="demo-positioned-menu"
+              aria-labelledby="demo-positioned-button"
+              anchorEl={anchorEl}
+              open={open}
+              onClose={handleClose}
+              anchorOrigin={{
+                vertical: "top",
+                horizontal: "left",
+              }}
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "left",
+              }}
+            >
+              <MenuItem onClick={handleClose}>Create .Xlsx File</MenuItem>
+              <MenuItem onClick={handleClose}>My account</MenuItem>
+              <MenuItem onClick={handleClose}>Logout</MenuItem>
+            </Menu> */}
+                  <Button
+                    type="button"
+                    variant="contained"
+                    onClick={createxlsxFile}
+                    sx={{
+                      background: "#fff",
+                      color: "#06A19B",
+                      fontWeight: 600,
+                      padding: "6px 16px",
+                      width: "fit-content",
+                      textTransform: "capitalize",
+                      borderRadius: "8px",
+                      border: "1px solid #06A19B",
+                    }}
+                  >
+                    Create .Xlsx File
+                  </Button>
+                  <Button
+                    type="button"
+                    onClick={() => CreateFeedPredictionPDF("table")}
+                    variant="contained"
+                    sx={{
+                      background: "#fff",
+                      color: "#06A19B",
+                      fontWeight: 600,
+                      padding: "6px 16px",
+                      width: "fit-content",
+                      textTransform: "capitalize",
+                      borderRadius: "8px",
+                      border: "1px solid #06A19B",
+                    }}
+                  >
+                    Create Pdf
+                  </Button>
+                </Grid>
+
                 <Box>
                   <FishGrowthTable data={growth.fishGrowthData} key={index} />
                 </Box>
@@ -476,11 +825,14 @@ function FeedingPlanOutput() {
         spacing={2}
         justifyContent={"space-between"}
         alignItems={"center"}
+        sx={{
+          mb: "20px",
+        }}
       >
         <Grid item xs={6}>
-          <Typography variant="h6" component={"h6"} fontWeight={600}>
+          {/* <Typography variant="h6" component={"h6"} fontWeight={600}>
             Fish Growth
-          </Typography>
+          </Typography> */}
           {flatData
             .filter(
               (val) =>
@@ -512,7 +864,7 @@ function FeedingPlanOutput() {
               );
             })}
           <Box>
-            <Button
+            {/* <Button
               type="submit"
               variant="contained"
               sx={{
@@ -527,6 +879,23 @@ function FeedingPlanOutput() {
               }}
             >
               Add dropdown here
+            </Button> */}
+            <Button
+              type="button"
+              variant="contained"
+              onClick={() => CreateFeedPredictionPDF("graph")}
+              sx={{
+                background: "#fff",
+                color: "#06A19B",
+                fontWeight: 600,
+                padding: "6px 16px",
+                width: "fit-content",
+                textTransform: "capitalize",
+                borderRadius: "8px",
+                border: "1px solid #06A19B",
+              }}
+            >
+              Create Pdf
             </Button>
           </Box>
         </Grid>

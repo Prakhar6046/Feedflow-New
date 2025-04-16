@@ -1,32 +1,28 @@
 "use client";
-import AdHoc, { FishFeedingData } from "@/app/_components/feedPrediction/AdHoc";
-import FeedingPlan, {
-  FarmsFishGrowth,
-} from "@/app/_components/feedPrediction/FeedingPlan";
-import FeedingSummary from "@/app/_components/feedPrediction/FeedingSummary";
+import { FishFeedingData } from "@/app/_components/feedPrediction/AdHoc";
+import { FarmsFishGrowth } from "@/app/_components/feedPrediction/FeedingPlan";
+import Loader from "@/app/_components/Loader";
 import {
   CommonFeedPredictionHead,
   exportFeedPredictionToXlsx,
   FeedPredictionHead,
 } from "@/app/_lib/utils";
-import TabContext from "@mui/lab/TabContext";
-import TabList from "@mui/lab/TabList";
-import { Box, Button, Stack, Tab } from "@mui/material";
-import html2canvas from "html2canvas";
-import jsPDF from "jspdf";
-import { useEffect, useState } from "react";
-import { createRoot } from "react-dom/client";
-import Loader from "@/app/_components/Loader";
-import ProductionManagerFilter from "@/app/_components/ProductionManagerFilter";
 import { Farm } from "@/app/_typeModels/Farm";
+import { FarmGroup, Production } from "@/app/_typeModels/production";
 import {
   selectAllFarms,
   selectEndDate,
   selectStartDate,
 } from "@/lib/features/commonFilters/commonFilters";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import { FarmGroup, Production } from "@/app/_typeModels/production";
 import { selectCurrentFarmTab } from "@/lib/features/feedPrediction/feedPredictionSlice";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import TabContext from "@mui/lab/TabContext";
+import TabList from "@mui/lab/TabList";
+import { Box, Stack, Tab } from "@mui/material";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
+import { useEffect, useState } from "react";
+import { createRoot } from "react-dom/client";
 import FeedingPlanOutput from "../feedPrediction/FeedingPlanOutputs";
 interface Props {
   productions: Production[];
@@ -480,7 +476,7 @@ const FeedingOutputTable = ({ farms, productions }: Props) => {
           </Box>
         </Stack>
       </TabContext>
-      <Button
+      {/* <Button
         id="basic-button"
         type="button"
         variant="contained"
@@ -503,7 +499,7 @@ const FeedingOutputTable = ({ farms, productions }: Props) => {
         }}
       >
         Create .xlsx File
-      </Button>
+      </Button> */}
       {/* 
       <Button
         id="basic-button"
@@ -529,15 +525,9 @@ const FeedingOutputTable = ({ farms, productions }: Props) => {
         Create PDF
       </Button> */}
       {selectedFeeding === "feedingPlan" ? (
-        <FeedingPlanOutput
-          productionData={productionData}
-          startDate={startDate}
-          endDate={endDate}
-          data={feedPlanData}
-          setData={setFeedPlanData}
-        />
+        <FeedingPlanOutput />
       ) : (
-        selectedFeeding === "feedingSummary" && <FeedingSummary />
+        selectedFeeding === "feedUsage" && null
       )}
     </>
   );
