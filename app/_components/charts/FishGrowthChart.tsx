@@ -23,8 +23,9 @@ ChartJS.register(
 interface IProps {
   xAxisData: (string | undefined)[];
   yData: (string | undefined)[];
+  graphTitle: string;
 }
-const FishGrowthChart = ({ xAxisData, yData }: IProps) => {
+const FishGrowthChart = ({ xAxisData, yData, graphTitle }: IProps) => {
   const chartRef = useRef(null);
 
   const data = {
@@ -76,7 +77,7 @@ const FishGrowthChart = ({ xAxisData, yData }: IProps) => {
       },
       title: {
         display: true,
-        text: "Fish Growth",
+        text: `Fish Growth ${graphTitle}`,
         color: "black",
         font: {
           size: 24,

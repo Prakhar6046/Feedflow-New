@@ -3,6 +3,7 @@ import { BreadcrumInitialState, Sort } from "@/app/_typeModels/breadcrum";
 import { RootState } from "@/lib/store";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import dayjs from "dayjs";
+import { ActionPathnameNormalizer } from "next/dist/server/future/normalizers/request/action";
 
 const initialState: any = {
   allFarms: [],
@@ -26,6 +27,7 @@ const commonFilterSlice = createSlice({
       state.allUnits = action.payload;
     },
     setSelectedDropDownfarms: (state, action) => {
+      console.log("farm payload", action.payload);
       state.selectedDropDownfarms = action.payload;
     },
     setSelectedDropDownUnits: (state, action) => {

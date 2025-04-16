@@ -1,5 +1,9 @@
 "use clinet";
-import { calculateFishGrowth } from "@/app/_lib/utils";
+import {
+  calculateFishGrowth,
+  getLocalItem,
+  setLocalItem,
+} from "@/app/_lib/utils";
 import { FarmGroup } from "@/app/_typeModels/production";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
@@ -27,6 +31,7 @@ import * as ValidationMessages from "@/app/_lib/utils/validationsMessage";
 import * as ValidationPatterns from "@/app/_lib/utils/validationPatterns";
 import { feedPredictionAction } from "@/lib/features/feedPrediction/feedPredictionSlice";
 import { commonFilterAction } from "@/lib/features/commonFilters/commonFilters";
+import { useRouter } from "next/navigation";
 
 interface Props {
   productionData: FarmGroup[] | undefined;
@@ -70,6 +75,7 @@ function FeedingPlan({
   data,
   setData,
 }: Props) {
+  const router = useRouter();
   const dispatch = useAppDispatch();
   const [flatData, setFlatData] = useState<FarmsFishGrowth[]>([]);
 
@@ -102,31 +108,43 @@ function FeedingPlan({
   const onSubmit: SubmitHandler<FormInputs> = (data) => {
     const formattedDate = dayjs(startDate).format("YYYY-MM-DD");
     const diffInDays = dayjs(endDate).diff(dayjs(startDate), "day");
-    const fishGrowthData: any = productionData?.map((production) =>
-      production.units.map((unit) => {
-        console.log(unit);
+    const payload = {
+      productionData: productionData,
+      fishWeight: data.fishWeight,
+      tempSelection: data.tempSelection,
+      adjustmentFactor: data.adjustmentFactor,
+      startDate: startDate,
+      endDate: endDate,
+      timeInterval: data.timeInterval,
+      temp: data.temp,
+    };
+    setLocalItem("feedPredictionData", payload);
+    router.push("/dashboard/feedPrediction/feedingPlan");
+    // const fishGrowthData: any = productionData?.map((production) =>
+    //   production.units.map((unit) => {
+    //     console.log(unit);
 
-        return {
-          farm: production.farm,
-          unit: unit.productionUnit.name,
-          fishGrowthData: calculateFishGrowth(
-            Number(data.fishWeight),
-            data.tempSelection === "default"
-              ? Number(unit?.waterTemp)
-              : Number(data.temp),
-            Number(unit.fishCount),
-            Number(data.adjustmentFactor),
-            Number(diffInDays),
-            formattedDate,
-            data.timeInterval,
-            13.47
-          ),
-        };
-      })
-    );
-    if (fishGrowthData?.length) {
-      setData([...fishGrowthData]);
-    }
+    //     return {
+    //       farm: production.farm,
+    //       unit: unit.productionUnit.name,
+    //       fishGrowthData: calculateFishGrowth(
+    //         Number(data.fishWeight),
+    //         data.tempSelection === "default"
+    //           ? Number(unit?.waterTemp)
+    //           : Number(data.temp),
+    //         Number(unit.fishCount),
+    //         Number(data.adjustmentFactor),
+    //         Number(diffInDays),
+    //         formattedDate,
+    //         data.timeInterval,
+    //         13.47
+    //       ),
+    //     };
+    //   })
+    // );
+    // if (fishGrowthData?.length) {
+    //   setData([...fishGrowthData]);
+    // }
   };
   const resetFeedPlanData = () => {
     setData([]);
@@ -407,6 +425,7 @@ function FeedingPlan({
             display: "flex",
             justifyContent: "end",
           }}
+          // onClick={() => router.push("/dashboard/feedPrediction/feedingPlan")}
         >
           <Button
             type="submit"
