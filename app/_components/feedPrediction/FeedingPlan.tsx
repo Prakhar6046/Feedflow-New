@@ -8,6 +8,7 @@ import { useAppSelector } from "@/lib/hooks";
 import {
   Box,
   Button,
+  Divider,
   FormControl,
   Grid,
   InputLabel,
@@ -132,9 +133,16 @@ function FeedingPlan({ productionData, startDate, endDate }: Props) {
 
   return (
     <Stack>
+      <Divider sx={{
+        my: 4
+      }} />
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Grid container spacing={3} mt={2} mb={5} alignItems={"center"}>
-          <Grid item lg={3} md={4} sm={6} xs={12}>
+        <Grid container spacing={2} mb={5} alignItems={"center"}>
+          <Grid item xl={2}
+            lg={4}
+            md={4}
+            sm={6}
+            xs={12}>
             <Box position={"relative"}>
               <TextField
                 label="Fish Weight *"
@@ -162,7 +170,11 @@ function FeedingPlan({ productionData, startDate, endDate }: Props) {
             </Box>
           </Grid>
 
-          <Grid item lg={3} md={4} sm={6} xs={12}>
+          <Grid item xl={2}
+            lg={4}
+            md={4}
+            sm={6}
+            xs={12}>
             <FormControl className="form-input" fullWidth focused>
               <InputLabel id="demo-simple-select-label">
                 Time Interval *
@@ -183,7 +195,11 @@ function FeedingPlan({ productionData, startDate, endDate }: Props) {
               />
             </FormControl>
           </Grid>
-          <Grid item lg={3} md={4} sm={6} xs={12}>
+          <Grid item xl={2}
+            lg={4}
+            md={4}
+            sm={6}
+            xs={12}>
             <FormControl className="form-input" fullWidth focused>
               <InputLabel id="demo-simple-select-label">
                 Temperature Selection *
@@ -205,7 +221,11 @@ function FeedingPlan({ productionData, startDate, endDate }: Props) {
             </FormControl>
           </Grid>
           {watch("tempSelection") !== "default" && (
-            <Grid item lg={3} md={4} sm={6} xs={12}>
+            <Grid item xl={2}
+              lg={4}
+              md={4}
+              sm={6}
+              xs={12}>
               <Box position={"relative"}>
                 <TextField
                   label="Average Temperature *"
@@ -239,14 +259,18 @@ function FeedingPlan({ productionData, startDate, endDate }: Props) {
                   {errors.temp.type === "required"
                     ? ValidationMessages.required
                     : errors.temp.type === "pattern"
-                    ? ValidationMessages.OnlyNumbersWithDot
-                    : ""}
+                      ? ValidationMessages.OnlyNumbersWithDot
+                      : ""}
                 </Typography>
               )}
             </Grid>
           )}
 
-          <Grid item lg={3} md={4} sm={6} xs={12}>
+          <Grid item xl={2}
+            lg={4}
+            md={4}
+            sm={6}
+            xs={12}>
             <Box position={"relative"}>
               <TextField
                 label="Total Number Of Fish *"
@@ -267,12 +291,16 @@ function FeedingPlan({ productionData, startDate, endDate }: Props) {
                 {errors.numberOfFishs.type === "required"
                   ? ValidationMessages.required
                   : errors.numberOfFishs.type === "pattern"
-                  ? ValidationMessages.OnlyNumbersWithDot
-                  : ""}
+                    ? ValidationMessages.OnlyNumbersWithDot
+                    : ""}
               </Typography>
             )}
           </Grid>
-          <Grid item lg={3} md={4} sm={6} xs={12}>
+          <Grid item xl={2}
+            lg={4}
+            md={4}
+            sm={6}
+            xs={12}>
             <Box position={"relative"}>
               <Box position={"relative"}>
                 <TextField
@@ -308,8 +336,8 @@ function FeedingPlan({ productionData, startDate, endDate }: Props) {
                 {errors.adjustmentFactor.type === "required"
                   ? ValidationMessages.required
                   : errors.adjustmentFactor.type === "pattern"
-                  ? ValidationMessages.OnlyNumbersWithDot
-                  : ""}
+                    ? ValidationMessages.OnlyNumbersWithDot
+                    : ""}
               </Typography>
             )}
           </Grid>
