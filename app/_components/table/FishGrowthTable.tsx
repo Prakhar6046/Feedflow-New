@@ -201,8 +201,7 @@ function FishGrowthTable({ data }: Props) {
         </Table>
       </TableContainer>
     </Paper>
-
   );
-}
+};
 
 export default FishGrowthTable;
