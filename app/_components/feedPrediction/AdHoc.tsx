@@ -441,7 +441,9 @@ function AdHoc({ data, setData }: Iprops) {
               </Typography>
             )}
           </Grid>
+        </Grid>
 
+        <Grid container spacing={3} mt={2} mb={5} alignItems={"start"}>
           <Grid item lg={3} md={4} sm={6} xs={12}>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <Controller
@@ -588,6 +590,7 @@ function AdHoc({ data, setData }: Iprops) {
               />
             </FormControl>
           </Grid>
+
           <Grid item lg={3} md={4} sm={6} xs={12}>
             <Box position={"relative"}>
               <TextField
@@ -622,129 +625,8 @@ function AdHoc({ data, setData }: Iprops) {
                 {errors.temp.type === "required"
                   ? ValidationMessages.required
                   : errors.temp.type === "pattern"
-                  ? ValidationMessages.OnlyNumbersWithDot
-                  : ""}
-              </Typography>
-            )}
-          </Grid>
-
-          <Grid item lg={3} md={4} sm={6} xs={12}>
-            <Box position={"relative"}>
-              <TextField
-                label="Average Fish Weight *"
-                type="text"
-                {...register("fishWeight", {
-                  required: true,
-                  pattern: ValidationPatterns.numbersWithDot,
-                })}
-                className="form-input"
-                focused
-                sx={{
-                  width: "100%",
-                }}
-              />
-              <Typography
-                variant="body1"
-                color="#555555AC"
-                sx={{
-                  position: "absolute",
-                  right: 13,
-                  top: "30%",
-                  backgroundColor: "white",
-                  paddingInline: "5px",
-                }}
-              >
-                g
-              </Typography>
-            </Box>
-            {errors.fishWeight && (
-              <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
-                {errors.fishWeight.type === "required"
-                  ? ValidationMessages.required
-                  : errors.fishWeight.type === "pattern"
-                  ? ValidationMessages.OnlyNumbersWithDot
-                  : ""}
-              </Typography>
-            )}
-          </Grid>
-
-          <Grid item lg={3} md={4} sm={6} xs={12}>
-            <Box position={"relative"}>
-              <TextField
-                label="Total Number Of Fish *"
-                type="text"
-                {...register("numberOfFishs", {
-                  required: true,
-                  pattern: ValidationPatterns.numbersWithDot,
-                })}
-                className="form-input"
-                focused
-                sx={{
-                  width: "100%",
-                }}
-              />
-              {/* <Typography
-                variant="body1"
-                color="#555555AC"
-                sx={{
-                  position: "absolute",
-                  right: 13,
-                  top: "30%",
-                  backgroundColor: "white",
-                  paddingInline: "5px",
-                }}
-              >
-                days
-              </Typography> */}
-            </Box>
-            {errors.numberOfFishs && (
-              <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
-                {errors.numberOfFishs.type === "required"
-                  ? ValidationMessages.required
-                  : errors.numberOfFishs.type === "pattern"
-                  ? ValidationMessages.OnlyNumbersWithDot
-                  : ""}
-              </Typography>
-            )}
-          </Grid>
-          <Grid item lg={3} md={4} sm={6} xs={12}>
-            <Box position={"relative"}>
-              <Box position={"relative"}>
-                <TextField
-                  label="Adjustment Factor *"
-                  type="text"
-                  {...register("adjustmentFactor", {
-                    required: true,
-                    pattern: ValidationPatterns.numbersWithDot,
-                  })}
-                  className="form-input"
-                  focused
-                  sx={{
-                    width: "100%",
-                  }}
-                />
-                <Typography
-                  variant="body1"
-                  color="#555555AC"
-                  sx={{
-                    position: "absolute",
-                    right: 13,
-                    top: "30%",
-                    backgroundColor: "white",
-                    paddingInline: "5px",
-                  }}
-                >
-                  %
-                </Typography>
-              </Box>
-            </Box>
-            {errors.adjustmentFactor && (
-              <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
-                {errors.adjustmentFactor.type === "required"
-                  ? ValidationMessages.required
-                  : errors.adjustmentFactor.type === "pattern"
-                  ? ValidationMessages.OnlyNumbersWithDot
-                  : ""}
+                    ? ValidationMessages.OnlyNumbersWithDot
+                    : ""}
               </Typography>
             )}
           </Grid>
@@ -895,7 +777,153 @@ function AdHoc({ data, setData }: Iprops) {
           </Grid> */}
         </Grid>
 
-        <Box
+        <Grid container spacing={3} mt={2} mb={5} alignItems={"start"}>
+          <Grid item lg={3} md={4} sm={6} xs={12}>
+            <Box position={"relative"}>
+              <TextField
+                label="Average Fish Weight *"
+                type="text"
+                {...register("fishWeight", {
+                  required: true,
+                  pattern: ValidationPatterns.numbersWithDot,
+                })}
+                className="form-input"
+                focused
+                sx={{
+                  width: "100%",
+                }}
+              />
+              <Typography
+                variant="body1"
+                color="#555555AC"
+                sx={{
+                  position: "absolute",
+                  right: 13,
+                  top: "30%",
+                  backgroundColor: "white",
+                  paddingInline: "5px",
+                }}
+              >
+                g
+              </Typography>
+            </Box>
+            {errors.fishWeight && (
+              <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                {errors.fishWeight.type === "required"
+                  ? ValidationMessages.required
+                  : errors.fishWeight.type === "pattern"
+                    ? ValidationMessages.OnlyNumbersWithDot
+                    : ""}
+              </Typography>
+            )}
+          </Grid>
+
+          <Grid item lg={3} md={4} sm={6} xs={12}>
+            <Box position={"relative"}>
+              <TextField
+                label="Total Number Of Fish *"
+                type="text"
+                {...register("numberOfFishs", {
+                  required: true,
+                  pattern: ValidationPatterns.numbersWithDot,
+                })}
+                className="form-input"
+                focused
+                sx={{
+                  width: "100%",
+                }}
+              />
+              {/* <Typography
+                variant="body1"
+                color="#555555AC"
+                sx={{
+                  position: "absolute",
+                  right: 13,
+                  top: "30%",
+                  backgroundColor: "white",
+                  paddingInline: "5px",
+                }}
+              >
+                days
+              </Typography> */}
+            </Box>
+            {errors.numberOfFishs && (
+              <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                {errors.numberOfFishs.type === "required"
+                  ? ValidationMessages.required
+                  : errors.numberOfFishs.type === "pattern"
+                    ? ValidationMessages.OnlyNumbersWithDot
+                    : ""}
+              </Typography>
+            )}
+          </Grid>
+        </Grid>
+
+        <Grid container spacing={3} mt={2} mb={5} alignItems={"start"}>
+          <Grid item lg={3} md={4} sm={6} xs={12}>
+            <Box position={"relative"}>
+              <Box position={"relative"}>
+                <TextField
+                  label="Adjustment Factor *"
+                  type="text"
+                  {...register("adjustmentFactor", {
+                    required: true,
+                    pattern: ValidationPatterns.numbersWithDot,
+                  })}
+                  className="form-input"
+                  focused
+                  sx={{
+                    width: "100%",
+                  }}
+                />
+                <Typography
+                  variant="body1"
+                  color="#555555AC"
+                  sx={{
+                    position: "absolute",
+                    right: 13,
+                    top: "30%",
+                    backgroundColor: "white",
+                    paddingInline: "5px",
+                  }}
+                >
+                  %
+                </Typography>
+              </Box>
+            </Box>
+            {errors.adjustmentFactor && (
+              <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                {errors.adjustmentFactor.type === "required"
+                  ? ValidationMessages.required
+                  : errors.adjustmentFactor.type === "pattern"
+                    ? ValidationMessages.OnlyNumbersWithDot
+                    : ""}
+              </Typography>
+            )}
+          </Grid>
+
+          <Grid item lg={3} md={4} sm={6} xs={12}>
+            <Box>
+              <Button
+                type="submit"
+                variant="contained"
+                sx={{
+                  background: "#06A19B",
+                  fontWeight: 600,
+                  padding: "6px 16px",
+                  width: "fit-content",
+                  textTransform: "capitalize",
+                  borderRadius: "8px",
+                  mt: 1
+                }}
+              >
+                Generate
+              </Button>
+            </Box>
+          </Grid>
+        </Grid>
+
+        {/* <Box
           sx={{
             display: "flex",
             justifyContent: "end",
@@ -918,7 +946,7 @@ function AdHoc({ data, setData }: Iprops) {
           >
             Generate
           </Button>
-        </Box>
+        </Box> */}
       </form>
       {data?.length !== 0 && (
         <Box>
