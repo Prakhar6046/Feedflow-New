@@ -655,7 +655,6 @@ label {
 }
 .selected > label {
   color: black !important;
-  font-weight: 500;
 }
 
 .selected input {
@@ -763,3 +762,7 @@ label {
   color: #06a19b !important;
   border-radius: 6px !important;
 }
+
+/* .date-picker label {
+  color: #000 !important;
+} */

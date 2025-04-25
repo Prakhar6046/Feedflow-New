@@ -636,7 +636,7 @@ function ProductionManagerFilter({
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DatePicker
                   label="Start Date"
-                  className="date-picker"
+                  className="date-picker form-input"
                   value={dayjs(startDate)}
                   onChange={(value) => {
                     const isoDate = value?.toISOString();
@@ -658,7 +658,6 @@ function ProductionManagerFilter({
           xs={12}
           sx={{
             width: "fit-content",
-
             paddingTop: "8px",
           }}>
           <Box sx={{ width: "100%" }}>
@@ -684,7 +683,7 @@ function ProductionManagerFilter({
                     marginTop: "0",
                     borderRadius: "6px",
                   }}
-                  className="date-picker"
+                  className="date-picker form-input"
                   minDate={dayjs(startDate)}
                   maxDate={dayjs()}
                 />

@@ -92,7 +92,7 @@ const FishGrowthChart = ({ xAxisData, yData, graphTitle }: IProps) => {
   };
 
   return (
-    <div style={{ height: "500px", width: "50%" }} className="mb-5">
+    <div style={{ height: "700px", width: "100%" }} className="mb-5">
       <Line ref={chartRef} data={data} options={options} className="pb-5" />
     </div>
   );
