@@ -311,3 +311,26 @@ export const getGrowthModels = async () => {
     return error;
   }
 };
+export const getFeedStores = async (payload: {
+  role?: string;
+  organisationId?: string;
+  query?: string;
+}) => {
+  try {
+    const data = await fetch(
+      `${process.env.BASE_URL}/api/feed-store?role=${payload.role}&organisationId=${payload.organisationId}&query=${payload.query}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        cache: "no-store",
+      }
+    );
+    const res = await data.json();
+
+    return res;
+  } catch (error) {
+    return error;
+  }
+};

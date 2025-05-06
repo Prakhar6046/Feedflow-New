@@ -27,7 +27,6 @@ const commonFilterSlice = createSlice({
       state.allUnits = action.payload;
     },
     setSelectedDropDownfarms: (state, action) => {
-      console.log("farm payload", action.payload);
       state.selectedDropDownfarms = action.payload;
     },
     setSelectedDropDownUnits: (state, action) => {
@@ -45,8 +44,6 @@ const commonFilterSlice = createSlice({
       state.selectedAverage = action.payload;
     },
     setStartDate: (state, action) => {
-      console.log(action.payload);
-
       state.startDate = action.payload;
     },
     setEndDate: (state, action) => {

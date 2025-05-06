@@ -84,8 +84,6 @@ function ProductionManagerFilter({
   const years = Array.from({ length: 6 }, (_, i) => currentYear - i);
   const [farms, setFarms] = useState<any>([]);
   const [units, setUnits] = useState<any>([]);
-  console.log(selectedDropDownUnits);
-  console.log(allUnits);
 
   // const handleResetFilters = () => {
   //   dispatch(commonFilterAction.setSelectedDropDownfarms(allFarms));
@@ -222,7 +220,6 @@ function ProductionManagerFilter({
       if (!startDate || !endDate) return data;
       const start = dayjs(startDate).format("YYYY-MM-DD");
       const end = dayjs(endDate).format("YYYY-MM-DD");
-      console.log("startDate", start);
 
       return data
         .map((farm) => ({
@@ -520,8 +517,9 @@ function ProductionManagerFilter({
           <Box sx={{ width: "100%" }}>
             <FormControl
               fullWidth
-              className={`form-input ${selectedDropDownfarms?.length >= 1 && "selected"
-                }`}
+              className={`form-input ${
+                selectedDropDownfarms?.length >= 1 && "selected"
+              }`}
               focused
             >
               <InputLabel
@@ -572,13 +570,14 @@ function ProductionManagerFilter({
           <Box sx={{ width: "100%" }}>
             <FormControl
               fullWidth
-              className={`form-input ${selectedDropDownfarms?.length &&
+              className={`form-input ${
+                selectedDropDownfarms?.length &&
                 selectedDropDownUnits?.length &&
                 // selectedDropDownYears?.length &&
                 startDate &&
                 endDate &&
                 "selected"
-                }`}
+              }`}
               focused
             >
               <InputLabel id="demo-simple-select-label">Averages</InputLabel>
@@ -589,10 +588,10 @@ function ProductionManagerFilter({
                 value={selectedAverage}
                 disabled={
                   selectedDropDownfarms &&
-                    selectedDropDownUnits &&
-                    selectedDropDownYears &&
-                    startDate &&
-                    endDate
+                  selectedDropDownUnits &&
+                  selectedDropDownYears &&
+                  startDate &&
+                  endDate
                     ? false
                     : true
                 }
@@ -614,7 +613,8 @@ function ProductionManagerFilter({
           </Box>
         </Grid>
 
-        <Grid item
+        <Grid
+          item
           xl={2}
           lg={4}
           md={4}
@@ -623,14 +623,16 @@ function ProductionManagerFilter({
           sx={{
             width: "fit-content",
             paddingTop: "8px",
-          }}>
+          }}
+        >
           <Box sx={{ width: "100%" }}>
             <FormControl
               fullWidth
-              className={`form-input ${selectedDropDownfarms?.length &&
+              className={`form-input ${
+                selectedDropDownfarms?.length &&
                 selectedDropDownUnits?.length &&
                 "selected"
-                }`}
+              }`}
               focused
             >
               <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -650,7 +652,8 @@ function ProductionManagerFilter({
           </Box>
         </Grid>
 
-        <Grid item
+        <Grid
+          item
           xl={2}
           lg={4}
           md={4}
@@ -659,15 +662,17 @@ function ProductionManagerFilter({
           sx={{
             width: "fit-content",
             paddingTop: "8px",
-          }}>
+          }}
+        >
           <Box sx={{ width: "100%" }}>
             <FormControl
               fullWidth
-              className={`form-input ${selectedDropDownfarms?.length &&
+              className={`form-input ${
+                selectedDropDownfarms?.length &&
                 selectedDropDownUnits?.length &&
                 startDate &&
                 "selected"
-                }`}
+              }`}
               focused
             >
               <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -691,8 +696,6 @@ function ProductionManagerFilter({
             </FormControl>
           </Box>
         </Grid>
-
-
 
         {/* <Grid
           item

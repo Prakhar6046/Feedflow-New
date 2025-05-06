@@ -1251,13 +1251,6 @@ export const feedStoreTableHead = [
     smallLabel: "C.P",
   },
   {
-    id: "",
-    numeric: false,
-    disablePadding: true,
-    label: "",
-    smallLabel: "",
-  },
-  {
     id: "Crude Fat (g/kg)",
     numeric: false,
     disablePadding: true,

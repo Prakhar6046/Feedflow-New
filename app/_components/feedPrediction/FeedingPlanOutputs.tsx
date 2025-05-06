@@ -606,8 +606,6 @@ function FeedingPlanOutput() {
 
     if (selectedFarm) {
       const getProductionUnits = (selectedFarm: any, detailedFarms: any) => {
-        console.log(detailedFarms);
-
         const matchedFarm = detailedFarms.find(
           (farm: any) => farm.units[0].farm.id == selectedFarm
         );
@@ -622,8 +620,6 @@ function FeedingPlanOutput() {
         id: unit.id,
         option: unit?.productionUnit?.name,
       }));
-      console.log(customUnits);
-
       setUnitOptions(customUnits);
     }
   }, [watch("farms"), farmOption]);
