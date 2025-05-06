@@ -10,6 +10,7 @@ import { useAppDispatch } from "@/lib/hooks";
 import {
   Box,
   Button,
+  Divider,
   FormControl,
   Grid,
   InputLabel,
@@ -32,6 +33,16 @@ import FishGrowthChart from "../charts/FishGrowthChart";
 import FishGrowthTable from "../table/FishGrowthTable";
 import { FishFeedingData } from "./AdHoc";
 import Loader from "../Loader";
+
+import {
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+} from "@mui/material";
 // import MenuItem from "@mui/material/MenuItem";
 
 interface FormInputs {
@@ -120,7 +131,9 @@ function FeedingPlanOutput() {
       "feeding_plan_Data"
     );
   };
-  const CreateFeedPredictionPDF = async (type: "table" | "graph") => {
+  const CreateFeedPredictionPDF = async (
+    type: "table" | "graph" | "feedTable"
+  ) => {
     if (!flatData.length) {
       return;
     }
@@ -338,13 +351,226 @@ function FeedingPlanOutput() {
                 </table>
               </div>
             </div>
-          ) : (
+          ) : type === "graph" ? (
             <div style={{ width: "100%", padding: "20px" }}>
               <FishGrowthChart
                 xAxisData={formatedData?.map((value) => value?.date) || []}
                 yData={formatedData?.map((value) => value?.fishSize) || []}
                 graphTitle={`Farm: ${formatedData[0].farmName} Unit: ${formatedData[0].unitName}`}
               />
+            </div>
+          ) : (
+            <div style={{ width: "100%", padding: "20px" }}>
+              <Paper
+                sx={{
+                  overflow: "hidden",
+                  borderRadius: "14px",
+                  boxShadow: "0px 0px 16px 5px #0000001A",
+                }}
+              >
+                {flatData
+                  .filter(
+                    (val) =>
+                      val.farmId === watch("farms") &&
+                      val.unitId === watch("units")
+                  )
+                  .map((growth, index) => {
+                    const uniqueFeedTypes = Array.from(
+                      new Set(
+                        growth?.fishGrowthData?.map((item) => item.feedType)
+                      )
+                    );
+
+                    const totalBags = uniqueFeedTypes.length;
+                    const totalWeight = totalBags * 20;
+
+                    return (
+                      <TableContainer component={Paper} key={index}>
+                        <Table>
+                          <TableHead>
+                            <TableRow>
+                              <TableCell
+                                sx={{
+                                  borderBottom: 0,
+                                  color: "#fff",
+                                  background: "#06a19b",
+                                  fontSize: {
+                                    md: 16,
+                                    xs: 14,
+                                  },
+                                  fontWeight: 600,
+                                }}
+                              >
+                                Supplier
+                              </TableCell>
+                              <TableCell
+                                sx={{
+                                  borderBottom: 0,
+                                  color: "#fff",
+                                  background: "#06a19b",
+                                  fontSize: {
+                                    md: 16,
+                                    xs: 14,
+                                  },
+                                  fontWeight: 600,
+                                }}
+                              >
+                                Feed
+                              </TableCell>
+                              <TableCell
+                                sx={{
+                                  borderBottom: 0,
+                                  color: "#fff",
+                                  background: "#06a19b",
+                                  pr: 0,
+                                  fontSize: {
+                                    md: 16,
+                                    xs: 14,
+                                  },
+                                  fontWeight: 600,
+                                }}
+                              >
+                                <Typography variant="body2">
+                                  {growth.farm}
+                                </Typography>
+                                <Divider
+                                  sx={{
+                                    borderWidth: 2,
+                                    borderColor: "#fff",
+                                    my: 1,
+                                  }}
+                                />
+                                <Typography variant="body2">{`${growth.farm}-${growth.unit}`}</Typography>
+                              </TableCell>
+                            </TableRow>
+                          </TableHead>
+
+                          <TableBody>
+                            {uniqueFeedTypes.map((feed, idx) => (
+                              <TableRow key={idx}>
+                                {idx === 0 && (
+                                  <TableCell
+                                    rowSpan={uniqueFeedTypes.length}
+                                    sx={{
+                                      // borderBottomColor: "#F5F6F8",
+                                      borderBottomWidth: 0,
+                                      color: "#555555",
+                                      fontWeight: 500,
+                                      whiteSpace: "nowrap",
+                                    }}
+                                  >
+                                    SA Feeds
+                                  </TableCell>
+                                )}
+                                <TableCell
+                                  sx={{
+                                    // borderBottomColor: "#F5F6F8",
+                                    borderBottomWidth: 0,
+                                    color: "#555555",
+                                    fontWeight: 500,
+                                    whiteSpace: "nowrap",
+                                    p: 0,
+                                  }}
+                                >
+                                  <Typography
+                                    variant="h6"
+                                    sx={{
+                                      fontWeight: 500,
+                                      fontSize: 14,
+                                      display: "flex",
+                                      alignItems: "center",
+                                      justifyContent: "space-between",
+                                      gap: 1,
+                                      backgroundColor: "#F5F6F8",
+                                      borderTopLeftRadius: "8px",
+                                      borderBottomLeftRadius: "8px",
+                                      padding: "8px 12px",
+                                      margin: "8px 0",
+                                      textWrap: "nowrap",
+                                    }}
+                                  >
+                                    {feed}
+                                  </Typography>
+                                </TableCell>
+                                <TableCell
+                                  sx={{
+                                    // borderBottomColor: "#F5F6F8",
+                                    borderBottomWidth: 0,
+                                    color: "#555555",
+                                    fontWeight: 500,
+                                    whiteSpace: "nowrap",
+                                    p: 0,
+                                  }}
+                                >
+                                  <Typography
+                                    variant="h6"
+                                    sx={{
+                                      fontWeight: 500,
+                                      fontSize: 14,
+                                      display: "flex",
+                                      alignItems: "center",
+                                      justifyContent: "space-between",
+                                      gap: 1,
+                                      backgroundColor: "#F5F6F8",
+                                      padding: "8px 12px",
+                                      margin: "8px 0",
+                                      textWrap: "nowrap",
+                                    }}
+                                  >
+                                    20 Kg (1 Bag)
+                                  </Typography>
+                                </TableCell>
+                              </TableRow>
+                            ))}
+
+                            <TableRow>
+                              <TableCell
+                                sx={{
+                                  color: "#555555",
+                                  fontWeight: 500,
+                                  whiteSpace: "nowrap",
+                                }}
+                              ></TableCell>
+
+                              <TableCell
+                                sx={{
+                                  color: "#555555",
+                                  fontWeight: 500,
+                                  whiteSpace: "nowrap",
+                                  p: 0,
+                                }}
+                              ></TableCell>
+
+                              <TableCell
+                                sx={{
+                                  color: "#555555",
+                                  fontWeight: 500,
+                                  whiteSpace: "nowrap",
+                                  p: 0,
+                                }}
+                              >
+                                <Typography
+                                  variant="h6"
+                                  sx={{
+                                    fontWeight: 500,
+                                    fontSize: 14,
+                                    padding: "16px 12px",
+                                    // margin: "8px 0",
+                                    textWrap: "nowrap",
+                                    background: "#06a19b",
+                                    color: "#fff",
+                                  }}
+                                >
+                                  80 Kg(4 Bags)
+                                </Typography>
+                              </TableCell>
+                            </TableRow>
+                          </TableBody>
+                        </Table>
+                      </TableContainer>
+                    );
+                  })}
+              </Paper>
             </div>
           )}
         </div>
@@ -544,8 +770,9 @@ function FeedingPlanOutput() {
               />
             </FormControl>
           </Grid>
+
           <Grid item xl={2} lg={4} md={4} sm={6} xs={12}>
-            <FormControl fullWidth className={`form-input`} focused>
+            <FormControl fullWidth className="form-input selected" focused>
               <InputLabel
                 id="demo-simple-select-label"
                 className="custom-input"
@@ -568,6 +795,7 @@ function FeedingPlanOutput() {
               />
             </FormControl>
           </Grid>
+
           <Grid item xl={2} lg={4} md={4} sm={6} xs={12}>
             <TextField
               label="Generated By"
@@ -583,52 +811,61 @@ function FeedingPlanOutput() {
               }}
             />
           </Grid>
+
           <Grid item xl={2} lg={4} md={4} sm={6} xs={12}>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DatePicker
-                label="Generated On"
-                className="date-picker"
-                value={dayjs()} // sets today's date
-                disabled
-              />
-            </LocalizationProvider>
+            <FormControl fullWidth className={`form-input`} focused>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DatePicker
+                  label="Generated On"
+                  className="date-picker form-input"
+                  value={dayjs()} // sets today's date
+                  disabled
+                />
+              </LocalizationProvider>
+            </FormControl>
+          </Grid>
+        </Grid>
+
+        <Grid container spacing={2} mt={3}>
+          <Grid item xl={2} lg={4} md={4} sm={6} xs={12}>
+            <FormControl fullWidth className={`form-input`} focused>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DatePicker
+                  label="Start Date"
+                  className="date-picker form-input"
+                  disabled
+                  value={dayjs(startDate)}
+                  onChange={(value) => {
+                    const isoDate = value?.toISOString();
+                    if (isoDate) setStartDate(isoDate);
+                  }}
+                  maxDate={dayjs(endDate)}
+                />
+              </LocalizationProvider>
+            </FormControl>
           </Grid>
 
           <Grid item xl={2} lg={4} md={4} sm={6} xs={12}>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DatePicker
-                label="Start Date"
-                className="date-picker"
-                disabled
-                value={dayjs(startDate)}
-                onChange={(value) => {
-                  const isoDate = value?.toISOString();
-                  if (isoDate) setStartDate(isoDate);
-                }}
-                maxDate={dayjs(endDate)}
-              />
-            </LocalizationProvider>
-          </Grid>
-
-          <Grid item xl={2} lg={4} md={4} sm={6} xs={12}>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DatePicker
-                label="End Date"
-                value={dayjs(endDate)}
-                disabled
-                onChange={(value) => {
-                  const isoDate = value?.toISOString();
-                  if (isoDate) setEndDate(isoDate);
-                }}
-                sx={{
-                  marginTop: "0",
-                  borderRadius: "6px",
-                }}
-                className="date-picker"
-                minDate={dayjs(startDate)}
-                maxDate={dayjs()}
-              />
-            </LocalizationProvider>
+            <FormControl fullWidth className={`form-input`} focused>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DatePicker
+                  label="End Date"
+                  value={dayjs(endDate)}
+                  disabled
+                  onChange={(value) => {
+                    const isoDate = value?.toISOString();
+                    if (isoDate) setEndDate(isoDate);
+                  }}
+                  sx={{
+                    marginTop: "0",
+                    borderRadius: "6px",
+                  }}
+                  className="date-picker form-input"
+                  minDate={dayjs(startDate)}
+                  maxDate={dayjs()}
+                />
+              </LocalizationProvider>
+            </FormControl>
           </Grid>
         </Grid>
       </Box>
@@ -642,43 +879,45 @@ function FeedingPlanOutput() {
       >
         <Grid
           item
-          xs="auto"
+          xl={2}
+          lg={4}
+          md={4}
+          sm={6}
+          xs={12}
           sx={{
             display: "flex",
             alignItems: "center",
             gap: 2,
           }}
         >
-          <Box position={"relative"}>
-            <Box position={"relative"}>
-              <TextField
-                label="Adjustment Factor *"
-                disabled
-                type="text"
-                {...register("adjustmentFactor", {
-                  required: true,
-                  // pattern: ValidationPatterns.numbersWithDot,
-                })}
-                className="form-input"
-                focused
-                sx={{
-                  width: "100%",
-                }}
-              />
-              <Typography
-                variant="body1"
-                color="#555555AC"
-                sx={{
-                  position: "absolute",
-                  right: 13,
-                  top: "30%",
-                  backgroundColor: "white",
-                  paddingInline: "5px",
-                }}
-              >
-                %
-              </Typography>
-            </Box>
+          <Box position={"relative"} width={"100%"}>
+            <TextField
+              label="Adjustment Factor *"
+              disabled
+              type="text"
+              {...register("adjustmentFactor", {
+                required: true,
+                // pattern: ValidationPatterns.numbersWithDot,
+              })}
+              className="form-input"
+              focused
+              sx={{
+                width: "100%",
+              }}
+            />
+            <Typography
+              variant="body1"
+              color="#555555AC"
+              sx={{
+                position: "absolute",
+                right: 13,
+                top: "30%",
+                backgroundColor: "white",
+                paddingInline: "5px",
+              }}
+            >
+              %
+            </Typography>
           </Box>
           {/* {errors.adjustmentFactor && (
             <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
@@ -738,57 +977,30 @@ function FeedingPlanOutput() {
                   width: "100%",
                 }}
               >
-                <Grid
-                  item
-                  xs="auto"
-                  spacing={2}
-                  justifyContent={"flex-end"}
-                  alignItems={"center"}
+                <Stack
                   sx={{
-                    mb: "20px",
+                    display: "flex",
+                    alignItems: "center",
+                    flexDirection: "row",
+                    justifyContent: "end",
+                    mt: 2.5,
+                    mb: 5,
                   }}
                 >
-                  {/* <Button
-              id="demo-positioned-button"
-              aria-controls={open ? "demo-positioned-menu" : undefined}
-              aria-haspopup="true"
-              aria-expanded={open ? "true" : undefined}
-              onClick={handleClick}
-            >
-              Dashboard
-            </Button>
-            <Menu
-              id="demo-positioned-menu"
-              aria-labelledby="demo-positioned-button"
-              anchorEl={anchorEl}
-              open={open}
-              onClose={handleClose}
-              anchorOrigin={{
-                vertical: "top",
-                horizontal: "left",
-              }}
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "left",
-              }}
-            >
-              <MenuItem onClick={handleClose}>Create .Xlsx File</MenuItem>
-              <MenuItem onClick={handleClose}>My account</MenuItem>
-              <MenuItem onClick={handleClose}>Logout</MenuItem>
-            </Menu> */}
                   <Button
                     type="button"
                     variant="contained"
                     onClick={createxlsxFile}
                     sx={{
-                      background: "#fff",
-                      color: "#06A19B",
+                      background: "#06A19B",
+                      color: "#fff",
                       fontWeight: 600,
                       padding: "6px 16px",
                       width: "fit-content",
                       textTransform: "capitalize",
                       borderRadius: "8px",
                       border: "1px solid #06A19B",
+                      mr: 1.5,
                     }}
                   >
                     Create .Xlsx File
@@ -810,7 +1022,7 @@ function FeedingPlanOutput() {
                   >
                     Create Pdf
                   </Button>
-                </Grid>
+                </Stack>
 
                 <Box>
                   <FishGrowthTable data={growth.fishGrowthData} key={index} />
@@ -822,9 +1034,9 @@ function FeedingPlanOutput() {
 
       <Grid
         container
-        spacing={2}
+        spacing={4}
         justifyContent={"space-between"}
-        alignItems={"center"}
+        alignItems={"start"}
         sx={{
           mb: "20px",
         }}
@@ -893,6 +1105,9 @@ function FeedingPlanOutput() {
                 textTransform: "capitalize",
                 borderRadius: "8px",
                 border: "1px solid #06A19B",
+                mt: 2,
+                display: "block",
+                ml: "auto",
               }}
             >
               Create Pdf
@@ -901,14 +1116,225 @@ function FeedingPlanOutput() {
         </Grid>
 
         <Grid item xs={6}>
-          <Typography variant="h6" component={"h6"} fontWeight={600}>
-            Feed Requirement
-          </Typography>
-          Add Graph Here
-          <Box>
+          <Paper
+            sx={{
+              overflow: "hidden",
+              borderRadius: "14px",
+              boxShadow: "0px 0px 16px 5px #0000001A",
+            }}
+          >
+            {flatData
+              .filter(
+                (val) =>
+                  val.farmId === watch("farms") && val.unitId === watch("units")
+              )
+              .map((growth, index) => {
+                const uniqueFeedTypes = Array.from(
+                  new Set(growth?.fishGrowthData?.map((item) => item.feedType))
+                );
+
+                const totalBags = uniqueFeedTypes.length;
+                const totalWeight = totalBags * 20;
+
+                return (
+                  <TableContainer component={Paper} key={index}>
+                    <Table>
+                      <TableHead>
+                        <TableRow>
+                          <TableCell
+                            sx={{
+                              borderBottom: 0,
+                              color: "#fff",
+                              background: "#06a19b",
+                              fontSize: {
+                                md: 16,
+                                xs: 14,
+                              },
+                              fontWeight: 600,
+                            }}
+                          >
+                            Supplier
+                          </TableCell>
+                          <TableCell
+                            sx={{
+                              borderBottom: 0,
+                              color: "#fff",
+                              background: "#06a19b",
+                              fontSize: {
+                                md: 16,
+                                xs: 14,
+                              },
+                              fontWeight: 600,
+                            }}
+                          >
+                            Feed
+                          </TableCell>
+                          <TableCell
+                            sx={{
+                              borderBottom: 0,
+                              color: "#fff",
+                              background: "#06a19b",
+                              pr: 0,
+                              fontSize: {
+                                md: 16,
+                                xs: 14,
+                              },
+                              fontWeight: 600,
+                            }}
+                          >
+                            <Typography variant="body2">
+                              {growth.farm}
+                            </Typography>
+                            <Divider
+                              sx={{
+                                borderWidth: 2,
+                                borderColor: "#fff",
+                                my: 1,
+                              }}
+                            />
+                            <Typography variant="body2">{`${growth.farm}-${growth.unit}`}</Typography>
+                          </TableCell>
+                        </TableRow>
+                      </TableHead>
+
+                      <TableBody>
+                        {uniqueFeedTypes.map((feed, idx) => (
+                          <TableRow key={idx}>
+                            {idx === 0 && (
+                              <TableCell
+                                rowSpan={uniqueFeedTypes.length}
+                                sx={{
+                                  // borderBottomColor: "#F5F6F8",
+                                  borderBottomWidth: 0,
+                                  color: "#555555",
+                                  fontWeight: 500,
+                                  whiteSpace: "nowrap",
+                                }}
+                              >
+                                SA Feeds
+                              </TableCell>
+                            )}
+                            <TableCell
+                              sx={{
+                                // borderBottomColor: "#F5F6F8",
+                                borderBottomWidth: 0,
+                                color: "#555555",
+                                fontWeight: 500,
+                                whiteSpace: "nowrap",
+                                p: 0,
+                              }}
+                            >
+                              <Typography
+                                variant="h6"
+                                sx={{
+                                  fontWeight: 500,
+                                  fontSize: 14,
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "space-between",
+                                  gap: 1,
+                                  backgroundColor: "#F5F6F8",
+                                  borderTopLeftRadius: "8px",
+                                  borderBottomLeftRadius: "8px",
+                                  padding: "8px 12px",
+                                  margin: "8px 0",
+                                  textWrap: "nowrap",
+                                }}
+                              >
+                                {feed}
+                              </Typography>
+                            </TableCell>
+                            <TableCell
+                              sx={{
+                                // borderBottomColor: "#F5F6F8",
+                                borderBottomWidth: 0,
+                                color: "#555555",
+                                fontWeight: 500,
+                                whiteSpace: "nowrap",
+                                p: 0,
+                              }}
+                            >
+                              <Typography
+                                variant="h6"
+                                sx={{
+                                  fontWeight: 500,
+                                  fontSize: 14,
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "space-between",
+                                  gap: 1,
+                                  backgroundColor: "#F5F6F8",
+                                  padding: "8px 12px",
+                                  margin: "8px 0",
+                                  textWrap: "nowrap",
+                                }}
+                              >
+                                20 Kg (1 Bag)
+                              </Typography>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+
+                        <TableRow>
+                          <TableCell
+                            sx={{
+                              color: "#555555",
+                              fontWeight: 500,
+                              whiteSpace: "nowrap",
+                            }}
+                          ></TableCell>
+
+                          <TableCell
+                            sx={{
+                              color: "#555555",
+                              fontWeight: 500,
+                              whiteSpace: "nowrap",
+                              p: 0,
+                            }}
+                          ></TableCell>
+
+                          <TableCell
+                            sx={{
+                              color: "#555555",
+                              fontWeight: 500,
+                              whiteSpace: "nowrap",
+                              p: 0,
+                            }}
+                          >
+                            <Typography
+                              variant="h6"
+                              sx={{
+                                fontWeight: 500,
+                                fontSize: 14,
+                                padding: "16px 12px",
+                                // margin: "8px 0",
+                                textWrap: "nowrap",
+                                background: "#06a19b",
+                                color: "#fff",
+                              }}
+                            >
+                              80 Kg(4 Bags)
+                            </Typography>
+                          </TableCell>
+                        </TableRow>
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                );
+              })}
+          </Paper>
+          <Box
+            mt={5}
+            sx={{
+              display: "flex",
+              justifyContent: "end",
+              gap: 1.5,
+            }}
+          >
             <Button
-              type="submit"
+              type="button"
               variant="contained"
+              disabled
               sx={{
                 background: "#06A19B",
                 color: "#fff",
@@ -918,15 +1344,15 @@ function FeedingPlanOutput() {
                 textTransform: "capitalize",
                 borderRadius: "8px",
                 border: "1px solid #06A19B",
-                mr: 2,
               }}
             >
               Order Feed
             </Button>
 
             <Button
-              type="submit"
+              type="button"
               variant="contained"
+              onClick={() => CreateFeedPredictionPDF("feedTable")}
               sx={{
                 background: "#fff",
                 color: "#06A19B",
@@ -938,7 +1364,7 @@ function FeedingPlanOutput() {
                 border: "1px solid #06A19B",
               }}
             >
-              Add dropdown here
+              Create PDF
             </Button>
           </Box>
         </Grid>

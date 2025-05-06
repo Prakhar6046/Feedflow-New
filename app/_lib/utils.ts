@@ -970,11 +970,15 @@ export function calculateFishGrowth(
       fishSize: fishSize.toFixed(3),
       growth,
       feedType:
-        prevWeight >= 50
+        Number(fishSize.toFixed(3)) >= 200
+          ? "SAF 6035 (2-3mm)"
+          : Number(fishSize.toFixed(3)) >= 50
           ? "Tilapia Starter #3"
-          : prevWeight >= 25
+          : Number(fishSize.toFixed(3)) >= 25
           ? "Tilapia Starter #2"
-          : "Tilapia Starter #1",
+          : Number(fishSize.toFixed(3)) >= 5
+          ? "Tilapia Starter #1"
+          : "Tilapia Starter #0",
       feedSize: prevWeight >= 50 ? "#3" : prevWeight >= 25 ? "#2" : "#1",
       feedProtein: 400,
       feedDE: 13.47,
