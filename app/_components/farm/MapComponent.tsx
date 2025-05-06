@@ -78,9 +78,6 @@ const MapComponent = ({
 
     const request: google.maps.places.AutocompletionRequest = {
       input,
-      // **Important:** Removed types to include all suggestions (both geocode and establishments)
-      // types: ["geocode"], // This was restricting suggestions to addresses only
-      // To include establishments (businesses) like "ensuesoft," remove the types parameter
     };
 
     autocompleteServiceRef.current.getPlacePredictions(
