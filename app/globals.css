@@ -502,10 +502,18 @@ label {
 }
 
 .ic-radio {
-  transform: scale(0.75);
+  /* transform: scale(0.75); */
   flex-grow: 1;
   justify-content: center;
   margin-inline: 0px;
+}
+
+.ic-radio span svg:nth-child(1) {
+  transform: scale(0.75);
+}
+
+.ic-radio input {
+  box-shadow: none;
 }
 
 .input-btn .MuiFormControlLabel-label {
