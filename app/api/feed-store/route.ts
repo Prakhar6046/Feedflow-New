@@ -1,3 +1,4 @@
+import { FeedProduct } from "@/app/_typeModels/Feed";
 import prisma from "@/prisma/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -21,6 +22,34 @@ export async function GET(request: NextRequest) {
       })
     );
   } catch (error) {
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
+  }
+}
+export async function PUT(request: NextRequest) {
+  try {
+    const body = await request.json();
+    const { data } = body;
+    const updatedFeedStores = await Promise.all(
+      data?.map((item: FeedProduct) =>
+        prisma.feedStore.update({
+          where: { id: item.id },
+          data: { ...item },
+        })
+      )
+    );
+    return new NextResponse(
+      JSON.stringify({
+        status: true,
+        message: "Feed store updated successfully.",
+        data: updatedFeedStores,
+      })
+    );
+  } catch (error) {
+    console.log("feed store update", error);
+
     return NextResponse.json(
       { error: "Internal Server Error" },
       { status: 500 }

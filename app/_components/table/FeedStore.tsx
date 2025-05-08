@@ -1,13 +1,9 @@
 "use client";
-import {
-  farmTableHead,
-  farmTableHeadMember,
-  feedStoreTableHead,
-} from "@/app/_lib/utils/tableHeadData";
+import { feedStoreTableHead } from "@/app/_lib/utils/tableHeadData";
 import { FeedProduct } from "@/app/_typeModels/Feed";
 import { selectRole } from "@/lib/features/user/userSlice";
 import { useAppSelector } from "@/lib/hooks";
-import { TableSortLabel } from "@mui/material";
+import { TableSortLabel, Typography } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -16,16 +12,25 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import React, { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 type Iprops = {
   data: FeedProduct[];
 };
+
 export default function FeedStoreTable({ data }: Iprops) {
   const role = useAppSelector(selectRole);
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("organisation");
+  const [isApiCallInProgress, setIsApiCallInProgress] = React.useState(false);
   const [filteredStores, setFilteredStores] = React.useState<FeedProduct[]>();
-  const { register } = useForm();
+  const { control, handleSubmit, setValue } = useForm<{
+    feedProducts: FeedProduct[];
+  }>({
+    defaultValues: {
+      feedProducts: [], // initialize with empty or populated via useEffect
+    },
+  });
   function EnhancedTableHead(data: any) {
     const { order, orderBy, onRequestSort } = data;
     const createSortHandler =
@@ -81,8 +86,40 @@ export default function FeedStoreTable({ data }: Iprops) {
       </TableHead>
     );
   }
+  const onSubmit = async (data: { feedProducts: FeedProduct[] }) => {
+    if (isApiCallInProgress) return;
+    setIsApiCallInProgress(true);
+    const payload = {
+      data: data.feedProducts,
+    };
+    try {
+      const response = await fetch(`/api/feed-store `, {
+        method: "PUT",
+        body: JSON.stringify(payload),
+      });
+
+      if (response.ok) {
+        const res = await response.json();
+        toast.dismiss();
+        console.log(res);
+
+        toast.success(res.message);
+      } else {
+        toast.dismiss();
+        toast.error("Somethig went wrong!");
+      }
+    } catch (error) {
+      toast.error("Something went wrong. Please try again.");
+    } finally {
+      setIsApiCallInProgress(false);
+    }
+  };
+
   useEffect(() => {
     setFilteredStores(data);
+    if (data) {
+      setValue("feedProducts", data);
+    }
   }, [data]);
   return (
     <Paper
@@ -99,472 +136,1215 @@ export default function FeedStoreTable({ data }: Iprops) {
           maxHeight: "72.5vh",
         }}
       >
-        <Table stickyHeader aria-label="sticky table">
-          <EnhancedTableHead order={order} orderBy={orderBy} />
-          <TableBody>
-            {filteredStores && filteredStores?.length > 0 ? (
-              filteredStores?.map((data, idx) => (
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <button type="submit" disabled={filteredStores?.length === 0}>
+            Save
+          </button>
+          <Table stickyHeader aria-label="sticky table">
+            <EnhancedTableHead order={order} orderBy={orderBy} />
+            <TableBody>
+              {filteredStores && filteredStores?.length > 0 ? (
+                filteredStores?.map((data, idx) => (
+                  <TableRow
+                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                    key={idx}
+                  >
+                    <TableCell
+                      // align="center"
+                      sx={{
+                        borderBottomColor: "#F5F6F8",
+                        borderBottomWidth: 2,
+                        color: "#555555",
+                        maxWidth: 250,
+                        fontWeight: 500,
+                        wordBreak: "break-all",
+                        paddingLeft: {
+                          lg: 10,
+                          md: 7,
+                          xs: 4,
+                        },
+                      }}
+                      component="th"
+                      scope="row"
+                    >
+                      <Controller
+                        name={`feedProducts.${idx}.productName`}
+                        control={control}
+                        render={({ field }) => (
+                          <Typography
+                            variant="body1"
+                            component={"p"}
+                            contentEditable
+                            suppressContentEditableWarning
+                            onBlur={(e) =>
+                              setValue(
+                                field.name,
+                                e.target.textContent || field.value
+                              )
+                            }
+                          >
+                            {field.value}
+                          </Typography>
+                        )}
+                      />
+                    </TableCell>
+                    <TableCell
+                      // align="center"
+                      sx={{
+                        borderBottomColor: "#F5F6F8",
+                        borderBottomWidth: 2,
+                        color: "#555555",
+                        fontWeight: 500,
+                        pl: 0,
+                      }}
+                    >
+                      <Controller
+                        name={`feedProducts.${idx}.productFormat`}
+                        control={control}
+                        render={({ field }) => (
+                          <Typography
+                            variant="body1"
+                            component={"p"}
+                            contentEditable
+                            suppressContentEditableWarning
+                            onBlur={(e) =>
+                              setValue(
+                                field.name,
+                                e.target.textContent || field.value
+                              )
+                            }
+                          >
+                            {field.value}
+                          </Typography>
+                        )}
+                      />
+                      {/* {data.productFormat ?? ""} */}
+                    </TableCell>
+                    <TableCell
+                      // align="center"
+                      sx={{
+                        borderBottomColor: "#F5F6F8",
+                        borderBottomWidth: 2,
+                        color: "#555555",
+                        fontWeight: 500,
+                        pl: 0,
+                      }}
+                    >
+                      {/* {data.particleSize ?? ""} */}
+                      <Controller
+                        name={`feedProducts.${idx}.particleSize`}
+                        control={control}
+                        render={({ field }) => (
+                          <Typography
+                            variant="body1"
+                            component={"p"}
+                            contentEditable
+                            suppressContentEditableWarning
+                            onBlur={(e) =>
+                              setValue(
+                                field.name,
+                                e.target.textContent || field.value
+                              )
+                            }
+                          >
+                            {field.value}
+                          </Typography>
+                        )}
+                      />
+                    </TableCell>
+                    <TableCell
+                      // align="center"
+                      sx={{
+                        borderBottomColor: "#F5F6F8",
+                        borderBottomWidth: 2,
+                        color: "#555555",
+                        fontWeight: 500,
+                        pl: 0,
+                      }}
+                    >
+                      {/* {data.fishSizeG ?? ""} */}
+                      <Controller
+                        name={`feedProducts.${idx}.fishSizeG`}
+                        control={control}
+                        render={({ field }) => (
+                          <Typography
+                            variant="body1"
+                            component={"p"}
+                            contentEditable
+                            suppressContentEditableWarning
+                            onBlur={(e) =>
+                              setValue(
+                                field.name,
+                                Number(e.target.textContent) ||
+                                  Number(field.value)
+                              )
+                            }
+                          >
+                            {field.value}
+                          </Typography>
+                        )}
+                      />
+                    </TableCell>
+                    <TableCell
+                      // align="center"
+                      sx={{
+                        borderBottomColor: "#F5F6F8",
+                        borderBottomWidth: 2,
+                        color: "#555555",
+                        fontWeight: 500,
+                        pl: 0,
+                      }}
+                    >
+                      {/* {data.nutritionalPurpose ?? ""} */}
+                      <Controller
+                        name={`feedProducts.${idx}.nutritionalPurpose`}
+                        control={control}
+                        render={({ field }) => (
+                          <Typography
+                            variant="body1"
+                            component={"p"}
+                            contentEditable
+                            suppressContentEditableWarning
+                            onBlur={(e) =>
+                              setValue(
+                                field.name,
+                                e.target.textContent || field.value
+                              )
+                            }
+                          >
+                            {field.value}
+                          </Typography>
+                        )}
+                      />
+                    </TableCell>
+                    <TableCell
+                      // align="center"
+                      sx={{
+                        borderBottomColor: "#F5F6F8",
+                        borderBottomWidth: 2,
+                        color: "#555555",
+                        fontWeight: 500,
+                        pl: 0,
+                      }}
+                    >
+                      {/* {data.suitableSpecies ?? ""} */}
+                      <Controller
+                        name={`feedProducts.${idx}.suitableSpecies`}
+                        control={control}
+                        render={({ field }) => (
+                          <Typography
+                            variant="body1"
+                            component={"p"}
+                            contentEditable
+                            suppressContentEditableWarning
+                            onBlur={(e) =>
+                              setValue(
+                                field.name,
+                                e.target.textContent || field.value
+                              )
+                            }
+                          >
+                            {field.value}
+                          </Typography>
+                        )}
+                      />
+                    </TableCell>
+                    <TableCell
+                      // align="center"
+                      sx={{
+                        borderBottomColor: "#F5F6F8",
+                        borderBottomWidth: 2,
+                        color: "#555555",
+                        fontWeight: 500,
+                        pl: 0,
+                      }}
+                    >
+                      {/* {data.suitabilityAnimalSize ?? ""} */}
+                      <Controller
+                        name={`feedProducts.${idx}.suitabilityAnimalSize`}
+                        control={control}
+                        render={({ field }) => (
+                          <Typography
+                            variant="body1"
+                            component={"p"}
+                            contentEditable
+                            suppressContentEditableWarning
+                            onBlur={(e) =>
+                              setValue(
+                                field.name,
+                                e.target.textContent || field.value
+                              )
+                            }
+                          >
+                            {field.value}
+                          </Typography>
+                        )}
+                      />
+                    </TableCell>
+                    <TableCell
+                      // align="center"
+                      sx={{
+                        borderBottomColor: "#F5F6F8",
+                        borderBottomWidth: 2,
+                        color: "#555555",
+                        fontWeight: 500,
+                        pl: 0,
+                      }}
+                    >
+                      {/* {data.productionIntensity ?? ""} */}
+                      <Controller
+                        name={`feedProducts.${idx}.productionIntensity`}
+                        control={control}
+                        render={({ field }) => (
+                          <Typography
+                            variant="body1"
+                            component={"p"}
+                            contentEditable
+                            suppressContentEditableWarning
+                            onBlur={(e) =>
+                              setValue(
+                                field.name,
+                                e.target.textContent || field.value
+                              )
+                            }
+                          >
+                            {field.value}
+                          </Typography>
+                        )}
+                      />
+                    </TableCell>
+                    <TableCell
+                      // align="center"
+                      sx={{
+                        borderBottomColor: "#F5F6F8",
+                        borderBottomWidth: 2,
+                        color: "#555555",
+                        fontWeight: 500,
+                        pl: 0,
+                      }}
+                    >
+                      {/* {data.suitabilityUnit ?? ""} */}
+                      <Controller
+                        name={`feedProducts.${idx}.suitabilityUnit`}
+                        control={control}
+                        render={({ field }) => (
+                          <Typography
+                            variant="body1"
+                            component={"p"}
+                            contentEditable
+                            suppressContentEditableWarning
+                            onBlur={(e) =>
+                              setValue(
+                                field.name,
+                                e.target.textContent || field.value
+                              )
+                            }
+                          >
+                            {field.value}
+                          </Typography>
+                        )}
+                      />
+                    </TableCell>
+                    <TableCell
+                      // align="center"
+                      sx={{
+                        borderBottomColor: "#F5F6F8",
+                        borderBottomWidth: 2,
+                        color: "#555555",
+                        fontWeight: 500,
+                        pl: 0,
+                      }}
+                    >
+                      {/* {data.feedingPhase ?? ""} */}
+                      <Controller
+                        name={`feedProducts.${idx}.feedingPhase`}
+                        control={control}
+                        render={({ field }) => (
+                          <Typography
+                            variant="body1"
+                            component={"p"}
+                            contentEditable
+                            suppressContentEditableWarning
+                            onBlur={(e) =>
+                              setValue(
+                                field.name,
+                                e.target.textContent || field.value
+                              )
+                            }
+                          >
+                            {field.value}
+                          </Typography>
+                        )}
+                      />
+                    </TableCell>
+                    <TableCell
+                      // align="center"
+                      sx={{
+                        borderBottomColor: "#F5F6F8",
+                        borderBottomWidth: 2,
+                        color: "#555555",
+                        fontWeight: 500,
+                        pl: 0,
+                      }}
+                    >
+                      {/* {data.lifeStage ?? ""} */}
+                      <Controller
+                        name={`feedProducts.${idx}.lifeStage`}
+                        control={control}
+                        render={({ field }) => (
+                          <Typography
+                            variant="body1"
+                            component={"p"}
+                            contentEditable
+                            suppressContentEditableWarning
+                            onBlur={(e) =>
+                              setValue(
+                                field.name,
+                                e.target.textContent || field.value
+                              )
+                            }
+                          >
+                            {field.value}
+                          </Typography>
+                        )}
+                      />
+                    </TableCell>
+                    <TableCell
+                      // align="center"
+                      sx={{
+                        borderBottomColor: "#F5F6F8",
+                        borderBottomWidth: 2,
+                        color: "#555555",
+                        fontWeight: 500,
+                        pl: 0,
+                      }}
+                    >
+                      {/* {data.shelfLifeMonths ?? ""} */}
+                      <Controller
+                        name={`feedProducts.${idx}.shelfLifeMonths`}
+                        control={control}
+                        render={({ field }) => (
+                          <Typography
+                            variant="body1"
+                            component={"p"}
+                            contentEditable
+                            suppressContentEditableWarning
+                            onBlur={(e) =>
+                              setValue(
+                                field.name,
+                                Number(e.target.textContent) ||
+                                  Number(field.value)
+                              )
+                            }
+                          >
+                            {field.value}
+                          </Typography>
+                        )}
+                      />
+                    </TableCell>
+                    <TableCell
+                      // align="center"
+                      sx={{
+                        borderBottomColor: "#F5F6F8",
+                        borderBottomWidth: 2,
+                        color: "#555555",
+                        fontWeight: 500,
+                        pl: 0,
+                      }}
+                    >
+                      {/* {data.feedCost ?? ""} */}
+                      <Controller
+                        name={`feedProducts.${idx}.feedCost`}
+                        control={control}
+                        render={({ field }) => (
+                          <Typography
+                            variant="body1"
+                            component={"p"}
+                            contentEditable
+                            suppressContentEditableWarning
+                            onBlur={(e) =>
+                              setValue(
+                                field.name,
+                                Number(e.target.textContent) ||
+                                  Number(field.value)
+                              )
+                            }
+                          >
+                            {field.value}
+                          </Typography>
+                        )}
+                      />
+                    </TableCell>
+                    <TableCell
+                      // align="center"
+                      sx={{
+                        borderBottomColor: "#F5F6F8",
+                        borderBottomWidth: 2,
+                        color: "#555555",
+                        fontWeight: 500,
+                        pl: 0,
+                      }}
+                    >
+                      {/* {data.feedIngredients ?? ""} */}
+                      <Controller
+                        name={`feedProducts.${idx}.feedIngredients`}
+                        control={control}
+                        render={({ field }) => (
+                          <Typography
+                            variant="body1"
+                            component={"p"}
+                            contentEditable
+                            suppressContentEditableWarning
+                            onBlur={(e) =>
+                              setValue(
+                                field.name,
+                                e.target.textContent || field.value
+                              )
+                            }
+                          >
+                            {field.value}
+                          </Typography>
+                        )}
+                      />
+                    </TableCell>
+                    <TableCell
+                      // align="center"
+                      sx={{
+                        borderBottomColor: "#F5F6F8",
+                        borderBottomWidth: 2,
+                        color: "#555555",
+                        fontWeight: 500,
+                        pl: 0,
+                      }}
+                    >
+                      {/* {data.moistureGPerKg ?? ""} */}
+                      <Controller
+                        name={`feedProducts.${idx}.moistureGPerKg`}
+                        control={control}
+                        render={({ field }) => (
+                          <Typography
+                            variant="body1"
+                            component={"p"}
+                            contentEditable
+                            suppressContentEditableWarning
+                            onBlur={(e) =>
+                              setValue(
+                                field.name,
+                                Number(e.target.textContent) ||
+                                  Number(field.value)
+                              )
+                            }
+                          >
+                            {field.value}
+                          </Typography>
+                        )}
+                      />
+                    </TableCell>
+                    <TableCell
+                      // align="center"
+                      sx={{
+                        borderBottomColor: "#F5F6F8",
+                        borderBottomWidth: 2,
+                        color: "#555555",
+                        fontWeight: 500,
+                        pl: 0,
+                      }}
+                    >
+                      {/* {data.crudeProteinGPerKg ?? ""} */}
+                      <Controller
+                        name={`feedProducts.${idx}.crudeProteinGPerKg`}
+                        control={control}
+                        render={({ field }) => (
+                          <Typography
+                            variant="body1"
+                            component={"p"}
+                            contentEditable
+                            suppressContentEditableWarning
+                            onBlur={(e) =>
+                              setValue(
+                                field.name,
+                                Number(e.target.textContent) ||
+                                  Number(field.value)
+                              )
+                            }
+                          >
+                            {field.value}
+                          </Typography>
+                        )}
+                      />
+                    </TableCell>
+                    <TableCell
+                      // align="center"
+                      sx={{
+                        borderBottomColor: "#F5F6F8",
+                        borderBottomWidth: 2,
+                        color: "#555555",
+                        fontWeight: 500,
+                        pl: 0,
+                      }}
+                    >
+                      {/* {data.crudeFatGPerKg ?? ""} */}
+                      <Controller
+                        name={`feedProducts.${idx}.crudeFatGPerKg`}
+                        control={control}
+                        render={({ field }) => (
+                          <Typography
+                            variant="body1"
+                            component={"p"}
+                            contentEditable
+                            suppressContentEditableWarning
+                            onBlur={(e) =>
+                              setValue(
+                                field.name,
+                                Number(e.target.textContent) ||
+                                  Number(field.value)
+                              )
+                            }
+                          >
+                            {field.value}
+                          </Typography>
+                        )}
+                      />
+                    </TableCell>
+                    <TableCell
+                      // align="center"
+                      sx={{
+                        borderBottomColor: "#F5F6F8",
+                        borderBottomWidth: 2,
+                        color: "#555555",
+                        fontWeight: 500,
+                        pl: 0,
+                      }}
+                    >
+                      {/* {data.crudeFiberGPerKg ?? ""} */}
+                      <Controller
+                        name={`feedProducts.${idx}.crudeFiberGPerKg`}
+                        control={control}
+                        render={({ field }) => (
+                          <Typography
+                            variant="body1"
+                            component={"p"}
+                            contentEditable
+                            suppressContentEditableWarning
+                            onBlur={(e) =>
+                              setValue(
+                                field.name,
+                                Number(e.target.textContent) ||
+                                  Number(field.value)
+                              )
+                            }
+                          >
+                            {field.value}
+                          </Typography>
+                        )}
+                      />
+                    </TableCell>
+                    <TableCell
+                      // align="center"
+                      sx={{
+                        borderBottomColor: "#F5F6F8",
+                        borderBottomWidth: 2,
+                        color: "#555555",
+                        fontWeight: 500,
+                        pl: 0,
+                      }}
+                    >
+                      {/* {data.crudeAshGPerKg ?? ""} */}
+                      <Controller
+                        name={`feedProducts.${idx}.crudeAshGPerKg`}
+                        control={control}
+                        render={({ field }) => (
+                          <Typography
+                            variant="body1"
+                            component={"p"}
+                            contentEditable
+                            suppressContentEditableWarning
+                            onBlur={(e) =>
+                              setValue(
+                                field.name,
+                                Number(e.target.textContent) ||
+                                  Number(field.value)
+                              )
+                            }
+                          >
+                            {field.value}
+                          </Typography>
+                        )}
+                      />
+                    </TableCell>
+                    <TableCell
+                      // align="center"
+                      sx={{
+                        borderBottomColor: "#F5F6F8",
+                        borderBottomWidth: 2,
+                        color: "#555555",
+                        fontWeight: 500,
+                        pl: 0,
+                      }}
+                    >
+                      {/* {data.nfe ?? ""} */}
+                      <Controller
+                        name={`feedProducts.${idx}.nfe`}
+                        control={control}
+                        render={({ field }) => (
+                          <Typography
+                            variant="body1"
+                            component={"p"}
+                            contentEditable
+                            suppressContentEditableWarning
+                            onBlur={(e) =>
+                              setValue(
+                                field.name,
+                                Number(e.target.textContent) ||
+                                  Number(field.value)
+                              )
+                            }
+                          >
+                            {field.value}
+                          </Typography>
+                        )}
+                      />
+                    </TableCell>
+                    <TableCell
+                      // align="center"
+                      sx={{
+                        borderBottomColor: "#F5F6F8",
+                        borderBottomWidth: 2,
+                        color: "#555555",
+                        fontWeight: 500,
+                        pl: 0,
+                      }}
+                    >
+                      {/* {data.calciumGPerKg ?? ""} */}
+                      <Controller
+                        name={`feedProducts.${idx}.calciumGPerKg`}
+                        control={control}
+                        render={({ field }) => (
+                          <Typography
+                            variant="body1"
+                            component={"p"}
+                            contentEditable
+                            suppressContentEditableWarning
+                            onBlur={(e) =>
+                              setValue(
+                                field.name,
+                                Number(e.target.textContent) ||
+                                  Number(field.value)
+                              )
+                            }
+                          >
+                            {field.value}
+                          </Typography>
+                        )}
+                      />
+                    </TableCell>
+                    <TableCell
+                      // align="center"
+                      sx={{
+                        borderBottomColor: "#F5F6F8",
+                        borderBottomWidth: 2,
+                        color: "#555555",
+                        fontWeight: 500,
+                        pl: 0,
+                      }}
+                    >
+                      {data.phosphorusGPerKg ?? ""}
+                      <Controller
+                        name={`feedProducts.${idx}.phosphorusGPerKg`}
+                        control={control}
+                        render={({ field }) => (
+                          <Typography
+                            variant="body1"
+                            component={"p"}
+                            contentEditable
+                            suppressContentEditableWarning
+                            onBlur={(e) =>
+                              setValue(
+                                field.name,
+                                Number(e.target.textContent) ||
+                                  Number(field.value)
+                              )
+                            }
+                          >
+                            {field.value}
+                          </Typography>
+                        )}
+                      />
+                    </TableCell>
+                    <TableCell
+                      // align="center"
+                      sx={{
+                        borderBottomColor: "#F5F6F8",
+                        borderBottomWidth: 2,
+                        color: "#555555",
+                        fontWeight: 500,
+                        pl: 0,
+                      }}
+                    >
+                      {/* {data.carbohydratesGPerKg ?? ""} */}
+                      <Controller
+                        name={`feedProducts.${idx}.carbohydratesGPerKg`}
+                        control={control}
+                        render={({ field }) => (
+                          <Typography
+                            variant="body1"
+                            component={"p"}
+                            contentEditable
+                            suppressContentEditableWarning
+                            onBlur={(e) =>
+                              setValue(
+                                field.name,
+                                Number(e.target.textContent) ||
+                                  Number(field.value)
+                              )
+                            }
+                          >
+                            {field.value}
+                          </Typography>
+                        )}
+                      />
+                    </TableCell>
+                    <TableCell
+                      // align="center"
+                      sx={{
+                        borderBottomColor: "#F5F6F8",
+                        borderBottomWidth: 2,
+                        color: "#555555",
+                        fontWeight: 500,
+                        pl: 0,
+                      }}
+                    >
+                      {/* {data.metabolizableEnergy ?? ""} */}
+                      <Controller
+                        name={`feedProducts.${idx}.metabolizableEnergy`}
+                        control={control}
+                        render={({ field }) => (
+                          <Typography
+                            variant="body1"
+                            component={"p"}
+                            contentEditable
+                            suppressContentEditableWarning
+                            onBlur={(e) =>
+                              setValue(
+                                field.name,
+                                Number(e.target.textContent) ||
+                                  Number(field.value)
+                              )
+                            }
+                          >
+                            {field.value}
+                          </Typography>
+                        )}
+                      />
+                    </TableCell>
+                    <TableCell
+                      // align="center"
+                      sx={{
+                        borderBottomColor: "#F5F6F8",
+                        borderBottomWidth: 2,
+                        color: "#555555",
+                        fontWeight: 500,
+                        pl: 0,
+                      }}
+                    >
+                      {/* {data.feedingGuide ?? ""} */}
+                      <Controller
+                        name={`feedProducts.${idx}.feedingGuide`}
+                        control={control}
+                        render={({ field }) => (
+                          <Typography
+                            variant="body1"
+                            component={"p"}
+                            contentEditable
+                            suppressContentEditableWarning
+                            onBlur={(e) =>
+                              setValue(
+                                field.name,
+                                e.target.textContent || field.value
+                              )
+                            }
+                          >
+                            {field.value}
+                          </Typography>
+                        )}
+                      />
+                    </TableCell>
+                    <TableCell
+                      // align="center"
+                      sx={{
+                        borderBottomColor: "#F5F6F8",
+                        borderBottomWidth: 2,
+                        color: "#555555",
+                        fontWeight: 500,
+                        pl: 0,
+                      }}
+                    >
+                      {/* {data.geCoeffCP ?? ""} */}
+                      <Controller
+                        name={`feedProducts.${idx}.geCoeffCP`}
+                        control={control}
+                        render={({ field }) => (
+                          <Typography
+                            variant="body1"
+                            component={"p"}
+                            contentEditable
+                            suppressContentEditableWarning
+                            onBlur={(e) =>
+                              setValue(
+                                field.name,
+                                Number(e.target.textContent) ||
+                                  Number(field.value)
+                              )
+                            }
+                          >
+                            {field.value}
+                          </Typography>
+                        )}
+                      />
+                    </TableCell>
+                    <TableCell
+                      // align="center"
+                      sx={{
+                        borderBottomColor: "#F5F6F8",
+                        borderBottomWidth: 2,
+                        color: "#555555",
+                        fontWeight: 500,
+                        pl: 0,
+                      }}
+                    >
+                      {/* {data.geCoeffCF ?? ""} */}
+                      <Controller
+                        name={`feedProducts.${idx}.geCoeffCF`}
+                        control={control}
+                        render={({ field }) => (
+                          <Typography
+                            variant="body1"
+                            component={"p"}
+                            contentEditable
+                            suppressContentEditableWarning
+                            onBlur={(e) =>
+                              setValue(
+                                field.name,
+                                Number(e.target.textContent) ||
+                                  Number(field.value)
+                              )
+                            }
+                          >
+                            {field.value}
+                          </Typography>
+                        )}
+                      />
+                    </TableCell>
+                    <TableCell
+                      // align="center"
+                      sx={{
+                        borderBottomColor: "#F5F6F8",
+                        borderBottomWidth: 2,
+                        color: "#555555",
+                        fontWeight: 500,
+                        pl: 0,
+                      }}
+                    >
+                      {/* {data.geCoeffNFE ?? ""} */}
+                      <Controller
+                        name={`feedProducts.${idx}.geCoeffNFE`}
+                        control={control}
+                        render={({ field }) => (
+                          <Typography
+                            variant="body1"
+                            component={"p"}
+                            contentEditable
+                            suppressContentEditableWarning
+                            onBlur={(e) =>
+                              setValue(
+                                field.name,
+                                Number(e.target.textContent) ||
+                                  Number(field.value)
+                              )
+                            }
+                          >
+                            {field.value}
+                          </Typography>
+                        )}
+                      />
+                    </TableCell>
+                    <TableCell
+                      // align="center"
+                      sx={{
+                        borderBottomColor: "#F5F6F8",
+                        borderBottomWidth: 2,
+                        color: "#555555",
+                        fontWeight: 500,
+                        pl: 0,
+                      }}
+                    >
+                      {/* {data.ge ?? ""} */}
+                      <Controller
+                        name={`feedProducts.${idx}.ge`}
+                        control={control}
+                        render={({ field }) => (
+                          <Typography
+                            variant="body1"
+                            component={"p"}
+                            contentEditable
+                            suppressContentEditableWarning
+                            onBlur={(e) =>
+                              setValue(
+                                field.name,
+                                Number(e.target.textContent) ||
+                                  Number(field.value)
+                              )
+                            }
+                          >
+                            {field.value}
+                          </Typography>
+                        )}
+                      />
+                    </TableCell>
+                    <TableCell
+                      // align="center"
+                      sx={{
+                        borderBottomColor: "#F5F6F8",
+                        borderBottomWidth: 2,
+                        color: "#555555",
+                        fontWeight: 500,
+                        pl: 0,
+                      }}
+                    >
+                      {/* {data.digCP ?? ""} */}
+                      <Controller
+                        name={`feedProducts.${idx}.digCP`}
+                        control={control}
+                        render={({ field }) => (
+                          <Typography
+                            variant="body1"
+                            component={"p"}
+                            contentEditable
+                            suppressContentEditableWarning
+                            onBlur={(e) =>
+                              setValue(
+                                field.name,
+                                Number(e.target.textContent) ||
+                                  Number(field.value)
+                              )
+                            }
+                          >
+                            {field.value}
+                          </Typography>
+                        )}
+                      />
+                    </TableCell>
+                    <TableCell
+                      // align="center"
+                      sx={{
+                        borderBottomColor: "#F5F6F8",
+                        borderBottomWidth: 2,
+                        color: "#555555",
+                        fontWeight: 500,
+                        pl: 0,
+                      }}
+                    >
+                      {/* {data.digCF ?? ""} */}
+                      <Controller
+                        name={`feedProducts.${idx}.digCF`}
+                        control={control}
+                        render={({ field }) => (
+                          <Typography
+                            variant="body1"
+                            component={"p"}
+                            contentEditable
+                            suppressContentEditableWarning
+                            onBlur={(e) =>
+                              setValue(
+                                field.name,
+                                Number(e.target.textContent) ||
+                                  Number(field.value)
+                              )
+                            }
+                          >
+                            {field.value}
+                          </Typography>
+                        )}
+                      />
+                    </TableCell>
+                    <TableCell
+                      // align="center"
+                      sx={{
+                        borderBottomColor: "#F5F6F8",
+                        borderBottomWidth: 2,
+                        color: "#555555",
+                        fontWeight: 500,
+                        pl: 0,
+                      }}
+                    >
+                      {/* {data.digNFE ?? ""} */}
+                      <Controller
+                        name={`feedProducts.${idx}.digNFE`}
+                        control={control}
+                        render={({ field }) => (
+                          <Typography
+                            variant="body1"
+                            component={"p"}
+                            contentEditable
+                            suppressContentEditableWarning
+                            onBlur={(e) =>
+                              setValue(
+                                field.name,
+                                Number(e.target.textContent) ||
+                                  Number(field.value)
+                              )
+                            }
+                          >
+                            {field.value}
+                          </Typography>
+                        )}
+                      />
+                    </TableCell>
+                    <TableCell
+                      // align="center"
+                      sx={{
+                        borderBottomColor: "#F5F6F8",
+                        borderBottomWidth: 2,
+                        color: "#555555",
+                        fontWeight: 500,
+                        pl: 0,
+                      }}
+                    >
+                      {/* {data.deCP ?? ""} */}
+                      <Controller
+                        name={`feedProducts.${idx}.deCP`}
+                        control={control}
+                        render={({ field }) => (
+                          <Typography
+                            variant="body1"
+                            component={"p"}
+                            contentEditable
+                            suppressContentEditableWarning
+                            onBlur={(e) =>
+                              setValue(
+                                field.name,
+                                Number(e.target.textContent) ||
+                                  Number(field.value)
+                              )
+                            }
+                          >
+                            {field.value}
+                          </Typography>
+                        )}
+                      />
+                    </TableCell>
+                    <TableCell
+                      // align="center"
+                      sx={{
+                        borderBottomColor: "#F5F6F8",
+                        borderBottomWidth: 2,
+                        color: "#555555",
+                        fontWeight: 500,
+                        pl: 0,
+                      }}
+                    >
+                      {/* {data.deCF ?? ""} */}
+                      <Controller
+                        name={`feedProducts.${idx}.deCF`}
+                        control={control}
+                        render={({ field }) => (
+                          <Typography
+                            variant="body1"
+                            component={"p"}
+                            contentEditable
+                            suppressContentEditableWarning
+                            onBlur={(e) =>
+                              setValue(
+                                field.name,
+                                Number(e.target.textContent) ||
+                                  Number(field.value)
+                              )
+                            }
+                          >
+                            {field.value}
+                          </Typography>
+                        )}
+                      />
+                    </TableCell>
+                    <TableCell
+                      // align="center"
+                      sx={{
+                        borderBottomColor: "#F5F6F8",
+                        borderBottomWidth: 2,
+                        color: "#555555",
+                        fontWeight: 500,
+                        pl: 0,
+                      }}
+                    >
+                      {/* {data.deNFE ?? ""} */}
+                      <Controller
+                        name={`feedProducts.${idx}.deNFE`}
+                        control={control}
+                        render={({ field }) => (
+                          <Typography
+                            variant="body1"
+                            component={"p"}
+                            contentEditable
+                            suppressContentEditableWarning
+                            onBlur={(e) =>
+                              setValue(
+                                field.name,
+                                Number(e.target.textContent) ||
+                                  Number(field.value)
+                              )
+                            }
+                          >
+                            {field.value}
+                          </Typography>
+                        )}
+                      />
+                    </TableCell>
+                    <TableCell
+                      // align="center"
+                      sx={{
+                        borderBottomColor: "#F5F6F8",
+                        borderBottomWidth: 2,
+                        color: "#555555",
+                        fontWeight: 500,
+                        pl: 0,
+                      }}
+                    >
+                      {data.de ?? ""}
+                      <Controller
+                        name={`feedProducts.${idx}.de`}
+                        control={control}
+                        render={({ field }) => (
+                          <Typography
+                            variant="body1"
+                            component={"p"}
+                            contentEditable
+                            suppressContentEditableWarning
+                            onBlur={(e) =>
+                              setValue(
+                                field.name,
+                                Number(e.target.textContent) ||
+                                  Number(field.value)
+                              )
+                            }
+                          >
+                            {field.value}
+                          </Typography>
+                        )}
+                      />
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
                 <TableRow
+                  key={"no table"}
                   sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                  key={idx}
                 >
-                  <TableCell
-                    // align="center"
-                    sx={{
-                      borderBottomColor: "#F5F6F8",
-                      borderBottomWidth: 2,
-                      color: "#555555",
-                      maxWidth: 250,
-                      fontWeight: 500,
-                      wordBreak: "break-all",
-                      paddingLeft: {
-                        lg: 10,
-                        md: 7,
-                        xs: 4,
-                      },
-                    }}
-                    component="th"
-                    scope="row"
-                  >
-                    {data.productName ?? ""}
-                    {/* <input
-                      id="productName"
-                      type="text"
-                      {...register("productName")}
-                    /> */}
-                  </TableCell>
-                  <TableCell
-                    // align="center"
-                    sx={{
-                      borderBottomColor: "#F5F6F8",
-                      borderBottomWidth: 2,
-                      color: "#555555",
-                      fontWeight: 500,
-                      pl: 0,
-                    }}
-                  >
-                    {data.productFormat ?? ""}
-                  </TableCell>
-                  <TableCell
-                    // align="center"
-                    sx={{
-                      borderBottomColor: "#F5F6F8",
-                      borderBottomWidth: 2,
-                      color: "#555555",
-                      fontWeight: 500,
-                      pl: 0,
-                    }}
-                  >
-                    {data.particleSize ?? ""}
-                  </TableCell>
-                  <TableCell
-                    // align="center"
-                    sx={{
-                      borderBottomColor: "#F5F6F8",
-                      borderBottomWidth: 2,
-                      color: "#555555",
-                      fontWeight: 500,
-                      pl: 0,
-                    }}
-                  >
-                    {data.fishSizeG ?? ""}
-                  </TableCell>
-                  <TableCell
-                    // align="center"
-                    sx={{
-                      borderBottomColor: "#F5F6F8",
-                      borderBottomWidth: 2,
-                      color: "#555555",
-                      fontWeight: 500,
-                      pl: 0,
-                    }}
-                  >
-                    {data.nutritionalPurpose ?? ""}
-                  </TableCell>
-                  <TableCell
-                    // align="center"
-                    sx={{
-                      borderBottomColor: "#F5F6F8",
-                      borderBottomWidth: 2,
-                      color: "#555555",
-                      fontWeight: 500,
-                      pl: 0,
-                    }}
-                  >
-                    {data.suitableSpecies ?? ""}
-                  </TableCell>
-                  <TableCell
-                    // align="center"
-                    sx={{
-                      borderBottomColor: "#F5F6F8",
-                      borderBottomWidth: 2,
-                      color: "#555555",
-                      fontWeight: 500,
-                      pl: 0,
-                    }}
-                  >
-                    {data.suitabilityAnimalSize ?? ""}
-                  </TableCell>
-                  <TableCell
-                    // align="center"
-                    sx={{
-                      borderBottomColor: "#F5F6F8",
-                      borderBottomWidth: 2,
-                      color: "#555555",
-                      fontWeight: 500,
-                      pl: 0,
-                    }}
-                  >
-                    {data.productionIntensity ?? ""}
-                  </TableCell>
-                  <TableCell
-                    // align="center"
-                    sx={{
-                      borderBottomColor: "#F5F6F8",
-                      borderBottomWidth: 2,
-                      color: "#555555",
-                      fontWeight: 500,
-                      pl: 0,
-                    }}
-                  >
-                    {data.suitabilityUnit ?? ""}
-                  </TableCell>
-                  <TableCell
-                    // align="center"
-                    sx={{
-                      borderBottomColor: "#F5F6F8",
-                      borderBottomWidth: 2,
-                      color: "#555555",
-                      fontWeight: 500,
-                      pl: 0,
-                    }}
-                  >
-                    {data.feedingPhase ?? ""}
-                  </TableCell>
-                  <TableCell
-                    // align="center"
-                    sx={{
-                      borderBottomColor: "#F5F6F8",
-                      borderBottomWidth: 2,
-                      color: "#555555",
-                      fontWeight: 500,
-                      pl: 0,
-                    }}
-                  >
-                    {data.lifeStage ?? ""}
-                  </TableCell>
-                  <TableCell
-                    // align="center"
-                    sx={{
-                      borderBottomColor: "#F5F6F8",
-                      borderBottomWidth: 2,
-                      color: "#555555",
-                      fontWeight: 500,
-                      pl: 0,
-                    }}
-                  >
-                    {data.shelfLifeMonths ?? ""}
-                  </TableCell>
-                  <TableCell
-                    // align="center"
-                    sx={{
-                      borderBottomColor: "#F5F6F8",
-                      borderBottomWidth: 2,
-                      color: "#555555",
-                      fontWeight: 500,
-                      pl: 0,
-                    }}
-                  >
-                    {data.feedCost ?? ""}
-                  </TableCell>
-                  <TableCell
-                    // align="center"
-                    sx={{
-                      borderBottomColor: "#F5F6F8",
-                      borderBottomWidth: 2,
-                      color: "#555555",
-                      fontWeight: 500,
-                      pl: 0,
-                    }}
-                  >
-                    {data.feedIngredients ?? ""}
-                  </TableCell>
-                  <TableCell
-                    // align="center"
-                    sx={{
-                      borderBottomColor: "#F5F6F8",
-                      borderBottomWidth: 2,
-                      color: "#555555",
-                      fontWeight: 500,
-                      pl: 0,
-                    }}
-                  >
-                    {data.moistureGPerKg ?? ""}
-                  </TableCell>
-                  <TableCell
-                    // align="center"
-                    sx={{
-                      borderBottomColor: "#F5F6F8",
-                      borderBottomWidth: 2,
-                      color: "#555555",
-                      fontWeight: 500,
-                      pl: 0,
-                    }}
-                  >
-                    {data.crudeProteinGPerKg ?? ""}
-                  </TableCell>
-                  <TableCell
-                    // align="center"
-                    sx={{
-                      borderBottomColor: "#F5F6F8",
-                      borderBottomWidth: 2,
-                      color: "#555555",
-                      fontWeight: 500,
-                      pl: 0,
-                    }}
-                  >
-                    {data.crudeFatGPerKg ?? ""}
-                  </TableCell>
-                  <TableCell
-                    // align="center"
-                    sx={{
-                      borderBottomColor: "#F5F6F8",
-                      borderBottomWidth: 2,
-                      color: "#555555",
-                      fontWeight: 500,
-                      pl: 0,
-                    }}
-                  >
-                    {data.crudeFiberGPerKg ?? ""}
-                  </TableCell>
-                  <TableCell
-                    // align="center"
-                    sx={{
-                      borderBottomColor: "#F5F6F8",
-                      borderBottomWidth: 2,
-                      color: "#555555",
-                      fontWeight: 500,
-                      pl: 0,
-                    }}
-                  >
-                    {data.crudeAshGPerKg ?? ""}
-                  </TableCell>
-                  <TableCell
-                    // align="center"
-                    sx={{
-                      borderBottomColor: "#F5F6F8",
-                      borderBottomWidth: 2,
-                      color: "#555555",
-                      fontWeight: 500,
-                      pl: 0,
-                    }}
-                  >
-                    {data.nfe ?? ""}
-                  </TableCell>
-                  <TableCell
-                    // align="center"
-                    sx={{
-                      borderBottomColor: "#F5F6F8",
-                      borderBottomWidth: 2,
-                      color: "#555555",
-                      fontWeight: 500,
-                      pl: 0,
-                    }}
-                  >
-                    {data.calciumGPerKg ?? ""}
-                  </TableCell>
-                  <TableCell
-                    // align="center"
-                    sx={{
-                      borderBottomColor: "#F5F6F8",
-                      borderBottomWidth: 2,
-                      color: "#555555",
-                      fontWeight: 500,
-                      pl: 0,
-                    }}
-                  >
-                    {data.phosphorusGPerKg ?? ""}
-                  </TableCell>
-                  <TableCell
-                    // align="center"
-                    sx={{
-                      borderBottomColor: "#F5F6F8",
-                      borderBottomWidth: 2,
-                      color: "#555555",
-                      fontWeight: 500,
-                      pl: 0,
-                    }}
-                  >
-                    {data.carbohydratesGPerKg ?? ""}
-                  </TableCell>
-                  <TableCell
-                    // align="center"
-                    sx={{
-                      borderBottomColor: "#F5F6F8",
-                      borderBottomWidth: 2,
-                      color: "#555555",
-                      fontWeight: 500,
-                      pl: 0,
-                    }}
-                  >
-                    {data.metabolizableEnergy ?? ""}
-                  </TableCell>
-                  <TableCell
-                    // align="center"
-                    sx={{
-                      borderBottomColor: "#F5F6F8",
-                      borderBottomWidth: 2,
-                      color: "#555555",
-                      fontWeight: 500,
-                      pl: 0,
-                    }}
-                  >
-                    {data.feedingGuide ?? ""}
-                  </TableCell>
-                  <TableCell
-                    // align="center"
-                    sx={{
-                      borderBottomColor: "#F5F6F8",
-                      borderBottomWidth: 2,
-                      color: "#555555",
-                      fontWeight: 500,
-                      pl: 0,
-                    }}
-                  >
-                    {data.geCoeffCP ?? ""}
-                  </TableCell>
-                  <TableCell
-                    // align="center"
-                    sx={{
-                      borderBottomColor: "#F5F6F8",
-                      borderBottomWidth: 2,
-                      color: "#555555",
-                      fontWeight: 500,
-                      pl: 0,
-                    }}
-                  >
-                    {data.geCoeffCF ?? ""}
-                  </TableCell>
-                  <TableCell
-                    // align="center"
-                    sx={{
-                      borderBottomColor: "#F5F6F8",
-                      borderBottomWidth: 2,
-                      color: "#555555",
-                      fontWeight: 500,
-                      pl: 0,
-                    }}
-                  >
-                    {data.geCoeffNFE ?? ""}
-                  </TableCell>
-                  <TableCell
-                    // align="center"
-                    sx={{
-                      borderBottomColor: "#F5F6F8",
-                      borderBottomWidth: 2,
-                      color: "#555555",
-                      fontWeight: 500,
-                      pl: 0,
-                    }}
-                  >
-                    {data.ge ?? ""}
-                  </TableCell>
-                  <TableCell
-                    // align="center"
-                    sx={{
-                      borderBottomColor: "#F5F6F8",
-                      borderBottomWidth: 2,
-                      color: "#555555",
-                      fontWeight: 500,
-                      pl: 0,
-                    }}
-                  >
-                    {data.digCP ?? ""}
-                  </TableCell>
-                  <TableCell
-                    // align="center"
-                    sx={{
-                      borderBottomColor: "#F5F6F8",
-                      borderBottomWidth: 2,
-                      color: "#555555",
-                      fontWeight: 500,
-                      pl: 0,
-                    }}
-                  >
-                    {data.digCF ?? ""}
-                  </TableCell>
-                  <TableCell
-                    // align="center"
-                    sx={{
-                      borderBottomColor: "#F5F6F8",
-                      borderBottomWidth: 2,
-                      color: "#555555",
-                      fontWeight: 500,
-                      pl: 0,
-                    }}
-                  >
-                    {data.digNFE ?? ""}
-                  </TableCell>
-                  <TableCell
-                    // align="center"
-                    sx={{
-                      borderBottomColor: "#F5F6F8",
-                      borderBottomWidth: 2,
-                      color: "#555555",
-                      fontWeight: 500,
-                      pl: 0,
-                    }}
-                  >
-                    {data.deCP ?? ""}
-                  </TableCell>
-                  <TableCell
-                    // align="center"
-                    sx={{
-                      borderBottomColor: "#F5F6F8",
-                      borderBottomWidth: 2,
-                      color: "#555555",
-                      fontWeight: 500,
-                      pl: 0,
-                    }}
-                  >
-                    {data.deCF ?? ""}
-                  </TableCell>
-                  <TableCell
-                    // align="center"
-                    sx={{
-                      borderBottomColor: "#F5F6F8",
-                      borderBottomWidth: 2,
-                      color: "#555555",
-                      fontWeight: 500,
-                      pl: 0,
-                    }}
-                  >
-                    {data.deNFE ?? ""}
-                  </TableCell>
-                  <TableCell
-                    // align="center"
-                    sx={{
-                      borderBottomColor: "#F5F6F8",
-                      borderBottomWidth: 2,
-                      color: "#555555",
-                      fontWeight: 500,
-                      pl: 0,
-                    }}
-                  >
-                    {data.de ?? ""}
-                  </TableCell>
+                  No Data Found
                 </TableRow>
-              ))
-            ) : (
-              <TableRow
-                key={"no table"}
-                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-              >
-                No Data Found
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+              )}
+            </TableBody>
+          </Table>
+        </form>
       </TableContainer>
     </Paper>
   );
