@@ -81,10 +81,9 @@ const FeedProfiles = ({ setActiveStep }: Props) => {
       render={({ field }) => (
         <Box
           display="flex"
-          justifyContent="start"
+          justifyContent="space-between"
           alignItems="center"
           gap={2}
-          className="ts"
         >
           {options.map((opt) => {
             const value =

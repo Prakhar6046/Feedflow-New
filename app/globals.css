@@ -503,6 +503,9 @@ label {
 
 .ic-radio {
   transform: scale(0.75);
+  flex-grow: 1;
+  justify-content: center;
+  margin-inline: 0px;
 }
 
 .input-btn .MuiFormControlLabel-label {
@@ -776,9 +779,5 @@ label {
 }
 
 .feed-profile-table table td {
-  padding-block: 0px !important;
-}
-
-.ts .ic-radio {
-  margin: 0 20px;
+  padding: 0px !important;
 }
