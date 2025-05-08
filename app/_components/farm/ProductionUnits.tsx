@@ -887,7 +887,7 @@ const ProductionUnits: NextPage<Props> = ({
                   border: "1px solid #06A19B",
                 }}
                 onClick={() => {
-                  setActiveStep(2),
+                  setActiveStep(3),
                     setLocalItem(
                       "farmProductionUnits",
                       watch("productionUnits")

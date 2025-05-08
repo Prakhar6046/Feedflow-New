@@ -501,6 +501,10 @@ label {
   color: #06a19b !important;
 }
 
+.ic-radio {
+  transform: scale(0.75);
+}
+
 .input-btn .MuiFormControlLabel-label {
   color: #555555;
 }
@@ -766,3 +770,15 @@ label {
 /* .date-picker label {
   color: #000 !important;
 } */
+
+.feed-profile-table {
+  height: 500px;
+}
+
+.feed-profile-table table td {
+  padding-block: 0px !important;
+}
+
+.ts .ic-radio {
+  margin: 0 20px;
+}

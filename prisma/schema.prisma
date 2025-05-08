@@ -133,6 +133,19 @@ model Farm {
   FishManageHistory               FishManageHistory[]
   WaterQualityPredictedParameters WaterQualityPredictedParameters[]
   FishSupply                      FishSupply[]
+  FeedProfile                     FeedProfile[]
+
+  @@index([createdAt])
+  @@index([updatedAt])
+}
+
+model FeedProfile {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  farmId    String
+  farm      Farm     @relation(fields: [farmId], references: [id])
+  profiles  Json?
 
   @@index([createdAt])
   @@index([updatedAt])

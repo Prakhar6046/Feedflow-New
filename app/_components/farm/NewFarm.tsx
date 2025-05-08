@@ -9,6 +9,7 @@ import ProductionUnits from "./ProductionUnits";
 import AllDone from "./AllDone";
 import ProductionParaMeter from "./ProductionParameter";
 import { Farm } from "@/app/_typeModels/Farm";
+import FeedProfiles from "./FeedProfiles";
 
 const steps = [
   {
@@ -18,6 +19,9 @@ const steps = [
     label: "Farm",
   },
   { label: "Production Parameters" },
+  {
+    label: "Feed profiles",
+  },
   {
     label: "Production Units",
   },
@@ -109,14 +113,16 @@ export default function NewFarm({ farmMembers, growthModels, farms }: Props) {
             growthModels={growthModels}
           />
         )}
-        {activeStep === 3 && (
+
+        {activeStep === 3 && <FeedProfiles setActiveStep={setActiveStep} />}
+        {activeStep === 4 && (
           <ProductionUnits
             setActiveStep={setActiveStep}
             growthModels={growthModels}
           />
         )}
 
-        {activeStep === 4 && <AllDone setActiveStep={setActiveStep} />}
+        {activeStep === 5 && <AllDone setActiveStep={setActiveStep} />}
       </Grid>
     </Grid>
   );
