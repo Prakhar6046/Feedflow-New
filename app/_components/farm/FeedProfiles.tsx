@@ -62,7 +62,6 @@ interface FormValues {
 const FeedProfiles = ({ setActiveStep }: Props) => {
   const { control, handleSubmit, watch } = useForm<FormValues>();
   const allFeedprofiles = watch();
-  console.log(allFeedprofiles);
 
   const onSubmit: SubmitHandler<FormValues> = (data) => {
     setLocalItem("feedProfiles", data);

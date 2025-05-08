@@ -101,7 +101,6 @@ export default function FeedStoreTable({ data }: Iprops) {
       if (response.ok) {
         const res = await response.json();
         toast.dismiss();
-        console.log(res);
 
         toast.success(res.message);
       } else {

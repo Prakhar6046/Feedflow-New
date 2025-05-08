@@ -322,7 +322,6 @@ const FeedingOutputTable = ({ farms, productions }: Props) => {
       if (!feedPlanData?.length && !currentFarmTab) {
         return;
       }
-      // console.log(feedPlanData);
       const data = feedPlanData?.flatMap((farm) =>
         farm
           ?.filter((val) => `${val.farm}/${val.unit}` === currentFarmTab)

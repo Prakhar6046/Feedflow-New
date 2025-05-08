@@ -157,7 +157,6 @@ function FeedingPlanOutput() {
           unitName: growth.unit,
         }))
       );
-    console.log("formated data", formatedData);
 
     setLoading(true);
     const chunkArray = <T,>(arr: any, chunkSize: number): T[][] => {

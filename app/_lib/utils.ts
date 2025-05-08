@@ -883,8 +883,6 @@ export function calculateFishGrowth(
   timeInterval: number,
   DE: number
 ) {
-  console.log(period, startDate);
-
   const IBW = fishWeight;
   const T = temp;
   let prevWeight = IBW;
