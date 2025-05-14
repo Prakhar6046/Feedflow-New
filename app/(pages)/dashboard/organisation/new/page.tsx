@@ -5,8 +5,15 @@ import { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Organisations",
 };
-export default async function Page() {
+export default async function Page({
+  searchParams,
+}: {
+  searchParams?: {
+    type?: string;
+  };
+}) {
   const organisations = await getAllOrganisations();
+  const type = searchParams?.type || "";
   return (
     <>
       <BasicBreadcrumbs
@@ -18,7 +25,7 @@ export default async function Page() {
           { name: "New Organisation", link: "/dashboard/organisation/new" },
         ]}
       />
-      <AddNewOrganisation organisations={organisations?.data} />
+      <AddNewOrganisation organisations={organisations?.data} type={type} />
     </>
   );
 }

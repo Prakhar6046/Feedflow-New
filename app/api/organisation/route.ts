@@ -6,8 +6,36 @@ export const GET = async (request: NextRequest) => {
     const searchParams = request.nextUrl.searchParams;
     const role = searchParams.get("role");
     const query = searchParams.get("query");
+    const tab = searchParams.get("tab");
 
     const organisationId = searchParams.get("organisationId");
+    // Map tab value to organisationType
+    const tabFilter =
+      tab === "fishFarmers"
+        ? "Fish Farmer"
+        : tab === "feedSuppliers"
+        ? "Feed Supplier"
+        : null;
+
+    // Common filters for all roles
+    const baseWhereClause: any = {
+      AND: [
+        query
+          ? {
+              OR: [
+                {
+                  name: { contains: query, mode: "insensitive" },
+                },
+              ],
+            }
+          : {},
+        tabFilter
+          ? {
+              organisationType: tabFilter,
+            }
+          : {},
+      ],
+    };
     let organisations;
     if (role === "SUPERADMIN") {
       organisations = await prisma.organisation.findMany({
@@ -15,35 +43,13 @@ export const GET = async (request: NextRequest) => {
         orderBy: {
           createdAt: "desc", // Sort by createdAt in descending order
         },
-        where: {
-          AND: [
-            query
-              ? {
-                  OR: [
-                    {
-                      name: { contains: query, mode: "insensitive" },
-                    },
-                  ],
-                }
-              : {},
-          ],
-        },
+        where: baseWhereClause,
       });
     } else {
       organisations = await prisma.organisation.findMany({
         where: {
           id: Number(organisationId),
-          AND: [
-            query
-              ? {
-                  OR: [
-                    {
-                      name: { contains: query, mode: "insensitive" },
-                    },
-                  ],
-                }
-              : {},
-          ],
+          ...baseWhereClause,
         },
         include: { contact: true },
         orderBy: {

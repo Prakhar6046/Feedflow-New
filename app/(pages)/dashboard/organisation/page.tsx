@@ -12,9 +12,11 @@ export default async function Page({
 }: {
   searchParams?: {
     query?: string;
+    tab?: string;
   };
 }) {
   const query = searchParams?.query || "";
+  const tab = searchParams?.tab || "all";
   const loggedUser: any = getCookie("logged-user", { cookies });
   const user = JSON.parse(loggedUser);
 
@@ -22,19 +24,30 @@ export default async function Page({
     organisationId: user?.organisationId,
     query,
     role: user?.role,
+    tab,
   });
-
+  let buttonName = "";
+  let buttonRoute = "";
+  if (user.role === "SUPERADMIN" || user.role === "ADMIN") {
+    if (tab === "feedSuppliers") {
+      buttonName = "Add Fish Farmer";
+      buttonRoute = "/dashboard/organisation/new?type=fishFarmers";
+    } else {
+      buttonName = "Add Organisation";
+      buttonRoute = "/dashboard/organisation/new";
+    }
+  }
   return (
     <>
       <BasicBreadcrumbs
         heading={"Organisations"}
-        buttonName={user.role === "SUPERADMIN" ? "Add Organisation" : ""}
-        buttonRoute={"/dashboard/organisation/new"}
+        buttonName={buttonName}
+        buttonRoute={buttonRoute}
         isTable={true}
         refetch={"organisation"}
         links={[
           { name: "Dashboard", link: "/dashboard" },
-          { name: "Organisations", link: "/dashboard/organisation" },
+          { name: "Organisations", link: buttonRoute },
         ]}
       />
       <BasicTable organisations={organisations?.data} userRole={user?.role} />

@@ -3,12 +3,15 @@ export const getOrganisations = async (payload: {
   role?: string;
   organisationId?: string;
   query?: string;
+  tab?: string;
 }) => {
   try {
     const data = await fetch(
       `${process.env.BASE_URL}/api/organisation${
         payload.organisationId && payload.role
-          ? `?organisationId=${payload.organisationId}&role=${payload.role}&query=${payload.query}`
+          ? `?organisationId=${payload.organisationId}&role=${payload.role}&tab=${payload?.tab}&query=${payload.query}`
+          : payload?.tab
+          ? `?tab=${payload?.tab}`
           : `?query=${payload.query}`
       }`,
       {

@@ -50,6 +50,7 @@ export interface SingleOrganisation {
   address?: OrganizationAddress;
   contact?: OrganizationContact[];
   users?: SingleUser[];
+  organisationType: string;
 }
 export interface AddOrganizationFormInputs {
   organisationName: String;
@@ -64,6 +65,11 @@ export interface AddOrganizationFormInputs {
   contacts: {
     name: string;
     role: string;
+    email: string;
+    phone: string;
+  }[];
+  members: {
+    name: string;
     email: string;
     phone: string;
   }[];

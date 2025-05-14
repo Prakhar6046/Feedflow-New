@@ -379,9 +379,21 @@ function FeedingPlanOutput() {
                         growth?.fishGrowthData?.map((item) => item.feedType)
                       )
                     );
+                    const intakeByFeedType: Record<string, number> = {};
 
-                    const totalBags = uniqueFeedTypes.length;
-                    const totalWeight = totalBags * 20;
+                    growth?.fishGrowthData?.forEach((item: any) => {
+                      const intake = parseFloat(item.feedIntake as string);
+                      if (!intakeByFeedType[item.feedType]) {
+                        intakeByFeedType[item.feedType] = 0;
+                      }
+                      intakeByFeedType[item.feedType] += isNaN(intake)
+                        ? 0
+                        : intake;
+                    });
+                    const totalIntake: number = Object.values(
+                      intakeByFeedType
+                    ).reduce((a: number, b: number) => a + b, 0);
+                    const totalBags: string = (totalIntake / 20).toFixed(2);
 
                     return (
                       <TableContainer component={Paper} key={index}>
@@ -445,84 +457,94 @@ function FeedingPlanOutput() {
                           </TableHead>
 
                           <TableBody>
-                            {uniqueFeedTypes.map((feed, idx) => (
-                              <TableRow key={idx}>
-                                {idx === 0 && (
+                            {uniqueFeedTypes.map((feed, idx) => {
+                              const feedKg =
+                                intakeByFeedType[feed]?.toFixed(2) || 0;
+                              const feedBags =
+                                (intakeByFeedType[feed] / 20)?.toFixed(2) || 0;
+                              return (
+                                <TableRow
+                                  key={idx}
+                                  sx={{ backgroundColor: "#fff" }}
+                                >
+                                  {idx === 0 && (
+                                    <TableCell
+                                      rowSpan={uniqueFeedTypes.length}
+                                      sx={{
+                                        // borderBottomColor: "#F5F6F8",
+                                        borderBottomWidth: 0,
+                                        color: "#555555",
+                                        backgroundColor: "#fff",
+                                        fontWeight: 500,
+                                        whiteSpace: "nowrap",
+                                      }}
+                                    >
+                                      SA Feeds
+                                    </TableCell>
+                                  )}
                                   <TableCell
-                                    rowSpan={uniqueFeedTypes.length}
                                     sx={{
                                       // borderBottomColor: "#F5F6F8",
                                       borderBottomWidth: 0,
                                       color: "#555555",
                                       fontWeight: 500,
                                       whiteSpace: "nowrap",
+                                      p: 0,
                                     }}
                                   >
-                                    SA Feeds
+                                    <Typography
+                                      variant="h6"
+                                      sx={{
+                                        fontWeight: 500,
+                                        fontSize: 14,
+                                        display: "flex",
+                                        alignItems: "center",
+                                        justifyContent: "space-between",
+                                        gap: 1,
+                                        backgroundColor: "#F5F6F8",
+                                        borderTopLeftRadius: "8px",
+                                        borderBottomLeftRadius: "8px",
+                                        padding: "8px 12px",
+                                        margin: "8px 0",
+                                        textWrap: "nowrap",
+                                      }}
+                                    >
+                                      {feed}
+                                    </Typography>
                                   </TableCell>
-                                )}
-                                <TableCell
-                                  sx={{
-                                    // borderBottomColor: "#F5F6F8",
-                                    borderBottomWidth: 0,
-                                    color: "#555555",
-                                    fontWeight: 500,
-                                    whiteSpace: "nowrap",
-                                    p: 0,
-                                  }}
-                                >
-                                  <Typography
-                                    variant="h6"
+                                  <TableCell
                                     sx={{
+                                      // borderBottomColor: "#F5F6F8",
+                                      borderBottomWidth: 0,
+                                      color: "#555555",
                                       fontWeight: 500,
-                                      fontSize: 14,
-                                      display: "flex",
-                                      alignItems: "center",
-                                      justifyContent: "space-between",
-                                      gap: 1,
-                                      backgroundColor: "#F5F6F8",
-                                      borderTopLeftRadius: "8px",
-                                      borderBottomLeftRadius: "8px",
-                                      padding: "8px 12px",
-                                      margin: "8px 0",
-                                      textWrap: "nowrap",
+                                      whiteSpace: "nowrap",
+                                      p: 0,
                                     }}
                                   >
-                                    {feed}
-                                  </Typography>
-                                </TableCell>
-                                <TableCell
-                                  sx={{
-                                    // borderBottomColor: "#F5F6F8",
-                                    borderBottomWidth: 0,
-                                    color: "#555555",
-                                    fontWeight: 500,
-                                    whiteSpace: "nowrap",
-                                    p: 0,
-                                  }}
-                                >
-                                  <Typography
-                                    variant="h6"
-                                    sx={{
-                                      fontWeight: 500,
-                                      fontSize: 14,
-                                      display: "flex",
-                                      alignItems: "center",
-                                      justifyContent: "space-between",
-                                      gap: 1,
-                                      backgroundColor: "#F5F6F8",
-                                      padding: "8px 12px",
-                                      margin: "8px 0",
-                                      textWrap: "nowrap",
-                                    }}
-                                  >
-                                    20 Kg (1 Bag)
-                                  </Typography>
-                                </TableCell>
-                              </TableRow>
-                            ))}
+                                    <Typography
+                                      variant="h6"
+                                      sx={{
+                                        fontWeight: 500,
+                                        fontSize: 14,
+                                        display: "flex",
+                                        alignItems: "center",
+                                        justifyContent: "space-between",
+                                        gap: 1,
+                                        backgroundColor: "#F5F6F8",
+                                        padding: "8px 12px",
+                                        margin: "8px 0",
+                                        textWrap: "nowrap",
+                                      }}
+                                    >
+                                      {`${feedKg} Kg (${feedBags} Bags)`}
+                                    </Typography>
+                                  </TableCell>
+                                </TableRow>
+                              );
+                            })}
 
-                            <TableRow>
+                            <TableRow sx={{ backgroundColor: "#fff" }}>
                               <TableCell
                                 sx={{
                                   color: "#555555",
@@ -560,7 +582,9 @@ function FeedingPlanOutput() {
                                     color: "#fff",
                                   }}
                                 >
-                                  80 Kg(4 Bags)
+                                  {`${totalIntake.toFixed(
+                                    2
+                                  )} Kg (${totalBags} Bags)`}
                                 </Typography>
                               </TableCell>
                             </TableRow>
@@ -1127,9 +1151,19 @@ function FeedingPlanOutput() {
                 const uniqueFeedTypes = Array.from(
                   new Set(growth?.fishGrowthData?.map((item) => item.feedType))
                 );
+                const intakeByFeedType: Record<string, number> = {};
 
-                const totalBags = uniqueFeedTypes.length;
-                const totalWeight = totalBags * 20;
+                growth?.fishGrowthData?.forEach((item: any) => {
+                  const intake = parseFloat(item.feedIntake as string);
+                  if (!intakeByFeedType[item.feedType]) {
+                    intakeByFeedType[item.feedType] = 0;
+                  }
+                  intakeByFeedType[item.feedType] += isNaN(intake) ? 0 : intake;
+                });
+                const totalIntake: number = Object.values(
+                  intakeByFeedType
+                ).reduce((a: number, b: number) => a + b, 0);
+                const totalBags: string = (totalIntake / 20).toFixed(2);
 
                 return (
                   <TableContainer component={Paper} key={index}>
@@ -1193,82 +1227,88 @@ function FeedingPlanOutput() {
                       </TableHead>
 
                       <TableBody>
-                        {uniqueFeedTypes.map((feed, idx) => (
-                          <TableRow key={idx}>
-                            {idx === 0 && (
+                        {uniqueFeedTypes.map((feed, idx) => {
+                          const feedKg =
+                            intakeByFeedType[feed]?.toFixed(2) || 0;
+                          const feedBags =
+                            (intakeByFeedType[feed] / 20)?.toFixed(2) || 0;
+                          return (
+                            <TableRow key={idx}>
+                              {idx === 0 && (
+                                <TableCell
+                                  rowSpan={uniqueFeedTypes.length}
+                                  sx={{
+                                    // borderBottomColor: "#F5F6F8",
+                                    borderBottomWidth: 0,
+                                    color: "#555555",
+                                    fontWeight: 500,
+                                    whiteSpace: "nowrap",
+                                  }}
+                                >
+                                  SA Feeds
+                                </TableCell>
+                              )}
                               <TableCell
-                                rowSpan={uniqueFeedTypes.length}
                                 sx={{
                                   // borderBottomColor: "#F5F6F8",
                                   borderBottomWidth: 0,
                                   color: "#555555",
                                   fontWeight: 500,
                                   whiteSpace: "nowrap",
+                                  p: 0,
                                 }}
                               >
-                                SA Feeds
+                                <Typography
+                                  variant="h6"
+                                  sx={{
+                                    fontWeight: 500,
+                                    fontSize: 14,
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "space-between",
+                                    gap: 1,
+                                    backgroundColor: "#F5F6F8",
+                                    borderTopLeftRadius: "8px",
+                                    borderBottomLeftRadius: "8px",
+                                    padding: "8px 12px",
+                                    margin: "8px 0",
+                                    textWrap: "nowrap",
+                                  }}
+                                >
+                                  {feed}
+                                </Typography>
                               </TableCell>
-                            )}
-                            <TableCell
-                              sx={{
-                                // borderBottomColor: "#F5F6F8",
-                                borderBottomWidth: 0,
-                                color: "#555555",
-                                fontWeight: 500,
-                                whiteSpace: "nowrap",
-                                p: 0,
-                              }}
-                            >
-                              <Typography
-                                variant="h6"
+                              <TableCell
                                 sx={{
+                                  // borderBottomColor: "#F5F6F8",
+                                  borderBottomWidth: 0,
+                                  color: "#555555",
                                   fontWeight: 500,
-                                  fontSize: 14,
-                                  display: "flex",
-                                  alignItems: "center",
-                                  justifyContent: "space-between",
-                                  gap: 1,
-                                  backgroundColor: "#F5F6F8",
-                                  borderTopLeftRadius: "8px",
-                                  borderBottomLeftRadius: "8px",
-                                  padding: "8px 12px",
-                                  margin: "8px 0",
-                                  textWrap: "nowrap",
+                                  whiteSpace: "nowrap",
+                                  p: 0,
                                 }}
                               >
-                                {feed}
-                              </Typography>
-                            </TableCell>
-                            <TableCell
-                              sx={{
-                                // borderBottomColor: "#F5F6F8",
-                                borderBottomWidth: 0,
-                                color: "#555555",
-                                fontWeight: 500,
-                                whiteSpace: "nowrap",
-                                p: 0,
-                              }}
-                            >
-                              <Typography
-                                variant="h6"
-                                sx={{
-                                  fontWeight: 500,
-                                  fontSize: 14,
-                                  display: "flex",
-                                  alignItems: "center",
-                                  justifyContent: "space-between",
-                                  gap: 1,
-                                  backgroundColor: "#F5F6F8",
-                                  padding: "8px 12px",
-                                  margin: "8px 0",
-                                  textWrap: "nowrap",
-                                }}
-                              >
-                                20 Kg (1 Bag)
-                              </Typography>
-                            </TableCell>
-                          </TableRow>
-                        ))}
+                                <Typography
+                                  variant="h6"
+                                  sx={{
+                                    fontWeight: 500,
+                                    fontSize: 14,
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "space-between",
+                                    gap: 1,
+                                    backgroundColor: "#F5F6F8",
+                                    padding: "8px 12px",
+                                    margin: "8px 0",
+                                    textWrap: "nowrap",
+                                  }}
+                                >
+                                  {`${feedKg} Kg (${feedBags} Bags)`}
+                                </Typography>
+                              </TableCell>
+                            </TableRow>
+                          );
+                        })}
 
                         <TableRow>
                           <TableCell
@@ -1308,7 +1348,9 @@ function FeedingPlanOutput() {
                                 color: "#fff",
                               }}
                             >
-                              80 Kg(4 Bags)
+                              {`${totalIntake.toFixed(
+                                2
+                              )} Kg (${totalBags} Bags)`}
                             </Typography>
                           </TableCell>
                         </TableRow>
