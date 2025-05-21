@@ -54,28 +54,28 @@ body {
 
 .table-edit-menu-item div:nth-child(3) {
   border-radius: 8px;
-  box-shadow: 1px 1px 5px rgba(151, 151, 151, 0.03);
+  box-shadow: 1px 1px 5px rgba(151, 151, 151, 0.15);
   width: fit-content;
-  transform: translate(64px, -70px) !important;
+  /* transform: translate(64px, -70px) !important; */
 }
 .table-edit-sample-item div:nth-child(3) {
   border-radius: 8px;
   padding: 4px 8px;
   margin: 6px;
-  transform: translate(13px, -50px) !important;
+  /* transform: translate(13px, -50px) !important; */
 }
 
 .table-edit-menu div:nth-child(3) {
   border-radius: 8px;
-  box-shadow: 1px 1px 5px rgba(151, 151, 151, 0.03);
+  box-shadow: 1px 1px 5px rgba(151, 151, 151, 0.15);
   width: fit-content;
-  transform: translate(-140px, -35px) !important;
+  /* transform: translate(-140px, -35px) !important; */
 }
 .table-edit-farm-menu div:nth-child(3) {
   border-radius: 8px;
-  box-shadow: 1px 1px 5px rgba(151, 151, 151, 0.03);
+  box-shadow: 1px 1px 5px rgba(151, 151, 151, 0.15);
   width: fit-content;
-  transform: translate(-153px, -35px) !important;
+  /* transform: translate(-153px, -35px) !important; */
 }
 
 .profile-dropdown div:nth-child(3) {
@@ -788,4 +788,13 @@ label {
 
 .feed-profile-table table td {
   padding: 0px !important;
+}
+
+.org-code input {
+  visibility: hidden;
+}
+
+.editable-org-code:focus-within {
+  outline: 0;
+  border: 0;
 }

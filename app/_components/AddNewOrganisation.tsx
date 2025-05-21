@@ -485,11 +485,11 @@ const AddNewOrganisation = ({ organisations, type }: Props) => {
                 gap: 1.5,
               }}
             >
-              <Box width={"100%"}>
+              <Box width={"100%"} position={"relative"}>
                 <TextField
                   label="Organisation Code *"
                   type="text"
-                  className="form-input"
+                  className="form-input org-code"
                   {...register("organisationCode", {
                     required: true,
                     // pattern: validationPattern.alphabetsNumbersAndSpacesPattern,
@@ -499,6 +499,23 @@ const AddNewOrganisation = ({ organisations, type }: Props) => {
                     width: "100%",
                   }}
                 />
+
+                <Box sx={{
+                  height: "1.4375em",
+                  paddingInline: "14px",
+                  display: "flex",
+                  gap: 0.5,
+                  alignItems: "center",
+                  position: "absolute",
+                  left: 0,
+                  top: "50%",
+                  transform: "translate(0, -50%)"
+
+                }}>
+                  <Typography variant="body1" component={"p"} contentEditable className="editable-org-code">ORG-</Typography>
+                  <Typography variant="body1">11</Typography>
+                </Box>
+
                 {errors &&
                   errors.organisationCode &&
                   errors.organisationCode.type === "required" && (
@@ -994,20 +1011,14 @@ const AddNewOrganisation = ({ organisations, type }: Props) => {
                       required: true,
                       pattern: validationPattern.emailPattern,
                       validate: (value) => {
-                        const allContacts = watch("contacts") || [];
-                        const allMembers = watch("members") || [];
-
-                        const currentEmail = String(value).toLowerCase();
-
-                        const allOtherEmails = [
-                          ...allContacts
-                            .filter((_, i) => i !== index)
-                            .map((c) => c.email?.toLowerCase()),
-                          ...allMembers.map((m) => m.email?.toLowerCase()),
-                        ];
-
-                        if (allOtherEmails.includes(currentEmail)) {
-                          return "Please enter a unique email. This email is already used in contacts or members information";
+                        const isUnique = fields.every(
+                          (f, i) =>
+                            i === index ||
+                            String(f.email).toLowerCase() !==
+                            String(value).toLowerCase()
+                        );
+                        if (!isUnique) {
+                          return "Please enter a unique email.This email is already used in contacts information";
                         }
 
                         return true;
@@ -1246,8 +1257,8 @@ const AddNewOrganisation = ({ organisations, type }: Props) => {
                         {errors?.members[index]?.name.type === "required"
                           ? validationMessage.required
                           : errors?.members[index]?.name.type === "pattern"
-                          ? validationMessage.OnlyAlphabatsMessage
-                          : ""}
+                            ? validationMessage.OnlyAlphabatsMessage
+                            : ""}
                       </Typography>
                     )}
                 </Box>
@@ -1306,10 +1317,10 @@ const AddNewOrganisation = ({ organisations, type }: Props) => {
                         {errors?.members[index]?.email.type === "required"
                           ? validationMessage.required
                           : errors?.members[index]?.email.type === "pattern"
-                          ? validationMessage.emailPatternMessage
-                          : errors?.members[index]?.email.type === "validate"
-                          ? errors?.members[index]?.email.message
-                          : ""}
+                            ? validationMessage.emailPatternMessage
+                            : errors?.members[index]?.email.type === "validate"
+                              ? errors?.members[index]?.email.message
+                              : ""}
                       </Typography>
                     )}
                 </Box>
@@ -1349,8 +1360,8 @@ const AddNewOrganisation = ({ organisations, type }: Props) => {
                         {errors?.members[index]?.phone.type === "required"
                           ? validationMessage.required
                           : errors?.members[index]?.phone.type === "pattern"
-                          ? validationMessage.phonePatternMessage
-                          : ""}
+                            ? validationMessage.phonePatternMessage
+                            : ""}
                       </Typography>
                     )}
                 </Box>
