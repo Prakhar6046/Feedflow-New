@@ -131,8 +131,8 @@ export default function BasicTable({ organisations, userRole }: Props) {
                 idx === headCells.length - 1
                   ? false
                   : orderBy === headCell.id
-                  ? order
-                  : false
+                    ? order
+                    : false
               }
               sx={{
                 borderBottom: 0,
@@ -378,7 +378,7 @@ export default function BasicTable({ organisations, userRole }: Props) {
                       >
                         <Box display={"flex"} alignItems={"center"} gap={1.5}>
                           {organisation?.imageUrl &&
-                          organisation?.imageUrl !== "null" ? (
+                            organisation?.imageUrl !== "null" ? (
                             <Image
                               src={String(organisation.imageUrl)}
                               width={40}
@@ -491,7 +491,7 @@ export default function BasicTable({ organisations, userRole }: Props) {
                             fontWeight: 500,
                           }}
                           className="cursor-pointer"
-                          // onClick={() => handleEdit(user)}
+                        // onClick={() => handleEdit(user)}
                         >
                           <Button
                             id="basic-button"
@@ -579,9 +579,8 @@ export default function BasicTable({ organisations, userRole }: Props) {
                                   {selectedOrganisation?.users?.find(
                                     (val) => val.role === "ADMIN" && val.access
                                   )
-                                    ? "Restrict access to feedflow"
-                                    : "Unrestrict access to feedflow"}
-                                  Restrict access to feedflow
+                                    ? "Access Restricted"
+                                    : "Access Unrestrict"}
                                 </Typography>
                               </Stack>
                             </MenuItem>
