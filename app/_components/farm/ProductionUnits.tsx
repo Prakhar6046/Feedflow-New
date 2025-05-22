@@ -40,6 +40,7 @@ import { v4 as uuidv4 } from "uuid";
 import CalculateVolume from "../models/CalculateFarmVolume";
 import ProductionUnitParametersPredicated from "../models/ProductionUnitParametersPredicated";
 import { useRouter } from "next/navigation";
+import ProductionUnitFeedProfile from "../models/ProductionUnitFeedProfile";
 interface Props {
   productionParaMeter?: ProductionParaMeterType[];
   growthModels?: any;
@@ -73,13 +74,14 @@ const ProductionUnits: NextPage<Props> = ({
   const [open, setopen] = useState<boolean>(false);
   const [openUnitParametersModal, setOpenUnitParametersModal] =
     useState<boolean>(false);
+  const [openUnitFeedProfileModal, setOpenUnitFeedProfileModal] =
+    useState<boolean>(false);
   const [selectedUnitName, setSelectedUnitName] = useState<string>("");
   const [calculatedValue, setCalculatedValue] = useState<CalculateType>();
   const [formProductionUnitsData, setFormProductionUnitsData] = useState<any>();
   const [isApiCallInProgress, setIsApiCallInProgress] =
     useState<boolean>(false);
-  const [productionParamtertsUnitsArray, setProductionParamtertsUnitsArray] =
-    useState<any>([]);
+
   const {
     register,
     handleSubmit,
@@ -168,6 +170,11 @@ const ProductionUnits: NextPage<Props> = ({
     const productionParamtertsUnitsArrayLocal = getLocalItem(
       "productionParamtertsUnitsArray"
     );
+    const productionUnitsFeedProfilesLocal = getLocalItem(
+      "productionUnitsFeedProfiles"
+    );
+    const feedProfile = getLocalItem("feedProfiles");
+
     if (farmData && farmPredictionValues && data) {
       // Prevent API call if one is already in progress
       if (isApiCallInProgress) return;
@@ -187,6 +194,13 @@ const ProductionUnits: NextPage<Props> = ({
                 (param: any) => param.name === unit.unitName
               )
           );
+        const filteredProductionUnitsFeedProfile =
+          productionUnitsFeedProfilesLocal.filter(
+            (unit: { unitName: string; feedProfile: any }) =>
+              data.productionUnits.some(
+                (param: any) => param.name === unit.unitName
+              )
+          );
         const updatedProductionUnits = filteredProductionUnits.map(
           (filteredUnit: any) => {
             const matchedUnit = editFarm?.productionUnits?.find(
@@ -202,7 +216,20 @@ const ProductionUnits: NextPage<Props> = ({
             return filteredUnit;
           }
         );
+        const updatedProductionUnitsFeedProfile =
+          filteredProductionUnitsFeedProfile.map((filteredUnit: any) => {
+            const matchedUnit = editFarm?.productionUnits?.find(
+              (unit: any) => unit.name === filteredUnit.unitName
+            );
 
+            if (matchedUnit) {
+              return {
+                ...filteredUnit,
+                id: matchedUnit.FeedProfileProductionUnit[0].id,
+              };
+            }
+            return filteredUnit;
+          });
         if (
           isEditFarm === "true" &&
           editFarm?.farmAddress?.id &&
@@ -244,6 +271,8 @@ const ProductionUnits: NextPage<Props> = ({
               },
             },
             productionParamtertsUnitsArray: updatedProductionUnits,
+            FeedProfileUnits: updatedProductionUnitsFeedProfile,
+
             farmAddress: {
               addressLine1: farmData.addressLine1,
               addressLine2: farmData.addressLine2,
@@ -264,10 +293,14 @@ const ProductionUnits: NextPage<Props> = ({
             productions: editFarm.production,
             mangerId: farmData.mangerId ? farmData.mangerId : null,
             userId: loggedUserData.id,
+            feedProfile,
+            feedProfileId: Number(getLocalItem("feedProfileId")),
           };
         } else {
           payload = {
             productionParamtertsUnitsArray: updatedProductionUnits,
+            FeedProfileUnits: updatedProductionUnitsFeedProfile,
+
             productionParameter: {
               ...farmPredictionValues,
               predictedValues: {
@@ -319,6 +352,7 @@ const ProductionUnits: NextPage<Props> = ({
             organsationId: loggedUserData.organisationId,
             mangerId: farmData.mangerId ? farmData.mangerId : null,
             userId: loggedUserData.id,
+            feedProfile,
           };
         }
 
@@ -340,12 +374,15 @@ const ProductionUnits: NextPage<Props> = ({
           const responseData = await response.json();
           toast.success(responseData.message);
           if (responseData.status) {
-            setActiveStep(4);
+            setActiveStep(5);
             deleteCookie("isEditFarm");
             removeLocalItem("farmData");
             removeLocalItem("farmProductionUnits");
             removeLocalItem("productionParametes");
             removeLocalItem("productionParamtertsUnitsArray");
+            removeLocalItem("feedProfiles");
+            removeLocalItem("feedProfileId");
+            removeLocalItem("productionUnitsFeedProfiles");
           }
         } else {
           toast.error("Please fill out the all feilds");
@@ -389,7 +426,11 @@ const ProductionUnits: NextPage<Props> = ({
       const productionParamtertsUnitsArrayLocal = getLocalItem(
         "productionParamtertsUnitsArray"
       );
+      const productionUnitsFeedProfilesLocal = getLocalItem(
+        "productionUnitsFeedProfiles"
+      );
       const farmData = getLocalItem("farmData");
+
       setFormProductionUnitsData({
         farmData: farmData,
         productionUnitData: productionUnit,
@@ -398,7 +439,9 @@ const ProductionUnits: NextPage<Props> = ({
         setLocalItem("productionParamtertsUnitsArray", []);
       }
 
-      setProductionParamtertsUnitsArray(productionParamtertsUnitsArrayLocal);
+      if (!productionUnitsFeedProfilesLocal?.length) {
+        setLocalItem("productionUnitsFeedProfiles", []);
+      }
     }
   }, []);
 
@@ -751,6 +794,7 @@ const ProductionUnits: NextPage<Props> = ({
                         )}
                       </TableCell>
                       <TableCell
+                        title="Water Quality Parameters"
                         sx={{
                           border: 0,
                           pl: 0,
@@ -804,6 +848,51 @@ const ProductionUnits: NextPage<Props> = ({
                         </Box>
                       </TableCell>
                       <TableCell
+                        title="Feed Profile"
+                        sx={{
+                          border: 0,
+                          pl: 0,
+                          pr: 1,
+                          position: "relative",
+                        }}
+                        onClick={() => {
+                          if (productionUnits[index]?.name) {
+                            toast.dismiss();
+                            setOpenUnitFeedProfileModal(true);
+                            setSelectedUnitName(productionUnits[index].name);
+                          } else {
+                            toast.dismiss();
+                            toast.error("Please enter unit name first");
+                          }
+                        }}
+                      >
+                        <Box
+                          sx={{
+                            cursor: "pointer",
+                            width: "fit-content",
+                            px: 1,
+                            mt: "16px",
+                          }}
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="1.7em"
+                            height="1.5em"
+                            viewBox="0 0 256 256"
+                          >
+                            <path
+                              fill={`${
+                                productionUnits[index]?.name
+                                  ? "#06A19B"
+                                  : "#808080"
+                              }`}
+                              d="M230.33 141.06a24.43 24.43 0 0 0-21.24-4.23l-41.84 9.62A28 28 0 0 0 140 112H89.94a31.82 31.82 0 0 0-22.63 9.37L44.69 144H16a16 16 0 0 0-16 16v40a16 16 0 0 0 16 16h104a8 8 0 0 0 1.94-.24l64-16a7 7 0 0 0 1.19-.4L226 182.82l.44-.2a24.6 24.6 0 0 0 3.93-41.56ZM16 160h24v40H16Zm203.43 8.21l-38 16.18L119 200H56v-44.69l22.63-22.62A15.86 15.86 0 0 1 89.94 128H140a12 12 0 0 1 0 24h-28a8 8 0 0 0 0 16h32a8.3 8.3 0 0 0 1.79-.2l67-15.41l.31-.08a8.6 8.6 0 0 1 6.3 15.9ZM164 96a36 36 0 0 0 5.9-.48a36 36 0 1 0 28.22-47A36 36 0 1 0 164 96m60-12a20 20 0 1 1-20-20a20 20 0 0 1 20 20m-60-44a20 20 0 0 1 19.25 14.61a36 36 0 0 0-15 24.93A20.4 20.4 0 0 1 164 80a20 20 0 0 1 0-40"
+                            />
+                          </svg>
+                        </Box>
+                      </TableCell>
+                      <TableCell
+                        title="Delete Unit"
                         sx={{
                           border: 0,
                           pl: 0,
@@ -921,6 +1010,14 @@ const ProductionUnits: NextPage<Props> = ({
         productionParaMeter={productionParaMeter}
         open={openUnitParametersModal}
         setOpen={setOpenUnitParametersModal}
+        selectedUnitName={selectedUnitName}
+        setSelectedUnitName={setSelectedUnitName}
+      />
+      <ProductionUnitFeedProfile
+        editFarm={editFarm}
+        productionParaMeter={productionParaMeter}
+        open={openUnitFeedProfileModal}
+        setOpen={setOpenUnitFeedProfileModal}
         selectedUnitName={selectedUnitName}
         setSelectedUnitName={setSelectedUnitName}
       />

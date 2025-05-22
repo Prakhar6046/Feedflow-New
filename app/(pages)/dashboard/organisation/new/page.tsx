@@ -1,6 +1,10 @@
 import AddNewOrganisation from "@/app/_components/AddNewOrganisation";
 import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
-import { getAllOrganisations, getOrganisations } from "@/app/_lib/action";
+import {
+  getAllOrganisations,
+  getOrganisationCount,
+  getOrganisations,
+} from "@/app/_lib/action";
 import { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Organisations",
@@ -13,7 +17,10 @@ export default async function Page({
   };
 }) {
   const organisations = await getAllOrganisations();
+
+  const organisationCount = await getOrganisationCount();
   const type = searchParams?.type || "";
+
   return (
     <>
       <BasicBreadcrumbs
@@ -25,7 +32,11 @@ export default async function Page({
           { name: "New Organisation", link: "/dashboard/organisation/new" },
         ]}
       />
-      <AddNewOrganisation organisations={organisations?.data} type={type} />
+      <AddNewOrganisation
+        organisations={organisations?.data}
+        type={type}
+        organisationCount={organisationCount?.data}
+      />
     </>
   );
 }

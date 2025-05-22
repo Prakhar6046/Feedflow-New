@@ -129,6 +129,7 @@ export async function PUT(req: NextRequest, context: { params: any }) {
             role: contact.role,
             email: contact.email,
             phone: contact.phone,
+            permission: contact.permission,
             userId: String(userId), // Associate the new userId with the contact
             organisation: { connect: { id: organisation.id } },
           },
@@ -147,6 +148,7 @@ export async function PUT(req: NextRequest, context: { params: any }) {
             email: contact.email,
             phone: contact.phone,
             userId: String(userId),
+            permission: contact.permission,
 
             // Keep the userId association
           },

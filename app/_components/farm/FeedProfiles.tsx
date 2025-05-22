@@ -1,3 +1,4 @@
+"use client";
 import { setLocalItem } from "@/app/_lib/utils";
 import {
   Box,
@@ -18,8 +19,9 @@ import {
   Typography,
 } from "@mui/material";
 import { NextPage } from "next";
+import { useEffect, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-const cellStyle = {
+export const cellStyle = {
   borderBottomColor: "#F5F6F8",
   borderBottomWidth: 2,
   color: "#555555",
@@ -27,7 +29,7 @@ const cellStyle = {
   whiteSpace: "nowrap",
   textAlign: "center",
 };
-const radioValueMap: Record<string, Record<string, string>> = {
+export const radioValueMap: Record<string, Record<string, string>> = {
   col1: {
     opt1: "Tilapia PreStarter #2 (1>5)-Feed Supplier 1",
     opt2: "Tilapia PreStarter #3 (5-20)-Feed Supplier 1",
@@ -49,18 +51,19 @@ const radioValueMap: Record<string, Record<string, string>> = {
   },
 };
 
-const fishSizes = [
+export const fishSizes = [
   1, 2, 3, 4, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85,
   90, 95, 100, 120, 140, 160, 180,
 ];
 interface Props {
   setActiveStep: (val: number) => void;
+  editFarm?: any;
 }
 interface FormValues {
   [key: string]: string;
 }
-const FeedProfiles = ({ setActiveStep }: Props) => {
-  const { control, handleSubmit, watch } = useForm<FormValues>();
+const FeedProfiles = ({ setActiveStep, editFarm }: Props) => {
+  const { control, handleSubmit, watch, setValue } = useForm<FormValues>();
   const allFeedprofiles = watch();
 
   const onSubmit: SubmitHandler<FormValues> = (data) => {
@@ -108,6 +111,15 @@ const FeedProfiles = ({ setActiveStep }: Props) => {
     />
   );
 
+  useEffect(() => {
+    if (editFarm) {
+      const profiles = editFarm.FeedProfile[0].profiles;
+      setLocalItem("feedProfileId", editFarm.FeedProfile[0].id);
+      Object.entries(profiles).forEach(([key, value]) => {
+        setValue(key, String(value));
+      });
+    }
+  }, [editFarm]);
   return (
     <>
       <Stack>

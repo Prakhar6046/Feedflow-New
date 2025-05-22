@@ -29,9 +29,9 @@ export default async function Page({
   let buttonName = "";
   let buttonRoute = "";
   if (user.role === "SUPERADMIN" || user.role === "ADMIN") {
-    if (tab === "feedSuppliers") {
-      buttonName = "Add Fish Farmer";
-      buttonRoute = "/dashboard/organisation/new?type=fishFarmers";
+    if (tab === "fishProducers") {
+      buttonName = "Add Fish Producer";
+      buttonRoute = "/dashboard/organisation/new?type=fishProducers";
     } else {
       buttonName = "Add Organisation";
       buttonRoute = "/dashboard/organisation/new";

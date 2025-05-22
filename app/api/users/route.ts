@@ -1,5 +1,5 @@
 import prisma from "@/prisma/prisma";
-import { NextResponse, NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 export const GET = async (request: NextRequest) => {
   try {
@@ -91,5 +91,65 @@ export const DELETE = async (request: NextRequest) => {
     return new NextResponse(JSON.stringify({ status: false, error }), {
       status: 500,
     });
+  }
+};
+
+export const PATCH = async (request: NextRequest) => {
+  try {
+    const { id, users } = await request.json();
+
+    if (!id) {
+      return NextResponse.json(
+        { error: "Invalid or missing Organisation id." },
+        { status: 404 }
+      );
+    }
+
+    const organisation = await prisma.organisation.findUnique({
+      where: { id: Number(id) },
+    });
+
+    if (!organisation) {
+      return NextResponse.json(
+        { error: "Organisation not found." },
+        { status: 404 }
+      );
+    }
+
+    const updatedUsers = [];
+
+    for (const userId of users) {
+      const user = await prisma.user.findUnique({
+        where: { id: Number(userId) },
+      });
+
+      if (!user || user.role === "SUPERADMIN") continue;
+
+      const updatedUser = await prisma.user.update({
+        where: { id: Number(userId) },
+        data: {
+          access: !user.access,
+        },
+      });
+
+      updatedUsers.push({
+        id: updatedUser.id,
+        name: updatedUser.name,
+        newAccess: updatedUser.access,
+      });
+    }
+
+    return NextResponse.json({
+      status: true,
+      message: `Access updated for ${updatedUsers.length} users.`,
+      users: updatedUsers,
+    });
+  } catch (error) {
+    console.error(error);
+
+    return new NextResponse(
+      JSON.stringify({ status: false, error: "Internal Server Error" }),
+      { status: 500 }
+    );
   }
 };

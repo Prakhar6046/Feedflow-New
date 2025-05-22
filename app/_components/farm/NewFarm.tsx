@@ -66,12 +66,14 @@ export default function NewFarm({ farmMembers, growthModels, farms }: Props) {
           }}
         >
           <Stepper activeStep={activeStep} orientation="vertical">
-            {steps.map((step) => (
+            {steps.map((step, index) => (
               <Step
                 key={step.label}
                 sx={{
                   fontSize: "30px",
+                  cursor: "pointer",
                 }}
+                onClick={() => setActiveStep(index)}
               >
                 <StepLabel className="stepper">{step.label}</StepLabel>
               </Step>

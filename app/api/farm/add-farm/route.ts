@@ -12,7 +12,9 @@ export async function POST(req: NextRequest) {
       !productionParameter ||
       !body.farmAddress ||
       !body.productionUnits ||
-      !body.productionParamtertsUnitsArray
+      !body.productionParamtertsUnitsArray ||
+      !body.FeedProfileUnits ||
+      !body.feedProfile
     ) {
       return NextResponse.json(
         { error: "All required payload missing or invalid" },
@@ -103,6 +105,25 @@ export async function POST(req: NextRequest) {
             return null;
           })
           .filter((entry: any) => entry !== null)
+      ),
+    });
+    await prisma.feedProfile.create({
+      data: {
+        farmId: farm.id,
+        profiles: body.feedProfile,
+      },
+    });
+    await prisma.feedProfileProductionUnit.createMany({
+      data: newProductUnits.flatMap((unit: any) =>
+        body.FeedProfileUnits.map((data: any) => {
+          if (unit.name === data.unitName) {
+            return {
+              productionUnitId: unit.id,
+              profiles: data.feedProfile.data,
+            };
+          }
+          return null;
+        }).filter((entry: any) => entry !== null)
       ),
     });
 

@@ -1,112 +1,80 @@
-export const organisationTableHeadMember = [
-  {
-    id: "name",
-    numeric: false,
-    disablePadding: true,
-    label: "Name",
-  },
-  {
-    id: "status",
-    numeric: false,
-    disablePadding: true,
-    label: "Status",
-  },
-  {
-    id: "role",
-    numeric: false,
-    disablePadding: true,
-    label: "Role",
-  },
-  {
-    id: "organisation",
-    numeric: false,
-    disablePadding: true,
-    label: "Organisation",
-  },
-  {
-    id: "createdAt",
-    numeric: false,
-    disablePadding: true,
-    label: "Joined",
-  },
-];
-export const organisationTableHead = [
-  {
-    id: "name",
-    numeric: false,
-    disablePadding: true,
-    label: "Name",
-  },
-  {
-    id: "status",
-    numeric: false,
-    disablePadding: true,
-    label: "Status",
-  },
-  {
-    id: "role",
-    numeric: false,
-    disablePadding: true,
-    label: "Role",
-  },
-  {
-    id: "organisation",
-    numeric: false,
-    disablePadding: true,
-    label: "Organisation",
-  },
-  {
-    id: "createdAt",
-    numeric: false,
-    disablePadding: true,
-    label: "Joined",
-  },
-  {
-    id: "action",
-    numeric: false,
-    disablePadding: true,
-    label: "Actions",
-  },
-];
-
-export const usersTableHead = [
-  {
-    id: "name",
-    numeric: false,
-    disablePadding: true,
-    label: "Organisations",
-  },
-  {
-    id: "email",
-    numeric: false,
-    disablePadding: true,
-    label: "Email",
-  },
-  {
-    id: "contactNumber",
-    numeric: true,
-    disablePadding: true,
-    label: "Contact Number",
-  },
-  {
-    id: "contactPerson",
-    numeric: false,
-    disablePadding: true,
-    label: "Contact Person",
-  },
-
-  {
-    id: "action",
-    numeric: false,
-    disablePadding: true,
-    label: "Actions",
-  },
-];
 export const usersTableHeadMember = [
   {
     id: "name",
     numeric: false,
     disablePadding: true,
+    label: "Name",
+  },
+  {
+    id: "status",
+    numeric: false,
+    disablePadding: true,
+    label: "Status",
+  },
+  {
+    id: "role",
+    numeric: false,
+    disablePadding: true,
+    label: "Role",
+  },
+  {
+    id: "organisation",
+    numeric: false,
+    disablePadding: true,
+    label: "Organisation",
+  },
+  {
+    id: "createdAt",
+    numeric: false,
+    disablePadding: true,
+    label: "Joined",
+  },
+];
+export const usersTableHead = [
+  {
+    id: "name",
+    numeric: false,
+    disablePadding: true,
+    label: "Name",
+  },
+  {
+    id: "status",
+    numeric: false,
+    disablePadding: true,
+    label: "Status",
+  },
+  {
+    id: "role",
+    numeric: false,
+    disablePadding: true,
+    label: "Role",
+  },
+  {
+    id: "organisation",
+    numeric: false,
+    disablePadding: true,
+    label: "Organisation",
+  },
+  {
+    id: "createdAt",
+    numeric: false,
+    disablePadding: true,
+    label: "Joined",
+  },
+
+  {
+    id: "action",
+    numeric: false,
+    disablePadding: true,
+    label: "Actions",
+  },
+];
+
+export const organisationTableHead = [
+  {
+    id: "name",
+    numeric: false,
+    disablePadding: true,
     label: "Organisations",
   },
   {
@@ -126,6 +94,50 @@ export const usersTableHeadMember = [
     numeric: false,
     disablePadding: true,
     label: "Contact Person",
+  },
+  {
+    id: "Access",
+    numeric: false,
+    disablePadding: true,
+    label: "Access",
+  },
+  {
+    id: "action",
+    numeric: false,
+    disablePadding: true,
+    label: "Actions",
+  },
+];
+export const organisationTableHeadMember = [
+  {
+    id: "name",
+    numeric: false,
+    disablePadding: true,
+    label: "Organisations",
+  },
+  {
+    id: "email",
+    numeric: false,
+    disablePadding: true,
+    label: "Email",
+  },
+  {
+    id: "contactNumber",
+    numeric: true,
+    disablePadding: true,
+    label: "Contact Number",
+  },
+  {
+    id: "contactPerson",
+    numeric: false,
+    disablePadding: true,
+    label: "Contact Person",
+  },
+  {
+    id: "Access",
+    numeric: false,
+    disablePadding: true,
+    label: "Access",
   },
 ];
 

@@ -37,7 +37,6 @@ export default function Page() {
         },
         body: JSON.stringify({ email, password }),
       });
-
       const data = await response.json();
 
       if (response.ok && data.data.user) {

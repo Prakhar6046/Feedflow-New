@@ -67,12 +67,9 @@ export interface AddOrganizationFormInputs {
     role: string;
     email: string;
     phone: string;
+    permission: string;
   }[];
-  members: {
-    name: string;
-    email: string;
-    phone: string;
-  }[];
+
   hatcheryName?: String;
   hatcheryCode?: String;
   fishSpecie?: String;

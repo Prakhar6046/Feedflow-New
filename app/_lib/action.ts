@@ -27,7 +27,19 @@ export const getOrganisations = async (payload: {
     return error;
   }
 };
-
+export const getOrganisationCount = async () => {
+  try {
+    const data = await fetch(`${process.env.BASE_URL}/api/organisation/count`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    return await data.json();
+  } catch (error) {
+    return error;
+  }
+};
 export const getAllOrganisations = async () => {
   try {
     const data = await fetch(`${process.env.BASE_URL}/api/organisation/all`, {

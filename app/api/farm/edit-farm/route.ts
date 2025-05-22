@@ -7,6 +7,7 @@ export async function POST(req: NextRequest) {
 
     const { yearBasedPredicationId, modelId, ...productionParameterPayload } =
       body.productionParameter;
+
     // Ensure that the farmAddress contains an id for updating
     if (!body.farmAddress.id) {
       throw new Error("Farm address ID is required for updating.");
@@ -99,6 +100,23 @@ export async function POST(req: NextRequest) {
         }
       }
 
+      for (const existingPredictionUnit of body.FeedProfileUnits || []) {
+        if (unit.name === existingPredictionUnit.unitName) {
+          const { id, feedProfile } = existingPredictionUnit;
+
+          await prisma.feedProfileProductionUnit.upsert({
+            where: { id: id || "", productionUnitId: unit.id || "" },
+            update: {
+              profiles: feedProfile,
+            },
+            create: {
+              productionUnitId: updatedUnit.id,
+              profiles: feedProfile,
+            },
+          });
+        }
+      }
+
       // Handle production entries corresponding to the production unit
       const correspondingProduction = body.productions.find(
         (p: any) => p.productionUnitId === unit.id
@@ -168,6 +186,9 @@ export async function POST(req: NextRequest) {
           where: { id: data.id },
         });
       });
+      // await prisma.feedProfileProductionUnit.delete({
+      //   where:{productionUnitId:da}
+      // })
       await prisma.productionUnit.delete({
         where: { id: unit.id },
       });
@@ -188,6 +209,18 @@ export async function POST(req: NextRequest) {
         data: { ...paylaodForProductionParameter },
       }
     );
+
+    //   const updateFeedProfileUnit = await prisma.feedProfileProductionUnit.update(
+    //   {
+    //     where: { id: yearBasedPredicationId },
+    //     data: { ...paylaodForProductionParameter },
+    //   }
+    // );
+    //update feedProfile
+    await prisma.feedProfile.update({
+      where: { id: body.feedProfileId },
+      data: { profiles: body.feedProfile },
+    });
     return NextResponse.json({
       message: "Farm updated successfully",
       data: updatedFarm,

@@ -16,9 +16,13 @@ export const GET = async (request: NextRequest, context: { params: any }) => {
       include: {
         farmAddress: true,
         productionUnits: {
-          include: { YearBasedPredicationProductionUnit: true },
+          include: {
+            YearBasedPredicationProductionUnit: true,
+            FeedProfileProductionUnit: true,
+          },
         },
         production: true,
+        FeedProfile: true,
         FarmManger: true,
         WaterQualityPredictedParameters: {
           include: { YearBasedPredication: true },

@@ -3,15 +3,17 @@ import { breadcrumsAction } from "@/lib/features/breadcrum/breadcrumSlice";
 import { selectOrganisationLoading } from "@/lib/features/organisation/organisationSlice";
 import { selectRole } from "@/lib/features/user/userSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import TabContext from "@mui/lab/TabContext";
+import TabList from "@mui/lab/TabList";
 import {
   Box,
   Button,
   Menu,
   MenuItem,
   Stack,
+  Tab,
   TableSortLabel,
   Typography,
-  Tab,
 } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
@@ -25,13 +27,14 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { getLocalItem } from "../_lib/utils";
+import userBlock from "../../public/static/img/user-block.svg";
+import userUnBlock from "../../public/static/img/user-unblock.svg";
+
 import {
-  usersTableHead,
-  usersTableHeadMember,
+  organisationTableHead,
+  organisationTableHeadMember,
 } from "../_lib/utils/tableHeadData";
 import { SingleOrganisation } from "../_typeModels/Organization";
-import TabContext from "@mui/lab/TabContext";
-import TabList from "@mui/lab/TabList";
 interface Props {
   organisations: SingleOrganisation[];
   userRole: string;
@@ -56,11 +59,6 @@ export default function BasicTable({ organisations, userRole }: Props) {
   );
   const [sortDataFromLocal, setSortDataFromLocal] = React.useState<any>("");
 
-  useEffect(() => {
-    if (pathName) {
-      setSortDataFromLocal(getLocalItem(pathName));
-    }
-  }, [pathName]);
   const handleClick = (
     event: React.MouseEvent<HTMLButtonElement>,
     organisation: SingleOrganisation
@@ -92,7 +90,27 @@ export default function BasicTable({ organisations, userRole }: Props) {
       }
     }
   };
+  const handleRestrictAccess = async () => {
+    setAnchorEl(null);
 
+    if (selectedOrganisation) {
+      const user = selectedOrganisation?.users?.find(
+        (user) => user.role === "ADMIN" || user.role === "SUPERADMIN"
+      );
+      const response = await fetch("/api/users", {
+        method: "PATCH",
+        body: JSON.stringify({
+          id: selectedOrganisation.id,
+          users: selectedOrganisation.users?.map((user) => user.id),
+        }),
+      });
+      if (response.ok) {
+        const res = await response.json();
+        toast.success(res.message);
+        router.refresh();
+      }
+    }
+  };
   function EnhancedTableHead(data: any) {
     const { order, orderBy, onRequestSort } = data;
     const createSortHandler =
@@ -103,47 +121,48 @@ export default function BasicTable({ organisations, userRole }: Props) {
     return (
       <TableHead>
         <TableRow>
-          {(role !== "MEMBER" ? usersTableHead : usersTableHeadMember).map(
-            (headCell, idx, headCells) => (
-              <TableCell
-                key={headCell.id}
-                sortDirection={
-                  idx === headCells.length - 1
-                    ? false
-                    : orderBy === headCell.id
-                    ? order
-                    : false
-                }
-                sx={{
-                  borderBottom: 0,
-                  color: "#67737F",
-                  background: "#F5F6F8",
-                  fontSize: {
-                    md: 16,
-                    xs: 14,
-                  },
-                  fontWeight: 600,
-                  paddingLeft: {
-                    lg: idx === 0 ? 10 : 0,
-                    md: idx === 0 ? 7 : 0,
-                    xs: idx === 0 ? 4 : 0,
-                  },
-                }}
-              >
-                {idx === headCells.length - 1 || idx === 1 ? (
-                  headCell.label
-                ) : (
-                  <TableSortLabel
-                    active={orderBy === headCell.id}
-                    direction={orderBy === headCell.id ? order : "asc"}
-                    onClick={createSortHandler(headCell.id)}
-                  >
-                    {headCell.label}
-                  </TableSortLabel>
-                )}
-              </TableCell>
-            )
-          )}
+          {(role !== "MEMBER"
+            ? organisationTableHead
+            : organisationTableHeadMember
+          ).map((headCell, idx, headCells) => (
+            <TableCell
+              key={headCell.id}
+              sortDirection={
+                idx === headCells.length - 1
+                  ? false
+                  : orderBy === headCell.id
+                  ? order
+                  : false
+              }
+              sx={{
+                borderBottom: 0,
+                color: "#67737F",
+                background: "#F5F6F8",
+                fontSize: {
+                  md: 16,
+                  xs: 14,
+                },
+                fontWeight: 600,
+                paddingLeft: {
+                  lg: idx === 0 ? 10 : 0,
+                  md: idx === 0 ? 7 : 0,
+                  xs: idx === 0 ? 4 : 0,
+                },
+              }}
+            >
+              {idx === headCells.length - 1 || idx === 1 ? (
+                headCell.label
+              ) : (
+                <TableSortLabel
+                  active={orderBy === headCell.id}
+                  direction={orderBy === headCell.id ? order : "asc"}
+                  onClick={createSortHandler(headCell.id)}
+                >
+                  {headCell.label}
+                </TableSortLabel>
+              )}
+            </TableCell>
+          ))}
         </TableRow>
       </TableHead>
     );
@@ -198,6 +217,12 @@ export default function BasicTable({ organisations, userRole }: Props) {
       setOrganisationData(sortedData);
     }
   };
+
+  useEffect(() => {
+    if (pathName) {
+      setSortDataFromLocal(getLocalItem(pathName));
+    }
+  }, [pathName]);
   useEffect(() => {
     if (sortDataFromLocal) {
       const data = sortDataFromLocal;
@@ -241,10 +266,6 @@ export default function BasicTable({ organisations, userRole }: Props) {
       setOrganisationData(organisations);
     }
   }, [organisations]);
-  // useEffect(() => {
-  //   console.log("selected view", selectedView);
-  // }, [selectedView]);
-  console.log("organisation", organisations);
 
   useEffect(() => {
     router.refresh();
@@ -260,6 +281,7 @@ export default function BasicTable({ organisations, userRole }: Props) {
       setSelectedView(tabParam);
     }
   }, []);
+
   return (
     <>
       <Box sx={{ width: "100%", typography: "body1", mt: 5 }}>
@@ -300,9 +322,11 @@ export default function BasicTable({ organisations, userRole }: Props) {
                   }
                 />
                 <Tab
-                  label="Fish Farmers"
-                  value="fishFarmers"
-                  className={selectedView === "fishFarmers" ? "active-tab" : ""}
+                  label="Fish Producers"
+                  value="fishProducers"
+                  className={
+                    selectedView === "fishProducers" ? "active-tab" : ""
+                  }
                 />
               </TabList>
             </Box>
@@ -442,6 +466,22 @@ export default function BasicTable({ organisations, userRole }: Props) {
                             contact.name === "Super Admin"
                         )?.name ?? ""}
                       </TableCell>
+                      <TableCell
+                        sx={{
+                          borderBottomColor: "#F5F6F8",
+                          borderBottomWidth: 2,
+                          color: "#555555",
+                          fontWeight: 500,
+                          pl: 0,
+                        }}
+                      >
+                        {organisation?.users?.find(
+                          (user) =>
+                            user.role === "ADMIN" || user.role === "SUPERADMIN"
+                        )?.access
+                          ? "True"
+                          : "False"}
+                      </TableCell>
                       {role !== "MEMBER" && (
                         <TableCell
                           sx={{
@@ -516,26 +556,31 @@ export default function BasicTable({ organisations, userRole }: Props) {
                                 </Typography>
                               </Stack>
                             </MenuItem>
-                            <MenuItem>
+                            <MenuItem onClick={handleRestrictAccess}>
                               <Stack
                                 display="flex"
                                 gap={1.2}
                                 alignItems="center"
                                 direction="row"
                               >
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width="1em"
-                                  height="1em"
-                                  viewBox="0 0 24 24"
-                                >
-                                  <path
-                                    fill="currentColor"
-                                    d="M3 21v-4.25L16.2 3.575q.3-.275.663-.425t.762-.15t.775.15t.65.45L20.425 5q.3.275.438.65T21 6.4q0 .4-.137.763t-.438.662L7.25 21zM17.6 7.8L19 6.4L17.6 5l-1.4 1.4z"
-                                  />
-                                </svg>
+                                <Image
+                                  alt="user-block"
+                                  src={
+                                    selectedOrganisation?.users?.find(
+                                      (val) =>
+                                        val.role === "ADMIN" && val.access
+                                    )
+                                      ? userUnBlock
+                                      : userBlock
+                                  }
+                                />
 
                                 <Typography variant="subtitle2">
+                                  {selectedOrganisation?.users?.find(
+                                    (val) => val.role === "ADMIN" && val.access
+                                  )
+                                    ? "Restrict access to feedflow"
+                                    : "Unrestrict access to feedflow"}
                                   Restrict access to feedflow
                                 </Typography>
                               </Stack>

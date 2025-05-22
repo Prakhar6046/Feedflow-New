@@ -36,6 +36,7 @@ export async function POST(req: NextRequest) {
         phone: contact.phone,
         role: contact.role,
         organisationId: organisation.id,
+        permission: contact.permission,
         userId: null, // Initially set userId to null
       })),
     });
@@ -81,6 +82,21 @@ export async function POST(req: NextRequest) {
         },
       });
     }
+
+    //increase orgainsation count
+    await prisma.organisationCount.upsert({
+      where: { id: 1 },
+      update: {
+        count: {
+          increment: 1,
+        },
+      },
+      create: {
+        id: 1,
+        count: 1,
+      },
+    });
+
     return NextResponse.json({
       message: "Organisation added successfully",
       data: { organisation, contacts, users },

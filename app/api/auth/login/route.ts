@@ -18,6 +18,16 @@ export const POST = async (request: Request) => {
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
+    //check user has access
+    if (!user.access) {
+      return NextResponse.json(
+        {
+          error: `User with the email address ${email} is restricted from accessing the feedflow.`,
+        },
+        { status: 400 }
+      );
+    }
+
     // Check the password
 
     if (user.password) {

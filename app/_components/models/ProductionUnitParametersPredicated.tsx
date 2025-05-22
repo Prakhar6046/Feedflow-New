@@ -98,7 +98,7 @@ const ProductionUnitParametersPredicated: React.FC<Props> = ({
       "productionParamtertsUnitsArray"
     );
 
-    const updatedData = productionParamtertsUnitsArray.filter(
+    const updatedData = productionParamtertsUnitsArray?.filter(
       (data: any) => data.unitName !== selectedUnitName
     );
 

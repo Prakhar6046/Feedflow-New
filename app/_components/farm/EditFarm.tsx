@@ -10,6 +10,7 @@ import { Box, Divider, Grid, Step, StepLabel, Stepper } from "@mui/material";
 import { getCookie, setCookie } from "cookies-next";
 import { useEffect, useState } from "react";
 import ProductionParaMeter from "./ProductionParameter";
+import FeedProfiles from "./FeedProfiles";
 
 const steps = [
   {
@@ -19,6 +20,9 @@ const steps = [
     label: "Farm",
   },
   { label: "Production Parameters" },
+  {
+    label: "Feed profiles",
+  },
   {
     label: "Production Units",
   },
@@ -98,7 +102,10 @@ const EditFarm = ({
                 key={step.label}
                 sx={{
                   fontSize: "30px",
+                  cursor: "pointer",
                 }}
+                completed={true}
+                onClick={() => setActiveStep(index)}
               >
                 <StepLabel className="stepper">{step.label}</StepLabel>
               </Step>
@@ -145,6 +152,9 @@ const EditFarm = ({
           />
         )}
         {activeStep === 3 && (
+          <FeedProfiles setActiveStep={setActiveStep} editFarm={editFarm} />
+        )}
+        {activeStep === 4 && (
           <ProductionUnits
             setActiveStep={setActiveStep}
             editFarm={editFarm}
@@ -154,7 +164,7 @@ const EditFarm = ({
           />
         )}
 
-        {activeStep === 4 && (
+        {activeStep === 5 && (
           <AllDone setActiveStep={setActiveStep} isEdit={isEdit} />
         )}
       </Grid>

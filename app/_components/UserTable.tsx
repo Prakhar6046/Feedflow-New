@@ -27,6 +27,8 @@ import { SingleUser } from "../_typeModels/User";
 import {
   organisationTableHead,
   organisationTableHeadMember,
+  usersTableHead,
+  usersTableHeadMember,
 } from "../_lib/utils/tableHeadData";
 import { breadcrumsAction } from "@/lib/features/breadcrum/breadcrumSlice";
 import { useAppDispatch } from "@/lib/hooks";
@@ -125,48 +127,47 @@ export default function UserTable({ users }: Props) {
     return (
       <TableHead>
         <TableRow>
-          {(role !== "MEMBER"
-            ? organisationTableHead
-            : organisationTableHeadMember
-          ).map((headCell, idx, headCells) => (
-            <TableCell
-              key={headCell.id}
-              sortDirection={
-                idx === headCells.length - 1
-                  ? false
-                  : orderBy === headCell.id
-                  ? order
-                  : false
-              }
-              sx={{
-                borderBottom: 0,
-                color: "#67737F",
-                background: "#F5F6F8",
-                fontSize: {
-                  md: 16,
-                  xs: 14,
-                },
-                fontWeight: 600,
-                paddingLeft: {
-                  lg: idx === 0 ? 10 : 0,
-                  md: idx === 0 ? 7 : 0,
-                  xs: idx === 0 ? 4 : 0,
-                },
-              }}
-            >
-              {idx === headCells.length - 1 ? (
-                headCell.label
-              ) : (
-                <TableSortLabel
-                  active={orderBy === headCell.id}
-                  direction={orderBy === headCell.id ? order : "asc"}
-                  onClick={createSortHandler(headCell.id)}
-                >
-                  {headCell.label}
-                </TableSortLabel>
-              )}
-            </TableCell>
-          ))}
+          {(role !== "MEMBER" ? usersTableHead : usersTableHeadMember).map(
+            (headCell, idx, headCells) => (
+              <TableCell
+                key={headCell.id}
+                sortDirection={
+                  idx === headCells.length - 1
+                    ? false
+                    : orderBy === headCell.id
+                    ? order
+                    : false
+                }
+                sx={{
+                  borderBottom: 0,
+                  color: "#67737F",
+                  background: "#F5F6F8",
+                  fontSize: {
+                    md: 16,
+                    xs: 14,
+                  },
+                  fontWeight: 600,
+                  paddingLeft: {
+                    lg: idx === 0 ? 10 : 0,
+                    md: idx === 0 ? 7 : 0,
+                    xs: idx === 0 ? 4 : 0,
+                  },
+                }}
+              >
+                {idx === headCells.length - 1 ? (
+                  headCell.label
+                ) : (
+                  <TableSortLabel
+                    active={orderBy === headCell.id}
+                    direction={orderBy === headCell.id ? order : "asc"}
+                    onClick={createSortHandler(headCell.id)}
+                  >
+                    {headCell.label}
+                  </TableSortLabel>
+                )}
+              </TableCell>
+            )
+          )}
         </TableRow>
       </TableHead>
     );

@@ -15,6 +15,7 @@ export interface SingleUser {
   createdAt: String;
   organisationId: Number;
   invite: boolean;
+  access: boolean;
   organisation: {
     organisationType(organisationType: any): string;
     name: String;

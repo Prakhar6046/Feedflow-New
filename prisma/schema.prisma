@@ -40,6 +40,7 @@ model User {
   updatedAt      DateTime     @updatedAt
   Farm           Farm[]
   FarmManger     FarmManger[]
+  access         Boolean      @default(true)
 }
 
 model Organisation {
@@ -73,6 +74,11 @@ model Organisation {
   @@index([organisationCode])
 }
 
+model OrganisationCount {
+  id    Int @id @default(1)
+  count Int
+}
+
 model Address {
   id       String  @id @default(cuid())
   name     String?
@@ -92,14 +98,15 @@ model Address {
 }
 
 model Contact {
-  id        String   @id @default(cuid())
-  name      String?
-  email     String?
-  phone     String?
-  role      String?
-  userId    String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id         String   @id @default(cuid())
+  name       String?
+  email      String?
+  phone      String?
+  role       String?
+  permission String?
+  userId     String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   organisation   Organisation? @relation(fields: [organisationId], references: [id])
   organisationId Int?
@@ -146,6 +153,18 @@ model FeedProfile {
   farmId    String
   farm      Farm     @relation(fields: [farmId], references: [id])
   profiles  Json?
+
+  @@index([createdAt])
+  @@index([updatedAt])
+}
+
+model FeedProfileProductionUnit {
+  id               Int            @id @default(autoincrement())
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+  profiles         Json?
+  productionUnitId String
+  ProductionUnit   ProductionUnit @relation(fields: [productionUnitId], references: [id])
 
   @@index([createdAt])
   @@index([updatedAt])
@@ -242,6 +261,7 @@ model ProductionUnit {
   production                         production[]
   FishManageHistory                  FishManageHistory[]
   YearBasedPredicationProductionUnit YearBasedPredicationProductionUnit[]
+  FeedProfileProductionUnit          FeedProfileProductionUnit[]
 
   @@index([createdAt])
   @@index([updatedAt])

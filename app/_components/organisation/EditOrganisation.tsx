@@ -6,7 +6,7 @@ import Select from "@mui/material/Select";
 
 import {
   OrganisationType,
-  RoleType,
+  PermissionType,
 } from "@/app/_components/AddNewOrganisation";
 import MapComponent from "@/app/_components/farm/MapComponent";
 import HatcheryForm from "@/app/_components/hatchery/HatcheryForm";
@@ -33,7 +33,12 @@ import {
 import { styled } from "@mui/material/styles";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
+import {
+  Controller,
+  SubmitHandler,
+  useFieldArray,
+  useForm,
+} from "react-hook-form";
 import toast from "react-hot-toast";
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -167,7 +172,7 @@ const EditOrganisation = ({ organisationId, organisations }: Iprops) => {
         lastContact.email &&
         lastContact.phone
       ) {
-        append({ name: "", role: "", email: "", phone: "" });
+        append({ name: "", role: "", email: "", phone: "", permission: "" });
       } else {
         toast.dismiss();
         toast.error("Please fill previous contact details.");
@@ -526,6 +531,7 @@ const EditOrganisation = ({ organisationId, organisations }: Iprops) => {
                 <TextField
                   label="Organisation Code *"
                   type="text"
+                  InputProps={{ readOnly: true }}
                   className="form-input"
                   {...register("organisationCode", {
                     required: true,
@@ -802,7 +808,7 @@ const EditOrganisation = ({ organisationId, organisations }: Iprops) => {
               marginTop={3}
               marginBottom={2}
             >
-              Contacts
+              Feedflow Managers
             </Typography>
 
             {fields.map((item, index) => (
@@ -859,7 +865,6 @@ const EditOrganisation = ({ organisationId, organisations }: Iprops) => {
                       </Typography>
                     )}
                 </Box>
-
                 <Box
                   sx={{
                     width: {
@@ -869,50 +874,85 @@ const EditOrganisation = ({ organisationId, organisations }: Iprops) => {
                     },
                   }}
                 >
-                  <FormControl className="form-input" focused fullWidth>
+                  <FormControl className="form-input" fullWidth focused>
                     <InputLabel id="demo-simple-select-label">
-                      Role *
+                      Permission *
                     </InputLabel>
-                    <Select
-                      labelId="demo-simple-select-label"
-                      id="demo-simple-select"
-                      label="Role *"
-                      {...register(`contacts.${index}.role` as const, {
-                        required: watch(`contacts.${index}.role`)
-                          ? false
-                          : true,
-                        validate: (value) => {
-                          if (value === "Admin") {
-                            watch("contacts").forEach((_, idx) => {
-                              clearErrors(`contacts.${idx}.role`);
-                            });
-                            return true;
-                          }
-                          const hasAdmin = watch("contacts").some(
-                            (contact) => contact.role === "Admin"
-                          );
+                    <Controller
+                      name={`contacts.${index}.permission`}
+                      control={control}
+                      rules={{
+                        required: true,
+                        // validate: (value) => {
+                        //   if (value === "Admin") {
+                        //     watch("contacts").forEach((_, idx) => {
+                        //       clearErrors(`contacts.${idx}.role`);
+                        //     });
+                        //     return true;
+                        //   }
+                        //   const hasAdmin = watch("contacts").some(
+                        //     (contact) => contact.role === "Admin"
+                        //   );
 
-                          if (!hasAdmin) {
-                            return "Please add an admin first, then add a member.";
-                          }
-                          return true;
-                        },
-                        onChange: (e) =>
-                          setValue(`contacts.${index}.role`, e.target.value),
-                        // pattern: validationPattern.alphabetsAndSpacesPattern,
-                      })}
-                      value={getValues(`contacts.${index}.role`)}
-                    >
-                      {RoleType.map((role, i) => {
-                        return (
-                          <MenuItem value={role} key={i}>
-                            {role}
-                          </MenuItem>
-                        );
-                      })}
-                    </Select>
+                        //   if (!hasAdmin) {
+                        //     return "Please add an admin first, then add a member.";
+                        //   }
+                        //   return true;
+                        // },
+                      }}
+                      render={({ field }) => (
+                        <Select
+                          labelId="demo-simple-select-label"
+                          id="demo-simple-select"
+                          label="Permission *"
+                          {...field}
+                        >
+                          {PermissionType.map((permission, i) => (
+                            <MenuItem value={permission} key={i}>
+                              {permission}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      )}
+                    />
                   </FormControl>
-
+                  {errors &&
+                    errors?.contacts &&
+                    errors?.contacts[index] &&
+                    errors?.contacts[index]?.permission &&
+                    errors?.contacts[index]?.permission.type === "required" && (
+                      <Typography
+                        variant="body2"
+                        color="red"
+                        fontSize={13}
+                        mt={0.5}
+                      >
+                        {validationMessage.required}
+                      </Typography>
+                    )}
+                </Box>
+                <Box
+                  sx={{
+                    width: {
+                      lg: "100%",
+                      md: "48.4%",
+                      xs: "100%",
+                    },
+                  }}
+                >
+                  <TextField
+                    label="Role *"
+                    type="text"
+                    className="form-input"
+                    {...register(`contacts.${index}.role` as const, {
+                      required: true,
+                      pattern: validationPattern.addressPattern,
+                    })}
+                    focused
+                    sx={{
+                      width: "100%",
+                    }}
+                  />
                   {errors &&
                     errors?.contacts &&
                     errors?.contacts[index] &&
@@ -925,20 +965,6 @@ const EditOrganisation = ({ organisationId, organisations }: Iprops) => {
                         mt={0.5}
                       >
                         {validationMessage.required}
-                      </Typography>
-                    )}
-                  {errors &&
-                    errors?.contacts &&
-                    errors?.contacts[index] &&
-                    errors?.contacts[index]?.role &&
-                    errors?.contacts[index]?.role.type === "validate" && (
-                      <Typography
-                        variant="body2"
-                        color="red"
-                        fontSize={13}
-                        mt={0.5}
-                      >
-                        {errors?.contacts[index]?.role?.message}
                       </Typography>
                     )}
                 </Box>
