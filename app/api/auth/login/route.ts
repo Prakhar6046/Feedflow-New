@@ -22,7 +22,7 @@ export const POST = async (request: Request) => {
     if (!user.access) {
       return NextResponse.json(
         {
-          error: `User with the email address ${email} is restricted from accessing the feedflow.`,
+          error: `User is restricted from accessing the feedflow.`,
         },
         { status: 400 }
       );

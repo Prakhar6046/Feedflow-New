@@ -141,7 +141,7 @@ export const PATCH = async (request: NextRequest) => {
 
     return NextResponse.json({
       status: true,
-      message: `Access updated for ${updatedUsers.length} users.`,
+      message: `Access updated`,
       users: updatedUsers,
     });
   } catch (error) {
