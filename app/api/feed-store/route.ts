@@ -48,8 +48,6 @@ export async function PUT(request: NextRequest) {
       })
     );
   } catch (error) {
-    console.log("feed store update", error);
-
     return NextResponse.json(
       { error: "Internal Server Error" },
       { status: 500 }
