@@ -36,6 +36,7 @@ import {
 import MapComponent from "./farm/MapComponent";
 import HatcheryForm from "./hatchery/HatcheryForm";
 import Image from "next/image";
+import { SingleUser } from "../_typeModels/User";
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
   clipPath: "inset(50%)",
@@ -60,12 +61,14 @@ interface Props {
   organisations: SingleOrganisation[];
   type?: string;
   organisationCount: number;
+  loggedUser: SingleUser;
 }
 export const PermissionType = ["Admin", "Non Admin"];
 const AddNewOrganisation = ({
   organisations,
   type,
   organisationCount,
+  loggedUser,
 }: Props) => {
   const [profilePic, setProfilePic] = useState<String>();
   const router = useRouter();
@@ -76,6 +79,7 @@ const AddNewOrganisation = ({
   const [useAddress, setUseAddress] = useState<boolean>(false);
   const [searchedAddress, setSearchedAddress] = useState<any>();
   const [altitude, setAltitude] = useState<String>("");
+
   const {
     register,
     setValue,
@@ -96,7 +100,7 @@ const AddNewOrganisation = ({
 
   const handleOrgPrefixChange = () => {
     const prefix = editableRef.current?.innerText || "ORG-";
-    const fullCode = `${prefix}${organisationCount + 1}`;
+    const fullCode = `${prefix}${Number(organisationCount) + 1}`;
     setValue("organisationCode", fullCode);
   };
 
@@ -114,7 +118,9 @@ const AddNewOrganisation = ({
     if (isApiCallInProgress) return;
     setIsApiCallInProgress(true);
     try {
-      if (data) {
+      if (data && loggedUser) {
+        data.createdBy = loggedUser.organisationId;
+
         const response = await fetch("/api/add-organisation", {
           method: "POST",
           headers: {
@@ -168,7 +174,7 @@ const AddNewOrganisation = ({
     }
   }, [watch("organisationType")]);
   useEffect(() => {
-    if (addressInformation && useAddress && altitude) {
+    if (addressInformation && useAddress) {
       setValue("address", addressInformation.address);
       setValue("city", addressInformation.city);
       setValue("postCode", addressInformation.postcode);
@@ -178,6 +184,7 @@ const AddNewOrganisation = ({
       setUseAddress(false);
     }
   }, [addressInformation, useAddress]);
+
   useEffect(() => {
     if (type === "fishProducers") {
       setValue("organisationType", "Fish Producer");
@@ -186,7 +193,7 @@ const AddNewOrganisation = ({
 
   useEffect(() => {
     if (organisationCount) {
-      const fullCode = `ORG-${organisationCount + 1}`;
+      const fullCode = `ORG-${Number(organisationCount) + 1}`;
       setValue("organisationCode", fullCode);
     }
   }, [organisationCount]);
@@ -523,7 +530,7 @@ const AddNewOrganisation = ({
                     ORG-
                   </Typography>
                   <Typography variant="body1">
-                    {organisationCount + 1}
+                    {Number(organisationCount) + 1}
                   </Typography>
                 </Box>
 
@@ -1040,7 +1047,7 @@ const AddNewOrganisation = ({
                           (f, i) =>
                             i === index ||
                             String(f.email).toLowerCase() !==
-                            String(value).toLowerCase()
+                              String(value).toLowerCase()
                         );
                         if (!isUnique) {
                           return "Please enter a unique email.This email is already used in contacts information";
@@ -1149,25 +1156,34 @@ const AddNewOrganisation = ({
                       </Typography>
                     )}
                 </Box>
-                <Stack display={"flex"}
+                <Stack
+                  display={"flex"}
                   justifyContent={"center"}
-                  alignItems={"center"} flexDirection={"row"} gap={"20px"} minWidth={"67px"}>
+                  alignItems={"center"}
+                  flexDirection={"row"}
+                  gap={"20px"}
+                  minWidth={"67px"}
+                >
                   <Box
                     display={"flex"}
                     justifyContent={"center"}
                     alignItems={"center"}
-                  // sx={{
-                  //   visibility: index === 0 ? "hidden" : "",
-                  //   cursor: "pointer",
-                  //   width: {
-                  //     lg: 150,
-                  //     xs: "auto",
-                  //   },
-                  // }}
+                    // sx={{
+                    //   visibility: index === 0 ? "hidden" : "",
+                    //   cursor: "pointer",
+                    //   width: {
+                    //     lg: 150,
+                    //     xs: "auto",
+                    //   },
+                    // }}
                   >
-                    <Image src={sendEmailIcon} alt="Send Email Icon" style={{
-                      cursor: "pointer"
-                    }} />
+                    <Image
+                      src={sendEmailIcon}
+                      alt="Send Email Icon"
+                      style={{
+                        cursor: "pointer",
+                      }}
+                    />
                   </Box>
 
                   <Box
@@ -1201,7 +1217,6 @@ const AddNewOrganisation = ({
                     </svg>
                   </Box>
                 </Stack>
-
               </Stack>
             ))}
 

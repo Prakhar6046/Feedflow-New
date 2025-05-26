@@ -131,8 +131,8 @@ export default function BasicTable({ organisations, userRole }: Props) {
                 idx === headCells.length - 1
                   ? false
                   : orderBy === headCell.id
-                    ? order
-                    : false
+                  ? order
+                  : false
               }
               sx={{
                 borderBottom: 0,
@@ -378,7 +378,7 @@ export default function BasicTable({ organisations, userRole }: Props) {
                       >
                         <Box display={"flex"} alignItems={"center"} gap={1.5}>
                           {organisation?.imageUrl &&
-                            organisation?.imageUrl !== "null" ? (
+                          organisation?.imageUrl !== "null" ? (
                             <Image
                               src={String(organisation.imageUrl)}
                               width={40}
@@ -432,7 +432,7 @@ export default function BasicTable({ organisations, userRole }: Props) {
                       >
                         {organisation?.contact?.find(
                           (contact) =>
-                            contact.role === "Admin" ||
+                            contact.permission === "Admin" ||
                             contact.name === "Super Admin"
                         )?.email ?? ""}
                       </TableCell>
@@ -447,7 +447,7 @@ export default function BasicTable({ organisations, userRole }: Props) {
                       >
                         {organisation?.contact?.find(
                           (contact) =>
-                            contact.role === "Admin" ||
+                            contact.permission === "Admin" ||
                             contact.name === "Super Admin"
                         )?.phone ?? ""}
                       </TableCell>
@@ -462,7 +462,7 @@ export default function BasicTable({ organisations, userRole }: Props) {
                       >
                         {organisation?.contact?.find(
                           (contact) =>
-                            contact.role === "Admin" ||
+                            contact.permission === "Admin" ||
                             contact.name === "Super Admin"
                         )?.name ?? ""}
                       </TableCell>
@@ -491,7 +491,7 @@ export default function BasicTable({ organisations, userRole }: Props) {
                             fontWeight: 500,
                           }}
                           className="cursor-pointer"
-                        // onClick={() => handleEdit(user)}
+                          // onClick={() => handleEdit(user)}
                         >
                           <Button
                             id="basic-button"

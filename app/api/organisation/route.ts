@@ -11,8 +11,8 @@ export const GET = async (request: NextRequest) => {
     const organisationId = searchParams.get("organisationId");
     // Map tab value to organisationType
     const tabFilter =
-      tab === "fishFarmers"
-        ? "Fish Farmer"
+      tab === "fishProducers"
+        ? "Fish Producer"
         : tab === "feedSuppliers"
         ? "Feed Supplier"
         : null;
@@ -41,19 +41,23 @@ export const GET = async (request: NextRequest) => {
       organisations = await prisma.organisation.findMany({
         include: { contact: true, users: true, hatchery: true },
         orderBy: {
-          createdAt: "desc", // Sort by createdAt in descending order
+          createdAt: "desc",
         },
         where: baseWhereClause,
       });
     } else {
       organisations = await prisma.organisation.findMany({
         where: {
-          id: Number(organisationId),
+          OR: [
+            { id: Number(organisationId) },
+            { createdBy: Number(organisationId) },
+          ],
+
           ...baseWhereClause,
         },
         include: { contact: true },
         orderBy: {
-          createdAt: "desc", // Sort by createdAt in descending order
+          createdAt: "desc",
         },
       });
     }

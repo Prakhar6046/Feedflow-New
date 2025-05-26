@@ -3,6 +3,7 @@ export interface UserInitialState {
   users: any;
   role: String;
 }
+
 export interface SingleUser {
   id: Number;
   name: String;

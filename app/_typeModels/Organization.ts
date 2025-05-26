@@ -31,6 +31,7 @@ export interface OrganizationContact {
   email: String;
   phone: String;
   role: String;
+  permission: string;
   createdAt: String;
   updatedAt: String;
   organisationId: String;
@@ -62,6 +63,7 @@ export interface AddOrganizationFormInputs {
   city: String;
   postCode: String;
   organisationType: String;
+  createdBy: Number;
   contacts: {
     name: string;
     role: string;
@@ -74,4 +76,68 @@ export interface AddOrganizationFormInputs {
   hatcheryCode?: String;
   fishSpecie?: String;
   hatcheryAltitude?: String;
+}
+
+export interface OrganizationData {
+  id: number;
+  image: string;
+  imageUrl: string;
+  name: string;
+  organisationCode: string;
+  organisationType: string;
+  updatedBy: null;
+  createdBy: number;
+  createdAt: string;
+  updatedAt: string;
+  addressId: string;
+  address: Address;
+  contact: Contact[];
+  hatchery: any[];
+  Farm: Farm[];
+}
+
+export interface Address {
+  id: string;
+  name: string | null;
+  street: null;
+  province: string;
+  city: string;
+  postCode: string;
+  country: string;
+  createdAt: string;
+  updatedAt: string;
+  organisationId: null;
+  addressLine1?: string; // Optional as it appears only in farmAddress
+  addressLine2?: string; // Optional as it appears only in farmAddress
+  zipCode?: string; // Optional as it appears only in farmAddress
+}
+
+export interface Contact {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  role: string;
+  permission: string;
+  userId: string;
+  createdAt: string;
+  updatedAt: string;
+  organisationId: number;
+}
+
+export interface Farm {
+  id: string;
+  name: string;
+  farmAltitude: string;
+  farmAddressId: string;
+  lat: string;
+  lng: string;
+  fishFarmer: string;
+  updatedBy: null;
+  createdBy: null;
+  organisationId: number;
+  createdAt: string;
+  updatedAt: string;
+  userId: number;
+  farmAddress: Address; // Reusing the Address interface as it has similar structure
 }

@@ -52,7 +52,7 @@ model Organisation {
   organisationCode String   @default("")
   organisationType String
   updatedBy        String?
-  createdBy        String?
+  createdBy        Int      @default(1)
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
   users            User[]

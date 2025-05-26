@@ -25,6 +25,7 @@ export async function POST(req: NextRequest) {
         organisationType: body.organisationType,
         addressId: address.id,
         imageUrl: body.imageUrl,
+        createdBy: body.createdBy,
       },
     });
 
@@ -42,12 +43,12 @@ export async function POST(req: NextRequest) {
     });
 
     // Create users and capture their IDs
-    const createdUsers = await prisma.user.createMany({
+    await prisma.user.createMany({
       data: body.contacts.map((user: any) => ({
         email: user.email.toLowerCase(),
         name: capitalizeFirstLetter(user.name),
         organisationId: organisation.id,
-        role: user.role?.toUpperCase(),
+        role: user.permission?.toUpperCase(),
       })),
     });
 

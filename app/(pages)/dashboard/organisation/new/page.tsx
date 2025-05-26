@@ -5,7 +5,9 @@ import {
   getOrganisationCount,
   getOrganisations,
 } from "@/app/_lib/action";
+import { getCookie } from "cookies-next";
 import { Metadata } from "next";
+import { cookies } from "next/headers";
 export const metadata: Metadata = {
   title: "Organisations",
 };
@@ -17,7 +19,7 @@ export default async function Page({
   };
 }) {
   const organisations = await getAllOrganisations();
-
+  const loggedUser: any = getCookie("logged-user", { cookies });
   const organisationCount = await getOrganisationCount();
   const type = searchParams?.type || "";
 
@@ -36,6 +38,7 @@ export default async function Page({
         organisations={organisations?.data}
         type={type}
         organisationCount={organisationCount?.data}
+        loggedUser={JSON.parse(loggedUser)}
       />
     </>
   );
