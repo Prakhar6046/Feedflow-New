@@ -68,7 +68,7 @@ export default function FarmTable({ farms }: Props) {
       removeLocalItem("farmProductionUnits");
       router.push(`/dashboard/farm/${selectedFarm.id}`);
       setCookie("isEditFarm", true);
-      setCookie("activeStep", 1);
+      setCookie("activeStep", 0);
     }
   };
   const handleClose = () => {

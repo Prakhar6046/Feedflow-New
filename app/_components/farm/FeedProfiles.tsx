@@ -68,7 +68,7 @@ const FeedProfiles = ({ setActiveStep, editFarm }: Props) => {
 
   const onSubmit: SubmitHandler<FormValues> = (data) => {
     setLocalItem("feedProfiles", data);
-    setActiveStep(4);
+    setActiveStep(3);
   };
 
   const renderRadioGroup = (
@@ -592,7 +592,7 @@ const FeedProfiles = ({ setActiveStep, editFarm }: Props) => {
               type="button"
               variant="contained"
               onClick={() => {
-                setActiveStep(2);
+                setActiveStep(1);
                 setLocalItem("feedProfiles", allFeedprofiles);
               }}
               sx={{

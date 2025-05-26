@@ -141,7 +141,7 @@ export default function ProductionParaMeter({
     }
 
     setLocalItem("productionParametes", payload);
-    setActiveStep(3);
+    setActiveStep(2);
   };
 
   useEffect(() => {
@@ -597,7 +597,7 @@ export default function ProductionParaMeter({
             type="button"
             variant="contained"
             onClick={() => {
-              setActiveStep(1);
+              setActiveStep(0);
               setLocalItem("productionParametes", allWatchObject);
             }}
             sx={{

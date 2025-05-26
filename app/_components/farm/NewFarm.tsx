@@ -1,20 +1,15 @@
 "use client";
+import { Farm } from "@/app/_typeModels/Farm";
 import { SingleUser } from "@/app/_typeModels/User";
 import { Box, Divider, Grid, Step, StepLabel, Stepper } from "@mui/material";
 import { getCookie, setCookie } from "cookies-next";
 import { useEffect, useState } from "react";
-import AquaFarmWizard from "./AquaFarmWizard";
 import FarmInformation from "./FarmInformation";
-import ProductionUnits from "./ProductionUnits";
-import AllDone from "./AllDone";
-import ProductionParaMeter from "./ProductionParameter";
-import { Farm } from "@/app/_typeModels/Farm";
 import FeedProfiles from "./FeedProfiles";
+import ProductionParaMeter from "./ProductionParameter";
+import ProductionUnits from "./ProductionUnits";
 
 const steps = [
-  {
-    label: "Intro",
-  },
   {
     label: "Farm",
   },
@@ -24,10 +19,6 @@ const steps = [
   },
   {
     label: "Production Units",
-  },
-
-  {
-    label: "Finished",
   },
 ];
 interface Props {
@@ -101,30 +92,27 @@ export default function NewFarm({ farmMembers, growthModels, farms }: Props) {
       </Grid>
 
       <Grid item xl={9} md={8} xs={12} my={2}>
-        {activeStep === 0 && <AquaFarmWizard setActiveStep={setActiveStep} />}
-        {activeStep === 1 && (
+        {activeStep === 0 && (
           <FarmInformation
             setActiveStep={setActiveStep}
             farmMembers={farmMembers}
             farms={farms}
           />
         )}
-        {activeStep === 2 && (
+        {activeStep === 1 && (
           <ProductionParaMeter
             setActiveStep={setActiveStep}
             growthModels={growthModels}
           />
         )}
 
-        {activeStep === 3 && <FeedProfiles setActiveStep={setActiveStep} />}
-        {activeStep === 4 && (
+        {activeStep === 2 && <FeedProfiles setActiveStep={setActiveStep} />}
+        {activeStep === 3 && (
           <ProductionUnits
             setActiveStep={setActiveStep}
             growthModels={growthModels}
           />
         )}
-
-        {activeStep === 5 && <AllDone setActiveStep={setActiveStep} />}
       </Grid>
     </Grid>
   );

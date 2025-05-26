@@ -1,21 +1,16 @@
 "use client";
-import AquaFarmWizard from "@/app/_components/farm/AquaFarmWizard";
 import FarmInformation from "@/app/_components/farm/FarmInformation";
 import ProductionUnits from "@/app/_components/farm/ProductionUnits";
-import AllDone from "@/app/_components/feedSupply/AllDone";
 import Loader from "@/app/_components/Loader";
 import { Farm } from "@/app/_typeModels/Farm";
 import { SingleUser } from "@/app/_typeModels/User";
 import { Box, Divider, Grid, Step, StepLabel, Stepper } from "@mui/material";
 import { getCookie, setCookie } from "cookies-next";
 import { useEffect, useState } from "react";
-import ProductionParaMeter from "./ProductionParameter";
 import FeedProfiles from "./FeedProfiles";
+import ProductionParaMeter from "./ProductionParameter";
 
 const steps = [
-  {
-    label: "Intro",
-  },
   {
     label: "Farm",
   },
@@ -25,9 +20,6 @@ const steps = [
   },
   {
     label: "Production Units",
-  },
-  {
-    label: "Finished",
   },
 ];
 interface Props {
@@ -48,7 +40,6 @@ const EditFarm = ({
   const [activeStep, setActiveStep] = useState<number>(
     activeStepIndex !== 0 ? activeStepIndex : 0
   );
-  // const isEditFarm = useAppSelector(selectIsEditFarm);
   const [editFarm, setEditFarm] = useState<Farm>();
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -133,8 +124,7 @@ const EditFarm = ({
       </Grid>
 
       <Grid item xl={9} md={8} xs={12} my={2}>
-        {activeStep === 0 && <AquaFarmWizard setActiveStep={setActiveStep} />}
-        {activeStep === 1 && (
+        {activeStep === 0 && (
           <FarmInformation
             setActiveStep={setActiveStep}
             editFarm={editFarm}
@@ -143,7 +133,7 @@ const EditFarm = ({
           />
         )}
 
-        {activeStep === 2 && (
+        {activeStep === 1 && (
           <ProductionParaMeter
             setActiveStep={setActiveStep}
             productionParaMeter={editFarm?.WaterQualityPredictedParameters}
@@ -151,10 +141,10 @@ const EditFarm = ({
             growthModels={growthModels}
           />
         )}
-        {activeStep === 3 && (
+        {activeStep === 2 && (
           <FeedProfiles setActiveStep={setActiveStep} editFarm={editFarm} />
         )}
-        {activeStep === 4 && (
+        {activeStep === 3 && (
           <ProductionUnits
             setActiveStep={setActiveStep}
             editFarm={editFarm}
@@ -162,10 +152,6 @@ const EditFarm = ({
             productionParaMeter={editFarm?.WaterQualityPredictedParameters}
             growthModels={growthModels}
           />
-        )}
-
-        {activeStep === 5 && (
-          <AllDone setActiveStep={setActiveStep} isEdit={isEdit} />
         )}
       </Grid>
     </Grid>

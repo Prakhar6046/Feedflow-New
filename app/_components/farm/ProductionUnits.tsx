@@ -374,7 +374,6 @@ const ProductionUnits: NextPage<Props> = ({
           const responseData = await response.json();
           toast.success(responseData.message);
           if (responseData.status) {
-            setActiveStep(5);
             deleteCookie("isEditFarm");
             removeLocalItem("farmData");
             removeLocalItem("farmProductionUnits");
@@ -383,6 +382,7 @@ const ProductionUnits: NextPage<Props> = ({
             removeLocalItem("feedProfiles");
             removeLocalItem("feedProfileId");
             removeLocalItem("productionUnitsFeedProfiles");
+            router.push("/dashboard/farm");
           }
         } else {
           toast.error("Please fill out the all feilds");
@@ -976,7 +976,7 @@ const ProductionUnits: NextPage<Props> = ({
                   border: "1px solid #06A19B",
                 }}
                 onClick={() => {
-                  setActiveStep(3),
+                  setActiveStep(2),
                     setLocalItem(
                       "farmProductionUnits",
                       watch("productionUnits")

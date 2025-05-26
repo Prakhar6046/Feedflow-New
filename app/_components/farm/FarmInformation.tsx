@@ -84,8 +84,7 @@ const FarmInformation: NextPage<Props> = ({
   const onSubmit: SubmitHandler<Farm> = (data) => {
     dispatch(farmAction.updateFarm(data));
     setLocalItem("farmData", data);
-    setActiveStep(2);
-    // setCookie("activeStep", 2);
+    setActiveStep(1);
   };
   useEffect(() => {
     if (editFarm && !formData) {
@@ -716,25 +715,6 @@ const FarmInformation: NextPage<Props> = ({
             gap={3}
             mt={1}
           >
-            <Button
-              type="button"
-              variant="contained"
-              onClick={() => setActiveStep(0)}
-              sx={{
-                background: "#fff",
-                color: "#06A19B",
-                fontWeight: 600,
-                padding: "6px 16px",
-                width: "fit-content",
-                textTransform: "capitalize",
-                borderRadius: "8px",
-                border: "1px solid #06A19B",
-              }}
-
-              // onClick={() => setCookie("activeStep", 0)}
-            >
-              Previous
-            </Button>
             <Button
               type="submit"
               variant="contained"

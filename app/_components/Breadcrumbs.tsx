@@ -65,18 +65,6 @@ export default function BasicBreadcrumbs({
     router.push(String(buttonRoute));
   };
 
-  // const handleRefetch = async () => {
-  //   const user = JSON.parse(loggedUser);
-  //   setStatus("Updating..");
-  //   if (refetch === "organisation") {
-  //     getSearchOrganisations(user);
-  //   } else if (refetch === "user") {
-  //     getSearchUsers(user);
-  //   } else if (refetch === "farm") {
-  //     getSearchFarms(user);
-  //   }
-  //   setStatus("Last update less than a minutes ago");
-  // };
   const handleRememberSort = () => {
     if (!isSort) {
       setLocalItem(pathName, sortvalue);

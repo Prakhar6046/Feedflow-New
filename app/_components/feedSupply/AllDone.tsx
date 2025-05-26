@@ -162,23 +162,6 @@ const AllDone: NextPage<Props> = ({ setActiveStep, isEdit }) => {
         gap={3}
         mt={1}
       >
-        {/* <Button
-          type="submit"
-          variant="contained"
-          sx={{
-            background: "#fff",
-            color: "#06A19B",
-            fontWeight: 600,
-            padding: "6px 16px",
-            width: "fit-content",
-            textTransform: "capitalize",
-            borderRadius: "8px",
-            border: "1px solid #06A19B",
-          }}
-          onClick={() => setActiveStep(2)}
-        >
-          Previous
-        </Button> */}
         <Button
           type="submit"
           variant="contained"
