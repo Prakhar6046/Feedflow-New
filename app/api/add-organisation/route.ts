@@ -109,11 +109,10 @@ export async function POST(req: NextRequest) {
     </style>
   </head>
   <body>
-    
     <div
       class="container"
       style="
-        background-color: #f2f2f2;
+        background-color: #F2F2F2;
         line-height: 1.7rem;
         font-family: 'Roboto', sans-serif;
         padding: 30px 0;
@@ -139,16 +138,15 @@ export async function POST(req: NextRequest) {
             position: relative
           "
         >
-          <h1 style="color: #fff; line-height: 1.2; margin: 0 50px; position: absolute; tranform: translate(0, -50%); top: 50%>
+          <h1 style="color: #fff; line-height: 1.2; margin: 0 50px; position: absolute; transform: translate(0, -50%); top: 50%">
             Hi ${contact.name}
           </h1>
         </div>
         <div style="padding: 30px 50px 60px 50px">
-          
           <p style="margin: 20px 40px 10px 0">
             You're invited to join Feedflow, the platform designed to streamline your workflow and keep everything running smoothly.
           </p>
-          <p style="line-height: 2; font-size: 14px; margin-bottom: 32px;"> <a href="${process.env.BASE_URL}/joinOrganisation/${userId}" style="color: #0d848e;">Click here</a> To Join Now & Set Your Password </p>
+          <p style="line-height: 2; font-size: 14px; margin-bottom: 32px;"> <a href="${process.env.BASE_URL}/joinOrganisation/${userId}" style="color: #0D848E;">Click here</a> To Join Now & Set Your Password </p>
           <p style="margin-bottom: 5px">Thanks,</p>
           <a
             href="#"
@@ -157,13 +155,8 @@ export async function POST(req: NextRequest) {
             >The Team Feedflow</a
           >
         </div>
-        
       </div>
     </div>
-
-   
-
-    
   </body>
 </html>`,
         };
