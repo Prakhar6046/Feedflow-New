@@ -6,6 +6,7 @@ import EyeOpened from "@/public/static/img/icons/ic-eye-open.svg";
 import logo from "@/public/static/img/logo-bigone.jpg";
 import { Box, Button, Stack, TextField, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid";
+
 import { setCookie } from "cookies-next";
 import Image from "next/image";
 import Link from "next/link";
@@ -13,6 +14,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 export default function Page() {
+  const currentYear = new Date().getFullYear();
   const router = useRouter();
   const dispatch = useAppDispatch();
   const [email, setEmail] = useState<string>(
@@ -453,7 +455,7 @@ export default function Page() {
           </Box>
 
           <Typography variant="subtitle2" color="#fff" fontWeight={400}>
-            All right reserved - 2024 Nutritionhub
+            All right reserved - {currentYear} Nutritionhub
           </Typography>
         </Stack>
         {/* Login Section End */}

@@ -224,7 +224,8 @@ export async function PUT(req: NextRequest, context: { params: any }) {
             position: relative
           "
         >
-          <h1 style="color: #fff; line-height: 1.2; margin: 0 50px; position: absolute; transform: translate(0, -50%); top: 50%">
+          
+          <h1 style="color: #fff; padding-top: 100px; line-height: 1.2; margin: 0 50px; position: absolute; transform: translate(0, -50%); top: 50%">
             Hi ${contact.name}
           </h1>
         </div>
