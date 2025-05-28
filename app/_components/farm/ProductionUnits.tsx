@@ -179,10 +179,11 @@ const ProductionUnits: NextPage<Props> = ({
       // Prevent API call if one is already in progress
       if (isApiCallInProgress) return;
       setIsApiCallInProgress(true);
-
       try {
         const loggedUserData = JSON.parse(userData);
         let payload;
+        let updatedProductionUnitsFeedProfile;
+        let updatedProductionUnits;
         const filteredProductionUnits =
           productionParamtertsUnitsArrayLocal.filter(
             (unit: {
@@ -194,42 +195,49 @@ const ProductionUnits: NextPage<Props> = ({
                 (param: any) => param.name === unit.unitName
               )
           );
+        if (filteredProductionUnits) {
+          updatedProductionUnits = filteredProductionUnits.map(
+            (filteredUnit: any) => {
+              const matchedUnit = editFarm?.productionUnits?.find(
+                (unit: any) => unit.name === filteredUnit.unitName
+              );
+
+              if (matchedUnit) {
+                return {
+                  ...filteredUnit,
+                  id: matchedUnit.YearBasedPredicationProductionUnit[0]?.id,
+                };
+              }
+              return filteredUnit;
+            }
+          );
+        }
+
         const filteredProductionUnitsFeedProfile =
-          productionUnitsFeedProfilesLocal.filter(
+          productionUnitsFeedProfilesLocal?.filter(
             (unit: { unitName: string; feedProfile: any }) =>
               data.productionUnits.some(
                 (param: any) => param.name === unit.unitName
               )
           );
-        const updatedProductionUnits = filteredProductionUnits.map(
-          (filteredUnit: any) => {
-            const matchedUnit = editFarm?.productionUnits?.find(
-              (unit: any) => unit.name === filteredUnit.unitName
-            );
 
-            if (matchedUnit) {
-              return {
-                ...filteredUnit,
-                id: matchedUnit.YearBasedPredicationProductionUnit[0]?.id,
-              };
-            }
-            return filteredUnit;
-          }
-        );
-        const updatedProductionUnitsFeedProfile =
-          filteredProductionUnitsFeedProfile.map((filteredUnit: any) => {
-            const matchedUnit = editFarm?.productionUnits?.find(
-              (unit: any) => unit.name === filteredUnit.unitName
-            );
+        if (filteredProductionUnitsFeedProfile && editFarm) {
+          updatedProductionUnitsFeedProfile =
+            filteredProductionUnitsFeedProfile?.map((filteredUnit: any) => {
+              const matchedUnit = editFarm?.productionUnits?.find(
+                (unit: any) => unit.name === filteredUnit.unitName
+              );
 
-            if (matchedUnit) {
-              return {
-                ...filteredUnit,
-                id: matchedUnit.FeedProfileProductionUnit[0].id,
-              };
-            }
-            return filteredUnit;
-          });
+              if (matchedUnit) {
+                return {
+                  ...filteredUnit,
+                  id: matchedUnit.FeedProfileProductionUnit[0].id,
+                };
+              }
+              return filteredUnit;
+            });
+        }
+
         if (
           isEditFarm === "true" &&
           editFarm?.farmAddress?.id &&
@@ -270,8 +278,8 @@ const ProductionUnits: NextPage<Props> = ({
                 visibility: farmPredictionValues.idealRange["Visibility cm"],
               },
             },
-            productionParamtertsUnitsArray: updatedProductionUnits,
-            FeedProfileUnits: updatedProductionUnitsFeedProfile,
+            productionParamtertsUnitsArray: updatedProductionUnits ?? [],
+            FeedProfileUnits: updatedProductionUnitsFeedProfile ?? [],
 
             farmAddress: {
               addressLine1: farmData.addressLine1,
@@ -388,6 +396,8 @@ const ProductionUnits: NextPage<Props> = ({
           toast.error("Please fill out the all feilds");
         }
       } catch (error) {
+        console.log(error);
+
         toast.error("Something went wrong. Please try again.");
       } finally {
         setIsApiCallInProgress(false);

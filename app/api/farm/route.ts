@@ -12,6 +12,7 @@ export const GET = async (request: NextRequest) => {
     const farms = await prisma.farm.findMany({
       include: {
         farmAddress: true,
+        organisation: true,
         productionUnits: {
           include: { YearBasedPredicationProductionUnit: true },
         },

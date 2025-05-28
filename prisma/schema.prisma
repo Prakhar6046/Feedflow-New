@@ -98,16 +98,16 @@ model Address {
 }
 
 model Contact {
-  id         String   @id @default(cuid())
-  name       String?
-  email      String?
-  phone      String?
-  role       String?
-  permission String?
-  userId     String?
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-
+  id             String        @id @default(cuid())
+  name           String?
+  email          String?
+  phone          String?
+  role           String?
+  permission     String?
+  userId         String?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  invite         Boolean       @default(false)
   organisation   Organisation? @relation(fields: [organisationId], references: [id])
   organisationId Int?
 

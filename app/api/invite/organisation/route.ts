@@ -3,15 +3,14 @@ import prisma from "@/prisma/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 
-const transporter = nodemailer.createTransport({
-  service: "gmail", // You can use any other email service provider
-  auth: {
-    user: process.env.EMAIL_USER, // Your email address
-    pass: process.env.EMAIL_PASS, // Your email password or app-specific password
-  },
-});
-
 export async function POST(req: NextRequest) {
+  const transporter: any = nodemailer.createTransport({
+    service: "gmail", // You can use any other email service provider
+    auth: {
+      user: process.env.EMAIL_USER, // Your email address
+      pass: process.env.EMAIL_PASS, // Your email password or app-specific password
+    },
+  });
   try {
     const { organisationId, users } = await req.json();
 
@@ -37,6 +36,7 @@ export async function POST(req: NextRequest) {
         email: true,
         name: true,
         userId: true,
+        invite: true,
       },
     });
 
@@ -55,58 +55,78 @@ export async function POST(req: NextRequest) {
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Invitation Email</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
+      rel="stylesheet"
+    />
+    <title>Feedflow</title>
+    <style>
+      *{
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+    </style>
   </head>
-  <body style="margin: 0">
+  <body>
+    
     <div
       class="container"
       style="
-        background-color: #F2F2F2;
+        background-color: #f2f2f2;
         line-height: 1.7rem;
-        font-family: 'Arial', sans-serif;
-        padding: 25px 0px;
+        font-family: 'Roboto', sans-serif;
+        padding: 30px 0;
         height: 100vh !important;
         font-size: 18px;
       "
     >
-      <div class="main" style="margin: 0 auto; max-width: 650px; width: 100%">
+      <div
+        style="
+          margin: 0 auto;
+          max-width: 680px;
+          width: 90%;
+          background-color: white;
+        "
+      >
+        <div style="padding: 18px 50px;display: flex;">
+          <img src="https://i.ibb.co/dKTVMh7/logo.png" alt="Logo" />
+        </div>
         <div
-          class="main-content"
           style="
-            background: rgb(255,255,255);
-            background: linear-gradient(0deg, rgba(255,255,255,1) 74%, rgba(6,161,155,1) 100%);
-            padding: 30px 20px;
-            text-align: center;
-            margin-top: 10px;
-            box-shadow: 0 0 10px lightgray;
-            border-radius: 10px;
+           background:url(https://i.ibb.co/tT8cdb7Q/emailbg.png);
+            min-height: 240px;
+            position: relative
           "
-        ><div style="display: flex; justify-content: center !important; align-items: center; width:100%">
-          <img
-            src="https://i.ibb.co/dKTVMh7/logo.png"
-            alt="Logo"
-            class="logo-img"
-            style="width: 120px; margin-bottom: 20px;"
-          />
+        >
+          <h1 style="color: #fff; line-height: 1.2; margin: 0 50px; position: absolute; tranform: translate(0, -50%); top: 50%>
+            Hi ${user.name}
+          </h1>
         </div>
-          <h3 class="m-0" style="margin: 0">Hi ${user.name}</h3>
-          <p class="m-0" style="margin: 10px 0">
-            You are invited to join Feedflow.
+        <div style="padding: 30px 50px 60px 50px">
+          
+          <p style="margin: 20px 40px 10px 0">
+            You're invited to join Feedflow, the platform designed to streamline your workflow and keep everything running smoothly.
           </p>
-          <p
-            style="line-height: 1.4; font-size: 16px; color: #505050; margin: 0"
+          <p style="line-height: 2; font-size: 14px; margin-bottom: 32px;"> <a href="${process.env.BASE_URL}/joinOrganisation/${user.userId}" style="color: #0d848e;">Click here</a> To Join Now & Set Your Password </p>
+          <p style="margin-bottom: 5px">Thanks,</p>
+          <a
+            href="#"
+            target="_blank"
+            style="text-decoration: none; font-weight: 600; color: #000"
+            >The Team Feedflow</a
           >
-            <a href="${process.env.BASE_URL}/joinOrganisation/${user.userId}"
-              >Click here</a
-            >
-            to join and set your password.
-          </p>
-          <div style="margin-block: 15px; border: 1px solid #EDEDED"></div>
-          <p style="font-size: 16px; font-weight: 600; margin: 0">Thanks,</p>
-          <p style="margin: 0">Team Feedflow</p>
         </div>
+        
       </div>
     </div>
+
+   
+
+    
   </body>
 </html>`,
       };

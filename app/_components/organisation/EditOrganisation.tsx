@@ -17,8 +17,10 @@ import {
   OrganizationData,
   SingleOrganisation,
 } from "@/app/_typeModels/Organization";
-import { selectRole } from "@/lib/features/user/userSlice";
-import { useAppSelector } from "@/lib/hooks";
+import sendEmailIcon from "@/public/static/img/ic-send-email.svg";
+import sentEmailIcon from "@/public/static/img/ic-sent-email.svg";
+import TabContext from "@mui/lab/TabContext";
+import TabList from "@mui/lab/TabList";
 import {
   Box,
   Button,
@@ -42,8 +44,8 @@ import {
   useForm,
 } from "react-hook-form";
 import toast from "react-hot-toast";
-import TabContext from "@mui/lab/TabContext";
-import TabList from "@mui/lab/TabList";
+
+import Image from "next/image";
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
   clipPath: "inset(50%)",
@@ -68,19 +70,31 @@ const EditOrganisation = ({ organisationId, organisations }: Iprops) => {
   const [altitude, setAltitude] = useState<String>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [profilePic, setProfilePic] = useState<String>();
-  const [contactError, setcontactError] = useState<string>("");
   const [addressInformation, setAddressInformation] = useState<any>();
   const [isApiCallInProgress, setIsApiCallInProgress] =
     useState<boolean>(false);
   const [useAddress, setUseAddress] = useState<boolean>(false);
   const [searchedAddress, setSearchedAddress] = useState<any>();
-  const role = useAppSelector(selectRole);
   const [selectedView, setSelectedView] = useState<string>(
     "organisationInformation"
   );
+  const [inviteSent, setInviteSent] = useState<{ [key: number]: boolean }>({});
+
+  const handleInviteUser = (invite: boolean, index: number) => {
+    if (!invite) {
+      setInviteSent((prev) => {
+        const newInviteState = !prev[index];
+        setValue(`contacts.${index}.newInvite`, newInviteState);
+        return {
+          ...prev,
+          [index]: newInviteState,
+        };
+      });
+    }
+  };
+
   const handleChange = (_event: any, newValue: string) => {
     setSelectedView(newValue);
-
     const newParams = new URLSearchParams(searchParams.toString());
     newParams.set("tab", newValue);
     router.push(`?${newParams.toString()}`);
@@ -101,16 +115,22 @@ const EditOrganisation = ({ organisationId, organisations }: Iprops) => {
     setValue,
     handleSubmit,
     control,
-    getValues,
-    resetField,
-    clearErrors,
     watch,
     trigger,
     formState: { errors },
   } = useForm<AddOrganizationFormInputs>({
     mode: "onChange",
     defaultValues: {
-      contacts: [{ name: "", role: "", email: "", phone: "" }],
+      contacts: [
+        {
+          name: "",
+          role: "",
+          email: "",
+          phone: "",
+          permission: "",
+          invite: false,
+        },
+      ],
     },
   });
   const selectedOrganisationType = watch("organisationType");
@@ -155,13 +175,15 @@ const EditOrganisation = ({ organisationId, organisations }: Iprops) => {
         method: "PUT",
         body: formData,
       });
+
       if (res.ok) {
         const updatedOrganisation = await res.json();
 
         toast.success(updatedOrganisation.message);
         router.push("/dashboard/organisation");
-        // resetField("confirmPassword");
-        // resetField("password");
+      } else {
+        const data = await res.json();
+        toast.error(data.error);
       }
     } catch (error) {
       toast.error("Something went wrong. Please try again.");
@@ -184,7 +206,15 @@ const EditOrganisation = ({ organisationId, organisations }: Iprops) => {
         lastContact.email &&
         lastContact.phone
       ) {
-        append({ name: "", role: "", email: "", phone: "", permission: "" });
+        append({
+          name: "",
+          role: "",
+          email: "",
+          phone: "",
+          permission: "",
+          invite: false,
+          newInvite: false,
+        });
       } else {
         toast.dismiss();
         toast.error("Please fill previous contact details.");
@@ -213,12 +243,9 @@ const EditOrganisation = ({ organisationId, organisations }: Iprops) => {
   useEffect(() => {
     if (organisationId) {
       const organisation = async () => {
-        // setLoading(true);
         const data = await getOrganisation();
 
         setOrganisationData(data.data);
-
-        // setUserData(data);
       };
       organisation();
     }
@@ -1177,6 +1204,29 @@ const EditOrganisation = ({ organisationId, organisations }: Iprops) => {
                         )}
                     </Box>
 
+                    <Box
+                      display={"flex"}
+                      justifyContent={"center"}
+                      alignItems={"center"}
+                      onClick={() =>
+                        handleInviteUser(Boolean(item.invite), index)
+                      }
+                    >
+                      <Image
+                        title={item.invite ? "Invited" : "Invite"}
+                        src={
+                          item.invite
+                            ? sentEmailIcon
+                            : inviteSent[index]
+                            ? sentEmailIcon
+                            : sendEmailIcon
+                        }
+                        alt="Send Email Icon"
+                        style={{
+                          cursor: item.invite ? "not-allowed" : "pointer",
+                        }}
+                      />
+                    </Box>
                     <Box
                       display={"flex"}
                       justifyContent={"center"}

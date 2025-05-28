@@ -186,9 +186,9 @@ export async function POST(req: NextRequest) {
           where: { id: data.id },
         });
       });
-      // await prisma.feedProfileProductionUnit.delete({
-      //   where:{productionUnitId:da}
-      // })
+      await prisma.feedProfileProductionUnit.deleteMany({
+        where: { productionUnitId: unit.id },
+      });
       await prisma.productionUnit.delete({
         where: { id: unit.id },
       });
@@ -210,12 +210,6 @@ export async function POST(req: NextRequest) {
       }
     );
 
-    //   const updateFeedProfileUnit = await prisma.feedProfileProductionUnit.update(
-    //   {
-    //     where: { id: yearBasedPredicationId },
-    //     data: { ...paylaodForProductionParameter },
-    //   }
-    // );
     //update feedProfile
     await prisma.feedProfile.update({
       where: { id: body.feedProfileId },
