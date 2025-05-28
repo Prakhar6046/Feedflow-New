@@ -7,6 +7,19 @@ export interface FarmInitialState {
   editFarm: Farm;
   isEditFarm: boolean;
 }
+export interface Organisation {
+  id: number;
+  image: string | null;
+  imageUrl: string;
+  name: string;
+  organisationCode: string;
+  organisationType: string;
+  updatedBy: number | null;
+  createdBy: number;
+  createdAt: string; // ISO string
+  updatedAt: string; // ISO string
+  addressId: string;
+}
 export interface Farm {
   name: String;
   mangerId?: String[];
@@ -34,6 +47,7 @@ export interface Farm {
     YearBasedPredicationProductionUnit: ProductionParaMeterType[];
   }[];
   production: Production[];
+  organisation: Organisation;
   WaterQualityPredictedParameters: ProductionParaMeterType[];
 }
 export interface UnitsTypes {

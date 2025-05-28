@@ -154,10 +154,11 @@ export const getFarms = async (payload: {
   organisationId?: string;
   query?: string;
   noFilter?: boolean;
+  tab?: string;
 }) => {
   try {
     const data = await fetch(
-      `${process.env.BASE_URL}/api/farm?role=${payload.role}&organisationId=${payload.organisationId}&query=${payload.query}&filter=${payload.noFilter}`,
+      `${process.env.BASE_URL}/api/farm?role=${payload.role}&organisationId=${payload.organisationId}&query=${payload.query}&filter=${payload.noFilter}&tab=${payload.tab}`,
       {
         method: "GET",
         headers: {

@@ -4,6 +4,7 @@ import * as validationPattern from "@/app/_lib/utils/validationPatterns/index";
 import * as validationMessage from "@/app/_lib/utils/validationsMessage/index";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import sendEmailIcon from "@/public/static/img/ic-send-email.svg";
+import sentEmailIcon from "@/public/static/img/ic-sent-email.svg";
 import {
   Box,
   Button,
@@ -79,7 +80,19 @@ const AddNewOrganisation = ({
   const [useAddress, setUseAddress] = useState<boolean>(false);
   const [searchedAddress, setSearchedAddress] = useState<any>();
   const [altitude, setAltitude] = useState<String>("");
-
+  const [inviteSent, setInviteSent] = useState<{ [key: number]: boolean }>({});
+  const handleInviteUser = (invite: boolean, index: number) => {
+    if (!invite) {
+      setInviteSent((prev) => {
+        const newInviteState = !prev[index];
+        setValue(`contacts.${index}.newInvite`, newInviteState);
+        return {
+          ...prev,
+          [index]: newInviteState,
+        };
+      });
+    }
+  };
   const {
     register,
     setValue,
@@ -120,7 +133,6 @@ const AddNewOrganisation = ({
     try {
       if (data && loggedUser) {
         data.createdBy = loggedUser.organisationId;
-
         const response = await fetch("/api/add-organisation", {
           method: "POST",
           headers: {
@@ -129,10 +141,12 @@ const AddNewOrganisation = ({
           body: JSON.stringify({ ...data, imageUrl: profilePic }),
         });
         const responseData = await response.json();
-        toast.success(responseData.message);
         if (responseData.status) {
+          toast.success(responseData.message);
           router.push("/dashboard/organisation");
           reset();
+        } else {
+          toast.error(responseData.error);
         }
       }
     } catch (error) {
@@ -1168,20 +1182,22 @@ const AddNewOrganisation = ({
                     display={"flex"}
                     justifyContent={"center"}
                     alignItems={"center"}
-                    // sx={{
-                    //   visibility: index === 0 ? "hidden" : "",
-                    //   cursor: "pointer",
-                    //   width: {
-                    //     lg: 150,
-                    //     xs: "auto",
-                    //   },
-                    // }}
+                    onClick={() =>
+                      handleInviteUser(Boolean(item.invite), index)
+                    }
                   >
                     <Image
-                      src={sendEmailIcon}
+                      title={item.invite ? "Invited" : "Invite"}
+                      src={
+                        item.invite
+                          ? sentEmailIcon
+                          : inviteSent[index]
+                          ? sentEmailIcon
+                          : sendEmailIcon
+                      }
                       alt="Send Email Icon"
                       style={{
-                        cursor: "pointer",
+                        cursor: item.invite ? "not-allowed" : "pointer",
                       }}
                     />
                   </Box>

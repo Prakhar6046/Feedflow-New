@@ -35,6 +35,7 @@ export interface OrganizationContact {
   createdAt: String;
   updatedAt: String;
   organisationId: String;
+  invite: boolean;
 }
 export interface SingleOrganisation {
   id: Number;
@@ -70,6 +71,8 @@ export interface AddOrganizationFormInputs {
     email: string;
     phone: string;
     permission: string;
+    invite?: boolean;
+    newInvite?: boolean;
   }[];
 
   hatcheryName?: String;

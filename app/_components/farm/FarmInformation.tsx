@@ -352,7 +352,7 @@ const FarmInformation: NextPage<Props> = ({
           <Box mb={2} width={"100%"}>
             <FormControl fullWidth className="form-input" focused>
               <InputLabel id="feed-supply-select-label1">
-                Fish Farmer *
+                Fish Producer *
               </InputLabel>
               <Select
                 labelId="feed-supply-select-label1"
@@ -361,7 +361,7 @@ const FarmInformation: NextPage<Props> = ({
                   required: true,
                   onChange: (e) => setValue("fishFarmer", e.target.value),
                 })}
-                label="Fish Farmer *"
+                label="Fish Producer *"
                 value={watchFishFarmer || ""}
               >
                 {fishFarmers?.map((fish: any) => {

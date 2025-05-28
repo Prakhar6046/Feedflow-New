@@ -220,6 +220,12 @@ export const farmTableHead = [
     label: "Farm",
   },
   {
+    id: "organisation",
+    numeric: false,
+    disablePadding: true,
+    label: "Organisation",
+  },
+  {
     id: "productionUnits",
     numeric: true,
     disablePadding: true,
@@ -238,6 +244,12 @@ export const farmTableHeadMember = [
     numeric: false,
     disablePadding: true,
     label: "Farm",
+  },
+  {
+    id: "organisation",
+    numeric: false,
+    disablePadding: true,
+    label: "Organisation",
   },
   {
     id: "productionUnits",
