@@ -26,28 +26,20 @@ export default async function Page({
     role: user?.role,
     tab,
   });
-  let buttonName = "";
-  let buttonRoute = "";
   if (user.role === "SUPERADMIN" || user.role === "ADMIN") {
-    if (tab === "fishProducers") {
-      buttonName = "Add Fish Producer";
-      buttonRoute = "/dashboard/organisation/new?type=fishProducers";
-    } else {
-      buttonName = "Add Organisation";
-      buttonRoute = "/dashboard/organisation/new";
-    }
   }
   return (
     <>
       <BasicBreadcrumbs
         heading={"Organisations"}
-        buttonName={buttonName}
-        buttonRoute={buttonRoute}
+        buttonName={"Add Organisation"}
+        buttonRoute={"/dashboard/organisation/new"}
         isTable={true}
         refetch={"organisation"}
         links={[
           { name: "Dashboard", link: "/dashboard" },
-          { name: "Organisations", link: buttonRoute },
+          { name: "Organisations", link: "/dashboard/organisation" },
+          { name: tab, link: `/dashboard/organisation?tab=${tab}` },
         ]}
       />
       <BasicTable organisations={organisations?.data} userRole={user?.role} />
