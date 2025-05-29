@@ -15,6 +15,7 @@ import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { OrganizationData } from "@/app/_typeModels/Organization";
 import { VisuallyHiddenInput } from "./EditOrganisation";
 import EmptyFarm from "./EmptyFarm";
+import { setCookie } from "cookies-next";
 interface Props {
   organisationData?: OrganizationData;
   profilePic: string | any;
@@ -400,7 +401,10 @@ const FarmsInformation = ({
               >
                 <Button
                   variant="contained"
-                  onClick={() => router.push(`/dashboard/farm/${farm?.id}`)}
+                  onClick={() => {
+                    setCookie("activeStep", 0);
+                    router.push(`/dashboard/farm/${farm?.id}`);
+                  }}
                   sx={{
                     background: "#fff",
                     border: "1px solid #06A19B",
@@ -417,7 +421,10 @@ const FarmsInformation = ({
                 </Button>
                 <Button
                   variant="contained"
-                  onClick={() => router.push("/dashboard/farm/newFarm")}
+                  onClick={() => {
+                    setCookie("activeStep", 0);
+                    router.push("/dashboard/farm/newFarm");
+                  }}
                   sx={{
                     background: "#06A19B",
                     fontWeight: 600,
