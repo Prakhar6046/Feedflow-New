@@ -30,7 +30,7 @@ const Page: NextPage = async ({
   return (
     <>
       <BasicBreadcrumbs
-        heading={"Thermal growth coefficient Demo"}
+        heading={"Feed Prediction"}
         hideSearchInput={true}
         links={[
           { name: "Dashboard", link: "/dashboard" },

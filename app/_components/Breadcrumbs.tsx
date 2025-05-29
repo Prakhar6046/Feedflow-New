@@ -4,7 +4,7 @@ import Breadcrumbs from "@mui/material/Breadcrumbs";
 import Typography from "@mui/material/Typography";
 
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { selectSort } from "@/lib/features/breadcrum/breadcrumSlice";
@@ -34,7 +34,9 @@ export default function BasicBreadcrumbs({
 }: Props) {
   const role = getCookie("role");
   const pathName = usePathname();
+  const search = useSearchParams();
   const router = useRouter();
+  const [updatedPathName, setUpdatedPathName] = useState<string>();
   const sortvalue = useAppSelector(selectSort);
   const loggedUser: any = getCookie("logged-user");
   const [open, setOpen] = useState(false);
@@ -88,12 +90,20 @@ export default function BasicBreadcrumbs({
   }, [role]);
   useEffect(() => {
     if (pathName) {
+      setUpdatedPathName(pathName);
       setSortDataFromLocal(getLocalItem(pathName));
     }
     if (pathName === "/dashboard/farm") {
       setCookie("isEditFarm", false);
     }
   }, [pathName]);
+
+  useEffect(() => {
+    if (search.get("tab") && pathName) {
+      const tab = search.get("tab");
+      setUpdatedPathName(`${pathName}?tab=${tab}`);
+    }
+  }, [search.get("tab")]);
 
   return (
     <>
@@ -142,7 +152,7 @@ export default function BasicBreadcrumbs({
                     key={link.name}
                     href={link.link}
                     className={`nav-links ${
-                      link.link === pathName ? "active-link" : ""
+                      link.link === `${updatedPathName}` ? "active-link" : ""
                     }`}
                   >
                     {link.name}

@@ -1334,11 +1334,10 @@ export default function FeedStoreTable({ data }: Iprops) {
                   </TableRow>
                 ))
               ) : (
-                <TableRow
-                  key={"no table"}
-                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                >
-                  No Data Found
+                <TableRow>
+                  <TableCell colSpan={13} sx={{ textAlign: "center" }}>
+                    No Data Found
+                  </TableCell>
                 </TableRow>
               )}
             </TableBody>

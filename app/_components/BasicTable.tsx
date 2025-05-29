@@ -631,11 +631,10 @@ export default function BasicTable({ organisations, userRole }: Props) {
                   );
                 })
               ) : (
-                <TableRow
-                  key={"no table"}
-                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                >
-                  No Data Found
+                <TableRow>
+                  <TableCell colSpan={6} sx={{ textAlign: "center" }}>
+                    No Data Found
+                  </TableCell>
                 </TableRow>
               )}
             </TableBody>

@@ -546,11 +546,10 @@ export default function FishSupplyTable({ tableData, fishSupply }: Props) {
                 );
               })
             ) : (
-              <TableRow
-                key={"no table"}
-                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-              >
-                <p style={{ width: "130px" }}>No Data Found</p>
+              <TableRow>
+                <TableCell colSpan={10} sx={{ textAlign: "center" }}>
+                  No Data Found
+                </TableCell>
               </TableRow>
             )}
           </TableBody>

@@ -150,13 +150,7 @@ const FeedPredictionTable = ({ farms, productions }: Props) => {
                   selectedFeeding === "feedingPlan" ? "active-tab" : ""
                 }
               />
-              {/* <Tab
-                label="Feeding Summary"
-                value="feedingSummary"
-                className={
-                  selectedFeeding === "feedingSummary" ? "active-tab" : ""
-                }
-              /> */}
+
               <Tab
                 label="Adhoc"
                 value="adhoc"

@@ -699,7 +699,7 @@ const ExpandedSidebar = () => {
             Admin
           </Typography>
 
-          <Link href={"/dashboard/organisation"} className="nav-links">
+          <Link href={"/dashboard/organisation?tab=all"} className="nav-links">
             <ListItem
               sx={{
                 paddingX: 0,
@@ -708,7 +708,7 @@ const ExpandedSidebar = () => {
             >
               <ListItemButton
                 className={
-                  activePage.startsWith("/dashboard/organisation")
+                  activePage.startsWith("/dashboard/organisation?tab=all")
                     ? "active"
                     : ""
                 }

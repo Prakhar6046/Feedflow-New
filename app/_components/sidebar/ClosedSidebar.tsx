@@ -23,8 +23,7 @@ function ClosedSidebar() {
   const loggedUser: any = getCookie("logged-user");
   const pathName = usePathname();
   const [activePage, setActivePage] = useState<String>("");
-    const [loggedUserData, setLoggedUserData] = useState<LoggedUser>();
-  
+  const [loggedUserData, setLoggedUserData] = useState<LoggedUser>();
 
   const dispatch = useAppDispatch();
   useEffect(() => {
@@ -32,7 +31,7 @@ function ClosedSidebar() {
       setActivePage(pathName);
     }
   }, [pathName]);
-useEffect(() => {
+  useEffect(() => {
     if (loggedUser) {
       setLoggedUserData(JSON.parse(loggedUser));
     }
@@ -490,63 +489,64 @@ useEffect(() => {
             </ListItem>
           </Link>
           {loggedUserData?.role === "SUPERADMIN" && (
-          <Link href={"/dashboard/growthModel"} className="nav-links">
-            <ListItem
-              sx={{
-                paddingX: 0,
-                mb: 1,
-              }}
-            >
-              <ListItemButton
-                className={
-                  activePage.startsWith("/dashboard/growthModel")
-                    ? "active"
-                    : ""
-                }
+            <Link href={"/dashboard/growthModel"} className="nav-links">
+              <ListItem
                 sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  alignItems: "center",
+                  paddingX: 0,
+                  mb: 1,
                 }}
               >
-                <ListItemIcon
+                <ListItemButton
+                  className={
+                    activePage.startsWith("/dashboard/growthModel")
+                      ? "active"
+                      : ""
+                  }
                   sx={{
-                    display: "grid",
-                    placeItems: "center",
-                    marginRight: 0,
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    alignItems: "center",
                   }}
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="1.4em"
-                    height="1.4em"
-                    viewBox="0 0 24 24"
+                  <ListItemIcon
+                    sx={{
+                      display: "grid",
+                      placeItems: "center",
+                      marginRight: 0,
+                    }}
                   >
-                    <g
-                      fill="none"
-                      stroke="#0E848E"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="1.5"
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="1.4em"
+                      height="1.4em"
+                      viewBox="0 0 24 24"
                     >
-                      <path d="M3.5 4v12.5a4 4 0 0 0 4 4H20" />
-                      <path d="m7 14l3.293-3.293a1 1 0 0 1 1.414 0l1.336 1.336a1 1 0 0 0 1.414 0L19 7.5l.648-.649M15 6.5h3.8c.331 0 .631.134.848.351M20 11.5V7.7c0-.331-.134-.631-.352-.849" />
-                    </g>
-                  </svg>
-                </ListItemIcon>
-                <ListItemText
-                  className="closed-nav-links"
-                  sx={{
-                    mt: 0.5,
-                    textAlign: "center",
-                  }}
-                >
-                  Growth Models
-                </ListItemText>
-              </ListItemButton>
-            </ListItem>
-          </Link>)}
+                      <g
+                        fill="none"
+                        stroke="#0E848E"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="1.5"
+                      >
+                        <path d="M3.5 4v12.5a4 4 0 0 0 4 4H20" />
+                        <path d="m7 14l3.293-3.293a1 1 0 0 1 1.414 0l1.336 1.336a1 1 0 0 0 1.414 0L19 7.5l.648-.649M15 6.5h3.8c.331 0 .631.134.848.351M20 11.5V7.7c0-.331-.134-.631-.352-.849" />
+                      </g>
+                    </svg>
+                  </ListItemIcon>
+                  <ListItemText
+                    className="closed-nav-links"
+                    sx={{
+                      mt: 0.5,
+                      textAlign: "center",
+                    }}
+                  >
+                    Growth Models
+                  </ListItemText>
+                </ListItemButton>
+              </ListItem>
+            </Link>
+          )}
           <Divider
             sx={{
               my: 1.5,
@@ -558,7 +558,7 @@ useEffect(() => {
             }}
           />
 
-          <Link href={"/dashboard/organisation"} className="nav-links">
+          <Link href={"/dashboard/organisation?tab=all"} className="nav-links">
             <ListItem
               sx={{
                 paddingX: 0,
@@ -567,7 +567,7 @@ useEffect(() => {
             >
               <ListItemButton
                 className={
-                  activePage.startsWith("/dashboard/organisation")
+                  activePage.startsWith("/dashboard/organisation?tab=all")
                     ? "active"
                     : ""
                 }

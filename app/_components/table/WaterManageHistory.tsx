@@ -894,7 +894,11 @@ const WaterManageHistoryTable: React.FC<Props> = ({
                       </TableCell>
                     </TableRow>
                   ) : (
-                    <TableRow>No Data Found</TableRow>
+                    <TableRow>
+                      <TableCell colSpan={6} sx={{ textAlign: "center" }}>
+                        No Data Found
+                      </TableCell>
+                    </TableRow>
                   )}
                 </TableBody>
               </Table>

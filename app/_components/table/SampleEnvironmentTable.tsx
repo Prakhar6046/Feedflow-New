@@ -356,7 +356,11 @@ export default function SampleEnvironmentTable({
                   }
                 )
               ) : (
-                <TableRow>No Data Found</TableRow>
+                <TableRow>
+                  <TableCell colSpan={6} sx={{ textAlign: "center" }}>
+                    No Data Found
+                  </TableCell>
+                </TableRow>
               )}
             </TableBody>
           </Table>
