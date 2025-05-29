@@ -620,7 +620,6 @@ export default function FeedStoreTable({ data }: Iprops) {
                     sx={{
                       borderBottomColor: "#F5F6F8",
                       borderBottomWidth: 2,
-                      color: "#555555",
                       background: "#F5F6F8",
                       fontWeight: 500,
                       paddingLeft: {
