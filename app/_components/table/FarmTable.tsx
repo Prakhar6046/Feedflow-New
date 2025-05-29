@@ -416,11 +416,10 @@ export default function FarmTable({ farms }: Props) {
                 );
               })
             ) : (
-              <TableRow
-                key={"no table"}
-                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-              >
-                No Data Found
+              <TableRow>
+                <TableCell colSpan={4} sx={{ textAlign: "center" }}>
+                  No Data Found
+                </TableCell>
               </TableRow>
             )}
           </TableBody>

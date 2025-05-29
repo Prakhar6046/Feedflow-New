@@ -39,7 +39,15 @@ export default async function Page({
         links={[
           { name: "Dashboard", link: "/dashboard" },
           { name: "Organisations", link: "/dashboard/organisation" },
-          { name: tab, link: `/dashboard/organisation?tab=${tab}` },
+          {
+            name:
+              tab === "all"
+                ? "All"
+                : tab === "feedSuppliers"
+                ? "Feed Suppliers"
+                : "Fish Producers",
+            link: `/dashboard/organisation?tab=${tab}`,
+          },
         ]}
       />
       <BasicTable organisations={organisations?.data} userRole={user?.role} />

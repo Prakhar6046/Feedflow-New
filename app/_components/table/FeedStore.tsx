@@ -49,8 +49,8 @@ export default function FeedStoreTable({ data }: Iprops) {
                   idx === headCells.length - 1
                     ? false
                     : orderBy === headCell.id
-                      ? order
-                      : false
+                    ? order
+                    : false
                 }
                 sx={{
                   borderBottom: 0,
@@ -131,7 +131,8 @@ export default function FeedStoreTable({ data }: Iprops) {
           mt: 4,
         }}
       >
-        <Button type="submit"
+        <Button
+          type="submit"
           variant="contained"
           sx={{
             background: "#06A19B",
@@ -143,9 +144,10 @@ export default function FeedStoreTable({ data }: Iprops) {
             my: 2,
             mr: 2,
             ml: "auto",
-            display: "block"
+            display: "block",
           }}
-          disabled={filteredStores?.length === 0}>
+          disabled={filteredStores?.length === 0}
+        >
           Save
         </Button>
 
@@ -163,48 +165,53 @@ export default function FeedStoreTable({ data }: Iprops) {
                       borderBottom: 0,
                       color: "#67737F",
                       background: "#F5F6F8",
-                      px: 0
+                      px: 0,
                     }}
                   >
-                    <Typography sx={{
-                      fontSize: {
-                        md: 14,
-                        xs: 12,
-                      },
-                      fontWeight: 600,
-                      paddingLeft: {
-                        lg: 10,
-                        md: 7,
-                        xs: 4,
-                      },
-                      pr: 2,
-                      whiteSpace: "nowrap",
-                    }}>
+                    <Typography
+                      sx={{
+                        fontSize: {
+                          md: 14,
+                          xs: 12,
+                        },
+                        fontWeight: 600,
+                        paddingLeft: {
+                          lg: 10,
+                          md: 7,
+                          xs: 4,
+                        },
+                        pr: 2,
+                        whiteSpace: "nowrap",
+                      }}
+                    >
                       Product supplier
                     </Typography>
 
-                    <Divider sx={{
-                      borderBottomWidth: 1,
-                      my: 0.5,
-                    }} />
+                    <Divider
+                      sx={{
+                        borderBottomWidth: 1,
+                        my: 0.5,
+                      }}
+                    />
 
-                    <Typography sx={{
-                      fontSize: {
-                        md: 14,
-                        xs: 12,
-                      },
-                      fontWeight: 600,
-                      paddingLeft: {
-                        lg: 10,
-                        md: 7,
-                        xs: 4,
-                      },
-                      pr: 2,
-                      whiteSpace: "nowrap",
-                    }}>
+                    <Typography
+                      sx={{
+                        fontSize: {
+                          md: 14,
+                          xs: 12,
+                        },
+                        fontWeight: 600,
+                        paddingLeft: {
+                          lg: 10,
+                          md: 7,
+                          xs: 4,
+                        },
+                        pr: 2,
+                        whiteSpace: "nowrap",
+                      }}
+                    >
                       Brand Name
                     </Typography>
-
                   </TableCell>
 
                   <TableCell
@@ -212,38 +219,43 @@ export default function FeedStoreTable({ data }: Iprops) {
                       borderBottom: 0,
                       color: "#67737F",
                       background: "#F5F6F8",
-                      px: 0
+                      px: 0,
                     }}
                   >
-                    <Typography sx={{
-                      fontSize: {
-                        md: 14,
-                        xs: 12,
-                      },
-                      fontWeight: 600,
-                      px: 2,
-                      whiteSpace: "nowrap",
-                    }}>
+                    <Typography
+                      sx={{
+                        fontSize: {
+                          md: 14,
+                          xs: 12,
+                        },
+                        fontWeight: 600,
+                        px: 2,
+                        whiteSpace: "nowrap",
+                      }}
+                    >
                       Specialised Aquatic Feeds
                     </Typography>
 
-                    <Divider sx={{
-                      borderBottomWidth: 1,
-                      my: 0.5,
-                    }} />
+                    <Divider
+                      sx={{
+                        borderBottomWidth: 1,
+                        my: 0.5,
+                      }}
+                    />
 
-                    <Typography sx={{
-                      fontSize: {
-                        md: 14,
-                        xs: 12,
-                      },
-                      fontWeight: 600,
-                      px: 2,
-                      whiteSpace: "nowrap",
-                    }}>
+                    <Typography
+                      sx={{
+                        fontSize: {
+                          md: 14,
+                          xs: 12,
+                        },
+                        fontWeight: 600,
+                        px: 2,
+                        whiteSpace: "nowrap",
+                      }}
+                    >
                       SAF 6000
                     </Typography>
-
                   </TableCell>
 
                   <TableCell
@@ -251,38 +263,43 @@ export default function FeedStoreTable({ data }: Iprops) {
                       borderBottom: 0,
                       color: "#67737F",
                       background: "#F5F6F8",
-                      px: 0
+                      px: 0,
                     }}
                   >
-                    <Typography sx={{
-                      fontSize: {
-                        md: 14,
-                        xs: 12,
-                      },
-                      fontWeight: 600,
-                      px: 2,
-                      whiteSpace: "nowrap",
-                    }}>
+                    <Typography
+                      sx={{
+                        fontSize: {
+                          md: 14,
+                          xs: 12,
+                        },
+                        fontWeight: 600,
+                        px: 2,
+                        whiteSpace: "nowrap",
+                      }}
+                    >
                       Specialised Aquatic Feeds
                     </Typography>
 
-                    <Divider sx={{
-                      borderBottomWidth: 1,
-                      my: 0.5,
-                    }} />
+                    <Divider
+                      sx={{
+                        borderBottomWidth: 1,
+                        my: 0.5,
+                      }}
+                    />
 
-                    <Typography sx={{
-                      fontSize: {
-                        md: 14,
-                        xs: 12,
-                      },
-                      fontWeight: 600,
-                      px: 2,
-                      whiteSpace: "nowrap",
-                    }}>
+                    <Typography
+                      sx={{
+                        fontSize: {
+                          md: 14,
+                          xs: 12,
+                        },
+                        fontWeight: 600,
+                        px: 2,
+                        whiteSpace: "nowrap",
+                      }}
+                    >
                       SAF 6000
                     </Typography>
-
                   </TableCell>
 
                   <TableCell
@@ -290,38 +307,43 @@ export default function FeedStoreTable({ data }: Iprops) {
                       borderBottom: 0,
                       color: "#67737F",
                       background: "#F5F6F8",
-                      px: 0
+                      px: 0,
                     }}
                   >
-                    <Typography sx={{
-                      fontSize: {
-                        md: 14,
-                        xs: 12,
-                      },
-                      fontWeight: 600,
-                      px: 2,
-                      whiteSpace: "nowrap",
-                    }}>
+                    <Typography
+                      sx={{
+                        fontSize: {
+                          md: 14,
+                          xs: 12,
+                        },
+                        fontWeight: 600,
+                        px: 2,
+                        whiteSpace: "nowrap",
+                      }}
+                    >
                       Specialised Aquatic Feeds
                     </Typography>
 
-                    <Divider sx={{
-                      borderBottomWidth: 1,
-                      my: 0.5,
-                    }} />
+                    <Divider
+                      sx={{
+                        borderBottomWidth: 1,
+                        my: 0.5,
+                      }}
+                    />
 
-                    <Typography sx={{
-                      fontSize: {
-                        md: 14,
-                        xs: 12,
-                      },
-                      fontWeight: 600,
-                      px: 2,
-                      whiteSpace: "nowrap",
-                    }}>
+                    <Typography
+                      sx={{
+                        fontSize: {
+                          md: 14,
+                          xs: 12,
+                        },
+                        fontWeight: 600,
+                        px: 2,
+                        whiteSpace: "nowrap",
+                      }}
+                    >
                       SAF 6000
                     </Typography>
-
                   </TableCell>
 
                   <TableCell
@@ -329,38 +351,43 @@ export default function FeedStoreTable({ data }: Iprops) {
                       borderBottom: 0,
                       color: "#67737F",
                       background: "#F5F6F8",
-                      px: 0
+                      px: 0,
                     }}
                   >
-                    <Typography sx={{
-                      fontSize: {
-                        md: 14,
-                        xs: 12,
-                      },
-                      fontWeight: 600,
-                      px: 2,
-                      whiteSpace: "nowrap",
-                    }}>
+                    <Typography
+                      sx={{
+                        fontSize: {
+                          md: 14,
+                          xs: 12,
+                        },
+                        fontWeight: 600,
+                        px: 2,
+                        whiteSpace: "nowrap",
+                      }}
+                    >
                       Specialised Aquatic Feeds
                     </Typography>
 
-                    <Divider sx={{
-                      borderBottomWidth: 1,
-                      my: 0.5,
-                    }} />
+                    <Divider
+                      sx={{
+                        borderBottomWidth: 1,
+                        my: 0.5,
+                      }}
+                    />
 
-                    <Typography sx={{
-                      fontSize: {
-                        md: 14,
-                        xs: 12,
-                      },
-                      fontWeight: 600,
-                      px: 2,
-                      whiteSpace: "nowrap",
-                    }}>
+                    <Typography
+                      sx={{
+                        fontSize: {
+                          md: 14,
+                          xs: 12,
+                        },
+                        fontWeight: 600,
+                        px: 2,
+                        whiteSpace: "nowrap",
+                      }}
+                    >
                       SAF 6000
                     </Typography>
-
                   </TableCell>
 
                   <TableCell
@@ -368,38 +395,43 @@ export default function FeedStoreTable({ data }: Iprops) {
                       borderBottom: 0,
                       color: "#67737F",
                       background: "#F5F6F8",
-                      px: 0
+                      px: 0,
                     }}
                   >
-                    <Typography sx={{
-                      fontSize: {
-                        md: 14,
-                        xs: 12,
-                      },
-                      fontWeight: 600,
-                      px: 2,
-                      whiteSpace: "nowrap",
-                    }}>
+                    <Typography
+                      sx={{
+                        fontSize: {
+                          md: 14,
+                          xs: 12,
+                        },
+                        fontWeight: 600,
+                        px: 2,
+                        whiteSpace: "nowrap",
+                      }}
+                    >
                       Specialised Aquatic Feeds
                     </Typography>
 
-                    <Divider sx={{
-                      borderBottomWidth: 1,
-                      my: 0.5,
-                    }} />
+                    <Divider
+                      sx={{
+                        borderBottomWidth: 1,
+                        my: 0.5,
+                      }}
+                    />
 
-                    <Typography sx={{
-                      fontSize: {
-                        md: 14,
-                        xs: 12,
-                      },
-                      fontWeight: 600,
-                      px: 2,
-                      whiteSpace: "nowrap",
-                    }}>
+                    <Typography
+                      sx={{
+                        fontSize: {
+                          md: 14,
+                          xs: 12,
+                        },
+                        fontWeight: 600,
+                        px: 2,
+                        whiteSpace: "nowrap",
+                      }}
+                    >
                       SAF 6000
                     </Typography>
-
                   </TableCell>
 
                   <TableCell
@@ -407,38 +439,43 @@ export default function FeedStoreTable({ data }: Iprops) {
                       borderBottom: 0,
                       color: "#67737F",
                       background: "#F5F6F8",
-                      px: 0
+                      px: 0,
                     }}
                   >
-                    <Typography sx={{
-                      fontSize: {
-                        md: 14,
-                        xs: 12,
-                      },
-                      fontWeight: 600,
-                      px: 2,
-                      whiteSpace: "nowrap",
-                    }}>
+                    <Typography
+                      sx={{
+                        fontSize: {
+                          md: 14,
+                          xs: 12,
+                        },
+                        fontWeight: 600,
+                        px: 2,
+                        whiteSpace: "nowrap",
+                      }}
+                    >
                       Specialised Aquatic Feeds
                     </Typography>
 
-                    <Divider sx={{
-                      borderBottomWidth: 1,
-                      my: 0.5,
-                    }} />
+                    <Divider
+                      sx={{
+                        borderBottomWidth: 1,
+                        my: 0.5,
+                      }}
+                    />
 
-                    <Typography sx={{
-                      fontSize: {
-                        md: 14,
-                        xs: 12,
-                      },
-                      fontWeight: 600,
-                      px: 2,
-                      whiteSpace: "nowrap",
-                    }}>
+                    <Typography
+                      sx={{
+                        fontSize: {
+                          md: 14,
+                          xs: 12,
+                        },
+                        fontWeight: 600,
+                        px: 2,
+                        whiteSpace: "nowrap",
+                      }}
+                    >
                       SAF 6000
                     </Typography>
-
                   </TableCell>
 
                   <TableCell
@@ -446,38 +483,43 @@ export default function FeedStoreTable({ data }: Iprops) {
                       borderBottom: 0,
                       color: "#67737F",
                       background: "#F5F6F8",
-                      px: 0
+                      px: 0,
                     }}
                   >
-                    <Typography sx={{
-                      fontSize: {
-                        md: 14,
-                        xs: 12,
-                      },
-                      fontWeight: 600,
-                      px: 2,
-                      whiteSpace: "nowrap",
-                    }}>
+                    <Typography
+                      sx={{
+                        fontSize: {
+                          md: 14,
+                          xs: 12,
+                        },
+                        fontWeight: 600,
+                        px: 2,
+                        whiteSpace: "nowrap",
+                      }}
+                    >
                       Specialised Aquatic Feeds
                     </Typography>
 
-                    <Divider sx={{
-                      borderBottomWidth: 1,
-                      my: 0.5,
-                    }} />
+                    <Divider
+                      sx={{
+                        borderBottomWidth: 1,
+                        my: 0.5,
+                      }}
+                    />
 
-                    <Typography sx={{
-                      fontSize: {
-                        md: 14,
-                        xs: 12,
-                      },
-                      fontWeight: 600,
-                      px: 2,
-                      whiteSpace: "nowrap",
-                    }}>
+                    <Typography
+                      sx={{
+                        fontSize: {
+                          md: 14,
+                          xs: 12,
+                        },
+                        fontWeight: 600,
+                        px: 2,
+                        whiteSpace: "nowrap",
+                      }}
+                    >
                       SAF 6000
                     </Typography>
-
                   </TableCell>
 
                   <TableCell
@@ -485,38 +527,43 @@ export default function FeedStoreTable({ data }: Iprops) {
                       borderBottom: 0,
                       color: "#67737F",
                       background: "#F5F6F8",
-                      px: 0
+                      px: 0,
                     }}
                   >
-                    <Typography sx={{
-                      fontSize: {
-                        md: 14,
-                        xs: 12,
-                      },
-                      fontWeight: 600,
-                      px: 2,
-                      whiteSpace: "nowrap",
-                    }}>
+                    <Typography
+                      sx={{
+                        fontSize: {
+                          md: 14,
+                          xs: 12,
+                        },
+                        fontWeight: 600,
+                        px: 2,
+                        whiteSpace: "nowrap",
+                      }}
+                    >
                       Specialised Aquatic Feeds
                     </Typography>
 
-                    <Divider sx={{
-                      borderBottomWidth: 1,
-                      my: 0.5,
-                    }} />
+                    <Divider
+                      sx={{
+                        borderBottomWidth: 1,
+                        my: 0.5,
+                      }}
+                    />
 
-                    <Typography sx={{
-                      fontSize: {
-                        md: 14,
-                        xs: 12,
-                      },
-                      fontWeight: 600,
-                      px: 2,
-                      whiteSpace: "nowrap",
-                    }}>
+                    <Typography
+                      sx={{
+                        fontSize: {
+                          md: 14,
+                          xs: 12,
+                        },
+                        fontWeight: 600,
+                        px: 2,
+                        whiteSpace: "nowrap",
+                      }}
+                    >
                       SAF 6000
                     </Typography>
-
                   </TableCell>
 
                   <TableCell
@@ -524,40 +571,44 @@ export default function FeedStoreTable({ data }: Iprops) {
                       borderBottom: 0,
                       color: "#67737F",
                       background: "#F5F6F8",
-                      px: 0
+                      px: 0,
                     }}
                   >
-                    <Typography sx={{
-                      fontSize: {
-                        md: 14,
-                        xs: 12,
-                      },
-                      fontWeight: 600,
-                      px: 2,
-                      whiteSpace: "nowrap",
-                    }}>
+                    <Typography
+                      sx={{
+                        fontSize: {
+                          md: 14,
+                          xs: 12,
+                        },
+                        fontWeight: 600,
+                        px: 2,
+                        whiteSpace: "nowrap",
+                      }}
+                    >
                       Specialised Aquatic Feeds
                     </Typography>
 
-                    <Divider sx={{
-                      borderBottomWidth: 1,
-                      my: 0.5,
-                    }} />
+                    <Divider
+                      sx={{
+                        borderBottomWidth: 1,
+                        my: 0.5,
+                      }}
+                    />
 
-                    <Typography sx={{
-                      fontSize: {
-                        md: 14,
-                        xs: 12,
-                      },
-                      fontWeight: 600,
-                      px: 2,
-                      whiteSpace: "nowrap",
-                    }}>
+                    <Typography
+                      sx={{
+                        fontSize: {
+                          md: 14,
+                          xs: 12,
+                        },
+                        fontWeight: 600,
+                        px: 2,
+                        whiteSpace: "nowrap",
+                      }}
+                    >
                       SAF 6000
                     </Typography>
-
                   </TableCell>
-
                 </TableRow>
               </TableHead>
 
@@ -579,7 +630,6 @@ export default function FeedStoreTable({ data }: Iprops) {
                       },
                       pr: 2,
                       color: "#67737F",
-
                     }}
                   >
                     <Typography
@@ -606,7 +656,6 @@ export default function FeedStoreTable({ data }: Iprops) {
                       px: 2,
                     }}
                   >
-
                     <Typography
                       variant="body1"
                       component={"p"}
@@ -616,19 +665,18 @@ export default function FeedStoreTable({ data }: Iprops) {
                         fontSize: {
                           md: 14,
                           xs: 12,
-                        }
+                        },
                       }}
-                    // onBlur={(e) =>
-                    //   setValue(
-                    //     field.name,
-                    //     Number(e.target.textContent) ||
-                    //     Number(field.value)
-                    //   )
-                    // }
+                      // onBlur={(e) =>
+                      //   setValue(
+                      //     field.name,
+                      //     Number(e.target.textContent) ||
+                      //     Number(field.value)
+                      //   )
+                      // }
                     >
                       Tilapia starter #0
                     </Typography>
-
                   </TableCell>
 
                   <TableCell
@@ -640,7 +688,6 @@ export default function FeedStoreTable({ data }: Iprops) {
                       px: 2,
                     }}
                   >
-
                     <Typography
                       variant="body1"
                       component={"p"}
@@ -650,19 +697,18 @@ export default function FeedStoreTable({ data }: Iprops) {
                         fontSize: {
                           md: 14,
                           xs: 12,
-                        }
+                        },
                       }}
-                    // onBlur={(e) =>
-                    //   setValue(
-                    //     field.name,
-                    //     Number(e.target.textContent) ||
-                    //     Number(field.value)
-                    //   )
-                    // }
+                      // onBlur={(e) =>
+                      //   setValue(
+                      //     field.name,
+                      //     Number(e.target.textContent) ||
+                      //     Number(field.value)
+                      //   )
+                      // }
                     >
                       Tilapia starter #1
                     </Typography>
-
                   </TableCell>
 
                   <TableCell
@@ -674,7 +720,6 @@ export default function FeedStoreTable({ data }: Iprops) {
                       px: 2,
                     }}
                   >
-
                     <Typography
                       variant="body1"
                       component={"p"}
@@ -684,19 +729,18 @@ export default function FeedStoreTable({ data }: Iprops) {
                         fontSize: {
                           md: 14,
                           xs: 12,
-                        }
+                        },
                       }}
-                    // onBlur={(e) =>
-                    //   setValue(
-                    //     field.name,
-                    //     Number(e.target.textContent) ||
-                    //     Number(field.value)
-                    //   )
-                    // }
+                      // onBlur={(e) =>
+                      //   setValue(
+                      //     field.name,
+                      //     Number(e.target.textContent) ||
+                      //     Number(field.value)
+                      //   )
+                      // }
                     >
                       Tilapia starter #1
                     </Typography>
-
                   </TableCell>
 
                   <TableCell
@@ -708,7 +752,6 @@ export default function FeedStoreTable({ data }: Iprops) {
                       px: 2,
                     }}
                   >
-
                     <Typography
                       variant="body1"
                       component={"p"}
@@ -718,19 +761,18 @@ export default function FeedStoreTable({ data }: Iprops) {
                         fontSize: {
                           md: 14,
                           xs: 12,
-                        }
+                        },
                       }}
-                    // onBlur={(e) =>
-                    //   setValue(
-                    //     field.name,
-                    //     Number(e.target.textContent) ||
-                    //     Number(field.value)
-                    //   )
-                    // }
+                      // onBlur={(e) =>
+                      //   setValue(
+                      //     field.name,
+                      //     Number(e.target.textContent) ||
+                      //     Number(field.value)
+                      //   )
+                      // }
                     >
                       Tilapia starter #1
                     </Typography>
-
                   </TableCell>
 
                   <TableCell
@@ -742,7 +784,6 @@ export default function FeedStoreTable({ data }: Iprops) {
                       px: 2,
                     }}
                   >
-
                     <Typography
                       variant="body1"
                       component={"p"}
@@ -752,20 +793,18 @@ export default function FeedStoreTable({ data }: Iprops) {
                         fontSize: {
                           md: 14,
                           xs: 12,
-                        }
+                        },
                       }}
-                    // onBlur={(e) =>
-                    //   setValue(
-                    //     field.name,
-                    //     Number(e.target.textContent) ||
-                    //     Number(field.value)
-                    //   )
-                    // }
+                      // onBlur={(e) =>
+                      //   setValue(
+                      //     field.name,
+                      //     Number(e.target.textContent) ||
+                      //     Number(field.value)
+                      //   )
+                      // }
                     >
                       Tilapia starter #1
                     </Typography>
-
-
                   </TableCell>
 
                   <TableCell
@@ -777,7 +816,6 @@ export default function FeedStoreTable({ data }: Iprops) {
                       px: 2,
                     }}
                   >
-
                     <Typography
                       variant="body1"
                       component={"p"}
@@ -787,20 +825,18 @@ export default function FeedStoreTable({ data }: Iprops) {
                         fontSize: {
                           md: 14,
                           xs: 12,
-                        }
+                        },
                       }}
-                    // onBlur={(e) =>
-                    //   setValue(
-                    //     field.name,
-                    //     Number(e.target.textContent) ||
-                    //     Number(field.value)
-                    //   )
-                    // }
+                      // onBlur={(e) =>
+                      //   setValue(
+                      //     field.name,
+                      //     Number(e.target.textContent) ||
+                      //     Number(field.value)
+                      //   )
+                      // }
                     >
                       Tilapia starter #1
                     </Typography>
-
-
                   </TableCell>
 
                   <TableCell
@@ -812,7 +848,6 @@ export default function FeedStoreTable({ data }: Iprops) {
                       px: 2,
                     }}
                   >
-
                     <Typography
                       variant="body1"
                       component={"p"}
@@ -822,20 +857,18 @@ export default function FeedStoreTable({ data }: Iprops) {
                         fontSize: {
                           md: 14,
                           xs: 12,
-                        }
+                        },
                       }}
-                    // onBlur={(e) =>
-                    //   setValue(
-                    //     field.name,
-                    //     Number(e.target.textContent) ||
-                    //     Number(field.value)
-                    //   )
-                    // }
+                      // onBlur={(e) =>
+                      //   setValue(
+                      //     field.name,
+                      //     Number(e.target.textContent) ||
+                      //     Number(field.value)
+                      //   )
+                      // }
                     >
                       Tilapia starter #1
                     </Typography>
-
-
                   </TableCell>
 
                   <TableCell
@@ -847,7 +880,6 @@ export default function FeedStoreTable({ data }: Iprops) {
                       px: 2,
                     }}
                   >
-
                     <Typography
                       variant="body1"
                       component={"p"}
@@ -857,20 +889,18 @@ export default function FeedStoreTable({ data }: Iprops) {
                         fontSize: {
                           md: 14,
                           xs: 12,
-                        }
+                        },
                       }}
-                    // onBlur={(e) =>
-                    //   setValue(
-                    //     field.name,
-                    //     Number(e.target.textContent) ||
-                    //     Number(field.value)
-                    //   )
-                    // }
+                      // onBlur={(e) =>
+                      //   setValue(
+                      //     field.name,
+                      //     Number(e.target.textContent) ||
+                      //     Number(field.value)
+                      //   )
+                      // }
                     >
                       Tilapia starter #1
                     </Typography>
-
-
                   </TableCell>
 
                   <TableCell
@@ -882,7 +912,6 @@ export default function FeedStoreTable({ data }: Iprops) {
                       px: 2,
                     }}
                   >
-
                     <Typography
                       variant="body1"
                       component={"p"}
@@ -892,22 +921,19 @@ export default function FeedStoreTable({ data }: Iprops) {
                         fontSize: {
                           md: 14,
                           xs: 12,
-                        }
+                        },
                       }}
-                    // onBlur={(e) =>
-                    //   setValue(
-                    //     field.name,
-                    //     Number(e.target.textContent) ||
-                    //     Number(field.value)
-                    //   )
-                    // }
+                      // onBlur={(e) =>
+                      //   setValue(
+                      //     field.name,
+                      //     Number(e.target.textContent) ||
+                      //     Number(field.value)
+                      //   )
+                      // }
                     >
                       Tilapia starter #1
                     </Typography>
-
-
                   </TableCell>
-
                 </TableRow>
               </TableBody>
             </Table>
@@ -1065,7 +1091,7 @@ export default function FeedStoreTable({ data }: Iprops) {
                                 setValue(
                                   field.name,
                                   Number(e.target.textContent) ||
-                                  Number(field.value)
+                                    Number(field.value)
                                 )
                               }
                             >
@@ -1314,7 +1340,7 @@ export default function FeedStoreTable({ data }: Iprops) {
                                 setValue(
                                   field.name,
                                   Number(e.target.textContent) ||
-                                  Number(field.value)
+                                    Number(field.value)
                                 )
                               }
                             >
@@ -1346,7 +1372,7 @@ export default function FeedStoreTable({ data }: Iprops) {
                                 setValue(
                                   field.name,
                                   Number(e.target.textContent) ||
-                                  Number(field.value)
+                                    Number(field.value)
                                 )
                               }
                             >
@@ -1409,7 +1435,7 @@ export default function FeedStoreTable({ data }: Iprops) {
                                 setValue(
                                   field.name,
                                   Number(e.target.textContent) ||
-                                  Number(field.value)
+                                    Number(field.value)
                                 )
                               }
                             >
@@ -1441,7 +1467,7 @@ export default function FeedStoreTable({ data }: Iprops) {
                                 setValue(
                                   field.name,
                                   Number(e.target.textContent) ||
-                                  Number(field.value)
+                                    Number(field.value)
                                 )
                               }
                             >
@@ -1473,7 +1499,7 @@ export default function FeedStoreTable({ data }: Iprops) {
                                 setValue(
                                   field.name,
                                   Number(e.target.textContent) ||
-                                  Number(field.value)
+                                    Number(field.value)
                                 )
                               }
                             >
@@ -1505,7 +1531,7 @@ export default function FeedStoreTable({ data }: Iprops) {
                                 setValue(
                                   field.name,
                                   Number(e.target.textContent) ||
-                                  Number(field.value)
+                                    Number(field.value)
                                 )
                               }
                             >
@@ -1537,7 +1563,7 @@ export default function FeedStoreTable({ data }: Iprops) {
                                 setValue(
                                   field.name,
                                   Number(e.target.textContent) ||
-                                  Number(field.value)
+                                    Number(field.value)
                                 )
                               }
                             >
@@ -1569,7 +1595,7 @@ export default function FeedStoreTable({ data }: Iprops) {
                                 setValue(
                                   field.name,
                                   Number(e.target.textContent) ||
-                                  Number(field.value)
+                                    Number(field.value)
                                 )
                               }
                             >
@@ -1601,7 +1627,7 @@ export default function FeedStoreTable({ data }: Iprops) {
                                 setValue(
                                   field.name,
                                   Number(e.target.textContent) ||
-                                  Number(field.value)
+                                    Number(field.value)
                                 )
                               }
                             >
@@ -1633,7 +1659,7 @@ export default function FeedStoreTable({ data }: Iprops) {
                                 setValue(
                                   field.name,
                                   Number(e.target.textContent) ||
-                                  Number(field.value)
+                                    Number(field.value)
                                 )
                               }
                             >
@@ -1665,7 +1691,7 @@ export default function FeedStoreTable({ data }: Iprops) {
                                 setValue(
                                   field.name,
                                   Number(e.target.textContent) ||
-                                  Number(field.value)
+                                    Number(field.value)
                                 )
                               }
                             >
@@ -1697,7 +1723,7 @@ export default function FeedStoreTable({ data }: Iprops) {
                                 setValue(
                                   field.name,
                                   Number(e.target.textContent) ||
-                                  Number(field.value)
+                                    Number(field.value)
                                 )
                               }
                             >
@@ -1760,7 +1786,7 @@ export default function FeedStoreTable({ data }: Iprops) {
                                 setValue(
                                   field.name,
                                   Number(e.target.textContent) ||
-                                  Number(field.value)
+                                    Number(field.value)
                                 )
                               }
                             >
@@ -1792,7 +1818,7 @@ export default function FeedStoreTable({ data }: Iprops) {
                                 setValue(
                                   field.name,
                                   Number(e.target.textContent) ||
-                                  Number(field.value)
+                                    Number(field.value)
                                 )
                               }
                             >
@@ -1824,7 +1850,7 @@ export default function FeedStoreTable({ data }: Iprops) {
                                 setValue(
                                   field.name,
                                   Number(e.target.textContent) ||
-                                  Number(field.value)
+                                    Number(field.value)
                                 )
                               }
                             >
@@ -1856,7 +1882,7 @@ export default function FeedStoreTable({ data }: Iprops) {
                                 setValue(
                                   field.name,
                                   Number(e.target.textContent) ||
-                                  Number(field.value)
+                                    Number(field.value)
                                 )
                               }
                             >
@@ -1888,7 +1914,7 @@ export default function FeedStoreTable({ data }: Iprops) {
                                 setValue(
                                   field.name,
                                   Number(e.target.textContent) ||
-                                  Number(field.value)
+                                    Number(field.value)
                                 )
                               }
                             >
@@ -1920,7 +1946,7 @@ export default function FeedStoreTable({ data }: Iprops) {
                                 setValue(
                                   field.name,
                                   Number(e.target.textContent) ||
-                                  Number(field.value)
+                                    Number(field.value)
                                 )
                               }
                             >
@@ -1952,7 +1978,7 @@ export default function FeedStoreTable({ data }: Iprops) {
                                 setValue(
                                   field.name,
                                   Number(e.target.textContent) ||
-                                  Number(field.value)
+                                    Number(field.value)
                                 )
                               }
                             >
@@ -1984,7 +2010,7 @@ export default function FeedStoreTable({ data }: Iprops) {
                                 setValue(
                                   field.name,
                                   Number(e.target.textContent) ||
-                                  Number(field.value)
+                                    Number(field.value)
                                 )
                               }
                             >
@@ -2016,7 +2042,7 @@ export default function FeedStoreTable({ data }: Iprops) {
                                 setValue(
                                   field.name,
                                   Number(e.target.textContent) ||
-                                  Number(field.value)
+                                    Number(field.value)
                                 )
                               }
                             >
@@ -2048,7 +2074,7 @@ export default function FeedStoreTable({ data }: Iprops) {
                                 setValue(
                                   field.name,
                                   Number(e.target.textContent) ||
-                                  Number(field.value)
+                                    Number(field.value)
                                 )
                               }
                             >
@@ -2080,7 +2106,7 @@ export default function FeedStoreTable({ data }: Iprops) {
                                 setValue(
                                   field.name,
                                   Number(e.target.textContent) ||
-                                  Number(field.value)
+                                    Number(field.value)
                                 )
                               }
                             >
