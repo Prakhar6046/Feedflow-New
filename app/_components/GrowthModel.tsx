@@ -2,6 +2,7 @@
 import {
   Box,
   Button,
+  Divider,
   FormControl,
   FormHelperText,
   Grid,
@@ -86,7 +87,8 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
         p: 3,
       }}
     >
-      <Stack width={"100%"}>
+      {/* Old Code */}
+      {/* <Stack width={"100%"}>
         <Typography
           variant="h6"
           fontWeight={700}
@@ -103,7 +105,6 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
         <form onSubmit={handleSubmit(onSubmit)}>
           <Box>
             <Grid container spacing={2}>
-              {/* div-1 */}
               <Grid item md={6} xs={12}>
                 <FormControl fullWidth className="form-input" focused>
                   <InputLabel id="feed-supply-select-label5">
@@ -160,7 +161,6 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
                 </Typography>
               </Grid>
 
-              {/* grid-2 */}
               <Grid item md={6} xs={12}>
                 <FormControl fullWidth className="form-input" focused>
                   <InputLabel id="feed-supply-select-label5">
@@ -185,7 +185,6 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
                 </Typography>
               </Grid>
 
-              {/* grid-3 */}
               <Grid item md={6} xs={12}>
                 <TextField
                   label="Growth equation - Length *"
@@ -203,7 +202,6 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
                 </Typography>
               </Grid>
 
-              {/* grid-4 */}
               <Grid item md={6} xs={12}>
                 <TextField
                   label="Growth equation (bodyweight) *"
@@ -223,7 +221,6 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
                 </Typography>
               </Grid>
 
-              {/* grid-5 */}
               <Grid item md={6} xs={12}>
                 <TextField
                   label="Condition Factor *"
@@ -241,7 +238,6 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
                 </Typography>
               </Grid>
 
-              {/* grid-6 */}
               <Grid item md={6} xs={12}>
                 <TextField
                   label="Condition Factor"
@@ -254,7 +250,7 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
                   }}
                 />
               </Grid>
-              {/* <Grid item md={6} xs={12}>
+              <Grid item md={6} xs={12}>
                 <FormControl fullWidth className="form-input" focused>
                   <InputLabel id="farm-select-label5">Farm *</InputLabel>
                   <Select
@@ -278,12 +274,633 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
                     <FormHelperText sx={{ color: "#d32f2f" }}></FormHelperText>
                   )}
                 </FormControl>
-              </Grid> */}
-              {/* <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
-                  {errors.specie ? "This field is required" : ""}
-                </Typography> */}
+              </Grid>
+              <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                {errors.specie ? "This field is required" : ""}
+              </Typography>
             </Grid>
           </Box>
+          <Box
+            display={"flex"}
+            justifyContent={"end"}
+            alignItems={"end"}
+            marginBlock={"20px"}
+          >
+            <Button
+              type="submit"
+              variant="contained"
+              sx={{
+                color: "#fff",
+                background: "#06A19B",
+                fontWeight: 600,
+                padding: "6px 16px",
+                width: "fit-content",
+                textTransform: "capitalize",
+                borderRadius: "8px",
+                border: "1px solid #06A19B",
+              }}
+            >
+              Save
+            </Button>
+          </Box>
+        </form>
+      </Stack> */}
+      <Stack width={"100%"}>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <Box>
+            <Typography
+              variant="h6"
+              fontWeight={700}
+              sx={{
+                fontSize: {
+                  md: 24,
+                  xs: 20,
+                },
+                marginBlock: 2,
+              }}
+            >
+              Overview
+            </Typography>
+            <Grid container spacing={2}>
+              <Grid item md={4} xs={12}>
+                <FormControl fullWidth className="form-input" focused>
+                  <InputLabel id="feed-supply-select-label5">
+                    Name *
+                  </InputLabel>
+                  <TextField
+                    label="Name *"
+                    type="text"
+                    className="form-input"
+                    focused
+                  // {...register("name", { required: true })}
+                  // error={!!errors.name}
+                  // sx={{
+                  //   width: "100%",
+                  // }}
+                  />
+                </FormControl>
+                {/* <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                  {errors.name ? "This field is required." : ""}
+                </Typography> */}
+              </Grid>
+
+              <Grid item md={4} xs={12}>
+                <FormControl fullWidth className="form-input" focused>
+                  <InputLabel id="feed-supply-select-label5">
+                    Species *
+                  </InputLabel>
+                  <Select
+                    labelId="feed-supply-select-label5"
+                    id="feed-supply-select5"
+                    label="Species *"
+                    {...register("specie", {
+                      required: true,
+                    })}
+                    value={species}
+                    onChange={(e) => {
+                      setSpecies(e.target.value);
+                      clearErrors("specie");
+                    }}
+                  >
+                    <MenuItem
+                      value={" Tilapia (Oreochromis Nilotic x Aureus)"}
+                      key={"Tilapia (Oreochromis Nilotic x Aureus)"}
+                    >
+                      Tilapia (Oreochromis Nilotic x Aureus)
+                    </MenuItem>
+                  </Select>
+                  {errors.specie && (
+                    <FormHelperText sx={{ color: "#d32f2f" }}></FormHelperText>
+                  )}
+                </FormControl>
+                <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                  {errors.specie ? "This field is required." : ""}
+                </Typography>
+              </Grid>
+
+              <Grid item md={4} xs={12}>
+                <FormControl fullWidth className="form-input" focused>
+                  <InputLabel id="feed-supply-select-label5">
+                    Production Systems *
+                  </InputLabel>
+                  <Select
+                    labelId="feed-supply-select-label5"
+                    id="feed-supply-select5"
+                    label="Production Systems *"
+                    {...register("specie", {
+                      required: true,
+                    })}
+                    value={species}
+                    onChange={(e) => {
+                      setSpecies(e.target.value);
+                      clearErrors("specie");
+                    }}
+                  >
+                    <MenuItem
+                      value={" Tilapia (Oreochromis Nilotic x Aureus)"}
+                      key={"Tilapia (Oreochromis Nilotic x Aureus)"}
+                    >
+                      Tilapia (Oreochromis Nilotic x Aureus)
+                    </MenuItem>
+                  </Select>
+                  {errors.specie && (
+                    <FormHelperText sx={{ color: "#d32f2f" }}></FormHelperText>
+                  )}
+                </FormControl>
+                <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                  {errors.specie ? "This field is required." : ""}
+                </Typography>
+              </Grid>
+            </Grid>
+          </Box>
+
+          <Divider
+            sx={{
+              my: 4,
+            }}
+          />
+
+          <Box>
+            <Typography
+              variant="h6"
+              fontWeight={700}
+              sx={{
+                fontSize: {
+                  md: 24,
+                  xs: 20,
+                },
+                marginBottom: 2,
+              }}
+            >
+              Gener
+            </Typography>
+            <Grid container spacing={2}>
+              <Grid item md={4} xs={12}>
+                <Box position={"relative"}>
+                  <TextField
+                    label="ADC CP *"
+                    type="text"
+                    // {...register("fishWeight")}
+                    className="form-input"
+                    focused
+                    sx={{
+                      width: "100%",
+                    }}
+                  />
+                  <Typography
+                    variant="body1"
+                    color="#555555AC"
+                    sx={{
+                      position: "absolute",
+                      right: 13,
+                      top: "30%",
+                      backgroundColor: "white",
+                      paddingInline: "5px",
+                    }}
+                  >
+                    %
+                  </Typography>
+                </Box>
+              </Grid>
+
+              <Grid item md={4} xs={12}>
+                <Box position={"relative"}>
+                  <TextField
+                    label="ADC CF *"
+                    type="text"
+                    // {...register("fishWeight")}
+                    className="form-input"
+                    focused
+                    sx={{
+                      width: "100%",
+                    }}
+                  />
+                  <Typography
+                    variant="body1"
+                    color="#555555AC"
+                    sx={{
+                      position: "absolute",
+                      right: 13,
+                      top: "30%",
+                      backgroundColor: "white",
+                      paddingInline: "5px",
+                    }}
+                  >
+                    %
+                  </Typography>
+                </Box>
+              </Grid>
+
+              <Grid item md={4} xs={12}>
+                <Box position={"relative"}>
+                  <TextField
+                    label="ADC NFE *"
+                    type="text"
+                    // {...register("fishWeight")}
+                    className="form-input"
+                    focused
+                    sx={{
+                      width: "100%",
+                    }}
+                  />
+                  <Typography
+                    variant="body1"
+                    color="#555555AC"
+                    sx={{
+                      position: "absolute",
+                      right: 13,
+                      top: "30%",
+                      backgroundColor: "white",
+                      paddingInline: "5px",
+                    }}
+                  >
+                    %
+                  </Typography>
+                </Box>
+              </Grid>
+
+              <Grid item md={4} xs={12}>
+                <Box position={"relative"}>
+                  <TextField
+                    label="GE Coeff CP *"
+                    type="text"
+                    // {...register("fishWeight")}
+                    className="form-input"
+                    focused
+                    sx={{
+                      width: "100%",
+                    }}
+                  />
+                  <Typography
+                    variant="body1"
+                    color="#555555AC"
+                    sx={{
+                      position: "absolute",
+                      right: 13,
+                      top: "30%",
+                      backgroundColor: "white",
+                      paddingInline: "5px",
+                    }}
+                  >
+                    MJ/kg
+                  </Typography>
+                </Box>
+              </Grid>
+
+              <Grid item md={4} xs={12}>
+                <Box position={"relative"}>
+                  <TextField
+                    label="GE Coeff CF *"
+                    type="text"
+                    // {...register("fishWeight")}
+                    className="form-input"
+                    focused
+                    sx={{
+                      width: "100%",
+                    }}
+                  />
+                  <Typography
+                    variant="body1"
+                    color="#555555AC"
+                    sx={{
+                      position: "absolute",
+                      right: 13,
+                      top: "30%",
+                      backgroundColor: "white",
+                      paddingInline: "5px",
+                    }}
+                  >
+                    MJ/kg
+                  </Typography>
+                </Box>
+              </Grid>
+
+              <Grid item md={4} xs={12}>
+                <Box position={"relative"}>
+                  <TextField
+                    label="GE Coeff NFE *"
+                    type="text"
+                    // {...register("fishWeight")}
+                    className="form-input"
+                    focused
+                    sx={{
+                      width: "100%",
+                    }}
+                  />
+                  <Typography
+                    variant="body1"
+                    color="#555555AC"
+                    sx={{
+                      position: "absolute",
+                      right: 13,
+                      top: "30%",
+                      backgroundColor: "white",
+                      paddingInline: "5px",
+                    }}
+                  >
+                    MJ/kg
+                  </Typography>
+                </Box>
+              </Grid>
+
+              <Grid item md={4} xs={12}>
+                <Box position={"relative"}>
+                  <TextField
+                    label="Waste Factor *"
+                    type="text"
+                    // {...register("fishWeight")}
+                    className="form-input"
+                    focused
+                    sx={{
+                      width: "100%",
+                    }}
+                  />
+                  <Typography
+                    variant="body1"
+                    color="#555555AC"
+                    sx={{
+                      position: "absolute",
+                      right: 13,
+                      top: "30%",
+                      backgroundColor: "white",
+                      paddingInline: "5px",
+                    }}
+                  >
+                    %
+                  </Typography>
+                </Box>
+              </Grid>
+
+            </Grid>
+          </Box>
+
+          <Divider
+            sx={{
+              my: 4,
+            }}
+          />
+
+          <Box>
+            <Typography
+              variant="h6"
+              fontWeight={700}
+              sx={{
+                fontSize: {
+                  md: 24,
+                  xs: 20,
+                },
+                marginBottom: 2,
+              }}
+            >
+              Thermal Growth Coefficient - TGC
+            </Typography>
+            <Grid container spacing={2}>
+              <Grid item md={4} xs={12}>
+                <FormControl fullWidth className="form-input" focused>
+                  <InputLabel id="feed-supply-select-label5">
+                    Modal *
+                  </InputLabel>
+                  <Select
+                    labelId="feed-supply-select-label5"
+                    id="feed-supply-select5"
+                    label="Species *"
+                    {...register("specie", {
+                      required: true,
+                    })}
+                    value={species}
+                    onChange={(e) => {
+                      setSpecies(e.target.value);
+                      clearErrors("specie");
+                    }}
+                  >
+                    <MenuItem
+                      value={" Tilapia (Oreochromis Nilotic x Aureus)"}
+                      key={"Tilapia (Oreochromis Nilotic x Aureus)"}
+                    >
+                      Tilapia (Oreochromis Nilotic x Aureus)
+                    </MenuItem>
+                  </Select>
+                  {errors.specie && (
+                    <FormHelperText sx={{ color: "#d32f2f" }}></FormHelperText>
+                  )}
+                </FormControl>
+                <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                  {errors.specie ? "This field is required." : ""}
+                </Typography>
+              </Grid>
+
+              <Grid item md={8} xs={12} sx={{
+                alignSelf: "center",
+              }}>
+                <Typography variant="body1" fontWeight={600} mb={1}>
+                  TGC = <Typography variant="body1" component={"span"}>-0.00356658 + 0.00012*LN(T-11.25)</Typography>
+                </Typography>
+              </Grid>
+
+              <Grid item md={4} xs={12}>
+                <FormControl fullWidth className="form-input" focused>
+                  <InputLabel id="feed-supply-select-label5">
+                    a
+                  </InputLabel>
+                  <TextField
+                    label="a"
+                    type="text"
+                    className="form-input"
+                    focused
+                  // {...register("name", { required: true })}
+                  // error={!!errors.name}
+                  // sx={{
+                  //   width: "100%",
+                  // }}
+                  />
+                </FormControl>
+                {/* <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                  {errors.name ? "This field is required." : ""}
+                </Typography> */}
+              </Grid>
+
+              <Grid item md={4} xs={12}>
+                <FormControl fullWidth className="form-input" focused>
+                  <InputLabel id="feed-supply-select-label5">
+                    b
+                  </InputLabel>
+                  <TextField
+                    label="b"
+                    type="text"
+                    className="form-input"
+                    focused
+                  // {...register("name", { required: true })}
+                  // error={!!errors.name}
+                  // sx={{
+                  //   width: "100%",
+                  // }}
+                  />
+                </FormControl>
+                {/* <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                  {errors.name ? "This field is required." : ""}
+                </Typography> */}
+              </Grid>
+
+              <Grid item md={4} xs={12}>
+                <FormControl fullWidth className="form-input" focused>
+                  <InputLabel id="feed-supply-select-label5">
+                    c
+                  </InputLabel>
+                  <TextField
+                    label="c"
+                    type="text"
+                    className="form-input"
+                    focused
+                  // {...register("name", { required: true })}
+                  // error={!!errors.name}
+                  // sx={{
+                  //   width: "100%",
+                  // }}
+                  />
+                </FormControl>
+                {/* <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                  {errors.name ? "This field is required." : ""}
+                </Typography> */}
+              </Grid>
+
+            </Grid>
+          </Box>
+
+          <Divider
+            sx={{
+              my: 4,
+            }}
+          />
+
+          <Box>
+            <Typography
+              variant="h6"
+              fontWeight={700}
+              sx={{
+                fontSize: {
+                  md: 24,
+                  xs: 20,
+                },
+                marginBottom: 2,
+              }}
+            >
+              Theoretical Feed Conversion Ratio - tFCR
+            </Typography>
+            <Grid container spacing={2}>
+              <Grid item md={4} xs={12}>
+                <FormControl fullWidth className="form-input" focused>
+                  <InputLabel id="feed-supply-select-label5">
+                    Modal *
+                  </InputLabel>
+                  <Select
+                    labelId="feed-supply-select-label5"
+                    id="feed-supply-select5"
+                    label="Species *"
+                    {...register("specie", {
+                      required: true,
+                    })}
+                    value={species}
+                    onChange={(e) => {
+                      setSpecies(e.target.value);
+                      clearErrors("specie");
+                    }}
+                  >
+                    <MenuItem
+                      value={" Tilapia (Oreochromis Nilotic x Aureus)"}
+                      key={"Tilapia (Oreochromis Nilotic x Aureus)"}
+                    >
+                      Tilapia (Oreochromis Nilotic x Aureus)
+                    </MenuItem>
+                  </Select>
+                  {errors.specie && (
+                    <FormHelperText sx={{ color: "#d32f2f" }}></FormHelperText>
+                  )}
+                </FormControl>
+                <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                  {errors.specie ? "This field is required." : ""}
+                </Typography>
+              </Grid>
+
+              <Grid item md={8} xs={12} sx={{
+                alignSelf: "center",
+              }}>
+                <Typography variant="body1" fontWeight={600} mb={1}>
+                  tFCR = <Typography variant="body1" component={"span"}>-0.00356658 + 0.00012*LN(T-11.25) <sup>1</sup></Typography>
+                </Typography>
+              </Grid>
+
+              <Grid item md={4} xs={12}>
+                <FormControl fullWidth className="form-input" focused>
+                  <InputLabel id="feed-supply-select-label5">
+                    a
+                  </InputLabel>
+                  <TextField
+                    label="a"
+                    type="text"
+                    className="form-input"
+                    focused
+                  // {...register("name", { required: true })}
+                  // error={!!errors.name}
+                  // sx={{
+                  //   width: "100%",
+                  // }}
+                  />
+                </FormControl>
+                {/* <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                  {errors.name ? "This field is required." : ""}
+                </Typography> */}
+              </Grid>
+
+              <Grid item md={4} xs={12}>
+                <FormControl fullWidth className="form-input" focused>
+                  <InputLabel id="feed-supply-select-label5">
+                    b
+                  </InputLabel>
+                  <TextField
+                    label="b"
+                    type="text"
+                    className="form-input"
+                    focused
+                  // {...register("name", { required: true })}
+                  // error={!!errors.name}
+                  // sx={{
+                  //   width: "100%",
+                  // }}
+                  />
+                </FormControl>
+                {/* <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                  {errors.name ? "This field is required." : ""}
+                </Typography> */}
+              </Grid>
+
+              <Grid item md={4} xs={12}>
+                <FormControl fullWidth className="form-input" focused>
+                  <InputLabel id="feed-supply-select-label5">
+                    c
+                  </InputLabel>
+                  <TextField
+                    label="c"
+                    type="text"
+                    className="form-input"
+                    focused
+                  // {...register("name", { required: true })}
+                  // error={!!errors.name}
+                  // sx={{
+                  //   width: "100%",
+                  // }}
+                  />
+                </FormControl>
+                {/* <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                  {errors.name ? "This field is required." : ""}
+                </Typography> */}
+              </Grid>
+
+            </Grid>
+          </Box>
+
+
+
+
           <Box
             display={"flex"}
             justifyContent={"end"}
