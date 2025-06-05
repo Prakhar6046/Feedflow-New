@@ -480,7 +480,7 @@ const ProductionUnitParametersPredicated: React.FC<Props> = ({
                 </TableContainer>
               </Grid>
               {/* grid-2 */}
-              <Grid item lg={2} xs={3}>
+              <Grid item lg={3} xs={3}>
                 <Typography
                   variant="h6"
                   fontWeight={700}
@@ -616,69 +616,6 @@ const ProductionUnitParametersPredicated: React.FC<Props> = ({
                               )}
                             </TableCell>
                           ))}
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-              </Grid>
-              {/* grid-3 */}
-              <Grid item lg={1} xs={2}>
-                <Typography
-                  variant="h6"
-                  fontWeight={700}
-                  minWidth={"70px"}
-                  sx={{
-                    fontSize: {
-                      xl: 18,
-                      xs: 12,
-                    },
-                    margin: "2",
-                  }}
-                >
-                  Apply to all units
-                </Typography>
-                <TableContainer>
-                  <Table aria-label="sticky table">
-                    <TableHead>
-                      <TableRow>
-                        <TableCell
-                          sx={{
-                            borderBottom: "0px",
-                            paddingTop: "40px",
-                          }}
-                        ></TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {waterQualityPredictedHead.map((head, i) => (
-                        <TableRow
-                          key={i}
-                          sx={{
-                            "&:last-child td, &:last-child th": { border: 0 },
-                          }}
-                        >
-                          <TableCell
-                            sx={{
-                              textAlign: "center",
-                              border: "none",
-                              padding: "0px",
-                              display: "flex",
-                              alignItems: "start",
-                            }}
-                          >
-                            <FormControlLabel
-                              label=""
-                              style={{
-                                fontSize: "14px",
-                                fontWeight: "500",
-                                color: "#555555",
-
-                                marginInline: "auto",
-                              }}
-                              control={<Checkbox defaultChecked />}
-                            />
-                          </TableCell>
                         </TableRow>
                       ))}
                     </TableBody>

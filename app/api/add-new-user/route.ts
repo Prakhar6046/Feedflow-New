@@ -4,7 +4,9 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   try {
-    const { email, name, organisationId, image } = await req.json();
+    const { email, name, organisationId, image, permissions } =
+      await req.json();
+
     if (!email || !name || !organisationId) {
       return NextResponse.json(
         { error: "Please provide all data" },
@@ -35,6 +37,7 @@ export async function POST(req: NextRequest) {
           name: formattedName,
           organisationId: Number(organisationId),
           imageUrl: image ?? undefined,
+          permissions: permissions ?? {},
         },
       });
       return NextResponse.json({

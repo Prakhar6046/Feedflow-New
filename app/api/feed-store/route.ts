@@ -11,7 +11,7 @@ export async function GET(request: NextRequest) {
 
     const feedStores = await prisma.feedStore.findMany({
       orderBy: {
-        createdAt: "desc", // Sort by createdAt in descending order
+        createdAt: "asc",
       },
     });
 

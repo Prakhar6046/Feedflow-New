@@ -78,7 +78,7 @@ export default function Page() {
       />
       <Stack
         sx={{
-          backgroundImage: "url(/static/img/login-bgImg.png)",
+          backgroundImage: "url(/static/img/high-backend.png)",
           backgroundRepeat: "no-repeat",
           backgroundSize: "100% 100%",
           minHeight: "100vh",

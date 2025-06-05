@@ -47,6 +47,7 @@ import toast from "react-hot-toast";
 
 import Image from "next/image";
 import FarmsInformation from "./FarmsInformation";
+import { Permissions } from "@/app/_typeModels/User";
 export const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
   clipPath: "inset(50%)",
@@ -61,8 +62,15 @@ export const VisuallyHiddenInput = styled("input")({
 type Iprops = {
   organisationId: string;
   organisations: SingleOrganisation[];
+  userRole: string;
+  permissions: Permissions;
 };
-const EditOrganisation = ({ organisationId, organisations }: Iprops) => {
+const EditOrganisation = ({
+  organisationId,
+  organisations,
+  permissions,
+  userRole,
+}: Iprops) => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [organisationData, setOrganisationData] = useState<OrganizationData>();

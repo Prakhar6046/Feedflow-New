@@ -13,6 +13,7 @@ import { getCookie, setCookie } from "cookies-next";
 import { useDebounce } from "../hooks/useDebounce";
 import SearchBar from "./SearchBar";
 import { getLocalItem, removeLocalItem, setLocalItem } from "../_lib/utils";
+import { Permissions } from "../_typeModels/User";
 interface Props {
   heading: string;
   buttonName?: string;
@@ -21,6 +22,7 @@ interface Props {
   isTable?: boolean;
   buttonRoute?: string;
   refetch?: string;
+  permissions?: boolean;
 }
 
 export default function BasicBreadcrumbs({
@@ -31,6 +33,7 @@ export default function BasicBreadcrumbs({
   isTable,
   buttonRoute,
   refetch,
+  permissions,
 }: Props) {
   const role = getCookie("role");
   const pathName = usePathname();
@@ -197,6 +200,7 @@ export default function BasicBreadcrumbs({
             {buttonName}
           </Button>
         ) : (
+          permissions &&
           buttonName &&
           buttonName !== "Add Organization" && (
             <Button
@@ -233,16 +237,6 @@ export default function BasicBreadcrumbs({
             </Button>
           )
         )}
-
-        {/* {heading !== "Batches" && heading === "Organization" ? (
-          <AddOrganization open={open} setOpen={setOpen} />
-        ) : (
-          <AddUser
-            open={open}
-            setOpen={setOpen}
-            organisations={organisations ?? []}
-          />
-        )} */}
       </Stack>
       {/* Breadcrumb Section End */}
 

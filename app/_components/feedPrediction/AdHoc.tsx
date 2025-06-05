@@ -102,7 +102,7 @@ function AdHoc({ data, setData }: Iprops) {
           Number(diffInDays),
           formattedDate,
           1,
-          13.47
+          13.9
         )
       );
     }
@@ -625,8 +625,8 @@ function AdHoc({ data, setData }: Iprops) {
                 {errors.temp.type === "required"
                   ? ValidationMessages.required
                   : errors.temp.type === "pattern"
-                    ? ValidationMessages.OnlyNumbersWithDot
-                    : ""}
+                  ? ValidationMessages.OnlyNumbersWithDot
+                  : ""}
               </Typography>
             )}
           </Grid>
@@ -812,8 +812,8 @@ function AdHoc({ data, setData }: Iprops) {
                 {errors.fishWeight.type === "required"
                   ? ValidationMessages.required
                   : errors.fishWeight.type === "pattern"
-                    ? ValidationMessages.OnlyNumbersWithDot
-                    : ""}
+                  ? ValidationMessages.OnlyNumbersWithDot
+                  : ""}
               </Typography>
             )}
           </Grid>
@@ -852,8 +852,8 @@ function AdHoc({ data, setData }: Iprops) {
                 {errors.numberOfFishs.type === "required"
                   ? ValidationMessages.required
                   : errors.numberOfFishs.type === "pattern"
-                    ? ValidationMessages.OnlyNumbersWithDot
-                    : ""}
+                  ? ValidationMessages.OnlyNumbersWithDot
+                  : ""}
               </Typography>
             )}
           </Grid>
@@ -896,8 +896,8 @@ function AdHoc({ data, setData }: Iprops) {
                 {errors.adjustmentFactor.type === "required"
                   ? ValidationMessages.required
                   : errors.adjustmentFactor.type === "pattern"
-                    ? ValidationMessages.OnlyNumbersWithDot
-                    : ""}
+                  ? ValidationMessages.OnlyNumbersWithDot
+                  : ""}
               </Typography>
             )}
           </Grid>
@@ -914,7 +914,7 @@ function AdHoc({ data, setData }: Iprops) {
                   width: "fit-content",
                   textTransform: "capitalize",
                   borderRadius: "8px",
-                  mt: 1
+                  mt: 1,
                 }}
               >
                 Generate

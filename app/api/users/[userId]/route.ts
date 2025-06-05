@@ -45,8 +45,9 @@ export async function PUT(req: NextRequest, context: { params: any }) {
     }
 
     // Upload the image using multer
-    const formData = await req.formData();
+    const formData: any = await req.formData();
 
+    const permissions = JSON.parse(formData.get("permissions"));
     const newPassword = formData.get("password") as string;
     let encryptedPassword;
     let updateData;
@@ -57,6 +58,7 @@ export async function PUT(req: NextRequest, context: { params: any }) {
         name: formData.get("name") as string,
         email: formData.get("email") as string,
         organisationId: Number(formData.get("organisationId") as string),
+        permissions: permissions ?? {},
         password: encryptedPassword,
       };
     } else {
@@ -65,8 +67,10 @@ export async function PUT(req: NextRequest, context: { params: any }) {
         email: formData.get("email") as string,
         imageUrl: formData.get("imageUrl") as string,
         organisationId: Number(formData.get("organisationId") as string),
+        permissions: permissions ?? {},
       };
     }
+
     await prisma.user.update({
       where: { id: Number(userId) },
       data: {

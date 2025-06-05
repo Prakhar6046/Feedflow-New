@@ -5,6 +5,7 @@ import {
   getOrganisationCount,
   getOrganisations,
 } from "@/app/_lib/action";
+import { SingleUser } from "@/app/_typeModels/User";
 import { getCookie } from "cookies-next";
 import { Metadata } from "next";
 import { cookies } from "next/headers";
@@ -20,6 +21,7 @@ export default async function Page({
 }) {
   const organisations = await getAllOrganisations();
   const loggedUser: any = getCookie("logged-user", { cookies });
+  const user: SingleUser = JSON.parse(loggedUser);
   const organisationCount = await getOrganisationCount();
   const type = searchParams?.type || "";
 
@@ -33,6 +35,7 @@ export default async function Page({
           { name: "Organisations", link: "/dashboard/organisation" },
           { name: "New Organisation", link: "/dashboard/organisation/new" },
         ]}
+        permissions={user?.permissions.createOrganisation}
       />
       <AddNewOrganisation
         organisations={organisations?.data}

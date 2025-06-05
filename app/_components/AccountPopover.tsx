@@ -90,6 +90,7 @@ const AccountPopover = () => {
     };
     getUser();
   }, [loggedUserData, router]);
+
   return (
     <React.Fragment>
       <Box sx={{ display: "flex", alignItems: "center", textAlign: "center" }}>
@@ -101,7 +102,7 @@ const AccountPopover = () => {
             aria-haspopup="true"
             aria-expanded={open ? "true" : undefined}
           >
-            {userData?.imageUrl ? (
+            {userData?.imageUrl !== "null" ? (
               <Box
                 borderRadius={100}
                 width={40}

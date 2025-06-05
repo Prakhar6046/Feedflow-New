@@ -1,7 +1,7 @@
 import { revalidatePath } from "next/cache";
 export const getOrganisations = async (payload: {
   role?: string;
-  organisationId?: string;
+  organisationId?: number;
   query?: string;
   tab?: string;
 }) => {

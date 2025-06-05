@@ -622,70 +622,7 @@ const ExpandedSidebar = () => {
               </ListItemButton>
             </ListItem>
           </Link>
-          {loggedUserData?.role === "SUPERADMIN" && (
-            <Link
-              href={"/dashboard/growthModel"}
-              className="nav-links"
-              onClick={() => dispatch(farmAction.resetState())}
-            >
-              <ListItem
-                sx={{
-                  paddingX: 0,
-                  mb: 0.5,
-                }}
-              >
-                <ListItemButton
-                  className={
-                    activePage.startsWith("/dashboard/growthModel")
-                      ? "active"
-                      : ""
-                  }
-                  sx={{
-                    display: "flex",
-                    flexDirection: "row",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    gap: 1.7,
-                  }}
-                >
-                  <ListItemIcon
-                    sx={{
-                      display: "grid",
-                      placeItems: "center",
-                      marginRight: 0,
-                      minWidth: "fit-content",
-                    }}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="1.7em"
-                      height="1.4em"
-                      viewBox="0 0 24 24"
-                    >
-                      <g
-                        fill="none"
-                        stroke="#0E848E"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="1.5"
-                      >
-                        <path d="M3.5 4v12.5a4 4 0 0 0 4 4H20" />
-                        <path d="m7 14l3.293-3.293a1 1 0 0 1 1.414 0l1.336 1.336a1 1 0 0 0 1.414 0L19 7.5l.648-.649M15 6.5h3.8c.331 0 .631.134.848.351M20 11.5V7.7c0-.331-.134-.631-.352-.849" />
-                      </g>
-                    </svg>
-                  </ListItemIcon>
-                  <ListItemText
-                    className="expand-nav-links"
-                    sx={{
-                      mt: 0.5,
-                    }}
-                  >
-                    Growth Models
-                  </ListItemText>
-                </ListItemButton>
-              </ListItem>
-            </Link>
-          )}
+
           <Typography
             variant="body1"
             fontSize={12}
@@ -801,6 +738,70 @@ const ExpandedSidebar = () => {
               </ListItemButton>
             </ListItem>
           </Link>
+          {loggedUserData?.role === "SUPERADMIN" && (
+            <Link
+              href={"/dashboard/growthModel"}
+              className="nav-links"
+              onClick={() => dispatch(farmAction.resetState())}
+            >
+              <ListItem
+                sx={{
+                  paddingX: 0,
+                  mb: 0.5,
+                }}
+              >
+                <ListItemButton
+                  className={
+                    activePage.startsWith("/dashboard/growthModel")
+                      ? "active"
+                      : ""
+                  }
+                  sx={{
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    gap: 1.7,
+                  }}
+                >
+                  <ListItemIcon
+                    sx={{
+                      display: "grid",
+                      placeItems: "center",
+                      marginRight: 0,
+                      minWidth: "fit-content",
+                    }}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="1.7em"
+                      height="1.4em"
+                      viewBox="0 0 24 24"
+                    >
+                      <g
+                        fill="none"
+                        stroke="#0E848E"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="1.5"
+                      >
+                        <path d="M3.5 4v12.5a4 4 0 0 0 4 4H20" />
+                        <path d="m7 14l3.293-3.293a1 1 0 0 1 1.414 0l1.336 1.336a1 1 0 0 0 1.414 0L19 7.5l.648-.649M15 6.5h3.8c.331 0 .631.134.848.351M20 11.5V7.7c0-.331-.134-.631-.352-.849" />
+                      </g>
+                    </svg>
+                  </ListItemIcon>
+                  <ListItemText
+                    className="expand-nav-links"
+                    sx={{
+                      mt: 0.5,
+                    }}
+                  >
+                    Growth Models
+                  </ListItemText>
+                </ListItemButton>
+              </ListItem>
+            </Link>
+          )}
         </List>
         <Box
           position={"absolute"}

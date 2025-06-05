@@ -213,8 +213,8 @@ const FarmInformation: NextPage<Props> = ({
                   );
                 },
                 maxLength: {
-                  value: 20,
-                  message: "Input can contain a maximum of 20 characters.",
+                  value: 150,
+                  message: "Input can contain a maximum of 150 characters.",
                 },
               })}
               focused

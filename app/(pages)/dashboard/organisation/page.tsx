@@ -1,6 +1,7 @@
 import BasicTable from "@/app/_components/BasicTable";
 import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
 import { getOrganisations } from "@/app/_lib/action";
+import { SingleUser } from "@/app/_typeModels/User";
 import { getCookie } from "cookies-next";
 import { Metadata } from "next";
 import { cookies } from "next/headers";
@@ -18,16 +19,15 @@ export default async function Page({
   const query = searchParams?.query || "";
   const tab = searchParams?.tab || "all";
   const loggedUser: any = getCookie("logged-user", { cookies });
-  const user = JSON.parse(loggedUser);
+  const user: SingleUser = JSON.parse(loggedUser);
 
   let organisations = await getOrganisations({
-    organisationId: user?.organisationId,
+    organisationId: Number(user?.organisationId),
     query,
-    role: user?.role,
+    role: String(user?.role),
     tab,
   });
-  if (user.role === "SUPERADMIN" || user.role === "ADMIN") {
-  }
+
   return (
     <>
       <BasicBreadcrumbs
@@ -49,8 +49,13 @@ export default async function Page({
             link: `/dashboard/organisation?tab=${tab}`,
           },
         ]}
+        permissions={user?.permissions.createOrganisation}
       />
-      <BasicTable organisations={organisations?.data} userRole={user?.role} />
+      <BasicTable
+        organisations={organisations?.data}
+        userRole={String(user?.role)}
+        permissions={user?.permissions}
+      />
     </>
   );
 }

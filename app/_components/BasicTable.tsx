@@ -35,12 +35,18 @@ import {
   organisationTableHeadMember,
 } from "../_lib/utils/tableHeadData";
 import { SingleOrganisation } from "../_typeModels/Organization";
+import { Permissions } from "../_typeModels/User";
 interface Props {
   organisations: SingleOrganisation[];
   userRole: string;
+  permissions: Permissions;
 }
 
-export default function BasicTable({ organisations, userRole }: Props) {
+export default function BasicTable({
+  organisations,
+  userRole,
+  permissions,
+}: Props) {
   const router = useRouter();
   const pathName = usePathname();
   const searchParams = useSearchParams();
@@ -532,7 +538,16 @@ export default function BasicTable({ organisations, userRole }: Props) {
                               left: "-10px",
                             }}
                           >
-                            <MenuItem onClick={handleEdit}>
+                            <MenuItem
+                              onClick={handleEdit}
+                              disabled={
+                                userRole === "SUPERADMIN"
+                                  ? false
+                                  : permissions?.editOrganisation
+                                  ? false
+                                  : true
+                              }
+                            >
                               <Stack
                                 display="flex"
                                 gap={1.2}

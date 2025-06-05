@@ -25,6 +25,7 @@ import toast from "react-hot-toast";
 import { SingleOrganisation } from "../_typeModels/Organization";
 import { AddUserFormInputs, SingleUser } from "../_typeModels/User";
 import { deleteImage, handleUpload } from "../_lib/utils";
+import UserPermission from "./user/UserPermission";
 
 interface Props {
   organisations?: SingleOrganisation[];
@@ -59,6 +60,7 @@ export default function AddNewUser({ organisations }: Props) {
     handleSubmit,
     clearErrors,
     reset,
+    control,
     formState: { errors },
   } = useForm<AddUserFormInputs>();
   const onSubmit: SubmitHandler<AddUserFormInputs> = async (data) => {
@@ -83,6 +85,7 @@ export default function AddNewUser({ organisations }: Props) {
             const oldImageName = profilePic?.split("/").pop()?.split(".")[0];
             formData.append("oldImageName", oldImageName || "");
             formData.append("userId", responseData.data.id);
+
             const response = await fetch(`/api/profile-pic/upload`, {
               method: "POST",
               body: formData,
@@ -128,15 +131,15 @@ export default function AddNewUser({ organisations }: Props) {
     <>
       <Stack pb={5}>
         {/* Profile Section Start */}
-        <Stack
-          sx={{
-            borderRadius: "14px",
-            boxShadow: "0px 0px 5px #C5C5C5",
-            mt: 4,
-            padding: 3,
-          }}
-        >
-          <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <Stack
+            sx={{
+              borderRadius: "14px",
+              boxShadow: "0px 0px 5px #C5C5C5",
+              mt: 4,
+              padding: 3,
+            }}
+          >
             <Grid container>
               <Grid
                 item
@@ -422,28 +425,29 @@ export default function AddNewUser({ organisations }: Props) {
                       )}
                   </FormControl>
                 </Box>
-                <Button
-                  type="submit"
-                  variant="contained"
-                  disabled={isApiCallInProgress}
-                  sx={{
-                    background: "#06A19B",
-                    fontWeight: 600,
-                    padding: "6px 16px",
-                    width: "fit-content",
-                    textTransform: "capitalize",
-                    borderRadius: "8px",
-                    marginLeft: "auto",
-                    display: "block",
-                    marginTop: 2,
-                  }}
-                >
-                  Create New User
-                </Button>
               </Grid>
             </Grid>
-          </form>
-        </Stack>
+          </Stack>
+          <UserPermission control={control} />
+          <Button
+            type="submit"
+            variant="contained"
+            disabled={isApiCallInProgress}
+            sx={{
+              background: "#06A19B",
+              fontWeight: 600,
+              padding: "6px 16px",
+              width: "fit-content",
+              textTransform: "capitalize",
+              borderRadius: "8px",
+              marginLeft: "auto",
+              display: "block",
+              marginTop: 5,
+            }}
+          >
+            Create New User
+          </Button>
+        </form>
       </Stack>
     </>
   );

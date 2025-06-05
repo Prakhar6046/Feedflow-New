@@ -41,6 +41,7 @@ model User {
   Farm           Farm[]
   FarmManger     FarmManger[]
   access         Boolean      @default(true)
+  permissions    Json         @default("{}")
 }
 
 model Organisation {
