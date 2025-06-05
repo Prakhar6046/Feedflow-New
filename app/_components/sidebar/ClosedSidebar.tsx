@@ -500,7 +500,7 @@ function ClosedSidebar() {
             }}
           />
 
-          <Link href={"/dashboard/organisation?tab=all"} className="nav-links">
+          <Link href={"/dashboard/organisation"} className="nav-links">
             <ListItem
               sx={{
                 paddingX: 0,
@@ -509,7 +509,7 @@ function ClosedSidebar() {
             >
               <ListItemButton
                 className={
-                  activePage.startsWith("/dashboard/organisation?tab=all")
+                  activePage.startsWith("/dashboard/organisation")
                     ? "active"
                     : ""
                 }
