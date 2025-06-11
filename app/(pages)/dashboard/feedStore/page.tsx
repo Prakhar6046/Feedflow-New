@@ -1,5 +1,6 @@
+import DnDKitTableColumn from "@/app/_components/DnDKitTableColumn";
 import FeedStoreTable from "@/app/_components/table/FeedStore";
-import { getFeedStores } from "@/app/_lib/action";
+import { getFeedStores, getFeedSuppliers } from "@/app/_lib/action";
 import { getCookie } from "cookies-next";
 import { cookies } from "next/headers";
 
@@ -21,10 +22,12 @@ const Page = async ({
     organisationId: userOrganisationType.organisationId,
     query,
   });
+  const feedSuppliers = await getFeedSuppliers();
 
   return (
     <div>
-      <FeedStoreTable data={stores?.data} />
+      <FeedStoreTable data={stores?.data} feedSuppliers={feedSuppliers?.data} />
+      {/* <DnDKitTableColumn /> */}
     </div>
   );
 };

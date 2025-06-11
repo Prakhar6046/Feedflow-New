@@ -144,3 +144,17 @@ export interface Farm {
   userId: number;
   farmAddress: Address; // Reusing the Address interface as it has similar structure
 }
+
+export interface FeedSupplier {
+  id: number;
+  image: string | null;
+  imageUrl: string | null;
+  name: string;
+  organisationCode: string;
+  organisationType: string;
+  updatedBy: number | null;
+  createdBy: number;
+  createdAt: string; // ISO date string
+  updatedAt: string; // ISO date string
+  addressId: string;
+}

@@ -350,3 +350,22 @@ export const getFeedStores = async (payload: {
     return error;
   }
 };
+export const getFeedSuppliers = async () => {
+  try {
+    const data = await fetch(
+      `${process.env.BASE_URL}/api/organisation/feedSuppliers`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        cache: "no-store",
+      }
+    );
+    const res = await data.json();
+
+    return res;
+  } catch (error) {
+    return error;
+  }
+};
