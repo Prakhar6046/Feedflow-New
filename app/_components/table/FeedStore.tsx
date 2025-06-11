@@ -216,7 +216,8 @@ export default function FeedStoreTable({ data, feedSuppliers }: Iprops) {
                               fontWeight: 600,
                               px: 2,
                               whiteSpace: "nowrap",
-                              minWidth: "150px",
+                              maxWidth: "250px",
+                              minWidth: "250px",
                               height: "32px",
                             }}
                             renderValue={(selected) =>
@@ -316,13 +317,13 @@ export default function FeedStoreTable({ data, feedSuppliers }: Iprops) {
                               xs: 12,
                             },
                           }}
-                          // onBlur={(e) =>
-                          //   setValue(
-                          //     field.name,
-                          //     Number(e.target.textContent) ||
-                          //     Number(field.value)
-                          //   )
-                          // }
+                        // onBlur={(e) =>
+                        //   setValue(
+                        //     field.name,
+                        //     Number(e.target.textContent) ||
+                        //     Number(field.value)
+                        //   )
+                        // }
                         >
                           {filteredStores ? filteredStores[i]?.productName : ""}
                         </Typography>
@@ -386,13 +387,13 @@ export default function FeedStoreTable({ data, feedSuppliers }: Iprops) {
                               xs: 12,
                             },
                           }}
-                          // onBlur={(e) =>
-                          //   setValue(
-                          //     field.name,
-                          //     Number(e.target.textContent) ||
-                          //     Number(field.value)
-                          //   )
-                          // }
+                        // onBlur={(e) =>
+                        //   setValue(
+                        //     field.name,
+                        //     Number(e.target.textContent) ||
+                        //     Number(field.value)
+                        //   )
+                        // }
                         >
                           {filteredStores
                             ? filteredStores[i]?.productFormat
@@ -458,13 +459,13 @@ export default function FeedStoreTable({ data, feedSuppliers }: Iprops) {
                               xs: 12,
                             },
                           }}
-                          // onBlur={(e) =>
-                          //   setValue(
-                          //     field.name,
-                          //     Number(e.target.textContent) ||
-                          //     Number(field.value)
-                          //   )
-                          // }
+                        // onBlur={(e) =>
+                        //   setValue(
+                        //     field.name,
+                        //     Number(e.target.textContent) ||
+                        //     Number(field.value)
+                        //   )
+                        // }
                         >
                           {filteredStores
                             ? filteredStores[i]?.particleSize
@@ -530,13 +531,13 @@ export default function FeedStoreTable({ data, feedSuppliers }: Iprops) {
                               xs: 12,
                             },
                           }}
-                          // onBlur={(e) =>
-                          //   setValue(
-                          //     field.name,
-                          //     Number(e.target.textContent) ||
-                          //     Number(field.value)
-                          //   )
-                          // }
+                        // onBlur={(e) =>
+                        //   setValue(
+                        //     field.name,
+                        //     Number(e.target.textContent) ||
+                        //     Number(field.value)
+                        //   )
+                        // }
                         >
                           {filteredStores ? filteredStores[i]?.fishSizeG : ""}
                         </Typography>
@@ -597,13 +598,13 @@ export default function FeedStoreTable({ data, feedSuppliers }: Iprops) {
                           xs: 12,
                         },
                       }}
-                      // onBlur={(e) =>
-                      //   setValue(
-                      //     field.name,
-                      //     Number(e.target.textContent) ||
-                      //     Number(field.value)
-                      //   )
-                      // }
+                    // onBlur={(e) =>
+                    //   setValue(
+                    //     field.name,
+                    //     Number(e.target.textContent) ||
+                    //     Number(field.value)
+                    //   )
+                    // }
                     >
                       Tilapia starter #0
                     </Typography>
@@ -629,13 +630,13 @@ export default function FeedStoreTable({ data, feedSuppliers }: Iprops) {
                           xs: 12,
                         },
                       }}
-                      // onBlur={(e) =>
-                      //   setValue(
-                      //     field.name,
-                      //     Number(e.target.textContent) ||
-                      //     Number(field.value)
-                      //   )
-                      // }
+                    // onBlur={(e) =>
+                    //   setValue(
+                    //     field.name,
+                    //     Number(e.target.textContent) ||
+                    //     Number(field.value)
+                    //   )
+                    // }
                     >
                       Tilapia starter #1
                     </Typography>
@@ -661,13 +662,13 @@ export default function FeedStoreTable({ data, feedSuppliers }: Iprops) {
                           xs: 12,
                         },
                       }}
-                      // onBlur={(e) =>
-                      //   setValue(
-                      //     field.name,
-                      //     Number(e.target.textContent) ||
-                      //     Number(field.value)
-                      //   )
-                      // }
+                    // onBlur={(e) =>
+                    //   setValue(
+                    //     field.name,
+                    //     Number(e.target.textContent) ||
+                    //     Number(field.value)
+                    //   )
+                    // }
                     >
                       Tilapia starter #1
                     </Typography>
@@ -693,13 +694,13 @@ export default function FeedStoreTable({ data, feedSuppliers }: Iprops) {
                           xs: 12,
                         },
                       }}
-                      // onBlur={(e) =>
-                      //   setValue(
-                      //     field.name,
-                      //     Number(e.target.textContent) ||
-                      //     Number(field.value)
-                      //   )
-                      // }
+                    // onBlur={(e) =>
+                    //   setValue(
+                    //     field.name,
+                    //     Number(e.target.textContent) ||
+                    //     Number(field.value)
+                    //   )
+                    // }
                     >
                       Tilapia starter #1
                     </Typography>
@@ -725,13 +726,13 @@ export default function FeedStoreTable({ data, feedSuppliers }: Iprops) {
                           xs: 12,
                         },
                       }}
-                      // onBlur={(e) =>
-                      //   setValue(
-                      //     field.name,
-                      //     Number(e.target.textContent) ||
-                      //     Number(field.value)
-                      //   )
-                      // }
+                    // onBlur={(e) =>
+                    //   setValue(
+                    //     field.name,
+                    //     Number(e.target.textContent) ||
+                    //     Number(field.value)
+                    //   )
+                    // }
                     >
                       Tilapia starter #1
                     </Typography>
@@ -757,13 +758,13 @@ export default function FeedStoreTable({ data, feedSuppliers }: Iprops) {
                           xs: 12,
                         },
                       }}
-                      // onBlur={(e) =>
-                      //   setValue(
-                      //     field.name,
-                      //     Number(e.target.textContent) ||
-                      //     Number(field.value)
-                      //   )
-                      // }
+                    // onBlur={(e) =>
+                    //   setValue(
+                    //     field.name,
+                    //     Number(e.target.textContent) ||
+                    //     Number(field.value)
+                    //   )
+                    // }
                     >
                       Tilapia starter #1
                     </Typography>
@@ -789,13 +790,13 @@ export default function FeedStoreTable({ data, feedSuppliers }: Iprops) {
                           xs: 12,
                         },
                       }}
-                      // onBlur={(e) =>
-                      //   setValue(
-                      //     field.name,
-                      //     Number(e.target.textContent) ||
-                      //     Number(field.value)
-                      //   )
-                      // }
+                    // onBlur={(e) =>
+                    //   setValue(
+                    //     field.name,
+                    //     Number(e.target.textContent) ||
+                    //     Number(field.value)
+                    //   )
+                    // }
                     >
                       Tilapia starter #1
                     </Typography>
@@ -854,13 +855,13 @@ export default function FeedStoreTable({ data, feedSuppliers }: Iprops) {
                           xs: 12,
                         },
                       }}
-                      // onBlur={(e) =>
-                      //   setValue(
-                      //     field.name,
-                      //     Number(e.target.textContent) ||
-                      //     Number(field.value)
-                      //   )
-                      // }
+                    // onBlur={(e) =>
+                    //   setValue(
+                    //     field.name,
+                    //     Number(e.target.textContent) ||
+                    //     Number(field.value)
+                    //   )
+                    // }
                     >
                       Tilapia starter #0
                     </Typography>
@@ -886,13 +887,13 @@ export default function FeedStoreTable({ data, feedSuppliers }: Iprops) {
                           xs: 12,
                         },
                       }}
-                      // onBlur={(e) =>
-                      //   setValue(
-                      //     field.name,
-                      //     Number(e.target.textContent) ||
-                      //     Number(field.value)
-                      //   )
-                      // }
+                    // onBlur={(e) =>
+                    //   setValue(
+                    //     field.name,
+                    //     Number(e.target.textContent) ||
+                    //     Number(field.value)
+                    //   )
+                    // }
                     >
                       Tilapia starter #1
                     </Typography>
@@ -918,13 +919,13 @@ export default function FeedStoreTable({ data, feedSuppliers }: Iprops) {
                           xs: 12,
                         },
                       }}
-                      // onBlur={(e) =>
-                      //   setValue(
-                      //     field.name,
-                      //     Number(e.target.textContent) ||
-                      //     Number(field.value)
-                      //   )
-                      // }
+                    // onBlur={(e) =>
+                    //   setValue(
+                    //     field.name,
+                    //     Number(e.target.textContent) ||
+                    //     Number(field.value)
+                    //   )
+                    // }
                     >
                       Tilapia starter #1
                     </Typography>
@@ -950,13 +951,13 @@ export default function FeedStoreTable({ data, feedSuppliers }: Iprops) {
                           xs: 12,
                         },
                       }}
-                      // onBlur={(e) =>
-                      //   setValue(
-                      //     field.name,
-                      //     Number(e.target.textContent) ||
-                      //     Number(field.value)
-                      //   )
-                      // }
+                    // onBlur={(e) =>
+                    //   setValue(
+                    //     field.name,
+                    //     Number(e.target.textContent) ||
+                    //     Number(field.value)
+                    //   )
+                    // }
                     >
                       Tilapia starter #1
                     </Typography>
@@ -982,13 +983,13 @@ export default function FeedStoreTable({ data, feedSuppliers }: Iprops) {
                           xs: 12,
                         },
                       }}
-                      // onBlur={(e) =>
-                      //   setValue(
-                      //     field.name,
-                      //     Number(e.target.textContent) ||
-                      //     Number(field.value)
-                      //   )
-                      // }
+                    // onBlur={(e) =>
+                    //   setValue(
+                    //     field.name,
+                    //     Number(e.target.textContent) ||
+                    //     Number(field.value)
+                    //   )
+                    // }
                     >
                       Tilapia starter #1
                     </Typography>
@@ -1014,13 +1015,13 @@ export default function FeedStoreTable({ data, feedSuppliers }: Iprops) {
                           xs: 12,
                         },
                       }}
-                      // onBlur={(e) =>
-                      //   setValue(
-                      //     field.name,
-                      //     Number(e.target.textContent) ||
-                      //     Number(field.value)
-                      //   )
-                      // }
+                    // onBlur={(e) =>
+                    //   setValue(
+                    //     field.name,
+                    //     Number(e.target.textContent) ||
+                    //     Number(field.value)
+                    //   )
+                    // }
                     >
                       Tilapia starter #1
                     </Typography>
@@ -1046,13 +1047,13 @@ export default function FeedStoreTable({ data, feedSuppliers }: Iprops) {
                           xs: 12,
                         },
                       }}
-                      // onBlur={(e) =>
-                      //   setValue(
-                      //     field.name,
-                      //     Number(e.target.textContent) ||
-                      //     Number(field.value)
-                      //   )
-                      // }
+                    // onBlur={(e) =>
+                    //   setValue(
+                    //     field.name,
+                    //     Number(e.target.textContent) ||
+                    //     Number(field.value)
+                    //   )
+                    // }
                     >
                       Tilapia starter #1
                     </Typography>
@@ -1114,13 +1115,13 @@ export default function FeedStoreTable({ data, feedSuppliers }: Iprops) {
                               xs: 12,
                             },
                           }}
-                          // onBlur={(e) =>
-                          //   setValue(
-                          //     field.name,
-                          //     Number(e.target.textContent) ||
-                          //     Number(field.value)
-                          //   )
-                          // }
+                        // onBlur={(e) =>
+                        //   setValue(
+                        //     field.name,
+                        //     Number(e.target.textContent) ||
+                        //     Number(field.value)
+                        //   )
+                        // }
                         >
                           {filteredStores
                             ? filteredStores[i]?.nutritionalClass
@@ -1186,13 +1187,13 @@ export default function FeedStoreTable({ data, feedSuppliers }: Iprops) {
                               xs: 12,
                             },
                           }}
-                          // onBlur={(e) =>
-                          //   setValue(
-                          //     field.name,
-                          //     Number(e.target.textContent) ||
-                          //     Number(field.value)
-                          //   )
-                          // }
+                        // onBlur={(e) =>
+                        //   setValue(
+                        //     field.name,
+                        //     Number(e.target.textContent) ||
+                        //     Number(field.value)
+                        //   )
+                        // }
                         >
                           {filteredStores
                             ? filteredStores[i]?.nutritionalPurpose
@@ -1258,13 +1259,13 @@ export default function FeedStoreTable({ data, feedSuppliers }: Iprops) {
                               xs: 12,
                             },
                           }}
-                          // onBlur={(e) =>
-                          //   setValue(
-                          //     field.name,
-                          //     Number(e.target.textContent) ||
-                          //     Number(field.value)
-                          //   )
-                          // }
+                        // onBlur={(e) =>
+                        //   setValue(
+                        //     field.name,
+                        //     Number(e.target.textContent) ||
+                        //     Number(field.value)
+                        //   )
+                        // }
                         >
                           {filteredStores
                             ? filteredStores[i]?.suitableSpecies
@@ -1330,13 +1331,13 @@ export default function FeedStoreTable({ data, feedSuppliers }: Iprops) {
                               xs: 12,
                             },
                           }}
-                          // onBlur={(e) =>
-                          //   setValue(
-                          //     field.name,
-                          //     Number(e.target.textContent) ||
-                          //     Number(field.value)
-                          //   )
-                          // }
+                        // onBlur={(e) =>
+                        //   setValue(
+                        //     field.name,
+                        //     Number(e.target.textContent) ||
+                        //     Number(field.value)
+                        //   )
+                        // }
                         >
                           {filteredStores
                             ? filteredStores[i]?.suitabilityAnimalSize
@@ -1402,13 +1403,13 @@ export default function FeedStoreTable({ data, feedSuppliers }: Iprops) {
                               xs: 12,
                             },
                           }}
-                          // onBlur={(e) =>
-                          //   setValue(
-                          //     field.name,
-                          //     Number(e.target.textContent) ||
-                          //     Number(field.value)
-                          //   )
-                          // }
+                        // onBlur={(e) =>
+                        //   setValue(
+                        //     field.name,
+                        //     Number(e.target.textContent) ||
+                        //     Number(field.value)
+                        //   )
+                        // }
                         >
                           {filteredStores
                             ? filteredStores[i]?.productionIntensity
@@ -1474,13 +1475,13 @@ export default function FeedStoreTable({ data, feedSuppliers }: Iprops) {
                               xs: 12,
                             },
                           }}
-                          // onBlur={(e) =>
-                          //   setValue(
-                          //     field.name,
-                          //     Number(e.target.textContent) ||
-                          //     Number(field.value)
-                          //   )
-                          // }
+                        // onBlur={(e) =>
+                        //   setValue(
+                        //     field.name,
+                        //     Number(e.target.textContent) ||
+                        //     Number(field.value)
+                        //   )
+                        // }
                         >
                           {filteredStores
                             ? filteredStores[i]?.suitabilityUnit
@@ -1546,13 +1547,13 @@ export default function FeedStoreTable({ data, feedSuppliers }: Iprops) {
                               xs: 12,
                             },
                           }}
-                          // onBlur={(e) =>
-                          //   setValue(
-                          //     field.name,
-                          //     Number(e.target.textContent) ||
-                          //     Number(field.value)
-                          //   )
-                          // }
+                        // onBlur={(e) =>
+                        //   setValue(
+                        //     field.name,
+                        //     Number(e.target.textContent) ||
+                        //     Number(field.value)
+                        //   )
+                        // }
                         >
                           {filteredStores
                             ? filteredStores[i]?.feedingPhase
@@ -1618,13 +1619,13 @@ export default function FeedStoreTable({ data, feedSuppliers }: Iprops) {
                               xs: 12,
                             },
                           }}
-                          // onBlur={(e) =>
-                          //   setValue(
-                          //     field.name,
-                          //     Number(e.target.textContent) ||
-                          //     Number(field.value)
-                          //   )
-                          // }
+                        // onBlur={(e) =>
+                        //   setValue(
+                        //     field.name,
+                        //     Number(e.target.textContent) ||
+                        //     Number(field.value)
+                        //   )
+                        // }
                         >
                           {filteredStores ? filteredStores[i]?.lifeStage : ""}
                         </Typography>
@@ -1688,13 +1689,13 @@ export default function FeedStoreTable({ data, feedSuppliers }: Iprops) {
                               xs: 12,
                             },
                           }}
-                          // onBlur={(e) =>
-                          //   setValue(
-                          //     field.name,
-                          //     Number(e.target.textContent) ||
-                          //     Number(field.value)
-                          //   )
-                          // }
+                        // onBlur={(e) =>
+                        //   setValue(
+                        //     field.name,
+                        //     Number(e.target.textContent) ||
+                        //     Number(field.value)
+                        //   )
+                        // }
                         >
                           {filteredStores
                             ? filteredStores[i]?.shelfLifeMonths
@@ -1760,13 +1761,13 @@ export default function FeedStoreTable({ data, feedSuppliers }: Iprops) {
                               xs: 12,
                             },
                           }}
-                          // onBlur={(e) =>
-                          //   setValue(
-                          //     field.name,
-                          //     Number(e.target.textContent) ||
-                          //     Number(field.value)
-                          //   )
-                          // }
+                        // onBlur={(e) =>
+                        //   setValue(
+                        //     field.name,
+                        //     Number(e.target.textContent) ||
+                        //     Number(field.value)
+                        //   )
+                        // }
                         >
                           {filteredStores ? filteredStores[i]?.feedCost : ""}
                         </Typography>
@@ -1829,13 +1830,13 @@ export default function FeedStoreTable({ data, feedSuppliers }: Iprops) {
                               xs: 12,
                             },
                           }}
-                          // onBlur={(e) =>
-                          //   setValue(
-                          //     field.name,
-                          //     Number(e.target.textContent) ||
-                          //     Number(field.value)
-                          //   )
-                          // }
+                        // onBlur={(e) =>
+                        //   setValue(
+                        //     field.name,
+                        //     Number(e.target.textContent) ||
+                        //     Number(field.value)
+                        //   )
+                        // }
                         >
                           {filteredStores
                             ? filteredStores[i]?.feedIngredients
@@ -1901,13 +1902,13 @@ export default function FeedStoreTable({ data, feedSuppliers }: Iprops) {
                               xs: 12,
                             },
                           }}
-                          // onBlur={(e) =>
-                          //   setValue(
-                          //     field.name,
-                          //     Number(e.target.textContent) ||
-                          //     Number(field.value)
-                          //   )
-                          // }
+                        // onBlur={(e) =>
+                        //   setValue(
+                        //     field.name,
+                        //     Number(e.target.textContent) ||
+                        //     Number(field.value)
+                        //   )
+                        // }
                         >
                           {filteredStores
                             ? filteredStores[i]?.moistureGPerKg
@@ -1973,13 +1974,13 @@ export default function FeedStoreTable({ data, feedSuppliers }: Iprops) {
                               xs: 12,
                             },
                           }}
-                          // onBlur={(e) =>
-                          //   setValue(
-                          //     field.name,
-                          //     Number(e.target.textContent) ||
-                          //     Number(field.value)
-                          //   )
-                          // }
+                        // onBlur={(e) =>
+                        //   setValue(
+                        //     field.name,
+                        //     Number(e.target.textContent) ||
+                        //     Number(field.value)
+                        //   )
+                        // }
                         >
                           {filteredStores
                             ? filteredStores[i]?.crudeProteinGPerKg
@@ -2045,13 +2046,13 @@ export default function FeedStoreTable({ data, feedSuppliers }: Iprops) {
                               xs: 12,
                             },
                           }}
-                          // onBlur={(e) =>
-                          //   setValue(
-                          //     field.name,
-                          //     Number(e.target.textContent) ||
-                          //     Number(field.value)
-                          //   )
-                          // }
+                        // onBlur={(e) =>
+                        //   setValue(
+                        //     field.name,
+                        //     Number(e.target.textContent) ||
+                        //     Number(field.value)
+                        //   )
+                        // }
                         >
                           {filteredStores
                             ? filteredStores[i]?.crudeFatGPerKg
@@ -2117,13 +2118,13 @@ export default function FeedStoreTable({ data, feedSuppliers }: Iprops) {
                               xs: 12,
                             },
                           }}
-                          // onBlur={(e) =>
-                          //   setValue(
-                          //     field.name,
-                          //     Number(e.target.textContent) ||
-                          //     Number(field.value)
-                          //   )
-                          // }
+                        // onBlur={(e) =>
+                        //   setValue(
+                        //     field.name,
+                        //     Number(e.target.textContent) ||
+                        //     Number(field.value)
+                        //   )
+                        // }
                         >
                           {filteredStores
                             ? filteredStores[i]?.crudeFiberGPerKg
@@ -2189,13 +2190,13 @@ export default function FeedStoreTable({ data, feedSuppliers }: Iprops) {
                               xs: 12,
                             },
                           }}
-                          // onBlur={(e) =>
-                          //   setValue(
-                          //     field.name,
-                          //     Number(e.target.textContent) ||
-                          //     Number(field.value)
-                          //   )
-                          // }
+                        // onBlur={(e) =>
+                        //   setValue(
+                        //     field.name,
+                        //     Number(e.target.textContent) ||
+                        //     Number(field.value)
+                        //   )
+                        // }
                         >
                           {filteredStores
                             ? filteredStores[i]?.crudeAshGPerKg
@@ -2261,13 +2262,13 @@ export default function FeedStoreTable({ data, feedSuppliers }: Iprops) {
                               xs: 12,
                             },
                           }}
-                          // onBlur={(e) =>
-                          //   setValue(
-                          //     field.name,
-                          //     Number(e.target.textContent) ||
-                          //     Number(field.value)
-                          //   )
-                          // }
+                        // onBlur={(e) =>
+                        //   setValue(
+                        //     field.name,
+                        //     Number(e.target.textContent) ||
+                        //     Number(field.value)
+                        //   )
+                        // }
                         >
                           {filteredStores ? filteredStores[i]?.nfe : ""}
                         </Typography>
@@ -2331,13 +2332,13 @@ export default function FeedStoreTable({ data, feedSuppliers }: Iprops) {
                               xs: 12,
                             },
                           }}
-                          // onBlur={(e) =>
-                          //   setValue(
-                          //     field.name,
-                          //     Number(e.target.textContent) ||
-                          //     Number(field.value)
-                          //   )
-                          // }
+                        // onBlur={(e) =>
+                        //   setValue(
+                        //     field.name,
+                        //     Number(e.target.textContent) ||
+                        //     Number(field.value)
+                        //   )
+                        // }
                         >
                           {filteredStores
                             ? filteredStores[i]?.calciumGPerKg
@@ -2403,13 +2404,13 @@ export default function FeedStoreTable({ data, feedSuppliers }: Iprops) {
                               xs: 12,
                             },
                           }}
-                          // onBlur={(e) =>
-                          //   setValue(
-                          //     field.name,
-                          //     Number(e.target.textContent) ||
-                          //     Number(field.value)
-                          //   )
-                          // }
+                        // onBlur={(e) =>
+                        //   setValue(
+                        //     field.name,
+                        //     Number(e.target.textContent) ||
+                        //     Number(field.value)
+                        //   )
+                        // }
                         >
                           {filteredStores
                             ? filteredStores[i]?.phosphorusGPerKg
@@ -2475,13 +2476,13 @@ export default function FeedStoreTable({ data, feedSuppliers }: Iprops) {
                               xs: 12,
                             },
                           }}
-                          // onBlur={(e) =>
-                          //   setValue(
-                          //     field.name,
-                          //     Number(e.target.textContent) ||
-                          //     Number(field.value)
-                          //   )
-                          // }
+                        // onBlur={(e) =>
+                        //   setValue(
+                        //     field.name,
+                        //     Number(e.target.textContent) ||
+                        //     Number(field.value)
+                        //   )
+                        // }
                         >
                           {filteredStores
                             ? filteredStores[i]?.carbohydratesGPerKg
@@ -2547,13 +2548,13 @@ export default function FeedStoreTable({ data, feedSuppliers }: Iprops) {
                               xs: 12,
                             },
                           }}
-                          // onBlur={(e) =>
-                          //   setValue(
-                          //     field.name,
-                          //     Number(e.target.textContent) ||
-                          //     Number(field.value)
-                          //   )
-                          // }
+                        // onBlur={(e) =>
+                        //   setValue(
+                        //     field.name,
+                        //     Number(e.target.textContent) ||
+                        //     Number(field.value)
+                        //   )
+                        // }
                         >
                           {filteredStores
                             ? filteredStores[i]?.metabolizableEnergy
@@ -2619,13 +2620,13 @@ export default function FeedStoreTable({ data, feedSuppliers }: Iprops) {
                               xs: 12,
                             },
                           }}
-                          // onBlur={(e) =>
-                          //   setValue(
-                          //     field.name,
-                          //     Number(e.target.textContent) ||
-                          //     Number(field.value)
-                          //   )
-                          // }
+                        // onBlur={(e) =>
+                        //   setValue(
+                        //     field.name,
+                        //     Number(e.target.textContent) ||
+                        //     Number(field.value)
+                        //   )
+                        // }
                         >
                           {filteredStores
                             ? filteredStores[i]?.feedingGuide
@@ -2691,13 +2692,13 @@ export default function FeedStoreTable({ data, feedSuppliers }: Iprops) {
                               xs: 12,
                             },
                           }}
-                          // onBlur={(e) =>
-                          //   setValue(
-                          //     field.name,
-                          //     Number(e.target.textContent) ||
-                          //     Number(field.value)
-                          //   )
-                          // }
+                        // onBlur={(e) =>
+                        //   setValue(
+                        //     field.name,
+                        //     Number(e.target.textContent) ||
+                        //     Number(field.value)
+                        //   )
+                        // }
                         >
                           {filteredStores ? filteredStores[i]?.geCoeffCP : ""}
                         </Typography>
@@ -2761,13 +2762,13 @@ export default function FeedStoreTable({ data, feedSuppliers }: Iprops) {
                               xs: 12,
                             },
                           }}
-                          // onBlur={(e) =>
-                          //   setValue(
-                          //     field.name,
-                          //     Number(e.target.textContent) ||
-                          //     Number(field.value)
-                          //   )
-                          // }
+                        // onBlur={(e) =>
+                        //   setValue(
+                        //     field.name,
+                        //     Number(e.target.textContent) ||
+                        //     Number(field.value)
+                        //   )
+                        // }
                         >
                           {filteredStores ? filteredStores[i]?.geCoeffCF : ""}
                         </Typography>
@@ -2831,13 +2832,13 @@ export default function FeedStoreTable({ data, feedSuppliers }: Iprops) {
                               xs: 12,
                             },
                           }}
-                          // onBlur={(e) =>
-                          //   setValue(
-                          //     field.name,
-                          //     Number(e.target.textContent) ||
-                          //     Number(field.value)
-                          //   )
-                          // }
+                        // onBlur={(e) =>
+                        //   setValue(
+                        //     field.name,
+                        //     Number(e.target.textContent) ||
+                        //     Number(field.value)
+                        //   )
+                        // }
                         >
                           {filteredStores ? filteredStores[i]?.geCoeffNFE : ""}
                         </Typography>
@@ -2901,13 +2902,13 @@ export default function FeedStoreTable({ data, feedSuppliers }: Iprops) {
                               xs: 12,
                             },
                           }}
-                          // onBlur={(e) =>
-                          //   setValue(
-                          //     field.name,
-                          //     Number(e.target.textContent) ||
-                          //     Number(field.value)
-                          //   )
-                          // }
+                        // onBlur={(e) =>
+                        //   setValue(
+                        //     field.name,
+                        //     Number(e.target.textContent) ||
+                        //     Number(field.value)
+                        //   )
+                        // }
                         >
                           {filteredStores ? filteredStores[i]?.ge : ""}
                         </Typography>
@@ -2971,13 +2972,13 @@ export default function FeedStoreTable({ data, feedSuppliers }: Iprops) {
                               xs: 12,
                             },
                           }}
-                          // onBlur={(e) =>
-                          //   setValue(
-                          //     field.name,
-                          //     Number(e.target.textContent) ||
-                          //     Number(field.value)
-                          //   )
-                          // }
+                        // onBlur={(e) =>
+                        //   setValue(
+                        //     field.name,
+                        //     Number(e.target.textContent) ||
+                        //     Number(field.value)
+                        //   )
+                        // }
                         >
                           {filteredStores ? filteredStores[i]?.digCP : ""}
                         </Typography>
@@ -3040,13 +3041,13 @@ export default function FeedStoreTable({ data, feedSuppliers }: Iprops) {
                               xs: 12,
                             },
                           }}
-                          // onBlur={(e) =>
-                          //   setValue(
-                          //     field.name,
-                          //     Number(e.target.textContent) ||
-                          //     Number(field.value)
-                          //   )
-                          // }
+                        // onBlur={(e) =>
+                        //   setValue(
+                        //     field.name,
+                        //     Number(e.target.textContent) ||
+                        //     Number(field.value)
+                        //   )
+                        // }
                         >
                           {filteredStores ? filteredStores[i]?.digCF : ""}
                         </Typography>
@@ -3110,13 +3111,13 @@ export default function FeedStoreTable({ data, feedSuppliers }: Iprops) {
                               xs: 12,
                             },
                           }}
-                          // onBlur={(e) =>
-                          //   setValue(
-                          //     field.name,
-                          //     Number(e.target.textContent) ||
-                          //     Number(field.value)
-                          //   )
-                          // }
+                        // onBlur={(e) =>
+                        //   setValue(
+                        //     field.name,
+                        //     Number(e.target.textContent) ||
+                        //     Number(field.value)
+                        //   )
+                        // }
                         >
                           {filteredStores ? filteredStores[i]?.digNFE : ""}
                         </Typography>
@@ -3180,13 +3181,13 @@ export default function FeedStoreTable({ data, feedSuppliers }: Iprops) {
                               xs: 12,
                             },
                           }}
-                          // onBlur={(e) =>
-                          //   setValue(
-                          //     field.name,
-                          //     Number(e.target.textContent) ||
-                          //     Number(field.value)
-                          //   )
-                          // }
+                        // onBlur={(e) =>
+                        //   setValue(
+                        //     field.name,
+                        //     Number(e.target.textContent) ||
+                        //     Number(field.value)
+                        //   )
+                        // }
                         >
                           {filteredStores ? filteredStores[i]?.deCP : ""}
                         </Typography>
@@ -3250,13 +3251,13 @@ export default function FeedStoreTable({ data, feedSuppliers }: Iprops) {
                               xs: 12,
                             },
                           }}
-                          // onBlur={(e) =>
-                          //   setValue(
-                          //     field.name,
-                          //     Number(e.target.textContent) ||
-                          //     Number(field.value)
-                          //   )
-                          // }
+                        // onBlur={(e) =>
+                        //   setValue(
+                        //     field.name,
+                        //     Number(e.target.textContent) ||
+                        //     Number(field.value)
+                        //   )
+                        // }
                         >
                           {filteredStores ? filteredStores[i]?.deCF : ""}
                         </Typography>
@@ -3320,13 +3321,13 @@ export default function FeedStoreTable({ data, feedSuppliers }: Iprops) {
                               xs: 12,
                             },
                           }}
-                          // onBlur={(e) =>
-                          //   setValue(
-                          //     field.name,
-                          //     Number(e.target.textContent) ||
-                          //     Number(field.value)
-                          //   )
-                          // }
+                        // onBlur={(e) =>
+                        //   setValue(
+                        //     field.name,
+                        //     Number(e.target.textContent) ||
+                        //     Number(field.value)
+                        //   )
+                        // }
                         >
                           {filteredStores ? filteredStores[i]?.deNFE : ""}
                         </Typography>
@@ -3390,13 +3391,13 @@ export default function FeedStoreTable({ data, feedSuppliers }: Iprops) {
                               xs: 12,
                             },
                           }}
-                          // onBlur={(e) =>
-                          //   setValue(
-                          //     field.name,
-                          //     Number(e.target.textContent) ||
-                          //     Number(field.value)
-                          //   )
-                          // }
+                        // onBlur={(e) =>
+                        //   setValue(
+                        //     field.name,
+                        //     Number(e.target.textContent) ||
+                        //     Number(field.value)
+                        //   )
+                        // }
                         >
                           {filteredStores ? filteredStores[i]?.de : ""}
                         </Typography>
