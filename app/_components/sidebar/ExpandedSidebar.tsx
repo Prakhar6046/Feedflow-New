@@ -505,7 +505,7 @@ const ExpandedSidebar = () => {
             </ListItem>
           </Link>
 
-          <Link
+          {/* <Link
             href={"/dashboard/feedStore"}
             className="nav-links"
             onClick={() => dispatch(farmAction.resetState())}
@@ -558,7 +558,7 @@ const ExpandedSidebar = () => {
                 </ListItemText>
               </ListItemButton>
             </ListItem>
-          </Link>
+          </Link> */}
 
           <Link
             href={"/dashboard/feedPrediction"}
