@@ -24,6 +24,7 @@ import jsPDF from "jspdf";
 import { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import FeedingPlanOutput from "../feedPrediction/FeedingPlanOutputs";
+import FeedUsageOutput from "../feedPrediction/FeedUsageOutputs";
 interface Props {
   productions: Production[];
   farms: Farm[];
@@ -526,7 +527,7 @@ const FeedingOutputTable = ({ farms, productions }: Props) => {
       {selectedFeeding === "feedingPlan" ? (
         <FeedingPlanOutput />
       ) : (
-        selectedFeeding === "feedUsage" && null
+        selectedFeeding === "feedUsage" && <FeedUsageOutput />
       )}
     </>
   );
