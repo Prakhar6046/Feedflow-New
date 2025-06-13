@@ -6,6 +6,7 @@ export interface FeedInitialState {
   isEditFeed: Boolean;
 }
 export interface FeedProduct {
+  organaisationId: number;
   id: string;
   ProductSupplier: string;
   brandName: string;
@@ -46,6 +47,6 @@ export interface FeedProduct {
   deCF: number;
   deNFE: number;
   de: number;
-  createdAt: string; // ISO timestamp
-  updatedAt: string; // ISO timestamp
+  createdAt: string;
+  updatedAt: string;
 }

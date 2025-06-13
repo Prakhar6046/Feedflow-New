@@ -1,3 +1,4 @@
+import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
 import DnDKitTableColumn from "@/app/_components/DnDKitTableColumn";
 import FeedStoreTable from "@/app/_components/table/FeedStore";
 import { getFeedStores, getFeedSuppliers } from "@/app/_lib/action";
@@ -26,6 +27,15 @@ const Page = async ({
 
   return (
     <div>
+      <BasicBreadcrumbs
+        heading={"Feed Supply"}
+        links={[
+          { name: "Dashboard", link: "/dashboard" },
+          { name: "Feed Supply", link: "/dashboard/feedSupply" },
+          { name: "Feed Libarary", link: "/dashboard/feedSupply/libarary" },
+        ]}
+        hideSearchInput
+      />
       <FeedStoreTable data={stores?.data} feedSuppliers={feedSuppliers?.data} />
       {/* <DnDKitTableColumn /> */}
     </div>

@@ -36,9 +36,7 @@ import NutritionalGuarantee from "./NutritionalGuarantee";
 // import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 interface Props {
-  setActiveStep?: any;
   feedSupplyId?: String;
-  activeStep: number;
 }
 interface nutritionalGuarantee {
   moisture: { kg: String; value: String };
@@ -76,11 +74,7 @@ export interface FormInputs {
   feedSupplier: String;
   nutritionalGuarantee: nutritionalGuarantee;
 }
-const NewFeed: NextPage<Props> = ({
-  setActiveStep,
-  feedSupplyId,
-  activeStep,
-}) => {
+const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const loggedUser: any = getCookie("logged-user");
@@ -1346,42 +1340,6 @@ const NewFeed: NextPage<Props> = ({
                 gap={3}
                 mt={3}
               >
-                {!isEditFeed && (
-                  <>
-                    <Button
-                      type="button"
-                      variant="contained"
-                      sx={{
-                        background: "#fff",
-                        color: "#06A19B",
-                        fontWeight: 600,
-                        padding: "6px 16px",
-                        width: "fit-content",
-                        textTransform: "capitalize",
-                        borderRadius: "8px",
-                        border: "1px solid #06A19B",
-                      }}
-                      onClick={() => setActiveStep(activeStep - 1)}
-                    >
-                      Previous
-                    </Button>
-                    {/* <Button
-                      type="button"
-                      variant="contained"
-                      sx={{
-                        background: "#06A19B",
-                        fontWeight: 600,
-                        padding: "6px 16px",
-                        width: "fit-content",
-                        textTransform: "capitalize",
-                        borderRadius: "8px",
-                      }}
-                      onClick={() => setActiveStep(2)}
-                    >
-                      Next
-                    </Button> */}
-                  </>
-                )}
                 <Button
                   type="submit"
                   variant="contained"

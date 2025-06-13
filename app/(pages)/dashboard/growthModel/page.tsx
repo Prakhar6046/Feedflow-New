@@ -5,7 +5,7 @@ import { getCookie } from "cookies-next";
 import { Metadata } from "next";
 import { cookies } from "next/headers";
 export const metadata: Metadata = {
-  title: "Growth Parameter",
+  title: "Growth Models",
 };
 export default async function Page({
   searchParams,
@@ -15,12 +15,12 @@ export default async function Page({
   };
 }) {
   const query = searchParams?.query || "";
-  const farms = await getFarms({
-    role: "",
-    organisationId: "",
-    query,
-    noFilter: true,
-  });
+  // const farms = await getFarms({
+  //   role: "",
+  //   organisationId: "",
+  //   query,
+  //   noFilter: true,
+  // });
   return (
     <>
       <BasicBreadcrumbs
@@ -29,9 +29,10 @@ export default async function Page({
           { name: "Dashboard", link: "/dashboard" },
           { name: "Growth Models", link: "/dashboard/growthModel" },
         ]}
-        hideSearchInput
+        buttonName="Add Model"
+        buttonRoute="/dashboard/growthModel/create"
       />
-      <GrowthModel farms={farms?.data} />
+      {/* <GrowthModel farms={farms?.data} /> */}
     </>
   );
 }

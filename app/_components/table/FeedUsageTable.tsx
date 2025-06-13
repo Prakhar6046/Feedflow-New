@@ -18,7 +18,7 @@ const formatFeed = (kg: number) => {
 const FeedUsageTable = ({ flatData }: any) => {
   const uniqueFeedTypes = Array.from(
     new Set(
-      flatData.flatMap((unit) =>
+      flatData.flatMap((unit: any) =>
         unit.fishGrowthData.map((d: any) => d.feedType)
       )
     )
@@ -30,7 +30,7 @@ const FeedUsageTable = ({ flatData }: any) => {
   }));
 
   const tableData = uniqueFeedTypes.map((feedType) => {
-    const unitValues = unitColumns.map((unit) => {
+    const unitValues = unitColumns.map((unit: any) => {
       const feedItems = unit.fishGrowthData.filter(
         (fd: any) => fd.feedType === feedType
       );
@@ -43,7 +43,7 @@ const FeedUsageTable = ({ flatData }: any) => {
       return totalKg;
     });
 
-    const totalIntake = unitValues.reduce((a, b) => a + b, 0);
+    const totalIntake = unitValues.reduce((a: any, b: any) => a + b, 0);
 
     return {
       feedType,
@@ -75,7 +75,7 @@ const FeedUsageTable = ({ flatData }: any) => {
             >
               Feed
             </TableCell>
-            {unitColumns.map((unit, idx) => (
+            {unitColumns.map((unit: any, idx: number) => (
               <TableCell
                 key={idx}
                 sx={{
@@ -110,7 +110,7 @@ const FeedUsageTable = ({ flatData }: any) => {
         </TableHead>
 
         <TableBody>
-          {tableData.map((row, rowIndex) => (
+          {tableData.map((row: any, rowIndex) => (
             <TableRow key={rowIndex}>
               {rowIndex === 0 && (
                 <TableCell
@@ -141,7 +141,7 @@ const FeedUsageTable = ({ flatData }: any) => {
                 </Typography>
               </TableCell>
 
-              {row.unitValues.map((kg, idx) => (
+              {row.unitValues.map((kg: any, idx: number) => (
                 <TableCell key={idx}>
                   <Typography
                     sx={{
@@ -191,7 +191,7 @@ const FeedUsageTable = ({ flatData }: any) => {
               </Typography>
             </TableCell>
 
-            {unitColumns.map((unit, idx) => {
+            {unitColumns.map((unit: any, idx: number) => {
               const unitTotal = unit.fishGrowthData.reduce(
                 (sum: number, item: any) => {
                   const intake = parseFloat(item.feedIntake);
@@ -231,7 +231,7 @@ const FeedUsageTable = ({ flatData }: any) => {
                 }}
               >
                 {formatFeed(
-                  unitColumns.reduce((sum, unit) => {
+                  unitColumns.reduce((sum: any, unit: any) => {
                     const total = unit.fishGrowthData.reduce(
                       (acc: number, item: any) => {
                         const intake = parseFloat(item.feedIntake);

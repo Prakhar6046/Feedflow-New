@@ -23,6 +23,7 @@ interface Props {
   buttonRoute?: string;
   refetch?: string;
   permissions?: boolean;
+  extraButton?: { buttonName: string; route: string };
 }
 
 export default function BasicBreadcrumbs({
@@ -34,6 +35,7 @@ export default function BasicBreadcrumbs({
   buttonRoute,
   refetch,
   permissions,
+  extraButton,
 }: Props) {
   const role = getCookie("role");
   const pathName = usePathname();
@@ -167,38 +169,60 @@ export default function BasicBreadcrumbs({
         </Box>
 
         {currentRole === "SUPERADMIN" && buttonName ? (
-          <Button
-            variant="contained"
-            onClick={handleClick}
-            sx={{
-              background: "#06A19B",
-              fontWeight: 600,
-              padding: "8px 20px",
-              width: "fit-content",
-              textTransform: "capitalize",
-              borderRadius: "8px",
-              textWrap: "nowrap",
-              display: "flex",
-              gap: 1,
-              alignItems: "center",
-            }}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="1.5em"
-              height="1.5em"
-              viewBox="0 0 24 24"
+          <Box sx={{ display: "flex", gap: 2 }}>
+            <Button
+              variant="contained"
+              onClick={handleClick}
+              sx={{
+                background: "#06A19B",
+                fontWeight: 600,
+                padding: "8px 20px",
+                width: "fit-content",
+                textTransform: "capitalize",
+                borderRadius: "8px",
+                textWrap: "nowrap",
+                display: "flex",
+                gap: 1,
+                alignItems: "center",
+              }}
             >
-              <path
-                fill="none"
-                stroke="#fff"
-                strokeLinecap="round"
-                strokeWidth="2"
-                d="M12 6v12m6-6H6"
-              />
-            </svg>
-            {buttonName}
-          </Button>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="1.5em"
+                height="1.5em"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  fill="none"
+                  stroke="#fff"
+                  strokeLinecap="round"
+                  strokeWidth="2"
+                  d="M12 6v12m6-6H6"
+                />
+              </svg>
+              {buttonName}
+            </Button>
+            {extraButton && Object.keys(extraButton).length && (
+              <Button
+                variant="contained"
+                onClick={() => router.push(extraButton?.route)}
+                sx={{
+                  background: "#06A19B",
+                  fontWeight: 600,
+                  padding: "8px 20px",
+                  width: "fit-content",
+                  textTransform: "capitalize",
+                  borderRadius: "8px",
+                  textWrap: "nowrap",
+                  display: "flex",
+                  gap: 1,
+                  alignItems: "center",
+                }}
+              >
+                {extraButton?.buttonName}
+              </Button>
+            )}
+          </Box>
         ) : (
           permissions &&
           buttonName &&

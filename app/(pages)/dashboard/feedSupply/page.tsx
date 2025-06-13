@@ -1,4 +1,5 @@
 import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
+import FeedSelection from "@/app/_components/feedSupply/FeedSelection";
 import FeedTable from "@/app/_components/table/FeedTable";
 import { getFeedSupplys } from "@/app/_lib/action";
 import { getCookie } from "cookies-next";
@@ -18,11 +19,11 @@ export default async function Page({
   const loggedUser: any = getCookie("logged-user", { cookies });
 
   const userOrganisationType = JSON.parse(loggedUser);
-  const feeds = await getFeedSupplys({
-    role: userOrganisationType.role,
-    organisationId: userOrganisationType.organisationId,
-    query,
-  });
+  // const feeds = await getFeedSupplys({
+  //   role: userOrganisationType.role,
+  //   organisationId: userOrganisationType.organisationId,
+  //   query,
+  // });
 
   return (
     <>
@@ -35,14 +36,20 @@ export default async function Page({
             ? "Add Feed"
             : ""
         }
-        isTable={true}
+        isTable={false}
         buttonRoute="/dashboard/feedSupply/new"
         links={[
           { name: "Dashboard", link: "/dashboard" },
           { name: "Feed Supply", link: "/dashboard/feedSupply" },
         ]}
+        hideSearchInput
+        extraButton={{
+          route: "/dashboard/feedSupply/libarary",
+          buttonName: "Feed Libarary",
+        }}
       />
-      <FeedTable feeds={feeds?.data} />
+      <FeedSelection />
+      {/* <FeedTable feeds={feeds?.data} /> */}
     </>
   );
 }

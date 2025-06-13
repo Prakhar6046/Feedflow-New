@@ -11,7 +11,7 @@ export default function Page() {
       <BasicBreadcrumbs
         heading={"Feed Supply"}
         isTable={false}
-        hideSearchInput={true}
+        hideSearchInput
         links={[
           { name: "Dashboard", link: "/dashboard" },
           { name: "Feed Supply", link: "/dashboard/feedSupply" },

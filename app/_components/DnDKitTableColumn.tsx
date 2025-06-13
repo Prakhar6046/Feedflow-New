@@ -83,7 +83,7 @@ export default function DnDKitTableColumn() {
           </SortableContext>
         </thead>
         <tbody>
-          {data.map((row, idx) => (
+          {data.map((row: any, idx) => (
             <tr key={idx}>
               {columns.map((col) => (
                 <td key={col}>{row[col]}</td>

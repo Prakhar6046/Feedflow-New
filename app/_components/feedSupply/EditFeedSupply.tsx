@@ -36,11 +36,7 @@ const EditFeedSupply = ({ feedSupplyId }: Iprops) => {
         }}
       ></Grid>
       <Grid item xl={9} md={8} xs={12} my={2}>
-        <NewFeed
-          activeStep={activeStep}
-          setActiveStep={setActiveStep}
-          feedSupplyId={feedSupplyId}
-        />
+        <NewFeed feedSupplyId={feedSupplyId} />
       </Grid>
     </Grid>
   );

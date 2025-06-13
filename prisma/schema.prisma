@@ -69,6 +69,7 @@ model Organisation {
   production        production[]
   FishManageHistory FishManageHistory[]
   GrowthModels      GrowthModel[]
+  FeedStore         FeedStore[]
 
   @@index([createdAt])
   @@index([updatedAt])
@@ -532,17 +533,19 @@ model FeedStore {
   metabolizableEnergy   Int
   feedingGuide          String @default("Feed according to the feedflow guide or as directed by a fish nutritionist")
 
-  geCoeffCP  Float
-  geCoeffCF  Float
-  geCoeffNFE Float
-  ge         Float    @default(16.75)
-  digCP      Float    @default(3600)
-  digCF      Float    @default(450)
-  digNFE     Float    @default(1860)
-  deCP       Float    @default(8.50)
-  deCF       Float    @default(1.78)
-  deNFE      Float    @default(3.20)
-  de         Float    @default(13.47)
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  geCoeffCP       Float
+  geCoeffCF       Float
+  geCoeffNFE      Float
+  ge              Float        @default(16.75)
+  digCP           Float        @default(3600)
+  digCF           Float        @default(450)
+  digNFE          Float        @default(1860)
+  deCP            Float        @default(8.50)
+  deCF            Float        @default(1.78)
+  deNFE           Float        @default(3.20)
+  de              Float        @default(13.47)
+  organaisationId Int          @default(1)
+  organisation    Organisation @relation(fields: [organaisationId], references: [id])
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
 }

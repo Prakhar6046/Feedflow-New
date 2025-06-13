@@ -1,6 +1,7 @@
+"use client";
+import { useAppDispatch } from "@/lib/hooks";
 import {
   Box,
-  Button,
   Divider,
   Grid,
   List,
@@ -9,18 +10,12 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
+import { getCookie } from "cookies-next";
 import { NextPage } from "next";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Loader from "../Loader";
-import { useAppDispatch } from "@/lib/hooks";
-import { feedAction } from "@/lib/features/feed/feedSlice";
-import { getCookie } from "cookies-next";
 
-interface Props {
-  setActiveStep: (val: number) => void;
-  editFarm?: any;
-}
 export interface FeedSupply {
   id: String;
   feedIngredients: String;
@@ -86,7 +81,7 @@ export interface FeedSupply {
   updatedAt: String;
 }
 
-const FeedSelection: NextPage<Props> = ({ setActiveStep, editFarm }) => {
+const FeedSelection: NextPage = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const loggedUserDataLocal: any = getCookie("logged-user");
@@ -737,7 +732,7 @@ const FeedSelection: NextPage<Props> = ({ setActiveStep, editFarm }) => {
         </Grid>
       </Box>
 
-      <Box>
+      {/* <Box>
         <Box
           display={"flex"}
           alignItems={"center"}
@@ -764,13 +759,12 @@ const FeedSelection: NextPage<Props> = ({ setActiveStep, editFarm }) => {
                 textTransform: "capitalize",
                 borderRadius: "8px",
               }}
-              onClick={() => setActiveStep(1)}
             >
               Next
             </Button>
           </Box>
         </Box>
-      </Box>
+      </Box> */}
     </Stack>
   );
 };
