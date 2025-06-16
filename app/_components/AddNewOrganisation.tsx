@@ -123,7 +123,7 @@ const AddNewOrganisation = ({
   const onSubmit: SubmitHandler<AddOrganizationFormInputs> = async (data) => {
     // Prevent API call if one is already in progress
     const hasAdmin = watch("contacts").some(
-      (contact) => contact.permission === "Admin"
+      (contact) => contact.permission === "ADMIN"
     );
 
     if (!hasAdmin) {
