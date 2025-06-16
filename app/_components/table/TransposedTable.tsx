@@ -155,7 +155,7 @@ export const TransposedTable = ({
 
               {/* Dynamic Store Columns */}
 
-              {filteredStores.map((store, i) => (
+              {filteredStores.map((_: any, i: number) => (
                 <TableCell
                   key={i}
                   sx={{
@@ -188,8 +188,8 @@ export const TransposedTable = ({
                           }}
                           renderValue={(selected) =>
                             feedSuppliers
-                              .filter((s) => selected.includes(s.id))
-                              .map((s) => s.name)
+                              .filter((s: any) => selected.includes(s.id))
+                              .map((s: any) => s.name)
                               .join(", ")
                           }
                         >
@@ -241,7 +241,7 @@ export const TransposedTable = ({
                   {key}
                 </TableCell>
 
-                {filteredStores.map((_, colIndex: number) => (
+                {filteredStores.map((_: any, colIndex: number) => (
                   <TableCell key={colIndex}>
                     <Controller
                       name={`${key}-${colIndex}`}
