@@ -34,6 +34,8 @@ const Page = async ({
           { name: "Feed Supply", link: "/dashboard/feedSupply" },
           { name: "Feed Libarary", link: "/dashboard/feedSupply/libarary" },
         ]}
+        buttonName="Add Feed"
+        buttonRoute="/dashboard/feedSupply/libarary/new"
         hideSearchInput
       />
       <FeedStoreTable data={stores?.data} feedSuppliers={feedSuppliers?.data} />

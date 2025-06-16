@@ -54,3 +54,32 @@ export async function PUT(request: NextRequest) {
     );
   }
 }
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json();
+    const data = body;
+    console.log(data);
+
+    if (!Object.keys(data).length) {
+      return NextResponse.json({
+        status: false,
+        message: "Some feilds are missing",
+      });
+    }
+
+    await prisma.feedStore.create({ data });
+    return new NextResponse(
+      JSON.stringify({
+        status: true,
+        message: "Feed Added successfully.",
+      })
+    );
+  } catch (error) {
+    console.log(error);
+
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
+  }
+}
