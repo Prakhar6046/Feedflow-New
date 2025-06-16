@@ -377,7 +377,7 @@ function ClosedSidebar() {
             </ListItem>
           </Link>
 
-          <Link
+          {/* <Link
             href={"/dashboard/feedStore"}
             className="nav-links"
             onClick={() => dispatch(farmAction.resetState())}
@@ -429,7 +429,7 @@ function ClosedSidebar() {
                 </ListItemText>
               </ListItemButton>
             </ListItem>
-          </Link>
+          </Link> */}
 
           <Link href={"/dashboard/feedPrediction"} className="nav-links">
             <ListItem
