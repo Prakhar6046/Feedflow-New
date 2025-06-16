@@ -1020,8 +1020,8 @@ const EditOrganisation = ({
                               {...field}
                             >
                               {PermissionType.map((permission, i) => (
-                                <MenuItem value={permission} key={i}>
-                                  {permission}
+                                <MenuItem value={permission.value} key={i}>
+                                  {permission.label}
                                 </MenuItem>
                               ))}
                             </Select>
