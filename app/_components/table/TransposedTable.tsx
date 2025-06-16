@@ -52,19 +52,64 @@ export const TransposedTable = ({
 
   if (!filteredStores || filteredStores.length === 0) return null;
 
-  const excludedKeys = ["id", "createdAt", "updatedAt", "organaisationId"];
+  const excludedKeys = [
+    "id",
+    "createdAt",
+    "updatedAt",
+    "organaisationId",
+    "ProductSupplier",
+  ];
   const keys = Object.keys(filteredStores[0]).filter(
     (key) => !excludedKeys.includes(key)
   );
+  function transformFeedProductsWithSuppliers(flatData: Record<string, any>) {
+    const result: any[] = [];
+    const suppliers = flatData.suppliers?.[0]?.supplierIds || [];
+
+    Object.keys(flatData).forEach((key) => {
+      const match = key.match(/^(.+)-(\d+)$/);
+      if (match) {
+        const [, field, index] = match;
+        const i = parseInt(index, 10);
+
+        if (!result[i]) result[i] = {};
+        result[i][field] = flatData[key];
+      }
+    });
+
+    // Add suppliers to each product object
+    return result.map((product) => ({
+      ...product,
+      suppliers,
+    }));
+  }
 
   const onSubmit = (data: any) => {
-    console.log("Form Data", data);
+    const payload = transformFeedProductsWithSuppliers(data);
+    const updatedPayload = payload.map((feed) => {
+      const { ProductSupplier, suppliers, ...rest } = feed;
+      return { ...rest, ProductSupplier: suppliers };
+    });
+    console.log(updatedPayload);
   };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 1 }}>
-        <Button type="submit" variant="contained">
+        <Button
+          type="submit"
+          variant="contained"
+          sx={{
+            color: "#fff",
+            background: "#06A19B",
+            fontWeight: 600,
+            padding: "6px 16px",
+            width: "fit-content",
+            textTransform: "capitalize",
+            borderRadius: "8px",
+            border: "1px solid #06A19B",
+          }}
+        >
           Save
         </Button>
       </Box>
@@ -121,7 +166,7 @@ export const TransposedTable = ({
                   <Box
                     sx={{
                       px: 2,
-                      py: 2
+                      py: 2,
                     }}
                   >
                     <Controller
@@ -158,7 +203,9 @@ export const TransposedTable = ({
                     />
                   </Box>
 
-                  <Divider sx={{ borderBottomWidth: 1, transform: "translateY(1px)" }} />
+                  <Divider
+                    sx={{ borderBottomWidth: 1, transform: "translateY(1px)" }}
+                  />
 
                   {/* <Controller
                     name={`suppliers[${i}].brandName`}

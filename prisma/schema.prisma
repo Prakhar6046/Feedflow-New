@@ -20,6 +20,7 @@ enum UserRole {
   ADMIN
   MEMBER
   FARMMANAGER
+  NONADMIN
 }
 
 model User {

@@ -20,6 +20,17 @@ export async function POST(req: NextRequest) {
         Boolean(email)
       );
 
+    //check org exist with name
+    const orgExist = await prisma.organisation.findUnique({
+      where: { name: body?.organisationName },
+    });
+
+    if (orgExist) {
+      return NextResponse.json(
+        { error: "Oranisation Name already exist!." },
+        { status: 409 }
+      );
+    }
     // check user exist with contact email
     const existUsers = await prisma.user.findMany({
       where: { email: { in: checkContactExist } },
@@ -31,6 +42,7 @@ export async function POST(req: NextRequest) {
         { status: 409 }
       );
     }
+
     // Create address
     const address = await prisma.address.create({
       data: {
