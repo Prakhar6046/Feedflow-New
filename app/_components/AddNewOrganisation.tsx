@@ -64,7 +64,10 @@ interface Props {
   organisationCount: number;
   loggedUser: SingleUser;
 }
-export const PermissionType = ["Admin", "Non Admin"];
+export const PermissionType = [
+  { label: "Admin", value: "ADMIN" },
+  { label: "No Admin", value: "NONADMIN" },
+];
 const AddNewOrganisation = ({
   organisations,
   type,
@@ -980,8 +983,8 @@ const AddNewOrganisation = ({
                           {...field}
                         >
                           {PermissionType.map((permission, i) => (
-                            <MenuItem value={permission} key={i}>
-                              {permission}
+                            <MenuItem value={permission.value} key={i}>
+                              {permission.label}
                             </MenuItem>
                           ))}
                         </Select>
