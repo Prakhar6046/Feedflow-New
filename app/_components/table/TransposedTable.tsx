@@ -115,12 +115,13 @@ export const TransposedTable = ({
                   key={i}
                   sx={{
                     borderBottom: 0,
-                    px: 0,
+                    p: 0,
                   }}
                 >
                   <Box
                     sx={{
                       px: 2,
+                      py: 2
                     }}
                   >
                     <Controller
@@ -138,7 +139,7 @@ export const TransposedTable = ({
                             whiteSpace: "nowrap",
                             maxWidth: "270px",
                             minWidth: "270px",
-                            height: "32px",
+                            height: "40px",
                           }}
                           renderValue={(selected) =>
                             feedSuppliers
@@ -157,7 +158,7 @@ export const TransposedTable = ({
                     />
                   </Box>
 
-                  <Divider sx={{ borderBottomWidth: 1, my: 0.5 }} />
+                  <Divider sx={{ borderBottomWidth: 1, transform: "translateY(1px)" }} />
 
                   {/* <Controller
                     name={`suppliers[${i}].brandName`}
