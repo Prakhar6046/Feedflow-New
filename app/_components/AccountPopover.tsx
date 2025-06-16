@@ -102,7 +102,7 @@ const AccountPopover = () => {
             aria-haspopup="true"
             aria-expanded={open ? "true" : undefined}
           >
-            {userData?.imageUrl !== "null" ? (
+            {userData?.imageUrl ? (
               <Box
                 borderRadius={100}
                 width={40}
