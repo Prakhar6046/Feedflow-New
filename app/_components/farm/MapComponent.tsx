@@ -15,6 +15,7 @@ import List from "@mui/material/List"; // For suggestions
 import ListItem from "@mui/material/ListItem"; // For individual suggestion
 import ListItemButton from "@mui/material/ListItemButton"; // For clickable suggestion
 import Paper from "@mui/material/Paper"; // For suggestions container
+import toast from "react-hot-toast";
 
 // Define map container style
 const mapContainerStyle = {
@@ -130,7 +131,6 @@ const MapComponent = ({
           setLng(String(res?.results[0]?.location.lng));
         }
         const address = data.results[0].formatted_address;
-        // setAddressInformation(address);
         setLocationData(address);
         const formattedAddress = formatGoogleAddress(
           data.results[0].address_components,
@@ -140,11 +140,10 @@ const MapComponent = ({
       } else {
         setAddressInformation(null);
         setLocationData("Address not found.");
-        alert("Address not found for the selected location.");
+        toast.error("Address not found for the selected location.");
       }
     } catch (error) {
       console.error("Error performing reverse geocoding:", error);
-      alert("An error occurred while fetching the address.");
     }
   };
 
@@ -191,7 +190,6 @@ const MapComponent = ({
         "Error fetching location data from Google Geocoding API:",
         error
       );
-      alert("An error occurred while fetching location data.");
     }
   };
 
