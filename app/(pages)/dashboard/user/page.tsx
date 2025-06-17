@@ -30,7 +30,6 @@ export default async function Page({
         buttonName={user.role !== "MEMBER" ? "Add User" : ""}
         buttonRoute="/dashboard/user/new"
         isTable={true}
-        refetch={"user"}
         links={[
           { name: "Dashboard", link: "/dashboard" },
           { name: "Users", link: "/dashboard/user" },

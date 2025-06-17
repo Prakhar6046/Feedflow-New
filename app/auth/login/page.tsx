@@ -291,7 +291,7 @@ export default function Page() {
                     </form>
                   </Box>
 
-                  <Box
+                  {/* <Box
                     display={"flex"}
                     justifyContent={"space-between"}
                     gap={2}
@@ -309,9 +309,9 @@ export default function Page() {
                       height={"1px"}
                       width={"100%"}
                     ></Box>
-                  </Box>
+                  </Box> */}
 
-                  <Box
+                  {/* <Box
                     color="#06A19B"
                     fontWeight={500}
                     display={"flex"}
@@ -334,7 +334,7 @@ export default function Page() {
                       />
                     </svg>
                     Login with Google
-                  </Box>
+                  </Box> */}
                 </Box>
               </Grid>
 

@@ -31,10 +31,10 @@ export async function GET(request: NextRequest) {
 export async function PUT(request: NextRequest) {
   try {
     const body = await request.json();
-    const { data } = body;
-    const updatedFeedStores = await Promise.all(
-      data?.map((item: FeedProduct) =>
-        prisma.feedStore.update({
+
+    await Promise.all(
+      body?.map((item: FeedProduct) =>
+        prisma.feedStore.updateMany({
           where: { id: item.id },
           data: { ...item },
         })
@@ -44,7 +44,7 @@ export async function PUT(request: NextRequest) {
       JSON.stringify({
         status: true,
         message: "Feed store updated successfully.",
-        data: updatedFeedStores,
+        // data: updatedFeedStores,
       })
     );
   } catch (error) {

@@ -19,6 +19,7 @@ export const getOrganisations = async (payload: {
         headers: {
           "Content-Type": "application/json",
         },
+        cache: "no-store",
       }
     );
     revalidatePath("/dashboard/organisation");

@@ -1,18 +1,24 @@
 "use client";
-import * as validationPattern from "@/app/_lib/utils/validationPatterns/index";
 import * as validationMessage from "@/app/_lib/utils/validationsMessage/index";
-import { feedAction, selectIsEditFeed } from "@/lib/features/feed/feedSlice";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import { Box, Button, Grid, Stack, TextField, Typography } from "@mui/material";
+import { FeedSupplier } from "@/app/_typeModels/Organization";
+import {
+  Box,
+  Button,
+  Grid,
+  MenuItem,
+  Select,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { getCookie } from "cookies-next";
 import { NextPage } from "next";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { useState } from "react";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import Loader from "../Loader";
 // import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 const fields = [
+  { name: "ProductSupplier", label: "Product Supplier", type: "select" },
   { name: "brandName", label: "Brand Name", type: "text" },
   { name: "productName", label: "Product Name", type: "text" },
   { name: "productFormat", label: "Product Format", type: "text" },
@@ -66,27 +72,25 @@ const fields = [
 ];
 
 interface Props {
-  feedSupplyId?: String;
+  feedSuppliers: FeedSupplier[];
 }
 
 type FeedFormFields = {
   [key: string]: string | number;
 };
-const NewFeedLibarary: NextPage<Props> = ({ feedSupplyId }) => {
-  const dispatch = useAppDispatch();
+const NewFeedLibarary: NextPage<Props> = ({ feedSuppliers }) => {
   const router = useRouter();
   const loggedUser: any = getCookie("logged-user");
-  const [loading, setLoading] = useState<boolean>(false);
-  const [editFeedSpecification, setEditFeedSpecification] = useState<any>();
   const [isApiCallInProgress, setIsApiCallInProgress] =
     useState<boolean>(false);
   const {
     register,
     handleSubmit,
     reset,
+    control,
     formState: { errors },
   } = useForm<FeedFormFields>({ mode: "onChange" });
-  console.log(errors);
+
   const createPayload = (formData: Record<string, any>) => {
     const payload: Record<string, any> = {};
 
@@ -114,7 +118,6 @@ const NewFeedLibarary: NextPage<Props> = ({ feedSupplyId }) => {
       const loggedUserData = JSON.parse(loggedUser);
 
       if (payload) {
-        console.log("Final payload:", payload);
         const response = await fetch("/api/feed-store", {
           method: "POST",
           headers: {
@@ -139,26 +142,50 @@ const NewFeedLibarary: NextPage<Props> = ({ feedSupplyId }) => {
     }
   };
 
-  if (loading) {
-    return <Loader />;
-  }
-
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Grid container spacing={2}>
-        {fields.map((field) => (
+        {fields.map((field, i) => (
           <Grid item xs={12} sm={6} key={field.name}>
-            <TextField
-              label={field.label}
-              type={field.type}
-              className="form-input"
-              focused
-              fullWidth
-              {...register(field.name, {
-                required: true,
-              })}
-              error={!!errors[field.name]}
-            />
+            {field?.type === "select" ? (
+              <Controller
+                name={field.name}
+                control={control}
+                defaultValue={[] as never}
+                render={({ field }) => (
+                  <Select
+                    multiple
+                    {...field}
+                    fullWidth
+                    renderValue={(selected: any) =>
+                      feedSuppliers
+                        .filter((s: any) => selected.includes(s.id))
+                        .map((s: any) => s.name)
+                        .join(", ")
+                    }
+                  >
+                    {feedSuppliers.map((supplier: any) => (
+                      <MenuItem key={supplier.id} value={supplier.id}>
+                        {supplier.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                )}
+              />
+            ) : (
+              <TextField
+                label={field.label}
+                type={field.type}
+                className="form-input"
+                focused
+                fullWidth
+                {...register(field.name, {
+                  required: true,
+                })}
+                error={!!errors[field.name]}
+              />
+            )}
+
             {errors[field.name]?.type === "required" && (
               <Typography fontSize={13} color="red">
                 {validationMessage.required}

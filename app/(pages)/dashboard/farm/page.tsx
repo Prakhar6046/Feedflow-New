@@ -31,7 +31,6 @@ export default async function Page({
         heading={"Farm"}
         buttonName={user?.role !== "MEMBER" ? "Add Farm" : ""}
         isTable={true}
-        refetch="farm"
         buttonRoute="/dashboard/farm/newFarm"
         links={[
           { name: "Dashboard", link: "/dashboard" },

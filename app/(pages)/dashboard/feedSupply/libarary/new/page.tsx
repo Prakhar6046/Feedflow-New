@@ -2,11 +2,13 @@ import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
 import { Metadata } from "next";
 import NewFeedSupply from "@/app/_components/feedSupply/NewFeedSupply";
 import NewFeedLibarary from "@/app/_components/feedSupply/NewFeedLibarary";
+import { getFeedSuppliers } from "@/app/_lib/action";
 
 export const metadata: Metadata = {
   title: "Feed Supply",
 };
-export default function Page() {
+export default async function Page() {
+  const feedSuppliers = await getFeedSuppliers();
   return (
     <>
       <BasicBreadcrumbs
@@ -20,7 +22,7 @@ export default function Page() {
           { name: "New", link: "/dashboard/feedSupply/libarary/new" },
         ]}
       />
-      <NewFeedLibarary />
+      <NewFeedLibarary feedSuppliers={feedSuppliers?.data} />
     </>
   );
 }

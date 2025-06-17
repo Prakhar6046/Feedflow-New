@@ -21,7 +21,6 @@ interface Props {
   hideSearchInput?: boolean;
   isTable?: boolean;
   buttonRoute?: string;
-  refetch?: string;
   permissions?: boolean;
   extraButton?: { buttonName: string; route: string };
 }
@@ -33,7 +32,6 @@ export default function BasicBreadcrumbs({
   hideSearchInput,
   isTable,
   buttonRoute,
-  refetch,
   permissions,
   extraButton,
 }: Props) {
@@ -362,36 +360,6 @@ export default function BasicBreadcrumbs({
                 alignItems="center"
                 gap={2}
               >
-                <Tooltip
-                  title="This will refetch the data in this table without clearing your filters or sorting."
-                  placement="top"
-                >
-                  <Box
-                    padding={1}
-                    borderRadius={1.8}
-                    width="fit-content"
-                    boxShadow="0px 0px 10px 0px #0000001A;"
-                    border={"1px solid #0000001A"}
-                    className="cursor-pointer custom-hover-effect"
-                    display="flex"
-                    justifyContent="center"
-                    alignItems="center"
-                    // onClick={handleRefetch}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="1.1em"
-                      height="1.1em"
-                      viewBox="-1.5 -2.5 24 24"
-                      onClick={() => setStatus("Updating...")}
-                    >
-                      <path
-                        fill="#637382"
-                        d="m4.859 5.308l1.594-.488a1 1 0 0 1 .585 1.913l-3.825 1.17a1 1 0 0 1-1.249-.665L.794 3.413a1 1 0 1 1 1.913-.585l.44 1.441C5.555.56 10.332-1.035 14.573.703a9.38 9.38 0 0 1 5.38 5.831a1 1 0 1 1-1.905.608A7.381 7.381 0 0 0 4.86 5.308zm12.327 8.195l-1.775.443a1 1 0 1 1-.484-1.94l3.643-.909a1 1 0 0 1 .61-.08a1 1 0 0 1 .84.75l.968 3.88a1 1 0 0 1-1.94.484l-.33-1.322a9.381 9.381 0 0 1-16.384-1.796l-.26-.634a1 1 0 1 1 1.851-.758l.26.633a7.381 7.381 0 0 0 13.001 1.25z"
-                      />
-                    </svg>
-                  </Box>
-                </Tooltip>
                 <Tooltip
                   title="This will remember any sorting, filter and which page you were on even if you navigate away from the page."
                   placement="top"

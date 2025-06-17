@@ -8,6 +8,7 @@ import { cookies } from "next/headers";
 export const metadata: Metadata = {
   title: "Organisations",
 };
+
 export default async function Page({
   searchParams,
 }: {
@@ -35,7 +36,6 @@ export default async function Page({
         buttonName={"Add Organisation"}
         buttonRoute={"/dashboard/organisation/new"}
         isTable={true}
-        refetch={"organisation"}
         links={[
           { name: "Dashboard", link: "/dashboard" },
           { name: "Organisations", link: "/dashboard/organisation" },

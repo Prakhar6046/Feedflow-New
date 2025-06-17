@@ -17,40 +17,15 @@ import {
 } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 import { useEffect } from "react";
+import toast from "react-hot-toast";
 
 interface Props {
   feedSuppliers: any;
-  handleChange: any;
-  selectedSupplierIds: any;
   filteredStores: any;
 }
 
-export const TransposedTable = ({
-  feedSuppliers,
-  filteredStores,
-  handleChange,
-  selectedSupplierIds,
-}: Props) => {
-  const { control, handleSubmit, reset } = useForm();
-
-  useEffect(() => {
-    if (filteredStores?.length) {
-      // Prepare flat key-value for default values
-      const defaultValues: Record<string, any> = {};
-      filteredStores.forEach((item: any, colIndex: number) => {
-        Object.entries(item).forEach(([key, value]) => {
-          if (
-            !["id", "createdAt", "updatedAt", "organaisationId"].includes(key)
-          ) {
-            defaultValues[`${key}-${colIndex}`] = value;
-          }
-        });
-      });
-      reset(defaultValues);
-    }
-  }, [filteredStores, reset]);
-
-  if (!filteredStores || filteredStores.length === 0) return null;
+export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
+  const { control, handleSubmit, reset, setValue } = useForm();
 
   const excludedKeys = [
     "id",
@@ -59,12 +34,37 @@ export const TransposedTable = ({
     "organaisationId",
     "ProductSupplier",
   ];
+
+  useEffect(() => {
+    if (filteredStores?.length) {
+      // Prepare flat key-value for default values
+      const defaultValues: Record<string, any> = {};
+      filteredStores.forEach((item: any, colIndex: number) => {
+        Object.entries(item).forEach(([key, value]) => {
+          if (!["createdAt", "updatedAt", "organaisationId"].includes(key)) {
+            defaultValues[`${key}-${colIndex}`] = value;
+          }
+        });
+      });
+      reset(defaultValues);
+    }
+  }, [filteredStores, reset]);
+
+  useEffect(() => {
+    if (filteredStores) {
+      filteredStores?.map((store: any, i: number) => {
+        return setValue(`suppliers[${i}].supplierIds`, store.ProductSupplier);
+      });
+    }
+  }, [filteredStores]);
+  if (!filteredStores || filteredStores.length === 0) return null;
+
   const keys = Object.keys(filteredStores[0]).filter(
     (key) => !excludedKeys.includes(key)
   );
   function transformFeedProductsWithSuppliers(flatData: Record<string, any>) {
     const result: any[] = [];
-    const suppliers = flatData.suppliers?.[0]?.supplierIds || [];
+    const suppliersArray = flatData.suppliers || [];
 
     Object.keys(flatData).forEach((key) => {
       const match = key.match(/^(.+)-(\d+)$/);
@@ -77,20 +77,38 @@ export const TransposedTable = ({
       }
     });
 
-    // Add suppliers to each product object
-    return result.map((product) => ({
+    // Add corresponding supplierIds to each product
+    return result.map((product, index) => ({
       ...product,
-      suppliers,
+      supplierIds: suppliersArray[index]?.supplierIds || [],
     }));
   }
 
-  const onSubmit = (data: any) => {
+  const onSubmit = async (data: any) => {
     const payload = transformFeedProductsWithSuppliers(data);
     const updatedPayload = payload.map((feed) => {
-      const { ProductSupplier, suppliers, ...rest } = feed;
-      return { ...rest, ProductSupplier: suppliers };
+      const { ProductSupplier, supplierIds, ...rest } = feed;
+      return { ...rest, ProductSupplier: supplierIds };
     });
-    console.log(updatedPayload);
+
+    try {
+      const response = await fetch(`/api/feed-store `, {
+        method: "PUT",
+        body: JSON.stringify(updatedPayload),
+      });
+
+      if (response.ok) {
+        const res = await response.json();
+        toast.dismiss();
+
+        toast.success(res.message);
+      } else {
+        toast.dismiss();
+        toast.error("Somethig went wrong!");
+      }
+    } catch (error) {
+      toast.error("Something went wrong. Please try again.");
+    }
   };
 
   return (
@@ -139,18 +157,6 @@ export const TransposedTable = ({
                 >
                   Product Supplier
                 </Typography>
-                {/* <Divider sx={{ borderBottomWidth: 1, my: 0.5 }} /> */}
-                {/* <Typography
-                  sx={{
-                    fontWeight: 500,
-                    background: "#FAFAFA",
-                    fontSize: 13,
-                    py: 1.2,
-                    px: 2,
-                  }}
-                >
-                  Brand Name
-                </Typography> */}
               </TableCell>
 
               {/* Dynamic Store Columns */}

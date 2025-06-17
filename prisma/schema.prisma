@@ -503,9 +503,16 @@ model GrowthModel {
   @@index([updatedAt])
 }
 
+// model ProductSupplier {
+//   id        String    @id @default(uuid())
+//   suppliers Json      @default("[]")
+//   feedId    String
+//   feed      FeedStore @relation(fields: [feedId], references: [id])
+// }
+
 model FeedStore {
   id                    String @id @default(uuid())
-  ProductSupplier       String @default("Specialised Aquatic Feeds")
+  ProductSupplier       Json   @default("[]")
   brandName             String @default("SAF 6000")
   productName           String @default("Tilapia starter #0")
   productFormat         String @default("Mash")
@@ -549,4 +556,5 @@ model FeedStore {
   organisation    Organisation @relation(fields: [organaisationId], references: [id])
   createdAt       DateTime     @default(now())
   updatedAt       DateTime     @updatedAt
+  // ProductSupplier ProductSupplier[]
 }
