@@ -17,11 +17,7 @@ export interface SingleUser {
   organisationId: number;
   invite: boolean;
   access: boolean;
-  organisation: {
-    organisationType(organisationType: any): string;
-    name: String;
-    imageUrl: String;
-  };
+  organisation: Organisation;
   permissions: {
     editOrganisation: boolean;
     viewOrganisation: boolean;
@@ -51,4 +47,37 @@ export interface AddUserFormInputs {
   organisationId: Number;
   email: string;
   permissions: Permissions;
+}
+export interface Organisation {
+  id: number;
+  image: string | null;
+  imageUrl: string;
+  name: string;
+  organisationCode: string;
+  organisationType: string;
+  updatedBy: number | null;
+  createdBy: number;
+  createdAt: string; // ISO date string
+  updatedAt: string; // ISO date string
+  addressId: string;
+  Farm: Farm[]; // Currently an empty array
+  contact: Contact[];
+}
+
+export interface Farm {
+  // Define structure here if you plan to use it later
+}
+
+export interface Contact {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  role: string | null;
+  permission: string; // e.g. 'SUPERADMIN'
+  userId: number | null;
+  createdAt: string;
+  updatedAt: string;
+  invite: boolean;
+  organisationId: number;
 }

@@ -1,5 +1,4 @@
 import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
-import DnDKitTableColumn from "@/app/_components/DnDKitTableColumn";
 import FeedStoreTable from "@/app/_components/table/FeedStore";
 import { getFeedStores, getFeedSuppliers } from "@/app/_lib/action";
 import { getCookie } from "cookies-next";
@@ -39,7 +38,6 @@ const Page = async ({
         hideSearchInput
       />
       <FeedStoreTable data={stores?.data} feedSuppliers={feedSuppliers?.data} />
-      {/* <DnDKitTableColumn /> */}
     </div>
   );
 };

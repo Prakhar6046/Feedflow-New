@@ -1,4 +1,4 @@
-import { UserEditFormInputs } from "@/app/_typeModels/User";
+import { SingleUser, UserEditFormInputs } from "@/app/_typeModels/User";
 import {
   Box,
   FormControlLabel,
@@ -9,6 +9,8 @@ import {
   SwitchProps,
   Typography,
 } from "@mui/material";
+import { getCookie } from "cookies-next";
+import { useEffect, useState } from "react";
 import { Control, Controller, FieldValues } from "react-hook-form";
 // Custom iOS styled switch
 const IOSSwitch = styled((props: SwitchProps) => (
@@ -75,6 +77,20 @@ interface UserPermissionProps {
   control: Control<any>;
 }
 function UserPermission({ control }: UserPermissionProps) {
+  const loggedUser: any = getCookie("logged-user");
+  const user: SingleUser = JSON.parse(loggedUser);
+  const [allDisabled, setAllDisabled] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (Object.keys(user).length) {
+      const isSuperAdmin = user?.role === "SUPERADMIN";
+      if (isSuperAdmin) {
+        setAllDisabled(false);
+      } else {
+        setAllDisabled(true);
+      }
+    }
+  }, [user]);
   return (
     <form>
       <Stack
@@ -142,6 +158,7 @@ function UserPermission({ control }: UserPermissionProps) {
               <Controller
                 name="permissions.viewOrganisation"
                 control={control}
+                disabled={allDisabled}
                 render={({ field }) => (
                   <FormControlLabel
                     control={
@@ -178,6 +195,7 @@ function UserPermission({ control }: UserPermissionProps) {
               <Controller
                 name="permissions.editOrganisation"
                 control={control}
+                disabled={allDisabled}
                 render={({ field }) => (
                   <FormControlLabel
                     control={
@@ -214,6 +232,7 @@ function UserPermission({ control }: UserPermissionProps) {
               <Controller
                 name="permissions.createOrganisation"
                 control={control}
+                disabled={allDisabled}
                 render={({ field }) => (
                   <FormControlLabel
                     control={

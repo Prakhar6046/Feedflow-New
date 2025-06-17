@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
       include: { contact: true },
     });
     const findOrganisationAdmin = organisationExist?.contact.find(
-      (org) => org.permission === "Admin"
+      (org) => org.permission === "ADMIN"
     );
     if (!organisationExist) {
       return NextResponse.json(

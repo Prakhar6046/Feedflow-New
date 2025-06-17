@@ -29,8 +29,6 @@ type Iprops = {
 };
 
 export default function FeedStoreTable({ data, feedSuppliers }: Iprops) {
-  console.log(data);
-
   const router = useRouter();
   const role = useAppSelector(selectRole);
   const [order, setOrder] = React.useState("asc");
@@ -57,7 +55,6 @@ export default function FeedStoreTable({ data, feedSuppliers }: Iprops) {
     const payload = {
       data: data.feedProducts,
     };
-    console.log(payload);
 
     // try {
     //   const response = await fetch(`/api/feed-store `, {
@@ -91,7 +88,6 @@ export default function FeedStoreTable({ data, feedSuppliers }: Iprops) {
   useEffect(() => {
     router.refresh();
   }, [router]);
-  console.log(filteredStores);
 
   return (
     <>

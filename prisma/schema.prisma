@@ -106,7 +106,7 @@ model Contact {
   email          String?
   phone          String?
   role           String?
-  permission     String?
+  permission     UserRole      @default(NONADMIN)
   userId         String?
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt

@@ -58,7 +58,6 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const data = body;
-    console.log(data);
 
     if (!Object.keys(data).length) {
       return NextResponse.json({

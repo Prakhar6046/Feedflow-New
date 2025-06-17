@@ -85,7 +85,6 @@ function EditUser({ userId }: Iprops) {
     if (data.password) {
       formData.append("password", data.password);
     }
-    console.log(data);
 
     const res = await fetch(`/api/users/${userId}`, {
       method: "PUT",

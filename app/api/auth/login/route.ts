@@ -12,7 +12,7 @@ export const POST = async (request: Request) => {
     const normalizedEmail = email.toLowerCase();
     const user = await prisma.user.findUnique({
       where: { email: normalizedEmail },
-      include: { organisation: { include: { Farm: true } } },
+      include: { organisation: { include: { Farm: true, contact: true } } },
     });
 
     if (!user) {

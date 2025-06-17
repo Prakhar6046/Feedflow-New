@@ -438,8 +438,8 @@ export default function BasicTable({
                       >
                         {organisation?.contact?.find(
                           (contact) =>
-                            contact.permission === "Admin" ||
-                            contact.name === "Super Admin"
+                            contact.permission === "ADMIN" ||
+                            contact.permission === "SUPERADMIN"
                         )?.email ?? ""}
                       </TableCell>
                       <TableCell
@@ -453,8 +453,8 @@ export default function BasicTable({
                       >
                         {organisation?.contact?.find(
                           (contact) =>
-                            contact.permission === "Admin" ||
-                            contact.name === "Super Admin"
+                            contact.permission === "ADMIN" ||
+                            contact.permission === "SUPERADMIN"
                         )?.phone ?? ""}
                       </TableCell>
                       <TableCell
@@ -468,8 +468,8 @@ export default function BasicTable({
                       >
                         {organisation?.contact?.find(
                           (contact) =>
-                            contact.permission === "Admin" ||
-                            contact.name === "Super Admin"
+                            contact.permission === "ADMIN" ||
+                            contact.permission === "SUPERADMIN"
                         )?.name ?? ""}
                       </TableCell>
                       <TableCell
