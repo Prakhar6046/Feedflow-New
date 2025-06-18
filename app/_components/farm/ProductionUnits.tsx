@@ -379,9 +379,10 @@ const ProductionUnits: NextPage<Props> = ({
               body: JSON.stringify(payload),
             }
           );
+
           const responseData = await response.json();
-          toast.success(responseData.message);
           if (responseData.status) {
+            toast.success(responseData.message);
             deleteCookie("isEditFarm");
             removeLocalItem("farmData");
             removeLocalItem("farmProductionUnits");
@@ -391,13 +392,13 @@ const ProductionUnits: NextPage<Props> = ({
             removeLocalItem("feedProfileId");
             removeLocalItem("productionUnitsFeedProfiles");
             router.push("/dashboard/farm");
+          } else {
+            toast.error(responseData.message);
           }
         } else {
           toast.error("Please fill out the all feilds");
         }
       } catch (error) {
-        console.log(error);
-
         toast.error("Something went wrong. Please try again.");
       } finally {
         setIsApiCallInProgress(false);

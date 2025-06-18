@@ -12,16 +12,30 @@ export async function POST(req: NextRequest) {
       !productionParameter ||
       !body.farmAddress ||
       !body.productionUnits ||
-      !body.productionParamtertsUnitsArray ||
-      !body.FeedProfileUnits ||
       !body.feedProfile
     ) {
       return NextResponse.json(
-        { error: "All required payload missing or invalid" },
+        {
+          status: false,
+          message: "All required payload missing or invalid",
+        },
         { status: 404 }
       );
     }
 
+    // check farm name
+    const farmExistWithName = await prisma.farm.findUnique({
+      where: { name: body?.name, organisationId: body.organsationId },
+    });
+    if (farmExistWithName) {
+      return NextResponse.json(
+        {
+          status: false,
+          message: `A farm named "${body?.name}" already exists. Please use a different name.`,
+        },
+        { status: 409 }
+      );
+    }
     const newFarmAddress = await prisma.farmAddress.create({
       data: { ...body.farmAddress },
     });
@@ -41,7 +55,7 @@ export async function POST(req: NextRequest) {
     //Creating farm manager
     if (body?.mangerId?.length) {
       await prisma.farmManger.createMany({
-        data: body.mangerId.map((userId: string) => ({
+        data: body.mangerId?.map((userId: string) => ({
           farmId: farm.id,
           userId: Number(userId),
         })),
@@ -71,7 +85,7 @@ export async function POST(req: NextRequest) {
 
     // Create production managers using the ids of the created production units
     const newProductionManage = await prisma.production.createMany({
-      data: newProductUnits.map((unit: any) => ({
+      data: newProductUnits?.map((unit: any) => ({
         fishFarmId: farm.id,
         productionUnitId: unit.id, // Use the production unit id
         organisationId: body.organsationId,
@@ -94,7 +108,7 @@ export async function POST(req: NextRequest) {
     await prisma.yearBasedPredicationProductionUnit.createMany({
       data: newProductUnits.flatMap((unit: any) =>
         body.productionParamtertsUnitsArray
-          .map((data: any) => {
+          ?.map((data: any) => {
             if (unit.name === data.unitName) {
               return {
                 productionUnitId: unit.id,
@@ -113,19 +127,22 @@ export async function POST(req: NextRequest) {
         profiles: body.feedProfile,
       },
     });
-    await prisma.feedProfileProductionUnit.createMany({
-      data: newProductUnits.flatMap((unit: any) =>
-        body.FeedProfileUnits.map((data: any) => {
-          if (unit.name === data.unitName) {
-            return {
-              productionUnitId: unit.id,
-              profiles: data.feedProfile.data,
-            };
-          }
-          return null;
-        }).filter((entry: any) => entry !== null)
-      ),
-    });
+
+    if (body.FeedProfileUnits) {
+      await prisma.feedProfileProductionUnit.createMany({
+        data: newProductUnits.flatMap((unit: any) =>
+          body.FeedProfileUnits?.map((data: any) => {
+            if (unit.name === data.unitName) {
+              return {
+                productionUnitId: unit.id,
+                profiles: data.feedProfile.data,
+              };
+            }
+            return null;
+          }).filter((entry: any) => entry !== null)
+        ),
+      });
+    }
 
     return NextResponse.json({
       message: "Farm created successfully",

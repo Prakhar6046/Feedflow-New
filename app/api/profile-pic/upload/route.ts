@@ -19,7 +19,6 @@ export const POST = async (request: NextRequest) => {
     if (oldImagePublicId && oldImagePublicId !== "") {
       try {
         await cloudinary.uploader.destroy(oldImagePublicId);
-        console.log(`Deleted old image: ${oldImagePublicId}`);
       } catch (err: any) {
         console.error(`Error deleting old image: ${err.message}`);
       }
@@ -54,8 +53,6 @@ export const POST = async (request: NextRequest) => {
       }
     );
   } catch (error) {
-    console.log(error);
-
     return new NextResponse(JSON.stringify({ error, status: false }), {
       status: 500,
     });

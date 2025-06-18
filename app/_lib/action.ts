@@ -69,7 +69,6 @@ export const getUsers = async (payload: any) => {
     );
     return await data.json();
   } catch (error) {
-    console.log(error);
     return error;
   }
 };

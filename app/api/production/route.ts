@@ -13,7 +13,7 @@ export const GET = async (request: NextRequest) => {
   try {
     const productions = await prisma.production.findMany({
       include: {
-        farm: {include:{productionUnits:true}},
+        farm: { include: { productionUnits: true } },
         organisation: true,
         productionUnit: {
           include: { YearBasedPredicationProductionUnit: true },
@@ -148,8 +148,6 @@ export async function POST(req: NextRequest) {
       status: true,
     });
   } catch (error) {
-    console.log(error);
-
     return NextResponse.json(
       { error: "Internal Server Error" },
       { status: 500 }

@@ -18,8 +18,6 @@ export const GET = async (request: NextRequest, context: { params: any }) => {
       status: 200,
     });
   } catch (error) {
-    console.log(error);
-
     return new NextResponse(JSON.stringify({ status: false, error }), {
       status: 500,
     });
@@ -50,8 +48,6 @@ export const PUT = async (request: NextRequest, context: { params: any }) => {
       }
     );
   } catch (error) {
-    console.log(error);
-
     return new NextResponse(JSON.stringify({ status: false, error }), {
       status: 500,
     });

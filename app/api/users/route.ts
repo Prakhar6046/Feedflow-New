@@ -86,8 +86,6 @@ export const DELETE = async (request: NextRequest) => {
       }
     );
   } catch (error) {
-    console.log(error);
-
     return new NextResponse(JSON.stringify({ status: false, error }), {
       status: 500,
     });
