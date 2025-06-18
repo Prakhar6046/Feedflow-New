@@ -23,8 +23,11 @@ export async function POST(req: NextRequest) {
     //check org exist with name
     const orgExist = await prisma.organisation.findUnique({
       where: { name: body?.organisationName },
+      include: { contact: true },
     });
-
+    const findOrganisationAdmin = orgExist?.contact.find(
+      (org) => org.permission === "ADMIN"
+    );
     if (orgExist) {
       return NextResponse.json(
         { error: "Oranisation Name already exist!." },
@@ -113,7 +116,7 @@ export async function POST(req: NextRequest) {
     />
     <title>Feedflow</title>
     <style>
-      *{
+      * {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
@@ -124,7 +127,7 @@ export async function POST(req: NextRequest) {
     <div
       class="container"
       style="
-        background-color: #F2F2F2;
+        background-color: #f2f2f2;
         line-height: 1.7rem;
         font-family: 'Roboto', sans-serif;
         padding: 30px 0;
@@ -140,37 +143,84 @@ export async function POST(req: NextRequest) {
           background-color: white;
         "
       >
-        <div style="padding: 18px 50px;display: flex;">
-          <img src="https://i.ibb.co/dKTVMh7/logo.png" alt="Logo" />
+        <div style="padding: 18px 50px; display: flex">
+          <img src="https://i.ibb.co/JN1NynZ/fulllogo.png" alt="Logo" width="200" />
         </div>
-        <div
-          style="
-           background:url(https://i.ibb.co/tT8cdb7Q/emailbg.png);
-            min-height: 240px;
-            position: relative
-          "
-        >
-          <h1 style="color: #fff; padding-top: 100px; line-height: 1.2; margin: 0 50px; position: absolute; transform: translate(0, -50%); top: 50%">
-            Hi ${contact.name}
+        <div style="background: url(https://i.ibb.co/tT8cdb7Q/emailbg.png); min-height: 240px">
+          <h1
+            style="
+              color: #fff;
+              line-height: 1.2;
+              margin: 0 50px;
+              padding-top: 90px;
+            "
+          >
+         Hi, ${contact.name}
           </h1>
         </div>
         <div style="padding: 30px 50px 60px 50px">
-          <p style="margin: 20px 40px 10px 0">
-            You're invited to join Feedflow, the platform designed to streamline your workflow and keep everything running smoothly.
+          <p style="margin: 16px 40px 10px 0">
+            You’re invited by ${findOrganisationAdmin?.name}, from
+            ${organisation?.name} to join Feedflow, a
+            platform designed to support feeding management for aquaculture
+            producers.
           </p>
-          <p style="line-height: 2; font-size: 14px; margin-bottom: 32px;"> <a href="${process.env.BASE_URL}/joinOrganisation/${userId}" style="color: #0D848E;">Click here</a> To Join Now & Set Your Password </p>
-          <p style="margin-bottom: 5px">Thanks,</p>
+
+          <div style="margin-top: 20px">
+            <p>
+              As a new user, you will gain access to tools that enable you to:
+            </p>
+
+            <ul style="padding-left: 16px">
+              <li style="font-size: 16px; margin-top: 8px; line-height: 1.35">
+                Plan and manage feeding and feed orders
+              </li>
+
+              <li style="font-size: 16px; margin-top: 8px; line-height: 1.35">
+                Monitor feed usage and performance
+              </li>
+
+              <li style="font-size: 16px; margin-top: 4px; line-height: 1.35">
+                Reduce feed waste and enhance operational efficiency
+              </li>
+
+              <li style="font-size: 16px; margin-top: 4px; line-height: 1.35">
+                Make informed decisions based on real-time data and analytics
+              </li>
+            </ul>
+
+            <p style="margin-top: 20px; margin-bottom: 8px">
+              To begin, please activate your account using the link below:
+            </p>
+
+            <a href="${process.env.BASE_URL}/joinOrganisation/${userId}" style="color: #06a19b; font-size: 16px"
+              >[Activate Your Feedflow Account]</a
+            >
+            <p style="margin-top: 8px; margin-bottom: 40px">
+              Should you require any assistance during setup or usage, our
+              support team is readily available to assist you.
+            </p>
+          </div>
+          <!-- <p style="line-height: 2; font-size: 14px; margin-bottom: 40px">
+            <a href="" style="color: #0d848e">Click here</a> To Join Now & Set
+            Your Password
+          </p> -->
+          <p style="margin-bottom: 0px; font-weight: 600; color: #000">
+            Kind regards,
+          </p>
+          <p style="margin: 0">Everett Pieterse</p>
           <a
             href="#"
             target="_blank"
-            style="text-decoration: none; font-weight: 600; color: #000"
-            >The Team Feedflow</a
+            style="text-decoration: none; font-size: 16px; color: #000"
+            >${organisation?.name}</a
           >
         </div>
       </div>
     </div>
   </body>
-</html>`,
+</html>
+`,
         };
 
         try {
