@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
       data: { invite: true },
     });
     const findOrganisationAdmin = UpdateUser?.organisation?.contact.find(
-      (org) => org.permission === "ADMIN"
+      (org) => org.permission === "ADMIN" || org.permission === "SUPERADMIN"
     );
     // Send the email
     const mailOptions = {

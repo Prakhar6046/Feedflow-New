@@ -13,6 +13,13 @@ export async function POST(req: NextRequest) {
       },
     });
     const body = await req.json();
+    const invitedByOrg = await prisma.organisation.findUnique({
+      where: { id: Number(body.createdBy) },
+      include: { contact: true },
+    });
+    const findOrganisationAdmin = invitedByOrg?.contact.find(
+      (org) => org.permission === "ADMIN" || org.permission === "SUPERADMIN"
+    );
     const checkContactExist = body.contacts
       .filter((contact: any) => !contact.id)
       .map((contact: any) => contact.email)
@@ -25,9 +32,7 @@ export async function POST(req: NextRequest) {
       where: { name: body?.organisationName },
       include: { contact: true },
     });
-    const findOrganisationAdmin = orgExist?.contact.find(
-      (org) => org.permission === "ADMIN"
-    );
+
     if (orgExist) {
       return NextResponse.json(
         { error: "Oranisation Name already exist!." },
@@ -161,7 +166,7 @@ export async function POST(req: NextRequest) {
         <div style="padding: 30px 50px 60px 50px">
           <p style="margin: 16px 40px 10px 0">
             You’re invited by ${findOrganisationAdmin?.name}, from
-            ${organisation?.name} to join Feedflow, a
+            ${invitedByOrg?.name} to join Feedflow, a
             platform designed to support feeding management for aquaculture
             producers.
           </p>
@@ -213,7 +218,7 @@ export async function POST(req: NextRequest) {
             href="#"
             target="_blank"
             style="text-decoration: none; font-size: 16px; color: #000"
-            >${organisation?.name}</a
+            >${invitedByOrg?.name}</a
           >
         </div>
       </div>

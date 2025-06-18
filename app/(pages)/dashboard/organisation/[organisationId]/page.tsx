@@ -33,6 +33,7 @@ const Page = async ({ params }: { params: { organisationId: string } }) => {
         organisations={organisations?.data}
         userRole={String(user?.role)}
         permissions={user?.permissions}
+        loggedUser={user}
       />
     </>
   );

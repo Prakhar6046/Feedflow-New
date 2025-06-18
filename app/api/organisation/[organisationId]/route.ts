@@ -47,9 +47,6 @@ export async function PUT(req: NextRequest, context: { params: any }) {
       where: { id: Number(organisationId) },
       include: { contact: true },
     });
-    const findOrganisationAdmin = organisation?.contact.find(
-      (org) => org.permission === "ADMIN"
-    );
 
     if (!organisation) {
       return NextResponse.json(
@@ -68,6 +65,15 @@ export async function PUT(req: NextRequest, context: { params: any }) {
     const hatcheryId = JSON.parse(formData.get("hatcheryId") as string);
     const hatchery = JSON.parse(formData.get("hatchery") as string);
     const imageUrl = formData.get("imageUrl") as string;
+    const invitedById = formData.get("invitedBy") as string;
+    const invitedByOrg = await prisma.organisation.findUnique({
+      where: { id: Number(invitedById) },
+      include: { contact: true },
+    });
+
+    const findOrganisationAdmin = invitedByOrg?.contact.find(
+      (org) => org.permission === "ADMIN" || org.permission === "SUPERADMIN"
+    );
     const checkContactExist = contactsData
       .filter((contact: any) => !contact.id)
       .map((contact: any) => contact.email)
@@ -256,7 +262,7 @@ export async function PUT(req: NextRequest, context: { params: any }) {
         <div style="padding: 30px 50px 60px 50px">
           <p style="margin: 16px 40px 10px 0">
             You’re invited by ${findOrganisationAdmin?.name}, from
-            ${organisation?.name} to join Feedflow, a
+            ${invitedByOrg?.name} to join Feedflow, a
             platform designed to support feeding management for aquaculture
             producers.
           </p>
@@ -308,7 +314,7 @@ export async function PUT(req: NextRequest, context: { params: any }) {
             href="#"
             target="_blank"
             style="text-decoration: none; font-size: 16px; color: #000"
-            >${organisation?.name}</a
+            >${invitedByOrg?.name}</a
           >
         </div>
       </div>
