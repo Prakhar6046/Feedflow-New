@@ -38,6 +38,7 @@ export default async function Page({
         permissions={user?.permissions.createOrganisation}
       />
       <AddNewOrganisation
+        key={Object.keys(organisationCount).length}
         organisations={organisations?.data}
         type={type}
         organisationCount={organisationCount?.data}

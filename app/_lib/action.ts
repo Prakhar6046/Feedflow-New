@@ -22,7 +22,7 @@ export const getOrganisations = async (payload: {
         cache: "no-store",
       }
     );
-    revalidatePath("/dashboard/organisation");
+    // revalidatePath("/dashboard/organisation");
     return await data.json();
   } catch (error) {
     return error;
@@ -35,6 +35,7 @@ export const getOrganisationCount = async () => {
       headers: {
         "Content-Type": "application/json",
       },
+      cache: "no-store",
     });
     return await data.json();
   } catch (error) {
@@ -48,6 +49,7 @@ export const getAllOrganisations = async () => {
       headers: {
         "Content-Type": "application/json",
       },
+      cache: "no-store",
     });
     return await data.json();
   } catch (error) {

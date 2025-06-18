@@ -145,7 +145,6 @@ const EditOrganisation = ({
     },
   });
   const selectedOrganisationType = watch("organisationType");
-  console.log(loggedUser.organisationId);
   const onSubmit: SubmitHandler<AddOrganizationFormInputs> = async (data) => {
     // Prevent API call if one is already in progress
     if (isApiCallInProgress) return;

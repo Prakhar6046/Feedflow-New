@@ -8,7 +8,7 @@ import { cookies } from "next/headers";
 export const metadata: Metadata = {
   title: "Organisations",
 };
-
+export const revalidate = 0;
 export default async function Page({
   searchParams,
 }: {
@@ -52,6 +52,7 @@ export default async function Page({
         permissions={user?.permissions.createOrganisation}
       />
       <BasicTable
+        key={organisations?.data?.length}
         organisations={organisations?.data}
         userRole={String(user?.role)}
         permissions={user?.permissions}
