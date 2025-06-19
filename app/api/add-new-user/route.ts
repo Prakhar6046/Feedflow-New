@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
       );
     }
     const normalizedEmail = email.toLowerCase();
-    const formattedName = capitalizeFirstLetter(name);
+    // const formattedName = capitalizeFirstLetter(name);
 
     const checkEmailExistInOrganisation = await prisma.organisation.findUnique({
       where: { id: organisationId },
@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
       const results = await prisma.user.create({
         data: {
           email: normalizedEmail,
-          name: formattedName,
+          name: name,
           organisationId: Number(organisationId),
           imageUrl: image ?? undefined,
           permissions: permissions ?? {},
