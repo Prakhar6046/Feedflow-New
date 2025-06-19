@@ -58,7 +58,7 @@ const MapComponent = ({
 
   // Load Google Maps script
   const { isLoaded, loadError } = useLoadScript({
-    googleMapsApiKey: process.env.GOOGLE_API_KEY as string,
+    googleMapsApiKey: "AIzaSyDKvMKD1DyMdxR7VgqjO428--aBf9wpkxw",
     libraries,
   });
 
@@ -113,7 +113,7 @@ const MapComponent = ({
   const fetchReverseGeocode = async (lat: any, lng: any) => {
     try {
       const response = await fetch(
-        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${process.env.GOOGLE_API_KEY}`
+        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=AIzaSyDKvMKD1DyMdxR7VgqjO428--aBf9wpkxw`
       );
       const data = await response.json();
 
@@ -155,7 +155,7 @@ const MapComponent = ({
       const response = await fetch(
         `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
           searchQuery
-        )}&key=${process.env.GOOGLE_API_KEY}`
+        )}&key=AIzaSyDKvMKD1DyMdxR7VgqjO428--aBf9wpkxw`
       );
       const data = await response.json();
 
