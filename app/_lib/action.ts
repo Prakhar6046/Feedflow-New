@@ -22,7 +22,8 @@ export const getOrganisations = async (payload: {
         cache: "no-store",
       }
     );
-    // revalidatePath("/dashboard/organisation");
+    revalidatePath("/dashboard/organisation?tab=all");
+
     return await data.json();
   } catch (error) {
     return error;

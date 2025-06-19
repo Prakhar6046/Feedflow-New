@@ -2,9 +2,9 @@
 // import UploadFileOutlinedIcon from '@mui/icons-material/UploadFileOutlined';
 import * as validationPattern from "@/app/_lib/utils/validationPatterns/index";
 import * as validationMessage from "@/app/_lib/utils/validationsMessage/index";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import sendEmailIcon from "@/public/static/img/ic-send-email.svg";
 import sentEmailIcon from "@/public/static/img/ic-sent-email.svg";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import {
   Box,
   Button,
@@ -21,6 +21,7 @@ import Select from "@mui/material/Select";
 import { styled } from "@mui/material/styles";
 import { useEffect, useRef, useState } from "react";
 
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import {
   Controller,
@@ -34,10 +35,9 @@ import {
   AddOrganizationFormInputs,
   SingleOrganisation,
 } from "../_typeModels/Organization";
+import { SingleUser } from "../_typeModels/User";
 import MapComponent from "./farm/MapComponent";
 import HatcheryForm from "./hatchery/HatcheryForm";
-import Image from "next/image";
-import { SingleUser } from "../_typeModels/User";
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
   clipPath: "inset(50%)",
@@ -61,7 +61,7 @@ export const OrganisationType = [
 interface Props {
   organisations: SingleOrganisation[];
   type?: string;
-  organisationCount: number;
+  // organisationCount: number;
   loggedUser: SingleUser;
 }
 export const PermissionType = [
@@ -71,12 +71,13 @@ export const PermissionType = [
 const AddNewOrganisation = ({
   organisations,
   type,
-  organisationCount,
+  // organisationCount,
   loggedUser,
 }: Props) => {
   const [profilePic, setProfilePic] = useState<String>();
   const router = useRouter();
   const [isHatcherySelected, setIsHatcherySelected] = useState<boolean>(false);
+  const [organisationCount, setOrganisationCount] = useState<number>(0);
   const [isApiCallInProgress, setIsApiCallInProgress] =
     useState<boolean>(false);
   const [addressInformation, setAddressInformation] = useState<any>();
@@ -214,6 +215,22 @@ const AddNewOrganisation = ({
       setValue("organisationCode", fullCode);
     }
   }, [organisationCount]);
+
+  useEffect(() => {
+    const getORGCount = async () => {
+      const data = await fetch(`/api/organisation/count`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        cache: "no-store",
+      });
+      const res = await data.json();
+      setOrganisationCount(res?.data);
+    };
+
+    getORGCount();
+  }, []);
   return (
     <Stack
       sx={{

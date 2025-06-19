@@ -22,7 +22,7 @@ export default async function Page({
   const organisations = await getAllOrganisations();
   const loggedUser: any = getCookie("logged-user", { cookies });
   const user: SingleUser = JSON.parse(loggedUser);
-  const organisationCount = await getOrganisationCount();
+  // const organisationCount = await getOrganisationCount();
   const type = searchParams?.type || "";
 
   return (
@@ -38,10 +38,10 @@ export default async function Page({
         permissions={user?.permissions.createOrganisation}
       />
       <AddNewOrganisation
-        key={Object.keys(organisationCount).length}
+        // key={Object.keys(organisationCount).length}
         organisations={organisations?.data}
         type={type}
-        organisationCount={organisationCount?.data}
+        // organisationCount={organisationCount?.data}
         loggedUser={JSON.parse(loggedUser)}
       />
     </>
