@@ -104,16 +104,23 @@ export async function POST(req: NextRequest) {
         if (unit.name === existingPredictionUnit.unitName) {
           const { id, feedProfile } = existingPredictionUnit;
 
-          await prisma.feedProfileProductionUnit.upsert({
-            where: { id: id || "", productionUnitId: unit.id || "" },
-            update: {
-              profiles: feedProfile,
-            },
-            create: {
-              productionUnitId: updatedUnit.id,
-              profiles: feedProfile,
-            },
-          });
+          if (id) {
+            // ✅ If id exists, update
+            await prisma.feedProfileProductionUnit.update({
+              where: { id },
+              data: {
+                profiles: feedProfile,
+              },
+            });
+          } else {
+            // ✅ If id doesn't exist, create
+            await prisma.feedProfileProductionUnit.create({
+              data: {
+                productionUnitId: updatedUnit.id,
+                profiles: feedProfile,
+              },
+            });
+          }
         }
       }
 

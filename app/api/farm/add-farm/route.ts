@@ -135,7 +135,7 @@ export async function POST(req: NextRequest) {
             if (unit.name === data.unitName) {
               return {
                 productionUnitId: unit.id,
-                profiles: data.feedProfile.data,
+                profiles: data.feedProfile,
               };
             }
             return null;

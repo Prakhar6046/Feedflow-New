@@ -60,13 +60,10 @@ const ProductionUnitFeedProfile: React.FC<Props> = ({
 }) => {
   const isEditFarm = getCookie("isEditFarm");
 
-  const farm = useAppSelector(selectFarm);
-
   const [formProductionFeedProfile, setFormProductionFeedProfile] =
     useState<any>();
 
   const { control, handleSubmit, watch, setValue } = useForm<FormData>();
-  const feedProfileWatch = watch();
 
   const onSubmit: SubmitHandler<FormData> = (formData) => {
     const productionUnitsFeedProfilesArray = getLocalItem(
@@ -94,6 +91,9 @@ const ProductionUnitFeedProfile: React.FC<Props> = ({
     if (typeof window !== "undefined") {
       const formData = getLocalItem("feedProfiles");
       setFormProductionFeedProfile(formData);
+      Object?.entries(formData).forEach(([key, value]) => {
+        setValue(key, String(value));
+      });
     }
   }, []);
 
@@ -110,11 +110,6 @@ const ProductionUnitFeedProfile: React.FC<Props> = ({
         setValue(key, String(value));
       });
     }
-    // else {
-    //   Object?.entries(formProductionFeedProfile).forEach(([key, value]) => {
-    //     setValue(key, String(value));
-    //   });
-    // }
   }, [formProductionFeedProfile, selectedUnitName, setValue]);
 
   useEffect(() => {

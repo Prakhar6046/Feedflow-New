@@ -14,7 +14,10 @@ export const GET = async (request: NextRequest) => {
         farmAddress: true,
         organisation: true,
         productionUnits: {
-          include: { YearBasedPredicationProductionUnit: true },
+          include: {
+            YearBasedPredicationProductionUnit: true,
+            FeedProfileProductionUnit: true,
+          },
         },
         production: true,
         WaterQualityPredictedParameters: {

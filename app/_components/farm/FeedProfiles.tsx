@@ -1,5 +1,5 @@
 "use client";
-import { setLocalItem } from "@/app/_lib/utils";
+import { getLocalItem, setLocalItem } from "@/app/_lib/utils";
 import {
   Box,
   Button,
@@ -120,6 +120,16 @@ const FeedProfiles = ({ setActiveStep, editFarm }: Props) => {
       });
     }
   }, [editFarm]);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const formData = getLocalItem("feedProfiles");
+      if (formData && Object.keys(formData).length)
+        Object.entries(formData)?.forEach(([key, value]) => {
+          setValue(key, String(value));
+        });
+    }
+  }, []);
   return (
     <>
       <Stack>

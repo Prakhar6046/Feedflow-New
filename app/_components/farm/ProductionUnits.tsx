@@ -66,6 +66,7 @@ const ProductionUnits: NextPage<Props> = ({
   productionParaMeter,
 }) => {
   uuidv4();
+
   const dispatch = useAppDispatch();
   const isEditFarm = getCookie("isEditFarm");
   const userData: any = getCookie("logged-user");
@@ -195,6 +196,7 @@ const ProductionUnits: NextPage<Props> = ({
                 (param: any) => param.name === unit.unitName
               )
           );
+
         if (filteredProductionUnits) {
           updatedProductionUnits = filteredProductionUnits.map(
             (filteredUnit: any) => {
@@ -231,12 +233,16 @@ const ProductionUnits: NextPage<Props> = ({
               if (matchedUnit) {
                 return {
                   ...filteredUnit,
-                  id: matchedUnit.FeedProfileProductionUnit[0].id,
+                  id: matchedUnit?.FeedProfileProductionUnit[0]?.id,
                 };
               }
               return filteredUnit;
             });
         }
+        const unitFeedProfiles: any = [];
+        productionUnits?.map((unit) =>
+          unitFeedProfiles.push({ unitName: unit.name, feedProfile })
+        );
 
         if (
           isEditFarm === "true" &&
@@ -307,7 +313,8 @@ const ProductionUnits: NextPage<Props> = ({
         } else {
           payload = {
             productionParamtertsUnitsArray: updatedProductionUnits,
-            FeedProfileUnits: updatedProductionUnitsFeedProfile,
+            FeedProfileUnits:
+              filteredProductionUnitsFeedProfile ?? unitFeedProfiles,
 
             productionParameter: {
               ...farmPredictionValues,
