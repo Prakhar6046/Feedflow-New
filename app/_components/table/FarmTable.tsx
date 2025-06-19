@@ -68,6 +68,11 @@ export default function FarmTable({ farms }: Props) {
     if (selectedFarm) {
       removeLocalItem("farmData");
       removeLocalItem("farmProductionUnits");
+      removeLocalItem("productionParametes");
+      removeLocalItem("productionParamtertsUnitsArray");
+      removeLocalItem("feedProfiles");
+      removeLocalItem("feedProfileId");
+      removeLocalItem("productionUnitsFeedProfiles");
       router.push(`/dashboard/farm/${selectedFarm.id}`);
       setCookie("isEditFarm", true);
       setCookie("activeStep", 0);
