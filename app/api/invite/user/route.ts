@@ -25,18 +25,6 @@ export async function POST(req: NextRequest) {
       data: { invite: true },
     });
 
-    const findContact = await prisma.contact.findFirst({
-      where: { email, organisationId: UpdateUser.organisationId },
-    });
-    // update contact for user
-    await prisma.contact.update({
-      where: {
-        organisationId: Number(UpdateUser.organisationId),
-        email,
-        id: findContact?.id,
-      },
-      data: { invite: true },
-    });
     const invitedByOrg = await prisma.organisation.findUnique({
       where: { id: Number(createdBy) },
       include: { contact: true },
