@@ -36,6 +36,7 @@ import {
 } from "../_lib/utils/tableHeadData";
 import { SingleOrganisation } from "../_typeModels/Organization";
 import { Permissions } from "../_typeModels/User";
+import { getCookie } from "cookies-next";
 interface Props {
   organisations: SingleOrganisation[];
   userRole: string;
@@ -52,6 +53,8 @@ export default function BasicTable({
   const searchParams = useSearchParams();
   const dispatch = useAppDispatch();
   const [order, setOrder] = useState("asc");
+  const loggedUser = getCookie("logged-user");
+  const loginUser = loggedUser && JSON.parse(loggedUser);
   const [orderBy, setOrderBy] = useState("organisation");
   const [selectedView, setSelectedView] = useState<string>("all");
   const role = useAppSelector(selectRole);
@@ -88,6 +91,7 @@ export default function BasicTable({
         body: JSON.stringify({
           organisationId: selectedOrganisation.id,
           users: selectedOrganisation.contact,
+          createdBy: loginUser?.id,
         }),
       });
       if (response.ok) {

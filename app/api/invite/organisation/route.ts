@@ -12,13 +12,17 @@ export async function POST(req: NextRequest) {
     },
   });
   try {
-    const { organisationId, users } = await req.json();
+    const { organisationId, users, createdBy } = await req.json();
 
     const organisationExist = await prisma.organisation.findUnique({
       where: { id: organisationId },
       include: { contact: true },
     });
-    const findOrganisationAdmin = organisationExist?.contact.find(
+    const invitedByOrg = await prisma.organisation.findUnique({
+      where: { id: Number(createdBy) },
+      include: { contact: true },
+    });
+    const findOrganisationAdmin = invitedByOrg?.contact.find(
       (org) => org.permission === "ADMIN" || org.permission === "SUPERADMIN"
     );
     if (!organisationExist) {
@@ -112,7 +116,7 @@ export async function POST(req: NextRequest) {
         <div style="padding: 30px 50px 60px 50px">
           <p style="margin: 16px 40px 10px 0">
             You’re invited by ${findOrganisationAdmin?.name}, from
-            ${organisationExist?.name} to join Feedflow, a
+            ${invitedByOrg?.name} to join Feedflow, a
             platform designed to support feeding management for aquaculture
             producers.
           </p>
@@ -159,12 +163,12 @@ export async function POST(req: NextRequest) {
           <p style="margin-bottom: 0px; font-weight: 600; color: #000">
             Kind regards,
           </p>
-          <p style="margin: 0">Everett Pieterse</p>
+          <p style="margin: 0">${findOrganisationAdmin?.name}</p>
           <a
             href="#"
             target="_blank"
             style="text-decoration: none; font-size: 16px; color: #000"
-            >${organisationExist?.name}</a
+            >${invitedByOrg?.name}</a
           >
         </div>
       </div>

@@ -12,7 +12,7 @@ const transporter = nodemailer.createTransport({
 });
 export async function POST(req: NextRequest) {
   try {
-    const { email, name, userId } = await req.json();
+    const { email, name, userId, createdBy } = await req.json();
 
     if (!email) {
       return NextResponse.json({ error: "Email is required" }, { status: 400 });
@@ -24,7 +24,11 @@ export async function POST(req: NextRequest) {
       include: { organisation: { include: { contact: true } } },
       data: { invite: true },
     });
-    const findOrganisationAdmin = UpdateUser?.organisation?.contact.find(
+    const invitedByOrg = await prisma.organisation.findUnique({
+      where: { id: Number(createdBy) },
+      include: { contact: true },
+    });
+    const findOrganisationAdmin = invitedByOrg?.contact.find(
       (org) => org.permission === "ADMIN" || org.permission === "SUPERADMIN"
     );
     // Send the email
@@ -91,7 +95,7 @@ export async function POST(req: NextRequest) {
         <div style="padding: 30px 50px 60px 50px">
           <p style="margin: 16px 40px 10px 0">
             You’re invited by ${findOrganisationAdmin?.name}, from
-            ${UpdateUser?.organisation?.name} to join Feedflow, a
+            ${invitedByOrg?.name} to join Feedflow, a
             platform designed to support feeding management for aquaculture
             producers.
           </p>
@@ -138,12 +142,12 @@ export async function POST(req: NextRequest) {
           <p style="margin-bottom: 0px; font-weight: 600; color: #000">
             Kind regards,
           </p>
-          <p style="margin: 0">{${findOrganisationAdmin?.name}}</p>
+          <p style="margin: 0">${findOrganisationAdmin?.name}</p>
           <a
             href="#"
             target="_blank"
             style="text-decoration: none; font-size: 16px; color: #000"
-            >${UpdateUser?.organisation?.name}</a
+            >${invitedByOrg?.name}</a
           >
         </div>
       </div>

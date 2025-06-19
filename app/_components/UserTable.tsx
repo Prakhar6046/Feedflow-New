@@ -87,6 +87,7 @@ export default function UserTable({ users }: Props) {
           name: selectedUser.name,
           email: selectedUser.email,
           userId: selectedUser.id,
+          createdBy: loginUser?.id,
         }),
       });
       if (response.ok) {

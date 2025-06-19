@@ -213,7 +213,7 @@ export async function POST(req: NextRequest) {
           <p style="margin-bottom: 0px; font-weight: 600; color: #000">
             Kind regards,
           </p>
-          <p style="margin: 0">Everett Pieterse</p>
+          <p style="margin: 0">${findOrganisationAdmin?.name}</p>
           <a
             href="#"
             target="_blank"
