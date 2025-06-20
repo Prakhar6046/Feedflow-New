@@ -15,7 +15,8 @@ import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { OrganizationData } from "@/app/_typeModels/Organization";
 import { VisuallyHiddenInput } from "./EditOrganisation";
 import EmptyFarm from "./EmptyFarm";
-import { setCookie } from "cookies-next";
+import { getCookie, setCookie } from "cookies-next";
+import { SingleUser } from "@/app/_typeModels/User";
 interface Props {
   organisationData?: OrganizationData;
   profilePic: string | any;
@@ -43,7 +44,8 @@ const FarmsInformation = ({
   errors,
 }: Props) => {
   const router = useRouter();
-
+  const loggedUser: any = getCookie("logged-user");
+  const user: SingleUser = JSON.parse(loggedUser);
   return organisationData?.Farm.length ? (
     organisationData?.Farm?.map((farm) => {
       return (
@@ -399,45 +401,28 @@ const FarmsInformation = ({
                   flexDirection: "row",
                 }}
               >
-                <Button
-                  variant="contained"
-                  onClick={() => {
-                    setCookie("activeStep", 0);
-                    router.push(`/dashboard/farm/${farm?.id}`);
-                  }}
-                  sx={{
-                    background: "#fff",
-                    border: "1px solid #06A19B",
-                    fontWeight: 600,
-                    padding: "6px 16px",
-                    width: "fit-content",
-                    textTransform: "capitalize",
-                    borderRadius: "8px",
-                    marginTop: 2,
-                    color: "#06A19B",
-                  }}
-                >
-                  Edit Farm
-                </Button>
-                <Button
-                  variant="contained"
-                  onClick={() => {
-                    setCookie("activeStep", 0);
-                    router.push("/dashboard/farm/newFarm");
-                  }}
-                  sx={{
-                    background: "#06A19B",
-                    fontWeight: 600,
-                    padding: "6px 16px",
-                    width: "fit-content",
-                    textTransform: "capitalize",
-                    borderRadius: "8px",
-
-                    marginTop: 2,
-                  }}
-                >
-                  Add Farm
-                </Button>
+                {user?.permissions?.editOrganisation && (
+                  <Button
+                    variant="contained"
+                    onClick={() => {
+                      setCookie("activeStep", 0);
+                      router.push(`/dashboard/farm/${farm?.id}`);
+                    }}
+                    sx={{
+                      background: "#fff",
+                      border: "1px solid #06A19B",
+                      fontWeight: 600,
+                      padding: "6px 16px",
+                      width: "fit-content",
+                      textTransform: "capitalize",
+                      borderRadius: "8px",
+                      marginTop: 2,
+                      color: "#06A19B",
+                    }}
+                  >
+                    Edit Farm
+                  </Button>
+                )}
               </Stack>
             </Grid>
           </Grid>

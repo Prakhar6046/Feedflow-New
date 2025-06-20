@@ -97,6 +97,7 @@ export default function BasicTable({
       if (response.ok) {
         const res = await response.json();
         toast.success(res.message);
+        router.refresh();
       }
     }
   };

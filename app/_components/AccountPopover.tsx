@@ -18,6 +18,7 @@ import {
 import { deleteCookie, getCookie } from "cookies-next";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 export interface LoggedUser {
   id: Number;
   name: String;
@@ -50,6 +51,7 @@ const AccountPopover = () => {
     setAnchorEl(null);
   };
   const handleLogout = async () => {
+    toast.dismiss();
     const data = await fetch("/api/auth/logout", { method: "GET" });
     const response = await data.json();
     if (response.status) {

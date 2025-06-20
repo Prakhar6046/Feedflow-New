@@ -49,6 +49,8 @@ function EditUser({ userId }: Iprops) {
   const router = useRouter();
   const loggedUser: any = getCookie("logged-user");
   const role = useAppSelector(selectRole);
+  const [isApiCallInProgress, setIsApiCallInProgress] =
+    useState<boolean>(false);
   const [userData, setUserData] = useState<{ data: SingleUser }>();
   const [loading, setLoading] = useState<boolean>(false);
   const [currentUserId, setCurrentUserId] = useState<Number>();
@@ -75,28 +77,37 @@ function EditUser({ userId }: Iprops) {
     formState: { errors },
   } = useForm<UserEditFormInputs>({ mode: "onTouched" });
   const onSubmit: SubmitHandler<UserEditFormInputs> = async (data) => {
-    const formData = new FormData();
-    formData.append("name", data.name);
-    formData.append("email", data.email);
-    formData.append("organisationId", String(userData?.data.organisationId));
-    formData.append("imageUrl", String(profilePic));
-    formData.append("permissions", JSON.stringify(data.permissions));
+    // Prevent API call if one is already in progress
+    if (isApiCallInProgress) return;
+    setIsApiCallInProgress(true);
+    try {
+      const formData = new FormData();
+      formData.append("name", data.name);
+      formData.append("email", data.email);
+      formData.append("organisationId", String(userData?.data.organisationId));
+      formData.append("imageUrl", String(profilePic));
+      formData.append("permissions", JSON.stringify(data.permissions));
 
-    if (data.password) {
-      formData.append("password", data.password);
-    }
+      if (data.password) {
+        formData.append("password", data.password);
+      }
 
-    const res = await fetch(`/api/users/${userId}`, {
-      method: "PUT",
-      body: formData,
-    });
+      const res = await fetch(`/api/users/${userId}`, {
+        method: "PUT",
+        body: formData,
+      });
 
-    if (res.ok) {
-      const updatedUser = await res.json();
-      toast.success(updatedUser.message);
-      router.push("/dashboard/user");
-      resetField("confirmPassword");
-      resetField("password");
+      if (res.ok) {
+        const updatedUser = await res.json();
+        toast.success(updatedUser.message);
+        router.push("/dashboard/user");
+        resetField("confirmPassword");
+        resetField("password");
+      }
+    } catch (error) {
+      toast.error("Something went wrong. Please try again.");
+    } finally {
+      setIsApiCallInProgress(false);
     }
   };
 
@@ -598,6 +609,7 @@ function EditUser({ userId }: Iprops) {
         <Button
           type="submit"
           variant="contained"
+          disabled={isApiCallInProgress}
           sx={{
             background: "#06A19B",
             fontWeight: 600,

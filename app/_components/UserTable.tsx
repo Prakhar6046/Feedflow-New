@@ -93,6 +93,7 @@ export default function UserTable({ users }: Props) {
       if (response.ok) {
         const res = await response.json();
         toast.success(res.message);
+        router.refresh();
       }
     }
   };

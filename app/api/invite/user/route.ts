@@ -24,6 +24,15 @@ export async function POST(req: NextRequest) {
       include: { organisation: { include: { contact: true } } },
       data: { invite: true },
     });
+    const userContact = UpdateUser?.organisation?.contact.find(
+      (con) => con.email === email
+    );
+    await prisma.contact.update({
+      where: { id: userContact?.id },
+      data: {
+        invite: true,
+      },
+    });
 
     const invitedByOrg = await prisma.organisation.findUnique({
       where: { id: Number(createdBy) },

@@ -678,6 +678,7 @@ const EditOrganisation = ({
                     id="demo-simple-select"
                     label="   Organisation Type *"
                     {...register("organisationType")}
+                    disabled
                     value={selectedOrganisationType || ""}
                     // onChange={(e) => handleChange(e, item)}
                   >
