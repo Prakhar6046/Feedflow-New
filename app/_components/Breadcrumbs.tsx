@@ -37,6 +37,7 @@ export default function BasicBreadcrumbs({
 }: Props) {
   const role = getCookie("role");
   const pathName = usePathname();
+
   const search = useSearchParams();
   const router = useRouter();
   const [updatedPathName, setUpdatedPathName] = useState<string>();
@@ -225,8 +226,44 @@ export default function BasicBreadcrumbs({
               </Button>
             )}
           </Box>
-        ) : (
+        ) : pathName === "/dashboard/organisation" ? (
           permissions &&
+          buttonName &&
+          buttonName !== "Add Organization" && (
+            <Button
+              variant="contained"
+              onClick={handleClick}
+              sx={{
+                background: "#06A19B",
+                fontWeight: 600,
+                padding: "8px 20px",
+                width: "fit-content",
+                textTransform: "capitalize",
+                borderRadius: "8px",
+                textWrap: "nowrap",
+                display: "flex",
+                gap: 1,
+                alignItems: "center",
+              }}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="1.5em"
+                height="1.5em"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  fill="none"
+                  stroke="#fff"
+                  strokeLinecap="round"
+                  strokeWidth="2"
+                  d="M12 6v12m6-6H6"
+                />
+              </svg>
+              {buttonName}
+            </Button>
+          )
+        ) : (
           buttonName &&
           buttonName !== "Add Organization" && (
             <Button

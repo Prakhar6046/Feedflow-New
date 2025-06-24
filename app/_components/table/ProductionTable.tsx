@@ -2007,22 +2007,43 @@ export default function ProductionTable({
                                           alignItems="center"
                                           direction="row"
                                         >
-                                          <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            width="1.25em"
-                                            height="1.25em"
-                                            viewBox="0 0 24 24"
-                                          >
-                                            <path
-                                              fill="none"
-                                              stroke="currentColor"
-                                              strokeLinecap="round"
-                                              strokeLinejoin="round"
-                                              strokeWidth="1.5"
-                                              d="M6.008 12h-.01M11 16.042c.463.153.908.329 1.31.61m0 0A3.95 3.95 0 0 1 14 19.885a.117.117 0 0 1-.118.116c-2.917-.013-4.224-.507-4.773-1.322L8 16.857c-2.492-.503-4.782-2.094-6-4.774c3-6.597 12.5-6.597 15.5 0m-5.19 4.57c2.17-.66 4.105-2.184 5.19-4.57m-5.19-4.569A3.95 3.95 0 0 0 14 4.282c0-.826-4.308.342-4.89 1.206L8 7.31m9.5 4.773c.333-.66 2.1-2.969 4.5-2.969c-.833.825-2.2 3.959-1 5.938c-1.2 0-3-2.309-3.5-2.969"
-                                              color="currentColor"
-                                            />
-                                          </svg>
+                                          {selectedView === "water" ? (
+                                            <svg
+                                              xmlns="http://www.w3.org/2000/svg"
+                                              width="1.25em"
+                                              height="1.25em"
+                                              viewBox="0 0 24 24"
+                                            >
+                                              <g
+                                                fill="none"
+                                                stroke="currentColor"
+                                                stroke-width="2"
+                                              >
+                                                <path
+                                                  stroke-linecap="round"
+                                                  d="M12 18a2 2 0 0 1-1.932-1.482"
+                                                />
+                                                <path d="M10.424 4.679c.631-1.073.947-1.61 1.398-1.69a1 1 0 0 1 .356 0c.451.08.767.617 1.398 1.69l1.668 2.836a27.2 27.2 0 0 1 2.707 6.315c1.027 3.593-1.67 7.17-5.408 7.17h-1.086c-3.737 0-6.435-3.577-5.408-7.17a27.2 27.2 0 0 1 2.707-6.315z" />
+                                              </g>
+                                            </svg>
+                                          ) : (
+                                            <svg
+                                              xmlns="http://www.w3.org/2000/svg"
+                                              width="1.25em"
+                                              height="1.25em"
+                                              viewBox="0 0 24 24"
+                                            >
+                                              <path
+                                                fill="none"
+                                                stroke="currentColor"
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                strokeWidth="1.5"
+                                                d="M6.008 12h-.01M11 16.042c.463.153.908.329 1.31.61m0 0A3.95 3.95 0 0 1 14 19.885a.117.117 0 0 1-.118.116c-2.917-.013-4.224-.507-4.773-1.322L8 16.857c-2.492-.503-4.782-2.094-6-4.774c3-6.597 12.5-6.597 15.5 0m-5.19 4.57c2.17-.66 4.105-2.184 5.19-4.57m-5.19-4.569A3.95 3.95 0 0 0 14 4.282c0-.826-4.308.342-4.89 1.206L8 7.31m9.5 4.773c.333-.66 2.1-2.969 4.5-2.969c-.833.825-2.2 3.959-1 5.938c-1.2 0-3-2.309-3.5-2.969"
+                                                color="currentColor"
+                                              />
+                                            </svg>
+                                          )}
 
                                           <Typography variant="subtitle2">
                                             Manage

@@ -178,10 +178,10 @@ export const getFarms = async (payload: {
     return error;
   }
 };
-export const getFarmMembers = async (organisationId?: string) => {
+export const getFarmMangers = async (organisationId?: string) => {
   try {
     const data = await fetch(
-      `${process.env.BASE_URL}/api/farm/members?organisationId=${organisationId}`,
+      `${process.env.BASE_URL}/api/farm/managers?organisationId=${organisationId}`,
       {
         method: "GET",
         headers: {

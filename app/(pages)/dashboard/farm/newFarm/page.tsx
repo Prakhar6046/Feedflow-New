@@ -1,6 +1,6 @@
 import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
 import NewFarm from "@/app/_components/farm/NewFarm";
-import { getFarmMembers, getFarms, getGrowthModels } from "@/app/_lib/action";
+import { getFarmMangers, getFarms, getGrowthModels } from "@/app/_lib/action";
 import { getCookie } from "cookies-next";
 import { Metadata } from "next";
 import { cookies } from "next/headers";
@@ -16,7 +16,7 @@ export default async function Page({
 }) {
   const loggedUser: any = getCookie("logged-user", { cookies });
   const user = JSON.parse(loggedUser);
-  const farmMembers = await getFarmMembers(user.organisationId);
+  const farmManagers = await getFarmMangers(user.organisationId);
   const growthModels = await getGrowthModels();
   const query = searchParams?.query || "";
   const farms = await getFarms({
@@ -25,6 +25,7 @@ export default async function Page({
     query,
     noFilter: true,
   });
+
   return (
     <>
       <BasicBreadcrumbs
@@ -38,7 +39,7 @@ export default async function Page({
       />
 
       <NewFarm
-        farmMembers={farmMembers?.data?.users}
+        farmMembers={farmManagers?.data?.users}
         growthModels={growthModels?.data}
         farms={farms?.data}
       />

@@ -576,7 +576,17 @@ export default function BasicTable({
                                 </Typography>
                               </Stack>
                             </MenuItem>
-                            <MenuItem onClick={handleRestrictAccess}>
+                            <MenuItem
+                              onClick={handleRestrictAccess}
+                              disabled={
+                                selectedOrganisation?.users?.some(
+                                  (user) => user.role === "SUPERADMIN"
+                                ) ||
+                                selectedOrganisation?.users?.some(
+                                  (user) => user.role === "ADMIN" && user.invite
+                                )
+                              }
+                            >
                               <Stack
                                 display="flex"
                                 gap={1.2}
@@ -608,11 +618,13 @@ export default function BasicTable({
                               <MenuItem
                                 onClick={handleInviteOrganisation}
                                 disabled={
-                                  selectedOrganisation?.users?.find(
-                                    (val) => val.role === "ADMIN" && val.invite
+                                  selectedOrganisation?.users?.some(
+                                    (user) => user.role === "SUPERADMIN"
+                                  ) ||
+                                  selectedOrganisation?.users?.some(
+                                    (user) =>
+                                      user.role === "ADMIN" && user.invite
                                   )
-                                    ? true
-                                    : false
                                 }
                               >
                                 <Stack

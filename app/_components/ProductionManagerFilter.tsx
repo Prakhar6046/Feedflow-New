@@ -480,6 +480,7 @@ function ProductionManagerFilter({
                 onChange={(e) =>
                   dispatch(commonFilterAction.setSelectedDropDownfarms(e.value))
                 }
+                selectAllLabel="Select All"
                 options={farms}
                 optionLabel="option"
                 display="chip"

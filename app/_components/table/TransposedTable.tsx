@@ -136,7 +136,7 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
 
       <TableContainer
         component={Paper}
-        sx={{ height: "75vh", overflow: "auto" }}
+        sx={{ height: "550px", overflow: "auto" }}
       >
         <Table>
           <TableHead

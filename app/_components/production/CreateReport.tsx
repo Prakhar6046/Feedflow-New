@@ -486,7 +486,7 @@ function CreateReport({ farms, productions }: Props) {
               borderRadius: "8px",
               border: "1px solid #06A19B",
             }}
-            disabled={selectedUnits?.length === 0}
+            disabled={selectedFarms.length === 0}
             onClick={handlePreview}
           >
             Preview
