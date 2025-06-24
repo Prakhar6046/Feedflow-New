@@ -110,6 +110,8 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
       toast.error("Something went wrong. Please try again.");
     }
   };
+  const firstRows = keys.slice(0, 2);
+  const remainingRows = keys.slice(2);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -132,9 +134,19 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
         </Button>
       </Box>
 
-      <TableContainer component={Paper}>
+      <TableContainer
+        component={Paper}
+        sx={{ height: "75vh", overflow: "auto" }}
+      >
         <Table>
-          <TableHead>
+          <TableHead
+            sx={{
+              position: "sticky",
+              top: 0,
+              backgroundColor: "#FFF",
+              zIndex: 12,
+            }}
+          >
             <TableRow>
               {/* Static Field Column Title */}
               <TableCell
@@ -167,6 +179,7 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
                   sx={{
                     borderBottom: 0,
                     p: 0,
+                    background: "#FAFAFA",
                   }}
                 >
                   <Box
@@ -230,36 +243,36 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
                 </TableCell>
               ))}
             </TableRow>
+
+            {firstRows.map((key) => (
+              <TableRow key={key}>
+                <TableCell sx={{ background: "#FAFAFA" }}>{key}</TableCell>
+                {filteredStores.map((_: any, colIndex: number) => (
+                  <TableCell key={colIndex} sx={{ background: "#FAFAFA" }}>
+                    <Controller
+                      name={`${key}-${colIndex}`}
+                      control={control}
+                      render={({ field }) => (
+                        <TextField {...field} size="small" fullWidth />
+                      )}
+                    />
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))}
           </TableHead>
 
           <TableBody>
-            {keys.map((key) => (
+            {remainingRows.map((key) => (
               <TableRow key={key}>
-                {/* Static Label Column */}
-                <TableCell
-                  sx={{
-                    fontWeight: 500,
-                    background: "#FAFAFA",
-                    fontSize: 13,
-                    py: 1.2,
-                  }}
-                >
-                  {key}
-                </TableCell>
-
+                <TableCell>{key}</TableCell>
                 {filteredStores.map((_: any, colIndex: number) => (
                   <TableCell key={colIndex}>
                     <Controller
                       name={`${key}-${colIndex}`}
                       control={control}
                       render={({ field }) => (
-                        <TextField
-                          {...field}
-                          size="small"
-                          variant="outlined"
-                          fullWidth
-                          sx={{ fontSize: 13 }}
-                        />
+                        <TextField {...field} size="small" fullWidth />
                       )}
                     />
                   </TableCell>

@@ -511,6 +511,7 @@ export const getChartPredictedValues = (
 ) => {
   const predictionUnit =
     productions?.[0]?.productionUnit?.YearBasedPredicationProductionUnit?.[0];
+
   const start = new Date(startDate);
   const end = new Date(endDate);
   const startMonth = start.getMonth();
@@ -534,15 +535,14 @@ export const getChartPredictedValues = (
     .map(Number)
     .filter((month: number) => month >= startMonth && month <= endMonth)
     .map((month: number) => monthMap[month]);
-  const filteredValues = Object.entries(predictionUnit).map(
-    ([key, value]: any) => {
-      const selectedData = selectedMonths
-        .map((month) => value?.[month])
-        .filter((val) => val !== undefined);
-      return selectedData.length > 0 ? { key, values: selectedData } : null;
-    }
-  );
-  const result = filteredValues.filter(Boolean);
+  const filteredValues = predictionUnit?.map(([key, value]: any) => {
+    const selectedData = selectedMonths
+      .map((month) => value?.[month])
+      .filter((val) => val !== undefined);
+    return selectedData.length > 0 ? { key, values: selectedData } : null;
+  });
+
+  const result = filteredValues?.filter(Boolean);
   return result;
 };
 
