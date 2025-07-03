@@ -164,6 +164,7 @@ const FishManageHistoryTable: React.FC<Props> = ({
         isManager: item.isManager,
         field: item.field,
         fishManageHistory: item.FishManageHistory,
+        currentDate: item?.currentDate,
       });
 
       return result;
@@ -329,6 +330,7 @@ const FishManageHistoryTable: React.FC<Props> = ({
       setTab("list");
     }
   }, []);
+
   return (
     <Box
       sx={{
@@ -527,7 +529,7 @@ const FishManageHistoryTable: React.FC<Props> = ({
                                       textWrap: "nowrap",
                                     }}
                                   >
-                                    {unit.currentDate
+                                    {unit?.currentDate ?? unit.currentDate
                                       ? unit.currentDate
                                       : new Date(
                                           String(unit?.updatedAt)

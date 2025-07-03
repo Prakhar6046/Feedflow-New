@@ -445,6 +445,7 @@ model production {
   TSS                       String?
   NH4                       String?
   NO3                       String?
+  currentDate               String?
   NO2                       String?
   ph                        String?
   visibility                String?

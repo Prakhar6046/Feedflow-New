@@ -177,18 +177,25 @@ const TransferModal: React.FC<Props> = ({
         (field) => field.field !== "Stock"
       );
       const addDataInSample = filteredData.map((data) => {
+        const formattedDate = data?.currentDate?.format
+          ? data.currentDate.format("MM/DD/YYYY")
+          : data?.currentDate;
+
         if (data.field === "Sample") {
           return {
             ...data,
             batchNumber: filteredData[0].batchNumber,
             productionUnit: filteredData[0].productionUnit,
             id: filteredData[0].id,
-            currentDate: data?.currentDate?.format("MM/DD/YYYY"),
+            currentDate: formattedDate,
             stockingDensityKG: filteredData[0].stockingDensityKG,
             stockingDensityNM: filteredData[0].stockingDensityNM,
           };
         } else {
-          return data;
+          return {
+            ...data,
+            currentDate: formattedDate,
+          };
         }
       });
       if (!isEnteredBiomassGreater && !isEnteredFishCountGreater) {
@@ -363,7 +370,7 @@ const TransferModal: React.FC<Props> = ({
 
   useEffect(() => {
     if ((isStockDeleted || selectedProduction) && !formData) {
-      const data = [
+      const data: any = [
         {
           id: selectedProduction.id,
           fishFarm: selectedProduction.fishFarmId,
@@ -376,6 +383,7 @@ const TransferModal: React.FC<Props> = ({
           stockingLevel: selectedProduction.stockingLevel,
           stockingDensityKG: selectedProduction.stockingDensityKG,
           batchNumber: selectedProduction.batchNumberId,
+          currentDate: selectedProduction?.currentDate,
         },
       ];
       setValue("manager", data);
@@ -988,7 +996,8 @@ const TransferModal: React.FC<Props> = ({
                             </Box>
                           </Grid>
                         )}
-                        {item.field === "Sample" && (
+                        {/* {item.field === "Sample" && ( */}
+                        {idx !== 0 && (
                           <Grid
                             xs
                             item
@@ -1043,6 +1052,7 @@ const TransferModal: React.FC<Props> = ({
                             </LocalizationProvider>
                           </Grid>
                         )}
+                        {/* // )} */}
 
                         {watchedFields[idx].field === "Sample" && (
                           <Grid

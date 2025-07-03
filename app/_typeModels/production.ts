@@ -1,3 +1,4 @@
+import { Dayjs } from "dayjs";
 import { Farm } from "./Farm";
 import { SingleOrganisation } from "./Organization";
 
@@ -14,6 +15,7 @@ export interface Production {
   updatedBy: String;
   createdAt: String;
   updatedAt: String;
+  currentDate: string;
   organisationId: Number;
   isManager?: Boolean;
   farm: Farm;

@@ -5,6 +5,7 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const filteredData = body.data.filter((data: any) => data.field);
+
     for (const data of filteredData) {
       await prisma.fishManageHistory.create({
         data: {
@@ -19,7 +20,7 @@ export async function POST(req: NextRequest) {
           stockingDensityKG: data.stockingDensityKG,
           stockingDensityNM: data.stockingDensityNM,
           organisationId: body.organisationId,
-          currentDate: body.date,
+          currentDate: data.currentDate,
           age: "",
           field: data.field ?? "",
           productionId: Number(data.id),
@@ -39,6 +40,7 @@ export async function POST(req: NextRequest) {
             meanLength: data.meanLength,
             meanWeight: data.meanWeight,
             stockingLevel: data.stockingLevel,
+            currentDate: data.currentDate,
             stockingDensityKG: data.stockingDensityKG,
             stockingDensityNM: data.stockingDensityNM,
             field: data.field ?? "",
@@ -48,6 +50,7 @@ export async function POST(req: NextRequest) {
         await prisma.production.create({
           data: {
             fishFarmId: data.fishFarm,
+
             productionUnitId: data.productionUnit,
             fishCount: data.count,
             batchNumberId: Number(data.batchNumber),
@@ -56,6 +59,7 @@ export async function POST(req: NextRequest) {
             meanWeight: data.meanWeight,
             stockingLevel: data.stockingLevel,
             stockingDensityKG: data.stockingDensityKG,
+            currentDate: data.currentDate,
             stockingDensityNM: data.stockingDensityNM,
             organisationId: body.organisationId,
             age: "",

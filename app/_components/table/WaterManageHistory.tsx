@@ -55,6 +55,8 @@ const WaterManageHistoryTable: React.FC<Props> = ({
   farms,
   waterId,
 }) => {
+  console.log(productions);
+
   const dispatch = useAppDispatch();
   const pathName = usePathname();
   const [order, setOrder] = useState("asc");
@@ -168,6 +170,7 @@ const WaterManageHistoryTable: React.FC<Props> = ({
     // Return only the first element of the grouped data or null if empty
     return filteredFarm?.[0] ?? null;
   }, [productions]);
+  console.log(groupedData);
 
   const handleRequestSort = (
     _: React.MouseEvent<HTMLButtonElement> | null,
@@ -556,8 +559,8 @@ const WaterManageHistoryTable: React.FC<Props> = ({
                           pl: 0,
                         }}
                       >
-                        {waterHistoryData?.units[0].WaterManageHistoryAvgrage &&
-                          waterHistoryData?.units[0].WaterManageHistoryAvgrage.map(
+                        {waterHistoryData?.units[0].waterManageHistory &&
+                          waterHistoryData?.units[0].waterManageHistory.map(
                             (unit, i) => {
                               return (
                                 <Typography
@@ -568,7 +571,7 @@ const WaterManageHistoryTable: React.FC<Props> = ({
                                     fontSize: 14,
                                     backgroundColor: "#F5F6F8",
                                     padding: `${
-                                      unit.createdAt
+                                      unit?.currentDate
                                         ? "8px 12px 8px 0"
                                         : "19px 12px 19px 0"
                                     }`,
@@ -576,7 +579,7 @@ const WaterManageHistoryTable: React.FC<Props> = ({
                                     textWrap: "nowrap",
                                   }}
                                 >
-                                  {formattedDate(String(unit.createdAt))}
+                                  {unit?.currentDate}
                                 </Typography>
                               );
                             }
