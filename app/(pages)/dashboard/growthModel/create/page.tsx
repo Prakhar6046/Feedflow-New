@@ -8,7 +8,6 @@ export const metadata: Metadata = {
 export default async function Page() {
   const farms = await getFarms({
     role: "",
-    organisationId: "",
     query: "",
     noFilter: true,
   });

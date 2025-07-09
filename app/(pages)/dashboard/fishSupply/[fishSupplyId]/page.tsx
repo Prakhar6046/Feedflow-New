@@ -13,7 +13,6 @@ export default async function Page({
   const organisationForhatchery = await getOrganisationForhatchery();
   const farms = await getFarms({
     noFilter: true,
-    organisationId: "",
     role: "",
     query: "",
   });

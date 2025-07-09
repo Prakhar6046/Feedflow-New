@@ -21,7 +21,6 @@ export default async function Page({
   const query = searchParams?.query || "";
   const farms = await getFarms({
     role: "",
-    organisationId: "",
     query,
     noFilter: true,
   });

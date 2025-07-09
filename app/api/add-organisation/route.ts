@@ -261,7 +261,7 @@ export async function POST(req: NextRequest) {
       users.map(async (user) => {
         await prisma.contact.updateMany({
           where: { email: user.email.toLowerCase() },
-          data: { userId: String(user.id) },
+          data: { userId: user.id },
         });
       })
     );

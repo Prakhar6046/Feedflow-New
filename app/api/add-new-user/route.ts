@@ -46,7 +46,7 @@ export async function POST(req: NextRequest) {
           email: normalizedEmail,
           name: name,
           organisationId: Number(organisationId),
-          userId: String(results.id),
+          userId: results.id,
           permission: "NONADMIN",
         },
       });
