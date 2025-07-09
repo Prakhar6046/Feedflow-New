@@ -1,7 +1,7 @@
 import { revalidatePath } from "next/cache";
 import { fetchWithAuth } from "./utils";
 import { GetToken } from "./cookiesGetter";
-const token = await GetToken();
+const token = GetToken();
 console.log(token);
 
 export const getOrganisations = async (payload: {
