@@ -34,9 +34,14 @@ interface Props {
     label: string;
   }[];
   fishSupply?: FishSupply[];
+  permisions: boolean;
 }
 
-export default function FishSupplyTable({ tableData, fishSupply }: Props) {
+export default function FishSupplyTable({
+  tableData,
+  fishSupply,
+  permisions,
+}: Props) {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
@@ -459,9 +464,8 @@ export default function FishSupplyTable({ tableData, fishSupply }: Props) {
                     >
                       {fish.status}
                     </TableCell>
-                    {role !== "MEMBER" && (
+                    {(role === "SUPERADMIN" || permisions) && (
                       <TableCell
-                        // align="center"
                         sx={{
                           borderBottomColor: "#F5F6F8",
                           borderBottomWidth: 2,
@@ -533,12 +537,7 @@ export default function FishSupplyTable({ tableData, fishSupply }: Props) {
                             </Stack>
                           </MenuItem>
 
-                          <Divider
-                            sx={{
-                              borderColor: "#9797971A",
-                              my: 0.5,
-                            }}
-                          />
+                          <Divider sx={{ borderColor: "#9797971A", my: 0.5 }} />
                         </Menu>
                       </TableCell>
                     )}

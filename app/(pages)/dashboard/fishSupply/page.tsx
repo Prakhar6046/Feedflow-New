@@ -5,6 +5,7 @@ import {
   fishTableHead,
   fishTableHeadMember,
 } from "@/app/_lib/utils/tableHeadData";
+import { SingleUser } from "@/app/_typeModels/User";
 import { Box } from "@mui/material";
 import { getCookie } from "cookies-next";
 import { Metadata } from "next";
@@ -21,7 +22,7 @@ export default async function Page({
 }) {
   const query = searchParams?.query || "";
   const loggedUser: any = getCookie("logged-user", { cookies });
-  const user = JSON.parse(loggedUser);
+  const user: SingleUser = JSON.parse(loggedUser);
 
   const fishSupply = await getFishSupply({
     organisationId: user.organisationId,
@@ -32,20 +33,24 @@ export default async function Page({
     <>
       <BasicBreadcrumbs
         heading={"Fish Supply"}
-        buttonName={user.role !== "MEMBER" ? "New Fish Supply" : ""}
+        buttonName={"New Fish Supply"}
         isTable={true}
         buttonRoute="/dashboard/fishSupply/new"
         links={[
           { name: "Dashboard", link: "/dashboard" },
           { name: "Fish Supply", link: "/dashboard/fishSupply" },
         ]}
+        permissions={user?.permissions?.createFishSupply}
       />
       <Box className="hatchery-table">
         <FishSupplyTable
           tableData={
-            user.role !== "MEMBER" ? fishTableHead : fishTableHeadMember
+            user?.role === "SUPERADMIN" || user?.permissions?.editFishSupply
+              ? fishTableHead
+              : fishTableHeadMember
           }
           fishSupply={fishSupply.data}
+          permisions={user?.permissions?.editFishSupply}
         />
       </Box>
     </>

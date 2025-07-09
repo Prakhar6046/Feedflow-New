@@ -63,13 +63,11 @@ type Iprops = {
   organisationId: string;
   organisations: SingleOrganisation[];
   userRole: string;
-  permissions: Permissions;
   loggedUser: SingleUser;
 };
 const EditOrganisation = ({
   organisationId,
   organisations,
-  permissions,
   userRole,
   loggedUser,
 }: Iprops) => {

@@ -172,7 +172,7 @@ export async function PUT(req: NextRequest, context: { params: any }) {
             email: contact.email,
             phone: contact.phone,
             permission: contact.permission,
-            userId: String(userId),
+            userId,
             organisation: { connect: { id: organisation.id } },
             invite: contact.newInvite,
           },
@@ -180,7 +180,7 @@ export async function PUT(req: NextRequest, context: { params: any }) {
       } else {
         await prisma.user.update({
           where: { id: Number(userId) },
-          data: { email: contact.email },
+          data: { email: contact?.email, name: contact?.name },
         });
         // If contact exists (has an id), update the contact information
         await prisma.contact.update({
@@ -190,7 +190,7 @@ export async function PUT(req: NextRequest, context: { params: any }) {
             role: contact.role,
             email: contact.email,
             phone: contact.phone,
-            userId: String(userId),
+            userId,
             permission: contact.permission,
             invite: contact.newInvite,
           },
@@ -382,6 +382,8 @@ export async function PUT(req: NextRequest, context: { params: any }) {
       { status: 200 }
     );
   } catch (error) {
+    console.log(error);
+
     return NextResponse.json(
       { error: "Something went wrong" },
       { status: 500 }

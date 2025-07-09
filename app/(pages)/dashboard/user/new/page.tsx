@@ -1,6 +1,7 @@
 import AddNewUser from "@/app/_components/AddNewUser";
 import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
 import { getOrganisations } from "@/app/_lib/action";
+import { SingleUser } from "@/app/_typeModels/User";
 import { getCookie } from "cookies-next";
 import { Metadata } from "next";
 import { cookies } from "next/headers";
@@ -10,10 +11,10 @@ export const metadata: Metadata = {
 };
 export default async function Page() {
   const loggedUser: any = getCookie("logged-user", { cookies });
-  const user = JSON.parse(loggedUser);
+  const user: SingleUser = JSON.parse(loggedUser);
   let organisations = await getOrganisations({
     organisationId: user?.organisationId,
-    role: user?.role,
+    role: String(user?.role),
     query: "",
   });
 

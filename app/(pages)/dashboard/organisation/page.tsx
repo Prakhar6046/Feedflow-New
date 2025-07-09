@@ -49,13 +49,13 @@ export default async function Page({
             link: `/dashboard/organisation?tab=${tab}`,
           },
         ]}
-        permissions={user?.permissions.createOrganisation}
+        permissions={user?.permissions.editOrganisation}
       />
       <BasicTable
         key={organisations?.data?.length}
         organisations={organisations?.data}
         userRole={String(user?.role)}
-        permissions={user?.permissions}
+        permissions={user?.permissions.editOrganisation}
       />
     </>
   );

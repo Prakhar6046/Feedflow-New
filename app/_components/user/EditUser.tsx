@@ -605,7 +605,10 @@ function EditUser({ userId }: Iprops) {
             </Grid>
           </Grid>
         </Stack>
-        <UserPermission control={control} />
+        <UserPermission
+          control={control}
+          oraginsationType={userData?.data?.organisation?.organisationType}
+        />
         <Button
           type="submit"
           variant="contained"

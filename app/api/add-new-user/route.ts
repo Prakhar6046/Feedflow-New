@@ -40,6 +40,16 @@ export async function POST(req: NextRequest) {
           permissions: permissions ?? {},
         },
       });
+
+      await prisma.contact.create({
+        data: {
+          email: normalizedEmail,
+          name: name,
+          organisationId: Number(organisationId),
+          userId: String(results.id),
+          permission: "NONADMIN",
+        },
+      });
       return NextResponse.json({
         message: "User created successfully",
         data: results,

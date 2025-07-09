@@ -35,7 +35,6 @@ export default async function Page({
           { name: "Organisations", link: "/dashboard/organisation" },
           { name: "New Organisation", link: "/dashboard/organisation/new" },
         ]}
-        permissions={user?.permissions.createOrganisation}
       />
       <AddNewOrganisation
         // key={Object.keys(organisationCount).length}

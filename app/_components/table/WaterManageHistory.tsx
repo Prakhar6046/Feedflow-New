@@ -55,8 +55,6 @@ const WaterManageHistoryTable: React.FC<Props> = ({
   farms,
   waterId,
 }) => {
-  console.log(productions);
-
   const dispatch = useAppDispatch();
   const pathName = usePathname();
   const [order, setOrder] = useState("asc");
@@ -170,7 +168,6 @@ const WaterManageHistoryTable: React.FC<Props> = ({
     // Return only the first element of the grouped data or null if empty
     return filteredFarm?.[0] ?? null;
   }, [productions]);
-  console.log(groupedData);
 
   const handleRequestSort = (
     _: React.MouseEvent<HTMLButtonElement> | null,

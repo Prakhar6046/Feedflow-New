@@ -1022,3 +1022,43 @@ export function calculateFishGrowth(
   }
   return newData;
 }
+
+export async function fetchWithAuth(
+  input: string,
+  init: RequestInit = {},
+  token?: any,
+  retry = true
+): Promise<Response> {
+  const headers = {
+    ...init.headers,
+    Authorization: `Bearer ${token}`,
+    "Content-Type": "application/json",
+  };
+  console.log(headers);
+
+  let res = await fetch(input, { ...init, headers });
+  // console.log(res);
+
+  // If 401, try refresh
+  if (res.status === 401 && retry) {
+    const refreshRes = await fetch("/api/auth/refresh", {
+      method: "GET",
+      credentials: "include",
+    });
+
+    if (refreshRes.ok) {
+      const { accessToken: newToken } = await refreshRes.json();
+
+      const retryHeaders = {
+        ...headers,
+        Authorization: `Bearer ${newToken}`,
+      };
+
+      res = await fetch(input, { ...init, headers: retryHeaders });
+    } else {
+      throw new Error("Authentication failed. Please login again.");
+    }
+  }
+
+  return res;
+}

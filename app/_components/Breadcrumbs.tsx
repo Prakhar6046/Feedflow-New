@@ -264,6 +264,7 @@ export default function BasicBreadcrumbs({
             </Button>
           )
         ) : (
+          permissions &&
           buttonName &&
           buttonName !== "Add Organization" && (
             <Button

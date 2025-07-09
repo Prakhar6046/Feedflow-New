@@ -38,6 +38,7 @@ export async function PUT(req: NextRequest, context: { params: any }) {
     // Check if a user exists
     const user = await prisma.user.findUnique({
       where: { id: Number(userId) },
+      include: { Contact: true },
     });
 
     if (!user) {
@@ -70,7 +71,13 @@ export async function PUT(req: NextRequest, context: { params: any }) {
         permissions: permissions ?? {},
       };
     }
-
+    await prisma.contact.update({
+      where: { userId: Number(userId), id: user?.Contact[0].id },
+      data: {
+        name: formData.get("name") as string,
+        email: formData.get("email") as string,
+      },
+    });
     await prisma.user.update({
       where: { id: Number(userId) },
       data: {

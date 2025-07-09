@@ -40,7 +40,7 @@ import { getCookie } from "cookies-next";
 interface Props {
   organisations: SingleOrganisation[];
   userRole: string;
-  permissions: Permissions;
+  permissions: boolean;
 }
 
 export default function BasicTable({
@@ -132,7 +132,7 @@ export default function BasicTable({
     return (
       <TableHead>
         <TableRow>
-          {(role !== "MEMBER"
+          {(role === "SUPERADMIN" || permissions
             ? organisationTableHead
             : organisationTableHeadMember
           ).map((headCell, idx, headCells) => (
@@ -548,7 +548,7 @@ export default function BasicTable({
                               disabled={
                                 userRole === "SUPERADMIN"
                                   ? false
-                                  : permissions?.editOrganisation
+                                  : permissions
                                   ? false
                                   : true
                               }

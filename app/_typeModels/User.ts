@@ -5,30 +5,47 @@ export interface UserInitialState {
 }
 
 export interface SingleUser {
-  id: Number;
-  name: String;
-  email: String;
-  image: String;
-  imageUrl: String;
-  password: String;
-  status: String;
-  role: String;
-  createdAt: String;
+  id: number;
+  name: string;
+  email: string;
+  image: string;
+  imageUrl: string;
+  password: string;
+  status: string;
+  role: string;
+  createdAt: string;
   organisationId: number;
   invite: boolean;
   access: boolean;
   organisation: Organisation;
-  permissions: {
-    editOrganisation: boolean;
-    viewOrganisation: boolean;
-    createOrganisation: boolean;
-  };
+  permissions: Permissions;
 }
 
+interface FarmsPermissions {
+  farmId: string;
+  stock: boolean;
+  transfer: boolean;
+  harvest: boolean;
+  mortalities: boolean;
+  sample: boolean;
+  feedingPlans: boolean;
+  createReports: boolean;
+}
 export interface Permissions {
-  viewOrganisation: boolean;
+  createUsers: boolean;
+  editUsers: boolean;
+  editAdminRights: boolean;
   editOrganisation: boolean;
-  createOrganisation: boolean;
+  addFeedSupply: boolean;
+  editFeedSupply: boolean;
+  addFishProducers: boolean;
+  editFishProducers: boolean;
+  createFishSupply: boolean;
+  editFishSupply: boolean;
+  createFarms: boolean;
+  editFarms: boolean;
+  transferFishBetweenFarms: boolean;
+  farms?: FarmsPermissions[];
 }
 export interface UserEditFormInputs {
   name: string;
@@ -39,7 +56,7 @@ export interface UserEditFormInputs {
   email: string;
   password: string;
   confirmPassword: string;
-  permissions: Permissions;
+  permissions?: Permissions;
 }
 export interface AddUserFormInputs {
   name: string;

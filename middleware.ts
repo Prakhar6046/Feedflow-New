@@ -1,37 +1,27 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getCookie } from "cookies-next";
+import { cookies } from "next/headers";
 
-// 1. Specify protected route patterns
-const protectedRoutePattern = /^\/$|^\/dashboard($|\/.*)/;
+const protectedRoutePattern = /^\/dashboard($|\/.*)/;
 const publicRoutes = ["/auth/login", "/auth/signup"];
 
-export default async function middleware(req: NextRequest, res: NextResponse) {
-  // 2. Check if the current route is protected or public
+export default function middleware(req: NextRequest) {
   const path = req.nextUrl.pathname;
-  const isProtectedRoute = protectedRoutePattern.test(path);
-  const isPublicRoute = publicRoutes.includes(path);
+  const isProtected = protectedRoutePattern.test(path);
+  const isPublic = publicRoutes.includes(path);
 
-  // 3. Decrypt the session from the cookie
-  const cookie = getCookie("auth-token", { res, req });
-  const session = cookie;
+  const refreshToken = cookies().get("refresh-token")?.value;
 
-  // 4. Redirect to /auth/login if the user is not authenticated
-  if (isProtectedRoute && !session) {
-    return NextResponse.redirect(new URL("/auth/login", req.nextUrl));
+  if (isProtected && !refreshToken) {
+    return NextResponse.redirect(new URL("/auth/login", req.url));
   }
 
-  // 5. Redirect to /dashboard if the user is authenticated
-  if (isPublicRoute && session && !path.startsWith("/dashboard/organisation")) {
-    return NextResponse.redirect(
-      new URL("/dashboard/organisation", req.nextUrl)
-    );
+  if (isPublic && refreshToken) {
+    return NextResponse.redirect(new URL("/dashboard/organisation", req.url));
   }
 
-  // 6. Allow access to the route
   return NextResponse.next();
 }
 
-// Routes Middleware should not run on
 export const config = {
   matcher: ["/((?!api|_next/static|_next/image|.*\\.png$).*)"],
 };

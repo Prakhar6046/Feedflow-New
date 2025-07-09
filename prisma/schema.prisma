@@ -43,6 +43,7 @@ model User {
   FarmManger     FarmManger[]
   access         Boolean      @default(true)
   permissions    Json         @default("{}")
+  Contact        Contact[]
 }
 
 model Organisation {
@@ -107,7 +108,8 @@ model Contact {
   phone          String?
   role           String?
   permission     UserRole      @default(NONADMIN)
-  userId         String?
+  userId         Int           @default(1)
+  user           User          @relation(fields: [userId], references: [id])
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
   invite         Boolean       @default(false)

@@ -30,22 +30,23 @@ import {
 } from "@/app/_lib/utils/tableHeadData";
 import { getLocalItem, removeLocalItem } from "@/app/_lib/utils";
 import Image from "next/image";
+import { SingleUser } from "@/app/_typeModels/User";
 
 interface Props {
   farms: Farm[];
+  permisions: boolean;
 }
-export default function FarmTable({ farms }: Props) {
+export default function FarmTable({ farms, permisions }: Props) {
   const router = useRouter();
   const pathName = usePathname();
   const dispatch = useAppDispatch();
-  // const sortDataFromLocal = "";
-  // const farms = useAppSelector(selectFarms);
   const role = useAppSelector(selectRole);
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("organisation");
   const [farmsData, setFarmsData] = useState<Farm[]>();
   const loading = useAppSelector(selectFarmLoading);
-  // const [farmsData, setFarmsData] = useState<any>();
+  const loggedUser: any = getCookie("logged-user");
+  const user: SingleUser = JSON.parse(loggedUser);
   const [selectedFarm, setSelectedFarm] = useState<any>(null);
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null
@@ -104,47 +105,48 @@ export default function FarmTable({ farms }: Props) {
     return (
       <TableHead>
         <TableRow>
-          {(role !== "MEMBER" ? farmTableHead : farmTableHeadMember).map(
-            (headCell, idx, headCells) => (
-              <TableCell
-                key={headCell.id}
-                sortDirection={
-                  idx === headCells.length - 1
-                    ? false
-                    : orderBy === headCell.id
-                    ? order
-                    : false
-                }
-                sx={{
-                  borderBottom: 0,
-                  color: "#67737F",
-                  background: "#F5F6F8",
-                  fontSize: {
-                    md: 16,
-                    xs: 14,
-                  },
-                  fontWeight: 600,
-                  paddingLeft: {
-                    lg: idx === 0 ? 10 : 0,
-                    md: idx === 0 ? 7 : 0,
-                    xs: idx === 0 ? 4 : 0,
-                  },
-                }}
-              >
-                {idx === headCells.length - 1 ? (
-                  headCell.label
-                ) : (
-                  <TableSortLabel
-                    active={orderBy === headCell.id}
-                    direction={orderBy === headCell.id ? order : "asc"}
-                    onClick={createSortHandler(headCell.id)}
-                  >
-                    {headCell.label}
-                  </TableSortLabel>
-                )}
-              </TableCell>
-            )
-          )}
+          {(role == "SUPERADMIN" || permisions
+            ? farmTableHead
+            : farmTableHeadMember
+          ).map((headCell, idx, headCells) => (
+            <TableCell
+              key={headCell.id}
+              sortDirection={
+                idx === headCells.length - 1
+                  ? false
+                  : orderBy === headCell.id
+                  ? order
+                  : false
+              }
+              sx={{
+                borderBottom: 0,
+                color: "#67737F",
+                background: "#F5F6F8",
+                fontSize: {
+                  md: 16,
+                  xs: 14,
+                },
+                fontWeight: 600,
+                paddingLeft: {
+                  lg: idx === 0 ? 10 : 0,
+                  md: idx === 0 ? 7 : 0,
+                  xs: idx === 0 ? 4 : 0,
+                },
+              }}
+            >
+              {idx === headCells.length - 1 ? (
+                headCell.label
+              ) : (
+                <TableSortLabel
+                  active={orderBy === headCell.id}
+                  direction={orderBy === headCell.id ? order : "asc"}
+                  onClick={createSortHandler(headCell.id)}
+                >
+                  {headCell.label}
+                </TableSortLabel>
+              )}
+            </TableCell>
+          ))}
         </TableRow>
       </TableHead>
     );
@@ -341,7 +343,7 @@ export default function FarmTable({ farms }: Props) {
                       {farm?.productionUnits?.length ?? ""}
                     </TableCell>
 
-                    {role !== "MEMBER" && (
+                    {(role === "SUPERADMIN" || permisions) && (
                       <TableCell
                         // align="center"
                         sx={{

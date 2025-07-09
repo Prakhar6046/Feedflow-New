@@ -4,12 +4,16 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { cookies } from "next/headers";
 import { setCookie } from "cookies-next";
-const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key";
+
+const JWT_SECRET = process.env.JWT_SECRET || "access-secret-key";
+const JWT_REFRESH_SECRET =
+  process.env.JWT_REFRESH_SECRET || "refresh-secret-key";
+
 export const POST = async (request: Request) => {
   try {
     const { email, password } = await request.json();
-    // Normalize the email to lowercase
     const normalizedEmail = email.toLowerCase();
+
     const user = await prisma.user.findUnique({
       where: { email: normalizedEmail },
       include: { organisation: { include: { Farm: true, contact: true } } },
@@ -18,51 +22,48 @@ export const POST = async (request: Request) => {
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
-    //check user has access
+
     if (!user.access) {
+      return NextResponse.json({ error: "Access denied" }, { status: 403 });
+    }
+
+    if (!user.password || !(await bcrypt.compare(password, user.password))) {
       return NextResponse.json(
-        {
-          error: `User is restricted from accessing the feedflow.`,
-        },
-        { status: 400 }
+        { error: "Invalid credentials" },
+        { status: 401 }
       );
     }
 
-    // Check the password
+    // Generate tokens
+    const payload = { id: user.id, email: user.email };
 
-    if (user.password) {
-      const isPasswordValid = await bcrypt.compare(password, user.password);
+    const accessToken = jwt.sign(payload, JWT_SECRET, { expiresIn: "15m" });
+    const refreshToken = jwt.sign(payload, JWT_REFRESH_SECRET, {
+      expiresIn: "7d",
+    });
 
-      if (!isPasswordValid) {
-        return NextResponse.json(
-          { error: "Invalid credentials" },
-          { status: 401 }
-        );
-      }
-    } else {
-      return NextResponse.json(
-        {
-          error:
-            "Please check your email and create password to access feedflow",
-        },
-        { status: 404 }
-      );
-    }
+    const response = NextResponse.json({
+      status: true,
+      data: { token: accessToken, user },
+    });
+    cookies().set("auth-token", refreshToken, {
+      httpOnly: true,
+      path: "/",
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 60,
+    });
+    // Set refresh token cookie
+    cookies().set("refresh-token", refreshToken, {
+      httpOnly: true,
+      path: "/",
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 60 * 60 * 24 * 7, // 7 days
+    });
 
-    // Generate a JWT token
-    const token = jwt.sign(
-      {
-        id: user.id,
-        email: user.email,
-      },
-      JWT_SECRET,
-      { expiresIn: "1h" } // Set token expiration time
-    );
-    setCookie("auth-token", token, { cookies });
-    return new NextResponse(
-      JSON.stringify({ status: true, data: { token, user } })
-    );
+    return response;
   } catch (error) {
-    return new NextResponse(JSON.stringify({ status: false, error }));
+    return NextResponse.json({ status: false, error }, { status: 500 });
   }
 };

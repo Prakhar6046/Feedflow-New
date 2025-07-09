@@ -1,4 +1,9 @@
 import { revalidatePath } from "next/cache";
+import { fetchWithAuth } from "./utils";
+import { GetToken } from "./cookiesGetter";
+const token = await GetToken();
+console.log(token);
+
 export const getOrganisations = async (payload: {
   role?: string;
   organisationId?: number;
@@ -6,7 +11,7 @@ export const getOrganisations = async (payload: {
   tab?: string;
 }) => {
   try {
-    const data = await fetch(
+    const res = await fetchWithAuth(
       `${process.env.BASE_URL}/api/organisation${
         payload.organisationId && payload.role
           ? `?organisationId=${payload.organisationId}&role=${payload.role}&tab=${payload?.tab}&query=${payload.query}`
@@ -16,206 +21,183 @@ export const getOrganisations = async (payload: {
       }`,
       {
         method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
+      },
+      token
+    );
+    revalidatePath("/dashboard/organisation?tab=all");
+    return await res.json();
+  } catch (error) {
+    return error;
+  }
+};
+
+export const getOrganisationCount = async () => {
+  try {
+    const res = await fetchWithAuth(
+      `${process.env.BASE_URL}/api/organisation/count`,
+      {
+        method: "GET",
         cache: "no-store",
       }
     );
-    revalidatePath("/dashboard/organisation?tab=all");
+    return await res.json();
+  } catch (error) {
+    return error;
+  }
+};
 
-    return await data.json();
-  } catch (error) {
-    return error;
-  }
-};
-export const getOrganisationCount = async () => {
-  try {
-    const data = await fetch(`${process.env.BASE_URL}/api/organisation/count`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      cache: "no-store",
-    });
-    return await data.json();
-  } catch (error) {
-    return error;
-  }
-};
 export const getAllOrganisations = async () => {
   try {
-    const data = await fetch(`${process.env.BASE_URL}/api/organisation/all`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
+    const res = await fetchWithAuth(
+      `${process.env.BASE_URL}/api/organisation/all`,
+      {
+        method: "GET",
+        cache: "no-store",
       },
-      cache: "no-store",
-    });
-    return await data.json();
+      token
+    );
+    return await res.json();
   } catch (error) {
     return error;
   }
 };
+
 export const getUsers = async (payload: any) => {
   try {
-    const data = await fetch(
+    const res = await fetchWithAuth(
       `${process.env.BASE_URL}/api/users?role=${payload.role}&organisationId=${payload.organisationId}&query=${payload.query}`,
       {
         method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
       }
     );
-    return await data.json();
+    return await res.json();
   } catch (error) {
     return error;
   }
 };
+
 export const getUser = async (userId: string) => {
   try {
-    const data = await fetch(`${process.env.BASE_URL}/api/user/${userId}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    const res = await fetchWithAuth(
+      `${process.env.BASE_URL}/api/user/${userId}`,
+      {
+        method: "GET",
+      }
+    );
     revalidatePath(`/dashboard/user/${userId}`);
-    return await data.json();
+    return await res.json();
   } catch (error) {
     return error;
   }
 };
+
 export const AddNewFeedSupply = async (formData: any) => {
   try {
-    const data = await fetch(
+    const res = await fetchWithAuth(
       `${process.env.BASE_URL}/api/feedSupply/new-feed`,
       {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
         body: JSON.stringify(formData),
       }
     );
-    const res = await data.json();
     revalidatePath(`/dashboard/feedSupply`);
-
-    return res;
+    return await res.json();
   } catch (error) {
     return error;
   }
 };
+
 export const getFeedSupplys = async (payload: {
   role: string;
   organisationId: string;
   query: string;
 }) => {
   try {
-    const data = await fetch(
+    const res = await fetchWithAuth(
       `${process.env.BASE_URL}/api/feedSupply?role=${payload.role}&organisationId=${payload.organisationId}&query=${payload.query}`,
       {
         method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
         cache: "no-store",
       }
     );
-    const res = await data.json();
     revalidatePath(`/dashboard/feedSupply`);
-
-    return res;
+    return await res.json();
   } catch (error) {
     return error;
   }
 };
+
 export const getFishSupply = async (payload: {
   role?: string;
-  organisationId?: string;
+  organisationId?: number;
   query?: string;
 }) => {
   try {
-    const data = await fetch(
+    const res = await fetchWithAuth(
       `${process.env.BASE_URL}/api/fish?role=${payload.role}&organisationId=${payload.organisationId}&query=${payload.query}`,
       {
         method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
       }
     );
     revalidatePath("/dashboard/fishSupply");
-    return await data.json();
+    return await res.json();
   } catch (error) {
     return error;
   }
 };
+
 export const getFarms = async (payload: {
   role?: string;
-  organisationId?: string;
+  organisationId?: number;
   query?: string;
   noFilter?: boolean;
   tab?: string;
 }) => {
   try {
-    const data = await fetch(
+    const res = await fetchWithAuth(
       `${process.env.BASE_URL}/api/farm?role=${payload.role}&organisationId=${payload.organisationId}&query=${payload.query}&filter=${payload.noFilter}&tab=${payload.tab}`,
       {
         method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
         cache: "no-store",
       }
     );
-    const res = await data.json();
     revalidatePath(`/dashboard/farm`);
-
-    return res;
+    return await res.json();
   } catch (error) {
     return error;
   }
 };
+
 export const getFarmMangers = async (organisationId?: string) => {
   try {
-    const data = await fetch(
+    const res = await fetchWithAuth(
       `${process.env.BASE_URL}/api/farm/managers?organisationId=${organisationId}`,
       {
         method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
         cache: "no-store",
       }
     );
-    const res = await data.json();
-
-    return res;
+    return await res.json();
   } catch (error) {
     return error;
   }
 };
+
 export const getOrganisationForhatchery = async () => {
   try {
-    const data = await fetch(
+    const res = await fetchWithAuth(
       `${process.env.BASE_URL}/api/organisation/hatchery`,
       {
         method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
         cache: "no-store",
       }
     );
-    const res = await data.json();
-
-    return res;
+    return await res.json();
   } catch (error) {
     return error;
   }
 };
+
 export const getProductions = async (payload: {
   role?: string;
   organisationId?: string;
@@ -224,24 +206,20 @@ export const getProductions = async (payload: {
   userId?: string;
 }) => {
   try {
-    const data = await fetch(
+    const res = await fetchWithAuth(
       `${process.env.BASE_URL}/api/production?role=${payload.role}&organisationId=${payload.organisationId}&query=${payload.query}&filter=${payload.noFilter}&userId=${payload.userId}`,
       {
         method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
         cache: "no-store",
       }
     );
-    const res = await data.json();
     revalidatePath(`/dashboard/farmManager`);
-
-    return res;
+    return await res.json();
   } catch (error) {
     return error;
   }
 };
+
 export const getBatches = async (payload: {
   role?: string;
   organisationId?: string;
@@ -249,21 +227,20 @@ export const getBatches = async (payload: {
   noFilter?: boolean;
 }) => {
   try {
-    const data = await fetch(`${process.env.BASE_URL}/api/production/batches`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      cache: "no-store",
-    });
-    const res = await data.json();
+    const res = await fetchWithAuth(
+      `${process.env.BASE_URL}/api/production/batches`,
+      {
+        method: "GET",
+        cache: "no-store",
+      }
+    );
     revalidatePath(`/dashboard/production`);
-
-    return res;
+    return await res.json();
   } catch (error) {
     return error;
   }
 };
+
 export const getSampleEnvironment = async (payload: {
   role?: string;
   organisationId?: string;
@@ -271,24 +248,20 @@ export const getSampleEnvironment = async (payload: {
   noFilter?: boolean;
 }) => {
   try {
-    const data = await fetch(
+    const res = await fetchWithAuth(
       `${process.env.BASE_URL}/api/sample/sampleEnvironment?role=${payload.role}&organisationId=${payload.organisationId}&query=${payload.query}&filter=${payload.noFilter}`,
       {
         method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
         cache: "no-store",
       }
     );
-    const res = await data.json();
     revalidatePath(`/dashboard/sample`);
-
-    return res;
+    return await res.json();
   } catch (error) {
     return error;
   }
 };
+
 export const getSampleStock = async (payload: {
   role?: string;
   organisationId?: string;
@@ -296,78 +269,64 @@ export const getSampleStock = async (payload: {
   noFilter?: boolean;
 }) => {
   try {
-    const data = await fetch(
+    const res = await fetchWithAuth(
       `${process.env.BASE_URL}/api/sample/sampleStock?role=${payload.role}&organisationId=${payload.organisationId}&query=${payload.query}&filter=${payload.noFilter}`,
       {
         method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
         cache: "no-store",
       }
     );
-    const res = await data.json();
     revalidatePath(`/dashboard/sample`);
-
-    return res;
+    return await res.json();
   } catch (error) {
     return error;
   }
 };
+
 export const getGrowthModels = async () => {
   try {
-    const data = await fetch(`${process.env.BASE_URL}/api/growth-model`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      cache: "no-store",
-    });
-    const res = await data.json();
-
-    return res;
+    const res = await fetchWithAuth(
+      `${process.env.BASE_URL}/api/growth-model`,
+      {
+        method: "GET",
+        cache: "no-store",
+      }
+    );
+    return await res.json();
   } catch (error) {
     return error;
   }
 };
+
 export const getFeedStores = async (payload: {
   role?: string;
   organisationId?: string;
   query?: string;
 }) => {
   try {
-    const data = await fetch(
+    const res = await fetchWithAuth(
       `${process.env.BASE_URL}/api/feed-store?role=${payload.role}&organisationId=${payload.organisationId}&query=${payload.query}`,
       {
         method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
         cache: "no-store",
       }
     );
-    const res = await data.json();
-
-    return res;
+    return await res.json();
   } catch (error) {
     return error;
   }
 };
+
 export const getFeedSuppliers = async () => {
   try {
-    const data = await fetch(
+    const res = await fetchWithAuth(
       `${process.env.BASE_URL}/api/organisation/feedSuppliers`,
       {
         method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
         cache: "no-store",
       }
     );
-    const res = await data.json();
-
-    return res;
+    return await res.json();
   } catch (error) {
     return error;
   }

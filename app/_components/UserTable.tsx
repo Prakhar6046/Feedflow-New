@@ -37,6 +37,7 @@ import { selectRole } from "@/lib/features/user/userSlice";
 
 interface Props {
   users: SingleUser[];
+  permissions: boolean;
 }
 
 interface Data {
@@ -47,14 +48,13 @@ interface Data {
   density: number;
 }
 
-export default function UserTable({ users }: Props) {
+export default function UserTable({ users, permissions }: Props) {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const pathName = usePathname();
   const loggedUser = getCookie("logged-user");
-  const loginUser = loggedUser && JSON.parse(loggedUser);
+  const loginUser: SingleUser = loggedUser && JSON.parse(loggedUser);
   const role = useAppSelector(selectRole);
-  // const sortDataFromLocal = localStorage?.getItem(pathName);
   const [selectedUser, setSelectedUser] = useState<SingleUser | null>(null);
   const [sortedUser, setSortedUsers] = useState<SingleUser[] | null>(null);
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
@@ -129,47 +129,48 @@ export default function UserTable({ users }: Props) {
     return (
       <TableHead>
         <TableRow>
-          {(role !== "MEMBER" ? usersTableHead : usersTableHeadMember).map(
-            (headCell, idx, headCells) => (
-              <TableCell
-                key={headCell.id}
-                sortDirection={
-                  idx === headCells.length - 1
-                    ? false
-                    : orderBy === headCell.id
-                    ? order
-                    : false
-                }
-                sx={{
-                  borderBottom: 0,
-                  color: "#67737F",
-                  background: "#F5F6F8",
-                  fontSize: {
-                    md: 16,
-                    xs: 14,
-                  },
-                  fontWeight: 600,
-                  paddingLeft: {
-                    lg: idx === 0 ? 10 : 0,
-                    md: idx === 0 ? 7 : 0,
-                    xs: idx === 0 ? 4 : 0,
-                  },
-                }}
-              >
-                {idx === headCells.length - 1 ? (
-                  headCell.label
-                ) : (
-                  <TableSortLabel
-                    active={orderBy === headCell.id}
-                    direction={orderBy === headCell.id ? order : "asc"}
-                    onClick={createSortHandler(headCell.id)}
-                  >
-                    {headCell.label}
-                  </TableSortLabel>
-                )}
-              </TableCell>
-            )
-          )}
+          {(role === "SUPERADMIN" || permissions
+            ? usersTableHead
+            : usersTableHeadMember
+          ).map((headCell, idx, headCells) => (
+            <TableCell
+              key={headCell.id}
+              sortDirection={
+                idx === headCells.length - 1
+                  ? false
+                  : orderBy === headCell.id
+                  ? order
+                  : false
+              }
+              sx={{
+                borderBottom: 0,
+                color: "#67737F",
+                background: "#F5F6F8",
+                fontSize: {
+                  md: 16,
+                  xs: 14,
+                },
+                fontWeight: 600,
+                paddingLeft: {
+                  lg: idx === 0 ? 10 : 0,
+                  md: idx === 0 ? 7 : 0,
+                  xs: idx === 0 ? 4 : 0,
+                },
+              }}
+            >
+              {idx === headCells.length - 1 ? (
+                headCell.label
+              ) : (
+                <TableSortLabel
+                  active={orderBy === headCell.id}
+                  direction={orderBy === headCell.id ? order : "asc"}
+                  onClick={createSortHandler(headCell.id)}
+                >
+                  {headCell.label}
+                </TableSortLabel>
+              )}
+            </TableCell>
+          ))}
         </TableRow>
       </TableHead>
     );
@@ -459,7 +460,7 @@ export default function UserTable({ users }: Props) {
                     >
                       {readableDate(user?.createdAt) ?? ""}
                     </TableCell>
-                    {role !== "MEMBER" && (
+                    {(loginUser?.role === "SUPERADMIN" || permissions) && (
                       <TableCell
                         sx={{
                           borderBottomColor: "#F5F6F8",

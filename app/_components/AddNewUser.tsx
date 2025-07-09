@@ -428,7 +428,13 @@ export default function AddNewUser({ organisations }: Props) {
               </Grid>
             </Grid>
           </Stack>
-          <UserPermission control={control} />
+          <UserPermission
+            control={control}
+            oraginsationType={
+              organisations?.find((org) => org?.id === selectedOrganisation)
+                ?.organisationType
+            }
+          />
           <Button
             type="submit"
             variant="contained"
