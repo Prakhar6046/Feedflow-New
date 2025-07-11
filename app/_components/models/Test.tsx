@@ -605,7 +605,7 @@ const Test: React.FC<Props> = ({
               setSelectedUnits(unitOptions.map((unit) => unit.key));
             }}
           >
-            See all units
+            Select all units
           </Button>
           <Button
             sx={{

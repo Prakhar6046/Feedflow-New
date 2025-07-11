@@ -47,6 +47,7 @@ interface Props {
   editFarm?: any;
   setActiveStep: (val: number) => void;
   isEdit?: boolean;
+  token: any;
 }
 
 const unitsTypes = [
@@ -64,12 +65,14 @@ const ProductionUnits: NextPage<Props> = ({
   isEdit,
   growthModels,
   productionParaMeter,
+  token,
 }) => {
   uuidv4();
 
   const dispatch = useAppDispatch();
   const isEditFarm = getCookie("isEditFarm");
   const userData: any = getCookie("logged-user");
+
   const router = useRouter();
   const [selectedUnit, setSelectedUnit] = React.useState<UnitsTypes>();
   const [open, setopen] = useState<boolean>(false);

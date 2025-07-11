@@ -537,6 +537,7 @@ function ProductionManagerFilter({
                 }
                 options={units}
                 optionLabel="option"
+                selectAllLabel="Select All"
                 display="chip"
                 placeholder="Select Units"
                 maxSelectedLabels={3}
@@ -632,7 +633,7 @@ function ProductionManagerFilter({
               className={`form-input ${
                 selectedDropDownfarms?.length &&
                 selectedDropDownUnits?.length &&
-                "selected"
+                ""
               }`}
               focused
             >
@@ -672,7 +673,7 @@ function ProductionManagerFilter({
                 selectedDropDownfarms?.length &&
                 selectedDropDownUnits?.length &&
                 startDate &&
-                "selected"
+                ""
               }`}
               focused
             >

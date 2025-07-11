@@ -144,7 +144,9 @@ function FeedingPlan({ productionData, startDate, endDate }: Props) {
               <TextField
                 label="Fish Weight *"
                 type="text"
-                {...register("fishWeight")}
+                {...register("fishWeight", {
+                  required: true,
+                })}
                 className="form-input"
                 focused
                 sx={{
@@ -164,6 +166,21 @@ function FeedingPlan({ productionData, startDate, endDate }: Props) {
               >
                 g
               </Typography>
+            </Box>
+            <Box>
+              {errors.fishWeight && (
+                <Typography
+                  variant="body2"
+                  color="red"
+                  fontSize={13}
+                  mt={0.5}
+                  position={"absolute"}
+                >
+                  {errors.fishWeight.type === "required"
+                    ? ValidationMessages.required
+                    : ""}
+                </Typography>
+              )}
             </Box>
           </Grid>
 
@@ -240,7 +257,13 @@ function FeedingPlan({ productionData, startDate, endDate }: Props) {
                 </Typography>
               </Box>
               {errors.temp && (
-                <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                <Typography
+                  variant="body2"
+                  color="red"
+                  fontSize={13}
+                  mt={0.5}
+                  position={"absolute"}
+                >
                   {errors.temp.type === "required"
                     ? ValidationMessages.required
                     : errors.temp.type === "pattern"
@@ -268,7 +291,13 @@ function FeedingPlan({ productionData, startDate, endDate }: Props) {
               />
             </Box>
             {errors.numberOfFishs && (
-              <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+              <Typography
+                variant="body2"
+                color="red"
+                fontSize={13}
+                mt={0.5}
+                position={"absolute"}
+              >
                 {errors.numberOfFishs.type === "required"
                   ? ValidationMessages.required
                   : errors.numberOfFishs.type === "pattern"
@@ -309,7 +338,13 @@ function FeedingPlan({ productionData, startDate, endDate }: Props) {
               </Box>
             </Box>
             {errors.adjustmentFactor && (
-              <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+              <Typography
+                variant="body2"
+                color="red"
+                fontSize={13}
+                mt={0.5}
+                position={"absolute"}
+              >
                 {errors.adjustmentFactor.type === "required"
                   ? ValidationMessages.required
                   : errors.adjustmentFactor.type === "pattern"

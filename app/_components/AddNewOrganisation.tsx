@@ -38,7 +38,7 @@ import {
 import { SingleUser } from "../_typeModels/User";
 import MapComponent from "./farm/MapComponent";
 import HatcheryForm from "./hatchery/HatcheryForm";
-import { useGetCookie } from "cookies-next";
+// import { useGetCookie } from "cookies-next";
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
   clipPath: "inset(50%)",
@@ -64,6 +64,7 @@ interface Props {
   type?: string;
   // organisationCount: number;
   loggedUser: SingleUser;
+  authToken: any;
 }
 export const PermissionType = [
   { label: "Admin", value: "ADMIN" },
@@ -74,8 +75,9 @@ const AddNewOrganisation = ({
   type,
   // organisationCount,
   loggedUser,
+  authToken,
 }: Props) => {
-  const token = useGetCookie("auth-token");
+  // const token = useGetCookie("auth-token");
   const [profilePic, setProfilePic] = useState<String>();
   const router = useRouter();
   const [isHatcherySelected, setIsHatcherySelected] = useState<boolean>(false);
@@ -144,7 +146,7 @@ const AddNewOrganisation = ({
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+            // Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({ ...data, imageUrl: profilePic }),
         });
@@ -226,7 +228,7 @@ const AddNewOrganisation = ({
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          // Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${authToken}`,
         },
         cache: "no-store",
       });
@@ -237,9 +239,9 @@ const AddNewOrganisation = ({
     getORGCount();
   }, []);
 
-  useEffect(() => {
-    if (token) console.log(token, "token");
-  }, [token]);
+  // useEffect(() => {
+  //   if (token) console.log(token, "token");
+  // }, [token]);
   return (
     <Stack
       sx={{

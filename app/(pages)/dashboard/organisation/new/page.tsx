@@ -20,6 +20,7 @@ export default async function Page({
   };
 }) {
   const refreshToken: any = getCookie("refresh-token", { cookies });
+  const token: any = getCookie("auth-token", { cookies });
   const organisations = await getAllOrganisations(refreshToken);
   const loggedUser: any = getCookie("logged-user", { cookies });
   const user: SingleUser = JSON.parse(loggedUser);
@@ -42,6 +43,7 @@ export default async function Page({
         organisations={organisations?.data}
         type={type}
         // organisationCount={organisationCount?.data}
+        authToken={token}
         loggedUser={JSON.parse(loggedUser)}
       />
     </>

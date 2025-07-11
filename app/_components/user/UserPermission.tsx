@@ -79,7 +79,7 @@ interface UserPermissionProps {
 }
 function UserPermission({ control, oraginsationType }: UserPermissionProps) {
   const loggedUser: any = getCookie("logged-user");
-  const user: SingleUser = JSON.parse(loggedUser);
+  const user: SingleUser = loggedUser ? JSON.parse(loggedUser) : {};
   const [allDisabled, setAllDisabled] = useState<boolean>(false);
 
   useEffect(() => {

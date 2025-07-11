@@ -500,7 +500,7 @@ export const handleUpload = async (
 
   if (response.ok) {
     const profileData = await response.json();
-    setProfilePic(profileData.data.url);
+    setProfilePic(profileData?.data?.url);
     toast.dismiss();
     toast.success("Profile photo successfully uploaded");
   }

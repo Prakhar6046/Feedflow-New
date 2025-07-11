@@ -91,9 +91,10 @@ function EditUser({ userId }: Iprops) {
       const payload = {
         name: data.name,
         email: data.email,
-        organisationId: userData?.data.organisationId,
+        organisationId: userData?.data?.organisationId,
         imageUrl: profilePic,
         permissions: data.permissions,
+        password: "",
       };
 
       if (data.password) {
@@ -128,13 +129,15 @@ function EditUser({ userId }: Iprops) {
       const user = async () => {
         setLoading(true);
         const token = getCookie("auth-token");
-        const data = await fetch(`/api/users/${userId}`, {
+        const data: any = await fetch(`/api/users/${userId}`, {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
-        setUserData(data);
+        const res = await data.json();
+        setLoading(false);
+        setUserData(res);
       };
       user();
     }
@@ -151,14 +154,14 @@ function EditUser({ userId }: Iprops) {
       setValue("name", String(userData?.data?.name));
       setValue("image", String(userData?.data?.imageUrl));
       setValue("email", String(userData?.data?.email));
-      setValue("organisation", String(userData?.data?.organisation.name));
+      setValue("organisation", String(userData?.data?.organisation?.name));
       setValue(
         "organisationType",
-        String(userData?.data?.organisation.organisationType)
+        String(userData?.data?.organisation?.organisationType)
       );
       setValue("organisationId", userData?.data?.organisationId);
       setValue("permissions", userData?.data?.permissions);
-      setProfilePic(userData.data.imageUrl);
+      setProfilePic(userData?.data?.imageUrl);
     }
   }, [userData]);
 

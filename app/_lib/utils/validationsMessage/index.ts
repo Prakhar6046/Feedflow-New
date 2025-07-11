@@ -1,7 +1,7 @@
 export const required = "This field is required.";
 export const emailPatternMessage = "Email pattern is wrong.";
 export const passwordPatternMessage =
-  "Input must contain at least 8 characters, including special characters, numbers, and letters.";
+  "Input must be 8–16 characters long and include letters, numbers, and special characters.";
 export const confirmPasswordMessage =
   "Confirm Password do not match with password.";
 export const phonePatternMessage = "Input must contain only numbers.";
@@ -17,7 +17,7 @@ export const alphabetswithSpecialCharacter =
 export const OnlyAlphabetsandNumberMessage2 =
   "Input must contain only letters, numbers, and spaces.";
 export const OnlyNumbersWithDot =
-  "Input must contain only numbers and a single decimal point.";
+  "Input must contain only positive numbers and a single decimal point.";
 export const NegativeNumberWithDot = "Input must contain only numbers.";
 export const numberWithCommaDot = "Input must contain only numbers.";
 export const numberMaxLength = "Input can have only 10 digits number.";

@@ -28,6 +28,7 @@ interface Props {
 }
 export default function NewFarm({ farmMembers, growthModels, farms }: Props) {
   const activeStepIndex = Number(getCookie("activeStep"));
+  const token = getCookie("auth-token");
   const [activeStep, setActiveStep] = useState<number>(
     activeStepIndex !== 0 ? activeStepIndex : 0
   );
@@ -111,6 +112,7 @@ export default function NewFarm({ farmMembers, growthModels, farms }: Props) {
           <ProductionUnits
             setActiveStep={setActiveStep}
             growthModels={growthModels}
+            token={token}
           />
         )}
       </Grid>

@@ -36,6 +36,7 @@ const EditFarm = ({
   farms,
   isEdit,
 }: Props) => {
+  const token = getCookie("auth-token");
   const activeStepIndex = Number(getCookie("activeStep"));
   const [activeStep, setActiveStep] = useState<number>(
     activeStepIndex !== 0 ? activeStepIndex : 0
@@ -44,7 +45,6 @@ const EditFarm = ({
   const [loading, setLoading] = useState<boolean>(false);
 
   const getFarm = async () => {
-    const token = getCookie("auth-token");
     const response = await fetch(`/api/farm/${farmId}`, {
       method: "GET",
       headers: {
@@ -157,6 +157,7 @@ const EditFarm = ({
             isEdit={isEdit}
             productionParaMeter={editFarm?.WaterQualityPredictedParameters}
             growthModels={growthModels}
+            token={token}
           />
         )}
       </Grid>
