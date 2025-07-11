@@ -1,8 +1,11 @@
 import { revalidatePath } from "next/cache";
-import { GetToken } from "./cookiesGetter";
+// import { GetToken } from "./cookiesGetter";
 import { fetchWithAuth } from "./auth/fetchWithAuth";
-const token = await GetToken();
-
+// import { getCookie } from "cookies-next";
+import { cookies } from "next/headers";
+// const token = await GetToken();
+const cookieStore = cookies();
+const token: any = cookieStore.get("auth-token")?.value;
 export const getOrganisations = async (payload: {
   role?: string;
   organisationId?: number;

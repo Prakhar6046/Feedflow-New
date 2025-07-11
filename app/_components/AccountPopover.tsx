@@ -19,7 +19,6 @@ import { deleteCookie, getCookie } from "cookies-next";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { GetToken } from "../_lib/cookiesGetter";
 export interface LoggedUser {
   id: Number;
   name: String;

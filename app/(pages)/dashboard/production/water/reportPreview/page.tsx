@@ -2,7 +2,7 @@ import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
 import FishReportPreview from "@/app/_components/production/fishReportDownloadPreview/FishReportPreview";
 import WaterReportPreview from "@/app/_components/production/waterReportDownloadPreview/WaterReportPreview";
 import { getProductions } from "@/app/_lib/action";
-import { getCookie } from "cookies-next";
+// import { getCookie } from "cookies-next";
 import { cookies } from "next/headers";
 export default async function Page({
   searchParams,
@@ -12,8 +12,12 @@ export default async function Page({
   };
 }) {
   const query = searchParams?.query || "";
-  const loggedUser: any = getCookie("logged-user", { cookies });
-  const selectedUnits: any = getCookie("selectedUnits", { cookies });
+  // const loggedUser: any = getCookie("logged-user", { cookies });
+  // const refreshToken: any = getCookie("refresh-token", { cookies });
+  // const selectedUnits: any = getCookie("selectedUnits", { cookies });
+  const cookieStore = cookies();
+  const loggedUser: any = cookieStore.get("logged-user")?.value;
+  const selectedUnits: any = cookieStore.get("selectedUnits")?.value;
   const user = JSON.parse(loggedUser);
   const farmUnits = JSON.parse(selectedUnits);
   const productions = await getProductions({

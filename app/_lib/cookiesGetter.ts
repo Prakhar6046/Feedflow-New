@@ -1,13 +1,13 @@
-"use server";
+// "use server";
 
-import { cookies } from "next/headers";
+// import { cookies } from "next/headers";
 
-export async function GetToken() {
-  const token = cookies().get("auth-token")?.value;
+// export async function GetToken() {
+//   const token = cookies().get("auth-token")?.value;
 
-  if (!token) {
-    return;
-  }
+//   if (!token) {
+//     return;
+//   }
 
-  return token;
-}
+//   return token;
+// }

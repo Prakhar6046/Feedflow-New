@@ -2,7 +2,7 @@ import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
 import FishChartDownloadPreview from "@/app/_components/production/fishChartDownloadPreview/FishChartDownloadPreview";
 import WaterChartDownloadPreview from "@/app/_components/production/waterChartDownloadPreview/WaterChartDownloadPreview";
 import { getProductions } from "@/app/_lib/action";
-import { getCookie } from "cookies-next";
+// import { getCookie } from "cookies-next";
 import { cookies } from "next/headers";
 export default async function Page({
   params,
@@ -14,7 +14,8 @@ export default async function Page({
   };
 }) {
   const query = searchParams?.query || "";
-  const loggedUser: any = getCookie("logged-user", { cookies });
+  const cookieStore = cookies();
+  const loggedUser: any = cookieStore.get("logged-user")?.value;
   const user = JSON.parse(loggedUser);
   const productions = await getProductions({
     role: user.role,

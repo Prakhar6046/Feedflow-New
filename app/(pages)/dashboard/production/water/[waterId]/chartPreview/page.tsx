@@ -13,7 +13,10 @@ export default async function Page({
   };
 }) {
   const query = searchParams?.query || "";
-  const loggedUser: any = getCookie("logged-user", { cookies });
+  // const loggedUser: any = getCookie("logged-user", { cookies });
+  // const refreshToken: any = getCookie("refresh-token", { cookies });
+  const cookieStore = cookies();
+  const loggedUser: any = cookieStore.get("logged-user")?.value;
   const user = JSON.parse(loggedUser);
 
   const productions = await getProductions({

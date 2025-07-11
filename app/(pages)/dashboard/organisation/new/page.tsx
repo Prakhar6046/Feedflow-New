@@ -19,10 +19,15 @@ export default async function Page({
     type?: string;
   };
 }) {
-  const refreshToken: any = getCookie("refresh-token", { cookies });
-  const token: any = getCookie("auth-token", { cookies });
+  // const loggedUser: any = getCookie("logged-user", { cookies });
+  // const refreshToken: any = getCookie("refresh-token", { cookies });
+  // const token: any = getCookie("auth-token", { cookies });
+  const cookieStore = cookies();
+  const loggedUser: any = cookieStore.get("logged-user")?.value;
+  const refreshToken = cookieStore.get("refresh-token")?.value;
+  const token: any = cookieStore.get("auth-token")?.value;
+
   const organisations = await getAllOrganisations(refreshToken);
-  const loggedUser: any = getCookie("logged-user", { cookies });
   const user: SingleUser = JSON.parse(loggedUser);
   // const organisationCount = await getOrganisationCount(refreshToken);
   const type = searchParams?.type || "";

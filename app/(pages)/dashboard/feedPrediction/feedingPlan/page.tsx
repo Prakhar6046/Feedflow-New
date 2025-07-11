@@ -1,7 +1,7 @@
 import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
 import FeedingOutputTable from "@/app/_components/table/FeedingOutputTable";
 import { getFarms, getProductions } from "@/app/_lib/action";
-import { getCookie } from "cookies-next";
+// import { getCookie } from "cookies-next";
 import { NextPage } from "next";
 import { cookies } from "next/headers";
 const Page: NextPage = async ({
@@ -12,8 +12,11 @@ const Page: NextPage = async ({
   };
 }) => {
   const query = searchParams?.query || "";
-  const loggedUser: any = getCookie("logged-user", { cookies });
-  const refreshToken: any = getCookie("refresh-token", { cookies });
+  const cookieStore = cookies();
+  const loggedUser: any = cookieStore.get("logged-user")?.value;
+  const refreshToken = cookieStore.get("refresh-token")?.value;
+  // const loggedUser: any = getCookie("logged-user", { cookies });
+  // const refreshToken: any = getCookie("refresh-token", { cookies });
   const user = JSON.parse(loggedUser);
   const farms = await getFarms({
     role: user.role,

@@ -1,17 +1,19 @@
 import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
 import NewFishSupply from "@/app/_components/fishSupply/NewFishSupply";
 import { getFarms, getOrganisationForhatchery } from "@/app/_lib/action";
-import { getCookie } from "cookies-next";
+// import { getCookie } from "cookies-next";
 import { Metadata } from "next";
 import { cookies } from "next/headers";
 export const metadata: Metadata = {
   title: "New Fish Supply",
 };
 export default async function Page() {
-  const loggedUser: any = getCookie("logged-user", { cookies });
-
+  // const loggedUser: any = getCookie("logged-user", { cookies });
+  // const refreshToken: any = getCookie("refresh-token", { cookies });
+  const cookieStore = cookies();
+  const loggedUser: any = cookieStore.get("logged-user")?.value;
+  const refreshToken = cookieStore.get("refresh-token")?.value;
   const user = JSON.parse(loggedUser);
-  const refreshToken: any = getCookie("refresh-token", { cookies });
   const organisationForhatchery = await getOrganisationForhatchery(
     refreshToken
   );

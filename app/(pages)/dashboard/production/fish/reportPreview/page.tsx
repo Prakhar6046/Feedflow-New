@@ -11,8 +11,11 @@ export default async function Page({
   };
 }) {
   const query = searchParams?.query || "";
-  const loggedUser: any = getCookie("logged-user", { cookies });
-  const selectedUnits: any = getCookie("selectedUnits", { cookies });
+  // const loggedUser: any = getCookie("logged-user", { cookies });
+  // const selectedUnits: any = getCookie("selectedUnits", { cookies });
+  const cookieStore = cookies();
+  const loggedUser: any = cookieStore.get("logged-user")?.value;
+  const selectedUnits: any = cookieStore.get("selectedUnits")?.value;
   const user = JSON.parse(loggedUser);
   const farmUnits = JSON.parse(selectedUnits);
   const productions = await getProductions({
