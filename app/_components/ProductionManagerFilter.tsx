@@ -454,67 +454,43 @@ function ProductionManagerFilter({
   }, [farmsList]);
   return (
     <Box>
-      <Grid container spacing={2} mt={1}>
-        <Grid
-          item
-          xl={2}
-          lg={4}
-          md={4}
-          sm={6}
-          xs={12}
-          sx={{
-            width: "fit-content",
-            paddingTop: "8px",
-          }}
-        >
-          <Box sx={{ width: "100%" }}>
-            <FormControl fullWidth className="form-input selected" focused>
-              <InputLabel
-                id="demo-simple-select-label-1 "
-                className="custom-input"
-              >
-                Farms
-              </InputLabel>
-              <MultiSelect
-                value={selectedDropDownfarms}
-                onChange={(e) =>
-                  dispatch(commonFilterAction.setSelectedDropDownfarms(e.value))
-                }
-                selectAllLabel="Select All"
-                options={farms}
-                optionLabel="option"
-                display="chip"
-                placeholder="Select Farms"
-                dropdownIcon={
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="10"
-                    height="10"
-                    viewBox="0 0 15 15"
-                  >
-                    <path fill="currentColor" d="M7.5 12L0 4h15z" />
-                  </svg>
-                } // Custom dropdown icon
-                maxSelectedLabels={3}
-                // Custom icon
-                className="w-full md:w-20rem custom-select"
-              />
-            </FormControl>
-          </Box>
-        </Grid>
+      <Box sx={{ display: "flex", gap: 2, width: "100%", flexWrap: "wrap" }}>
+        <Box>
+          <FormControl fullWidth className="form-input selected" focused>
+            <InputLabel
+              id="demo-simple-select-label-1 "
+              className="custom-input"
+            >
+              Farms
+            </InputLabel>
+            <MultiSelect
+              value={selectedDropDownfarms}
+              onChange={(e) =>
+                dispatch(commonFilterAction.setSelectedDropDownfarms(e.value))
+              }
+              selectAllLabel="Select All"
+              options={farms}
+              optionLabel="option"
+              display="chip"
+              placeholder="Select Farms"
+              dropdownIcon={
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="10"
+                  height="10"
+                  viewBox="0 0 15 15"
+                >
+                  <path fill="currentColor" d="M7.5 12L0 4h15z" />
+                </svg>
+              } // Custom dropdown icon
+              maxSelectedLabels={3}
+              // Custom icon
+              className="w-100 max-w-100 custom-select"
+            />
+          </FormControl>
+        </Box>
 
-        <Grid
-          item
-          xl={2}
-          lg={4}
-          md={4}
-          sm={6}
-          xs={12}
-          sx={{
-            width: "fit-content",
-            paddingTop: "8px",
-          }}
-        >
+        <Box>
           <Box sx={{ width: "100%" }}>
             <FormControl
               fullWidth
@@ -551,24 +527,13 @@ function ProductionManagerFilter({
                     <path fill="currentColor" d="M7.5 12L0 4h15z" />
                   </svg>
                 }
-                className="w-full md:w-20rem custom-select"
+                className="w-100 max-w-100 custom-select"
               />
             </FormControl>
           </Box>
-        </Grid>
+        </Box>
 
-        <Grid
-          item
-          xl={2}
-          lg={4}
-          md={4}
-          sm={6}
-          xs={12}
-          sx={{
-            width: "fit-content",
-            paddingTop: "8px",
-          }}
-        >
+        <Box>
           <Box sx={{ width: "100%" }}>
             <FormControl
               fullWidth
@@ -613,20 +578,9 @@ function ProductionManagerFilter({
               </Select>
             </FormControl>
           </Box>
-        </Grid>
+        </Box>
 
-        <Grid
-          item
-          xl={2}
-          lg={4}
-          md={4}
-          sm={6}
-          xs={12}
-          sx={{
-            width: "fit-content",
-            paddingTop: "8px",
-          }}
-        >
+        <Box>
           <Box sx={{ width: "100%" }}>
             <FormControl
               fullWidth
@@ -652,20 +606,9 @@ function ProductionManagerFilter({
               </LocalizationProvider>
             </FormControl>
           </Box>
-        </Grid>
+        </Box>
 
-        <Grid
-          item
-          xl={2}
-          lg={4}
-          md={4}
-          sm={6}
-          xs={12}
-          sx={{
-            width: "fit-content",
-            paddingTop: "8px",
-          }}
-        >
+        <Box>
           <Box sx={{ width: "100%" }}>
             <FormControl
               fullWidth
@@ -697,9 +640,188 @@ function ProductionManagerFilter({
               </LocalizationProvider>
             </FormControl>
           </Box>
-        </Grid>
+        </Box>
 
-        {/* <Grid
+        <Box>
+          <Box
+            sx={{
+              display: "flex",
+              gap: "10px",
+              mt: 1,
+              justifyContent: "start",
+            }}
+          >
+            {reset && (
+              <Button
+                id="basic-button"
+                type="button"
+                variant="contained"
+                onClick={() =>
+                  dispatch(commonFilterAction.handleResetFilters())
+                }
+                sx={{
+                  background: "#fff",
+                  color: "#06A19B",
+                  fontWeight: 600,
+                  padding: "6px 16px",
+                  width: "fit-content",
+                  textTransform: "capitalize",
+                  borderRadius: "8px",
+                  border: "1px solid #06A19B",
+                  whiteSpace: "nowrap",
+                  boxShadow: "none",
+                  "&:hover": {
+                    boxShadow: "none",
+                  },
+                }}
+              >
+                Reset Filters
+              </Button>
+            )}
+            {selectedView === "feeding" && (
+              <Button
+                id="basic-button"
+                type="button"
+                variant="contained"
+                sx={{
+                  background: "#06A19B",
+                  fontWeight: 600,
+                  padding: "6px 16px",
+                  width: "fit-content",
+                  textTransform: "capitalize",
+                  borderRadius: "8px",
+                  color: "white",
+                  whiteSpace: "nowrap",
+                  boxShadow: "none",
+                  "&:hover": {
+                    boxShadow: "none",
+                  },
+                }}
+                onClick={() => router.push("/dashboard/feedPrediction")}
+              >
+                Feed Prediction
+              </Button>
+            )}
+
+            {/* <Button
+              sx={{
+                background: "#06A19B",
+                fontWeight: 600,
+                padding: "6px 16px",
+                width: "fit-content",
+                textTransform: "capitalize",
+                borderRadius: "8px",
+                color: "white",
+              }}
+              id="basic-buttonnew"
+              aria-controls={open4 ? "basic-menu" : undefined}
+              aria-haspopup="true"
+              aria-expanded={open4 ? "true" : undefined}
+              onClick={handleClick}
+            >
+              Create report
+            </Button>
+            <Menu
+              id="basic-menunew"
+              anchorEl={anchorEl}
+              open={open4}
+              onClose={handleClose}
+              MenuListProps={{
+                "aria-labelledby": "basic-button",
+              }}
+              sx={{
+                borderRadius: "26px",
+              }}
+            >
+              <MenuItem onClick={captureScreenshot}>Take screenshot</MenuItem>
+              <MenuItem
+                onClick={() =>
+                  router.push("/dashboard/production/createReport")
+                }
+              >
+                Create all report
+              </MenuItem>
+            </Menu> */}
+          </Box>
+        </Box>
+      </Box>
+      {/* <Grid container spacing={2} mt={1}> */}
+      {/* <Grid
+          item
+          xl={2}
+          lg={4}
+          md={4}
+          sm={6}
+          xs={12}
+          sx={{
+            width: "fit-content",
+            paddingTop: "8px",
+          }}
+        >
+          
+        </Grid> */}
+
+      {/* <Grid
+          item
+          xl={2}
+          lg={4}
+          md={4}
+          sm={6}
+          xs={12}
+          sx={{
+            width: "fit-content",
+            paddingTop: "8px",
+          }}
+        >
+          
+        </Grid> */}
+
+      {/* <Grid
+          item
+          xl={2}
+          lg={4}
+          md={4}
+          sm={6}
+          xs={12}
+          sx={{
+            width: "fit-content",
+            paddingTop: "8px",
+          }}
+        >
+          
+        </Grid> */}
+
+      {/* <Grid
+          item
+          xl={2}
+          lg={4}
+          md={4}
+          sm={6}
+          xs={12}
+          sx={{
+            width: "fit-content",
+            paddingTop: "8px",
+          }}
+        >
+          
+        </Grid> */}
+
+      {/* <Grid
+          item
+          xl={2}
+          lg={4}
+          md={4}
+          sm={6}
+          xs={12}
+          sx={{
+            width: "fit-content",
+            paddingTop: "8px",
+          }}
+        >
+          
+        </Grid> */}
+
+      {/* <Grid
           item
           xl={2}
           lg={4}
@@ -756,7 +878,7 @@ function ProductionManagerFilter({
           </Grid>
         </Grid> */}
 
-        {/* <Grid
+      {/* <Grid
           item
           xs
           sx={{
@@ -819,114 +941,17 @@ function ProductionManagerFilter({
           </Box>
         </Grid> */}
 
-        <Grid
-          item
-          xs
-          sx={{
-            width: "fit-content",
-            paddingTop: "8px",
-          }}
-        >
-          <Box
-            sx={{
-              display: "flex",
-              gap: "10px",
-              mt: 1,
-              justifyContent: "start",
-            }}
-          >
-            {reset && (
-              <Button
-                id="basic-button"
-                type="button"
-                variant="contained"
-                onClick={() =>
-                  dispatch(commonFilterAction.handleResetFilters())
-                }
-                sx={{
-                  background: "#fff",
-                  color: "#06A19B",
-                  fontWeight: 600,
-                  padding: "6px 16px",
-                  width: "fit-content",
-                  textTransform: "capitalize",
-                  borderRadius: "8px",
-                  border: "1px solid #06A19B",
-                  boxShadow: "none",
-                  "&:hover": {
-                    boxShadow: "none",
-                  },
-                }}
-              >
-                Reset Filters
-              </Button>
-            )}
-            {selectedView === "feeding" && (
-              <Button
-                id="basic-button"
-                type="button"
-                variant="contained"
-                sx={{
-                  background: "#06A19B",
-                  fontWeight: 600,
-                  padding: "6px 16px",
-                  width: "fit-content",
-                  textTransform: "capitalize",
-                  borderRadius: "8px",
-                  color: "white",
-                  boxShadow: "none",
-                  "&:hover": {
-                    boxShadow: "none",
-                  },
-                }}
-                onClick={() => router.push("/dashboard/feedPrediction")}
-              >
-                Feed Prediction
-              </Button>
-            )}
-
-            {/* <Button
-              sx={{
-                background: "#06A19B",
-                fontWeight: 600,
-                padding: "6px 16px",
-                width: "fit-content",
-                textTransform: "capitalize",
-                borderRadius: "8px",
-                color: "white",
-              }}
-              id="basic-buttonnew"
-              aria-controls={open4 ? "basic-menu" : undefined}
-              aria-haspopup="true"
-              aria-expanded={open4 ? "true" : undefined}
-              onClick={handleClick}
-            >
-              Create report
-            </Button>
-            <Menu
-              id="basic-menunew"
-              anchorEl={anchorEl}
-              open={open4}
-              onClose={handleClose}
-              MenuListProps={{
-                "aria-labelledby": "basic-button",
-              }}
-              sx={{
-                borderRadius: "26px",
-              }}
-            >
-              <MenuItem onClick={captureScreenshot}>Take screenshot</MenuItem>
-              <MenuItem
-                onClick={() =>
-                  router.push("/dashboard/production/createReport")
-                }
-              >
-                Create all report
-              </MenuItem>
-            </Menu> */}
-          </Box>
-        </Grid>
-      </Grid>
+      {/* <Grid
+        item
+        xs
+        sx={{
+          width: "fit-content",
+          paddingTop: "8px",
+        }}
+      >
+        
+      </Grid> */}
+      {/* </Grid> */}
       <Dialog
         open={isModalOpen}
         onClose={() => {

@@ -328,7 +328,7 @@ export default function ProductionParaMeter({
                                   type="text"
                                   placeholder="0"
                                   style={{
-                                    maxWidth: "80px",
+                                    maxWidth: "100px",
                                     padding: "4px 2px",
                                     border: "none",
                                     textAlign: "center",
