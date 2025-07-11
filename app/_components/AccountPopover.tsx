@@ -19,6 +19,7 @@ import { deleteCookie, getCookie } from "cookies-next";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { GetToken } from "../_lib/cookiesGetter";
 export interface LoggedUser {
   id: Number;
   name: String;
@@ -39,6 +40,8 @@ export interface LoggedUser {
 const AccountPopover = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
+  const token = getCookie("auth-token");
+  console.log(token);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const [loggedUserData, setLoggedUserData] = useState<LoggedUser>();
@@ -52,7 +55,12 @@ const AccountPopover = () => {
   };
   const handleLogout = async () => {
     toast.dismiss();
-    const data = await fetch("/api/auth/logout", { method: "GET" });
+    const data = await fetch("/api/auth/logout", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     const response = await data.json();
     if (response.status) {
       router.push("/auth/login");
@@ -70,6 +78,7 @@ const AccountPopover = () => {
   useEffect(() => {
     if (loggedUser) {
       const user = JSON.parse(loggedUser);
+
       dispatch(userAction.handleRole(user?.role));
       setLoggedUserData(JSON.parse(loggedUser));
     }
@@ -81,6 +90,9 @@ const AccountPopover = () => {
       try {
         const response = await fetch(`/api/users/${loggedUserData.id}`, {
           method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         });
         const data = await response.json();
         setUserData(data.data);
@@ -92,6 +104,7 @@ const AccountPopover = () => {
     };
     getUser();
   }, [loggedUserData, router]);
+  console.log(userData);
 
   return (
     <React.Fragment>

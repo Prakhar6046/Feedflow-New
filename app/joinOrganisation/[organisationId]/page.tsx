@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useForm, SubmitHandler } from "react-hook-form";
 import logo from "@/public/static/img/logo.svg";
-import { setCookie } from "cookies-next";
+import { setCookie, getCookie } from "cookies-next";
 import EyeOpened from "@/public/static/img/icons/ic-eye-open.svg";
 import EyeClosed from "@/public/static/img/icons/ic-eye-closed.svg";
 import { useState } from "react";
@@ -29,15 +29,18 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
     if (data.password && params.organisationId) {
+      const token = getCookie("auth-token");
+      const payload = {
+        userId: params.organisationId,
+        password: data.password,
+      };
       const response = await fetch("/api/add-new-user/setPassword", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({
-          userId: params.organisationId,
-          password: data.password,
-        }),
+        body: JSON.stringify(payload),
       });
       const responseData = await response.json();
       toast.success(responseData.message);

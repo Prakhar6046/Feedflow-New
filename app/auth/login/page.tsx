@@ -13,6 +13,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
+import { getCookie } from "cookies-next";
+
 export default function Page() {
   const currentYear = new Date().getFullYear();
   const router = useRouter();
@@ -32,10 +34,12 @@ export default function Page() {
     setLoading(true);
 
     try {
+      const token = getCookie("auth-token");
       const response = await fetch("/api/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({ email, password }),
       });

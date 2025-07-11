@@ -16,6 +16,7 @@ export default async function Page({
 }) {
   const query = searchParams?.query || "";
   const loggedUser: any = getCookie("logged-user", { cookies });
+  const refreshToken: any = getCookie("refresh-token", { cookies });
   const user = JSON.parse(loggedUser);
   const productions = await getProductions({
     role: user.role,
@@ -23,14 +24,16 @@ export default async function Page({
     query,
     noFilter: false,
     userId: user.id,
+    refreshToken,
   });
   const farms = await getFarms({
     role: user.role,
     organisationId: user.organisationId,
     query: "",
     noFilter: false,
+    refreshToken,
   });
-  const batches = await getBatches({});
+  const batches = await getBatches({ refreshToken });
   return (
     <>
       <BasicBreadcrumbs

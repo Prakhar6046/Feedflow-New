@@ -16,6 +16,7 @@ import ListItem from "@mui/material/ListItem"; // For individual suggestion
 import ListItemButton from "@mui/material/ListItemButton"; // For clickable suggestion
 import Paper from "@mui/material/Paper"; // For suggestions container
 import toast from "react-hot-toast";
+import { getCookie } from "cookies-next";
 
 // Define map container style
 const mapContainerStyle = {

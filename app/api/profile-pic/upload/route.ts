@@ -2,7 +2,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/prisma/prisma";
 import cloudinary from "@/lib/cloudinary";
+import { verifyAndRefreshToken } from "@/app/_lib/auth/verifyAndRefreshToken";
+
 export const POST = async (request: NextRequest) => {
+  const user = await verifyAndRefreshToken(request);
+  if (user.status === 401) {
+    return NextResponse.json(
+      { status: false, message: "Unauthorized: Token missing or invalid" },
+      { status: 401 }
+    );
+  }
+
   try {
     const formData = await request.formData();
     const image: any = formData.get("image");
@@ -29,15 +39,6 @@ export const POST = async (request: NextRequest) => {
       folder: "user_images",
     });
 
-    const user = await prisma.user.findUnique({
-      where: { id: Number(userId) },
-    });
-
-    if (!user) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 });
-    }
-
-    // Update user with Cloudinary image data
     const updatedUser = await prisma.user.update({
       where: { id: Number(userId) },
       data: {

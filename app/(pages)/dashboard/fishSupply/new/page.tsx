@@ -11,11 +11,15 @@ export default async function Page() {
   const loggedUser: any = getCookie("logged-user", { cookies });
 
   const user = JSON.parse(loggedUser);
-  const organisationForhatchery = await getOrganisationForhatchery();
+  const refreshToken: any = getCookie("refresh-token", { cookies });
+  const organisationForhatchery = await getOrganisationForhatchery(
+    refreshToken
+  );
   const farms = await getFarms({
     noFilter: true,
     role: "",
     query: "",
+    refreshToken,
   });
 
   return (

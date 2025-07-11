@@ -11,11 +11,13 @@ export const metadata: Metadata = {
 };
 export default async function Page() {
   const loggedUser: any = getCookie("logged-user", { cookies });
+  const refreshToken: any = getCookie("refresh-token", { cookies });
   const user: SingleUser = JSON.parse(loggedUser);
   let organisations = await getOrganisations({
     organisationId: user?.organisationId,
     role: String(user?.role),
     query: "",
+    refreshToken,
   });
 
   return (

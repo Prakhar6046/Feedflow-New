@@ -86,12 +86,18 @@ const FeedSelection: NextPage = () => {
   const dispatch = useAppDispatch();
   const loggedUserDataLocal: any = getCookie("logged-user");
   const loggedUser = JSON.parse(loggedUserDataLocal);
+  const token = getCookie("auth-token");
 
   const [feedSupply, setFeedSupply] = useState<FeedSupply[]>();
   const [loading, setLoading] = useState<boolean>(false);
   const getFeedSupplys = async () => {
     const response = await fetch(
-      `/api/feedSupply?role=${loggedUser.role}&organisationId=${loggedUser.organisationId}`
+      `/api/feedSupply?role=${loggedUser.role}&organisationId=${loggedUser.organisationId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
     );
     return response.json();
   };

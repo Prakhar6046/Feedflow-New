@@ -13,12 +13,14 @@ const Page: NextPage = async ({
 }) => {
   const query = searchParams?.query || "";
   const loggedUser: any = getCookie("logged-user", { cookies });
+  const refreshToken: any = getCookie("refresh-token", { cookies });
   const user = JSON.parse(loggedUser);
   const farms = await getFarms({
     role: user.role,
     organisationId: user.organisationId,
     query: "",
     noFilter: false,
+    refreshToken,
   });
   const productions = await getProductions({
     role: user.role,
@@ -26,6 +28,7 @@ const Page: NextPage = async ({
     query,
     noFilter: false,
     userId: user.id,
+    refreshToken,
   });
   return (
     <>

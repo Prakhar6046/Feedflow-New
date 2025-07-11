@@ -1,7 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import cloudinary from "@/lib/cloudinary";
+import { verifyAndRefreshToken } from "@/app/_lib/auth/verifyAndRefreshToken";
+
 export const POST = async (request: NextRequest) => {
+  const user = await verifyAndRefreshToken(request);
+  if (user.status === 401) {
+    return NextResponse.json(
+      { status: false, message: "Unauthorized: Token missing or invalid" },
+      { status: 401 }
+    );
+  }
+
   try {
     // Upload the image using multer
     const formData = await request.formData();

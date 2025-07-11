@@ -1,6 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useForm, SubmitHandler } from "react-hook-form";
+import { getCookie } from "cookies-next";
 
 interface IFormInput {
   password: string;
@@ -18,15 +19,18 @@ const Page = ({ params }: { params: { userId: string } }) => {
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
     if (data.password && params.userId) {
+      const token = getCookie("auth-token");
+      const payload = {
+        userId: params.userId,
+        password: data.password,
+      };
       const response = await fetch("/api/add-new-user/setPassword", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({
-          userId: params.userId,
-          password: data.password,
-        }),
+        body: JSON.stringify(payload),
       });
       const responseData = await response.json();
       if (responseData.status) {

@@ -17,6 +17,7 @@ import { useState } from "react";
 
 import toast from "react-hot-toast";
 import { SingleOrganisation } from "@/app/_typeModels/Organization";
+import { getCookie } from "cookies-next";
 const style = {
   position: "absolute" as "absolute",
   top: "50%",
@@ -52,12 +53,19 @@ const AddUser: React.FC<Props> = ({ setOpen, open, organisations }) => {
 
   const onSubmit: SubmitHandler<FormInputs> = async (data) => {
     if (data.email && data.name && data.organisationId) {
+      const token = getCookie("auth-token");
+      const payload = {
+        name: data.name,
+        email: data.email,
+        organisationId: data.organisationId,
+      };
       const response = await fetch("/api/add-new-user", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(payload),
       });
       const responseData = await response.json();
       toast.success(responseData.message);

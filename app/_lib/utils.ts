@@ -3,6 +3,7 @@ import { FarmGroup, Production } from "../_typeModels/production";
 import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
 import dayjs from "dayjs";
+import { NextRequest } from "next/server";
 export const readableDate = (date: any) => {
   return new Date(date).toLocaleString("en-US", {
     dateStyle: "medium",
@@ -1021,44 +1022,4 @@ export function calculateFishGrowth(
     prevFeedingRate = prevFeedingRate;
   }
   return newData;
-}
-
-export async function fetchWithAuth(
-  input: string,
-  init: RequestInit = {},
-  token?: any,
-  retry = true
-): Promise<Response> {
-  const headers = {
-    ...init.headers,
-    Authorization: `Bearer ${token}`,
-    "Content-Type": "application/json",
-  };
-  console.log(headers);
-
-  let res = await fetch(input, { ...init, headers });
-  // console.log(res);
-
-  // If 401, try refresh
-  if (res.status === 401 && retry) {
-    const refreshRes = await fetch("/api/auth/refresh", {
-      method: "GET",
-      credentials: "include",
-    });
-
-    if (refreshRes.ok) {
-      const { accessToken: newToken } = await refreshRes.json();
-
-      const retryHeaders = {
-        ...headers,
-        Authorization: `Bearer ${newToken}`,
-      };
-
-      res = await fetch(input, { ...init, headers: retryHeaders });
-    } else {
-      throw new Error("Authentication failed. Please login again.");
-    }
-  }
-
-  return res;
 }

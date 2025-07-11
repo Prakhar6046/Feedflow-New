@@ -19,10 +19,11 @@ export default async function Page({
     type?: string;
   };
 }) {
-  const organisations = await getAllOrganisations();
+  const refreshToken: any = getCookie("refresh-token", { cookies });
+  const organisations = await getAllOrganisations(refreshToken);
   const loggedUser: any = getCookie("logged-user", { cookies });
   const user: SingleUser = JSON.parse(loggedUser);
-  // const organisationCount = await getOrganisationCount();
+  // const organisationCount = await getOrganisationCount(refreshToken);
   const type = searchParams?.type || "";
 
   return (

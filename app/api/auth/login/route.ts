@@ -51,7 +51,7 @@ export const POST = async (request: Request) => {
       path: "/",
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
-      maxAge: 60,
+      maxAge: 60 * 60 * 1 * 1,
     });
     // Set refresh token cookie
     cookies().set("refresh-token", refreshToken, {

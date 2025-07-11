@@ -2,14 +2,12 @@
 
 import { cookies } from "next/headers";
 
-export const GetToken = async () => {
+export async function GetToken() {
   const token = cookies().get("auth-token")?.value;
 
   if (!token) {
     return;
-    throw new Error("Not authenticated");
   }
-  console.log(token);
 
   return token;
-};
+}

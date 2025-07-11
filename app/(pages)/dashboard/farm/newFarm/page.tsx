@@ -15,14 +15,16 @@ export default async function Page({
   };
 }) {
   const loggedUser: any = getCookie("logged-user", { cookies });
+  const refreshToken: any = getCookie("refresh-token", { cookies });
   const user = JSON.parse(loggedUser);
-  const farmManagers = await getFarmMangers(user.organisationId);
-  const growthModels = await getGrowthModels();
+  const farmManagers = await getFarmMangers(user.organisationId, refreshToken);
+  const growthModels = await getGrowthModels(refreshToken);
   const query = searchParams?.query || "";
   const farms = await getFarms({
     role: "",
     query,
     noFilter: true,
+    refreshToken,
   });
 
   return (

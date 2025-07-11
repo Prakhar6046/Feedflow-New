@@ -33,6 +33,7 @@ interface InputType {
 }
 function GrowthModel({ farms }: { farms: Farm[] }) {
   const loggedUser: any = getCookie("logged-user");
+  const token = getCookie("auth-token");
   const {
     register,
     handleSubmit,
@@ -55,6 +56,7 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({
             model: data,
@@ -324,19 +326,17 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
             <Grid container spacing={2}>
               <Grid item md={4} xs={12}>
                 <FormControl fullWidth className="form-input" focused>
-                  <InputLabel id="feed-supply-select-label5">
-                    Name *
-                  </InputLabel>
+                  <InputLabel id="feed-supply-select-label5">Name *</InputLabel>
                   <TextField
                     label="Name *"
                     type="text"
                     className="form-input"
                     focused
-                  // {...register("name", { required: true })}
-                  // error={!!errors.name}
-                  // sx={{
-                  //   width: "100%",
-                  // }}
+                    // {...register("name", { required: true })}
+                    // error={!!errors.name}
+                    // sx={{
+                    //   width: "100%",
+                    // }}
                   />
                 </FormControl>
                 {/* <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
@@ -630,7 +630,6 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
                   </Typography>
                 </Box>
               </Grid>
-
             </Grid>
           </Box>
 
@@ -689,29 +688,35 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
                 </Typography>
               </Grid>
 
-              <Grid item md={8} xs={12} sx={{
-                alignSelf: "center",
-              }}>
+              <Grid
+                item
+                md={8}
+                xs={12}
+                sx={{
+                  alignSelf: "center",
+                }}
+              >
                 <Typography variant="body1" fontWeight={600} mb={1}>
-                  TGC = <Typography variant="body1" component={"span"}>-0.00356658 + 0.00012*LN(T-11.25)</Typography>
+                  TGC ={" "}
+                  <Typography variant="body1" component={"span"}>
+                    -0.00356658 + 0.00012*LN(T-11.25)
+                  </Typography>
                 </Typography>
               </Grid>
 
               <Grid item md={4} xs={12}>
                 <FormControl fullWidth className="form-input" focused>
-                  <InputLabel id="feed-supply-select-label5">
-                    a
-                  </InputLabel>
+                  <InputLabel id="feed-supply-select-label5">a</InputLabel>
                   <TextField
                     label="a"
                     type="text"
                     className="form-input"
                     focused
-                  // {...register("name", { required: true })}
-                  // error={!!errors.name}
-                  // sx={{
-                  //   width: "100%",
-                  // }}
+                    // {...register("name", { required: true })}
+                    // error={!!errors.name}
+                    // sx={{
+                    //   width: "100%",
+                    // }}
                   />
                 </FormControl>
                 {/* <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
@@ -721,19 +726,17 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
 
               <Grid item md={4} xs={12}>
                 <FormControl fullWidth className="form-input" focused>
-                  <InputLabel id="feed-supply-select-label5">
-                    b
-                  </InputLabel>
+                  <InputLabel id="feed-supply-select-label5">b</InputLabel>
                   <TextField
                     label="b"
                     type="text"
                     className="form-input"
                     focused
-                  // {...register("name", { required: true })}
-                  // error={!!errors.name}
-                  // sx={{
-                  //   width: "100%",
-                  // }}
+                    // {...register("name", { required: true })}
+                    // error={!!errors.name}
+                    // sx={{
+                    //   width: "100%",
+                    // }}
                   />
                 </FormControl>
                 {/* <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
@@ -743,26 +746,23 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
 
               <Grid item md={4} xs={12}>
                 <FormControl fullWidth className="form-input" focused>
-                  <InputLabel id="feed-supply-select-label5">
-                    c
-                  </InputLabel>
+                  <InputLabel id="feed-supply-select-label5">c</InputLabel>
                   <TextField
                     label="c"
                     type="text"
                     className="form-input"
                     focused
-                  // {...register("name", { required: true })}
-                  // error={!!errors.name}
-                  // sx={{
-                  //   width: "100%",
-                  // }}
+                    // {...register("name", { required: true })}
+                    // error={!!errors.name}
+                    // sx={{
+                    //   width: "100%",
+                    // }}
                   />
                 </FormControl>
                 {/* <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
                   {errors.name ? "This field is required." : ""}
                 </Typography> */}
               </Grid>
-
             </Grid>
           </Box>
 
@@ -821,29 +821,35 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
                 </Typography>
               </Grid>
 
-              <Grid item md={8} xs={12} sx={{
-                alignSelf: "center",
-              }}>
+              <Grid
+                item
+                md={8}
+                xs={12}
+                sx={{
+                  alignSelf: "center",
+                }}
+              >
                 <Typography variant="body1" fontWeight={600} mb={1}>
-                  tFCR = <Typography variant="body1" component={"span"}>-0.00356658 + 0.00012*LN(T-11.25) <sup>1</sup></Typography>
+                  tFCR ={" "}
+                  <Typography variant="body1" component={"span"}>
+                    -0.00356658 + 0.00012*LN(T-11.25) <sup>1</sup>
+                  </Typography>
                 </Typography>
               </Grid>
 
               <Grid item md={4} xs={12}>
                 <FormControl fullWidth className="form-input" focused>
-                  <InputLabel id="feed-supply-select-label5">
-                    a
-                  </InputLabel>
+                  <InputLabel id="feed-supply-select-label5">a</InputLabel>
                   <TextField
                     label="a"
                     type="text"
                     className="form-input"
                     focused
-                  // {...register("name", { required: true })}
-                  // error={!!errors.name}
-                  // sx={{
-                  //   width: "100%",
-                  // }}
+                    // {...register("name", { required: true })}
+                    // error={!!errors.name}
+                    // sx={{
+                    //   width: "100%",
+                    // }}
                   />
                 </FormControl>
                 {/* <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
@@ -853,19 +859,17 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
 
               <Grid item md={4} xs={12}>
                 <FormControl fullWidth className="form-input" focused>
-                  <InputLabel id="feed-supply-select-label5">
-                    b
-                  </InputLabel>
+                  <InputLabel id="feed-supply-select-label5">b</InputLabel>
                   <TextField
                     label="b"
                     type="text"
                     className="form-input"
                     focused
-                  // {...register("name", { required: true })}
-                  // error={!!errors.name}
-                  // sx={{
-                  //   width: "100%",
-                  // }}
+                    // {...register("name", { required: true })}
+                    // error={!!errors.name}
+                    // sx={{
+                    //   width: "100%",
+                    // }}
                   />
                 </FormControl>
                 {/* <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
@@ -875,31 +879,25 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
 
               <Grid item md={4} xs={12}>
                 <FormControl fullWidth className="form-input" focused>
-                  <InputLabel id="feed-supply-select-label5">
-                    c
-                  </InputLabel>
+                  <InputLabel id="feed-supply-select-label5">c</InputLabel>
                   <TextField
                     label="c"
                     type="text"
                     className="form-input"
                     focused
-                  // {...register("name", { required: true })}
-                  // error={!!errors.name}
-                  // sx={{
-                  //   width: "100%",
-                  // }}
+                    // {...register("name", { required: true })}
+                    // error={!!errors.name}
+                    // sx={{
+                    //   width: "100%",
+                    // }}
                   />
                 </FormControl>
                 {/* <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
                   {errors.name ? "This field is required." : ""}
                 </Typography> */}
               </Grid>
-
             </Grid>
           </Box>
-
-
-
 
           <Box
             display={"flex"}

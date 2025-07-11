@@ -70,6 +70,7 @@ const FarmInformation: NextPage<Props> = ({
   const selectedManagerIds = watch("mangerId") || [];
   const watchFishFarmer = watch("fishFarmer");
   const isEditFarm = getCookie("isEditFarm");
+  const token = getCookie("auth-token");
 
   const handleChange = (event: any) => {
     const {
@@ -78,7 +79,12 @@ const FarmInformation: NextPage<Props> = ({
     setValue("mangerId", value);
   };
   const getFarmers = async () => {
-    const response = await fetch("/api/farm/fish-farmers");
+    const response = await fetch("/api/farm/fish-farmers", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     return response.json();
   };
   const onSubmit: SubmitHandler<Farm> = (data) => {

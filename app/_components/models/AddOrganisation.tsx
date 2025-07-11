@@ -10,6 +10,7 @@ import Image from "next/image";
 import closeIcon from "@/public/static/img/icons/ic-close.svg";
 import { useForm, SubmitHandler } from "react-hook-form";
 import toast from "react-hot-toast";
+import { getCookie } from "cookies-next";
 
 const style = {
   position: "absolute" as "absolute",
@@ -45,11 +46,13 @@ const AddOrganization: React.FC<Props> = ({ setOpen, open }) => {
   const handleClose = () => setOpen(false);
 
   const onSubmit: SubmitHandler<FormInputs> = async (data) => {
+    const token = getCookie("auth-token");
     if (data.email) {
       const response = await fetch("/api/add-organisation", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(data),
       });

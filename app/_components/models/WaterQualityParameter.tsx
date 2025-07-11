@@ -41,6 +41,7 @@ import {
 } from "react-hook-form";
 import toast from "react-hot-toast";
 import { color } from "framer-motion";
+import { getCookie } from "cookies-next";
 const style = {
   position: "absolute" as "absolute",
   top: "50%",
@@ -93,6 +94,7 @@ const WaterQualityParameter: React.FC<Props> = ({
   const [isApiCallInProgress, setIsApiCallInProgress] =
     useState<boolean>(false);
   const [formData, setFormData] = useState<any>();
+  const token = getCookie("auth-token");
 
   const {
     register,
@@ -162,6 +164,7 @@ const WaterQualityParameter: React.FC<Props> = ({
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify(payload),
         });

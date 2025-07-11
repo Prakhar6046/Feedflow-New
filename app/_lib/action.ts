@@ -1,14 +1,14 @@
 import { revalidatePath } from "next/cache";
-import { fetchWithAuth } from "./utils";
 import { GetToken } from "./cookiesGetter";
-const token = GetToken();
-console.log(token);
+import { fetchWithAuth } from "./auth/fetchWithAuth";
+const token = await GetToken();
 
 export const getOrganisations = async (payload: {
   role?: string;
   organisationId?: number;
   query?: string;
   tab?: string;
+  refreshToken?: string;
 }) => {
   try {
     const res = await fetchWithAuth(
@@ -22,23 +22,30 @@ export const getOrganisations = async (payload: {
       {
         method: "GET",
       },
-      token
+      token,
+      true,
+      payload.refreshToken
     );
     revalidatePath("/dashboard/organisation?tab=all");
     return await res.json();
   } catch (error) {
+    console.log(error);
+
     return error;
   }
 };
 
-export const getOrganisationCount = async () => {
+export const getOrganisationCount = async (refreshToken?: string) => {
   try {
     const res = await fetchWithAuth(
       `${process.env.BASE_URL}/api/organisation/count`,
       {
         method: "GET",
         cache: "no-store",
-      }
+      },
+      token,
+      true,
+      refreshToken
     );
     return await res.json();
   } catch (error) {
@@ -46,7 +53,7 @@ export const getOrganisationCount = async () => {
   }
 };
 
-export const getAllOrganisations = async () => {
+export const getAllOrganisations = async (refreshToken?: string) => {
   try {
     const res = await fetchWithAuth(
       `${process.env.BASE_URL}/api/organisation/all`,
@@ -54,21 +61,28 @@ export const getAllOrganisations = async () => {
         method: "GET",
         cache: "no-store",
       },
-      token
+      token,
+      true,
+      refreshToken
     );
     return await res.json();
   } catch (error) {
+    console.log(error);
+
     return error;
   }
 };
 
-export const getUsers = async (payload: any) => {
+export const getUsers = async (payload: any & { refreshToken?: string }) => {
   try {
     const res = await fetchWithAuth(
       `${process.env.BASE_URL}/api/users?role=${payload.role}&organisationId=${payload.organisationId}&query=${payload.query}`,
       {
         method: "GET",
-      }
+      },
+      token,
+      true,
+      payload.refreshToken
     );
     return await res.json();
   } catch (error) {
@@ -76,13 +90,16 @@ export const getUsers = async (payload: any) => {
   }
 };
 
-export const getUser = async (userId: string) => {
+export const getUser = async (userId: string, refreshToken?: string) => {
   try {
     const res = await fetchWithAuth(
       `${process.env.BASE_URL}/api/user/${userId}`,
       {
         method: "GET",
-      }
+      },
+      token,
+      true,
+      refreshToken
     );
     revalidatePath(`/dashboard/user/${userId}`);
     return await res.json();
@@ -91,14 +108,20 @@ export const getUser = async (userId: string) => {
   }
 };
 
-export const AddNewFeedSupply = async (formData: any) => {
+export const AddNewFeedSupply = async (
+  formData: any,
+  refreshToken?: string
+) => {
   try {
     const res = await fetchWithAuth(
       `${process.env.BASE_URL}/api/feedSupply/new-feed`,
       {
         method: "POST",
         body: JSON.stringify(formData),
-      }
+      },
+      token,
+      true,
+      refreshToken
     );
     revalidatePath(`/dashboard/feedSupply`);
     return await res.json();
@@ -111,6 +134,7 @@ export const getFeedSupplys = async (payload: {
   role: string;
   organisationId: string;
   query: string;
+  refreshToken?: string;
 }) => {
   try {
     const res = await fetchWithAuth(
@@ -118,7 +142,10 @@ export const getFeedSupplys = async (payload: {
       {
         method: "GET",
         cache: "no-store",
-      }
+      },
+      token,
+      true,
+      payload.refreshToken
     );
     revalidatePath(`/dashboard/feedSupply`);
     return await res.json();
@@ -131,13 +158,17 @@ export const getFishSupply = async (payload: {
   role?: string;
   organisationId?: number;
   query?: string;
+  refreshToken?: string;
 }) => {
   try {
     const res = await fetchWithAuth(
       `${process.env.BASE_URL}/api/fish?role=${payload.role}&organisationId=${payload.organisationId}&query=${payload.query}`,
       {
         method: "GET",
-      }
+      },
+      token,
+      true,
+      payload.refreshToken
     );
     revalidatePath("/dashboard/fishSupply");
     return await res.json();
@@ -152,6 +183,7 @@ export const getFarms = async (payload: {
   query?: string;
   noFilter?: boolean;
   tab?: string;
+  refreshToken?: string;
 }) => {
   try {
     const res = await fetchWithAuth(
@@ -159,7 +191,10 @@ export const getFarms = async (payload: {
       {
         method: "GET",
         cache: "no-store",
-      }
+      },
+      token,
+      true,
+      payload.refreshToken
     );
     revalidatePath(`/dashboard/farm`);
     return await res.json();
@@ -168,14 +203,20 @@ export const getFarms = async (payload: {
   }
 };
 
-export const getFarmMangers = async (organisationId?: string) => {
+export const getFarmMangers = async (
+  organisationId?: string,
+  refreshToken?: string
+) => {
   try {
     const res = await fetchWithAuth(
       `${process.env.BASE_URL}/api/farm/managers?organisationId=${organisationId}`,
       {
         method: "GET",
         cache: "no-store",
-      }
+      },
+      token,
+      true,
+      refreshToken
     );
     return await res.json();
   } catch (error) {
@@ -183,14 +224,17 @@ export const getFarmMangers = async (organisationId?: string) => {
   }
 };
 
-export const getOrganisationForhatchery = async () => {
+export const getOrganisationForhatchery = async (refreshToken?: string) => {
   try {
     const res = await fetchWithAuth(
       `${process.env.BASE_URL}/api/organisation/hatchery`,
       {
         method: "GET",
         cache: "no-store",
-      }
+      },
+      token,
+      true,
+      refreshToken
     );
     return await res.json();
   } catch (error) {
@@ -204,6 +248,7 @@ export const getProductions = async (payload: {
   query?: string;
   noFilter?: boolean;
   userId?: string;
+  refreshToken?: string;
 }) => {
   try {
     const res = await fetchWithAuth(
@@ -211,7 +256,10 @@ export const getProductions = async (payload: {
       {
         method: "GET",
         cache: "no-store",
-      }
+      },
+      token,
+      true,
+      payload.refreshToken
     );
     revalidatePath(`/dashboard/farmManager`);
     return await res.json();
@@ -225,6 +273,7 @@ export const getBatches = async (payload: {
   organisationId?: string;
   query?: string;
   noFilter?: boolean;
+  refreshToken?: string;
 }) => {
   try {
     const res = await fetchWithAuth(
@@ -232,7 +281,10 @@ export const getBatches = async (payload: {
       {
         method: "GET",
         cache: "no-store",
-      }
+      },
+      token,
+      true,
+      payload.refreshToken
     );
     revalidatePath(`/dashboard/production`);
     return await res.json();
@@ -246,6 +298,7 @@ export const getSampleEnvironment = async (payload: {
   organisationId?: string;
   query?: string;
   noFilter?: boolean;
+  refreshToken?: string;
 }) => {
   try {
     const res = await fetchWithAuth(
@@ -253,7 +306,10 @@ export const getSampleEnvironment = async (payload: {
       {
         method: "GET",
         cache: "no-store",
-      }
+      },
+      token,
+      true,
+      payload.refreshToken
     );
     revalidatePath(`/dashboard/sample`);
     return await res.json();
@@ -267,6 +323,7 @@ export const getSampleStock = async (payload: {
   organisationId?: string;
   query?: string;
   noFilter?: boolean;
+  refreshToken?: string;
 }) => {
   try {
     const res = await fetchWithAuth(
@@ -274,7 +331,10 @@ export const getSampleStock = async (payload: {
       {
         method: "GET",
         cache: "no-store",
-      }
+      },
+      token,
+      true,
+      payload.refreshToken
     );
     revalidatePath(`/dashboard/sample`);
     return await res.json();
@@ -283,14 +343,17 @@ export const getSampleStock = async (payload: {
   }
 };
 
-export const getGrowthModels = async () => {
+export const getGrowthModels = async (refreshToken?: string) => {
   try {
     const res = await fetchWithAuth(
       `${process.env.BASE_URL}/api/growth-model`,
       {
         method: "GET",
         cache: "no-store",
-      }
+      },
+      token,
+      true,
+      refreshToken
     );
     return await res.json();
   } catch (error) {
@@ -302,6 +365,7 @@ export const getFeedStores = async (payload: {
   role?: string;
   organisationId?: string;
   query?: string;
+  refreshToken?: string;
 }) => {
   try {
     const res = await fetchWithAuth(
@@ -309,7 +373,10 @@ export const getFeedStores = async (payload: {
       {
         method: "GET",
         cache: "no-store",
-      }
+      },
+      token,
+      true,
+      payload.refreshToken
     );
     return await res.json();
   } catch (error) {
@@ -317,14 +384,17 @@ export const getFeedStores = async (payload: {
   }
 };
 
-export const getFeedSuppliers = async () => {
+export const getFeedSuppliers = async (refreshToken?: string) => {
   try {
     const res = await fetchWithAuth(
       `${process.env.BASE_URL}/api/organisation/feedSuppliers`,
       {
         method: "GET",
         cache: "no-store",
-      }
+      },
+      token,
+      true,
+      refreshToken
     );
     return await res.json();
   } catch (error) {

@@ -48,6 +48,7 @@ import toast from "react-hot-toast";
 import Image from "next/image";
 import FarmsInformation from "./FarmsInformation";
 import { Permissions, SingleUser } from "@/app/_typeModels/User";
+import { getCookie } from "cookies-next";
 export const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
   clipPath: "inset(50%)",
@@ -110,8 +111,12 @@ const EditOrganisation = ({
   };
   const getOrganisation = async () => {
     setLoading(true);
+    const token = getCookie("auth-token");
     const data = await fetch(`/api/organisation/${organisationId}`, {
       method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
     if (data) {
       setLoading(false);
@@ -181,9 +186,14 @@ const EditOrganisation = ({
         formData.append("hatchery", JSON.stringify(hatchery));
       }
 
+      const token = getCookie("auth-token");
       const res = await fetch(`/api/organisation/${organisationId}`, {
         method: "PUT",
-        body: formData,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(payload),
       });
 
       if (res.ok) {

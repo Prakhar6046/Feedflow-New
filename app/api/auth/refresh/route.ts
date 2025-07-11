@@ -1,15 +1,14 @@
 import { cookies } from "next/headers";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 
 const JWT_SECRET = process.env.JWT_SECRET || "access-secret-key";
 const JWT_REFRESH_SECRET =
   process.env.JWT_REFRESH_SECRET || "refresh-secret-key";
 
-export const GET = async () => {
+export const GET = async (req: NextRequest) => {
   try {
-    const cookieStore = cookies();
-    const refreshToken = cookieStore.get("refresh-token")?.value;
+    const refreshToken = req.cookies.get("refresh-token")?.value;
 
     if (!refreshToken) {
       return NextResponse.json(

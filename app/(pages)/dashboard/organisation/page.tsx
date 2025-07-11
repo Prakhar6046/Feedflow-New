@@ -20,6 +20,7 @@ export default async function Page({
   const query = searchParams?.query || "";
   const tab = searchParams?.tab || "all";
   const loggedUser: any = getCookie("logged-user", { cookies });
+  const refreshToken: any = getCookie("refresh-token", { cookies });
   const user: SingleUser = JSON.parse(loggedUser);
 
   let organisations = await getOrganisations({
@@ -27,6 +28,7 @@ export default async function Page({
     query,
     role: String(user?.role),
     tab,
+    refreshToken,
   });
 
   return (

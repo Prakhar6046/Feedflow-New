@@ -1,6 +1,17 @@
+import { verifyAndRefreshToken } from "@/app/_lib/auth/verifyAndRefreshToken";
 import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
+  const user = await verifyAndRefreshToken(request);
+  if (user.status === 401) {
+    return new NextResponse(
+      JSON.stringify({
+        status: false,
+        message: "Unauthorized: Token missing or invalid",
+      }),
+      { status: 401 }
+    );
+  }
   const { searchParams } = new URL(request.url);
   const lat = searchParams.get("lat");
   const lng = searchParams.get("lng");

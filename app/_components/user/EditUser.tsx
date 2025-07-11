@@ -60,7 +60,13 @@ function EditUser({ userId }: Iprops) {
     useState<boolean>(false);
   const getUser = async () => {
     setLoading(true);
-    const data = await fetch(`/api/users/${userId}`, { method: "GET" });
+    const token = getCookie("auth-token");
+    const data = await fetch(`/api/users/${userId}`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     if (data) {
       setLoading(false);
     }
@@ -81,20 +87,26 @@ function EditUser({ userId }: Iprops) {
     if (isApiCallInProgress) return;
     setIsApiCallInProgress(true);
     try {
-      const formData = new FormData();
-      formData.append("name", data.name);
-      formData.append("email", data.email);
-      formData.append("organisationId", String(userData?.data.organisationId));
-      formData.append("imageUrl", String(profilePic));
-      formData.append("permissions", JSON.stringify(data.permissions));
+      const token = getCookie("auth-token");
+      const payload = {
+        name: data.name,
+        email: data.email,
+        organisationId: userData?.data.organisationId,
+        imageUrl: profilePic,
+        permissions: data.permissions,
+      };
 
       if (data.password) {
-        formData.append("password", data.password);
+        payload.password = data.password;
       }
 
       const res = await fetch(`/api/users/${userId}`, {
         method: "PUT",
-        body: formData,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(payload),
       });
 
       if (res.ok) {
@@ -115,7 +127,13 @@ function EditUser({ userId }: Iprops) {
     if (userId) {
       const user = async () => {
         setLoading(true);
-        const data = await getUser();
+        const token = getCookie("auth-token");
+        const data = await fetch(`/api/users/${userId}`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         setUserData(data);
       };
       user();

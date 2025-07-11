@@ -70,10 +70,12 @@ export default function AddNewUser({ organisations }: Props) {
 
     try {
       if (data.email && data.name && data.organisationId) {
+        const token = getCookie("auth-token");
         const response = await fetch("/api/add-new-user", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({ ...data, image: profilePic }),
         });
@@ -88,6 +90,9 @@ export default function AddNewUser({ organisations }: Props) {
 
             const response = await fetch(`/api/profile-pic/upload`, {
               method: "POST",
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
               body: formData,
             });
             const updatedUser = await response.json();

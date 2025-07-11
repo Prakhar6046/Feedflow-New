@@ -44,7 +44,13 @@ const EditFarm = ({
   const [loading, setLoading] = useState<boolean>(false);
 
   const getFarm = async () => {
-    const response = await fetch(`/api/farm/${farmId}`);
+    const token = getCookie("auth-token");
+    const response = await fetch(`/api/farm/${farmId}`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     const res = await response.json();
     return res;
   };

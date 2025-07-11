@@ -41,6 +41,7 @@ import toast from "react-hot-toast";
 import CalculateMeanLength from "./CalculateMeanLength";
 import CalculateMeanWeigth from "./CalculateMeanWeigth";
 import Confirmation from "./Confirmation";
+import { getCookie } from "cookies-next";
 const style = {
   position: "absolute" as "absolute",
   top: "50%",
@@ -211,10 +212,12 @@ const TransferModal: React.FC<Props> = ({
           data: addStockField,
         };
 
+        const token = getCookie("auth-token");
         const response = await fetch("/api/production/mange", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify(payload),
         });

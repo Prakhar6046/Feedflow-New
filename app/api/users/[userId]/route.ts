@@ -1,7 +1,19 @@
 import prisma from "@/prisma/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
+import { verifyAndRefreshToken } from "@/app/_lib/auth/verifyAndRefreshToken";
+
 export const GET = async (request: NextRequest, context: { params: any }) => {
+  const user = await verifyAndRefreshToken(request);
+  if (user.status === 401) {
+    return new NextResponse(
+      JSON.stringify({
+        status: false,
+        message: "Unauthorized: Token missing or invalid",
+      }),
+      { status: 401 }
+    );
+  }
   const userId = context.params.userId;
   if (!userId) {
     return new NextResponse(
@@ -32,16 +44,23 @@ export const GET = async (request: NextRequest, context: { params: any }) => {
 };
 
 export async function PUT(req: NextRequest, context: { params: any }) {
+  const user = await verifyAndRefreshToken(req);
+  if (user.status === 401) {
+    return NextResponse.json(
+      { status: false, message: "Unauthorized: Token missing or invalid" },
+      { status: 401 }
+    );
+  }
   try {
     const userId = context.params.userId;
 
     // Check if a user exists
-    const user = await prisma.user.findUnique({
+    const userData = await prisma.user.findUnique({
       where: { id: Number(userId) },
       include: { Contact: true },
     });
 
-    if (!user) {
+    if (!userData) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
@@ -72,7 +91,7 @@ export async function PUT(req: NextRequest, context: { params: any }) {
       };
     }
     await prisma.contact.update({
-      where: { userId: Number(userId), id: user?.Contact[0].id },
+      where: { userId: Number(userId), id: userData?.Contact[0].id },
       data: {
         name: formData.get("name") as string,
         email: formData.get("email") as string,

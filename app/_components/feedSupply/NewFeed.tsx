@@ -78,6 +78,7 @@ const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const loggedUser: any = getCookie("logged-user");
+  const token = getCookie("auth-token");
   const [month, setMonth] = React.useState(new Date());
   const [loading, setLoading] = useState<boolean>(false);
   const [feedSuppliers, setFeedSuppliers] = useState<any>();
@@ -112,6 +113,7 @@ const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
             method: isEditFeed ? "PUT" : "POST",
             headers: {
               "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
             },
             body: isEditFeed
               ? JSON.stringify({
@@ -145,13 +147,21 @@ const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
     }
   };
   const getFeedSuppliers = async () => {
-    const response = await fetch(`/api/organisation/feedSuppliers`);
+    const response = await fetch(`/api/organisation/feedSuppliers`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     const res = response.json();
     return res;
   };
   const getFeed = async () => {
     const data = await fetch(`/api/feedSupply/${feedSupplyId}`, {
       method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
     if (data) {
     }

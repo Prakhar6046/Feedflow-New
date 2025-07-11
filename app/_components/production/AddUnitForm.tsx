@@ -85,10 +85,12 @@ function AddUnitForm({ farms }: Props) {
         ...restData,
       };
 
+      const token = getCookie("auth-token");
       const response = await fetch(`/api/production`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(payload),
       });

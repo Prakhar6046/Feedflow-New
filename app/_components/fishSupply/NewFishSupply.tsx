@@ -50,11 +50,17 @@ interface FormInputs {
 function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
   const router = useRouter();
   const userData: any = getCookie("logged-user");
+  const token = getCookie("auth-token");
   const [loading, setLoading] = useState<boolean>(false);
   const [isApiCallInProgress, setIsApiCallInProgress] = useState(false);
   const [fishSupply, setFishSupply] = useState<FishSupply>();
   const getFishSupply = async () => {
-    const response = await fetch(`/api/fish/${fishSupplyId}`);
+    const response = await fetch(`/api/fish/${fishSupplyId}`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     return response.json();
   };
   const {

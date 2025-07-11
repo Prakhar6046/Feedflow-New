@@ -1,3 +1,4 @@
+import { verifyAndRefreshToken } from "@/app/_lib/auth/verifyAndRefreshToken";
 import { InvitationEmail } from "@/app/_lib/emailTemplate/invitationEmail";
 import prisma from "@/prisma/prisma";
 import { Prisma } from "@prisma/client";
@@ -5,7 +6,16 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
-
+  const user = await verifyAndRefreshToken(req);
+  if (user.status === 401) {
+    return new NextResponse(
+      JSON.stringify({
+        status: false,
+        message: "Unauthorized: Token missing or invalid",
+      }),
+      { status: 401 }
+    );
+  }
   try {
     const productionParameter = body.productionParameter;
     if (

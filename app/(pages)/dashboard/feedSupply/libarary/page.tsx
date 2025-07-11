@@ -15,14 +15,16 @@ const Page = async ({
 }) => {
   const query = searchParams?.query || "";
   const loggedUser: any = getCookie("logged-user", { cookies });
+  const refreshToken: any = getCookie("refresh-token", { cookies });
 
   const userOrganisationType = JSON.parse(loggedUser);
   const stores = await getFeedStores({
     role: userOrganisationType.role,
     organisationId: userOrganisationType.organisationId,
     query,
+    refreshToken,
   });
-  const feedSuppliers = await getFeedSuppliers();
+  const feedSuppliers = await getFeedSuppliers(refreshToken);
 
   return (
     <div>

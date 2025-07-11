@@ -20,6 +20,7 @@ import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
+import { getCookie } from "cookies-next";
 const style = {
   position: "absolute" as "absolute",
   top: "50%",
@@ -70,10 +71,12 @@ const SamplingEnvironmentCal: React.FC<Props> = ({ setOpen, open }) => {
     setIsApiCallInProgress(true);
 
     try {
+      // const token = getCookie("auth-token");
       // const response = await fetch("/api/production/mange", {
       //   method: "POST",
       //   headers: {
       //     "Content-Type": "application/json",
+      //     Authorization: `Bearer ${token}`,
       //   },
       //   body: JSON.stringify(payload),
       // });

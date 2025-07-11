@@ -1,15 +1,24 @@
+import { verifyAndRefreshToken } from "@/app/_lib/auth/verifyAndRefreshToken";
 import prisma from "@/prisma/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
 export const GET = async (request: NextRequest) => {
   try {
+    const user = await verifyAndRefreshToken(request);
+    // If no user (token invalid or missing), return 401
+    if (user.status === 401) {
+      return NextResponse.json(
+        { status: false, message: "Unauthorized: Token missing or invalid" },
+        { status: 401 }
+      );
+    }
+
     const searchParams = request.nextUrl.searchParams;
     const role = searchParams.get("role");
     const query = searchParams.get("query");
     const tab = searchParams.get("tab");
-
     const organisationId = searchParams.get("organisationId");
-    // Map tab value to organisationType
+
     const tabFilter =
       tab === "fishProducers"
         ? "Fish Producer"
@@ -17,7 +26,6 @@ export const GET = async (request: NextRequest) => {
         ? "Feed Supplier"
         : null;
 
-    // Common filters for all roles
     const baseWhereClause: any = {
       AND: [
         query
@@ -36,7 +44,9 @@ export const GET = async (request: NextRequest) => {
           : {},
       ],
     };
+
     let organisations;
+
     if (role === "SUPERADMIN") {
       organisations = await prisma.organisation.findMany({
         include: { contact: true, users: true, hatchery: true },
@@ -52,7 +62,6 @@ export const GET = async (request: NextRequest) => {
             { id: Number(organisationId) },
             { createdBy: Number(organisationId) },
           ],
-
           ...baseWhereClause,
         },
         include: { contact: true },
@@ -61,15 +70,16 @@ export const GET = async (request: NextRequest) => {
         },
       });
     }
+
     return new NextResponse(
       JSON.stringify({ status: true, data: organisations }),
-      {
-        status: 200,
-      }
+      { status: 200 }
     );
   } catch (error) {
-    return new NextResponse(JSON.stringify({ status: false, error }), {
-      status: 500,
-    });
+    console.error("❌ Error in /api/organisation:", error);
+    return new NextResponse(
+      JSON.stringify({ status: false, error: "Internal Server Error" }),
+      { status: 500 }
+    );
   }
 };
