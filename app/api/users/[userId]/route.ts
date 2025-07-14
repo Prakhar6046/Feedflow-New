@@ -64,37 +64,37 @@ export async function PUT(req: NextRequest, context: { params: any }) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    // Upload the image using multer
-    const formData: any = await req.formData();
+    // Accept JSON body
+    const body = await req.json();
 
-    const permissions = JSON.parse(formData.get("permissions"));
-    const newPassword = formData.get("password") as string;
+    const permissions = body.permissions;
+    const newPassword = body.password;
     let encryptedPassword;
     let updateData;
 
     if (newPassword) {
       encryptedPassword = bcrypt.hashSync(newPassword, 8);
       updateData = {
-        name: formData.get("name") as string,
-        email: formData.get("email") as string,
-        organisationId: Number(formData.get("organisationId") as string),
+        name: body.name,
+        email: body.email,
+        organisationId: Number(body.organisationId),
         permissions: permissions ?? {},
         password: encryptedPassword,
       };
     } else {
       updateData = {
-        name: formData.get("name") as string,
-        email: formData.get("email") as string,
-        imageUrl: formData.get("imageUrl") as string,
-        organisationId: Number(formData.get("organisationId") as string),
+        name: body.name,
+        email: body.email,
+        imageUrl: body.imageUrl,
+        organisationId: Number(body.organisationId),
         permissions: permissions ?? {},
       };
     }
     await prisma.contact.update({
       where: { userId: Number(userId), id: userData?.Contact[0].id },
       data: {
-        name: formData.get("name") as string,
-        email: formData.get("email") as string,
+        name: body.name,
+        email: body.email,
       },
     });
     await prisma.user.update({
