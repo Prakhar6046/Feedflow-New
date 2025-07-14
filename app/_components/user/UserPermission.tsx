@@ -106,7 +106,7 @@ function UserPermission({ control, oraginsationType }: UserPermissionProps) {
           <Typography
             variant="h6"
             color="rgb(0,0,0)"
-            fontSize={18}
+            fontSize={20}
             fontWeight={600}
           >
             Admin Rights
@@ -417,27 +417,28 @@ function UserPermission({ control, oraginsationType }: UserPermissionProps) {
           <Typography
             variant="h6"
             color="rgb(0,0,0)"
-            fontSize={18}
+            fontSize={20}
             fontWeight={600}
+            mb={2}
           >
             Admin Rights
           </Typography>
 
-          <Grid container>
+          <Grid container rowSpacing={2.5}>
             {/* Column Headers */}
-            <Grid item md={1}>
+            <Grid item lg={4} xs={6} sx={{
+              display: "flex",
+              gap: 6
+            }}>
               <Typography
                 variant="h6"
                 fontSize={16}
-                textAlign={"center"}
                 fontWeight={600}
               >
                 Create Users
               </Typography>
-            </Grid>
 
-            <Grid item lg={3} xs={10} sx={{ ml: { lg: 0, xs: 3 } }}>
-              <Box display={"flex"} flexDirection={"column"} gap={4}>
+              <Box>
                 <Controller
                   name="permissions.createUsers"
                   control={control}
@@ -445,7 +446,9 @@ function UserPermission({ control, oraginsationType }: UserPermissionProps) {
                   render={({ field }) => (
                     <FormControlLabel
                       control={
-                        <IOSSwitch {...field} checked={Boolean(field.value)} />
+                        <IOSSwitch {...field} checked={Boolean(field.value)} sx={{
+                          marginRight: 2
+                        }} />
                       }
                       label="Create Users"
                     />
@@ -454,7 +457,10 @@ function UserPermission({ control, oraginsationType }: UserPermissionProps) {
               </Box>
             </Grid>
 
-            <Grid item md={1} sx={{ mt: { lg: 0, xs: 5 } }}>
+            <Grid item lg={4} xs={6} sx={{
+              display: "flex",
+              gap: 6
+            }} >
               <Typography
                 variant="h6"
                 fontSize={16}
@@ -463,18 +469,8 @@ function UserPermission({ control, oraginsationType }: UserPermissionProps) {
               >
                 Edit Users
               </Typography>
-            </Grid>
 
-            <Grid
-              item
-              lg={3}
-              xs={10}
-              sx={{
-                ml: { lg: 0, xs: 3 },
-                mt: { lg: 0, xs: 5 },
-              }}
-            >
-              <Box display={"flex"} flexDirection={"column"} gap={4}>
+              <Box>
                 <Controller
                   name="permissions.editUsers"
                   control={control}
@@ -482,7 +478,9 @@ function UserPermission({ control, oraginsationType }: UserPermissionProps) {
                   render={({ field }) => (
                     <FormControlLabel
                       control={
-                        <IOSSwitch {...field} checked={Boolean(field.value)} />
+                        <IOSSwitch {...field} checked={Boolean(field.value)} sx={{
+                          marginRight: 2
+                        }} />
                       }
                       label="Edit Users"
                     />
@@ -491,35 +489,34 @@ function UserPermission({ control, oraginsationType }: UserPermissionProps) {
               </Box>
             </Grid>
 
-            <Grid item md={1} sx={{ mt: { lg: 0, xs: 5 } }}>
+            <Grid item lg={4} xs={6} sx={{
+              display: "flex",
+              gap: 6
+            }}>
               <Typography
                 variant="h6"
                 fontSize={16}
                 textAlign={"center"}
                 fontWeight={600}
+                whiteSpace={"nowrap"}
               >
                 Edit Admin Rights
               </Typography>
-            </Grid>
 
-            <Grid
-              item
-              lg={3}
-              xs={10}
-              sx={{
-                ml: { lg: 0, xs: 3 },
-                mt: { lg: 0, xs: 5 },
-              }}
-            >
-              <Box display={"flex"} flexDirection={"column"} gap={4}>
+              <Box>
                 <Controller
                   name="permissions.editAdminRights"
                   control={control}
                   disabled={allDisabled}
                   render={({ field }) => (
                     <FormControlLabel
+                      sx={{
+                        alignItems: "start",
+                      }}
                       control={
-                        <IOSSwitch {...field} checked={Boolean(field.value)} />
+                        <IOSSwitch {...field} checked={Boolean(field.value)} sx={{
+                          marginRight: 2,
+                        }} />
                       }
                       label="Edit Admin Rights"
                     />
@@ -534,13 +531,18 @@ function UserPermission({ control, oraginsationType }: UserPermissionProps) {
             color="rgb(0,0,0)"
             fontSize={18}
             fontWeight={600}
+            mt={5}
+            mb={2}
           >
             Organisation Rights
           </Typography>
 
-          <Grid container>
+          <Grid container rowSpacing={2.5}>
             {/* Column Headers */}
-            <Grid item md={1}>
+            <Grid item lg={4} xs={6} sx={{
+              display: "flex",
+              gap: 6
+            }} >
               <Typography
                 variant="h6"
                 fontSize={16}
@@ -549,10 +551,8 @@ function UserPermission({ control, oraginsationType }: UserPermissionProps) {
               >
                 Edit Organisation
               </Typography>
-            </Grid>
 
-            <Grid item lg={3} xs={10} sx={{ ml: { lg: 0, xs: 3 } }}>
-              <Box display={"flex"} flexDirection={"column"} gap={4}>
+              <Box>
                 <Controller
                   name="permissions.editOrganisation"
                   control={control}
@@ -560,7 +560,9 @@ function UserPermission({ control, oraginsationType }: UserPermissionProps) {
                   render={({ field }) => (
                     <FormControlLabel
                       control={
-                        <IOSSwitch {...field} checked={Boolean(field.value)} />
+                        <IOSSwitch {...field} checked={Boolean(field.value)} sx={{
+                          marginRight: 2
+                        }} />
                       }
                       label="Edit Organisation"
                     />
@@ -569,7 +571,10 @@ function UserPermission({ control, oraginsationType }: UserPermissionProps) {
               </Box>
             </Grid>
 
-            <Grid item md={1} sx={{ mt: { lg: 0, xs: 5 } }}>
+            <Grid item lg={4} xs={6} sx={{
+              display: "flex",
+              gap: 6
+            }} >
               <Typography
                 variant="h6"
                 fontSize={16}
@@ -578,26 +583,21 @@ function UserPermission({ control, oraginsationType }: UserPermissionProps) {
               >
                 Create Fish Supply
               </Typography>
-            </Grid>
 
-            <Grid
-              item
-              lg={3}
-              xs={10}
-              sx={{
-                ml: { lg: 0, xs: 3 },
-                mt: { lg: 0, xs: 5 },
-              }}
-            >
-              <Box display={"flex"} flexDirection={"column"} gap={4}>
+              <Box>
                 <Controller
                   name="permissions.createFishSupply"
                   control={control}
                   disabled={allDisabled}
                   render={({ field }) => (
                     <FormControlLabel
+                      sx={{
+                        alignItems: "start",
+                      }}
                       control={
-                        <IOSSwitch {...field} checked={Boolean(field.value)} />
+                        <IOSSwitch {...field} checked={Boolean(field.value)} sx={{
+                          marginRight: 2
+                        }} />
                       }
                       label="Create Fish Supply"
                     />
@@ -606,35 +606,34 @@ function UserPermission({ control, oraginsationType }: UserPermissionProps) {
               </Box>
             </Grid>
 
-            <Grid item md={1} sx={{ mt: { lg: 0, xs: 5 } }}>
+            <Grid item lg={4} xs={6} sx={{
+              display: "flex",
+              gap: 6
+            }} >
               <Typography
                 variant="h6"
                 fontSize={16}
                 textAlign={"center"}
                 fontWeight={600}
+                whiteSpace={"nowrap"}
               >
                 Edit Fish Supply
               </Typography>
-            </Grid>
 
-            <Grid
-              item
-              lg={3}
-              xs={10}
-              sx={{
-                ml: { lg: 0, xs: 3 },
-                mt: { lg: 0, xs: 5 },
-              }}
-            >
-              <Box display={"flex"} flexDirection={"column"} gap={4}>
+              <Box>
                 <Controller
                   name="permissions.editFishSupply"
                   control={control}
                   disabled={allDisabled}
                   render={({ field }) => (
                     <FormControlLabel
+                      sx={{
+                        alignItems: "start",
+                      }}
                       control={
-                        <IOSSwitch {...field} checked={Boolean(field.value)} />
+                        <IOSSwitch {...field} checked={Boolean(field.value)} sx={{
+                          marginRight: 2
+                        }} />
                       }
                       label="Edit Fish Supply"
                     />
@@ -642,27 +641,20 @@ function UserPermission({ control, oraginsationType }: UserPermissionProps) {
                 />
               </Box>
             </Grid>
-            <Grid item md={1} sx={{ mt: { lg: 0, xs: 5 } }}>
+
+            <Grid item lg={4} xs={6} sx={{
+              display: "flex",
+              gap: 10
+            }} >
               <Typography
                 variant="h6"
                 fontSize={16}
-                textAlign={"center"}
                 fontWeight={600}
               >
                 Create Farms
               </Typography>
-            </Grid>
 
-            <Grid
-              item
-              lg={3}
-              xs={10}
-              sx={{
-                ml: { lg: 0, xs: 3 },
-                mt: { lg: 0, xs: 5 },
-              }}
-            >
-              <Box display={"flex"} flexDirection={"column"} gap={4}>
+              <Box>
                 <Controller
                   name="permissions.createFarms"
                   control={control}
@@ -670,7 +662,9 @@ function UserPermission({ control, oraginsationType }: UserPermissionProps) {
                   render={({ field }) => (
                     <FormControlLabel
                       control={
-                        <IOSSwitch {...field} checked={Boolean(field.value)} />
+                        <IOSSwitch {...field} checked={Boolean(field.value)} sx={{
+                          marginRight: 2
+                        }} />
                       }
                       label="Create Farms"
                     />
@@ -678,27 +672,20 @@ function UserPermission({ control, oraginsationType }: UserPermissionProps) {
                 />
               </Box>
             </Grid>
-            <Grid item md={1} sx={{ mt: { lg: 0, xs: 5 } }}>
+
+            <Grid item lg={4} xs={6} sx={{
+              display: "flex",
+              gap: 14.5
+            }} >
               <Typography
                 variant="h6"
                 fontSize={16}
-                textAlign={"center"}
                 fontWeight={600}
               >
                 Edit Farms
               </Typography>
-            </Grid>
 
-            <Grid
-              item
-              lg={3}
-              xs={10}
-              sx={{
-                ml: { lg: 0, xs: 3 },
-                mt: { lg: 0, xs: 5 },
-              }}
-            >
-              <Box display={"flex"} flexDirection={"column"} gap={4}>
+              <Box>
                 <Controller
                   name="permissions.editFarms"
                   control={control}
@@ -706,7 +693,9 @@ function UserPermission({ control, oraginsationType }: UserPermissionProps) {
                   render={({ field }) => (
                     <FormControlLabel
                       control={
-                        <IOSSwitch {...field} checked={Boolean(field.value)} />
+                        <IOSSwitch {...field} checked={Boolean(field.value)} sx={{
+                          marginRight: 2
+                        }} />
                       }
                       label="Edit Farms"
                     />
@@ -714,27 +703,20 @@ function UserPermission({ control, oraginsationType }: UserPermissionProps) {
                 />
               </Box>
             </Grid>
-            <Grid item md={1} sx={{ mt: { lg: 0, xs: 5 } }}>
+
+            <Grid item lg={4} xs={6} sx={{
+              display: "flex",
+              gap: 6
+            }} >
               <Typography
                 variant="h6"
                 fontSize={16}
-                textAlign={"center"}
                 fontWeight={600}
               >
                 Transfer Fish Between Farms
               </Typography>
-            </Grid>
 
-            <Grid
-              item
-              lg={3}
-              xs={10}
-              sx={{
-                ml: { lg: 0, xs: 3 },
-                mt: { lg: 0, xs: 5 },
-              }}
-            >
-              <Box display={"flex"} flexDirection={"column"} gap={4}>
+              <Box display={"flex"}>
                 <Controller
                   name="permissions.transferFishBetweenFarms"
                   control={control}
@@ -742,7 +724,9 @@ function UserPermission({ control, oraginsationType }: UserPermissionProps) {
                   render={({ field }) => (
                     <FormControlLabel
                       control={
-                        <IOSSwitch {...field} checked={Boolean(field.value)} />
+                        <IOSSwitch {...field} checked={Boolean(field.value)} sx={{
+                          marginRight: 2
+                        }} />
                       }
                       label="Transfer Fish Between Farms"
                     />
