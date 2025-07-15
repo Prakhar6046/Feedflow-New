@@ -239,9 +239,6 @@ const AddNewOrganisation = ({
     getORGCount();
   }, []);
 
-  // useEffect(() => {
-  //   if (token) console.log(token, "token");
-  // }, [token]);
   return (
     <Stack
       sx={{

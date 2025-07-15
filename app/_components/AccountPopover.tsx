@@ -40,7 +40,6 @@ const AccountPopover = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const token = getCookie("auth-token");
-  console.log(token);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const [loggedUserData, setLoggedUserData] = useState<LoggedUser>();
@@ -103,7 +102,6 @@ const AccountPopover = () => {
     };
     getUser();
   }, [loggedUserData, router]);
-  console.log(userData);
 
   return (
     <React.Fragment>

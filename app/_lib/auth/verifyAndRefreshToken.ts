@@ -19,14 +19,9 @@ export const verifyAndRefreshToken = async (req: Request): Promise<any> => {
   }
 
   const accessToken = authHeader.split(" ")[1];
-  console.log(accessToken);
 
   try {
     if (accessToken) {
-      // ✅ Try to verify the access token
-      // const decoded = jwt.verify(accessToken, JWT_SECRET);
-      // return decoded;
-      // console.log(decoded);
       return true;
     }
   } catch (err: any) {

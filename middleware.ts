@@ -10,12 +10,13 @@ export default function middleware(req: NextRequest) {
   const isPublic = publicRoutes.includes(path);
 
   const refreshToken = cookies().get("refresh-token")?.value;
+  const loggedUser = cookies().get("logged-user")?.value;
 
-  if (isProtected && !refreshToken) {
+  if (isProtected && (!refreshToken || !loggedUser)) {
     return NextResponse.redirect(new URL("/auth/login", req.url));
   }
 
-  if (isPublic && refreshToken) {
+  if (isPublic && refreshToken && loggedUser) {
     return NextResponse.redirect(new URL("/dashboard/organisation", req.url));
   }
 

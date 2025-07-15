@@ -45,9 +45,6 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
       const responseData = await response.json();
       toast.success(responseData.message);
 
-      // setCookie("logged-user", responseData);
-      // setCookie("role", responseData?.data?.user?.role);
-
       if (responseData.status) {
         router.push("/auth/login");
       }

@@ -39,7 +39,7 @@ export const POST = async (request: Request) => {
 
     const accessToken = jwt.sign(payload, JWT_SECRET, { expiresIn: "15m" });
     const refreshToken = jwt.sign(payload, JWT_REFRESH_SECRET, {
-      expiresIn: "7d",
+      expiresIn: "1d",
     });
 
     const response = NextResponse.json({
@@ -59,7 +59,7 @@ export const POST = async (request: Request) => {
       path: "/",
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
-      maxAge: 60 * 60 * 24 * 7, // 7 days
+      maxAge: 60 * 60 * 24 * 1, // 1 day
     });
 
     return response;
