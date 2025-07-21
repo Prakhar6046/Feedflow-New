@@ -12,6 +12,10 @@ import {
 import { getCookie } from "cookies-next";
 import { useEffect, useState } from "react";
 import { Control, Controller, FieldValues } from "react-hook-form";
+import OrganisationPermission from "../organisation/OrganisationPermission";
+import { OrganizationData } from "@/app/_typeModels/Organization";
+import Loader from "../Loader";
+import { AnyAaaaRecord } from "dns";
 // Custom iOS styled switch
 const IOSSwitch = styled((props: SwitchProps) => (
   <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
@@ -76,8 +80,13 @@ const IOSSwitch = styled((props: SwitchProps) => (
 interface UserPermissionProps {
   control: Control<any>;
   oraginsationType: string | any;
+  userData: any;
 }
-function UserPermission({ control, oraginsationType }: UserPermissionProps) {
+function UserPermission({
+  control,
+  oraginsationType,
+  userData,
+}: UserPermissionProps) {
   const loggedUser: any = getCookie("logged-user");
   const user: SingleUser = loggedUser ? JSON.parse(loggedUser) : {};
   const [allDisabled, setAllDisabled] = useState<boolean>(false);
@@ -92,6 +101,7 @@ function UserPermission({ control, oraginsationType }: UserPermissionProps) {
       }
     }
   }, [user]);
+
   return (
     <form>
       {oraginsationType === "Feed Supplier" ? (
@@ -406,336 +416,9 @@ function UserPermission({ control, oraginsationType }: UserPermissionProps) {
           </Grid>
         </Stack>
       ) : oraginsationType === "Fish Producer" ? (
-        <Stack
-          sx={{
-            borderRadius: "14px",
-            boxShadow: "0px 0px 5px #C5C5C5",
-            mt: 2.5,
-            padding: 3,
-          }}
-        >
-          <Typography
-            variant="h6"
-            color="rgb(0,0,0)"
-            fontSize={20}
-            fontWeight={600}
-            mb={2}
-          >
-            Admin Rights
-          </Typography>
-
-          <Grid container rowSpacing={2.5}>
-            {/* Column Headers */}
-            <Grid item lg={4} xs={6} sx={{
-              display: "flex",
-              gap: 6
-            }}>
-              <Typography
-                variant="h6"
-                fontSize={16}
-                fontWeight={600}
-              >
-                Create Users
-              </Typography>
-
-              <Box>
-                <Controller
-                  name="permissions.createUsers"
-                  control={control}
-                  disabled={allDisabled}
-                  render={({ field }) => (
-                    <FormControlLabel
-                      control={
-                        <IOSSwitch {...field} checked={Boolean(field.value)} sx={{
-                          marginRight: 2
-                        }} />
-                      }
-                      label="Create Users"
-                    />
-                  )}
-                />
-              </Box>
-            </Grid>
-
-            <Grid item lg={4} xs={6} sx={{
-              display: "flex",
-              gap: 6
-            }} >
-              <Typography
-                variant="h6"
-                fontSize={16}
-                textAlign={"center"}
-                fontWeight={600}
-              >
-                Edit Users
-              </Typography>
-
-              <Box>
-                <Controller
-                  name="permissions.editUsers"
-                  control={control}
-                  disabled={allDisabled}
-                  render={({ field }) => (
-                    <FormControlLabel
-                      control={
-                        <IOSSwitch {...field} checked={Boolean(field.value)} sx={{
-                          marginRight: 2
-                        }} />
-                      }
-                      label="Edit Users"
-                    />
-                  )}
-                />
-              </Box>
-            </Grid>
-
-            <Grid item lg={4} xs={6} sx={{
-              display: "flex",
-              gap: 6
-            }}>
-              <Typography
-                variant="h6"
-                fontSize={16}
-                textAlign={"center"}
-                fontWeight={600}
-                whiteSpace={"nowrap"}
-              >
-                Edit Admin Rights
-              </Typography>
-
-              <Box>
-                <Controller
-                  name="permissions.editAdminRights"
-                  control={control}
-                  disabled={allDisabled}
-                  render={({ field }) => (
-                    <FormControlLabel
-                      sx={{
-                        alignItems: "start",
-                      }}
-                      control={
-                        <IOSSwitch {...field} checked={Boolean(field.value)} sx={{
-                          marginRight: 2,
-                        }} />
-                      }
-                      label="Edit Admin Rights"
-                    />
-                  )}
-                />
-              </Box>
-            </Grid>
-          </Grid>
-
-          <Typography
-            variant="h6"
-            color="rgb(0,0,0)"
-            fontSize={18}
-            fontWeight={600}
-            mt={5}
-            mb={2}
-          >
-            Organisation Rights
-          </Typography>
-
-          <Grid container rowSpacing={2.5}>
-            {/* Column Headers */}
-            <Grid item lg={4} xs={6} sx={{
-              display: "flex",
-              gap: 6
-            }} >
-              <Typography
-                variant="h6"
-                fontSize={16}
-                textAlign={"center"}
-                fontWeight={600}
-              >
-                Edit Organisation
-              </Typography>
-
-              <Box>
-                <Controller
-                  name="permissions.editOrganisation"
-                  control={control}
-                  disabled={allDisabled}
-                  render={({ field }) => (
-                    <FormControlLabel
-                      control={
-                        <IOSSwitch {...field} checked={Boolean(field.value)} sx={{
-                          marginRight: 2
-                        }} />
-                      }
-                      label="Edit Organisation"
-                    />
-                  )}
-                />
-              </Box>
-            </Grid>
-
-            <Grid item lg={4} xs={6} sx={{
-              display: "flex",
-              gap: 6
-            }} >
-              <Typography
-                variant="h6"
-                fontSize={16}
-                textAlign={"center"}
-                fontWeight={600}
-              >
-                Create Fish Supply
-              </Typography>
-
-              <Box>
-                <Controller
-                  name="permissions.createFishSupply"
-                  control={control}
-                  disabled={allDisabled}
-                  render={({ field }) => (
-                    <FormControlLabel
-                      sx={{
-                        alignItems: "start",
-                      }}
-                      control={
-                        <IOSSwitch {...field} checked={Boolean(field.value)} sx={{
-                          marginRight: 2
-                        }} />
-                      }
-                      label="Create Fish Supply"
-                    />
-                  )}
-                />
-              </Box>
-            </Grid>
-
-            <Grid item lg={4} xs={6} sx={{
-              display: "flex",
-              gap: 6
-            }} >
-              <Typography
-                variant="h6"
-                fontSize={16}
-                textAlign={"center"}
-                fontWeight={600}
-                whiteSpace={"nowrap"}
-              >
-                Edit Fish Supply
-              </Typography>
-
-              <Box>
-                <Controller
-                  name="permissions.editFishSupply"
-                  control={control}
-                  disabled={allDisabled}
-                  render={({ field }) => (
-                    <FormControlLabel
-                      sx={{
-                        alignItems: "start",
-                      }}
-                      control={
-                        <IOSSwitch {...field} checked={Boolean(field.value)} sx={{
-                          marginRight: 2
-                        }} />
-                      }
-                      label="Edit Fish Supply"
-                    />
-                  )}
-                />
-              </Box>
-            </Grid>
-
-            <Grid item lg={4} xs={6} sx={{
-              display: "flex",
-              gap: 10
-            }} >
-              <Typography
-                variant="h6"
-                fontSize={16}
-                fontWeight={600}
-              >
-                Create Farms
-              </Typography>
-
-              <Box>
-                <Controller
-                  name="permissions.createFarms"
-                  control={control}
-                  disabled={allDisabled}
-                  render={({ field }) => (
-                    <FormControlLabel
-                      control={
-                        <IOSSwitch {...field} checked={Boolean(field.value)} sx={{
-                          marginRight: 2
-                        }} />
-                      }
-                      label="Create Farms"
-                    />
-                  )}
-                />
-              </Box>
-            </Grid>
-
-            <Grid item lg={4} xs={6} sx={{
-              display: "flex",
-              gap: 14.5
-            }} >
-              <Typography
-                variant="h6"
-                fontSize={16}
-                fontWeight={600}
-              >
-                Edit Farms
-              </Typography>
-
-              <Box>
-                <Controller
-                  name="permissions.editFarms"
-                  control={control}
-                  disabled={allDisabled}
-                  render={({ field }) => (
-                    <FormControlLabel
-                      control={
-                        <IOSSwitch {...field} checked={Boolean(field.value)} sx={{
-                          marginRight: 2
-                        }} />
-                      }
-                      label="Edit Farms"
-                    />
-                  )}
-                />
-              </Box>
-            </Grid>
-
-            <Grid item lg={4} xs={6} sx={{
-              display: "flex",
-              gap: 6
-            }} >
-              <Typography
-                variant="h6"
-                fontSize={16}
-                fontWeight={600}
-              >
-                Transfer Fish Between Farms
-              </Typography>
-
-              <Box display={"flex"}>
-                <Controller
-                  name="permissions.transferFishBetweenFarms"
-                  control={control}
-                  disabled={allDisabled}
-                  render={({ field }) => (
-                    <FormControlLabel
-                      control={
-                        <IOSSwitch {...field} checked={Boolean(field.value)} sx={{
-                          marginRight: 2
-                        }} />
-                      }
-                      label="Transfer Fish Between Farms"
-                    />
-                  )}
-                />
-              </Box>
-            </Grid>
-          </Grid>
-        </Stack>
+        userData?.farms?.length ? (
+          <OrganisationPermission control={control as any} />
+        ) : null
       ) : null}
     </form>
   );

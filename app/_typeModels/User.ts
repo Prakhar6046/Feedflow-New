@@ -21,16 +21,17 @@ export interface SingleUser {
   permissions: Permissions;
 }
 
-interface FarmsPermissions {
-  farmId: string;
+export interface FarmPermissions {
+  farmId: string; // or number, depending on your Farm model
   stock: boolean;
   transfer: boolean;
   harvest: boolean;
   mortalities: boolean;
   sample: boolean;
+  createReport: boolean;
   feedingPlans: boolean;
-  createReports: boolean;
 }
+
 export interface Permissions {
   createUsers: boolean;
   editUsers: boolean;
@@ -45,7 +46,7 @@ export interface Permissions {
   createFarms: boolean;
   editFarms: boolean;
   transferFishBetweenFarms: boolean;
-  farms?: FarmsPermissions[];
+  farms?: FarmPermissions[];
 }
 export interface UserEditFormInputs {
   name: string;
@@ -77,12 +78,34 @@ export interface Organisation {
   createdAt: string; // ISO date string
   updatedAt: string; // ISO date string
   addressId: string;
-  Farm: Farm[]; // Currently an empty array
+  Farm: Farm[];
   contact: Contact[];
 }
 
 export interface Farm {
-  // Define structure here if you plan to use it later
+  id: string;
+  name: string;
+  farmAltitude: string;
+  farmAddressId: string;
+  lat: string;
+  lng: string;
+  fishFarmer: string;
+  updatedBy: null;
+  createdBy: null;
+  organisationId: number;
+  createdAt: string;
+  updatedAt: string;
+  userId: number;
+}
+export interface FarmPermissions {
+  farmId: string; // or number, depending on your Farm model
+  stock: boolean;
+  transfer: boolean;
+  harvest: boolean;
+  mortalities: boolean;
+  sample: boolean;
+  createReport: boolean;
+  feedingPlans: boolean;
 }
 
 export interface Contact {

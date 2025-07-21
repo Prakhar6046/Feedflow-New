@@ -29,6 +29,7 @@ export const GET = async (request: NextRequest, context: { params: any }) => {
           select: {
             name: true,
             organisationType: true,
+            Farm: true,
           },
         },
       },

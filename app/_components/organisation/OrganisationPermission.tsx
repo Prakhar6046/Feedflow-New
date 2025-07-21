@@ -143,15 +143,16 @@ function OrganisationPermission({ control }: OrganisationPermissionProps) {
 
       <Grid container rowSpacing={2.5}>
         {/* Column Headers */}
-        <Grid item lg={4} xs={6} sx={{
-          display: "flex",
-          gap: 6
-        }}>
-          <Typography
-            variant="h6"
-            fontSize={16}
-            fontWeight={600}
-          >
+        <Grid
+          item
+          lg={4}
+          xs={6}
+          sx={{
+            display: "flex",
+            gap: 6,
+          }}
+        >
+          <Typography variant="h6" fontSize={16} fontWeight={600}>
             Create Users
           </Typography>
 
@@ -163,9 +164,13 @@ function OrganisationPermission({ control }: OrganisationPermissionProps) {
               render={({ field }) => (
                 <FormControlLabel
                   control={
-                    <IOSSwitch {...field} checked={Boolean(field.value)} sx={{
-                      marginRight: 2
-                    }} />
+                    <IOSSwitch
+                      {...field}
+                      checked={Boolean(field.value)}
+                      sx={{
+                        marginRight: 2,
+                      }}
+                    />
                   }
                   label="Create Users"
                 />
@@ -174,10 +179,15 @@ function OrganisationPermission({ control }: OrganisationPermissionProps) {
           </Box>
         </Grid>
 
-        <Grid item lg={4} xs={6} sx={{
-          display: "flex",
-          gap: 6
-        }}>
+        <Grid
+          item
+          lg={4}
+          xs={6}
+          sx={{
+            display: "flex",
+            gap: 6,
+          }}
+        >
           <Typography
             variant="h6"
             fontSize={16}
@@ -195,9 +205,13 @@ function OrganisationPermission({ control }: OrganisationPermissionProps) {
               render={({ field }) => (
                 <FormControlLabel
                   control={
-                    <IOSSwitch {...field} checked={Boolean(field.value)} sx={{
-                      marginRight: 2
-                    }} />
+                    <IOSSwitch
+                      {...field}
+                      checked={Boolean(field.value)}
+                      sx={{
+                        marginRight: 2,
+                      }}
+                    />
                   }
                   label="Edit Users"
                 />
@@ -206,10 +220,15 @@ function OrganisationPermission({ control }: OrganisationPermissionProps) {
           </Box>
         </Grid>
 
-        <Grid item lg={4} xs={6} sx={{
-          display: "flex",
-          gap: 6
-        }}>
+        <Grid
+          item
+          lg={4}
+          xs={6}
+          sx={{
+            display: "flex",
+            gap: 6,
+          }}
+        >
           <Typography
             variant="h6"
             fontSize={16}
@@ -227,9 +246,13 @@ function OrganisationPermission({ control }: OrganisationPermissionProps) {
               render={({ field }) => (
                 <FormControlLabel
                   control={
-                    <IOSSwitch {...field} checked={Boolean(field.value)} sx={{
-                      marginRight: 2
-                    }} />
+                    <IOSSwitch
+                      {...field}
+                      checked={Boolean(field.value)}
+                      sx={{
+                        marginRight: 2,
+                      }}
+                    />
                   }
                   label="Organisation Rights"
                 />
@@ -252,10 +275,15 @@ function OrganisationPermission({ control }: OrganisationPermissionProps) {
 
       <Grid container rowSpacing={2.5}>
         {/* Column Headers */}
-        <Grid item lg={4} xs={6} sx={{
-          display: "flex",
-          gap: 6
-        }}>
+        <Grid
+          item
+          lg={4}
+          xs={6}
+          sx={{
+            display: "flex",
+            gap: 6,
+          }}
+        >
           <Typography
             variant="h6"
             fontSize={16}
@@ -273,9 +301,13 @@ function OrganisationPermission({ control }: OrganisationPermissionProps) {
               render={({ field }) => (
                 <FormControlLabel
                   control={
-                    <IOSSwitch {...field} checked={Boolean(field.value)} sx={{
-                      marginRight: 2
-                    }} />
+                    <IOSSwitch
+                      {...field}
+                      checked={Boolean(field.value)}
+                      sx={{
+                        marginRight: 2,
+                      }}
+                    />
                   }
                   label="Edit Organisation"
                 />
@@ -284,10 +316,15 @@ function OrganisationPermission({ control }: OrganisationPermissionProps) {
           </Box>
         </Grid>
 
-        <Grid item lg={4} xs={6} sx={{
-          display: "flex",
-          gap: 6
-        }}>
+        <Grid
+          item
+          lg={4}
+          xs={6}
+          sx={{
+            display: "flex",
+            gap: 6,
+          }}
+        >
           <Typography
             variant="h6"
             fontSize={16}
@@ -305,22 +342,30 @@ function OrganisationPermission({ control }: OrganisationPermissionProps) {
               render={({ field }) => (
                 <FormControlLabel
                   control={
-                    <IOSSwitch {...field} checked={Boolean(field.value)} sx={{
-                      marginRight: 2
-                    }} />
+                    <IOSSwitch
+                      {...field}
+                      checked={Boolean(field.value)}
+                      sx={{
+                        marginRight: 2,
+                      }}
+                    />
                   }
                   label="Create Fish Supply"
                 />
               )}
             />
           </Box>
-
         </Grid>
 
-        <Grid item lg={4} xs={6} sx={{
-          display: "flex",
-          gap: 6
-        }}>
+        <Grid
+          item
+          lg={4}
+          xs={6}
+          sx={{
+            display: "flex",
+            gap: 6,
+          }}
+        >
           <Typography
             variant="h6"
             fontSize={16}
@@ -338,9 +383,13 @@ function OrganisationPermission({ control }: OrganisationPermissionProps) {
               render={({ field }) => (
                 <FormControlLabel
                   control={
-                    <IOSSwitch {...field} checked={Boolean(field.value)} sx={{
-                      marginRight: 2
-                    }} />
+                    <IOSSwitch
+                      {...field}
+                      checked={Boolean(field.value)}
+                      sx={{
+                        marginRight: 2,
+                      }}
+                    />
                   }
                   label="Edit Fish Supply"
                 />
@@ -349,10 +398,15 @@ function OrganisationPermission({ control }: OrganisationPermissionProps) {
           </Box>
         </Grid>
 
-        <Grid item lg={4} xs={6} sx={{
-          display: "flex",
-          gap: 10
-        }}>
+        <Grid
+          item
+          lg={4}
+          xs={6}
+          sx={{
+            display: "flex",
+            gap: 10,
+          }}
+        >
           <Typography
             variant="h6"
             fontSize={16}
@@ -370,9 +424,13 @@ function OrganisationPermission({ control }: OrganisationPermissionProps) {
               render={({ field }) => (
                 <FormControlLabel
                   control={
-                    <IOSSwitch {...field} checked={Boolean(field.value)} sx={{
-                      marginRight: 2
-                    }} />
+                    <IOSSwitch
+                      {...field}
+                      checked={Boolean(field.value)}
+                      sx={{
+                        marginRight: 2,
+                      }}
+                    />
                   }
                   label="Create Farms"
                 />
@@ -381,10 +439,15 @@ function OrganisationPermission({ control }: OrganisationPermissionProps) {
           </Box>
         </Grid>
 
-        <Grid item lg={4} xs={6} sx={{
-          display: "flex",
-          gap: 14.5
-        }}>
+        <Grid
+          item
+          lg={4}
+          xs={6}
+          sx={{
+            display: "flex",
+            gap: 14.5,
+          }}
+        >
           <Typography
             variant="h6"
             fontSize={16}
@@ -402,22 +465,30 @@ function OrganisationPermission({ control }: OrganisationPermissionProps) {
               render={({ field }) => (
                 <FormControlLabel
                   control={
-                    <IOSSwitch {...field} checked={Boolean(field.value)} sx={{
-                      marginRight: 2
-                    }} />
+                    <IOSSwitch
+                      {...field}
+                      checked={Boolean(field.value)}
+                      sx={{
+                        marginRight: 2,
+                      }}
+                    />
                   }
                   label="Edit Farms"
                 />
               )}
             />
           </Box>
-
         </Grid>
 
-        <Grid item lg={4} xs={6} sx={{
-          display: "flex",
-          gap: 6
-        }}>
+        <Grid
+          item
+          lg={4}
+          xs={6}
+          sx={{
+            display: "flex",
+            gap: 6,
+          }}
+        >
           <Typography
             variant="h6"
             fontSize={16}
@@ -435,18 +506,20 @@ function OrganisationPermission({ control }: OrganisationPermissionProps) {
               render={({ field }) => (
                 <FormControlLabel
                   control={
-                    <IOSSwitch {...field} checked={Boolean(field.value)} sx={{
-                      marginRight: 2
-                    }} />
+                    <IOSSwitch
+                      {...field}
+                      checked={Boolean(field.value)}
+                      sx={{
+                        marginRight: 2,
+                      }}
+                    />
                   }
                   label="Transfer Fish Between Farms"
                 />
               )}
             />
           </Box>
-
         </Grid>
-
       </Grid>
 
       {fields.map((field, index) => {
@@ -464,10 +537,15 @@ function OrganisationPermission({ control }: OrganisationPermissionProps) {
             </Typography>
             <Grid container rowSpacing={2.5}>
               {/* Column Headers */}
-              <Grid item lg={4} xs={6} sx={{
-                display: "flex",
-                gap: 6
-              }}>
+              <Grid
+                item
+                lg={4}
+                xs={6}
+                sx={{
+                  display: "flex",
+                  gap: 6,
+                }}
+              >
                 <Typography
                   variant="h6"
                   fontSize={16}
@@ -489,7 +567,7 @@ function OrganisationPermission({ control }: OrganisationPermissionProps) {
                             {...field}
                             checked={Boolean(field.value)}
                             sx={{
-                              marginRight: 2
+                              marginRight: 2,
                             }}
                           />
                         }
@@ -500,10 +578,15 @@ function OrganisationPermission({ control }: OrganisationPermissionProps) {
                 </Box>
               </Grid>
 
-              <Grid item lg={4} xs={6} sx={{
-                display: "flex",
-                gap: 6
-              }}>
+              <Grid
+                item
+                lg={4}
+                xs={6}
+                sx={{
+                  display: "flex",
+                  gap: 6,
+                }}
+              >
                 <Typography
                   variant="h6"
                   fontSize={16}
@@ -525,7 +608,7 @@ function OrganisationPermission({ control }: OrganisationPermissionProps) {
                             {...field}
                             checked={Boolean(field.value)}
                             sx={{
-                              marginRight: 2
+                              marginRight: 2,
                             }}
                           />
                         }
@@ -534,13 +617,17 @@ function OrganisationPermission({ control }: OrganisationPermissionProps) {
                     )}
                   />
                 </Box>
-
               </Grid>
 
-              <Grid item lg={4} xs={6} sx={{
-                display: "flex",
-                gap: 6
-              }}>
+              <Grid
+                item
+                lg={4}
+                xs={6}
+                sx={{
+                  display: "flex",
+                  gap: 6,
+                }}
+              >
                 <Typography
                   variant="h6"
                   fontSize={16}
@@ -562,7 +649,7 @@ function OrganisationPermission({ control }: OrganisationPermissionProps) {
                             {...field}
                             checked={Boolean(field.value)}
                             sx={{
-                              marginRight: 2
+                              marginRight: 2,
                             }}
                           />
                         }
@@ -571,13 +658,17 @@ function OrganisationPermission({ control }: OrganisationPermissionProps) {
                     )}
                   />
                 </Box>
-
               </Grid>
 
-              <Grid item lg={4} xs={6} sx={{
-                display: "flex",
-                gap: 6
-              }}>
+              <Grid
+                item
+                lg={4}
+                xs={6}
+                sx={{
+                  display: "flex",
+                  gap: 6,
+                }}
+              >
                 <Typography
                   variant="h6"
                   fontSize={16}
@@ -598,7 +689,7 @@ function OrganisationPermission({ control }: OrganisationPermissionProps) {
                             {...field}
                             checked={Boolean(field.value)}
                             sx={{
-                              marginRight: 2
+                              marginRight: 2,
                             }}
                           />
                         }
@@ -609,10 +700,15 @@ function OrganisationPermission({ control }: OrganisationPermissionProps) {
                 </Box>
               </Grid>
 
-              <Grid item lg={4} xs={6} sx={{
-                display: "flex",
-                gap: 6
-              }}>
+              <Grid
+                item
+                lg={4}
+                xs={6}
+                sx={{
+                  display: "flex",
+                  gap: 6,
+                }}
+              >
                 <Typography
                   variant="h6"
                   fontSize={16}
@@ -634,7 +730,7 @@ function OrganisationPermission({ control }: OrganisationPermissionProps) {
                             {...field}
                             checked={Boolean(field.value)}
                             sx={{
-                              marginRight: 2
+                              marginRight: 2,
                             }}
                           />
                         }
@@ -643,13 +739,17 @@ function OrganisationPermission({ control }: OrganisationPermissionProps) {
                     )}
                   />
                 </Box>
-
               </Grid>
 
-              <Grid item lg={4} xs={6} sx={{
-                display: "flex",
-                gap: 6
-              }}>
+              <Grid
+                item
+                lg={4}
+                xs={6}
+                sx={{
+                  display: "flex",
+                  gap: 6,
+                }}
+              >
                 <Typography
                   variant="h6"
                   fontSize={16}
@@ -671,7 +771,7 @@ function OrganisationPermission({ control }: OrganisationPermissionProps) {
                             {...field}
                             checked={Boolean(field.value)}
                             sx={{
-                              marginRight: 2
+                              marginRight: 2,
                             }}
                           />
                         }
@@ -680,13 +780,17 @@ function OrganisationPermission({ control }: OrganisationPermissionProps) {
                     )}
                   />
                 </Box>
-
               </Grid>
 
-              <Grid item lg={4} xs={6} sx={{
-                display: "flex",
-                gap: 6
-              }}>
+              <Grid
+                item
+                lg={4}
+                xs={6}
+                sx={{
+                  display: "flex",
+                  gap: 6,
+                }}
+              >
                 <Typography
                   variant="h6"
                   fontSize={16}
@@ -707,9 +811,8 @@ function OrganisationPermission({ control }: OrganisationPermissionProps) {
                           <IOSSwitch
                             {...field}
                             checked={Boolean(field.value)}
-
                             sx={{
-                              marginRight: 2
+                              marginRight: 2,
                             }}
                           />
                         }
@@ -723,7 +826,6 @@ function OrganisationPermission({ control }: OrganisationPermissionProps) {
           </Box>
         );
       })}
-
     </Stack>
   );
 }

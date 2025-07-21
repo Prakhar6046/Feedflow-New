@@ -146,7 +146,6 @@ const EditOrganisation = ({
           invite: false,
         },
       ],
-      permissions: {},
     },
   });
   const selectedOrganisationType = watch("organisationType");
@@ -180,7 +179,6 @@ const EditOrganisation = ({
       formData.append("organisationType", String(data.organisationType));
       formData.append("address", JSON.stringify(address));
       formData.append("contacts", JSON.stringify(data.contacts));
-      formData.append("permissions", JSON.stringify(data.permissions));
       formData.append("imageUrl", String(profilePic));
       formData.append("invitedBy", String(loggedUser?.organisationId));
 
@@ -288,46 +286,6 @@ const EditOrganisation = ({
       setValue("country", organisationData?.address?.country);
       setValue("contacts", organisationData?.contact);
       setValue("organisationType", organisationData?.organisationType);
-
-      // Prepare the data for useFieldArray, including the farm name
-      const farmPermissions = (organisationData.Farm || []).map((farm) => {
-        const found = organisationData.permissions?.farms?.find(
-          (p) => String(p.farmId) === String(farm.id)
-        );
-        return {
-          farmId: farm.id,
-          name: farm.name, // Include farm name for useFieldArray
-          stock: found?.stock ?? false,
-          transfer: found?.transfer ?? false,
-          harvest: found?.harvest ?? false,
-          mortalities: found?.mortalities ?? false,
-          sample: found?.sample ?? false,
-          createReport: found?.createReport ?? false,
-          feedingPlans: found?.feedingPlans ?? false,
-        };
-      });
-      setValue("permissions.farms", farmPermissions);
-
-      // Set non-farm permissions individually
-      if (organisationData.permissions) {
-        Object.keys(organisationData.permissions).forEach((key) => {
-          if (key !== "farms") {
-            // Only set value if the key is a valid field in the form schema
-            setValue(
-              `permissions.${key}` as any,
-              (organisationData.permissions as Record<string, any>)[key]
-            );
-          }
-        });
-
-        if (organisationData?.hatchery[0]) {
-          setValue("hatcheryAltitude", organisationData?.hatchery[0].altitude);
-          setValue("hatcheryName", organisationData?.hatchery[0].name);
-          setValue("hatcheryCode", organisationData?.hatchery[0].code);
-          setValue("fishSpecie", organisationData?.hatchery[0].fishSpecie);
-        }
-        setProfilePic(organisationData.imageUrl);
-      }
     }
   }, [organisationData]);
 
@@ -1382,11 +1340,6 @@ const EditOrganisation = ({
                 </Button>
               </form>
             </Grid>
-          </Grid>
-          <Grid item xs={12}>
-            {organisationData?.Farm?.length ? (
-              <OrganisationPermission control={control as any} />
-            ) : null}
           </Grid>
         </Stack>
       ) : (

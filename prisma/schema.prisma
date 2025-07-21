@@ -72,7 +72,6 @@ model Organisation {
   FishManageHistory FishManageHistory[]
   GrowthModels      GrowthModel[]
   FeedStore         FeedStore[]
-  permissions       Json                @default("{}")
 
   @@index([createdAt])
   @@index([updatedAt])

@@ -4,22 +4,10 @@ import { deleteImage, handleUpload } from "@/app/_lib/utils";
 import * as validationPattern from "@/app/_lib/utils/validationPatterns/index";
 import * as validationMessage from "@/app/_lib/utils/validationsMessage/index";
 import { SingleUser, UserEditFormInputs } from "@/app/_typeModels/User";
-import { selectRole } from "@/lib/features/user/userSlice";
-import { useAppSelector } from "@/lib/hooks";
 import EyeClosed from "@/public/static/img/icons/ic-eye-closed.svg";
 import EyeOpened from "@/public/static/img/icons/ic-eye-open.svg";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import {
-  Box,
-  Divider,
-  FormControlLabel,
-  Grid,
-  Stack,
-  Switch,
-  SwitchProps,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Box, Grid, Stack, TextField, Typography } from "@mui/material";
 import Button from "@mui/material/Button";
 import { styled } from "@mui/material/styles";
 import { getCookie } from "cookies-next";
@@ -57,20 +45,7 @@ function EditUser({ userId }: Iprops) {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [showConfirmPassword, setshowConfirmPassword] =
     useState<boolean>(false);
-  const getUser = async () => {
-    setLoading(true);
-    const token = getCookie("auth-token");
-    const data = await fetch(`/api/users/${userId}`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    if (data) {
-      setLoading(false);
-    }
-    return data.json();
-  };
+
   const {
     register,
     setValue,
@@ -160,7 +135,43 @@ function EditUser({ userId }: Iprops) {
       );
       setValue("organisationId", userData?.data?.organisationId);
       setValue("permissions", userData?.data?.permissions);
+
       setProfilePic(userData?.data?.imageUrl);
+
+      // Prepare the data for useFieldArray, including the farm name
+      const farmPermissions = (userData?.data?.organisation?.Farm || []).map(
+        (farm) => {
+          const found = userData?.data?.permissions?.farms?.find(
+            (p) => String(p.farmId) === String(farm.id)
+          );
+          return {
+            farmId: farm.id,
+            name: farm.name,
+            stock: found?.stock ?? false,
+            transfer: found?.transfer ?? false,
+            harvest: found?.harvest ?? false,
+            mortalities: found?.mortalities ?? false,
+            sample: found?.sample ?? false,
+            createReport: found?.createReport ?? false,
+            feedingPlans: found?.feedingPlans ?? false,
+          };
+        }
+      );
+
+      setValue("permissions.farms", farmPermissions);
+
+      // Set non-farm permissions individually
+      if (userData?.data?.permissions) {
+        Object.keys(userData?.data?.permissions).forEach((key) => {
+          if (key !== "farms") {
+            // Only set value if the key is a valid field in the form schema
+            setValue(
+              `permissions.${key}` as any,
+              (userData?.data?.permissions as Record<string, any>)[key]
+            );
+          }
+        });
+      }
     }
   }, [userData]);
 
@@ -628,6 +639,7 @@ function EditUser({ userId }: Iprops) {
         <UserPermission
           control={control}
           oraginsationType={userData?.data?.organisation?.organisationType}
+          userData={userData?.data?.permissions}
         />
         <Button
           type="submit"

@@ -85,7 +85,6 @@ export async function PUT(req: NextRequest, context: { params: any }) {
     const hatchery = JSON.parse(formData.get("hatchery") as string);
     const imageUrl = formData.get("imageUrl") as string;
     const invitedById = formData.get("invitedBy") as string;
-    const permissions = JSON.parse(formData.get("permissions") as any);
     const invitedByOrg = await prisma.organisation.findUnique({
       where: { id: Number(invitedById) },
       include: { contact: true },
@@ -394,7 +393,6 @@ export async function PUT(req: NextRequest, context: { params: any }) {
         addressId: updatedAddress.id,
         organisationType: organisationType || organisation.organisationType,
         imageUrl: imageUrl || organisation.imageUrl,
-        permissions: permissions || organisation.permissions,
       },
     });
 
