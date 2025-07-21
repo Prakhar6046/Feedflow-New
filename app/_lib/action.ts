@@ -32,7 +32,6 @@ export const getOrganisations = async (payload: {
     revalidatePath("/dashboard/organisation?tab=all");
     return await res.json();
   } catch (error) {
-    console.log(error);
     return error;
   }
 };
@@ -73,7 +72,6 @@ export const getAllOrganisations = async (refreshToken?: string) => {
     );
     return await res.json();
   } catch (error) {
-    console.log(error);
     return error;
   }
 };

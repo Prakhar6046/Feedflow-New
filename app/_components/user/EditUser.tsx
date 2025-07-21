@@ -48,7 +48,6 @@ type Iprops = {
 function EditUser({ userId }: Iprops) {
   const router = useRouter();
   const loggedUser: any = getCookie("logged-user");
-  const role = useAppSelector(selectRole);
   const [isApiCallInProgress, setIsApiCallInProgress] =
     useState<boolean>(false);
   const [userData, setUserData] = useState<{ data: SingleUser }>();

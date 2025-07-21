@@ -54,6 +54,29 @@ export interface SingleOrganisation {
   users?: SingleUser[];
   organisationType: string;
 }
+export interface FarmPermissions {
+  farmId: string; // or number, depending on your Farm model
+  stock: boolean;
+  transfer: boolean;
+  harvest: boolean;
+  mortalities: boolean;
+  sample: boolean;
+  createReport: boolean;
+  feedingPlans: boolean;
+}
+
+export interface Permissions {
+  createUsers: boolean;
+  editUsers: boolean;
+  editOrganisationRights: boolean;
+  editOrganisation: boolean;
+  addFishSupply: boolean;
+  editFishSupply: boolean;
+  addFarms: boolean;
+  editFarms: boolean;
+  transferFishBetweenFarms: boolean;
+  farms?: FarmPermissions[];
+}
 export interface AddOrganizationFormInputs {
   organisationName: String;
   image: FileList;
@@ -65,6 +88,7 @@ export interface AddOrganizationFormInputs {
   postCode: String;
   organisationType: String;
   createdBy: Number;
+  permissions?: Permissions;
   contacts: {
     name: string;
     role: string;
@@ -97,6 +121,7 @@ export interface OrganizationData {
   contact: Contact[];
   hatchery: any[];
   Farm: Farm[];
+  permissions: Permissions;
 }
 
 export interface Address {

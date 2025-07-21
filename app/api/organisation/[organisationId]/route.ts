@@ -79,12 +79,13 @@ export async function PUT(req: NextRequest, context: { params: any }) {
     const name = formData.get("name") as string;
     const organisationCode = formData.get("organisationCode") as string;
     const organisationType = formData.get("organisationType") as string;
-    const addressData = JSON.parse(formData.get("address") as string);
-    const contactsData = JSON.parse(formData.get("contacts") as string);
+    const addressData = JSON.parse(formData.get("address") as any);
+    const contactsData = JSON.parse(formData.get("contacts") as any);
     const hatcheryId = JSON.parse(formData.get("hatcheryId") as string);
     const hatchery = JSON.parse(formData.get("hatchery") as string);
     const imageUrl = formData.get("imageUrl") as string;
     const invitedById = formData.get("invitedBy") as string;
+    const permissions = JSON.parse(formData.get("permissions") as any);
     const invitedByOrg = await prisma.organisation.findUnique({
       where: { id: Number(invitedById) },
       include: { contact: true },
@@ -393,6 +394,7 @@ export async function PUT(req: NextRequest, context: { params: any }) {
         addressId: updatedAddress.id,
         organisationType: organisationType || organisation.organisationType,
         imageUrl: imageUrl || organisation.imageUrl,
+        permissions: permissions || organisation.permissions,
       },
     });
 
@@ -401,8 +403,6 @@ export async function PUT(req: NextRequest, context: { params: any }) {
       { status: 200 }
     );
   } catch (error) {
-    console.log(error);
-
     return NextResponse.json(
       { error: "Something went wrong" },
       { status: 500 }

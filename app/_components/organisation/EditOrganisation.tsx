@@ -49,6 +49,7 @@ import Image from "next/image";
 import FarmsInformation from "./FarmsInformation";
 import { Permissions, SingleUser } from "@/app/_typeModels/User";
 import { getCookie } from "cookies-next";
+import OrganisationPermission from "./OrganisationPermission";
 export const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
   clipPath: "inset(50%)",
@@ -145,6 +146,7 @@ const EditOrganisation = ({
           invite: false,
         },
       ],
+      permissions: {},
     },
   });
   const selectedOrganisationType = watch("organisationType");
@@ -152,6 +154,7 @@ const EditOrganisation = ({
     // Prevent API call if one is already in progress
     if (isApiCallInProgress) return;
     setIsApiCallInProgress(true);
+
     try {
       let hatchery;
       const address: any = {
@@ -177,7 +180,10 @@ const EditOrganisation = ({
       formData.append("organisationType", String(data.organisationType));
       formData.append("address", JSON.stringify(address));
       formData.append("contacts", JSON.stringify(data.contacts));
+      formData.append("permissions", JSON.stringify(data.permissions));
       formData.append("imageUrl", String(profilePic));
+      formData.append("invitedBy", String(loggedUser?.organisationId));
+
       if (isHatcherySelected && organisationData) {
         formData.append(
           "hatcheryId",
@@ -190,10 +196,9 @@ const EditOrganisation = ({
       const res = await fetch(`/api/organisation/${organisationId}`, {
         method: "PUT",
         headers: {
-          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(formData),
+        body: formData,
       });
 
       if (res.ok) {
@@ -283,13 +288,44 @@ const EditOrganisation = ({
       setValue("country", organisationData?.address?.country);
       setValue("contacts", organisationData?.contact);
       setValue("organisationType", organisationData?.organisationType);
+
+      // Prepare the data for useFieldArray, including the farm name
+      const farmPermissions = (organisationData.Farm || []).map((farm) => {
+        const found = organisationData.permissions?.farms?.find(
+          (p) => String(p.farmId) === String(farm.id)
+        );
+        return {
+          farmId: farm.id,
+          name: farm.name, // Include farm name for useFieldArray
+          stock: found?.stock ?? false,
+          transfer: found?.transfer ?? false,
+          harvest: found?.harvest ?? false,
+          mortalities: found?.mortalities ?? false,
+          sample: found?.sample ?? false,
+          createReport: found?.createReport ?? false,
+          feedingPlans: found?.feedingPlans ?? false,
+        };
+      });
+      setValue("permissions.farms", farmPermissions);
+
+      // Set non-farm permissions individually
+      if (organisationData.permissions) {
+        Object.keys(organisationData.permissions).forEach((key) => {
+          if (key !== "farms") {
+            setValue(
+              `permissions.${key}`,
+              (organisationData.permissions as any)[key]
+            );
+          }
+        });
+      }
+
       if (organisationData?.hatchery[0]) {
         setValue("hatcheryAltitude", organisationData?.hatchery[0].altitude);
         setValue("hatcheryName", organisationData?.hatchery[0].name);
         setValue("hatcheryCode", organisationData?.hatchery[0].code);
         setValue("fishSpecie", organisationData?.hatchery[0].fishSpecie);
       }
-
       setProfilePic(organisationData.imageUrl);
     }
   }, [organisationData]);
@@ -594,19 +630,19 @@ const EditOrganisation = ({
                     focused
                     {...register("organisationName", {
                       required: true,
-                      validate: (value: String) => {
-                        const isUnique = organisations.every((val) => {
-                          if (val.id === Number(organisationId)) {
-                            return true;
-                          }
-                          return val.name.toLowerCase() !== value.toLowerCase();
-                        });
+                      // validate: (value: String) => {
+                      //   const isUnique = organisations?.every((val) => {
+                      //     if (val.id === Number(organisationId)) {
+                      //       return true;
+                      //     }
+                      //     return val.name.toLowerCase() !== value.toLowerCase();
+                      //   });
 
-                        return (
-                          isUnique ||
-                          "Please enter a unique name. The name you entered is not available."
-                        );
-                      },
+                      //   return (
+                      //     isUnique ||
+                      //     "Please enter a unique name. The name you entered is not available."
+                      //   );
+                      // },
                     })}
                     // focused={userData?.data.name ? true : false}
                     // value={userData?.data.name}
@@ -1345,6 +1381,11 @@ const EditOrganisation = ({
                 </Button>
               </form>
             </Grid>
+          </Grid>
+          <Grid item xs={12}>
+            {organisationData?.Farm?.length ? (
+              <OrganisationPermission control={control} />
+            ) : null}
           </Grid>
         </Stack>
       ) : (
