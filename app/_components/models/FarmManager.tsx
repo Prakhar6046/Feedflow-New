@@ -90,6 +90,10 @@ const TransferModal: React.FC<Props> = ({
   const searchParams = useSearchParams();
   const isFish = searchParams.get("isFish");
   const router = useRouter();
+  const filterFarmPermission =
+    selectedProduction?.organisation?.permissions.farms?.find(
+      (per) => per?.farmId === selectedProduction?.fishFarmId
+    );
   const pathName = usePathname();
   const [selectedFarm, setSelectedFarm] = useState<any>(null);
   const [isEnteredBiomassGreater, setIsEnteredBiomassGreater] =
@@ -590,6 +594,7 @@ const TransferModal: React.FC<Props> = ({
       setValue("manager", updatedFields);
     }
   }, [avgOfMeanLength]);
+
   return (
     <div>
       <Modal
@@ -2005,7 +2010,7 @@ const TransferModal: React.FC<Props> = ({
                         selectedProduction?.fishCount &&
                         selectedProduction?.meanLength &&
                         selectedProduction?.meanWeight &&
-                        field === "Stock"
+                        (field === "Stock" || filterFarmPermission?.stock)
                           ? true
                           : watchedFields[1]?.field === "Stock"
                           ? true

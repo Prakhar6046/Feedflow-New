@@ -53,6 +53,7 @@ export interface SingleOrganisation {
   contact?: OrganizationContact[];
   users?: SingleUser[];
   organisationType: string;
+  permissions: Permissions;
 }
 export interface FarmPermissions {
   farmId: string; // or number, depending on your Farm model
