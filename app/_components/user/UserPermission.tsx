@@ -80,7 +80,7 @@ const IOSSwitch = styled((props: SwitchProps) => (
 interface UserPermissionProps {
   control: Control<any>;
   oraginsationType: string | any;
-  userData: any;
+  userData?: any;
 }
 function UserPermission({
   control,
