@@ -312,21 +312,22 @@ const EditOrganisation = ({
       if (organisationData.permissions) {
         Object.keys(organisationData.permissions).forEach((key) => {
           if (key !== "farms") {
+            // Only set value if the key is a valid field in the form schema
             setValue(
-              `permissions.${key}`,
-              (organisationData.permissions as any)[key]
+              `permissions.${key}` as any,
+              (organisationData.permissions as Record<string, any>)[key]
             );
           }
         });
-      }
 
-      if (organisationData?.hatchery[0]) {
-        setValue("hatcheryAltitude", organisationData?.hatchery[0].altitude);
-        setValue("hatcheryName", organisationData?.hatchery[0].name);
-        setValue("hatcheryCode", organisationData?.hatchery[0].code);
-        setValue("fishSpecie", organisationData?.hatchery[0].fishSpecie);
+        if (organisationData?.hatchery[0]) {
+          setValue("hatcheryAltitude", organisationData?.hatchery[0].altitude);
+          setValue("hatcheryName", organisationData?.hatchery[0].name);
+          setValue("hatcheryCode", organisationData?.hatchery[0].code);
+          setValue("fishSpecie", organisationData?.hatchery[0].fishSpecie);
+        }
+        setProfilePic(organisationData.imageUrl);
       }
-      setProfilePic(organisationData.imageUrl);
     }
   }, [organisationData]);
 
@@ -1384,7 +1385,7 @@ const EditOrganisation = ({
           </Grid>
           <Grid item xs={12}>
             {organisationData?.Farm?.length ? (
-              <OrganisationPermission control={control} />
+              <OrganisationPermission control={control as any} />
             ) : null}
           </Grid>
         </Stack>
