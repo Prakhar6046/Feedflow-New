@@ -8,6 +8,8 @@ import FarmInformation from "./FarmInformation";
 import FeedProfiles from "./FeedProfiles";
 import ProductionParaMeter from "./ProductionParameter";
 import ProductionUnits from "./ProductionUnits";
+import { FeedProduct } from "@/app/_typeModels/Feed";
+import { FeedSupplier } from "@/app/_typeModels/Organization";
 
 const steps = [
   {
@@ -25,8 +27,16 @@ interface Props {
   farmMembers: SingleUser[];
   growthModels: any;
   farms: Farm[];
+  feedstores: FeedProduct[];
+  feedSuppliers: FeedSupplier[];
 }
-export default function NewFarm({ farmMembers, growthModels, farms }: Props) {
+export default function NewFarm({
+  farmMembers,
+  growthModels,
+  farms,
+  feedstores,
+  feedSuppliers,
+}: Props) {
   const activeStepIndex = Number(getCookie("activeStep"));
   const token = getCookie("auth-token");
   const [activeStep, setActiveStep] = useState<number>(
@@ -107,7 +117,13 @@ export default function NewFarm({ farmMembers, growthModels, farms }: Props) {
           />
         )}
 
-        {activeStep === 2 && <FeedProfiles setActiveStep={setActiveStep} />}
+        {activeStep === 2 && (
+          <FeedProfiles
+            setActiveStep={setActiveStep}
+            feedStores={feedstores}
+            feedSuppliers={feedSuppliers}
+          />
+        )}
         {activeStep === 3 && (
           <ProductionUnits
             setActiveStep={setActiveStep}

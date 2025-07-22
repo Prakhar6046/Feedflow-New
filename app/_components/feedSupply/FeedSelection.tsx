@@ -11,10 +11,11 @@ import {
   Typography,
 } from "@mui/material";
 import { getCookie } from "cookies-next";
-import { NextPage } from "next";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Loader from "../Loader";
+import { FeedProduct } from "@/app/_typeModels/Feed";
+import { FeedSupplier } from "@/app/_typeModels/Organization";
 
 export interface FeedSupply {
   id: String;
@@ -80,8 +81,11 @@ export interface FeedSupply {
   createdAt: String;
   updatedAt: String;
 }
-
-const FeedSelection: NextPage = () => {
+type Iprops = {
+  data: FeedProduct[];
+  feedSuppliers: FeedSupplier[];
+};
+const FeedSelection = ({ data, feedSuppliers }: Iprops) => {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const loggedUserDataLocal: any = getCookie("logged-user");
@@ -89,6 +93,7 @@ const FeedSelection: NextPage = () => {
   const token = getCookie("auth-token");
 
   const [feedSupply, setFeedSupply] = useState<FeedSupply[]>();
+  const [feedStores, setFeedStores] = useState<FeedProduct[]>();
   const [loading, setLoading] = useState<boolean>(false);
   const getFeedSupplys = async () => {
     const response = await fetch(
@@ -110,21 +115,20 @@ const FeedSelection: NextPage = () => {
       return "Typ";
     }
   };
-  // const handleEditFeedSupply = (feedSupply: FeedSupply) => {
-  //   if (feedSupply) {
-  //     router.push(`/dashboard/feedSupply/${feedSupply.id}`);
-  //     dispatch(feedAction.editFeed(feedSupply));
-  //   }
-  // };
+
+  // useEffect(() => {
+  //   setLoading(true);
+  //   const getFeedSupplyer = async () => {
+  //     const res = await getFeedSupplys();
+  //     setFeedSupply(res.data);
+  //     setLoading(false);
+  //   };
+  //   getFeedSupplyer();
+  // }, []);
+
   useEffect(() => {
-    setLoading(true);
-    const getFeedSupplyer = async () => {
-      const res = await getFeedSupplys();
-      setFeedSupply(res.data);
-      setLoading(false);
-    };
-    getFeedSupplyer();
-  }, []);
+    setFeedStores(data);
+  }, [data]);
 
   if (loading) {
     return <Loader />;
@@ -160,8 +164,11 @@ const FeedSelection: NextPage = () => {
             pb: "16px",
           }}
         >
-          {feedSupply?.length ? (
-            feedSupply?.map((supply) => {
+          {feedStores?.length ? (
+            feedStores?.map((supply) => {
+              const supplierName = feedSuppliers?.find((supplier: any) =>
+                supply?.ProductSupplier?.includes(supplier?.id)
+              )?.name;
               return (
                 <Grid item xs="auto" key={Number(supply?.id)}>
                   <Box
@@ -228,7 +235,7 @@ const FeedSelection: NextPage = () => {
                             fontWeight={600}
                             fontSize={20}
                           >
-                            {`${supply?.feedSupplierCode} ${supply?.productName}`}
+                            {`${supplierName} ${supply?.productName}`}
                           </Typography>
 
                           <Typography
@@ -237,7 +244,7 @@ const FeedSelection: NextPage = () => {
                             fontWeight={500}
                             fontSize={11}
                           >
-                            {`  Product code ${supply?.productCode}`}
+                            {`  Product code `}
                           </Typography>
                         </Box>
 
@@ -261,7 +268,7 @@ const FeedSelection: NextPage = () => {
                             gap={1}
                           >
                             {supply?.particleSize}
-                            <Typography
+                            {/* <Typography
                               color="#06a19b"
                               variant="h6"
                               fontWeight={700}
@@ -269,7 +276,7 @@ const FeedSelection: NextPage = () => {
                               lineHeight={1}
                             >
                               mm
-                            </Typography>
+                            </Typography> */}
                           </Typography>
 
                           <Typography
@@ -300,7 +307,7 @@ const FeedSelection: NextPage = () => {
                           fontSize={14}
                           textAlign={"center"}
                         >
-                          {` ${supply?.nutritionalClass} Feed for ${supply?.specie} production.`}
+                          {` ${supply?.nutritionalClass} Feed for ${supply?.suitableSpecies} production.`}
                           <br />
                           {` Suitable for use as ${supply?.nutritionalPurpose} in ${supply?.productionIntensity}.`}
                         </Typography>
@@ -355,7 +362,7 @@ const FeedSelection: NextPage = () => {
                                       width: "fit-content",
                                     }}
                                   >
-                                    {supply?.unit}
+                                    {supply?.suitabilityUnit}
                                   </ListItem>
 
                                   <ListItem
@@ -444,7 +451,8 @@ const FeedSelection: NextPage = () => {
                                   fontSize={16}
                                   textAlign={"center"}
                                 >
-                                  5 - 30g
+                                  {/* 5 - 30g */}
+                                  {`${supply?.fishSizeG} g`}
                                 </Typography>
                               </Box>
                             </Box>
@@ -478,9 +486,10 @@ const FeedSelection: NextPage = () => {
                               fontWeight={500}
                               fontSize={14}
                             >
-                              {`  Moisture (${getNutritionalValue(
+                              {/* {`  Moisture (${getNutritionalValue(
                                 supply?.nutritionalGuarantee?.moisture.value
-                              )})`}
+                              )})`} */}
+                              Moisture
                             </Typography>
                           </Grid>
 
@@ -490,7 +499,8 @@ const FeedSelection: NextPage = () => {
                               fontWeight={600}
                               fontSize={14}
                             >
-                              {supply?.nutritionalGuarantee?.moisture.kg}
+                              {/* {supply?.nutritionalGuarantee?.moisture.kg} */}
+                              {supply?.moistureGPerKg}
                             </Typography>
                           </Grid>
 
@@ -500,9 +510,10 @@ const FeedSelection: NextPage = () => {
                               fontWeight={500}
                               fontSize={14}
                             >
-                              {`Crude Protein (${getNutritionalValue(
+                              {/* {`Crude Protein (${getNutritionalValue(
                                 supply?.nutritionalGuarantee?.crudeProtein.value
-                              )})`}
+                              )})`} */}
+                              Crude Protien
                             </Typography>
                           </Grid>
 
@@ -512,7 +523,7 @@ const FeedSelection: NextPage = () => {
                               fontWeight={600}
                               fontSize={14}
                             >
-                              {supply?.nutritionalGuarantee?.crudeProtein.kg}
+                              {supply?.crudeProteinGPerKg}
                             </Typography>
                           </Grid>
 
@@ -522,9 +533,10 @@ const FeedSelection: NextPage = () => {
                               fontWeight={500}
                               fontSize={14}
                             >
-                              {`Crude Fat (${getNutritionalValue(
+                              {/* {`Crude Fat (${getNutritionalValue(
                                 supply?.nutritionalGuarantee?.crudeFat.value
-                              )})`}
+                              )})`} */}
+                              {`Crude Fat`}
                             </Typography>
                           </Grid>
 
@@ -534,7 +546,7 @@ const FeedSelection: NextPage = () => {
                               fontWeight={600}
                               fontSize={14}
                             >
-                              {supply?.nutritionalGuarantee?.crudeFat.kg}
+                              {supply?.crudeFatGPerKg}
                             </Typography>
                           </Grid>
 
@@ -544,9 +556,10 @@ const FeedSelection: NextPage = () => {
                               fontWeight={500}
                               fontSize={14}
                             >
-                              {`Crude Fiber (${getNutritionalValue(
+                              {/* {`Crude Fiber (${getNutritionalValue(
                                 supply?.nutritionalGuarantee?.crudeFiber.value
-                              )})`}
+                              )})`} */}
+                              {`Crude Fiber `}
                             </Typography>
                           </Grid>
 
@@ -556,7 +569,7 @@ const FeedSelection: NextPage = () => {
                               fontWeight={600}
                               fontSize={14}
                             >
-                              {supply?.nutritionalGuarantee?.crudeFiber.kg}
+                              {supply?.crudeFiberGPerKg}
                             </Typography>
                           </Grid>
 
@@ -566,9 +579,10 @@ const FeedSelection: NextPage = () => {
                               fontWeight={500}
                               fontSize={14}
                             >
-                              {`Crude Ash (${getNutritionalValue(
+                              {/* {`Crude Ash (${getNutritionalValue(
                                 supply?.nutritionalGuarantee?.crudeAsh.value
-                              )})`}
+                              )})`} */}
+                              {`Crude Ash`}
                             </Typography>
                           </Grid>
 
@@ -578,7 +592,7 @@ const FeedSelection: NextPage = () => {
                               fontWeight={600}
                               fontSize={14}
                             >
-                              {supply?.nutritionalGuarantee?.crudeAsh.kg}
+                              {supply?.crudeAshGPerKg}
                             </Typography>
                           </Grid>
 
@@ -588,9 +602,10 @@ const FeedSelection: NextPage = () => {
                               fontWeight={500}
                               fontSize={14}
                             >
-                              {`Calcium (${getNutritionalValue(
+                              {/* {`Calcium (${getNutritionalValue(
                                 supply?.nutritionalGuarantee?.calcium.value
-                              )})`}
+                              )})`} */}
+                              {`Calcium `}
                             </Typography>
                           </Grid>
 
@@ -600,7 +615,7 @@ const FeedSelection: NextPage = () => {
                               fontWeight={600}
                               fontSize={14}
                             >
-                              {supply?.nutritionalGuarantee?.calcium.kg}
+                              {supply?.calciumGPerKg}
                             </Typography>
                           </Grid>
 
@@ -610,9 +625,10 @@ const FeedSelection: NextPage = () => {
                               fontWeight={500}
                               fontSize={14}
                             >
-                              {`Phosphorous (${getNutritionalValue(
+                              {/* {`Phosphorous (${getNutritionalValue(
                                 supply?.nutritionalGuarantee?.phosphorous.value
-                              )})`}
+                              )})`} */}
+                              {`Phosphorous`}
                             </Typography>
                           </Grid>
 
@@ -622,7 +638,7 @@ const FeedSelection: NextPage = () => {
                               fontWeight={600}
                               fontSize={14}
                             >
-                              {supply?.nutritionalGuarantee?.phosphorous.kg}
+                              {supply?.phosphorusGPerKg}
                             </Typography>
                           </Grid>
                         </Grid>
@@ -705,7 +721,7 @@ const FeedSelection: NextPage = () => {
                         color="#06a19b"
                         textAlign={"center"}
                       >
-                        Shelf Life: {supply?.shelfLife} months
+                        Shelf Life: {supply?.shelfLifeMonths} months
                       </Typography>
 
                       <Divider

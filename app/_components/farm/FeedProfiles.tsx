@@ -1,5 +1,7 @@
 "use client";
 import { getLocalItem, setLocalItem } from "@/app/_lib/utils";
+import { FeedProduct } from "@/app/_typeModels/Feed";
+import { FeedSupplier } from "@/app/_typeModels/Organization";
 import {
   Box,
   Button,
@@ -58,11 +60,18 @@ export const fishSizes = [
 interface Props {
   setActiveStep: (val: number) => void;
   editFarm?: any;
+  feedStores: FeedProduct[];
+  feedSuppliers: FeedSupplier[];
 }
 interface FormValues {
   [key: string]: string;
 }
-const FeedProfiles = ({ setActiveStep, editFarm }: Props) => {
+const FeedProfiles = ({
+  setActiveStep,
+  editFarm,
+  feedStores,
+  feedSuppliers,
+}: Props) => {
   const { control, handleSubmit, watch, setValue } = useForm<FormValues>();
   const allFeedprofiles = watch();
 
@@ -109,6 +118,23 @@ const FeedProfiles = ({ setActiveStep, editFarm }: Props) => {
         </Box>
       )}
     />
+  );
+  const groupedData = feedSuppliers?.reduce(
+    (acc: any[], supplier: FeedSupplier) => {
+      const storesForSupplier = feedStores?.filter((store: any) =>
+        store?.ProductSupplier?.includes(supplier.id)
+      );
+
+      if (storesForSupplier?.length) {
+        acc.push({
+          supplier,
+          stores: storesForSupplier,
+        });
+      }
+
+      return acc;
+    },
+    []
   );
 
   useEffect(() => {
@@ -177,99 +203,111 @@ const FeedProfiles = ({ setActiveStep, editFarm }: Props) => {
                       Fish Size <br />
                       (g)
                     </TableCell>
-
-                    <TableCell
-                      sx={{
-                        borderBottom: 0,
-                        color: "#67737F",
-                        background: "#F5F6F8",
-                        textAlign: "center",
-                        pr: "4px",
-                      }}
-                    >
-                      <Typography
-                        variant="body1"
-                        sx={{
-                          fontSize: {
-                            md: 16,
-                            xs: 14,
-                          },
-                          fontWeight: 600,
-                          background: "#06a19b",
-                          color: "#fff",
-                          p: 1,
-                          borderRadius: "8px",
-                          whiteSpace: "nowrap",
-                        }}
-                      >
-                        Feed Supplier 1
-                      </Typography>
-                      <Box>
-                        <List
+                    {groupedData?.map((tableHead, mainIndex) => {
+                      return (
+                        <TableCell
+                          key={mainIndex}
                           sx={{
-                            display: "flex",
-                            flexDirection: "row",
-                            justifyContent: "space-around",
-                            alignItems: "center",
-                            gap: 2,
+                            borderBottom: 0,
+                            color: "#67737F",
+                            background: "#F5F6F8",
+                            textAlign: "center",
+                            pr: "4px",
                           }}
                         >
-                          <ListItem
-                            disablePadding
+                          <Typography
+                            variant="body1"
                             sx={{
-                              width: "fit-content",
+                              fontSize: {
+                                md: 16,
+                                xs: 14,
+                              },
+                              fontWeight: 600,
+                              background: "#06a19b",
+                              color: "#fff",
+                              p: 1,
+                              borderRadius: "8px",
+                              whiteSpace: "nowrap",
                             }}
                           >
-                            <Typography
-                              variant="body2"
-                              fontWeight={500}
-                              textAlign={"center"}
-                              minWidth={100}
+                            {tableHead?.supplier?.name}
+                          </Typography>
+                          <Box>
+                            <List
+                              sx={{
+                                display: "flex",
+                                flexDirection: "row",
+                                justifyContent: "space-around",
+                                alignItems: "center",
+                                gap: 2,
+                              }}
                             >
-                              Tilapia PreStarter #2 <br />
-                              (1&gt;5)
-                            </Typography>
-                          </ListItem>
+                              {tableHead?.stores?.map(
+                                (store: FeedProduct, subIndex: number) => {
+                                  return (
+                                    <ListItem
+                                      key={subIndex}
+                                      disablePadding
+                                      sx={{
+                                        width: "fit-content",
+                                      }}
+                                    >
+                                      <Typography
+                                        variant="body2"
+                                        fontWeight={500}
+                                        textAlign={"center"}
+                                        minWidth={100}
+                                      >
+                                        {store?.productName}
+                                        <br />
+                                        (1&gt;5)
+                                      </Typography>
+                                    </ListItem>
+                                  );
+                                }
+                              )}
 
-                          <ListItem
-                            disablePadding
-                            sx={{
-                              width: "fit-content",
-                            }}
-                          >
-                            <Typography
-                              variant="body2"
-                              fontWeight={500}
-                              textAlign={"center"}
-                              minWidth={100}
-                            >
-                              Tilapia PreStarter #3 <br />
-                              (5-20)
-                            </Typography>
-                          </ListItem>
+                              {/* <ListItem
+                                disablePadding
+                                sx={{
+                                  width: "fit-content",
+                                }}
+                              >
+                                <Typography
+                                  variant="body2"
+                                  fontWeight={500}
+                                  textAlign={"center"}
+                                  minWidth={100}
+                                >
+                                  Tilapia PreStarter #3 <br />
+                                  (5-20)
+                                </Typography>
+                              </ListItem>
 
-                          <ListItem
-                            disablePadding
-                            sx={{
-                              width: "fit-content",
-                            }}
-                          >
-                            <Typography
-                              variant="body2"
-                              fontWeight={500}
-                              textAlign={"center"}
-                              minWidth={100}
-                            >
-                              Tilapia Grower 2mm
-                              <br />
-                              (25-40)
-                            </Typography>
-                          </ListItem>
-                        </List>
-                      </Box>
-                    </TableCell>
+                              <ListItem
+                                disablePadding
+                                sx={{
+                                  width: "fit-content",
+                                }}
+                              >
+                                <Typography
+                                  variant="body2"
+                                  fontWeight={500}
+                                  textAlign={"center"}
+                                  minWidth={100}
+                                >
+                                  Tilapia Grower 2mm
+                                  <br />
+                                  (25-40)
+                                </Typography>
+                              </ListItem> */}
+                            </List>
+                          </Box>
+                        </TableCell>
+                      );
+                    })}
 
-                    <TableCell
+                    {/* <TableCell
                       sx={{
                         borderBottom: 0,
                         color: "#67737F",
@@ -545,7 +583,7 @@ const FeedProfiles = ({ setActiveStep, editFarm }: Props) => {
                           </ListItem>
                         </List>
                       </Box>
-                    </TableCell>
+                    </TableCell> */}
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -555,34 +593,21 @@ const FeedProfiles = ({ setActiveStep, editFarm }: Props) => {
                     return (
                       <TableRow key={size}>
                         <TableCell sx={cellStyle}>{size}</TableCell>
+                        {groupedData?.map((group, index) => {
+                          const options = group.stores.map(
+                            (_: FeedProduct, i: number) => `opt${i + 1}`
+                          );
 
-                        <TableCell sx={cellStyle}>
-                          {renderRadioGroup(rowName, "col1", [
-                            "opt1",
-                            "opt2",
-                            "opt3",
-                          ])}
-                        </TableCell>
-
-                        <TableCell sx={cellStyle}>
-                          {renderRadioGroup(rowName, "col2", [
-                            "opt1",
-                            "opt2",
-                            "opt3",
-                          ])}
-                        </TableCell>
-
-                        <TableCell sx={cellStyle}>
-                          {renderRadioGroup(rowName, "col3", ["opt1"])}
-                        </TableCell>
-
-                        <TableCell sx={cellStyle}>
-                          {renderRadioGroup(rowName, "col4", ["opt1"])}
-                        </TableCell>
-
-                        <TableCell sx={cellStyle}>
-                          {renderRadioGroup(rowName, "col5", ["opt1"])}
-                        </TableCell>
+                          return (
+                            <TableCell sx={cellStyle} key={group.supplier.id}>
+                              {renderRadioGroup(
+                                rowName,
+                                `col${index + 1}`,
+                                options
+                              )}
+                            </TableCell>
+                          );
+                        })}
                       </TableRow>
                     );
                   })}

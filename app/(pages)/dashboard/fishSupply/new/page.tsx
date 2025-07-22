@@ -19,6 +19,7 @@ export default async function Page() {
   );
   const farms = await getFarms({
     noFilter: true,
+    organisationId: user?.organisationId,
     role: "",
     query: "",
     refreshToken,

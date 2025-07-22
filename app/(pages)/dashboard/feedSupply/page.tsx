@@ -1,7 +1,11 @@
 import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
 import FeedSelection from "@/app/_components/feedSupply/FeedSelection";
 import FeedTable from "@/app/_components/table/FeedTable";
-import { getFeedSupplys } from "@/app/_lib/action";
+import {
+  getFeedStores,
+  getFeedSuppliers,
+  getFeedSupplys,
+} from "@/app/_lib/action";
 import { SingleUser } from "@/app/_typeModels/User";
 import { getCookie } from "cookies-next";
 import { Metadata } from "next";
@@ -9,17 +13,35 @@ import { cookies } from "next/headers";
 export const metadata: Metadata = {
   title: "Feed Supply",
 };
-export default async function Page() {
-  const loggedUser: any = getCookie("logged-user", { cookies });
-  const user: SingleUser = JSON.parse(loggedUser);
+export default async function Page({
+  searchParams,
+}: {
+  searchParams?: {
+    query?: string;
+  };
+}) {
+  const query = searchParams?.query || "";
+  // const loggedUser: any = getCookie("logged-user", { cookies });
+  // const refreshToken: any = getCookie("refresh-token", { cookies });
+  const cookieStore = cookies();
+  const loggedUser: any = cookieStore.get("logged-user")?.value;
+  const refreshToken = cookieStore.get("refresh-token")?.value;
+  const user = JSON.parse(loggedUser);
+  const stores = await getFeedStores({
+    role: user.role,
+    organisationId: user.organisationId,
+    query,
+    refreshToken,
+  });
+  const feedSuppliers = await getFeedSuppliers(refreshToken);
 
   return (
     <>
       <BasicBreadcrumbs
         heading={"Feed Supply"}
-        buttonName={"Add Feed"}
+        // buttonName={"Add Feed"}
         isTable={false}
-        buttonRoute="/dashboard/feedSupply/new"
+        // buttonRoute="/dashboard/feedSupply/new"
         links={[
           { name: "Dashboard", link: "/dashboard" },
           { name: "Feed Supply", link: "/dashboard/feedSupply" },
@@ -31,7 +53,7 @@ export default async function Page() {
         }}
         permissions={user?.permissions?.addFeedSupply}
       />
-      <FeedSelection />
+      <FeedSelection data={stores?.data} feedSuppliers={feedSuppliers?.data} />
       {/* <FeedTable feeds={feeds?.data} /> */}
     </>
   );

@@ -9,6 +9,8 @@ import { getCookie, setCookie } from "cookies-next";
 import { useEffect, useState } from "react";
 import FeedProfiles from "./FeedProfiles";
 import ProductionParaMeter from "./ProductionParameter";
+import { FeedProduct } from "@/app/_typeModels/Feed";
+import { FeedSupplier } from "@/app/_typeModels/Organization";
 
 const steps = [
   {
@@ -28,6 +30,8 @@ interface Props {
   growthModels: any;
   farms: Farm[];
   isEdit?: boolean;
+  feedstores: FeedProduct[];
+  feedSuppliers: FeedSupplier[];
 }
 const EditFarm = ({
   farmId,
@@ -35,6 +39,8 @@ const EditFarm = ({
   growthModels,
   farms,
   isEdit,
+  feedstores,
+  feedSuppliers,
 }: Props) => {
   const token = getCookie("auth-token");
   const activeStepIndex = Number(getCookie("activeStep"));
@@ -148,7 +154,12 @@ const EditFarm = ({
           />
         )}
         {activeStep === 2 && (
-          <FeedProfiles setActiveStep={setActiveStep} editFarm={editFarm} />
+          <FeedProfiles
+            setActiveStep={setActiveStep}
+            editFarm={editFarm}
+            feedStores={feedstores}
+            feedSuppliers={feedSuppliers}
+          />
         )}
         {activeStep === 3 && (
           <ProductionUnits

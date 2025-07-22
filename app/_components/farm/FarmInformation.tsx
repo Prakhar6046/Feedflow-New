@@ -155,10 +155,10 @@ const FarmInformation: NextPage<Props> = ({
     }
   }, [addressInformation, useAddress]);
   useEffect(() => {
-    if (altitude && lat && lng) {
-      setValue("farmAltitude", String(Number(altitude).toFixed(2)));
-      setValue("lat", String(Number(lat).toFixed(2)));
-      setValue("lng", String(Number(lng).toFixed(2)));
+    if (altitude || lat || lng) {
+      setValue("farmAltitude", String(Number(altitude)?.toFixed(2)));
+      setValue("lat", String(Number(lat)?.toFixed(2)));
+      setValue("lng", String(Number(lng)?.toFixed(2)));
     }
   }, [altitude, setValue, lat, lng]);
 
@@ -471,6 +471,7 @@ const FarmInformation: NextPage<Props> = ({
               clearErrors={clearErrors}
               setUseAddress={setUseAddress}
               isCalAltitude={true}
+              token={token}
               i
             />
           </Box>

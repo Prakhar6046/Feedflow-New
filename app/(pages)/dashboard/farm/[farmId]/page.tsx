@@ -1,6 +1,12 @@
 import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
 import EditFarm from "@/app/_components/farm/EditFarm";
-import { getFarmMangers, getFarms, getGrowthModels } from "@/app/_lib/action";
+import {
+  getFarmMangers,
+  getFarms,
+  getFeedStores,
+  getFeedSuppliers,
+  getGrowthModels,
+} from "@/app/_lib/action";
 import { getCookie } from "cookies-next";
 import { Metadata } from "next";
 import { cookies } from "next/headers";
@@ -26,6 +32,13 @@ export default async function Page({
     noFilter: true,
     refreshToken,
   });
+  const stores = await getFeedStores({
+    role: user.role,
+    organisationId: user.organisationId,
+    query,
+    refreshToken,
+  });
+  const feedSuppliers = await getFeedSuppliers(refreshToken);
   return (
     <>
       <BasicBreadcrumbs
@@ -43,6 +56,8 @@ export default async function Page({
         growthModels={growthModels?.data}
         farms={farms?.data}
         isEdit={true}
+        feedstores={stores?.data}
+        feedSuppliers={feedSuppliers?.data}
       />
     </>
   );

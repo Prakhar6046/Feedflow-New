@@ -90,10 +90,12 @@ const ProductionUnitFeedProfile: React.FC<Props> = ({
   useEffect(() => {
     if (typeof window !== "undefined") {
       const formData = getLocalItem("feedProfiles");
-      setFormProductionFeedProfile(formData);
-      Object?.entries(formData).forEach(([key, value]) => {
-        setValue(key, String(value));
-      });
+      if (formData) {
+        setFormProductionFeedProfile(formData);
+        Object?.entries(formData).forEach(([key, value]) => {
+          setValue(key, String(value));
+        });
+      }
     }
   }, []);
 

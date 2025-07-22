@@ -135,6 +135,7 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
       setIsApiCallInProgress(false);
     }
   };
+  console.log("famrs", farms);
   useEffect(() => {
     setLoading(true);
 
@@ -182,10 +183,8 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
   useEffect(() => {
     if (userData && !isEdit) {
       const loggedUserData = JSON.parse(userData);
-
-      // setValue("organisation", loggedUserData.id);
-      if (loggedUserData?.organisation?.Farm[0]?.id) {
-        setValue("fishFarmId", loggedUserData.organisation.Farm[0].id);
+      if (loggedUserData.organisationId) {
+        setValue("fishFarmId", loggedUserData.organisationId);
       }
     }
   }, [userData]);
@@ -272,11 +271,13 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
 
           <Grid item sm={6} xs={12}>
             <FormControl className="form-input" fullWidth focused>
-              <InputLabel id="demo-simple-select-label">Fish Farm *</InputLabel>
+              <InputLabel id="demo-simple-select-label">
+                Fish Producer *
+              </InputLabel>
               <Select
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
-                label="Fish Farm *"
+                label="Fish Producer *"
                 value={watch("fishFarmId") || ""}
                 {...register("fishFarmId", {
                   required: true,
@@ -511,7 +512,7 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
               )}
             </FormControl>
           </Grid>
-          <Grid item sm={6} xs={12}>
+          {/* <Grid item sm={6} xs={12}>
             <Box width={"100%"}>
               <TextField
                 label="Production Unit *"
@@ -540,7 +541,7 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
                   </Typography>
                 )}
             </Box>
-          </Grid>
+          </Grid> */}
         </Grid>
 
         <Button

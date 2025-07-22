@@ -453,16 +453,16 @@ export default function ProductionParaMeter({
                                 pattern:
                                   validationPattern.negativeNumberWithDot,
                                 maxLength: 10,
-                                validate: (value) => {
-                                  const min = watch(`idealRange.${head}.Min`);
-                                  if (
-                                    val === "Max" &&
-                                    Number(value) < Number(min)
-                                  ) {
-                                    return "Max value cannot be less than Min value";
-                                  }
-                                  return true;
-                                },
+                                // validate: (value) => {
+                                //   const min = watch(`idealRange.${head}.Min`);
+                                //   if (
+                                //     val === "Max" &&
+                                //     Number(value) < Number(min)
+                                //   ) {
+                                //     return "Max value cannot be less than Min value";
+                                //   }
+                                //   return true;
+                                // },
                               }}
                               render={({ field }) => (
                                 <input

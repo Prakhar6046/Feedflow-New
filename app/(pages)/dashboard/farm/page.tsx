@@ -16,7 +16,12 @@ export default async function Page({
   };
 }) {
   const query = searchParams?.query || "";
-  const loggedUser: any = getCookie("logged-user", { cookies });
+  // const loggedUser: any = getCookie("logged-user", { cookies });
+  // const refreshToken: any = getCookie("refresh-token", { cookies });
+  const cookieStore = cookies();
+  const loggedUser: any = cookieStore.get("logged-user")?.value;
+  const refreshToken = cookieStore.get("refresh-token")?.value;
+
   const user: SingleUser = JSON.parse(loggedUser);
 
   const farms = await getFarms({
@@ -24,6 +29,7 @@ export default async function Page({
     organisationId: user?.organisationId,
     query,
     noFilter: false,
+    refreshToken,
   });
 
   return (

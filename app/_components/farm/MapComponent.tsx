@@ -40,9 +40,9 @@ const MapComponent = ({
   setAltitude,
   isCalAltitude,
   clearErrors,
-
   setLng,
   setLat,
+  token,
 }: any) => {
   const [selectedPosition, setSelectedPosition] = useState<any>(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -121,7 +121,13 @@ const MapComponent = ({
       if (data.status === "OK" && data.results.length > 0) {
         if (isCalAltitude && data.results[0].geometry) {
           const altitudeResponse = await fetch(
-            `/api/farm/altitude?lat=${data.results[0].geometry.location.lat}&lng=${data.results[0].geometry.location.lng}`
+            `/api/farm/altitude?lat=${data.results[0].geometry.location.lat}&lng=${data.results[0].geometry.location.lng}`,
+            {
+              method: "GET",
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
           );
           const res = await altitudeResponse.json();
           clearErrors("farmAltitude");
@@ -163,7 +169,13 @@ const MapComponent = ({
       if (data.status === "OK" && data.results.length > 0) {
         if (isCalAltitude && data.results[0].geometry) {
           const altitudeResponse = await fetch(
-            `/api/farm/altitude?lat=${data.results[0].geometry.location.lat}&lng=${data.results[0].geometry.location.lng}`
+            `/api/farm/altitude?lat=${data.results[0].geometry.location.lat}&lng=${data.results[0].geometry.location.lng}`,
+            {
+              method: "GET",
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
           );
           const res = await altitudeResponse.json();
           clearErrors("farmAltitude");
@@ -383,7 +395,13 @@ const MapComponent = ({
                                   results[0].geometry.location
                                 ) {
                                   fetch(
-                                    `/api/farm/altitude?lat=${results[0].geometry.location.lat()}&lng=${results[0].geometry.location.lng()}`
+                                    `/api/farm/altitude?lat=${results[0].geometry.location.lat()}&lng=${results[0].geometry.location.lng()}`,
+                                    {
+                                      method: "GET",
+                                      headers: {
+                                        Authorization: `Bearer ${token}`,
+                                      },
+                                    }
                                   )
                                     .then((altitudeRes) => altitudeRes.json())
                                     .then((altitudeData) => {
