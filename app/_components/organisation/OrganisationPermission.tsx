@@ -141,7 +141,9 @@ function OrganisationPermission({ control }: OrganisationPermissionProps) {
         Admin Rights
       </Typography>
 
-      <Grid container rowSpacing={2.5}>
+      <Grid container rowSpacing={2.5} sx={{
+        textAlign: "start"
+      }}>
         {/* Column Headers */}
         <Grid
           item
@@ -150,6 +152,7 @@ function OrganisationPermission({ control }: OrganisationPermissionProps) {
           sx={{
             display: "flex",
             gap: 6,
+            textAlign: "start"
           }}
         >
           <Typography variant="h6" fontSize={16} fontWeight={600}>
@@ -186,12 +189,12 @@ function OrganisationPermission({ control }: OrganisationPermissionProps) {
           sx={{
             display: "flex",
             gap: 6,
+            textAlign: "start"
           }}
         >
           <Typography
             variant="h6"
             fontSize={16}
-            textAlign={"center"}
             fontWeight={600}
           >
             Edit Users
@@ -227,12 +230,12 @@ function OrganisationPermission({ control }: OrganisationPermissionProps) {
           sx={{
             display: "flex",
             gap: 6,
+            textAlign: "start"
           }}
         >
           <Typography
             variant="h6"
             fontSize={16}
-            textAlign={"center"}
             fontWeight={600}
           >
             Organisation Rights
@@ -273,7 +276,9 @@ function OrganisationPermission({ control }: OrganisationPermissionProps) {
         Organisation Rights
       </Typography>
 
-      <Grid container rowSpacing={2.5}>
+      <Grid container rowSpacing={2.5} sx={{
+        textAlign: "start"
+      }}>
         {/* Column Headers */}
         <Grid
           item
@@ -287,7 +292,6 @@ function OrganisationPermission({ control }: OrganisationPermissionProps) {
           <Typography
             variant="h6"
             fontSize={16}
-            textAlign={"center"}
             fontWeight={600}
           >
             Edit Organisation
@@ -328,7 +332,6 @@ function OrganisationPermission({ control }: OrganisationPermissionProps) {
           <Typography
             variant="h6"
             fontSize={16}
-            textAlign={"center"}
             fontWeight={600}
           >
             Create Fish Supply
@@ -369,7 +372,6 @@ function OrganisationPermission({ control }: OrganisationPermissionProps) {
           <Typography
             variant="h6"
             fontSize={16}
-            textAlign={"center"}
             fontWeight={600}
           >
             Edit Fish Supply
@@ -410,7 +412,6 @@ function OrganisationPermission({ control }: OrganisationPermissionProps) {
           <Typography
             variant="h6"
             fontSize={16}
-            textAlign={"center"}
             fontWeight={600}
           >
             Create Farms
@@ -451,7 +452,6 @@ function OrganisationPermission({ control }: OrganisationPermissionProps) {
           <Typography
             variant="h6"
             fontSize={16}
-            textAlign={"center"}
             fontWeight={600}
           >
             Edit Farms
@@ -492,7 +492,6 @@ function OrganisationPermission({ control }: OrganisationPermissionProps) {
           <Typography
             variant="h6"
             fontSize={16}
-            textAlign={"center"}
             fontWeight={600}
           >
             Transfer Fish Between Farms
@@ -535,7 +534,9 @@ function OrganisationPermission({ control }: OrganisationPermissionProps) {
             >
               {field.name}
             </Typography>
-            <Grid container rowSpacing={2.5}>
+            <Grid container rowSpacing={2.5} sx={{
+              textAlign: "start"
+            }}>
               {/* Column Headers */}
               <Grid
                 item
@@ -549,7 +550,6 @@ function OrganisationPermission({ control }: OrganisationPermissionProps) {
                 <Typography
                   variant="h6"
                   fontSize={16}
-                  textAlign={"center"}
                   fontWeight={600}
                 >
                   Stock
@@ -590,7 +590,6 @@ function OrganisationPermission({ control }: OrganisationPermissionProps) {
                 <Typography
                   variant="h6"
                   fontSize={16}
-                  textAlign={"center"}
                   fontWeight={600}
                 >
                   Transfer
@@ -631,7 +630,6 @@ function OrganisationPermission({ control }: OrganisationPermissionProps) {
                 <Typography
                   variant="h6"
                   fontSize={16}
-                  textAlign={"center"}
                   fontWeight={600}
                 >
                   Harvest
@@ -672,7 +670,6 @@ function OrganisationPermission({ control }: OrganisationPermissionProps) {
                 <Typography
                   variant="h6"
                   fontSize={16}
-                  textAlign={"center"}
                   fontWeight={600}
                 >
                   Mortalities
@@ -712,7 +709,6 @@ function OrganisationPermission({ control }: OrganisationPermissionProps) {
                 <Typography
                   variant="h6"
                   fontSize={16}
-                  textAlign={"center"}
                   fontWeight={600}
                 >
                   Sample
@@ -753,7 +749,6 @@ function OrganisationPermission({ control }: OrganisationPermissionProps) {
                 <Typography
                   variant="h6"
                   fontSize={16}
-                  textAlign={"center"}
                   fontWeight={600}
                 >
                   Create Report
@@ -794,7 +789,6 @@ function OrganisationPermission({ control }: OrganisationPermissionProps) {
                 <Typography
                   variant="h6"
                   fontSize={16}
-                  textAlign={"center"}
                   fontWeight={600}
                 >
                   Feeding Plans
