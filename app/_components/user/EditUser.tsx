@@ -36,6 +36,7 @@ type Iprops = {
 function EditUser({ userId }: Iprops) {
   const router = useRouter();
   const loggedUser: any = getCookie('logged-user');
+  const token = getCookie('auth-token');
   const [isApiCallInProgress, setIsApiCallInProgress] =
     useState<boolean>(false);
   const [userData, setUserData] = useState<{ data: SingleUser }>();
@@ -249,7 +250,12 @@ function EditUser({ userId }: Iprops) {
                   type="file"
                   {...register('image', {
                     onChange: (e) =>
-                      handleUpload(e.target.files, profilePic, setProfilePic),
+                      handleUpload(
+                        e.target.files,
+                        profilePic,
+                        setProfilePic,
+                        String(token),
+                      ),
                   })}
                   accept=".jpg,.jpeg,.png,.svg"
                 />
@@ -299,6 +305,7 @@ function EditUser({ userId }: Iprops) {
                             e.target.files,
                             profilePic,
                             setProfilePic,
+                            String(token),
                           ),
                       })}
                       accept=".jpg,.jpeg,.png,.svg"
@@ -316,6 +323,7 @@ function EditUser({ userId }: Iprops) {
                           type: 'user',
                           image: userData?.data?.image,
                         },
+                        String(token),
                         setProfilePic,
                       )
                     }

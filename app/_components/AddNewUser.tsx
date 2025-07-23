@@ -45,6 +45,7 @@ const VisuallyHiddenInput = styled('input')({
 export default function AddNewUser({ organisations }: Props) {
   const router = useRouter();
   const loggedUser: any = getCookie('logged-user');
+  const token = getCookie('auth-token');
   const [userData, setUserData] = useState<{ data: SingleUser }>();
   const [selectedOrganisation, setSelectedOrganisation] = useState<any>('');
   const [loading, setLoading] = useState<boolean>(false);
@@ -203,7 +204,12 @@ export default function AddNewUser({ organisations }: Props) {
                     type="file"
                     {...register('image', {
                       onChange: (e) =>
-                        handleUpload(e.target.files, profilePic, setProfilePic),
+                        handleUpload(
+                          e.target.files,
+                          profilePic,
+                          setProfilePic,
+                          String(token),
+                        ),
                     })}
                     accept=".jpg,.jpeg,.png,.svg"
                   />
@@ -253,6 +259,7 @@ export default function AddNewUser({ organisations }: Props) {
                               e.target.files,
                               profilePic,
                               setProfilePic,
+                              String(token),
                             ),
                         })}
                         accept=".jpg,.jpeg,.png,.svg"
@@ -263,7 +270,11 @@ export default function AddNewUser({ organisations }: Props) {
                       type="button"
                       variant="contained"
                       onClick={() =>
-                        deleteImage({ image: profilePic }, setProfilePic)
+                        deleteImage(
+                          { image: profilePic },
+                          String(token),
+                          setProfilePic,
+                        )
                       }
                       sx={{
                         background: '#D71818',

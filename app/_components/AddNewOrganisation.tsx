@@ -38,6 +38,7 @@ import {
 import { SingleUser } from '../_typeModels/User';
 import MapComponent from './farm/MapComponent';
 import HatcheryForm from './hatchery/HatcheryForm';
+import { getCookie } from 'cookies-next';
 // import { useGetCookie } from "cookies-next";
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -77,7 +78,8 @@ const AddNewOrganisation = ({
   loggedUser,
   authToken,
 }: Props) => {
-  // const token = useGetCookie("auth-token");
+  const token = getCookie('auth-token');
+
   const [profilePic, setProfilePic] = useState<string>();
   const router = useRouter();
   const [isHatcherySelected, setIsHatcherySelected] = useState<boolean>(false);
@@ -330,7 +332,12 @@ const AddNewOrganisation = ({
               type="file"
               {...register('image', {
                 onChange: (e) =>
-                  handleUpload(e.target.files, profilePic, setProfilePic),
+                  handleUpload(
+                    e.target.files,
+                    profilePic,
+                    setProfilePic,
+                    String(token),
+                  ),
               })}
               accept=".jpg,.jpeg,.png,.svg"
             />
@@ -371,7 +378,12 @@ const AddNewOrganisation = ({
                   type="file"
                   {...register('image', {
                     onChange: (e) =>
-                      handleUpload(e.target.files, profilePic, setProfilePic),
+                      handleUpload(
+                        e.target.files,
+                        profilePic,
+                        setProfilePic,
+                        String(token),
+                      ),
                   })}
                   accept=".jpg,.jpeg,.png,.svg"
                 />
@@ -380,7 +392,11 @@ const AddNewOrganisation = ({
                 type="button"
                 variant="contained"
                 onClick={() =>
-                  deleteImage({ image: profilePic }, setProfilePic)
+                  deleteImage(
+                    { image: profilePic },
+                    String(token),
+                    setProfilePic,
+                  )
                 }
                 sx={{
                   background: '#D71818',

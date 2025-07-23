@@ -75,7 +75,7 @@ const EditOrganisation = ({
   const router = useRouter();
   const searchParams = useSearchParams();
   const [organisationData, setOrganisationData] = useState<OrganizationData>();
-
+  const token = getCookie('auth-token');
   const [isHatcherySelected, setIsHatcherySelected] = useState<boolean>(false);
   const [altitude, setAltitude] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
@@ -430,7 +430,12 @@ const EditOrganisation = ({
                   type="file"
                   {...register('image', {
                     onChange: (e) =>
-                      handleUpload(e.target.files, profilePic, setProfilePic),
+                      handleUpload(
+                        e.target.files,
+                        profilePic,
+                        setProfilePic,
+                        String(token),
+                      ),
                   })}
                   accept=".jpg,.jpeg,.png,.svg"
                 />
@@ -480,6 +485,7 @@ const EditOrganisation = ({
                             e.target.files,
                             profilePic,
                             setProfilePic,
+                            String(token),
                           ),
                       })}
                       accept=".jpg,.jpeg,.png,.svg"
@@ -497,6 +503,7 @@ const EditOrganisation = ({
                           type: 'organisation',
                           image: organisationData?.image,
                         },
+                        String(token),
                         setProfilePic,
                       )
                     }
