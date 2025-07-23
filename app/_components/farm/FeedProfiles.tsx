@@ -19,7 +19,6 @@ import {
   TableRow,
   Typography,
 } from '@mui/material';
-import { NextPage } from 'next';
 import { useEffect, useMemo, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 export const cellStyle = {

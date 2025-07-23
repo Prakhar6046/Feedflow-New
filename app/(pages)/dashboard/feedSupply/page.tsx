@@ -1,13 +1,6 @@
 import BasicBreadcrumbs from '@/app/_components/Breadcrumbs';
 import FeedSelection from '@/app/_components/feedSupply/FeedSelection';
-import FeedTable from '@/app/_components/table/FeedTable';
-import {
-  getFeedStores,
-  getFeedSuppliers,
-  getFeedSupplys,
-} from '@/app/_lib/action';
-import { SingleUser } from '@/app/_typeModels/User';
-import { getCookie } from 'cookies-next';
+import { getFeedStores, getFeedSuppliers } from '@/app/_lib/action';
 import { Metadata } from 'next';
 import { cookies } from 'next/headers';
 export const metadata: Metadata = {

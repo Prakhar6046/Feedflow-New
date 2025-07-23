@@ -2,7 +2,6 @@ import BasicBreadcrumbs from '@/app/_components/Breadcrumbs';
 import FarmTable from '@/app/_components/table/FarmTable';
 import { getFarms } from '@/app/_lib/action';
 import { SingleUser } from '@/app/_typeModels/User';
-import { getCookie } from 'cookies-next';
 import { Metadata } from 'next';
 import { cookies } from 'next/headers';
 export const metadata: Metadata = {

@@ -4,7 +4,9 @@ import { FeedSupplier } from '@/app/_typeModels/Organization';
 import {
   Box,
   Button,
+  FormControl,
   Grid,
+  InputLabel,
   MenuItem,
   Select,
   TextField,
@@ -155,33 +157,39 @@ const NewFeedLibarary: NextPage<Props> = ({ feedSuppliers }) => {
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Grid container spacing={2}>
-        {fields.map((field, i) => (
+        {fields?.map((field, i) => (
           <Grid item xs={12} sm={6} key={field.name}>
             {field?.type === 'select' ? (
-              <Controller
-                name={field.name}
-                control={control}
-                defaultValue={[] as never}
-                render={({ field }) => (
-                  <Select
-                    multiple
-                    {...field}
-                    fullWidth
-                    renderValue={(selected: any) =>
-                      feedSuppliers
-                        .filter((s: any) => selected.includes(s.id))
-                        .map((s: any) => s.name)
-                        .join(', ')
-                    }
-                  >
-                    {feedSuppliers.map((supplier: any) => (
-                      <MenuItem key={supplier.id} value={supplier.id}>
-                        {supplier.name}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                )}
-              />
+              <FormControl fullWidth className="form-input" focused>
+                <InputLabel id="feed-supply-select-label1">
+                  {field.label}
+                </InputLabel>
+                <Controller
+                  name={field.name}
+                  control={control}
+                  defaultValue={[] as never}
+                  render={({ field }) => (
+                    <Select
+                      multiple
+                      {...field}
+                      fullWidth
+                      label={field.name}
+                      renderValue={(selected: any) =>
+                        feedSuppliers
+                          ?.filter((s: any) => selected.includes(s.id))
+                          ?.map((s: any) => s.name)
+                          ?.join(', ')
+                      }
+                    >
+                      {feedSuppliers?.map((supplier: any) => (
+                        <MenuItem key={supplier.id} value={supplier.id}>
+                          {supplier.name}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  )}
+                />
+              </FormControl>
             ) : (
               <TextField
                 label={field.label}
