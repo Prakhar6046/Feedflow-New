@@ -1,12 +1,12 @@
-import { capitalizeFirstLetter } from "@/app/_lib/utils";
-import prisma from "@/prisma/prisma";
-import { NextRequest, NextResponse } from "next/server";
-import nodemailer from "nodemailer";
+import { capitalizeFirstLetter } from '@/app/_lib/utils';
+import prisma from '@/prisma/prisma';
+import { NextRequest, NextResponse } from 'next/server';
+import nodemailer from 'nodemailer';
 
 export async function POST(req: NextRequest) {
   try {
     const transporter: any = nodemailer.createTransport({
-      service: "gmail", // You can use any other email service provider
+      service: 'gmail', // You can use any other email service provider
       auth: {
         user: process.env.EMAIL_USER, // Your email address
         pass: process.env.EMAIL_PASS, // Your email password or app-specific password
@@ -18,13 +18,13 @@ export async function POST(req: NextRequest) {
       include: { contact: true },
     });
     const findOrganisationAdmin = invitedByOrg?.contact.find(
-      (org) => org.permission === "ADMIN" || org.permission === "SUPERADMIN"
+      (org) => org.permission === 'ADMIN' || org.permission === 'SUPERADMIN',
     );
     const checkContactExist = body.contacts
       .filter((contact: any) => !contact.id)
       .map((contact: any) => contact.email)
       .filter((email: string | null | undefined): email is string =>
-        Boolean(email)
+        Boolean(email),
       );
 
     //check org exist with name
@@ -35,8 +35,8 @@ export async function POST(req: NextRequest) {
 
     if (orgExist) {
       return NextResponse.json(
-        { error: "Oranisation Name already exist!." },
-        { status: 409 }
+        { error: 'Oranisation Name already exist!.' },
+        { status: 409 },
       );
     }
     // check user exist with contact email
@@ -46,19 +46,19 @@ export async function POST(req: NextRequest) {
 
     if (existUsers.length) {
       return NextResponse.json(
-        { error: "User already exist with some email" },
-        { status: 409 }
+        { error: 'User already exist with some email' },
+        { status: 409 },
       );
     }
 
     // Create address
     const address = await prisma.address.create({
       data: {
-        city: body.city ?? "",
-        postCode: body.postCode ?? "",
-        province: body.province ?? "",
-        name: capitalizeFirstLetter(body.address) ?? "",
-        country: body.country ?? "",
+        city: body.city ?? '',
+        postCode: body.postCode ?? '',
+        province: body.province ?? '',
+        name: capitalizeFirstLetter(body.address) ?? '',
+        country: body.country ?? '',
       },
     });
 
@@ -106,7 +106,7 @@ export async function POST(req: NextRequest) {
         const mailOptions = {
           from: process.env.EMAIL_USER,
           to: contact.email,
-          subject: "Welcome!",
+          subject: 'Welcome!',
           text: `Hi ${contact.name}, you are invited to join Feedflow.`,
           html: `<!DOCTYPE html>
 <html lang="en">
@@ -231,7 +231,7 @@ export async function POST(req: NextRequest) {
         try {
           await transporter.sendMail(mailOptions);
         } catch (error) {
-          console.error("Failed to send email to", contact.email, error);
+          console.error('Failed to send email to', contact.email, error);
         }
       }
     }
@@ -263,16 +263,16 @@ export async function POST(req: NextRequest) {
           where: { email: user.email.toLowerCase() },
           data: { userId: user.id },
         });
-      })
+      }),
     );
 
     if (body.hatcheryName) {
       await prisma.hatchery.create({
         data: {
-          name: body.hatcheryName ?? "",
-          altitude: body.hatcheryAltitude ?? "",
-          code: body.hatcheryCode ?? "",
-          fishSpecie: body.fishSpecie ?? "",
+          name: body.hatcheryName ?? '',
+          altitude: body.hatcheryAltitude ?? '',
+          code: body.hatcheryCode ?? '',
+          fishSpecie: body.fishSpecie ?? '',
           createdBy: organisation.id,
         },
       });
@@ -293,15 +293,15 @@ export async function POST(req: NextRequest) {
     });
 
     return NextResponse.json({
-      message: "Organisation added successfully",
+      message: 'Organisation added successfully',
       data: { organisation, contacts, users },
       status: true,
     });
   } catch (error) {
-    console.error("Error creating organisation or users:", error);
+    console.error('Error creating organisation or users:', error);
     return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 }
+      { error: 'Internal Server Error' },
+      { status: 500 },
     );
   }
 }

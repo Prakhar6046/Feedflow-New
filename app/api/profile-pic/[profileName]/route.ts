@@ -1,16 +1,16 @@
-import fs from "fs/promises";
-import path from "path";
-import { NextRequest, NextResponse } from "next/server";
-import { createReadStream } from "fs";
+import fs from 'fs/promises';
+import path from 'path';
+import { NextRequest, NextResponse } from 'next/server';
+import { createReadStream } from 'fs';
 
 export const GET = async (
   request: NextRequest,
   context: { params: any },
-  res: NextResponse
+  res: NextResponse,
 ) => {
   try {
     const profileName = context.params.profileName;
-    const directoryPath = "./public/static/uploads/";
+    const directoryPath = './public/static/uploads/';
     const filePath = path.join(directoryPath, profileName);
     fs.access(filePath);
     const ext = path.extname(filePath);
@@ -19,7 +19,7 @@ export const GET = async (
     const fileStream: any = createReadStream(filePath);
 
     return new NextResponse(fileStream, {
-      headers: { "Content-Type": contentType },
+      headers: { 'Content-Type': contentType },
     });
   } catch (error) {
     return new NextResponse(JSON.stringify({ status: false, error }), {
@@ -30,19 +30,19 @@ export const GET = async (
 
 function getContentType(ext: string) {
   switch (ext.toLowerCase()) {
-    case ".jpg":
-    case ".jpeg":
-      return "image/jpeg";
-    case ".png":
-      return "image/png";
-    case ".gif":
-      return "image/gif";
-    case ".bmp":
-      return "image/bmp";
-    case ".webp":
-      return "image/webp";
+    case '.jpg':
+    case '.jpeg':
+      return 'image/jpeg';
+    case '.png':
+      return 'image/png';
+    case '.gif':
+      return 'image/gif';
+    case '.bmp':
+      return 'image/bmp';
+    case '.webp':
+      return 'image/webp';
     // Add more cases for other image types as needed
     default:
-      return "application/octet-stream";
+      return 'application/octet-stream';
   }
 }

@@ -1,11 +1,10 @@
-"use client";
-import { getLocalItem, setLocalItem } from "@/app/_lib/utils";
-import { FeedProduct } from "@/app/_typeModels/Feed";
-import { FeedSupplier } from "@/app/_typeModels/Organization";
+'use client';
+import { getLocalItem, setLocalItem } from '@/app/_lib/utils';
+import { FeedProduct } from '@/app/_typeModels/Feed';
+import { FeedSupplier } from '@/app/_typeModels/Organization';
 import {
   Box,
   Button,
-  FormControl,
   FormControlLabel,
   List,
   ListItem,
@@ -19,17 +18,17 @@ import {
   TableHead,
   TableRow,
   Typography,
-} from "@mui/material";
-import { NextPage } from "next";
-import { useEffect, useMemo, useState } from "react";
-import { Controller, SubmitHandler, useForm } from "react-hook-form";
+} from '@mui/material';
+import { NextPage } from 'next';
+import { useEffect, useMemo, useState } from 'react';
+import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 export const cellStyle = {
-  borderBottomColor: "#F5F6F8",
+  borderBottomColor: '#F5F6F8',
   borderBottomWidth: 2,
-  color: "#555555",
+  color: '#555555',
   fontWeight: 500,
-  whiteSpace: "nowrap",
-  textAlign: "center",
+  whiteSpace: 'nowrap',
+  textAlign: 'center',
 };
 
 export const fishSizes = [
@@ -57,14 +56,14 @@ const FeedProfiles = ({
     Record<string, Record<string, string>>
   >({});
   const onSubmit: SubmitHandler<FormValues> = (data) => {
-    setLocalItem("feedProfiles", data);
+    setLocalItem('feedProfiles', data);
     setActiveStep(3);
   };
 
   const renderRadioGroup = (
     rowName: string,
     columnName: string,
-    options: string[]
+    options: string[],
   ) => (
     <Controller
       name={rowName}
@@ -103,7 +102,7 @@ const FeedProfiles = ({
   const groupedData = useMemo(() => {
     return feedSuppliers?.reduce((acc: any[], supplier: FeedSupplier) => {
       const storesForSupplier = feedStores?.filter((store: any) =>
-        store?.ProductSupplier?.includes(supplier.id)
+        store?.ProductSupplier?.includes(supplier.id),
       );
 
       if (storesForSupplier?.length) {
@@ -139,7 +138,7 @@ const FeedProfiles = ({
   useEffect(() => {
     if (editFarm) {
       const profiles = editFarm.FeedProfile[0].profiles;
-      setLocalItem("feedProfileId", editFarm.FeedProfile[0].id);
+      setLocalItem('feedProfileId', editFarm.FeedProfile[0].id);
       Object.entries(profiles).forEach(([key, value]) => {
         setValue(key, String(value));
       });
@@ -147,8 +146,8 @@ const FeedProfiles = ({
   }, [editFarm]);
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const formData = getLocalItem("feedProfiles");
+    if (typeof window !== 'undefined') {
+      const formData = getLocalItem('feedProfiles');
       if (formData && Object.keys(formData).length)
         Object.entries(formData)?.forEach(([key, value]) => {
           setValue(key, String(value));
@@ -174,10 +173,10 @@ const FeedProfiles = ({
           </Typography>
           <Paper
             sx={{
-              width: "100%",
-              overflow: "hidden",
-              borderRadius: "14px",
-              boxShadow: "0px 0px 16px 5px #0000001A",
+              width: '100%',
+              overflow: 'hidden',
+              borderRadius: '14px',
+              boxShadow: '0px 0px 16px 5px #0000001A',
             }}
           >
             <TableContainer component={Paper} className="feed-profile-table">
@@ -187,16 +186,16 @@ const FeedProfiles = ({
                     <TableCell
                       sx={{
                         borderBottom: 0,
-                        color: "#67737F",
-                        background: "#F5F6F8",
-                        textAlign: "center",
-                        pr: "4px",
+                        color: '#67737F',
+                        background: '#F5F6F8',
+                        textAlign: 'center',
+                        pr: '4px',
                         fontSize: {
                           md: 16,
                           xs: 14,
                         },
                         fontWeight: 600,
-                        verticalAlign: "baseline",
+                        verticalAlign: 'baseline',
                       }}
                     >
                       Fish Size <br />
@@ -208,10 +207,10 @@ const FeedProfiles = ({
                           key={mainIndex}
                           sx={{
                             borderBottom: 0,
-                            color: "#67737F",
-                            background: "#F5F6F8",
-                            textAlign: "center",
-                            pr: "4px",
+                            color: '#67737F',
+                            background: '#F5F6F8',
+                            textAlign: 'center',
+                            pr: '4px',
                           }}
                         >
                           <Typography
@@ -222,11 +221,11 @@ const FeedProfiles = ({
                                 xs: 14,
                               },
                               fontWeight: 600,
-                              background: "#06a19b",
-                              color: "#fff",
+                              background: '#06a19b',
+                              color: '#fff',
                               p: 1,
-                              borderRadius: "8px",
-                              whiteSpace: "nowrap",
+                              borderRadius: '8px',
+                              whiteSpace: 'nowrap',
                             }}
                           >
                             {tableHead?.supplier?.name}
@@ -234,10 +233,10 @@ const FeedProfiles = ({
                           <Box>
                             <List
                               sx={{
-                                display: "flex",
-                                flexDirection: "row",
-                                justifyContent: "space-around",
-                                alignItems: "center",
+                                display: 'flex',
+                                flexDirection: 'row',
+                                justifyContent: 'space-around',
+                                alignItems: 'center',
                                 gap: 2,
                               }}
                             >
@@ -248,13 +247,13 @@ const FeedProfiles = ({
                                       key={subIndex}
                                       disablePadding
                                       sx={{
-                                        width: "fit-content",
+                                        width: 'fit-content',
                                       }}
                                     >
                                       <Typography
                                         variant="body2"
                                         fontWeight={500}
-                                        textAlign={"center"}
+                                        textAlign={'center'}
                                         minWidth={100}
                                       >
                                         {store?.productName}
@@ -263,7 +262,7 @@ const FeedProfiles = ({
                                       </Typography>
                                     </ListItem>
                                   );
-                                }
+                                },
                               )}
 
                               {/* <ListItem
@@ -309,15 +308,15 @@ const FeedProfiles = ({
                     {/* <TableCell
                       sx={{
                         borderBottom: 0,
-                        color: "#67737F",
-                        background: "#F5F6F8",
+                        color: '#67737F',
+                        background: '#F5F6F8',
                         fontSize: {
                           md: 16,
                           xs: 14,
                         },
                         fontWeight: 600,
-                        textAlign: "center",
-                        pr: "4px",
+                        textAlign: 'center',
+                        pr: '4px',
                       }}
                     >
                       <Typography
@@ -328,11 +327,11 @@ const FeedProfiles = ({
                             xs: 14,
                           },
                           fontWeight: 600,
-                          background: "#06a19b",
-                          color: "#fff",
+                          background: '#06a19b',
+                          color: '#fff',
                           p: 1,
-                          borderRadius: "8px",
-                          whiteSpace: "nowrap",
+                          borderRadius: '8px',
+                          whiteSpace: 'nowrap',
                         }}
                       >
                         Feed Supplier 2
@@ -340,23 +339,23 @@ const FeedProfiles = ({
                       <Box>
                         <List
                           sx={{
-                            display: "flex",
-                            flexDirection: "row",
-                            justifyContent: "space-around",
-                            alignItems: "center",
+                            display: 'flex',
+                            flexDirection: 'row',
+                            justifyContent: 'space-around',
+                            alignItems: 'center',
                             gap: 2,
                           }}
                         >
                           <ListItem
                             disablePadding
                             sx={{
-                              width: "fit-content",
+                              width: 'fit-content',
                             }}
                           >
                             <Typography
                               variant="body2"
                               fontWeight={500}
-                              textAlign={"center"}
+                              textAlign={'center'}
                               minWidth={100}
                             >
                               Tilapia PreStarter #2 <br />
@@ -367,13 +366,13 @@ const FeedProfiles = ({
                           <ListItem
                             disablePadding
                             sx={{
-                              width: "fit-content",
+                              width: 'fit-content',
                             }}
                           >
                             <Typography
                               variant="body2"
                               fontWeight={500}
-                              textAlign={"center"}
+                              textAlign={'center'}
                               minWidth={100}
                             >
                               Tilapia PreStarter #3 <br />
@@ -384,13 +383,13 @@ const FeedProfiles = ({
                           <ListItem
                             disablePadding
                             sx={{
-                              width: "fit-content",
+                              width: 'fit-content',
                             }}
                           >
                             <Typography
                               variant="body2"
                               fontWeight={500}
-                              textAlign={"center"}
+                              textAlign={'center'}
                               minWidth={100}
                             >
                               Tilapia Grower 2mm
@@ -405,16 +404,16 @@ const FeedProfiles = ({
                     <TableCell
                       sx={{
                         borderBottom: 0,
-                        color: "#67737F",
-                        background: "#F5F6F8",
+                        color: '#67737F',
+                        background: '#F5F6F8',
                         fontSize: {
                           md: 16,
                           xs: 14,
                         },
                         fontWeight: 600,
-                        textAlign: "center",
-                        pr: "4px",
-                        verticalAlign: "baseline",
+                        textAlign: 'center',
+                        pr: '4px',
+                        verticalAlign: 'baseline',
                       }}
                     >
                       <Typography
@@ -425,11 +424,11 @@ const FeedProfiles = ({
                             xs: 14,
                           },
                           fontWeight: 600,
-                          background: "#06a19b",
-                          color: "#fff",
+                          background: '#06a19b',
+                          color: '#fff',
                           p: 1,
-                          borderRadius: "8px",
-                          whiteSpace: "nowrap",
+                          borderRadius: '8px',
+                          whiteSpace: 'nowrap',
                         }}
                       >
                         Feed Supplier 3
@@ -437,22 +436,22 @@ const FeedProfiles = ({
                       <Box>
                         <List
                           sx={{
-                            display: "flex",
-                            flexDirection: "row",
-                            justifyContent: "center",
-                            alignItems: "center",
+                            display: 'flex',
+                            flexDirection: 'row',
+                            justifyContent: 'center',
+                            alignItems: 'center',
                           }}
                         >
                           <ListItem
                             disablePadding
                             sx={{
-                              width: "fit-content",
+                              width: 'fit-content',
                             }}
                           >
                             <Typography
                               variant="body2"
                               fontWeight={500}
-                              textAlign={"center"}
+                              textAlign={'center'}
                               minWidth={100}
                             >
                               Tilapia Grower <br />
@@ -466,16 +465,16 @@ const FeedProfiles = ({
                     <TableCell
                       sx={{
                         borderBottom: 0,
-                        color: "#67737F",
-                        background: "#F5F6F8",
+                        color: '#67737F',
+                        background: '#F5F6F8',
                         fontSize: {
                           md: 16,
                           xs: 14,
                         },
                         fontWeight: 600,
-                        textAlign: "center",
-                        pr: "4px",
-                        verticalAlign: "baseline",
+                        textAlign: 'center',
+                        pr: '4px',
+                        verticalAlign: 'baseline',
                       }}
                     >
                       <Typography
@@ -486,11 +485,11 @@ const FeedProfiles = ({
                             xs: 14,
                           },
                           fontWeight: 600,
-                          background: "#06a19b",
-                          color: "#fff",
+                          background: '#06a19b',
+                          color: '#fff',
                           p: 1,
-                          borderRadius: "8px",
-                          whiteSpace: "nowrap",
+                          borderRadius: '8px',
+                          whiteSpace: 'nowrap',
                         }}
                       >
                         Feed Supplier 4
@@ -498,22 +497,22 @@ const FeedProfiles = ({
                       <Box>
                         <List
                           sx={{
-                            display: "flex",
-                            flexDirection: "row",
-                            justifyContent: "center",
-                            alignItems: "center",
+                            display: 'flex',
+                            flexDirection: 'row',
+                            justifyContent: 'center',
+                            alignItems: 'center',
                           }}
                         >
                           <ListItem
                             disablePadding
                             sx={{
-                              width: "fit-content",
+                              width: 'fit-content',
                             }}
                           >
                             <Typography
                               variant="body2"
                               fontWeight={500}
-                              textAlign={"center"}
+                              textAlign={'center'}
                               minWidth={100}
                             >
                               Tilapia Finsher <br />
@@ -527,15 +526,15 @@ const FeedProfiles = ({
                     <TableCell
                       sx={{
                         borderBottom: 0,
-                        color: "#67737F",
-                        background: "#F5F6F8",
+                        color: '#67737F',
+                        background: '#F5F6F8',
                         fontSize: {
                           md: 16,
                           xs: 14,
                         },
                         fontWeight: 600,
-                        textAlign: "center",
-                        verticalAlign: "baseline",
+                        textAlign: 'center',
+                        verticalAlign: 'baseline',
                       }}
                     >
                       <Typography
@@ -546,11 +545,11 @@ const FeedProfiles = ({
                             xs: 14,
                           },
                           fontWeight: 600,
-                          background: "#06a19b",
-                          color: "#fff",
+                          background: '#06a19b',
+                          color: '#fff',
                           p: 1,
-                          borderRadius: "8px",
-                          whiteSpace: "nowrap",
+                          borderRadius: '8px',
+                          whiteSpace: 'nowrap',
                         }}
                       >
                         Feed Supplier 5
@@ -558,22 +557,22 @@ const FeedProfiles = ({
                       <Box>
                         <List
                           sx={{
-                            display: "flex",
-                            flexDirection: "row",
-                            justifyContent: "center",
-                            alignItems: "center",
+                            display: 'flex',
+                            flexDirection: 'row',
+                            justifyContent: 'center',
+                            alignItems: 'center',
                           }}
                         >
                           <ListItem
                             disablePadding
                             sx={{
-                              width: "fit-content",
+                              width: 'fit-content',
                             }}
                           >
                             <Typography
                               variant="body2"
                               fontWeight={500}
-                              textAlign={"center"}
+                              textAlign={'center'}
                               minWidth={100}
                             >
                               Tilapia Breeder <br />
@@ -594,14 +593,14 @@ const FeedProfiles = ({
                         <TableCell sx={cellStyle}>{size}</TableCell>
                         {groupedData?.map((group, index) => {
                           const options = group.stores.map(
-                            (_: FeedProduct, i: number) => `opt${i + 1}`
+                            (_: FeedProduct, i: number) => `opt${i + 1}`,
                           );
                           return (
                             <TableCell sx={cellStyle} key={group.supplier.id}>
                               {renderRadioGroup(
                                 rowName,
                                 `col${index + 1}`,
-                                options
+                                options,
                               )}
                             </TableCell>
                           );
@@ -615,9 +614,9 @@ const FeedProfiles = ({
           </Paper>
 
           <Box
-            display={"flex"}
-            justifyContent={"flex-end"}
-            alignItems={"center"}
+            display={'flex'}
+            justifyContent={'flex-end'}
+            alignItems={'center'}
             gap={3}
             mt={4}
           >
@@ -626,17 +625,17 @@ const FeedProfiles = ({
               variant="contained"
               onClick={() => {
                 setActiveStep(1);
-                setLocalItem("feedProfiles", allFeedprofiles);
+                setLocalItem('feedProfiles', allFeedprofiles);
               }}
               sx={{
-                background: "#fff",
-                color: "#06A19B",
+                background: '#fff',
+                color: '#06A19B',
                 fontWeight: 600,
-                padding: "6px 16px",
-                width: "fit-content",
-                textTransform: "capitalize",
-                borderRadius: "8px",
-                border: "1px solid #06A19B",
+                padding: '6px 16px',
+                width: 'fit-content',
+                textTransform: 'capitalize',
+                borderRadius: '8px',
+                border: '1px solid #06A19B',
               }}
             >
               Previous
@@ -645,12 +644,12 @@ const FeedProfiles = ({
               type="submit"
               variant="contained"
               sx={{
-                background: "#06A19B",
+                background: '#06A19B',
                 fontWeight: 600,
-                padding: "6px 16px",
-                width: "fit-content",
-                textTransform: "capitalize",
-                borderRadius: "8px",
+                padding: '6px 16px',
+                width: 'fit-content',
+                textTransform: 'capitalize',
+                borderRadius: '8px',
               }}
             >
               Next

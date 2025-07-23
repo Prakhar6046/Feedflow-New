@@ -1,7 +1,7 @@
-"use client";
-import { sidebarAction } from "@/lib/features/sidebar/sidebarSlice";
-import { userAction } from "@/lib/features/user/userSlice";
-import { useAppDispatch } from "@/lib/hooks";
+'use client';
+import { sidebarAction } from '@/lib/features/sidebar/sidebarSlice';
+import { userAction } from '@/lib/features/user/userSlice';
+import { useAppDispatch } from '@/lib/hooks';
 import {
   Avatar,
   Badge,
@@ -14,32 +14,32 @@ import {
   Stack,
   Tooltip,
   Typography,
-} from "@mui/material";
-import { deleteCookie, getCookie } from "cookies-next";
-import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
-import toast from "react-hot-toast";
+} from '@mui/material';
+import { deleteCookie, getCookie } from 'cookies-next';
+import { useRouter } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
 export interface LoggedUser {
-  id: Number;
-  name: String;
-  email: String;
-  password: String;
-  status: String;
-  role: String;
-  createdAt: String;
-  imageUrl: String;
-  updatedBy: String;
-  createdBy: String;
-  organisationId: Number;
-  updatedAt: String;
+  id: number;
+  name: string;
+  email: string;
+  password: string;
+  status: string;
+  role: string;
+  createdAt: string;
+  imageUrl: string;
+  updatedBy: string;
+  createdBy: string;
+  organisationId: number;
+  updatedAt: string;
 
-  organisationType: String;
+  organisationType: string;
 }
 
 const AccountPopover = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const token = getCookie("auth-token");
+  const token = getCookie('auth-token');
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const [loggedUserData, setLoggedUserData] = useState<LoggedUser>();
@@ -53,16 +53,16 @@ const AccountPopover = () => {
   };
   const handleLogout = async () => {
     toast.dismiss();
-    const data = await fetch("/api/auth/logout", {
-      method: "GET",
+    const data = await fetch('/api/auth/logout', {
+      method: 'GET',
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
     const response = await data.json();
     if (response.status) {
-      router.push("/auth/login");
-      deleteCookie("logged-user");
+      router.push('/auth/login');
+      deleteCookie('logged-user');
       dispatch(sidebarAction.handleSwitchSidebar(false));
     }
 
@@ -72,7 +72,7 @@ const AccountPopover = () => {
     handleClose();
     router.push(route);
   };
-  const loggedUser: any = getCookie("logged-user");
+  const loggedUser: any = getCookie('logged-user');
   useEffect(() => {
     if (loggedUser) {
       const user = JSON.parse(loggedUser);
@@ -87,7 +87,7 @@ const AccountPopover = () => {
     const getUser = async () => {
       try {
         const response = await fetch(`/api/users/${loggedUserData.id}`, {
-          method: "GET",
+          method: 'GET',
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -96,7 +96,7 @@ const AccountPopover = () => {
         setUserData(data.data);
         setLoading(false);
       } catch (error) {
-        console.error("Error fetching user data:", error);
+        console.error('Error fetching user data:', error);
         setLoading(false);
       }
     };
@@ -105,26 +105,26 @@ const AccountPopover = () => {
 
   return (
     <React.Fragment>
-      <Box sx={{ display: "flex", alignItems: "center", textAlign: "center" }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
         <Tooltip title="Account settings">
           <IconButton
             onClick={handleClick}
             size="small"
-            aria-controls={open ? "account-menu" : undefined}
+            aria-controls={open ? 'account-menu' : undefined}
             aria-haspopup="true"
-            aria-expanded={open ? "true" : undefined}
+            aria-expanded={open ? 'true' : undefined}
           >
-            {userData?.imageUrl?.startsWith("http") ? (
+            {userData?.imageUrl?.startsWith('http') ? (
               <Box
                 borderRadius={100}
                 width={40}
                 height={40}
                 style={{
                   backgroundImage: `url(${userData?.imageUrl})`,
-                  backgroundSize: "contain",
-                  backgroundPosition: "center",
-                  backgroundRepeat: "no-repeat",
-                  margin: "0 !important",
+                  backgroundSize: 'contain',
+                  backgroundPosition: 'center',
+                  backgroundRepeat: 'no-repeat',
+                  margin: '0 !important',
                 }}
               ></Box>
             ) : (
@@ -149,54 +149,54 @@ const AccountPopover = () => {
           paper: {
             elevation: 0,
             sx: {
-              overflow: "visible",
-              filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
+              overflow: 'visible',
+              filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
               mt: 1.5,
-              "& .MuiAvatar-root": {
+              '& .MuiAvatar-root': {
                 width: 32,
                 height: 32,
                 ml: -0.5,
                 mr: 1,
               },
-              "&::before": {
+              '&::before': {
                 content: '""',
-                display: "block",
-                position: "absolute",
+                display: 'block',
+                position: 'absolute',
                 top: 0,
                 right: 14,
                 width: 10,
                 height: 10,
-                bgcolor: "background.paper",
-                transform: "translateY(-50%) rotate(45deg)",
+                bgcolor: 'background.paper',
+                transform: 'translateY(-50%) rotate(45deg)',
                 zIndex: 0,
               },
             },
           },
         }}
-        transformOrigin={{ horizontal: "right", vertical: "top" }}
-        anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
         <Box paddingInline={1.5}>
           <Stack
-            display={"flex"}
-            justifyContent={"space-between"}
-            alignItems={"center"}
-            direction={"row"}
+            display={'flex'}
+            justifyContent={'space-between'}
+            alignItems={'center'}
+            direction={'row'}
             gap={3}
           >
             <Typography variant="subtitle2" fontWeight={600}>
-              {userData ? userData?.name : "Demo"}
+              {userData ? userData?.name : 'Demo'}
             </Typography>
             <Badge
-              badgeContent={userData ? userData?.role : ""}
+              badgeContent={userData ? userData?.role : ''}
               color="primary"
               className="profile-badge"
             ></Badge>
           </Stack>
           <Typography variant="body2" fontSize={13} fontWeight={400} mt={0.3}>
-            {userData ? userData?.email : "Demo"}
+            {userData ? userData?.email : 'Demo'}
           </Typography>
-          {userData?.role !== "SUPERADMIN" && (
+          {userData?.role !== 'SUPERADMIN' && (
             <Typography
               variant="body2"
               fontSize={12}
@@ -204,7 +204,7 @@ const AccountPopover = () => {
               fontWeight={600}
               mt={0.5}
             >
-              {userData ? userData?.organisationType : ""}
+              {userData ? userData?.organisationType : ''}
             </Typography>
           )}
         </Box>
@@ -217,7 +217,7 @@ const AccountPopover = () => {
         />
 
         <MenuItem
-          onClick={() => handleChangePage("/dashboard")}
+          onClick={() => handleChangePage('/dashboard')}
           sx={{
             fontSize: 14,
             fontWeight: 500,

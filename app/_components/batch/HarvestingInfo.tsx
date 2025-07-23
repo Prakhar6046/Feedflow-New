@@ -9,19 +9,19 @@ import {
   SelectChangeEvent,
   Stack,
   Typography,
-} from "@mui/material";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { NextPage } from "next";
-import { useState } from "react";
+} from '@mui/material';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { NextPage } from 'next';
+import { useState } from 'react';
 
 interface Props {
   setActiveStep: (val: number) => void;
 }
 
 const HarvestingInfo: NextPage<Props> = ({ setActiveStep }) => {
-  const [age, setAge] = useState("");
+  const [age, setAge] = useState('');
 
   const handleChange = (event: SelectChangeEvent) => {
     setAge(event.target.value as string);
@@ -51,7 +51,7 @@ const HarvestingInfo: NextPage<Props> = ({ setActiveStep }) => {
                 <DatePicker
                   className="form-input"
                   sx={{
-                    width: "100%",
+                    width: '100%',
                   }}
                 />
               </LocalizationProvider>
@@ -76,9 +76,9 @@ const HarvestingInfo: NextPage<Props> = ({ setActiveStep }) => {
           </Grid>
 
           <Box
-            display={"flex"}
-            justifyContent={"flex-end"}
-            alignItems={"center"}
+            display={'flex'}
+            justifyContent={'flex-end'}
+            alignItems={'center'}
             gap={3}
             mt={3}
           >
@@ -86,14 +86,14 @@ const HarvestingInfo: NextPage<Props> = ({ setActiveStep }) => {
               type="submit"
               variant="contained"
               sx={{
-                background: "#fff",
-                color: "#06A19B",
+                background: '#fff',
+                color: '#06A19B',
                 fontWeight: 600,
-                padding: "6px 16px",
-                width: "fit-content",
-                textTransform: "capitalize",
-                borderRadius: "8px",
-                border: "1px solid #06A19B",
+                padding: '6px 16px',
+                width: 'fit-content',
+                textTransform: 'capitalize',
+                borderRadius: '8px',
+                border: '1px solid #06A19B',
               }}
               onClick={() => setActiveStep(1)}
             >
@@ -103,12 +103,12 @@ const HarvestingInfo: NextPage<Props> = ({ setActiveStep }) => {
               type="submit"
               variant="contained"
               sx={{
-                background: "#06A19B",
+                background: '#06A19B',
                 fontWeight: 600,
-                padding: "6px 16px",
-                width: "fit-content",
-                textTransform: "capitalize",
-                borderRadius: "8px",
+                padding: '6px 16px',
+                width: 'fit-content',
+                textTransform: 'capitalize',
+                borderRadius: '8px',
               }}
               onClick={() => setActiveStep(3)}
             >

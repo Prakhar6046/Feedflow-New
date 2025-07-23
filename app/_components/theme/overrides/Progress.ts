@@ -1,36 +1,44 @@
-import { LinearProgressProps } from "@mui/material";
-import { Theme, alpha } from "@mui/material/styles";
+import { LinearProgressProps } from '@mui/material';
+import { Theme, alpha } from '@mui/material/styles';
 
-const COLORS = ["primary", "secondary", "info", "success", "warning", "error"] as const;
+const COLORS = [
+  'primary',
+  'secondary',
+  'info',
+  'success',
+  'warning',
+  'error',
+] as const;
 
 export default function Progress(theme: Theme) {
-	const rootStyle = (ownerState: LinearProgressProps) => {
-		const bufferVariant = ownerState.variant === "buffer";
+  const rootStyle = (ownerState: LinearProgressProps) => {
+    const bufferVariant = ownerState.variant === 'buffer';
 
-		const defaultStyle = {
-			borderRadius: 4,
-			"& .MuiLinearProgress-bar": {
-				borderRadius: 4
-			},
-			...(bufferVariant && {
-				backgroundColor: "transparent"
-			})
-		};
+    const defaultStyle = {
+      borderRadius: 4,
+      '& .MuiLinearProgress-bar': {
+        borderRadius: 4,
+      },
+      ...(bufferVariant && {
+        backgroundColor: 'transparent',
+      }),
+    };
 
-		const colorStyle = COLORS.map(color => ({
-			...(ownerState.color === color && {
-				backgroundColor: alpha(theme.palette[color].main, 0.24)
-			})
-		}));
+    const colorStyle = COLORS.map((color) => ({
+      ...(ownerState.color === color && {
+        backgroundColor: alpha(theme.palette[color].main, 0.24),
+      }),
+    }));
 
-		return [...colorStyle, defaultStyle];
-	};
+    return [...colorStyle, defaultStyle];
+  };
 
-	return {
-		MuiLinearProgress: {
-			styleOverrides: {
-				root: ({ ownerState }: { ownerState: LinearProgressProps }) => rootStyle(ownerState)
-			}
-		}
-	};
+  return {
+    MuiLinearProgress: {
+      styleOverrides: {
+        root: ({ ownerState }: { ownerState: LinearProgressProps }) =>
+          rootStyle(ownerState),
+      },
+    },
+  };
 }

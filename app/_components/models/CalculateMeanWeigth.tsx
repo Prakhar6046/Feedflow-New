@@ -1,34 +1,31 @@
 import {
   Box,
   Button,
-  Grid,
   IconButton,
   Modal,
   Stack,
   TextField,
   Typography,
-} from "@mui/material";
-import React, { useEffect } from "react";
-import { Close as CloseIcon } from "@mui/icons-material";
-import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
-import toast from "react-hot-toast";
-import { Production } from "@/app/_typeModels/production";
-import * as validationPattern from "@/app/_lib/utils/validationPatterns/index";
-import * as validationMessage from "@/app/_lib/utils/validationsMessage/index";
+} from '@mui/material';
+import React, { useEffect } from 'react';
+import { Close as CloseIcon } from '@mui/icons-material';
+import { SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
+import toast from 'react-hot-toast';
+import * as validationMessage from '@/app/_lib/utils/validationsMessage/index';
 
 interface InputTypes {
-  avgOfMeanWeight?: Number;
+  avgOfMeanWeight?: number;
 
   meanWeight: {
-    noOfFish: Number | undefined;
-    totalWeight: Number | undefined;
-    meanWeight: Number;
+    noOfFish: number | undefined;
+    totalWeight: number | undefined;
+    meanWeight: number;
   }[];
 }
 interface Props {
   setOpen: (open: boolean) => void;
   open: boolean;
-  setAvgOfMeanWeight: (val: Number) => void;
+  setAvgOfMeanWeight: (val: number) => void;
 }
 const CalculateMeanWeigth = ({ open, setOpen, setAvgOfMeanWeight }: Props) => {
   const {
@@ -55,12 +52,12 @@ const CalculateMeanWeigth = ({ open, setOpen, setAvgOfMeanWeight }: Props) => {
       reset();
     } else {
       toast.dismiss();
-      toast.error("Please fill the number of fish and total weight");
+      toast.error('Please fill the number of fish and total weight');
     }
   };
   const { fields, append, remove } = useFieldArray({
     control,
-    name: "meanWeight",
+    name: 'meanWeight',
   });
   const handleClose = () => {
     setOpen(false);
@@ -68,7 +65,7 @@ const CalculateMeanWeigth = ({ open, setOpen, setAvgOfMeanWeight }: Props) => {
   };
 
   const handleKeyPress = (key: string) => {
-    if (key === "Enter") {
+    if (key === 'Enter') {
       append({ noOfFish: undefined, totalWeight: undefined, meanWeight: 0 });
     }
   };
@@ -77,12 +74,12 @@ const CalculateMeanWeigth = ({ open, setOpen, setAvgOfMeanWeight }: Props) => {
       if (feild.noOfFish && feild.totalWeight) {
         setValue(
           `meanWeight.${i}.meanWeight`,
-          Math.round(Number(feild.totalWeight) / Number(feild.noOfFish))
+          Math.round(Number(feild.totalWeight) / Number(feild.noOfFish)),
         );
       }
 
-      let totalWeightArr: Array<number> = [];
-      let totalFishsArr: Array<number> = [];
+      const totalWeightArr: Array<number> = [];
+      const totalFishsArr: Array<number> = [];
 
       watchFields.map((feild) => {
         if (feild.totalWeight) {
@@ -100,11 +97,11 @@ const CalculateMeanWeigth = ({ open, setOpen, setAvgOfMeanWeight }: Props) => {
         return (acc += val);
       }, 0);
       const avgOfMeanWeight = totalWeight / totalFish;
-      setValue("avgOfMeanWeight", avgOfMeanWeight);
+      setValue('avgOfMeanWeight', avgOfMeanWeight);
     });
   }, [
-    watchFields.map((field) => field.noOfFish).join(","),
-    watchFields.map((field) => field.totalWeight).join(","),
+    watchFields.map((field) => field.noOfFish).join(','),
+    watchFields.map((field) => field.totalWeight).join(','),
   ]);
 
   return (
@@ -117,37 +114,37 @@ const CalculateMeanWeigth = ({ open, setOpen, setAvgOfMeanWeight }: Props) => {
       className="custom-modal-positioning"
     >
       <Stack
-        bgcolor={"white"}
+        bgcolor={'white'}
         borderRadius={2}
-        mx={"auto"}
-        height={"fit-content"}
+        mx={'auto'}
+        height={'fit-content'}
         sx={{
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%,-50%)",
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%,-50%)',
           width: {
-            md: "fit-content",
-            sm: "70%",
-            xs: "90%",
+            md: 'fit-content',
+            sm: '70%',
+            xs: '90%',
           },
         }}
       >
         <form className="form-height">
           <Box
-            display={"flex"}
-            justifyContent={"center"}
-            alignItems={"center"}
-            width={"100%"}
+            display={'flex'}
+            justifyContent={'center'}
+            alignItems={'center'}
+            width={'100%'}
           >
             <Box>
               <Box display="flex" justifyContent="end" padding={2}>
                 <IconButton
                   onClick={handleClose}
                   sx={{
-                    color: "inherit",
-                    background: "transparent",
-                    margin: "2",
+                    color: 'inherit',
+                    background: 'transparent',
+                    margin: '2',
                     mr: 0,
                   }}
                 >
@@ -158,24 +155,24 @@ const CalculateMeanWeigth = ({ open, setOpen, setAvgOfMeanWeight }: Props) => {
               {fields?.map((field, idx) => (
                 <Stack
                   key={field.id}
-                  display={"flex"}
-                  direction={"row"}
+                  display={'flex'}
+                  direction={'row'}
                   sx={{
-                    width: "100%",
-                    paddingInline: "20px",
+                    width: '100%',
+                    paddingInline: '20px',
                     marginBottom: 2,
                     gap: 1.5,
                     justifyContent: {
-                      lg: "center",
+                      lg: 'center',
                     },
                   }}
                 >
                   <Box
                     sx={{
                       width: {
-                        lg: "100%",
-                        md: "48.4%",
-                        xs: "100%",
+                        lg: '100%',
+                        md: '48.4%',
+                        xs: '100%',
                       },
                     }}
                   >
@@ -187,13 +184,13 @@ const CalculateMeanWeigth = ({ open, setOpen, setAvgOfMeanWeight }: Props) => {
                       })}
                       focused
                       className="form-input"
-                      sx={{ width: "100%" }}
+                      sx={{ width: '100%' }}
                     />
 
                     {errors &&
                       errors.meanWeight &&
                       errors.meanWeight[idx] &&
-                      errors.meanWeight[idx].noOfFish?.type === "required" && (
+                      errors.meanWeight[idx].noOfFish?.type === 'required' && (
                         <Typography
                           variant="body2"
                           color="red"
@@ -206,12 +203,12 @@ const CalculateMeanWeigth = ({ open, setOpen, setAvgOfMeanWeight }: Props) => {
                   </Box>
 
                   <Box
-                    position={"relative"}
+                    position={'relative'}
                     sx={{
                       width: {
-                        lg: "100%",
-                        md: "48.4%",
-                        xs: "100%",
+                        lg: '100%',
+                        md: '48.4%',
+                        xs: '100%',
                       },
                     }}
                   >
@@ -223,20 +220,20 @@ const CalculateMeanWeigth = ({ open, setOpen, setAvgOfMeanWeight }: Props) => {
                       })}
                       focused
                       className="form-input"
-                      sx={{ width: "100%" }}
+                      sx={{ width: '100%' }}
                     />
                     <Typography
                       variant="body2"
                       color="#555555AC"
                       sx={{
-                        position: "absolute",
+                        position: 'absolute',
                         right: 6,
-                        top: "29px",
-                        transform: "translate(-6px, -50%)",
-                        backgroundColor: "#fff",
+                        top: '29px',
+                        transform: 'translate(-6px, -50%)',
+                        backgroundColor: '#fff',
                         height: 30,
-                        display: "grid",
-                        placeItems: "center",
+                        display: 'grid',
+                        placeItems: 'center',
                         zIndex: 1,
                         pl: 1,
                       }}
@@ -259,12 +256,12 @@ const CalculateMeanWeigth = ({ open, setOpen, setAvgOfMeanWeight }: Props) => {
                   </Box>
 
                   <Box
-                    position={"relative"}
+                    position={'relative'}
                     sx={{
                       width: {
-                        lg: "100%",
-                        md: "48.4%",
-                        xs: "100%",
+                        lg: '100%',
+                        md: '48.4%',
+                        xs: '100%',
                       },
                     }}
                   >
@@ -275,20 +272,20 @@ const CalculateMeanWeigth = ({ open, setOpen, setAvgOfMeanWeight }: Props) => {
                       focused
                       {...register(`meanWeight.${idx}.meanWeight`)}
                       className="form-input"
-                      sx={{ width: "100%" }}
+                      sx={{ width: '100%' }}
                     />
                     <Typography
                       variant="body2"
                       color="#555555AC"
                       sx={{
-                        position: "absolute",
+                        position: 'absolute',
                         right: 6,
-                        top: "50%",
-                        transform: "translate(-6px, -50%)",
-                        backgroundColor: "#fff",
+                        top: '50%',
+                        transform: 'translate(-6px, -50%)',
+                        backgroundColor: '#fff',
                         height: 30,
-                        display: "grid",
-                        placeItems: "center",
+                        display: 'grid',
+                        placeItems: 'center',
                         zIndex: 1,
                         pl: 1,
                       }}
@@ -298,15 +295,15 @@ const CalculateMeanWeigth = ({ open, setOpen, setAvgOfMeanWeight }: Props) => {
                   </Box>
 
                   <Box
-                    display={"flex"}
-                    alignItems={"center"}
-                    justifyContent={"end"}
-                    position={"relative"}
+                    display={'flex'}
+                    alignItems={'center'}
+                    justifyContent={'end'}
+                    position={'relative'}
                     sx={{
-                      visibility: idx === 0 ? "hidden" : "",
-                      cursor: "pointer",
+                      visibility: idx === 0 ? 'hidden' : '',
+                      cursor: 'pointer',
                       width: {
-                        xs: "auto",
+                        xs: 'auto',
                       },
                     }}
                     onClick={() => remove(idx)}
@@ -332,8 +329,8 @@ const CalculateMeanWeigth = ({ open, setOpen, setAvgOfMeanWeight }: Props) => {
               <Box
                 px={2}
                 mt={3}
-                display={"flex"}
-                alignItems={"center"}
+                display={'flex'}
+                alignItems={'center'}
                 gap={1.5}
               >
                 <Typography variant="body1" fontWeight={600}>
@@ -341,8 +338,8 @@ const CalculateMeanWeigth = ({ open, setOpen, setAvgOfMeanWeight }: Props) => {
                 </Typography>
 
                 <Typography variant="body1">
-                  {watch("avgOfMeanWeight")
-                    ? Number(watch("avgOfMeanWeight")).toFixed(2)
+                  {watch('avgOfMeanWeight')
+                    ? Number(watch('avgOfMeanWeight')).toFixed(2)
                     : 0}
                 </Typography>
               </Box>
@@ -350,7 +347,7 @@ const CalculateMeanWeigth = ({ open, setOpen, setAvgOfMeanWeight }: Props) => {
               <Box
                 display="flex"
                 justifyContent="flex-end"
-                alignItems={"flex-end"}
+                alignItems={'flex-end'}
                 gap="10px"
                 padding={3}
                 // marginX={"40px"}
@@ -366,16 +363,16 @@ const CalculateMeanWeigth = ({ open, setOpen, setAvgOfMeanWeight }: Props) => {
                     })
                   }
                   sx={{
-                    background: "#06A19B",
-                    fontWeight: "bold",
-                    padding: "8px 20px",
+                    background: '#06A19B',
+                    fontWeight: 'bold',
+                    padding: '8px 20px',
                     width: {
-                      xs: "50%",
-                      lg: "fit-content",
+                      xs: '50%',
+                      lg: 'fit-content',
                     },
-                    textTransform: "capitalize",
-                    borderRadius: "12px",
-                    marginBlock: "10px",
+                    textTransform: 'capitalize',
+                    borderRadius: '12px',
+                    marginBlock: '10px',
                   }}
                 >
                   Add Row
@@ -384,16 +381,16 @@ const CalculateMeanWeigth = ({ open, setOpen, setAvgOfMeanWeight }: Props) => {
                 <Button
                   variant="contained"
                   sx={{
-                    background: "#06A19B",
-                    fontWeight: "bold",
-                    padding: "8px 20px",
+                    background: '#06A19B',
+                    fontWeight: 'bold',
+                    padding: '8px 20px',
                     width: {
-                      xs: "50%",
-                      lg: "fit-content",
+                      xs: '50%',
+                      lg: 'fit-content',
                     },
-                    textTransform: "capitalize",
-                    borderRadius: "12px",
-                    marginBlock: "10px",
+                    textTransform: 'capitalize',
+                    borderRadius: '12px',
+                    marginBlock: '10px',
                   }}
                   onClick={handleSubmit(onSubmit)}
                 >

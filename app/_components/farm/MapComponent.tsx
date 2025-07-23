@@ -1,27 +1,26 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef } from 'react';
 import {
   GoogleMap,
   useLoadScript,
   Marker,
   InfoWindow,
-} from "@react-google-maps/api";
-import Button from "@mui/material/Button";
-import Dialog from "@mui/material/Dialog";
-import DialogTitle from "@mui/material/DialogTitle";
-import DialogContent from "@mui/material/DialogContent";
-import DialogActions from "@mui/material/DialogActions";
-import TextField from "@mui/material/TextField";
-import List from "@mui/material/List"; // For suggestions
-import ListItem from "@mui/material/ListItem"; // For individual suggestion
-import ListItemButton from "@mui/material/ListItemButton"; // For clickable suggestion
-import Paper from "@mui/material/Paper"; // For suggestions container
-import toast from "react-hot-toast";
-import { getCookie } from "cookies-next";
+} from '@react-google-maps/api';
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+import TextField from '@mui/material/TextField';
+import List from '@mui/material/List'; // For suggestions
+import ListItem from '@mui/material/ListItem'; // For individual suggestion
+import ListItemButton from '@mui/material/ListItemButton'; // For clickable suggestion
+import Paper from '@mui/material/Paper'; // For suggestions container
+import toast from 'react-hot-toast';
 
 // Define map container style
 const mapContainerStyle = {
-  width: "100%",
-  height: "400px",
+  width: '100%',
+  height: '400px',
 };
 
 // Default center position (e.g., London)
@@ -31,7 +30,7 @@ const defaultCenter = {
 };
 
 // Libraries to load
-const libraries: any = ["places"];
+const libraries: any = ['places'];
 
 const MapComponent = ({
   setAddressInformation,
@@ -45,7 +44,7 @@ const MapComponent = ({
   token,
 }: any) => {
   const [selectedPosition, setSelectedPosition] = useState<any>(null);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState('');
   const [locationData, setLocationData] = useState<any>(null);
   const [openDialog, setOpenDialog] = useState(false);
   const [infoWindowOpen, setInfoWindowOpen] = useState(false);
@@ -59,7 +58,7 @@ const MapComponent = ({
 
   // Load Google Maps script
   const { isLoaded, loadError } = useLoadScript({
-    googleMapsApiKey: "AIzaSyDKvMKD1DyMdxR7VgqjO428--aBf9wpkxw",
+    googleMapsApiKey: 'AIzaSyDKvMKD1DyMdxR7VgqjO428--aBf9wpkxw',
     libraries,
   });
 
@@ -93,7 +92,7 @@ const MapComponent = ({
         } else {
           setSuggestions([]);
         }
-      }
+      },
     );
   };
 
@@ -107,32 +106,32 @@ const MapComponent = ({
       setInfoWindowOpen(true);
       fetchReverseGeocode(lat, lng);
     },
-    [isCalAltitude]
+    [isCalAltitude],
   );
 
   // Function to perform reverse geocoding using Google Maps Geocoding API
   const fetchReverseGeocode = async (lat: any, lng: any) => {
     try {
       const response = await fetch(
-        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=AIzaSyDKvMKD1DyMdxR7VgqjO428--aBf9wpkxw`
+        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=AIzaSyDKvMKD1DyMdxR7VgqjO428--aBf9wpkxw`,
       );
       const data = await response.json();
 
-      if (data.status === "OK" && data.results.length > 0) {
+      if (data.status === 'OK' && data.results.length > 0) {
         if (isCalAltitude && data.results[0].geometry) {
           const altitudeResponse = await fetch(
             `/api/farm/altitude?lat=${data.results[0].geometry.location.lat}&lng=${data.results[0].geometry.location.lng}`,
             {
-              method: "GET",
+              method: 'GET',
               headers: {
                 Authorization: `Bearer ${token}`,
               },
-            }
+            },
           );
           const res = await altitudeResponse.json();
-          clearErrors("farmAltitude");
-          clearErrors("lat");
-          clearErrors("lng");
+          clearErrors('farmAltitude');
+          clearErrors('lat');
+          clearErrors('lng');
           setAltitude(String(res?.results[0]?.elevation));
           setLat(String(res?.results[0]?.location.lat));
           setLng(String(res?.results[0]?.location.lng));
@@ -141,16 +140,16 @@ const MapComponent = ({
         setLocationData(address);
         const formattedAddress = formatGoogleAddress(
           data.results[0].address_components,
-          data.results[0].formatted_address
+          data.results[0].formatted_address,
         );
         setAddressInformation(formattedAddress);
       } else {
         setAddressInformation(null);
-        setLocationData("Address not found.");
-        toast.error("Address not found for the selected location.");
+        setLocationData('Address not found.');
+        toast.error('Address not found for the selected location.');
       }
     } catch (error) {
-      console.error("Error performing reverse geocoding:", error);
+      console.error('Error performing reverse geocoding:', error);
     }
   };
 
@@ -161,26 +160,26 @@ const MapComponent = ({
     try {
       const response = await fetch(
         `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
-          searchQuery
-        )}&key=AIzaSyDKvMKD1DyMdxR7VgqjO428--aBf9wpkxw`
+          searchQuery,
+        )}&key=AIzaSyDKvMKD1DyMdxR7VgqjO428--aBf9wpkxw`,
       );
       const data = await response.json();
 
-      if (data.status === "OK" && data.results.length > 0) {
+      if (data.status === 'OK' && data.results.length > 0) {
         if (isCalAltitude && data.results[0].geometry) {
           const altitudeResponse = await fetch(
             `/api/farm/altitude?lat=${data.results[0].geometry.location.lat}&lng=${data.results[0].geometry.location.lng}`,
             {
-              method: "GET",
+              method: 'GET',
               headers: {
                 Authorization: `Bearer ${token}`,
               },
-            }
+            },
           );
           const res = await altitudeResponse.json();
-          clearErrors("farmAltitude");
-          clearErrors("lat");
-          clearErrors("lng");
+          clearErrors('farmAltitude');
+          clearErrors('lat');
+          clearErrors('lng');
           setAltitude(String(res?.results[0]?.elevation));
           setLat(String(res?.results[0]?.location.lat));
           setLng(String(res?.results[0]?.location.lng));
@@ -190,53 +189,53 @@ const MapComponent = ({
         setSelectedPosition(newPosition);
         const formattedAddress = formatGoogleAddress(
           data.results[0].address_components,
-          data.results[0].formatted_address
+          data.results[0].formatted_address,
         );
         setAddressInformation(formattedAddress);
         // setAddressInformation(data.results[0].formatted_address);
         setLocationData(data.results[0].formatted_address);
       } else {
-        alert("Location not found.");
+        alert('Location not found.');
       }
     } catch (error) {
       console.error(
-        "Error fetching location data from Google Geocoding API:",
-        error
+        'Error fetching location data from Google Geocoding API:',
+        error,
       );
     }
   };
 
   const formatGoogleAddress = (components: any, completeAddress: any) => {
-    let address = "";
-    let address2 = "";
-    let city = "";
-    let state = "";
-    let postcode = "";
-    let country = "";
+    let address = '';
+    let address2 = '';
+    let city = '';
+    let state = '';
+    let postcode = '';
+    let country = '';
 
     components.forEach((component: any) => {
-      if (component.types.includes("premise")) {
+      if (component.types.includes('premise')) {
         address = component.long_name;
-      } else if (component.types.includes("street_number")) {
+      } else if (component.types.includes('street_number')) {
         address = address ? address : component.long_name; // Use street_number if premise is not available
-      } else if (component.types.includes("route")) {
+      } else if (component.types.includes('route')) {
         address = address
-          ? address + " " + component.long_name
+          ? address + ' ' + component.long_name
           : component.long_name; // Combine with existing address or use route
-      } else if (component.types.includes("locality")) {
+      } else if (component.types.includes('locality')) {
         city = component.long_name;
-      } else if (component.types.includes("administrative_area_level_1")) {
+      } else if (component.types.includes('administrative_area_level_1')) {
         state = component.long_name;
-      } else if (component.types.includes("postal_code")) {
+      } else if (component.types.includes('postal_code')) {
         postcode = component.long_name;
-      } else if (component.types.includes("country")) {
+      } else if (component.types.includes('country')) {
         country = component.long_name;
       } else if (
-        component.types.includes("neighborhood") ||
-        component.types.includes("sublocality")
+        component.types.includes('neighborhood') ||
+        component.types.includes('sublocality')
       ) {
         address2 = address2
-          ? address2 + ", " + component.long_name
+          ? address2 + ', ' + component.long_name
           : component.long_name;
       }
     });
@@ -246,7 +245,7 @@ const MapComponent = ({
       address = completeAddress;
     }
 
-    address2 = address2.trim().replace(/,$/, "");
+    address2 = address2.trim().replace(/,$/, '');
 
     return { address, city, state, postcode, country, address2 };
   };
@@ -255,22 +254,22 @@ const MapComponent = ({
   if (!isLoaded) return <div>Loading Maps</div>;
 
   return (
-    <div style={{ position: "relative" }}>
+    <div style={{ position: 'relative' }}>
       {/* <-- Added relative positioning for suggestions dropdown */}
       <Button
         type="button"
         onClick={() => setOpenDialog(true)}
         variant="contained"
         sx={{
-          background: "#fff",
+          background: '#fff',
           fontWeight: 600,
-          padding: "6px 16px",
-          width: "fit-content",
-          textTransform: "capitalize",
-          borderRadius: "8px",
-          color: "#06A19B",
-          border: "1px solid #06A19B",
-          boxShadow: "none",
+          padding: '6px 16px',
+          width: 'fit-content',
+          textTransform: 'capitalize',
+          borderRadius: '8px',
+          color: '#06A19B',
+          border: '1px solid #06A19B',
+          boxShadow: 'none',
         }}
       >
         Use Coordinates
@@ -280,11 +279,11 @@ const MapComponent = ({
         <DialogContent>
           <div
             style={{
-              marginBottom: "20px",
-              display: "flex",
-              alignItems: "center",
-              position: "relative", // <-- Added for positioning the dropdown
-              width: "100%",
+              marginBottom: '20px',
+              display: 'flex',
+              alignItems: 'center',
+              position: 'relative', // <-- Added for positioning the dropdown
+              width: '100%',
             }}
           >
             <TextField
@@ -298,19 +297,19 @@ const MapComponent = ({
               variant="outlined"
               size="small"
               style={{
-                padding: "8px",
-                width: "300px",
-                borderRadius: "4px",
-                marginRight: "10px",
+                padding: '8px',
+                width: '300px',
+                borderRadius: '4px',
+                marginRight: '10px',
               }}
             />
             <Button
               onClick={handleSearch}
               variant="contained"
               sx={{
-                background: "#06A19B",
-                color: "#fff",
-                borderRadius: "4px",
+                background: '#06A19B',
+                color: '#fff',
+                borderRadius: '4px',
               }}
             >
               Search
@@ -323,15 +322,15 @@ const MapComponent = ({
                 setUseAddress(true);
               }}
               sx={{
-                background: "#06A19B",
+                background: '#06A19B',
                 fontWeight: 600,
-                padding: "6px 16px",
-                width: "fit-content",
-                textTransform: "capitalize",
-                borderRadius: "8px",
-                boxShadow: "none",
-                border: "1px solid #06A19B",
-                marginLeft: "10px",
+                padding: '6px 16px',
+                width: 'fit-content',
+                textTransform: 'capitalize',
+                borderRadius: '8px',
+                boxShadow: 'none',
+                border: '1px solid #06A19B',
+                marginLeft: '10px',
               }}
             >
               Use Address
@@ -341,16 +340,16 @@ const MapComponent = ({
             {suggestions.length > 0 && (
               <Paper
                 style={{
-                  position: "absolute",
-                  top: "100%", // Position right below the input field
+                  position: 'absolute',
+                  top: '100%', // Position right below the input field
                   left: 0,
                   right: 0,
                   zIndex: 1000,
-                  maxHeight: "200px",
-                  overflowY: "auto",
-                  backgroundColor: "#fff", // Ensure background is white
-                  border: "1px solid #ccc", // Add a subtle border
-                  borderTop: "none", // Remove top border to connect with input
+                  maxHeight: '200px',
+                  overflowY: 'auto',
+                  backgroundColor: '#fff', // Ensure background is white
+                  border: '1px solid #ccc', // Add a subtle border
+                  borderTop: 'none', // Remove top border to connect with input
                 }}
               >
                 <List>
@@ -369,7 +368,7 @@ const MapComponent = ({
                             { placeId: suggestion.place_id },
                             (results, status) => {
                               if (
-                                status === "OK" &&
+                                status === 'OK' &&
                                 results &&
                                 results[0].geometry
                               ) {
@@ -385,8 +384,8 @@ const MapComponent = ({
                                 setAddressInformation(
                                   formatGoogleAddress(
                                     results[0].address_components,
-                                    results[0].formatted_address
-                                  )
+                                    results[0].formatted_address,
+                                  ),
                                 );
 
                                 // Optionally, fetch altitude if required
@@ -397,44 +396,46 @@ const MapComponent = ({
                                   fetch(
                                     `/api/farm/altitude?lat=${results[0].geometry.location.lat()}&lng=${results[0].geometry.location.lng()}`,
                                     {
-                                      method: "GET",
+                                      method: 'GET',
                                       headers: {
                                         Authorization: `Bearer ${token}`,
                                       },
-                                    }
+                                    },
                                   )
                                     .then((altitudeRes) => altitudeRes.json())
                                     .then((altitudeData) => {
-                                      clearErrors("farmAltitude");
-                                      clearErrors("lat");
-                                      clearErrors("lng");
+                                      clearErrors('farmAltitude');
+                                      clearErrors('lat');
+                                      clearErrors('lng');
                                       setAltitude(
                                         String(
-                                          altitudeData?.results[0]?.elevation
-                                        )
+                                          altitudeData?.results[0]?.elevation,
+                                        ),
                                       );
                                       setLat(
                                         String(
-                                          altitudeData?.results[0]?.location.lat
-                                        )
+                                          altitudeData?.results[0]?.location
+                                            .lat,
+                                        ),
                                       );
                                       setLng(
                                         String(
-                                          altitudeData?.results[0]?.location.lng
-                                        )
+                                          altitudeData?.results[0]?.location
+                                            .lng,
+                                        ),
                                       );
                                     })
                                     .catch((error) => {
                                       console.error(
-                                        "Error fetching altitude:",
-                                        error
+                                        'Error fetching altitude:',
+                                        error,
                                       );
                                     });
                                 }
                               } else {
-                                alert("Location details not found.");
+                                alert('Location details not found.');
                               }
-                            }
+                            },
                           );
                         }}
                       >

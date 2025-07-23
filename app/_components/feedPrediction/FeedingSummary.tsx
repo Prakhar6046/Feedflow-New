@@ -1,8 +1,8 @@
-"use clinet";
-import TabContext from "@mui/lab/TabContext";
-import TabList from "@mui/lab/TabList";
-import { Box, Grid, Stack, Tab, Typography } from "@mui/material";
-import React from "react";
+'use clinet';
+import TabContext from '@mui/lab/TabContext';
+import TabList from '@mui/lab/TabList';
+import { Box, Grid, Stack, Tab, Typography } from '@mui/material';
+import React from 'react';
 
 function FeedingSummary() {
   return (
@@ -21,13 +21,13 @@ function FeedingSummary() {
                 my: 1.5,
                 pb: 1,
               }}
-              borderBottom={"1px solid black"}
+              borderBottom={'1px solid black'}
             >
               Overall Summary
             </Typography>
 
             <Stack>
-              <Box display={"flex"} alignItems={"center"} gap={1} mb={0.75}>
+              <Box display={'flex'} alignItems={'center'} gap={1} mb={0.75}>
                 <Typography
                   variant="body1"
                   color="#000"
@@ -55,7 +55,7 @@ function FeedingSummary() {
                 </Typography>
               </Box>
 
-              <Box display={"flex"} alignItems={"center"} gap={1} mb={0.75}>
+              <Box display={'flex'} alignItems={'center'} gap={1} mb={0.75}>
                 <Typography
                   variant="body1"
                   color="#000"
@@ -83,7 +83,7 @@ function FeedingSummary() {
                 </Typography>
               </Box>
 
-              <Box display={"flex"} alignItems={"center"} gap={1} mb={0.75}>
+              <Box display={'flex'} alignItems={'center'} gap={1} mb={0.75}>
                 <Typography
                   variant="body1"
                   color="#000"
@@ -111,7 +111,7 @@ function FeedingSummary() {
                 </Typography>
               </Box>
 
-              <Box display={"flex"} alignItems={"center"} gap={1} mb={0.75}>
+              <Box display={'flex'} alignItems={'center'} gap={1} mb={0.75}>
                 <Typography
                   variant="body1"
                   color="#000"
@@ -155,13 +155,13 @@ function FeedingSummary() {
                 my: 1.5,
                 pb: 1,
               }}
-              borderBottom={"1px solid black"}
+              borderBottom={'1px solid black'}
             >
               Feed Usage(All Farms/Units)
             </Typography>
 
             <Stack>
-              <Box display={"flex"} alignItems={"center"} gap={1} mb={0.75}>
+              <Box display={'flex'} alignItems={'center'} gap={1} mb={0.75}>
                 <Typography
                   variant="body1"
                   color="#000"
@@ -189,7 +189,7 @@ function FeedingSummary() {
                 </Typography>
               </Box>
 
-              <Box display={"flex"} alignItems={"center"} gap={1} mb={0.75}>
+              <Box display={'flex'} alignItems={'center'} gap={1} mb={0.75}>
                 <Typography
                   variant="body1"
                   color="#000"
@@ -217,7 +217,7 @@ function FeedingSummary() {
                 </Typography>
               </Box>
 
-              <Box display={"flex"} alignItems={"center"} gap={1} mb={0.75}>
+              <Box display={'flex'} alignItems={'center'} gap={1} mb={0.75}>
                 <Typography
                   variant="body1"
                   color="#000"
@@ -249,7 +249,7 @@ function FeedingSummary() {
         </Grid>
 
         <Grid item xs={12}>
-          <TabContext value={"farm1"}>
+          <TabContext value={'farm1'}>
             {/* value={value} */}
 
             <Box mb={2}>
@@ -276,13 +276,13 @@ function FeedingSummary() {
                 my: 1.5,
                 pb: 1,
               }}
-              borderBottom={"1px solid black"}
+              borderBottom={'1px solid black'}
             >
               Feed Usage(Farm 1)
             </Typography>
 
             <Stack>
-              <Box display={"flex"} alignItems={"center"} gap={1} mb={0.75}>
+              <Box display={'flex'} alignItems={'center'} gap={1} mb={0.75}>
                 <Typography
                   variant="body1"
                   color="#000"
@@ -310,7 +310,7 @@ function FeedingSummary() {
                 </Typography>
               </Box>
 
-              <Box display={"flex"} alignItems={"center"} gap={1} mb={0.75}>
+              <Box display={'flex'} alignItems={'center'} gap={1} mb={0.75}>
                 <Typography
                   variant="body1"
                   color="#000"
@@ -338,7 +338,7 @@ function FeedingSummary() {
                 </Typography>
               </Box>
 
-              <Box display={"flex"} alignItems={"center"} gap={1} mb={0.75}>
+              <Box display={'flex'} alignItems={'center'} gap={1} mb={0.75}>
                 <Typography
                   variant="body1"
                   color="#000"

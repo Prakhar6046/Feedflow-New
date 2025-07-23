@@ -1,5 +1,5 @@
-import { RootState } from "@/lib/store";
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { RootState } from '@/lib/store';
+import { createSlice } from '@reduxjs/toolkit';
 interface InitialState {
   switchSidebar: boolean;
 }
@@ -8,7 +8,7 @@ const initialState: InitialState = {
   switchSidebar: false,
 };
 const sidebarSlice = createSlice({
-  name: "sidebar",
+  name: 'sidebar',
   initialState,
   reducers: {
     handleSwitchSidebar: (state, action) => {

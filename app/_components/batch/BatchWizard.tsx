@@ -1,5 +1,5 @@
-import { Box, Button, Stack, Typography } from "@mui/material";
-import { NextPage } from "next";
+import { Box, Button, Stack, Typography } from '@mui/material';
+import { NextPage } from 'next';
 
 interface Props {
   setActiveStep: (val: number) => void;
@@ -22,15 +22,15 @@ const BatchWizard: NextPage<Props> = ({ setActiveStep }) => {
       </Typography>
 
       <Typography variant="body1" color="#555555">
-        This wizard will assist you in adding a new fish batch to your account.{" "}
+        This wizard will assist you in adding a new fish batch to your account.{' '}
         <br />
         The steps you will be following will proceed as follows:
       </Typography>
 
       <Stack mt={4}>
         <Box
-          display={"flex"}
-          alignItems={"start"}
+          display={'flex'}
+          alignItems={'start'}
           sx={{
             gap: {
               md: 2,
@@ -41,9 +41,9 @@ const BatchWizard: NextPage<Props> = ({ setActiveStep }) => {
           <Box>
             <Box
               fontWeight={700}
-              display={"flex"}
-              justifyContent={"center"}
-              alignItems={"center"}
+              display={'flex'}
+              justifyContent={'center'}
+              alignItems={'center'}
               borderRadius={100}
               sx={{
                 width: {
@@ -54,8 +54,8 @@ const BatchWizard: NextPage<Props> = ({ setActiveStep }) => {
                   md: 60,
                   xs: 30,
                 },
-                color: "#fff",
-                backgroundColor: "#06A19B",
+                color: '#fff',
+                backgroundColor: '#06A19B',
                 fontSize: {
                   md: 28,
                   xs: 16,
@@ -93,14 +93,15 @@ const BatchWizard: NextPage<Props> = ({ setActiveStep }) => {
                 },
               }}
             >
-              In this step you will define the parameters for the projection.{" "}
+              In this step you will define the parameters for the
+              projection.{' '}
             </Typography>
           </Box>
         </Box>
 
         <Box
-          display={"flex"}
-          alignItems={"start"}
+          display={'flex'}
+          alignItems={'start'}
           sx={{
             gap: {
               md: 2,
@@ -115,9 +116,9 @@ const BatchWizard: NextPage<Props> = ({ setActiveStep }) => {
           <Box>
             <Box
               fontWeight={700}
-              display={"flex"}
-              justifyContent={"center"}
-              alignItems={"center"}
+              display={'flex'}
+              justifyContent={'center'}
+              alignItems={'center'}
               borderRadius={100}
               sx={{
                 width: {
@@ -128,8 +129,8 @@ const BatchWizard: NextPage<Props> = ({ setActiveStep }) => {
                   md: 60,
                   xs: 30,
                 },
-                color: "#fff",
-                backgroundColor: "#06A19B",
+                color: '#fff',
+                backgroundColor: '#06A19B',
                 fontSize: {
                   md: 28,
                   xs: 16,
@@ -168,14 +169,15 @@ const BatchWizard: NextPage<Props> = ({ setActiveStep }) => {
               }}
             >
               In this step you will define the parameters for the projection. In
-              other words: when and how the batch would ideally be harvested{" "}
+              other words: when and how the batch would ideally be
+              harvested{' '}
             </Typography>
           </Box>
         </Box>
 
         <Box
-          display={"flex"}
-          alignItems={"start"}
+          display={'flex'}
+          alignItems={'start'}
           sx={{
             gap: {
               md: 2,
@@ -186,9 +188,9 @@ const BatchWizard: NextPage<Props> = ({ setActiveStep }) => {
           <Box>
             <Box
               fontWeight={700}
-              display={"flex"}
-              justifyContent={"center"}
-              alignItems={"center"}
+              display={'flex'}
+              justifyContent={'center'}
+              alignItems={'center'}
               borderRadius={100}
               sx={{
                 width: {
@@ -199,8 +201,8 @@ const BatchWizard: NextPage<Props> = ({ setActiveStep }) => {
                   md: 60,
                   xs: 30,
                 },
-                color: "#fff",
-                backgroundColor: "#06A19B",
+                color: '#fff',
+                backgroundColor: '#06A19B',
                 fontSize: {
                   md: 28,
                   xs: 16,
@@ -242,24 +244,25 @@ const BatchWizard: NextPage<Props> = ({ setActiveStep }) => {
               following during the lifecycle of your newly added batch. You can
               choose from existing feeding plans - either your own saved feeding
               plans or plans composed by a nutritionist. Alternatively you can
-              create your own feeding regime from the list of available feeds.{" "}
+              create your own feeding regime from the list of available
+              feeds.{' '}
             </Typography>
           </Box>
         </Box>
       </Stack>
-      <Box display={"flex"} justifyContent={"flex-end"} alignItems={"center"}>
+      <Box display={'flex'} justifyContent={'flex-end'} alignItems={'center'}>
         <Button
           type="submit"
           variant="contained"
           sx={{
-            background: "#06A19B",
+            background: '#06A19B',
             fontWeight: 600,
-            padding: "6px 16px",
-            width: "fit-content",
-            textTransform: "capitalize",
-            borderRadius: "8px",
+            padding: '6px 16px',
+            width: 'fit-content',
+            textTransform: 'capitalize',
+            borderRadius: '8px',
             marginTop: 3,
-            border: "1px solid #06A19B",
+            border: '1px solid #06A19B',
           }}
           onClick={() => setActiveStep(1)}
         >

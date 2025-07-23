@@ -1,6 +1,6 @@
 export interface Sort {
-  column: String;
-  direction: String;
+  column: string;
+  direction: string;
 }
 
 export interface BreadcrumInitialState {

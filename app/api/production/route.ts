@@ -1,22 +1,22 @@
-import prisma from "@/prisma/prisma";
-import { NextRequest, NextResponse } from "next/server";
-import { verifyAndRefreshToken } from "@/app/_lib/auth/verifyAndRefreshToken";
+import prisma from '@/prisma/prisma';
+import { NextRequest, NextResponse } from 'next/server';
+import { verifyAndRefreshToken } from '@/app/_lib/auth/verifyAndRefreshToken';
 
 export const GET = async (request: NextRequest) => {
   const user = await verifyAndRefreshToken(request);
   if (user.status === 401) {
     return NextResponse.json(
-      { status: false, message: "Unauthorized: Token missing or invalid" },
-      { status: 401 }
+      { status: false, message: 'Unauthorized: Token missing or invalid' },
+      { status: 401 },
     );
   }
   const searchParams = request.nextUrl.searchParams;
-  const role = searchParams.get("role");
-  const organisationId = searchParams.get("organisationId");
-  const userId = searchParams.get("userId");
+  const role = searchParams.get('role');
+  const organisationId = searchParams.get('organisationId');
+  const userId = searchParams.get('userId');
 
-  const query = searchParams.get("query");
-  const filter = searchParams.get("filter");
+  const query = searchParams.get('query');
+  const filter = searchParams.get('filter');
 
   try {
     const productions = await prisma.production.findMany({
@@ -30,51 +30,51 @@ export const GET = async (request: NextRequest) => {
 
         WaterManageHistory: {
           orderBy: {
-            id: "asc",
+            id: 'asc',
           },
         },
         FishManageHistory: {
           orderBy: {
-            id: "asc",
+            id: 'asc',
           },
         },
         WaterManageHistoryAvgrage: {
           orderBy: {
-            id: "asc",
+            id: 'asc',
           },
         },
       },
       orderBy: {
-        id: "asc",
+        id: 'asc',
       },
       where: {
-        ...(filter === "true"
+        ...(filter === 'true'
           ? {}
-          : role !== "SUPERADMIN" && organisationId
-          ? { organisationId: Number(organisationId) }
-          : {}),
+          : role !== 'SUPERADMIN' && organisationId
+            ? { organisationId: Number(organisationId) }
+            : {}),
 
         AND: [
           query
             ? {
                 OR: [
                   {
-                    biomass: { contains: query, mode: "insensitive" },
+                    biomass: { contains: query, mode: 'insensitive' },
                   },
                   {
-                    fishCount: { contains: query, mode: "insensitive" },
+                    fishCount: { contains: query, mode: 'insensitive' },
                   },
                   {
-                    meanWeight: { contains: query, mode: "insensitive" },
+                    meanWeight: { contains: query, mode: 'insensitive' },
                   },
                   {
-                    stockingLevel: { contains: query, mode: "insensitive" },
+                    stockingLevel: { contains: query, mode: 'insensitive' },
                   },
                   {
-                    stockingDensityNM: { contains: query, mode: "insensitive" },
+                    stockingDensityNM: { contains: query, mode: 'insensitive' },
                   },
                   {
-                    stockingDensityKG: { contains: query, mode: "insensitive" },
+                    stockingDensityKG: { contains: query, mode: 'insensitive' },
                   },
                 ],
               }
@@ -83,7 +83,7 @@ export const GET = async (request: NextRequest) => {
       },
     });
     let dataWithIsManager;
-    if (role !== "SUPERADMIN") {
+    if (role !== 'SUPERADMIN') {
       // currentUserFarms = get farms for current user here
       const currentUserFarms = await prisma.farmManger.findMany({
         where: { userId: Number(userId) },
@@ -93,7 +93,7 @@ export const GET = async (request: NextRequest) => {
       // assign IsManger currentUserFarms exist  production.farmId == currentUserFarms.farmId
       dataWithIsManager = productions.map((production) => {
         const farmId = currentUserFarms.find(
-          (manager) => manager.farmId === production.fishFarmId
+          (manager) => manager.farmId === production.fishFarmId,
         );
 
         if (production.fishFarmId === String(farmId?.farmId)) {
@@ -112,7 +112,7 @@ export const GET = async (request: NextRequest) => {
       JSON.stringify({ status: true, data: dataWithIsManager }),
       {
         status: 200,
-      }
+      },
     );
   } catch (error) {
     return new NextResponse(JSON.stringify({ status: false, error }), {
@@ -125,8 +125,8 @@ export async function POST(req: NextRequest) {
   const user = await verifyAndRefreshToken(req);
   if (user.status === 401) {
     return NextResponse.json(
-      { status: false, message: "Unauthorized: Token missing or invalid" },
-      { status: 401 }
+      { status: false, message: 'Unauthorized: Token missing or invalid' },
+      { status: 401 },
     );
   }
   try {
@@ -136,7 +136,7 @@ export async function POST(req: NextRequest) {
     });
     if (!farm) {
       return NextResponse.json({
-        message: "Invaild or missing farm",
+        message: 'Invaild or missing farm',
         status: false,
       });
     }
@@ -158,14 +158,14 @@ export async function POST(req: NextRequest) {
       },
     });
     return NextResponse.json({
-      message: "Unit created successfully",
+      message: 'Unit created successfully',
       data: newProduction,
       status: true,
     });
   } catch (error) {
     return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 }
+      { error: 'Internal Server Error' },
+      { status: 500 },
     );
   }
 }

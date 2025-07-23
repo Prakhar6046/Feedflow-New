@@ -2,8 +2,8 @@ import {
   CalculateType,
   ProductionUnitsFormTypes,
   UnitsTypes,
-} from "@/app/_typeModels/Farm";
-import closeIcon from "@/public/static/img/icons/ic-close.svg";
+} from '@/app/_typeModels/Farm';
+import closeIcon from '@/public/static/img/icons/ic-close.svg';
 import {
   Box,
   Button,
@@ -11,8 +11,8 @@ import {
   Stack,
   TextField,
   Typography,
-} from "@mui/material";
-import Image from "next/image";
+} from '@mui/material';
+import Image from 'next/image';
 import {
   FieldErrors,
   UseFormClearErrors,
@@ -20,15 +20,15 @@ import {
   UseFormSetValue,
   UseFormTrigger,
   UseFormWatch,
-} from "react-hook-form";
+} from 'react-hook-form';
 
 const style = {
-  position: "absolute" as "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
+  position: 'absolute' as const,
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
   width: 400,
-  bgcolor: "background.paper",
+  bgcolor: 'background.paper',
   boxShadow: 24,
 };
 
@@ -61,18 +61,18 @@ const CalculateVolume2: React.FC<Props> = ({
   setValue,
 }) => {
   const handleCalculate = () => {
-    trigger("length"),
-      trigger("width"),
-      trigger("depth"),
-      trigger("area"),
-      trigger("radius"),
-      trigger("height");
-    const length = watch("length");
-    const width = watch("width");
-    const depth = watch("depth");
-    const area = watch("area");
-    const radius = watch("radius");
-    const heigth = watch("height");
+    (trigger('length'),
+      trigger('width'),
+      trigger('depth'),
+      trigger('area'),
+      trigger('radius'),
+      trigger('height'));
+    const length = watch('length');
+    const width = watch('width');
+    const depth = watch('depth');
+    const area = watch('area');
+    const radius = watch('radius');
+    const heigth = watch('height');
     if (
       Number(length) ||
       Number(width) ||
@@ -82,47 +82,47 @@ const CalculateVolume2: React.FC<Props> = ({
     ) {
       let output;
       if (
-        selectedUnit?.name === "Rectangular Tank" &&
+        selectedUnit?.name === 'Rectangular Tank' &&
         Number(length) &&
         Number(width) &&
         Number(depth)
       ) {
         output = Number(length) * Number(width) * Number(depth);
       } else if (
-        selectedUnit?.name === "Earthen Pond" &&
+        selectedUnit?.name === 'Earthen Pond' &&
         Number(area) &&
         Number(depth)
       ) {
         output = Number(area) * Number(depth);
       } else if (
-        selectedUnit?.name === "Raceway" &&
+        selectedUnit?.name === 'Raceway' &&
         Number(length) &&
         Number(width) &&
         Number(depth)
       ) {
         output = Number(length) * Number(width) * Number(depth);
       } else if (
-        selectedUnit?.name === "Cage" &&
+        selectedUnit?.name === 'Cage' &&
         Number(length) &&
         Number(width) &&
         Number(heigth)
       ) {
         output = Number(length) * Number(width) * Number(heigth);
       } else if (
-        selectedUnit?.name === "Hapa" &&
+        selectedUnit?.name === 'Hapa' &&
         Number(length) &&
         Number(width) &&
         Number(heigth)
       ) {
         output = Number(length) * Number(width) * Number(heigth);
       } else if (
-        selectedUnit?.name === "Circular Tank" &&
+        selectedUnit?.name === 'Circular Tank' &&
         Number(radius) &&
         Number(depth)
       ) {
         output = 3.14159 * Number(radius) * 2 * Number(depth);
       } else if (
-        selectedUnit?.name === "D-end Tank" &&
+        selectedUnit?.name === 'D-end Tank' &&
         Number(radius) &&
         Number(length) &&
         Number(width) &&
@@ -141,23 +141,23 @@ const CalculateVolume2: React.FC<Props> = ({
       if (selectedUnit?.index) {
         clearErrors(`productionUnits.${selectedUnit?.index}.capacity`);
       }
-      setValue("length", "1");
-      setValue("width", "1");
-      setValue("radius", "1");
-      setValue("area", "1");
-      setValue("depth", "1");
-      setValue("height", "1");
+      setValue('length', '1');
+      setValue('width', '1');
+      setValue('radius', '1');
+      setValue('area', '1');
+      setValue('depth', '1');
+      setValue('height', '1');
     }
   };
   const handleClose = () => {
     setOpen(false);
-    setValue("length", "");
-    setValue("width", "");
-    setValue("radius", "");
-    setValue("area", "");
-    setValue("depth", "");
-    setValue("height", "");
-    clearErrors(["length", "width", "depth", "radius", "area", "height"]);
+    setValue('length', '');
+    setValue('width', '');
+    setValue('radius', '');
+    setValue('area', '');
+    setValue('depth', '');
+    setValue('height', '');
+    clearErrors(['length', 'width', 'depth', 'radius', 'area', 'height']);
   };
 
   return (
@@ -175,10 +175,10 @@ const CalculateVolume2: React.FC<Props> = ({
           display="flex"
           justifyContent="space-between"
           gap={2}
-          alignItems={"center"}
+          alignItems={'center'}
           sx={{
-            borderTopLeftRadius: "14px",
-            borderTopRightRadius: "14px",
+            borderTopLeftRadius: '14px',
+            borderTopRightRadius: '14px',
           }}
         >
           <Typography
@@ -198,7 +198,7 @@ const CalculateVolume2: React.FC<Props> = ({
             alignItems="center"
             sx={{
               opacity: 0.5,
-              cursor: "pointer",
+              cursor: 'pointer',
             }}
             onClick={handleClose}
           >
@@ -208,10 +208,10 @@ const CalculateVolume2: React.FC<Props> = ({
         <Box
           px={3}
           pt={2}
-          display={"flex"}
-          alignItems={"center"}
+          display={'flex'}
+          alignItems={'center'}
           gap={1}
-          justifyContent={"start"}
+          justifyContent={'start'}
         >
           <Typography variant="body2" color="black" fontWeight={500}>
             {selectedUnit?.name} Formula
@@ -221,9 +221,9 @@ const CalculateVolume2: React.FC<Props> = ({
             {selectedUnit?.formula}
           </Typography>
         </Box>
-        {selectedUnit?.name === "Rectangular Tank" ? (
-          <Box padding={3} display={"flex"} alignItems={"start"} gap={1}>
-            <Box position={"relative"}>
+        {selectedUnit?.name === 'Rectangular Tank' ? (
+          <Box padding={3} display={'flex'} alignItems={'start'} gap={1}>
+            <Box position={'relative'}>
               <TextField
                 label="Length *"
                 variant="outlined"
@@ -231,10 +231,10 @@ const CalculateVolume2: React.FC<Props> = ({
                 type="text"
                 className="form-input"
                 sx={{
-                  width: "100%",
+                  width: '100%',
                 }}
                 focused
-                {...register("length", {
+                {...register('length', {
                   required: true,
                   pattern: /^\d*\.?\d*$/,
                 })}
@@ -243,33 +243,33 @@ const CalculateVolume2: React.FC<Props> = ({
                 variant="body2"
                 color="#555555AC"
                 sx={{
-                  position: "absolute",
+                  position: 'absolute',
                   right: 6,
-                  top: "28px",
-                  transform: "translate(-6px, -50%)",
-                  backgroundColor: "#fff",
+                  top: '28px',
+                  transform: 'translate(-6px, -50%)',
+                  backgroundColor: '#fff',
                   height: 30,
-                  display: "grid",
-                  placeItems: "center",
+                  display: 'grid',
+                  placeItems: 'center',
                   zIndex: 1,
                   pl: 1,
                 }}
               >
                 m
               </Typography>
-              {errors?.length?.type === "required" && (
+              {errors?.length?.type === 'required' && (
                 <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
                   {validationMessage.required}
                 </Typography>
               )}
-              {errors?.length?.type === "pattern" && (
+              {errors?.length?.type === 'pattern' && (
                 <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
                   Please enter valid numbers.
                 </Typography>
               )}
             </Box>
 
-            <Box position={"relative"}>
+            <Box position={'relative'}>
               <TextField
                 label="Width *"
                 variant="outlined"
@@ -277,10 +277,10 @@ const CalculateVolume2: React.FC<Props> = ({
                 type="text"
                 className="form-input"
                 sx={{
-                  width: "100%",
+                  width: '100%',
                 }}
                 focused
-                {...register("width", {
+                {...register('width', {
                   required: true,
                   pattern: /^\d*\.?\d*$/,
                 })}
@@ -289,33 +289,33 @@ const CalculateVolume2: React.FC<Props> = ({
                 variant="body2"
                 color="#555555AC"
                 sx={{
-                  position: "absolute",
+                  position: 'absolute',
                   right: 6,
-                  top: "28px",
-                  transform: "translate(-6px, -50%)",
-                  backgroundColor: "#fff",
+                  top: '28px',
+                  transform: 'translate(-6px, -50%)',
+                  backgroundColor: '#fff',
                   height: 30,
-                  display: "grid",
-                  placeItems: "center",
+                  display: 'grid',
+                  placeItems: 'center',
                   zIndex: 1,
                   pl: 1,
                 }}
               >
                 m
               </Typography>
-              {errors?.width?.type === "required" && (
+              {errors?.width?.type === 'required' && (
                 <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
                   {validationMessage.required}
                 </Typography>
               )}
-              {errors?.width?.type === "pattern" && (
+              {errors?.width?.type === 'pattern' && (
                 <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
                   Please enter valid numbers.
                 </Typography>
               )}
             </Box>
 
-            <Box position={"relative"}>
+            <Box position={'relative'}>
               <TextField
                 label="Depth *"
                 variant="outlined"
@@ -323,10 +323,10 @@ const CalculateVolume2: React.FC<Props> = ({
                 type="text"
                 className="form-input"
                 sx={{
-                  width: "100%",
+                  width: '100%',
                 }}
                 focused
-                {...register("depth", {
+                {...register('depth', {
                   required: true,
                   pattern: /^\d*\.?\d*$/,
                 })}
@@ -335,35 +335,35 @@ const CalculateVolume2: React.FC<Props> = ({
                 variant="body2"
                 color="#555555AC"
                 sx={{
-                  position: "absolute",
+                  position: 'absolute',
                   right: 6,
-                  top: "28px",
-                  transform: "translate(-6px, -50%)",
-                  backgroundColor: "#fff",
+                  top: '28px',
+                  transform: 'translate(-6px, -50%)',
+                  backgroundColor: '#fff',
                   height: 30,
-                  display: "grid",
-                  placeItems: "center",
+                  display: 'grid',
+                  placeItems: 'center',
                   zIndex: 1,
                   pl: 1,
                 }}
               >
                 m
               </Typography>
-              {errors?.depth?.type === "required" && (
+              {errors?.depth?.type === 'required' && (
                 <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
                   {validationMessage.required}
                 </Typography>
               )}
-              {errors?.depth?.type === "pattern" && (
+              {errors?.depth?.type === 'pattern' && (
                 <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
                   Please enter valid numbers.
                 </Typography>
               )}
             </Box>
           </Box>
-        ) : selectedUnit?.name === "Earthen Pond" ? (
-          <Box padding={3} display={"flex"} alignItems={"start"} gap={1}>
-            <Box position={"relative"}>
+        ) : selectedUnit?.name === 'Earthen Pond' ? (
+          <Box padding={3} display={'flex'} alignItems={'start'} gap={1}>
+            <Box position={'relative'}>
               <TextField
                 label="Surface area *"
                 variant="outlined"
@@ -371,10 +371,10 @@ const CalculateVolume2: React.FC<Props> = ({
                 type="text"
                 className="form-input"
                 sx={{
-                  width: "100%",
+                  width: '100%',
                 }}
                 focused
-                {...register("area", {
+                {...register('area', {
                   required: true,
                   pattern: /^\d*\.?\d*$/,
                 })}
@@ -383,33 +383,33 @@ const CalculateVolume2: React.FC<Props> = ({
                 variant="body2"
                 color="#555555AC"
                 sx={{
-                  position: "absolute",
+                  position: 'absolute',
                   right: 6,
-                  top: "28px",
-                  transform: "translate(-6px, -50%)",
-                  backgroundColor: "#fff",
+                  top: '28px',
+                  transform: 'translate(-6px, -50%)',
+                  backgroundColor: '#fff',
                   height: 30,
-                  display: "grid",
-                  placeItems: "center",
+                  display: 'grid',
+                  placeItems: 'center',
                   zIndex: 1,
                   pl: 1,
                 }}
               >
                 m
               </Typography>
-              {errors?.area?.type === "required" && (
+              {errors?.area?.type === 'required' && (
                 <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
                   {validationMessage.required}
                 </Typography>
               )}
-              {errors?.area?.type === "pattern" && (
+              {errors?.area?.type === 'pattern' && (
                 <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
                   Please enter valid numbers.
                 </Typography>
               )}
             </Box>
 
-            <Box position={"relative"}>
+            <Box position={'relative'}>
               <TextField
                 label="Depth *"
                 variant="outlined"
@@ -417,10 +417,10 @@ const CalculateVolume2: React.FC<Props> = ({
                 type="text"
                 className="form-input"
                 sx={{
-                  width: "100%",
+                  width: '100%',
                 }}
                 focused
-                {...register("depth", {
+                {...register('depth', {
                   required: true,
                   pattern: /^\d*\.?\d*$/,
                 })}
@@ -429,35 +429,35 @@ const CalculateVolume2: React.FC<Props> = ({
                 variant="body2"
                 color="#555555AC"
                 sx={{
-                  position: "absolute",
+                  position: 'absolute',
                   right: 6,
-                  top: "28px",
-                  transform: "translate(-6px, -50%)",
-                  backgroundColor: "#fff",
+                  top: '28px',
+                  transform: 'translate(-6px, -50%)',
+                  backgroundColor: '#fff',
                   height: 30,
-                  display: "grid",
-                  placeItems: "center",
+                  display: 'grid',
+                  placeItems: 'center',
                   zIndex: 1,
                   pl: 1,
                 }}
               >
                 m
               </Typography>
-              {errors?.depth?.type === "required" && (
+              {errors?.depth?.type === 'required' && (
                 <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
                   {validationMessage.required}
                 </Typography>
               )}
-              {errors?.depth?.type === "pattern" && (
+              {errors?.depth?.type === 'pattern' && (
                 <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
                   Please enter valid numbers.
                 </Typography>
               )}
             </Box>
           </Box>
-        ) : selectedUnit?.name === "Raceway" ? (
-          <Box padding={3} display={"flex"} alignItems={"start"} gap={1}>
-            <Box position={"relative"}>
+        ) : selectedUnit?.name === 'Raceway' ? (
+          <Box padding={3} display={'flex'} alignItems={'start'} gap={1}>
+            <Box position={'relative'}>
               <TextField
                 label="Length *"
                 variant="outlined"
@@ -465,10 +465,10 @@ const CalculateVolume2: React.FC<Props> = ({
                 type="text"
                 className="form-input"
                 sx={{
-                  width: "100%",
+                  width: '100%',
                 }}
                 focused
-                {...register("length", {
+                {...register('length', {
                   required: true,
                   pattern: /^\d*\.?\d*$/,
                 })}
@@ -477,33 +477,33 @@ const CalculateVolume2: React.FC<Props> = ({
                 variant="body2"
                 color="#555555AC"
                 sx={{
-                  position: "absolute",
+                  position: 'absolute',
                   right: 6,
-                  top: "28px",
-                  transform: "translate(-6px, -50%)",
-                  backgroundColor: "#fff",
+                  top: '28px',
+                  transform: 'translate(-6px, -50%)',
+                  backgroundColor: '#fff',
                   height: 30,
-                  display: "grid",
-                  placeItems: "center",
+                  display: 'grid',
+                  placeItems: 'center',
                   zIndex: 1,
                   pl: 1,
                 }}
               >
                 m
               </Typography>
-              {errors?.length?.type === "required" && (
+              {errors?.length?.type === 'required' && (
                 <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
                   {validationMessage.required}
                 </Typography>
               )}
-              {errors?.length?.type === "pattern" && (
+              {errors?.length?.type === 'pattern' && (
                 <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
                   Please enter valid numbers.
                 </Typography>
               )}
             </Box>
 
-            <Box position={"relative"}>
+            <Box position={'relative'}>
               <TextField
                 label="Width *"
                 variant="outlined"
@@ -511,10 +511,10 @@ const CalculateVolume2: React.FC<Props> = ({
                 type="text"
                 className="form-input"
                 sx={{
-                  width: "100%",
+                  width: '100%',
                 }}
                 focused
-                {...register("width", {
+                {...register('width', {
                   required: true,
                   pattern: /^\d*\.?\d*$/,
                 })}
@@ -523,33 +523,33 @@ const CalculateVolume2: React.FC<Props> = ({
                 variant="body2"
                 color="#555555AC"
                 sx={{
-                  position: "absolute",
+                  position: 'absolute',
                   right: 6,
-                  top: "28px",
-                  transform: "translate(-6px, -50%)",
-                  backgroundColor: "#fff",
+                  top: '28px',
+                  transform: 'translate(-6px, -50%)',
+                  backgroundColor: '#fff',
                   height: 30,
-                  display: "grid",
-                  placeItems: "center",
+                  display: 'grid',
+                  placeItems: 'center',
                   zIndex: 1,
                   pl: 1,
                 }}
               >
                 m
               </Typography>
-              {errors?.width?.type === "required" && (
+              {errors?.width?.type === 'required' && (
                 <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
                   {validationMessage.required}
                 </Typography>
               )}
-              {errors?.width?.type === "pattern" && (
+              {errors?.width?.type === 'pattern' && (
                 <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
                   Please enter valid numbers.
                 </Typography>
               )}
             </Box>
 
-            <Box position={"relative"}>
+            <Box position={'relative'}>
               <TextField
                 label="Depth *"
                 variant="outlined"
@@ -557,10 +557,10 @@ const CalculateVolume2: React.FC<Props> = ({
                 type="text"
                 className="form-input"
                 sx={{
-                  width: "100%",
+                  width: '100%',
                 }}
                 focused
-                {...register("depth", {
+                {...register('depth', {
                   required: true,
                   pattern: /^\d*\.?\d*$/,
                 })}
@@ -569,35 +569,35 @@ const CalculateVolume2: React.FC<Props> = ({
                 variant="body2"
                 color="#555555AC"
                 sx={{
-                  position: "absolute",
+                  position: 'absolute',
                   right: 6,
-                  top: "28px",
-                  transform: "translate(-6px, -50%)",
-                  backgroundColor: "#fff",
+                  top: '28px',
+                  transform: 'translate(-6px, -50%)',
+                  backgroundColor: '#fff',
                   height: 30,
-                  display: "grid",
-                  placeItems: "center",
+                  display: 'grid',
+                  placeItems: 'center',
                   zIndex: 1,
                   pl: 1,
                 }}
               >
                 m
               </Typography>
-              {errors?.depth?.type === "required" && (
+              {errors?.depth?.type === 'required' && (
                 <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
                   {validationMessage.required}
                 </Typography>
               )}
-              {errors?.depth?.type === "pattern" && (
+              {errors?.depth?.type === 'pattern' && (
                 <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
                   Please enter valid numbers.
                 </Typography>
               )}
             </Box>
           </Box>
-        ) : selectedUnit?.name === "Cage" ? (
-          <Box padding={3} display={"flex"} alignItems={"start"} gap={1}>
-            <Box position={"relative"}>
+        ) : selectedUnit?.name === 'Cage' ? (
+          <Box padding={3} display={'flex'} alignItems={'start'} gap={1}>
+            <Box position={'relative'}>
               <TextField
                 label="Length *"
                 variant="outlined"
@@ -605,10 +605,10 @@ const CalculateVolume2: React.FC<Props> = ({
                 type="text"
                 className="form-input"
                 sx={{
-                  width: "100%",
+                  width: '100%',
                 }}
                 focused
-                {...register("length", {
+                {...register('length', {
                   required: true,
                   pattern: /^\d*\.?\d*$/,
                 })}
@@ -617,33 +617,33 @@ const CalculateVolume2: React.FC<Props> = ({
                 variant="body2"
                 color="#555555AC"
                 sx={{
-                  position: "absolute",
+                  position: 'absolute',
                   right: 6,
-                  top: "28px",
-                  transform: "translate(-6px, -50%)",
-                  backgroundColor: "#fff",
+                  top: '28px',
+                  transform: 'translate(-6px, -50%)',
+                  backgroundColor: '#fff',
                   height: 30,
-                  display: "grid",
-                  placeItems: "center",
+                  display: 'grid',
+                  placeItems: 'center',
                   zIndex: 1,
                   pl: 1,
                 }}
               >
                 m
               </Typography>
-              {errors?.length?.type === "required" && (
+              {errors?.length?.type === 'required' && (
                 <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
                   {validationMessage.required}
                 </Typography>
               )}
-              {errors?.length?.type === "pattern" && (
+              {errors?.length?.type === 'pattern' && (
                 <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
                   Please enter valid numbers.
                 </Typography>
               )}
             </Box>
 
-            <Box position={"relative"}>
+            <Box position={'relative'}>
               <TextField
                 label="Width *"
                 variant="outlined"
@@ -651,10 +651,10 @@ const CalculateVolume2: React.FC<Props> = ({
                 type="text"
                 className="form-input"
                 sx={{
-                  width: "100%",
+                  width: '100%',
                 }}
                 focused
-                {...register("width", {
+                {...register('width', {
                   required: true,
                   pattern: /^\d*\.?\d*$/,
                 })}
@@ -663,33 +663,33 @@ const CalculateVolume2: React.FC<Props> = ({
                 variant="body2"
                 color="#555555AC"
                 sx={{
-                  position: "absolute",
+                  position: 'absolute',
                   right: 6,
-                  top: "28px",
-                  transform: "translate(-6px, -50%)",
-                  backgroundColor: "#fff",
+                  top: '28px',
+                  transform: 'translate(-6px, -50%)',
+                  backgroundColor: '#fff',
                   height: 30,
-                  display: "grid",
-                  placeItems: "center",
+                  display: 'grid',
+                  placeItems: 'center',
                   zIndex: 1,
                   pl: 1,
                 }}
               >
                 m
               </Typography>
-              {errors?.width?.type === "required" && (
+              {errors?.width?.type === 'required' && (
                 <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
                   {validationMessage.required}
                 </Typography>
               )}
-              {errors?.width?.type === "pattern" && (
+              {errors?.width?.type === 'pattern' && (
                 <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
                   Please enter valid numbers.
                 </Typography>
               )}
             </Box>
 
-            <Box position={"relative"}>
+            <Box position={'relative'}>
               <TextField
                 label="Height *"
                 variant="outlined"
@@ -697,10 +697,10 @@ const CalculateVolume2: React.FC<Props> = ({
                 type="text"
                 className="form-input"
                 sx={{
-                  width: "100%",
+                  width: '100%',
                 }}
                 focused
-                {...register("height", {
+                {...register('height', {
                   required: true,
                   pattern: /^\d*\.?\d*$/,
                 })}
@@ -709,35 +709,35 @@ const CalculateVolume2: React.FC<Props> = ({
                 variant="body2"
                 color="#555555AC"
                 sx={{
-                  position: "absolute",
+                  position: 'absolute',
                   right: 6,
-                  top: "28px",
-                  transform: "translate(-6px, -50%)",
-                  backgroundColor: "#fff",
+                  top: '28px',
+                  transform: 'translate(-6px, -50%)',
+                  backgroundColor: '#fff',
                   height: 30,
-                  display: "grid",
-                  placeItems: "center",
+                  display: 'grid',
+                  placeItems: 'center',
                   zIndex: 1,
                   pl: 1,
                 }}
               >
                 m
               </Typography>
-              {errors?.height?.type === "required" && (
+              {errors?.height?.type === 'required' && (
                 <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
                   {validationMessage.required}
                 </Typography>
               )}
-              {errors?.height?.type === "pattern" && (
+              {errors?.height?.type === 'pattern' && (
                 <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
                   Please enter valid numbers.
                 </Typography>
               )}
             </Box>
           </Box>
-        ) : selectedUnit?.name === "Hapa" ? (
-          <Box padding={3} display={"flex"} alignItems={"start"} gap={1}>
-            <Box position={"relative"}>
+        ) : selectedUnit?.name === 'Hapa' ? (
+          <Box padding={3} display={'flex'} alignItems={'start'} gap={1}>
+            <Box position={'relative'}>
               <TextField
                 label="Length *"
                 variant="outlined"
@@ -745,10 +745,10 @@ const CalculateVolume2: React.FC<Props> = ({
                 type="text"
                 className="form-input"
                 sx={{
-                  width: "100%",
+                  width: '100%',
                 }}
                 focused
-                {...register("length", {
+                {...register('length', {
                   required: true,
                   pattern: /^\d*\.?\d*$/,
                 })}
@@ -757,33 +757,33 @@ const CalculateVolume2: React.FC<Props> = ({
                 variant="body2"
                 color="#555555AC"
                 sx={{
-                  position: "absolute",
+                  position: 'absolute',
                   right: 6,
-                  top: "28px",
-                  transform: "translate(-6px, -50%)",
-                  backgroundColor: "#fff",
+                  top: '28px',
+                  transform: 'translate(-6px, -50%)',
+                  backgroundColor: '#fff',
                   height: 30,
-                  display: "grid",
-                  placeItems: "center",
+                  display: 'grid',
+                  placeItems: 'center',
                   zIndex: 1,
                   pl: 1,
                 }}
               >
                 m
               </Typography>
-              {errors?.length?.type === "required" && (
+              {errors?.length?.type === 'required' && (
                 <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
                   {validationMessage.required}
                 </Typography>
               )}
-              {errors?.length?.type === "pattern" && (
+              {errors?.length?.type === 'pattern' && (
                 <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
                   Please enter valid numbers.
                 </Typography>
               )}
             </Box>
 
-            <Box position={"relative"}>
+            <Box position={'relative'}>
               <TextField
                 label="Width *"
                 variant="outlined"
@@ -791,10 +791,10 @@ const CalculateVolume2: React.FC<Props> = ({
                 type="text"
                 className="form-input"
                 sx={{
-                  width: "100%",
+                  width: '100%',
                 }}
                 focused
-                {...register("width", {
+                {...register('width', {
                   required: true,
                   pattern: /^\d*\.?\d*$/,
                 })}
@@ -803,33 +803,33 @@ const CalculateVolume2: React.FC<Props> = ({
                 variant="body2"
                 color="#555555AC"
                 sx={{
-                  position: "absolute",
+                  position: 'absolute',
                   right: 6,
-                  top: "28px",
-                  transform: "translate(-6px, -50%)",
-                  backgroundColor: "#fff",
+                  top: '28px',
+                  transform: 'translate(-6px, -50%)',
+                  backgroundColor: '#fff',
                   height: 30,
-                  display: "grid",
-                  placeItems: "center",
+                  display: 'grid',
+                  placeItems: 'center',
                   zIndex: 1,
                   pl: 1,
                 }}
               >
                 m
               </Typography>
-              {errors?.width?.type === "required" && (
+              {errors?.width?.type === 'required' && (
                 <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
                   {validationMessage.required}
                 </Typography>
               )}
-              {errors?.width?.type === "pattern" && (
+              {errors?.width?.type === 'pattern' && (
                 <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
                   Please enter valid numbers.
                 </Typography>
               )}
             </Box>
 
-            <Box position={"relative"}>
+            <Box position={'relative'}>
               <TextField
                 label="Height *"
                 variant="outlined"
@@ -837,10 +837,10 @@ const CalculateVolume2: React.FC<Props> = ({
                 type="text"
                 className="form-input"
                 sx={{
-                  width: "100%",
+                  width: '100%',
                 }}
                 focused
-                {...register("height", {
+                {...register('height', {
                   required: true,
                   pattern: /^\d*\.?\d*$/,
                 })}
@@ -849,35 +849,35 @@ const CalculateVolume2: React.FC<Props> = ({
                 variant="body2"
                 color="#555555AC"
                 sx={{
-                  position: "absolute",
+                  position: 'absolute',
                   right: 6,
-                  top: "28px",
-                  transform: "translate(-6px, -50%)",
-                  backgroundColor: "#fff",
+                  top: '28px',
+                  transform: 'translate(-6px, -50%)',
+                  backgroundColor: '#fff',
                   height: 30,
-                  display: "grid",
-                  placeItems: "center",
+                  display: 'grid',
+                  placeItems: 'center',
                   zIndex: 1,
                   pl: 1,
                 }}
               >
                 m
               </Typography>
-              {errors?.height?.type === "required" && (
+              {errors?.height?.type === 'required' && (
                 <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
                   {validationMessage.required}
                 </Typography>
               )}
-              {errors?.height?.type === "pattern" && (
+              {errors?.height?.type === 'pattern' && (
                 <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
                   Please enter valid numbers.
                 </Typography>
               )}
             </Box>
           </Box>
-        ) : selectedUnit?.name === "Circular Tank" ? (
-          <Box padding={3} display={"flex"} alignItems={"start"} gap={1}>
-            <Box position={"relative"}>
+        ) : selectedUnit?.name === 'Circular Tank' ? (
+          <Box padding={3} display={'flex'} alignItems={'start'} gap={1}>
+            <Box position={'relative'}>
               <TextField
                 label="Radius *"
                 variant="outlined"
@@ -885,10 +885,10 @@ const CalculateVolume2: React.FC<Props> = ({
                 type="text"
                 className="form-input"
                 sx={{
-                  width: "100%",
+                  width: '100%',
                 }}
                 focused
-                {...register("radius", {
+                {...register('radius', {
                   required: true,
                   pattern: /^\d*\.?\d*$/,
                 })}
@@ -897,33 +897,33 @@ const CalculateVolume2: React.FC<Props> = ({
                 variant="body2"
                 color="#555555AC"
                 sx={{
-                  position: "absolute",
+                  position: 'absolute',
                   right: 6,
-                  top: "28px",
-                  transform: "translate(-6px, -50%)",
-                  backgroundColor: "#fff",
+                  top: '28px',
+                  transform: 'translate(-6px, -50%)',
+                  backgroundColor: '#fff',
                   height: 30,
-                  display: "grid",
-                  placeItems: "center",
+                  display: 'grid',
+                  placeItems: 'center',
                   zIndex: 1,
                   pl: 1,
                 }}
               >
                 m
               </Typography>
-              {errors?.radius?.type === "required" && (
+              {errors?.radius?.type === 'required' && (
                 <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
                   {validationMessage.required}
                 </Typography>
               )}
-              {errors?.radius?.type === "pattern" && (
+              {errors?.radius?.type === 'pattern' && (
                 <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
                   Please enter valid numbers.
                 </Typography>
               )}
             </Box>
 
-            <Box position={"relative"}>
+            <Box position={'relative'}>
               <TextField
                 label="Depth *"
                 variant="outlined"
@@ -931,10 +931,10 @@ const CalculateVolume2: React.FC<Props> = ({
                 type="text"
                 className="form-input"
                 sx={{
-                  width: "100%",
+                  width: '100%',
                 }}
                 focused
-                {...register("depth", {
+                {...register('depth', {
                   required: true,
                   pattern: /^\d*\.?\d*$/,
                 })}
@@ -943,26 +943,26 @@ const CalculateVolume2: React.FC<Props> = ({
                 variant="body2"
                 color="#555555AC"
                 sx={{
-                  position: "absolute",
+                  position: 'absolute',
                   right: 6,
-                  top: "28px",
-                  transform: "translate(-6px, -50%)",
-                  backgroundColor: "#fff",
+                  top: '28px',
+                  transform: 'translate(-6px, -50%)',
+                  backgroundColor: '#fff',
                   height: 30,
-                  display: "grid",
-                  placeItems: "center",
+                  display: 'grid',
+                  placeItems: 'center',
                   zIndex: 1,
                   pl: 1,
                 }}
               >
                 m
               </Typography>
-              {errors?.depth?.type === "required" && (
+              {errors?.depth?.type === 'required' && (
                 <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
                   {validationMessage.required}
                 </Typography>
               )}
-              {errors?.depth?.type === "pattern" && (
+              {errors?.depth?.type === 'pattern' && (
                 <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
                   Please enter valid numbers.
                 </Typography>
@@ -970,8 +970,8 @@ const CalculateVolume2: React.FC<Props> = ({
             </Box>
           </Box>
         ) : (
-          <Box padding={3} display={"flex"} alignItems={"start"} gap={1}>
-            <Box position={"relative"}>
+          <Box padding={3} display={'flex'} alignItems={'start'} gap={1}>
+            <Box position={'relative'}>
               <TextField
                 label="Radius *"
                 variant="outlined"
@@ -979,10 +979,10 @@ const CalculateVolume2: React.FC<Props> = ({
                 type="text"
                 className="form-input"
                 sx={{
-                  width: "100%",
+                  width: '100%',
                 }}
                 focused
-                {...register("radius", {
+                {...register('radius', {
                   required: true,
                   pattern: /^\d*\.?\d*$/,
                 })}
@@ -991,32 +991,32 @@ const CalculateVolume2: React.FC<Props> = ({
                 variant="body2"
                 color="#555555AC"
                 sx={{
-                  position: "absolute",
+                  position: 'absolute',
                   right: 6,
-                  top: "28px",
-                  transform: "translate(-6px, -50%)",
-                  backgroundColor: "#fff",
+                  top: '28px',
+                  transform: 'translate(-6px, -50%)',
+                  backgroundColor: '#fff',
                   height: 30,
-                  display: "grid",
-                  placeItems: "center",
+                  display: 'grid',
+                  placeItems: 'center',
                   zIndex: 1,
                   pl: 1,
                 }}
               >
                 m
               </Typography>
-              {errors?.radius?.type === "required" && (
+              {errors?.radius?.type === 'required' && (
                 <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
                   {validationMessage.required}
                 </Typography>
               )}
-              {errors?.radius?.type === "pattern" && (
+              {errors?.radius?.type === 'pattern' && (
                 <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
                   Please enter valid numbers.
                 </Typography>
               )}
             </Box>
-            <Box position={"relative"}>
+            <Box position={'relative'}>
               <TextField
                 label="Length *"
                 variant="outlined"
@@ -1024,10 +1024,10 @@ const CalculateVolume2: React.FC<Props> = ({
                 type="text"
                 className="form-input"
                 sx={{
-                  width: "100%",
+                  width: '100%',
                 }}
                 focused
-                {...register("length", {
+                {...register('length', {
                   required: true,
                   pattern: /^\d*\.?\d*$/,
                 })}
@@ -1036,33 +1036,33 @@ const CalculateVolume2: React.FC<Props> = ({
                 variant="body2"
                 color="#555555AC"
                 sx={{
-                  position: "absolute",
+                  position: 'absolute',
                   right: 6,
-                  top: "28px",
-                  transform: "translate(-6px, -50%)",
-                  backgroundColor: "#fff",
+                  top: '28px',
+                  transform: 'translate(-6px, -50%)',
+                  backgroundColor: '#fff',
                   height: 30,
-                  display: "grid",
-                  placeItems: "center",
+                  display: 'grid',
+                  placeItems: 'center',
                   zIndex: 1,
                   pl: 1,
                 }}
               >
                 m
               </Typography>
-              {errors?.length?.type === "required" && (
+              {errors?.length?.type === 'required' && (
                 <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
                   {validationMessage.required}
                 </Typography>
               )}
-              {errors?.length?.type === "pattern" && (
+              {errors?.length?.type === 'pattern' && (
                 <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
                   Please enter valid numbers.
                 </Typography>
               )}
             </Box>
 
-            <Box position={"relative"}>
+            <Box position={'relative'}>
               <TextField
                 label="Width *"
                 variant="outlined"
@@ -1070,10 +1070,10 @@ const CalculateVolume2: React.FC<Props> = ({
                 type="text"
                 className="form-input"
                 sx={{
-                  width: "100%",
+                  width: '100%',
                 }}
                 focused
-                {...register("width", {
+                {...register('width', {
                   required: true,
                   pattern: /^\d*\.?\d*$/,
                 })}
@@ -1082,33 +1082,33 @@ const CalculateVolume2: React.FC<Props> = ({
                 variant="body2"
                 color="#555555AC"
                 sx={{
-                  position: "absolute",
+                  position: 'absolute',
                   right: 6,
-                  top: "28px",
-                  transform: "translate(-6px, -50%)",
-                  backgroundColor: "#fff",
+                  top: '28px',
+                  transform: 'translate(-6px, -50%)',
+                  backgroundColor: '#fff',
                   height: 30,
-                  display: "grid",
-                  placeItems: "center",
+                  display: 'grid',
+                  placeItems: 'center',
                   zIndex: 1,
                   pl: 1,
                 }}
               >
                 m
               </Typography>
-              {errors?.width?.type === "required" && (
+              {errors?.width?.type === 'required' && (
                 <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
                   {validationMessage.required}
                 </Typography>
               )}
-              {errors?.width?.type === "pattern" && (
+              {errors?.width?.type === 'pattern' && (
                 <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
                   Please enter valid numbers.
                 </Typography>
               )}
             </Box>
 
-            <Box position={"relative"}>
+            <Box position={'relative'}>
               <TextField
                 label="Depth *"
                 variant="outlined"
@@ -1116,10 +1116,10 @@ const CalculateVolume2: React.FC<Props> = ({
                 type="text"
                 className="form-input"
                 sx={{
-                  width: "100%",
+                  width: '100%',
                 }}
                 focused
-                {...register("depth", {
+                {...register('depth', {
                   required: true,
                   pattern: /^\d*\.?\d*$/,
                 })}
@@ -1128,26 +1128,26 @@ const CalculateVolume2: React.FC<Props> = ({
                 variant="body2"
                 color="#555555AC"
                 sx={{
-                  position: "absolute",
+                  position: 'absolute',
                   right: 6,
-                  top: "28px",
-                  transform: "translate(-6px, -50%)",
-                  backgroundColor: "#fff",
+                  top: '28px',
+                  transform: 'translate(-6px, -50%)',
+                  backgroundColor: '#fff',
                   height: 30,
-                  display: "grid",
-                  placeItems: "center",
+                  display: 'grid',
+                  placeItems: 'center',
                   zIndex: 1,
                   pl: 1,
                 }}
               >
                 m
               </Typography>
-              {errors?.depth?.type === "required" && (
+              {errors?.depth?.type === 'required' && (
                 <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
                   {validationMessage.required}
                 </Typography>
               )}
-              {errors?.depth?.type === "pattern" && (
+              {errors?.depth?.type === 'pattern' && (
                 <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
                   Please enter valid numbers.
                 </Typography>
@@ -1161,14 +1161,14 @@ const CalculateVolume2: React.FC<Props> = ({
             type="button"
             variant="contained"
             sx={{
-              background: "#06A19B",
-              fontWeight: "bold",
-              padding: "8px 24px",
-              width: "fit-content",
-              textTransform: "capitalize",
-              borderRadius: "12px",
-              marginLeft: "auto",
-              display: "block",
+              background: '#06A19B',
+              fontWeight: 'bold',
+              padding: '8px 24px',
+              width: 'fit-content',
+              textTransform: 'capitalize',
+              borderRadius: '12px',
+              marginLeft: 'auto',
+              display: 'block',
             }}
             onClick={() => {
               handleCalculate();

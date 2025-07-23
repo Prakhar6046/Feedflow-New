@@ -1,5 +1,5 @@
-"use client";
-import { Line } from "react-chartjs-2";
+'use client';
+import { Line } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
   LineElement,
@@ -12,10 +12,10 @@ import {
   Title,
   Chart,
   ChartOptions,
-} from "chart.js";
-import annotationPlugin from "chartjs-plugin-annotation";
-import { useEffect, useRef } from "react";
-import "chartjs-adapter-date-fns";
+} from 'chart.js';
+import annotationPlugin from 'chartjs-plugin-annotation';
+import { useEffect, useRef } from 'react';
+import 'chartjs-adapter-date-fns';
 ChartJS.register(
   LineElement,
   CategoryScale,
@@ -25,11 +25,11 @@ ChartJS.register(
   Tooltip,
   Legend,
   annotationPlugin,
-  Title
+  Title,
 );
 interface Iprops {
   xAxisData: string[];
-  ydata: (String | undefined)[];
+  ydata: (string | undefined)[];
   title: string;
 
   startDate: string;
@@ -46,11 +46,11 @@ const FishChart = ({
 }: Iprops) => {
   const chartRef = useRef<Chart | any>(null);
   const getUnit = (diff: number): any => {
-    if (diff <= 1) return "hour"; // Use hourly granularity for 1 day or less
-    if (diff <= 7) return "day"; // Use daily granularity for up to a week
-    if (diff <= 30) return "week"; // Use weekly granularity for up to a month
-    if (diff <= 365) return "month"; // Use monthly granularity for up to a year
-    return "year"; // Use yearly granularity for over a year
+    if (diff <= 1) return 'hour'; // Use hourly granularity for 1 day or less
+    if (diff <= 7) return 'day'; // Use daily granularity for up to a week
+    if (diff <= 30) return 'week'; // Use weekly granularity for up to a month
+    if (diff <= 365) return 'month'; // Use monthly granularity for up to a year
+    return 'year'; // Use yearly granularity for over a year
   };
 
   const data = {
@@ -61,29 +61,29 @@ const FishChart = ({
         label: `${title} average`,
         data: ydata || [1, 2, 34, 55],
         backgroundColor: [
-          "rgba(255, 99, 132, 0.2)",
-          "rgba(255, 159, 64, 0.2)",
-          "rgba(255, 205, 86, 0.2)",
-          "rgba(75, 192, 192, 0.2)",
-          "rgba(54, 162, 235, 0.2)",
-          "rgba(153, 102, 255, 0.2)",
-          "rgba(201, 203, 207, 0.2)",
+          'rgba(255, 99, 132, 0.2)',
+          'rgba(255, 159, 64, 0.2)',
+          'rgba(255, 205, 86, 0.2)',
+          'rgba(75, 192, 192, 0.2)',
+          'rgba(54, 162, 235, 0.2)',
+          'rgba(153, 102, 255, 0.2)',
+          'rgba(201, 203, 207, 0.2)',
         ],
         borderColor: [
-          "rgb(255, 99, 132)",
-          "rgb(255, 159, 64)",
-          "rgb(255, 205, 86)",
-          "rgb(75, 192, 192)",
-          "rgb(54, 162, 235)",
-          "rgb(153, 102, 255)",
-          "rgb(201, 203, 207)",
+          'rgb(255, 99, 132)',
+          'rgb(255, 159, 64)',
+          'rgb(255, 205, 86)',
+          'rgb(75, 192, 192)',
+          'rgb(54, 162, 235)',
+          'rgb(153, 102, 255)',
+          'rgb(201, 203, 207)',
         ],
         borderWidth: 2,
       },
     ],
   };
 
-  const options: ChartOptions<"line"> = {
+  const options: ChartOptions<'line'> = {
     responsive: true,
     maintainAspectRatio: false,
     layout: {
@@ -102,7 +102,7 @@ const FishChart = ({
       title: {
         display: true,
         text: title,
-        color: "black",
+        color: 'black',
         font: {
           size: 24, // Increase the font size for the title
           weight: 400, // Optional: Make the font bold
@@ -111,18 +111,18 @@ const FishChart = ({
     },
     scales: {
       x: {
-        type: "time",
-        position: "bottom",
-        title: { display: true, text: "Date" },
+        type: 'time',
+        position: 'bottom',
+        title: { display: true, text: 'Date' },
         grid: { display: false },
         time: {
           unit: getUnit(dateDiff),
           displayFormats: {
-            hour: "MMM d",
-            day: "MMM d",
-            week: "MMM d",
-            month: "MMM yyyy",
-            year: "yyyy",
+            hour: 'MMM d',
+            day: 'MMM d',
+            week: 'MMM d',
+            month: 'MMM yyyy',
+            year: 'yyyy',
           },
         },
 
@@ -143,17 +143,17 @@ const FishChart = ({
       ctx,
       chartArea: { left, right, top, bottom },
     } = chart;
-    chart.update("none");
+    chart.update('none');
     const coorX = mousemove.offsetX;
     const coorY = mousemove.offsetY;
 
     if (coorX >= left && coorX <= right && coorY >= top && coorY <= bottom) {
-      canvas.style.cursor = "default";
+      canvas.style.cursor = 'default';
     } else {
-      canvas.style.cursor = "default";
+      canvas.style.cursor = 'default';
     }
     ctx.lineWidth = 1;
-    ctx.strokeStyle = "#666";
+    ctx.strokeStyle = '#666';
     ctx.setLineDash([3, 3]);
     if (coorY >= top && coorY <= bottom && coorX >= left && coorX <= right) {
       ctx.beginPath();
@@ -182,26 +182,26 @@ const FishChart = ({
     const textWidth =
       ctx.measureText(new Date(x.getValueForPixel(coorX)).toLocaleString())
         .width + 10;
-    ctx.font = "13px sans-serif bold";
-    ctx.textBaseline = "middle";
-    ctx.textAlign = "center";
+    ctx.font = '13px sans-serif bold';
+    ctx.textBaseline = 'middle';
+    ctx.textAlign = 'center';
     ctx.beginPath();
-    ctx.fillStyle = "rgba(51,51,51,255)";
+    ctx.fillStyle = 'rgba(51,51,51,255)';
     drawRoundedRect(ctx, right, coorY - 14, 40, 25, 4);
     ctx.closePath();
-    ctx.fillStyle = "white";
+    ctx.fillStyle = 'white';
     ctx.fillText(y.getValueForPixel(coorY).toFixed(2), right + 20, coorY);
     ctx.beginPath();
-    ctx.fillStyle = "rgba(51,51,51,255)";
+    ctx.fillStyle = 'rgba(51,51,51,255)';
     ctx.fillRect(coorX - textWidth / 2, bottom, textWidth, 20);
     ctx.closePath();
-    ctx.fillStyle = "white";
+    ctx.fillStyle = 'white';
     const nearestValue = x.getValueForPixel(coorX);
     if (nearestValue !== undefined) {
       ctx.fillText(
         new Date(x.getValueForPixel(coorX)).toLocaleString(),
         coorX,
-        bottom + 10
+        bottom + 10,
       );
     }
     ctx.restore();
@@ -212,13 +212,13 @@ const FishChart = ({
     y: number,
     width: number,
     height: number,
-    radius: any
+    radius: any,
   ) => {
-    if (typeof radius === "number") {
+    if (typeof radius === 'number') {
       radius = { tl: radius, tr: radius, br: radius, bl: radius };
     } else {
       const defaultRadius: any = { tl: 0, tr: 0, br: 0, bl: 0 };
-      for (let side in defaultRadius) {
+      for (const side in defaultRadius) {
         radius[side] = radius[side] || defaultRadius[side];
       }
     }
@@ -232,7 +232,7 @@ const FishChart = ({
       y + height,
       x + width - radius.br,
       y + height,
-      radius.br
+      radius.br,
     );
     ctx.lineTo(x + radius.bl, y + height);
     ctx.arcTo(x, y + height, x, y + height - radius.bl, radius.bl);
@@ -242,7 +242,7 @@ const FishChart = ({
     ctx.fill();
   };
   const dottedLine = {
-    id: "dottedLine",
+    id: 'dottedLine',
     beforeDatasetDraw(chart: any) {
       const {
         ctx,
@@ -256,29 +256,29 @@ const FishChart = ({
       const avg =
         dataset?.reduce(
           (sum: string, value: string) => Number(sum) + Number(value),
-          0
+          0,
         ) / dataset?.length;
 
       ctx.save();
       ctx.beginPath();
       ctx.lineWidth = 1;
       ctx.setLineDash([5, 4]);
-      ctx.strokeStyle = "rgba(0, 128, 0, 1)"; // Green color for the dotted line
+      ctx.strokeStyle = 'rgba(0, 128, 0, 1)'; // Green color for the dotted line
       ctx.moveTo(left, y.getPixelForValue(avg));
       ctx.lineTo(right, y.getPixelForValue(avg));
       ctx.stroke();
 
       // Draw the rounded rectangle and label with "avg"
-      ctx.fillStyle = "rgba(0, 128, 0, 1)"; // Green background for the label
+      ctx.fillStyle = 'rgba(0, 128, 0, 1)'; // Green background for the label
       drawRoundedRect(ctx, right, y.getPixelForValue(avg) - 10, 40, 25, 4);
-      ctx.font = "13px sans-serif bold";
-      ctx.fillStyle = "white"; // White text color
-      ctx.textBaseline = "middle";
-      ctx.textAlign = "center";
+      ctx.font = '13px sans-serif bold';
+      ctx.fillStyle = 'white'; // White text color
+      ctx.textBaseline = 'middle';
+      ctx.textAlign = 'center';
       ctx.fillText(
-        "avg", // Label as "avg"
+        'avg', // Label as "avg"
         right + 20,
-        y.getPixelForValue(avg) + 3
+        y.getPixelForValue(avg) + 3,
       );
 
       ctx.restore();
@@ -287,7 +287,7 @@ const FishChart = ({
 
   //custom tooltip plugin block
   const customTooltip = {
-    id: "customTooltip",
+    id: 'customTooltip',
     afterDraw(chart: Chart) {
       const {
         ctx,
@@ -295,7 +295,7 @@ const FishChart = ({
         scales: { x, y },
       } = chart;
 
-      chart.canvas.addEventListener("mousemove", (e) => tooltipPosition(e));
+      chart.canvas.addEventListener('mousemove', (e) => tooltipPosition(e));
 
       const tooltipPosition = (mousemove: MouseEvent) => {
         let xTooltip, yTooltip;
@@ -318,9 +318,9 @@ const FishChart = ({
 
           // Tooltip box
           ctx.beginPath();
-          ctx.fillStyle = "rgba(173, 216, 230, 0.9)";
-          ctx.strokeStyle = "rgba(173, 216, 230, 0.9)";
-          ctx.lineJoin = "round";
+          ctx.fillStyle = 'rgba(173, 216, 230, 0.9)';
+          ctx.strokeStyle = 'rgba(173, 216, 230, 0.9)';
+          ctx.lineJoin = 'round';
           ctx.lineWidth = 5;
           ctx.setLineDash([]);
           ctx.fillRect(xTooltip, yTooltip, 150, 60);
@@ -329,10 +329,10 @@ const FishChart = ({
           ctx.restore();
 
           // Tooltip text
-          ctx.font = "13px sans-serif";
-          ctx.fillStyle = "#006d77"; // Teal color for text
-          ctx.textAlign = "center";
-          ctx.textBaseline = "middle";
+          ctx.font = '13px sans-serif';
+          ctx.fillStyle = '#006d77'; // Teal color for text
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
 
           const xValue: number | any = x.getValueForPixel(mousemove.offsetX); // X-axis value
           const yValue = y.getValueForPixel(mousemove.offsetY)?.toFixed(2); // Y-axis value
@@ -340,7 +340,7 @@ const FishChart = ({
           ctx.fillText(
             `Date: ${new Date(xValue).toLocaleDateString()}`,
             xTooltip + 75, // Center text horizontally
-            yTooltip + 20 // Adjust vertical position
+            yTooltip + 20, // Adjust vertical position
           );
           ctx.fillText(` Value: ${yValue}`, xTooltip + 75, yTooltip + 40);
 
@@ -357,9 +357,9 @@ const FishChart = ({
       if (canvas) {
         const handleMouseMove = (e: MouseEvent) =>
           crosshairLine(chartInstance, e);
-        canvas.addEventListener("mousemove", handleMouseMove);
+        canvas.addEventListener('mousemove', handleMouseMove);
         return () => {
-          canvas.removeEventListener("mousemove", handleMouseMove);
+          canvas.removeEventListener('mousemove', handleMouseMove);
           if (chartInstance) {
             chartInstance.destroy();
           }

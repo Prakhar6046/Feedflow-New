@@ -1,6 +1,6 @@
 // LAYOUT
 
-import { SettingsValueProps } from "./app/_components/settings/types";
+import { SettingsValueProps } from './app/_components/settings/types';
 
 export const HEADER = {
   H_MOBILE: 64,
@@ -30,17 +30,17 @@ export const ICON = {
 export const cookiesExpires = 3;
 
 export const cookiesKey = {
-  themeMode: "themeMode",
-  autoThemeMode: "autoThemeMode",
-  themeLayout: "themeLayout",
-  themeStretch: "themeStretch",
+  themeMode: 'themeMode',
+  autoThemeMode: 'autoThemeMode',
+  themeLayout: 'themeLayout',
+  themeStretch: 'themeStretch',
 };
 
 export const defaultSettings: SettingsValueProps = {
-  themeMode: "light",
+  themeMode: 'light',
   autoThemeMode: true,
   themeStretch: false,
-  themeLayout: "mini",
+  themeLayout: 'mini',
 };
 
 // Remove AUTH_LOGIN_URL and AUTH_VERIFY_URL as they are related to next-auth
@@ -70,7 +70,7 @@ export const defaultSettings: SettingsValueProps = {
 //	}
 // }
 
-export const QUALICHECK_ORGANISATION_ID = "cl76axbqn000909l79hziigvk";
+export const QUALICHECK_ORGANISATION_ID = 'cl76axbqn000909l79hziigvk';
 
 // Remove reloadSession if it's no longer needed
 // export const reloadSession = () => {

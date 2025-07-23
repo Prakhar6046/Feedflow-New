@@ -1,31 +1,31 @@
-import prisma from "@/prisma/prisma";
-import { NextRequest, NextResponse } from "next/server";
-import { verifyAndRefreshToken } from "@/app/_lib/auth/verifyAndRefreshToken";
+import prisma from '@/prisma/prisma';
+import { NextRequest, NextResponse } from 'next/server';
+import { verifyAndRefreshToken } from '@/app/_lib/auth/verifyAndRefreshToken';
 
-import cloudinary from "@/lib/cloudinary";
+import cloudinary from '@/lib/cloudinary';
 export const POST = async (request: NextRequest) => {
   const user = await verifyAndRefreshToken(request);
   if (user.status === 401) {
     return NextResponse.json(
-      { status: false, message: "Unauthorized: Token missing or invalid" },
-      { status: 401 }
+      { status: false, message: 'Unauthorized: Token missing or invalid' },
+      { status: 401 },
     );
   }
   try {
     // Upload the image using multer
     const formData = await request.formData();
-    const image: any = formData.get("image");
-    const organisationId: any = formData.get("organisationId");
-    const oldImagePublicId: any = formData.get("oldImageName"); // Using public_id from Cloudinary
+    const image: any = formData.get('image');
+    const organisationId: any = formData.get('organisationId');
+    const oldImagePublicId: any = formData.get('oldImageName'); // Using public_id from Cloudinary
 
     // Convert image to base64
     const buffer = Buffer.from(await image.arrayBuffer());
     const base64Image = `data:${image.type};base64,${buffer.toString(
-      "base64"
+      'base64',
     )}`;
 
     // Delete the old image from Cloudinary if provided
-    if (oldImagePublicId && oldImagePublicId !== "") {
+    if (oldImagePublicId && oldImagePublicId !== '') {
       try {
         await cloudinary.uploader.destroy(oldImagePublicId);
       } catch (err: any) {
@@ -35,7 +35,7 @@ export const POST = async (request: NextRequest) => {
 
     // Upload new image to Cloudinary
     const uploadResponse = await cloudinary.uploader.upload(base64Image, {
-      folder: "user_images",
+      folder: 'user_images',
     });
 
     const organisation = await prisma.organisation.findUnique({
@@ -44,8 +44,8 @@ export const POST = async (request: NextRequest) => {
 
     if (!organisation) {
       return NextResponse.json(
-        { error: "Organisation not found" },
-        { status: 404 }
+        { error: 'Organisation not found' },
+        { status: 404 },
       );
     }
 
@@ -61,7 +61,7 @@ export const POST = async (request: NextRequest) => {
       JSON.stringify({ data: updatedUser, status: true }),
       {
         status: 200,
-      }
+      },
     );
   } catch (error) {
     return new NextResponse(JSON.stringify({ error, status: false }), {

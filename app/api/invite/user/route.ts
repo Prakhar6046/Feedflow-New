@@ -1,10 +1,10 @@
-import prisma from "@/prisma/prisma";
-import { NextRequest, NextResponse } from "next/server";
-import nodemailer from "nodemailer";
+import prisma from '@/prisma/prisma';
+import { NextRequest, NextResponse } from 'next/server';
+import nodemailer from 'nodemailer';
 
 // Create a transporter using your email provider's SMTP settings
 const transporter = nodemailer.createTransport({
-  service: "gmail", // You can use any other email service provider
+  service: 'gmail', // You can use any other email service provider
   auth: {
     user: process.env.EMAIL_USER, // Your email address
     pass: process.env.EMAIL_PASS, // Your email password or app-specific password
@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
     const { email, name, userId, createdBy } = await req.json();
 
     if (!email) {
-      return NextResponse.json({ error: "Email is required" }, { status: 400 });
+      return NextResponse.json({ error: 'Email is required' }, { status: 400 });
     }
 
     const results = await prisma.user.findUnique({ where: { id: userId } });
@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
       data: { invite: true },
     });
     const userContact = UpdateUser?.organisation?.contact.find(
-      (con) => con.email === email
+      (con) => con.email === email,
     );
     await prisma.contact.update({
       where: { id: userContact?.id },
@@ -39,14 +39,14 @@ export async function POST(req: NextRequest) {
       include: { contact: true },
     });
     const findOrganisationAdmin = invitedByOrg?.contact.find(
-      (org) => org.permission === "ADMIN" || org.permission === "SUPERADMIN"
+      (org) => org.permission === 'ADMIN' || org.permission === 'SUPERADMIN',
     );
     // Send the email
     const mailOptions = {
       from: process.env.EMAIL_USER, // Sender address
       to: email, // List of recipients
-      subject: "Welcome!", // Subject line
-      text: "Thank you for signing up!", // Plain text body
+      subject: 'Welcome!', // Subject line
+      text: 'Thank you for signing up!', // Plain text body
       html: `<!DOCTYPE html>
 <html lang="en">
   <head>
@@ -171,16 +171,16 @@ export async function POST(req: NextRequest) {
 
     // Return a success response
     return NextResponse.json({
-      message: "Email sent successfully",
+      message: 'Email sent successfully',
       info: info.response,
       data: results,
       status: true,
     });
   } catch (error) {
-    console.error("Error sending email:", error);
+    console.error('Error sending email:', error);
     return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 }
+      { error: 'Internal Server Error' },
+      { status: 500 },
     );
   }
 }

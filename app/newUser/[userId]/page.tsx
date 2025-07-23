@@ -1,7 +1,7 @@
-"use client";
-import { useRouter } from "next/navigation";
-import { useForm, SubmitHandler } from "react-hook-form";
-import { getCookie } from "cookies-next";
+'use client';
+import { useRouter } from 'next/navigation';
+import { useForm, SubmitHandler } from 'react-hook-form';
+import { getCookie } from 'cookies-next';
 
 interface IFormInput {
   password: string;
@@ -19,28 +19,28 @@ const Page = ({ params }: { params: { userId: string } }) => {
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
     if (data.password && params.userId) {
-      const token = getCookie("auth-token");
+      const token = getCookie('auth-token');
       const payload = {
         userId: params.userId,
         password: data.password,
       };
-      const response = await fetch("/api/add-new-user/setPassword", {
-        method: "POST",
+      const response = await fetch('/api/add-new-user/setPassword', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(payload),
       });
       const responseData = await response.json();
       if (responseData.status) {
-        router.push("/auth/login");
+        router.push('/auth/login');
       }
     }
   };
 
   // Watch the password field to validate confirmPassword
-  const password = watch("password");
+  const password = watch('password');
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -49,11 +49,11 @@ const Page = ({ params }: { params: { userId: string } }) => {
         <input
           id="password"
           type="password"
-          {...register("password", {
-            required: "Password is required",
+          {...register('password', {
+            required: 'Password is required',
             minLength: {
               value: 8,
-              message: "Password must be at least 8 characters",
+              message: 'Password must be at least 8 characters',
             },
           })}
         />
@@ -65,9 +65,9 @@ const Page = ({ params }: { params: { userId: string } }) => {
         <input
           id="confirmPassword"
           type="password"
-          {...register("confirmPassword", {
-            required: "Please confirm your password",
-            validate: (value) => value === password || "Passwords do not match",
+          {...register('confirmPassword', {
+            required: 'Please confirm your password',
+            validate: (value) => value === password || 'Passwords do not match',
           })}
         />
         {errors.confirmPassword && (

@@ -1,54 +1,54 @@
-import { Farm } from "./Farm";
-import { SingleOrganisation } from "./Organization";
+import { Farm } from './Farm';
+import { SingleOrganisation } from './Organization';
 
 export interface SampleEnvironment {
-  id: Number;
-  fishFarmId: String;
-  productionUnitId: String;
-  date: String;
-  do: String;
-  ammonia: String;
-  TSS: String;
-  createdBy: String;
-  updatedBy: String;
-  createdAt: String;
-  updatedAt: String;
-  organisationId: Number;
+  id: number;
+  fishFarmId: string;
+  productionUnitId: string;
+  date: string;
+  do: string;
+  ammonia: string;
+  TSS: string;
+  createdBy: string;
+  updatedBy: string;
+  createdAt: string;
+  updatedAt: string;
+  organisationId: number;
   farm: Farm;
   organisation: SingleOrganisation;
 
   productionUnit: {
-    id: String;
-    name: String;
-    type: String;
-    capacity: String;
-    waterflowRate: String;
-    farmId: String;
+    id: string;
+    name: string;
+    type: string;
+    capacity: string;
+    waterflowRate: string;
+    farmId: string;
   };
 }
 
 export interface SampleStock {
-  id: Number;
-  fishFarmId: String;
-  productionUnitId: String;
-  biomass: String;
-  fishCount: String;
-  meanLength: String;
-  meanWeight: String;
-  createdBy: String;
-  updatedBy: String;
-  createdAt: String;
-  updatedAt: String;
-  organisationId: Number;
+  id: number;
+  fishFarmId: string;
+  productionUnitId: string;
+  biomass: string;
+  fishCount: string;
+  meanLength: string;
+  meanWeight: string;
+  createdBy: string;
+  updatedBy: string;
+  createdAt: string;
+  updatedAt: string;
+  organisationId: number;
   farm: Farm;
   organisation: SingleOrganisation;
 
   productionUnit: {
-    id: String;
-    name: String;
-    type: String;
-    capacity: String;
-    waterflowRate: String;
-    farmId: String;
+    id: string;
+    name: string;
+    type: string;
+    capacity: string;
+    waterflowRate: string;
+    farmId: string;
   };
 }

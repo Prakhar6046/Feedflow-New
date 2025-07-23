@@ -1,7 +1,7 @@
-import prisma from "@/prisma/prisma";
-import { NextRequest, NextResponse } from "next/server";
-import nodemailer from "nodemailer";
-import { verifyAndRefreshToken } from "@/app/_lib/auth/verifyAndRefreshToken";
+import prisma from '@/prisma/prisma';
+import { NextRequest, NextResponse } from 'next/server';
+import nodemailer from 'nodemailer';
+import { verifyAndRefreshToken } from '@/app/_lib/auth/verifyAndRefreshToken';
 
 export const GET = async (request: NextRequest, context: { params: any }) => {
   const user = await verifyAndRefreshToken(request);
@@ -9,17 +9,17 @@ export const GET = async (request: NextRequest, context: { params: any }) => {
     return new NextResponse(
       JSON.stringify({
         status: false,
-        message: "Unauthorized: Token missing or invalid",
+        message: 'Unauthorized: Token missing or invalid',
       }),
-      { status: 401 }
+      { status: 401 },
     );
   }
   const organisationId = context.params.organisationId;
 
   if (!organisationId) {
     return new NextResponse(
-      JSON.stringify({ message: "Invalid or missing organisationId" }),
-      { status: 400 }
+      JSON.stringify({ message: 'Invalid or missing organisationId' }),
+      { status: 400 },
     );
   }
   try {
@@ -47,13 +47,13 @@ export async function PUT(req: NextRequest, context: { params: any }) {
   const user = await verifyAndRefreshToken(req);
   if (user.status === 401) {
     return NextResponse.json(
-      { status: false, message: "Unauthorized: Token missing or invalid" },
-      { status: 401 }
+      { status: false, message: 'Unauthorized: Token missing or invalid' },
+      { status: 401 },
     );
   }
   try {
     const transporter: any = nodemailer.createTransport({
-      service: "gmail", // You can use any other email service provider
+      service: 'gmail', // You can use any other email service provider
       auth: {
         user: process.env.EMAIL_USER, // Your email address
         pass: process.env.EMAIL_PASS, // Your email password or app-specific password
@@ -69,35 +69,35 @@ export async function PUT(req: NextRequest, context: { params: any }) {
 
     if (!organisation) {
       return NextResponse.json(
-        { error: "Organisation not found" },
-        { status: 404 }
+        { error: 'Organisation not found' },
+        { status: 404 },
       );
     }
 
     // Parse form data
     const formData = await req.formData();
-    const name = formData.get("name") as string;
-    const organisationCode = formData.get("organisationCode") as string;
-    const organisationType = formData.get("organisationType") as string;
-    const addressData = JSON.parse(formData.get("address") as any);
-    const contactsData = JSON.parse(formData.get("contacts") as any);
-    const hatcheryId = JSON.parse(formData.get("hatcheryId") as string);
-    const hatchery = JSON.parse(formData.get("hatchery") as string);
-    const imageUrl = formData.get("imageUrl") as string;
-    const invitedById = formData.get("invitedBy") as string;
+    const name = formData.get('name') as string;
+    const organisationCode = formData.get('organisationCode') as string;
+    const organisationType = formData.get('organisationType') as string;
+    const addressData = JSON.parse(formData.get('address') as any);
+    const contactsData = JSON.parse(formData.get('contacts') as any);
+    const hatcheryId = JSON.parse(formData.get('hatcheryId') as string);
+    const hatchery = JSON.parse(formData.get('hatchery') as string);
+    const imageUrl = formData.get('imageUrl') as string;
+    const invitedById = formData.get('invitedBy') as string;
     const invitedByOrg = await prisma.organisation.findUnique({
       where: { id: Number(invitedById) },
       include: { contact: true },
     });
 
     const findOrganisationAdmin = invitedByOrg?.contact.find(
-      (org) => org.permission === "ADMIN" || org.permission === "SUPERADMIN"
+      (org) => org.permission === 'ADMIN' || org.permission === 'SUPERADMIN',
     );
     const checkContactExist = contactsData
       .filter((contact: any) => !contact.id)
       .map((contact: any) => contact.email)
       .filter((email: string | null | undefined): email is string =>
-        Boolean(email)
+        Boolean(email),
       );
 
     // check user exist with contact email
@@ -107,13 +107,13 @@ export async function PUT(req: NextRequest, context: { params: any }) {
 
     if (users.length) {
       return NextResponse.json(
-        { error: "User already exist with some email" },
-        { status: 409 }
+        { error: 'User already exist with some email' },
+        { status: 409 },
       );
     }
     // Handle address update or create
     const updatedAddress = await prisma.address.upsert({
-      where: { id: organisation.addressId || "" },
+      where: { id: organisation.addressId || '' },
       update: {
         name: addressData.address,
         street: addressData.street,
@@ -134,7 +134,7 @@ export async function PUT(req: NextRequest, context: { params: any }) {
     });
     if (hatchery) {
       const updatedHatchery = await prisma.hatchery.upsert({
-        where: { id: hatcheryId || "" },
+        where: { id: hatcheryId || '' },
         update: {
           name: hatchery.name,
           altitude: hatchery.altitude,
@@ -142,10 +142,10 @@ export async function PUT(req: NextRequest, context: { params: any }) {
           fishSpecie: hatchery.fishSpecie,
         },
         create: {
-          name: hatchery.name ?? "",
-          altitude: hatchery.altitude ?? "",
-          code: hatchery.code ?? "",
-          fishSpecie: hatchery.fishSpecie ?? "",
+          name: hatchery.name ?? '',
+          altitude: hatchery.altitude ?? '',
+          code: hatchery.code ?? '',
+          fishSpecie: hatchery.fishSpecie ?? '',
           createdBy: organisation.id,
         },
       });
@@ -221,7 +221,7 @@ export async function PUT(req: NextRequest, context: { params: any }) {
         const mailOptions = {
           from: process.env.EMAIL_USER, // Sender address
           to: contact.email, // Recipient email
-          subject: "Welcome!", // Subject line
+          subject: 'Welcome!', // Subject line
           text: `Hi ${contact.name}, you are invited to join Feedflow.`, // Plain text body
           html: `<!DOCTYPE html>
 <html lang="en">
@@ -346,7 +346,7 @@ export async function PUT(req: NextRequest, context: { params: any }) {
         try {
           await transporter.sendMail(mailOptions);
         } catch (error) {
-          console.error("Failed to send email to", contact.email, error);
+          console.error('Failed to send email to', contact.email, error);
         }
       }
     }
@@ -397,13 +397,13 @@ export async function PUT(req: NextRequest, context: { params: any }) {
     });
 
     return new NextResponse(
-      JSON.stringify({ message: "Organisation successfully updated!" }),
-      { status: 200 }
+      JSON.stringify({ message: 'Organisation successfully updated!' }),
+      { status: 200 },
     );
   } catch (error) {
     return NextResponse.json(
-      { error: "Something went wrong" },
-      { status: 500 }
+      { error: 'Something went wrong' },
+      { status: 500 },
     );
   }
 }

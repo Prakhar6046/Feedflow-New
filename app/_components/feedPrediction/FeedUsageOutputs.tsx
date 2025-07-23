@@ -1,101 +1,77 @@
-"use clinet";
-import {
-  calculateFishGrowth,
-  CommonFeedPredictionHead,
-  exportFeedPredictionToXlsx,
-  getLocalItem,
-} from "@/app/_lib/utils";
-import { FarmGroup } from "@/app/_typeModels/production";
-import { useAppDispatch } from "@/lib/hooks";
-import { MultiSelect } from "primereact/multiselect";
+'use clinet';
+import { calculateFishGrowth, getLocalItem } from '@/app/_lib/utils';
+import { FarmGroup } from '@/app/_typeModels/production';
+import { MultiSelect } from 'primereact/multiselect';
 import {
   Box,
   Button,
-  Divider,
   FormControl,
   Grid,
   InputLabel,
-  MenuItem,
-  Select,
   Stack,
   TextField,
   Typography,
-} from "@mui/material";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import dayjs from "dayjs";
-import html2canvas from "html2canvas";
-import jsPDF from "jspdf";
-import React, { useEffect, useState } from "react";
-import { createRoot } from "react-dom/client";
-import { Controller, useForm } from "react-hook-form";
-import FishGrowthChart from "../charts/FishGrowthChart";
-import FishGrowthTable from "../table/FishGrowthTable";
-import { FishFeedingData } from "./AdHoc";
-import Loader from "../Loader";
+} from '@mui/material';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import dayjs from 'dayjs';
+import React, { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
 
-import {
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-} from "@mui/material";
-import { FarmsFishGrowth } from "./FeedingPlanOutputs";
-import FeedUsageTable from "../table/FeedUsageTable";
+import { Paper } from '@mui/material';
+import { FarmsFishGrowth } from './FeedingPlanOutputs';
+import FeedUsageTable from '../table/FeedUsageTable';
 
 // import MenuItem from "@mui/material/MenuItem";
 
 const headerStyle = {
   borderBottom: 0,
-  color: "#fff",
-  background: "#06a19b",
+  color: '#fff',
+  background: '#06a19b',
   fontSize: { md: 16, xs: 14 },
   fontWeight: 600,
 };
 
 const cellStyle = {
   borderBottomWidth: 0,
-  color: "#555555",
+  color: '#555555',
   fontWeight: 500,
-  whiteSpace: "nowrap",
+  whiteSpace: 'nowrap',
   p: 0,
 };
 
 const feedStyle = {
   fontWeight: 500,
   fontSize: 14,
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "space-between",
-  backgroundColor: "#F5F6F8",
-  borderTopLeftRadius: "8px",
-  borderBottomLeftRadius: "8px",
-  padding: "8px 12px",
-  margin: "8px 0",
-  textWrap: "nowrap",
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  backgroundColor: '#F5F6F8',
+  borderTopLeftRadius: '8px',
+  borderBottomLeftRadius: '8px',
+  padding: '8px 12px',
+  margin: '8px 0',
+  textWrap: 'nowrap',
 };
 
 const amountStyle = {
   fontWeight: 500,
   fontSize: 14,
-  display: "flex",
-  alignItems: "center",
-  backgroundColor: "#F5F6F8",
-  padding: "8px 12px",
-  margin: "8px 0",
-  textWrap: "nowrap",
+  display: 'flex',
+  alignItems: 'center',
+  backgroundColor: '#F5F6F8',
+  padding: '8px 12px',
+  margin: '8px 0',
+  textWrap: 'nowrap',
 };
 
 const summaryStyle = {
   fontWeight: 500,
   fontSize: 14,
-  padding: "16px 12px",
-  background: "#06a19b",
-  color: "#fff",
+  padding: '16px 12px',
+  background: '#06a19b',
+  color: '#fff',
 };
 const FeedUsageOutput = () => {
   const [farmList, setFarmList] = useState<any>([]);
@@ -104,7 +80,7 @@ const FeedUsageOutput = () => {
   const [selectedDropDownfarms, setSelectedDropDownfarms] = useState<any>([]);
   const [selectedDropDownUnits, setSelectedDropDownUnits] = useState<any>([]);
   const [startDate, setStartDate] = useState<string | null>(
-    dayjs().toISOString()
+    dayjs().toISOString(),
   );
   const [endDate, setEndDate] = useState<string | null>(dayjs().toISOString());
   const [flatData, setFlatData] = useState<FarmsFishGrowth[]>([]);
@@ -125,11 +101,11 @@ const FeedUsageOutput = () => {
           id: string;
           option: string;
         }[],
-        detailedFarms: any
+        detailedFarms: any,
       ) => {
         return dynamicFarms.map((dynamicFarm) => {
           const matchedFarm = detailedFarms.find(
-            (farm: any) => farm.units?.[0]?.farm?.id === dynamicFarm.id
+            (farm: any) => farm.units?.[0]?.farm?.id === dynamicFarm.id,
           );
           return {
             farmId: dynamicFarm.id,
@@ -139,11 +115,11 @@ const FeedUsageOutput = () => {
         });
       };
       const result = getProductionUnits(selectedDropDownfarms, farmList);
-      let customUnits = result.flatMap((farm) =>
+      const customUnits = result.flatMap((farm) =>
         farm?.productionUnits.map((unit: any) => ({
           id: unit.id,
           option: unit.productionUnit?.name,
-        }))
+        })),
       );
       setUnitOptions(customUnits);
       setSelectedDropDownUnits(customUnits);
@@ -153,14 +129,14 @@ const FeedUsageOutput = () => {
     const selectedUnitIds = selectedDropDownUnits.map((unit: any) => unit.id);
 
     const data = flatData.filter((unit: any) =>
-      selectedUnitIds.includes(unit.unitId)
+      selectedUnitIds.includes(unit.unitId),
     );
     setFilteredData(data);
   }, [selectedDropDownUnits]);
   useEffect(() => {
-    const data = getLocalItem("feedPredictionData");
+    const data = getLocalItem('feedPredictionData');
     if (data) {
-      let customFarms: any = data?.productionData?.map((farm: any) => {
+      const customFarms: any = data?.productionData?.map((farm: any) => {
         return { option: farm.farm, id: farm.units[0].farm.id };
       });
       setFarmList(data?.productionData);
@@ -168,17 +144,17 @@ const FeedUsageOutput = () => {
       setEndDate(data?.endDate);
       setFarmOptions(customFarms);
       setSelectedDropDownfarms(customFarms);
-      setValue("adjustmentFactor", data.adjustmentFactor);
+      setValue('adjustmentFactor', data.adjustmentFactor);
       setFomData(data);
       const fishGrowthData: any = data?.productionData?.map(
         (production: FarmGroup) =>
           production.units.map((unit: any) => {
-            const formattedDate = dayjs(data?.startDate).format("YYYY-MM-DD");
+            const formattedDate = dayjs(data?.startDate).format('YYYY-MM-DD');
             const diffInDays = dayjs(data?.endDate).diff(
               dayjs(data?.startDate),
-              "day"
+              'day',
             );
-            setValue("period", diffInDays);
+            setValue('period', diffInDays);
             return {
               farm: production.farm,
               farmId: unit?.farm?.id,
@@ -186,7 +162,7 @@ const FeedUsageOutput = () => {
               unit: unit.productionUnit.name,
               fishGrowthData: calculateFishGrowth(
                 Number(data?.fishWeight ?? 0),
-                data?.tempSelection === "default"
+                data?.tempSelection === 'default'
                   ? Number(unit?.waterTemp ?? 0)
                   : Number(data?.temp),
                 Number(unit.fishCount ?? 0),
@@ -194,10 +170,10 @@ const FeedUsageOutput = () => {
                 Number(diffInDays),
                 formattedDate,
                 data?.timeInterval,
-                13.47
+                13.47,
               ),
             };
-          })
+          }),
       );
       if (fishGrowthData?.length) {
         setFlatData([...fishGrowthData].flat());
@@ -216,11 +192,11 @@ const FeedUsageOutput = () => {
             sm={6}
             xs={12}
             sx={{
-              width: "fit-content",
-              paddingTop: "8px",
+              width: 'fit-content',
+              paddingTop: '8px',
             }}
           >
-            <Box sx={{ width: "100%" }}>
+            <Box sx={{ width: '100%' }}>
               <FormControl fullWidth className="form-input selected" focused>
                 <InputLabel
                   id="demo-simple-select-label-1 "
@@ -261,15 +237,15 @@ const FeedUsageOutput = () => {
             sm={6}
             xs={12}
             sx={{
-              width: "fit-content",
-              paddingTop: "8px",
+              width: 'fit-content',
+              paddingTop: '8px',
             }}
           >
-            <Box sx={{ width: "100%" }}>
+            <Box sx={{ width: '100%' }}>
               <FormControl
                 fullWidth
                 className={`form-input ${
-                  selectedDropDownfarms?.length >= 1 && "selected"
+                  selectedDropDownfarms?.length >= 1 && 'selected'
                 }`}
                 focused
               >
@@ -334,8 +310,8 @@ const FeedUsageOutput = () => {
                     if (isoDate) setEndDate(isoDate);
                   }}
                   sx={{
-                    marginTop: "0",
-                    borderRadius: "6px",
+                    marginTop: '0',
+                    borderRadius: '6px',
                   }}
                   className="date-picker form-input"
                   minDate={dayjs(startDate)}
@@ -345,29 +321,29 @@ const FeedUsageOutput = () => {
             </FormControl>
           </Grid>
           <Grid item xl={2} lg={4} md={4} sm={6} xs={12}>
-            <Box position={"relative"} width={"100%"}>
+            <Box position={'relative'} width={'100%'}>
               <TextField
                 label="Period *"
                 disabled
                 type="text"
-                {...register("period", {
+                {...register('period', {
                   required: true,
                 })}
                 className="form-input"
                 focused
                 sx={{
-                  width: "100%",
+                  width: '100%',
                 }}
               />
               <Typography
                 variant="body1"
                 color="#555555AC"
                 sx={{
-                  position: "absolute",
+                  position: 'absolute',
                   right: 13,
-                  top: "30%",
-                  backgroundColor: "white",
-                  paddingInline: "5px",
+                  top: '30%',
+                  backgroundColor: 'white',
+                  paddingInline: '5px',
                 }}
               >
                 days
@@ -380,9 +356,9 @@ const FeedUsageOutput = () => {
         <Grid item xs={12}>
           <Paper
             sx={{
-              overflow: "hidden",
-              borderRadius: "14px",
-              boxShadow: "0px 0px 16px 5px #0000001A",
+              overflow: 'hidden',
+              borderRadius: '14px',
+              boxShadow: '0px 0px 16px 5px #0000001A',
             }}
           >
             <FeedUsageTable flatData={filteredData} />
@@ -390,8 +366,8 @@ const FeedUsageOutput = () => {
           <Box
             mt={5}
             sx={{
-              display: "flex",
-              justifyContent: "end",
+              display: 'flex',
+              justifyContent: 'end',
               gap: 1.5,
             }}
           >
@@ -400,14 +376,14 @@ const FeedUsageOutput = () => {
               variant="contained"
               disabled
               sx={{
-                background: "#06A19B",
-                color: "#fff",
+                background: '#06A19B',
+                color: '#fff',
                 fontWeight: 600,
-                padding: "6px 16px",
-                width: "fit-content",
-                textTransform: "capitalize",
-                borderRadius: "8px",
-                border: "1px solid #06A19B",
+                padding: '6px 16px',
+                width: 'fit-content',
+                textTransform: 'capitalize',
+                borderRadius: '8px',
+                border: '1px solid #06A19B',
               }}
             >
               Order Feed
@@ -417,14 +393,14 @@ const FeedUsageOutput = () => {
               type="button"
               variant="contained"
               sx={{
-                background: "#fff",
-                color: "#06A19B",
+                background: '#fff',
+                color: '#06A19B',
                 fontWeight: 600,
-                padding: "6px 16px",
-                width: "fit-content",
-                textTransform: "capitalize",
-                borderRadius: "8px",
-                border: "1px solid #06A19B",
+                padding: '6px 16px',
+                width: 'fit-content',
+                textTransform: 'capitalize',
+                borderRadius: '8px',
+                border: '1px solid #06A19B',
               }}
             >
               Create PDF

@@ -1,8 +1,6 @@
-"use client";
-import { getLocalItem, setLocalItem } from "@/app/_lib/utils";
-import { ProductionParaMeterType } from "@/app/_typeModels/Farm";
-import { selectFarm } from "@/lib/features/farm/farmSlice";
-import { useAppSelector } from "@/lib/hooks";
+'use client';
+import { getLocalItem, setLocalItem } from '@/app/_lib/utils';
+import { ProductionParaMeterType } from '@/app/_typeModels/Farm';
 import {
   Box,
   Button,
@@ -14,21 +12,21 @@ import {
   Radio,
   Stack,
   Typography,
-} from "@mui/material";
-import Paper from "@mui/material/Paper";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import { getCookie } from "cookies-next";
-import { useEffect, useMemo, useState } from "react";
-import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { cellStyle, fishSizes } from "../farm/FeedProfiles";
-import { CloseIcon } from "../theme/overrides/CustomIcons";
-import { FeedProduct } from "@/app/_typeModels/Feed";
-import { FeedSupplier } from "@/app/_typeModels/Organization";
+} from '@mui/material';
+import Paper from '@mui/material/Paper';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import { getCookie } from 'cookies-next';
+import { useEffect, useMemo, useState } from 'react';
+import { Controller, SubmitHandler, useForm } from 'react-hook-form';
+import { cellStyle, fishSizes } from '../farm/FeedProfiles';
+import { CloseIcon } from '../theme/overrides/CustomIcons';
+import { FeedProduct } from '@/app/_typeModels/Feed';
+import { FeedSupplier } from '@/app/_typeModels/Organization';
 
 interface Props {
   productionParaMeter?: ProductionParaMeterType[];
@@ -44,14 +42,14 @@ interface FormData {
   [key: string]: string;
 }
 const style = {
-  position: "absolute" as "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
+  position: 'absolute' as const,
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
   width: 400,
-  bgcolor: "background.paper",
+  bgcolor: 'background.paper',
   boxShadow: 24,
-  padding: "5px 25px",
+  padding: '5px 25px',
 };
 
 const ProductionUnitFeedProfile: React.FC<Props> = ({
@@ -63,7 +61,7 @@ const ProductionUnitFeedProfile: React.FC<Props> = ({
   feedStores,
   feedSuppliers,
 }) => {
-  const isEditFarm = getCookie("isEditFarm");
+  const isEditFarm = getCookie('isEditFarm');
   const [radioValueMap, setRadioValueMap] = useState<
     Record<string, Record<string, string>>
   >({});
@@ -74,12 +72,12 @@ const ProductionUnitFeedProfile: React.FC<Props> = ({
 
   const onSubmit: SubmitHandler<FormData> = (formData) => {
     const productionUnitsFeedProfilesArray = getLocalItem(
-      "productionUnitsFeedProfiles"
+      'productionUnitsFeedProfiles',
     );
     const { data, ...rest } = formData;
 
     const updatedData = productionUnitsFeedProfilesArray?.filter(
-      (data: any) => data.unitName !== selectedUnitName
+      (data: any) => data.unitName !== selectedUnitName,
     );
     const payload = {
       unitName: selectedUnitName,
@@ -90,15 +88,15 @@ const ProductionUnitFeedProfile: React.FC<Props> = ({
 
     updatedData.push(payload);
 
-    setLocalItem("productionUnitsFeedProfiles", updatedData);
+    setLocalItem('productionUnitsFeedProfiles', updatedData);
     setOpen(false);
-    setSelectedUnitName("");
+    setSelectedUnitName('');
     reset();
   };
 
   useEffect(() => {
-    if (typeof window !== "undefined" && selectedUnitName) {
-      const formData = getLocalItem("feedProfiles");
+    if (typeof window !== 'undefined' && selectedUnitName) {
+      const formData = getLocalItem('feedProfiles');
       if (formData) {
         setFormProductionFeedProfile(formData);
         Object?.entries(formData).forEach(([key, value]) => {
@@ -110,11 +108,11 @@ const ProductionUnitFeedProfile: React.FC<Props> = ({
 
   useEffect(() => {
     const productionUnitsFeedProfilesArray = getLocalItem(
-      "productionUnitsFeedProfiles"
+      'productionUnitsFeedProfiles',
     );
 
     const updatedData = productionUnitsFeedProfilesArray?.find(
-      (data: any) => data.unitName === selectedUnitName
+      (data: any) => data.unitName === selectedUnitName,
     );
     if (updatedData) {
       Object.entries(updatedData?.feedProfile).forEach(([key, value]) => {
@@ -125,10 +123,10 @@ const ProductionUnitFeedProfile: React.FC<Props> = ({
 
   useEffect(() => {
     const formProductionFeedProfileArray = getLocalItem(
-      "productionUnitsFeedProfiles"
+      'productionUnitsFeedProfiles',
     );
     const currentUnit = formProductionFeedProfileArray?.find(
-      (val: any) => val.unitName === selectedUnitName
+      (val: any) => val.unitName === selectedUnitName,
     );
     if (
       isEditFarm &&
@@ -144,7 +142,7 @@ const ProductionUnitFeedProfile: React.FC<Props> = ({
           Object.entries(unit?.FeedProfileProductionUnit[0]?.profiles).forEach(
             ([key, value]) => {
               setValue(key, String(value));
-            }
+            },
           );
         }
       });
@@ -157,7 +155,7 @@ const ProductionUnitFeedProfile: React.FC<Props> = ({
   const renderRadioGroup = (
     rowName: string,
     columnName: string,
-    options: string[] = ["opt1", "opt2", "opt3"]
+    options: string[] = ['opt1', 'opt2', 'opt3'],
   ) => (
     <Controller
       name={rowName}
@@ -196,7 +194,7 @@ const ProductionUnitFeedProfile: React.FC<Props> = ({
   const groupedData = useMemo(() => {
     return feedSuppliers?.reduce((acc: any[], supplier: FeedSupplier) => {
       const storesForSupplier = feedStores?.filter((store: any) =>
-        store?.ProductSupplier?.includes(supplier.id)
+        store?.ProductSupplier?.includes(supplier.id),
       );
 
       if (storesForSupplier?.length) {
@@ -231,7 +229,7 @@ const ProductionUnitFeedProfile: React.FC<Props> = ({
   const handleClose = () => {
     setOpen(false);
     reset();
-    setSelectedUnitName("");
+    setSelectedUnitName('');
   };
   return (
     <Modal
@@ -249,9 +247,9 @@ const ProductionUnitFeedProfile: React.FC<Props> = ({
           <IconButton
             onClick={handleClose}
             sx={{
-              color: "inherit",
-              background: "transparent",
-              margin: "2",
+              color: 'inherit',
+              background: 'transparent',
+              margin: '2',
             }}
           >
             <CloseIcon />
@@ -260,10 +258,10 @@ const ProductionUnitFeedProfile: React.FC<Props> = ({
         <form onSubmit={handleSubmit(onSubmit)}>
           <Paper
             sx={{
-              width: "100%",
-              overflow: "hidden",
-              borderRadius: "14px",
-              boxShadow: "0px 0px 16px 5px #0000001A",
+              width: '100%',
+              overflow: 'hidden',
+              borderRadius: '14px',
+              boxShadow: '0px 0px 16px 5px #0000001A',
             }}
           >
             <Stack>
@@ -283,10 +281,10 @@ const ProductionUnitFeedProfile: React.FC<Props> = ({
               </Typography>
               <Paper
                 sx={{
-                  width: "100%",
-                  overflow: "hidden",
-                  borderRadius: "14px",
-                  boxShadow: "0px 0px 16px 5px #0000001A",
+                  width: '100%',
+                  overflow: 'hidden',
+                  borderRadius: '14px',
+                  boxShadow: '0px 0px 16px 5px #0000001A',
                 }}
               >
                 <TableContainer
@@ -299,16 +297,16 @@ const ProductionUnitFeedProfile: React.FC<Props> = ({
                         <TableCell
                           sx={{
                             borderBottom: 0,
-                            color: "#67737F",
-                            background: "#F5F6F8",
-                            textAlign: "center",
-                            pr: "4px",
+                            color: '#67737F',
+                            background: '#F5F6F8',
+                            textAlign: 'center',
+                            pr: '4px',
                             fontSize: {
                               md: 16,
                               xs: 14,
                             },
                             fontWeight: 600,
-                            verticalAlign: "baseline",
+                            verticalAlign: 'baseline',
                           }}
                         >
                           Fish Size <br />
@@ -321,10 +319,10 @@ const ProductionUnitFeedProfile: React.FC<Props> = ({
                               key={mainIndex}
                               sx={{
                                 borderBottom: 0,
-                                color: "#67737F",
-                                background: "#F5F6F8",
-                                textAlign: "center",
-                                pr: "4px",
+                                color: '#67737F',
+                                background: '#F5F6F8',
+                                textAlign: 'center',
+                                pr: '4px',
                               }}
                             >
                               <Typography
@@ -335,11 +333,11 @@ const ProductionUnitFeedProfile: React.FC<Props> = ({
                                     xs: 14,
                                   },
                                   fontWeight: 600,
-                                  background: "#06a19b",
-                                  color: "#fff",
+                                  background: '#06a19b',
+                                  color: '#fff',
                                   p: 1,
-                                  borderRadius: "8px",
-                                  whiteSpace: "nowrap",
+                                  borderRadius: '8px',
+                                  whiteSpace: 'nowrap',
                                 }}
                               >
                                 {tableHead?.supplier?.name}
@@ -347,10 +345,10 @@ const ProductionUnitFeedProfile: React.FC<Props> = ({
                               <Box>
                                 <List
                                   sx={{
-                                    display: "flex",
-                                    flexDirection: "row",
-                                    justifyContent: "space-around",
-                                    alignItems: "center",
+                                    display: 'flex',
+                                    flexDirection: 'row',
+                                    justifyContent: 'space-around',
+                                    alignItems: 'center',
                                     gap: 2,
                                   }}
                                 >
@@ -361,13 +359,13 @@ const ProductionUnitFeedProfile: React.FC<Props> = ({
                                           key={subIndex}
                                           disablePadding
                                           sx={{
-                                            width: "fit-content",
+                                            width: 'fit-content',
                                           }}
                                         >
                                           <Typography
                                             variant="body2"
                                             fontWeight={500}
-                                            textAlign={"center"}
+                                            textAlign={'center'}
                                             minWidth={100}
                                           >
                                             {store?.productName}
@@ -376,7 +374,7 @@ const ProductionUnitFeedProfile: React.FC<Props> = ({
                                           </Typography>
                                         </ListItem>
                                       );
-                                    }
+                                    },
                                   )}
                                 </List>
                               </Box>
@@ -394,7 +392,7 @@ const ProductionUnitFeedProfile: React.FC<Props> = ({
                             <TableCell sx={cellStyle}>{size}</TableCell>
                             {groupedData?.map((group, index) => {
                               const options = group.stores.map(
-                                (_: FeedProduct, i: number) => `opt${i + 1}`
+                                (_: FeedProduct, i: number) => `opt${i + 1}`,
                               );
                               return (
                                 <TableCell
@@ -404,7 +402,7 @@ const ProductionUnitFeedProfile: React.FC<Props> = ({
                                   {renderRadioGroup(
                                     rowName,
                                     `col${index + 1}`,
-                                    options
+                                    options,
                                   )}
                                 </TableCell>
                               );
@@ -422,9 +420,9 @@ const ProductionUnitFeedProfile: React.FC<Props> = ({
           </Paper>
 
           <Box
-            display={"flex"}
-            justifyContent={"flex-end"}
-            alignItems={"center"}
+            display={'flex'}
+            justifyContent={'flex-end'}
+            alignItems={'center'}
             gap={3}
             mt={4}
           >
@@ -432,12 +430,12 @@ const ProductionUnitFeedProfile: React.FC<Props> = ({
               type="submit"
               variant="contained"
               sx={{
-                background: "#06A19B",
+                background: '#06A19B',
                 fontWeight: 600,
-                padding: "6px 16px",
-                width: "fit-content",
-                textTransform: "capitalize",
-                borderRadius: "8px",
+                padding: '6px 16px',
+                width: 'fit-content',
+                textTransform: 'capitalize',
+                borderRadius: '8px',
               }}
             >
               Save

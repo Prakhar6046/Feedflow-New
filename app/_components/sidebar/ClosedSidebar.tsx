@@ -1,28 +1,26 @@
-"use client";
-import React, { useEffect, useState } from "react";
-import Box from "@mui/material/Box";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import { Divider, Stack, Typography } from "@mui/material";
-import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import Image from "next/image";
-import { useAppDispatch } from "@/lib/hooks";
-import { sidebarAction } from "@/lib/features/sidebar/sidebarSlice";
-import Logo from "@/public/static/img/logo.svg";
-import { farmAction } from "@/lib/features/farm/farmSlice";
-import SampleIcon from "@/public/static/img/ic-sample.svg";
-import { getCookie, setCookie } from "cookies-next";
-import { LoggedUser } from "../AccountPopover";
+'use client';
+import React, { useEffect, useState } from 'react';
+import Box from '@mui/material/Box';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import { Divider, Stack } from '@mui/material';
+import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
+import Image from 'next/image';
+import { useAppDispatch } from '@/lib/hooks';
+import { sidebarAction } from '@/lib/features/sidebar/sidebarSlice';
+import Logo from '@/public/static/img/logo.svg';
+import { getCookie, setCookie } from 'cookies-next';
+import { LoggedUser } from '../AccountPopover';
 
 function ClosedSidebar() {
   const router = useRouter();
-  const loggedUser: any = getCookie("logged-user");
+  const loggedUser: any = getCookie('logged-user');
   const pathName = usePathname();
-  const [activePage, setActivePage] = useState<String>("");
+  const [activePage, setActivePage] = useState<string>('');
   const [loggedUserData, setLoggedUserData] = useState<LoggedUser>();
 
   const dispatch = useAppDispatch();
@@ -40,45 +38,45 @@ function ClosedSidebar() {
     <Stack
       className="sidebar"
       sx={{
-        position: "fixed",
-        top: "0",
-        left: "0",
-        height: "100% !important",
-        overflowY: "auto",
-        overflowX: "hidden",
+        position: 'fixed',
+        top: '0',
+        left: '0',
+        height: '100% !important',
+        overflowY: 'auto',
+        overflowX: 'hidden',
         background:
-          "linear-gradient(349.33deg, rgba(6, 161, 155, 0.4) -27.15%, rgba(2, 59, 57, 0) 103.57%)",
+          'linear-gradient(349.33deg, rgba(6, 161, 155, 0.4) -27.15%, rgba(2, 59, 57, 0) 103.57%)',
       }}
     >
       <Box
-        position={"relative"}
+        position={'relative'}
         paddingTop={3}
         paddingInline={1}
         sx={{
           width: 96,
           height: {
-            xl: "100%",
+            xl: '100%',
           },
 
-          transition: "width 1s !important",
+          transition: 'width 1s !important',
         }}
         className="sidebar-scroller"
         role="presentation"
       >
         <Box
           sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
             mb: 2,
           }}
           className="cursor-pointer"
-          onClick={() => router.push("/dashboard")}
+          onClick={() => router.push('/dashboard')}
         >
           <Image src={Logo} alt="Logo" width={50} height={40} />
         </Box>
         <List>
-          <Link href={"/dashboard"} className="nav-links">
+          <Link href={'/dashboard'} className="nav-links">
             <ListItem
               sx={{
                 paddingX: 0,
@@ -86,18 +84,18 @@ function ClosedSidebar() {
               }}
             >
               <ListItemButton
-                className={activePage === "/dashboard" ? "active" : ""}
+                className={activePage === '/dashboard' ? 'active' : ''}
                 sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  alignItems: "center",
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  alignItems: 'center',
                 }}
               >
                 <ListItemIcon
                   sx={{
-                    display: "grid",
-                    placeItems: "center",
+                    display: 'grid',
+                    placeItems: 'center',
                     marginRight: 0,
                   }}
                 >
@@ -135,14 +133,14 @@ function ClosedSidebar() {
             sx={{
               my: 1.5,
               width: 35,
-              marginInline: "auto",
+              marginInline: 'auto',
               borderWidth: 1,
               borderRadius: 50,
-              borderColor: "rgba(6, 161, 155, 0.25)",
+              borderColor: 'rgba(6, 161, 155, 0.25)',
             }}
           />
 
-          <Link href={"/dashboard/fishSupply"} className="nav-links">
+          <Link href={'/dashboard/fishSupply'} className="nav-links">
             <ListItem
               sx={{
                 paddingX: 0,
@@ -151,19 +149,19 @@ function ClosedSidebar() {
             >
               <ListItemButton
                 className={
-                  activePage.startsWith("/dashboard/fishSupply") ? "active" : ""
+                  activePage.startsWith('/dashboard/fishSupply') ? 'active' : ''
                 }
                 sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  alignItems: "center",
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  alignItems: 'center',
                 }}
               >
                 <ListItemIcon
                   sx={{
-                    display: "grid",
-                    placeItems: "center",
+                    display: 'grid',
+                    placeItems: 'center',
                     marginRight: 0,
                   }}
                 >
@@ -190,7 +188,7 @@ function ClosedSidebar() {
                   className="closed-nav-links"
                   sx={{
                     mt: 0.5,
-                    textAlign: "center",
+                    textAlign: 'center',
                   }}
                 >
                   Fish Supply
@@ -200,9 +198,9 @@ function ClosedSidebar() {
           </Link>
 
           <Link
-            href={"/dashboard/farm"}
+            href={'/dashboard/farm'}
             className="nav-links"
-            onClick={() => setCookie("isEditFarm", false)}
+            onClick={() => setCookie('isEditFarm', false)}
           >
             <ListItem
               sx={{
@@ -212,19 +210,19 @@ function ClosedSidebar() {
             >
               <ListItemButton
                 className={
-                  activePage.startsWith("/dashboard/farm") ? "active" : ""
+                  activePage.startsWith('/dashboard/farm') ? 'active' : ''
                 }
                 sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  alignItems: "center",
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  alignItems: 'center',
                 }}
               >
                 <ListItemIcon
                   sx={{
-                    display: "grid",
-                    placeItems: "center",
+                    display: 'grid',
+                    placeItems: 'center',
                     marginRight: 0,
                   }}
                 >
@@ -252,7 +250,7 @@ function ClosedSidebar() {
             </ListItem>
           </Link>
 
-          <Link href={"/dashboard/feedSupply"} className="nav-links">
+          <Link href={'/dashboard/feedSupply'} className="nav-links">
             <ListItem
               sx={{
                 paddingX: 0,
@@ -261,19 +259,19 @@ function ClosedSidebar() {
             >
               <ListItemButton
                 className={
-                  activePage.startsWith("/dashboard/feedSupply") ? "active" : ""
+                  activePage.startsWith('/dashboard/feedSupply') ? 'active' : ''
                 }
                 sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  alignItems: "center",
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  alignItems: 'center',
                 }}
               >
                 <ListItemIcon
                   sx={{
-                    display: "grid",
-                    placeItems: "center",
+                    display: 'grid',
+                    placeItems: 'center',
                     marginRight: 0,
                   }}
                 >
@@ -293,7 +291,7 @@ function ClosedSidebar() {
                   className="closed-nav-links"
                   sx={{
                     mt: 0.5,
-                    textAlign: "center",
+                    textAlign: 'center',
                   }}
                 >
                   Feed Supply
@@ -306,14 +304,14 @@ function ClosedSidebar() {
             sx={{
               my: 1.5,
               width: 35,
-              marginInline: "auto",
+              marginInline: 'auto',
               borderWidth: 1,
               borderRadius: 50,
-              borderColor: "rgba(6, 161, 155, 0.25)",
+              borderColor: 'rgba(6, 161, 155, 0.25)',
             }}
           />
 
-          <Link href={"/dashboard/production"} className="nav-links">
+          <Link href={'/dashboard/production'} className="nav-links">
             <ListItem
               sx={{
                 paddingX: 0,
@@ -322,19 +320,19 @@ function ClosedSidebar() {
             >
               <ListItemButton
                 className={
-                  activePage.startsWith("/dashboard/production") ? "active" : ""
+                  activePage.startsWith('/dashboard/production') ? 'active' : ''
                 }
                 sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  alignItems: "center",
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  alignItems: 'center',
                 }}
               >
                 <ListItemIcon
                   sx={{
-                    display: "grid",
-                    placeItems: "center",
+                    display: 'grid',
+                    placeItems: 'center',
                     marginRight: 0,
                   }}
                 >
@@ -368,7 +366,7 @@ function ClosedSidebar() {
                   className="closed-nav-links"
                   sx={{
                     mt: 0.5,
-                    textAlign: "center",
+                    textAlign: 'center',
                   }}
                 >
                   Production
@@ -431,7 +429,7 @@ function ClosedSidebar() {
             </ListItem>
           </Link> */}
 
-          <Link href={"/dashboard/feedPrediction"} className="nav-links">
+          <Link href={'/dashboard/feedPrediction'} className="nav-links">
             <ListItem
               sx={{
                 paddingX: 0,
@@ -440,21 +438,21 @@ function ClosedSidebar() {
             >
               <ListItemButton
                 className={
-                  activePage.startsWith("/dashboard/feedPrediction")
-                    ? "active"
-                    : ""
+                  activePage.startsWith('/dashboard/feedPrediction')
+                    ? 'active'
+                    : ''
                 }
                 sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  alignItems: "center",
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  alignItems: 'center',
                 }}
               >
                 <ListItemIcon
                   sx={{
-                    display: "grid",
-                    placeItems: "center",
+                    display: 'grid',
+                    placeItems: 'center',
                     marginRight: 0,
                   }}
                 >
@@ -480,7 +478,7 @@ function ClosedSidebar() {
                   className="closed-nav-links"
                   sx={{
                     mt: 0.5,
-                    textAlign: "center",
+                    textAlign: 'center',
                   }}
                 >
                   Feed Prediction
@@ -493,14 +491,14 @@ function ClosedSidebar() {
             sx={{
               my: 1.5,
               width: 35,
-              marginInline: "auto",
+              marginInline: 'auto',
               borderWidth: 1,
               borderRadius: 50,
-              borderColor: "rgba(6, 161, 155, 0.25)",
+              borderColor: 'rgba(6, 161, 155, 0.25)',
             }}
           />
 
-          <Link href={"/dashboard/organisation"} className="nav-links">
+          <Link href={'/dashboard/organisation'} className="nav-links">
             <ListItem
               sx={{
                 paddingX: 0,
@@ -509,21 +507,21 @@ function ClosedSidebar() {
             >
               <ListItemButton
                 className={
-                  activePage.startsWith("/dashboard/organisation")
-                    ? "active"
-                    : ""
+                  activePage.startsWith('/dashboard/organisation')
+                    ? 'active'
+                    : ''
                 }
                 sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  alignItems: "center",
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  alignItems: 'center',
                 }}
               >
                 <ListItemIcon
                   sx={{
-                    display: "grid",
-                    placeItems: "center",
+                    display: 'grid',
+                    placeItems: 'center',
                     marginRight: 0,
                   }}
                 >
@@ -551,7 +549,7 @@ function ClosedSidebar() {
             </ListItem>
           </Link>
 
-          <Link href={"/dashboard/user"} className="nav-links">
+          <Link href={'/dashboard/user'} className="nav-links">
             <ListItem
               sx={{
                 paddingX: 0,
@@ -559,19 +557,19 @@ function ClosedSidebar() {
             >
               <ListItemButton
                 className={
-                  activePage.startsWith("/dashboard/user") ? "active" : ""
+                  activePage.startsWith('/dashboard/user') ? 'active' : ''
                 }
                 sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  alignItems: "center",
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  alignItems: 'center',
                 }}
               >
                 <ListItemIcon
                   sx={{
-                    display: "grid",
-                    placeItems: "center",
+                    display: 'grid',
+                    placeItems: 'center',
                     marginRight: 0,
                   }}
                 >
@@ -598,8 +596,8 @@ function ClosedSidebar() {
               </ListItemButton>
             </ListItem>
           </Link>
-          {loggedUserData?.role === "SUPERADMIN" && (
-            <Link href={"/dashboard/growthModel"} className="nav-links">
+          {loggedUserData?.role === 'SUPERADMIN' && (
+            <Link href={'/dashboard/growthModel'} className="nav-links">
               <ListItem
                 sx={{
                   paddingX: 0,
@@ -608,21 +606,21 @@ function ClosedSidebar() {
               >
                 <ListItemButton
                   className={
-                    activePage.startsWith("/dashboard/growthModel")
-                      ? "active"
-                      : ""
+                    activePage.startsWith('/dashboard/growthModel')
+                      ? 'active'
+                      : ''
                   }
                   sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                    alignItems: "center",
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    alignItems: 'center',
                   }}
                 >
                   <ListItemIcon
                     sx={{
-                      display: "grid",
-                      placeItems: "center",
+                      display: 'grid',
+                      placeItems: 'center',
                       marginRight: 0,
                     }}
                   >
@@ -648,7 +646,7 @@ function ClosedSidebar() {
                     className="closed-nav-links"
                     sx={{
                       mt: 0.5,
-                      textAlign: "center",
+                      textAlign: 'center',
                     }}
                   >
                     Growth Models
@@ -659,17 +657,17 @@ function ClosedSidebar() {
           )}
         </List>
         <Box
-          position={"absolute"}
+          position={'absolute'}
           top={35}
           right={0}
           className="sidebar-icon"
           sx={{
-            cursor: "pointer",
+            cursor: 'pointer',
           }}
           onClick={() => dispatch(sidebarAction.handleSwitchSidebar(true))}
         >
           <Image
-            src={"/static/img/icons/ic-expand-sidebar.svg"}
+            src={'/static/img/icons/ic-expand-sidebar.svg'}
             width={17}
             height={17}
             alt="Sidebar Expand Icon"

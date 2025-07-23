@@ -1,4 +1,4 @@
-"use client";
+'use client';
 import {
   Box,
   Button,
@@ -12,28 +12,28 @@ import {
   Stack,
   TextField,
   Typography,
-} from "@mui/material";
-import { getCookie } from "cookies-next";
-import React, { useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
-import toast from "react-hot-toast";
-import { Farm } from "../_typeModels/Farm";
+} from '@mui/material';
+import { getCookie } from 'cookies-next';
+import React, { useState } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import toast from 'react-hot-toast';
+import { Farm } from '../_typeModels/Farm';
 
 interface InputType {
-  name: String;
-  specie: String;
-  temperatureCoefficient: String;
-  growthEquationLength: String;
-  growthEquationBodyWeight: String;
-  conditionFactor1: String;
-  conditionFactor2: String;
+  name: string;
+  specie: string;
+  temperatureCoefficient: string;
+  growthEquationLength: string;
+  growthEquationBodyWeight: string;
+  conditionFactor1: string;
+  conditionFactor2: string;
   // farm: String;
   // farm: String;
   // modelId: number;
 }
 function GrowthModel({ farms }: { farms: Farm[] }) {
-  const loggedUser: any = getCookie("logged-user");
-  const token = getCookie("auth-token");
+  const loggedUser: any = getCookie('logged-user');
+  const token = getCookie('auth-token');
   const {
     register,
     handleSubmit,
@@ -44,7 +44,7 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
 
   const [isApiCallInProgress, setIsApiCallInProgress] =
     useState<boolean>(false);
-  const [species, setSpecies] = useState("");
+  const [species, setSpecies] = useState('');
   const onSubmit: SubmitHandler<InputType> = async (data) => {
     const user = JSON.parse(loggedUser);
     if (user?.organisationId && data.name) {
@@ -52,10 +52,10 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
       if (isApiCallInProgress) return;
       setIsApiCallInProgress(true);
       try {
-        const response = await fetch("/api/growth-model", {
-          method: "POST",
+        const response = await fetch('/api/growth-model', {
+          method: 'POST',
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({
@@ -68,11 +68,11 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
           const data = await response.json();
           toast.dismiss();
           toast.success(data.message);
-          setSpecies("");
+          setSpecies('');
           reset();
         }
       } catch (error) {
-        toast.error("Something went wrong. Please try again.");
+        toast.error('Something went wrong. Please try again.');
       } finally {
         setIsApiCallInProgress(false);
       }
@@ -82,10 +82,10 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
     <Grid
       container
       sx={{
-        width: "100%",
-        overflow: "hidden",
-        borderRadius: "14px",
-        boxShadow: "0px 0px 16px 5px #0000001A",
+        width: '100%',
+        overflow: 'hidden',
+        borderRadius: '14px',
+        boxShadow: '0px 0px 16px 5px #0000001A',
         p: 3,
       }}
     >
@@ -307,7 +307,7 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
           </Box>
         </form>
       </Stack> */}
-      <Stack width={"100%"}>
+      <Stack width={'100%'}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Box>
             <Typography
@@ -353,28 +353,28 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
                     labelId="feed-supply-select-label5"
                     id="feed-supply-select5"
                     label="Species *"
-                    {...register("specie", {
+                    {...register('specie', {
                       required: true,
                     })}
                     value={species}
                     onChange={(e) => {
                       setSpecies(e.target.value);
-                      clearErrors("specie");
+                      clearErrors('specie');
                     }}
                   >
                     <MenuItem
-                      value={" Tilapia (Oreochromis Nilotic x Aureus)"}
-                      key={"Tilapia (Oreochromis Nilotic x Aureus)"}
+                      value={' Tilapia (Oreochromis Nilotic x Aureus)'}
+                      key={'Tilapia (Oreochromis Nilotic x Aureus)'}
                     >
                       Tilapia (Oreochromis Nilotic x Aureus)
                     </MenuItem>
                   </Select>
                   {errors.specie && (
-                    <FormHelperText sx={{ color: "#d32f2f" }}></FormHelperText>
+                    <FormHelperText sx={{ color: '#d32f2f' }}></FormHelperText>
                   )}
                 </FormControl>
                 <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
-                  {errors.specie ? "This field is required." : ""}
+                  {errors.specie ? 'This field is required.' : ''}
                 </Typography>
               </Grid>
 
@@ -387,28 +387,28 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
                     labelId="feed-supply-select-label5"
                     id="feed-supply-select5"
                     label="Production Systems *"
-                    {...register("specie", {
+                    {...register('specie', {
                       required: true,
                     })}
                     value={species}
                     onChange={(e) => {
                       setSpecies(e.target.value);
-                      clearErrors("specie");
+                      clearErrors('specie');
                     }}
                   >
                     <MenuItem
-                      value={" Tilapia (Oreochromis Nilotic x Aureus)"}
-                      key={"Tilapia (Oreochromis Nilotic x Aureus)"}
+                      value={' Tilapia (Oreochromis Nilotic x Aureus)'}
+                      key={'Tilapia (Oreochromis Nilotic x Aureus)'}
                     >
                       Tilapia (Oreochromis Nilotic x Aureus)
                     </MenuItem>
                   </Select>
                   {errors.specie && (
-                    <FormHelperText sx={{ color: "#d32f2f" }}></FormHelperText>
+                    <FormHelperText sx={{ color: '#d32f2f' }}></FormHelperText>
                   )}
                 </FormControl>
                 <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
-                  {errors.specie ? "This field is required." : ""}
+                  {errors.specie ? 'This field is required.' : ''}
                 </Typography>
               </Grid>
             </Grid>
@@ -436,7 +436,7 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
             </Typography>
             <Grid container spacing={2}>
               <Grid item md={4} xs={12}>
-                <Box position={"relative"}>
+                <Box position={'relative'}>
                   <TextField
                     label="ADC CP *"
                     type="text"
@@ -444,18 +444,18 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
                     className="form-input"
                     focused
                     sx={{
-                      width: "100%",
+                      width: '100%',
                     }}
                   />
                   <Typography
                     variant="body1"
                     color="#555555AC"
                     sx={{
-                      position: "absolute",
+                      position: 'absolute',
                       right: 13,
-                      top: "30%",
-                      backgroundColor: "white",
-                      paddingInline: "5px",
+                      top: '30%',
+                      backgroundColor: 'white',
+                      paddingInline: '5px',
                     }}
                   >
                     %
@@ -464,7 +464,7 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
               </Grid>
 
               <Grid item md={4} xs={12}>
-                <Box position={"relative"}>
+                <Box position={'relative'}>
                   <TextField
                     label="ADC CF *"
                     type="text"
@@ -472,18 +472,18 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
                     className="form-input"
                     focused
                     sx={{
-                      width: "100%",
+                      width: '100%',
                     }}
                   />
                   <Typography
                     variant="body1"
                     color="#555555AC"
                     sx={{
-                      position: "absolute",
+                      position: 'absolute',
                       right: 13,
-                      top: "30%",
-                      backgroundColor: "white",
-                      paddingInline: "5px",
+                      top: '30%',
+                      backgroundColor: 'white',
+                      paddingInline: '5px',
                     }}
                   >
                     %
@@ -492,7 +492,7 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
               </Grid>
 
               <Grid item md={4} xs={12}>
-                <Box position={"relative"}>
+                <Box position={'relative'}>
                   <TextField
                     label="ADC NFE *"
                     type="text"
@@ -500,18 +500,18 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
                     className="form-input"
                     focused
                     sx={{
-                      width: "100%",
+                      width: '100%',
                     }}
                   />
                   <Typography
                     variant="body1"
                     color="#555555AC"
                     sx={{
-                      position: "absolute",
+                      position: 'absolute',
                       right: 13,
-                      top: "30%",
-                      backgroundColor: "white",
-                      paddingInline: "5px",
+                      top: '30%',
+                      backgroundColor: 'white',
+                      paddingInline: '5px',
                     }}
                   >
                     %
@@ -520,7 +520,7 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
               </Grid>
 
               <Grid item md={4} xs={12}>
-                <Box position={"relative"}>
+                <Box position={'relative'}>
                   <TextField
                     label="GE Coeff CP *"
                     type="text"
@@ -528,18 +528,18 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
                     className="form-input"
                     focused
                     sx={{
-                      width: "100%",
+                      width: '100%',
                     }}
                   />
                   <Typography
                     variant="body1"
                     color="#555555AC"
                     sx={{
-                      position: "absolute",
+                      position: 'absolute',
                       right: 13,
-                      top: "30%",
-                      backgroundColor: "white",
-                      paddingInline: "5px",
+                      top: '30%',
+                      backgroundColor: 'white',
+                      paddingInline: '5px',
                     }}
                   >
                     MJ/kg
@@ -548,7 +548,7 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
               </Grid>
 
               <Grid item md={4} xs={12}>
-                <Box position={"relative"}>
+                <Box position={'relative'}>
                   <TextField
                     label="GE Coeff CF *"
                     type="text"
@@ -556,18 +556,18 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
                     className="form-input"
                     focused
                     sx={{
-                      width: "100%",
+                      width: '100%',
                     }}
                   />
                   <Typography
                     variant="body1"
                     color="#555555AC"
                     sx={{
-                      position: "absolute",
+                      position: 'absolute',
                       right: 13,
-                      top: "30%",
-                      backgroundColor: "white",
-                      paddingInline: "5px",
+                      top: '30%',
+                      backgroundColor: 'white',
+                      paddingInline: '5px',
                     }}
                   >
                     MJ/kg
@@ -576,7 +576,7 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
               </Grid>
 
               <Grid item md={4} xs={12}>
-                <Box position={"relative"}>
+                <Box position={'relative'}>
                   <TextField
                     label="GE Coeff NFE *"
                     type="text"
@@ -584,18 +584,18 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
                     className="form-input"
                     focused
                     sx={{
-                      width: "100%",
+                      width: '100%',
                     }}
                   />
                   <Typography
                     variant="body1"
                     color="#555555AC"
                     sx={{
-                      position: "absolute",
+                      position: 'absolute',
                       right: 13,
-                      top: "30%",
-                      backgroundColor: "white",
-                      paddingInline: "5px",
+                      top: '30%',
+                      backgroundColor: 'white',
+                      paddingInline: '5px',
                     }}
                   >
                     MJ/kg
@@ -604,7 +604,7 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
               </Grid>
 
               <Grid item md={4} xs={12}>
-                <Box position={"relative"}>
+                <Box position={'relative'}>
                   <TextField
                     label="Waste Factor *"
                     type="text"
@@ -612,18 +612,18 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
                     className="form-input"
                     focused
                     sx={{
-                      width: "100%",
+                      width: '100%',
                     }}
                   />
                   <Typography
                     variant="body1"
                     color="#555555AC"
                     sx={{
-                      position: "absolute",
+                      position: 'absolute',
                       right: 13,
-                      top: "30%",
-                      backgroundColor: "white",
-                      paddingInline: "5px",
+                      top: '30%',
+                      backgroundColor: 'white',
+                      paddingInline: '5px',
                     }}
                   >
                     %
@@ -663,28 +663,28 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
                     labelId="feed-supply-select-label5"
                     id="feed-supply-select5"
                     label="Species *"
-                    {...register("specie", {
+                    {...register('specie', {
                       required: true,
                     })}
                     value={species}
                     onChange={(e) => {
                       setSpecies(e.target.value);
-                      clearErrors("specie");
+                      clearErrors('specie');
                     }}
                   >
                     <MenuItem
-                      value={" Tilapia (Oreochromis Nilotic x Aureus)"}
-                      key={"Tilapia (Oreochromis Nilotic x Aureus)"}
+                      value={' Tilapia (Oreochromis Nilotic x Aureus)'}
+                      key={'Tilapia (Oreochromis Nilotic x Aureus)'}
                     >
                       Tilapia (Oreochromis Nilotic x Aureus)
                     </MenuItem>
                   </Select>
                   {errors.specie && (
-                    <FormHelperText sx={{ color: "#d32f2f" }}></FormHelperText>
+                    <FormHelperText sx={{ color: '#d32f2f' }}></FormHelperText>
                   )}
                 </FormControl>
                 <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
-                  {errors.specie ? "This field is required." : ""}
+                  {errors.specie ? 'This field is required.' : ''}
                 </Typography>
               </Grid>
 
@@ -693,12 +693,12 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
                 md={8}
                 xs={12}
                 sx={{
-                  alignSelf: "center",
+                  alignSelf: 'center',
                 }}
               >
                 <Typography variant="body1" fontWeight={600} mb={1}>
-                  TGC ={" "}
-                  <Typography variant="body1" component={"span"}>
+                  TGC ={' '}
+                  <Typography variant="body1" component={'span'}>
                     -0.00356658 + 0.00012*LN(T-11.25)
                   </Typography>
                 </Typography>
@@ -796,28 +796,28 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
                     labelId="feed-supply-select-label5"
                     id="feed-supply-select5"
                     label="Species *"
-                    {...register("specie", {
+                    {...register('specie', {
                       required: true,
                     })}
                     value={species}
                     onChange={(e) => {
                       setSpecies(e.target.value);
-                      clearErrors("specie");
+                      clearErrors('specie');
                     }}
                   >
                     <MenuItem
-                      value={" Tilapia (Oreochromis Nilotic x Aureus)"}
-                      key={"Tilapia (Oreochromis Nilotic x Aureus)"}
+                      value={' Tilapia (Oreochromis Nilotic x Aureus)'}
+                      key={'Tilapia (Oreochromis Nilotic x Aureus)'}
                     >
                       Tilapia (Oreochromis Nilotic x Aureus)
                     </MenuItem>
                   </Select>
                   {errors.specie && (
-                    <FormHelperText sx={{ color: "#d32f2f" }}></FormHelperText>
+                    <FormHelperText sx={{ color: '#d32f2f' }}></FormHelperText>
                   )}
                 </FormControl>
                 <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
-                  {errors.specie ? "This field is required." : ""}
+                  {errors.specie ? 'This field is required.' : ''}
                 </Typography>
               </Grid>
 
@@ -826,12 +826,12 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
                 md={8}
                 xs={12}
                 sx={{
-                  alignSelf: "center",
+                  alignSelf: 'center',
                 }}
               >
                 <Typography variant="body1" fontWeight={600} mb={1}>
-                  tFCR ={" "}
-                  <Typography variant="body1" component={"span"}>
+                  tFCR ={' '}
+                  <Typography variant="body1" component={'span'}>
                     -0.00356658 + 0.00012*LN(T-11.25) <sup>1</sup>
                   </Typography>
                 </Typography>
@@ -900,23 +900,23 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
           </Box>
 
           <Box
-            display={"flex"}
-            justifyContent={"end"}
-            alignItems={"end"}
-            marginBlock={"20px"}
+            display={'flex'}
+            justifyContent={'end'}
+            alignItems={'end'}
+            marginBlock={'20px'}
           >
             <Button
               type="submit"
               variant="contained"
               sx={{
-                color: "#fff",
-                background: "#06A19B",
+                color: '#fff',
+                background: '#06A19B',
                 fontWeight: 600,
-                padding: "6px 16px",
-                width: "fit-content",
-                textTransform: "capitalize",
-                borderRadius: "8px",
-                border: "1px solid #06A19B",
+                padding: '6px 16px',
+                width: 'fit-content',
+                textTransform: 'capitalize',
+                borderRadius: '8px',
+                border: '1px solid #06A19B',
               }}
             >
               Save

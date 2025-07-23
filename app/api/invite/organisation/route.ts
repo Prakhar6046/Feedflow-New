@@ -1,11 +1,10 @@
-import { InvitationEmail } from "@/app/_lib/emailTemplate/invitationEmail";
-import prisma from "@/prisma/prisma";
-import { NextRequest, NextResponse } from "next/server";
-import nodemailer from "nodemailer";
+import prisma from '@/prisma/prisma';
+import { NextRequest, NextResponse } from 'next/server';
+import nodemailer from 'nodemailer';
 
 export async function POST(req: NextRequest) {
   const transporter: any = nodemailer.createTransport({
-    service: "gmail", // You can use any other email service provider
+    service: 'gmail', // You can use any other email service provider
     auth: {
       user: process.env.EMAIL_USER, // Your email address
       pass: process.env.EMAIL_PASS, // Your email password or app-specific password
@@ -23,12 +22,12 @@ export async function POST(req: NextRequest) {
       include: { contact: true },
     });
     const findOrganisationAdmin = invitedByOrg?.contact.find(
-      (org) => org.permission === "ADMIN" || org.permission === "SUPERADMIN"
+      (org) => org.permission === 'ADMIN' || org.permission === 'SUPERADMIN',
     );
     if (!organisationExist) {
       return NextResponse.json(
-        { error: "Organisation Not Found" },
-        { status: 404 }
+        { error: 'Organisation Not Found' },
+        { status: 404 },
       );
     }
 
@@ -48,7 +47,7 @@ export async function POST(req: NextRequest) {
     });
 
     if (createdUsers.length === 0) {
-      return NextResponse.json({ error: "No users found" }, { status: 404 });
+      return NextResponse.json({ error: 'No users found' }, { status: 404 });
     }
 
     // Sending emails to all created users
@@ -56,7 +55,7 @@ export async function POST(req: NextRequest) {
       const mailOptions = {
         from: process.env.EMAIL_USER, // Sender address
         to: user.email, // Recipient email
-        subject: "Welcome!", // Subject line
+        subject: 'Welcome!', // Subject line
         text: `Hi ${user.name}, you are invited to join Feedflow.`, // Plain text body
         html: `<!DOCTYPE html>
 <html lang="en">
@@ -186,14 +185,14 @@ export async function POST(req: NextRequest) {
     await Promise.all(emailPromises);
 
     return NextResponse.json({
-      message: "Email sent successfully",
+      message: 'Email sent successfully',
       status: true,
     });
   } catch (error) {
-    console.error("Error sending emails:", error);
+    console.error('Error sending emails:', error);
     return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 }
+      { error: 'Internal Server Error' },
+      { status: 500 },
     );
   }
 }

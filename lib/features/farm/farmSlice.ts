@@ -1,6 +1,6 @@
-import { Farm, FarmInitialState } from "@/app/_typeModels/Farm";
-import { RootState } from "@/lib/store";
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { Farm, FarmInitialState } from '@/app/_typeModels/Farm';
+import { RootState } from '@/lib/store';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 const initialState: FarmInitialState = {
   isLoading: false,
@@ -11,7 +11,7 @@ const initialState: FarmInitialState = {
 };
 
 const farmSlice = createSlice({
-  name: "farm",
+  name: 'farm',
   initialState,
   reducers: {
     handleLoading: (state, action: PayloadAction<boolean>) => {
@@ -26,7 +26,6 @@ const farmSlice = createSlice({
     editFarm: (state, action: PayloadAction<Farm>) => {
       state.editFarm = action.payload;
     },
-    handleIsFarm: (state) => {},
     resetState: (state) => {
       state.isEditFarm = false;
     },

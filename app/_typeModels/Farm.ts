@@ -1,4 +1,4 @@
-import { Production } from "./production";
+import { Production } from './production';
 
 export interface FarmInitialState {
   isLoading: boolean;
@@ -21,22 +21,22 @@ export interface Organisation {
   addressId: string;
 }
 export interface Farm {
-  name: String;
-  mangerId?: String[];
+  name: string;
+  mangerId?: string[];
   FarmManger?: {
-    userId: Number;
+    userId: number;
   }[];
-  addressLine1: String;
-  farmAltitude: String;
-  addressLine2: String;
-  province: String;
-  city: String;
-  zipCode: String;
-  country: String;
-  id?: String;
-  fishFarmer: String;
-  lat: String;
-  lng: String;
+  addressLine1: string;
+  farmAltitude: string;
+  addressLine2: string;
+  province: string;
+  city: string;
+  zipCode: string;
+  country: string;
+  id?: string;
+  fishFarmer: string;
+  lat: string;
+  lng: string;
   productionUnits?: {
     name: string;
     type: string;
@@ -125,7 +125,7 @@ export interface ProductionParaMeterType {
         waterTemp?: { Max: string; Min: string };
         visibility?: { Max: string; Min: string };
       };
-    }
+    },
   ];
 }
 export interface Models {
@@ -151,10 +151,10 @@ export interface GrowthModel {
 }
 
 export interface Prediction {
-  id: Number;
-  waterQualityPredictedParameterId: Number;
-  createdAt: String;
-  updatedAt: String;
+  id: number;
+  waterQualityPredictedParameterId: number;
+  createdAt: string;
+  updatedAt: string;
   waterTemp: any;
   DO: any;
   TSS: any;
@@ -164,5 +164,5 @@ export interface Prediction {
   ph: any;
   visibility: any;
   idealRange: any;
-  modelId: Number;
+  modelId: number;
 }

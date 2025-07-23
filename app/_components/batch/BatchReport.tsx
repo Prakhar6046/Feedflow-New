@@ -12,16 +12,16 @@ import {
   Stack,
   TextField,
   Typography,
-} from "@mui/material";
-import { NextPage } from "next";
-import { useState } from "react";
+} from '@mui/material';
+import { NextPage } from 'next';
+import { useState } from 'react';
 
 interface Props {
   setActiveStep: (val: number) => void;
 }
 
 const BatchReport: NextPage<Props> = ({ setActiveStep }) => {
-  const [age, setAge] = useState("");
+  const [age, setAge] = useState('');
 
   const handleChange = (event: SelectChangeEvent) => {
     setAge(event.target.value as string);
@@ -38,7 +38,7 @@ const BatchReport: NextPage<Props> = ({ setActiveStep }) => {
           },
           marginBottom: {
             md: 3,
-            xs: 2
+            xs: 2,
           },
         }}
       >
@@ -63,8 +63,8 @@ const BatchReport: NextPage<Props> = ({ setActiveStep }) => {
         <List
           sx={{
             py: 0,
-            display: "flex",
-            flexWrap: "wrap",
+            display: 'flex',
+            flexWrap: 'wrap',
             rowGap: 1,
             columnGap: 3,
           }}
@@ -73,15 +73,15 @@ const BatchReport: NextPage<Props> = ({ setActiveStep }) => {
             sx={{
               pl: 0,
               py: 0,
-              width: "fit-content",
+              width: 'fit-content',
             }}
           >
             <Box
-              bgcolor={"#1BB6B0"}
+              bgcolor={'#1BB6B0'}
               borderRadius={100}
               sx={{
-                width: "8px",
-                height: "8px",
+                width: '8px',
+                height: '8px',
                 mr: 1,
               }}
             ></Box>
@@ -92,15 +92,15 @@ const BatchReport: NextPage<Props> = ({ setActiveStep }) => {
             sx={{
               pl: 0,
               py: 0,
-              width: "fit-content",
+              width: 'fit-content',
             }}
           >
             <Box
-              bgcolor={"#1BB6B0"}
+              bgcolor={'#1BB6B0'}
               borderRadius={100}
               sx={{
-                width: "8px",
-                height: "8px",
+                width: '8px',
+                height: '8px',
                 mr: 1,
               }}
             ></Box>
@@ -111,15 +111,15 @@ const BatchReport: NextPage<Props> = ({ setActiveStep }) => {
             sx={{
               pl: 0,
               py: 0,
-              width: "fit-content",
+              width: 'fit-content',
             }}
           >
             <Box
-              bgcolor={"#1BB6B0"}
+              bgcolor={'#1BB6B0'}
               borderRadius={100}
               sx={{
-                width: "8px",
-                height: "8px",
+                width: '8px',
+                height: '8px',
                 mr: 1,
               }}
             ></Box>
@@ -130,15 +130,15 @@ const BatchReport: NextPage<Props> = ({ setActiveStep }) => {
             sx={{
               pl: 0,
               py: 0,
-              width: "fit-content",
+              width: 'fit-content',
             }}
           >
             <Box
-              bgcolor={"#1BB6B0"}
+              bgcolor={'#1BB6B0'}
               borderRadius={100}
               sx={{
-                width: "8px",
-                height: "8px",
+                width: '8px',
+                height: '8px',
                 mr: 1,
               }}
             ></Box>
@@ -149,15 +149,15 @@ const BatchReport: NextPage<Props> = ({ setActiveStep }) => {
             sx={{
               pl: 0,
               py: 0,
-              width: "fit-content",
+              width: 'fit-content',
             }}
           >
             <Box
-              bgcolor={"#1BB6B0"}
+              bgcolor={'#1BB6B0'}
               borderRadius={100}
               sx={{
-                width: "8px",
-                height: "8px",
+                width: '8px',
+                height: '8px',
                 mr: 1,
               }}
             ></Box>
@@ -168,15 +168,15 @@ const BatchReport: NextPage<Props> = ({ setActiveStep }) => {
             sx={{
               pl: 0,
               py: 0,
-              width: "fit-content",
+              width: 'fit-content',
             }}
           >
             <Box
-              bgcolor={"#1BB6B0"}
+              bgcolor={'#1BB6B0'}
               borderRadius={100}
               sx={{
-                width: "8px",
-                height: "8px",
+                width: '8px',
+                height: '8px',
                 mr: 1,
               }}
             ></Box>
@@ -187,15 +187,15 @@ const BatchReport: NextPage<Props> = ({ setActiveStep }) => {
             sx={{
               pl: 0,
               py: 0,
-              width: "fit-content",
+              width: 'fit-content',
             }}
           >
             <Box
-              bgcolor={"#1BB6B0"}
+              bgcolor={'#1BB6B0'}
               borderRadius={100}
               sx={{
-                width: "8px",
-                height: "8px",
+                width: '8px',
+                height: '8px',
                 mr: 1,
               }}
             ></Box>
@@ -205,31 +205,31 @@ const BatchReport: NextPage<Props> = ({ setActiveStep }) => {
 
         <Stack
           mt={1}
-          display={"flex"}
-          direction={"row"}
-          justifyContent={"flex-start"}
-          alignItems={"center"}
+          display={'flex'}
+          direction={'row'}
+          justifyContent={'flex-start'}
+          alignItems={'center'}
           gap={2}
-          flexWrap={"wrap"}
+          flexWrap={'wrap'}
           sx={{
-            mb : {
+            mb: {
               md: 5,
-              xs: 3
-            }
+              xs: 3,
+            },
           }}
         >
           <Button
             type="submit"
             variant="contained"
             sx={{
-              background: "#06A19B",
+              background: '#06A19B',
               fontWeight: 600,
-              padding: "6px 16px",
-              width: "fit-content",
-              textTransform: "capitalize",
-              borderRadius: "8px",
+              padding: '6px 16px',
+              width: 'fit-content',
+              textTransform: 'capitalize',
+              borderRadius: '8px',
               marginTop: 2,
-              boxShadow: "none",
+              boxShadow: 'none',
             }}
           >
             Merge Batches
@@ -239,16 +239,16 @@ const BatchReport: NextPage<Props> = ({ setActiveStep }) => {
             type="submit"
             variant="contained"
             sx={{
-              background: "#fff",
+              background: '#fff',
               fontWeight: 600,
-              padding: "6px 16px",
-              width: "fit-content",
-              textTransform: "capitalize",
-              borderRadius: "8px",
+              padding: '6px 16px',
+              width: 'fit-content',
+              textTransform: 'capitalize',
+              borderRadius: '8px',
               marginTop: 2,
-              color: "#06A19B",
-              border: "1px solid #06A19B",
-              boxShadow: "none",
+              color: '#06A19B',
+              border: '1px solid #06A19B',
+              boxShadow: 'none',
             }}
           >
             Merge Batches
@@ -258,14 +258,14 @@ const BatchReport: NextPage<Props> = ({ setActiveStep }) => {
             type="submit"
             variant="contained"
             sx={{
-              background: "#06A19B",
+              background: '#06A19B',
               fontWeight: 600,
-              padding: "6px 16px",
-              width: "fit-content",
-              textTransform: "capitalize",
-              borderRadius: "8px",
+              padding: '6px 16px',
+              width: 'fit-content',
+              textTransform: 'capitalize',
+              borderRadius: '8px',
               marginTop: 2,
-              boxShadow: "none",
+              boxShadow: 'none',
             }}
           >
             Move Batch
@@ -275,16 +275,16 @@ const BatchReport: NextPage<Props> = ({ setActiveStep }) => {
             type="submit"
             variant="contained"
             sx={{
-              background: "#fff",
+              background: '#fff',
               fontWeight: 600,
-              padding: "6px 16px",
-              width: "fit-content",
-              textTransform: "capitalize",
-              borderRadius: "8px",
+              padding: '6px 16px',
+              width: 'fit-content',
+              textTransform: 'capitalize',
+              borderRadius: '8px',
               marginTop: 2,
-              color: "#06A19B",
-              border: "1px solid #06A19B",
-              boxShadow: "none",
+              color: '#06A19B',
+              border: '1px solid #06A19B',
+              boxShadow: 'none',
             }}
           >
             Create a Batch
@@ -300,7 +300,7 @@ const BatchReport: NextPage<Props> = ({ setActiveStep }) => {
                 className="form-input"
                 // focused
                 sx={{
-                  width: "100%",
+                  width: '100%',
                   marginBottom: 2,
                 }}
               />
@@ -359,9 +359,9 @@ const BatchReport: NextPage<Props> = ({ setActiveStep }) => {
           </Grid>
 
           <Box
-            display={"flex"}
-            justifyContent={"flex-end"}
-            alignItems={"center"}
+            display={'flex'}
+            justifyContent={'flex-end'}
+            alignItems={'center'}
             gap={3}
             mt={3}
           >
@@ -369,14 +369,14 @@ const BatchReport: NextPage<Props> = ({ setActiveStep }) => {
               type="submit"
               variant="contained"
               sx={{
-                background: "#fff",
-                color: "#06A19B",
+                background: '#fff',
+                color: '#06A19B',
                 fontWeight: 600,
-                padding: "6px 16px",
-                width: "fit-content",
-                textTransform: "capitalize",
-                borderRadius: "8px",
-                border: "1px solid #06A19B",
+                padding: '6px 16px',
+                width: 'fit-content',
+                textTransform: 'capitalize',
+                borderRadius: '8px',
+                border: '1px solid #06A19B',
               }}
               onClick={() => setActiveStep(0)}
             >
@@ -386,12 +386,12 @@ const BatchReport: NextPage<Props> = ({ setActiveStep }) => {
               type="submit"
               variant="contained"
               sx={{
-                background: "#06A19B",
+                background: '#06A19B',
                 fontWeight: 600,
-                padding: "6px 16px",
-                width: "fit-content",
-                textTransform: "capitalize",
-                borderRadius: "8px",
+                padding: '6px 16px',
+                width: 'fit-content',
+                textTransform: 'capitalize',
+                borderRadius: '8px',
               }}
               onClick={() => setActiveStep(2)}
             >

@@ -1,8 +1,8 @@
-import { Tooltip } from "@mui/material";
-import { alpha } from "@mui/material/styles";
+import { Tooltip } from '@mui/material';
+import { alpha } from '@mui/material/styles';
 
-import Iconify from "../iconify";
-import { IconButtonAnimate } from "../animate";
+import Iconify from '../iconify';
+import { IconButtonAnimate } from '../animate';
 type Props = {
   open: boolean;
   notDefault: boolean;
@@ -17,13 +17,13 @@ export default function ToggleButton({ notDefault, open, onToggle }: Props) {
         onClick={onToggle}
         sx={{
           p: 1.25,
-          transition: (theme: any) => theme.transitions.create("all"),
-          "&:hover": {
-            color: "primary.main",
+          transition: (theme: any) => theme.transitions.create('all'),
+          '&:hover': {
+            color: 'primary.main',
             bgcolor: (theme: any) =>
               alpha(
                 theme.palette.primary.main,
-                theme.palette.action.hoverOpacity
+                theme.palette.action.hoverOpacity,
               ),
           },
         }}

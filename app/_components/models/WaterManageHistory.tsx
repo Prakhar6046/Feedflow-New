@@ -1,11 +1,9 @@
-import { formattedDate } from "@/app/_lib/utils";
+import { formattedDate } from '@/app/_lib/utils';
 import {
-  FarmGroup,
-  FishManageHistoryGroup,
   Production,
   WaterManageHistoryGroup,
-} from "@/app/_typeModels/production";
-import { Close as CloseIcon } from "@mui/icons-material"; // Use Material-UI's Close icon directly
+} from '@/app/_typeModels/production';
+import { Close as CloseIcon } from '@mui/icons-material'; // Use Material-UI's Close icon directly
 import {
   Box,
   Button,
@@ -17,23 +15,22 @@ import {
   TableSortLabel,
   Tooltip,
   Typography,
-} from "@mui/material";
-import Table from "@mui/material/Table";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import React, { useEffect, useState } from "react";
-import WaterSampleHistoryModal from "./WaterSampleHistory";
-import { waterSampleHistoryHead } from "@/app/_lib/utils/tableHeadData";
-import WaterTempChart from "../charts/WaterTempChart";
+} from '@mui/material';
+import Table from '@mui/material/Table';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import React, { useState } from 'react';
+import WaterSampleHistoryModal from './WaterSampleHistory';
+import { waterSampleHistoryHead } from '@/app/_lib/utils/tableHeadData';
 const style = {
-  position: "absolute" as "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: "95%",
-  bgcolor: "background.paper",
+  position: 'absolute' as const,
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: '95%',
+  bgcolor: 'background.paper',
   boxShadow: 24,
 };
 interface Props {
@@ -52,8 +49,8 @@ const WaterManageHistoryModal: React.FC<Props> = ({
     setOpen(false);
   };
 
-  const [order, setOrder] = useState("asc");
-  const [orderBy, setOrderBy] = useState("Farm");
+  const [order, setOrder] = useState('asc');
+  const [orderBy, setOrderBy] = useState('Farm');
   const [isWaterSampleHistory, setIsWaterSampleHistory] =
     useState<boolean>(false);
   const [xAxisData, setXAxisData] = useState();
@@ -76,14 +73,14 @@ const WaterManageHistoryModal: React.FC<Props> = ({
                 idx === headCells.length - 1
                   ? false
                   : orderBy === headCell.id
-                  ? order
-                  : false
+                    ? order
+                    : false
               }
               // align="center"
               sx={{
                 borderBottom: 0,
-                color: "#67737F",
-                background: "#F5F6F8",
+                color: '#67737F',
+                background: '#F5F6F8',
 
                 fontSize: {
                   md: 16,
@@ -102,7 +99,7 @@ const WaterManageHistoryModal: React.FC<Props> = ({
               ) : (
                 <TableSortLabel
                   active={orderBy === headCell.id}
-                  direction={orderBy === headCell.id ? order : "asc"}
+                  direction={orderBy === headCell.id ? order : 'asc'}
                   onClick={createSortHandler(headCell.id)}
                 >
                   {headCell.label}
@@ -118,7 +115,7 @@ const WaterManageHistoryModal: React.FC<Props> = ({
   const groupedData: any = productions?.reduce((result: any, item) => {
     // Find or create a farm group
     let farmGroup: any = result.find(
-      (group: any) => group.farm === item.farm.name
+      (group: any) => group.farm === item.farm.name,
     );
     if (!farmGroup) {
       farmGroup = { unit: item.productionUnit.name, units: [] };
@@ -165,7 +162,7 @@ const WaterManageHistoryModal: React.FC<Props> = ({
       data-bs-backdrop="static"
       sx={{
         px: 5,
-        overflowY: "auto",
+        overflowY: 'auto',
       }}
     >
       <Stack sx={style}>
@@ -174,9 +171,9 @@ const WaterManageHistoryModal: React.FC<Props> = ({
             <IconButton
               onClick={handleClose}
               sx={{
-                color: "inherit",
-                background: "transparent",
-                margin: "2",
+                color: 'inherit',
+                background: 'transparent',
+                margin: '2',
               }}
             >
               <CloseIcon />
@@ -186,16 +183,16 @@ const WaterManageHistoryModal: React.FC<Props> = ({
 
         <Paper
           sx={{
-            width: "95%",
-            overflow: "hidden",
-            borderRadius: "14px",
-            boxShadow: "0px 0px 16px 5px #0000001A",
-            textAlign: "center",
+            width: '95%',
+            overflow: 'hidden',
+            borderRadius: '14px',
+            boxShadow: '0px 0px 16px 5px #0000001A',
+            textAlign: 'center',
             mt: 4,
-            mx: "auto",
+            mx: 'auto',
             overflowY: {
-              xl: "visible",
-              xs: "auto",
+              xl: 'visible',
+              xs: 'auto',
             },
           }}
         >
@@ -203,7 +200,7 @@ const WaterManageHistoryModal: React.FC<Props> = ({
             <Table stickyHeader aria-label="sticky table">
               <TableHead
                 sx={{
-                  textAlign: "center",
+                  textAlign: 'center',
                 }}
               >
                 <TableRow></TableRow>
@@ -221,13 +218,13 @@ const WaterManageHistoryModal: React.FC<Props> = ({
                         <TableRow
                           key={i}
                           sx={{
-                            "&:last-child td, &:last-child th": { border: 0 },
+                            '&:last-child td, &:last-child th': { border: 0 },
                           }}
                         >
                           <TableCell
                             sx={{
-                              color: "#555555",
-                              borderBottomColor: "#ececec",
+                              color: '#555555',
+                              borderBottomColor: '#ececec',
                               borderBottomWidth: 2,
                               fontWeight: 700,
                               paddingLeft: {
@@ -235,7 +232,7 @@ const WaterManageHistoryModal: React.FC<Props> = ({
                                 md: 7,
                                 xs: 4,
                               },
-                              textWrap: "nowrap",
+                              textWrap: 'nowrap',
                             }}
                             component="th"
                             scope="row"
@@ -248,12 +245,12 @@ const WaterManageHistoryModal: React.FC<Props> = ({
                                   sx={{
                                     fontWeight: 500,
                                     fontSize: 14,
-                                    display: "flex",
-                                    alignItems: "center",
+                                    display: 'flex',
+                                    alignItems: 'center',
                                     gap: 1,
-                                    padding: "8px 12px",
-                                    margin: "8px 0",
-                                    textWrap: "nowrap",
+                                    padding: '8px 12px',
+                                    margin: '8px 0',
+                                    textWrap: 'nowrap',
                                   }}
                                 >
                                   {unit.productionUnit.name}
@@ -271,16 +268,16 @@ const WaterManageHistoryModal: React.FC<Props> = ({
                                         type="button"
                                         variant="contained"
                                         style={{
-                                          border: "1px solid #06A19B",
+                                          border: '1px solid #06A19B',
                                         }}
                                         sx={{
-                                          background: "transparent",
-                                          fontWeight: "bold",
+                                          background: 'transparent',
+                                          fontWeight: 'bold',
                                           padding: 0.25,
 
-                                          borderRadius: "4px",
-                                          alignItems: "center",
-                                          minWidth: "fit-content",
+                                          borderRadius: '4px',
+                                          alignItems: 'center',
+                                          minWidth: 'fit-content',
                                         }}
                                       >
                                         <svg
@@ -300,13 +297,13 @@ const WaterManageHistoryModal: React.FC<Props> = ({
                                 </Typography>
                               );
                             })}
-                          </TableCell>{" "}
+                          </TableCell>{' '}
                           <TableCell
                             className="table-padding"
                             sx={{
                               borderBottomWidth: 2,
-                              borderBottomColor: "#ececec",
-                              color: "#555555",
+                              borderBottomColor: '#ececec',
+                              color: '#555555',
                               fontWeight: 500,
                               pl: 0,
                             }}
@@ -322,28 +319,28 @@ const WaterManageHistoryModal: React.FC<Props> = ({
                                       sx={{
                                         fontWeight: 500,
                                         fontSize: 14,
-                                        backgroundColor: "#F5F6F8",
+                                        backgroundColor: '#F5F6F8',
                                         padding: `${
                                           unit.createdAt
-                                            ? "8px 12px 8px 0"
-                                            : "19px 12px 19px 0"
+                                            ? '8px 12px 8px 0'
+                                            : '19px 12px 19px 0'
                                         }`,
-                                        margin: "8px 0",
-                                        textWrap: "nowrap",
+                                        margin: '8px 0',
+                                        textWrap: 'nowrap',
                                       }}
                                     >
                                       {formattedDate(String(unit.createdAt))}
                                     </Typography>
                                   );
-                                }
+                                },
                               )}
-                          </TableCell>{" "}
+                          </TableCell>{' '}
                           <TableCell
                             className="table-padding"
                             sx={{
                               borderBottomWidth: 2,
-                              borderBottomColor: "#ececec",
-                              color: "#555555",
+                              borderBottomColor: '#ececec',
+                              color: '#555555',
                               fontWeight: 500,
                               pl: 0,
                             }}
@@ -359,30 +356,30 @@ const WaterManageHistoryModal: React.FC<Props> = ({
                                       sx={{
                                         fontWeight: 500,
                                         fontSize: 14,
-                                        backgroundColor: "#F5F6F8",
+                                        backgroundColor: '#F5F6F8',
                                         padding: `${
                                           unit?.waterTemp
-                                            ? "8px 12px 8px 0"
-                                            : "19px 12px 19px 0"
+                                            ? '8px 12px 8px 0'
+                                            : '19px 12px 19px 0'
                                         }`,
-                                        margin: "8px 0",
+                                        margin: '8px 0',
                                         // marginBottom: "10px",
                                         // padding: "21px",
-                                        textWrap: "nowrap",
+                                        textWrap: 'nowrap',
                                       }}
                                     >
-                                      {unit.waterTemp ?? ""}
+                                      {unit.waterTemp ?? ''}
                                     </Typography>
                                   );
-                                }
+                                },
                               )}
                           </TableCell>
                           <TableCell
                             className="table-padding"
                             sx={{
                               borderBottomWidth: 2,
-                              borderBottomColor: "#ececec",
-                              color: "#555555",
+                              borderBottomColor: '#ececec',
+                              color: '#555555',
                               fontWeight: 500,
                               pl: 0,
                             }}
@@ -398,28 +395,28 @@ const WaterManageHistoryModal: React.FC<Props> = ({
                                       sx={{
                                         fontWeight: 500,
                                         fontSize: 14,
-                                        backgroundColor: "#F5F6F8",
+                                        backgroundColor: '#F5F6F8',
                                         padding: `${
                                           unit.DO
-                                            ? "8px 12px 8px 0"
-                                            : "19px 12px 19px 0"
+                                            ? '8px 12px 8px 0'
+                                            : '19px 12px 19px 0'
                                         }`,
-                                        margin: "8px 0",
-                                        textWrap: "nowrap",
+                                        margin: '8px 0',
+                                        textWrap: 'nowrap',
                                       }}
                                     >
-                                      {unit.DO ?? ""}
+                                      {unit.DO ?? ''}
                                     </Typography>
                                   );
-                                }
+                                },
                               )}
                           </TableCell>
                           <TableCell
                             className="table-padding"
                             sx={{
                               borderBottomWidth: 2,
-                              borderBottomColor: "#ececec",
-                              color: "#555555",
+                              borderBottomColor: '#ececec',
+                              color: '#555555',
                               fontWeight: 500,
                               pl: 0,
                               p: 0,
@@ -438,27 +435,27 @@ const WaterManageHistoryModal: React.FC<Props> = ({
                                         fontSize: 14,
                                         padding: `${
                                           unit.TSS
-                                            ? "8px 12px 8px 0"
-                                            : "19px 12px 19px 0"
+                                            ? '8px 12px 8px 0'
+                                            : '19px 12px 19px 0'
                                         }`,
-                                        backgroundColor: "#F5F6F8",
-                                        margin: "8px 0",
+                                        backgroundColor: '#F5F6F8',
+                                        margin: '8px 0',
 
-                                        textWrap: "nowrap",
+                                        textWrap: 'nowrap',
                                       }}
                                     >
-                                      {unit.TSS ?? ""}
+                                      {unit.TSS ?? ''}
                                     </Typography>
                                   );
-                                }
+                                },
                               )}
                           </TableCell>
                           <TableCell
                             className="table-padding"
                             sx={{
                               borderBottomWidth: 2,
-                              borderBottomColor: "#ececec",
-                              color: "#555555",
+                              borderBottomColor: '#ececec',
+                              color: '#555555',
                               fontWeight: 500,
                               pl: 0,
                             }}
@@ -474,31 +471,31 @@ const WaterManageHistoryModal: React.FC<Props> = ({
                                       sx={{
                                         fontWeight: 500,
                                         fontSize: 14,
-                                        backgroundColor: "#F5F6F8",
+                                        backgroundColor: '#F5F6F8',
                                         padding: `${
                                           unit?.NH4
-                                            ? "8px 12px 8px 0"
-                                            : "19px 12px 19px 0"
+                                            ? '8px 12px 8px 0'
+                                            : '19px 12px 19px 0'
                                         }`,
-                                        margin: "8px 0",
+                                        margin: '8px 0',
                                         // marginBottom: "10px",
                                         // padding: "21px",
-                                        textWrap: "nowrap",
+                                        textWrap: 'nowrap',
                                       }}
                                     >
-                                      {unit?.NH4 ?? ""}
+                                      {unit?.NH4 ?? ''}
                                     </Typography>
                                   );
-                                }
+                                },
                               )}
                           </TableCell>
                           <TableCell
                             className="table-padding"
                             // align="center"
                             sx={{
-                              borderBottomColor: "#ececec",
+                              borderBottomColor: '#ececec',
                               borderBottomWidth: 2,
-                              color: "#555555",
+                              color: '#555555',
                               fontWeight: 500,
                               pl: 0,
                             }}
@@ -514,30 +511,30 @@ const WaterManageHistoryModal: React.FC<Props> = ({
                                       sx={{
                                         fontWeight: 500,
                                         fontSize: 14,
-                                        backgroundColor: "#F5F6F8",
+                                        backgroundColor: '#F5F6F8',
                                         padding: `${
                                           unit?.NO3
-                                            ? "8px 12px 8px 0"
-                                            : "19px 12px 19px 0"
+                                            ? '8px 12px 8px 0'
+                                            : '19px 12px 19px 0'
                                         }`,
-                                        margin: "8px 0",
+                                        margin: '8px 0',
                                         // marginBottom: "10px",
-                                        textWrap: "nowrap",
+                                        textWrap: 'nowrap',
                                       }}
                                     >
-                                      {unit.NO3 ?? ""}
+                                      {unit.NO3 ?? ''}
                                     </Typography>
                                   );
-                                }
+                                },
                               )}
                           </TableCell>
                           <TableCell
                             className="table-padding"
                             // align="center"
                             sx={{
-                              borderBottomColor: "#ececec",
+                              borderBottomColor: '#ececec',
                               borderBottomWidth: 2,
-                              color: "#555555",
+                              color: '#555555',
                               fontWeight: 500,
                               pl: 0,
                             }}
@@ -553,30 +550,30 @@ const WaterManageHistoryModal: React.FC<Props> = ({
                                       sx={{
                                         fontWeight: 500,
                                         fontSize: 14,
-                                        backgroundColor: "#F5F6F8",
+                                        backgroundColor: '#F5F6F8',
                                         padding: `${
                                           unit?.NO2
-                                            ? "8px 12px 8px 0"
-                                            : "19px 12px 19px 0"
+                                            ? '8px 12px 8px 0'
+                                            : '19px 12px 19px 0'
                                         }`,
-                                        margin: "8px 0",
+                                        margin: '8px 0',
                                         // marginBottom: "10px",
-                                        textWrap: "nowrap",
+                                        textWrap: 'nowrap',
                                       }}
                                     >
-                                      {unit.NO2 ?? ""}
+                                      {unit.NO2 ?? ''}
                                     </Typography>
                                   );
-                                }
+                                },
                               )}
                           </TableCell>
                           <TableCell
                             className="table-padding"
                             // align="center"
                             sx={{
-                              borderBottomColor: "#ececec",
+                              borderBottomColor: '#ececec',
                               borderBottomWidth: 2,
-                              color: "#555555",
+                              color: '#555555',
                               fontWeight: 500,
                               pl: 0,
                             }}
@@ -592,30 +589,30 @@ const WaterManageHistoryModal: React.FC<Props> = ({
                                       sx={{
                                         fontWeight: 500,
                                         fontSize: 14,
-                                        backgroundColor: "#F5F6F8",
+                                        backgroundColor: '#F5F6F8',
                                         padding: `${
                                           unit?.ph
-                                            ? "8px 12px 8px 0"
-                                            : "19px 12px 19px 0"
+                                            ? '8px 12px 8px 0'
+                                            : '19px 12px 19px 0'
                                         }`,
-                                        margin: "8px 0",
+                                        margin: '8px 0',
                                         // marginBottom: "10px",
-                                        textWrap: "nowrap",
+                                        textWrap: 'nowrap',
                                       }}
                                     >
-                                      {unit.ph ?? ""}
+                                      {unit.ph ?? ''}
                                     </Typography>
                                   );
-                                }
+                                },
                               )}
                           </TableCell>
                           <TableCell
                             className="table-padding"
                             // align="center"
                             sx={{
-                              borderBottomColor: "#ececec",
+                              borderBottomColor: '#ececec',
                               borderBottomWidth: 2,
-                              color: "#555555",
+                              color: '#555555',
                               fontWeight: 500,
                               pl: 0,
                             }}
@@ -631,30 +628,30 @@ const WaterManageHistoryModal: React.FC<Props> = ({
                                       sx={{
                                         fontWeight: 500,
                                         fontSize: 14,
-                                        backgroundColor: "#F5F6F8",
+                                        backgroundColor: '#F5F6F8',
                                         padding: `${
                                           unit?.visibility
-                                            ? "8px 12px 8px 0"
-                                            : "19px 12px 19px 0"
+                                            ? '8px 12px 8px 0'
+                                            : '19px 12px 19px 0'
                                         }`,
-                                        margin: "8px 0",
+                                        margin: '8px 0',
                                         // marginBottom: "10px",
-                                        textWrap: "nowrap",
+                                        textWrap: 'nowrap',
                                       }}
                                     >
-                                      {unit.visibility ?? ""}
+                                      {unit.visibility ?? ''}
                                     </Typography>
                                   );
-                                }
+                                },
                               )}
                           </TableCell>
                         </TableRow>
                       );
-                    }
+                    },
                   )
                 ) : (
                   <TableRow>
-                    <TableCell colSpan={6} sx={{ textAlign: "center" }}>
+                    <TableCell colSpan={6} sx={{ textAlign: 'center' }}>
                       No Data Found
                     </TableCell>
                   </TableRow>

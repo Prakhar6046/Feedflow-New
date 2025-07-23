@@ -1,6 +1,6 @@
-import { verifyAndRefreshToken } from "@/app/_lib/auth/verifyAndRefreshToken";
-import prisma from "@/prisma/prisma";
-import { NextRequest, NextResponse } from "next/server";
+import { verifyAndRefreshToken } from '@/app/_lib/auth/verifyAndRefreshToken';
+import prisma from '@/prisma/prisma';
+import { NextRequest, NextResponse } from 'next/server';
 
 export async function PUT(req: NextRequest) {
   try {
@@ -9,15 +9,15 @@ export async function PUT(req: NextRequest) {
       return new NextResponse(
         JSON.stringify({
           status: false,
-          message: "Unauthorized: Token missing or invalid",
+          message: 'Unauthorized: Token missing or invalid',
         }),
-        { status: 401 }
+        { status: 401 },
       );
     }
     const body = await req.json();
     const { id, ...rest } = body;
     if (!body.id) {
-      throw new Error("Feed ID is required for updating.");
+      throw new Error('Feed ID is required for updating.');
     }
     const updatedFeed = await prisma.feedSupply.update({
       where: { id: body.id },
@@ -25,15 +25,15 @@ export async function PUT(req: NextRequest) {
     });
     // const updateFeed
     return NextResponse.json({
-      message: "Feed updated successfully",
+      message: 'Feed updated successfully',
       data: updatedFeed,
       status: true,
     });
   } catch (error: any) {
-    console.error("Error updating farm:", error);
+    console.error('Error updating farm:', error);
     return NextResponse.json(
-      { error: error.message || "Internal Server Error" },
-      { status: 500 }
+      { error: error.message || 'Internal Server Error' },
+      { status: 500 },
     );
   }
 }

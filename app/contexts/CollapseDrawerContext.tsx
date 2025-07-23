@@ -1,5 +1,5 @@
-import { ReactNode, createContext, useEffect, useState } from "react";
-import useResponsive from "../hooks/useResponsive";
+import { ReactNode, createContext, useEffect, useState } from 'react';
+import useResponsive from '../hooks/useResponsive';
 
 export type CollapseDrawerContextProps = {
   isCollapse: boolean;
@@ -26,7 +26,7 @@ type CollapseDrawerProviderProps = {
 };
 
 function CollapseDrawerProvider({ children }: CollapseDrawerProviderProps) {
-  const isDesktop = useResponsive("up", "lg");
+  const isDesktop = useResponsive('up', 'lg');
 
   const [collapse, setCollapse] = useState({
     click: false,

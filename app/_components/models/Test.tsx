@@ -1,34 +1,21 @@
 import {
   Box,
   Button,
-  Modal,
-  Stack,
-  TextField,
-  Grid,
-  Typography,
-  FormControl,
-  FormLabel,
-  RadioGroup,
   FormControlLabel,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
-  Radio,
   Checkbox,
-} from "@mui/material";
-import Image from "next/image";
-import closeIcon from "@/public/static/img/icons/ic-close.svg";
-import { useForm, SubmitHandler } from "react-hook-form";
-import toast from "react-hot-toast";
-import { useEffect, useMemo, useState } from "react";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
-import { FarmGroup, Production } from "@/app/_typeModels/production";
-import { Farm } from "@/app/_typeModels/Farm";
-import dayjs from "dayjs";
-import { setLocalItem } from "@/app/_lib/utils";
-import { useRouter } from "next/navigation";
+} from '@mui/material';
+import toast from 'react-hot-toast';
+import { useEffect, useMemo, useState } from 'react';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
+import { Production } from '@/app/_typeModels/production';
+import dayjs from 'dayjs';
+import { setLocalItem } from '@/app/_lib/utils';
+import { useRouter } from 'next/navigation';
 // const style = {
 //   position: "absolute" as "absolute",
 //   top: "50%",
@@ -55,50 +42,50 @@ const Test: React.FC<Props> = ({
   selectedFarm,
 }) => {
   const router = useRouter();
-  const startDate = dayjs().startOf("month").format();
+  const startDate = dayjs().startOf('month').format();
   const endDate = dayjs().format();
   const [xAxisData, setXAxisData] = useState<string[]>([]);
   const unitOptions =
-    selectedView === "fish"
+    selectedView === 'fish'
       ? [
-          { key: "Fish Count", yDataKey: "fishCount", title: "Fish Count" },
-          { key: "Biomass", yDataKey: "biomass", title: "Biomass" },
-          { key: "Mean Weight", yDataKey: "meanWeight", title: "Mean Weight" },
-          { key: "Mean Length", yDataKey: "meanLength", title: "Mean Length" },
+          { key: 'Fish Count', yDataKey: 'fishCount', title: 'Fish Count' },
+          { key: 'Biomass', yDataKey: 'biomass', title: 'Biomass' },
+          { key: 'Mean Weight', yDataKey: 'meanWeight', title: 'Mean Weight' },
+          { key: 'Mean Length', yDataKey: 'meanLength', title: 'Mean Length' },
           {
-            key: "Stocking density (kg/m³)",
-            yDataKey: "stockingDensityKG",
-            title: `Stocking density (kg/${"m\u00B3"})`,
+            key: 'Stocking density (kg/m³)',
+            yDataKey: 'stockingDensityKG',
+            title: `Stocking density (kg/${'m\u00B3'})`,
           },
           {
-            key: "Stocking density (n/m³)",
-            yDataKey: "stockingDensityNM",
-            title: `Stocking density (n/${"m\u00B3"})`,
+            key: 'Stocking density (n/m³)',
+            yDataKey: 'stockingDensityNM',
+            title: `Stocking density (n/${'m\u00B3'})`,
           },
         ]
       : [
           {
-            key: "waterTempChart",
-            yDataKey: "waterTemp",
-            title: "Water Temperature",
+            key: 'waterTempChart',
+            yDataKey: 'waterTemp',
+            title: 'Water Temperature',
           },
           {
-            key: "dissolvedOxgChart",
-            yDataKey: "DO",
-            title: "Dissolved Oxygen",
+            key: 'dissolvedOxgChart',
+            yDataKey: 'DO',
+            title: 'Dissolved Oxygen',
           },
-          { key: "TSS", yDataKey: "TSS", title: "TSS" },
-          { key: "ammonia", yDataKey: "NH4", title: "Ammonia" },
-          { key: "nitrate", yDataKey: "NO3", title: "Nitrate" },
-          { key: "nitrite", yDataKey: "NO2", title: "Nitrite" },
-          { key: "ph", yDataKey: "ph", title: "PH" },
-          { key: "visibility", yDataKey: "visibility", title: "Visibility" },
+          { key: 'TSS', yDataKey: 'TSS', title: 'TSS' },
+          { key: 'ammonia', yDataKey: 'NH4', title: 'Ammonia' },
+          { key: 'nitrate', yDataKey: 'NO3', title: 'Nitrate' },
+          { key: 'nitrite', yDataKey: 'NO2', title: 'Nitrite' },
+          { key: 'ph', yDataKey: 'ph', title: 'PH' },
+          { key: 'visibility', yDataKey: 'visibility', title: 'Visibility' },
         ];
   const groupedData: any = useMemo(() => {
     const filteredFarm = productions?.reduce((result: any, item) => {
       // Find or create a farm group
       let farmGroup: any = result.find(
-        (group: any) => group.farm === item.farm.name
+        (group: any) => group.farm === item.farm.name,
       );
       if (!farmGroup) {
         farmGroup = { farm: item.productionUnit.name, units: [] };
@@ -146,7 +133,7 @@ const Test: React.FC<Props> = ({
   const previewReport = () => {
     if (!selectedUnits?.length) {
       toast.dismiss();
-      toast.error("Please select at least one unit to preview.");
+      toast.error('Please select at least one unit to preview.');
       return;
     }
     const data = {
@@ -164,17 +151,17 @@ const Test: React.FC<Props> = ({
       },
       startDate: startDate,
       endDate: endDate,
-      dateDiff: dayjs(endDate).diff(dayjs(startDate), "day"),
+      dateDiff: dayjs(endDate).diff(dayjs(startDate), 'day'),
     };
-    if (selectedView === "water") {
-      setLocalItem("waterPreviewData", data);
+    if (selectedView === 'water') {
+      setLocalItem('waterPreviewData', data);
       router.push(
-        `/dashboard/production/water/${selectedFarm?.productionUnit?.id}/chartPreview`
+        `/dashboard/production/water/${selectedFarm?.productionUnit?.id}/chartPreview`,
       );
     } else {
-      setLocalItem("fishPreviewData", data);
+      setLocalItem('fishPreviewData', data);
       router.push(
-        `/dashboard/production/fish/${selectedFarm?.productionUnit?.id}/chartPreview`
+        `/dashboard/production/fish/${selectedFarm?.productionUnit?.id}/chartPreview`,
       );
     }
   };
@@ -183,27 +170,27 @@ const Test: React.FC<Props> = ({
     setSelectedUnits((prev) =>
       prev.includes(key)
         ? prev.filter((chartKey) => chartKey !== key)
-        : [...prev, key]
+        : [...prev, key],
     );
   };
   useEffect(() => {
     if (groupedData?.units) {
       let createdAtArray;
-      if (selectedView === "water") {
+      if (selectedView === 'water') {
         createdAtArray = groupedData.units
           ?.flatMap(
             (unit: any) =>
               unit.waterManageHistory?.map((history: any) => {
-                const datePart = String(history.currentDate).split("T")[0];
+                const datePart = String(history.currentDate).split('T')[0];
                 return dayjs(datePart).isValid() ? datePart : null;
-              }) || []
+              }) || [],
           )
           .filter(Boolean);
       } else {
         createdAtArray = groupedData.units.flatMap(
           (unit: any) =>
             unit.fishManageHistory?.map((history: any) => history.createdAt) ||
-            []
+            [],
         );
       }
 
@@ -552,7 +539,7 @@ const Test: React.FC<Props> = ({
     <Dialog
       open={open}
       onClose={() => {
-        setOpen(false), setSelectedUnits([]);
+        (setOpen(false), setSelectedUnits([]));
       }}
     >
       <DialogTitle>Select Units</DialogTitle>
@@ -568,8 +555,8 @@ const Test: React.FC<Props> = ({
                 icon={<RadioButtonUncheckedIcon />}
                 checkedIcon={<CheckCircleIcon />}
                 sx={{
-                  "&.Mui-checked": {
-                    color: "#06A19B",
+                  '&.Mui-checked': {
+                    color: '#06A19B',
                   },
                 }}
               />
@@ -585,21 +572,21 @@ const Test: React.FC<Props> = ({
       >
         <Box
           sx={{
-            display: "flex",
-            justifyContent: "end",
-            gap: "10px",
-            margin: "20px",
+            display: 'flex',
+            justifyContent: 'end',
+            gap: '10px',
+            margin: '20px',
           }}
         >
           <Button
             sx={{
-              background: "#06A19B",
-              fontWeight: "bold",
-              color: "white",
-              padding: "8px 20px",
-              width: "fit-content",
-              textTransform: "capitalize",
-              borderRadius: "8px",
+              background: '#06A19B',
+              fontWeight: 'bold',
+              color: 'white',
+              padding: '8px 20px',
+              width: 'fit-content',
+              textTransform: 'capitalize',
+              borderRadius: '8px',
             }}
             onClick={() => {
               setSelectedUnits(unitOptions.map((unit) => unit.key));
@@ -609,13 +596,13 @@ const Test: React.FC<Props> = ({
           </Button>
           <Button
             sx={{
-              border: " 2px solid #06A19B",
-              fontWeight: "bold",
-              color: "#06A19B",
-              padding: "8px 20px",
-              width: "fit-content",
-              textTransform: "capitalize",
-              borderRadius: "8px",
+              border: ' 2px solid #06A19B',
+              fontWeight: 'bold',
+              color: '#06A19B',
+              padding: '8px 20px',
+              width: 'fit-content',
+              textTransform: 'capitalize',
+              borderRadius: '8px',
             }}
             onClick={previewReport}
           >
@@ -623,16 +610,16 @@ const Test: React.FC<Props> = ({
           </Button>
           <Button
             onClick={() => {
-              setOpen(false), setSelectedUnits([]);
+              (setOpen(false), setSelectedUnits([]));
             }}
             sx={{
-              background: "#06A19B",
-              fontWeight: "bold",
-              color: "white",
-              padding: "8px 20px",
-              width: "fit-content",
-              textTransform: "capitalize",
-              borderRadius: "8px",
+              background: '#06A19B',
+              fontWeight: 'bold',
+              color: 'white',
+              padding: '8px 20px',
+              width: 'fit-content',
+              textTransform: 'capitalize',
+              borderRadius: '8px',
             }}
           >
             Cancel

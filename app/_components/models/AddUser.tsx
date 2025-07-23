@@ -5,26 +5,26 @@ import {
   Stack,
   TextField,
   Typography,
-} from "@mui/material";
-import Image from "next/image";
-import closeIcon from "@/public/static/img/icons/ic-close.svg";
-import { useForm, SubmitHandler } from "react-hook-form";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select, { SelectChangeEvent } from "@mui/material/Select";
-import { useState } from "react";
+} from '@mui/material';
+import Image from 'next/image';
+import closeIcon from '@/public/static/img/icons/ic-close.svg';
+import { useForm, SubmitHandler } from 'react-hook-form';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+import { useState } from 'react';
 
-import toast from "react-hot-toast";
-import { SingleOrganisation } from "@/app/_typeModels/Organization";
-import { getCookie } from "cookies-next";
+import toast from 'react-hot-toast';
+import { SingleOrganisation } from '@/app/_typeModels/Organization';
+import { getCookie } from 'cookies-next';
 const style = {
-  position: "absolute" as "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
+  position: 'absolute' as const,
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
   width: 400,
-  bgcolor: "background.paper",
+  bgcolor: 'background.paper',
   boxShadow: 24,
 };
 
@@ -37,11 +37,11 @@ interface Props {
 interface FormInputs {
   name: string;
   email: string;
-  organisationId: Number;
+  organisationId: number;
 }
 
 const AddUser: React.FC<Props> = ({ setOpen, open, organisations }) => {
-  const [selectedOrganisation, setSelectedOrganisation] = useState<any>("");
+  const [selectedOrganisation, setSelectedOrganisation] = useState<any>('');
   const {
     register,
     handleSubmit,
@@ -53,16 +53,16 @@ const AddUser: React.FC<Props> = ({ setOpen, open, organisations }) => {
 
   const onSubmit: SubmitHandler<FormInputs> = async (data) => {
     if (data.email && data.name && data.organisationId) {
-      const token = getCookie("auth-token");
+      const token = getCookie('auth-token');
       const payload = {
         name: data.name,
         email: data.email,
         organisationId: data.organisationId,
       };
-      const response = await fetch("/api/add-new-user", {
-        method: "POST",
+      const response = await fetch('/api/add-new-user', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(payload),
@@ -95,10 +95,10 @@ const AddUser: React.FC<Props> = ({ setOpen, open, organisations }) => {
           display="flex"
           justifyContent="space-between"
           gap={2}
-          alignItems={"center"}
+          alignItems={'center'}
           sx={{
-            borderTopLeftRadius: "14px",
-            borderTopRightRadius: "14px",
+            borderTopLeftRadius: '14px',
+            borderTopRightRadius: '14px',
           }}
         >
           <Typography
@@ -118,7 +118,7 @@ const AddUser: React.FC<Props> = ({ setOpen, open, organisations }) => {
             alignItems="center"
             sx={{
               opacity: 0.5,
-              cursor: "pointer",
+              cursor: 'pointer',
             }}
             onClick={handleClose}
           >
@@ -132,9 +132,9 @@ const AddUser: React.FC<Props> = ({ setOpen, open, organisations }) => {
               variant="outlined"
               className="form-input"
               fullWidth
-              {...register("name", { required: true })}
+              {...register('name', { required: true })}
               error={!!errors.name}
-              helperText={errors.name ? "Name is required" : ""}
+              helperText={errors.name ? 'Name is required' : ''}
               sx={{
                 marginBottom: 2,
               }}
@@ -147,15 +147,15 @@ const AddUser: React.FC<Props> = ({ setOpen, open, organisations }) => {
               sx={{
                 marginBottom: 2,
               }}
-              {...register("email", {
-                required: "Email is required",
+              {...register('email', {
+                required: 'Email is required',
                 pattern: {
                   value: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
-                  message: "Invalid email address",
+                  message: 'Invalid email address',
                 },
               })}
               error={!!errors.email}
-              helperText={errors.email ? errors.email.message : ""}
+              helperText={errors.email ? errors.email.message : ''}
             />
             <Box sx={{ minWidth: 120 }}>
               <FormControl fullWidth className="form-input">
@@ -167,7 +167,7 @@ const AddUser: React.FC<Props> = ({ setOpen, open, organisations }) => {
                   id="demo-simple-select"
                   value={selectedOrganisation}
                   label="Organisation"
-                  {...register("organisationId")}
+                  {...register('organisationId')}
                   onChange={handleChange}
                 >
                   {organisations?.map((organisation, i) => {
@@ -187,14 +187,14 @@ const AddUser: React.FC<Props> = ({ setOpen, open, organisations }) => {
               type="submit"
               variant="contained"
               sx={{
-                background: "#06A19B",
-                fontWeight: "bold",
-                padding: "8px 24px",
-                width: "fit-content",
-                textTransform: "capitalize",
-                borderRadius: "12px",
-                marginLeft: "auto",
-                display: "block",
+                background: '#06A19B',
+                fontWeight: 'bold',
+                padding: '8px 24px',
+                width: 'fit-content',
+                textTransform: 'capitalize',
+                borderRadius: '12px',
+                marginLeft: 'auto',
+                display: 'block',
                 marginTop: 3,
               }}
             >

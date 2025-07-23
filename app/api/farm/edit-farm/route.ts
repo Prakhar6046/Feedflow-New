@@ -1,6 +1,6 @@
-import { verifyAndRefreshToken } from "@/app/_lib/auth/verifyAndRefreshToken";
-import prisma from "@/prisma/prisma";
-import { NextRequest, NextResponse } from "next/server";
+import { verifyAndRefreshToken } from '@/app/_lib/auth/verifyAndRefreshToken';
+import prisma from '@/prisma/prisma';
+import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(req: NextRequest) {
   try {
@@ -9,9 +9,9 @@ export async function POST(req: NextRequest) {
       return new NextResponse(
         JSON.stringify({
           status: false,
-          message: "Unauthorized: Token missing or invalid",
+          message: 'Unauthorized: Token missing or invalid',
         }),
-        { status: 401 }
+        { status: 401 },
       );
     }
     const body = await req.json();
@@ -21,10 +21,10 @@ export async function POST(req: NextRequest) {
 
     // Ensure that the farmAddress contains an id for updating
     if (!body.farmAddress.id) {
-      throw new Error("Farm address ID is required for updating.");
+      throw new Error('Farm address ID is required for updating.');
     }
     if (!yearBasedPredicationId) {
-      throw new Error("Year Based Predication ID is required for updating.");
+      throw new Error('Year Based Predication ID is required for updating.');
     }
 
     // const productionParameter = body.productionParameter;
@@ -72,7 +72,7 @@ export async function POST(req: NextRequest) {
     // Upsert (create or update) production units and corresponding production entries
     for (const unit of body.productionUnits) {
       const updatedUnit = await prisma.productionUnit.upsert({
-        where: { id: unit.id || "" }, // If no id, create a new entry
+        where: { id: unit.id || '' }, // If no id, create a new entry
         update: {
           name: unit.name,
           type: unit.type,
@@ -96,7 +96,7 @@ export async function POST(req: NextRequest) {
           const { id, unitName, idealRange, ...rest } = existingPredictionUnit;
 
           await prisma.yearBasedPredicationProductionUnit.upsert({
-            where: { id: id || "", productionUnitId: unit.id || "" },
+            where: { id: id || '', productionUnitId: unit.id || '' },
             update: {
               ...rest.predictedValues,
               idealRange,
@@ -137,7 +137,7 @@ export async function POST(req: NextRequest) {
 
       // Handle production entries corresponding to the production unit
       const correspondingProduction = body.productions.find(
-        (p: any) => p.productionUnitId === unit.id
+        (p: any) => p.productionUnitId === unit.id,
       );
 
       // Create or update production based on whether it's found or not
@@ -190,7 +190,7 @@ export async function POST(req: NextRequest) {
 
     // Delete units that are no longer present in the updated list
     const unitsToDelete = existingUnits.filter(
-      (existingUnit) => !unitIds.includes(existingUnit.id)
+      (existingUnit) => !unitIds.includes(existingUnit.id),
     );
 
     for (const unit of unitsToDelete) {
@@ -218,14 +218,14 @@ export async function POST(req: NextRequest) {
 
     if (!existingPredication) {
       throw new Error(
-        `Year Based Predication record with ID ${yearBasedPredicationId} not found.`
+        `Year Based Predication record with ID ${yearBasedPredicationId} not found.`,
       );
     }
     const updateProductionPredection = await prisma.yearBasedPredication.update(
       {
         where: { id: yearBasedPredicationId },
         data: { ...paylaodForProductionParameter },
-      }
+      },
     );
 
     //update feedProfile
@@ -234,15 +234,15 @@ export async function POST(req: NextRequest) {
       data: { profiles: body.feedProfile },
     });
     return NextResponse.json({
-      message: "Farm updated successfully",
+      message: 'Farm updated successfully',
       data: updatedFarm,
       status: true,
     });
   } catch (error: any) {
-    console.error("Error updating farm and production managers:", error);
+    console.error('Error updating farm and production managers:', error);
     return NextResponse.json(
-      { error: error.message || "Internal Server Error" },
-      { status: 500 }
+      { error: error.message || 'Internal Server Error' },
+      { status: 500 },
     );
   }
 }

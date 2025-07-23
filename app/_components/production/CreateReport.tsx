@@ -1,6 +1,6 @@
-"use client";
-import { getFullYear, setLocalItem } from "@/app/_lib/utils";
-import { Farm, ProductionParaMeterType } from "@/app/_typeModels/Farm";
+'use client';
+import { getFullYear, setLocalItem } from '@/app/_lib/utils';
+import { Farm, ProductionParaMeterType } from '@/app/_typeModels/Farm';
 import {
   Box,
   Button,
@@ -13,51 +13,51 @@ import {
   RadioGroup,
   Stack,
   Typography,
-} from "@mui/material";
-import { setCookie } from "cookies-next";
-import dayjs from "dayjs";
-import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+} from '@mui/material';
+import { setCookie } from 'cookies-next';
+import dayjs from 'dayjs';
+import { useRouter } from 'next/navigation';
+import { useEffect, useMemo, useState } from 'react';
 interface Props {
   farms: Farm[];
   productions: any;
 }
 interface SelectedFarms {
-  farm: String | undefined;
+  farm: string | undefined;
   units: {
-    id: String;
-    name: String;
-    farmId: String;
+    id: string;
+    name: string;
+    farmId: string;
     YearBasedPredicationProductionUnit: ProductionParaMeterType[];
   }[];
 }
 const fishUnits = [
-  "Fish Count",
-  "Biomass",
-  "Mean Weight",
-  "Mean Length",
-  "Stocking density (kg/m³)",
-  "Stocking density (n/m³)",
+  'Fish Count',
+  'Biomass',
+  'Mean Weight',
+  'Mean Length',
+  'Stocking density (kg/m³)',
+  'Stocking density (n/m³)',
 ];
 const waterUnits = [
-  "waterTempChart",
-  "dissolvedOxgChart",
-  "TSS",
-  "ammonia",
-  "nitrate",
-  "nitrite",
-  "ph",
-  "visibility",
+  'waterTempChart',
+  'dissolvedOxgChart',
+  'TSS',
+  'ammonia',
+  'nitrate',
+  'nitrite',
+  'ph',
+  'visibility',
 ];
 function CreateReport({ farms, productions }: Props) {
   const router = useRouter();
-  const [selectedUnits, setSelectedUnits] = useState<String[]>([]);
-  const [selectedView, setSelectedView] = useState<string>("fish");
-  const startDate = dayjs().startOf("month").format();
+  const [selectedUnits, setSelectedUnits] = useState<string[]>([]);
+  const [selectedView, setSelectedView] = useState<string>('fish');
+  const startDate = dayjs().startOf('month').format();
   const endDate = dayjs().format();
   const [xAxisData, setXAxisData] = useState<string[]>([]);
-  const [selectedFarms, setSelectedFarms] = useState<(String | undefined)[]>(
-    []
+  const [selectedFarms, setSelectedFarms] = useState<(string | undefined)[]>(
+    [],
   );
   const [extractedData, setExtratedData] = useState<SelectedFarms[]>([]);
   const allFarmIds = farms?.map((prod) => prod.id);
@@ -66,7 +66,7 @@ function CreateReport({ farms, productions }: Props) {
     const filteredFarm = productions?.reduce((result: any, item: any) => {
       // Find or create a farm group
       let farmGroup: any = result.find(
-        (group: any) => group.farm === item.farm.name
+        (group: any) => group.farm === item.farm.name,
       );
       if (!farmGroup) {
         farmGroup = { farm: item.productionUnit.name, units: [] };
@@ -111,47 +111,47 @@ function CreateReport({ farms, productions }: Props) {
     }, []);
     return filteredFarm ?? [];
   }, [productions]);
-  const handleFarmChange = (farmId: String | undefined) => {
+  const handleFarmChange = (farmId: string | undefined) => {
     setSelectedFarms((prev) =>
       prev.includes(farmId)
         ? prev.filter((id) => id !== farmId)
-        : [...prev, farmId]
+        : [...prev, farmId],
     );
   };
-  const handleUnitSelection = (unitId: String) => {
+  const handleUnitSelection = (unitId: string) => {
     setSelectedUnits((prev) =>
       prev.includes(unitId)
         ? prev.filter((id) => id !== unitId)
-        : [...prev, unitId]
+        : [...prev, unitId],
     );
   };
 
-  const handleSelectAllUnits = (unitIds: String[]) => {
+  const handleSelectAllUnits = (unitIds: string[]) => {
     setSelectedUnits((prev) =>
       unitIds.every((id) => prev.includes(id))
         ? prev.filter((id) => !unitIds.includes(id))
-        : [...prev, ...unitIds.filter((id) => !prev.includes(id))]
+        : [...prev, ...unitIds.filter((id) => !prev.includes(id))],
     );
   };
   const handleSelectAll = () => {
     setSelectedFarms(allSelected ? [] : allFarmIds);
   };
   const handlePreview = () => {
-    setCookie("selectedUnits", JSON.stringify(selectedUnits));
+    setCookie('selectedUnits', JSON.stringify(selectedUnits));
     const data = {
-      selectedCharts: selectedView === "water" ? waterUnits : fishUnits,
+      selectedCharts: selectedView === 'water' ? waterUnits : fishUnits,
       xAxisData: xAxisData,
       groupedData: groupedData,
       startDate: startDate,
       endDate: endDate,
-      dateDiff: dayjs(endDate).diff(dayjs(startDate), "day"),
+      dateDiff: dayjs(endDate).diff(dayjs(startDate), 'day'),
     };
-    if (selectedView === "water") {
-      setLocalItem("waterPreviewData", data);
-      router.push("/dashboard/production/water/reportPreview");
+    if (selectedView === 'water') {
+      setLocalItem('waterPreviewData', data);
+      router.push('/dashboard/production/water/reportPreview');
     } else {
-      setLocalItem("fishPreviewData", data);
-      router.push("/dashboard/production/fish/reportPreview");
+      setLocalItem('fishPreviewData', data);
+      router.push('/dashboard/production/fish/reportPreview');
     }
   };
   useEffect(() => {
@@ -177,16 +177,16 @@ function CreateReport({ farms, productions }: Props) {
   useEffect(() => {
     if (groupedData?.length) {
       let createdAtArray;
-      if (selectedView === "water") {
+      if (selectedView === 'water') {
         createdAtArray = groupedData?.flatMap((group: any) =>
           group.units
             ?.flatMap(
               (unit: any) =>
                 unit.waterManageHistory?.map((history: any) => {
                   getFullYear(history?.currentDate);
-                }) || []
+                }) || [],
             )
-            .filter(Boolean)
+            .filter(Boolean),
         );
       } else {
         createdAtArray = groupedData?.flatMap(
@@ -194,9 +194,9 @@ function CreateReport({ farms, productions }: Props) {
             group?.units?.flatMap(
               (unit: any) =>
                 unit.fishManageHistory?.map(
-                  (history: any) => history.createdAt
-                ) || []
-            ) || []
+                  (history: any) => history.createdAt,
+                ) || [],
+            ) || [],
         );
       }
 
@@ -206,21 +206,21 @@ function CreateReport({ farms, productions }: Props) {
 
   return (
     <>
-      <FormControl sx={{ width: "100%", mb: 2 }}>
+      <FormControl sx={{ width: '100%', mb: 2 }}>
         <RadioGroup
           aria-labelledby="demo-radio-buttons-group-label"
-          value={selectedView ? selectedView : "fish"}
+          value={selectedView ? selectedView : 'fish'}
           name="radio-buttons-group"
           onChange={(e) => {
             setSelectedView(e.target.value);
           }}
           className="ic-radio"
           sx={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            flexWrap: "nowrap",
-            justifyContent: "end",
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            flexWrap: 'nowrap',
+            justifyContent: 'end',
           }}
         >
           <FormControlLabel
@@ -239,17 +239,17 @@ function CreateReport({ farms, productions }: Props) {
       </FormControl>
       <Stack
         sx={{
-          width: "100%",
+          width: '100%',
           // overflow: "hidden",
-          borderRadius: "14px",
-          boxShadow: "0px 0px 16px 5px #0000001A",
+          borderRadius: '14px',
+          boxShadow: '0px 0px 16px 5px #0000001A',
           p: 3,
         }}
       >
         <Box
           sx={{
-            display: "flex",
-            justifyContent: "flex-end",
+            display: 'flex',
+            justifyContent: 'flex-end',
           }}
         ></Box>
         <Grid container>
@@ -257,14 +257,14 @@ function CreateReport({ farms, productions }: Props) {
             <Box
               mb={3}
               sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
                 columnGap: 3,
                 rowGap: 1,
-                flexWrap: "wrap",
+                flexWrap: 'wrap',
                 pb: 0.5,
-                borderBottom: "1px solid #E0E0E0",
+                borderBottom: '1px solid #E0E0E0',
               }}
             >
               <Typography
@@ -294,8 +294,8 @@ function CreateReport({ farms, productions }: Props) {
               container
               spacing={3}
               sx={{
-                maxHeight: "600px",
-                overflowY: "auto",
+                maxHeight: '600px',
+                overflowY: 'auto',
                 mt: 3.5,
               }}
             >
@@ -323,9 +323,9 @@ function CreateReport({ farms, productions }: Props) {
             item
             xs={1}
             sx={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
             }}
           >
             <Divider orientation="vertical" variant="middle" />
@@ -334,13 +334,13 @@ function CreateReport({ farms, productions }: Props) {
             <Box
               mb={3}
               sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
                 columnGap: 3,
                 rowGap: 1,
-                flexWrap: "wrap",
-                borderBottom: "1px solid #E0E0E0",
+                flexWrap: 'wrap',
+                borderBottom: '1px solid #E0E0E0',
                 pb: 0.5,
               }}
             >
@@ -358,15 +358,15 @@ function CreateReport({ farms, productions }: Props) {
             </Box>
             <Stack
               sx={{
-                maxHeight: "600px",
-                overflowY: "auto",
+                maxHeight: '600px',
+                overflowY: 'auto',
               }}
             >
               {selectedFarms?.length && extractedData ? (
                 extractedData?.map((farm, index) => {
                   const allUnitIds = farm.units.map((unit) => unit.id);
                   const isAllSelected = allUnitIds.every((id) =>
-                    selectedUnits.includes(id)
+                    selectedUnits.includes(id),
                   );
 
                   return (
@@ -380,13 +380,13 @@ function CreateReport({ farms, productions }: Props) {
                         <Box
                           mt={1.5}
                           sx={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center",
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
                             columnGap: 3,
                             rowGap: 1,
-                            flexWrap: "wrap",
-                            borderBottom: "1px solid #E0E0E0",
+                            flexWrap: 'wrap',
+                            borderBottom: '1px solid #E0E0E0',
                             pb: 0.5,
                           }}
                         >
@@ -418,7 +418,7 @@ function CreateReport({ farms, productions }: Props) {
                         </Box>
                       </Grid>
                       {farm.units.map((unit) => (
-                        <Grid item xs={"auto"} key={Number(unit.id)}>
+                        <Grid item xs={'auto'} key={Number(unit.id)}>
                           <FormControlLabel
                             control={
                               <Checkbox
@@ -440,20 +440,20 @@ function CreateReport({ farms, productions }: Props) {
                   container
                   rowSpacing={2}
                   columnSpacing={4}
-                  alignItems={"center"}
-                  justifyContent={"center"}
+                  alignItems={'center'}
+                  justifyContent={'center'}
                   height={450}
                 >
                   <Grid item xs="auto">
                     <Box
                       mt={1.5}
                       sx={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
                         columnGap: 3,
                         rowGap: 1,
-                        flexWrap: "wrap",
+                        flexWrap: 'wrap',
                         pb: 0.5,
                       }}
                     >
@@ -467,9 +467,9 @@ function CreateReport({ farms, productions }: Props) {
         </Grid>
 
         <Box
-          display={"flex"}
-          justifyContent={"flex-end"}
-          alignItems={"center"}
+          display={'flex'}
+          justifyContent={'flex-end'}
+          alignItems={'center'}
           gap={3}
           mt={3}
         >
@@ -477,14 +477,14 @@ function CreateReport({ farms, productions }: Props) {
             type="button"
             variant="contained"
             sx={{
-              background: "#fff",
-              color: "#06A19B",
+              background: '#fff',
+              color: '#06A19B',
               fontWeight: 600,
-              padding: "6px 16px",
-              width: "fit-content",
-              textTransform: "capitalize",
-              borderRadius: "8px",
-              border: "1px solid #06A19B",
+              padding: '6px 16px',
+              width: 'fit-content',
+              textTransform: 'capitalize',
+              borderRadius: '8px',
+              border: '1px solid #06A19B',
             }}
             disabled={selectedUnits.length === 0}
             onClick={handlePreview}

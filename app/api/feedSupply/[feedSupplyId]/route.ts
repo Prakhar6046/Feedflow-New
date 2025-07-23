@@ -1,6 +1,6 @@
-import prisma from "@/prisma/prisma";
-import { NextRequest, NextResponse } from "next/server";
-import { verifyAndRefreshToken } from "@/app/_lib/auth/verifyAndRefreshToken";
+import prisma from '@/prisma/prisma';
+import { NextRequest, NextResponse } from 'next/server';
+import { verifyAndRefreshToken } from '@/app/_lib/auth/verifyAndRefreshToken';
 
 export const GET = async (request: NextRequest, context: { params: any }) => {
   const user = await verifyAndRefreshToken(request);
@@ -8,17 +8,17 @@ export const GET = async (request: NextRequest, context: { params: any }) => {
     return new NextResponse(
       JSON.stringify({
         status: false,
-        message: "Unauthorized: Token missing or invalid",
+        message: 'Unauthorized: Token missing or invalid',
       }),
-      { status: 401 }
+      { status: 401 },
     );
   }
   const feedId = context.params.feedSupplyId;
 
   if (!feedId) {
     return new NextResponse(
-      JSON.stringify({ message: "Invalid or missing feedId" }),
-      { status: 400 }
+      JSON.stringify({ message: 'Invalid or missing feedId' }),
+      { status: 400 },
     );
   }
   try {

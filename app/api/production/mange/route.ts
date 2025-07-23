@@ -1,5 +1,5 @@
-import prisma from "@/prisma/prisma";
-import { NextRequest, NextResponse } from "next/server";
+import prisma from '@/prisma/prisma';
+import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(req: NextRequest) {
   try {
@@ -21,8 +21,8 @@ export async function POST(req: NextRequest) {
           stockingDensityNM: data.stockingDensityNM,
           organisationId: body.organisationId,
           currentDate: data.currentDate,
-          age: "",
-          field: data.field ?? "",
+          age: '',
+          field: data.field ?? '',
           productionId: Number(data.id),
         },
       });
@@ -43,7 +43,7 @@ export async function POST(req: NextRequest) {
             currentDate: data.currentDate,
             stockingDensityKG: data.stockingDensityKG,
             stockingDensityNM: data.stockingDensityNM,
-            field: data.field ?? "",
+            field: data.field ?? '',
           },
         });
       } else {
@@ -62,21 +62,21 @@ export async function POST(req: NextRequest) {
             currentDate: data.currentDate,
             stockingDensityNM: data.stockingDensityNM,
             organisationId: body.organisationId,
-            age: "",
-            field: data.field ?? "",
+            age: '',
+            field: data.field ?? '',
           },
         });
       }
     }
 
     return NextResponse.json({
-      message: "Unit Added successfully",
+      message: 'Unit Added successfully',
       status: true,
     });
   } catch (error) {
     return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 }
+      { error: 'Internal Server Error' },
+      { status: 500 },
     );
   }
 }

@@ -3,12 +3,12 @@ import {
   productionMangeFields,
   removeLocalItem,
   setLocalItem,
-} from "@/app/_lib/utils";
-import * as validationPattern from "@/app/_lib/utils/validationPatterns/index";
-import * as validationMessage from "@/app/_lib/utils/validationsMessage/index";
-import { Farm } from "@/app/_typeModels/Farm";
-import { Production } from "@/app/_typeModels/production";
-import { Close as CloseIcon } from "@mui/icons-material"; // Use Material-UI's Close icon directly
+} from '@/app/_lib/utils';
+import * as validationPattern from '@/app/_lib/utils/validationPatterns/index';
+import * as validationMessage from '@/app/_lib/utils/validationsMessage/index';
+import { Farm } from '@/app/_typeModels/Farm';
+import { Production } from '@/app/_typeModels/production';
+import { Close as CloseIcon } from '@mui/icons-material'; // Use Material-UI's Close icon directly
 import {
   Box,
   Button,
@@ -21,34 +21,34 @@ import {
   Stack,
   TextField,
   Typography,
-} from "@mui/material";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
-import Select from "@mui/material/Select";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { Dayjs } from "dayjs";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
+} from '@mui/material';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { Dayjs } from 'dayjs';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
 import {
   Controller,
   SubmitHandler,
   useFieldArray,
   useForm,
-} from "react-hook-form";
-import toast from "react-hot-toast";
-import CalculateMeanLength from "./CalculateMeanLength";
-import CalculateMeanWeigth from "./CalculateMeanWeigth";
-import Confirmation from "./Confirmation";
-import { getCookie } from "cookies-next";
+} from 'react-hook-form';
+import toast from 'react-hot-toast';
+import CalculateMeanLength from './CalculateMeanLength';
+import CalculateMeanWeigth from './CalculateMeanWeigth';
+import Confirmation from './Confirmation';
+import { getCookie } from 'cookies-next';
 const style = {
-  position: "absolute" as "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
+  position: 'absolute' as const,
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
   width: 400,
-  bgcolor: "background.paper",
+  bgcolor: 'background.paper',
   boxShadow: 24,
 };
 
@@ -57,26 +57,26 @@ interface Props {
   open: boolean;
   selectedProduction: Production;
   farms: Farm[];
-  batches: { batchNumber: String; id: Number }[];
+  batches: { batchNumber: string; id: number }[];
   productions: Production[];
 }
 interface InputTypes {
   manager: {
-    id: Number;
-    fishFarm: String;
-    productionUnit: String;
-    biomass: String;
-    count: String;
-    meanWeight: String;
-    meanLength: String;
-    field?: String;
-    stockingDensityNM?: String;
-    stockingLevel?: String;
-    stockingDensityKG?: String;
-    batchNumber: String;
+    id: number;
+    fishFarm: string;
+    productionUnit: string;
+    biomass: string;
+    count: string;
+    meanWeight: string;
+    meanLength: string;
+    field?: string;
+    stockingDensityNM?: string;
+    stockingLevel?: string;
+    stockingDensityKG?: string;
+    batchNumber: string;
     currentDate?: Dayjs | null;
-    totalWeight?: String;
-    noOfFish?: String;
+    totalWeight?: string;
+    noOfFish?: string;
   }[];
 }
 const TransferModal: React.FC<Props> = ({
@@ -88,7 +88,7 @@ const TransferModal: React.FC<Props> = ({
   productions,
 }) => {
   const searchParams = useSearchParams();
-  const isFish = searchParams.get("isFish");
+  const isFish = searchParams.get('isFish');
   const router = useRouter();
   // const filterFarmPermission =
   //   selectedProduction?.organisation?.permissions.farms?.find(
@@ -97,23 +97,23 @@ const TransferModal: React.FC<Props> = ({
   const pathName = usePathname();
   const [selectedFarm, setSelectedFarm] = useState<any>(null);
   const [isEnteredBiomassGreater, setIsEnteredBiomassGreater] =
-    useState<Boolean>(false);
+    useState<boolean>(false);
   const [isEnteredFishCountGreater, setIsEnteredFishCountGreater] =
-    useState<Boolean>(false);
+    useState<boolean>(false);
   const [openConfirmationModal, setOpenConfirmationModal] =
     useState<boolean>(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const [isStockDeleted, setIsStockDeleted] = useState<boolean>(false);
   const [isMeanWeigthCal, setIsMeanWeigthCal] = useState<boolean>(false);
   const [isMeanLengthCal, setIsMeanLengthCal] = useState<boolean>(false);
-  const [avgOfMeanWeight, setAvgOfMeanWeight] = useState<Number>();
-  const [avgOfMeanLength, setAvgOfMeanLength] = useState<Number>();
+  const [avgOfMeanWeight, setAvgOfMeanWeight] = useState<number>();
+  const [avgOfMeanLength, setAvgOfMeanLength] = useState<number>();
   const [formData, setFormData] = useState<any>();
-  const [selectedMeanWeightId, setSelectedMeanWeightId] = useState<String>("");
-  const [selectedMeanLengthId, setSelectedMeanLengthId] = useState<String>("");
+  const [selectedMeanWeightId, setSelectedMeanWeightId] = useState<string>('');
+  const [selectedMeanLengthId, setSelectedMeanLengthId] = useState<string>('');
   const [isApiCallInProgress, setIsApiCallInProgress] =
     useState<boolean>(false);
-  const [currentInput, setCurrentInput] = useState("");
+  const [currentInput, setCurrentInput] = useState('');
   const {
     register,
     setValue,
@@ -128,23 +128,23 @@ const TransferModal: React.FC<Props> = ({
     setFocus,
     getFieldState,
   } = useForm<InputTypes>({
-    mode: "onChange",
+    mode: 'onChange',
     defaultValues: {
       manager: [
         {
           id: 0,
-          fishFarm: "",
-          productionUnit: "",
-          biomass: "",
-          count: "",
-          meanWeight: "",
-          meanLength: "",
-          stockingDensityNM: "",
-          stockingLevel: "",
-          stockingDensityKG: "",
-          field: "",
-          batchNumber: "",
-          currentDate: "",
+          fishFarm: '',
+          productionUnit: '',
+          biomass: '',
+          count: '',
+          meanWeight: '',
+          meanLength: '',
+          stockingDensityNM: '',
+          stockingLevel: '',
+          stockingDensityKG: '',
+          field: '',
+          batchNumber: '',
+          currentDate: '',
         },
       ],
     },
@@ -152,9 +152,9 @@ const TransferModal: React.FC<Props> = ({
 
   const { fields, append, remove } = useFieldArray({
     control,
-    name: "manager",
+    name: 'manager',
   });
-  const watchedFields = watch("manager");
+  const watchedFields = watch('manager');
   const onSubmit: SubmitHandler<InputTypes> = async (data) => {
     // Prevent API call if one is already in progress
     if (isApiCallInProgress) return;
@@ -165,7 +165,7 @@ const TransferModal: React.FC<Props> = ({
         const fishFarm = productions.find(
           (OldField) =>
             OldField.fishFarmId === field.fishFarm &&
-            OldField.productionUnitId === field.productionUnit
+            OldField.productionUnitId === field.productionUnit,
         );
 
         if (
@@ -179,14 +179,14 @@ const TransferModal: React.FC<Props> = ({
       });
 
       const filteredData = addIdToData.filter(
-        (field) => field.field !== "Stock"
+        (field) => field.field !== 'Stock',
       );
       const addDataInSample = filteredData.map((data) => {
         const formattedDate = data?.currentDate?.format
-          ? data.currentDate.format("MM/DD/YYYY")
+          ? data.currentDate.format('MM/DD/YYYY')
           : data?.currentDate;
 
-        if (data.field === "Sample") {
+        if (data.field === 'Sample') {
           return {
             ...data,
             batchNumber: filteredData[0].batchNumber,
@@ -206,7 +206,7 @@ const TransferModal: React.FC<Props> = ({
       if (!isEnteredBiomassGreater && !isEnteredFishCountGreater) {
         const addStockField = addDataInSample.map((data) => {
           if (!data.field && !selectedProduction.batchNumberId) {
-            return { ...data, field: "Stock" };
+            return { ...data, field: 'Stock' };
           } else {
             return data;
           }
@@ -216,11 +216,11 @@ const TransferModal: React.FC<Props> = ({
           data: addStockField,
         };
 
-        const token = getCookie("auth-token");
-        const response = await fetch("/api/production/mange", {
-          method: "POST",
+        const token = getCookie('auth-token');
+        const response = await fetch('/api/production/mange', {
+          method: 'POST',
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify(payload),
@@ -231,27 +231,27 @@ const TransferModal: React.FC<Props> = ({
           toast.dismiss();
           toast.success(res.message);
           setOpen(false);
-          removeLocalItem("productionData");
-          removeLocalItem("transferformData");
-          router.push("/dashboard/production");
+          removeLocalItem('productionData');
+          removeLocalItem('transferformData');
+          router.push('/dashboard/production');
           reset();
           router.refresh();
         }
       } else {
         toast.dismiss();
         toast.error(
-          "Please enter biomass and fish count value less than selected production"
+          'Please enter biomass and fish count value less than selected production',
         );
       }
     } catch (error) {
-      toast.error("Something went wrong. Please try again.");
+      toast.error('Something went wrong. Please try again.');
     } finally {
       setIsApiCallInProgress(false);
     }
   };
 
   const handleDelete = (item: any) => {
-    if (item.field !== "Stock") {
+    if (item.field !== 'Stock') {
       const currentIndex = fields.findIndex((field) => field.id === item.id);
       remove(currentIndex);
     } else {
@@ -259,16 +259,16 @@ const TransferModal: React.FC<Props> = ({
     }
   };
   const handleClose = () => {
-    const firstObject = getValues("manager")[0];
+    const firstObject = getValues('manager')[0];
     // Reset the form and keep the first object intact
     reset({
       manager: [firstObject], // Keep only the first object
     });
     setOpen(false);
     const params = new URLSearchParams(searchParams);
-    params.delete("isFish");
-    removeLocalItem("productionData");
-    removeLocalItem("transferformData");
+    params.delete('isFish');
+    removeLocalItem('productionData');
+    removeLocalItem('transferformData');
     router.replace(`/dashboard/production`);
     toast.dismiss();
   };
@@ -283,21 +283,21 @@ const TransferModal: React.FC<Props> = ({
         id: 0,
         fishFarm: selectedProduction.fishFarmId,
         productionUnit:
-          field === "Stock" || field === "Harvest" || field === "Mortalities"
+          field === 'Stock' || field === 'Harvest' || field === 'Mortalities'
             ? selectedProduction?.productionUnitId
-            : "",
-        biomass: "",
-        count: "",
-        meanWeight: "",
-        meanLength: "",
-        stockingDensityNM: "",
-        stockingLevel: "",
-        stockingDensityKG: "",
+            : '',
+        biomass: '',
+        count: '',
+        meanWeight: '',
+        meanLength: '',
+        stockingDensityNM: '',
+        stockingLevel: '',
+        stockingDensityKG: '',
         field,
         batchNumber:
-          field === "Harvest" || field === "Mortalities"
+          field === 'Harvest' || field === 'Mortalities'
             ? selectedProduction.batchNumberId
-            : "",
+            : '',
       });
       setAnchorEl(null);
     } else {
@@ -314,38 +314,38 @@ const TransferModal: React.FC<Props> = ({
     setIsMeanLengthCal(true);
   };
   const handleKeyDown = (event: KeyboardEvent) => {
-    if (event.key === "Enter" && !open) {
+    if (event.key === 'Enter' && !open) {
       event.preventDefault();
       const params = new URLSearchParams(searchParams);
-      params.delete("isFish");
+      params.delete('isFish');
       router.replace(`/dashboard/production`);
-      removeLocalItem("productionData");
-      removeLocalItem("transferformData");
+      removeLocalItem('productionData');
+      removeLocalItem('transferformData');
     }
   };
   const handleCheckUnitSelected = (idx: number, inputName: string) => {
     setCurrentInput(inputName);
     if (!watchedFields[idx].productionUnit) {
       toast.dismiss();
-      toast.error("Please select production unit first");
+      toast.error('Please select production unit first');
     }
   };
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const data = getLocalItem("transferformData");
+    if (typeof window !== 'undefined') {
+      const data = getLocalItem('transferformData');
       setFormData(data);
     }
   }, []);
   useEffect(() => {
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
   }, [open]);
 
   useEffect(() => {
     watchedFields.map((feild, i) => {
-      if (feild.field === "Sample" && feild.noOfFish && feild.totalWeight) {
-        let totalWeightArr: Array<number> = [];
-        let totalFishsArr: Array<number> = [];
+      if (feild.field === 'Sample' && feild.noOfFish && feild.totalWeight) {
+        const totalWeightArr: Array<number> = [];
+        const totalFishsArr: Array<number> = [];
 
         watchedFields.map((feild) => {
           if (feild.totalWeight) {
@@ -365,14 +365,14 @@ const TransferModal: React.FC<Props> = ({
         const avgOfMeanWeight = totalWeight / totalFish;
         setValue(
           `manager.${i}.meanWeight`,
-          String(Number(avgOfMeanWeight).toFixed(2))
+          String(Number(avgOfMeanWeight).toFixed(2)),
         );
         // setValue("avgOfMeanWeight", avgOfMeanWeight);
       }
     });
   }, [
-    watchedFields.map((field) => field.noOfFish).join(","),
-    watchedFields.map((field) => field.totalWeight).join(","),
+    watchedFields.map((field) => field.noOfFish).join(','),
+    watchedFields.map((field) => field.totalWeight).join(','),
   ]);
 
   useEffect(() => {
@@ -393,15 +393,15 @@ const TransferModal: React.FC<Props> = ({
           currentDate: selectedProduction?.currentDate,
         },
       ];
-      setValue("manager", data);
+      setValue('manager', data);
     }
 
     if (formData) {
-      setValue("manager", formData);
+      setValue('manager', formData);
     }
 
     setSelectedFarm(
-      formData ? formData[0]?.fishFarm : selectedProduction?.fishFarmId
+      formData ? formData[0]?.fishFarm : selectedProduction?.fishFarmId,
     ); // Set the selected farm when manager is selected
     return () => {
       setIsStockDeleted(false);
@@ -426,7 +426,7 @@ const TransferModal: React.FC<Props> = ({
             !selectedProduction.fishCount &&
             !selectedProduction.meanLength &&
             !selectedProduction.meanWeight &&
-            field.field === "Stock"
+            field.field === 'Stock'
           ) {
             updatedBiomass = Number(field.biomass);
             updatedCount = Number(field.count);
@@ -435,12 +435,12 @@ const TransferModal: React.FC<Props> = ({
 
             setValue(
               `manager.0.stockingDensityKG`,
-              Number(field.stockingDensityKG).toFixed(2)
+              Number(field.stockingDensityKG).toFixed(2),
             );
 
             setValue(
               `manager.0.stockingDensityNM`,
-              Number(field.stockingDensityNM).toFixed(2)
+              Number(field.stockingDensityNM).toFixed(2),
             );
 
             setValue(`manager.0.batchNumber`, field.batchNumber);
@@ -449,18 +449,18 @@ const TransferModal: React.FC<Props> = ({
           const currentBiomass = Number(field.biomass) || 0; // Convert to number
           const currentCount = Number(field.count) || 0; // Convert to number
           if (
-            field.field !== "Stock" &&
+            field.field !== 'Stock' &&
             currentBiomass > updatedBiomass &&
-            currentInput === "biomass"
+            currentInput === 'biomass'
           ) {
             toast.dismiss();
             toast.error(`Please enter a value lower than ${updatedBiomass}`);
             setIsEnteredBiomassGreater(true);
           }
           if (
-            field.field !== "Stock" &&
+            field.field !== 'Stock' &&
             currentCount > updatedCount &&
-            currentInput === "fishCount"
+            currentInput === 'fishCount'
           ) {
             toast.dismiss();
             toast.error(`Please enter a value lower than ${updatedCount}`);
@@ -470,7 +470,7 @@ const TransferModal: React.FC<Props> = ({
           if (currentBiomass > 0 && updatedBiomass > currentBiomass) {
             updatedBiomass -= currentBiomass;
             setIsEnteredBiomassGreater(false);
-          } else if (field.field === "Stock") {
+          } else if (field.field === 'Stock') {
             // trigger(`manager.${0}`);
 
             updatedBiomass = currentBiomass;
@@ -478,11 +478,11 @@ const TransferModal: React.FC<Props> = ({
             setValue(`manager.0.meanWeight`, field.meanWeight);
             setValue(
               `manager.0.stockingDensityNM`,
-              Number(field.stockingDensityNM).toFixed(2)
+              Number(field.stockingDensityNM).toFixed(2),
             );
             setValue(
               `manager.0.stockingDensityKG`,
-              Number(field.stockingDensityKG).toFixed(2)
+              Number(field.stockingDensityKG).toFixed(2),
             );
 
             setValue(`manager.0.batchNumber`, field.batchNumber);
@@ -492,17 +492,17 @@ const TransferModal: React.FC<Props> = ({
           if (currentCount > 0 && updatedCount > currentCount) {
             updatedCount -= currentCount;
             setIsEnteredFishCountGreater(false);
-          } else if (field.field === "Stock") {
+          } else if (field.field === 'Stock') {
             updatedCount = currentCount;
             setValue(`manager.0.meanLength`, field.meanLength);
             setValue(`manager.0.meanWeight`, field.meanWeight);
             setValue(
               `manager.0.stockingDensityNM`,
-              Number(field.stockingDensityNM).toFixed(2)
+              Number(field.stockingDensityNM).toFixed(2),
             );
             setValue(
               `manager.0.stockingDensityKG`,
-              Number(field.stockingDensityKG).toFixed(2)
+              Number(field.stockingDensityKG).toFixed(2),
             );
             setValue(`manager.0.batchNumber`, field.batchNumber);
           }
@@ -513,13 +513,13 @@ const TransferModal: React.FC<Props> = ({
         if (farm && farm.capacity) {
           const regex = validationPattern.numbersWithDot;
           const SDNMvalue = Number(
-            Number(field.count) / Number(farm?.capacity)
+            Number(field.count) / Number(farm?.capacity),
           ).toFixed(2);
           if (regex.test(SDNMvalue)) {
             setValue(`manager.${index}.stockingDensityNM`, String(SDNMvalue));
           }
           const SDKG = Number(
-            Number(field.biomass) / Number(farm?.capacity)
+            Number(field.biomass) / Number(farm?.capacity),
           ).toFixed(2);
           if (regex.test(SDKG)) {
             setValue(`manager.${index}.stockingDensityKG`, String(SDKG));
@@ -534,22 +534,22 @@ const TransferModal: React.FC<Props> = ({
 
     if (watchedFields[0]?.id) {
       if (isFish && watchedFields[0]?.id) {
-        setLocalItem("transferformData", watchedFields);
+        setLocalItem('transferformData', watchedFields);
       } else {
-        removeLocalItem("transferformData");
+        removeLocalItem('transferformData');
         setFormData(null);
       }
     }
   }, [
-    watchedFields.map((field) => field.biomass).join(","),
-    watchedFields.map((field) => field.count).join(","),
-    watchedFields.map((field) => field.meanLength).join(","),
-    watchedFields.map((field) => field.meanWeight).join(","),
-    watchedFields.map((field) => field.batchNumber).join(","),
-    watchedFields.map((field) => field.productionUnit).join(","),
-    watchedFields.map((field) => field.stockingLevel).join(","),
-    watchedFields.map((field) => field.stockingDensityKG).join(","),
-    watchedFields.map((field) => field.stockingDensityNM).join(","),
+    watchedFields.map((field) => field.biomass).join(','),
+    watchedFields.map((field) => field.count).join(','),
+    watchedFields.map((field) => field.meanLength).join(','),
+    watchedFields.map((field) => field.meanWeight).join(','),
+    watchedFields.map((field) => field.batchNumber).join(','),
+    watchedFields.map((field) => field.productionUnit).join(','),
+    watchedFields.map((field) => field.stockingLevel).join(','),
+    watchedFields.map((field) => field.stockingDensityKG).join(','),
+    watchedFields.map((field) => field.stockingDensityNM).join(','),
     setValue,
     isFish,
     selectedProduction,
@@ -571,7 +571,7 @@ const TransferModal: React.FC<Props> = ({
         }
       });
 
-      setValue("manager", updatedFields);
+      setValue('manager', updatedFields);
     }
   }, [avgOfMeanWeight]);
   useEffect(() => {
@@ -591,7 +591,7 @@ const TransferModal: React.FC<Props> = ({
         }
       });
 
-      setValue("manager", updatedFields);
+      setValue('manager', updatedFields);
     }
   }, [avgOfMeanLength]);
 
@@ -614,9 +614,9 @@ const TransferModal: React.FC<Props> = ({
             <IconButton
               onClick={handleClose}
               sx={{
-                color: "inherit",
-                background: "transparent",
-                margin: "2",
+                color: 'inherit',
+                background: 'transparent',
+                margin: '2',
               }}
             >
               <CloseIcon />
@@ -641,12 +641,12 @@ const TransferModal: React.FC<Props> = ({
 
                   <Box
                     sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                      height: "100%",
-                      position: "relative",
-                      bottom: "10px",
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      height: '100%',
+                      position: 'relative',
+                      bottom: '10px',
                       gap: 1.5,
                     }}
                   >
@@ -654,9 +654,9 @@ const TransferModal: React.FC<Props> = ({
                       sx={{
                         overflowY: {
                           // xl: "visible",
-                          xs: "auto",
+                          xs: 'auto',
                         },
-                        width: "97%",
+                        width: '97%',
                         pb: 2,
                       }}
                     >
@@ -665,23 +665,23 @@ const TransferModal: React.FC<Props> = ({
                         spacing={2}
                         className="grid-margin"
                         sx={{
-                          flexWrap: "nowrap",
+                          flexWrap: 'nowrap',
                         }}
                       >
-                        {item.field !== "Sample" && (
+                        {item.field !== 'Sample' && (
                           <Grid
                             item
                             xs
                             sx={{
-                              width: "fit-content",
+                              width: 'fit-content',
                               minWidth: 130,
                             }}
                           >
-                            <Box width={"100%"}>
+                            <Box width={'100%'}>
                               <FormControl
                                 fullWidth
                                 className={`form-input ${
-                                  idx === 0 && "selected"
+                                  idx === 0 && 'selected'
                                 }`}
                                 focused
                               >
@@ -701,9 +701,9 @@ const TransferModal: React.FC<Props> = ({
                                   slotProps={{
                                     input: {
                                       readOnly:
-                                        item.field === "Stock" ||
-                                        item.field === "Harvest" ||
-                                        item.field === "Mortalities" ||
+                                        item.field === 'Stock' ||
+                                        item.field === 'Harvest' ||
+                                        item.field === 'Mortalities' ||
                                         idx === 0
                                           ? true
                                           : false,
@@ -718,23 +718,23 @@ const TransferModal: React.FC<Props> = ({
                                   })}
                                   onChange={(e) => {
                                     const selectedFishFarm = e.target.value;
-                                    item.field === "Stock" &&
+                                    (item.field === 'Stock' &&
                                       setValue(
                                         `manager.0.fishFarm`,
-                                        e.target.value
+                                        e.target.value,
                                       ),
-                                      setSelectedFarm(selectedFishFarm); // Set selected farm for this specific entry
+                                      setSelectedFarm(selectedFishFarm)); // Set selected farm for this specific entry
                                     setValue(
                                       `manager.${idx}.fishFarm`,
-                                      selectedFishFarm
+                                      selectedFishFarm,
                                     ); // Set the value for this fishFarm
                                     setValue(
                                       `manager.${idx}.productionUnit`,
-                                      ""
+                                      '',
                                     ); // Reset production unit for the current entry
                                   }}
                                   value={
-                                    getValues(`manager.${idx}.fishFarm`) || ""
+                                    getValues(`manager.${idx}.fishFarm`) || ''
                                   } // Ensure only the current entry is updated
                                 >
                                   {farms?.map((farm: Farm, i) => (
@@ -750,7 +750,7 @@ const TransferModal: React.FC<Props> = ({
                                   idx !== 0 &&
                                   errors?.manager[idx].fishFarm &&
                                   errors?.manager[idx].fishFarm.type ===
-                                    "required" && (
+                                    'required' && (
                                     <Typography
                                       variant="body2"
                                       color="red"
@@ -770,20 +770,20 @@ const TransferModal: React.FC<Props> = ({
                             </Box>
                           </Grid>
                         )}
-                        {item.field !== "Sample" && (
+                        {item.field !== 'Sample' && (
                           <Grid
                             xs
                             item
                             sx={{
-                              width: "fit-content",
+                              width: 'fit-content',
                               minWidth: 130,
                             }}
                           >
-                            <Box width={"100%"}>
+                            <Box width={'100%'}>
                               <FormControl
                                 fullWidth
                                 className={`form-input ${
-                                  idx === 0 && "selected"
+                                  idx === 0 && 'selected'
                                 }`}
                                 focused
                               >
@@ -793,32 +793,32 @@ const TransferModal: React.FC<Props> = ({
                                   id="production-unit-select"
                                   label="Production Unit*"
                                   sx={{
-                                    width: "100%",
+                                    width: '100%',
                                     zIndex: 999,
-                                    "& .MuiInputLabel-root": {
-                                      transition: "all 0.2s ease",
-                                      maxWidth: "60%",
-                                      overflow: "hidden",
-                                      whiteSpace: "nowrap",
-                                      textOverflow: "ellipsis",
-                                      height: "auto",
+                                    '& .MuiInputLabel-root': {
+                                      transition: 'all 0.2s ease',
+                                      maxWidth: '60%',
+                                      overflow: 'hidden',
+                                      whiteSpace: 'nowrap',
+                                      textOverflow: 'ellipsis',
+                                      height: 'auto',
                                     },
-                                    "&:focus-within .MuiInputLabel-root": {
-                                      transform: "translate(10px, -9px)",
-                                      fontSize: "0.75rem",
-                                      color: "primary.main",
-                                      backgroundColor: "#fff",
-                                      maxWidth: "100%",
-                                      overflow: "visible",
-                                      textOverflow: "unset",
+                                    '&:focus-within .MuiInputLabel-root': {
+                                      transform: 'translate(10px, -9px)',
+                                      fontSize: '0.75rem',
+                                      color: 'primary.main',
+                                      backgroundColor: '#fff',
+                                      maxWidth: '100%',
+                                      overflow: 'visible',
+                                      textOverflow: 'unset',
                                     },
                                   }}
                                   slotProps={{
                                     input: {
                                       readOnly:
-                                        item.field === "Stock" ||
-                                        item.field === "Harvest" ||
-                                        item.field === "Mortalities" ||
+                                        item.field === 'Stock' ||
+                                        item.field === 'Harvest' ||
+                                        item.field === 'Mortalities' ||
                                         idx === 0
                                           ? true
                                           : false,
@@ -829,32 +829,32 @@ const TransferModal: React.FC<Props> = ({
                                     {
                                       required:
                                         watch(
-                                          `manager.${idx}.productionUnit`
+                                          `manager.${idx}.productionUnit`,
                                         ) && idx !== 0
                                           ? false
                                           : true,
                                       onChange: (e) =>
-                                        item.field === "Stock" &&
+                                        item.field === 'Stock' &&
                                         setValue(
                                           `manager.0.productionUnit`,
-                                          e.target.value
+                                          e.target.value,
                                         ),
-                                    }
+                                    },
                                   )}
                                   inputProps={{
                                     shrink: watch(
-                                      `manager.${idx}.productionUnit`
+                                      `manager.${idx}.productionUnit`,
                                     ),
                                   }}
                                   value={
-                                    watch(`manager.${idx}.productionUnit`) || ""
+                                    watch(`manager.${idx}.productionUnit`) || ''
                                   }
                                 >
                                   {(() => {
-                                    let selectedFarm = farms?.find(
+                                    const selectedFarm = farms?.find(
                                       (farm) =>
                                         farm.id ===
-                                        watch(`manager.${idx}.fishFarm`)
+                                        watch(`manager.${idx}.fishFarm`),
                                     );
 
                                     return selectedFarm ? (
@@ -864,7 +864,7 @@ const TransferModal: React.FC<Props> = ({
                                             value={String(unit.id)}
                                             key={unit.id}
                                             disabled={
-                                              item.field === "Transfer" &&
+                                              item.field === 'Transfer' &&
                                               selectedProduction?.productionUnitId ===
                                                 unit.id
                                                 ? true
@@ -873,7 +873,7 @@ const TransferModal: React.FC<Props> = ({
                                           >
                                             {unit.name}
                                           </MenuItem>
-                                        )
+                                        ),
                                       )
                                     ) : (
                                       <MenuItem value="" disabled>
@@ -907,20 +907,20 @@ const TransferModal: React.FC<Props> = ({
                             </Box>
                           </Grid>
                         )}
-                        {item.field !== "Sample" && (
+                        {item.field !== 'Sample' && (
                           <Grid
                             xs
                             item
                             sx={{
-                              width: "fit-content",
+                              width: 'fit-content',
                               minWidth: 130,
                             }}
                           >
-                            <Box mb={2} width={"100%"}>
+                            <Box mb={2} width={'100%'}>
                               <FormControl
                                 fullWidth
                                 className={`form-input ${
-                                  idx === 0 && "selected"
+                                  idx === 0 && 'selected'
                                 }`}
                                 focused
                               >
@@ -940,8 +940,8 @@ const TransferModal: React.FC<Props> = ({
                                   slotProps={{
                                     input: {
                                       readOnly:
-                                        item.field === "Harvest" ||
-                                        item.field === "Mortalities" ||
+                                        item.field === 'Harvest' ||
+                                        item.field === 'Mortalities' ||
                                         idx === 0
                                           ? true
                                           : false,
@@ -954,26 +954,26 @@ const TransferModal: React.FC<Props> = ({
                                         ? false
                                         : true,
                                     onChange: (e) =>
-                                      item.field === "Stock" &&
+                                      item.field === 'Stock' &&
                                       setValue(
                                         `manager.0.batchNumber`,
-                                        e.target.value
+                                        e.target.value,
                                       ),
                                   })}
                                   inputProps={{
                                     shrink: watch(`manager.${idx}.batchNumber`),
                                   }}
                                   value={
-                                    watch(`manager.${idx}.batchNumber`) || ""
+                                    watch(`manager.${idx}.batchNumber`) || ''
                                   } // Ensure only the current entry is updated
                                 >
                                   {batches?.map(
                                     (
                                       batch: {
-                                        batchNumber: String;
-                                        id: Number;
+                                        batchNumber: string;
+                                        id: number;
                                       },
-                                      i
+                                      i,
                                     ) => (
                                       <MenuItem
                                         value={String(batch.id)}
@@ -981,7 +981,7 @@ const TransferModal: React.FC<Props> = ({
                                       >
                                         {batch.batchNumber}
                                       </MenuItem>
-                                    )
+                                    ),
                                   )}
                                 </Select>
 
@@ -1010,7 +1010,7 @@ const TransferModal: React.FC<Props> = ({
                             xs
                             item
                             sx={{
-                              width: "fit-content",
+                              width: 'fit-content',
                               minWidth: 130,
                             }}
                           >
@@ -1018,7 +1018,7 @@ const TransferModal: React.FC<Props> = ({
                               <Controller
                                 name={`manager.${idx}.currentDate`}
                                 control={control}
-                                rules={{ required: "This field is required." }}
+                                rules={{ required: 'This field is required.' }}
                                 render={({ field, fieldState: { error } }) => (
                                   <>
                                     <DatePicker
@@ -1026,14 +1026,14 @@ const TransferModal: React.FC<Props> = ({
                                       label="Current Date * "
                                       className="form-input"
                                       sx={{
-                                        width: "100%",
+                                        width: '100%',
                                       }}
                                       onChange={(date) => {
                                         if (date && date.isValid()) {
                                           field.onChange(date); // Set a valid Dayjs date
                                           setValue(
                                             `manager.${idx}.currentDate`,
-                                            date
+                                            date,
                                           );
                                         } else {
                                           field.onChange(null); // Clear the field if date is invalid
@@ -1062,12 +1062,12 @@ const TransferModal: React.FC<Props> = ({
                         )}
                         {/* // )} */}
 
-                        {watchedFields[idx].field === "Sample" && (
+                        {watchedFields[idx].field === 'Sample' && (
                           <Grid
                             item
                             xs
                             sx={{
-                              width: "fit-content",
+                              width: 'fit-content',
                               minWidth: 130,
                             }}
                           >
@@ -1080,7 +1080,7 @@ const TransferModal: React.FC<Props> = ({
                               })}
                               focused
                               className="form-input"
-                              sx={{ width: "100%" }}
+                              sx={{ width: '100%' }}
                             />
 
                             {errors &&
@@ -1094,27 +1094,27 @@ const TransferModal: React.FC<Props> = ({
                                   mt={0.5}
                                 >
                                   {errors.manager[idx].noOfFish?.type ===
-                                  "required"
+                                  'required'
                                     ? validationMessage.required
                                     : errors.manager[idx].noOfFish?.type ===
-                                      "maxLength"
-                                    ? validationMessage.numberMaxLength
-                                    : ""}
+                                        'maxLength'
+                                      ? validationMessage.numberMaxLength
+                                      : ''}
                                 </Typography>
                               )}
                           </Grid>
                         )}
 
-                        {watchedFields[idx].field === "Sample" && (
+                        {watchedFields[idx].field === 'Sample' && (
                           <Grid
                             item
                             xs
                             sx={{
-                              width: "fit-content",
+                              width: 'fit-content',
                               minWidth: 130,
                             }}
                           >
-                            <Box position={"relative"}>
+                            <Box position={'relative'}>
                               <TextField
                                 label="Total weight *"
                                 type="number"
@@ -1123,20 +1123,20 @@ const TransferModal: React.FC<Props> = ({
                                 })}
                                 focused
                                 className="form-input"
-                                sx={{ width: "100%" }}
+                                sx={{ width: '100%' }}
                               />
                               <Typography
                                 variant="body2"
                                 color="#555555AC"
                                 sx={{
-                                  position: "absolute",
+                                  position: 'absolute',
                                   right: 6,
-                                  top: "50%",
-                                  transform: "translate(-6px, -50%)",
-                                  backgroundColor: "#fff",
+                                  top: '50%',
+                                  transform: 'translate(-6px, -50%)',
+                                  backgroundColor: '#fff',
                                   height: 30,
-                                  display: "grid",
-                                  placeItems: "center",
+                                  display: 'grid',
+                                  placeItems: 'center',
                                   zIndex: 1,
                                   pl: 1,
                                 }}
@@ -1160,46 +1160,46 @@ const TransferModal: React.FC<Props> = ({
                           </Grid>
                         )}
 
-                        {watchedFields[idx].field !== "Sample" && (
+                        {watchedFields[idx].field !== 'Sample' && (
                           <Grid
                             xs
                             item
                             sx={{
-                              width: "fit-content",
+                              width: 'fit-content',
                               minWidth: 130,
                             }}
                           >
                             <Box
-                              display={"flex"}
+                              display={'flex'}
                               gap={2}
-                              alignItems={"center"}
-                              position={"relative"}
+                              alignItems={'center'}
+                              position={'relative'}
                             >
                               <TextField
                                 label="Biomass *"
                                 type="text"
                                 className={`form-input ${
-                                  idx === 0 && "selected"
+                                  idx === 0 && 'selected'
                                 }`}
                                 // disabled={idx === 0 ? true : false}
                                 slotProps={{
                                   input: {
                                     readOnly:
-                                      (watchedFields[idx].field !== "Sample" &&
+                                      (watchedFields[idx].field !== 'Sample' &&
                                         !watchedFields[idx].productionUnit) ||
                                       idx === 0
                                         ? true
                                         : false,
                                   },
                                 }}
-                                sx={{ width: "100%" }}
+                                sx={{ width: '100%' }}
                                 {...register(`manager.${idx}.biomass`, {
                                   required: true,
                                   pattern: /^\d+(\.\d+)?(e[+-]?\d+)?$/,
                                   maxLength: 10,
                                 })}
                                 onClick={() =>
-                                  handleCheckUnitSelected(idx, "biomass")
+                                  handleCheckUnitSelected(idx, 'biomass')
                                 }
                                 focused
                               />
@@ -1208,15 +1208,15 @@ const TransferModal: React.FC<Props> = ({
                                 variant="body2"
                                 color="#555555AC"
                                 sx={{
-                                  color: `${idx === 0 ? "black" : "grey"}`,
-                                  position: "absolute",
+                                  color: `${idx === 0 ? 'black' : 'grey'}`,
+                                  position: 'absolute',
                                   right: 6,
-                                  top: "50%",
-                                  transform: "translate(-6px, -50%)",
-                                  backgroundColor: "#fff",
+                                  top: '50%',
+                                  transform: 'translate(-6px, -50%)',
+                                  backgroundColor: '#fff',
                                   height: 30,
-                                  display: "grid",
-                                  placeItems: "center",
+                                  display: 'grid',
+                                  placeItems: 'center',
                                   zIndex: 1,
                                   pl: 1,
                                 }}
@@ -1235,7 +1235,7 @@ const TransferModal: React.FC<Props> = ({
                               errors.manager[idx] &&
                               errors.manager[idx].biomass &&
                               errors.manager[idx].biomass.type ===
-                                "required" && (
+                                'required' && (
                                 <Typography
                                   variant="body2"
                                   color="red"
@@ -1250,7 +1250,7 @@ const TransferModal: React.FC<Props> = ({
                               errors.manager[idx] &&
                               errors.manager[idx].biomass &&
                               errors.manager[idx].biomass.type ===
-                                "pattern" && (
+                                'pattern' && (
                                 <Typography
                                   variant="body2"
                                   color="red"
@@ -1265,7 +1265,7 @@ const TransferModal: React.FC<Props> = ({
                               errors.manager[idx] &&
                               errors.manager[idx].biomass &&
                               errors.manager[idx].biomass.type ===
-                                "maxLength" && (
+                                'maxLength' && (
                                 <Typography
                                   variant="body2"
                                   color="red"
@@ -1277,29 +1277,29 @@ const TransferModal: React.FC<Props> = ({
                               )}
                           </Grid>
                         )}
-                        {watchedFields[idx].field !== "Sample" && (
+                        {watchedFields[idx].field !== 'Sample' && (
                           <Grid
                             xs
                             item
                             sx={{
-                              width: "fit-content",
+                              width: 'fit-content',
                               minWidth: 130,
-                              position: "relative",
+                              position: 'relative',
                             }}
                           >
                             <TextField
                               label="Fish Count *"
                               type="text"
                               className={`form-input ${
-                                idx === 0 && "selected"
+                                idx === 0 && 'selected'
                               }`}
-                              sx={{ width: "100%" }}
+                              sx={{ width: '100%' }}
                               // disabled={idx === 0 ? true : false}
 
                               slotProps={{
                                 input: {
                                   readOnly:
-                                    (watchedFields[idx].field !== "Sample" &&
+                                    (watchedFields[idx].field !== 'Sample' &&
                                       !watchedFields[idx].productionUnit) ||
                                     idx === 0
                                       ? true
@@ -1312,7 +1312,7 @@ const TransferModal: React.FC<Props> = ({
                                 maxLength: 10,
                               })}
                               onClick={() =>
-                                handleCheckUnitSelected(idx, "fishCount")
+                                handleCheckUnitSelected(idx, 'fishCount')
                               }
                               focused
                             />
@@ -1320,15 +1320,15 @@ const TransferModal: React.FC<Props> = ({
                               variant="body2"
                               color="#555555AC"
                               sx={{
-                                color: `${idx === 0 ? "black" : "grey"}`,
-                                position: "absolute",
+                                color: `${idx === 0 ? 'black' : 'grey'}`,
+                                position: 'absolute',
                                 right: 6,
-                                top: "29px",
-                                transform: "translate(-6px, 0px)",
-                                backgroundColor: "#fff",
+                                top: '29px',
+                                transform: 'translate(-6px, 0px)',
+                                backgroundColor: '#fff',
                                 height: 30,
-                                display: "grid",
-                                placeItems: "center",
+                                display: 'grid',
+                                placeItems: 'center',
                                 zIndex: 1,
                                 pl: 1,
                               }}
@@ -1339,7 +1339,7 @@ const TransferModal: React.FC<Props> = ({
                               errors.manager &&
                               errors.manager[idx] &&
                               errors.manager[idx].count &&
-                              errors.manager[idx].count.type === "required" && (
+                              errors.manager[idx].count.type === 'required' && (
                                 <Typography
                                   variant="body2"
                                   color="red"
@@ -1353,7 +1353,7 @@ const TransferModal: React.FC<Props> = ({
                               errors.manager &&
                               errors.manager[idx] &&
                               errors.manager[idx].count &&
-                              errors.manager[idx].count.type === "pattern" && (
+                              errors.manager[idx].count.type === 'pattern' && (
                                 <Typography
                                   variant="body2"
                                   color="red"
@@ -1368,7 +1368,7 @@ const TransferModal: React.FC<Props> = ({
                               errors.manager[idx] &&
                               errors.manager[idx].count &&
                               errors.manager[idx].count.type ===
-                                "maxLength" && (
+                                'maxLength' && (
                                 <Typography
                                   variant="body2"
                                   color="red"
@@ -1384,32 +1384,32 @@ const TransferModal: React.FC<Props> = ({
                           xs
                           item
                           sx={{
-                            width: "fit-content",
+                            width: 'fit-content',
                             minWidth: 130,
-                            position: "relative",
+                            position: 'relative',
                           }}
                         >
-                          <Box position={"relative"}>
+                          <Box position={'relative'}>
                             {idx !== 0 &&
-                              watchedFields[idx].field !== "Sample" && (
+                              watchedFields[idx].field !== 'Sample' && (
                                 <Box onClick={() => handleMeanWeight(item)}>
                                   <Typography
                                     variant="body2"
                                     color="#555555AC"
                                     sx={{
-                                      position: "absolute",
+                                      position: 'absolute',
                                       // right: 6,
                                       right: 0,
-                                      top: "53px",
-                                      transform: "translate(-6px, -40px)",
-                                      backgroundColor: "#06A19B",
+                                      top: '53px',
+                                      transform: 'translate(-6px, -40px)',
+                                      backgroundColor: '#06A19B',
                                       height: 30,
-                                      display: "grid",
-                                      placeItems: "center",
+                                      display: 'grid',
+                                      placeItems: 'center',
                                       zIndex: 999,
                                       px: 0.75,
                                       borderRadius: 1,
-                                      cursor: "pointer",
+                                      cursor: 'pointer',
                                       // textOverflow: "ellipsis",
                                       // whiteSpace: "nowrap",
                                       // minHeight: "1.4375em",
@@ -1435,10 +1435,10 @@ const TransferModal: React.FC<Props> = ({
                               label="Mean Weights *"
                               type="text"
                               className={`form-input ${
-                                idx === 0 && "selected"
+                                idx === 0 && 'selected'
                               }`}
                               sx={{
-                                width: "100%",
+                                width: '100%',
                               }}
                               slotProps={{
                                 input: { readOnly: idx === 0 ? true : false },
@@ -1460,15 +1460,15 @@ const TransferModal: React.FC<Props> = ({
                               variant="body2"
                               color="#555555AC"
                               sx={{
-                                color: `${idx === 0 ? "black" : "grey"}`,
-                                position: "absolute",
+                                color: `${idx === 0 ? 'black' : 'grey'}`,
+                                position: 'absolute',
                                 right: 6,
-                                top: "50%",
-                                transform: "translate(-6px, -50%)",
-                                backgroundColor: "#fff",
+                                top: '50%',
+                                transform: 'translate(-6px, -50%)',
+                                backgroundColor: '#fff',
                                 height: 30,
-                                display: "grid",
-                                placeItems: "center",
+                                display: 'grid',
+                                placeItems: 'center',
                                 zIndex: 1,
                                 pl: 1,
                               }}
@@ -1483,7 +1483,7 @@ const TransferModal: React.FC<Props> = ({
                             errors.manager[idx] &&
                             errors.manager[idx].meanWeight &&
                             errors.manager[idx].meanWeight.type ===
-                              "required" && (
+                              'required' && (
                               <Typography
                                 variant="body2"
                                 color="red"
@@ -1498,7 +1498,7 @@ const TransferModal: React.FC<Props> = ({
                             errors.manager[idx] &&
                             errors.manager[idx].meanWeight &&
                             errors.manager[idx].meanWeight.type ===
-                              "pattern" && (
+                              'pattern' && (
                               <Typography
                                 variant="body2"
                                 color="red"
@@ -1513,7 +1513,7 @@ const TransferModal: React.FC<Props> = ({
                             errors.manager[idx] &&
                             errors.manager[idx].meanWeight &&
                             errors.manager[idx].meanWeight.type ===
-                              "maxLength" && (
+                              'maxLength' && (
                               <Typography
                                 variant="body2"
                                 color="red"
@@ -1528,31 +1528,31 @@ const TransferModal: React.FC<Props> = ({
                           xs
                           item
                           sx={{
-                            width: "fit-content",
+                            width: 'fit-content',
                             minWidth: 130,
-                            position: "relative",
+                            position: 'relative',
                           }}
                         >
-                          <Box position={"relative"}>
+                          <Box position={'relative'}>
                             {idx !== 0 && (
                               <Box onClick={() => handleMeanLength(item)}>
                                 <Typography
                                   variant="body2"
                                   color="#555555AC"
                                   sx={{
-                                    position: "absolute",
+                                    position: 'absolute',
                                     // right: 6,
                                     right: 0,
-                                    top: "53px",
-                                    transform: "translate(-6px, -40px)",
-                                    backgroundColor: "#06A19B",
+                                    top: '53px',
+                                    transform: 'translate(-6px, -40px)',
+                                    backgroundColor: '#06A19B',
                                     height: 30,
-                                    display: "grid",
-                                    placeItems: "center",
+                                    display: 'grid',
+                                    placeItems: 'center',
                                     zIndex: 999,
                                     px: 0.75,
                                     borderRadius: 1,
-                                    cursor: "pointer",
+                                    cursor: 'pointer',
                                   }}
                                 >
                                   <svg
@@ -1573,10 +1573,10 @@ const TransferModal: React.FC<Props> = ({
                               label="Mean Length *"
                               type="text"
                               className={`form-input ${
-                                idx === 0 && "selected"
+                                idx === 0 && 'selected'
                               }`}
                               sx={{
-                                width: "100%",
+                                width: '100%',
                               }}
                               slotProps={{
                                 input: { readOnly: idx === 0 ? true : false },
@@ -1591,7 +1591,7 @@ const TransferModal: React.FC<Props> = ({
                                       : true,
                                   pattern: validationPattern.numbersWithDot,
                                   maxLength: 10,
-                                }
+                                },
                               )}
                               focused
                             />
@@ -1600,15 +1600,15 @@ const TransferModal: React.FC<Props> = ({
                                 variant="body2"
                                 color="#555555AC"
                                 sx={{
-                                  color: `${idx === 0 ? "black" : "grey"}`,
-                                  position: "absolute",
+                                  color: `${idx === 0 ? 'black' : 'grey'}`,
+                                  position: 'absolute',
                                   right: 3,
-                                  top: "50%",
-                                  transform: "translate(-6px, -50%)",
-                                  backgroundColor: "#fff",
+                                  top: '50%',
+                                  transform: 'translate(-6px, -50%)',
+                                  backgroundColor: '#fff',
                                   height: 30,
-                                  display: "grid",
-                                  placeItems: "center",
+                                  display: 'grid',
+                                  placeItems: 'center',
                                   zIndex: 1,
                                   pl: 1,
                                 }}
@@ -1624,7 +1624,7 @@ const TransferModal: React.FC<Props> = ({
                               errors.manager[idx] &&
                               errors.manager[idx].meanLength &&
                               errors.manager[idx].meanLength.type ===
-                                "required" && (
+                                'required' && (
                                 <Typography
                                   variant="body2"
                                   color="red"
@@ -1639,7 +1639,7 @@ const TransferModal: React.FC<Props> = ({
                               errors.manager[idx] &&
                               errors.manager[idx].meanLength &&
                               errors.manager[idx].meanLength.type ===
-                                "pattern" && (
+                                'pattern' && (
                                 <Typography
                                   variant="body2"
                                   color="red"
@@ -1654,7 +1654,7 @@ const TransferModal: React.FC<Props> = ({
                               errors.manager[idx] &&
                               errors.manager[idx].meanLength &&
                               errors.manager[idx].meanLength.type ===
-                                "maxLength" && (
+                                'maxLength' && (
                                 <Typography
                                   variant="body2"
                                   color="red"
@@ -1666,26 +1666,26 @@ const TransferModal: React.FC<Props> = ({
                               )}
                           </Box>
                         </Grid>
-                        {item.field !== "Sample" && (
+                        {item.field !== 'Sample' && (
                           <Grid
                             item
                             xs
                             sx={{
-                              width: "fit-content",
+                              width: 'fit-content',
                               minWidth: 130,
                             }}
                           >
                             <Box
-                              display={"flex"}
+                              display={'flex'}
                               gap={2}
-                              alignItems={"center"}
-                              position={"relative"}
+                              alignItems={'center'}
+                              position={'relative'}
                             >
                               <TextField
                                 label={`Stocking Density *`}
                                 type="text"
                                 className={`form-input ${
-                                  idx === 0 && "selected"
+                                  idx === 0 && 'selected'
                                 }`}
                                 // disabled={
                                 //   idx === 0 ||
@@ -1698,39 +1698,39 @@ const TransferModal: React.FC<Props> = ({
                                   input: { readOnly: true },
                                 }}
                                 sx={{
-                                  width: "100%",
+                                  width: '100%',
                                 }}
                                 focused
                                 {...register(
                                   `manager.${idx}.stockingDensityKG` as const,
                                   {
                                     required: watch(
-                                      `manager.${idx}.stockingDensityKG`
+                                      `manager.${idx}.stockingDensityKG`,
                                     )
                                       ? false
                                       : true,
                                     pattern: validationPattern.numbersWithDot,
-                                  }
+                                  },
                                 )}
                               />
                               <Typography
                                 variant="body2"
                                 color="#555555AC"
                                 sx={{
-                                  color: `${idx === 0 ? "black" : "grey"}`,
-                                  position: "absolute",
+                                  color: `${idx === 0 ? 'black' : 'grey'}`,
+                                  position: 'absolute',
                                   right: 6,
-                                  top: "50%",
-                                  transform: "translate(-6px, -50%)",
-                                  backgroundColor: "#fff",
+                                  top: '50%',
+                                  transform: 'translate(-6px, -50%)',
+                                  backgroundColor: '#fff',
                                   height: 30,
-                                  display: "grid",
-                                  placeItems: "center",
+                                  display: 'grid',
+                                  placeItems: 'center',
                                   zIndex: 1,
                                   pl: 1,
                                 }}
                               >
-                                {`(kg/${"m\u00B3"})`}
+                                {`(kg/${'m\u00B3'})`}
                               </Typography>
                             </Box>
                             <Typography
@@ -1745,7 +1745,7 @@ const TransferModal: React.FC<Props> = ({
                               errors.manager[idx] &&
                               errors.manager[idx].stockingDensityKG &&
                               errors.manager[idx].stockingDensityKG.type ===
-                                "required" && (
+                                'required' && (
                                 <Typography
                                   variant="body2"
                                   color="red"
@@ -1760,7 +1760,7 @@ const TransferModal: React.FC<Props> = ({
                               errors.manager[idx] &&
                               errors.manager[idx].stockingDensityKG &&
                               errors.manager[idx].stockingDensityKG.type ===
-                                "pattern" && (
+                                'pattern' && (
                                 <Typography
                                   variant="body2"
                                   color="red"
@@ -1772,26 +1772,26 @@ const TransferModal: React.FC<Props> = ({
                               )}
                           </Grid>
                         )}
-                        {item.field !== "Sample" && (
+                        {item.field !== 'Sample' && (
                           <Grid
                             xs
                             item
                             sx={{
-                              width: "fit-content",
+                              width: 'fit-content',
                               minWidth: 130,
                             }}
                           >
                             <Box
-                              display={"flex"}
+                              display={'flex'}
                               gap={2}
-                              alignItems={"center"}
-                              position={"relative"}
+                              alignItems={'center'}
+                              position={'relative'}
                             >
                               <TextField
                                 label={`Stocking Density *`}
                                 type="text"
                                 className={`form-input ${
-                                  idx === 0 && "selected"
+                                  idx === 0 && 'selected'
                                 }`}
                                 slotProps={{
                                   input: { readOnly: true },
@@ -1800,36 +1800,36 @@ const TransferModal: React.FC<Props> = ({
                                   `manager.${idx}.stockingDensityNM` as const,
                                   {
                                     required: watch(
-                                      `manager.${idx}.stockingDensityNM`
+                                      `manager.${idx}.stockingDensityNM`,
                                     )
                                       ? false
                                       : true,
                                     pattern: validationPattern.numbersWithDot,
-                                  }
+                                  },
                                 )}
                                 focused
                                 sx={{
-                                  width: "100%",
+                                  width: '100%',
                                 }}
                               />
                               <Typography
                                 variant="body2"
                                 color="rgba(0,0,0,0.2)"
                                 sx={{
-                                  color: `${idx === 0 ? "black" : "grey"}`,
-                                  position: "absolute",
+                                  color: `${idx === 0 ? 'black' : 'grey'}`,
+                                  position: 'absolute',
                                   right: 6,
-                                  top: "50%",
-                                  transform: "translate(-6px, -50%)",
-                                  backgroundColor: "#fff",
+                                  top: '50%',
+                                  transform: 'translate(-6px, -50%)',
+                                  backgroundColor: '#fff',
                                   height: 30,
-                                  display: "grid",
-                                  placeItems: "center",
+                                  display: 'grid',
+                                  placeItems: 'center',
                                   zIndex: 1,
                                   pl: 1,
                                 }}
                               >
-                                {`(n/${"m\u00B3"})`}
+                                {`(n/${'m\u00B3'})`}
                               </Typography>
                             </Box>
                             <Typography
@@ -1844,7 +1844,7 @@ const TransferModal: React.FC<Props> = ({
                               errors.manager[idx] &&
                               errors.manager[idx].stockingDensityNM &&
                               errors.manager[idx].stockingDensityNM.type ===
-                                "required" && (
+                                'required' && (
                                 <Typography
                                   variant="body2"
                                   color="red"
@@ -1859,7 +1859,7 @@ const TransferModal: React.FC<Props> = ({
                               errors.manager[idx] &&
                               errors.manager[idx].stockingDensityNM &&
                               errors.manager[idx].stockingDensityNM.type ===
-                                "pattern" && (
+                                'pattern' && (
                                 <Typography
                                   variant="body2"
                                   color="red"
@@ -1871,12 +1871,12 @@ const TransferModal: React.FC<Props> = ({
                               )}
                           </Grid>
                         )}
-                        {item.field !== "Sample" && (
+                        {item.field !== 'Sample' && (
                           <Grid
                             item
                             xs
                             sx={{
-                              width: "fit-content",
+                              width: 'fit-content',
                               minWidth: 130,
                             }}
                           >
@@ -1884,15 +1884,15 @@ const TransferModal: React.FC<Props> = ({
                               label="Stocking Level *"
                               type="text"
                               className={`form-input ${
-                                idx === 0 && "selected"
+                                idx === 0 && 'selected'
                               }`}
                               slotProps={{
                                 input: { readOnly: true },
                               }}
                               focused
-                              sx={{ width: "100%" }}
+                              sx={{ width: '100%' }}
                               {...register(
-                                `manager.${idx}.stockingLevel` as const
+                                `manager.${idx}.stockingLevel` as const,
                               )}
                             />
                             <Typography
@@ -1907,23 +1907,23 @@ const TransferModal: React.FC<Props> = ({
                     </Stack>
 
                     <Box
-                      display={"flex"}
-                      alignItems={"center"}
-                      justifyContent={"center"}
-                      position={"relative"}
+                      display={'flex'}
+                      alignItems={'center'}
+                      justifyContent={'center'}
+                      position={'relative'}
                       top="90%"
                     >
                       <Box
-                        display={"flex"}
-                        justifyContent={"center"}
-                        alignItems={"center"}
+                        display={'flex'}
+                        justifyContent={'center'}
+                        alignItems={'center'}
                         width={50}
                         sx={{
-                          visibility: idx === 0 ? "hidden" : "",
-                          cursor: "pointer",
+                          visibility: idx === 0 ? 'hidden' : '',
+                          cursor: 'pointer',
                           width: {
                             // lg: 150,
-                            xs: "auto",
+                            xs: 'auto',
                           },
                         }}
                         onClick={() => handleDelete(item)}
@@ -1949,12 +1949,12 @@ const TransferModal: React.FC<Props> = ({
                   <Divider
                     orientation="vertical"
                     sx={{
-                      height: "100%",
-                      borderBottom: "2px solid #E6E7E9 !important",
-                      borderRight: "none !important",
-                      width: "100%",
-                      marginLeft: "12px",
-                      paddingBlock: "10px",
+                      height: '100%',
+                      borderBottom: '2px solid #E6E7E9 !important',
+                      borderRight: 'none !important',
+                      width: '100%',
+                      marginLeft: '12px',
+                      paddingBlock: '10px',
                     }}
                   />
                 </Box>
@@ -1964,10 +1964,10 @@ const TransferModal: React.FC<Props> = ({
             <Box
               display="flex"
               justifyContent="flex-end"
-              alignItems={"flex-end"}
+              alignItems={'flex-end'}
               gap="10px"
               padding={3}
-              margin={"40px"}
+              margin={'40px'}
             >
               <Button
                 className=""
@@ -1975,17 +1975,17 @@ const TransferModal: React.FC<Props> = ({
                 variant="contained"
                 onClick={handleClick}
                 sx={{
-                  background: "#06A19B",
-                  fontWeight: "bold",
-                  padding: "8px 20px",
+                  background: '#06A19B',
+                  fontWeight: 'bold',
+                  padding: '8px 20px',
                   width: {
-                    xs: "50%",
-                    lg: "fit-content",
+                    xs: '50%',
+                    lg: 'fit-content',
                   },
-                  textTransform: "capitalize",
-                  borderRadius: "12px",
+                  textTransform: 'capitalize',
+                  borderRadius: '12px',
 
-                  marginBlock: "10px",
+                  marginBlock: '10px',
                 }}
               >
                 Add Row
@@ -1996,7 +1996,7 @@ const TransferModal: React.FC<Props> = ({
                 open={openAnchor}
                 onClose={handleCloseAnchor}
                 MenuListProps={{
-                  "aria-labelledby": "basic-button",
+                  'aria-labelledby': 'basic-button',
                 }}
               >
                 {productionMangeFields?.map((field, i) => {
@@ -2010,33 +2010,33 @@ const TransferModal: React.FC<Props> = ({
                         selectedProduction?.fishCount &&
                         selectedProduction?.meanLength &&
                         selectedProduction?.meanWeight &&
-                        field === "Stock"
+                        field === 'Stock'
                           ? true
-                          : watchedFields[1]?.field === "Stock"
-                          ? true
-                          : field === "Stock" &&
-                            selectedProduction?.batchNumberId &&
-                            selectedProduction?.fishCount
-                          ? true
-                          : field === "Harvest" ||
-                            field === "Mortalities" ||
-                            field === "Transfer" ||
-                            field === "Sample"
-                          ? watchedFields[0].count &&
-                            watchedFields[0].batchNumber
-                            ? false
-                            : true
-                          : selectedProduction?.batchNumberId &&
-                            selectedProduction?.biomass &&
-                            selectedProduction?.fishCount &&
-                            selectedProduction?.meanLength &&
-                            selectedProduction?.meanWeight
-                          ? false
-                          : watchedFields.find(
-                              (field) => field.field === "Stock"
-                            ) && field === "Stock"
-                          ? true
-                          : false
+                          : watchedFields[1]?.field === 'Stock'
+                            ? true
+                            : field === 'Stock' &&
+                                selectedProduction?.batchNumberId &&
+                                selectedProduction?.fishCount
+                              ? true
+                              : field === 'Harvest' ||
+                                  field === 'Mortalities' ||
+                                  field === 'Transfer' ||
+                                  field === 'Sample'
+                                ? watchedFields[0].count &&
+                                  watchedFields[0].batchNumber
+                                  ? false
+                                  : true
+                                : selectedProduction?.batchNumberId &&
+                                    selectedProduction?.biomass &&
+                                    selectedProduction?.fishCount &&
+                                    selectedProduction?.meanLength &&
+                                    selectedProduction?.meanWeight
+                                  ? false
+                                  : watchedFields.find(
+                                        (field) => field.field === 'Stock',
+                                      ) && field === 'Stock'
+                                    ? true
+                                    : false
                       }
                     >
                       {field}
@@ -2050,17 +2050,17 @@ const TransferModal: React.FC<Props> = ({
                 variant="contained"
                 disabled={watchedFields.length > 1 ? false : true}
                 sx={{
-                  background: "#06A19B",
-                  fontWeight: "bold",
-                  padding: "8px 20px",
+                  background: '#06A19B',
+                  fontWeight: 'bold',
+                  padding: '8px 20px',
                   width: {
-                    xs: "50%",
-                    lg: "fit-content",
+                    xs: '50%',
+                    lg: 'fit-content',
                   },
-                  textTransform: "capitalize",
-                  borderRadius: "12px",
+                  textTransform: 'capitalize',
+                  borderRadius: '12px',
 
-                  marginBlock: "10px",
+                  marginBlock: '10px',
                 }}
               >
                 Save

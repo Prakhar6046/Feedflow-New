@@ -1,7 +1,7 @@
-import cloudinary from "@/lib/cloudinary";
-import prisma from "@/prisma/prisma";
-import { NextRequest, NextResponse } from "next/server";
-import { verifyAndRefreshToken } from "@/app/_lib/auth/verifyAndRefreshToken";
+import cloudinary from '@/lib/cloudinary';
+import prisma from '@/prisma/prisma';
+import { NextRequest, NextResponse } from 'next/server';
+import { verifyAndRefreshToken } from '@/app/_lib/auth/verifyAndRefreshToken';
 
 export const DELETE = async (request: NextRequest) => {
   const user = await verifyAndRefreshToken(request);
@@ -9,9 +9,9 @@ export const DELETE = async (request: NextRequest) => {
     return new NextResponse(
       JSON.stringify({
         status: false,
-        message: "Unauthorized: Token missing or invalid",
+        message: 'Unauthorized: Token missing or invalid',
       }),
-      { status: 401 }
+      { status: 401 },
     );
   }
   try {
@@ -21,10 +21,10 @@ export const DELETE = async (request: NextRequest) => {
     const public_id = body.image;
     if (!public_id) {
       return new NextResponse(
-        JSON.stringify({ message: "Missing or invalid image name" })
+        JSON.stringify({ message: 'Missing or invalid image name' }),
       );
     }
-    if (type === "user" && id) {
+    if (type === 'user' && id) {
       await prisma.user.update({
         where: { id },
         data: { image: null, imageUrl: null },
@@ -35,7 +35,7 @@ export const DELETE = async (request: NextRequest) => {
         data: { image: null, imageUrl: null },
       });
     }
-    if (public_id && public_id !== "") {
+    if (public_id && public_id !== '') {
       try {
         await cloudinary.uploader.destroy(public_id);
       } catch (err: any) {
@@ -43,10 +43,10 @@ export const DELETE = async (request: NextRequest) => {
       }
     }
     return new NextResponse(
-      JSON.stringify({ message: "Image delete successfully", status: true }),
+      JSON.stringify({ message: 'Image delete successfully', status: true }),
       {
         status: 200,
-      }
+      },
     );
   } catch (error) {
     return new NextResponse(JSON.stringify({ error, status: false }), {

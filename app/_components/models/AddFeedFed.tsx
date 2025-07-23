@@ -1,17 +1,17 @@
-import { Production } from "@/app/_typeModels/production";
-import closeIcon from "@/public/static/img/icons/ic-close.svg";
-import { Box, Button, Grid, Modal, Stack, TextField } from "@mui/material";
-import Image from "next/image";
-import { useEffect } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { Production } from '@/app/_typeModels/production';
+import closeIcon from '@/public/static/img/icons/ic-close.svg';
+import { Box, Button, Grid, Modal, Stack, TextField } from '@mui/material';
+import Image from 'next/image';
+import { useEffect } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
 
 const style = {
-  position: "absolute" as "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
+  position: 'absolute' as const,
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
   width: 750,
-  bgcolor: "background.paper",
+  bgcolor: 'background.paper',
   boxShadow: 24,
 };
 
@@ -22,9 +22,9 @@ interface Props {
 }
 
 interface FormInputs {
-  name: String;
-  unit: String;
-  feedFed: Number;
+  name: string;
+  unit: string;
+  feedFed: number;
 }
 
 const AddFeedFed: React.FC<Props> = ({ setOpen, open, selectedProduction }) => {
@@ -42,8 +42,8 @@ const AddFeedFed: React.FC<Props> = ({ setOpen, open, selectedProduction }) => {
 
   useEffect(() => {
     if (selectedProduction) {
-      setValue("name", selectedProduction?.farm?.name);
-      setValue("unit", selectedProduction?.productionUnit?.name);
+      setValue('name', selectedProduction?.farm?.name);
+      setValue('unit', selectedProduction?.productionUnit?.name);
     }
   }, [selectedProduction]);
   return (
@@ -62,7 +62,7 @@ const AddFeedFed: React.FC<Props> = ({ setOpen, open, selectedProduction }) => {
             opacity: 0.5,
             p: 3,
             pb: 0,
-            cursor: "pointer",
+            cursor: 'pointer',
           }}
           onClick={handleClose}
         >
@@ -76,10 +76,10 @@ const AddFeedFed: React.FC<Props> = ({ setOpen, open, selectedProduction }) => {
                 variant="outlined"
                 className="form-input"
                 fullWidth
-                {...register("name", { required: true })}
+                {...register('name', { required: true })}
                 InputProps={{ readOnly: true }}
                 error={!!errors.name}
-                helperText={errors.name ? "Name is required" : ""}
+                helperText={errors.name ? 'Name is required' : ''}
                 sx={{
                   marginBottom: 2,
                 }}
@@ -96,8 +96,8 @@ const AddFeedFed: React.FC<Props> = ({ setOpen, open, selectedProduction }) => {
                   marginBottom: 2,
                 }}
                 InputProps={{ readOnly: true }}
-                {...register("unit")}
-                value={selectedProduction?.productionUnit?.name ?? ""}
+                {...register('unit')}
+                value={selectedProduction?.productionUnit?.name ?? ''}
                 // error={!!errors.email}
                 // helperText={errors.email ? errors.email.message : ""}
               />
@@ -112,7 +112,7 @@ const AddFeedFed: React.FC<Props> = ({ setOpen, open, selectedProduction }) => {
                 sx={{
                   marginBottom: 2,
                 }}
-                {...register("feedFed")}
+                {...register('feedFed')}
                 // error={!!errors.email}
                 // helperText={errors.email ? errors.email.message : ""}
               />
@@ -121,21 +121,21 @@ const AddFeedFed: React.FC<Props> = ({ setOpen, open, selectedProduction }) => {
 
           <Box
             sx={{
-              display: "flex",
-              justifyContent: "flex-end",
-              alignItems: "center",
+              display: 'flex',
+              justifyContent: 'flex-end',
+              alignItems: 'center',
             }}
           >
             <Button
               type="submit"
               variant="contained"
               sx={{
-                background: "#06A19B",
-                fontWeight: "bold",
-                padding: "8px 24px",
-                width: "fit-content",
-                textTransform: "capitalize",
-                borderRadius: "12px",
+                background: '#06A19B',
+                fontWeight: 'bold',
+                padding: '8px 24px',
+                width: 'fit-content',
+                textTransform: 'capitalize',
+                borderRadius: '12px',
                 margin: 3,
                 mt: 0,
               }}

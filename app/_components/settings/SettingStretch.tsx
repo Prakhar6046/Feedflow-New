@@ -1,7 +1,7 @@
-import useSettings from "@/app/hooks/useSettings";
-import { CardActionArea, Stack } from "@mui/material";
-import { alpha, styled } from "@mui/material/styles";
-import Iconify from "../iconify";
+import useSettings from '@/app/hooks/useSettings';
+import { CardActionArea, Stack } from '@mui/material';
+import { alpha, styled } from '@mui/material/styles';
+import Iconify from '../iconify';
 
 // import Iconify from "@/components/iconify";
 // import useSettings from "@/hooks/useSettings";
@@ -37,33 +37,33 @@ export default function SettingStretch() {
         justifyContent="space-between"
         sx={{
           px: 1,
-          mx: "auto",
+          mx: 'auto',
           width: 0.5,
           height: 40,
           borderRadius: 1,
-          color: "action.active",
-          bgcolor: "background.default",
+          color: 'action.active',
+          bgcolor: 'background.default',
           boxShadow: (theme) => theme.customShadows.z12,
-          transition: (theme) => theme.transitions.create("width"),
+          transition: (theme) => theme.transitions.create('width'),
           ...(themeStretch && {
             width: 1,
-            color: "primary.main",
+            color: 'primary.main',
           }),
         }}
       >
         <Iconify
           icon={
             themeStretch
-              ? "eva:arrow-ios-back-fill"
-              : "eva:arrow-ios-forward-fill"
+              ? 'eva:arrow-ios-back-fill'
+              : 'eva:arrow-ios-forward-fill'
           }
           {...ICON_SIZE}
         />
         <Iconify
           icon={
             themeStretch
-              ? "eva:arrow-ios-forward-fill"
-              : "eva:arrow-ios-back-fill"
+              ? 'eva:arrow-ios-forward-fill'
+              : 'eva:arrow-ios-back-fill'
           }
           {...ICON_SIZE}
         />

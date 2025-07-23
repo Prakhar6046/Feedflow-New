@@ -1,12 +1,12 @@
-import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
-import UserTable from "@/app/_components/UserTable";
-import { getUsers } from "@/app/_lib/action";
-import { SingleUser } from "@/app/_typeModels/User";
-import { getCookie } from "cookies-next";
-import { Metadata } from "next";
-import { cookies } from "next/headers";
+import BasicBreadcrumbs from '@/app/_components/Breadcrumbs';
+import UserTable from '@/app/_components/UserTable';
+import { getUsers } from '@/app/_lib/action';
+import { SingleUser } from '@/app/_typeModels/User';
+import { getCookie } from 'cookies-next';
+import { Metadata } from 'next';
+import { cookies } from 'next/headers';
 export const metadata: Metadata = {
-  title: "User",
+  title: 'User',
 };
 export default async function Page({
   searchParams,
@@ -15,9 +15,9 @@ export default async function Page({
     query?: string;
   };
 }) {
-  const query = searchParams?.query || "";
-  const loggedUser: any = getCookie("logged-user", { cookies });
-  const refreshToken: any = getCookie("refresh-token", { cookies });
+  const query = searchParams?.query || '';
+  const loggedUser: any = getCookie('logged-user', { cookies });
+  const refreshToken: any = getCookie('refresh-token', { cookies });
   const user: SingleUser = JSON.parse(loggedUser);
   const users = await getUsers({
     role: user.role,
@@ -29,13 +29,13 @@ export default async function Page({
   return (
     <>
       <BasicBreadcrumbs
-        heading={"Users"}
-        buttonName={"Add User"}
+        heading={'Users'}
+        buttonName={'Add User'}
         buttonRoute="/dashboard/user/new"
         isTable={true}
         links={[
-          { name: "Dashboard", link: "/dashboard" },
-          { name: "Users", link: "/dashboard/user" },
+          { name: 'Dashboard', link: '/dashboard' },
+          { name: 'Users', link: '/dashboard/user' },
         ]}
         permissions={user?.permissions?.createUsers}
       />

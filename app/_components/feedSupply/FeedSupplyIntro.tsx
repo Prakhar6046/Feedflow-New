@@ -1,5 +1,5 @@
-import { Box, Button, Stack, Typography } from "@mui/material";
-import { NextPage } from "next";
+import { Box, Button, Stack, Typography } from '@mui/material';
+import { NextPage } from 'next';
 
 interface Props {
   setActiveStep: (val: number) => void;
@@ -22,14 +22,15 @@ const FeedSupplyIntro: NextPage<Props> = ({ setActiveStep }) => {
       </Typography>
 
       <Typography variant="body1" color="#555555">
-        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Illum, tenetur architecto impedit recusandae eius omnis. <br />{" "}
-        The steps you will be following will proceed as follows:
+        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Illum, tenetur
+        architecto impedit recusandae eius omnis. <br /> The steps you will be
+        following will proceed as follows:
       </Typography>
 
       <Stack mt={4}>
         <Box
-          display={"flex"}
-          alignItems={"start"}
+          display={'flex'}
+          alignItems={'start'}
           sx={{
             gap: {
               md: 2,
@@ -40,9 +41,9 @@ const FeedSupplyIntro: NextPage<Props> = ({ setActiveStep }) => {
           <Box>
             <Box
               fontWeight={700}
-              display={"flex"}
-              justifyContent={"center"}
-              alignItems={"center"}
+              display={'flex'}
+              justifyContent={'center'}
+              alignItems={'center'}
               borderRadius={100}
               sx={{
                 width: {
@@ -53,8 +54,8 @@ const FeedSupplyIntro: NextPage<Props> = ({ setActiveStep }) => {
                   md: 60,
                   xs: 30,
                 },
-                color: "#fff",
-                backgroundColor: "#06A19B",
+                color: '#fff',
+                backgroundColor: '#06A19B',
                 fontSize: {
                   md: 28,
                   xs: 16,
@@ -92,14 +93,15 @@ const FeedSupplyIntro: NextPage<Props> = ({ setActiveStep }) => {
                 },
               }}
             >
-              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ratione nihil laborum optio illo?
+              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ratione
+              nihil laborum optio illo?
             </Typography>
           </Box>
         </Box>
 
         <Box
-          display={"flex"}
-          alignItems={"start"}
+          display={'flex'}
+          alignItems={'start'}
           sx={{
             gap: {
               md: 2,
@@ -114,9 +116,9 @@ const FeedSupplyIntro: NextPage<Props> = ({ setActiveStep }) => {
           <Box>
             <Box
               fontWeight={700}
-              display={"flex"}
-              justifyContent={"center"}
-              alignItems={"center"}
+              display={'flex'}
+              justifyContent={'center'}
+              alignItems={'center'}
               borderRadius={100}
               sx={{
                 width: {
@@ -127,8 +129,8 @@ const FeedSupplyIntro: NextPage<Props> = ({ setActiveStep }) => {
                   md: 60,
                   xs: 30,
                 },
-                color: "#fff",
-                backgroundColor: "#06A19B",
+                color: '#fff',
+                backgroundColor: '#06A19B',
                 fontSize: {
                   md: 28,
                   xs: 16,
@@ -166,7 +168,9 @@ const FeedSupplyIntro: NextPage<Props> = ({ setActiveStep }) => {
                 },
               }}
             >
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolorem pariatur qui minus adipisci eveniet exercitationem iure ut sapiente? Culpa eos fugit aut. Illo, architecto error.
+              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolorem
+              pariatur qui minus adipisci eveniet exercitationem iure ut
+              sapiente? Culpa eos fugit aut. Illo, architecto error.
             </Typography>
           </Box>
         </Box>
@@ -177,14 +181,14 @@ const FeedSupplyIntro: NextPage<Props> = ({ setActiveStep }) => {
           type="submit"
           variant="contained"
           sx={{
-            background: "#06A19B",
+            background: '#06A19B',
             fontWeight: 600,
-            padding: "6px 16px",
-            width: "fit-content",
-            textTransform: "capitalize",
-            borderRadius: "8px",
-            marginLeft: "auto",
-            display: "block",
+            padding: '6px 16px',
+            width: 'fit-content',
+            textTransform: 'capitalize',
+            borderRadius: '8px',
+            marginLeft: 'auto',
+            display: 'block',
             marginTop: 2,
           }}
           onClick={() => setActiveStep(1)}

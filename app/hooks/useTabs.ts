@@ -1,13 +1,13 @@
-import { SyntheticEvent, useState } from "react";
+import { SyntheticEvent, useState } from 'react';
 
 export default function useTabs(defaultValues?: string) {
-	const [currentTab, setCurrentTab] = useState(defaultValues || "");
+  const [currentTab, setCurrentTab] = useState(defaultValues || '');
 
-	return {
-		currentTab,
-		onChangeTab: (event: SyntheticEvent<Element, Event>, newValue: any) => {
-			setCurrentTab(newValue);
-		},
-		setCurrentTab
-	};
+  return {
+    currentTab,
+    onChangeTab: (event: SyntheticEvent<Element, Event>, newValue: any) => {
+      setCurrentTab(newValue);
+    },
+    setCurrentTab,
+  };
 }

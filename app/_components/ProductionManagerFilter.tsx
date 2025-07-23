@@ -1,7 +1,6 @@
 import {
   Box,
   Button,
-  Checkbox,
   Dialog,
   DialogActions,
   DialogContent,
@@ -10,22 +9,20 @@ import {
   FormControlLabel,
   Grid,
   InputLabel,
-  ListItemText,
   MenuItem,
-  OutlinedInput,
   Radio,
   RadioGroup,
   Select,
-} from "@mui/material";
-import dayjs from "dayjs";
-import { useRouter } from "next/navigation";
-import { MultiSelect } from "primereact/multiselect";
-import "primereact/resources/primereact.css";
-import "primereact/resources/themes/lara-light-indigo/theme.css";
-import React, { useEffect, useState } from "react";
-import { averagesDropdown, months } from "../_lib/utils";
-import { Farm } from "../_typeModels/Farm";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+} from '@mui/material';
+import dayjs from 'dayjs';
+import { useRouter } from 'next/navigation';
+import { MultiSelect } from 'primereact/multiselect';
+import 'primereact/resources/primereact.css';
+import 'primereact/resources/themes/lara-light-indigo/theme.css';
+import React, { useEffect, useState } from 'react';
+import { averagesDropdown } from '../_lib/utils';
+import { Farm } from '../_typeModels/Farm';
+import { useAppDispatch, useAppSelector } from '@/lib/hooks';
 import {
   commonFilterAction,
   selectAllFarms,
@@ -36,12 +33,11 @@ import {
   selectSelectedFarms,
   selectSelectedUnits,
   selectStartDate,
-} from "@/lib/features/commonFilters/commonFilters";
-import { FarmGroup } from "../_typeModels/production";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+} from '@/lib/features/commonFilters/commonFilters';
+import { FarmGroup } from '../_typeModels/production';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 interface Props {
   selectedView?: string | undefined;
   farmsList: Farm[];
@@ -108,11 +104,11 @@ function ProductionManagerFilter({
           id: string;
           option: string;
         }[],
-        detailedFarms: Farm[]
+        detailedFarms: Farm[],
       ) => {
         return dynamicFarms.map((dynamicFarm) => {
           const matchedFarm = detailedFarms.find(
-            (farm) => farm.id === dynamicFarm.id
+            (farm) => farm.id === dynamicFarm.id,
           );
           return {
             farmId: dynamicFarm.id,
@@ -122,11 +118,11 @@ function ProductionManagerFilter({
         });
       };
       const result = getProductionUnits(selectedDropDownfarms, farmsList);
-      let customUnits = result.flatMap((farm) =>
+      const customUnits = result.flatMap((farm) =>
         farm?.productionUnits.map((unit) => ({
           id: unit.id,
           option: unit.name,
-        }))
+        })),
       );
       dispatch(commonFilterAction.setAllUnits(customUnits));
       dispatch(commonFilterAction.setSelectedDropDownUnits(customUnits));
@@ -137,17 +133,17 @@ function ProductionManagerFilter({
     // Utility: Filter by farms
     const filterByFarms = (
       data: FarmGroup[],
-      selectedFarms: { id: string; option: string }[] | any
+      selectedFarms: { id: string; option: string }[] | any,
     ) => {
       if (!selectedFarms?.length) return data;
       const selectedFarmIds = selectedFarms?.map(
-        (farm: { option: string; id: string }) => farm?.id
+        (farm: { option: string; id: string }) => farm?.id,
       );
       return data
         .map((farm) => ({
           ...farm,
           units: farm.units.filter((unit: any) =>
-            selectedFarmIds.includes(unit.farm?.id)
+            selectedFarmIds.includes(unit.farm?.id),
           ),
         }))
         .filter((farm) => farm.units.length > 0);
@@ -156,17 +152,17 @@ function ProductionManagerFilter({
     // Utility: Filter by units
     const filterByUnits = (
       data: FarmGroup[],
-      selectedUnits: { id: string; option: string }[] | any
+      selectedUnits: { id: string; option: string }[] | any,
     ) => {
       if (!selectedUnits?.length) return data;
       const selectedUnitIds = selectedUnits?.map(
-        (unit: { id: string; option: string }) => unit?.id
+        (unit: { id: string; option: string }) => unit?.id,
       );
       return data
         .map((farm) => ({
           ...farm,
           units: farm.units.filter((unit) =>
-            selectedUnitIds.includes(unit.productionUnit?.id)
+            selectedUnitIds.includes(unit.productionUnit?.id),
           ),
         }))
         .filter((farm) => farm.units.length > 0);
@@ -190,15 +186,15 @@ function ProductionManagerFilter({
       data: FarmGroup[],
       years: Array<number>,
       startMonth: number,
-      endMonth: number
+      endMonth: number,
     ) => {
       if (!years.length || !startMonth || !endMonth) return data;
 
       const startDates = years.map(
-        (year) => new Date(`${year}-${String(startMonth).padStart(2, "0")}-01`)
+        (year) => new Date(`${year}-${String(startMonth).padStart(2, '0')}-01`),
       );
       const endDates = years.map((year) => {
-        const end = new Date(`${year}-${String(endMonth).padStart(2, "0")}-01`);
+        const end = new Date(`${year}-${String(endMonth).padStart(2, '0')}-01`);
         end.setMonth(end.getMonth() + 1); // Include the end of the month
         return end;
       });
@@ -210,7 +206,7 @@ function ProductionManagerFilter({
             const createdAt = new Date(unit.createdAt);
             return startDates.some(
               (start, index) =>
-                createdAt >= start && createdAt < endDates[index]
+                createdAt >= start && createdAt < endDates[index],
             );
           }),
         }))
@@ -218,14 +214,14 @@ function ProductionManagerFilter({
     };
     const filterByDates = (data: FarmGroup[], startDate: any, endDate: any) => {
       if (!startDate || !endDate) return data;
-      const start = dayjs(startDate).format("YYYY-MM-DD");
-      const end = dayjs(endDate).format("YYYY-MM-DD");
+      const start = dayjs(startDate).format('YYYY-MM-DD');
+      const end = dayjs(endDate).format('YYYY-MM-DD');
 
       return data
         .map((farm) => ({
           ...farm,
           units: farm.units.filter((unit: any) => {
-            const created = dayjs(unit.createdAt).format("YYYY-MM-DD");
+            const created = dayjs(unit.createdAt).format('YYYY-MM-DD');
             return created >= start && created <= end;
           }),
         }))
@@ -254,7 +250,7 @@ function ProductionManagerFilter({
       };
 
       switch (type) {
-        case "Monthly average":
+        case 'Monthly average':
           return data.map((farm) => ({
             ...farm,
             units: farm.units.map((unit: any) => ({
@@ -271,13 +267,13 @@ function ProductionManagerFilter({
                   );
                 }),
                 [
-                  "biomass",
-                  "fishCount",
-                  "meanLength",
-                  "meanWeight",
-                  "stockingDensityKG",
-                  "stockingDensityNM",
-                ]
+                  'biomass',
+                  'fishCount',
+                  'meanLength',
+                  'meanWeight',
+                  'stockingDensityKG',
+                  'stockingDensityNM',
+                ],
               ),
 
               monthlyAveragesWater: calculateIndividualAverages(
@@ -293,20 +289,20 @@ function ProductionManagerFilter({
                 }),
 
                 [
-                  "DO",
-                  "NH4",
-                  "NO2",
-                  "NO3",
-                  "TSS",
-                  "ph",
-                  "visibility",
-                  "waterTemp",
-                ]
+                  'DO',
+                  'NH4',
+                  'NO2',
+                  'NO3',
+                  'TSS',
+                  'ph',
+                  'visibility',
+                  'waterTemp',
+                ],
               ),
             })),
           }));
 
-        case "Yearly average":
+        case 'Yearly average':
           return data.map((farm) => ({
             ...farm,
             units: farm.units.map((unit: any) => ({
@@ -315,40 +311,40 @@ function ProductionManagerFilter({
                 unit.fishManageHistory.filter((entry: any) => {
                   const createdAt = new Date(entry.createdAt);
                   return selectedDropDownYears.includes(
-                    createdAt.getFullYear()
+                    createdAt.getFullYear(),
                   );
                 }),
                 [
-                  "biomass",
-                  "fishCount",
-                  "meanLength",
-                  "meanWeight",
-                  "stockingDensityKG",
-                  "stockingDensityNM",
-                ]
+                  'biomass',
+                  'fishCount',
+                  'meanLength',
+                  'meanWeight',
+                  'stockingDensityKG',
+                  'stockingDensityNM',
+                ],
               ),
               yearlyAveragesWater: calculateIndividualAverages(
                 unit.WaterManageHistoryAvgrage.filter((entry: any) => {
                   const createdAt = new Date(entry.createdAt);
                   return selectedDropDownYears.includes(
-                    createdAt.getFullYear()
+                    createdAt.getFullYear(),
                   );
                 }),
                 [
-                  "DO",
-                  "NH4",
-                  "NO2",
-                  "NO3",
-                  "TSS",
-                  "ph",
-                  "visibility",
-                  "waterTemp",
-                ]
+                  'DO',
+                  'NH4',
+                  'NO2',
+                  'NO3',
+                  'TSS',
+                  'ph',
+                  'visibility',
+                  'waterTemp',
+                ],
               ),
             })),
           }));
 
-        case "All-time average":
+        case 'All-time average':
           return data.map((farm) => ({
             ...farm,
             units: farm.units.map((unit: any) => ({
@@ -356,31 +352,31 @@ function ProductionManagerFilter({
               allTimeAverages: calculateIndividualAverages(
                 unit.fishManageHistory || [],
                 [
-                  "biomass",
-                  "fishCount",
-                  "meanLength",
-                  "meanWeight",
-                  "stockingDensityKG",
-                  "stockingDensityNM",
-                ]
+                  'biomass',
+                  'fishCount',
+                  'meanLength',
+                  'meanWeight',
+                  'stockingDensityKG',
+                  'stockingDensityNM',
+                ],
               ),
               allTimeAveragesWater: calculateIndividualAverages(
                 unit.WaterManageHistoryAvgrage || [],
                 [
-                  "DO",
-                  "NH4",
-                  "NO2",
-                  "NO3",
-                  "TSS",
-                  "ph",
-                  "visibility",
-                  "waterTemp",
-                ]
+                  'DO',
+                  'NH4',
+                  'NO2',
+                  'NO3',
+                  'TSS',
+                  'ph',
+                  'visibility',
+                  'waterTemp',
+                ],
               ),
             })),
           }));
 
-        case "Individual average":
+        case 'Individual average':
           return data.map((farm) => ({
             ...farm,
             units: farm.units.map((unit: any) => ({
@@ -388,26 +384,26 @@ function ProductionManagerFilter({
               individualAverages: calculateIndividualAverages(
                 unit.fishManageHistory || [],
                 [
-                  "biomass",
-                  "fishCount",
-                  "meanLength",
-                  "meanWeight",
-                  "stockingDensityKG",
-                  "stockingDensityNM",
-                ]
+                  'biomass',
+                  'fishCount',
+                  'meanLength',
+                  'meanWeight',
+                  'stockingDensityKG',
+                  'stockingDensityNM',
+                ],
               ),
               individualAveragesWater: calculateIndividualAverages(
                 unit.WaterManageHistoryAvgrage || [],
                 [
-                  "DO",
-                  "NH4",
-                  "NO2",
-                  "NO3",
-                  "TSS",
-                  "ph",
-                  "visibility",
-                  "waterTemp",
-                ]
+                  'DO',
+                  'NH4',
+                  'NO2',
+                  'NO3',
+                  'TSS',
+                  'ph',
+                  'visibility',
+                  'waterTemp',
+                ],
               ),
             })),
           }));
@@ -444,7 +440,7 @@ function ProductionManagerFilter({
   ]);
   useEffect(() => {
     if (farmsList) {
-      let customFarms: any = farmsList.map((farm: Farm) => {
+      const customFarms: any = farmsList.map((farm: Farm) => {
         return { option: farm.name, id: farm.id };
       });
       // customFarms.unshift({ code: "0", option: "All farms" });
@@ -454,7 +450,7 @@ function ProductionManagerFilter({
   }, [farmsList]);
   return (
     <Box>
-      <Box sx={{ display: "flex", gap: 2, width: "100%", flexWrap: "wrap" }}>
+      <Box sx={{ display: 'flex', gap: 2, width: '100%', flexWrap: 'wrap' }}>
         <Box>
           <FormControl fullWidth className="form-input selected" focused>
             <InputLabel
@@ -491,11 +487,11 @@ function ProductionManagerFilter({
         </Box>
 
         <Box>
-          <Box sx={{ width: "100%" }}>
+          <Box sx={{ width: '100%' }}>
             <FormControl
               fullWidth
               className={`form-input ${
-                selectedDropDownfarms?.length >= 1 && "selected"
+                selectedDropDownfarms?.length >= 1 && 'selected'
               }`}
               focused
             >
@@ -534,7 +530,7 @@ function ProductionManagerFilter({
         </Box>
 
         <Box>
-          <Box sx={{ width: "100%" }}>
+          <Box sx={{ width: '100%' }}>
             <FormControl
               fullWidth
               className={`form-input ${
@@ -543,7 +539,7 @@ function ProductionManagerFilter({
                 // selectedDropDownYears?.length &&
                 startDate &&
                 endDate &&
-                "selected"
+                'selected'
               }`}
               focused
             >
@@ -564,7 +560,7 @@ function ProductionManagerFilter({
                 }
                 onChange={(e) =>
                   dispatch(
-                    commonFilterAction.setSelectedAverage(e.target.value)
+                    commonFilterAction.setSelectedAverage(e.target.value),
                   )
                 }
               >
@@ -581,13 +577,13 @@ function ProductionManagerFilter({
         </Box>
 
         <Box>
-          <Box sx={{ width: "100%" }}>
+          <Box sx={{ width: '100%' }}>
             <FormControl
               fullWidth
               className={`form-input ${
                 selectedDropDownfarms?.length &&
                 selectedDropDownUnits?.length &&
-                ""
+                ''
               }`}
               focused
             >
@@ -609,14 +605,14 @@ function ProductionManagerFilter({
         </Box>
 
         <Box>
-          <Box sx={{ width: "100%" }}>
+          <Box sx={{ width: '100%' }}>
             <FormControl
               fullWidth
               className={`form-input ${
                 selectedDropDownfarms?.length &&
                 selectedDropDownUnits?.length &&
                 startDate &&
-                ""
+                ''
               }`}
               focused
             >
@@ -630,8 +626,8 @@ function ProductionManagerFilter({
                       dispatch(commonFilterAction.setEndDate(isoDate));
                   }}
                   sx={{
-                    marginTop: "0",
-                    borderRadius: "6px",
+                    marginTop: '0',
+                    borderRadius: '6px',
                   }}
                   className="date-picker form-input"
                   minDate={dayjs(startDate)}
@@ -645,10 +641,10 @@ function ProductionManagerFilter({
         <Box>
           <Box
             sx={{
-              display: "flex",
-              gap: "10px",
+              display: 'flex',
+              gap: '10px',
               mt: 1,
-              justifyContent: "start",
+              justifyContent: 'start',
             }}
           >
             {reset && (
@@ -660,44 +656,44 @@ function ProductionManagerFilter({
                   dispatch(commonFilterAction.handleResetFilters())
                 }
                 sx={{
-                  background: "#fff",
-                  color: "#06A19B",
+                  background: '#fff',
+                  color: '#06A19B',
                   fontWeight: 600,
-                  padding: "6px 16px",
-                  width: "fit-content",
-                  textTransform: "capitalize",
-                  borderRadius: "8px",
-                  border: "1px solid #06A19B",
-                  whiteSpace: "nowrap",
-                  boxShadow: "none",
-                  "&:hover": {
-                    boxShadow: "none",
+                  padding: '6px 16px',
+                  width: 'fit-content',
+                  textTransform: 'capitalize',
+                  borderRadius: '8px',
+                  border: '1px solid #06A19B',
+                  whiteSpace: 'nowrap',
+                  boxShadow: 'none',
+                  '&:hover': {
+                    boxShadow: 'none',
                   },
                 }}
               >
                 Reset Filters
               </Button>
             )}
-            {selectedView === "feeding" && (
+            {selectedView === 'feeding' && (
               <Button
                 id="basic-button"
                 type="button"
                 variant="contained"
                 sx={{
-                  background: "#06A19B",
+                  background: '#06A19B',
                   fontWeight: 600,
-                  padding: "6px 16px",
-                  width: "fit-content",
-                  textTransform: "capitalize",
-                  borderRadius: "8px",
-                  color: "white",
-                  whiteSpace: "nowrap",
-                  boxShadow: "none",
-                  "&:hover": {
-                    boxShadow: "none",
+                  padding: '6px 16px',
+                  width: 'fit-content',
+                  textTransform: 'capitalize',
+                  borderRadius: '8px',
+                  color: 'white',
+                  whiteSpace: 'nowrap',
+                  boxShadow: 'none',
+                  '&:hover': {
+                    boxShadow: 'none',
                   },
                 }}
-                onClick={() => router.push("/dashboard/feedPrediction")}
+                onClick={() => router.push('/dashboard/feedPrediction')}
               >
                 Feed Prediction
               </Button>
@@ -965,17 +961,17 @@ function ProductionManagerFilter({
               <FormControl>
                 <RadioGroup
                   aria-labelledby="demo-radio-buttons-group-label"
-                  value={"fish"}
+                  value={'fish'}
                   name="radio-buttons-group"
                   //    onChange={(e) => {
                   //      handleTableView(e.target.value);
                   //    }}
                   className="ic-radio"
                   sx={{
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "center",
-                    flexWrap: "nowrap",
+                    display: 'flex',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    flexWrap: 'nowrap',
                   }}
                 >
                   <FormControlLabel
@@ -991,17 +987,17 @@ function ProductionManagerFilter({
               <FormControl>
                 <RadioGroup
                   aria-labelledby="demo-radio-buttons-group-label"
-                  value={"fish"}
+                  value={'fish'}
                   name="radio-buttons-group"
                   //    onChange={(e) => {
                   //      handleTableView(e.target.value);
                   //    }}
                   className="ic-radio"
                   sx={{
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "center",
-                    flexWrap: "nowrap",
+                    display: 'flex',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    flexWrap: 'nowrap',
                   }}
                 >
                   <FormControlLabel
@@ -1017,17 +1013,17 @@ function ProductionManagerFilter({
               <FormControl>
                 <RadioGroup
                   aria-labelledby="demo-radio-buttons-group-label"
-                  value={"fish"}
+                  value={'fish'}
                   name="radio-buttons-group"
                   //    onChange={(e) => {
                   //      handleTableView(e.target.value);
                   //    }}
                   className="ic-radio"
                   sx={{
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "center",
-                    flexWrap: "nowrap",
+                    display: 'flex',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    flexWrap: 'nowrap',
                   }}
                 >
                   <FormControlLabel
@@ -1043,17 +1039,17 @@ function ProductionManagerFilter({
               <FormControl>
                 <RadioGroup
                   aria-labelledby="demo-radio-buttons-group-label"
-                  value={"fish"}
+                  value={'fish'}
                   name="radio-buttons-group"
                   //    onChange={(e) => {
                   //      handleTableView(e.target.value);
                   //    }}
                   className="ic-radio"
                   sx={{
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "center",
-                    flexWrap: "nowrap",
+                    display: 'flex',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    flexWrap: 'nowrap',
                   }}
                 >
                   <FormControlLabel
@@ -1077,12 +1073,12 @@ function ProductionManagerFilter({
             variant="contained"
             onClick={() => setIsModalOpenNext(true)}
             sx={{
-              background: "#06A19B",
+              background: '#06A19B',
               fontWeight: 600,
-              padding: "6px 16px",
-              width: "fit-content",
-              textTransform: "capitalize",
-              borderRadius: "8px",
+              padding: '6px 16px',
+              width: 'fit-content',
+              textTransform: 'capitalize',
+              borderRadius: '8px',
             }}
           >
             Next
@@ -1095,14 +1091,14 @@ function ProductionManagerFilter({
             }}
             variant="contained"
             sx={{
-              background: "#fff",
-              color: "#06A19B",
+              background: '#fff',
+              color: '#06A19B',
               fontWeight: 600,
-              padding: "6px 16px",
-              width: "fit-content",
-              textTransform: "capitalize",
-              borderRadius: "8px",
-              border: "1px solid #06A19B",
+              padding: '6px 16px',
+              width: 'fit-content',
+              textTransform: 'capitalize',
+              borderRadius: '8px',
+              border: '1px solid #06A19B',
             }}
           >
             Cancel
@@ -1122,7 +1118,7 @@ function ProductionManagerFilter({
         <DialogContent>
           <Grid container>
             <Grid item xs={12}>
-              <Box sx={{ display: "flex" }}>Farm one </Box>
+              <Box sx={{ display: 'flex' }}>Farm one </Box>
             </Grid>
           </Grid>
         </DialogContent>
@@ -1135,12 +1131,12 @@ function ProductionManagerFilter({
             type="button"
             variant="contained"
             sx={{
-              background: "#06A19B",
+              background: '#06A19B',
               fontWeight: 600,
-              padding: "6px 16px",
-              width: "fit-content",
-              textTransform: "capitalize",
-              borderRadius: "8px",
+              padding: '6px 16px',
+              width: 'fit-content',
+              textTransform: 'capitalize',
+              borderRadius: '8px',
             }}
           >
             finish
@@ -1153,14 +1149,14 @@ function ProductionManagerFilter({
             }}
             variant="contained"
             sx={{
-              background: "#fff",
-              color: "#06A19B",
+              background: '#fff',
+              color: '#06A19B',
               fontWeight: 600,
-              padding: "6px 16px",
-              width: "fit-content",
-              textTransform: "capitalize",
-              borderRadius: "8px",
-              border: "1px solid #06A19B",
+              padding: '6px 16px',
+              width: 'fit-content',
+              textTransform: 'capitalize',
+              borderRadius: '8px',
+              border: '1px solid #06A19B',
             }}
           >
             Cancel

@@ -1,17 +1,17 @@
-import { CssBaseline } from "@mui/material";
-import { SpeedInsights } from "@vercel/speed-insights/next";
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "./globals.css";
-import StoreProvider from "./StoreProvider";
+import { CssBaseline } from '@mui/material';
+import { SpeedInsights } from '@vercel/speed-insights/next';
+import type { Metadata } from 'next';
+import { Inter } from 'next/font/google';
+import './globals.css';
+import StoreProvider from './StoreProvider';
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: {
-    absolute: "",
-    default: "Feedflow ",
-    template: "%s | Feedflow",
+    absolute: '',
+    default: 'Feedflow ',
+    template: '%s | Feedflow',
   },
 };
 

@@ -1,4 +1,4 @@
-import { NextPage } from "next";
+import { NextPage } from 'next';
 import {
   Box,
   Button,
@@ -15,15 +15,15 @@ import {
   Stack,
   TextField,
   Typography,
-} from "@mui/material";
-import { useState } from "react";
+} from '@mui/material';
+import { useState } from 'react';
 
 interface Props {
   setActiveStep: (val: number) => void;
 }
 
 const FeedingPlan: NextPage<Props> = ({ setActiveStep }) => {
-  const [age, setAge] = useState("");
+  const [age, setAge] = useState('');
 
   const handleChange = (event: SelectChangeEvent) => {
     setAge(event.target.value as string);
@@ -54,7 +54,7 @@ const FeedingPlan: NextPage<Props> = ({ setActiveStep }) => {
                 type="text"
                 className="form-input"
                 sx={{
-                  width: "100%",
+                  width: '100%',
                   marginBottom: 2,
                 }}
               />
@@ -83,17 +83,17 @@ const FeedingPlan: NextPage<Props> = ({ setActiveStep }) => {
               type="submit"
               variant="contained"
               sx={{
-                background: "#fff",
-                color: "#06A19B",
-                border: "1px solid #06A19B",
-                boxShadow: "none",
+                background: '#fff',
+                color: '#06A19B',
+                border: '1px solid #06A19B',
+                boxShadow: 'none',
                 fontWeight: 600,
-                padding: "6px 16px",
-                width: "fit-content",
-                textTransform: "capitalize",
-                borderRadius: "8px",
-                marginLeft: "auto",
-                display: "block",
+                padding: '6px 16px',
+                width: 'fit-content',
+                textTransform: 'capitalize',
+                borderRadius: '8px',
+                marginLeft: 'auto',
+                display: 'block',
                 marginTop: 1,
               }}
             >
@@ -124,7 +124,7 @@ const FeedingPlan: NextPage<Props> = ({ setActiveStep }) => {
                     sx={{
                       fontSize: 18,
                       fontWeight: 600,
-                      color: "#000 !important",
+                      color: '#000 !important',
                     }}
                   >
                     Stocking
@@ -167,7 +167,7 @@ const FeedingPlan: NextPage<Props> = ({ setActiveStep }) => {
                     sx={{
                       fontSize: 18,
                       fontWeight: 600,
-                      color: "#000 !important",
+                      color: '#000 !important',
                     }}
                   >
                     Harvest
@@ -211,7 +211,7 @@ const FeedingPlan: NextPage<Props> = ({ setActiveStep }) => {
                   type="text"
                   className="form-input"
                   sx={{
-                    width: "100%",
+                    width: '100%',
                     marginBottom: 2,
                   }}
                 />
@@ -223,7 +223,7 @@ const FeedingPlan: NextPage<Props> = ({ setActiveStep }) => {
                   type="text"
                   className="form-input"
                   sx={{
-                    width: "100%",
+                    width: '100%',
                     marginBottom: 2,
                   }}
                 />
@@ -232,9 +232,9 @@ const FeedingPlan: NextPage<Props> = ({ setActiveStep }) => {
           </Box>
 
           <Box
-            display={"flex"}
-            justifyContent={"flex-end"}
-            alignItems={"center"}
+            display={'flex'}
+            justifyContent={'flex-end'}
+            alignItems={'center'}
             gap={3}
             mt={1}
           >
@@ -242,14 +242,14 @@ const FeedingPlan: NextPage<Props> = ({ setActiveStep }) => {
               type="submit"
               variant="contained"
               sx={{
-                background: "#fff",
-                color: "#06A19B",
+                background: '#fff',
+                color: '#06A19B',
                 fontWeight: 600,
-                padding: "6px 16px",
-                width: "fit-content",
-                textTransform: "capitalize",
-                borderRadius: "8px",
-                border: "1px solid #06A19B",
+                padding: '6px 16px',
+                width: 'fit-content',
+                textTransform: 'capitalize',
+                borderRadius: '8px',
+                border: '1px solid #06A19B',
               }}
               onClick={() => setActiveStep(2)}
             >
@@ -259,12 +259,12 @@ const FeedingPlan: NextPage<Props> = ({ setActiveStep }) => {
               type="submit"
               variant="contained"
               sx={{
-                background: "#06A19B",
+                background: '#06A19B',
                 fontWeight: 600,
-                padding: "6px 16px",
-                width: "fit-content",
-                textTransform: "capitalize",
-                borderRadius: "8px",
+                padding: '6px 16px',
+                width: 'fit-content',
+                textTransform: 'capitalize',
+                borderRadius: '8px',
               }}
               onClick={() => setActiveStep(4)}
             >

@@ -1,34 +1,34 @@
-import AddNewUser from "@/app/_components/AddNewUser";
-import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
-import { getOrganisations } from "@/app/_lib/action";
-import { SingleUser } from "@/app/_typeModels/User";
-import { getCookie } from "cookies-next";
-import { Metadata } from "next";
-import { cookies } from "next/headers";
+import AddNewUser from '@/app/_components/AddNewUser';
+import BasicBreadcrumbs from '@/app/_components/Breadcrumbs';
+import { getOrganisations } from '@/app/_lib/action';
+import { SingleUser } from '@/app/_typeModels/User';
+import { getCookie } from 'cookies-next';
+import { Metadata } from 'next';
+import { cookies } from 'next/headers';
 // import { getAllOrganisations } from "@/app/_lib/action";
 export const metadata: Metadata = {
-  title: "New User",
+  title: 'New User',
 };
 export default async function Page() {
-  const loggedUser: any = getCookie("logged-user", { cookies });
-  const refreshToken: any = getCookie("refresh-token", { cookies });
+  const loggedUser: any = getCookie('logged-user', { cookies });
+  const refreshToken: any = getCookie('refresh-token', { cookies });
   const user: SingleUser = JSON.parse(loggedUser);
-  let organisations = await getOrganisations({
+  const organisations = await getOrganisations({
     organisationId: user?.organisationId,
     role: String(user?.role),
-    query: "",
+    query: '',
     refreshToken,
   });
 
   return (
     <>
       <BasicBreadcrumbs
-        heading={"Add a new user"}
+        heading={'Add a new user'}
         hideSearchInput={true}
         links={[
-          { name: "Dashboard", link: "/dashboard" },
-          { name: "Users", link: "/dashboard/user" },
-          { name: "New User", link: "/dashboard/user/new" },
+          { name: 'Dashboard', link: '/dashboard' },
+          { name: 'Users', link: '/dashboard/user' },
+          { name: 'New User', link: '/dashboard/user/new' },
         ]}
       />
       <AddNewUser organisations={organisations?.data} />

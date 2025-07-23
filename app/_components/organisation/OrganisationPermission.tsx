@@ -1,5 +1,4 @@
-import { Farm, OrganizationData } from "@/app/_typeModels/Organization";
-import { SingleUser } from "@/app/_typeModels/User";
+import { SingleUser } from '@/app/_typeModels/User';
 import {
   Box,
   FormControlLabel,
@@ -9,15 +8,15 @@ import {
   Switch,
   SwitchProps,
   Typography,
-} from "@mui/material";
-import { getCookie } from "cookies-next";
-import { useEffect, useState } from "react";
+} from '@mui/material';
+import { getCookie } from 'cookies-next';
+import { useEffect, useState } from 'react';
 import {
   Control,
   Controller,
   useFieldArray,
   FieldValues,
-} from "react-hook-form";
+} from 'react-hook-form';
 // Custom iOS styled switch
 const IOSSwitch = styled((props: SwitchProps) => (
   <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
@@ -25,56 +24,56 @@ const IOSSwitch = styled((props: SwitchProps) => (
   width: 42,
   height: 26,
   padding: 0,
-  "& .MuiSwitch-switchBase": {
+  '& .MuiSwitch-switchBase': {
     padding: 0,
     margin: 2,
-    transitionDuration: "300ms",
-    "&.Mui-checked": {
-      transform: "translateX(16px)",
-      color: "#fff",
-      "& + .MuiSwitch-track": {
-        backgroundColor: "#65C466",
+    transitionDuration: '300ms',
+    '&.Mui-checked': {
+      transform: 'translateX(16px)',
+      color: '#fff',
+      '& + .MuiSwitch-track': {
+        backgroundColor: '#65C466',
         opacity: 1,
         border: 0,
-        ...theme.applyStyles?.("dark", {
-          backgroundColor: "#2ECA45",
+        ...theme.applyStyles?.('dark', {
+          backgroundColor: '#2ECA45',
         }),
       },
-      "&.Mui-disabled + .MuiSwitch-track": {
+      '&.Mui-disabled + .MuiSwitch-track': {
         opacity: 0.5,
       },
     },
-    "&.Mui-focusVisible .MuiSwitch-thumb": {
-      color: "#33cf4d",
-      border: "6px solid #fff",
+    '&.Mui-focusVisible .MuiSwitch-thumb': {
+      color: '#33cf4d',
+      border: '6px solid #fff',
     },
-    "&.Mui-disabled .MuiSwitch-thumb": {
+    '&.Mui-disabled .MuiSwitch-thumb': {
       color: theme.palette.grey[100],
-      ...theme.applyStyles?.("dark", {
+      ...theme.applyStyles?.('dark', {
         color: theme.palette.grey[600],
       }),
     },
-    "&.Mui-disabled + .MuiSwitch-track": {
+    '&.Mui-disabled + .MuiSwitch-track': {
       opacity: 0.7,
-      ...theme.applyStyles?.("dark", {
+      ...theme.applyStyles?.('dark', {
         opacity: 0.3,
       }),
     },
   },
-  "& .MuiSwitch-thumb": {
-    boxSizing: "border-box",
+  '& .MuiSwitch-thumb': {
+    boxSizing: 'border-box',
     width: 22,
     height: 22,
   },
-  "& .MuiSwitch-track": {
+  '& .MuiSwitch-track': {
     borderRadius: 13,
-    backgroundColor: "#E9E9EA",
+    backgroundColor: '#E9E9EA',
     opacity: 1,
-    transition: theme.transitions.create(["background-color"], {
+    transition: theme.transitions.create(['background-color'], {
       duration: 500,
     }),
-    ...theme.applyStyles?.("dark", {
-      backgroundColor: "#39393D",
+    ...theme.applyStyles?.('dark', {
+      backgroundColor: '#39393D',
     }),
   },
 }));
@@ -104,16 +103,16 @@ interface OrganisationPermissionProps {
 function OrganisationPermission({ control }: OrganisationPermissionProps) {
   const { fields } = useFieldArray({
     control,
-    name: "permissions.farms",
+    name: 'permissions.farms',
   });
 
-  const loggedUser: any = getCookie("logged-user");
+  const loggedUser: any = getCookie('logged-user');
   const user: SingleUser = loggedUser ? JSON.parse(loggedUser) : {};
   const [allDisabled, setAllDisabled] = useState<boolean>(false);
 
   useEffect(() => {
     if (Object.keys(user).length) {
-      const isSuperAdmin = user?.role === "SUPERADMIN";
+      const isSuperAdmin = user?.role === 'SUPERADMIN';
       if (isSuperAdmin) {
         setAllDisabled(false);
       } else {
@@ -125,8 +124,8 @@ function OrganisationPermission({ control }: OrganisationPermissionProps) {
   return (
     <Stack
       sx={{
-        borderRadius: "14px",
-        boxShadow: "0px 0px 5px #C5C5C5",
+        borderRadius: '14px',
+        boxShadow: '0px 0px 5px #C5C5C5',
         mt: 2.5,
         padding: 3,
       }}
@@ -141,18 +140,22 @@ function OrganisationPermission({ control }: OrganisationPermissionProps) {
         Admin Rights
       </Typography>
 
-      <Grid container rowSpacing={2.5} sx={{
-        textAlign: "start"
-      }}>
+      <Grid
+        container
+        rowSpacing={2.5}
+        sx={{
+          textAlign: 'start',
+        }}
+      >
         {/* Column Headers */}
         <Grid
           item
           lg={4}
           xs={6}
           sx={{
-            display: "flex",
+            display: 'flex',
             gap: 6,
-            textAlign: "start"
+            textAlign: 'start',
           }}
         >
           <Typography variant="h6" fontSize={16} fontWeight={600}>
@@ -187,16 +190,12 @@ function OrganisationPermission({ control }: OrganisationPermissionProps) {
           lg={4}
           xs={6}
           sx={{
-            display: "flex",
+            display: 'flex',
             gap: 6,
-            textAlign: "start"
+            textAlign: 'start',
           }}
         >
-          <Typography
-            variant="h6"
-            fontSize={16}
-            fontWeight={600}
-          >
+          <Typography variant="h6" fontSize={16} fontWeight={600}>
             Edit Users
           </Typography>
 
@@ -228,16 +227,12 @@ function OrganisationPermission({ control }: OrganisationPermissionProps) {
           lg={4}
           xs={6}
           sx={{
-            display: "flex",
+            display: 'flex',
             gap: 6,
-            textAlign: "start"
+            textAlign: 'start',
           }}
         >
-          <Typography
-            variant="h6"
-            fontSize={16}
-            fontWeight={600}
-          >
+          <Typography variant="h6" fontSize={16} fontWeight={600}>
             Organisation Rights
           </Typography>
 
@@ -276,24 +271,24 @@ function OrganisationPermission({ control }: OrganisationPermissionProps) {
         Organisation Rights
       </Typography>
 
-      <Grid container rowSpacing={2.5} sx={{
-        textAlign: "start"
-      }}>
+      <Grid
+        container
+        rowSpacing={2.5}
+        sx={{
+          textAlign: 'start',
+        }}
+      >
         {/* Column Headers */}
         <Grid
           item
           lg={4}
           xs={6}
           sx={{
-            display: "flex",
+            display: 'flex',
             gap: 6,
           }}
         >
-          <Typography
-            variant="h6"
-            fontSize={16}
-            fontWeight={600}
-          >
+          <Typography variant="h6" fontSize={16} fontWeight={600}>
             Edit Organisation
           </Typography>
 
@@ -325,15 +320,11 @@ function OrganisationPermission({ control }: OrganisationPermissionProps) {
           lg={4}
           xs={6}
           sx={{
-            display: "flex",
+            display: 'flex',
             gap: 6,
           }}
         >
-          <Typography
-            variant="h6"
-            fontSize={16}
-            fontWeight={600}
-          >
+          <Typography variant="h6" fontSize={16} fontWeight={600}>
             Create Fish Supply
           </Typography>
 
@@ -365,15 +356,11 @@ function OrganisationPermission({ control }: OrganisationPermissionProps) {
           lg={4}
           xs={6}
           sx={{
-            display: "flex",
+            display: 'flex',
             gap: 6,
           }}
         >
-          <Typography
-            variant="h6"
-            fontSize={16}
-            fontWeight={600}
-          >
+          <Typography variant="h6" fontSize={16} fontWeight={600}>
             Edit Fish Supply
           </Typography>
 
@@ -405,15 +392,11 @@ function OrganisationPermission({ control }: OrganisationPermissionProps) {
           lg={4}
           xs={6}
           sx={{
-            display: "flex",
+            display: 'flex',
             gap: 10,
           }}
         >
-          <Typography
-            variant="h6"
-            fontSize={16}
-            fontWeight={600}
-          >
+          <Typography variant="h6" fontSize={16} fontWeight={600}>
             Create Farms
           </Typography>
 
@@ -445,15 +428,11 @@ function OrganisationPermission({ control }: OrganisationPermissionProps) {
           lg={4}
           xs={6}
           sx={{
-            display: "flex",
+            display: 'flex',
             gap: 14.5,
           }}
         >
-          <Typography
-            variant="h6"
-            fontSize={16}
-            fontWeight={600}
-          >
+          <Typography variant="h6" fontSize={16} fontWeight={600}>
             Edit Farms
           </Typography>
 
@@ -485,15 +464,11 @@ function OrganisationPermission({ control }: OrganisationPermissionProps) {
           lg={4}
           xs={6}
           sx={{
-            display: "flex",
+            display: 'flex',
             gap: 6,
           }}
         >
-          <Typography
-            variant="h6"
-            fontSize={16}
-            fontWeight={600}
-          >
+          <Typography variant="h6" fontSize={16} fontWeight={600}>
             Transfer Fish Between Farms
           </Typography>
 
@@ -534,24 +509,24 @@ function OrganisationPermission({ control }: OrganisationPermissionProps) {
             >
               {field.name}
             </Typography>
-            <Grid container rowSpacing={2.5} sx={{
-              textAlign: "start"
-            }}>
+            <Grid
+              container
+              rowSpacing={2.5}
+              sx={{
+                textAlign: 'start',
+              }}
+            >
               {/* Column Headers */}
               <Grid
                 item
                 lg={4}
                 xs={6}
                 sx={{
-                  display: "flex",
+                  display: 'flex',
                   gap: 6,
                 }}
               >
-                <Typography
-                  variant="h6"
-                  fontSize={16}
-                  fontWeight={600}
-                >
+                <Typography variant="h6" fontSize={16} fontWeight={600}>
                   Stock
                 </Typography>
 
@@ -583,15 +558,11 @@ function OrganisationPermission({ control }: OrganisationPermissionProps) {
                 lg={4}
                 xs={6}
                 sx={{
-                  display: "flex",
+                  display: 'flex',
                   gap: 6,
                 }}
               >
-                <Typography
-                  variant="h6"
-                  fontSize={16}
-                  fontWeight={600}
-                >
+                <Typography variant="h6" fontSize={16} fontWeight={600}>
                   Transfer
                 </Typography>
 
@@ -623,15 +594,11 @@ function OrganisationPermission({ control }: OrganisationPermissionProps) {
                 lg={4}
                 xs={6}
                 sx={{
-                  display: "flex",
+                  display: 'flex',
                   gap: 6,
                 }}
               >
-                <Typography
-                  variant="h6"
-                  fontSize={16}
-                  fontWeight={600}
-                >
+                <Typography variant="h6" fontSize={16} fontWeight={600}>
                   Harvest
                 </Typography>
 
@@ -663,15 +630,11 @@ function OrganisationPermission({ control }: OrganisationPermissionProps) {
                 lg={4}
                 xs={6}
                 sx={{
-                  display: "flex",
+                  display: 'flex',
                   gap: 6,
                 }}
               >
-                <Typography
-                  variant="h6"
-                  fontSize={16}
-                  fontWeight={600}
-                >
+                <Typography variant="h6" fontSize={16} fontWeight={600}>
                   Mortalities
                 </Typography>
                 <Box>
@@ -702,15 +665,11 @@ function OrganisationPermission({ control }: OrganisationPermissionProps) {
                 lg={4}
                 xs={6}
                 sx={{
-                  display: "flex",
+                  display: 'flex',
                   gap: 6,
                 }}
               >
-                <Typography
-                  variant="h6"
-                  fontSize={16}
-                  fontWeight={600}
-                >
+                <Typography variant="h6" fontSize={16} fontWeight={600}>
                   Sample
                 </Typography>
 
@@ -742,15 +701,11 @@ function OrganisationPermission({ control }: OrganisationPermissionProps) {
                 lg={4}
                 xs={6}
                 sx={{
-                  display: "flex",
+                  display: 'flex',
                   gap: 6,
                 }}
               >
-                <Typography
-                  variant="h6"
-                  fontSize={16}
-                  fontWeight={600}
-                >
+                <Typography variant="h6" fontSize={16} fontWeight={600}>
                   Create Report
                 </Typography>
 
@@ -782,15 +737,11 @@ function OrganisationPermission({ control }: OrganisationPermissionProps) {
                 lg={4}
                 xs={6}
                 sx={{
-                  display: "flex",
+                  display: 'flex',
                   gap: 6,
                 }}
               >
-                <Typography
-                  variant="h6"
-                  fontSize={16}
-                  fontWeight={600}
-                >
+                <Typography variant="h6" fontSize={16} fontWeight={600}>
                   Feeding Plans
                 </Typography>
 

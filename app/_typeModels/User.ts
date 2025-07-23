@@ -1,7 +1,7 @@
 export interface UserInitialState {
-  isLoading: Boolean;
+  isLoading: boolean;
   users: any;
-  role: String;
+  role: string;
 }
 
 export interface SingleUser {
@@ -53,7 +53,7 @@ export interface UserEditFormInputs {
   image: string;
   organisation: string;
   organisationType: string;
-  organisationId: Number;
+  organisationId: number;
   email: string;
   password: string;
   confirmPassword: string;
@@ -62,7 +62,7 @@ export interface UserEditFormInputs {
 export interface AddUserFormInputs {
   name: string;
   image: string;
-  organisationId: Number;
+  organisationId: number;
   email: string;
   permissions: Permissions;
 }

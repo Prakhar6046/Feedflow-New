@@ -1,27 +1,23 @@
 import {
   Box,
   Button,
-  IconButton,
   Modal,
   Stack,
   TextField,
-  Tooltip,
   Typography,
-} from "@mui/material";
-import Image from "next/image";
-import closeIcon from "@/public/static/img/icons/ic-close.svg";
-import { useForm, SubmitHandler } from "react-hook-form";
-import toast from "react-hot-toast";
-import { useEffect, useState } from "react";
-import { CalculateType, UnitsTypes } from "@/app/_typeModels/Farm";
+} from '@mui/material';
+import Image from 'next/image';
+import closeIcon from '@/public/static/img/icons/ic-close.svg';
+import { useEffect, useState } from 'react';
+import { CalculateType, UnitsTypes } from '@/app/_typeModels/Farm';
 
 const style = {
-  position: "absolute" as "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
+  position: 'absolute' as const,
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
   width: 400,
-  bgcolor: "background.paper",
+  bgcolor: 'background.paper',
   boxShadow: 24,
 };
 
@@ -99,47 +95,47 @@ const CalculateVolume: React.FC<Props> = ({
     ) {
       let output;
       if (
-        selectedUnit?.name === "Rectangular Tank" &&
+        selectedUnit?.name === 'Rectangular Tank' &&
         Number(length) &&
         Number(width) &&
         Number(depth)
       ) {
         output = Number(length) * Number(width) * Number(depth);
       } else if (
-        selectedUnit?.name === "Earthen Pond" &&
+        selectedUnit?.name === 'Earthen Pond' &&
         Number(area) &&
         Number(depth)
       ) {
         output = Number(area) * Number(depth);
       } else if (
-        selectedUnit?.name === "Raceway" &&
+        selectedUnit?.name === 'Raceway' &&
         Number(length) &&
         Number(width) &&
         Number(depth)
       ) {
         output = Number(length) * Number(width) * Number(depth);
       } else if (
-        selectedUnit?.name === "Cage" &&
+        selectedUnit?.name === 'Cage' &&
         Number(length) &&
         Number(width) &&
         Number(heigth)
       ) {
         output = Number(length) * Number(width) * Number(heigth);
       } else if (
-        selectedUnit?.name === "Hapa" &&
+        selectedUnit?.name === 'Hapa' &&
         Number(length) &&
         Number(width) &&
         Number(heigth)
       ) {
         output = Number(length) * Number(width) * Number(heigth);
       } else if (
-        selectedUnit?.name === "Circular Tank" &&
+        selectedUnit?.name === 'Circular Tank' &&
         Number(radius) &&
         Number(depth)
       ) {
         output = 3.14159 * Number(radius) * 2 * Number(depth);
       } else if (
-        selectedUnit?.name === "D-end Tank" &&
+        selectedUnit?.name === 'D-end Tank' &&
         Number(radius) &&
         Number(length) &&
         Number(width) &&
@@ -156,26 +152,26 @@ const CalculateVolume: React.FC<Props> = ({
       }
       setOpen(false);
     } else {
-      if (selectedUnit?.name === "Rectangular Tank") {
+      if (selectedUnit?.name === 'Rectangular Tank') {
         setLengthError(true);
         setWidthError(true);
         setDepthError(true);
-      } else if (selectedUnit?.name === "Earthen Pond") {
+      } else if (selectedUnit?.name === 'Earthen Pond') {
         setAreaError(true);
         setDepthError(true);
-      } else if (selectedUnit?.name === "Raceway") {
+      } else if (selectedUnit?.name === 'Raceway') {
         setLengthError(true);
         setWidthError(true);
         setDepthError(true);
-      } else if (selectedUnit?.name === "Cage") {
+      } else if (selectedUnit?.name === 'Cage') {
         setLengthError(true);
         setWidthError(true);
         setHeigthError(true);
-      } else if (selectedUnit?.name === "Hapa") {
+      } else if (selectedUnit?.name === 'Hapa') {
         setLengthError(true);
         setWidthError(true);
         setHeigthError(true);
-      } else if (selectedUnit?.name === "Circular Tank") {
+      } else if (selectedUnit?.name === 'Circular Tank') {
         setDepthError(true);
         setRadiusError(true);
       } else {
@@ -187,7 +183,7 @@ const CalculateVolume: React.FC<Props> = ({
     }
   };
   const handleBlur = (field: any, setError: any) => {
-    setError(field === "");
+    setError(field === '');
   };
 
   useEffect(() => {
@@ -253,10 +249,10 @@ const CalculateVolume: React.FC<Props> = ({
           display="flex"
           justifyContent="space-between"
           gap={2}
-          alignItems={"center"}
+          alignItems={'center'}
           sx={{
-            borderTopLeftRadius: "14px",
-            borderTopRightRadius: "14px",
+            borderTopLeftRadius: '14px',
+            borderTopRightRadius: '14px',
           }}
         >
           <Typography
@@ -276,7 +272,7 @@ const CalculateVolume: React.FC<Props> = ({
             alignItems="center"
             sx={{
               opacity: 0.5,
-              cursor: "pointer",
+              cursor: 'pointer',
             }}
             onClick={handleClose}
           >
@@ -286,10 +282,10 @@ const CalculateVolume: React.FC<Props> = ({
         <Box
           px={3}
           pt={2}
-          display={"flex"}
-          alignItems={"center"}
+          display={'flex'}
+          alignItems={'center'}
           gap={1}
-          justifyContent={"start"}
+          justifyContent={'start'}
         >
           <Typography variant="body2" color="black" fontWeight={500}>
             {selectedUnit?.name} Formula
@@ -299,9 +295,9 @@ const CalculateVolume: React.FC<Props> = ({
             {selectedUnit?.formula}
           </Typography>
         </Box>
-        {selectedUnit?.name === "Rectangular Tank" ? (
-          <Box padding={3} display={"flex"} alignItems={"start"} gap={1}>
-            <Box position={"relative"}>
+        {selectedUnit?.name === 'Rectangular Tank' ? (
+          <Box padding={3} display={'flex'} alignItems={'start'} gap={1}>
+            <Box position={'relative'}>
               <TextField
                 label="Length *"
                 variant="outlined"
@@ -310,7 +306,7 @@ const CalculateVolume: React.FC<Props> = ({
                 className="form-input"
                 sx={{
                   marginBottom: 2,
-                  width: "100%",
+                  width: '100%',
                 }}
                 focused
                 value={length}
@@ -324,20 +320,20 @@ const CalculateVolume: React.FC<Props> = ({
                 }}
                 onBlur={() => handleBlur(length, setLengthError)}
                 error={lengthError}
-                helperText={lengthError ? "This field is required" : ""}
+                helperText={lengthError ? 'This field is required' : ''}
               />
               <Typography
                 variant="body2"
                 color="#555555AC"
                 sx={{
-                  position: "absolute",
+                  position: 'absolute',
                   right: 6,
-                  top: "28px",
-                  transform: "translate(-6px, -50%)",
-                  backgroundColor: "#fff",
+                  top: '28px',
+                  transform: 'translate(-6px, -50%)',
+                  backgroundColor: '#fff',
                   height: 30,
-                  display: "grid",
-                  placeItems: "center",
+                  display: 'grid',
+                  placeItems: 'center',
                   zIndex: 1,
                   pl: 1,
                 }}
@@ -346,7 +342,7 @@ const CalculateVolume: React.FC<Props> = ({
               </Typography>
             </Box>
 
-            <Box position={"relative"}>
+            <Box position={'relative'}>
               <TextField
                 label="Width *"
                 variant="outlined"
@@ -368,20 +364,20 @@ const CalculateVolume: React.FC<Props> = ({
                 }}
                 onBlur={() => handleBlur(width, setWidthError)}
                 error={widthError}
-                helperText={widthError ? "This field is required" : ""}
+                helperText={widthError ? 'This field is required' : ''}
               />
               <Typography
                 variant="body2"
                 color="#555555AC"
                 sx={{
-                  position: "absolute",
+                  position: 'absolute',
                   right: 6,
-                  top: "28px",
-                  transform: "translate(-6px, -50%)",
-                  backgroundColor: "#fff",
+                  top: '28px',
+                  transform: 'translate(-6px, -50%)',
+                  backgroundColor: '#fff',
                   height: 30,
-                  display: "grid",
-                  placeItems: "center",
+                  display: 'grid',
+                  placeItems: 'center',
                   zIndex: 1,
                   pl: 1,
                 }}
@@ -390,7 +386,7 @@ const CalculateVolume: React.FC<Props> = ({
               </Typography>
             </Box>
 
-            <Box position={"relative"}>
+            <Box position={'relative'}>
               <TextField
                 label="Depth *"
                 variant="outlined"
@@ -412,20 +408,20 @@ const CalculateVolume: React.FC<Props> = ({
                 }}
                 onBlur={() => handleBlur(depth, setDepthError)}
                 error={depthError}
-                helperText={depthError ? "This field is required" : ""}
+                helperText={depthError ? 'This field is required' : ''}
               />
               <Typography
                 variant="body2"
                 color="#555555AC"
                 sx={{
-                  position: "absolute",
+                  position: 'absolute',
                   right: 6,
-                  top: "28px",
-                  transform: "translate(-6px, -50%)",
-                  backgroundColor: "#fff",
+                  top: '28px',
+                  transform: 'translate(-6px, -50%)',
+                  backgroundColor: '#fff',
                   height: 30,
-                  display: "grid",
-                  placeItems: "center",
+                  display: 'grid',
+                  placeItems: 'center',
                   zIndex: 1,
                   pl: 1,
                 }}
@@ -434,9 +430,9 @@ const CalculateVolume: React.FC<Props> = ({
               </Typography>
             </Box>
           </Box>
-        ) : selectedUnit?.name === "Earthen Pond" ? (
-          <Box padding={3} display={"flex"} alignItems={"start"} gap={1}>
-            <Box position={"relative"}>
+        ) : selectedUnit?.name === 'Earthen Pond' ? (
+          <Box padding={3} display={'flex'} alignItems={'start'} gap={1}>
+            <Box position={'relative'}>
               <TextField
                 label="Surface area *"
                 variant="outlined"
@@ -458,20 +454,20 @@ const CalculateVolume: React.FC<Props> = ({
                 }}
                 onBlur={() => handleBlur(area, setAreaError)}
                 error={areaError}
-                helperText={areaError ? "This field is required" : ""}
+                helperText={areaError ? 'This field is required' : ''}
               />
               <Typography
                 variant="body2"
                 color="#555555AC"
                 sx={{
-                  position: "absolute",
+                  position: 'absolute',
                   right: 6,
-                  top: "28px",
-                  transform: "translate(-6px, -50%)",
-                  backgroundColor: "#fff",
+                  top: '28px',
+                  transform: 'translate(-6px, -50%)',
+                  backgroundColor: '#fff',
                   height: 30,
-                  display: "grid",
-                  placeItems: "center",
+                  display: 'grid',
+                  placeItems: 'center',
                   zIndex: 1,
                   pl: 1,
                 }}
@@ -480,7 +476,7 @@ const CalculateVolume: React.FC<Props> = ({
               </Typography>
             </Box>
 
-            <Box position={"relative"}>
+            <Box position={'relative'}>
               <TextField
                 label="Depth *"
                 variant="outlined"
@@ -502,20 +498,20 @@ const CalculateVolume: React.FC<Props> = ({
                 }}
                 onBlur={() => handleBlur(depth, setDepthError)}
                 error={depthError}
-                helperText={depthError ? "This field is required" : ""}
+                helperText={depthError ? 'This field is required' : ''}
               />
               <Typography
                 variant="body2"
                 color="#555555AC"
                 sx={{
-                  position: "absolute",
+                  position: 'absolute',
                   right: 6,
-                  top: "28px",
-                  transform: "translate(-6px, -50%)",
-                  backgroundColor: "#fff",
+                  top: '28px',
+                  transform: 'translate(-6px, -50%)',
+                  backgroundColor: '#fff',
                   height: 30,
-                  display: "grid",
-                  placeItems: "center",
+                  display: 'grid',
+                  placeItems: 'center',
                   zIndex: 1,
                   pl: 1,
                 }}
@@ -524,9 +520,9 @@ const CalculateVolume: React.FC<Props> = ({
               </Typography>
             </Box>
           </Box>
-        ) : selectedUnit?.name === "Raceway" ? (
-          <Box padding={3} display={"flex"} alignItems={"start"} gap={1}>
-            <Box position={"relative"}>
+        ) : selectedUnit?.name === 'Raceway' ? (
+          <Box padding={3} display={'flex'} alignItems={'start'} gap={1}>
+            <Box position={'relative'}>
               <TextField
                 label="Length *"
                 variant="outlined"
@@ -548,20 +544,20 @@ const CalculateVolume: React.FC<Props> = ({
                 }}
                 onBlur={() => handleBlur(length, setLengthError)}
                 error={lengthError}
-                helperText={lengthError ? "This field is required" : ""}
+                helperText={lengthError ? 'This field is required' : ''}
               />
               <Typography
                 variant="body2"
                 color="#555555AC"
                 sx={{
-                  position: "absolute",
+                  position: 'absolute',
                   right: 6,
-                  top: "28px",
-                  transform: "translate(-6px, -50%)",
-                  backgroundColor: "#fff",
+                  top: '28px',
+                  transform: 'translate(-6px, -50%)',
+                  backgroundColor: '#fff',
                   height: 30,
-                  display: "grid",
-                  placeItems: "center",
+                  display: 'grid',
+                  placeItems: 'center',
                   zIndex: 1,
                   pl: 1,
                 }}
@@ -570,7 +566,7 @@ const CalculateVolume: React.FC<Props> = ({
               </Typography>
             </Box>
 
-            <Box position={"relative"}>
+            <Box position={'relative'}>
               <TextField
                 label="Width *"
                 variant="outlined"
@@ -592,20 +588,20 @@ const CalculateVolume: React.FC<Props> = ({
                 }}
                 onBlur={() => handleBlur(width, setWidthError)}
                 error={widthError}
-                helperText={widthError ? "This field is required" : ""}
+                helperText={widthError ? 'This field is required' : ''}
               />
               <Typography
                 variant="body2"
                 color="#555555AC"
                 sx={{
-                  position: "absolute",
+                  position: 'absolute',
                   right: 6,
-                  top: "28px",
-                  transform: "translate(-6px, -50%)",
-                  backgroundColor: "#fff",
+                  top: '28px',
+                  transform: 'translate(-6px, -50%)',
+                  backgroundColor: '#fff',
                   height: 30,
-                  display: "grid",
-                  placeItems: "center",
+                  display: 'grid',
+                  placeItems: 'center',
                   zIndex: 1,
                   pl: 1,
                 }}
@@ -614,7 +610,7 @@ const CalculateVolume: React.FC<Props> = ({
               </Typography>
             </Box>
 
-            <Box position={"relative"}>
+            <Box position={'relative'}>
               <TextField
                 label="Depth *"
                 variant="outlined"
@@ -636,20 +632,20 @@ const CalculateVolume: React.FC<Props> = ({
                 }}
                 onBlur={() => handleBlur(depth, setDepthError)}
                 error={depthError}
-                helperText={depthError ? "This field is required" : ""}
+                helperText={depthError ? 'This field is required' : ''}
               />
               <Typography
                 variant="body2"
                 color="#555555AC"
                 sx={{
-                  position: "absolute",
+                  position: 'absolute',
                   right: 6,
-                  top: "28px",
-                  transform: "translate(-6px, -50%)",
-                  backgroundColor: "#fff",
+                  top: '28px',
+                  transform: 'translate(-6px, -50%)',
+                  backgroundColor: '#fff',
                   height: 30,
-                  display: "grid",
-                  placeItems: "center",
+                  display: 'grid',
+                  placeItems: 'center',
                   zIndex: 1,
                   pl: 1,
                 }}
@@ -658,9 +654,9 @@ const CalculateVolume: React.FC<Props> = ({
               </Typography>
             </Box>
           </Box>
-        ) : selectedUnit?.name === "Cage" ? (
-          <Box padding={3} display={"flex"} alignItems={"start"} gap={1}>
-            <Box position={"relative"}>
+        ) : selectedUnit?.name === 'Cage' ? (
+          <Box padding={3} display={'flex'} alignItems={'start'} gap={1}>
+            <Box position={'relative'}>
               <TextField
                 label="Length *"
                 variant="outlined"
@@ -682,20 +678,20 @@ const CalculateVolume: React.FC<Props> = ({
                 }}
                 onBlur={() => handleBlur(length, setLengthError)}
                 error={lengthError}
-                helperText={lengthError ? "This field is required" : ""}
+                helperText={lengthError ? 'This field is required' : ''}
               />
               <Typography
                 variant="body2"
                 color="#555555AC"
                 sx={{
-                  position: "absolute",
+                  position: 'absolute',
                   right: 6,
-                  top: "28px",
-                  transform: "translate(-6px, -50%)",
-                  backgroundColor: "#fff",
+                  top: '28px',
+                  transform: 'translate(-6px, -50%)',
+                  backgroundColor: '#fff',
                   height: 30,
-                  display: "grid",
-                  placeItems: "center",
+                  display: 'grid',
+                  placeItems: 'center',
                   zIndex: 1,
                   pl: 1,
                 }}
@@ -704,7 +700,7 @@ const CalculateVolume: React.FC<Props> = ({
               </Typography>
             </Box>
 
-            <Box position={"relative"}>
+            <Box position={'relative'}>
               <TextField
                 label="Width *"
                 variant="outlined"
@@ -726,21 +722,21 @@ const CalculateVolume: React.FC<Props> = ({
                 }}
                 onBlur={() => handleBlur(width, setWidthError)}
                 error={widthError}
-                helperText={widthError ? "This field is required" : ""}
+                helperText={widthError ? 'This field is required' : ''}
               />
 
               <Typography
                 variant="body2"
                 color="#555555AC"
                 sx={{
-                  position: "absolute",
+                  position: 'absolute',
                   right: 6,
-                  top: "28px",
-                  transform: "translate(-6px, -50%)",
-                  backgroundColor: "#fff",
+                  top: '28px',
+                  transform: 'translate(-6px, -50%)',
+                  backgroundColor: '#fff',
                   height: 30,
-                  display: "grid",
-                  placeItems: "center",
+                  display: 'grid',
+                  placeItems: 'center',
                   zIndex: 1,
                   pl: 1,
                 }}
@@ -749,7 +745,7 @@ const CalculateVolume: React.FC<Props> = ({
               </Typography>
             </Box>
 
-            <Box position={"relative"}>
+            <Box position={'relative'}>
               <TextField
                 label="Height *"
                 variant="outlined"
@@ -771,20 +767,20 @@ const CalculateVolume: React.FC<Props> = ({
                 }}
                 onBlur={() => handleBlur(heigth, setHeigthError)}
                 error={heigthError}
-                helperText={heigthError ? "This field is required" : ""}
+                helperText={heigthError ? 'This field is required' : ''}
               />
               <Typography
                 variant="body2"
                 color="#555555AC"
                 sx={{
-                  position: "absolute",
+                  position: 'absolute',
                   right: 6,
-                  top: "28px",
-                  transform: "translate(-6px, -50%)",
-                  backgroundColor: "#fff",
+                  top: '28px',
+                  transform: 'translate(-6px, -50%)',
+                  backgroundColor: '#fff',
                   height: 30,
-                  display: "grid",
-                  placeItems: "center",
+                  display: 'grid',
+                  placeItems: 'center',
                   zIndex: 1,
                   pl: 1,
                 }}
@@ -793,9 +789,9 @@ const CalculateVolume: React.FC<Props> = ({
               </Typography>
             </Box>
           </Box>
-        ) : selectedUnit?.name === "Hapa" ? (
-          <Box padding={3} display={"flex"} alignItems={"start"} gap={1}>
-            <Box position={"relative"}>
+        ) : selectedUnit?.name === 'Hapa' ? (
+          <Box padding={3} display={'flex'} alignItems={'start'} gap={1}>
+            <Box position={'relative'}>
               <TextField
                 label="Length *"
                 variant="outlined"
@@ -817,20 +813,20 @@ const CalculateVolume: React.FC<Props> = ({
                 }}
                 onBlur={() => handleBlur(length, setLengthError)}
                 error={lengthError}
-                helperText={lengthError ? "This field is required" : ""}
+                helperText={lengthError ? 'This field is required' : ''}
               />
               <Typography
                 variant="body2"
                 color="#555555AC"
                 sx={{
-                  position: "absolute",
+                  position: 'absolute',
                   right: 6,
-                  top: "28px",
-                  transform: "translate(-6px, -50%)",
-                  backgroundColor: "#fff",
+                  top: '28px',
+                  transform: 'translate(-6px, -50%)',
+                  backgroundColor: '#fff',
                   height: 30,
-                  display: "grid",
-                  placeItems: "center",
+                  display: 'grid',
+                  placeItems: 'center',
                   zIndex: 1,
                   pl: 1,
                 }}
@@ -839,7 +835,7 @@ const CalculateVolume: React.FC<Props> = ({
               </Typography>
             </Box>
 
-            <Box position={"relative"}>
+            <Box position={'relative'}>
               <TextField
                 label="Width *"
                 variant="outlined"
@@ -861,20 +857,20 @@ const CalculateVolume: React.FC<Props> = ({
                 }}
                 onBlur={() => handleBlur(width, setWidthError)}
                 error={widthError}
-                helperText={widthError ? "This field is required" : ""}
+                helperText={widthError ? 'This field is required' : ''}
               />
               <Typography
                 variant="body2"
                 color="#555555AC"
                 sx={{
-                  position: "absolute",
+                  position: 'absolute',
                   right: 6,
-                  top: "28px",
-                  transform: "translate(-6px, -50%)",
-                  backgroundColor: "#fff",
+                  top: '28px',
+                  transform: 'translate(-6px, -50%)',
+                  backgroundColor: '#fff',
                   height: 30,
-                  display: "grid",
-                  placeItems: "center",
+                  display: 'grid',
+                  placeItems: 'center',
                   zIndex: 1,
                   pl: 1,
                 }}
@@ -883,7 +879,7 @@ const CalculateVolume: React.FC<Props> = ({
               </Typography>
             </Box>
 
-            <Box position={"relative"}>
+            <Box position={'relative'}>
               <TextField
                 label="Height *"
                 variant="outlined"
@@ -905,20 +901,20 @@ const CalculateVolume: React.FC<Props> = ({
                 }}
                 onBlur={() => handleBlur(heigth, setHeigthError)}
                 error={heigthError}
-                helperText={heigthError ? "This field is required" : ""}
+                helperText={heigthError ? 'This field is required' : ''}
               />
               <Typography
                 variant="body2"
                 color="#555555AC"
                 sx={{
-                  position: "absolute",
+                  position: 'absolute',
                   right: 6,
-                  top: "28px",
-                  transform: "translate(-6px, -50%)",
-                  backgroundColor: "#fff",
+                  top: '28px',
+                  transform: 'translate(-6px, -50%)',
+                  backgroundColor: '#fff',
                   height: 30,
-                  display: "grid",
-                  placeItems: "center",
+                  display: 'grid',
+                  placeItems: 'center',
                   zIndex: 1,
                   pl: 1,
                 }}
@@ -927,9 +923,9 @@ const CalculateVolume: React.FC<Props> = ({
               </Typography>
             </Box>
           </Box>
-        ) : selectedUnit?.name === "Circular Tank" ? (
-          <Box padding={3} display={"flex"} alignItems={"start"} gap={1}>
-            <Box position={"relative"}>
+        ) : selectedUnit?.name === 'Circular Tank' ? (
+          <Box padding={3} display={'flex'} alignItems={'start'} gap={1}>
+            <Box position={'relative'}>
               <TextField
                 label="Radius *"
                 variant="outlined"
@@ -951,20 +947,20 @@ const CalculateVolume: React.FC<Props> = ({
                 }}
                 onBlur={() => handleBlur(radius, setRadiusError)}
                 error={radiusError}
-                helperText={radiusError ? "This field is required" : ""}
+                helperText={radiusError ? 'This field is required' : ''}
               />
               <Typography
                 variant="body2"
                 color="#555555AC"
                 sx={{
-                  position: "absolute",
+                  position: 'absolute',
                   right: 6,
-                  top: "28px",
-                  transform: "translate(-6px, -50%)",
-                  backgroundColor: "#fff",
+                  top: '28px',
+                  transform: 'translate(-6px, -50%)',
+                  backgroundColor: '#fff',
                   height: 30,
-                  display: "grid",
-                  placeItems: "center",
+                  display: 'grid',
+                  placeItems: 'center',
                   zIndex: 1,
                   pl: 1,
                 }}
@@ -973,7 +969,7 @@ const CalculateVolume: React.FC<Props> = ({
               </Typography>
             </Box>
 
-            <Box position={"relative"}>
+            <Box position={'relative'}>
               <TextField
                 label="Depth *"
                 variant="outlined"
@@ -995,20 +991,20 @@ const CalculateVolume: React.FC<Props> = ({
                 }}
                 onBlur={() => handleBlur(depth, setDepthError)}
                 error={depthError}
-                helperText={depthError ? "This field is required" : ""}
+                helperText={depthError ? 'This field is required' : ''}
               />
               <Typography
                 variant="body2"
                 color="#555555AC"
                 sx={{
-                  position: "absolute",
+                  position: 'absolute',
                   right: 6,
-                  top: "28px",
-                  transform: "translate(-6px, -50%)",
-                  backgroundColor: "#fff",
+                  top: '28px',
+                  transform: 'translate(-6px, -50%)',
+                  backgroundColor: '#fff',
                   height: 30,
-                  display: "grid",
-                  placeItems: "center",
+                  display: 'grid',
+                  placeItems: 'center',
                   zIndex: 1,
                   pl: 1,
                 }}
@@ -1018,8 +1014,8 @@ const CalculateVolume: React.FC<Props> = ({
             </Box>
           </Box>
         ) : (
-          <Box padding={3} display={"flex"} alignItems={"start"} gap={1}>
-            <Box position={"relative"}>
+          <Box padding={3} display={'flex'} alignItems={'start'} gap={1}>
+            <Box position={'relative'}>
               <TextField
                 label="Radius *"
                 variant="outlined"
@@ -1041,20 +1037,20 @@ const CalculateVolume: React.FC<Props> = ({
                 }}
                 onBlur={() => handleBlur(radius, setRadiusError)}
                 error={radiusError}
-                helperText={radiusError ? "This field is required" : ""}
+                helperText={radiusError ? 'This field is required' : ''}
               />
               <Typography
                 variant="body2"
                 color="#555555AC"
                 sx={{
-                  position: "absolute",
+                  position: 'absolute',
                   right: 6,
-                  top: "28px",
-                  transform: "translate(-6px, -50%)",
-                  backgroundColor: "#fff",
+                  top: '28px',
+                  transform: 'translate(-6px, -50%)',
+                  backgroundColor: '#fff',
                   height: 30,
-                  display: "grid",
-                  placeItems: "center",
+                  display: 'grid',
+                  placeItems: 'center',
                   zIndex: 1,
                   pl: 1,
                 }}
@@ -1062,7 +1058,7 @@ const CalculateVolume: React.FC<Props> = ({
                 m
               </Typography>
             </Box>
-            <Box position={"relative"}>
+            <Box position={'relative'}>
               <TextField
                 label="Length *"
                 variant="outlined"
@@ -1084,20 +1080,20 @@ const CalculateVolume: React.FC<Props> = ({
                 }}
                 onBlur={() => handleBlur(length, setLengthError)}
                 error={lengthError}
-                helperText={lengthError ? "This field is required" : ""}
+                helperText={lengthError ? 'This field is required' : ''}
               />
               <Typography
                 variant="body2"
                 color="#555555AC"
                 sx={{
-                  position: "absolute",
+                  position: 'absolute',
                   right: 6,
-                  top: "28px",
-                  transform: "translate(-6px, -50%)",
-                  backgroundColor: "#fff",
+                  top: '28px',
+                  transform: 'translate(-6px, -50%)',
+                  backgroundColor: '#fff',
                   height: 30,
-                  display: "grid",
-                  placeItems: "center",
+                  display: 'grid',
+                  placeItems: 'center',
                   zIndex: 1,
                   pl: 1,
                 }}
@@ -1106,7 +1102,7 @@ const CalculateVolume: React.FC<Props> = ({
               </Typography>
             </Box>
 
-            <Box position={"relative"}>
+            <Box position={'relative'}>
               <TextField
                 label="Width *"
                 variant="outlined"
@@ -1128,20 +1124,20 @@ const CalculateVolume: React.FC<Props> = ({
                 }}
                 onBlur={() => handleBlur(width, setWidthError)}
                 error={widthError}
-                helperText={widthError ? "This field is required" : ""}
+                helperText={widthError ? 'This field is required' : ''}
               />
               <Typography
                 variant="body2"
                 color="#555555AC"
                 sx={{
-                  position: "absolute",
+                  position: 'absolute',
                   right: 6,
-                  top: "28px",
-                  transform: "translate(-6px, -50%)",
-                  backgroundColor: "#fff",
+                  top: '28px',
+                  transform: 'translate(-6px, -50%)',
+                  backgroundColor: '#fff',
                   height: 30,
-                  display: "grid",
-                  placeItems: "center",
+                  display: 'grid',
+                  placeItems: 'center',
                   zIndex: 1,
                   pl: 1,
                 }}
@@ -1150,7 +1146,7 @@ const CalculateVolume: React.FC<Props> = ({
               </Typography>
             </Box>
 
-            <Box position={"relative"}>
+            <Box position={'relative'}>
               <TextField
                 label="Depth *"
                 variant="outlined"
@@ -1172,20 +1168,20 @@ const CalculateVolume: React.FC<Props> = ({
                 }}
                 onBlur={() => handleBlur(depth, setDepthError)}
                 error={depthError}
-                helperText={depthError ? "This field is required" : ""}
+                helperText={depthError ? 'This field is required' : ''}
               />
               <Typography
                 variant="body2"
                 color="#555555AC"
                 sx={{
-                  position: "absolute",
+                  position: 'absolute',
                   right: 6,
-                  top: "28px",
-                  transform: "translate(-6px, -50%)",
-                  backgroundColor: "#fff",
+                  top: '28px',
+                  transform: 'translate(-6px, -50%)',
+                  backgroundColor: '#fff',
                   height: 30,
-                  display: "grid",
-                  placeItems: "center",
+                  display: 'grid',
+                  placeItems: 'center',
                   zIndex: 1,
                   pl: 1,
                 }}
@@ -1222,14 +1218,14 @@ const CalculateVolume: React.FC<Props> = ({
             type="button"
             variant="contained"
             sx={{
-              background: "#06A19B",
-              fontWeight: "bold",
-              padding: "8px 24px",
-              width: "fit-content",
-              textTransform: "capitalize",
-              borderRadius: "12px",
-              marginLeft: "auto",
-              display: "block",
+              background: '#06A19B',
+              fontWeight: 'bold',
+              padding: '8px 24px',
+              width: 'fit-content',
+              textTransform: 'capitalize',
+              borderRadius: '12px',
+              marginLeft: 'auto',
+              display: 'block',
             }}
             onClick={handleCalculate}
           >

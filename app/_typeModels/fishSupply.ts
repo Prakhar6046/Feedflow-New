@@ -1,39 +1,39 @@
-import { Dayjs } from "dayjs";
-import { Farm } from "./Farm";
+import { Dayjs } from 'dayjs';
+import { Farm } from './Farm';
 
 export interface FishSupply {
-  id: Number;
-  organisation: Number;
-  batchNumber: String;
+  id: number;
+  organisation: number;
+  batchNumber: string;
   hatchingDate: Dayjs | any;
   spawningDate: Dayjs | any;
-  spawningNumber: Number;
-  age: String;
-  broodstockMale: String;
-  broodstockFemale: String;
-  fishFarm: String;
-  fishFarmId: String;
-  status: String;
-  createdBy: Number;
-  updatedBy: String;
-  createdAt: String;
-  updatedAt: String;
-  organisationId: String;
-  productionUnits: String;
+  spawningNumber: number;
+  age: string;
+  broodstockMale: string;
+  broodstockFemale: string;
+  fishFarm: string;
+  fishFarmId: string;
+  status: string;
+  createdBy: number;
+  updatedBy: string;
+  createdAt: string;
+  updatedAt: string;
+  organisationId: string;
+  productionUnits: string;
   creator: {
     hatchery: [
       {
-        id: String;
-        name: String;
-        code: String;
-        altitude: String;
-        fishSpecie: String;
-        createdBy: Number;
-        updatedBy: String;
-        createdAt: String;
-        updatedAt: String;
-        organisationId: Number;
-      }
+        id: string;
+        name: string;
+        code: string;
+        altitude: string;
+        fishSpecie: string;
+        createdBy: number;
+        updatedBy: string;
+        createdAt: string;
+        updatedAt: string;
+        organisationId: number;
+      },
     ];
   };
   farm: Farm;

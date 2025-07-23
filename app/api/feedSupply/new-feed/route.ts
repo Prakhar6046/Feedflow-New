@@ -1,6 +1,6 @@
-import { verifyAndRefreshToken } from "@/app/_lib/auth/verifyAndRefreshToken";
-import prisma from "@/prisma/prisma";
-import { NextRequest, NextResponse } from "next/server";
+import { verifyAndRefreshToken } from '@/app/_lib/auth/verifyAndRefreshToken';
+import prisma from '@/prisma/prisma';
+import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(request: NextRequest) {
   try {
@@ -9,9 +9,9 @@ export async function POST(request: NextRequest) {
       return new NextResponse(
         JSON.stringify({
           status: false,
-          message: "Unauthorized: Token missing or invalid",
+          message: 'Unauthorized: Token missing or invalid',
         }),
-        { status: 401 }
+        { status: 401 },
       );
     }
     const body = await request.json();
@@ -21,13 +21,13 @@ export async function POST(request: NextRequest) {
       JSON.stringify({
         status: true,
         data: newFeedSupply,
-        message: "New feed supply created",
-      })
+        message: 'New feed supply created',
+      }),
     );
   } catch (error) {
     return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 }
+      { error: 'Internal Server Error' },
+      { status: 500 },
     );
   }
 }

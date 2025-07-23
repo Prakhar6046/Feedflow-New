@@ -1,6 +1,6 @@
-import { verifyAndRefreshToken } from "@/app/_lib/auth/verifyAndRefreshToken";
-import prisma from "@/prisma/prisma";
-import { NextRequest, NextResponse } from "next/server";
+import { verifyAndRefreshToken } from '@/app/_lib/auth/verifyAndRefreshToken';
+import prisma from '@/prisma/prisma';
+import { NextRequest, NextResponse } from 'next/server';
 
 export const GET = async (request: NextRequest) => {
   try {
@@ -9,14 +9,14 @@ export const GET = async (request: NextRequest) => {
       return new NextResponse(
         JSON.stringify({
           status: false,
-          message: "Unauthorized: Token missing or invalid",
+          message: 'Unauthorized: Token missing or invalid',
         }),
-        { status: 401 }
+        { status: 401 },
       );
     }
     const searchParams = request.nextUrl.searchParams;
-    const role = searchParams.get("role");
-    const query = searchParams.get("query");
+    const role = searchParams.get('role');
+    const query = searchParams.get('query');
 
     //getting all growth models
     const growthModels = await prisma.growthModel.findMany({
@@ -27,7 +27,7 @@ export const GET = async (request: NextRequest) => {
       JSON.stringify({ status: true, data: growthModels }),
       {
         status: 200,
-      }
+      },
     );
   } catch (error) {
     return new NextResponse(JSON.stringify({ status: false, error }), {
@@ -43,25 +43,25 @@ export const POST = async (request: NextRequest) => {
       return new NextResponse(
         JSON.stringify({
           status: false,
-          message: "Unauthorized: Token missing or invalid",
+          message: 'Unauthorized: Token missing or invalid',
         }),
-        { status: 401 }
+        { status: 401 },
       );
     }
     const body = await request.json();
     if (!body.organisationId) {
       return new NextResponse(
-        JSON.stringify({ message: "Missing and Invalid orgainsation id" }),
-        { status: 404 }
+        JSON.stringify({ message: 'Missing and Invalid orgainsation id' }),
+        { status: 404 },
       );
     }
 
     if (!body.model) {
       return new NextResponse(
         JSON.stringify({
-          message: "model data not found",
+          message: 'model data not found',
         }),
-        { status: 404 }
+        { status: 404 },
       );
     }
     //creating new model
@@ -77,8 +77,8 @@ export const POST = async (request: NextRequest) => {
     });
 
     return new NextResponse(
-      JSON.stringify({ message: "Growth model added succussfully" }),
-      { status: 200 }
+      JSON.stringify({ message: 'Growth model added succussfully' }),
+      { status: 200 },
     );
   } catch (error) {
     return new NextResponse(JSON.stringify(error), { status: 500 });

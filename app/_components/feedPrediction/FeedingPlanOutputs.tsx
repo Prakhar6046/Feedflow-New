@@ -1,12 +1,12 @@
-"use clinet";
+'use clinet';
 import {
   calculateFishGrowth,
   CommonFeedPredictionHead,
   exportFeedPredictionToXlsx,
   getLocalItem,
-} from "@/app/_lib/utils";
-import { FarmGroup } from "@/app/_typeModels/production";
-import { useAppDispatch } from "@/lib/hooks";
+} from '@/app/_lib/utils';
+import { FarmGroup } from '@/app/_typeModels/production';
+import { useAppDispatch } from '@/lib/hooks';
 import {
   Box,
   Button,
@@ -19,20 +19,20 @@ import {
   Stack,
   TextField,
   Typography,
-} from "@mui/material";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import dayjs from "dayjs";
-import html2canvas from "html2canvas";
-import jsPDF from "jspdf";
-import React, { useEffect, useState } from "react";
-import { createRoot } from "react-dom/client";
-import { Controller, useForm } from "react-hook-form";
-import FishGrowthChart from "../charts/FishGrowthChart";
-import FishGrowthTable from "../table/FishGrowthTable";
-import { FishFeedingData } from "./AdHoc";
-import Loader from "../Loader";
+} from '@mui/material';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import dayjs from 'dayjs';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
+import React, { useEffect, useState } from 'react';
+import { createRoot } from 'react-dom/client';
+import { Controller, useForm } from 'react-hook-form';
+import FishGrowthChart from '../charts/FishGrowthChart';
+import FishGrowthTable from '../table/FishGrowthTable';
+import { FishFeedingData } from './AdHoc';
+import Loader from '../Loader';
 
 import {
   Paper,
@@ -42,7 +42,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-} from "@mui/material";
+} from '@mui/material';
 // import MenuItem from "@mui/material/MenuItem";
 
 interface FormInputs {
@@ -63,16 +63,16 @@ export interface FarmsFishGrowth {
   fishGrowthData: FishFeedingData[];
 }
 export const timeIntervalOptions = [
-  { id: 1, label: "Daily", value: 1 },
-  { id: 2, label: "Weekly", value: 7 },
-  { id: 3, label: "Bi-Weekly", value: 14 },
-  { id: 4, label: "Monthly", value: 30 },
+  { id: 1, label: 'Daily', value: 1 },
+  { id: 2, label: 'Weekly', value: 7 },
+  { id: 3, label: 'Bi-Weekly', value: 14 },
+  { id: 4, label: 'Monthly', value: 30 },
 ];
 export const tempSelectionOptions = [
-  { label: "Use Farm Profile", value: "default" },
+  { label: 'Use Farm Profile', value: 'default' },
   {
-    label: "Specify",
-    value: "new",
+    label: 'Specify',
+    value: 'new',
   },
 ];
 function FeedingPlanOutput() {
@@ -90,7 +90,7 @@ function FeedingPlanOutput() {
   const [farmOption, setFarmOptions] = useState<any[]>([]);
   const [unitOption, setUnitOptions] = useState<any[]>([]);
   const [startDate, setStartDate] = useState<string | null>(
-    dayjs().toISOString()
+    dayjs().toISOString(),
   );
   const [endDate, setEndDate] = useState<string | null>(dayjs().toISOString());
   const [flatData, setFlatData] = useState<FarmsFishGrowth[]>([]);
@@ -108,7 +108,7 @@ function FeedingPlanOutput() {
     }
     const formatedData = flatData
       ?.filter(
-        (val) => val.farmId == watch("farms") && val.unitId == watch("units")
+        (val) => val.farmId == watch('farms') && val.unitId == watch('units'),
       )
       .flatMap((growth: any) =>
         growth.fishGrowthData.map((val: any) => ({
@@ -122,24 +122,24 @@ function FeedingPlanOutput() {
           estimatedFCR: val.estimatedFCR,
           feedIntake: val.feedIntake,
           feedingRate: val.feedingRate,
-        }))
+        })),
       );
     exportFeedPredictionToXlsx(
       e,
       CommonFeedPredictionHead,
       formatedData,
-      "feeding_plan_Data"
+      'feeding_plan_Data',
     );
   };
   const CreateFeedPredictionPDF = async (
-    type: "table" | "graph" | "feedTable"
+    type: 'table' | 'graph' | 'feedTable',
   ) => {
     if (!flatData.length) {
       return;
     }
     const formatedData = flatData
       ?.filter(
-        (val) => val.farmId == watch("farms") && val.unitId == watch("units")
+        (val) => val.farmId == watch('farms') && val.unitId == watch('units'),
       )
       .flatMap((growth: any) =>
         growth.fishGrowthData.map((val: any) => ({
@@ -155,7 +155,7 @@ function FeedingPlanOutput() {
           feedingRate: val.feedingRate,
           farmName: growth.farm,
           unitName: growth.unit,
-        }))
+        })),
       );
 
     setLoading(true);
@@ -166,13 +166,13 @@ function FeedingPlanOutput() {
       }
       return results;
     };
-    const pdf = new jsPDF({ orientation: "landscape" });
+    const pdf = new jsPDF({ orientation: 'landscape' });
     const chunks = chunkArray(formatedData, 20);
 
-    for (let i = 0; i < (type === "table" ? chunks.length : 1); i++) {
-      const tempContainer = document.createElement("div");
+    for (let i = 0; i < (type === 'table' ? chunks.length : 1); i++) {
+      const tempContainer = document.createElement('div');
       document.body.appendChild(tempContainer);
-      const chartDiv = document.createElement("div");
+      const chartDiv = document.createElement('div');
       tempContainer.appendChild(chartDiv);
       const root = createRoot(chartDiv);
 
@@ -181,30 +181,30 @@ function FeedingPlanOutput() {
       root.render(
         <div
           style={{
-            maxWidth: "100vw",
-            width: "100%",
-            height: "100%",
-            fontFamily: "Arial, sans-serif",
-            margin: "auto",
+            maxWidth: '100vw',
+            width: '100%',
+            height: '100%',
+            fontFamily: 'Arial, sans-serif',
+            margin: 'auto',
           }}
         >
           <div
             style={{
-              padding: "12px 20px",
-              backgroundColor: "rgb(6,161,155)",
-              boxShadow: "0 0 3px rgb(6, 161, 155)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
+              padding: '12px 20px',
+              backgroundColor: 'rgb(6,161,155)',
+              boxShadow: '0 0 3px rgb(6, 161, 155)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
             }}
           >
             <img src="/static/img/logo-bigone.jpg" alt="Logo" width={200} />
             <div>
               <h6
                 style={{
-                  marginBottom: "4px",
-                  fontSize: "16px",
-                  color: "white",
+                  marginBottom: '4px',
+                  fontSize: '16px',
+                  color: 'white',
                 }}
               >
                 Feeding Plan Report
@@ -212,30 +212,30 @@ function FeedingPlanOutput() {
             </div>
           </div>
 
-          {type === "table" ? (
+          {type === 'table' ? (
             <div
               style={{
-                width: "100%",
-                marginBottom: "20px",
-                display: "flex",
-                alignItems: "start",
+                width: '100%',
+                marginBottom: '20px',
+                display: 'flex',
+                alignItems: 'start',
               }}
             >
               <div
                 style={{
-                  width: "100%",
-                  margin: "20px",
-                  display: "flex",
-                  alignItems: "center",
+                  width: '100%',
+                  margin: '20px',
+                  display: 'flex',
+                  alignItems: 'center',
                 }}
               >
                 <table
                   style={{
-                    width: "100%",
-                    borderCollapse: "collapse",
-                    fontSize: "12px",
-                    color: "#333",
-                    marginTop: "16px",
+                    width: '100%',
+                    borderCollapse: 'collapse',
+                    fontSize: '12px',
+                    color: '#333',
+                    marginTop: '16px',
                   }}
                 >
                   <thead>
@@ -245,19 +245,19 @@ function FeedingPlanOutput() {
                           <th
                             key={idx}
                             style={{
-                              border: "1px solid #ccc",
-                              padding: "8px 12px",
-                              textAlign: "left",
+                              border: '1px solid #ccc',
+                              padding: '8px 12px',
+                              textAlign: 'left',
                               borderTopLeftRadius:
                                 idx === CommonFeedPredictionHead.length - 1
-                                  ? "8px"
-                                  : "0px",
-                              background: "#efefef",
+                                  ? '8px'
+                                  : '0px',
+                              background: '#efefef',
                             }}
                           >
                             {head}
                           </th>
-                        )
+                        ),
                       )}
                     </tr>
                   </thead>
@@ -266,80 +266,80 @@ function FeedingPlanOutput() {
                       <tr key={index}>
                         <td
                           style={{
-                            border: "1px solid #ccc",
-                            padding: "8px 12px",
+                            border: '1px solid #ccc',
+                            padding: '8px 12px',
                           }}
                         >
                           {row.date}
                         </td>
                         <td
                           style={{
-                            border: "1px solid #ccc",
-                            padding: "8px 12px",
+                            border: '1px solid #ccc',
+                            padding: '8px 12px',
                           }}
                         >
                           {row.averageProjectedTemp}
                         </td>
                         <td
                           style={{
-                            border: "1px solid #ccc",
-                            padding: "8px 12px",
+                            border: '1px solid #ccc',
+                            padding: '8px 12px',
                           }}
                         >
                           {row.numberOfFish}
                         </td>
                         <td
                           style={{
-                            border: "1px solid #ccc",
-                            padding: "8px 12px",
+                            border: '1px solid #ccc',
+                            padding: '8px 12px',
                           }}
                         >
                           {row.fishSize}
                         </td>
                         <td
                           style={{
-                            border: "1px solid #ccc",
-                            padding: "8px 12px",
+                            border: '1px solid #ccc',
+                            padding: '8px 12px',
                           }}
                         >
                           {row.growth}
                         </td>
                         <td
                           style={{
-                            border: "1px solid #ccc",
-                            padding: "8px 12px",
+                            border: '1px solid #ccc',
+                            padding: '8px 12px',
                           }}
                         >
                           {row.feedType}
                         </td>
                         <td
                           style={{
-                            border: "1px solid #ccc",
-                            padding: "8px 12px",
+                            border: '1px solid #ccc',
+                            padding: '8px 12px',
                           }}
                         >
                           {row.feedSize}
                         </td>
                         <td
                           style={{
-                            border: "1px solid #ccc",
-                            padding: "8px 12px",
+                            border: '1px solid #ccc',
+                            padding: '8px 12px',
                           }}
                         >
                           {row.estimatedFCR}
                         </td>
                         <td
                           style={{
-                            border: "1px solid #ccc",
-                            padding: "8px 12px",
+                            border: '1px solid #ccc',
+                            padding: '8px 12px',
                           }}
                         >
                           {row.feedIntake}
                         </td>
                         <td
                           style={{
-                            border: "1px solid #ccc",
-                            padding: "8px 12px",
+                            border: '1px solid #ccc',
+                            padding: '8px 12px',
                           }}
                         >
                           {row.feedingRate}
@@ -350,8 +350,8 @@ function FeedingPlanOutput() {
                 </table>
               </div>
             </div>
-          ) : type === "graph" ? (
-            <div style={{ width: "100%", padding: "20px" }}>
+          ) : type === 'graph' ? (
+            <div style={{ width: '100%', padding: '20px' }}>
               <FishGrowthChart
                 xAxisData={formatedData?.map((value) => value?.date) || []}
                 yData={formatedData?.map((value) => value?.fishSize) || []}
@@ -359,25 +359,25 @@ function FeedingPlanOutput() {
               />
             </div>
           ) : (
-            <div style={{ width: "100%", padding: "20px" }}>
+            <div style={{ width: '100%', padding: '20px' }}>
               <Paper
                 sx={{
-                  overflow: "hidden",
-                  borderRadius: "14px",
-                  boxShadow: "0px 0px 16px 5px #0000001A",
+                  overflow: 'hidden',
+                  borderRadius: '14px',
+                  boxShadow: '0px 0px 16px 5px #0000001A',
                 }}
               >
                 {flatData
                   .filter(
                     (val) =>
-                      val.farmId === watch("farms") &&
-                      val.unitId === watch("units")
+                      val.farmId === watch('farms') &&
+                      val.unitId === watch('units'),
                   )
                   .map((growth, index) => {
                     const uniqueFeedTypes = Array.from(
                       new Set(
-                        growth?.fishGrowthData?.map((item) => item.feedType)
-                      )
+                        growth?.fishGrowthData?.map((item) => item.feedType),
+                      ),
                     );
                     const intakeByFeedType: Record<string, number> = {};
 
@@ -391,7 +391,7 @@ function FeedingPlanOutput() {
                         : intake;
                     });
                     const totalIntake: number = Object.values(
-                      intakeByFeedType
+                      intakeByFeedType,
                     ).reduce((a: number, b: number) => a + b, 0);
                     const totalBags: string = (totalIntake / 20).toFixed(2);
 
@@ -403,8 +403,8 @@ function FeedingPlanOutput() {
                               <TableCell
                                 sx={{
                                   borderBottom: 0,
-                                  color: "#fff",
-                                  background: "#06a19b",
+                                  color: '#fff',
+                                  background: '#06a19b',
                                   fontSize: {
                                     md: 16,
                                     xs: 14,
@@ -417,8 +417,8 @@ function FeedingPlanOutput() {
                               <TableCell
                                 sx={{
                                   borderBottom: 0,
-                                  color: "#fff",
-                                  background: "#06a19b",
+                                  color: '#fff',
+                                  background: '#06a19b',
                                   fontSize: {
                                     md: 16,
                                     xs: 14,
@@ -431,8 +431,8 @@ function FeedingPlanOutput() {
                               <TableCell
                                 sx={{
                                   borderBottom: 0,
-                                  color: "#fff",
-                                  background: "#06a19b",
+                                  color: '#fff',
+                                  background: '#06a19b',
                                   pr: 0,
                                   fontSize: {
                                     md: 16,
@@ -447,7 +447,7 @@ function FeedingPlanOutput() {
                                 <Divider
                                   sx={{
                                     borderWidth: 2,
-                                    borderColor: "#fff",
+                                    borderColor: '#fff',
                                     my: 1,
                                   }}
                                 />
@@ -465,7 +465,7 @@ function FeedingPlanOutput() {
                               return (
                                 <TableRow
                                   key={idx}
-                                  sx={{ backgroundColor: "#fff" }}
+                                  sx={{ backgroundColor: '#fff' }}
                                 >
                                   {idx === 0 && (
                                     <TableCell
@@ -473,10 +473,10 @@ function FeedingPlanOutput() {
                                       sx={{
                                         // borderBottomColor: "#F5F6F8",
                                         borderBottomWidth: 0,
-                                        color: "#555555",
-                                        backgroundColor: "#fff",
+                                        color: '#555555',
+                                        backgroundColor: '#fff',
                                         fontWeight: 500,
-                                        whiteSpace: "nowrap",
+                                        whiteSpace: 'nowrap',
                                       }}
                                     >
                                       SA Feeds
@@ -486,9 +486,9 @@ function FeedingPlanOutput() {
                                     sx={{
                                       // borderBottomColor: "#F5F6F8",
                                       borderBottomWidth: 0,
-                                      color: "#555555",
+                                      color: '#555555',
                                       fontWeight: 500,
-                                      whiteSpace: "nowrap",
+                                      whiteSpace: 'nowrap',
                                       p: 0,
                                     }}
                                   >
@@ -497,16 +497,16 @@ function FeedingPlanOutput() {
                                       sx={{
                                         fontWeight: 500,
                                         fontSize: 14,
-                                        display: "flex",
-                                        alignItems: "center",
-                                        justifyContent: "space-between",
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'space-between',
                                         gap: 1,
-                                        backgroundColor: "#F5F6F8",
-                                        borderTopLeftRadius: "8px",
-                                        borderBottomLeftRadius: "8px",
-                                        padding: "8px 12px",
-                                        margin: "8px 0",
-                                        textWrap: "nowrap",
+                                        backgroundColor: '#F5F6F8',
+                                        borderTopLeftRadius: '8px',
+                                        borderBottomLeftRadius: '8px',
+                                        padding: '8px 12px',
+                                        margin: '8px 0',
+                                        textWrap: 'nowrap',
                                       }}
                                     >
                                       {feed}
@@ -516,9 +516,9 @@ function FeedingPlanOutput() {
                                     sx={{
                                       // borderBottomColor: "#F5F6F8",
                                       borderBottomWidth: 0,
-                                      color: "#555555",
+                                      color: '#555555',
                                       fontWeight: 500,
-                                      whiteSpace: "nowrap",
+                                      whiteSpace: 'nowrap',
                                       p: 0,
                                     }}
                                   >
@@ -527,14 +527,14 @@ function FeedingPlanOutput() {
                                       sx={{
                                         fontWeight: 500,
                                         fontSize: 14,
-                                        display: "flex",
-                                        alignItems: "center",
-                                        justifyContent: "space-between",
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'space-between',
                                         gap: 1,
-                                        backgroundColor: "#F5F6F8",
-                                        padding: "8px 12px",
-                                        margin: "8px 0",
-                                        textWrap: "nowrap",
+                                        backgroundColor: '#F5F6F8',
+                                        padding: '8px 12px',
+                                        margin: '8px 0',
+                                        textWrap: 'nowrap',
                                       }}
                                     >
                                       {`${feedKg} Kg (${feedBags} Bags)`}
@@ -544,29 +544,29 @@ function FeedingPlanOutput() {
                               );
                             })}
 
-                            <TableRow sx={{ backgroundColor: "#fff" }}>
+                            <TableRow sx={{ backgroundColor: '#fff' }}>
                               <TableCell
                                 sx={{
-                                  color: "#555555",
+                                  color: '#555555',
                                   fontWeight: 500,
-                                  whiteSpace: "nowrap",
+                                  whiteSpace: 'nowrap',
                                 }}
                               ></TableCell>
 
                               <TableCell
                                 sx={{
-                                  color: "#555555",
+                                  color: '#555555',
                                   fontWeight: 500,
-                                  whiteSpace: "nowrap",
+                                  whiteSpace: 'nowrap',
                                   p: 0,
                                 }}
                               ></TableCell>
 
                               <TableCell
                                 sx={{
-                                  color: "#555555",
+                                  color: '#555555',
                                   fontWeight: 500,
-                                  whiteSpace: "nowrap",
+                                  whiteSpace: 'nowrap',
                                   p: 0,
                                 }}
                               >
@@ -575,15 +575,15 @@ function FeedingPlanOutput() {
                                   sx={{
                                     fontWeight: 500,
                                     fontSize: 14,
-                                    padding: "16px 12px",
+                                    padding: '16px 12px',
                                     // margin: "8px 0",
-                                    textWrap: "nowrap",
-                                    background: "#06a19b",
-                                    color: "#fff",
+                                    textWrap: 'nowrap',
+                                    background: '#06a19b',
+                                    color: '#fff',
                                   }}
                                 >
                                   {`${totalIntake.toFixed(
-                                    2
+                                    2,
                                   )} Kg (${totalBags} Bags)`}
                                 </Typography>
                               </TableCell>
@@ -596,19 +596,19 @@ function FeedingPlanOutput() {
               </Paper>
             </div>
           )}
-        </div>
+        </div>,
       );
 
       await new Promise((resolve) => setTimeout(resolve, 800));
 
       const canvas = await html2canvas(chartDiv);
-      const imgData = canvas.toDataURL("image/png");
+      const imgData = canvas.toDataURL('image/png');
       const imgProps = pdf.getImageProperties(imgData);
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
 
       if (i > 0) pdf.addPage();
-      pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
 
       root.unmount();
       tempContainer.remove();
@@ -619,18 +619,18 @@ function FeedingPlanOutput() {
   };
 
   useEffect(() => {
-    const selectedFarm = watch("farms");
+    const selectedFarm = watch('farms');
 
     if (!selectedFarm && farmOption?.length > 0) {
       const defaultFarmId = farmOption[0].id;
-      setValue("farms", defaultFarmId);
+      setValue('farms', defaultFarmId);
       return;
     }
 
     if (selectedFarm) {
       const getProductionUnits = (selectedFarm: any, detailedFarms: any) => {
         const matchedFarm = detailedFarms.find(
-          (farm: any) => farm.units[0].farm.id == selectedFarm
+          (farm: any) => farm.units[0].farm.id == selectedFarm,
         );
         return {
           productionUnits: matchedFarm?.units || [],
@@ -645,30 +645,30 @@ function FeedingPlanOutput() {
       }));
       setUnitOptions(customUnits);
     }
-  }, [watch("farms"), farmOption]);
+  }, [watch('farms'), farmOption]);
   useEffect(() => {
     if (unitOption?.length) {
-      setValue("units", unitOption[0]?.id);
+      setValue('units', unitOption[0]?.id);
     }
   }, [unitOption]);
   useEffect(() => {
-    const data = getLocalItem("feedPredictionData");
+    const data = getLocalItem('feedPredictionData');
     if (data) {
-      let customFarms: any = data?.productionData?.map((farm: any) => {
+      const customFarms: any = data?.productionData?.map((farm: any) => {
         return { option: farm.farm, id: farm.units[0].farm.id };
       });
       setStartDate(data?.startDate);
       setEndDate(data?.endDate);
       setFarmOptions(customFarms);
-      setValue("adjustmentFactor", data.adjustmentFactor);
+      setValue('adjustmentFactor', data.adjustmentFactor);
       setFomData(data);
       const fishGrowthData: any = data?.productionData?.map(
         (production: FarmGroup) =>
           production.units.map((unit: any) => {
-            const formattedDate = dayjs(data?.startDate).format("YYYY-MM-DD");
+            const formattedDate = dayjs(data?.startDate).format('YYYY-MM-DD');
             const diffInDays = dayjs(data?.endDate).diff(
               dayjs(data?.startDate),
-              "day"
+              'day',
             );
             return {
               farm: production.farm,
@@ -677,7 +677,7 @@ function FeedingPlanOutput() {
               unit: unit.productionUnit.name,
               fishGrowthData: calculateFishGrowth(
                 Number(data?.fishWeight ?? 0),
-                data?.tempSelection === "default"
+                data?.tempSelection === 'default'
                   ? Number(unit?.waterTemp ?? 0)
                   : Number(data?.temp),
                 Number(unit.fishCount ?? 0),
@@ -685,10 +685,10 @@ function FeedingPlanOutput() {
                 Number(diffInDays),
                 formattedDate,
                 data?.timeInterval,
-                13.47
+                13.47,
               ),
             };
-          })
+          }),
       );
       if (fishGrowthData?.length) {
         setFlatData([...fishGrowthData].flat());
@@ -697,19 +697,19 @@ function FeedingPlanOutput() {
   }, []);
   useEffect(() => {
     if (loading) {
-      document.body.style.position = "fixed";
-      document.body.style.width = "100%";
-      document.body.style.overflow = "hidden";
+      document.body.style.position = 'fixed';
+      document.body.style.width = '100%';
+      document.body.style.overflow = 'hidden';
     } else {
-      document.body.style.position = "";
-      document.body.style.width = "";
-      document.body.style.overflow = "";
+      document.body.style.position = '';
+      document.body.style.width = '';
+      document.body.style.overflow = '';
     }
 
     return () => {
-      document.body.style.position = "";
-      document.body.style.width = "";
-      document.body.style.overflow = "";
+      document.body.style.position = '';
+      document.body.style.width = '';
+      document.body.style.overflow = '';
     };
   }, [loading]);
 
@@ -717,9 +717,9 @@ function FeedingPlanOutput() {
     return (
       <Box
         sx={{
-          position: "absolute",
-          width: "100%",
-          height: "100%",
+          position: 'absolute',
+          width: '100%',
+          height: '100%',
         }}
       >
         <Loader />
@@ -776,9 +776,9 @@ function FeedingPlanOutput() {
               <Controller
                 name="farms"
                 control={control}
-                defaultValue={farmOption[0]?.id ?? ""}
+                defaultValue={farmOption[0]?.id ?? ''}
                 render={({ field }) => (
-                  <Select {...field} label="Farm *" value={field.value ?? ""}>
+                  <Select {...field} label="Farm *" value={field.value ?? ''}>
                     {farmOption.map((option) => (
                       <MenuItem value={option.id} key={option.id}>
                         {option.option}
@@ -801,9 +801,9 @@ function FeedingPlanOutput() {
               <Controller
                 name="units"
                 control={control}
-                defaultValue={unitOption[0]?.id ?? ""}
+                defaultValue={unitOption[0]?.id ?? ''}
                 render={({ field }) => (
-                  <Select {...field} label="Units *" value={field.value ?? ""}>
+                  <Select {...field} label="Units *" value={field.value ?? ''}>
                     {unitOption.map((option) => (
                       <MenuItem value={option.id} key={option.id}>
                         {option.option}
@@ -826,7 +826,7 @@ function FeedingPlanOutput() {
               className="form-input"
               focused
               sx={{
-                width: "100%",
+                width: '100%',
               }}
             />
           </Grid>
@@ -876,8 +876,8 @@ function FeedingPlanOutput() {
                     if (isoDate) setEndDate(isoDate);
                   }}
                   sx={{
-                    marginTop: "0",
-                    borderRadius: "6px",
+                    marginTop: '0',
+                    borderRadius: '6px',
                   }}
                   className="date-picker form-input"
                   minDate={dayjs(startDate)}
@@ -892,8 +892,8 @@ function FeedingPlanOutput() {
       <Grid
         container
         spacing={2}
-        justifyContent={"space-between"}
-        alignItems={"center"}
+        justifyContent={'space-between'}
+        alignItems={'center'}
         mb={5}
       >
         <Grid
@@ -904,35 +904,35 @@ function FeedingPlanOutput() {
           sm={6}
           xs={12}
           sx={{
-            display: "flex",
-            alignItems: "center",
+            display: 'flex',
+            alignItems: 'center',
             gap: 2,
           }}
         >
-          <Box position={"relative"} width={"100%"}>
+          <Box position={'relative'} width={'100%'}>
             <TextField
               label="Adjustment Factor *"
               disabled
               type="text"
-              {...register("adjustmentFactor", {
+              {...register('adjustmentFactor', {
                 required: true,
                 // pattern: ValidationPatterns.numbersWithDot,
               })}
               className="form-input"
               focused
               sx={{
-                width: "100%",
+                width: '100%',
               }}
             />
             <Typography
               variant="body1"
               color="#555555AC"
               sx={{
-                position: "absolute",
+                position: 'absolute',
                 right: 13,
-                top: "30%",
-                backgroundColor: "white",
-                paddingInline: "5px",
+                top: '30%',
+                backgroundColor: 'white',
+                paddingInline: '5px',
               }}
             >
               %
@@ -986,22 +986,22 @@ function FeedingPlanOutput() {
         {flatData
           .filter(
             (val) =>
-              val.farmId == watch("farms") && val.unitId == watch("units")
+              val.farmId == watch('farms') && val.unitId == watch('units'),
           )
           .map((growth, index) => {
             return (
               <Box
                 key={index}
                 sx={{
-                  width: "100%",
+                  width: '100%',
                 }}
               >
                 <Stack
                   sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    flexDirection: "row",
-                    justifyContent: "end",
+                    display: 'flex',
+                    alignItems: 'center',
+                    flexDirection: 'row',
+                    justifyContent: 'end',
                     mt: 2.5,
                     mb: 5,
                   }}
@@ -1011,14 +1011,14 @@ function FeedingPlanOutput() {
                     variant="contained"
                     onClick={createxlsxFile}
                     sx={{
-                      background: "#06A19B",
-                      color: "#fff",
+                      background: '#06A19B',
+                      color: '#fff',
                       fontWeight: 600,
-                      padding: "6px 16px",
-                      width: "fit-content",
-                      textTransform: "capitalize",
-                      borderRadius: "8px",
-                      border: "1px solid #06A19B",
+                      padding: '6px 16px',
+                      width: 'fit-content',
+                      textTransform: 'capitalize',
+                      borderRadius: '8px',
+                      border: '1px solid #06A19B',
                       mr: 1.5,
                     }}
                   >
@@ -1026,17 +1026,17 @@ function FeedingPlanOutput() {
                   </Button>
                   <Button
                     type="button"
-                    onClick={() => CreateFeedPredictionPDF("table")}
+                    onClick={() => CreateFeedPredictionPDF('table')}
                     variant="contained"
                     sx={{
-                      background: "#fff",
-                      color: "#06A19B",
+                      background: '#fff',
+                      color: '#06A19B',
                       fontWeight: 600,
-                      padding: "6px 16px",
-                      width: "fit-content",
-                      textTransform: "capitalize",
-                      borderRadius: "8px",
-                      border: "1px solid #06A19B",
+                      padding: '6px 16px',
+                      width: 'fit-content',
+                      textTransform: 'capitalize',
+                      borderRadius: '8px',
+                      border: '1px solid #06A19B',
                     }}
                   >
                     Create Pdf
@@ -1054,10 +1054,10 @@ function FeedingPlanOutput() {
       <Grid
         container
         spacing={4}
-        justifyContent={"space-between"}
-        alignItems={"start"}
+        justifyContent={'space-between'}
+        alignItems={'start'}
         sx={{
-          mb: "20px",
+          mb: '20px',
         }}
       >
         <Grid item xs={6}>
@@ -1067,14 +1067,14 @@ function FeedingPlanOutput() {
           {flatData
             .filter(
               (val) =>
-                val.farmId == watch("farms") && val.unitId == watch("units")
+                val.farmId == watch('farms') && val.unitId == watch('units'),
             )
             .map((growth, index) => {
               return (
                 <Box
                   key={index}
                   sx={{
-                    width: "100%",
+                    width: '100%',
                   }}
                 >
                   <Box>
@@ -1085,7 +1085,7 @@ function FeedingPlanOutput() {
                       }
                       yData={
                         growth?.fishGrowthData?.map(
-                          (value) => value?.fishSize
+                          (value) => value?.fishSize,
                         ) || []
                       }
                       graphTitle={`Farm: ${growth.farm} Unit: ${growth.unit}`}
@@ -1114,19 +1114,19 @@ function FeedingPlanOutput() {
             <Button
               type="button"
               variant="contained"
-              onClick={() => CreateFeedPredictionPDF("graph")}
+              onClick={() => CreateFeedPredictionPDF('graph')}
               sx={{
-                background: "#fff",
-                color: "#06A19B",
+                background: '#fff',
+                color: '#06A19B',
                 fontWeight: 600,
-                padding: "6px 16px",
-                width: "fit-content",
-                textTransform: "capitalize",
-                borderRadius: "8px",
-                border: "1px solid #06A19B",
+                padding: '6px 16px',
+                width: 'fit-content',
+                textTransform: 'capitalize',
+                borderRadius: '8px',
+                border: '1px solid #06A19B',
                 mt: 2,
-                display: "block",
-                ml: "auto",
+                display: 'block',
+                ml: 'auto',
               }}
             >
               Create Pdf
@@ -1137,19 +1137,20 @@ function FeedingPlanOutput() {
         <Grid item xs={6}>
           <Paper
             sx={{
-              overflow: "hidden",
-              borderRadius: "14px",
-              boxShadow: "0px 0px 16px 5px #0000001A",
+              overflow: 'hidden',
+              borderRadius: '14px',
+              boxShadow: '0px 0px 16px 5px #0000001A',
             }}
           >
             {flatData
               .filter(
                 (val) =>
-                  val.farmId === watch("farms") && val.unitId === watch("units")
+                  val.farmId === watch('farms') &&
+                  val.unitId === watch('units'),
               )
               .map((growth, index) => {
                 const uniqueFeedTypes = Array.from(
-                  new Set(growth?.fishGrowthData?.map((item) => item.feedType))
+                  new Set(growth?.fishGrowthData?.map((item) => item.feedType)),
                 );
                 const intakeByFeedType: Record<string, number> = {};
 
@@ -1161,7 +1162,7 @@ function FeedingPlanOutput() {
                   intakeByFeedType[item.feedType] += isNaN(intake) ? 0 : intake;
                 });
                 const totalIntake: number = Object.values(
-                  intakeByFeedType
+                  intakeByFeedType,
                 ).reduce((a: number, b: number) => a + b, 0);
                 const totalBags: string = (totalIntake / 20).toFixed(2);
 
@@ -1173,8 +1174,8 @@ function FeedingPlanOutput() {
                           <TableCell
                             sx={{
                               borderBottom: 0,
-                              color: "#fff",
-                              background: "#06a19b",
+                              color: '#fff',
+                              background: '#06a19b',
                               fontSize: {
                                 md: 16,
                                 xs: 14,
@@ -1187,8 +1188,8 @@ function FeedingPlanOutput() {
                           <TableCell
                             sx={{
                               borderBottom: 0,
-                              color: "#fff",
-                              background: "#06a19b",
+                              color: '#fff',
+                              background: '#06a19b',
                               fontSize: {
                                 md: 16,
                                 xs: 14,
@@ -1201,8 +1202,8 @@ function FeedingPlanOutput() {
                           <TableCell
                             sx={{
                               borderBottom: 0,
-                              color: "#fff",
-                              background: "#06a19b",
+                              color: '#fff',
+                              background: '#06a19b',
                               pr: 0,
                               fontSize: {
                                 md: 16,
@@ -1217,7 +1218,7 @@ function FeedingPlanOutput() {
                             <Divider
                               sx={{
                                 borderWidth: 2,
-                                borderColor: "#fff",
+                                borderColor: '#fff',
                                 my: 1,
                               }}
                             />
@@ -1240,9 +1241,9 @@ function FeedingPlanOutput() {
                                   sx={{
                                     // borderBottomColor: "#F5F6F8",
                                     borderBottomWidth: 0,
-                                    color: "#555555",
+                                    color: '#555555',
                                     fontWeight: 500,
-                                    whiteSpace: "nowrap",
+                                    whiteSpace: 'nowrap',
                                   }}
                                 >
                                   SA Feeds
@@ -1252,9 +1253,9 @@ function FeedingPlanOutput() {
                                 sx={{
                                   // borderBottomColor: "#F5F6F8",
                                   borderBottomWidth: 0,
-                                  color: "#555555",
+                                  color: '#555555',
                                   fontWeight: 500,
-                                  whiteSpace: "nowrap",
+                                  whiteSpace: 'nowrap',
                                   p: 0,
                                 }}
                               >
@@ -1263,16 +1264,16 @@ function FeedingPlanOutput() {
                                   sx={{
                                     fontWeight: 500,
                                     fontSize: 14,
-                                    display: "flex",
-                                    alignItems: "center",
-                                    justifyContent: "space-between",
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'space-between',
                                     gap: 1,
-                                    backgroundColor: "#F5F6F8",
-                                    borderTopLeftRadius: "8px",
-                                    borderBottomLeftRadius: "8px",
-                                    padding: "8px 12px",
-                                    margin: "8px 0",
-                                    textWrap: "nowrap",
+                                    backgroundColor: '#F5F6F8',
+                                    borderTopLeftRadius: '8px',
+                                    borderBottomLeftRadius: '8px',
+                                    padding: '8px 12px',
+                                    margin: '8px 0',
+                                    textWrap: 'nowrap',
                                   }}
                                 >
                                   {feed}
@@ -1282,9 +1283,9 @@ function FeedingPlanOutput() {
                                 sx={{
                                   // borderBottomColor: "#F5F6F8",
                                   borderBottomWidth: 0,
-                                  color: "#555555",
+                                  color: '#555555',
                                   fontWeight: 500,
-                                  whiteSpace: "nowrap",
+                                  whiteSpace: 'nowrap',
                                   p: 0,
                                 }}
                               >
@@ -1293,14 +1294,14 @@ function FeedingPlanOutput() {
                                   sx={{
                                     fontWeight: 500,
                                     fontSize: 14,
-                                    display: "flex",
-                                    alignItems: "center",
-                                    justifyContent: "space-between",
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'space-between',
                                     gap: 1,
-                                    backgroundColor: "#F5F6F8",
-                                    padding: "8px 12px",
-                                    margin: "8px 0",
-                                    textWrap: "nowrap",
+                                    backgroundColor: '#F5F6F8',
+                                    padding: '8px 12px',
+                                    margin: '8px 0',
+                                    textWrap: 'nowrap',
                                   }}
                                 >
                                   {`${feedKg} Kg (${feedBags} Bags)`}
@@ -1313,26 +1314,26 @@ function FeedingPlanOutput() {
                         <TableRow>
                           <TableCell
                             sx={{
-                              color: "#555555",
+                              color: '#555555',
                               fontWeight: 500,
-                              whiteSpace: "nowrap",
+                              whiteSpace: 'nowrap',
                             }}
                           ></TableCell>
 
                           <TableCell
                             sx={{
-                              color: "#555555",
+                              color: '#555555',
                               fontWeight: 500,
-                              whiteSpace: "nowrap",
+                              whiteSpace: 'nowrap',
                               p: 0,
                             }}
                           ></TableCell>
 
                           <TableCell
                             sx={{
-                              color: "#555555",
+                              color: '#555555',
                               fontWeight: 500,
-                              whiteSpace: "nowrap",
+                              whiteSpace: 'nowrap',
                               p: 0,
                             }}
                           >
@@ -1341,15 +1342,15 @@ function FeedingPlanOutput() {
                               sx={{
                                 fontWeight: 500,
                                 fontSize: 14,
-                                padding: "16px 12px",
+                                padding: '16px 12px',
                                 // margin: "8px 0",
-                                textWrap: "nowrap",
-                                background: "#06a19b",
-                                color: "#fff",
+                                textWrap: 'nowrap',
+                                background: '#06a19b',
+                                color: '#fff',
                               }}
                             >
                               {`${totalIntake.toFixed(
-                                2
+                                2,
                               )} Kg (${totalBags} Bags)`}
                             </Typography>
                           </TableCell>
@@ -1363,8 +1364,8 @@ function FeedingPlanOutput() {
           <Box
             mt={5}
             sx={{
-              display: "flex",
-              justifyContent: "end",
+              display: 'flex',
+              justifyContent: 'end',
               gap: 1.5,
             }}
           >
@@ -1373,14 +1374,14 @@ function FeedingPlanOutput() {
               variant="contained"
               disabled
               sx={{
-                background: "#06A19B",
-                color: "#fff",
+                background: '#06A19B',
+                color: '#fff',
                 fontWeight: 600,
-                padding: "6px 16px",
-                width: "fit-content",
-                textTransform: "capitalize",
-                borderRadius: "8px",
-                border: "1px solid #06A19B",
+                padding: '6px 16px',
+                width: 'fit-content',
+                textTransform: 'capitalize',
+                borderRadius: '8px',
+                border: '1px solid #06A19B',
               }}
             >
               Order Feed
@@ -1389,16 +1390,16 @@ function FeedingPlanOutput() {
             <Button
               type="button"
               variant="contained"
-              onClick={() => CreateFeedPredictionPDF("feedTable")}
+              onClick={() => CreateFeedPredictionPDF('feedTable')}
               sx={{
-                background: "#fff",
-                color: "#06A19B",
+                background: '#fff',
+                color: '#06A19B',
                 fontWeight: 600,
-                padding: "6px 16px",
-                width: "fit-content",
-                textTransform: "capitalize",
-                borderRadius: "8px",
-                border: "1px solid #06A19B",
+                padding: '6px 16px',
+                width: 'fit-content',
+                textTransform: 'capitalize',
+                borderRadius: '8px',
+                border: '1px solid #06A19B',
               }}
             >
               Create PDF

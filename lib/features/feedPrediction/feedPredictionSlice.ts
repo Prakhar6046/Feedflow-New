@@ -1,13 +1,12 @@
-import { FeedInitialState } from "@/app/_typeModels/Feed";
-import { RootState } from "@/lib/store";
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { RootState } from '@/lib/store';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 const initialState = {
-  currentFarmTab: "",
+  currentFarmTab: '',
 };
 
 const feedPredictionSlice = createSlice({
-  name: "feedPrediction",
+  name: 'feedPrediction',
   initialState,
   reducers: {
     setFarmTab: (state, action: PayloadAction<string>) => {

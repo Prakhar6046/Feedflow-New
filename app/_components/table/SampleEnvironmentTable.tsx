@@ -1,10 +1,10 @@
-"use client";
-import { getLocalItem } from "@/app/_lib/utils";
-import { Farm } from "@/app/_typeModels/Farm";
-import { Production } from "@/app/_typeModels/production";
-import { SampleEnvironment } from "@/app/_typeModels/sample";
-import { selectRole } from "@/lib/features/user/userSlice";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+'use client';
+import { getLocalItem } from '@/app/_lib/utils';
+import { Farm } from '@/app/_typeModels/Farm';
+import { Production } from '@/app/_typeModels/production';
+import { SampleEnvironment } from '@/app/_typeModels/sample';
+import { selectRole } from '@/lib/features/user/userSlice';
+import { useAppDispatch, useAppSelector } from '@/lib/hooks';
 import {
   Button,
   Menu,
@@ -12,17 +12,17 @@ import {
   Stack,
   TableSortLabel,
   Typography,
-} from "@mui/material";
-import Paper from "@mui/material/Paper";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import { usePathname, useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
-import SamplingEnvironmentCal from "../models/SamplingEnvironmentCal";
+} from '@mui/material';
+import Paper from '@mui/material/Paper';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import { usePathname, useRouter } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
+import SamplingEnvironmentCal from '../models/SamplingEnvironmentCal';
 interface Props {
   tableData: any;
   farms?: Farm[];
@@ -40,15 +40,15 @@ export default function SampleEnvironmentTable({
   //   const loading = useAppSelector(selectFarmLoading);
   const [selectedProduction, setSelectedProduction] = useState<any>(null);
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
-    null
+    null,
   );
   const [openSamplingEnvironmentCalModal, setOpenSamplingEnvironmentCalModal] =
     useState<boolean>(false);
   const [productionData, setProductionData] = useState<Production[]>();
   const role = useAppSelector(selectRole);
-  const [order, setOrder] = React.useState("asc");
-  const [orderBy, setOrderBy] = React.useState("Farm");
-  const [sortDataFromLocal, setSortDataFromLocal] = React.useState<any>("");
+  const [order, setOrder] = React.useState('asc');
+  const [orderBy, setOrderBy] = React.useState('Farm');
+  const [sortDataFromLocal, setSortDataFromLocal] = React.useState<any>('');
 
   useEffect(() => {
     if (pathName) {
@@ -57,7 +57,7 @@ export default function SampleEnvironmentTable({
   }, [pathName]);
   const handleClick = (
     event: React.MouseEvent<HTMLButtonElement>,
-    farm: any
+    farm: any,
   ) => {
     setAnchorEl(event.currentTarget);
     setSelectedProduction(farm);
@@ -90,14 +90,14 @@ export default function SampleEnvironmentTable({
                 idx === headCells.length - 1
                   ? false
                   : orderBy === headCell.id
-                  ? order
-                  : false
+                    ? order
+                    : false
               }
               // align="center"
               sx={{
                 borderBottom: 0,
-                color: "#67737F",
-                background: "#F5F6F8",
+                color: '#67737F',
+                background: '#F5F6F8',
 
                 fontSize: {
                   md: 16,
@@ -116,7 +116,7 @@ export default function SampleEnvironmentTable({
               ) : (
                 <TableSortLabel
                   active={orderBy === headCell.id}
-                  direction={orderBy === headCell.id ? order : "asc"}
+                  direction={orderBy === headCell.id ? order : 'asc'}
                   onClick={createSortHandler(headCell.id)}
                 >
                   {headCell.label}
@@ -136,11 +136,11 @@ export default function SampleEnvironmentTable({
     <>
       <Paper
         sx={{
-          width: "100%",
-          overflow: "hidden",
-          borderRadius: "14px",
-          boxShadow: "0px 0px 16px 5px #0000001A",
-          textAlign: "center",
+          width: '100%',
+          overflow: 'hidden',
+          borderRadius: '14px',
+          boxShadow: '0px 0px 16px 5px #0000001A',
+          textAlign: 'center',
           mt: 4,
         }}
       >
@@ -148,7 +148,7 @@ export default function SampleEnvironmentTable({
           <Table stickyHeader aria-label="sticky table">
             <TableHead
               sx={{
-                textAlign: "center",
+                textAlign: 'center',
               }}
             >
               <TableRow></TableRow>
@@ -166,96 +166,96 @@ export default function SampleEnvironmentTable({
                       <TableRow
                         key={i}
                         sx={{
-                          "&:last-child td, &:last-child th": { border: 0 },
+                          '&:last-child td, &:last-child th': { border: 0 },
                         }}
                       >
                         <TableCell
                           // align="center"
                           sx={{
-                            borderBottomColor: "#F5F6F8",
+                            borderBottomColor: '#F5F6F8',
 
                             borderBottomWidth: 2,
-                            color: "#555555",
+                            color: '#555555',
                             fontWeight: 500,
                             paddingLeft: {
                               lg: 10,
                               md: 7,
                               xs: 4,
                             },
-                            textWrap: "nowrap",
+                            textWrap: 'nowrap',
                           }}
                           component="th"
                           scope="row"
                         >
-                          {sample.farm.name ?? ""}
+                          {sample.farm.name ?? ''}
                         </TableCell>
                         <TableCell
                           // align="center"
                           sx={{
-                            borderBottomColor: "#F5F6F8",
+                            borderBottomColor: '#F5F6F8',
                             borderBottomWidth: 2,
-                            color: "#555555",
+                            color: '#555555',
                             fontWeight: 500,
                             pl: 0,
                           }}
                         >
-                          {sample.productionUnit.name ?? ""}
+                          {sample.productionUnit.name ?? ''}
                         </TableCell>
                         <TableCell
                           // align="center"
                           sx={{
-                            borderBottomColor: "#F5F6F8",
+                            borderBottomColor: '#F5F6F8',
                             borderBottomWidth: 2,
-                            color: "#555555",
+                            color: '#555555',
                             fontWeight: 500,
                             pl: 0,
                           }}
                         >
-                          {sample?.date ?? ""}
+                          {sample?.date ?? ''}
                         </TableCell>
                         <TableCell
                           // align="center"
                           sx={{
-                            borderBottomColor: "#F5F6F8",
+                            borderBottomColor: '#F5F6F8',
                             borderBottomWidth: 2,
-                            color: "#555555",
+                            color: '#555555',
                             fontWeight: 500,
                             pl: 0,
                           }}
                         >
-                          {Number(sample.do).toFixed(2) ?? ""}
+                          {Number(sample.do).toFixed(2) ?? ''}
                           {/* {farm.meanWeight ? `${farm.meanWeight}g` : ""} */}
-                        </TableCell>{" "}
+                        </TableCell>{' '}
                         <TableCell
                           // align="center"
                           sx={{
-                            borderBottomColor: "#F5F6F8",
+                            borderBottomColor: '#F5F6F8',
                             borderBottomWidth: 2,
-                            color: "#555555",
+                            color: '#555555',
                             fontWeight: 500,
                             pl: 0,
                           }}
                         >
-                          {sample.ammonia ?? ""}
+                          {sample.ammonia ?? ''}
                         </TableCell>
                         <TableCell
                           // align="center"
                           sx={{
-                            borderBottomColor: "#F5F6F8",
+                            borderBottomColor: '#F5F6F8',
                             borderBottomWidth: 2,
-                            color: "#555555",
+                            color: '#555555',
                             fontWeight: 500,
                             pl: 0,
                           }}
                         >
-                          {sample.TSS ?? ""}
+                          {sample.TSS ?? ''}
                         </TableCell>
-                        {role !== "MEMBER" && (
+                        {role !== 'MEMBER' && (
                           <TableCell
                             sx={{
-                              borderBottomColor: "#F5F6F8",
+                              borderBottomColor: '#F5F6F8',
                               borderBottomWidth: 2,
-                              color: "#555555",
+                              color: '#555555',
                               fontWeight: 500,
                             }}
                             className="cursor-pointer"
@@ -263,15 +263,15 @@ export default function SampleEnvironmentTable({
                           >
                             <Button
                               id="basic-button"
-                              aria-controls={open ? "basic-menu" : undefined}
+                              aria-controls={open ? 'basic-menu' : undefined}
                               aria-haspopup="true"
-                              aria-expanded={open ? "true" : undefined}
+                              aria-expanded={open ? 'true' : undefined}
                               className="table-edit-option"
                               onClick={(e) => handleClick(e, sample)}
                               sx={{
-                                background: "transparent",
-                                color: "red",
-                                boxShadow: "none",
+                                background: 'transparent',
+                                color: 'red',
+                                boxShadow: 'none',
                               }}
                             >
                               <svg
@@ -293,7 +293,7 @@ export default function SampleEnvironmentTable({
                               open={open}
                               onClose={handleClose}
                               MenuListProps={{
-                                "aria-labelledby": "basic-button",
+                                'aria-labelledby': 'basic-button',
                               }}
                             >
                               <MenuItem
@@ -353,11 +353,11 @@ export default function SampleEnvironmentTable({
                         )}
                       </TableRow>
                     );
-                  }
+                  },
                 )
               ) : (
                 <TableRow>
-                  <TableCell colSpan={6} sx={{ textAlign: "center" }}>
+                  <TableCell colSpan={6} sx={{ textAlign: 'center' }}>
                     No Data Found
                   </TableCell>
                 </TableRow>

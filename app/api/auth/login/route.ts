@@ -1,13 +1,12 @@
-import prisma from "@/prisma/prisma";
-import { NextResponse } from "next/server";
-import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
-import { cookies } from "next/headers";
-import { setCookie } from "cookies-next";
+import prisma from '@/prisma/prisma';
+import { NextResponse } from 'next/server';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import { cookies } from 'next/headers';
 
-const JWT_SECRET = process.env.JWT_SECRET || "access-secret-key";
+const JWT_SECRET = process.env.JWT_SECRET || 'access-secret-key';
 const JWT_REFRESH_SECRET =
-  process.env.JWT_REFRESH_SECRET || "refresh-secret-key";
+  process.env.JWT_REFRESH_SECRET || 'refresh-secret-key';
 
 export const POST = async (request: Request) => {
   try {
@@ -20,45 +19,45 @@ export const POST = async (request: Request) => {
     });
 
     if (!user) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 });
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
     if (!user.access) {
-      return NextResponse.json({ error: "Access denied" }, { status: 403 });
+      return NextResponse.json({ error: 'Access denied' }, { status: 403 });
     }
 
     if (!user.password || !(await bcrypt.compare(password, user.password))) {
       return NextResponse.json(
-        { error: "Invalid credentials" },
-        { status: 401 }
+        { error: 'Invalid credentials' },
+        { status: 401 },
       );
     }
 
     // Generate tokens
     const payload = { id: user.id, email: user.email };
 
-    const accessToken = jwt.sign(payload, JWT_SECRET, { expiresIn: "15m" });
+    const accessToken = jwt.sign(payload, JWT_SECRET, { expiresIn: '15m' });
     const refreshToken = jwt.sign(payload, JWT_REFRESH_SECRET, {
-      expiresIn: "1d",
+      expiresIn: '1d',
     });
 
     const response = NextResponse.json({
       status: true,
       data: { token: accessToken, user },
     });
-    cookies().set("auth-token", refreshToken, {
+    cookies().set('auth-token', refreshToken, {
       httpOnly: true,
-      path: "/",
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      path: '/',
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
       maxAge: 60 * 60 * 1 * 1,
     });
     // Set refresh token cookie
-    cookies().set("refresh-token", refreshToken, {
+    cookies().set('refresh-token', refreshToken, {
       httpOnly: true,
-      path: "/",
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      path: '/',
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
       maxAge: 60 * 60 * 24 * 1, // 1 day
     });
 

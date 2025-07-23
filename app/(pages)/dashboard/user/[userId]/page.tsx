@@ -1,21 +1,21 @@
-import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
-import EditUser from "@/app/_components/user/EditUser";
-import { Metadata } from "next";
+import BasicBreadcrumbs from '@/app/_components/Breadcrumbs';
+import EditUser from '@/app/_components/user/EditUser';
+import { Metadata } from 'next';
 export const metadata: Metadata = {
-  title: "Edit User",
+  title: 'Edit User',
 };
 export default function Page({ params }: { params: { userId: string } }) {
   return (
     <>
       <BasicBreadcrumbs
-        heading={"Edit User"}
+        heading={'Edit User'}
         isTable={false}
         hideSearchInput={true}
         links={[
-          { name: "Dashboard", link: "/dashboard" },
-          { name: "Users", link: "/dashboard/user" },
+          { name: 'Dashboard', link: '/dashboard' },
+          { name: 'Users', link: '/dashboard/user' },
           {
-            name: "Edit User",
+            name: 'Edit User',
             link: `/dashboard/user/${params.userId}`,
           },
         ]}

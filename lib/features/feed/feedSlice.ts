@@ -1,8 +1,7 @@
-import { FeedSupply } from "@/app/_components/feedSupply/FeedSelection";
-import { Farm, FarmInitialState } from "@/app/_typeModels/Farm";
-import { FeedInitialState } from "@/app/_typeModels/Feed";
-import { RootState } from "@/lib/store";
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { FeedSupply } from '@/app/_components/feedSupply/FeedSelection';
+import { FeedInitialState } from '@/app/_typeModels/Feed';
+import { RootState } from '@/lib/store';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 const initialState: FeedInitialState = {
   isLoading: false,
@@ -11,7 +10,7 @@ const initialState: FeedInitialState = {
 };
 
 const feedSlice = createSlice({
-  name: "feed",
+  name: 'feed',
   initialState,
   reducers: {
     handleLoading: (state, action: PayloadAction<boolean>) => {

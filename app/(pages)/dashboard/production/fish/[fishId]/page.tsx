@@ -1,12 +1,12 @@
-import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
-import FishManageHistoryTable from "@/app/_components/table/FishManageHistory";
-import { getProductions } from "@/app/_lib/action";
-import { fishManageHistoryHead } from "@/app/_lib/utils/tableHeadData";
-import { getCookie } from "cookies-next";
-import { Metadata } from "next";
-import { cookies } from "next/headers";
+import BasicBreadcrumbs from '@/app/_components/Breadcrumbs';
+import FishManageHistoryTable from '@/app/_components/table/FishManageHistory';
+import { getProductions } from '@/app/_lib/action';
+import { fishManageHistoryHead } from '@/app/_lib/utils/tableHeadData';
+import { getCookie } from 'cookies-next';
+import { Metadata } from 'next';
+import { cookies } from 'next/headers';
 export const metadata: Metadata = {
-  title: "Fish History",
+  title: 'Fish History',
 };
 export default async function Page({
   params,
@@ -17,8 +17,8 @@ export default async function Page({
     query?: string;
   };
 }) {
-  const query = searchParams?.query || "";
-  const loggedUser: any = getCookie("logged-user", { cookies });
+  const query = searchParams?.query || '';
+  const loggedUser: any = getCookie('logged-user', { cookies });
   const user = JSON.parse(loggedUser);
   const productions = await getProductions({
     role: user.role,
@@ -31,13 +31,13 @@ export default async function Page({
   return (
     <>
       <BasicBreadcrumbs
-        heading={"Fish History"}
+        heading={'Fish History'}
         isTable={true}
         links={[
-          { name: "Dashboard", link: "/dashboard" },
-          { name: "Production Manager", link: "/dashboard/production" },
+          { name: 'Dashboard', link: '/dashboard' },
+          { name: 'Production Manager', link: '/dashboard/production' },
           {
-            name: "Fish History",
+            name: 'Fish History',
             link: `/dashboard/production/fish/${params.fishId}`,
           },
         ]}
@@ -46,7 +46,7 @@ export default async function Page({
       <FishManageHistoryTable
         tableData={fishManageHistoryHead}
         productions={productions?.data?.filter(
-          (data: any) => data.productionUnitId === params.fishId
+          (data: any) => data.productionUnitId === params.fishId,
         )}
         fishId={params.fishId}
       />

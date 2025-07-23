@@ -1,15 +1,15 @@
-import { UserInitialState } from "@/app/_typeModels/User";
-import { RootState } from "@/lib/store";
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { UserInitialState } from '@/app/_typeModels/User';
+import { RootState } from '@/lib/store';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 const initialState: UserInitialState = {
   isLoading: false,
   users: [],
-  role: "",
+  role: '',
 };
 
 const userSlice = createSlice({
-  name: "user",
+  name: 'user',
   initialState,
   reducers: {
     handleLoading: (state, action: PayloadAction<boolean>) => {

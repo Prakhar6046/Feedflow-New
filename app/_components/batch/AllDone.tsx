@@ -1,16 +1,16 @@
-import { Box, Button, Stack, Typography } from "@mui/material";
-import { NextPage } from "next";
-import { useRouter } from "next/navigation";
+import { Box, Button, Stack, Typography } from '@mui/material';
+import { NextPage } from 'next';
+import { useRouter } from 'next/navigation';
 
 interface Props {
   setActiveStep: (val: number) => void;
-  activeStep: Number;
+  activeStep: number;
 }
 const AllDone: NextPage<Props> = ({ setActiveStep, activeStep }) => {
   const router = useRouter();
   const handleClick = () => {
     if (activeStep === 5) {
-      router.push("/dashboard/batches");
+      router.push('/dashboard/batches');
     } else {
       setActiveStep(5);
     }
@@ -46,8 +46,8 @@ const AllDone: NextPage<Props> = ({ setActiveStep, activeStep }) => {
 
       <Stack my={3}>
         <Box
-          display={"flex"}
-          alignItems={"start"}
+          display={'flex'}
+          alignItems={'start'}
           sx={{
             gap: {
               md: 2,
@@ -58,9 +58,9 @@ const AllDone: NextPage<Props> = ({ setActiveStep, activeStep }) => {
           <Box>
             <Box
               fontWeight={700}
-              display={"flex"}
-              justifyContent={"center"}
-              alignItems={"center"}
+              display={'flex'}
+              justifyContent={'center'}
+              alignItems={'center'}
               borderRadius={100}
               sx={{
                 width: {
@@ -71,8 +71,8 @@ const AllDone: NextPage<Props> = ({ setActiveStep, activeStep }) => {
                   md: 80,
                   xs: 40,
                 },
-                color: "#fff",
-                backgroundColor: "#06A19B",
+                color: '#fff',
+                backgroundColor: '#06A19B',
                 fontSize: {
                   md: 28,
                   xs: 16,
@@ -126,21 +126,21 @@ const AllDone: NextPage<Props> = ({ setActiveStep, activeStep }) => {
               are the
               <span
                 style={{
-                  color: "#06A19B",
+                  color: '#06A19B',
                   fontWeight: 500,
                 }}
               >
-                {" "}
-                parameters{" "}
-              </span>{" "}
-              the website uses to make predictions or your batches.{" "}
+                {' '}
+                parameters{' '}
+              </span>{' '}
+              the website uses to make predictions or your batches.{' '}
             </Typography>
           </Box>
         </Box>
 
         <Box
-          display={"flex"}
-          alignItems={"start"}
+          display={'flex'}
+          alignItems={'start'}
           sx={{
             gap: {
               md: 2,
@@ -155,9 +155,9 @@ const AllDone: NextPage<Props> = ({ setActiveStep, activeStep }) => {
           <Box>
             <Box
               fontWeight={700}
-              display={"flex"}
-              justifyContent={"center"}
-              alignItems={"center"}
+              display={'flex'}
+              justifyContent={'center'}
+              alignItems={'center'}
               borderRadius={100}
               sx={{
                 width: {
@@ -168,8 +168,8 @@ const AllDone: NextPage<Props> = ({ setActiveStep, activeStep }) => {
                   md: 80,
                   xs: 40,
                 },
-                color: "#fff",
-                backgroundColor: "#06A19B",
+                color: '#fff',
+                backgroundColor: '#06A19B',
                 fontSize: {
                   md: 28,
                   xs: 16,
@@ -230,52 +230,52 @@ const AllDone: NextPage<Props> = ({ setActiveStep, activeStep }) => {
               information on`}
               <span
                 style={{
-                  color: "#06A19B",
+                  color: '#06A19B',
                   fontWeight: 500,
                 }}
               >
-                {" "}
-                fish batch{" "}
-              </span>{" "}
+                {' '}
+                fish batch{' '}
+              </span>{' '}
               {` that'll be growing in the production unit. Next, we'll need to
               know which`}
               <span
                 style={{
-                  color: "#06A19B",
+                  color: '#06A19B',
                   fontWeight: 500,
                 }}
               >
-                {" "}
-                feed plan{" "}
-              </span>{" "}
+                {' '}
+                feed plan{' '}
+              </span>{' '}
               {`you're going to use and lastly either the`}
               <span
                 style={{
-                  color: "#06A19B",
+                  color: '#06A19B',
                   fontWeight: 500,
                 }}
               >
-                {" "}
-                harvest date{" "}
-              </span>{" "}
-              or the{" "}
+                {' '}
+                harvest date{' '}
+              </span>{' '}
+              or the{' '}
               <span
                 style={{
-                  color: "#06A19B",
+                  color: '#06A19B',
                   fontWeight: 500,
                 }}
               >
-                {" "}
+                {' '}
                 harvest weights
-              </span>{" "}
+              </span>{' '}
             </Typography>
           </Box>
         </Box>
       </Stack>
       <Box
-        display={"flex"}
-        justifyContent={"flex-end"}
-        alignItems={"center"}
+        display={'flex'}
+        justifyContent={'flex-end'}
+        alignItems={'center'}
         gap={3}
         mt={3}
       >
@@ -284,14 +284,14 @@ const AllDone: NextPage<Props> = ({ setActiveStep, activeStep }) => {
             type="submit"
             variant="contained"
             sx={{
-              background: "#fff",
-              color: "#06A19B",
+              background: '#fff',
+              color: '#06A19B',
               fontWeight: 600,
-              padding: "6px 16px",
-              width: "fit-content",
-              textTransform: "capitalize",
-              borderRadius: "8px",
-              border: "1px solid #06A19B",
+              padding: '6px 16px',
+              width: 'fit-content',
+              textTransform: 'capitalize',
+              borderRadius: '8px',
+              border: '1px solid #06A19B',
             }}
             onClick={() => setActiveStep(3)}
           >
@@ -303,16 +303,16 @@ const AllDone: NextPage<Props> = ({ setActiveStep, activeStep }) => {
           type="submit"
           variant="contained"
           sx={{
-            background: "#06A19B",
+            background: '#06A19B',
             fontWeight: 600,
-            padding: "6px 16px",
-            width: "fit-content",
-            textTransform: "capitalize",
-            borderRadius: "8px",
+            padding: '6px 16px',
+            width: 'fit-content',
+            textTransform: 'capitalize',
+            borderRadius: '8px',
           }}
           onClick={handleClick}
         >
-          {activeStep === 5 ? "Go To Batches" : "Let's Get Started"}
+          {activeStep === 5 ? 'Go To Batches' : "Let's Get Started"}
         </Button>
       </Box>
     </Stack>

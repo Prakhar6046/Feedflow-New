@@ -1,6 +1,6 @@
-import { OrganizationInitialState } from "@/app/_typeModels/Organization";
-import { RootState } from "@/lib/store";
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { OrganizationInitialState } from '@/app/_typeModels/Organization';
+import { RootState } from '@/lib/store';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 const initialState: OrganizationInitialState = {
   isLoading: false,
@@ -8,7 +8,7 @@ const initialState: OrganizationInitialState = {
 };
 
 const organisationSlice = createSlice({
-  name: "organisation",
+  name: 'organisation',
   initialState,
   reducers: {
     handleLoading: (state, action: PayloadAction<boolean>) => {

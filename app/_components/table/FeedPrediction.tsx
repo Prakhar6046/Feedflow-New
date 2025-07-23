@@ -1,22 +1,22 @@
-"use client";
-import AdHoc, { FishFeedingData } from "@/app/_components/feedPrediction/AdHoc";
-import FeedingPlan from "@/app/_components/feedPrediction/FeedingPlan";
-import FeedingSummary from "@/app/_components/feedPrediction/FeedingSummary";
-import Loader from "@/app/_components/Loader";
-import ProductionManagerFilter from "@/app/_components/ProductionManagerFilter";
-import { Farm } from "@/app/_typeModels/Farm";
-import { FarmGroup, Production } from "@/app/_typeModels/production";
+'use client';
+import AdHoc, { FishFeedingData } from '@/app/_components/feedPrediction/AdHoc';
+import FeedingPlan from '@/app/_components/feedPrediction/FeedingPlan';
+import FeedingSummary from '@/app/_components/feedPrediction/FeedingSummary';
+import Loader from '@/app/_components/Loader';
+import ProductionManagerFilter from '@/app/_components/ProductionManagerFilter';
+import { Farm } from '@/app/_typeModels/Farm';
+import { FarmGroup, Production } from '@/app/_typeModels/production';
 import {
   selectAllFarms,
   selectEndDate,
   selectStartDate,
-} from "@/lib/features/commonFilters/commonFilters";
-import { selectCurrentFarmTab } from "@/lib/features/feedPrediction/feedPredictionSlice";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import TabContext from "@mui/lab/TabContext";
-import TabList from "@mui/lab/TabList";
-import { Box, Stack, Tab } from "@mui/material";
-import { useEffect, useState } from "react";
+} from '@/lib/features/commonFilters/commonFilters';
+import { selectCurrentFarmTab } from '@/lib/features/feedPrediction/feedPredictionSlice';
+import { useAppDispatch, useAppSelector } from '@/lib/hooks';
+import TabContext from '@mui/lab/TabContext';
+import TabList from '@mui/lab/TabList';
+import { Box, Stack, Tab } from '@mui/material';
+import { useEffect, useState } from 'react';
 interface Props {
   productions: Production[];
   farms: Farm[];
@@ -29,7 +29,7 @@ const FeedPredictionTable = ({ farms, productions }: Props) => {
   const currentFarmTab = useAppSelector(selectCurrentFarmTab);
   const [adHocData, setAdHocData] = useState<FishFeedingData[]>([]);
   const [loading, setLoading] = useState(false);
-  const [selectedFeeding, setSelectedFeeding] = useState<string>("feedingPlan");
+  const [selectedFeeding, setSelectedFeeding] = useState<string>('feedingPlan');
   const [productionData, setProductionData] = useState<FarmGroup[]>();
 
   const handleChange = (event: any, newValue: string) => {
@@ -38,7 +38,7 @@ const FeedPredictionTable = ({ farms, productions }: Props) => {
   const groupedData: FarmGroup[] = productions?.reduce((result: any, item) => {
     // Find or create a farm group
     let farmGroup: any = result.find(
-      (group: any) => group.farm === item.farm.name
+      (group: any) => group.farm === item.farm.name,
     );
     if (!farmGroup) {
       farmGroup = { farm: item.farm.name, units: [] };
@@ -88,19 +88,19 @@ const FeedPredictionTable = ({ farms, productions }: Props) => {
   }, []);
   useEffect(() => {
     if (loading) {
-      document.body.style.position = "fixed";
-      document.body.style.width = "100%";
-      document.body.style.overflow = "hidden";
+      document.body.style.position = 'fixed';
+      document.body.style.width = '100%';
+      document.body.style.overflow = 'hidden';
     } else {
-      document.body.style.position = "";
-      document.body.style.width = "";
-      document.body.style.overflow = "";
+      document.body.style.position = '';
+      document.body.style.width = '';
+      document.body.style.overflow = '';
     }
 
     return () => {
-      document.body.style.position = "";
-      document.body.style.width = "";
-      document.body.style.overflow = "";
+      document.body.style.position = '';
+      document.body.style.width = '';
+      document.body.style.overflow = '';
     };
   }, [loading]);
 
@@ -108,9 +108,9 @@ const FeedPredictionTable = ({ farms, productions }: Props) => {
     return (
       <Box
         sx={{
-          position: "absolute",
-          width: "100%",
-          height: "100%",
+          position: 'absolute',
+          width: '100%',
+          height: '100%',
         }}
       >
         <Loader />
@@ -121,19 +121,19 @@ const FeedPredictionTable = ({ farms, productions }: Props) => {
     <>
       <TabContext value={String(selectedFeeding)}>
         <Stack
-          display={"flex"}
+          display={'flex'}
           rowGap={2}
           columnGap={5}
           mb={2}
-          justifyContent={"space-between"}
+          justifyContent={'space-between'}
           sx={{
             flexDirection: {
-              md: "row",
-              xs: "column",
+              md: 'row',
+              xs: 'column',
             },
             alignItems: {
-              md: "center",
-              xs: "start",
+              md: 'center',
+              xs: 'start',
             },
           }}
         >
@@ -147,20 +147,20 @@ const FeedPredictionTable = ({ farms, productions }: Props) => {
                 label="Feeding Plan"
                 value="feedingPlan"
                 className={
-                  selectedFeeding === "feedingPlan" ? "active-tab" : ""
+                  selectedFeeding === 'feedingPlan' ? 'active-tab' : ''
                 }
               />
 
               <Tab
                 label="Adhoc"
                 value="adhoc"
-                className={selectedFeeding === "adhoc" ? "active-tab" : ""}
+                className={selectedFeeding === 'adhoc' ? 'active-tab' : ''}
               />
             </TabList>
           </Box>
         </Stack>
       </TabContext>
-      {selectedFeeding === "feedingPlan" && (
+      {selectedFeeding === 'feedingPlan' && (
         <ProductionManagerFilter
           farmsList={farms}
           groupedData={groupedData}
@@ -168,13 +168,13 @@ const FeedPredictionTable = ({ farms, productions }: Props) => {
           reset={false}
         />
       )}
-      {selectedFeeding === "feedingPlan" ? (
+      {selectedFeeding === 'feedingPlan' ? (
         <FeedingPlan
           productionData={productionData}
           startDate={startDate}
           endDate={endDate}
         />
-      ) : selectedFeeding === "feedingSummary" ? (
+      ) : selectedFeeding === 'feedingSummary' ? (
         <FeedingSummary />
       ) : (
         <AdHoc data={adHocData} setData={setAdHocData} />

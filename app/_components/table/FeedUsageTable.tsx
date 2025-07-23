@@ -8,7 +8,7 @@ import {
   Paper,
   Typography,
   Divider,
-} from "@mui/material";
+} from '@mui/material';
 
 const formatFeed = (kg: number) => {
   const bags = (kg / 20).toFixed(2);
@@ -19,9 +19,9 @@ const FeedUsageTable = ({ flatData }: any) => {
   const uniqueFeedTypes = Array.from(
     new Set(
       flatData.flatMap((unit: any) =>
-        unit.fishGrowthData.map((d: any) => d.feedType)
-      )
-    )
+        unit.fishGrowthData.map((d: any) => d.feedType),
+      ),
+    ),
   );
 
   const unitColumns = flatData.map((unit: any) => ({
@@ -32,7 +32,7 @@ const FeedUsageTable = ({ flatData }: any) => {
   const tableData = uniqueFeedTypes.map((feedType) => {
     const unitValues = unitColumns.map((unit: any) => {
       const feedItems = unit.fishGrowthData.filter(
-        (fd: any) => fd.feedType === feedType
+        (fd: any) => fd.feedType === feedType,
       );
 
       const totalKg = feedItems.reduce((sum: number, item: any) => {
@@ -59,8 +59,8 @@ const FeedUsageTable = ({ flatData }: any) => {
           <TableRow>
             <TableCell
               sx={{
-                background: "#06a19b",
-                color: "#fff",
+                background: '#06a19b',
+                color: '#fff',
                 fontWeight: 600,
               }}
             >
@@ -68,8 +68,8 @@ const FeedUsageTable = ({ flatData }: any) => {
             </TableCell>
             <TableCell
               sx={{
-                background: "#06a19b",
-                color: "#fff",
+                background: '#06a19b',
+                color: '#fff',
                 fontWeight: 600,
               }}
             >
@@ -79,18 +79,18 @@ const FeedUsageTable = ({ flatData }: any) => {
               <TableCell
                 key={idx}
                 sx={{
-                  background: "#06a19b",
-                  color: "#fff",
+                  background: '#06a19b',
+                  color: '#fff',
                   fontWeight: 600,
                 }}
               >
                 <Typography variant="body2">
-                  {unit.label.split("-")[0]}
+                  {unit.label.split('-')[0]}
                 </Typography>
                 <Divider
                   sx={{
                     borderWidth: 2,
-                    borderColor: "#fff",
+                    borderColor: '#fff',
                     my: 1,
                   }}
                 />
@@ -99,8 +99,8 @@ const FeedUsageTable = ({ flatData }: any) => {
             ))}
             <TableCell
               sx={{
-                background: "#06a19b",
-                color: "#fff",
+                background: '#06a19b',
+                color: '#fff',
                 fontWeight: 600,
               }}
             >
@@ -117,8 +117,8 @@ const FeedUsageTable = ({ flatData }: any) => {
                   rowSpan={tableData.length}
                   sx={{
                     fontWeight: 500,
-                    whiteSpace: "nowrap",
-                    verticalAlign: "top",
+                    whiteSpace: 'nowrap',
+                    verticalAlign: 'top',
                   }}
                 >
                   SA Feeds
@@ -129,12 +129,12 @@ const FeedUsageTable = ({ flatData }: any) => {
                   sx={{
                     fontWeight: 500,
                     fontSize: 14,
-                    backgroundColor: "#F5F6F8",
-                    borderTopLeftRadius: "8px",
-                    borderBottomLeftRadius: "8px",
-                    padding: "8px 12px",
-                    margin: "8px 0",
-                    whiteSpace: "nowrap",
+                    backgroundColor: '#F5F6F8',
+                    borderTopLeftRadius: '8px',
+                    borderBottomLeftRadius: '8px',
+                    padding: '8px 12px',
+                    margin: '8px 0',
+                    whiteSpace: 'nowrap',
                   }}
                 >
                   {row.feedType}
@@ -146,10 +146,10 @@ const FeedUsageTable = ({ flatData }: any) => {
                   <Typography
                     sx={{
                       fontSize: 14,
-                      padding: "8px 12px",
-                      margin: "8px 0",
-                      backgroundColor: "#F5F6F8",
-                      whiteSpace: "nowrap",
+                      padding: '8px 12px',
+                      margin: '8px 0',
+                      backgroundColor: '#F5F6F8',
+                      whiteSpace: 'nowrap',
                     }}
                   >
                     {formatFeed(kg)}
@@ -162,11 +162,11 @@ const FeedUsageTable = ({ flatData }: any) => {
                   sx={{
                     fontSize: 14,
                     fontWeight: 600,
-                    padding: "8px 12px",
-                    margin: "8px 0",
-                    backgroundColor: "#06a19b",
-                    color: "#fff",
-                    whiteSpace: "nowrap",
+                    padding: '8px 12px',
+                    margin: '8px 0',
+                    backgroundColor: '#06a19b',
+                    color: '#fff',
+                    whiteSpace: 'nowrap',
                   }}
                 >
                   {formatFeed(row.totalIntake)}
@@ -181,10 +181,10 @@ const FeedUsageTable = ({ flatData }: any) => {
                 sx={{
                   fontWeight: 600,
                   fontSize: 14,
-                  padding: "8px 12px",
-                  backgroundColor: "#06a19b",
-                  color: "#fff",
-                  whiteSpace: "nowrap",
+                  padding: '8px 12px',
+                  backgroundColor: '#06a19b',
+                  color: '#fff',
+                  whiteSpace: 'nowrap',
                 }}
               >
                 Total
@@ -197,7 +197,7 @@ const FeedUsageTable = ({ flatData }: any) => {
                   const intake = parseFloat(item.feedIntake);
                   return sum + (isNaN(intake) ? 0 : intake);
                 },
-                0
+                0,
               );
 
               return (
@@ -206,10 +206,10 @@ const FeedUsageTable = ({ flatData }: any) => {
                     sx={{
                       fontSize: 14,
                       fontWeight: 600,
-                      padding: "8px 12px",
-                      backgroundColor: "#06a19b",
-                      color: "#fff",
-                      whiteSpace: "nowrap",
+                      padding: '8px 12px',
+                      backgroundColor: '#06a19b',
+                      color: '#fff',
+                      whiteSpace: 'nowrap',
                     }}
                   >
                     {formatFeed(unitTotal)}
@@ -224,10 +224,10 @@ const FeedUsageTable = ({ flatData }: any) => {
                 sx={{
                   fontSize: 14,
                   fontWeight: 600,
-                  padding: "8px 12px",
-                  backgroundColor: "#06a19b",
-                  color: "#fff",
-                  whiteSpace: "nowrap",
+                  padding: '8px 12px',
+                  backgroundColor: '#06a19b',
+                  color: '#fff',
+                  whiteSpace: 'nowrap',
                 }}
               >
                 {formatFeed(
@@ -237,10 +237,10 @@ const FeedUsageTable = ({ flatData }: any) => {
                         const intake = parseFloat(item.feedIntake);
                         return acc + (isNaN(intake) ? 0 : intake);
                       },
-                      0
+                      0,
                     );
                     return sum + total;
-                  }, 0)
+                  }, 0),
                 )}
               </Typography>
             </TableCell>

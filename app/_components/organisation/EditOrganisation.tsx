@@ -1,26 +1,26 @@
-"use client";
-import * as validationPattern from "@/app/_lib/utils/validationPatterns/index";
-import * as validationMessage from "@/app/_lib/utils/validationsMessage/index";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import Select from "@mui/material/Select";
+'use client';
+import * as validationPattern from '@/app/_lib/utils/validationPatterns/index';
+import * as validationMessage from '@/app/_lib/utils/validationsMessage/index';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import Select from '@mui/material/Select';
 
 import {
   OrganisationType,
   PermissionType,
-} from "@/app/_components/AddNewOrganisation";
-import MapComponent from "@/app/_components/farm/MapComponent";
-import HatcheryForm from "@/app/_components/hatchery/HatcheryForm";
-import Loader from "@/app/_components/Loader";
-import { deleteImage, handleUpload } from "@/app/_lib/utils";
+} from '@/app/_components/AddNewOrganisation';
+import MapComponent from '@/app/_components/farm/MapComponent';
+import HatcheryForm from '@/app/_components/hatchery/HatcheryForm';
+import Loader from '@/app/_components/Loader';
+import { deleteImage, handleUpload } from '@/app/_lib/utils';
 import {
   AddOrganizationFormInputs,
   OrganizationData,
   SingleOrganisation,
-} from "@/app/_typeModels/Organization";
-import sendEmailIcon from "@/public/static/img/ic-send-email.svg";
-import sentEmailIcon from "@/public/static/img/ic-sent-email.svg";
-import TabContext from "@mui/lab/TabContext";
-import TabList from "@mui/lab/TabList";
+} from '@/app/_typeModels/Organization';
+import sendEmailIcon from '@/public/static/img/ic-send-email.svg';
+import sentEmailIcon from '@/public/static/img/ic-sent-email.svg';
+import TabContext from '@mui/lab/TabContext';
+import TabList from '@mui/lab/TabList';
 import {
   Box,
   Button,
@@ -33,32 +33,31 @@ import {
   Tab,
   TextField,
   Typography,
-} from "@mui/material";
-import { styled } from "@mui/material/styles";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+} from '@mui/material';
+import { styled } from '@mui/material/styles';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import {
   Controller,
   SubmitHandler,
   useFieldArray,
   useForm,
-} from "react-hook-form";
-import toast from "react-hot-toast";
+} from 'react-hook-form';
+import toast from 'react-hot-toast';
 
-import Image from "next/image";
-import FarmsInformation from "./FarmsInformation";
-import { Permissions, SingleUser } from "@/app/_typeModels/User";
-import { getCookie } from "cookies-next";
-import OrganisationPermission from "./OrganisationPermission";
-export const VisuallyHiddenInput = styled("input")({
-  clip: "rect(0 0 0 0)",
-  clipPath: "inset(50%)",
+import Image from 'next/image';
+import FarmsInformation from './FarmsInformation';
+import { SingleUser } from '@/app/_typeModels/User';
+import { getCookie } from 'cookies-next';
+export const VisuallyHiddenInput = styled('input')({
+  clip: 'rect(0 0 0 0)',
+  clipPath: 'inset(50%)',
   height: 1,
-  overflow: "hidden",
-  position: "absolute",
+  overflow: 'hidden',
+  position: 'absolute',
   bottom: 0,
   left: 0,
-  whiteSpace: "nowrap",
+  whiteSpace: 'nowrap',
   width: 1,
 });
 type Iprops = {
@@ -78,16 +77,16 @@ const EditOrganisation = ({
   const [organisationData, setOrganisationData] = useState<OrganizationData>();
 
   const [isHatcherySelected, setIsHatcherySelected] = useState<boolean>(false);
-  const [altitude, setAltitude] = useState<String>("");
+  const [altitude, setAltitude] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
-  const [profilePic, setProfilePic] = useState<String>();
+  const [profilePic, setProfilePic] = useState<string>();
   const [addressInformation, setAddressInformation] = useState<any>();
   const [isApiCallInProgress, setIsApiCallInProgress] =
     useState<boolean>(false);
   const [useAddress, setUseAddress] = useState<boolean>(false);
   const [searchedAddress, setSearchedAddress] = useState<any>();
   const [selectedView, setSelectedView] = useState<string>(
-    "organisationInformation"
+    'organisationInformation',
   );
   const [inviteSent, setInviteSent] = useState<{ [key: number]: boolean }>({});
 
@@ -107,14 +106,14 @@ const EditOrganisation = ({
   const handleChange = (_event: any, newValue: string) => {
     setSelectedView(newValue);
     const newParams = new URLSearchParams(searchParams.toString());
-    newParams.set("tab", newValue);
+    newParams.set('tab', newValue);
     router.push(`?${newParams.toString()}`);
   };
   const getOrganisation = async () => {
     setLoading(true);
-    const token = getCookie("auth-token");
+    const token = getCookie('auth-token');
     const data = await fetch(`/api/organisation/${organisationId}`, {
-      method: "GET",
+      method: 'GET',
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -134,21 +133,21 @@ const EditOrganisation = ({
     trigger,
     formState: { errors },
   } = useForm<AddOrganizationFormInputs>({
-    mode: "onChange",
+    mode: 'onChange',
     defaultValues: {
       contacts: [
         {
-          name: "",
-          role: "",
-          email: "",
-          phone: "",
-          permission: "",
+          name: '',
+          role: '',
+          email: '',
+          phone: '',
+          permission: '',
           invite: false,
         },
       ],
     },
   });
-  const selectedOrganisationType = watch("organisationType");
+  const selectedOrganisationType = watch('organisationType');
   const onSubmit: SubmitHandler<AddOrganizationFormInputs> = async (data) => {
     // Prevent API call if one is already in progress
     if (isApiCallInProgress) return;
@@ -173,26 +172,26 @@ const EditOrganisation = ({
       }
 
       const formData = new FormData();
-      formData.append("name", String(data.organisationName));
-      formData.append("invitedBy", String(loggedUser?.organisationId));
-      formData.append("organisationCode", String(data.organisationCode));
-      formData.append("organisationType", String(data.organisationType));
-      formData.append("address", JSON.stringify(address));
-      formData.append("contacts", JSON.stringify(data.contacts));
-      formData.append("imageUrl", String(profilePic));
-      formData.append("invitedBy", String(loggedUser?.organisationId));
+      formData.append('name', String(data.organisationName));
+      formData.append('invitedBy', String(loggedUser?.organisationId));
+      formData.append('organisationCode', String(data.organisationCode));
+      formData.append('organisationType', String(data.organisationType));
+      formData.append('address', JSON.stringify(address));
+      formData.append('contacts', JSON.stringify(data.contacts));
+      formData.append('imageUrl', String(profilePic));
+      formData.append('invitedBy', String(loggedUser?.organisationId));
 
       if (isHatcherySelected && organisationData) {
         formData.append(
-          "hatcheryId",
-          JSON.stringify(organisationData?.hatchery[0]?.id ?? "")
+          'hatcheryId',
+          JSON.stringify(organisationData?.hatchery[0]?.id ?? ''),
         );
-        formData.append("hatchery", JSON.stringify(hatchery));
+        formData.append('hatchery', JSON.stringify(hatchery));
       }
 
-      const token = getCookie("auth-token");
+      const token = getCookie('auth-token');
       const res = await fetch(`/api/organisation/${organisationId}`, {
-        method: "PUT",
+        method: 'PUT',
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -203,23 +202,23 @@ const EditOrganisation = ({
         const updatedOrganisation = await res.json();
 
         toast.success(updatedOrganisation.message);
-        router.push("/dashboard/organisation");
+        router.push('/dashboard/organisation');
       } else {
         const data = await res.json();
         toast.error(data.error);
       }
     } catch (error) {
-      toast.error("Something went wrong. Please try again.");
+      toast.error('Something went wrong. Please try again.');
     } finally {
       setIsApiCallInProgress(false);
     }
   };
   const { fields, append, remove } = useFieldArray({
     control,
-    name: "contacts",
+    name: 'contacts',
   });
   const AddContactField = () => {
-    const conatcts = watch("contacts");
+    const conatcts = watch('contacts');
     if (conatcts) {
       const lastContact = conatcts[conatcts.length - 1];
       if (
@@ -230,35 +229,35 @@ const EditOrganisation = ({
         lastContact.phone
       ) {
         append({
-          name: "",
-          role: "",
-          email: "",
-          phone: "",
-          permission: "",
+          name: '',
+          role: '',
+          email: '',
+          phone: '',
+          permission: '',
           invite: false,
           newInvite: false,
         });
       } else {
         toast.dismiss();
-        toast.error("Please fill previous contact details.");
+        toast.error('Please fill previous contact details.');
       }
     }
   };
 
   useEffect(() => {
-    if (watch("organisationType") === "Hatchery") {
+    if (watch('organisationType') === 'Hatchery') {
       setIsHatcherySelected(true);
     } else {
       setIsHatcherySelected(false);
     }
-  }, [watch("organisationType")]);
+  }, [watch('organisationType')]);
   useEffect(() => {
     if (addressInformation && useAddress && altitude) {
-      setValue("address", addressInformation.address);
-      setValue("city", addressInformation.city);
-      setValue("postCode", addressInformation.postcode);
-      setValue("province", addressInformation.state);
-      setValue("country", addressInformation.country);
+      setValue('address', addressInformation.address);
+      setValue('city', addressInformation.city);
+      setValue('postCode', addressInformation.postcode);
+      setValue('province', addressInformation.state);
+      setValue('country', addressInformation.country);
 
       setUseAddress(false);
     }
@@ -276,16 +275,16 @@ const EditOrganisation = ({
 
   useEffect(() => {
     if (organisationData) {
-      setValue("organisationName", organisationData.name);
-      setValue("organisationCode", organisationData.organisationCode);
-      setValue("address", String(organisationData?.address?.name));
-      setValue("city", String(organisationData.address?.city));
-      setValue("country", String(organisationData.address?.country));
-      setValue("province", String(organisationData.address?.province));
-      setValue("postCode", String(organisationData.address?.postCode));
-      setValue("country", organisationData?.address?.country);
-      setValue("contacts", organisationData?.contact);
-      setValue("organisationType", organisationData?.organisationType);
+      setValue('organisationName', organisationData.name);
+      setValue('organisationCode', organisationData.organisationCode);
+      setValue('address', String(organisationData?.address?.name));
+      setValue('city', String(organisationData.address?.city));
+      setValue('country', String(organisationData.address?.country));
+      setValue('province', String(organisationData.address?.province));
+      setValue('postCode', String(organisationData.address?.postCode));
+      setValue('country', organisationData?.address?.country);
+      setValue('contacts', organisationData?.contact);
+      setValue('organisationType', organisationData?.organisationType);
     }
   }, [organisationData]);
 
@@ -294,22 +293,22 @@ const EditOrganisation = ({
   }
   return (
     <>
-      <Box sx={{ width: "100%", typography: "body1", mt: 5 }}>
+      <Box sx={{ width: '100%', typography: 'body1', mt: 5 }}>
         <TabContext value={String(selectedView)}>
           <Stack
-            display={"flex"}
+            display={'flex'}
             rowGap={2}
             columnGap={5}
             mb={2}
-            justifyContent={"space-between"}
+            justifyContent={'space-between'}
             sx={{
               flexDirection: {
-                md: "row",
-                xs: "column",
+                md: 'row',
+                xs: 'column',
               },
               alignItems: {
-                md: "center",
-                xs: "start",
+                md: 'center',
+                xs: 'start',
               },
             }}
           >
@@ -323,16 +322,16 @@ const EditOrganisation = ({
                   label="Organisation Information"
                   value="organisationInformation"
                   className={
-                    selectedView === "organisationInformation"
-                      ? "active-tab"
-                      : ""
+                    selectedView === 'organisationInformation'
+                      ? 'active-tab'
+                      : ''
                   }
                 />
                 <Tab
                   label="Farm Information"
                   value="farmInformation"
                   className={
-                    selectedView === "farmInformation" ? "active-tab" : ""
+                    selectedView === 'farmInformation' ? 'active-tab' : ''
                   }
                 />
               </TabList>
@@ -340,11 +339,11 @@ const EditOrganisation = ({
           </Stack>
         </TabContext>
       </Box>
-      {selectedView === "organisationInformation" ? (
+      {selectedView === 'organisationInformation' ? (
         <Stack
           sx={{
-            borderRadius: "14px",
-            boxShadow: "0px 0px 16px 5px #0000001A",
+            borderRadius: '14px',
+            boxShadow: '0px 0px 16px 5px #0000001A',
             mt: 4,
           }}
         >
@@ -356,7 +355,7 @@ const EditOrganisation = ({
               },
               fontSize: 20,
               fontWeight: 600,
-              borderColor: "#0000001A",
+              borderColor: '#0000001A',
             }}
           >
             Orgainsation Information
@@ -380,12 +379,12 @@ const EditOrganisation = ({
               md={5}
               xs={12}
               sx={{
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "flex-start",
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'flex-start',
                 gap: 3,
                 alignItems: {
-                  xs: "center",
+                  xs: 'center',
                 },
               }}
             >
@@ -393,7 +392,7 @@ const EditOrganisation = ({
                 variant="h6"
                 color="rgb(99, 115, 129)"
                 fontSize={14}
-                alignSelf={"flex-start"}
+                alignSelf={'flex-start'}
               >
                 Profile Picture
               </Typography>
@@ -404,32 +403,32 @@ const EditOrganisation = ({
                 tabIndex={-1}
                 style={{
                   backgroundImage: `url(${profilePic})`,
-                  backgroundSize: "100% 100%",
+                  backgroundSize: '100% 100%',
                 }}
                 startIcon={profilePic ? null : <CloudUploadIcon />}
                 className="upload-file-input1"
                 sx={{
-                  textTransform: "unset",
+                  textTransform: 'unset',
                   fontSize: 12,
                   width: 140,
                   height: 140,
                   borderRadius: 100,
-                  border: "7px solid white",
-                  outline: "1px dashed rgba(145, 158, 171, 0.32)",
-                  backgroundColor: "rgb(244, 246, 248)",
-                  boxShadow: "none",
-                  color: "rgb(99, 115, 129)",
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  position: "relative",
+                  border: '7px solid white',
+                  outline: '1px dashed rgba(145, 158, 171, 0.32)',
+                  backgroundColor: 'rgb(244, 246, 248)',
+                  boxShadow: 'none',
+                  color: 'rgb(99, 115, 129)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  position: 'relative',
                 }}
               >
-                <Box>{profilePic ? "" : "Upload photo"}</Box>
+                <Box>{profilePic ? '' : 'Upload photo'}</Box>
                 <VisuallyHiddenInput
                   type="file"
-                  {...register("image", {
+                  {...register('image', {
                     onChange: (e) =>
                       handleUpload(e.target.files, profilePic, setProfilePic),
                   })}
@@ -438,27 +437,27 @@ const EditOrganisation = ({
               </Button>
               {profilePic && (
                 <Box
-                  display={"flex"}
+                  display={'flex'}
                   gap="10px"
-                  alignItems={"center"}
-                  mt={"2px"}
+                  alignItems={'center'}
+                  mt={'2px'}
                 >
                   <Button
                     component="label"
                     variant="contained"
                     sx={{
-                      background: "#06A19B",
-                      color: "#fff",
+                      background: '#06A19B',
+                      color: '#fff',
                       fontWeight: 600,
-                      padding: "4px",
-                      textTransform: "capitalize",
-                      borderRadius: "10px",
-                      border: "1px solid #06A19B",
+                      padding: '4px',
+                      textTransform: 'capitalize',
+                      borderRadius: '10px',
+                      border: '1px solid #06A19B',
                       // position: "absolute",
                       // bottom: "1%",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "2px",
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '2px',
                     }}
                   >
                     <svg
@@ -475,12 +474,12 @@ const EditOrganisation = ({
                     Edit
                     <VisuallyHiddenInput
                       type="file"
-                      {...register("image", {
+                      {...register('image', {
                         onChange: (e) =>
                           handleUpload(
                             e.target.files,
                             profilePic,
-                            setProfilePic
+                            setProfilePic,
                           ),
                       })}
                       accept=".jpg,.jpeg,.png,.svg"
@@ -495,29 +494,29 @@ const EditOrganisation = ({
                       deleteImage(
                         {
                           id: organisationData?.id,
-                          type: "organisation",
+                          type: 'organisation',
                           image: organisationData?.image,
                         },
-                        setProfilePic
+                        setProfilePic,
                       )
                     }
                     sx={{
-                      background: "#D71818",
+                      background: '#D71818',
                       fontWeight: 600,
-                      padding: "4px",
-                      width: "fit-content",
-                      textTransform: "capitalize",
-                      borderRadius: "10px",
-                      color: "#fff",
-                      border: "1px solid #D71818",
-                      boxShadow: "none",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      gap: "2px",
+                      padding: '4px',
+                      width: 'fit-content',
+                      textTransform: 'capitalize',
+                      borderRadius: '10px',
+                      color: '#fff',
+                      border: '1px solid #D71818',
+                      boxShadow: 'none',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '2px',
                     }}
                   >
-                    {" "}
+                    {' '}
                     <svg
                       width="14"
                       height="14"
@@ -544,21 +543,21 @@ const EditOrganisation = ({
               )}
 
               <Box
-                display={"flex"}
-                justifyContent={"center"}
-                alignItems={"center"}
-                flexDirection={"row"}
+                display={'flex'}
+                justifyContent={'center'}
+                alignItems={'center'}
+                flexDirection={'row'}
                 sx={{
                   width: {
-                    md: "90%",
-                    xs: "100%",
+                    md: '90%',
+                    xs: '100%',
                   },
                 }}
               >
                 <Typography
                   variant="body1"
                   fontSize={12}
-                  textAlign={"center"}
+                  textAlign={'center'}
                   margin="0 auto"
                   color="#979797"
                 >
@@ -581,13 +580,13 @@ const EditOrganisation = ({
               }}
             >
               <form onSubmit={handleSubmit(onSubmit)}>
-                <Box width={"100%"} mb={2}>
+                <Box width={'100%'} mb={2}>
                   <TextField
                     label="Organisation Name *"
                     type="text"
                     className="form-input"
                     focused
-                    {...register("organisationName", {
+                    {...register('organisationName', {
                       required: true,
                       // validate: (value: String) => {
                       //   const isUnique = organisations?.every((val) => {
@@ -606,13 +605,13 @@ const EditOrganisation = ({
                     // focused={userData?.data.name ? true : false}
                     // value={userData?.data.name}
                     sx={{
-                      width: "100%",
+                      width: '100%',
                     }}
                   />
 
                   {errors &&
                     errors.organisationName &&
-                    errors.organisationName.type === "required" && (
+                    errors.organisationName.type === 'required' && (
                       <Typography
                         variant="body2"
                         color="red"
@@ -622,7 +621,7 @@ const EditOrganisation = ({
                         This field is required.
                       </Typography>
                     )}
-                  {errors?.organisationName?.type === "validate" && (
+                  {errors?.organisationName?.type === 'validate' && (
                     <Typography
                       variant="body2"
                       color="red"
@@ -634,33 +633,33 @@ const EditOrganisation = ({
                   )}
                 </Box>
                 <Stack
-                  display={"flex"}
-                  justifyContent={"flex-start"}
-                  direction={"row"}
+                  display={'flex'}
+                  justifyContent={'flex-start'}
+                  direction={'row'}
                   sx={{
-                    width: "100%",
+                    width: '100%',
                     marginBottom: 2,
                     gap: 1.5,
                   }}
                 >
-                  <Box width={"100%"}>
+                  <Box width={'100%'}>
                     <TextField
                       label="Organisation Code *"
                       type="text"
                       InputProps={{ readOnly: true }}
                       className="form-input"
-                      {...register("organisationCode", {
+                      {...register('organisationCode', {
                         required: true,
                       })}
                       // disabled
                       sx={{
-                        width: "100%",
+                        width: '100%',
                       }}
                       focused
                     />
                     {errors &&
                       errors.organisationCode &&
-                      errors.organisationCode.type === "required" && (
+                      errors.organisationCode.type === 'required' && (
                         <Typography
                           variant="body2"
                           color="red"
@@ -680,9 +679,9 @@ const EditOrganisation = ({
                     labelId="demo-simple-select-label"
                     id="demo-simple-select"
                     label="   Organisation Type *"
-                    {...register("organisationType")}
+                    {...register('organisationType')}
                     disabled
-                    value={selectedOrganisationType || ""}
+                    value={selectedOrganisationType || ''}
                     // onChange={(e) => handleChange(e, item)}
                   >
                     {OrganisationType.map((organisation, i) => {
@@ -716,31 +715,31 @@ const EditOrganisation = ({
                 </Typography>
 
                 <Stack
-                  display={"flex"}
-                  justifyContent={"flex-start"}
-                  direction={"row"}
+                  display={'flex'}
+                  justifyContent={'flex-start'}
+                  direction={'row'}
                   sx={{
-                    width: "100%",
+                    width: '100%',
                     marginBottom: 2,
                     gap: 1.5,
                   }}
                 >
-                  <Box width={"100%"}>
+                  <Box width={'100%'}>
                     <TextField
                       label="Address *"
                       type="text"
                       className="form-input"
-                      {...register("address", {
+                      {...register('address', {
                         required: true,
                       })}
                       focused
                       sx={{
-                        width: "100%",
+                        width: '100%',
                       }}
                     />
                     {errors &&
                       errors.address &&
-                      errors.address.type === "required" && (
+                      errors.address.type === 'required' && (
                         <Typography
                           variant="body2"
                           color="red"
@@ -752,22 +751,22 @@ const EditOrganisation = ({
                       )}
                   </Box>
 
-                  <Box width={"100%"}>
+                  <Box width={'100%'}>
                     <TextField
                       label="City *"
                       type="text"
                       className="form-input"
-                      {...register("city", {
+                      {...register('city', {
                         required: true,
                       })}
                       focused
                       sx={{
-                        width: "100%",
+                        width: '100%',
                       }}
                     />
                     {errors &&
                       errors.city &&
-                      errors.city.type === "required" && (
+                      errors.city.type === 'required' && (
                         <Typography
                           variant="body2"
                           color="red"
@@ -781,32 +780,32 @@ const EditOrganisation = ({
                 </Stack>
 
                 <Stack
-                  display={"flex"}
-                  justifyContent={"flex-start"}
-                  direction={"row"}
+                  display={'flex'}
+                  justifyContent={'flex-start'}
+                  direction={'row'}
                   sx={{
-                    width: "100%",
+                    width: '100%',
                     marginBottom: 2,
                     gap: 1.5,
                   }}
                 >
-                  <Box width={"100%"}>
+                  <Box width={'100%'}>
                     <TextField
                       label="Province *"
                       type="text"
                       className="form-input"
-                      {...register("province", {
+                      {...register('province', {
                         required: true,
                       })}
                       focused
                       sx={{
-                        width: "100%",
+                        width: '100%',
                       }}
                     />
 
                     {errors &&
                       errors.province &&
-                      errors.province.type === "required" && (
+                      errors.province.type === 'required' && (
                         <Typography
                           variant="body2"
                           color="red"
@@ -818,24 +817,24 @@ const EditOrganisation = ({
                       )}
                   </Box>
 
-                  <Box width={"100%"}>
+                  <Box width={'100%'}>
                     <TextField
                       label="Post Code *"
                       type="text"
                       className="form-input"
-                      {...register("postCode", {
+                      {...register('postCode', {
                         required: true,
                         pattern: validationPattern.onlyNumbersPattern,
                         maxLength: 10,
                       })}
                       focused
                       sx={{
-                        width: "100%",
+                        width: '100%',
                       }}
                     />
                     {errors &&
                       errors.postCode &&
-                      errors.postCode.type === "required" && (
+                      errors.postCode.type === 'required' && (
                         <Typography
                           variant="body2"
                           color="red"
@@ -848,7 +847,7 @@ const EditOrganisation = ({
 
                     {errors &&
                       errors.postCode &&
-                      errors.postCode.type === "pattern" && (
+                      errors.postCode.type === 'pattern' && (
                         <Typography
                           variant="body2"
                           color="red"
@@ -860,7 +859,7 @@ const EditOrganisation = ({
                       )}
                     {errors &&
                       errors.postCode &&
-                      errors.postCode.type === "maxLength" && (
+                      errors.postCode.type === 'maxLength' && (
                         <Typography
                           variant="body2"
                           color="red"
@@ -873,31 +872,31 @@ const EditOrganisation = ({
                   </Box>
                 </Stack>
                 <Stack
-                  display={"flex"}
-                  justifyContent={"flex-start"}
-                  direction={"row"}
+                  display={'flex'}
+                  justifyContent={'flex-start'}
+                  direction={'row'}
                   sx={{
-                    width: "100%",
+                    width: '100%',
                     marginBottom: 2,
                     gap: 1.5,
                   }}
                 >
-                  <Box width={"50%"}>
+                  <Box width={'50%'}>
                     <TextField
                       label="Country *"
                       type="text"
                       className="form-input"
-                      {...register("country", {
+                      {...register('country', {
                         required: true,
                       })}
                       focused
                       sx={{
-                        width: "100%",
+                        width: '100%',
                       }}
                     />
                     {errors &&
                       errors.country &&
-                      errors.country.type === "required" && (
+                      errors.country.type === 'required' && (
                         <Typography
                           variant="body2"
                           color="red"
@@ -909,7 +908,7 @@ const EditOrganisation = ({
                       )}
                   </Box>
                 </Stack>
-                <Box display={"flex"} justifyContent={"end"} width={"100%"}>
+                <Box display={'flex'} justifyContent={'end'} width={'100%'}>
                   <MapComponent
                     setAddressInformation={setAddressInformation}
                     setSearchedAddress={setSearchedAddress}
@@ -933,27 +932,27 @@ const EditOrganisation = ({
                 {fields.map((item, index) => (
                   <Stack
                     key={item.id}
-                    display={"flex"}
-                    direction={"row"}
+                    display={'flex'}
+                    direction={'row'}
                     sx={{
-                      width: "100%",
+                      width: '100%',
                       marginBottom: 2,
                       gap: 1.5,
                       justifyContent: {
-                        md: "center",
+                        md: 'center',
                       },
                       flexWrap: {
-                        lg: "nowrap",
-                        xs: "wrap",
+                        lg: 'nowrap',
+                        xs: 'wrap',
                       },
                     }}
                   >
                     <Box
                       sx={{
                         width: {
-                          lg: "100%",
-                          md: "48.4%",
-                          xs: "100%",
+                          lg: '100%',
+                          md: '48.4%',
+                          xs: '100%',
                         },
                       }}
                     >
@@ -966,14 +965,14 @@ const EditOrganisation = ({
                         })}
                         focused
                         sx={{
-                          width: "100%",
+                          width: '100%',
                         }}
                       />
                       {errors &&
                         errors?.contacts &&
                         errors?.contacts[index] &&
                         errors?.contacts[index]?.name &&
-                        errors?.contacts[index]?.name.type === "required" && (
+                        errors?.contacts[index]?.name.type === 'required' && (
                           <Typography
                             variant="body2"
                             color="red"
@@ -987,9 +986,9 @@ const EditOrganisation = ({
                     <Box
                       sx={{
                         width: {
-                          lg: "100%",
-                          md: "48.4%",
-                          xs: "100%",
+                          lg: '100%',
+                          md: '48.4%',
+                          xs: '100%',
                         },
                       }}
                     >
@@ -1040,7 +1039,7 @@ const EditOrganisation = ({
                         errors?.contacts[index] &&
                         errors?.contacts[index]?.permission &&
                         errors?.contacts[index]?.permission.type ===
-                          "required" && (
+                          'required' && (
                           <Typography
                             variant="body2"
                             color="red"
@@ -1054,9 +1053,9 @@ const EditOrganisation = ({
                     <Box
                       sx={{
                         width: {
-                          lg: "100%",
-                          md: "48.4%",
-                          xs: "100%",
+                          lg: '100%',
+                          md: '48.4%',
+                          xs: '100%',
                         },
                       }}
                     >
@@ -1070,14 +1069,14 @@ const EditOrganisation = ({
                         })}
                         focused
                         sx={{
-                          width: "100%",
+                          width: '100%',
                         }}
                       />
                       {errors &&
                         errors?.contacts &&
                         errors?.contacts[index] &&
                         errors?.contacts[index]?.role &&
-                        errors?.contacts[index]?.role.type === "required" && (
+                        errors?.contacts[index]?.role.type === 'required' && (
                           <Typography
                             variant="body2"
                             color="red"
@@ -1092,9 +1091,9 @@ const EditOrganisation = ({
                     <Box
                       sx={{
                         width: {
-                          lg: "100%",
-                          md: "48.4%",
-                          xs: "100%",
+                          lg: '100%',
+                          md: '48.4%',
+                          xs: '100%',
                         },
                       }}
                     >
@@ -1110,10 +1109,10 @@ const EditOrganisation = ({
                               (f, i) =>
                                 i === index ||
                                 String(f.email).toLowerCase() !==
-                                  String(value).toLowerCase()
+                                  String(value).toLowerCase(),
                             );
                             if (!isUnique) {
-                              return "Please enter a unique email.This email is already used in contacts information";
+                              return 'Please enter a unique email.This email is already used in contacts information';
                             }
 
                             return true;
@@ -1121,14 +1120,14 @@ const EditOrganisation = ({
                         })}
                         focused
                         sx={{
-                          width: "100%",
+                          width: '100%',
                         }}
                       />
                       {errors &&
                         errors?.contacts &&
                         errors?.contacts[index] &&
                         errors?.contacts[index]?.email &&
-                        errors?.contacts[index]?.email.type === "required" && (
+                        errors?.contacts[index]?.email.type === 'required' && (
                           <Typography
                             variant="body2"
                             color="red"
@@ -1142,7 +1141,7 @@ const EditOrganisation = ({
                         errors?.contacts &&
                         errors?.contacts[index] &&
                         errors?.contacts[index]?.email &&
-                        errors?.contacts[index]?.email.type === "pattern" && (
+                        errors?.contacts[index]?.email.type === 'pattern' && (
                           <Typography
                             variant="body2"
                             color="red"
@@ -1156,7 +1155,7 @@ const EditOrganisation = ({
                         errors?.contacts &&
                         errors?.contacts[index] &&
                         errors?.contacts[index]?.email &&
-                        errors?.contacts[index]?.email.type === "validate" && (
+                        errors?.contacts[index]?.email.type === 'validate' && (
                           <Typography
                             variant="body2"
                             color="red"
@@ -1171,9 +1170,9 @@ const EditOrganisation = ({
                     <Box
                       sx={{
                         width: {
-                          lg: "100%",
-                          md: "48.4%",
-                          xs: "100%",
+                          lg: '100%',
+                          md: '48.4%',
+                          xs: '100%',
                         },
                       }}
                     >
@@ -1187,14 +1186,14 @@ const EditOrganisation = ({
                         })}
                         focused
                         sx={{
-                          width: "100%",
+                          width: '100%',
                         }}
                       />
                       {errors &&
                         errors?.contacts &&
                         errors?.contacts[index] &&
                         errors?.contacts[index]?.phone &&
-                        errors?.contacts[index]?.phone.type === "required" && (
+                        errors?.contacts[index]?.phone.type === 'required' && (
                           <Typography
                             variant="body2"
                             color="red"
@@ -1208,7 +1207,7 @@ const EditOrganisation = ({
                         errors?.contacts &&
                         errors?.contacts[index] &&
                         errors?.contacts[index]?.phone &&
-                        errors?.contacts[index]?.phone.type === "pattern" && (
+                        errors?.contacts[index]?.phone.type === 'pattern' && (
                           <Typography
                             variant="body2"
                             color="red"
@@ -1221,44 +1220,44 @@ const EditOrganisation = ({
                     </Box>
 
                     <Box
-                      display={"flex"}
-                      justifyContent={"center"}
-                      alignItems={"center"}
+                      display={'flex'}
+                      justifyContent={'center'}
+                      alignItems={'center'}
                       onClick={() =>
                         handleInviteUser(Boolean(item.invite), index)
                       }
                     >
                       <Image
-                        title={item.invite ? "Invited" : "Invite"}
+                        title={item.invite ? 'Invited' : 'Invite'}
                         src={
                           item.invite
                             ? sentEmailIcon
                             : inviteSent[index]
-                            ? sentEmailIcon
-                            : sendEmailIcon
+                              ? sentEmailIcon
+                              : sendEmailIcon
                         }
                         alt="Send Email Icon"
                         style={{
-                          cursor: item.invite ? "not-allowed" : "pointer",
+                          cursor: item.invite ? 'not-allowed' : 'pointer',
                         }}
                       />
                     </Box>
                     <Box
-                      display={"flex"}
-                      justifyContent={"center"}
-                      alignItems={"center"}
+                      display={'flex'}
+                      justifyContent={'center'}
+                      alignItems={'center'}
                       width={150}
                       sx={{
                         cursor: `  ${
-                          item.role !== "Admin" ? "pointer" : "not-allowed"
+                          item.role !== 'Admin' ? 'pointer' : 'not-allowed'
                         }`,
                         width: {
                           lg: 150,
-                          xs: "auto",
+                          xs: 'auto',
                         },
                       }}
                       onClick={() =>
-                        item.permission !== "ADMIN" && remove(index)
+                        item.permission !== 'ADMIN' && remove(index)
                       }
                     >
                       <svg
@@ -1271,9 +1270,9 @@ const EditOrganisation = ({
                           <path d="m12.593 23.258l-.011.002l-.071.035l-.02.004l-.014-.004l-.071-.035q-.016-.005-.024.005l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.017-.018m.265-.113l-.013.002l-.185.093l-.01.01l-.003.011l.018.43l.005.012l.008.007l.201.093q.019.005.029-.008l.004-.014l-.034-.614q-.005-.018-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.614q.001.018.017.024l.015-.002l.201-.093l.01-.008l.004-.011l.017-.43l-.003-.012l-.01-.01z" />
                           <path
                             fill={`${
-                              item.permission !== "ADMIN"
-                                ? "#ff0000"
-                                : "#808080"
+                              item.permission !== 'ADMIN'
+                                ? '#ff0000'
+                                : '#808080'
                             }`}
                             d="M14.28 2a2 2 0 0 1 1.897 1.368L16.72 5H20a1 1 0 1 1 0 2l-.003.071l-.867 12.143A3 3 0 0 1 16.138 22H7.862a3 3 0 0 1-2.992-2.786L4.003 7.07L4 7a1 1 0 0 1 0-2h3.28l.543-1.632A2 2 0 0 1 9.721 2zm3.717 5H6.003l.862 12.071a1 1 0 0 0 .997.929h8.276a1 1 0 0 0 .997-.929zM10 10a1 1 0 0 1 .993.883L11 11v5a1 1 0 0 1-1.993.117L9 16v-5a1 1 0 0 1 1-1m4 0a1 1 0 0 1 1 1v5a1 1 0 1 1-2 0v-5a1 1 0 0 1 1-1m.28-6H9.72l-.333 1h5.226z"
                           />
@@ -1285,24 +1284,24 @@ const EditOrganisation = ({
 
                 <Divider
                   sx={{
-                    borderColor: "#979797",
+                    borderColor: '#979797',
                     my: 1,
                   }}
                 />
 
                 <Stack
                   p={1.5}
-                  direction={"row"}
+                  direction={'row'}
                   borderRadius={3}
                   mt={2}
-                  color={"#06a19b"}
+                  color={'#06a19b'}
                   fontSize={14}
                   fontWeight={500}
-                  display={"flex"}
-                  alignItems={"center"}
-                  justifyContent={"center"}
+                  display={'flex'}
+                  alignItems={'center'}
+                  justifyContent={'center'}
                   gap={0.5}
-                  border={"2px dashed #06a19b"}
+                  border={'2px dashed #06a19b'}
                   className="add-contact-btn"
                   onClick={() => AddContactField()}
                 >
@@ -1325,14 +1324,14 @@ const EditOrganisation = ({
                   variant="contained"
                   disabled={isApiCallInProgress}
                   sx={{
-                    background: "#06A19B",
+                    background: '#06A19B',
                     fontWeight: 600,
-                    padding: "6px 16px",
-                    width: "fit-content",
-                    textTransform: "capitalize",
-                    borderRadius: "8px",
-                    marginLeft: "auto",
-                    display: "block",
+                    padding: '6px 16px',
+                    width: 'fit-content',
+                    textTransform: 'capitalize',
+                    borderRadius: '8px',
+                    marginLeft: 'auto',
+                    display: 'block',
                     marginTop: 2,
                   }}
                 >

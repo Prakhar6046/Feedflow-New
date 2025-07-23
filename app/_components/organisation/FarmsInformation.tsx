@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import {
   Box,
@@ -8,22 +8,22 @@ import {
   Stack,
   TextField,
   Typography,
-} from "@mui/material";
-import HatcheryForm from "../hatchery/HatcheryForm";
-import { useRouter } from "next/navigation";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import { OrganizationData } from "@/app/_typeModels/Organization";
-import { VisuallyHiddenInput } from "./EditOrganisation";
-import EmptyFarm from "./EmptyFarm";
-import { getCookie, setCookie } from "cookies-next";
-import { SingleUser } from "@/app/_typeModels/User";
+} from '@mui/material';
+import HatcheryForm from '../hatchery/HatcheryForm';
+import { useRouter } from 'next/navigation';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import { OrganizationData } from '@/app/_typeModels/Organization';
+import { VisuallyHiddenInput } from './EditOrganisation';
+import EmptyFarm from './EmptyFarm';
+import { getCookie, setCookie } from 'cookies-next';
+import { SingleUser } from '@/app/_typeModels/User';
 interface Props {
   organisationData?: OrganizationData;
   profilePic: string | any;
   setProfilePic: any;
   isHatcherySelected: boolean;
   handleUpload: (file: any, profilePic: string, setProfilePic: any) => void;
-  altitude: String;
+  altitude: string;
   register: any;
   setValue: any;
   trigger: any;
@@ -44,7 +44,7 @@ const FarmsInformation = ({
   errors,
 }: Props) => {
   const router = useRouter();
-  const loggedUser: any = getCookie("logged-user");
+  const loggedUser: any = getCookie('logged-user');
   const user: SingleUser = JSON.parse(loggedUser);
   return organisationData?.Farm.length ? (
     organisationData?.Farm?.map((farm) => {
@@ -52,8 +52,8 @@ const FarmsInformation = ({
         <Stack
           key={farm.id}
           sx={{
-            borderRadius: "14px",
-            boxShadow: "0px 0px 16px 5px #0000001A",
+            borderRadius: '14px',
+            boxShadow: '0px 0px 16px 5px #0000001A',
             mt: 4,
           }}
         >
@@ -65,7 +65,7 @@ const FarmsInformation = ({
               },
               fontSize: 20,
               fontWeight: 600,
-              borderColor: "#0000001A",
+              borderColor: '#0000001A',
             }}
           >
             Farm Information
@@ -89,12 +89,12 @@ const FarmsInformation = ({
               md={5}
               xs={12}
               sx={{
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "flex-start",
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'flex-start',
                 gap: 3,
                 alignItems: {
-                  xs: "center",
+                  xs: 'center',
                 },
               }}
             >
@@ -102,7 +102,7 @@ const FarmsInformation = ({
                 variant="h6"
                 color="rgb(99, 115, 129)"
                 fontSize={14}
-                alignSelf={"flex-start"}
+                alignSelf={'flex-start'}
               >
                 Profile Picture
               </Typography>
@@ -113,32 +113,32 @@ const FarmsInformation = ({
                 tabIndex={-1}
                 style={{
                   backgroundImage: `url(${profilePic})`,
-                  backgroundSize: "100% 100%",
+                  backgroundSize: '100% 100%',
                 }}
                 startIcon={profilePic ? null : <CloudUploadIcon />}
                 className="upload-file-input1"
                 sx={{
-                  textTransform: "unset",
+                  textTransform: 'unset',
                   fontSize: 12,
                   width: 140,
                   height: 140,
                   borderRadius: 100,
-                  border: "7px solid white",
-                  outline: "1px dashed rgba(145, 158, 171, 0.32)",
-                  backgroundColor: "rgb(244, 246, 248)",
-                  boxShadow: "none",
-                  color: "rgb(99, 115, 129)",
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  position: "relative",
+                  border: '7px solid white',
+                  outline: '1px dashed rgba(145, 158, 171, 0.32)',
+                  backgroundColor: 'rgb(244, 246, 248)',
+                  boxShadow: 'none',
+                  color: 'rgb(99, 115, 129)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  position: 'relative',
                 }}
               >
-                <Box>{profilePic ? "" : "Upload photo"}</Box>
+                <Box>{profilePic ? '' : 'Upload photo'}</Box>
                 <VisuallyHiddenInput
                   type="file"
-                  {...register("image", {
+                  {...register('image', {
                     onChange: (e: any) =>
                       handleUpload(e.target.files, profilePic, setProfilePic),
                   })}
@@ -147,21 +147,21 @@ const FarmsInformation = ({
               </Button>
 
               <Box
-                display={"flex"}
-                justifyContent={"center"}
-                alignItems={"center"}
-                flexDirection={"row"}
+                display={'flex'}
+                justifyContent={'center'}
+                alignItems={'center'}
+                flexDirection={'row'}
                 sx={{
                   width: {
-                    md: "90%",
-                    xs: "100%",
+                    md: '90%',
+                    xs: '100%',
                   },
                 }}
               >
                 <Typography
                   variant="body1"
                   fontSize={12}
-                  textAlign={"center"}
+                  textAlign={'center'}
                   margin="0 auto"
                   color="#979797"
                 >
@@ -183,7 +183,7 @@ const FarmsInformation = ({
                 },
               }}
             >
-              <Box width={"100%"} mb={2}>
+              <Box width={'100%'} mb={2}>
                 <TextField
                   label="Farm Name"
                   type="text"
@@ -192,21 +192,21 @@ const FarmsInformation = ({
                   focused
                   value={farm?.name}
                   sx={{
-                    width: "100%",
+                    width: '100%',
                   }}
                 />
               </Box>
               <Stack
-                display={"flex"}
-                justifyContent={"flex-start"}
-                direction={"row"}
+                display={'flex'}
+                justifyContent={'flex-start'}
+                direction={'row'}
                 sx={{
-                  width: "100%",
+                  width: '100%',
                   marginBottom: 2,
                   gap: 1.5,
                 }}
               >
-                <Box width={"100%"}>
+                <Box width={'100%'}>
                   <TextField
                     label="Farm Altitude"
                     type="text"
@@ -215,23 +215,23 @@ const FarmsInformation = ({
                     value={farm?.farmAltitude}
                     // disabled
                     sx={{
-                      width: "100%",
+                      width: '100%',
                     }}
                     focused
                   />
                 </Box>
               </Stack>
               <Stack
-                display={"flex"}
-                justifyContent={"flex-start"}
-                direction={"row"}
+                display={'flex'}
+                justifyContent={'flex-start'}
+                direction={'row'}
                 sx={{
-                  width: "100%",
+                  width: '100%',
                   marginBottom: 2,
                   gap: 1.5,
                 }}
               >
-                <Box width={"100%"}>
+                <Box width={'100%'}>
                   <TextField
                     label="Farm Latitude"
                     type="text"
@@ -240,23 +240,23 @@ const FarmsInformation = ({
                     value={farm?.lat}
                     // disabled
                     sx={{
-                      width: "100%",
+                      width: '100%',
                     }}
                     focused
                   />
                 </Box>
               </Stack>
               <Stack
-                display={"flex"}
-                justifyContent={"flex-start"}
-                direction={"row"}
+                display={'flex'}
+                justifyContent={'flex-start'}
+                direction={'row'}
                 sx={{
-                  width: "100%",
+                  width: '100%',
                   marginBottom: 2,
                   gap: 1.5,
                 }}
               >
-                <Box width={"100%"}>
+                <Box width={'100%'}>
                   <TextField
                     label="Farm Longitude"
                     type="text"
@@ -265,7 +265,7 @@ const FarmsInformation = ({
                     value={farm?.lng}
                     // disabled
                     sx={{
-                      width: "100%",
+                      width: '100%',
                     }}
                     focused
                   />
@@ -293,16 +293,16 @@ const FarmsInformation = ({
               </Typography>
 
               <Stack
-                display={"flex"}
-                justifyContent={"flex-start"}
-                direction={"row"}
+                display={'flex'}
+                justifyContent={'flex-start'}
+                direction={'row'}
                 sx={{
-                  width: "100%",
+                  width: '100%',
                   marginBottom: 2,
                   gap: 1.5,
                 }}
               >
-                <Box width={"100%"}>
+                <Box width={'100%'}>
                   <TextField
                     label="Address"
                     type="text"
@@ -311,12 +311,12 @@ const FarmsInformation = ({
                     value={farm?.farmAddress?.addressLine1}
                     focused
                     sx={{
-                      width: "100%",
+                      width: '100%',
                     }}
                   />
                 </Box>
 
-                <Box width={"100%"}>
+                <Box width={'100%'}>
                   <TextField
                     label="City"
                     type="text"
@@ -325,23 +325,23 @@ const FarmsInformation = ({
                     value={farm?.farmAddress?.city}
                     focused
                     sx={{
-                      width: "100%",
+                      width: '100%',
                     }}
                   />
                 </Box>
               </Stack>
 
               <Stack
-                display={"flex"}
-                justifyContent={"flex-start"}
-                direction={"row"}
+                display={'flex'}
+                justifyContent={'flex-start'}
+                direction={'row'}
                 sx={{
-                  width: "100%",
+                  width: '100%',
                   marginBottom: 2,
                   gap: 1.5,
                 }}
               >
-                <Box width={"100%"}>
+                <Box width={'100%'}>
                   <TextField
                     label="Province"
                     type="text"
@@ -350,12 +350,12 @@ const FarmsInformation = ({
                     value={farm?.farmAddress?.province}
                     focused
                     sx={{
-                      width: "100%",
+                      width: '100%',
                     }}
                   />
                 </Box>
 
-                <Box width={"100%"}>
+                <Box width={'100%'}>
                   <TextField
                     label="Post Code"
                     type="text"
@@ -364,22 +364,22 @@ const FarmsInformation = ({
                     value={farm?.farmAddress?.zipCode}
                     focused
                     sx={{
-                      width: "100%",
+                      width: '100%',
                     }}
                   />
                 </Box>
               </Stack>
               <Stack
-                display={"flex"}
-                justifyContent={"flex-start"}
-                direction={"row"}
+                display={'flex'}
+                justifyContent={'flex-start'}
+                direction={'row'}
                 sx={{
-                  width: "100%",
+                  width: '100%',
                   marginBottom: 2,
                   gap: 1.5,
                 }}
               >
-                <Box width={"50%"}>
+                <Box width={'50%'}>
                   <TextField
                     label="Country"
                     type="text"
@@ -388,36 +388,36 @@ const FarmsInformation = ({
                     value={farm?.farmAddress?.country}
                     focused
                     sx={{
-                      width: "100%",
+                      width: '100%',
                     }}
                   />
                 </Box>
               </Stack>
               <Stack
                 sx={{
-                  display: "flex",
-                  justifyContent: "end",
+                  display: 'flex',
+                  justifyContent: 'end',
                   gap: 2,
-                  flexDirection: "row",
+                  flexDirection: 'row',
                 }}
               >
                 {user?.permissions?.editOrganisation && (
                   <Button
                     variant="contained"
                     onClick={() => {
-                      setCookie("activeStep", 0);
+                      setCookie('activeStep', 0);
                       router.push(`/dashboard/farm/${farm?.id}`);
                     }}
                     sx={{
-                      background: "#fff",
-                      border: "1px solid #06A19B",
+                      background: '#fff',
+                      border: '1px solid #06A19B',
                       fontWeight: 600,
-                      padding: "6px 16px",
-                      width: "fit-content",
-                      textTransform: "capitalize",
-                      borderRadius: "8px",
+                      padding: '6px 16px',
+                      width: 'fit-content',
+                      textTransform: 'capitalize',
+                      borderRadius: '8px',
                       marginTop: 2,
-                      color: "#06A19B",
+                      color: '#06A19B',
                     }}
                   >
                     Edit Farm

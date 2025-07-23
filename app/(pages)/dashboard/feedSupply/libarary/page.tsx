@@ -1,8 +1,8 @@
-import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
-import FeedStoreTable from "@/app/_components/table/FeedStore";
-import { getFeedStores, getFeedSuppliers } from "@/app/_lib/action";
+import BasicBreadcrumbs from '@/app/_components/Breadcrumbs';
+import FeedStoreTable from '@/app/_components/table/FeedStore';
+import { getFeedStores, getFeedSuppliers } from '@/app/_lib/action';
 // import { getCookie } from "cookies-next";
-import { cookies } from "next/headers";
+import { cookies } from 'next/headers';
 
 interface Props {}
 
@@ -13,12 +13,12 @@ const Page = async ({
     query?: string;
   };
 }) => {
-  const query = searchParams?.query || "";
+  const query = searchParams?.query || '';
   // const loggedUser: any = getCookie("logged-user", { cookies });
   // const refreshToken: any = getCookie("refresh-token", { cookies });
   const cookieStore = cookies();
-  const loggedUser: any = cookieStore.get("logged-user")?.value;
-  const refreshToken = cookieStore.get("refresh-token")?.value;
+  const loggedUser: any = cookieStore.get('logged-user')?.value;
+  const refreshToken = cookieStore.get('refresh-token')?.value;
   const userOrganisationType = JSON.parse(loggedUser);
   const stores = await getFeedStores({
     role: userOrganisationType.role,
@@ -31,11 +31,11 @@ const Page = async ({
   return (
     <div>
       <BasicBreadcrumbs
-        heading={"Feed Supply"}
+        heading={'Feed Supply'}
         links={[
-          { name: "Dashboard", link: "/dashboard" },
-          { name: "Feed Supply", link: "/dashboard/feedSupply" },
-          { name: "Feed Libarary", link: "/dashboard/feedSupply/libarary" },
+          { name: 'Dashboard', link: '/dashboard' },
+          { name: 'Feed Supply', link: '/dashboard/feedSupply' },
+          { name: 'Feed Libarary', link: '/dashboard/feedSupply/libarary' },
         ]}
         buttonName="Add Feed"
         buttonRoute="/dashboard/feedSupply/libarary/new"

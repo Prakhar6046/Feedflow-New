@@ -1,16 +1,16 @@
-import { BreadcrumInitialState, Sort } from "@/app/_typeModels/breadcrum";
-import { RootState } from "@/lib/store";
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { BreadcrumInitialState, Sort } from '@/app/_typeModels/breadcrum';
+import { RootState } from '@/lib/store';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 const initialState: BreadcrumInitialState = {
   sort: {
-    column: "",
-    direction: "",
+    column: '',
+    direction: '',
   },
 };
 
 const breadcrumSlice = createSlice({
-  name: "breadcrum",
+  name: 'breadcrum',
   initialState,
   reducers: {
     handleSort: (state, action: PayloadAction<Sort>) => {

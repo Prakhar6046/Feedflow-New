@@ -1,4 +1,4 @@
-"use client";
+'use client';
 import {
   Table,
   TableBody,
@@ -14,11 +14,11 @@ import {
   MenuItem,
   TextField,
   Button,
-} from "@mui/material";
-import { useForm, Controller } from "react-hook-form";
-import { useEffect } from "react";
-import toast from "react-hot-toast";
-import { getCookie } from "cookies-next";
+} from '@mui/material';
+import { useForm, Controller } from 'react-hook-form';
+import { useEffect } from 'react';
+import toast from 'react-hot-toast';
+import { getCookie } from 'cookies-next';
 
 interface Props {
   feedSuppliers: any;
@@ -29,11 +29,11 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
   const { control, handleSubmit, reset, setValue } = useForm();
 
   const excludedKeys = [
-    "id",
-    "createdAt",
-    "updatedAt",
-    "organaisationId",
-    "ProductSupplier",
+    'id',
+    'createdAt',
+    'updatedAt',
+    'organaisationId',
+    'ProductSupplier',
   ];
 
   useEffect(() => {
@@ -42,7 +42,7 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
       const defaultValues: Record<string, any> = {};
       filteredStores.forEach((item: any, colIndex: number) => {
         Object.entries(item).forEach(([key, value]) => {
-          if (!["createdAt", "updatedAt", "organaisationId"].includes(key)) {
+          if (!['createdAt', 'updatedAt', 'organaisationId'].includes(key)) {
             defaultValues[`${key}-${colIndex}`] = value;
           }
         });
@@ -61,7 +61,7 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
   if (!filteredStores || filteredStores.length === 0) return null;
 
   const keys = Object.keys(filteredStores[0]).filter(
-    (key) => !excludedKeys.includes(key)
+    (key) => !excludedKeys.includes(key),
   );
   function transformFeedProductsWithSuppliers(flatData: Record<string, any>) {
     const result: any[] = [];
@@ -93,9 +93,9 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
     });
 
     try {
-      const token = getCookie("auth-token");
+      const token = getCookie('auth-token');
       const response = await fetch(`/api/feed-store `, {
-        method: "PUT",
+        method: 'PUT',
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -109,10 +109,10 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
         toast.success(res.message);
       } else {
         toast.dismiss();
-        toast.error("Somethig went wrong!");
+        toast.error('Somethig went wrong!');
       }
     } catch (error) {
-      toast.error("Something went wrong. Please try again.");
+      toast.error('Something went wrong. Please try again.');
     }
   };
   const firstRows = keys.slice(0, 2);
@@ -120,19 +120,19 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 1 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 1 }}>
         <Button
           type="submit"
           variant="contained"
           sx={{
-            color: "#fff",
-            background: "#06A19B",
+            color: '#fff',
+            background: '#06A19B',
             fontWeight: 600,
-            padding: "6px 16px",
-            width: "fit-content",
-            textTransform: "capitalize",
-            borderRadius: "8px",
-            border: "1px solid #06A19B",
+            padding: '6px 16px',
+            width: 'fit-content',
+            textTransform: 'capitalize',
+            borderRadius: '8px',
+            border: '1px solid #06A19B',
           }}
         >
           Save
@@ -141,14 +141,14 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
 
       <TableContainer
         component={Paper}
-        sx={{ height: "550px", overflow: "auto" }}
+        sx={{ height: '550px', overflow: 'auto' }}
       >
         <Table>
           <TableHead
             sx={{
-              position: "sticky",
+              position: 'sticky',
               top: 0,
-              backgroundColor: "#FFF",
+              backgroundColor: '#FFF',
               zIndex: 12,
             }}
           >
@@ -157,7 +157,7 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
               <TableCell
                 sx={{
                   fontWeight: 500,
-                  background: "#FAFAFA",
+                  background: '#FAFAFA',
                   fontSize: 13,
                   py: 1.2,
                   px: 0,
@@ -166,7 +166,7 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
                 <Typography
                   sx={{
                     fontWeight: 500,
-                    background: "#FAFAFA",
+                    background: '#FAFAFA',
                     fontSize: 13,
                     // py: 0.75,
                     px: 2,
@@ -184,7 +184,7 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
                   sx={{
                     borderBottom: 0,
                     p: 0,
-                    background: "#FAFAFA",
+                    background: '#FAFAFA',
                   }}
                 >
                   <Box
@@ -205,16 +205,16 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
                             fontSize: { md: 14, xs: 12 },
                             fontWeight: 600,
                             px: 2,
-                            whiteSpace: "nowrap",
-                            maxWidth: "270px",
-                            minWidth: "270px",
-                            height: "40px",
+                            whiteSpace: 'nowrap',
+                            maxWidth: '270px',
+                            minWidth: '270px',
+                            height: '40px',
                           }}
                           renderValue={(selected) =>
                             feedSuppliers
                               .filter((s: any) => selected.includes(s.id))
                               .map((s: any) => s.name)
-                              .join(", ")
+                              .join(', ')
                           }
                         >
                           {feedSuppliers.map((supplier: any) => (
@@ -228,7 +228,7 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
                   </Box>
 
                   <Divider
-                    sx={{ borderBottomWidth: 1, transform: "translateY(1px)" }}
+                    sx={{ borderBottomWidth: 1, transform: 'translateY(1px)' }}
                   />
 
                   {/* <Controller
@@ -251,9 +251,9 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
 
             {firstRows.map((key) => (
               <TableRow key={key}>
-                <TableCell sx={{ background: "#FAFAFA" }}>{key}</TableCell>
+                <TableCell sx={{ background: '#FAFAFA' }}>{key}</TableCell>
                 {filteredStores.map((_: any, colIndex: number) => (
-                  <TableCell key={colIndex} sx={{ background: "#FAFAFA" }}>
+                  <TableCell key={colIndex} sx={{ background: '#FAFAFA' }}>
                     <Controller
                       name={`${key}-${colIndex}`}
                       control={control}

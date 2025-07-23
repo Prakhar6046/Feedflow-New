@@ -1,9 +1,9 @@
-"use client";
-import Loader from "@/app/_components/Loader";
-import { getDayMonthDifference, Status } from "@/app/_lib/utils";
-import { Farm } from "@/app/_typeModels/Farm";
-import { FishSupply } from "@/app/_typeModels/fishSupply";
-import { SingleOrganisation } from "@/app/_typeModels/Organization";
+'use client';
+import Loader from '@/app/_components/Loader';
+import { getDayMonthDifference, Status } from '@/app/_lib/utils';
+import { Farm } from '@/app/_typeModels/Farm';
+import { FishSupply } from '@/app/_typeModels/fishSupply';
+import { SingleOrganisation } from '@/app/_typeModels/Organization';
 import {
   Box,
   Button,
@@ -16,47 +16,47 @@ import {
   Stack,
   TextField,
   Typography,
-} from "@mui/material";
+} from '@mui/material';
 
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import dayjs, { Dayjs } from "dayjs";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import * as validationPattern from "@/app/_lib/utils/validationPatterns/index";
-import * as validationMessage from "@/app/_lib/utils/validationsMessage/index";
-import toast from "react-hot-toast";
-import { getCookie } from "cookies-next";
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import dayjs, { Dayjs } from 'dayjs';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { Controller, SubmitHandler, useForm } from 'react-hook-form';
+import * as validationPattern from '@/app/_lib/utils/validationPatterns/index';
+import * as validationMessage from '@/app/_lib/utils/validationsMessage/index';
+import toast from 'react-hot-toast';
+import { getCookie } from 'cookies-next';
 interface Props {
-  isEdit?: Boolean;
-  fishSupplyId?: String;
+  isEdit?: boolean;
+  fishSupplyId?: string;
   farms?: Farm[];
   organisations?: SingleOrganisation[];
 }
 interface FormInputs {
-  organisation: String;
+  organisation: string;
   hatchingDate: Dayjs | null;
   spawningDate: Dayjs | null;
-  spawningNumber: String;
-  age: String;
-  broodstockMale: String;
-  broodstockFemale: String;
-  fishFarmId: String;
-  status: String;
-  productionUnits: String;
+  spawningNumber: string;
+  age: string;
+  broodstockMale: string;
+  broodstockFemale: string;
+  fishFarmId: string;
+  status: string;
+  productionUnits: string;
 }
 function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
   const router = useRouter();
-  const userData: any = getCookie("logged-user");
-  const token = getCookie("auth-token");
+  const userData: any = getCookie('logged-user');
+  const token = getCookie('auth-token');
   const [loading, setLoading] = useState<boolean>(false);
   const [isApiCallInProgress, setIsApiCallInProgress] = useState(false);
   const [fishSupply, setFishSupply] = useState<FishSupply>();
   const getFishSupply = async () => {
     const response = await fetch(`/api/fish/${fishSupplyId}`, {
-      method: "GET",
+      method: 'GET',
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -71,8 +71,8 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
     watch,
     formState: { errors },
   } = useForm<FormInputs>({
-    defaultValues: { hatchingDate: null, organisation: "" },
-    mode: "onChange",
+    defaultValues: { hatchingDate: null, organisation: '' },
+    mode: 'onChange',
   });
   const onSubmit: SubmitHandler<FormInputs> = async (data) => {
     // Prevent API call if one is already in progress
@@ -90,15 +90,15 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
         ...restData
       } = data;
       const validHatchingDate = hatchingDate?.isValid()
-        ? hatchingDate.format("MM/DD/YYYY")
+        ? hatchingDate.format('MM/DD/YYYY')
         : null;
 
       const validSpawningDate = spawningDate?.isValid()
-        ? spawningDate.format("MM/DD/YYYY")
+        ? spawningDate.format('MM/DD/YYYY')
         : null;
 
       if (!validHatchingDate || !validSpawningDate) {
-        toast.error("Invalid date selected. Please choose a valid date.");
+        toast.error('Invalid date selected. Please choose a valid date.');
         return;
       }
       const payload = {
@@ -112,25 +112,25 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
       };
 
       const response = await fetch(
-        `${isEdit ? `/api/fish/${fishSupplyId}` : "/api/fish"} `,
+        `${isEdit ? `/api/fish/${fishSupplyId}` : '/api/fish'} `,
         {
-          method: isEdit ? "PUT" : "POST",
+          method: isEdit ? 'PUT' : 'POST',
           body: JSON.stringify(payload),
-        }
+        },
       );
 
       if (response.ok) {
         const res = await response.json();
-        router.push("/dashboard/fishSupply");
+        router.push('/dashboard/fishSupply');
         toast.dismiss();
         toast.success(res.message);
       } else {
         toast.dismiss();
-        toast.error("Somethig went wrong!");
+        toast.error('Somethig went wrong!');
       }
     } catch (error) {
       // console.error("Fish supply error:", error);
-      toast.error("Something went wrong. Please try again.");
+      toast.error('Something went wrong. Please try again.');
     } finally {
       setIsApiCallInProgress(false);
     }
@@ -156,26 +156,26 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
   }, []);
 
   useEffect(() => {
-    if (watch("hatchingDate")) {
+    if (watch('hatchingDate')) {
       const age = getDayMonthDifference(
-        watch("hatchingDate")?.format("MM/DD/YYYY")
+        watch('hatchingDate')?.format('MM/DD/YYYY'),
       );
-      setValue("age", age);
+      setValue('age', age);
     }
-  }, [watch("hatchingDate")]);
+  }, [watch('hatchingDate')]);
 
   useEffect(() => {
     if (fishSupply) {
-      setValue("age", fishSupply?.age);
-      setValue("broodstockFemale", fishSupply?.broodstockFemale);
-      setValue("broodstockMale", fishSupply?.broodstockMale);
-      setValue("organisation", String(fishSupply?.organisation));
-      setValue("spawningDate", dayjs(fishSupply?.spawningDate));
-      setValue("hatchingDate", dayjs(fishSupply?.hatchingDate));
-      setValue("spawningNumber", String(fishSupply?.spawningNumber));
-      setValue("status", fishSupply?.status);
-      setValue("fishFarmId", fishSupply?.fishFarmId);
-      setValue("productionUnits", String(fishSupply?.productionUnits));
+      setValue('age', fishSupply?.age);
+      setValue('broodstockFemale', fishSupply?.broodstockFemale);
+      setValue('broodstockMale', fishSupply?.broodstockMale);
+      setValue('organisation', String(fishSupply?.organisation));
+      setValue('spawningDate', dayjs(fishSupply?.spawningDate));
+      setValue('hatchingDate', dayjs(fishSupply?.hatchingDate));
+      setValue('spawningNumber', String(fishSupply?.spawningNumber));
+      setValue('status', fishSupply?.status);
+      setValue('fishFarmId', fishSupply?.fishFarmId);
+      setValue('productionUnits', String(fishSupply?.productionUnits));
     }
   }, [fishSupply]);
 
@@ -183,7 +183,7 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
     if (userData && !isEdit) {
       const loggedUserData = JSON.parse(userData);
       if (loggedUserData.organisationId) {
-        setValue("fishFarmId", loggedUserData.organisationId);
+        setValue('fishFarmId', loggedUserData.organisationId);
       }
     }
   }, [userData]);
@@ -194,8 +194,8 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
   return (
     <Stack
       sx={{
-        borderRadius: "14px",
-        boxShadow: "0px 0px 16px 5px #0000001A",
+        borderRadius: '14px',
+        boxShadow: '0px 0px 16px 5px #0000001A',
         my: 4,
       }}
     >
@@ -207,7 +207,7 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
           },
           fontSize: 20,
           fontWeight: 600,
-          borderColor: "#0000001A",
+          borderColor: '#0000001A',
         }}
       >
         Information
@@ -227,7 +227,7 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
           }}
         >
           <Grid item sm={6} xs={12}>
-            <Box width={"100%"}>
+            <Box width={'100%'}>
               <FormControl fullWidth className="form-input" focused>
                 <InputLabel id="demo-simple-select-label">
                   Hatchery *
@@ -235,13 +235,13 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
                 <Select
                   labelId="demo-simple-select-label"
                   id="demo-simple-select"
-                  {...register("organisation", {
+                  {...register('organisation', {
                     required: true,
                     onChange: (e) => {
-                      setValue("organisation", e.target.value);
+                      setValue('organisation', e.target.value);
                     },
                   })}
-                  value={watch("organisation") || ""}
+                  value={watch('organisation') || ''}
                   label="Hatchery *"
                 >
                   {organisations?.map((organisation, i) => {
@@ -254,7 +254,7 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
                 </Select>
                 {errors &&
                   errors.organisation &&
-                  errors.organisation.type === "required" && (
+                  errors.organisation.type === 'required' && (
                     <Typography
                       variant="body2"
                       color="red"
@@ -277,11 +277,11 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
                 label="Fish Producer *"
-                value={watch("fishFarmId") || ""}
-                {...register("fishFarmId", {
+                value={watch('fishFarmId') || ''}
+                {...register('fishFarmId', {
                   required: true,
                   onChange: (e) => {
-                    setValue("fishFarmId", e.target.value);
+                    setValue('fishFarmId', e.target.value);
                   },
                 })}
               >
@@ -295,7 +295,7 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
               </Select>
               {errors &&
                 errors.fishFarmId &&
-                errors.fishFarmId.type === "required" && (
+                errors.fishFarmId.type === 'required' && (
                   <Typography
                     variant="body2"
                     color="red"
@@ -313,7 +313,7 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
               <Controller
                 name="spawningDate"
                 control={control}
-                rules={{ required: "This field is required." }}
+                rules={{ required: 'This field is required.' }}
                 render={({ field, fieldState: { error } }) => (
                   <>
                     <DatePicker
@@ -321,12 +321,12 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
                       label="Spawning Date * "
                       className="form-input"
                       sx={{
-                        width: "100%",
+                        width: '100%',
                       }}
                       onChange={(date) => {
                         if (date && date.isValid()) {
                           field.onChange(date); // Set a valid Dayjs date
-                          setValue("hatchingDate", date);
+                          setValue('hatchingDate', date);
                         } else {
                           field.onChange(null); // Clear the field if date is invalid
                         }
@@ -353,10 +353,10 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
           </Grid>
 
           <Grid item sm={6} xs={12}>
-            <Box width={"100%"}>
+            <Box width={'100%'}>
               <TextField
                 label="Spawning Number *"
-                {...register("spawningNumber", {
+                {...register('spawningNumber', {
                   required: true,
                   pattern: validationPattern.numbersWithDot,
                   maxLength: 10,
@@ -365,13 +365,13 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
                 type="number"
                 className="form-input"
                 sx={{
-                  width: "100%",
+                  width: '100%',
                 }}
               />
 
               {errors &&
                 errors.spawningNumber &&
-                errors.spawningNumber.type === "required" && (
+                errors.spawningNumber.type === 'required' && (
                   <Typography
                     variant="body2"
                     color="red"
@@ -383,7 +383,7 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
                 )}
               {errors &&
                 errors.spawningNumber &&
-                errors.spawningNumber.type === "pattern" && (
+                errors.spawningNumber.type === 'pattern' && (
                   <Typography
                     variant="body2"
                     color="red"
@@ -395,7 +395,7 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
                 )}
               {errors &&
                 errors.spawningNumber &&
-                errors.spawningNumber.type === "maxLength" && (
+                errors.spawningNumber.type === 'maxLength' && (
                   <Typography
                     variant="body2"
                     color="red"
@@ -409,30 +409,30 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
           </Grid>
 
           <Grid item sm={6} xs={12}>
-            <Box width={"100%"}>
+            <Box width={'100%'}>
               <TextField
                 label="Broodstock (Male)"
                 type="text"
                 className="form-input"
-                {...register("broodstockMale")}
+                {...register('broodstockMale')}
                 focused
                 sx={{
-                  width: "100%",
+                  width: '100%',
                 }}
               />
             </Box>
           </Grid>
 
           <Grid item sm={6} xs={12}>
-            <Box width={"100%"}>
+            <Box width={'100%'}>
               <TextField
                 label="Broodstock (Female)"
                 type="text"
                 className="form-input"
-                {...register("broodstockFemale")}
+                {...register('broodstockFemale')}
                 focused
                 sx={{
-                  width: "100%",
+                  width: '100%',
                 }}
               />
             </Box>
@@ -443,7 +443,7 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
               <Controller
                 name="hatchingDate"
                 control={control}
-                rules={{ required: "This field is required." }}
+                rules={{ required: 'This field is required.' }}
                 render={({ field, fieldState: { error } }) => (
                   <>
                     <DatePicker
@@ -451,7 +451,7 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
                       label="Hatching Date *"
                       className="form-input"
                       sx={{
-                        width: "100%",
+                        width: '100%',
                       }}
                       slotProps={{
                         textField: { focused: true },
@@ -488,11 +488,11 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
                 label="Status *"
-                value={watch("status") || ""}
-                {...register("status", {
+                value={watch('status') || ''}
+                {...register('status', {
                   required: true,
                   onChange: (e) => {
-                    setValue("status", e.target.value);
+                    setValue('status', e.target.value);
                   },
                 })}
               >
@@ -504,7 +504,7 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
                   );
                 })}
               </Select>
-              {errors && errors.status && errors.status.type === "required" && (
+              {errors && errors.status && errors.status.type === 'required' && (
                 <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
                   This field is required.
                 </Typography>
@@ -518,18 +518,18 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
                 multiline
                 rows={3}
                 className="form-input"
-                {...register("productionUnits", {
+                {...register('productionUnits', {
                   required: true,
                 })}
                 focused
                 sx={{
-                  width: "100%",
+                  width: '100%',
                 }}
               />
 
               {errors &&
                 errors.productionUnits &&
-                errors.productionUnits.type === "required" && (
+                errors.productionUnits.type === 'required' && (
                   <Typography
                     variant="body2"
                     color="red"
@@ -548,14 +548,14 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
           variant="contained"
           disabled={isApiCallInProgress}
           sx={{
-            background: "#06A19B",
+            background: '#06A19B',
             fontWeight: 600,
-            padding: "6px 16px",
-            width: "fit-content",
-            textTransform: "capitalize",
-            borderRadius: "8px",
-            marginLeft: "auto",
-            display: "block",
+            padding: '6px 16px',
+            width: 'fit-content',
+            textTransform: 'capitalize',
+            borderRadius: '8px',
+            marginLeft: 'auto',
+            display: 'block',
             marginTop: 2,
             mb: 5,
             mr: {
@@ -564,7 +564,7 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
             },
           }}
         >
-          {isEdit ? "Save" : "Add Fish Supply"}
+          {isEdit ? 'Save' : 'Add Fish Supply'}
         </Button>
       </form>
     </Stack>

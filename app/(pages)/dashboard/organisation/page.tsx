@@ -1,14 +1,14 @@
-import BasicTable from "@/app/_components/BasicTable";
-import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
-import { getOrganisations } from "@/app/_lib/action";
-import { SingleUser } from "@/app/_typeModels/User";
-import { getCookie } from "cookies-next";
-import { Metadata } from "next";
-import { cookies } from "next/headers";
+import BasicTable from '@/app/_components/BasicTable';
+import BasicBreadcrumbs from '@/app/_components/Breadcrumbs';
+import { getOrganisations } from '@/app/_lib/action';
+import { SingleUser } from '@/app/_typeModels/User';
+import { getCookie } from 'cookies-next';
+import { Metadata } from 'next';
+import { cookies } from 'next/headers';
 export const metadata: Metadata = {
-  title: "Organisations",
+  title: 'Organisations',
 };
-export const dynamic = "force-dynamic";
+export const dynamic = 'force-dynamic';
 export default async function Page({
   searchParams,
 }: {
@@ -17,13 +17,13 @@ export default async function Page({
     tab?: string;
   };
 }) {
-  const query = searchParams?.query || "";
-  const tab = searchParams?.tab || "all";
-  const loggedUser: any = getCookie("logged-user", { cookies });
-  const refreshToken: any = getCookie("refresh-token", { cookies });
+  const query = searchParams?.query || '';
+  const tab = searchParams?.tab || 'all';
+  const loggedUser: any = getCookie('logged-user', { cookies });
+  const refreshToken: any = getCookie('refresh-token', { cookies });
   const user: SingleUser = JSON.parse(loggedUser);
 
-  let organisations = await getOrganisations({
+  const organisations = await getOrganisations({
     organisationId: Number(user?.organisationId),
     query,
     role: String(user?.role),
@@ -34,20 +34,20 @@ export default async function Page({
   return (
     <>
       <BasicBreadcrumbs
-        heading={"Organisations"}
-        buttonName={"Add Organisation"}
-        buttonRoute={"/dashboard/organisation/new"}
+        heading={'Organisations'}
+        buttonName={'Add Organisation'}
+        buttonRoute={'/dashboard/organisation/new'}
         isTable={true}
         links={[
-          { name: "Dashboard", link: "/dashboard" },
-          { name: "Organisations", link: "/dashboard/organisation" },
+          { name: 'Dashboard', link: '/dashboard' },
+          { name: 'Organisations', link: '/dashboard/organisation' },
           {
             name:
-              tab === "all"
-                ? "All"
-                : tab === "feedSuppliers"
-                ? "Feed Suppliers"
-                : "Fish Producers",
+              tab === 'all'
+                ? 'All'
+                : tab === 'feedSuppliers'
+                  ? 'Feed Suppliers'
+                  : 'Fish Producers',
             link: `/dashboard/organisation?tab=${tab}`,
           },
         ]}

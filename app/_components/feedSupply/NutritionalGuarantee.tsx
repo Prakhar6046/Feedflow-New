@@ -1,6 +1,6 @@
-import { nutritionalGuarantee } from "@/app/_lib/utils";
-import * as validationPattern from "@/app/_lib/utils/validationPatterns/index";
-import * as validationMessage from "@/app/_lib/utils/validationsMessage/index";
+import { nutritionalGuarantee } from '@/app/_lib/utils';
+import * as validationPattern from '@/app/_lib/utils/validationPatterns/index';
+import * as validationMessage from '@/app/_lib/utils/validationsMessage/index';
 import {
   Box,
   Button,
@@ -12,7 +12,7 @@ import {
   Stack,
   TextField,
   Typography,
-} from "@mui/material";
+} from '@mui/material';
 import {
   FieldErrors,
   UseFormRegister,
@@ -20,8 +20,8 @@ import {
   UseFormSetValue,
   UseFormTrigger,
   UseFormClearErrors,
-} from "react-hook-form";
-import { FormInputs } from "./NewFeed";
+} from 'react-hook-form';
+import { FormInputs } from './NewFeed';
 
 interface Iprops {
   register: UseFormRegister<FormInputs>;
@@ -59,7 +59,7 @@ const NutritionalGuarantee = ({
       <Box
         sx={{
           borderRadius: 3,
-          boxShadow: "0px 0px 16px 5px #0000001A",
+          boxShadow: '0px 0px 16px 5px #0000001A',
           padding: 3,
         }}
       >
@@ -69,24 +69,24 @@ const NutritionalGuarantee = ({
             xl={6}
             xs={12}
             sx={{
-              display: "flex",
+              display: 'flex',
               gap: 1.5,
-              minWidth: "200px",
-              overflowX: "auto",
+              minWidth: '200px',
+              overflowX: 'auto',
               pb: 1.5,
             }}
           >
-            {" "}
+            {' '}
             <Typography
               variant="subtitle1"
               fontWeight={600}
               sx={{
-                minWidth: "14px",
-                position: "relative",
-                top: "10px",
+                minWidth: '14px',
+                position: 'relative',
+                top: '10px',
               }}
             >
-              1.{" "}
+              1.{' '}
             </Typography>
             <Grid container spacing={3}>
               <Grid item xs={12} md={6}>
@@ -94,26 +94,26 @@ const NutritionalGuarantee = ({
                   // display={"flex"}
                   // gap={2}
                   // alignItems={"center"}
-                  position={"relative"}
+                  position={'relative'}
                 >
                   <TextField
                     label="Moisture *"
                     type="text"
                     className="form-input"
-                    {...register("nutritionalGuarantee.moisture.kg", {
+                    {...register('nutritionalGuarantee.moisture.kg', {
                       required: true,
                       pattern: validationPattern.numbersWithDot,
                       maxLength: 10,
                     })}
                     focused
                     sx={{
-                      width: "100%",
+                      width: '100%',
                     }}
                   />
                   {errors &&
                     errors?.nutritionalGuarantee?.moisture?.kg &&
                     errors.nutritionalGuarantee.moisture.kg.type ===
-                      "required" && (
+                      'required' && (
                       <Typography
                         variant="body2"
                         color="red"
@@ -126,7 +126,7 @@ const NutritionalGuarantee = ({
                   {errors &&
                     errors?.nutritionalGuarantee?.moisture?.kg &&
                     errors?.nutritionalGuarantee?.moisture?.kg.type ===
-                      "pattern" && (
+                      'pattern' && (
                       <Typography
                         variant="body2"
                         color="red"
@@ -139,7 +139,7 @@ const NutritionalGuarantee = ({
                   {errors &&
                     errors?.nutritionalGuarantee?.moisture?.kg &&
                     errors?.nutritionalGuarantee?.moisture?.kg.type ===
-                      "maxLength" && (
+                      'maxLength' && (
                       <Typography
                         variant="body2"
                         color="red"
@@ -153,16 +153,16 @@ const NutritionalGuarantee = ({
                     variant="body1"
                     color="#555555AC"
                     sx={{
-                      position: "absolute",
+                      position: 'absolute',
                       right: 6,
                       top: errors?.nutritionalGuarantee?.crudeProtein?.kg
-                        ? "30px"
-                        : "30px",
-                      transform: "translate(-6px, -50%)",
-                      backgroundColor: "#fff",
+                        ? '30px'
+                        : '30px',
+                      transform: 'translate(-6px, -50%)',
+                      backgroundColor: '#fff',
                       height: 30,
-                      display: "grid",
-                      placeItems: "center",
+                      display: 'grid',
+                      placeItems: 'center',
                       zIndex: 1,
                       pl: 1,
                     }}
@@ -173,7 +173,7 @@ const NutritionalGuarantee = ({
               </Grid>
 
               <Grid item xs={12} md={6}>
-                <Box width={"100%"}>
+                <Box width={'100%'}>
                   <FormControl
                     fullWidth
                     className="form-input"
@@ -188,17 +188,17 @@ const NutritionalGuarantee = ({
                     <Select
                       labelId="feed-supply-select-label10"
                       id="feed-supply-select10"
-                      {...register("nutritionalGuarantee.moisture.value", {
+                      {...register('nutritionalGuarantee.moisture.value', {
                         required: true,
                       })}
                       label="Min *"
-                      value={watch("nutritionalGuarantee.moisture.value") || ""}
+                      value={watch('nutritionalGuarantee.moisture.value') || ''}
                       onChange={(e) => {
                         setValue(
-                          "nutritionalGuarantee.moisture.value",
-                          e.target.value
+                          'nutritionalGuarantee.moisture.value',
+                          e.target.value,
                         );
-                        trigger("nutritionalGuarantee.moisture.value");
+                        trigger('nutritionalGuarantee.moisture.value');
                       }}
                     >
                       {nutritionalGuarantee.map((guarantee, i) => {
@@ -213,7 +213,7 @@ const NutritionalGuarantee = ({
                   {errors &&
                     errors?.nutritionalGuarantee?.moisture?.value &&
                     errors?.nutritionalGuarantee?.moisture?.value.type ===
-                      "required" && (
+                      'required' && (
                       <Typography
                         variant="body2"
                         color="red"
@@ -226,21 +226,21 @@ const NutritionalGuarantee = ({
                 </Box>
               </Grid>
             </Grid>
-            {!watch("nutritionalGuarantee.moisture.value") &&
-              !watch("nutritionalGuarantee.moisture.kg") && (
+            {!watch('nutritionalGuarantee.moisture.value') &&
+              !watch('nutritionalGuarantee.moisture.kg') && (
                 <Box
                   fontSize={14}
                   fontWeight={500}
                   width="fit-content"
                   onClick={() => {
                     {
-                      setValue("nutritionalGuarantee.moisture.value", ""),
-                        setValue("nutritionalGuarantee.moisture.kg", "");
+                      (setValue('nutritionalGuarantee.moisture.value', ''),
+                        setValue('nutritionalGuarantee.moisture.kg', ''));
                     }
                   }}
-                  style={{ cursor: "pointer" }}
+                  style={{ cursor: 'pointer' }}
                   sx={{
-                    visibility: "hidden",
+                    visibility: 'hidden',
                   }}
                 >
                   <svg
@@ -256,26 +256,26 @@ const NutritionalGuarantee = ({
                   </svg>
                 </Box>
               )}
-            {(watch("nutritionalGuarantee.moisture.value") ||
-              watch("nutritionalGuarantee.moisture.kg")) && (
+            {(watch('nutritionalGuarantee.moisture.value') ||
+              watch('nutritionalGuarantee.moisture.kg')) && (
               <Box
                 fontSize={14}
                 fontWeight={500}
                 width="fit-content"
                 onClick={() => {
                   {
-                    setValue("nutritionalGuarantee.moisture.value", ""),
-                      setValue("nutritionalGuarantee.moisture.kg", "");
+                    (setValue('nutritionalGuarantee.moisture.value', ''),
+                      setValue('nutritionalGuarantee.moisture.kg', ''));
                     clearErrors([
-                      "nutritionalGuarantee.moisture.value",
-                      "nutritionalGuarantee.moisture.kg",
+                      'nutritionalGuarantee.moisture.value',
+                      'nutritionalGuarantee.moisture.kg',
                     ]);
                   }
                 }}
-                style={{ cursor: "pointer" }}
+                style={{ cursor: 'pointer' }}
                 sx={{
-                  position: "relative",
-                  top: "10px",
+                  position: 'relative',
+                  top: '10px',
                 }}
               >
                 <svg
@@ -298,11 +298,11 @@ const NutritionalGuarantee = ({
             xl={6}
             xs={12}
             sx={{
-              display: "flex",
+              display: 'flex',
               gap: 1.5,
 
-              minWidth: "200px",
-              overflowX: "auto",
+              minWidth: '200px',
+              overflowX: 'auto',
               pb: 1.5,
             }}
           >
@@ -310,12 +310,12 @@ const NutritionalGuarantee = ({
               variant="subtitle1"
               fontWeight={600}
               sx={{
-                minWidth: "14px",
-                position: "relative",
-                top: "10px",
+                minWidth: '14px',
+                position: 'relative',
+                top: '10px',
               }}
             >
-              2.{" "}
+              2.{' '}
             </Typography>
 
             <Grid container spacing={3}>
@@ -324,27 +324,27 @@ const NutritionalGuarantee = ({
                   // display={"flex"}
                   // gap={2}
                   // alignItems={"center"}
-                  position={"relative"}
+                  position={'relative'}
                 >
                   <TextField
                     label="Crude Protein *"
                     type="text"
                     className="form-input"
-                    {...register("nutritionalGuarantee.crudeProtein.kg", {
+                    {...register('nutritionalGuarantee.crudeProtein.kg', {
                       required: true,
                       pattern: validationPattern.numbersWithDot,
                       maxLength: 10,
                     })}
                     focused
                     sx={{
-                      width: "100%",
+                      width: '100%',
                       // minWidth: 190,
                     }}
                   />
                   {errors &&
                     errors?.nutritionalGuarantee?.crudeProtein?.kg &&
                     errors.nutritionalGuarantee.crudeProtein.kg.type ===
-                      "required" && (
+                      'required' && (
                       <Typography
                         variant="body2"
                         color="red"
@@ -357,7 +357,7 @@ const NutritionalGuarantee = ({
                   {errors &&
                     errors?.nutritionalGuarantee?.crudeProtein?.kg &&
                     errors.nutritionalGuarantee.crudeProtein.kg.type ===
-                      "pattern" && (
+                      'pattern' && (
                       <Typography
                         variant="body2"
                         color="red"
@@ -370,7 +370,7 @@ const NutritionalGuarantee = ({
                   {errors &&
                     errors?.nutritionalGuarantee?.crudeProtein?.kg &&
                     errors.nutritionalGuarantee.crudeProtein.kg.type ===
-                      "maxLength" && (
+                      'maxLength' && (
                       <Typography
                         variant="body2"
                         color="red"
@@ -384,16 +384,16 @@ const NutritionalGuarantee = ({
                     variant="body2"
                     color="#555555AC"
                     sx={{
-                      position: "absolute",
+                      position: 'absolute',
                       right: 6,
                       top: errors?.nutritionalGuarantee?.crudeProtein?.kg
-                        ? "30px"
-                        : "30px",
-                      transform: "translate(-6px, -50%)",
-                      backgroundColor: "#fff",
+                        ? '30px'
+                        : '30px',
+                      transform: 'translate(-6px, -50%)',
+                      backgroundColor: '#fff',
                       height: 30,
-                      display: "grid",
-                      placeItems: "center",
+                      display: 'grid',
+                      placeItems: 'center',
                       zIndex: 1,
                       pl: 1,
                     }}
@@ -404,7 +404,7 @@ const NutritionalGuarantee = ({
               </Grid>
 
               <Grid item xs={12} md={6}>
-                <Box width={"100%"}>
+                <Box width={'100%'}>
                   <FormControl
                     fullWidth
                     className="form-input"
@@ -420,18 +420,18 @@ const NutritionalGuarantee = ({
                       labelId="feed-supply-select-label10"
                       id="feed-supply-select10"
                       label="Min *"
-                      {...register("nutritionalGuarantee.crudeProtein.value", {
+                      {...register('nutritionalGuarantee.crudeProtein.value', {
                         required: true,
                       })}
                       value={
-                        watch("nutritionalGuarantee.crudeProtein.value") || ""
+                        watch('nutritionalGuarantee.crudeProtein.value') || ''
                       }
                       onChange={(e) => {
                         setValue(
-                          "nutritionalGuarantee.crudeProtein.value",
-                          e.target.value
+                          'nutritionalGuarantee.crudeProtein.value',
+                          e.target.value,
                         );
-                        trigger("nutritionalGuarantee.crudeProtein.value");
+                        trigger('nutritionalGuarantee.crudeProtein.value');
                       }}
                     >
                       {nutritionalGuarantee.map((guarantee, i) => {
@@ -446,7 +446,7 @@ const NutritionalGuarantee = ({
                   {errors &&
                     errors?.nutritionalGuarantee?.crudeProtein?.value &&
                     errors.nutritionalGuarantee.crudeProtein.value.type ===
-                      "required" && (
+                      'required' && (
                       <Typography
                         variant="body2"
                         color="red"
@@ -477,21 +477,21 @@ const NutritionalGuarantee = ({
                 </svg>
               </Box> */}
 
-            {!watch("nutritionalGuarantee.crudeProtein.value") &&
-              !watch("nutritionalGuarantee.crudeProtein.kg") && (
+            {!watch('nutritionalGuarantee.crudeProtein.value') &&
+              !watch('nutritionalGuarantee.crudeProtein.kg') && (
                 <Box
                   fontSize={14}
                   fontWeight={500}
                   width="fit-content"
                   onClick={() => {
                     {
-                      setValue("nutritionalGuarantee.crudeProtein.value", ""),
-                        setValue("nutritionalGuarantee.crudeProtein.kg", "");
+                      (setValue('nutritionalGuarantee.crudeProtein.value', ''),
+                        setValue('nutritionalGuarantee.crudeProtein.kg', ''));
                     }
                   }}
-                  style={{ cursor: "pointer" }}
+                  style={{ cursor: 'pointer' }}
                   sx={{
-                    visibility: "hidden",
+                    visibility: 'hidden',
                   }}
                 >
                   <svg
@@ -507,26 +507,26 @@ const NutritionalGuarantee = ({
                   </svg>
                 </Box>
               )}
-            {(watch("nutritionalGuarantee.crudeProtein.value") ||
-              watch("nutritionalGuarantee.crudeProtein.kg")) && (
+            {(watch('nutritionalGuarantee.crudeProtein.value') ||
+              watch('nutritionalGuarantee.crudeProtein.kg')) && (
               <Box
                 fontSize={14}
                 fontWeight={500}
                 width="fit-content"
                 onClick={() => {
                   {
-                    setValue("nutritionalGuarantee.crudeProtein.value", ""),
-                      setValue("nutritionalGuarantee.crudeProtein.kg", "");
+                    (setValue('nutritionalGuarantee.crudeProtein.value', ''),
+                      setValue('nutritionalGuarantee.crudeProtein.kg', ''));
                     clearErrors([
-                      "nutritionalGuarantee.crudeProtein.value",
-                      "nutritionalGuarantee.crudeProtein.kg",
+                      'nutritionalGuarantee.crudeProtein.value',
+                      'nutritionalGuarantee.crudeProtein.kg',
                     ]);
                   }
                 }}
-                style={{ cursor: "pointer" }}
+                style={{ cursor: 'pointer' }}
                 sx={{
-                  position: "relative",
-                  top: "10px",
+                  position: 'relative',
+                  top: '10px',
                 }}
               >
                 <svg
@@ -549,11 +549,11 @@ const NutritionalGuarantee = ({
             xl={6}
             xs={12}
             sx={{
-              display: "flex",
+              display: 'flex',
               gap: 1.5,
 
-              minWidth: "200px",
-              overflowX: "auto",
+              minWidth: '200px',
+              overflowX: 'auto',
               pb: 1.5,
             }}
           >
@@ -561,12 +561,12 @@ const NutritionalGuarantee = ({
               variant="subtitle1"
               fontWeight={600}
               sx={{
-                minWidth: "14px",
-                position: "relative",
-                top: "10px",
+                minWidth: '14px',
+                position: 'relative',
+                top: '10px',
               }}
             >
-              3.{" "}
+              3.{' '}
             </Typography>
 
             <Grid container spacing={3}>
@@ -575,27 +575,27 @@ const NutritionalGuarantee = ({
                   // display={"flex"}
                   // gap={2}
                   // alignItems={"center"}
-                  position={"relative"}
+                  position={'relative'}
                 >
                   <TextField
                     label="Crude Fat *"
                     type="text"
                     className="form-input"
-                    {...register("nutritionalGuarantee.crudeFat.kg", {
+                    {...register('nutritionalGuarantee.crudeFat.kg', {
                       required: true,
                       pattern: validationPattern.numbersWithDot,
                       maxLength: 10,
                     })}
                     focused
                     sx={{
-                      width: "100%",
+                      width: '100%',
                       // minWidth: 190,
                     }}
                   />
                   {errors &&
                     errors?.nutritionalGuarantee?.crudeFat?.kg &&
                     errors?.nutritionalGuarantee?.crudeFat?.kg.type ===
-                      "required" && (
+                      'required' && (
                       <Typography
                         variant="body2"
                         color="red"
@@ -608,7 +608,7 @@ const NutritionalGuarantee = ({
                   {errors &&
                     errors?.nutritionalGuarantee?.crudeFat?.kg &&
                     errors?.nutritionalGuarantee?.crudeFat?.kg.type ===
-                      "pattern" && (
+                      'pattern' && (
                       <Typography
                         variant="body2"
                         color="red"
@@ -621,7 +621,7 @@ const NutritionalGuarantee = ({
                   {errors &&
                     errors?.nutritionalGuarantee?.crudeFat?.kg &&
                     errors?.nutritionalGuarantee?.crudeFat?.kg.type ===
-                      "maxLength" && (
+                      'maxLength' && (
                       <Typography
                         variant="body2"
                         color="red"
@@ -635,16 +635,16 @@ const NutritionalGuarantee = ({
                     variant="body2"
                     color="#555555AC"
                     sx={{
-                      position: "absolute",
+                      position: 'absolute',
                       right: 6,
                       top: errors?.nutritionalGuarantee?.crudeFat?.kg
-                        ? "30px"
-                        : "20px",
-                      transform: "translate(-6px, -50%)",
-                      backgroundColor: "#fff",
+                        ? '30px'
+                        : '20px',
+                      transform: 'translate(-6px, -50%)',
+                      backgroundColor: '#fff',
                       height: 30,
-                      display: "grid",
-                      placeItems: "center",
+                      display: 'grid',
+                      placeItems: 'center',
                       zIndex: 1,
                       pl: 1,
                     }}
@@ -655,7 +655,7 @@ const NutritionalGuarantee = ({
               </Grid>
 
               <Grid item xs={12} md={6}>
-                <Box width={"100%"}>
+                <Box width={'100%'}>
                   <FormControl
                     fullWidth
                     className="form-input"
@@ -671,16 +671,16 @@ const NutritionalGuarantee = ({
                       labelId="feed-supply-select-label10"
                       id="feed-supply-select10"
                       label="Min *"
-                      {...register("nutritionalGuarantee.crudeFat.value", {
+                      {...register('nutritionalGuarantee.crudeFat.value', {
                         required: true,
                       })}
-                      value={watch("nutritionalGuarantee.crudeFat.value") || ""}
+                      value={watch('nutritionalGuarantee.crudeFat.value') || ''}
                       onChange={(e) => {
                         setValue(
-                          "nutritionalGuarantee.crudeFat.value",
-                          e.target.value
+                          'nutritionalGuarantee.crudeFat.value',
+                          e.target.value,
                         );
-                        trigger("nutritionalGuarantee.crudeFat.value");
+                        trigger('nutritionalGuarantee.crudeFat.value');
                       }}
                     >
                       {nutritionalGuarantee.map((guarantee, i) => {
@@ -695,7 +695,7 @@ const NutritionalGuarantee = ({
                   {errors &&
                     errors?.nutritionalGuarantee?.crudeFat?.value &&
                     errors?.nutritionalGuarantee?.crudeFat?.value.type ===
-                      "required" && (
+                      'required' && (
                       <Typography
                         variant="body2"
                         color="red"
@@ -726,21 +726,21 @@ const NutritionalGuarantee = ({
                 </svg>
               </Box> */}
 
-            {!watch("nutritionalGuarantee.crudeFat.value") &&
-              !watch("nutritionalGuarantee.crudeFat.kg") && (
+            {!watch('nutritionalGuarantee.crudeFat.value') &&
+              !watch('nutritionalGuarantee.crudeFat.kg') && (
                 <Box
                   fontSize={14}
                   fontWeight={500}
                   width="fit-content"
                   onClick={() => {
                     {
-                      setValue("nutritionalGuarantee.crudeFat.value", ""),
-                        setValue("nutritionalGuarantee.crudeFat.kg", "");
+                      (setValue('nutritionalGuarantee.crudeFat.value', ''),
+                        setValue('nutritionalGuarantee.crudeFat.kg', ''));
                     }
                   }}
-                  style={{ cursor: "pointer" }}
+                  style={{ cursor: 'pointer' }}
                   sx={{
-                    visibility: "hidden",
+                    visibility: 'hidden',
                   }}
                 >
                   <svg
@@ -757,26 +757,26 @@ const NutritionalGuarantee = ({
                 </Box>
               )}
 
-            {(watch("nutritionalGuarantee.crudeFat.value") ||
-              watch("nutritionalGuarantee.crudeFat.kg")) && (
+            {(watch('nutritionalGuarantee.crudeFat.value') ||
+              watch('nutritionalGuarantee.crudeFat.kg')) && (
               <Box
                 fontSize={14}
                 fontWeight={500}
                 width="fit-content"
                 onClick={() => {
                   {
-                    setValue("nutritionalGuarantee.crudeFat.value", ""),
-                      setValue("nutritionalGuarantee.crudeFat.kg", "");
+                    (setValue('nutritionalGuarantee.crudeFat.value', ''),
+                      setValue('nutritionalGuarantee.crudeFat.kg', ''));
                     clearErrors([
-                      "nutritionalGuarantee.crudeFat.value",
-                      "nutritionalGuarantee.crudeFat.kg",
+                      'nutritionalGuarantee.crudeFat.value',
+                      'nutritionalGuarantee.crudeFat.kg',
                     ]);
                   }
                 }}
-                style={{ cursor: "pointer" }}
+                style={{ cursor: 'pointer' }}
                 sx={{
-                  position: "relative",
-                  top: "10px",
+                  position: 'relative',
+                  top: '10px',
                 }}
               >
                 <svg
@@ -799,11 +799,11 @@ const NutritionalGuarantee = ({
             xl={6}
             xs={12}
             sx={{
-              display: "flex",
+              display: 'flex',
               gap: 1.5,
 
-              minWidth: "200px",
-              overflowX: "auto",
+              minWidth: '200px',
+              overflowX: 'auto',
               pb: 1.5,
             }}
           >
@@ -811,12 +811,12 @@ const NutritionalGuarantee = ({
               variant="subtitle1"
               fontWeight={600}
               sx={{
-                minWidth: "14px",
-                position: "relative",
-                top: "10px",
+                minWidth: '14px',
+                position: 'relative',
+                top: '10px',
               }}
             >
-              4.{" "}
+              4.{' '}
             </Typography>
 
             <Grid container spacing={3}>
@@ -825,27 +825,27 @@ const NutritionalGuarantee = ({
                   // display={"flex"}
                   // gap={2}
                   // alignItems={"center"}
-                  position={"relative"}
+                  position={'relative'}
                 >
                   <TextField
                     label="Crude Ash *"
                     type="text"
                     className="form-input"
-                    {...register("nutritionalGuarantee.crudeAsh.kg", {
+                    {...register('nutritionalGuarantee.crudeAsh.kg', {
                       required: true,
                       pattern: validationPattern.numbersWithDot,
                       maxLength: 10,
                     })}
                     focused
                     sx={{
-                      width: "100%",
+                      width: '100%',
                       // minWidth: 190,
                     }}
                   />
                   {errors &&
                     errors?.nutritionalGuarantee?.crudeAsh?.kg &&
                     errors?.nutritionalGuarantee?.crudeAsh.kg.type ===
-                      "required" && (
+                      'required' && (
                       <Typography
                         variant="body2"
                         color="red"
@@ -858,7 +858,7 @@ const NutritionalGuarantee = ({
                   {errors &&
                     errors?.nutritionalGuarantee?.crudeAsh?.kg &&
                     errors?.nutritionalGuarantee?.crudeAsh.kg.type ===
-                      "pattern" && (
+                      'pattern' && (
                       <Typography
                         variant="body2"
                         color="red"
@@ -871,7 +871,7 @@ const NutritionalGuarantee = ({
                   {errors &&
                     errors?.nutritionalGuarantee?.crudeAsh?.kg &&
                     errors?.nutritionalGuarantee?.crudeAsh.kg.type ===
-                      "maxLength" && (
+                      'maxLength' && (
                       <Typography
                         variant="body2"
                         color="red"
@@ -885,16 +885,16 @@ const NutritionalGuarantee = ({
                     variant="body2"
                     color="#555555AC"
                     sx={{
-                      position: "absolute",
+                      position: 'absolute',
                       right: 6,
                       top: errors?.nutritionalGuarantee?.crudeAsh?.kg
-                        ? "30px"
-                        : "30px",
-                      transform: "translate(-6px, -50%)",
-                      backgroundColor: "#fff",
+                        ? '30px'
+                        : '30px',
+                      transform: 'translate(-6px, -50%)',
+                      backgroundColor: '#fff',
                       height: 30,
-                      display: "grid",
-                      placeItems: "center",
+                      display: 'grid',
+                      placeItems: 'center',
                       zIndex: 1,
                       pl: 1,
                     }}
@@ -904,7 +904,7 @@ const NutritionalGuarantee = ({
                 </Box>
               </Grid>
               <Grid item xs={12} md={6}>
-                <Box width={"100%"}>
+                <Box width={'100%'}>
                   <FormControl
                     fullWidth
                     className="form-input"
@@ -919,17 +919,17 @@ const NutritionalGuarantee = ({
                     <Select
                       labelId="feed-supply-select-label10"
                       id="feed-supply-select10"
-                      {...register("nutritionalGuarantee.crudeAsh.value", {
+                      {...register('nutritionalGuarantee.crudeAsh.value', {
                         required: true,
                       })}
                       label="Min *"
-                      value={watch("nutritionalGuarantee.crudeAsh.value") || ""}
+                      value={watch('nutritionalGuarantee.crudeAsh.value') || ''}
                       onChange={(e) => {
                         setValue(
-                          "nutritionalGuarantee.crudeAsh.value",
-                          e.target.value
+                          'nutritionalGuarantee.crudeAsh.value',
+                          e.target.value,
                         );
-                        trigger("nutritionalGuarantee.crudeAsh.value");
+                        trigger('nutritionalGuarantee.crudeAsh.value');
                       }}
                       // onChange={handleChange}
                     >
@@ -945,7 +945,7 @@ const NutritionalGuarantee = ({
                   {errors &&
                     errors?.nutritionalGuarantee?.crudeAsh?.value &&
                     errors?.nutritionalGuarantee?.crudeAsh.value.type ===
-                      "required" && (
+                      'required' && (
                       <Typography
                         variant="body2"
                         color="red"
@@ -976,21 +976,21 @@ const NutritionalGuarantee = ({
                 </svg>
               </Box> */}
 
-            {!watch("nutritionalGuarantee.crudeAsh.value") &&
-              !watch("nutritionalGuarantee.crudeAsh.kg") && (
+            {!watch('nutritionalGuarantee.crudeAsh.value') &&
+              !watch('nutritionalGuarantee.crudeAsh.kg') && (
                 <Box
                   fontSize={14}
                   fontWeight={500}
                   width="fit-content"
                   onClick={() => {
                     {
-                      setValue("nutritionalGuarantee.crudeAsh.value", ""),
-                        setValue("nutritionalGuarantee.crudeAsh.kg", "");
+                      (setValue('nutritionalGuarantee.crudeAsh.value', ''),
+                        setValue('nutritionalGuarantee.crudeAsh.kg', ''));
                     }
                   }}
-                  style={{ cursor: "pointer" }}
+                  style={{ cursor: 'pointer' }}
                   sx={{
-                    visibility: "hidden",
+                    visibility: 'hidden',
                   }}
                 >
                   <svg
@@ -1007,26 +1007,26 @@ const NutritionalGuarantee = ({
                 </Box>
               )}
 
-            {(watch("nutritionalGuarantee.crudeAsh.value") ||
-              watch("nutritionalGuarantee.crudeAsh.kg")) && (
+            {(watch('nutritionalGuarantee.crudeAsh.value') ||
+              watch('nutritionalGuarantee.crudeAsh.kg')) && (
               <Box
                 fontSize={14}
                 fontWeight={500}
                 width="fit-content"
                 onClick={() => {
                   {
-                    setValue("nutritionalGuarantee.crudeAsh.value", ""),
-                      setValue("nutritionalGuarantee.crudeAsh.kg", "");
+                    (setValue('nutritionalGuarantee.crudeAsh.value', ''),
+                      setValue('nutritionalGuarantee.crudeAsh.kg', ''));
                     clearErrors([
-                      "nutritionalGuarantee.crudeAsh.value",
-                      "nutritionalGuarantee.crudeAsh.kg",
+                      'nutritionalGuarantee.crudeAsh.value',
+                      'nutritionalGuarantee.crudeAsh.kg',
                     ]);
                   }
                 }}
-                style={{ cursor: "pointer" }}
+                style={{ cursor: 'pointer' }}
                 sx={{
-                  position: "relative",
-                  top: "10px",
+                  position: 'relative',
+                  top: '10px',
                 }}
               >
                 <svg
@@ -1049,10 +1049,10 @@ const NutritionalGuarantee = ({
             xl={6}
             xs={12}
             sx={{
-              display: "flex",
+              display: 'flex',
               gap: 1.5,
-              minWidth: "200px",
-              overflowX: "auto",
+              minWidth: '200px',
+              overflowX: 'auto',
               pb: 1.5,
             }}
           >
@@ -1060,12 +1060,12 @@ const NutritionalGuarantee = ({
               variant="subtitle1"
               fontWeight={600}
               sx={{
-                minWidth: "14px",
-                position: "relative",
-                top: "10px",
+                minWidth: '14px',
+                position: 'relative',
+                top: '10px',
               }}
             >
-              5.{" "}
+              5.{' '}
             </Typography>
 
             <Grid container spacing={3}>
@@ -1074,27 +1074,27 @@ const NutritionalGuarantee = ({
                   // display={"flex"}
                   // gap={2}
                   // alignItems={"center"}
-                  position={"relative"}
+                  position={'relative'}
                 >
                   <TextField
                     label=" Crude Fiber *"
                     type="text"
                     className="form-input"
-                    {...register("nutritionalGuarantee.crudeFiber.kg", {
+                    {...register('nutritionalGuarantee.crudeFiber.kg', {
                       required: true,
                       pattern: validationPattern.numbersWithDot,
                       maxLength: 10,
                     })}
                     focused
                     sx={{
-                      width: "100%",
+                      width: '100%',
                       // minWidth: 190,
                     }}
                   />
                   {errors &&
                     errors?.nutritionalGuarantee?.crudeFiber?.kg &&
                     errors?.nutritionalGuarantee?.crudeFiber.kg.type ===
-                      "required" && (
+                      'required' && (
                       <Typography
                         variant="body2"
                         color="red"
@@ -1107,7 +1107,7 @@ const NutritionalGuarantee = ({
                   {errors &&
                     errors?.nutritionalGuarantee?.crudeFiber?.kg &&
                     errors?.nutritionalGuarantee?.crudeFiber.kg.type ===
-                      "pattern" && (
+                      'pattern' && (
                       <Typography
                         variant="body2"
                         color="red"
@@ -1120,7 +1120,7 @@ const NutritionalGuarantee = ({
                   {errors &&
                     errors?.nutritionalGuarantee?.crudeFiber?.kg &&
                     errors?.nutritionalGuarantee?.crudeFiber.kg.type ===
-                      "maxLength" && (
+                      'maxLength' && (
                       <Typography
                         variant="body2"
                         color="red"
@@ -1134,16 +1134,16 @@ const NutritionalGuarantee = ({
                     variant="body2"
                     color="#555555AC"
                     sx={{
-                      position: "absolute",
+                      position: 'absolute',
                       right: 6,
                       top: errors?.nutritionalGuarantee?.crudeFiber?.kg
-                        ? "30px"
-                        : "30px",
-                      transform: "translate(-6px, -50%)",
-                      backgroundColor: "#fff",
+                        ? '30px'
+                        : '30px',
+                      transform: 'translate(-6px, -50%)',
+                      backgroundColor: '#fff',
                       height: 30,
-                      display: "grid",
-                      placeItems: "center",
+                      display: 'grid',
+                      placeItems: 'center',
                       zIndex: 1,
                       pl: 1,
                     }}
@@ -1153,7 +1153,7 @@ const NutritionalGuarantee = ({
                 </Box>
               </Grid>
               <Grid item xs={12} md={6}>
-                <Box width={"100%"}>
+                <Box width={'100%'}>
                   <FormControl
                     fullWidth
                     className="form-input"
@@ -1168,19 +1168,19 @@ const NutritionalGuarantee = ({
                     <Select
                       labelId="feed-supply-select-label10"
                       id="feed-supply-select10"
-                      {...register("nutritionalGuarantee.crudeFiber.value", {
+                      {...register('nutritionalGuarantee.crudeFiber.value', {
                         required: true,
                       })}
                       label="Min *"
                       value={
-                        watch("nutritionalGuarantee.crudeFiber.value") || ""
+                        watch('nutritionalGuarantee.crudeFiber.value') || ''
                       }
                       onChange={(e) => {
                         setValue(
-                          "nutritionalGuarantee.crudeFiber.value",
-                          e.target.value
+                          'nutritionalGuarantee.crudeFiber.value',
+                          e.target.value,
                         );
-                        trigger("nutritionalGuarantee.crudeFiber.value");
+                        trigger('nutritionalGuarantee.crudeFiber.value');
                       }}
                       // onChange={handleChange}
                     >
@@ -1196,7 +1196,7 @@ const NutritionalGuarantee = ({
                   {errors &&
                     errors?.nutritionalGuarantee?.crudeFiber?.value &&
                     errors?.nutritionalGuarantee?.crudeFiber.value.type ===
-                      "required" && (
+                      'required' && (
                       <Typography
                         variant="body2"
                         color="red"
@@ -1227,21 +1227,21 @@ const NutritionalGuarantee = ({
                 </svg>
               </Box> */}
 
-            {!watch("nutritionalGuarantee.crudeFiber.value") &&
-              !watch("nutritionalGuarantee.crudeFiber.kg") && (
+            {!watch('nutritionalGuarantee.crudeFiber.value') &&
+              !watch('nutritionalGuarantee.crudeFiber.kg') && (
                 <Box
                   fontSize={14}
                   fontWeight={500}
                   width="fit-content"
                   onClick={() => {
                     {
-                      setValue("nutritionalGuarantee.crudeFiber.value", ""),
-                        setValue("nutritionalGuarantee.crudeFiber.kg", "");
+                      (setValue('nutritionalGuarantee.crudeFiber.value', ''),
+                        setValue('nutritionalGuarantee.crudeFiber.kg', ''));
                     }
                   }}
-                  style={{ cursor: "pointer" }}
+                  style={{ cursor: 'pointer' }}
                   sx={{
-                    visibility: "hidden",
+                    visibility: 'hidden',
                   }}
                 >
                   <svg
@@ -1257,26 +1257,26 @@ const NutritionalGuarantee = ({
                   </svg>
                 </Box>
               )}
-            {(watch("nutritionalGuarantee.crudeFiber.value") ||
-              watch("nutritionalGuarantee.crudeFiber.kg")) && (
+            {(watch('nutritionalGuarantee.crudeFiber.value') ||
+              watch('nutritionalGuarantee.crudeFiber.kg')) && (
               <Box
                 fontSize={14}
                 fontWeight={500}
                 width="fit-content"
                 onClick={() => {
                   {
-                    setValue("nutritionalGuarantee.crudeFiber.value", ""),
-                      setValue("nutritionalGuarantee.crudeFiber.kg", "");
+                    (setValue('nutritionalGuarantee.crudeFiber.value', ''),
+                      setValue('nutritionalGuarantee.crudeFiber.kg', ''));
                     clearErrors([
-                      "nutritionalGuarantee.crudeFiber.value",
-                      "nutritionalGuarantee.crudeFiber.kg",
+                      'nutritionalGuarantee.crudeFiber.value',
+                      'nutritionalGuarantee.crudeFiber.kg',
                     ]);
                   }
                 }}
-                style={{ cursor: "pointer" }}
+                style={{ cursor: 'pointer' }}
                 sx={{
-                  position: "relative",
-                  top: "10px",
+                  position: 'relative',
+                  top: '10px',
                 }}
               >
                 <svg
@@ -1299,10 +1299,10 @@ const NutritionalGuarantee = ({
             xl={6}
             xs={12}
             sx={{
-              display: "flex",
+              display: 'flex',
               gap: 1.5,
-              minWidth: "200px",
-              overflowX: "auto",
+              minWidth: '200px',
+              overflowX: 'auto',
               pb: 1.5,
             }}
           >
@@ -1310,12 +1310,12 @@ const NutritionalGuarantee = ({
               variant="subtitle1"
               fontWeight={600}
               sx={{
-                minWidth: "14px",
-                position: "relative",
-                top: "10px",
+                minWidth: '14px',
+                position: 'relative',
+                top: '10px',
               }}
             >
-              6.{" "}
+              6.{' '}
             </Typography>
 
             <Grid container spacing={3}>
@@ -1324,27 +1324,27 @@ const NutritionalGuarantee = ({
                   // display={"flex"}
                   // gap={2}
                   // alignItems={"center"}
-                  position={"relative"}
+                  position={'relative'}
                 >
                   <TextField
                     label="Calcium *"
                     type="text"
                     className="form-input"
-                    {...register("nutritionalGuarantee.calcium.kg", {
+                    {...register('nutritionalGuarantee.calcium.kg', {
                       required: true,
                       pattern: validationPattern.numbersWithDot,
                       maxLength: 10,
                     })}
                     focused
                     sx={{
-                      width: "100%",
+                      width: '100%',
                       // minWidth: 190,
                     }}
                   />
                   {errors &&
                     errors?.nutritionalGuarantee?.calcium?.kg &&
                     errors?.nutritionalGuarantee?.calcium.kg.type ===
-                      "required" && (
+                      'required' && (
                       <Typography
                         variant="body2"
                         color="red"
@@ -1357,7 +1357,7 @@ const NutritionalGuarantee = ({
                   {errors &&
                     errors?.nutritionalGuarantee?.calcium?.kg &&
                     errors?.nutritionalGuarantee?.calcium.kg.type ===
-                      "pattern" && (
+                      'pattern' && (
                       <Typography
                         variant="body2"
                         color="red"
@@ -1370,7 +1370,7 @@ const NutritionalGuarantee = ({
                   {errors &&
                     errors?.nutritionalGuarantee?.calcium?.kg &&
                     errors?.nutritionalGuarantee?.calcium.kg.type ===
-                      "maxLength" && (
+                      'maxLength' && (
                       <Typography
                         variant="body2"
                         color="red"
@@ -1384,16 +1384,16 @@ const NutritionalGuarantee = ({
                     variant="body2"
                     color="#555555AC"
                     sx={{
-                      position: "absolute",
+                      position: 'absolute',
                       right: 6,
                       top: errors?.nutritionalGuarantee?.calcium?.kg
-                        ? "30px"
-                        : "30px",
-                      transform: "translate(-6px, -50%)",
-                      backgroundColor: "#fff",
+                        ? '30px'
+                        : '30px',
+                      transform: 'translate(-6px, -50%)',
+                      backgroundColor: '#fff',
                       height: 30,
-                      display: "grid",
-                      placeItems: "center",
+                      display: 'grid',
+                      placeItems: 'center',
                       zIndex: 1,
                       pl: 1,
                     }}
@@ -1403,7 +1403,7 @@ const NutritionalGuarantee = ({
                 </Box>
               </Grid>
               <Grid item xs={12} md={6}>
-                <Box width={"100%"}>
+                <Box width={'100%'}>
                   <FormControl
                     fullWidth
                     className="form-input"
@@ -1419,16 +1419,16 @@ const NutritionalGuarantee = ({
                       labelId="feed-supply-select-label10"
                       id="feed-supply-select10"
                       label="Min *"
-                      {...register("nutritionalGuarantee.calcium.value", {
+                      {...register('nutritionalGuarantee.calcium.value', {
                         required: true,
                       })}
-                      value={watch("nutritionalGuarantee.calcium.value") || ""}
+                      value={watch('nutritionalGuarantee.calcium.value') || ''}
                       onChange={(e) => {
                         setValue(
-                          "nutritionalGuarantee.calcium.value",
-                          e.target.value
+                          'nutritionalGuarantee.calcium.value',
+                          e.target.value,
                         );
-                        trigger("nutritionalGuarantee.calcium.value");
+                        trigger('nutritionalGuarantee.calcium.value');
                       }}
                     >
                       {nutritionalGuarantee.map((guarantee, i) => {
@@ -1443,7 +1443,7 @@ const NutritionalGuarantee = ({
                   {errors &&
                     errors?.nutritionalGuarantee?.calcium?.value &&
                     errors?.nutritionalGuarantee?.calcium.value.type ===
-                      "required" && (
+                      'required' && (
                       <Typography
                         variant="body2"
                         color="red"
@@ -1474,21 +1474,21 @@ const NutritionalGuarantee = ({
                 </svg>
               </Box> */}
 
-            {!watch("nutritionalGuarantee.calcium.value") &&
-              !watch("nutritionalGuarantee.calcium.kg") && (
+            {!watch('nutritionalGuarantee.calcium.value') &&
+              !watch('nutritionalGuarantee.calcium.kg') && (
                 <Box
                   fontSize={14}
                   fontWeight={500}
                   width="fit-content"
                   onClick={() => {
                     {
-                      setValue("nutritionalGuarantee.calcium.value", ""),
-                        setValue("nutritionalGuarantee.calcium.kg", "");
+                      (setValue('nutritionalGuarantee.calcium.value', ''),
+                        setValue('nutritionalGuarantee.calcium.kg', ''));
                     }
                   }}
-                  style={{ cursor: "pointer" }}
+                  style={{ cursor: 'pointer' }}
                   sx={{
-                    visibility: "hidden",
+                    visibility: 'hidden',
                   }}
                 >
                   <svg
@@ -1504,26 +1504,26 @@ const NutritionalGuarantee = ({
                   </svg>
                 </Box>
               )}
-            {(watch("nutritionalGuarantee.calcium.value") ||
-              watch("nutritionalGuarantee.calcium.kg")) && (
+            {(watch('nutritionalGuarantee.calcium.value') ||
+              watch('nutritionalGuarantee.calcium.kg')) && (
               <Box
                 fontSize={14}
                 fontWeight={500}
                 width="fit-content"
                 onClick={() => {
                   {
-                    setValue("nutritionalGuarantee.calcium.value", ""),
-                      setValue("nutritionalGuarantee.calcium.kg", "");
+                    (setValue('nutritionalGuarantee.calcium.value', ''),
+                      setValue('nutritionalGuarantee.calcium.kg', ''));
                     clearErrors([
-                      "nutritionalGuarantee.calcium.value",
-                      "nutritionalGuarantee.calcium.kg",
+                      'nutritionalGuarantee.calcium.value',
+                      'nutritionalGuarantee.calcium.kg',
                     ]);
                   }
                 }}
-                style={{ cursor: "pointer" }}
+                style={{ cursor: 'pointer' }}
                 sx={{
-                  position: "relative",
-                  top: "10px",
+                  position: 'relative',
+                  top: '10px',
                 }}
               >
                 <svg
@@ -1546,10 +1546,10 @@ const NutritionalGuarantee = ({
             xl={6}
             xs={12}
             sx={{
-              display: "flex",
+              display: 'flex',
               gap: 1.5,
-              minWidth: "200px",
-              overflowX: "auto",
+              minWidth: '200px',
+              overflowX: 'auto',
               pb: 1.5,
             }}
           >
@@ -1557,12 +1557,12 @@ const NutritionalGuarantee = ({
               variant="subtitle1"
               fontWeight={600}
               sx={{
-                minWidth: "14px",
-                position: "relative",
-                top: "10px",
+                minWidth: '14px',
+                position: 'relative',
+                top: '10px',
               }}
             >
-              7.{" "}
+              7.{' '}
             </Typography>
 
             <Grid container spacing={3}>
@@ -1571,27 +1571,27 @@ const NutritionalGuarantee = ({
                   // display={"flex"}
                   // gap={2}
                   // alignItems={"center"}
-                  position={"relative"}
+                  position={'relative'}
                 >
                   <TextField
                     label="Phosphorous *"
                     type="text"
                     className="form-input"
-                    {...register("nutritionalGuarantee.phosphorous.kg", {
+                    {...register('nutritionalGuarantee.phosphorous.kg', {
                       required: true,
                       pattern: validationPattern.numbersWithDot,
                       maxLength: 10,
                     })}
                     focused
                     sx={{
-                      width: "100%",
+                      width: '100%',
                       // minWidth: 190,
                     }}
                   />
                   {errors &&
                     errors?.nutritionalGuarantee?.phosphorous?.kg &&
                     errors?.nutritionalGuarantee?.phosphorous.kg.type ===
-                      "required" && (
+                      'required' && (
                       <Typography
                         variant="body2"
                         color="red"
@@ -1604,7 +1604,7 @@ const NutritionalGuarantee = ({
                   {errors &&
                     errors?.nutritionalGuarantee?.phosphorous?.kg &&
                     errors?.nutritionalGuarantee?.phosphorous.kg.type ===
-                      "pattern" && (
+                      'pattern' && (
                       <Typography
                         variant="body2"
                         color="red"
@@ -1617,7 +1617,7 @@ const NutritionalGuarantee = ({
                   {errors &&
                     errors?.nutritionalGuarantee?.phosphorous?.kg &&
                     errors?.nutritionalGuarantee?.phosphorous.kg.type ===
-                      "maxLength" && (
+                      'maxLength' && (
                       <Typography
                         variant="body2"
                         color="red"
@@ -1631,16 +1631,16 @@ const NutritionalGuarantee = ({
                     variant="body2"
                     color="#555555AC"
                     sx={{
-                      position: "absolute",
+                      position: 'absolute',
                       right: 6,
                       top: errors?.nutritionalGuarantee?.phosphorous?.kg
-                        ? "30px"
-                        : "30px",
-                      transform: "translate(-6px, -50%)",
-                      backgroundColor: "#fff",
+                        ? '30px'
+                        : '30px',
+                      transform: 'translate(-6px, -50%)',
+                      backgroundColor: '#fff',
                       height: 30,
-                      display: "grid",
-                      placeItems: "center",
+                      display: 'grid',
+                      placeItems: 'center',
                       zIndex: 1,
                       pl: 1,
                     }}
@@ -1651,7 +1651,7 @@ const NutritionalGuarantee = ({
               </Grid>
 
               <Grid item xs={12} md={6}>
-                <Box width={"100%"}>
+                <Box width={'100%'}>
                   <FormControl
                     fullWidth
                     className="form-input"
@@ -1667,18 +1667,18 @@ const NutritionalGuarantee = ({
                       labelId="feed-supply-select-label10"
                       id="feed-supply-select10"
                       label="Min *"
-                      {...register("nutritionalGuarantee.phosphorous.value", {
+                      {...register('nutritionalGuarantee.phosphorous.value', {
                         required: true,
                       })}
                       value={
-                        watch("nutritionalGuarantee.phosphorous.value") || ""
+                        watch('nutritionalGuarantee.phosphorous.value') || ''
                       }
                       onChange={(e) => {
                         setValue(
-                          "nutritionalGuarantee.phosphorous.value",
-                          e.target.value
+                          'nutritionalGuarantee.phosphorous.value',
+                          e.target.value,
                         );
-                        trigger("nutritionalGuarantee.phosphorous.value");
+                        trigger('nutritionalGuarantee.phosphorous.value');
                       }}
                     >
                       {nutritionalGuarantee.map((guarantee, i) => {
@@ -1693,7 +1693,7 @@ const NutritionalGuarantee = ({
                   {errors &&
                     errors?.nutritionalGuarantee?.phosphorous?.value &&
                     errors?.nutritionalGuarantee?.phosphorous.value.type ===
-                      "required" && (
+                      'required' && (
                       <Typography
                         variant="body2"
                         color="red"
@@ -1724,21 +1724,21 @@ const NutritionalGuarantee = ({
                   />
                 </svg>
               </Box> */}
-            {!watch("nutritionalGuarantee.phosphorous.value") &&
-              !watch("nutritionalGuarantee.phosphorous.kg") && (
+            {!watch('nutritionalGuarantee.phosphorous.value') &&
+              !watch('nutritionalGuarantee.phosphorous.kg') && (
                 <Box
                   fontSize={14}
                   fontWeight={500}
                   width="fit-content"
                   onClick={() => {
                     {
-                      setValue("nutritionalGuarantee.phosphorous.value", ""),
-                        setValue("nutritionalGuarantee.phosphorous.kg", "");
+                      (setValue('nutritionalGuarantee.phosphorous.value', ''),
+                        setValue('nutritionalGuarantee.phosphorous.kg', ''));
                     }
                   }}
-                  style={{ cursor: "pointer" }}
+                  style={{ cursor: 'pointer' }}
                   sx={{
-                    visibility: "hidden",
+                    visibility: 'hidden',
                   }}
                 >
                   <svg
@@ -1754,26 +1754,26 @@ const NutritionalGuarantee = ({
                   </svg>
                 </Box>
               )}
-            {(watch("nutritionalGuarantee.phosphorous.value") ||
-              watch("nutritionalGuarantee.phosphorous.kg")) && (
+            {(watch('nutritionalGuarantee.phosphorous.value') ||
+              watch('nutritionalGuarantee.phosphorous.kg')) && (
               <Box
                 fontSize={14}
                 fontWeight={500}
                 width="fit-content"
                 onClick={() => {
                   {
-                    setValue("nutritionalGuarantee.phosphorous.value", ""),
-                      setValue("nutritionalGuarantee.phosphorous.kg", "");
+                    (setValue('nutritionalGuarantee.phosphorous.value', ''),
+                      setValue('nutritionalGuarantee.phosphorous.kg', ''));
                     clearErrors([
-                      "nutritionalGuarantee.phosphorous.value",
-                      "nutritionalGuarantee.phosphorous.kg",
+                      'nutritionalGuarantee.phosphorous.value',
+                      'nutritionalGuarantee.phosphorous.kg',
                     ]);
                   }
                 }}
-                style={{ cursor: "pointer" }}
+                style={{ cursor: 'pointer' }}
                 sx={{
-                  position: "relative",
-                  top: "10px",
+                  position: 'relative',
+                  top: '10px',
                 }}
               >
                 <svg
@@ -1796,10 +1796,10 @@ const NutritionalGuarantee = ({
             xl={6}
             xs={12}
             sx={{
-              display: "flex",
+              display: 'flex',
               gap: 1.5,
-              minWidth: "200px",
-              overflowX: "auto",
+              minWidth: '200px',
+              overflowX: 'auto',
               pb: 1.5,
             }}
           >
@@ -1807,12 +1807,12 @@ const NutritionalGuarantee = ({
               variant="subtitle1"
               fontWeight={600}
               sx={{
-                minWidth: "14px",
-                position: "relative",
-                top: "10px",
+                minWidth: '14px',
+                position: 'relative',
+                top: '10px',
               }}
             >
-              8.{" "}
+              8.{' '}
             </Typography>
 
             <Grid container spacing={3}>
@@ -1821,21 +1821,21 @@ const NutritionalGuarantee = ({
                   // display={"flex"}
                   // gap={2}
                   // alignItems={"center"}
-                  position={"relative"}
+                  position={'relative'}
                 >
                   <TextField
                     label="Carbohydrates *"
                     type="text"
                     InputProps={{ readOnly: true }}
                     className="form-input"
-                    {...register("nutritionalGuarantee.carbohydrates.kg", {
+                    {...register('nutritionalGuarantee.carbohydrates.kg', {
                       required: true,
                       pattern: validationPattern.numbersWithDot,
                       maxLength: 10,
                     })}
                     focused
                     sx={{
-                      width: "100%",
+                      width: '100%',
                       minWidth: 110,
                     }}
                   />
@@ -1844,16 +1844,16 @@ const NutritionalGuarantee = ({
                     variant="body2"
                     color="#555555AC"
                     sx={{
-                      position: "absolute",
+                      position: 'absolute',
                       right: 6,
                       top: errors?.nutritionalGuarantee?.carbohydrates?.kg
-                        ? "30px"
-                        : "30px",
-                      transform: "translate(-6px, -50%)",
-                      backgroundColor: "#fff",
+                        ? '30px'
+                        : '30px',
+                      transform: 'translate(-6px, -50%)',
+                      backgroundColor: '#fff',
                       height: 30,
-                      display: "grid",
-                      placeItems: "center",
+                      display: 'grid',
+                      placeItems: 'center',
                       zIndex: 1,
                       pl: 1,
                     }}
@@ -1863,7 +1863,7 @@ const NutritionalGuarantee = ({
                   {errors &&
                     errors?.nutritionalGuarantee?.carbohydrates?.kg &&
                     errors?.nutritionalGuarantee?.carbohydrates.kg.type ===
-                      "required" && (
+                      'required' && (
                       <Typography
                         variant="body2"
                         color="red"
@@ -1876,7 +1876,7 @@ const NutritionalGuarantee = ({
                   {errors &&
                     errors?.nutritionalGuarantee?.carbohydrates?.kg &&
                     errors?.nutritionalGuarantee?.carbohydrates.kg.type ===
-                      "pattern" && (
+                      'pattern' && (
                       <Typography
                         variant="body2"
                         color="red"
@@ -1889,7 +1889,7 @@ const NutritionalGuarantee = ({
                   {errors &&
                     errors?.nutritionalGuarantee?.carbohydrates?.kg &&
                     errors?.nutritionalGuarantee?.carbohydrates.kg.type ===
-                      "maxLength" && (
+                      'maxLength' && (
                       <Typography
                         variant="body2"
                         color="red"
@@ -1903,7 +1903,7 @@ const NutritionalGuarantee = ({
               </Grid>
 
               <Grid item xs={12} md={6}>
-                <Box width={"100%"}>
+                <Box width={'100%'}>
                   <FormControl
                     fullWidth
                     className="form-input"
@@ -1919,18 +1919,18 @@ const NutritionalGuarantee = ({
                       labelId="feed-supply-select-label10"
                       id="feed-supply-select10"
                       label="Min *"
-                      {...register("nutritionalGuarantee.carbohydrates.value", {
+                      {...register('nutritionalGuarantee.carbohydrates.value', {
                         required: true,
                       })}
                       value={
-                        watch("nutritionalGuarantee.carbohydrates.value") || ""
+                        watch('nutritionalGuarantee.carbohydrates.value') || ''
                       }
                       onChange={(e) => {
                         setValue(
-                          "nutritionalGuarantee.carbohydrates.value",
-                          e.target.value
+                          'nutritionalGuarantee.carbohydrates.value',
+                          e.target.value,
                         );
-                        trigger("nutritionalGuarantee.carbohydrates.value");
+                        trigger('nutritionalGuarantee.carbohydrates.value');
                       }}
                     >
                       {nutritionalGuarantee.map((guarantee, i) => {
@@ -1946,7 +1946,7 @@ const NutritionalGuarantee = ({
                   {errors &&
                     errors?.nutritionalGuarantee?.carbohydrates?.value &&
                     errors?.nutritionalGuarantee?.carbohydrates.value.type ===
-                      "required" && (
+                      'required' && (
                       <Typography
                         variant="body2"
                         color="red"
@@ -1960,21 +1960,21 @@ const NutritionalGuarantee = ({
               </Grid>
             </Grid>
 
-            {!watch("nutritionalGuarantee.carbohydrates.value") &&
-              !watch("nutritionalGuarantee.carbohydrates.kg") && (
+            {!watch('nutritionalGuarantee.carbohydrates.value') &&
+              !watch('nutritionalGuarantee.carbohydrates.kg') && (
                 <Box
                   fontSize={14}
                   fontWeight={500}
                   width="fit-content"
                   onClick={() => {
                     {
-                      setValue("nutritionalGuarantee.carbohydrates.value", "");
+                      setValue('nutritionalGuarantee.carbohydrates.value', '');
                       // setValue("nutritionalGuarantee.carbohydrates.kg", "");
                     }
                   }}
-                  style={{ cursor: "pointer" }}
+                  style={{ cursor: 'pointer' }}
                   sx={{
-                    visibility: "hidden",
+                    visibility: 'hidden',
                   }}
                 >
                   <svg
@@ -1990,26 +1990,26 @@ const NutritionalGuarantee = ({
                   </svg>
                 </Box>
               )}
-            {(watch("nutritionalGuarantee.carbohydrates.value") ||
-              watch("nutritionalGuarantee.carbohydrates.kg")) && (
+            {(watch('nutritionalGuarantee.carbohydrates.value') ||
+              watch('nutritionalGuarantee.carbohydrates.kg')) && (
               <Box
                 fontSize={14}
                 fontWeight={500}
                 width="fit-content"
                 onClick={() => {
                   {
-                    setValue("nutritionalGuarantee.carbohydrates.value", ""),
+                    (setValue('nutritionalGuarantee.carbohydrates.value', ''),
                       // setValue("nutritionalGuarantee.carbohydrates.kg", "");
                       clearErrors([
-                        "nutritionalGuarantee.carbohydrates.value",
-                        "nutritionalGuarantee.carbohydrates.kg",
-                      ]);
+                        'nutritionalGuarantee.carbohydrates.value',
+                        'nutritionalGuarantee.carbohydrates.kg',
+                      ]));
                   }
                 }}
-                style={{ cursor: "pointer" }}
+                style={{ cursor: 'pointer' }}
                 sx={{
-                  position: "relative",
-                  top: "10px",
+                  position: 'relative',
+                  top: '10px',
                 }}
               >
                 <svg
@@ -2032,11 +2032,11 @@ const NutritionalGuarantee = ({
             xl={6}
             xs={12}
             sx={{
-              display: "flex",
+              display: 'flex',
               gap: 1.5,
-              minWidth: "200px",
-              overflowX: "auto",
-              alignItems: "self-start",
+              minWidth: '200px',
+              overflowX: 'auto',
+              alignItems: 'self-start',
               pb: 1.5,
             }}
           >
@@ -2044,33 +2044,33 @@ const NutritionalGuarantee = ({
               variant="subtitle1"
               fontWeight={600}
               sx={{
-                minWidth: "14px",
-                position: "relative",
-                top: "10px",
+                minWidth: '14px',
+                position: 'relative',
+                top: '10px',
               }}
             >
-              9.{" "}
+              9.{' '}
             </Typography>
 
             <Box
-              width={"100%"}
+              width={'100%'}
               // display={"flex"}
               // gap={2}
               // alignItems={"center"}
-              position={"relative"}
+              position={'relative'}
             >
               <TextField
                 label="Metabolizable Energy *"
                 type="text"
                 className="form-input"
-                {...register("nutritionalGuarantee.metabolizableEnergy.kg", {
+                {...register('nutritionalGuarantee.metabolizableEnergy.kg', {
                   required: true,
                   pattern: validationPattern.numbersWithDot,
                   maxLength: 10,
                 })}
                 focused
                 sx={{
-                  width: "100%",
+                  width: '100%',
                 }}
               />
 
@@ -2078,16 +2078,16 @@ const NutritionalGuarantee = ({
                 variant="body2"
                 color="#555555AC"
                 sx={{
-                  position: "absolute",
+                  position: 'absolute',
                   right: 6,
                   top: errors?.nutritionalGuarantee?.metabolizableEnergy?.kg
-                    ? "30px"
-                    : "30px",
-                  transform: "translate(-6px, -50%)",
-                  backgroundColor: "#fff",
+                    ? '30px'
+                    : '30px',
+                  transform: 'translate(-6px, -50%)',
+                  backgroundColor: '#fff',
                   height: 30,
-                  display: "grid",
-                  placeItems: "center",
+                  display: 'grid',
+                  placeItems: 'center',
                   zIndex: 1,
                   pl: 1,
                 }}
@@ -2097,7 +2097,7 @@ const NutritionalGuarantee = ({
               {errors &&
                 errors?.nutritionalGuarantee?.metabolizableEnergy?.kg &&
                 errors?.nutritionalGuarantee?.metabolizableEnergy.kg.type ===
-                  "required" && (
+                  'required' && (
                   <Typography
                     variant="body2"
                     color="red"
@@ -2110,7 +2110,7 @@ const NutritionalGuarantee = ({
               {errors &&
                 errors?.nutritionalGuarantee?.metabolizableEnergy?.kg &&
                 errors?.nutritionalGuarantee?.metabolizableEnergy.kg.type ===
-                  "pattern" && (
+                  'pattern' && (
                   <Typography
                     variant="body2"
                     color="red"
@@ -2123,7 +2123,7 @@ const NutritionalGuarantee = ({
               {errors &&
                 errors?.nutritionalGuarantee?.metabolizableEnergy?.kg &&
                 errors?.nutritionalGuarantee?.metabolizableEnergy.kg.type ===
-                  "maxLength" && (
+                  'maxLength' && (
                   <Typography
                     variant="body2"
                     color="red"
@@ -2139,21 +2139,21 @@ const NutritionalGuarantee = ({
               type="button"
               variant="contained"
               sx={{
-                background: "#06a19b",
-                color: "#fff",
+                background: '#06a19b',
+                color: '#fff',
                 fontWeight: 600,
-                padding: "6px",
-                width: "fit-content",
-                textTransform: "capitalize",
-                borderRadius: "8px",
-                border: "1px solid #06A19B",
+                padding: '6px',
+                width: 'fit-content',
+                textTransform: 'capitalize',
+                borderRadius: '8px',
+                border: '1px solid #06A19B',
                 minWidth: 90,
               }}
               // onClick={() => handleCalculate(item, index)}
             >
               Calculate
             </Button>
-            <Box width={"100%"}>
+            <Box width={'100%'}>
               <FormControl
                 fullWidth
                 className="form-input"
@@ -2168,21 +2168,21 @@ const NutritionalGuarantee = ({
                   id="feed-supply-select10"
                   label="Min *"
                   {...register(
-                    "nutritionalGuarantee.metabolizableEnergy.value",
+                    'nutritionalGuarantee.metabolizableEnergy.value',
                     {
                       required: true,
-                    }
+                    },
                   )}
                   value={
-                    watch("nutritionalGuarantee.metabolizableEnergy.value") ||
-                    ""
+                    watch('nutritionalGuarantee.metabolizableEnergy.value') ||
+                    ''
                   }
                   onChange={(e) => {
                     setValue(
-                      "nutritionalGuarantee.metabolizableEnergy.value",
-                      e.target.value
+                      'nutritionalGuarantee.metabolizableEnergy.value',
+                      e.target.value,
                     );
-                    trigger("nutritionalGuarantee.metabolizableEnergy.value");
+                    trigger('nutritionalGuarantee.metabolizableEnergy.value');
                   }}
                 >
                   {nutritionalGuarantee.map((guarantee, i) => {
@@ -2197,7 +2197,7 @@ const NutritionalGuarantee = ({
               {errors &&
                 errors?.nutritionalGuarantee?.metabolizableEnergy?.value &&
                 errors?.nutritionalGuarantee?.metabolizableEnergy.value.type ===
-                  "required" && (
+                  'required' && (
                   <Typography
                     variant="body2"
                     color="red"
@@ -2227,27 +2227,27 @@ const NutritionalGuarantee = ({
                 </svg>
               </Box> */}
 
-            {!watch("nutritionalGuarantee.metabolizableEnergy.value") &&
-              !watch("nutritionalGuarantee.metabolizableEnergy.kg") && (
+            {!watch('nutritionalGuarantee.metabolizableEnergy.value') &&
+              !watch('nutritionalGuarantee.metabolizableEnergy.kg') && (
                 <Box
                   fontSize={14}
                   fontWeight={500}
                   width="fit-content"
                   onClick={() => {
                     {
-                      setValue(
-                        "nutritionalGuarantee.metabolizableEnergy.value",
-                        ""
+                      (setValue(
+                        'nutritionalGuarantee.metabolizableEnergy.value',
+                        '',
                       ),
                         setValue(
-                          "nutritionalGuarantee.metabolizableEnergy.kg",
-                          ""
-                        );
+                          'nutritionalGuarantee.metabolizableEnergy.kg',
+                          '',
+                        ));
                     }
                   }}
-                  style={{ cursor: "pointer" }}
+                  style={{ cursor: 'pointer' }}
                   sx={{
-                    visibility: "hidden",
+                    visibility: 'hidden',
                   }}
                 >
                   <svg
@@ -2264,32 +2264,32 @@ const NutritionalGuarantee = ({
                 </Box>
               )}
 
-            {(watch("nutritionalGuarantee.metabolizableEnergy.value") ||
-              watch("nutritionalGuarantee.metabolizableEnergy.kg")) && (
+            {(watch('nutritionalGuarantee.metabolizableEnergy.value') ||
+              watch('nutritionalGuarantee.metabolizableEnergy.kg')) && (
               <Box
                 fontSize={14}
                 fontWeight={500}
                 width="fit-content"
                 onClick={() => {
                   {
-                    setValue(
-                      "nutritionalGuarantee.metabolizableEnergy.value",
-                      ""
+                    (setValue(
+                      'nutritionalGuarantee.metabolizableEnergy.value',
+                      '',
                     ),
                       setValue(
-                        "nutritionalGuarantee.metabolizableEnergy.kg",
-                        ""
-                      );
+                        'nutritionalGuarantee.metabolizableEnergy.kg',
+                        '',
+                      ));
                     clearErrors([
-                      "nutritionalGuarantee.metabolizableEnergy.value",
-                      "nutritionalGuarantee.metabolizableEnergy.kg",
+                      'nutritionalGuarantee.metabolizableEnergy.value',
+                      'nutritionalGuarantee.metabolizableEnergy.kg',
                     ]);
                   }
                 }}
-                style={{ cursor: "pointer" }}
+                style={{ cursor: 'pointer' }}
                 sx={{
-                  position: "relative",
-                  top: "10px",
+                  position: 'relative',
+                  top: '10px',
                 }}
               >
                 <svg

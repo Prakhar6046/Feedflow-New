@@ -1,11 +1,11 @@
-import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
-import ProductionTable from "@/app/_components/table/ProductionTable";
-import { getBatches, getFarms, getProductions } from "@/app/_lib/action";
+import BasicBreadcrumbs from '@/app/_components/Breadcrumbs';
+import ProductionTable from '@/app/_components/table/ProductionTable';
+import { getBatches, getFarms, getProductions } from '@/app/_lib/action';
 // import { getCookie } from "cookies-next";
-import { Metadata } from "next";
-import { cookies } from "next/headers";
+import { Metadata } from 'next';
+import { cookies } from 'next/headers';
 export const metadata: Metadata = {
-  title: "Production Manager",
+  title: 'Production Manager',
 };
 export default async function Page({
   searchParams,
@@ -14,12 +14,12 @@ export default async function Page({
     query?: string;
   };
 }) {
-  const query = searchParams?.query || "";
+  const query = searchParams?.query || '';
   // const loggedUser: any = getCookie("logged-user", { cookies });
   // const refreshToken: any = getCookie("refresh-token", { cookies });
   const cookieStore = cookies();
-  const loggedUser: any = cookieStore.get("logged-user")?.value;
-  const refreshToken = cookieStore.get("refresh-token")?.value;
+  const loggedUser: any = cookieStore.get('logged-user')?.value;
+  const refreshToken = cookieStore.get('refresh-token')?.value;
   const user = JSON.parse(loggedUser);
   const productions = await getProductions({
     role: user.role,
@@ -32,7 +32,7 @@ export default async function Page({
   const farms = await getFarms({
     role: user.role,
     organisationId: user.organisationId,
-    query: "",
+    query: '',
     noFilter: false,
     refreshToken,
   });
@@ -40,11 +40,11 @@ export default async function Page({
   return (
     <>
       <BasicBreadcrumbs
-        heading={"Production Manager"}
+        heading={'Production Manager'}
         isTable={true}
         links={[
-          { name: "Dashboard", link: "/dashboard" },
-          { name: "Production Manager", link: "/dashboard/production" },
+          { name: 'Dashboard', link: '/dashboard' },
+          { name: 'Production Manager', link: '/dashboard/production' },
         ]}
       />
 

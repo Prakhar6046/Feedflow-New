@@ -1,12 +1,12 @@
-"use client";
+'use client';
 import {
   calculateFishGrowth,
   CommonFeedPredictionHead,
   exportFeedPredictionToXlsx,
   FeedPredictionHead,
-} from "@/app/_lib/utils";
-import * as ValidationPatterns from "@/app/_lib/utils/validationPatterns";
-import * as ValidationMessages from "@/app/_lib/utils/validationsMessage";
+} from '@/app/_lib/utils';
+import * as ValidationPatterns from '@/app/_lib/utils/validationPatterns';
+import * as ValidationMessages from '@/app/_lib/utils/validationsMessage';
 import {
   Box,
   Button,
@@ -18,19 +18,19 @@ import {
   Stack,
   TextField,
   Typography,
-} from "@mui/material";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import dayjs from "dayjs";
-import html2canvas from "html2canvas";
-import jsPDF from "jspdf";
-import { useEffect, useState } from "react";
-import { createRoot } from "react-dom/client";
-import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import Loader from "../Loader";
-import FishGrowthTable from "../table/FishGrowthTable";
-import { timeIntervalOptions } from "./FeedingPlan";
+} from '@mui/material';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import dayjs from 'dayjs';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
+import { useEffect, useState } from 'react';
+import { createRoot } from 'react-dom/client';
+import { Controller, SubmitHandler, useForm } from 'react-hook-form';
+import Loader from '../Loader';
+import FishGrowthTable from '../table/FishGrowthTable';
+import { timeIntervalOptions } from './FeedingPlan';
 interface FormInputs {
   farm: string;
   unit: string;
@@ -82,16 +82,16 @@ function AdHoc({ data, setData }: Iprops) {
       numberOfFishs: 7500,
       fishWeight: 2,
       adjustmentFactor: 0.05,
-      startDate: dayjs().format("YYYY-MM-DD"),
+      startDate: dayjs().format('YYYY-MM-DD'),
       temp: 24,
       period: 5,
     },
-    mode: "onChange",
+    mode: 'onChange',
   });
 
   const onSubmit: SubmitHandler<FormInputs> = (data) => {
-    const formattedDate = dayjs(data.startDate).format("YYYY-MM-DD");
-    const diffInDays = dayjs(data.endDate).diff(dayjs(data.startDate), "day");
+    const formattedDate = dayjs(data.startDate).format('YYYY-MM-DD');
+    const diffInDays = dayjs(data.endDate).diff(dayjs(data.startDate), 'day');
     if (data) {
       setData(
         calculateFishGrowth(
@@ -102,8 +102,8 @@ function AdHoc({ data, setData }: Iprops) {
           Number(diffInDays),
           formattedDate,
           1,
-          13.9
-        )
+          13.9,
+        ),
       );
     }
   };
@@ -138,13 +138,13 @@ function AdHoc({ data, setData }: Iprops) {
       }
       return results;
     };
-    const pdf = new jsPDF({ orientation: "landscape" });
+    const pdf = new jsPDF({ orientation: 'landscape' });
     const chunks = chunkArray(formatedData, 20);
 
     for (let i = 0; i < chunks.length; i++) {
-      const tempContainer = document.createElement("div");
+      const tempContainer = document.createElement('div');
       document.body.appendChild(tempContainer);
-      const chartDiv = document.createElement("div");
+      const chartDiv = document.createElement('div');
       tempContainer.appendChild(chartDiv);
       const root = createRoot(chartDiv);
 
@@ -153,30 +153,30 @@ function AdHoc({ data, setData }: Iprops) {
       root.render(
         <div
           style={{
-            maxWidth: "100vw",
-            width: "100%",
-            height: "100%",
-            fontFamily: "Arial, sans-serif",
-            margin: "auto",
+            maxWidth: '100vw',
+            width: '100%',
+            height: '100%',
+            fontFamily: 'Arial, sans-serif',
+            margin: 'auto',
           }}
         >
           <div
             style={{
-              padding: "12px 20px",
-              backgroundColor: "rgb(6,161,155)",
-              boxShadow: "0 0 3px rgb(6, 161, 155)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
+              padding: '12px 20px',
+              backgroundColor: 'rgb(6,161,155)',
+              boxShadow: '0 0 3px rgb(6, 161, 155)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
             }}
           >
             <img src="/static/img/logo-bigone.jpg" alt="Logo" width={200} />
             <div>
               <h6
                 style={{
-                  marginBottom: "4px",
-                  fontSize: "16px",
-                  color: "white",
+                  marginBottom: '4px',
+                  fontSize: '16px',
+                  color: 'white',
                 }}
               >
                 Feed Prediction Report
@@ -185,27 +185,27 @@ function AdHoc({ data, setData }: Iprops) {
           </div>
           <div
             style={{
-              width: "100%",
-              marginBottom: "20px",
-              display: "flex",
-              alignItems: "start",
+              width: '100%',
+              marginBottom: '20px',
+              display: 'flex',
+              alignItems: 'start',
             }}
           >
             <div
               style={{
-                width: "100%",
-                margin: "20px",
-                display: "flex",
-                alignItems: "center",
+                width: '100%',
+                margin: '20px',
+                display: 'flex',
+                alignItems: 'center',
               }}
             >
               <table
                 style={{
-                  width: "100%",
-                  borderCollapse: "collapse",
-                  fontSize: "12px",
-                  color: "#333",
-                  marginTop: "16px",
+                  width: '100%',
+                  borderCollapse: 'collapse',
+                  fontSize: '12px',
+                  color: '#333',
+                  marginTop: '16px',
                 }}
               >
                 <thead>
@@ -215,19 +215,19 @@ function AdHoc({ data, setData }: Iprops) {
                         <th
                           key={idx}
                           style={{
-                            border: "1px solid #ccc",
-                            padding: "8px 12px",
-                            textAlign: "left",
+                            border: '1px solid #ccc',
+                            padding: '8px 12px',
+                            textAlign: 'left',
                             borderTopLeftRadius:
                               idx === FeedPredictionHead.length - 1
-                                ? "8px"
-                                : "0px",
-                            background: "#efefef",
+                                ? '8px'
+                                : '0px',
+                            background: '#efefef',
                           }}
                         >
                           {head}
                         </th>
-                      )
+                      ),
                     )}
                   </tr>
                 </thead>
@@ -236,80 +236,80 @@ function AdHoc({ data, setData }: Iprops) {
                     <tr key={index}>
                       <td
                         style={{
-                          border: "1px solid #ccc",
-                          padding: "8px 12px",
+                          border: '1px solid #ccc',
+                          padding: '8px 12px',
                         }}
                       >
                         {row.date}
                       </td>
                       <td
                         style={{
-                          border: "1px solid #ccc",
-                          padding: "8px 12px",
+                          border: '1px solid #ccc',
+                          padding: '8px 12px',
                         }}
                       >
                         {row.averageProjectedTemp}
                       </td>
                       <td
                         style={{
-                          border: "1px solid #ccc",
-                          padding: "8px 12px",
+                          border: '1px solid #ccc',
+                          padding: '8px 12px',
                         }}
                       >
                         {row.numberOfFish}
                       </td>
                       <td
                         style={{
-                          border: "1px solid #ccc",
-                          padding: "8px 12px",
+                          border: '1px solid #ccc',
+                          padding: '8px 12px',
                         }}
                       >
                         {row.fishSize}
                       </td>
                       <td
                         style={{
-                          border: "1px solid #ccc",
-                          padding: "8px 12px",
+                          border: '1px solid #ccc',
+                          padding: '8px 12px',
                         }}
                       >
                         {row.growth}
                       </td>
                       <td
                         style={{
-                          border: "1px solid #ccc",
-                          padding: "8px 12px",
+                          border: '1px solid #ccc',
+                          padding: '8px 12px',
                         }}
                       >
                         {row.feedType}
                       </td>
                       <td
                         style={{
-                          border: "1px solid #ccc",
-                          padding: "8px 12px",
+                          border: '1px solid #ccc',
+                          padding: '8px 12px',
                         }}
                       >
                         {row.feedSize}
                       </td>
                       <td
                         style={{
-                          border: "1px solid #ccc",
-                          padding: "8px 12px",
+                          border: '1px solid #ccc',
+                          padding: '8px 12px',
                         }}
                       >
                         {row.estimatedFCR}
                       </td>
                       <td
                         style={{
-                          border: "1px solid #ccc",
-                          padding: "8px 12px",
+                          border: '1px solid #ccc',
+                          padding: '8px 12px',
                         }}
                       >
                         {row.feedIntake}
                       </td>
                       <td
                         style={{
-                          border: "1px solid #ccc",
-                          padding: "8px 12px",
+                          border: '1px solid #ccc',
+                          padding: '8px 12px',
                         }}
                       >
                         {row.feedingRate}
@@ -320,19 +320,19 @@ function AdHoc({ data, setData }: Iprops) {
               </table>
             </div>
           </div>
-        </div>
+        </div>,
       );
 
       await new Promise((resolve) => setTimeout(resolve, 800));
 
       const canvas = await html2canvas(chartDiv);
-      const imgData = canvas.toDataURL("image/png");
+      const imgData = canvas.toDataURL('image/png');
       const imgProps = pdf.getImageProperties(imgData);
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
 
       if (i > 0) pdf.addPage();
-      pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
 
       root.unmount();
       tempContainer.remove();
@@ -363,25 +363,25 @@ function AdHoc({ data, setData }: Iprops) {
       e,
       CommonFeedPredictionHead,
       formatedData,
-      "ad_Hoc_Data"
+      'ad_Hoc_Data',
     );
   };
 
   useEffect(() => {
     if (loading) {
-      document.body.style.position = "fixed";
-      document.body.style.width = "100%";
-      document.body.style.overflow = "hidden";
+      document.body.style.position = 'fixed';
+      document.body.style.width = '100%';
+      document.body.style.overflow = 'hidden';
     } else {
-      document.body.style.position = "";
-      document.body.style.width = "";
-      document.body.style.overflow = "";
+      document.body.style.position = '';
+      document.body.style.width = '';
+      document.body.style.overflow = '';
     }
 
     return () => {
-      document.body.style.position = "";
-      document.body.style.width = "";
-      document.body.style.overflow = "";
+      document.body.style.position = '';
+      document.body.style.width = '';
+      document.body.style.overflow = '';
     };
   }, [loading]);
 
@@ -389,9 +389,9 @@ function AdHoc({ data, setData }: Iprops) {
     return (
       <Box
         sx={{
-          position: "absolute",
-          width: "100%",
-          height: "100%",
+          position: 'absolute',
+          width: '100%',
+          height: '100%',
         }}
       >
         <Loader />
@@ -401,18 +401,18 @@ function AdHoc({ data, setData }: Iprops) {
   return (
     <Stack>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Grid container spacing={3} mt={2} mb={5} alignItems={"start"}>
+        <Grid container spacing={3} mt={2} mb={5} alignItems={'start'}>
           <Grid item lg={3} md={4} sm={6} xs={12}>
             <TextField
               label="Farm *"
               type="text"
-              {...register("farm", {
+              {...register('farm', {
                 required: true,
               })}
               className="form-input"
               focused
               sx={{
-                width: "100%",
+                width: '100%',
               }}
             />
             {errors.farm && (
@@ -426,13 +426,13 @@ function AdHoc({ data, setData }: Iprops) {
             <TextField
               label="Unit *"
               type="text"
-              {...register("unit", {
+              {...register('unit', {
                 required: true,
               })}
               className="form-input"
               focused
               sx={{
-                width: "100%",
+                width: '100%',
               }}
             />
             {errors.unit && (
@@ -443,36 +443,36 @@ function AdHoc({ data, setData }: Iprops) {
           </Grid>
         </Grid>
 
-        <Grid container spacing={3} mt={2} mb={5} alignItems={"start"}>
+        <Grid container spacing={3} mt={2} mb={5} alignItems={'start'}>
           <Grid item lg={3} md={4} sm={6} xs={12}>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <Controller
                 name="startDate"
                 control={control}
-                rules={{ required: "This field is required." }}
+                rules={{ required: 'This field is required.' }}
                 render={({ field, fieldState: { error } }) => (
                   <>
                     <DatePicker
                       {...field}
                       label="Start Date * "
                       className="form-input"
-                      sx={{ width: "100%" }}
+                      sx={{ width: '100%' }}
                       onChange={(date) => {
                         if (date && date.isValid()) {
-                          const formattedDate = date.format("YYYY-MM-DD");
+                          const formattedDate = date.format('YYYY-MM-DD');
                           field.onChange(formattedDate);
-                          setValue("startDate", formattedDate);
-                          setValue("endDate", "");
+                          setValue('startDate', formattedDate);
+                          setValue('endDate', '');
                         } else {
                           field.onChange(null);
-                          setValue("startDate", "");
+                          setValue('startDate', '');
                         }
                       }}
                       slotProps={{
                         textField: { focused: true },
                       }}
                       value={field.value ? dayjs(field.value) : null} // Ensure correct rendering
-                      maxDate={dayjs(watch("endDate"))}
+                      maxDate={dayjs(watch('endDate'))}
                     />
 
                     {error && (
@@ -496,28 +496,28 @@ function AdHoc({ data, setData }: Iprops) {
               <Controller
                 name="endDate"
                 control={control}
-                rules={{ required: "This field is required." }}
+                rules={{ required: 'This field is required.' }}
                 render={({ field, fieldState: { error } }) => (
                   <>
                     <DatePicker
                       {...field}
                       label="End Date * "
                       className="form-input"
-                      sx={{ width: "100%" }}
+                      sx={{ width: '100%' }}
                       onChange={(date) => {
                         if (date && date.isValid()) {
-                          const formattedDate = date.format("YYYY-MM-DD");
+                          const formattedDate = date.format('YYYY-MM-DD');
                           field.onChange(formattedDate);
-                          setValue("endDate", formattedDate);
+                          setValue('endDate', formattedDate);
                         } else {
                           field.onChange(null);
-                          setValue("endDate", "");
+                          setValue('endDate', '');
                         }
                       }}
                       slotProps={{
                         textField: { focused: true },
                       }}
-                      minDate={dayjs(watch("startDate")).add(1, "day")}
+                      minDate={dayjs(watch('startDate')).add(1, 'day')}
                       value={field.value ? dayjs(field.value) : null} // Ensure correct rendering
                     />
 
@@ -592,29 +592,29 @@ function AdHoc({ data, setData }: Iprops) {
           </Grid>
 
           <Grid item lg={3} md={4} sm={6} xs={12}>
-            <Box position={"relative"}>
+            <Box position={'relative'}>
               <TextField
                 label="Average Temperature *"
                 type="text"
-                {...register("temp", {
+                {...register('temp', {
                   required: true,
                   pattern: ValidationPatterns.numbersWithDot,
                 })}
                 className="form-input"
                 focused
                 sx={{
-                  width: "100%",
+                  width: '100%',
                 }}
               />
               <Typography
                 variant="body1"
                 color="#555555AC"
                 sx={{
-                  position: "absolute",
+                  position: 'absolute',
                   right: 13,
-                  top: "30%",
-                  backgroundColor: "white",
-                  paddingInline: "5px",
+                  top: '30%',
+                  backgroundColor: 'white',
+                  paddingInline: '5px',
                 }}
               >
                 °C
@@ -622,11 +622,11 @@ function AdHoc({ data, setData }: Iprops) {
             </Box>
             {errors.temp && (
               <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
-                {errors.temp.type === "required"
+                {errors.temp.type === 'required'
                   ? ValidationMessages.required
-                  : errors.temp.type === "pattern"
-                  ? ValidationMessages.OnlyNumbersWithDot
-                  : ""}
+                  : errors.temp.type === 'pattern'
+                    ? ValidationMessages.OnlyNumbersWithDot
+                    : ''}
               </Typography>
             )}
           </Grid>
@@ -777,31 +777,31 @@ function AdHoc({ data, setData }: Iprops) {
           </Grid> */}
         </Grid>
 
-        <Grid container spacing={3} mt={2} mb={5} alignItems={"start"}>
+        <Grid container spacing={3} mt={2} mb={5} alignItems={'start'}>
           <Grid item lg={3} md={4} sm={6} xs={12}>
-            <Box position={"relative"}>
+            <Box position={'relative'}>
               <TextField
                 label="Average Fish Weight *"
                 type="text"
-                {...register("fishWeight", {
+                {...register('fishWeight', {
                   required: true,
                   pattern: ValidationPatterns.numbersWithDot,
                 })}
                 className="form-input"
                 focused
                 sx={{
-                  width: "100%",
+                  width: '100%',
                 }}
               />
               <Typography
                 variant="body1"
                 color="#555555AC"
                 sx={{
-                  position: "absolute",
+                  position: 'absolute',
                   right: 13,
-                  top: "30%",
-                  backgroundColor: "white",
-                  paddingInline: "5px",
+                  top: '30%',
+                  backgroundColor: 'white',
+                  paddingInline: '5px',
                 }}
               >
                 g
@@ -809,28 +809,28 @@ function AdHoc({ data, setData }: Iprops) {
             </Box>
             {errors.fishWeight && (
               <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
-                {errors.fishWeight.type === "required"
+                {errors.fishWeight.type === 'required'
                   ? ValidationMessages.required
-                  : errors.fishWeight.type === "pattern"
-                  ? ValidationMessages.OnlyNumbersWithDot
-                  : ""}
+                  : errors.fishWeight.type === 'pattern'
+                    ? ValidationMessages.OnlyNumbersWithDot
+                    : ''}
               </Typography>
             )}
           </Grid>
 
           <Grid item lg={3} md={4} sm={6} xs={12}>
-            <Box position={"relative"}>
+            <Box position={'relative'}>
               <TextField
                 label="Total Number Of Fish *"
                 type="text"
-                {...register("numberOfFishs", {
+                {...register('numberOfFishs', {
                   required: true,
                   pattern: ValidationPatterns.numbersWithDot,
                 })}
                 className="form-input"
                 focused
                 sx={{
-                  width: "100%",
+                  width: '100%',
                 }}
               />
               {/* <Typography
@@ -849,42 +849,42 @@ function AdHoc({ data, setData }: Iprops) {
             </Box>
             {errors.numberOfFishs && (
               <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
-                {errors.numberOfFishs.type === "required"
+                {errors.numberOfFishs.type === 'required'
                   ? ValidationMessages.required
-                  : errors.numberOfFishs.type === "pattern"
-                  ? ValidationMessages.OnlyNumbersWithDot
-                  : ""}
+                  : errors.numberOfFishs.type === 'pattern'
+                    ? ValidationMessages.OnlyNumbersWithDot
+                    : ''}
               </Typography>
             )}
           </Grid>
         </Grid>
 
-        <Grid container spacing={3} mt={2} mb={5} alignItems={"start"}>
+        <Grid container spacing={3} mt={2} mb={5} alignItems={'start'}>
           <Grid item lg={3} md={4} sm={6} xs={12}>
-            <Box position={"relative"}>
-              <Box position={"relative"}>
+            <Box position={'relative'}>
+              <Box position={'relative'}>
                 <TextField
                   label="Adjustment Factor *"
                   type="text"
-                  {...register("adjustmentFactor", {
+                  {...register('adjustmentFactor', {
                     required: true,
                     pattern: ValidationPatterns.numbersWithDot,
                   })}
                   className="form-input"
                   focused
                   sx={{
-                    width: "100%",
+                    width: '100%',
                   }}
                 />
                 <Typography
                   variant="body1"
                   color="#555555AC"
                   sx={{
-                    position: "absolute",
+                    position: 'absolute',
                     right: 13,
-                    top: "30%",
-                    backgroundColor: "white",
-                    paddingInline: "5px",
+                    top: '30%',
+                    backgroundColor: 'white',
+                    paddingInline: '5px',
                   }}
                 >
                   %
@@ -893,11 +893,11 @@ function AdHoc({ data, setData }: Iprops) {
             </Box>
             {errors.adjustmentFactor && (
               <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
-                {errors.adjustmentFactor.type === "required"
+                {errors.adjustmentFactor.type === 'required'
                   ? ValidationMessages.required
-                  : errors.adjustmentFactor.type === "pattern"
-                  ? ValidationMessages.OnlyNumbersWithDot
-                  : ""}
+                  : errors.adjustmentFactor.type === 'pattern'
+                    ? ValidationMessages.OnlyNumbersWithDot
+                    : ''}
               </Typography>
             )}
           </Grid>
@@ -908,12 +908,12 @@ function AdHoc({ data, setData }: Iprops) {
                 type="submit"
                 variant="contained"
                 sx={{
-                  background: "#06A19B",
+                  background: '#06A19B',
                   fontWeight: 600,
-                  padding: "6px 16px",
-                  width: "fit-content",
-                  textTransform: "capitalize",
-                  borderRadius: "8px",
+                  padding: '6px 16px',
+                  width: 'fit-content',
+                  textTransform: 'capitalize',
+                  borderRadius: '8px',
                   mt: 1,
                 }}
               >
@@ -950,7 +950,7 @@ function AdHoc({ data, setData }: Iprops) {
       </form>
       {data?.length !== 0 && (
         <Box>
-          <Grid container spacing={3} mt={2} mb={5} alignItems={"flex-end"}>
+          <Grid container spacing={3} mt={2} mb={5} alignItems={'flex-end'}>
             <Grid item lg={3} md={4} sm={6} xs={12}>
               <Button
                 id="basic-button"
@@ -958,19 +958,19 @@ function AdHoc({ data, setData }: Iprops) {
                 variant="contained"
                 onClick={(e) => createxlsxFile(e)}
                 sx={{
-                  background: "#fff",
-                  color: "#06A19B",
+                  background: '#fff',
+                  color: '#06A19B',
                   fontWeight: 600,
-                  padding: "6px 16px",
-                  width: "fit-content",
-                  textTransform: "capitalize",
-                  borderRadius: "8px",
-                  border: "1px solid #06A19B",
-                  marginBottom: "10px",
-                  marginTop: "10px",
-                  boxShadow: "none",
-                  "&:hover": {
-                    boxShadow: "none",
+                  padding: '6px 16px',
+                  width: 'fit-content',
+                  textTransform: 'capitalize',
+                  borderRadius: '8px',
+                  border: '1px solid #06A19B',
+                  marginBottom: '10px',
+                  marginTop: '10px',
+                  boxShadow: 'none',
+                  '&:hover': {
+                    boxShadow: 'none',
                   },
                 }}
               >
@@ -984,18 +984,18 @@ function AdHoc({ data, setData }: Iprops) {
                 variant="contained"
                 onClick={CreateFeedPredictionPDF}
                 sx={{
-                  background: "#fff",
-                  color: "#06A19B",
+                  background: '#fff',
+                  color: '#06A19B',
                   fontWeight: 600,
-                  padding: "6px 16px",
-                  width: "fit-content",
-                  textTransform: "capitalize",
-                  borderRadius: "8px",
-                  border: "1px solid #06A19B",
-                  marginBottom: "10px",
-                  boxShadow: "none",
-                  "&:hover": {
-                    boxShadow: "none",
+                  padding: '6px 16px',
+                  width: 'fit-content',
+                  textTransform: 'capitalize',
+                  borderRadius: '8px',
+                  border: '1px solid #06A19B',
+                  marginBottom: '10px',
+                  boxShadow: 'none',
+                  '&:hover': {
+                    boxShadow: 'none',
                   },
                 }}
               >
@@ -1009,17 +1009,17 @@ function AdHoc({ data, setData }: Iprops) {
                 onClick={resetAdHocData}
                 variant="contained"
                 sx={{
-                  background: "#fff",
-                  color: "#06A19B",
+                  background: '#fff',
+                  color: '#06A19B',
                   fontWeight: 600,
-                  padding: "6px 16px",
-                  width: "fit-content",
-                  textTransform: "capitalize",
-                  borderRadius: "8px",
-                  border: "1px solid #06A19B",
-                  boxShadow: "none",
-                  "&:hover": {
-                    boxShadow: "none",
+                  padding: '6px 16px',
+                  width: 'fit-content',
+                  textTransform: 'capitalize',
+                  borderRadius: '8px',
+                  border: '1px solid #06A19B',
+                  boxShadow: 'none',
+                  '&:hover': {
+                    boxShadow: 'none',
                   },
                 }}
               >

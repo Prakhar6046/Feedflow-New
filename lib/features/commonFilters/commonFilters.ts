@@ -1,14 +1,12 @@
-import { averagesDropdown } from "@/app/_lib/utils";
-import { BreadcrumInitialState, Sort } from "@/app/_typeModels/breadcrum";
-import { RootState } from "@/lib/store";
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import dayjs from "dayjs";
-import { ActionPathnameNormalizer } from "next/dist/server/future/normalizers/request/action";
+import { averagesDropdown } from '@/app/_lib/utils';
+import { RootState } from '@/lib/store';
+import { createSlice } from '@reduxjs/toolkit';
+import dayjs from 'dayjs';
 
 const initialState: any = {
   allFarms: [],
   allUnits: [],
-  startDate: dayjs().startOf("year").format(),
+  startDate: dayjs().startOf('year').format(),
   endDate: dayjs().format(),
   selectedDropDownYears: [new Date().getFullYear()],
   selectedDropDownfarms: [],
@@ -17,7 +15,7 @@ const initialState: any = {
 };
 
 const commonFilterSlice = createSlice({
-  name: "commonFilter",
+  name: 'commonFilter',
   initialState,
   reducers: {
     setAllFarms: (state, action) => {
@@ -38,7 +36,7 @@ const commonFilterSlice = createSlice({
     handleYearChange: (state, action) => {
       const value = action.payload;
       state.selectedDropDownYears =
-        typeof value === "string" ? value.split(",") : value;
+        typeof value === 'string' ? value.split(',') : value;
     },
     setSelectedAverage: (state, action) => {
       state.selectedAverage = action.payload;
@@ -54,7 +52,7 @@ const commonFilterSlice = createSlice({
       state.selectedDropDownUnits = [];
       state.selectedDropDownYears = [new Date().getFullYear()];
       state.selectedAverage = averagesDropdown[0];
-      state.startDate = dayjs().startOf("year").format();
+      state.startDate = dayjs().startOf('year').format();
       state.endDate = dayjs().format();
     },
   },

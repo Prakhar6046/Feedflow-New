@@ -1,14 +1,14 @@
-"use client";
-import Paper from "@mui/material/Paper";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import { getCookie } from "cookies-next";
-import { usePathname, useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+'use client';
+import Paper from '@mui/material/Paper';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import { getCookie } from 'cookies-next';
+import { usePathname, useRouter } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
 // import { getUsers } from "../_lib/action";
 import {
   Box,
@@ -19,21 +19,19 @@ import {
   Stack,
   TableSortLabel,
   Typography,
-} from "@mui/material";
-import Image from "next/image";
-import toast from "react-hot-toast";
-import { getLocalItem, readableDate } from "../_lib/utils";
-import { SingleUser } from "../_typeModels/User";
+} from '@mui/material';
+import Image from 'next/image';
+import toast from 'react-hot-toast';
+import { getLocalItem, readableDate } from '../_lib/utils';
+import { SingleUser } from '../_typeModels/User';
 import {
-  organisationTableHead,
-  organisationTableHeadMember,
   usersTableHead,
   usersTableHeadMember,
-} from "../_lib/utils/tableHeadData";
-import { breadcrumsAction } from "@/lib/features/breadcrum/breadcrumSlice";
-import { useAppDispatch } from "@/lib/hooks";
-import { useAppSelector } from "@/lib/hooks";
-import { selectRole } from "@/lib/features/user/userSlice";
+} from '../_lib/utils/tableHeadData';
+import { breadcrumsAction } from '@/lib/features/breadcrum/breadcrumSlice';
+import { useAppDispatch } from '@/lib/hooks';
+import { useAppSelector } from '@/lib/hooks';
+import { selectRole } from '@/lib/features/user/userSlice';
 
 interface Props {
   users: SingleUser[];
@@ -52,23 +50,23 @@ export default function UserTable({ users, permissions }: Props) {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const pathName = usePathname();
-  const loggedUser = getCookie("logged-user");
+  const loggedUser = getCookie('logged-user');
   const loginUser: SingleUser = loggedUser && JSON.parse(loggedUser);
   const role = useAppSelector(selectRole);
   const [selectedUser, setSelectedUser] = useState<SingleUser | null>(null);
   const [sortedUser, setSortedUsers] = useState<SingleUser[] | null>(null);
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
-    null
+    null,
   );
-  const [order, setOrder] = React.useState("asc");
-  const [orderBy, setOrderBy] = React.useState("name");
-  const [sortDataFromLocal, setSortDataFromLocal] = React.useState<any>("");
+  const [order, setOrder] = React.useState('asc');
+  const [orderBy, setOrderBy] = React.useState('name');
+  const [sortDataFromLocal, setSortDataFromLocal] = React.useState<any>('');
   const handleEdit = (user: any) => {
     router.push(`/dashboard/user/${selectedUser?.id}`);
   };
   const handleClick = (
     event: React.MouseEvent<HTMLButtonElement>,
-    user: SingleUser
+    user: SingleUser,
   ) => {
     setAnchorEl(event.currentTarget);
     setSelectedUser(user);
@@ -81,11 +79,11 @@ export default function UserTable({ users, permissions }: Props) {
   const handleInviteUser = async () => {
     setAnchorEl(null);
     if (selectedUser) {
-      const token = getCookie("auth-token");
-      const response = await fetch("/api/invite/user", {
-        method: "POST",
+      const token = getCookie('auth-token');
+      const response = await fetch('/api/invite/user', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
@@ -105,9 +103,9 @@ export default function UserTable({ users, permissions }: Props) {
   const handleDeleteUser = async () => {
     setAnchorEl(null);
     if (selectedUser) {
-      const token = getCookie("auth-token");
-      const response = await fetch("/api/users", {
-        method: "DELETE",
+      const token = getCookie('auth-token');
+      const response = await fetch('/api/users', {
+        method: 'DELETE',
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -138,7 +136,7 @@ export default function UserTable({ users, permissions }: Props) {
     return (
       <TableHead>
         <TableRow>
-          {(role === "SUPERADMIN" || permissions
+          {(role === 'SUPERADMIN' || permissions
             ? usersTableHead
             : usersTableHeadMember
           ).map((headCell, idx, headCells) => (
@@ -148,13 +146,13 @@ export default function UserTable({ users, permissions }: Props) {
                 idx === headCells.length - 1
                   ? false
                   : orderBy === headCell.id
-                  ? order
-                  : false
+                    ? order
+                    : false
               }
               sx={{
                 borderBottom: 0,
-                color: "#67737F",
-                background: "#F5F6F8",
+                color: '#67737F',
+                background: '#F5F6F8',
                 fontSize: {
                   md: 16,
                   xs: 14,
@@ -172,7 +170,7 @@ export default function UserTable({ users, permissions }: Props) {
               ) : (
                 <TableSortLabel
                   active={orderBy === headCell.id}
-                  direction={orderBy === headCell.id ? order : "asc"}
+                  direction={orderBy === headCell.id ? order : 'asc'}
                   onClick={createSortHandler(headCell.id)}
                 >
                   {headCell.label}
@@ -186,47 +184,47 @@ export default function UserTable({ users, permissions }: Props) {
   }
   const handleRequestSort = (
     _: React.MouseEvent<HTMLButtonElement> | null,
-    property: string
+    property: string,
   ) => {
-    const isAsc = orderBy === property && order === "asc";
-    setOrder(isAsc ? "desc" : "asc");
+    const isAsc = orderBy === property && order === 'asc';
+    setOrder(isAsc ? 'desc' : 'asc');
 
     setOrderBy(property);
     dispatch(
       breadcrumsAction.handleSort({
-        direction: isAsc ? "desc" : "asc",
+        direction: isAsc ? 'desc' : 'asc',
         column: property,
-      })
+      }),
     );
     if (users) {
       const sortedData = [...users].sort(
         (user1: SingleUser, user2: SingleUser) => {
-          const orderType = order === "asc" ? 1 : -1;
-          if (property === "name") {
+          const orderType = order === 'asc' ? 1 : -1;
+          if (property === 'name') {
             if (user1.name < user2.name) return -1 * orderType;
             if (user1.name > user2.name) return 1 * orderType;
             return 0;
-          } else if (property === "status") {
+          } else if (property === 'status') {
             if (user1.status < user2.status) return -1 * orderType;
             if (user1.status > user2.status) return 1 * orderType;
             return 0;
-          } else if (property === "role") {
+          } else if (property === 'role') {
             if (user1.role < user2.role) return -1 * orderType;
             if (user1.role > user2.role) return 1 * orderType;
             return 0;
-          } else if (property === "organisation") {
+          } else if (property === 'organisation') {
             if (user1.organisation?.name < user2.organisation?.name)
               return -1 * orderType;
             if (user1.organisation?.name > user2.organisation?.name)
               return 1 * orderType;
             return 0;
-          } else if (property === "createdAt") {
+          } else if (property === 'createdAt') {
             if (user1.createdAt < user2.createdAt) return -1 * orderType;
             if (user1.createdAt > user2.createdAt) return 1 * orderType;
             return 0;
           }
           return 0;
-        }
+        },
       );
       setSortedUsers(sortedData);
       // setUsers(sortedData);
@@ -241,32 +239,32 @@ export default function UserTable({ users, permissions }: Props) {
       if (users) {
         const sortedData = [...users].sort(
           (user1: SingleUser, user2: SingleUser) => {
-            const orderType = data.direction === "asc" ? -1 : 1;
-            if (data.column === "name") {
+            const orderType = data.direction === 'asc' ? -1 : 1;
+            if (data.column === 'name') {
               if (user1.name < user2.name) return -1 * orderType;
               if (user1.name > user2.name) return 1 * orderType;
               return 0;
-            } else if (data.column === "status") {
+            } else if (data.column === 'status') {
               if (user1.status < user2.status) return -1 * orderType;
               if (user1.status > user2.status) return 1 * orderType;
               return 0;
-            } else if (data.column === "role") {
+            } else if (data.column === 'role') {
               if (user1.role < user2.role) return -1 * orderType;
               if (user1.role > user2.role) return 1 * orderType;
               return 0;
-            } else if (data.column === "organisation") {
+            } else if (data.column === 'organisation') {
               if (user1.organisation?.name < user2.organisation?.name)
                 return -1 * orderType;
               if (user1.organisation?.name > user2.organisation?.name)
                 return 1 * orderType;
               return 0;
-            } else if (data.column === "createdAt") {
+            } else if (data.column === 'createdAt') {
               if (user1.createdAt < user2.createdAt) return -1 * orderType;
               if (user1.createdAt > user2.createdAt) return 1 * orderType;
               return 0;
             }
             return 0;
-          }
+          },
         );
         setSortedUsers(sortedData);
         // setUsers(sortedData);
@@ -292,16 +290,16 @@ export default function UserTable({ users, permissions }: Props) {
   return (
     <Paper
       sx={{
-        width: "100%",
-        overflow: "hidden",
-        borderRadius: "14px",
-        boxShadow: "0px 0px 16px 5px #0000001A",
+        width: '100%',
+        overflow: 'hidden',
+        borderRadius: '14px',
+        boxShadow: '0px 0px 16px 5px #0000001A',
         mt: 4,
       }}
     >
       <TableContainer
         sx={{
-          maxHeight: "72.5vh",
+          maxHeight: '72.5vh',
         }}
       >
         <Table stickyHeader aria-label="sticky table">
@@ -317,14 +315,14 @@ export default function UserTable({ users, permissions }: Props) {
                   <TableRow
                     key={i}
                     sx={{
-                      "&:last-child td, &:last-child th": { border: 0 },
+                      '&:last-child td, &:last-child th': { border: 0 },
                     }}
                   >
                     <TableCell
                       sx={{
-                        borderBottomColor: "#F5F6F8",
+                        borderBottomColor: '#F5F6F8',
                         borderBottomWidth: 2,
-                        color: "#555555",
+                        color: '#555555',
                         fontWeight: 500,
                         paddingLeft: {
                           lg: 10,
@@ -335,27 +333,27 @@ export default function UserTable({ users, permissions }: Props) {
                       component="th"
                       scope="row"
                     >
-                      <Box display={"flex"} alignItems={"center"} gap={1.5}>
-                        {user?.imageUrl && user?.imageUrl !== "null" ? (
+                      <Box display={'flex'} alignItems={'center'} gap={1.5}>
+                        {user?.imageUrl && user?.imageUrl !== 'null' ? (
                           <Image
                             src={String(user.imageUrl)}
                             width={40}
                             height={40}
                             style={{
-                              borderRadius: "8px",
+                              borderRadius: '8px',
                             }}
                             alt="img not found"
                           />
                         ) : (
                           <Box
-                            display={"flex"}
-                            justifyContent={"center"}
-                            alignItems={"center"}
-                            bgcolor={"rgba(145, 158, 171, 0.24)"}
+                            display={'flex'}
+                            justifyContent={'center'}
+                            alignItems={'center'}
+                            bgcolor={'rgba(145, 158, 171, 0.24)'}
                             sx={{
                               width: 40,
                               height: 40,
-                              borderRadius: "8px",
+                              borderRadius: '8px',
                             }}
                           >
                             <svg
@@ -375,68 +373,68 @@ export default function UserTable({ users, permissions }: Props) {
                           </Box>
                         )}
 
-                        {user?.name ?? ""}
+                        {user?.name ?? ''}
                       </Box>
                     </TableCell>
                     <TableCell
                       sx={{
-                        borderBottomColor: "#F5F6F8",
+                        borderBottomColor: '#F5F6F8',
                         borderBottomWidth: 2,
-                        color: "#555555",
+                        color: '#555555',
                         fontWeight: 500,
                         pl: 0,
                       }}
                     >
-                      {user?.status ?? ""}
+                      {user?.status ?? ''}
                     </TableCell>
                     <TableCell
                       sx={{
-                        borderBottomColor: "#F5F6F8",
+                        borderBottomColor: '#F5F6F8',
                         borderBottomWidth: 2,
-                        color: "#555555",
+                        color: '#555555',
                         fontWeight: 500,
                         pl: 0,
                       }}
                     >
-                      {user?.role ?? ""}
+                      {user?.role ?? ''}
                     </TableCell>
                     <TableCell
                       sx={{
-                        borderBottomColor: "#F5F6F8",
+                        borderBottomColor: '#F5F6F8',
                         borderBottomWidth: 2,
-                        color: "#555555",
+                        color: '#555555',
                         fontWeight: 500,
                         pl: 0,
                       }}
                     >
                       <Box
-                        display={"flex"}
-                        justifyContent={"flex-start"}
-                        alignItems={"center"}
-                        gap={"12px"}
+                        display={'flex'}
+                        justifyContent={'flex-start'}
+                        alignItems={'center'}
+                        gap={'12px'}
                       >
                         {user?.organisation?.imageUrl &&
-                        user?.organisation?.imageUrl !== "null" ? (
+                        user?.organisation?.imageUrl !== 'null' ? (
                           <Image
                             src={String(user.organisation.imageUrl)}
                             width={40}
                             height={40}
                             style={{
-                              borderRadius: "8px",
-                              objectFit: "contain",
+                              borderRadius: '8px',
+                              objectFit: 'contain',
                             }}
                             alt="img not found"
                           />
                         ) : (
                           <Box
-                            display={"flex"}
-                            justifyContent={"center"}
-                            alignItems={"center"}
-                            bgcolor={"rgba(145, 158, 171, 0.24)"}
+                            display={'flex'}
+                            justifyContent={'center'}
+                            alignItems={'center'}
+                            bgcolor={'rgba(145, 158, 171, 0.24)'}
                             sx={{
                               width: 40,
                               height: 40,
-                              borderRadius: "8px",
+                              borderRadius: '8px',
                             }}
                           >
                             <svg
@@ -455,26 +453,26 @@ export default function UserTable({ users, permissions }: Props) {
                             </svg>
                           </Box>
                         )}
-                        {user?.organisation?.name ?? "No Organisation"}
+                        {user?.organisation?.name ?? 'No Organisation'}
                       </Box>
                     </TableCell>
                     <TableCell
                       sx={{
-                        borderBottomColor: "#F5F6F8",
+                        borderBottomColor: '#F5F6F8',
                         borderBottomWidth: 2,
-                        color: "#555555",
+                        color: '#555555',
                         fontWeight: 500,
                         pl: 0,
                       }}
                     >
-                      {readableDate(user?.createdAt) ?? ""}
+                      {readableDate(user?.createdAt) ?? ''}
                     </TableCell>
-                    {(loginUser?.role === "SUPERADMIN" || permissions) && (
+                    {(loginUser?.role === 'SUPERADMIN' || permissions) && (
                       <TableCell
                         sx={{
-                          borderBottomColor: "#F5F6F8",
+                          borderBottomColor: '#F5F6F8',
                           borderBottomWidth: 2,
-                          color: "#555555",
+                          color: '#555555',
                           fontWeight: 500,
                         }}
                         className="cursor-pointer"
@@ -482,15 +480,15 @@ export default function UserTable({ users, permissions }: Props) {
                       >
                         <Button
                           id="basic-button"
-                          aria-controls={open ? "basic-menu" : undefined}
+                          aria-controls={open ? 'basic-menu' : undefined}
                           aria-haspopup="true"
-                          aria-expanded={open ? "true" : undefined}
+                          aria-expanded={open ? 'true' : undefined}
                           onClick={(e) => handleClick(e, user)}
                           className="table-edit-option"
                           sx={{
-                            background: "transparent",
-                            color: "#555555",
-                            boxShadow: "none",
+                            background: 'transparent',
+                            color: '#555555',
+                            boxShadow: 'none',
                           }}
                         >
                           <svg
@@ -512,11 +510,11 @@ export default function UserTable({ users, permissions }: Props) {
                           open={open}
                           onClose={handleClose}
                           MenuListProps={{
-                            "aria-labelledby": "basic-button",
+                            'aria-labelledby': 'basic-button',
                           }}
                           sx={{
-                            position: "absolute",
-                            left: "-10px",
+                            position: 'absolute',
+                            left: '-10px',
                           }}
                         >
                           <MenuItem onClick={handleEdit}>
@@ -544,7 +542,7 @@ export default function UserTable({ users, permissions }: Props) {
 
                           <Divider
                             sx={{
-                              borderColor: "#9797971A",
+                              borderColor: '#9797971A',
                               my: 0.5,
                             }}
                           />
@@ -583,13 +581,13 @@ export default function UserTable({ users, permissions }: Props) {
 
                           <Divider
                             sx={{
-                              borderColor: "#9797971A",
+                              borderColor: '#9797971A',
                               my: 0.5,
                             }}
                           />
                           <MenuItem
                             disabled={
-                              loginUser?.role === "ADMIN" ? true : false
+                              loginUser?.role === 'ADMIN' ? true : false
                             }
                             onClick={handleDeleteUser}
                           >
@@ -627,7 +625,7 @@ export default function UserTable({ users, permissions }: Props) {
               })
             ) : (
               <TableRow>
-                <TableCell colSpan={6} sx={{ textAlign: "center" }}>
+                <TableCell colSpan={6} sx={{ textAlign: 'center' }}>
                   No Data Found
                 </TableCell>
               </TableRow>

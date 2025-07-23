@@ -1,6 +1,6 @@
-import { verifyAndRefreshToken } from "@/app/_lib/auth/verifyAndRefreshToken";
-import prisma from "@/prisma/prisma";
-import { NextRequest, NextResponse } from "next/server";
+import { verifyAndRefreshToken } from '@/app/_lib/auth/verifyAndRefreshToken';
+import prisma from '@/prisma/prisma';
+import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(request: NextRequest) {
   try {
@@ -9,19 +9,19 @@ export async function GET(request: NextRequest) {
       return new NextResponse(
         JSON.stringify({
           status: false,
-          message: "Unauthorized: Token missing or invalid",
+          message: 'Unauthorized: Token missing or invalid',
         }),
-        { status: 401 }
+        { status: 401 },
       );
     }
     const searchParams = request.nextUrl.searchParams;
-    const role = searchParams.get("role");
-    const organisationId = searchParams.get("organisationId");
-    const query = searchParams.get("query");
+    const role = searchParams.get('role');
+    const organisationId = searchParams.get('organisationId');
+    const query = searchParams.get('query');
 
     const feedSupplys = await prisma.feedSupply.findMany({
       where: {
-        ...(role !== "SUPERADMIN"
+        ...(role !== 'SUPERADMIN'
           ? { organisationId: Number(organisationId) }
           : {}),
         AND: [
@@ -29,24 +29,24 @@ export async function GET(request: NextRequest) {
             ? {
                 OR: [
                   {
-                    productName: { contains: query, mode: "insensitive" },
+                    productName: { contains: query, mode: 'insensitive' },
                   },
-                  { productCode: { contains: query, mode: "insensitive" } },
+                  { productCode: { contains: query, mode: 'insensitive' } },
                   {
                     productionIntensity: {
                       contains: query,
-                      mode: "insensitive",
+                      mode: 'insensitive',
                     },
                   },
-                  { feedingPhase: { contains: query, mode: "insensitive" } },
-                  { specie: { contains: query, mode: "insensitive" } },
+                  { feedingPhase: { contains: query, mode: 'insensitive' } },
+                  { specie: { contains: query, mode: 'insensitive' } },
                 ],
               }
             : {},
         ],
       },
       orderBy: {
-        createdAt: "desc", // Sort by createdAt in descending order
+        createdAt: 'desc', // Sort by createdAt in descending order
       },
     });
 
@@ -54,12 +54,12 @@ export async function GET(request: NextRequest) {
       JSON.stringify({
         status: true,
         data: feedSupplys,
-      })
+      }),
     );
   } catch (error) {
     return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 }
+      { error: 'Internal Server Error' },
+      { status: 500 },
     );
   }
 }

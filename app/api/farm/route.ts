@@ -1,20 +1,20 @@
-import prisma from "@/prisma/prisma";
-import { NextRequest, NextResponse } from "next/server";
-import { verifyAndRefreshToken } from "@/app/_lib/auth/verifyAndRefreshToken";
+import prisma from '@/prisma/prisma';
+import { NextRequest, NextResponse } from 'next/server';
+import { verifyAndRefreshToken } from '@/app/_lib/auth/verifyAndRefreshToken';
 
 export const GET = async (request: NextRequest) => {
   const user = await verifyAndRefreshToken(request);
   if (user.status === 401) {
     return NextResponse.json(
-      { status: false, message: "Unauthorized: Token missing or invalid" },
-      { status: 401 }
+      { status: false, message: 'Unauthorized: Token missing or invalid' },
+      { status: 401 },
     );
   }
   const searchParams = request.nextUrl.searchParams;
-  const role = searchParams.get("role");
-  const organisationId = searchParams.get("organisationId");
-  const query = searchParams.get("query");
-  const filter = searchParams.get("filter");
+  const role = searchParams.get('role');
+  const organisationId = searchParams.get('organisationId');
+  const query = searchParams.get('query');
+  const filter = searchParams.get('filter');
 
   try {
     const farms = await prisma.farm.findMany({
@@ -33,21 +33,21 @@ export const GET = async (request: NextRequest) => {
         },
       },
       orderBy: {
-        createdAt: "desc",
+        createdAt: 'desc',
       },
       where: {
-        ...(filter === "true"
+        ...(filter === 'true'
           ? {}
-          : role !== "SUPERADMIN" && organisationId
-          ? { organisationId: Number(organisationId) }
-          : {}),
+          : role !== 'SUPERADMIN' && organisationId
+            ? { organisationId: Number(organisationId) }
+            : {}),
 
         AND: [
           query
             ? {
                 OR: [
                   {
-                    name: { contains: query, mode: "insensitive" },
+                    name: { contains: query, mode: 'insensitive' },
                   },
                 ],
               }

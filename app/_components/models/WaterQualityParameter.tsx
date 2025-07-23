@@ -1,15 +1,14 @@
 import {
-  getCurrentMonth,
   getLocalItem,
   removeLocalItem,
   setLocalItem,
   waterQualityFields,
-} from "@/app/_lib/utils";
-import * as validationPattern from "@/app/_lib/utils/validationPatterns/index";
-import * as validationMessage from "@/app/_lib/utils/validationsMessage/index";
-import { Farm } from "@/app/_typeModels/Farm";
-import { Production } from "@/app/_typeModels/production";
-import { Close as CloseIcon, Margin } from "@mui/icons-material"; // Use Material-UI's Close icon directly
+} from '@/app/_lib/utils';
+import * as validationPattern from '@/app/_lib/utils/validationPatterns/index';
+import * as validationMessage from '@/app/_lib/utils/validationsMessage/index';
+import { Farm } from '@/app/_typeModels/Farm';
+import { Production } from '@/app/_typeModels/production';
+import { Close as CloseIcon } from '@mui/icons-material'; // Use Material-UI's Close icon directly
 import {
   Box,
   Button,
@@ -23,32 +22,31 @@ import {
   Stack,
   TextField,
   Typography,
-} from "@mui/material";
-import MenuItem from "@mui/material/MenuItem";
-import Select from "@mui/material/Select";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
-import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { Dayjs } from "dayjs";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
+} from '@mui/material';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { Dayjs } from 'dayjs';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
 import {
   Controller,
   SubmitHandler,
   useFieldArray,
   useForm,
-} from "react-hook-form";
-import toast from "react-hot-toast";
-import { color } from "framer-motion";
-import { getCookie } from "cookies-next";
+} from 'react-hook-form';
+import toast from 'react-hot-toast';
+import { getCookie } from 'cookies-next';
 const style = {
-  position: "absolute" as "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
+  position: 'absolute' as const,
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
   width: 400,
-  bgcolor: "background.paper",
+  bgcolor: 'background.paper',
   boxShadow: 24,
 };
 
@@ -62,18 +60,18 @@ interface Props {
 
 interface InputTypes {
   water: {
-    id: Number;
-    fishFarm: String;
-    productionUnit: String;
-    waterTemp?: String;
-    DO?: String;
-    TSS?: String;
-    NH4?: String;
-    NO3?: String;
-    NO2?: String;
-    ph?: String;
-    visibility?: String;
-    showDate?: Boolean;
+    id: number;
+    fishFarm: string;
+    productionUnit: string;
+    waterTemp?: string;
+    DO?: string;
+    TSS?: string;
+    NH4?: string;
+    NO3?: string;
+    NO2?: string;
+    ph?: string;
+    visibility?: string;
+    showDate?: boolean;
     date?: Dayjs | null;
   }[];
 }
@@ -87,14 +85,14 @@ const WaterQualityParameter: React.FC<Props> = ({
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathName = usePathname();
-  const isWater = searchParams.get("isWater");
+  const isWater = searchParams.get('isWater');
   const [selectedFarm, setSelectedFarm] = useState<any>(null);
   const [currentfarm, setCurrentFarm] = useState<any>(null);
   const [anchorEl, setAnchorEl] = useState(null);
   const [isApiCallInProgress, setIsApiCallInProgress] =
     useState<boolean>(false);
   const [formData, setFormData] = useState<any>();
-  const token = getCookie("auth-token");
+  const token = getCookie('auth-token');
 
   const {
     register,
@@ -113,18 +111,18 @@ const WaterQualityParameter: React.FC<Props> = ({
     defaultValues: {
       water: [
         {
-          id: "",
-          fishFarm: "",
-          productionUnit: "",
-          DO: "",
-          NH4: "",
-          NO2: "",
-          NO3: "",
-          ph: "",
-          TSS: "",
-          visibility: "",
-          waterTemp: "",
-          date: "",
+          id: 0,
+          fishFarm: '',
+          productionUnit: '',
+          DO: '',
+          NH4: '',
+          NO2: '',
+          NO3: '',
+          ph: '',
+          TSS: '',
+          visibility: '',
+          waterTemp: '',
+          date: '',
           showDate: false,
         },
       ],
@@ -133,9 +131,9 @@ const WaterQualityParameter: React.FC<Props> = ({
 
   const { fields, append, remove } = useFieldArray({
     control,
-    name: "water",
+    name: 'water',
   });
-  const watchedFields = watch("water");
+  const watchedFields = watch('water');
 
   const onSubmit: SubmitHandler<InputTypes> = async (data) => {
     // Prevent API call if one is already in progress
@@ -144,11 +142,11 @@ const WaterQualityParameter: React.FC<Props> = ({
 
     try {
       if (data.water[1]) {
-        let updatedData = data.water.map((data) => {
+        const updatedData = data.water.map((data) => {
           if (data.date) {
             return {
               ...data,
-              date: data.date.format("YYYY-MM-DDTHH:mm:ssZ[Z]"),
+              date: data.date.format('YYYY-MM-DDTHH:mm:ssZ[Z]'),
             };
           } else {
             return data;
@@ -160,10 +158,10 @@ const WaterQualityParameter: React.FC<Props> = ({
           listData: updatedData.filter((_, idx) => idx !== 0),
         };
 
-        const response = await fetch("/api/production/mange/waterQuality", {
-          method: "POST",
+        const response = await fetch('/api/production/mange/waterQuality', {
+          method: 'POST',
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify(payload),
@@ -174,31 +172,31 @@ const WaterQualityParameter: React.FC<Props> = ({
           toast.dismiss();
           toast.success(res.message);
           setOpen(false);
-          router.push("/dashboard/production");
-          removeLocalItem("productionData");
-          removeLocalItem("formData");
+          router.push('/dashboard/production');
+          removeLocalItem('productionData');
+          removeLocalItem('formData');
           reset();
           router.refresh();
         }
       }
     } catch (error) {
-      toast.error("Something went wrong. Please try again.");
+      toast.error('Something went wrong. Please try again.');
     } finally {
       setIsApiCallInProgress(false);
     }
   };
 
   const handleClose = () => {
-    const firstObject = getValues("water")[0];
+    const firstObject = getValues('water')[0];
     // Reset the form and keep the first object intact
     reset({
       water: [firstObject], // Keep only the first object
     });
     setOpen(false);
     const params = new URLSearchParams(searchParams);
-    params.delete("isWater");
-    removeLocalItem("productionData");
-    removeLocalItem("formData");
+    params.delete('isWater');
+    removeLocalItem('productionData');
+    removeLocalItem('formData');
     router.replace(`/dashboard/production`);
   };
   const openAnchor = Boolean(anchorEl);
@@ -211,14 +209,14 @@ const WaterQualityParameter: React.FC<Props> = ({
         id: selectedProduction?.id,
         fishFarm: selectedProduction?.fishFarmId,
         productionUnit: selectedProduction?.productionUnitId,
-        DO: "",
-        NH4: "",
-        NO2: "",
-        NO3: "",
-        ph: "",
-        TSS: "",
-        visibility: "",
-        waterTemp: "",
+        DO: '',
+        NH4: '',
+        NO2: '',
+        NO3: '',
+        ph: '',
+        TSS: '',
+        visibility: '',
+        waterTemp: '',
         date: null,
         showDate: true,
       });
@@ -237,13 +235,13 @@ const WaterQualityParameter: React.FC<Props> = ({
           productionUnit: selectedProduction.productionUnitId,
         },
       ];
-      setValue("water", data);
+      setValue('water', data);
     }
     if (formData) {
-      setValue("water", formData);
+      setValue('water', formData);
     }
     setSelectedFarm(
-      formData ? formData[0]?.fishFarm : selectedProduction?.fishFarmId
+      formData ? formData[0]?.fishFarm : selectedProduction?.fishFarmId,
     ); // Set the selected farm when manager is selected
   }, [selectedProduction, formData]);
 
@@ -291,59 +289,59 @@ const WaterQualityParameter: React.FC<Props> = ({
         }
       };
 
-      const totalWaterTempAvg = updatedWaterTemp / totalFields("waterTemp");
+      const totalWaterTempAvg = updatedWaterTemp / totalFields('waterTemp');
 
-      const totalDo = updatedDo / totalFields("DO");
-      const totalTSS = updatedTSS / totalFields("TSS");
-      const totalNH4 = updatedNH4 / totalFields("NH4");
-      const totalNO3 = updatedNO3 / totalFields("NO3");
-      const totalNO2 = updatedNO2 / totalFields("NO2");
-      const totalPH = updatedPH / totalFields("ph");
-      const totalVisibility = updatedVisibility / totalFields("visibility");
+      const totalDo = updatedDo / totalFields('DO');
+      const totalTSS = updatedTSS / totalFields('TSS');
+      const totalNH4 = updatedNH4 / totalFields('NH4');
+      const totalNO3 = updatedNO3 / totalFields('NO3');
+      const totalNO2 = updatedNO2 / totalFields('NO2');
+      const totalPH = updatedPH / totalFields('ph');
+      const totalVisibility = updatedVisibility / totalFields('visibility');
       // Set the index 0 values after calculation
       setValue(
         `water.0.waterTemp`,
-        totalWaterTempAvg ? totalWaterTempAvg.toFixed(2).toString() : ""
+        totalWaterTempAvg ? totalWaterTempAvg.toFixed(2).toString() : '',
       );
-      setValue(`water.0.DO`, totalDo ? totalDo.toFixed(2).toString() : "");
-      setValue(`water.0.TSS`, totalTSS ? totalTSS.toFixed(2).toString() : "");
-      setValue(`water.0.NH4`, totalNH4 ? totalNH4.toFixed(2).toString() : "");
-      setValue(`water.0.NO3`, totalNO3 ? totalNO3.toFixed(2).toString() : "");
-      setValue(`water.0.NO2`, totalNO2 ? totalNO2.toFixed(2).toString() : "");
-      setValue(`water.0.ph`, totalPH ? totalPH.toFixed(2).toString() : "");
+      setValue(`water.0.DO`, totalDo ? totalDo.toFixed(2).toString() : '');
+      setValue(`water.0.TSS`, totalTSS ? totalTSS.toFixed(2).toString() : '');
+      setValue(`water.0.NH4`, totalNH4 ? totalNH4.toFixed(2).toString() : '');
+      setValue(`water.0.NO3`, totalNO3 ? totalNO3.toFixed(2).toString() : '');
+      setValue(`water.0.NO2`, totalNO2 ? totalNO2.toFixed(2).toString() : '');
+      setValue(`water.0.ph`, totalPH ? totalPH.toFixed(2).toString() : '');
       setValue(
         `water.0.visibility`,
-        totalVisibility ? totalVisibility.toFixed(2).toString() : ""
+        totalVisibility ? totalVisibility.toFixed(2).toString() : '',
       );
 
       // Clear validation errors for index 0 fields
       clearErrors([
-        "water.0.waterTemp",
-        "water.0.DO",
-        "water.0.TSS",
-        "water.0.NH4",
-        "water.0.NO3",
-        "water.0.NO2",
-        "water.0.ph",
-        "water.0.visibility",
+        'water.0.waterTemp',
+        'water.0.DO',
+        'water.0.TSS',
+        'water.0.NH4',
+        'water.0.NO3',
+        'water.0.NO2',
+        'water.0.ph',
+        'water.0.visibility',
       ]);
     }
     if (watchedFields[0]?.id) {
       if (isWater && watchedFields[0]?.id) {
-        setLocalItem("formData", watchedFields);
+        setLocalItem('formData', watchedFields);
       } else {
-        removeLocalItem("formData");
+        removeLocalItem('formData');
       }
     }
   }, [
-    watchedFields.map((field) => field.waterTemp).join(","),
-    watchedFields.map((field) => field.DO).join(","),
-    watchedFields.map((field) => field.TSS).join(","),
-    watchedFields.map((field) => field.NH4).join(","),
-    watchedFields.map((field) => field.NO3).join(","),
-    watchedFields.map((field) => field.NO2).join(","),
-    watchedFields.map((field) => field.ph).join(","),
-    watchedFields.map((field) => field.visibility).join(","),
+    watchedFields.map((field) => field.waterTemp).join(','),
+    watchedFields.map((field) => field.DO).join(','),
+    watchedFields.map((field) => field.TSS).join(','),
+    watchedFields.map((field) => field.NH4).join(','),
+    watchedFields.map((field) => field.NO3).join(','),
+    watchedFields.map((field) => field.NO2).join(','),
+    watchedFields.map((field) => field.ph).join(','),
+    watchedFields.map((field) => field.visibility).join(','),
     setValue,
     clearErrors,
     isWater,
@@ -352,8 +350,8 @@ const WaterQualityParameter: React.FC<Props> = ({
   ]);
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const data = getLocalItem("formData");
+    if (typeof window !== 'undefined') {
+      const data = getLocalItem('formData');
       setFormData(data);
     }
   }, []);
@@ -371,9 +369,9 @@ const WaterQualityParameter: React.FC<Props> = ({
           <IconButton
             onClick={handleClose}
             sx={{
-              color: "inherit",
-              background: "transparent",
-              margin: "2",
+              color: 'inherit',
+              background: 'transparent',
+              margin: '2',
             }}
           >
             <CloseIcon />
@@ -382,9 +380,9 @@ const WaterQualityParameter: React.FC<Props> = ({
         <Typography
           variant="h5"
           sx={{
-            fontWeight: "bold",
-            marginLeft: "50px",
-            marginBottom: "10px",
+            fontWeight: 'bold',
+            marginLeft: '50px',
+            marginBottom: '10px',
           }}
         >
           Water Average
@@ -396,12 +394,12 @@ const WaterQualityParameter: React.FC<Props> = ({
               <Box paddingInline={4} key={item.id}>
                 <Box
                   sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    height: "100%",
-                    position: "relative",
-                    bottom: "10px",
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    height: '100%',
+                    position: 'relative',
+                    bottom: '10px',
                     gap: 1.5,
                   }}
                 >
@@ -409,9 +407,9 @@ const WaterQualityParameter: React.FC<Props> = ({
                     sx={{
                       overflowY: {
                         // xl: "visible",
-                        xs: "auto",
+                        xs: 'auto',
                       },
-                      width: "97%",
+                      width: '97%',
                       pb: 2,
                     }}
                   >
@@ -420,7 +418,7 @@ const WaterQualityParameter: React.FC<Props> = ({
                       spacing={2}
                       className="grid-margin"
                       sx={{
-                        flexWrap: "nowrap",
+                        flexWrap: 'nowrap',
                       }}
                     >
                       {!item.showDate && (
@@ -428,19 +426,19 @@ const WaterQualityParameter: React.FC<Props> = ({
                           item
                           xs
                           sx={{
-                            width: "fit-content",
+                            width: 'fit-content',
                             minWidth: 135,
                           }}
                         >
-                          <Box width={"100%"}>
+                          <Box width={'100%'}>
                             <FormControl
                               fullWidth
                               className={`form-input ${
-                                idx === 0 && "selected"
+                                idx === 0 && 'selected'
                               }`}
                               focused
                             >
-                              <InputLabel sx={{ fontWeight: "medium" }} id="">
+                              <InputLabel sx={{ fontWeight: 'medium' }} id="">
                                 Fish Farm *
                               </InputLabel>
                               <Select
@@ -460,11 +458,11 @@ const WaterQualityParameter: React.FC<Props> = ({
                                   setSelectedFarm(selectedFishFarm); // Set selected farm for this specific entry
                                   setValue(
                                     `water.${idx}.fishFarm`,
-                                    selectedFishFarm
+                                    selectedFishFarm,
                                   ); // Set the value for this fishFarm
-                                  setValue(`water.${idx}.productionUnit`, ""); // Reset production unit for the current entry
+                                  setValue(`water.${idx}.productionUnit`, ''); // Reset production unit for the current entry
                                 }}
-                                value={getValues(`water.${idx}.fishFarm`) || ""} // Ensure only the current entry is updated
+                                value={getValues(`water.${idx}.fishFarm`) || ''} // Ensure only the current entry is updated
                               >
                                 {farms?.map((farm: Farm, i) => (
                                   <MenuItem value={String(farm.id)} key={i}>
@@ -478,7 +476,7 @@ const WaterQualityParameter: React.FC<Props> = ({
                                 errors?.water[idx] &&
                                 errors?.water[idx].fishFarm &&
                                 errors?.water[idx].fishFarm.type ===
-                                  "required" && (
+                                  'required' && (
                                   <Typography
                                     variant="body2"
                                     color="red"
@@ -503,17 +501,17 @@ const WaterQualityParameter: React.FC<Props> = ({
                           xs
                           item
                           sx={{
-                            width: "fit-content",
+                            width: 'fit-content',
                             minWidth: 135,
                           }}
                         >
-                          <Box width={"100%"}>
+                          <Box width={'100%'}>
                             <FormControl
                               focused
                               fullWidth
                               className="form-input selected"
                             >
-                              <InputLabel sx={{ fontWeight: "medium" }} id="">
+                              <InputLabel sx={{ fontWeight: 'medium' }} id="">
                                 Production Unit *
                               </InputLabel>
                               <Select
@@ -521,24 +519,24 @@ const WaterQualityParameter: React.FC<Props> = ({
                                 id="production-unit-select"
                                 label="Production Unit*"
                                 sx={{
-                                  width: "100%",
+                                  width: '100%',
                                   zIndex: 999,
-                                  "& .MuiInputLabel-root": {
-                                    transition: "all 0.2s ease",
-                                    maxWidth: "60%",
-                                    overflow: "hidden",
-                                    whiteSpace: "nowrap",
-                                    textOverflow: "ellipsis",
-                                    height: "auto",
+                                  '& .MuiInputLabel-root': {
+                                    transition: 'all 0.2s ease',
+                                    maxWidth: '60%',
+                                    overflow: 'hidden',
+                                    whiteSpace: 'nowrap',
+                                    textOverflow: 'ellipsis',
+                                    height: 'auto',
                                   },
-                                  "&:focus-within .MuiInputLabel-root": {
-                                    transform: "translate(10px, -9px)",
-                                    fontSize: "0.75rem",
-                                    color: "primary.main",
-                                    backgroundColor: "#fff",
-                                    maxWidth: "100%",
-                                    overflow: "visible",
-                                    textOverflow: "unset",
+                                  '&:focus-within .MuiInputLabel-root': {
+                                    transform: 'translate(10px, -9px)',
+                                    fontSize: '0.75rem',
+                                    color: 'primary.main',
+                                    backgroundColor: '#fff',
+                                    maxWidth: '100%',
+                                    overflow: 'visible',
+                                    textOverflow: 'unset',
                                   },
                                 }}
                                 // disabled={
@@ -564,13 +562,14 @@ const WaterQualityParameter: React.FC<Props> = ({
                                   shrink: watch(`water.${idx}.productionUnit`),
                                 }}
                                 value={
-                                  watch(`water.${idx}.productionUnit`) || ""
+                                  watch(`water.${idx}.productionUnit`) || ''
                                 }
                               >
                                 {(() => {
-                                  let selectedFarm = farms?.find(
+                                  const selectedFarm = farms?.find(
                                     (farm) =>
-                                      farm.id === watch(`water.${idx}.fishFarm`)
+                                      farm.id ===
+                                      watch(`water.${idx}.fishFarm`),
                                   );
 
                                   return selectedFarm ? (
@@ -582,7 +581,7 @@ const WaterQualityParameter: React.FC<Props> = ({
                                         >
                                           {unit.name}
                                         </MenuItem>
-                                      )
+                                      ),
                                     )
                                   ) : (
                                     <MenuItem value="" disabled>
@@ -614,13 +613,13 @@ const WaterQualityParameter: React.FC<Props> = ({
                           xs
                           item
                           sx={{
-                            width: "fit-content",
+                            width: 'fit-content',
                             minWidth: 270,
                           }}
                         >
                           <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <Box className="tablecell">
-                              <DemoContainer components={["DateTimePicker"]}>
+                              <DemoContainer components={['DateTimePicker']}>
                                 <Controller
                                   name={`water.${idx}.date`}
                                   control={control}
@@ -631,7 +630,7 @@ const WaterQualityParameter: React.FC<Props> = ({
                                         label="Current Date * "
                                         className="form-input custom-date-time"
                                         sx={{
-                                          width: "100%",
+                                          width: '100%',
                                         }}
                                         onChange={(date) => {
                                           if (date && date.isValid()) {
@@ -659,23 +658,23 @@ const WaterQualityParameter: React.FC<Props> = ({
                         xs
                         item
                         sx={{
-                          width: "fit-content",
+                          width: 'fit-content',
                           minWidth: 135,
                         }}
                       >
                         <Box
-                          display={"flex"}
+                          display={'flex'}
                           gap={2}
-                          alignItems={"center"}
-                          position={"relative"}
+                          alignItems={'center'}
+                          position={'relative'}
                         >
                           <TextField
                             label="Water Temperature *"
                             type="text"
-                            className={`form-input ${idx === 0 && "selected"}`}
+                            className={`form-input ${idx === 0 && 'selected'}`}
                             // disabled={idx === 0 ? true : false}
 
-                            sx={{ width: "100%" }}
+                            sx={{ width: '100%' }}
                             {...register(`water.${idx}.waterTemp`, {
                               pattern: validationPattern.numbersWithDot,
                               maxLength: 10,
@@ -687,16 +686,16 @@ const WaterQualityParameter: React.FC<Props> = ({
                             variant="body2"
                             color="#555555AC"
                             sx={{
-                              color: `${idx === 0 ? "black" : "grey"}`,
-                              fontWeight: "medium",
-                              position: "absolute",
+                              color: `${idx === 0 ? 'black' : 'grey'}`,
+                              fontWeight: 'medium',
+                              position: 'absolute',
                               right: 6,
-                              top: "50%",
-                              transform: "translate(-6px, -50%)",
-                              backgroundColor: "#fff",
+                              top: '50%',
+                              transform: 'translate(-6px, -50%)',
+                              backgroundColor: '#fff',
                               height: 30,
-                              display: "grid",
-                              placeItems: "center",
+                              display: 'grid',
+                              placeItems: 'center',
                               zIndex: 1,
                               pl: 1,
                             }}
@@ -709,7 +708,7 @@ const WaterQualityParameter: React.FC<Props> = ({
                           errors.water &&
                           errors.water[idx] &&
                           errors.water[idx].waterTemp &&
-                          errors.water[idx].waterTemp.type === "pattern" && (
+                          errors.water[idx].waterTemp.type === 'pattern' && (
                             <Typography
                               variant="body2"
                               color="red"
@@ -723,7 +722,7 @@ const WaterQualityParameter: React.FC<Props> = ({
                           errors.water &&
                           errors.water[idx] &&
                           errors.water[idx].waterTemp &&
-                          errors.water[idx].waterTemp.type === "maxLength" && (
+                          errors.water[idx].waterTemp.type === 'maxLength' && (
                             <Typography
                               variant="body2"
                               color="red"
@@ -738,42 +737,42 @@ const WaterQualityParameter: React.FC<Props> = ({
                         xs
                         item
                         sx={{
-                          width: "fit-content",
+                          width: 'fit-content',
                           minWidth: 135,
                         }}
                       >
                         <Box
-                          display={"flex"}
+                          display={'flex'}
                           gap={2}
-                          alignItems={"center"}
-                          position={"relative"}
+                          alignItems={'center'}
+                          position={'relative'}
                         >
                           <TextField
                             focused
                             label="Dissolved Oxygen(DO) *"
                             type="text"
-                            className={`form-input ${idx === 0 && "selected"}`}
+                            className={`form-input ${idx === 0 && 'selected'}`}
                             // disabled={idx === 0 ? true : false}
                             {...register(`water.${idx}.DO`, {
                               pattern: validationPattern.numbersWithDot,
                               maxLength: 10,
                             })}
-                            sx={{ width: "100%" }}
+                            sx={{ width: '100%' }}
                           />
 
                           <Typography
                             variant="body2"
                             color="#555555AC"
                             sx={{
-                              position: "absolute",
-                              color: `${idx === 0 ? "black" : "grey"}`,
+                              position: 'absolute',
+                              color: `${idx === 0 ? 'black' : 'grey'}`,
                               right: 6,
-                              top: "50%",
-                              transform: "translate(-6px, -50%)",
-                              backgroundColor: "#fff",
+                              top: '50%',
+                              transform: 'translate(-6px, -50%)',
+                              backgroundColor: '#fff',
                               height: 30,
-                              display: "grid",
-                              placeItems: "center",
+                              display: 'grid',
+                              placeItems: 'center',
                               zIndex: 1,
                               pl: 1,
                             }}
@@ -786,7 +785,7 @@ const WaterQualityParameter: React.FC<Props> = ({
                           errors.water &&
                           errors.water[idx] &&
                           errors.water[idx].DO &&
-                          errors.water[idx].DO.type === "pattern" && (
+                          errors.water[idx].DO.type === 'pattern' && (
                             <Typography
                               variant="body2"
                               color="red"
@@ -800,7 +799,7 @@ const WaterQualityParameter: React.FC<Props> = ({
                           errors.water &&
                           errors.water[idx] &&
                           errors.water[idx].DO &&
-                          errors.water[idx].DO.type === "maxLength" && (
+                          errors.water[idx].DO.type === 'maxLength' && (
                             <Typography
                               variant="body2"
                               color="red"
@@ -815,23 +814,23 @@ const WaterQualityParameter: React.FC<Props> = ({
                         xs
                         item
                         sx={{
-                          width: "fit-content",
+                          width: 'fit-content',
                           minWidth: 135,
                         }}
                       >
                         <Box
-                          display={"flex"}
+                          display={'flex'}
                           gap={2}
-                          alignItems={"center"}
-                          position={"relative"}
+                          alignItems={'center'}
+                          position={'relative'}
                         >
                           <TextField
                             focused
                             label="Total Suspended Solids (TSS) *"
                             type="text"
-                            className={`form-input ${idx === 0 && "selected"}`}
+                            className={`form-input ${idx === 0 && 'selected'}`}
                             // disabled={idx === 0 ? true : false}
-                            sx={{ width: "100%" }}
+                            sx={{ width: '100%' }}
                             {...register(`water.${idx}.TSS`, {
                               pattern: validationPattern.numbersWithDot,
                               maxLength: 10,
@@ -842,15 +841,15 @@ const WaterQualityParameter: React.FC<Props> = ({
                             variant="body2"
                             color="#555555AC"
                             sx={{
-                              color: `${idx === 0 ? "black" : "grey"}`,
-                              position: "absolute",
+                              color: `${idx === 0 ? 'black' : 'grey'}`,
+                              position: 'absolute',
                               right: 6,
-                              top: "50%",
-                              transform: "translate(-6px, -50%)",
-                              backgroundColor: "#fff",
+                              top: '50%',
+                              transform: 'translate(-6px, -50%)',
+                              backgroundColor: '#fff',
                               height: 30,
-                              display: "grid",
-                              placeItems: "center",
+                              display: 'grid',
+                              placeItems: 'center',
                               zIndex: 1,
                               pl: 1,
                             }}
@@ -863,7 +862,7 @@ const WaterQualityParameter: React.FC<Props> = ({
                           errors.water &&
                           errors.water[idx] &&
                           errors.water[idx].TSS &&
-                          errors.water[idx].TSS.type === "pattern" && (
+                          errors.water[idx].TSS.type === 'pattern' && (
                             <Typography
                               variant="body2"
                               color="red"
@@ -877,7 +876,7 @@ const WaterQualityParameter: React.FC<Props> = ({
                           errors.water &&
                           errors.water[idx] &&
                           errors.water[idx].TSS &&
-                          errors.water[idx].TSS.type === "maxLength" && (
+                          errors.water[idx].TSS.type === 'maxLength' && (
                             <Typography
                               variant="body2"
                               color="red"
@@ -893,23 +892,23 @@ const WaterQualityParameter: React.FC<Props> = ({
                         xs
                         item
                         sx={{
-                          width: "fit-content",
+                          width: 'fit-content',
                           minWidth: 135,
                         }}
                       >
                         <Box
-                          display={"flex"}
+                          display={'flex'}
                           gap={2}
-                          alignItems={"center"}
-                          position={"relative"}
+                          alignItems={'center'}
+                          position={'relative'}
                         >
                           <TextField
                             focused
                             label="Ammonia (NH₄) *"
                             type="text"
-                            className={`form-input ${idx === 0 && "selected"}`}
+                            className={`form-input ${idx === 0 && 'selected'}`}
                             // disabled={idx === 0 ? true : false}
-                            sx={{ width: "100%" }}
+                            sx={{ width: '100%' }}
                             {...register(`water.${idx}.NH4`, {
                               pattern: validationPattern.numbersWithDot,
                               maxLength: 10,
@@ -920,15 +919,15 @@ const WaterQualityParameter: React.FC<Props> = ({
                             variant="body2"
                             color="#555555AC"
                             sx={{
-                              color: `${idx === 0 ? "black" : "grey"}`,
-                              position: "absolute",
+                              color: `${idx === 0 ? 'black' : 'grey'}`,
+                              position: 'absolute',
                               right: 6,
-                              top: "50%",
-                              transform: "translate(-6px, -50%)",
-                              backgroundColor: "#fff",
+                              top: '50%',
+                              transform: 'translate(-6px, -50%)',
+                              backgroundColor: '#fff',
                               height: 30,
-                              display: "grid",
-                              placeItems: "center",
+                              display: 'grid',
+                              placeItems: 'center',
                               zIndex: 1,
                               pl: 1,
                             }}
@@ -940,7 +939,7 @@ const WaterQualityParameter: React.FC<Props> = ({
                           errors.water &&
                           errors.water[idx] &&
                           errors.water[idx].NH4 &&
-                          errors.water[idx].NH4.type === "pattern" && (
+                          errors.water[idx].NH4.type === 'pattern' && (
                             <Typography
                               variant="body2"
                               color="red"
@@ -954,7 +953,7 @@ const WaterQualityParameter: React.FC<Props> = ({
                           errors.water &&
                           errors.water[idx] &&
                           errors.water[idx].NH4 &&
-                          errors.water[idx].NH4.type === "maxLength" && (
+                          errors.water[idx].NH4.type === 'maxLength' && (
                             <Typography
                               variant="body2"
                               color="red"
@@ -969,23 +968,23 @@ const WaterQualityParameter: React.FC<Props> = ({
                         xs
                         item
                         sx={{
-                          width: "fit-content",
+                          width: 'fit-content',
                           minWidth: 135,
                         }}
                       >
                         <Box
-                          display={"flex"}
+                          display={'flex'}
                           gap={2}
-                          alignItems={"center"}
-                          position={"relative"}
+                          alignItems={'center'}
+                          position={'relative'}
                         >
                           <TextField
                             focused
                             label="Nitrate (NO₃⁻) *"
                             type="text"
-                            className={`form-input ${idx === 0 && "selected"}`}
+                            className={`form-input ${idx === 0 && 'selected'}`}
                             // disabled={idx === 0 ? true : false}
-                            sx={{ width: "100%" }}
+                            sx={{ width: '100%' }}
                             {...register(`water.${idx}.NO3`, {
                               pattern: validationPattern.numbersWithDot,
                               maxLength: 10,
@@ -996,15 +995,15 @@ const WaterQualityParameter: React.FC<Props> = ({
                             variant="body2"
                             color="#555555AC"
                             sx={{
-                              color: `${idx === 0 ? "black" : "grey"}`,
-                              position: "absolute",
+                              color: `${idx === 0 ? 'black' : 'grey'}`,
+                              position: 'absolute',
                               right: 6,
-                              top: "50%",
-                              transform: "translate(-6px, -50%)",
-                              backgroundColor: "#fff",
+                              top: '50%',
+                              transform: 'translate(-6px, -50%)',
+                              backgroundColor: '#fff',
                               height: 30,
-                              display: "grid",
-                              placeItems: "center",
+                              display: 'grid',
+                              placeItems: 'center',
                               zIndex: 1,
                               pl: 1,
                             }}
@@ -1017,7 +1016,7 @@ const WaterQualityParameter: React.FC<Props> = ({
                           errors.water &&
                           errors.water[idx] &&
                           errors.water[idx].NO3 &&
-                          errors.water[idx].NO3.type === "pattern" && (
+                          errors.water[idx].NO3.type === 'pattern' && (
                             <Typography
                               variant="body2"
                               color="red"
@@ -1031,7 +1030,7 @@ const WaterQualityParameter: React.FC<Props> = ({
                           errors.water &&
                           errors.water[idx] &&
                           errors.water[idx].NO3 &&
-                          errors.water[idx].NO3.type === "maxLength" && (
+                          errors.water[idx].NO3.type === 'maxLength' && (
                             <Typography
                               variant="body2"
                               color="red"
@@ -1046,23 +1045,23 @@ const WaterQualityParameter: React.FC<Props> = ({
                         xs
                         item
                         sx={{
-                          width: "fit-content",
+                          width: 'fit-content',
                           minWidth: 135,
                         }}
                       >
                         <Box
-                          display={"flex"}
+                          display={'flex'}
                           gap={2}
-                          alignItems={"center"}
-                          position={"relative"}
+                          alignItems={'center'}
+                          position={'relative'}
                         >
                           <TextField
                             focused
                             label="Nitrite (NO₂⁻) *"
                             type="text"
-                            className={`form-input ${idx === 0 && "selected"}`}
+                            className={`form-input ${idx === 0 && 'selected'}`}
                             // disabled={idx === 0 ? true : false}
-                            sx={{ width: "100%" }}
+                            sx={{ width: '100%' }}
                             {...register(`water.${idx}.NO2`, {
                               pattern: validationPattern.numbersWithDot,
                               maxLength: 10,
@@ -1073,15 +1072,15 @@ const WaterQualityParameter: React.FC<Props> = ({
                             variant="body2"
                             color="#555555AC"
                             sx={{
-                              color: `${idx === 0 ? "black" : "grey"}`,
-                              position: "absolute",
+                              color: `${idx === 0 ? 'black' : 'grey'}`,
+                              position: 'absolute',
                               right: 6,
-                              top: "50%",
-                              transform: "translate(-6px, -50%)",
-                              backgroundColor: "#fff",
+                              top: '50%',
+                              transform: 'translate(-6px, -50%)',
+                              backgroundColor: '#fff',
                               height: 30,
-                              display: "grid",
-                              placeItems: "center",
+                              display: 'grid',
+                              placeItems: 'center',
                               zIndex: 1,
                               pl: 1,
                             }}
@@ -1094,7 +1093,7 @@ const WaterQualityParameter: React.FC<Props> = ({
                           errors.water &&
                           errors.water[idx] &&
                           errors.water[idx].NO2 &&
-                          errors.water[idx].NO2.type === "pattern" && (
+                          errors.water[idx].NO2.type === 'pattern' && (
                             <Typography
                               variant="body2"
                               color="red"
@@ -1108,7 +1107,7 @@ const WaterQualityParameter: React.FC<Props> = ({
                           errors.water &&
                           errors.water[idx] &&
                           errors.water[idx].NO2 &&
-                          errors.water[idx].NO2.type === "maxLength" && (
+                          errors.water[idx].NO2.type === 'maxLength' && (
                             <Typography
                               variant="body2"
                               color="red"
@@ -1123,23 +1122,23 @@ const WaterQualityParameter: React.FC<Props> = ({
                         xs
                         item
                         sx={{
-                          width: "fit-content",
+                          width: 'fit-content',
                           minWidth: 135,
                         }}
                       >
                         <Box
-                          display={"flex"}
+                          display={'flex'}
                           gap={2}
-                          alignItems={"center"}
-                          position={"relative"}
+                          alignItems={'center'}
+                          position={'relative'}
                         >
                           <TextField
                             focused
                             label="pH *"
                             type="text"
-                            className={`form-input ${idx === 0 && "selected"}`}
+                            className={`form-input ${idx === 0 && 'selected'}`}
                             // disabled={idx === 0 ? true : false}
-                            sx={{ width: "100%" }}
+                            sx={{ width: '100%' }}
                             {...register(`water.${idx}.ph`, {
                               pattern: validationPattern.numbersWithDot,
                               maxLength: 10,
@@ -1151,7 +1150,7 @@ const WaterQualityParameter: React.FC<Props> = ({
                           errors.water &&
                           errors.water[idx] &&
                           errors.water[idx].ph &&
-                          errors.water[idx].ph.type === "pattern" && (
+                          errors.water[idx].ph.type === 'pattern' && (
                             <Typography
                               variant="body2"
                               color="red"
@@ -1165,7 +1164,7 @@ const WaterQualityParameter: React.FC<Props> = ({
                           errors.water &&
                           errors.water[idx] &&
                           errors.water[idx].ph &&
-                          errors.water[idx].ph.type === "maxLength" && (
+                          errors.water[idx].ph.type === 'maxLength' && (
                             <Typography
                               variant="body2"
                               color="red"
@@ -1180,23 +1179,23 @@ const WaterQualityParameter: React.FC<Props> = ({
                         xs
                         item
                         sx={{
-                          width: "fit-content",
+                          width: 'fit-content',
                           minWidth: 135,
                         }}
                       >
                         <Box
-                          display={"flex"}
+                          display={'flex'}
                           gap={2}
-                          alignItems={"center"}
-                          position={"relative"}
+                          alignItems={'center'}
+                          position={'relative'}
                         >
                           <TextField
                             focused
                             label="Visibility *"
                             type="text"
-                            className={`form-input ${idx === 0 && "selected"}`}
+                            className={`form-input ${idx === 0 && 'selected'}`}
                             // disabled={idx === 0 ? true : false}
-                            sx={{ width: "100%" }}
+                            sx={{ width: '100%' }}
                             {...register(`water.${idx}.visibility`, {
                               pattern: validationPattern.numbersWithDot,
                               maxLength: 10,
@@ -1207,15 +1206,15 @@ const WaterQualityParameter: React.FC<Props> = ({
                             variant="body2"
                             color="#555555AC"
                             sx={{
-                              color: `${idx === 0 ? "black" : "grey"}`,
-                              position: "absolute",
+                              color: `${idx === 0 ? 'black' : 'grey'}`,
+                              position: 'absolute',
                               right: 6,
-                              top: "50%",
-                              transform: "translate(-6px, -50%)",
-                              backgroundColor: "#fff",
+                              top: '50%',
+                              transform: 'translate(-6px, -50%)',
+                              backgroundColor: '#fff',
                               height: 30,
-                              display: "grid",
-                              placeItems: "center",
+                              display: 'grid',
+                              placeItems: 'center',
                               zIndex: 1,
                               pl: 1,
                             }}
@@ -1228,7 +1227,7 @@ const WaterQualityParameter: React.FC<Props> = ({
                           errors.water &&
                           errors.water[idx] &&
                           errors.water[idx].visibility &&
-                          errors.water[idx].visibility.type === "pattern" && (
+                          errors.water[idx].visibility.type === 'pattern' && (
                             <Typography
                               variant="body2"
                               color="red"
@@ -1242,7 +1241,7 @@ const WaterQualityParameter: React.FC<Props> = ({
                           errors.water &&
                           errors.water[idx] &&
                           errors.water[idx].visibility &&
-                          errors.water[idx].visibility.type === "maxLength" && (
+                          errors.water[idx].visibility.type === 'maxLength' && (
                             <Typography
                               variant="body2"
                               color="red"
@@ -1257,23 +1256,23 @@ const WaterQualityParameter: React.FC<Props> = ({
                   </Stack>
 
                   <Box
-                    display={"flex"}
-                    alignItems={"center"}
-                    justifyContent={"center"}
-                    position={"relative"}
+                    display={'flex'}
+                    alignItems={'center'}
+                    justifyContent={'center'}
+                    position={'relative'}
                     top="90%"
                   >
                     <Box
-                      display={"flex"}
-                      justifyContent={"center"}
-                      alignItems={"center"}
+                      display={'flex'}
+                      justifyContent={'center'}
+                      alignItems={'center'}
                       width={50}
                       sx={{
-                        visibility: idx === 0 ? "hidden" : "",
-                        cursor: "pointer",
+                        visibility: idx === 0 ? 'hidden' : '',
+                        cursor: 'pointer',
                         width: {
                           // lg: 150,
-                          xs: "auto",
+                          xs: 'auto',
                         },
                       }}
                       onClick={() => remove(idx)}
@@ -1301,21 +1300,21 @@ const WaterQualityParameter: React.FC<Props> = ({
                     <Divider
                       orientation="vertical"
                       sx={{
-                        height: "100%",
-                        borderBottom: "2px solid #E6E7E9 !important",
-                        borderRight: "none !important",
-                        width: "100%",
-                        marginLeft: "12px",
-                        paddingBlock: "10px",
-                        marginBottom: "20px",
+                        height: '100%',
+                        borderBottom: '2px solid #E6E7E9 !important',
+                        borderRight: 'none !important',
+                        width: '100%',
+                        marginLeft: '12px',
+                        paddingBlock: '10px',
+                        marginBottom: '20px',
                       }}
                     />
                     <Typography
                       variant="h5"
                       sx={{
-                        fontWeight: "bold",
-                        marginLeft: "20px",
-                        marginBottom: "10px",
+                        fontWeight: 'bold',
+                        marginLeft: '20px',
+                        marginBottom: '10px',
                       }}
                     >
                       Sampling
@@ -1329,10 +1328,10 @@ const WaterQualityParameter: React.FC<Props> = ({
           <Box
             display="flex"
             justifyContent="flex-end"
-            alignItems={"flex-end"}
+            alignItems={'flex-end'}
             gap="10px"
             padding={3}
-            margin={"40px"}
+            margin={'40px'}
           >
             <Button
               className=""
@@ -1340,17 +1339,17 @@ const WaterQualityParameter: React.FC<Props> = ({
               variant="contained"
               onClick={handleClick}
               sx={{
-                background: "#06A19B",
-                fontWeight: "bold",
-                padding: "8px 20px",
+                background: '#06A19B',
+                fontWeight: 'bold',
+                padding: '8px 20px',
                 width: {
-                  xs: "50%",
-                  lg: "fit-content",
+                  xs: '50%',
+                  lg: 'fit-content',
                 },
-                textTransform: "capitalize",
-                borderRadius: "12px",
+                textTransform: 'capitalize',
+                borderRadius: '12px',
 
-                marginBlock: "10px",
+                marginBlock: '10px',
               }}
             >
               Add Row
@@ -1361,7 +1360,7 @@ const WaterQualityParameter: React.FC<Props> = ({
               open={openAnchor}
               onClose={handleCloseAnchor}
               MenuListProps={{
-                "aria-labelledby": "basic-button",
+                'aria-labelledby': 'basic-button',
               }}
             >
               {waterQualityFields.map((field, i) => {
@@ -1391,17 +1390,17 @@ const WaterQualityParameter: React.FC<Props> = ({
                   : true
               }
               sx={{
-                background: "#06A19B",
-                fontWeight: "bold",
-                padding: "8px 20px",
+                background: '#06A19B',
+                fontWeight: 'bold',
+                padding: '8px 20px',
                 width: {
-                  xs: "50%",
-                  lg: "fit-content",
+                  xs: '50%',
+                  lg: 'fit-content',
                 },
-                textTransform: "capitalize",
-                borderRadius: "12px",
+                textTransform: 'capitalize',
+                borderRadius: '12px',
 
-                marginBlock: "10px",
+                marginBlock: '10px',
               }}
             >
               Save

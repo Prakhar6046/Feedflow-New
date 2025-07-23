@@ -1,6 +1,6 @@
-"use client";
-import * as validationMessage from "@/app/_lib/utils/validationsMessage/index";
-import { FeedSupplier } from "@/app/_typeModels/Organization";
+'use client';
+import * as validationMessage from '@/app/_lib/utils/validationsMessage/index';
+import { FeedSupplier } from '@/app/_typeModels/Organization';
 import {
   Box,
   Button,
@@ -9,66 +9,74 @@ import {
   Select,
   TextField,
   Typography,
-} from "@mui/material";
-import { getCookie } from "cookies-next";
-import { NextPage } from "next";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import toast from "react-hot-toast";
+} from '@mui/material';
+import { getCookie } from 'cookies-next';
+import { NextPage } from 'next';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { Controller, SubmitHandler, useForm } from 'react-hook-form';
+import toast from 'react-hot-toast';
 // import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 const fields = [
-  { name: "ProductSupplier", label: "Product Supplier *", type: "select" },
-  { name: "brandName", label: "Brand Name *", type: "text" },
-  { name: "productName", label: "Product Name *", type: "text" },
-  { name: "productFormat", label: "Product Format *", type: "text" },
-  { name: "particleSize", label: "Particle Size *", type: "string" },
-  { name: "fishSizeG", label: "Fish Size (g) *", type: "number" },
-  { name: "nutritionalClass", label: "Nutritional Class *", type: "text" },
-  { name: "nutritionalPurpose", label: "Nutritional Purpose *", type: "text" },
-  { name: "suitableSpecies", label: "Suitable Species *", type: "text" },
+  { name: 'ProductSupplier', label: 'Product Supplier *', type: 'select' },
+  { name: 'brandName', label: 'Brand Name *', type: 'text' },
+  { name: 'productName', label: 'Product Name *', type: 'text' },
+  { name: 'productFormat', label: 'Product Format *', type: 'text' },
+  { name: 'particleSize', label: 'Particle Size *', type: 'string' },
+  { name: 'fishSizeG', label: 'Fish Size (g) *', type: 'number' },
+  { name: 'nutritionalClass', label: 'Nutritional Class *', type: 'text' },
+  { name: 'nutritionalPurpose', label: 'Nutritional Purpose *', type: 'text' },
+  { name: 'suitableSpecies', label: 'Suitable Species *', type: 'text' },
   {
-    name: "suitabilityAnimalSize",
-    label: "Suitability: Animal Size *",
-    type: "text",
-  },
-  { name: "productionIntensity", label: "Production Intensity *", type: "text" },
-  { name: "suitabilityUnit", label: "Suitability Unit *", type: "text" },
-  { name: "feedingPhase", label: "Feeding Phase *", type: "text" },
-  { name: "lifeStage", label: "Life Stage *", type: "text" },
-  { name: "shelfLifeMonths", label: "Shelf Life (months) *", type: "number" },
-  { name: "feedCost", label: "Feed Cost *", type: "number" },
-  { name: "feedIngredients", label: "Feed Ingredients *", type: "text" },
-  { name: "moistureGPerKg", label: "Moisture (g/kg) *", type: "number" },
-  { name: "crudeProteinGPerKg", label: "Crude Protein (g/kg) *", type: "number" },
-  { name: "crudeFatGPerKg", label: "Crude Fat (g/kg) *", type: "number" },
-  { name: "crudeFiberGPerKg", label: "Crude Fiber (g/kg) *", type: "number" },
-  { name: "crudeAshGPerKg", label: "Crude Ash (g/kg) *", type: "number" },
-  { name: "nfe", label: "NFE *", type: "number" },
-  { name: "calciumGPerKg", label: "Calcium (g/kg) *", type: "number" },
-  { name: "phosphorusGPerKg", label: "Phosphorus (g/kg) *", type: "number" },
-  {
-    name: "carbohydratesGPerKg",
-    label: "Carbohydrates (g/kg) *",
-    type: "number",
+    name: 'suitabilityAnimalSize',
+    label: 'Suitability: Animal Size *',
+    type: 'text',
   },
   {
-    name: "metabolizableEnergy",
-    label: "Metabolizable Energy *",
-    type: "number",
+    name: 'productionIntensity',
+    label: 'Production Intensity *',
+    type: 'text',
   },
-  { name: "feedingGuide", label: "Feeding Guide *", type: "text" },
-  { name: "geCoeffCP", label: "GE Coeff CP *", type: "number" },
-  { name: "geCoeffCF", label: "GE Coeff CF *", type: "number" },
-  { name: "geCoeffNFE", label: "GE Coeff NFE *", type: "number" },
-  { name: "ge", label: "GE *", type: "number" },
-  { name: "digCP", label: "Dig CP *", type: "number" },
-  { name: "digCF", label: "Dig CF *", type: "number" },
-  { name: "digNFE", label: "Dig NFE *", type: "number" },
-  { name: "deCP", label: "DE CP *", type: "number" },
-  { name: "deCF", label: "DE CF *", type: "number" },
-  { name: "deNFE", label: "DE NFE *", type: "number" },
-  { name: "de", label: "DE *", type: "number" },
+  { name: 'suitabilityUnit', label: 'Suitability Unit *', type: 'text' },
+  { name: 'feedingPhase', label: 'Feeding Phase *', type: 'text' },
+  { name: 'lifeStage', label: 'Life Stage *', type: 'text' },
+  { name: 'shelfLifeMonths', label: 'Shelf Life (months) *', type: 'number' },
+  { name: 'feedCost', label: 'Feed Cost *', type: 'number' },
+  { name: 'feedIngredients', label: 'Feed Ingredients *', type: 'text' },
+  { name: 'moistureGPerKg', label: 'Moisture (g/kg) *', type: 'number' },
+  {
+    name: 'crudeProteinGPerKg',
+    label: 'Crude Protein (g/kg) *',
+    type: 'number',
+  },
+  { name: 'crudeFatGPerKg', label: 'Crude Fat (g/kg) *', type: 'number' },
+  { name: 'crudeFiberGPerKg', label: 'Crude Fiber (g/kg) *', type: 'number' },
+  { name: 'crudeAshGPerKg', label: 'Crude Ash (g/kg) *', type: 'number' },
+  { name: 'nfe', label: 'NFE *', type: 'number' },
+  { name: 'calciumGPerKg', label: 'Calcium (g/kg) *', type: 'number' },
+  { name: 'phosphorusGPerKg', label: 'Phosphorus (g/kg) *', type: 'number' },
+  {
+    name: 'carbohydratesGPerKg',
+    label: 'Carbohydrates (g/kg) *',
+    type: 'number',
+  },
+  {
+    name: 'metabolizableEnergy',
+    label: 'Metabolizable Energy *',
+    type: 'number',
+  },
+  { name: 'feedingGuide', label: 'Feeding Guide *', type: 'text' },
+  { name: 'geCoeffCP', label: 'GE Coeff CP *', type: 'number' },
+  { name: 'geCoeffCF', label: 'GE Coeff CF *', type: 'number' },
+  { name: 'geCoeffNFE', label: 'GE Coeff NFE *', type: 'number' },
+  { name: 'ge', label: 'GE *', type: 'number' },
+  { name: 'digCP', label: 'Dig CP *', type: 'number' },
+  { name: 'digCF', label: 'Dig CF *', type: 'number' },
+  { name: 'digNFE', label: 'Dig NFE *', type: 'number' },
+  { name: 'deCP', label: 'DE CP *', type: 'number' },
+  { name: 'deCF', label: 'DE CF *', type: 'number' },
+  { name: 'deNFE', label: 'DE NFE *', type: 'number' },
+  { name: 'de', label: 'DE *', type: 'number' },
 ];
 
 interface Props {
@@ -80,7 +88,7 @@ type FeedFormFields = {
 };
 const NewFeedLibarary: NextPage<Props> = ({ feedSuppliers }) => {
   const router = useRouter();
-  const loggedUser: any = getCookie("logged-user");
+  const loggedUser: any = getCookie('logged-user');
   const [isApiCallInProgress, setIsApiCallInProgress] =
     useState<boolean>(false);
   const {
@@ -89,18 +97,18 @@ const NewFeedLibarary: NextPage<Props> = ({ feedSuppliers }) => {
     reset,
     control,
     formState: { errors },
-  } = useForm<FeedFormFields>({ mode: "onChange" });
+  } = useForm<FeedFormFields>({ mode: 'onChange' });
 
   const createPayload = (formData: Record<string, any>) => {
     const payload: Record<string, any> = {};
 
     fields.forEach((field) => {
       const value = formData[field.name];
-      if (field.type === "number") {
+      if (field.type === 'number') {
         payload[field.name] =
-          value !== "" && value !== null ? Number(value) : null;
+          value !== '' && value !== null ? Number(value) : null;
       } else {
-        payload[field.name] = value ?? "";
+        payload[field.name] = value ?? '';
       }
     });
 
@@ -116,13 +124,13 @@ const NewFeedLibarary: NextPage<Props> = ({ feedSuppliers }) => {
 
     try {
       const loggedUserData = JSON.parse(loggedUser);
-      const token = getCookie("auth-token");
+      const token = getCookie('auth-token');
 
       if (payload) {
-        const response = await fetch("/api/feed-store", {
-          method: "POST",
+        const response = await fetch('/api/feed-store', {
+          method: 'POST',
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({
@@ -133,12 +141,12 @@ const NewFeedLibarary: NextPage<Props> = ({ feedSuppliers }) => {
         const res = await response.json();
         if (res.status) {
           toast.success(res.message);
-          router.push("/dashboard/feedSupply/libarary");
+          router.push('/dashboard/feedSupply/libarary');
           reset();
         }
       }
     } catch (error) {
-      toast.error("Something went wrong. Please try again.");
+      toast.error('Something went wrong. Please try again.');
     } finally {
       setIsApiCallInProgress(false);
     }
@@ -149,7 +157,7 @@ const NewFeedLibarary: NextPage<Props> = ({ feedSuppliers }) => {
       <Grid container spacing={2}>
         {fields.map((field, i) => (
           <Grid item xs={12} sm={6} key={field.name}>
-            {field?.type === "select" ? (
+            {field?.type === 'select' ? (
               <Controller
                 name={field.name}
                 control={control}
@@ -163,7 +171,7 @@ const NewFeedLibarary: NextPage<Props> = ({ feedSuppliers }) => {
                       feedSuppliers
                         .filter((s: any) => selected.includes(s.id))
                         .map((s: any) => s.name)
-                        .join(", ")
+                        .join(', ')
                     }
                   >
                     {feedSuppliers.map((supplier: any) => (
@@ -188,7 +196,7 @@ const NewFeedLibarary: NextPage<Props> = ({ feedSuppliers }) => {
               />
             )}
 
-            {errors[field.name]?.type === "required" && (
+            {errors[field.name]?.type === 'required' && (
               <Typography fontSize={13} color="red">
                 {validationMessage.required}
               </Typography>
@@ -198,9 +206,9 @@ const NewFeedLibarary: NextPage<Props> = ({ feedSuppliers }) => {
 
         <Grid item xs={12}>
           <Box
-            display={"flex"}
-            justifyContent={"flex-end"}
-            alignItems={"center"}
+            display={'flex'}
+            justifyContent={'flex-end'}
+            alignItems={'center'}
             gap={3}
             mt={3}
           >
@@ -209,14 +217,14 @@ const NewFeedLibarary: NextPage<Props> = ({ feedSuppliers }) => {
               variant="contained"
               disabled={isApiCallInProgress}
               sx={{
-                color: "#fff",
-                background: "#06A19B",
+                color: '#fff',
+                background: '#06A19B',
                 fontWeight: 600,
-                padding: "6px 16px",
-                width: "fit-content",
-                textTransform: "capitalize",
-                borderRadius: "8px",
-                border: "1px solid #06A19B",
+                padding: '6px 16px',
+                width: 'fit-content',
+                textTransform: 'capitalize',
+                borderRadius: '8px',
+                border: '1px solid #06A19B',
               }}
             >
               Add feed

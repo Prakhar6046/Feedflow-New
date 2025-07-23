@@ -1,32 +1,32 @@
-"use client";
-import Loader from "@/app/_components/Loader";
-import { deleteImage, handleUpload } from "@/app/_lib/utils";
-import * as validationPattern from "@/app/_lib/utils/validationPatterns/index";
-import * as validationMessage from "@/app/_lib/utils/validationsMessage/index";
-import { SingleUser, UserEditFormInputs } from "@/app/_typeModels/User";
-import EyeClosed from "@/public/static/img/icons/ic-eye-closed.svg";
-import EyeOpened from "@/public/static/img/icons/ic-eye-open.svg";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import { Box, Grid, Stack, TextField, Typography } from "@mui/material";
-import Button from "@mui/material/Button";
-import { styled } from "@mui/material/styles";
-import { getCookie } from "cookies-next";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
-import toast from "react-hot-toast";
-import UserPermission from "./UserPermission";
+'use client';
+import Loader from '@/app/_components/Loader';
+import { deleteImage, handleUpload } from '@/app/_lib/utils';
+import * as validationPattern from '@/app/_lib/utils/validationPatterns/index';
+import * as validationMessage from '@/app/_lib/utils/validationsMessage/index';
+import { SingleUser, UserEditFormInputs } from '@/app/_typeModels/User';
+import EyeClosed from '@/public/static/img/icons/ic-eye-closed.svg';
+import EyeOpened from '@/public/static/img/icons/ic-eye-open.svg';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import { Box, Grid, Stack, TextField, Typography } from '@mui/material';
+import Button from '@mui/material/Button';
+import { styled } from '@mui/material/styles';
+import { getCookie } from 'cookies-next';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import toast from 'react-hot-toast';
+import UserPermission from './UserPermission';
 
-const VisuallyHiddenInput = styled("input")({
-  clip: "rect(0 0 0 0)",
-  clipPath: "inset(50%)",
+const VisuallyHiddenInput = styled('input')({
+  clip: 'rect(0 0 0 0)',
+  clipPath: 'inset(50%)',
   height: 1,
-  overflow: "hidden",
-  position: "absolute",
+  overflow: 'hidden',
+  position: 'absolute',
   bottom: 0,
   left: 0,
-  whiteSpace: "nowrap",
+  whiteSpace: 'nowrap',
   width: 1,
 });
 
@@ -35,13 +35,13 @@ type Iprops = {
 };
 function EditUser({ userId }: Iprops) {
   const router = useRouter();
-  const loggedUser: any = getCookie("logged-user");
+  const loggedUser: any = getCookie('logged-user');
   const [isApiCallInProgress, setIsApiCallInProgress] =
     useState<boolean>(false);
   const [userData, setUserData] = useState<{ data: SingleUser }>();
   const [loading, setLoading] = useState<boolean>(false);
-  const [currentUserId, setCurrentUserId] = useState<Number>();
-  const [profilePic, setProfilePic] = useState<String>();
+  const [currentUserId, setCurrentUserId] = useState<number>();
+  const [profilePic, setProfilePic] = useState<string>();
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [showConfirmPassword, setshowConfirmPassword] =
     useState<boolean>(false);
@@ -55,20 +55,20 @@ function EditUser({ userId }: Iprops) {
     watch,
     control,
     formState: { errors },
-  } = useForm<UserEditFormInputs>({ mode: "onTouched" });
+  } = useForm<UserEditFormInputs>({ mode: 'onTouched' });
   const onSubmit: SubmitHandler<UserEditFormInputs> = async (data) => {
     // Prevent API call if one is already in progress
     if (isApiCallInProgress) return;
     setIsApiCallInProgress(true);
     try {
-      const token = getCookie("auth-token");
+      const token = getCookie('auth-token');
       const payload = {
         name: data.name,
         email: data.email,
         organisationId: userData?.data?.organisationId,
         imageUrl: profilePic,
         permissions: data.permissions,
-        password: "",
+        password: '',
       };
 
       if (data.password) {
@@ -76,9 +76,9 @@ function EditUser({ userId }: Iprops) {
       }
 
       const res = await fetch(`/api/users/${userId}`, {
-        method: "PUT",
+        method: 'PUT',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(payload),
@@ -87,12 +87,12 @@ function EditUser({ userId }: Iprops) {
       if (res.ok) {
         const updatedUser = await res.json();
         toast.success(updatedUser.message);
-        router.push("/dashboard/user");
-        resetField("confirmPassword");
-        resetField("password");
+        router.push('/dashboard/user');
+        resetField('confirmPassword');
+        resetField('password');
       }
     } catch (error) {
-      toast.error("Something went wrong. Please try again.");
+      toast.error('Something went wrong. Please try again.');
     } finally {
       setIsApiCallInProgress(false);
     }
@@ -102,9 +102,9 @@ function EditUser({ userId }: Iprops) {
     if (userId) {
       const user = async () => {
         setLoading(true);
-        const token = getCookie("auth-token");
+        const token = getCookie('auth-token');
         const data: any = await fetch(`/api/users/${userId}`, {
-          method: "GET",
+          method: 'GET',
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -125,16 +125,16 @@ function EditUser({ userId }: Iprops) {
 
   useEffect(() => {
     if (userData) {
-      setValue("name", String(userData?.data?.name));
-      setValue("image", String(userData?.data?.imageUrl));
-      setValue("email", String(userData?.data?.email));
-      setValue("organisation", String(userData?.data?.organisation?.name));
+      setValue('name', String(userData?.data?.name));
+      setValue('image', String(userData?.data?.imageUrl));
+      setValue('email', String(userData?.data?.email));
+      setValue('organisation', String(userData?.data?.organisation?.name));
       setValue(
-        "organisationType",
-        String(userData?.data?.organisation?.organisationType)
+        'organisationType',
+        String(userData?.data?.organisation?.organisationType),
       );
-      setValue("organisationId", userData?.data?.organisationId);
-      setValue("permissions", userData?.data?.permissions);
+      setValue('organisationId', userData?.data?.organisationId);
+      setValue('permissions', userData?.data?.permissions);
 
       setProfilePic(userData?.data?.imageUrl);
 
@@ -142,7 +142,7 @@ function EditUser({ userId }: Iprops) {
       const farmPermissions = (userData?.data?.organisation?.Farm || []).map(
         (farm) => {
           const found = userData?.data?.permissions?.farms?.find(
-            (p) => String(p.farmId) === String(farm.id)
+            (p) => String(p.farmId) === String(farm.id),
           );
           return {
             farmId: farm.id,
@@ -155,19 +155,19 @@ function EditUser({ userId }: Iprops) {
             createReport: found?.createReport ?? false,
             feedingPlans: found?.feedingPlans ?? false,
           };
-        }
+        },
       );
 
-      setValue("permissions.farms", farmPermissions);
+      setValue('permissions.farms', farmPermissions);
 
       // Set non-farm permissions individually
       if (userData?.data?.permissions) {
         Object.keys(userData?.data?.permissions).forEach((key) => {
-          if (key !== "farms") {
+          if (key !== 'farms') {
             // Only set value if the key is a valid field in the form schema
             setValue(
               `permissions.${key}` as any,
-              (userData?.data?.permissions as Record<string, any>)[key]
+              (userData?.data?.permissions as Record<string, any>)[key],
             );
           }
         });
@@ -184,8 +184,8 @@ function EditUser({ userId }: Iprops) {
       <form onSubmit={handleSubmit(onSubmit)}>
         <Stack
           sx={{
-            borderRadius: "14px",
-            boxShadow: "0px 0px 5px #C5C5C5",
+            borderRadius: '14px',
+            boxShadow: '0px 0px 5px #C5C5C5',
             mt: 4,
             padding: 3,
           }}
@@ -197,21 +197,21 @@ function EditUser({ userId }: Iprops) {
               md={5}
               xs={12}
               sx={{
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "flex-start",
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'flex-start',
                 gap: {
                   // sm: 5,
                   // xs: 3,
                 },
-                alignItems: "center",
+                alignItems: 'center',
               }}
             >
               <Typography
                 variant="h6"
                 color="rgb(99, 115, 129)"
                 fontSize={14}
-                alignSelf={"flex-start"}
+                alignSelf={'flex-start'}
               >
                 Profile Picture
               </Typography>
@@ -219,7 +219,7 @@ function EditUser({ userId }: Iprops) {
                 component="label"
                 style={{
                   backgroundImage: `url(${profilePic})`,
-                  backgroundSize: "100% 100%",
+                  backgroundSize: '100% 100%',
                 }}
                 role={undefined}
                 variant="contained"
@@ -227,27 +227,27 @@ function EditUser({ userId }: Iprops) {
                 startIcon={profilePic ? null : <CloudUploadIcon />}
                 className="upload-file-input1"
                 sx={{
-                  textTransform: "unset",
+                  textTransform: 'unset',
                   fontSize: 12,
                   width: 140,
                   height: 140,
                   borderRadius: 100,
-                  border: "7px solid white",
-                  outline: "1px dashed rgba(145, 158, 171, 0.32)",
-                  backgroundColor: "rgb(244, 246, 248)",
-                  boxShadow: "none",
-                  color: "rgb(99, 115, 129)",
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  position: "relative",
+                  border: '7px solid white',
+                  outline: '1px dashed rgba(145, 158, 171, 0.32)',
+                  backgroundColor: 'rgb(244, 246, 248)',
+                  boxShadow: 'none',
+                  color: 'rgb(99, 115, 129)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  position: 'relative',
                 }}
               >
-                {profilePic ? "" : "Upload photo"}
+                {profilePic ? '' : 'Upload photo'}
                 <VisuallyHiddenInput
                   type="file"
-                  {...register("image", {
+                  {...register('image', {
                     onChange: (e) =>
                       handleUpload(e.target.files, profilePic, setProfilePic),
                   })}
@@ -256,27 +256,27 @@ function EditUser({ userId }: Iprops) {
               </Button>
               {profilePic && (
                 <Box
-                  display={"flex"}
+                  display={'flex'}
                   gap="10px"
-                  alignItems={"center"}
-                  my={"10px"}
+                  alignItems={'center'}
+                  my={'10px'}
                 >
                   <Button
                     component="label"
                     variant="contained"
                     sx={{
-                      background: "#06A19B",
-                      color: "#fff",
+                      background: '#06A19B',
+                      color: '#fff',
                       fontWeight: 600,
-                      padding: "4px 10px",
-                      textTransform: "capitalize",
-                      borderRadius: "10px",
-                      border: "1px solid #06A19B",
+                      padding: '4px 10px',
+                      textTransform: 'capitalize',
+                      borderRadius: '10px',
+                      border: '1px solid #06A19B',
                       // position: "absolute",
                       // bottom: "1%",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "2px",
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '2px',
                     }}
                   >
                     <svg
@@ -293,12 +293,12 @@ function EditUser({ userId }: Iprops) {
                     Edit
                     <VisuallyHiddenInput
                       type="file"
-                      {...register("image", {
+                      {...register('image', {
                         onChange: (e) =>
                           handleUpload(
                             e.target.files,
                             profilePic,
-                            setProfilePic
+                            setProfilePic,
                           ),
                       })}
                       accept=".jpg,.jpeg,.png,.svg"
@@ -313,29 +313,29 @@ function EditUser({ userId }: Iprops) {
                       deleteImage(
                         {
                           id: userData?.data?.id,
-                          type: "user",
+                          type: 'user',
                           image: userData?.data?.image,
                         },
-                        setProfilePic
+                        setProfilePic,
                       )
                     }
                     sx={{
-                      background: "#D71818",
+                      background: '#D71818',
                       fontWeight: 600,
-                      padding: "4px",
-                      width: "fit-content",
-                      textTransform: "capitalize",
-                      borderRadius: "10px",
-                      color: "#fff",
-                      border: "1px solid #D71818",
-                      boxShadow: "none",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      gap: "2px",
+                      padding: '4px',
+                      width: 'fit-content',
+                      textTransform: 'capitalize',
+                      borderRadius: '10px',
+                      color: '#fff',
+                      border: '1px solid #D71818',
+                      boxShadow: 'none',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '2px',
                     }}
                   >
-                    {" "}
+                    {' '}
                     <svg
                       width="14"
                       height="14"
@@ -361,21 +361,21 @@ function EditUser({ userId }: Iprops) {
                 </Box>
               )}
               <Box
-                display={"flex"}
-                justifyContent={"center"}
-                alignItems={"center"}
-                flexDirection={"row"}
+                display={'flex'}
+                justifyContent={'center'}
+                alignItems={'center'}
+                flexDirection={'row'}
                 sx={{
                   width: {
-                    md: "90%",
-                    xs: "100%",
+                    md: '90%',
+                    xs: '100%',
                   },
                 }}
               >
                 <Typography
                   variant="body1"
                   fontSize={12}
-                  textAlign={"center"}
+                  textAlign={'center'}
                   margin="0 auto"
                   color="#979797"
                 >
@@ -400,25 +400,25 @@ function EditUser({ userId }: Iprops) {
                 fontWeight={500}
                 color="black"
                 fontSize={16}
-                alignSelf={"flex-start"}
+                alignSelf={'flex-start'}
                 marginBottom={1}
               >
                 Information
               </Typography>
-              <Box mb={3} width={"100%"}>
+              <Box mb={3} width={'100%'}>
                 <TextField
                   label="Name *"
                   type="text"
                   className="form-input"
-                  {...register("name", {
+                  {...register('name', {
                     required: true,
                   })}
                   focused
                   sx={{
-                    width: "100%",
+                    width: '100%',
                   }}
                 />
-                {errors && errors.name && errors.name.type === "required" && (
+                {errors && errors.name && errors.name.type === 'required' && (
                   <Typography
                     variant="body2"
                     color="red"
@@ -429,9 +429,9 @@ function EditUser({ userId }: Iprops) {
                   </Typography>
                 )}
               </Box>
-              <Box mb={2} width={"100%"}>
+              <Box mb={2} width={'100%'}>
                 <TextField
-                  label={"Email *"}
+                  label={'Email *'}
                   type="email"
                   className="form-input"
                   autoFocus
@@ -439,18 +439,18 @@ function EditUser({ userId }: Iprops) {
                   InputProps={{
                     readOnly: true,
                   }}
-                  {...register("email", {
+                  {...register('email', {
                     required: true,
                   })}
                   sx={{
-                    width: "100%",
-                    backgroundColor: "#f0f0f0",
-                    "& .MuiInputBase-input.Mui-disabled": {
-                      backgroundColor: "#f0f0f0",
+                    width: '100%',
+                    backgroundColor: '#f0f0f0',
+                    '& .MuiInputBase-input.Mui-disabled': {
+                      backgroundColor: '#f0f0f0',
                     },
                   }}
                 />
-                {errors && errors.email && errors.email.type === "required" && (
+                {errors && errors.email && errors.email.type === 'required' && (
                   <Typography
                     variant="body2"
                     color="red"
@@ -469,13 +469,13 @@ function EditUser({ userId }: Iprops) {
                   readOnly: true,
                 }}
                 focused
-                {...register("organisation")}
+                {...register('organisation')}
                 sx={{
-                  width: "100%",
+                  width: '100%',
                   marginBottom: 2,
-                  backgroundColor: "#f0f0f0",
-                  "& .MuiInputBase-input.Mui-disabled": {
-                    backgroundColor: "#f0f0f0",
+                  backgroundColor: '#f0f0f0',
+                  '& .MuiInputBase-input.Mui-disabled': {
+                    backgroundColor: '#f0f0f0',
                   },
                 }}
               />
@@ -487,13 +487,13 @@ function EditUser({ userId }: Iprops) {
                   readOnly: true,
                 }}
                 focused
-                {...register("organisationType")}
+                {...register('organisationType')}
                 sx={{
-                  width: "100%",
+                  width: '100%',
                   marginBottom: 2,
-                  backgroundColor: "#f0f0f0",
-                  "& .MuiInputBase-input.Mui-disabled": {
-                    backgroundColor: "#f0f0f0",
+                  backgroundColor: '#f0f0f0',
+                  '& .MuiInputBase-input.Mui-disabled': {
+                    backgroundColor: '#f0f0f0',
                   },
                 }}
               />
@@ -525,27 +525,27 @@ function EditUser({ userId }: Iprops) {
                 password here. If you already have a password set, you can
                 change it here.
               </Typography>
-              <Box position={"relative"} mb={2}>
+              <Box position={'relative'} mb={2}>
                 <TextField
                   label="Password"
-                  type={showPassword ? "text" : "password"}
+                  type={showPassword ? 'text' : 'password'}
                   className="form-input"
-                  {...register("password", {
+                  {...register('password', {
                     pattern: validationPattern.passwordPattern,
                   })}
                   focused
                   sx={{
-                    width: "100%",
+                    width: '100%',
                   }}
                 />
 
                 <Box
-                  bgcolor={"white"}
+                  bgcolor={'white'}
                   sx={{
-                    position: "absolute",
-                    right: "7px",
-                    top: errors?.password ? "35%" : "50%",
-                    transform: "translate(-7px,-50%)",
+                    position: 'absolute',
+                    right: '7px',
+                    top: errors?.password ? '35%' : '50%',
+                    transform: 'translate(-7px,-50%)',
                     width: 20,
                     height: 20,
                   }}
@@ -556,13 +556,13 @@ function EditUser({ userId }: Iprops) {
                     width={20}
                     height={20}
                     alt="Eye Icon"
-                    style={{ cursor: "pointer" }}
+                    style={{ cursor: 'pointer' }}
                     className="cursor-pointer"
                   />
                 </Box>
                 {errors &&
                   errors.password &&
-                  errors.password.type === "pattern" && (
+                  errors.password.type === 'pattern' && (
                     <Typography
                       variant="body2"
                       color="red"
@@ -573,30 +573,30 @@ function EditUser({ userId }: Iprops) {
                     </Typography>
                   )}
               </Box>
-              <Box position={"relative"}>
+              <Box position={'relative'}>
                 <TextField
                   label="Re-enter Password"
-                  type={showConfirmPassword ? "text" : "password"}
+                  type={showConfirmPassword ? 'text' : 'password'}
                   className="form-input"
-                  {...register("confirmPassword", {
-                    required: watch("password") ? true : false,
+                  {...register('confirmPassword', {
+                    required: watch('password') ? true : false,
                     validate: (value) =>
                       value === getValues().password ||
-                      "Confirm Password do not match!",
+                      'Confirm Password do not match!',
                   })}
                   focused
                   sx={{
-                    width: "100%",
+                    width: '100%',
                   }}
                 />
 
                 <Box
-                  bgcolor={"white"}
+                  bgcolor={'white'}
                   sx={{
-                    position: "absolute",
-                    right: "7px",
-                    top: errors?.confirmPassword ? "35%" : "50%",
-                    transform: "translate(-7px,-50%)",
+                    position: 'absolute',
+                    right: '7px',
+                    top: errors?.confirmPassword ? '35%' : '50%',
+                    transform: 'translate(-7px,-50%)',
                     width: 20,
                     height: 20,
                   }}
@@ -607,12 +607,12 @@ function EditUser({ userId }: Iprops) {
                     width={20}
                     height={20}
                     alt="Eye Icon"
-                    style={{ cursor: "pointer" }}
+                    style={{ cursor: 'pointer' }}
                   />
                 </Box>
                 {errors &&
-                  watch("password") &&
-                  errors.confirmPassword?.type == "required" && (
+                  watch('password') &&
+                  errors.confirmPassword?.type == 'required' && (
                     <Typography
                       variant="body2"
                       color="red"
@@ -622,7 +622,7 @@ function EditUser({ userId }: Iprops) {
                       Please Re-enter Password.
                     </Typography>
                   )}
-                {errors && errors.confirmPassword?.type == "validate" && (
+                {errors && errors.confirmPassword?.type == 'validate' && (
                   <Typography
                     variant="body2"
                     color="red"
@@ -646,14 +646,14 @@ function EditUser({ userId }: Iprops) {
           variant="contained"
           disabled={isApiCallInProgress}
           sx={{
-            background: "#06A19B",
+            background: '#06A19B',
             fontWeight: 600,
-            padding: "6px 16px",
-            width: "fit-content",
-            textTransform: "capitalize",
-            borderRadius: "8px",
-            marginLeft: "auto",
-            display: "block",
+            padding: '6px 16px',
+            width: 'fit-content',
+            textTransform: 'capitalize',
+            borderRadius: '8px',
+            marginLeft: 'auto',
+            display: 'block',
             marginTop: 5,
           }}
         >

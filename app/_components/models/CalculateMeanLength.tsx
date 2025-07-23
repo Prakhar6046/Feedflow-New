@@ -1,31 +1,30 @@
 import {
   Box,
   Button,
-  Grid,
   IconButton,
   Modal,
   Stack,
   TextField,
   Typography,
-} from "@mui/material";
-import React, { useEffect } from "react";
-import { Close as CloseIcon } from "@mui/icons-material"; // Use Material-UI's Close icon directly
-import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
-import toast from "react-hot-toast";
-import * as validationPattern from "@/app/_lib/utils/validationPatterns/index";
-import * as validationMessage from "@/app/_lib/utils/validationsMessage/index";
+} from '@mui/material';
+import React, { useEffect } from 'react';
+import { Close as CloseIcon } from '@mui/icons-material'; // Use Material-UI's Close icon directly
+import { SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
+import toast from 'react-hot-toast';
+import * as validationPattern from '@/app/_lib/utils/validationPatterns/index';
+import * as validationMessage from '@/app/_lib/utils/validationsMessage/index';
 // import { CloseIcon } from "../theme/overrides/CustomIcons";
 interface InputTypes {
-  avgOfMeanLength?: Number;
+  avgOfMeanLength?: number;
   meanlength: {
-    measurement: Number | undefined;
-    length: Number | undefined;
+    measurement: number | undefined;
+    length: number | undefined;
   }[];
 }
 interface Props {
   setOpen: (open: boolean) => void;
   open: boolean;
-  setAvgOfMeanLength: (val: Number) => void;
+  setAvgOfMeanLength: (val: number) => void;
 }
 const CalculateMeanLength = ({ open, setOpen, setAvgOfMeanLength }: Props) => {
   const {
@@ -50,25 +49,25 @@ const CalculateMeanLength = ({ open, setOpen, setAvgOfMeanLength }: Props) => {
       reset();
     } else {
       toast.dismiss();
-      toast.error("Please fill the measurements and length");
+      toast.error('Please fill the measurements and length');
     }
   };
   const { fields, append, remove } = useFieldArray({
     control,
-    name: "meanlength",
+    name: 'meanlength',
   });
   const handleClose = () => {
     setOpen(false);
     reset();
   };
   const handleKeyPress = (key: string) => {
-    if (key === "Enter") {
+    if (key === 'Enter') {
       append({ measurement: undefined, length: undefined });
     }
   };
   useEffect(() => {
-    let totalMeasurementArr: Array<number> = [];
-    let totalLengthsArr: Array<number> = [];
+    const totalMeasurementArr: Array<number> = [];
+    const totalLengthsArr: Array<number> = [];
     watchFields.map((feild) => {
       if (feild.measurement) {
         totalMeasurementArr.push(Number(feild.measurement));
@@ -81,10 +80,10 @@ const CalculateMeanLength = ({ open, setOpen, setAvgOfMeanLength }: Props) => {
       return (acc += val);
     }, 0);
     const avgOfMeanLength = totalLengths / totalMeasurementArr.length;
-    setValue("avgOfMeanLength", avgOfMeanLength);
+    setValue('avgOfMeanLength', avgOfMeanLength);
   }, [
-    watchFields.map((field) => field.measurement).join(","),
-    watchFields.map((field) => field.length).join(","),
+    watchFields.map((field) => field.measurement).join(','),
+    watchFields.map((field) => field.length).join(','),
   ]);
   return (
     <Modal
@@ -96,39 +95,39 @@ const CalculateMeanLength = ({ open, setOpen, setAvgOfMeanLength }: Props) => {
       className="custom-modal-positioning"
     >
       <Stack
-        bgcolor={"white"}
+        bgcolor={'white'}
         borderRadius={2}
-        mx={"auto"}
-        height={"fit-content"}
+        mx={'auto'}
+        height={'fit-content'}
         sx={{
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%,-50%)",
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%,-50%)',
           width: {
-            md: "fit-content",
-            sm: "70%",
-            xs: "90%",
+            md: 'fit-content',
+            sm: '70%',
+            xs: '90%',
           },
-          maxWidth: "500px",
-          maxHeight: "500px",
+          maxWidth: '500px',
+          maxHeight: '500px',
         }}
       >
         <form className="form-height">
           <Box
-            display={"flex"}
-            justifyContent={"center"}
-            alignItems={"center"}
-            height={"100%"}
+            display={'flex'}
+            justifyContent={'center'}
+            alignItems={'center'}
+            height={'100%'}
           >
             <Box>
               <Box display="flex" justifyContent="end" padding={2}>
                 <IconButton
                   onClick={handleClose}
                   sx={{
-                    color: "inherit",
-                    background: "transparent",
-                    margin: "2",
+                    color: 'inherit',
+                    background: 'transparent',
+                    margin: '2',
                     mr: 0,
                   }}
                 >
@@ -139,25 +138,25 @@ const CalculateMeanLength = ({ open, setOpen, setAvgOfMeanLength }: Props) => {
                 return (
                   <Stack
                     key={field.id}
-                    display={"flex"}
-                    direction={"row"}
+                    display={'flex'}
+                    direction={'row'}
                     sx={{
-                      width: "100%",
-                      paddingInline: "20px",
+                      width: '100%',
+                      paddingInline: '20px',
                       marginBottom: 2,
                       gap: 1.5,
                       justifyContent: {
-                        lg: "center",
+                        lg: 'center',
                       },
                     }}
                   >
                     <Box
-                      position={"relative"}
+                      position={'relative'}
                       sx={{
                         width: {
-                          lg: "100%",
-                          md: "48.4%",
-                          xs: "100%",
+                          lg: '100%',
+                          md: '48.4%',
+                          xs: '100%',
                         },
                       }}
                     >
@@ -170,13 +169,13 @@ const CalculateMeanLength = ({ open, setOpen, setAvgOfMeanLength }: Props) => {
                         })}
                         focused
                         className="form-input"
-                        sx={{ width: "100%" }}
+                        sx={{ width: '100%' }}
                       />
                       {errors &&
                         errors.meanlength &&
                         errors.meanlength[idx] &&
                         errors.meanlength[idx].measurement?.type ===
-                          "required" && (
+                          'required' && (
                           <Typography
                             variant="body2"
                             color="red"
@@ -190,7 +189,7 @@ const CalculateMeanLength = ({ open, setOpen, setAvgOfMeanLength }: Props) => {
                         errors.meanlength &&
                         errors.meanlength[idx] &&
                         errors.meanlength[idx].measurement?.type ===
-                          "pattern" && (
+                          'pattern' && (
                           <Typography
                             variant="body2"
                             color="red"
@@ -202,12 +201,12 @@ const CalculateMeanLength = ({ open, setOpen, setAvgOfMeanLength }: Props) => {
                         )}
                     </Box>
                     <Box
-                      position={"relative"}
+                      position={'relative'}
                       sx={{
                         width: {
-                          lg: "100%",
-                          md: "48.4%",
-                          xs: "100%",
+                          lg: '100%',
+                          md: '48.4%',
+                          xs: '100%',
                         },
                       }}
                     >
@@ -220,20 +219,20 @@ const CalculateMeanLength = ({ open, setOpen, setAvgOfMeanLength }: Props) => {
                         })}
                         focused
                         className="form-input"
-                        sx={{ width: "100%" }}
+                        sx={{ width: '100%' }}
                       />
                       <Typography
                         variant="body2"
                         color="#555555AC"
                         sx={{
-                          position: "absolute",
+                          position: 'absolute',
                           right: 6,
-                          top: "29px",
-                          transform: "translate(-6px, -50%)",
-                          backgroundColor: "#fff",
+                          top: '29px',
+                          transform: 'translate(-6px, -50%)',
+                          backgroundColor: '#fff',
                           height: 30,
-                          display: "grid",
-                          placeItems: "center",
+                          display: 'grid',
+                          placeItems: 'center',
                           zIndex: 1,
                           pl: 1,
                         }}
@@ -243,7 +242,7 @@ const CalculateMeanLength = ({ open, setOpen, setAvgOfMeanLength }: Props) => {
                       {errors &&
                         errors.meanlength &&
                         errors.meanlength[idx] &&
-                        errors.meanlength[idx].length?.type == "required" && (
+                        errors.meanlength[idx].length?.type == 'required' && (
                           <Typography
                             variant="body2"
                             color="red"
@@ -256,7 +255,7 @@ const CalculateMeanLength = ({ open, setOpen, setAvgOfMeanLength }: Props) => {
                       {errors &&
                         errors.meanlength &&
                         errors.meanlength[idx] &&
-                        errors.meanlength[idx].length?.type == "pattern" && (
+                        errors.meanlength[idx].length?.type == 'pattern' && (
                           <Typography
                             variant="body2"
                             color="red"
@@ -268,15 +267,15 @@ const CalculateMeanLength = ({ open, setOpen, setAvgOfMeanLength }: Props) => {
                         )}
                     </Box>
                     <Box
-                      display={"flex"}
-                      alignItems={"center"}
-                      justifyContent={"end"}
-                      position={"relative"}
+                      display={'flex'}
+                      alignItems={'center'}
+                      justifyContent={'end'}
+                      position={'relative'}
                       sx={{
-                        visibility: idx === 0 ? "hidden" : "",
-                        cursor: "pointer",
+                        visibility: idx === 0 ? 'hidden' : '',
+                        cursor: 'pointer',
                         width: {
-                          xs: "auto",
+                          xs: 'auto',
                         },
                       }}
                       onClick={() => remove(idx)}
@@ -302,23 +301,23 @@ const CalculateMeanLength = ({ open, setOpen, setAvgOfMeanLength }: Props) => {
               <Box
                 px={2}
                 mt={3}
-                display={"flex"}
-                alignItems={"center"}
+                display={'flex'}
+                alignItems={'center'}
                 gap={1.5}
               >
                 <Typography variant="body1" fontWeight={600}>
                   Mean Length :
                 </Typography>
                 <Typography variant="body1">
-                  {watch("avgOfMeanLength")
-                    ? Number(watch("avgOfMeanLength")).toFixed(2)
+                  {watch('avgOfMeanLength')
+                    ? Number(watch('avgOfMeanLength')).toFixed(2)
                     : 0}
                 </Typography>
               </Box>
               <Box
                 display="flex"
                 justifyContent="flex-end"
-                alignItems={"flex-end"}
+                alignItems={'flex-end'}
                 gap="10px"
                 padding={3}
                 // marginX={"40px"}
@@ -330,16 +329,16 @@ const CalculateMeanLength = ({ open, setOpen, setAvgOfMeanLength }: Props) => {
                     append({ measurement: undefined, length: undefined })
                   }
                   sx={{
-                    background: "#06A19B",
-                    fontWeight: "bold",
-                    padding: "8px 20px",
+                    background: '#06A19B',
+                    fontWeight: 'bold',
+                    padding: '8px 20px',
                     width: {
-                      xs: "50%",
-                      lg: "fit-content",
+                      xs: '50%',
+                      lg: 'fit-content',
                     },
-                    textTransform: "capitalize",
-                    borderRadius: "12px",
-                    marginBlock: "10px",
+                    textTransform: 'capitalize',
+                    borderRadius: '12px',
+                    marginBlock: '10px',
                   }}
                 >
                   Add Row
@@ -347,16 +346,16 @@ const CalculateMeanLength = ({ open, setOpen, setAvgOfMeanLength }: Props) => {
                 <Button
                   variant="contained"
                   sx={{
-                    background: "#06A19B",
-                    fontWeight: "bold",
-                    padding: "8px 20px",
+                    background: '#06A19B',
+                    fontWeight: 'bold',
+                    padding: '8px 20px',
                     width: {
-                      xs: "50%",
-                      lg: "fit-content",
+                      xs: '50%',
+                      lg: 'fit-content',
                     },
-                    textTransform: "capitalize",
-                    borderRadius: "12px",
-                    marginBlock: "10px",
+                    textTransform: 'capitalize',
+                    borderRadius: '12px',
+                    marginBlock: '10px',
                   }}
                   onClick={handleSubmit(onSubmit)}
                 >

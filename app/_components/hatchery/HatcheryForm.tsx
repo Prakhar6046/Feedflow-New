@@ -1,4 +1,4 @@
-import { species } from "@/app/_lib/utils";
+import { species } from '@/app/_lib/utils';
 import {
   Box,
   FormControl,
@@ -7,13 +7,12 @@ import {
   Select,
   TextField,
   Typography,
-} from "@mui/material";
-import React, { useEffect } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
-import * as validationPattern from "@/app/_lib/utils/validationPatterns/index";
-import * as validationMessage from "@/app/_lib/utils/validationsMessage/index";
+} from '@mui/material';
+import React, { useEffect } from 'react';
+import * as validationPattern from '@/app/_lib/utils/validationPatterns/index';
+import * as validationMessage from '@/app/_lib/utils/validationsMessage/index';
 interface Props {
-  altitude: String;
+  altitude: string;
   register: any;
   setValue: any;
   trigger: any;
@@ -30,23 +29,23 @@ function HatcheryForm({
 }: Props) {
   useEffect(() => {
     if (altitude) {
-      setValue("hatcheryAltitude", String(Number(altitude).toFixed(2)));
+      setValue('hatcheryAltitude', String(Number(altitude).toFixed(2)));
     }
   }, [altitude]);
 
   return (
-    <Box width={"100%"}>
+    <Box width={'100%'}>
       <TextField
         label="Hatchery Name *"
         type="text"
         className="form-input"
-        {...register("hatcheryName", {
+        {...register('hatcheryName', {
           required: true,
           pattern: validationPattern.alphabetsAndSpacesPattern,
         })}
         // disabled
         sx={{
-          width: "100%",
+          width: '100%',
           mt: 2,
         }}
         focused
@@ -55,14 +54,14 @@ function HatcheryForm({
       />
       {errors &&
         errors.hatcheryName &&
-        errors.hatcheryName.type === "required" && (
+        errors.hatcheryName.type === 'required' && (
           <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
             {validationMessage.required}
           </Typography>
         )}
       {errors &&
         errors.hatcheryName &&
-        errors.hatcheryName.type === "pattern" && (
+        errors.hatcheryName.type === 'pattern' && (
           <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
             {validationMessage.OnlyAlphabatsMessage}
           </Typography>
@@ -71,13 +70,13 @@ function HatcheryForm({
         label="Hatchery Code *"
         type="text"
         className="form-input"
-        {...register("hatcheryCode", {
+        {...register('hatcheryCode', {
           required: true,
           pattern: validationPattern.alphabetsNumbersAndSpacesPattern,
         })}
         // disabled
         sx={{
-          width: "100%",
+          width: '100%',
           mt: 2,
         }}
         focused
@@ -86,31 +85,31 @@ function HatcheryForm({
       />
       {errors &&
         errors.hatcheryCode &&
-        errors.hatcheryCode.type === "required" && (
+        errors.hatcheryCode.type === 'required' && (
           <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
             {validationMessage.required}
           </Typography>
         )}
       {errors &&
         errors.hatcheryCode &&
-        errors.hatcheryCode.type === "pattern" && (
+        errors.hatcheryCode.type === 'pattern' && (
           <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
             {validationMessage.OnlyAlphabetsandNumberMessage}
           </Typography>
         )}
-      <Box position={"relative"}>
+      <Box position={'relative'}>
         <TextField
           label="Hatchery Altitude *"
           type="text"
           className="form-input"
-          {...register("hatcheryAltitude", {
+          {...register('hatcheryAltitude', {
             required: true,
             pattern: validationPattern.numbersWithDot,
             maxLength: 10,
           })}
           // disabled
           sx={{
-            width: "100%",
+            width: '100%',
             mt: 2,
           }}
           focused
@@ -121,14 +120,14 @@ function HatcheryForm({
           variant="body2"
           color="#555555AC"
           sx={{
-            position: "absolute",
+            position: 'absolute',
             right: 6,
-            top: errors?.hatcheryAltitude ? "35%" : "50%",
-            transform: "translate(-6px, -50%)",
-            backgroundColor: "#fff",
+            top: errors?.hatcheryAltitude ? '35%' : '50%',
+            transform: 'translate(-6px, -50%)',
+            backgroundColor: '#fff',
             height: 30,
-            display: "grid",
-            placeItems: "center",
+            display: 'grid',
+            placeItems: 'center',
             zIndex: 1,
             pl: 1,
           }}
@@ -137,21 +136,21 @@ function HatcheryForm({
         </Typography>
         {errors &&
           errors.hatcheryAltitude &&
-          errors.hatcheryAltitude.type === "required" && (
+          errors.hatcheryAltitude.type === 'required' && (
             <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
               {validationMessage.required}
             </Typography>
           )}
         {errors &&
           errors.hatcheryAltitude &&
-          errors.hatcheryAltitude.type === "pattern" && (
+          errors.hatcheryAltitude.type === 'pattern' && (
             <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
               {validationMessage.OnlyNumbersWithDot}
             </Typography>
           )}
         {errors &&
           errors.hatcheryAltitude &&
-          errors.hatcheryAltitude.type === "maxLength" && (
+          errors.hatcheryAltitude.type === 'maxLength' && (
             <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
               {validationMessage.numberMaxLength}
             </Typography>
@@ -171,15 +170,15 @@ function HatcheryForm({
           id="feed-supply-select5"
           label="Species *"
           sx={{
-            width: "100%",
+            width: '100%',
           }}
-          {...register("fishSpecie", {
+          {...register('fishSpecie', {
             required: true,
           })}
-          value={watch("fishSpecie") || ""}
+          value={watch('fishSpecie') || ''}
           onChange={(e) => {
-            setValue("fishSpecie", e.target.value);
-            trigger("fishSpecie");
+            setValue('fishSpecie', e.target.value);
+            trigger('fishSpecie');
           }}
         >
           {species.map((specie, i) => {
@@ -192,7 +191,7 @@ function HatcheryForm({
         </Select>
         {errors &&
           errors.fishSpecie &&
-          errors.fishSpecie.type === "required" && (
+          errors.fishSpecie.type === 'required' && (
             <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
               {validationMessage.required}
             </Typography>

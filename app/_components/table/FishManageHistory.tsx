@@ -1,54 +1,45 @@
-"use client";
+'use client';
 import {
   FishManageHistoryGroup,
   Production,
-} from "@/app/_typeModels/production";
+} from '@/app/_typeModels/production';
 import {
   Box,
-  Checkbox,
   FormControl,
-  FormControlLabel,
   FormLabel,
   Grid,
   Paper,
-  Stack,
   TableBody,
   TableSortLabel,
   Typography,
-  Button,
-} from "@mui/material";
-import Table from "@mui/material/Table";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import TabContext from "@mui/lab/TabContext";
-import TabList from "@mui/lab/TabList";
-import TabPanel from "@mui/lab/TabPanel";
-import Tab from "@mui/material/Tab";
-import React, { useEffect, useMemo, useState } from "react";
-import MuiTextField from "@mui/material/TextField";
-import Input from "../theme/overrides/Input";
-import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
-import { DateField } from "@mui/x-date-pickers/DateField";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { pink } from "@mui/material/colors";
-import { useAppDispatch } from "@/lib/hooks";
-import { usePathname } from "next/navigation";
-import dayjs from "dayjs";
-import { getLocalItem } from "@/app/_lib/utils";
-import { getCookie, setCookie } from "cookies-next";
-import { breadcrumsAction } from "@/lib/features/breadcrum/breadcrumSlice";
-import FishHistoryCharts from "../production/fishHistoryCharts/FishHistoryCharts";
-import { Farm } from "@/app/_typeModels/Farm";
+} from '@mui/material';
+import Table from '@mui/material/Table';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import TabContext from '@mui/lab/TabContext';
+import TabList from '@mui/lab/TabList';
+import TabPanel from '@mui/lab/TabPanel';
+import Tab from '@mui/material/Tab';
+import React, { useEffect, useMemo, useState } from 'react';
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { useAppDispatch } from '@/lib/hooks';
+import { usePathname } from 'next/navigation';
+import dayjs from 'dayjs';
+import { getLocalItem } from '@/app/_lib/utils';
+import { getCookie, setCookie } from 'cookies-next';
+import { breadcrumsAction } from '@/lib/features/breadcrum/breadcrumSlice';
+import FishHistoryCharts from '../production/fishHistoryCharts/FishHistoryCharts';
 
 // const TextField = React.forwardRef((props, ref) => (
 //   <MuiTextField {...props} ref={ref} size="small" />
 // ));
 const style = {
-  bgcolor: "background.paper",
+  bgcolor: 'background.paper',
   boxShadow: 24,
 };
 interface Props {
@@ -63,16 +54,16 @@ const FishManageHistoryTable: React.FC<Props> = ({
 }) => {
   const dispatch = useAppDispatch();
   const pathName = usePathname();
-  const [order, setOrder] = useState("asc");
-  const [orderBy, setOrderBy] = useState("Farm");
-  const [tab, setTab] = useState<string>("list");
+  const [order, setOrder] = useState('asc');
+  const [orderBy, setOrderBy] = useState('Farm');
+  const [tab, setTab] = useState<string>('list');
   const [fishHistoryData, setFishHistoryData] =
     useState<FishManageHistoryGroup>();
-  const [sortDataFromLocal, setSortDataFromLocal] = React.useState<any>("");
+  const [sortDataFromLocal, setSortDataFromLocal] = React.useState<any>('');
   const [isWaterSampleHistory, setIsWaterSampleHistory] =
     useState<boolean>(false);
   const [startDate, setStartDate] = useState<string>(
-    dayjs().subtract(2, "weeks").format()
+    dayjs().subtract(2, 'weeks').format(),
   );
   const [endDate, setEndDate] = useState<string>(dayjs().format());
   function EnhancedTableHead(data: any) {
@@ -92,14 +83,14 @@ const FishManageHistoryTable: React.FC<Props> = ({
                 idx === headCells.length - 1
                   ? false
                   : orderBy === headCell.id
-                  ? order
-                  : false
+                    ? order
+                    : false
               }
               // align="center"
               sx={{
                 borderBottom: 0,
-                color: "#67737F",
-                background: "#F5F6F8",
+                color: '#67737F',
+                background: '#F5F6F8',
 
                 fontSize: {
                   md: 16,
@@ -118,7 +109,7 @@ const FishManageHistoryTable: React.FC<Props> = ({
               ) : (
                 <TableSortLabel
                   active={orderBy === headCell.id}
-                  direction={orderBy === headCell.id ? order : "asc"}
+                  direction={orderBy === headCell.id ? order : 'asc'}
                   onClick={createSortHandler(headCell.id)}
                 >
                   {headCell.label}
@@ -134,7 +125,7 @@ const FishManageHistoryTable: React.FC<Props> = ({
     const filteredFarm = productions?.reduce((result: any, item) => {
       // Find or create a farm group
       let farmGroup: any = result.find(
-        (group: any) => group.farm === item.farm.name
+        (group: any) => group.farm === item.farm.name,
       );
       if (!farmGroup) {
         farmGroup = { farm: item.productionUnit.name, units: [] };
@@ -174,52 +165,52 @@ const FishManageHistoryTable: React.FC<Props> = ({
 
   const handleRequestSort = (
     _: React.MouseEvent<HTMLButtonElement> | null,
-    property: string
+    property: string,
   ) => {
-    const isAsc = orderBy === property && order === "asc";
-    setOrder(isAsc ? "desc" : "asc");
+    const isAsc = orderBy === property && order === 'asc';
+    setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
     dispatch(
       breadcrumsAction.handleSort({
-        direction: isAsc ? "desc" : "asc",
+        direction: isAsc ? 'desc' : 'asc',
         column: property,
-      })
+      }),
     );
     const unitData = groupedData?.units[0]?.fishManageHistory;
     if (unitData) {
       const sortedData = [...unitData].sort((fish1, fish2) => {
-        const orderType = order === "asc" ? 1 : -1;
-        if (property === "date") {
+        const orderType = order === 'asc' ? 1 : -1;
+        if (property === 'date') {
           if (fish1.currentDate < fish2.currentDate) return -1 * orderType;
           if (fish1.currentDate > fish2.currentDate) return 1 * orderType;
           return 0;
-        } else if (property === "status") {
+        } else if (property === 'status') {
           if (fish1.field < fish2.field) return -1 * orderType;
           if (fish1.field > fish2.field) return 1 * orderType;
           return 0;
-        } else if (property === "Mean weight") {
+        } else if (property === 'Mean weight') {
           if (fish1.meanWeight < fish2.meanWeight) return -1 * orderType;
           if (fish1.meanWeight > fish2.meanWeight) return 1 * orderType;
           return 0;
-        } else if (property === "Fish") {
+        } else if (property === 'Fish') {
           if (fish1.fishCount < fish2.fishCount) return -1 * orderType;
           if (fish1.fishCount > fish2.fishCount) return 1 * orderType;
           return 0;
-        } else if (property === "Biomass") {
+        } else if (property === 'Biomass') {
           if (fish1.biomass < fish2.biomass) return -1 * orderType;
           if (fish1.biomass > fish2.biomass) return 1 * orderType;
           return 0;
-        } else if (property === "Mean length") {
+        } else if (property === 'Mean length') {
           if (fish1.meanLength < fish2.meanLength) return -1 * orderType;
           if (fish1.meanLength > fish2.meanLength) return 1 * orderType;
           return 0;
-        } else if (property === "Stocking Density") {
+        } else if (property === 'Stocking Density') {
           if (fish1.stockingDensityKG < fish2.stockingDensityKG)
             return -1 * orderType;
           if (fish1.stockingDensityKG > fish2.stockingDensityKG)
             return 1 * orderType;
           return 0;
-        } else if (property === "Stocking density") {
+        } else if (property === 'Stocking density') {
           if (fish1.stockingDensityNM < fish2.stockingDensityNM)
             return -1 * orderType;
           if (fish1.stockingDensityNM > fish2.stockingDensityNM)
@@ -251,38 +242,38 @@ const FishManageHistoryTable: React.FC<Props> = ({
       const unitData = groupedData?.units[0]?.fishManageHistory;
       if (unitData) {
         const sortedData = [...unitData].sort((fish1, fish2) => {
-          const orderType = data.direction === "asc" ? -1 : 1;
-          if (data.column === "date") {
+          const orderType = data.direction === 'asc' ? -1 : 1;
+          if (data.column === 'date') {
             if (fish1.currentDate < fish2.currentDate) return -1 * orderType;
             if (fish1.currentDate > fish2.currentDate) return 1 * orderType;
             return 0;
-          } else if (data.column === "status") {
+          } else if (data.column === 'status') {
             if (fish1.field < fish2.field) return -1 * orderType;
             if (fish1.field > fish2.field) return 1 * orderType;
             return 0;
-          } else if (data.column === "Mean weight") {
+          } else if (data.column === 'Mean weight') {
             if (fish1.meanWeight < fish2.meanWeight) return -1 * orderType;
             if (fish1.meanWeight > fish2.meanWeight) return 1 * orderType;
             return 0;
-          } else if (data.column === "Fish") {
+          } else if (data.column === 'Fish') {
             if (fish1.fishCount < fish2.fishCount) return -1 * orderType;
             if (fish1.fishCount > fish2.fishCount) return 1 * orderType;
             return 0;
-          } else if (data.column === "Biomass") {
+          } else if (data.column === 'Biomass') {
             if (fish1.biomass < fish2.biomass) return -1 * orderType;
             if (fish1.biomass > fish2.biomass) return 1 * orderType;
             return 0;
-          } else if (data.column === "Mean length") {
+          } else if (data.column === 'Mean length') {
             if (fish1.meanLength < fish2.meanLength) return -1 * orderType;
             if (fish1.meanLength > fish2.meanLength) return 1 * orderType;
             return 0;
-          } else if (data.column === "Stocking Density") {
+          } else if (data.column === 'Stocking Density') {
             if (fish1.stockingDensityKG < fish2.stockingDensityKG)
               return -1 * orderType;
             if (fish1.stockingDensityKG > fish2.stockingDensityKG)
               return 1 * orderType;
             return 0;
-          } else if (data.column === "Stocking density") {
+          } else if (data.column === 'Stocking density') {
             if (fish1.stockingDensityNM < fish2.stockingDensityNM)
               return -1 * orderType;
             if (fish1.stockingDensityNM > fish2.stockingDensityNM)
@@ -309,7 +300,7 @@ const FishManageHistoryTable: React.FC<Props> = ({
   }, [sortDataFromLocal]);
   useEffect(() => {
     if (tab) {
-      setCookie("fishTab", tab);
+      setCookie('fishTab', tab);
     }
   }, [tab]);
   useEffect(() => {
@@ -323,20 +314,20 @@ const FishManageHistoryTable: React.FC<Props> = ({
     }
   }, [pathName]);
   useEffect(() => {
-    const currentTab = getCookie("fishTab");
+    const currentTab = getCookie('fishTab');
     if (currentTab) {
       setTab(currentTab);
     } else {
-      setTab("list");
+      setTab('list');
     }
   }, []);
 
   return (
     <Box
       sx={{
-        width: "100%",
-        borderRadius: "14px",
-        boxShadow: "0px 0px 16px 5px #0000001A",
+        width: '100%',
+        borderRadius: '14px',
+        boxShadow: '0px 0px 16px 5px #0000001A',
         my: 4,
         px: 5,
         pt: 2.5,
@@ -348,19 +339,19 @@ const FishManageHistoryTable: React.FC<Props> = ({
           container
           columnSpacing={3}
           rowSpacing={1}
-          alignItems={"center"}
-          flexWrap={"wrap"}
-          justifyContent={"space-between"}
+          alignItems={'center'}
+          flexWrap={'wrap'}
+          justifyContent={'space-between'}
           mb={4}
         >
-          {" "}
-          <Grid item xs={"auto"}>
+          {' '}
+          <Grid item xs={'auto'}>
             <TabList
               className="tab-list"
               style={{
-                borderRadius: "25px",
-                border: "1px solid #A6A6A6",
-                width: "186px",
+                borderRadius: '25px',
+                border: '1px solid #A6A6A6',
+                width: '186px',
               }}
               onChange={(_, val: string) => {
                 setTab(val);
@@ -371,7 +362,7 @@ const FishManageHistoryTable: React.FC<Props> = ({
             </TabList>
           </Grid>
           {/*hISTORY-CHART*/}
-          {tab === "graph" && (
+          {tab === 'graph' && (
             <>
               <Grid item xl={4} lg={7} md={9} xs={12} className="form-grid">
                 <FormControl>
@@ -379,13 +370,13 @@ const FishManageHistoryTable: React.FC<Props> = ({
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                       <DemoContainer
                         sx={{
-                          display: "flex",
-                          flexDirection: "row",
+                          display: 'flex',
+                          flexDirection: 'row',
                           gap: 3,
-                          alignItems: "center",
-                          margin: "0",
+                          alignItems: 'center',
+                          margin: '0',
                         }}
-                        components={["DatePicker"]}
+                        components={['DatePicker']}
                       >
                         <DatePicker
                           label="Start Date"
@@ -405,9 +396,9 @@ const FishManageHistoryTable: React.FC<Props> = ({
                             if (isoDate) setEndDate(isoDate);
                           }}
                           sx={{
-                            marginTop: "0",
+                            marginTop: '0',
 
-                            borderRadius: "6px",
+                            borderRadius: '6px',
                           }}
                           className="date-picker"
                           maxDate={dayjs()}
@@ -420,14 +411,14 @@ const FishManageHistoryTable: React.FC<Props> = ({
             </>
           )}
         </Grid>
-        <TabPanel value="list" hidden={tab === "list" ? false : true}>
+        <TabPanel value="list" hidden={tab === 'list' ? false : true}>
           <Paper
             sx={{
-              width: "100%",
-              overflow: "hidden",
-              borderRadius: "14px",
-              boxShadow: "0px 0px 16px 5px #0000001A",
-              textAlign: "center",
+              width: '100%',
+              overflow: 'hidden',
+              borderRadius: '14px',
+              boxShadow: '0px 0px 16px 5px #0000001A',
+              textAlign: 'center',
               margin: 4,
             }}
           >
@@ -435,7 +426,7 @@ const FishManageHistoryTable: React.FC<Props> = ({
               <Table stickyHeader aria-label="sticky table">
                 <TableHead
                   sx={{
-                    textAlign: "center",
+                    textAlign: 'center',
                   }}
                 >
                   <TableRow></TableRow>
@@ -450,17 +441,17 @@ const FishManageHistoryTable: React.FC<Props> = ({
                     fishHistoryData.units && (
                       <TableRow
                         sx={{
-                          "&:last-child td, &:last-child th": { border: 0 },
+                          '&:last-child td, &:last-child th': { border: 0 },
                         }}
                       >
                         <TableCell
                           sx={{
-                            color: "#555555",
+                            color: '#555555',
                             maxWidth: 250,
-                            borderBottomColor: "#ececec",
+                            borderBottomColor: '#ececec',
                             borderBottomWidth: 2,
                             fontWeight: 700,
-                            textWrap: "nowrap",
+                            textWrap: 'nowrap',
                             paddingLeft: {
                               lg: 10,
                               md: 7,
@@ -476,16 +467,16 @@ const FishManageHistoryTable: React.FC<Props> = ({
                             sx={{
                               fontWeight: 500,
                               fontSize: 14,
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "space-between",
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'space-between',
                               gap: 1,
-                              backgroundColor: "#F5F6F8",
-                              borderTopLeftRadius: "8px",
-                              borderBottomLeftRadius: "8px",
-                              padding: "8px 12px",
-                              margin: "8px 0",
-                              textWrap: "nowrap",
+                              backgroundColor: '#F5F6F8',
+                              borderTopLeftRadius: '8px',
+                              borderBottomLeftRadius: '8px',
+                              padding: '8px 12px',
+                              margin: '8px 0',
+                              textWrap: 'nowrap',
                             }}
                           >
                             {fishHistoryData.farm}
@@ -495,13 +486,13 @@ const FishManageHistoryTable: React.FC<Props> = ({
                               }}
                             ></Box>
                           </Typography>
-                        </TableCell>{" "}
+                        </TableCell>{' '}
                         <TableCell
                           className="table-padding"
                           sx={{
                             borderBottomWidth: 2,
-                            borderBottomColor: "#ececec",
-                            color: "#555555",
+                            borderBottomColor: '#ececec',
+                            color: '#555555',
                             fontWeight: 500,
                             pl: 0,
                           }}
@@ -517,37 +508,37 @@ const FishManageHistoryTable: React.FC<Props> = ({
                                     sx={{
                                       fontWeight: 500,
                                       fontSize: 14,
-                                      backgroundColor: "#F5F6F8",
+                                      backgroundColor: '#F5F6F8',
                                       padding: `${
                                         unit?.currentDate || unit.updatedAt
-                                          ? "8px 12px 8px 0"
-                                          : "19px 12px 19px 0"
+                                          ? '8px 12px 8px 0'
+                                          : '19px 12px 19px 0'
                                       }`,
-                                      margin: "8px 0",
+                                      margin: '8px 0',
                                       // marginBottom: "10px",
                                       // padding: "21px",
-                                      textWrap: "nowrap",
+                                      textWrap: 'nowrap',
                                     }}
                                   >
-                                    {unit?.currentDate ?? unit.currentDate
+                                    {(unit?.currentDate ?? unit.currentDate)
                                       ? unit.currentDate
                                       : new Date(
-                                          String(unit?.updatedAt)
+                                          String(unit?.updatedAt),
                                         ).toLocaleDateString()}
                                   </Typography>
                                 );
-                              }
+                              },
                             )}
-                        </TableCell>{" "}
+                        </TableCell>{' '}
                         <TableCell
                           className="table-padding"
                           sx={{
                             borderBottomWidth: 2,
-                            borderBottomColor: "#ececec",
-                            color: "#555555",
+                            borderBottomColor: '#ececec',
+                            color: '#555555',
                             fontWeight: 500,
                             pl: 0,
-                            textWrap: "nowrap",
+                            textWrap: 'nowrap',
                           }}
                         >
                           {fishHistoryData &&
@@ -561,30 +552,30 @@ const FishManageHistoryTable: React.FC<Props> = ({
                                     sx={{
                                       fontWeight: 500,
                                       fontSize: 14,
-                                      backgroundColor: "#F5F6F8",
+                                      backgroundColor: '#F5F6F8',
                                       padding: `${
                                         unit?.field
-                                          ? "8px 12px 8px 0"
-                                          : "19px 12px 19px 0"
+                                          ? '8px 12px 8px 0'
+                                          : '19px 12px 19px 0'
                                       }`,
-                                      margin: "8px 0",
+                                      margin: '8px 0',
                                       // marginBottom: "10px",
                                       // padding: "21px",
-                                      textWrap: "nowrap",
+                                      textWrap: 'nowrap',
                                     }}
                                   >
-                                    {unit.field ? unit.field : "Stock"}
+                                    {unit.field ? unit.field : 'Stock'}
                                   </Typography>
                                 );
-                              }
+                              },
                             )}
                         </TableCell>
                         <TableCell
                           className="table-padding"
                           sx={{
                             borderBottomWidth: 2,
-                            borderBottomColor: "#ececec",
-                            color: "#555555",
+                            borderBottomColor: '#ececec',
+                            color: '#555555',
                             fontWeight: 500,
                             pl: 0,
                           }}
@@ -600,30 +591,30 @@ const FishManageHistoryTable: React.FC<Props> = ({
                                     sx={{
                                       fontWeight: 500,
                                       fontSize: 14,
-                                      backgroundColor: "#F5F6F8",
+                                      backgroundColor: '#F5F6F8',
                                       padding: `${
                                         fishHistoryData.units[0].fishSupply
                                           ?.batchNumber
-                                          ? "8px 12px 8px 0"
-                                          : "19px 12px 19px 0"
+                                          ? '8px 12px 8px 0'
+                                          : '19px 12px 19px 0'
                                       }`,
-                                      margin: "8px 0",
-                                      textWrap: "nowrap",
+                                      margin: '8px 0',
+                                      textWrap: 'nowrap',
                                     }}
                                   >
                                     {fishHistoryData.units[0].fishSupply
-                                      ?.batchNumber ?? ""}
+                                      ?.batchNumber ?? ''}
                                   </Typography>
                                 );
-                              }
+                              },
                             )}
                         </TableCell>
                         <TableCell
                           className="table-padding"
                           sx={{
                             borderBottomWidth: 2,
-                            borderBottomColor: "#ececec",
-                            color: "#555555",
+                            borderBottomColor: '#ececec',
+                            color: '#555555',
                             fontWeight: 500,
                             pl: 0,
                             p: 0,
@@ -642,28 +633,28 @@ const FishManageHistoryTable: React.FC<Props> = ({
                                       fontSize: 14,
                                       padding: `${
                                         fishHistoryData.units[0].fishSupply?.age
-                                          ? "8px 12px 8px 0"
-                                          : "19px 12px 19px 0"
+                                          ? '8px 12px 8px 0'
+                                          : '19px 12px 19px 0'
                                       }`,
-                                      backgroundColor: "#F5F6F8",
-                                      margin: "8px 0",
+                                      backgroundColor: '#F5F6F8',
+                                      margin: '8px 0',
 
-                                      textWrap: "nowrap",
+                                      textWrap: 'nowrap',
                                     }}
                                   >
                                     {fishHistoryData.units[0].fishSupply?.age ??
-                                      ""}
+                                      ''}
                                   </Typography>
                                 );
-                              }
+                              },
                             )}
                         </TableCell>
                         <TableCell
                           className="table-padding"
                           sx={{
                             borderBottomWidth: 2,
-                            borderBottomColor: "#ececec",
-                            color: "#555555",
+                            borderBottomColor: '#ececec',
+                            color: '#555555',
                             fontWeight: 500,
                             pl: 0,
                           }}
@@ -679,31 +670,31 @@ const FishManageHistoryTable: React.FC<Props> = ({
                                     sx={{
                                       fontWeight: 500,
                                       fontSize: 14,
-                                      backgroundColor: "#F5F6F8",
+                                      backgroundColor: '#F5F6F8',
                                       padding: `${
                                         unit?.fishCount
-                                          ? "8px 12px 8px 0"
-                                          : "19px 12px 19px 0"
+                                          ? '8px 12px 8px 0'
+                                          : '19px 12px 19px 0'
                                       }`,
-                                      margin: "8px 0",
+                                      margin: '8px 0',
                                       // marginBottom: "10px",
                                       // padding: "21px",
-                                      textWrap: "nowrap",
+                                      textWrap: 'nowrap',
                                     }}
                                   >
-                                    {unit?.fishCount ?? ""}
+                                    {unit?.fishCount ?? ''}
                                   </Typography>
                                 );
-                              }
+                              },
                             )}
                         </TableCell>
                         <TableCell
                           className="table-padding"
                           // align="center"
                           sx={{
-                            borderBottomColor: "#ececec",
+                            borderBottomColor: '#ececec',
                             borderBottomWidth: 2,
-                            color: "#555555",
+                            color: '#555555',
                             fontWeight: 500,
                             pl: 0,
                           }}
@@ -719,30 +710,30 @@ const FishManageHistoryTable: React.FC<Props> = ({
                                     sx={{
                                       fontWeight: 500,
                                       fontSize: 14,
-                                      backgroundColor: "#F5F6F8",
+                                      backgroundColor: '#F5F6F8',
                                       padding: `${
                                         unit?.biomass
-                                          ? "8px 12px 8px 0"
-                                          : "19px 12px 19px 0"
+                                          ? '8px 12px 8px 0'
+                                          : '19px 12px 19px 0'
                                       }`,
-                                      margin: "8px 0",
+                                      margin: '8px 0',
                                       // marginBottom: "10px",
-                                      textWrap: "nowrap",
+                                      textWrap: 'nowrap',
                                     }}
                                   >
-                                    {unit.biomass ? `${unit.biomass} kg` : ""}
+                                    {unit.biomass ? `${unit.biomass} kg` : ''}
                                   </Typography>
                                 );
-                              }
+                              },
                             )}
                         </TableCell>
                         <TableCell
                           className="table-padding"
                           // align="center"
                           sx={{
-                            borderBottomColor: "#ececec",
+                            borderBottomColor: '#ececec',
                             borderBottomWidth: 2,
-                            color: "#555555",
+                            color: '#555555',
                             fontWeight: 500,
                             pl: 0,
                           }}
@@ -758,32 +749,32 @@ const FishManageHistoryTable: React.FC<Props> = ({
                                     sx={{
                                       fontWeight: 500,
                                       fontSize: 14,
-                                      backgroundColor: "#F5F6F8",
+                                      backgroundColor: '#F5F6F8',
                                       padding: `${
                                         unit?.meanWeight
-                                          ? "8px 12px 8px 0"
-                                          : "19px 12px 19px 0"
+                                          ? '8px 12px 8px 0'
+                                          : '19px 12px 19px 0'
                                       }`,
-                                      margin: "8px 0",
+                                      margin: '8px 0',
                                       // marginBottom: "10px",
-                                      textWrap: "nowrap",
+                                      textWrap: 'nowrap',
                                     }}
                                   >
                                     {unit.meanWeight
                                       ? `${unit.meanWeight} g`
-                                      : ""}
+                                      : ''}
                                   </Typography>
                                 );
-                              }
+                              },
                             )}
                         </TableCell>
                         <TableCell
                           className="table-padding"
                           // align="center"
                           sx={{
-                            borderBottomColor: "#ececec",
+                            borderBottomColor: '#ececec',
                             borderBottomWidth: 2,
-                            color: "#555555",
+                            color: '#555555',
                             fontWeight: 500,
                             pl: 0,
                           }}
@@ -799,32 +790,32 @@ const FishManageHistoryTable: React.FC<Props> = ({
                                     sx={{
                                       fontWeight: 500,
                                       fontSize: 14,
-                                      backgroundColor: "#F5F6F8",
+                                      backgroundColor: '#F5F6F8',
                                       padding: `${
                                         unit?.meanLength
-                                          ? "8px 12px 8px 0"
-                                          : "19px 12px 19px 0"
+                                          ? '8px 12px 8px 0'
+                                          : '19px 12px 19px 0'
                                       }`,
-                                      margin: "8px 0",
+                                      margin: '8px 0',
                                       // marginBottom: "10px",
-                                      textWrap: "nowrap",
+                                      textWrap: 'nowrap',
                                     }}
                                   >
                                     {unit.meanLength
                                       ? `${unit.meanLength} mm`
-                                      : ""}
+                                      : ''}
                                   </Typography>
                                 );
-                              }
+                              },
                             )}
                         </TableCell>
                         <TableCell
                           className="table-padding"
                           // align="center"
                           sx={{
-                            borderBottomColor: "#ececec",
+                            borderBottomColor: '#ececec',
                             borderBottomWidth: 2,
-                            color: "#555555",
+                            color: '#555555',
                             fontWeight: 500,
                             pl: 0,
                           }}
@@ -840,28 +831,28 @@ const FishManageHistoryTable: React.FC<Props> = ({
                                     sx={{
                                       fontWeight: 500,
                                       fontSize: 14,
-                                      backgroundColor: "#F5F6F8",
-                                      padding: "8px 12px 8px 0",
-                                      margin: "8px 0",
+                                      backgroundColor: '#F5F6F8',
+                                      padding: '8px 12px 8px 0',
+                                      margin: '8px 0',
                                       // marginBottom: "10px",
-                                      textWrap: "nowrap",
+                                      textWrap: 'nowrap',
                                     }}
                                   >
                                     {Number(unit.stockingDensityKG).toFixed(
-                                      2
-                                    ) ?? ""}
+                                      2,
+                                    ) ?? ''}
                                   </Typography>
                                 );
-                              }
+                              },
                             )}
                         </TableCell>
                         <TableCell
                           className="table-padding"
                           // align="center"
                           sx={{
-                            borderBottomColor: "#ececec",
+                            borderBottomColor: '#ececec',
                             borderBottomWidth: 2,
-                            color: "#555555",
+                            color: '#555555',
                             fontWeight: 500,
                             pl: 0,
                           }}
@@ -877,29 +868,29 @@ const FishManageHistoryTable: React.FC<Props> = ({
                                     sx={{
                                       fontWeight: 500,
                                       fontSize: 14,
-                                      backgroundColor: "#F5F6F8",
-                                      padding: "8px 12px 8px 0",
-                                      margin: "8px 0",
+                                      backgroundColor: '#F5F6F8',
+                                      padding: '8px 12px 8px 0',
+                                      margin: '8px 0',
                                       // marginBottom: "10px",
-                                      textWrap: "nowrap",
+                                      textWrap: 'nowrap',
                                     }}
                                   >
                                     {Number(unit.stockingDensityNM).toFixed(
-                                      2
-                                    ) ?? ""}
+                                      2,
+                                    ) ?? ''}
                                   </Typography>
                                 );
-                              }
+                              },
                             )}
 
                           {/* {farm.meanWeight ? `${farm.meanWeight}g` : ""} */}
-                        </TableCell>{" "}
+                        </TableCell>{' '}
                         <TableCell
                           className="table-padding"
                           sx={{
-                            borderBottomColor: "#ececec",
+                            borderBottomColor: '#ececec',
                             borderBottomWidth: 2,
-                            color: "#555555",
+                            color: '#555555',
                             fontWeight: 500,
                             pl: 0,
                           }}
@@ -915,24 +906,24 @@ const FishManageHistoryTable: React.FC<Props> = ({
                                     sx={{
                                       fontWeight: 500,
                                       fontSize: 14,
-                                      backgroundColor: "#F5F6F8",
-                                      padding: "8px 12px 8px 0",
-                                      margin: "8px 0",
+                                      backgroundColor: '#F5F6F8',
+                                      padding: '8px 12px 8px 0',
+                                      margin: '8px 0',
                                       // marginBottom: "10px",
-                                      textWrap: "nowrap",
+                                      textWrap: 'nowrap',
                                     }}
                                   >
-                                    {Number(unit.stockingLevel) ?? ""}
+                                    {Number(unit.stockingLevel) ?? ''}
                                   </Typography>
                                 );
-                              }
+                              },
                             )}
                         </TableCell>
                       </TableRow>
                     )
                   ) : (
                     <TableRow>
-                      <TableCell colSpan={6} sx={{ textAlign: "center" }}>
+                      <TableCell colSpan={6} sx={{ textAlign: 'center' }}>
                         No Data Found
                       </TableCell>
                     </TableRow>
@@ -942,7 +933,7 @@ const FishManageHistoryTable: React.FC<Props> = ({
             </TableContainer>
           </Paper>
         </TabPanel>
-        <TabPanel value="graph" hidden={tab === "graph" ? false : true}>
+        <TabPanel value="graph" hidden={tab === 'graph' ? false : true}>
           <FishHistoryCharts
             productions={productions}
             groupedData={groupedData}

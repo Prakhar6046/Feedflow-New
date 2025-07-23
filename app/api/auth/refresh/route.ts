@@ -1,19 +1,18 @@
-import { cookies } from "next/headers";
-import { NextRequest, NextResponse } from "next/server";
-import jwt from "jsonwebtoken";
+import { NextRequest, NextResponse } from 'next/server';
+import jwt from 'jsonwebtoken';
 
-const JWT_SECRET = process.env.JWT_SECRET || "access-secret-key";
+const JWT_SECRET = process.env.JWT_SECRET || 'access-secret-key';
 const JWT_REFRESH_SECRET =
-  process.env.JWT_REFRESH_SECRET || "refresh-secret-key";
+  process.env.JWT_REFRESH_SECRET || 'refresh-secret-key';
 
 export const GET = async (req: NextRequest) => {
   try {
-    const refreshToken = req.cookies.get("refresh-token")?.value;
+    const refreshToken = req.cookies.get('refresh-token')?.value;
 
     if (!refreshToken) {
       return NextResponse.json(
-        { error: "No refresh token provided" },
-        { status: 401 }
+        { error: 'No refresh token provided' },
+        { status: 401 },
       );
     }
 
@@ -22,14 +21,14 @@ export const GET = async (req: NextRequest) => {
     const newAccessToken = jwt.sign(
       { id: (payload as any).id, email: (payload as any).email },
       JWT_SECRET,
-      { expiresIn: "15m" }
+      { expiresIn: '15m' },
     );
 
     return NextResponse.json({ accessToken: newAccessToken });
   } catch (error) {
     return NextResponse.json(
-      { error: "Invalid or expired refresh token" },
-      { status: 403 }
+      { error: 'Invalid or expired refresh token' },
+      { status: 403 },
     );
   }
 };

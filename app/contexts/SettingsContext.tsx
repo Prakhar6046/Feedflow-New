@@ -1,5 +1,5 @@
-"use client";
-import Cookies from "js-cookie";
+'use client';
+import Cookies from 'js-cookie';
 import React, {
   Dispatch,
   ReactNode,
@@ -7,15 +7,15 @@ import React, {
   createContext,
   useEffect,
   useState,
-} from "react";
+} from 'react';
 
-import { defaultSettings, cookiesExpires, cookiesKey } from "@/config";
+import { defaultSettings, cookiesExpires, cookiesKey } from '@/config';
 import {
   SettingsContextProps,
   SettingsValueProps,
   ThemeLayout,
   ThemeMode,
-} from "../_components/settings/types";
+} from '../_components/settings/types';
 
 const initialState: SettingsContextProps = {
   ...defaultSettings,
@@ -46,33 +46,33 @@ function SettingsProvider({
         ? {
             ...settings,
             themeMode:
-              typeof window !== "undefined" &&
+              typeof window !== 'undefined' &&
               window?.matchMedia &&
-              window.matchMedia("(prefers-color-scheme: dark)").matches
-                ? "dark"
-                : "light",
+              window.matchMedia('(prefers-color-scheme: dark)').matches
+                ? 'dark'
+                : 'light',
           }
-        : settings
+        : settings,
     );
   }, []);
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
     const handleChange = (e: MediaQueryListEvent) => {
       setSettings((settings) =>
         settings.autoThemeMode
-          ? { ...settings, themeMode: e.matches ? "dark" : "light" }
-          : settings
+          ? { ...settings, themeMode: e.matches ? 'dark' : 'light' }
+          : settings,
       );
     };
-    mediaQuery.addEventListener("change", handleChange);
-    return () => mediaQuery.removeEventListener("change", handleChange);
+    mediaQuery.addEventListener('change', handleChange);
+    return () => mediaQuery.removeEventListener('change', handleChange);
   }, []);
 
   const onToggleMode = () => {
     setSettings((settings) => ({
       ...settings,
-      themeMode: settings.themeMode === "light" ? "dark" : "light",
+      themeMode: settings.themeMode === 'light' ? 'dark' : 'light',
     }));
   };
 
@@ -81,11 +81,11 @@ function SettingsProvider({
       ...settings,
       autoThemeMode: !settings.autoThemeMode,
       themeMode: !settings.autoThemeMode
-        ? typeof window !== "undefined" &&
+        ? typeof window !== 'undefined' &&
           window?.matchMedia &&
-          window.matchMedia("(prefers-color-scheme: dark)").matches
-          ? "dark"
-          : "light"
+          window.matchMedia('(prefers-color-scheme: dark)').matches
+          ? 'dark'
+          : 'light'
         : settings.themeMode,
     }));
   };
@@ -102,7 +102,7 @@ function SettingsProvider({
   const onToggleLayout = () => {
     setSettings((settings) => ({
       ...settings,
-      themeLayout: settings.themeLayout === "vertical" ? "mini" : "vertical",
+      themeLayout: settings.themeLayout === 'vertical' ? 'mini' : 'vertical',
     }));
   };
 
@@ -140,7 +140,7 @@ function SettingsProvider({
 export { SettingsProvider, SettingsContext };
 
 function useSettingCookies(
-  defaultSettings: SettingsValueProps
+  defaultSettings: SettingsValueProps,
 ): [SettingsValueProps, Dispatch<SetStateAction<SettingsValueProps>>] {
   const [settings, setSettings] = useState<SettingsValueProps>(defaultSettings);
 
@@ -159,7 +159,7 @@ function useSettingCookies(
       JSON.stringify(settings.themeStretch),
       {
         expires: cookiesExpires,
-      }
+      },
     );
   }, [settings]);
 

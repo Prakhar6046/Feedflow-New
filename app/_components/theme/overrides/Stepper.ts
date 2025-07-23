@@ -1,13 +1,13 @@
-import { Theme } from "@mui/material/styles";
+import { Theme } from '@mui/material/styles';
 
 export default function Stepper(theme: Theme) {
-	return {
-		MuiStepConnector: {
-			styleOverrides: {
-				line: {
-					borderColor: theme.palette.divider
-				}
-			}
-		}
-	};
+  return {
+    MuiStepConnector: {
+      styleOverrides: {
+        line: {
+          borderColor: theme.palette.divider,
+        },
+      },
+    },
+  };
 }

@@ -1,8 +1,8 @@
-import { farmAction } from "@/lib/features/farm/farmSlice";
-import { useAppDispatch } from "@/lib/hooks";
-import { Box, Button, Stack, Typography } from "@mui/material";
-import { NextPage } from "next";
-import { useRouter } from "next/navigation";
+import { farmAction } from '@/lib/features/farm/farmSlice';
+import { useAppDispatch } from '@/lib/hooks';
+import { Box, Button, Stack, Typography } from '@mui/material';
+import { NextPage } from 'next';
+import { useRouter } from 'next/navigation';
 
 interface Props {
   setActiveStep: (val: number) => void;
@@ -14,7 +14,7 @@ const AllDone: NextPage<Props> = ({ setActiveStep, isEdit }) => {
   const dispatch = useAppDispatch();
   const handleClick = () => {
     dispatch(farmAction.resetState());
-    router.push("/dashboard/farm");
+    router.push('/dashboard/farm');
   };
   return (
     <Stack>
@@ -47,8 +47,8 @@ const AllDone: NextPage<Props> = ({ setActiveStep, isEdit }) => {
 
       <Stack my={3}>
         <Box
-          display={"flex"}
-          alignItems={"start"}
+          display={'flex'}
+          alignItems={'start'}
           sx={{
             gap: {
               md: 2,
@@ -59,9 +59,9 @@ const AllDone: NextPage<Props> = ({ setActiveStep, isEdit }) => {
           <Box>
             <Box
               fontWeight={700}
-              display={"flex"}
-              justifyContent={"center"}
-              alignItems={"center"}
+              display={'flex'}
+              justifyContent={'center'}
+              alignItems={'center'}
               borderRadius={100}
               sx={{
                 width: {
@@ -72,8 +72,8 @@ const AllDone: NextPage<Props> = ({ setActiveStep, isEdit }) => {
                   md: 80,
                   xs: 40,
                 },
-                color: "#fff",
-                backgroundColor: "#06A19B",
+                color: '#fff',
+                backgroundColor: '#06A19B',
                 fontSize: {
                   md: 28,
                   xs: 16,
@@ -125,40 +125,40 @@ const AllDone: NextPage<Props> = ({ setActiveStep, isEdit }) => {
             >
               {`  You've now successfully ${
                 isEdit
-                  ? "edited production unit(s) in"
-                  : "added production unit(s) to"
+                  ? 'edited production unit(s) in'
+                  : 'added production unit(s) to'
               } your
           farm. The next step is to assign a`}
               <span
                 style={{
-                  color: "#06A19B",
+                  color: '#06A19B',
                   fontWeight: 500,
                 }}
               >
-                {" "}
-                fish batch{" "}
-              </span>{" "}
+                {' '}
+                fish batch{' '}
+              </span>{' '}
               to each of the production units on your farm. After assigning a
-              batch to your farm, you will assign a{" "}
+              batch to your farm, you will assign a{' '}
               <span
                 style={{
-                  color: "#06A19B",
+                  color: '#06A19B',
                   fontWeight: 500,
                 }}
               >
-                {" "}
-                feeding plan{" "}
-              </span>{" "}
+                {' '}
+                feeding plan{' '}
+              </span>{' '}
               that the system will use to do your projections
             </Typography>
           </Box>
         </Box>
       </Stack>
       <Box
-        display={"flex"}
-        justifyContent={"flex-end"}
-        alignItems={"center"}
-        flexWrap={"wrap"}
+        display={'flex'}
+        justifyContent={'flex-end'}
+        alignItems={'center'}
+        flexWrap={'wrap'}
         gap={3}
         mt={1}
       >
@@ -166,12 +166,12 @@ const AllDone: NextPage<Props> = ({ setActiveStep, isEdit }) => {
           type="submit"
           variant="contained"
           sx={{
-            background: "#06A19B",
+            background: '#06A19B',
             fontWeight: 600,
-            padding: "6px 16px",
-            width: "fit-content",
-            textTransform: "capitalize",
-            borderRadius: "8px",
+            padding: '6px 16px',
+            width: 'fit-content',
+            textTransform: 'capitalize',
+            borderRadius: '8px',
           }}
           onClick={handleClick}
         >

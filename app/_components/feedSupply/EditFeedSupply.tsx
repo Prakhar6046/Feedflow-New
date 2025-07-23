@@ -1,9 +1,9 @@
-"use client";
-import NewFeed from "@/app/_components/feedSupply/NewFeed";
-import { selectIsEditFeed } from "@/lib/features/feed/feedSlice";
-import { useAppSelector } from "@/lib/hooks";
-import { Grid } from "@mui/material";
-import { useEffect, useState } from "react";
+'use client';
+import NewFeed from '@/app/_components/feedSupply/NewFeed';
+import { selectIsEditFeed } from '@/lib/features/feed/feedSlice';
+import { useAppSelector } from '@/lib/hooks';
+import { Grid } from '@mui/material';
+import { useEffect, useState } from 'react';
 type Iprops = {
   feedSupplyId: string;
 };
@@ -20,10 +20,10 @@ const EditFeedSupply = ({ feedSupplyId }: Iprops) => {
     <Grid
       container
       sx={{
-        width: "100%",
-        overflow: "hidden",
-        borderRadius: "14px",
-        boxShadow: "0px 0px 16px 5px #0000001A",
+        width: '100%',
+        overflow: 'hidden',
+        borderRadius: '14px',
+        boxShadow: '0px 0px 16px 5px #0000001A',
         p: 3,
       }}
     >
@@ -31,8 +31,8 @@ const EditFeedSupply = ({ feedSupplyId }: Iprops) => {
         item
         xs={1}
         sx={{
-          display: "flex",
-          justifyContent: "center",
+          display: 'flex',
+          justifyContent: 'center',
         }}
       ></Grid>
       <Grid item xl={9} md={8} xs={12} my={2}>

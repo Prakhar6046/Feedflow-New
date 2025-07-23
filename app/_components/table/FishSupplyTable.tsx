@@ -1,7 +1,7 @@
-"use client";
-import { FishSupply } from "@/app/_typeModels/fishSupply";
-import { breadcrumsAction } from "@/lib/features/breadcrum/breadcrumSlice";
-import { useAppDispatch } from "@/lib/hooks";
+'use client';
+import { FishSupply } from '@/app/_typeModels/fishSupply';
+import { breadcrumsAction } from '@/lib/features/breadcrum/breadcrumSlice';
+import { useAppDispatch } from '@/lib/hooks';
 import {
   Box,
   Button,
@@ -11,21 +11,20 @@ import {
   Stack,
   TableSortLabel,
   Typography,
-} from "@mui/material";
-import Paper from "@mui/material/Paper";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import { usePathname, useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+} from '@mui/material';
+import Paper from '@mui/material/Paper';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import { usePathname, useRouter } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
 
-import { selectRole } from "@/lib/features/user/userSlice";
-import { useAppSelector } from "@/lib/hooks";
-import { getCookie } from "cookies-next";
-import { getLocalItem } from "@/app/_lib/utils";
+import { selectRole } from '@/lib/features/user/userSlice';
+import { useAppSelector } from '@/lib/hooks';
+import { getLocalItem } from '@/app/_lib/utils';
 interface Props {
   tableData: {
     id: string;
@@ -45,16 +44,16 @@ export default function FishSupplyTable({
   const router = useRouter();
   const dispatch = useAppDispatch();
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
-    null
+    null,
   );
   const pathName = usePathname();
   // const sortDataFromLocal = "";
-  const [order, setOrder] = useState("asc");
-  const [orderBy, setOrderBy] = useState("spawningDate");
+  const [order, setOrder] = useState('asc');
+  const [orderBy, setOrderBy] = useState('spawningDate');
   const [selectedFishSupply, setSelectedFishSupply] = useState<FishSupply>();
   const role = useAppSelector(selectRole);
   const [sortedFishSupply, setSortedFishSupply] = useState<FishSupply[]>();
-  const [sortDataFromLocal, setSortDataFromLocal] = React.useState<any>("");
+  const [sortDataFromLocal, setSortDataFromLocal] = React.useState<any>('');
 
   useEffect(() => {
     if (pathName) {
@@ -63,7 +62,7 @@ export default function FishSupplyTable({
   }, [pathName]);
   const handleClick = (
     event: React.MouseEvent<HTMLButtonElement>,
-    fish: FishSupply
+    fish: FishSupply,
   ) => {
     setAnchorEl(event.currentTarget);
     setSelectedFishSupply(fish);
@@ -93,13 +92,13 @@ export default function FishSupplyTable({
                 idx === tableData.length - 1
                   ? false
                   : orderBy === headCell.id
-                  ? order
-                  : false
+                    ? order
+                    : false
               }
               sx={{
                 borderBottom: 0,
-                color: "#67737F",
-                background: "#F5F6F8",
+                color: '#67737F',
+                background: '#F5F6F8',
                 fontSize: {
                   md: 16,
                   xs: 14,
@@ -121,7 +120,7 @@ export default function FishSupplyTable({
               ) : (
                 <TableSortLabel
                   active={orderBy === headCell.id}
-                  direction={orderBy === headCell.id ? order : "asc"}
+                  direction={orderBy === headCell.id ? order : 'asc'}
                   onClick={createSortHandler(headCell.id)}
                 >
                   {headCell.label}
@@ -135,30 +134,30 @@ export default function FishSupplyTable({
   }
   const handleRequestSort = (
     _: React.MouseEvent<HTMLButtonElement> | null,
-    property: string
+    property: string,
   ) => {
-    const isAsc = orderBy === property && order === "asc";
-    setOrder(isAsc ? "desc" : "asc");
+    const isAsc = orderBy === property && order === 'asc';
+    setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
     dispatch(
       breadcrumsAction.handleSort({
-        direction: isAsc ? "desc" : "asc",
+        direction: isAsc ? 'desc' : 'asc',
         column: property,
-      })
+      }),
     );
     if (fishSupply) {
       const sortedData = [...fishSupply].sort(
         (fish1: FishSupply, fish2: FishSupply) => {
-          const orderType = order === "asc" ? 1 : -1;
-          if (property === "spawningDate") {
+          const orderType = order === 'asc' ? 1 : -1;
+          if (property === 'spawningDate') {
             if (fish1.spawningDate < fish2.spawningDate) return -1 * orderType;
             if (fish1.spawningDate > fish2.spawningDate) return 1 * orderType;
             return 0;
-          } else if (property === "hatchingDate") {
+          } else if (property === 'hatchingDate') {
             if (fish1.hatchingDate < fish2.hatchingDate) return -1 * orderType;
             if (fish1.hatchingDate > fish2.hatchingDate) return 1 * orderType;
             return 0;
-          } else if (property === "name") {
+          } else if (property === 'name') {
             if (
               fish1.creator?.hatchery[0]?.name <
               fish2.creator?.hatchery[0]?.name
@@ -170,23 +169,23 @@ export default function FishSupplyTable({
             )
               return 1 * orderType;
             return 0;
-          } else if (property === "fishFarm") {
+          } else if (property === 'fishFarm') {
             if (fish1.fishFarm < fish2.fishFarm) return -1 * orderType;
             if (fish1.fishFarm > fish2.fishFarm) return 1 * orderType;
             return 0;
-          } else if (property === "productionUnits") {
+          } else if (property === 'productionUnits') {
             if (fish1.productionUnits < fish2.productionUnits)
               return -1 * orderType;
             if (fish1.productionUnits > fish2.productionUnits)
               return 1 * orderType;
             return 0;
-          } else if (property === "status") {
+          } else if (property === 'status') {
             if (fish1.status < fish2.status) return -1 * orderType;
             if (fish1.status > fish2.status) return 1 * orderType;
             return 0;
           }
           return 0;
-        }
+        },
       );
       setSortedFishSupply(sortedData);
     }
@@ -201,18 +200,18 @@ export default function FishSupplyTable({
       if (fishSupply) {
         const sortedData = [...fishSupply].sort(
           (fish1: FishSupply, fish2: FishSupply) => {
-            const orderType = data.direction === "asc" ? -1 : 1;
-            if (data.column === "spawningDate") {
+            const orderType = data.direction === 'asc' ? -1 : 1;
+            if (data.column === 'spawningDate') {
               if (fish1.spawningDate < fish2.spawningDate)
                 return -1 * orderType;
               if (fish1.spawningDate > fish2.spawningDate) return 1 * orderType;
               return 0;
-            } else if (data.column === "hatchingDate") {
+            } else if (data.column === 'hatchingDate') {
               if (fish1.hatchingDate < fish2.hatchingDate)
                 return -1 * orderType;
               if (fish1.hatchingDate > fish2.hatchingDate) return 1 * orderType;
               return 0;
-            } else if (data.column === "name") {
+            } else if (data.column === 'name') {
               if (
                 fish1.creator?.hatchery[0]?.name <
                 fish2.creator?.hatchery[0]?.name
@@ -224,23 +223,23 @@ export default function FishSupplyTable({
               )
                 return 1 * orderType;
               return 0;
-            } else if (data.column === "fishFarm") {
+            } else if (data.column === 'fishFarm') {
               if (fish1.fishFarm < fish2.fishFarm) return -1 * orderType;
               if (fish1.fishFarm > fish2.fishFarm) return 1 * orderType;
               return 0;
-            } else if (data.column === "productionUnits") {
+            } else if (data.column === 'productionUnits') {
               if (fish1.productionUnits < fish2.productionUnits)
                 return -1 * orderType;
               if (fish1.productionUnits > fish2.productionUnits)
                 return 1 * orderType;
               return 0;
-            } else if (data.column === "status") {
+            } else if (data.column === 'status') {
               if (fish1.status < fish2.status) return -1 * orderType;
               if (fish1.status > fish2.status) return 1 * orderType;
               return 0;
             }
             return 0;
-          }
+          },
         );
         setSortedFishSupply(sortedData);
       }
@@ -258,17 +257,17 @@ export default function FishSupplyTable({
   return (
     <Paper
       sx={{
-        width: "100%",
-        overflow: "hidden",
-        borderRadius: "14px",
-        boxShadow: "0px 0px 16px 5px #0000001A",
+        width: '100%',
+        overflow: 'hidden',
+        borderRadius: '14px',
+        boxShadow: '0px 0px 16px 5px #0000001A',
         mt: 4,
       }}
     >
       <TableContainer
         sx={{
-          maxHeight: "72.5vh",
-          overflow: "auto",
+          maxHeight: '72.5vh',
+          overflow: 'auto',
         }}
       >
         <Table stickyHeader aria-label="sticky table">
@@ -283,18 +282,18 @@ export default function FishSupplyTable({
                 return (
                   <TableRow
                     key={i}
-                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                   >
                     <TableCell
                       sx={{
-                        borderBottomColor: "#F5F6F8",
+                        borderBottomColor: '#F5F6F8',
                         borderBottomWidth: 2,
-                        color: "#555555",
+                        color: '#555555',
                         fontWeight: 500,
                         maxWidth: 250,
-                        wordBreak: "break-all",
+                        wordBreak: 'break-all',
                         pr: 2,
-                        textWrap: "nowrap",
+                        textWrap: 'nowrap',
                         paddingLeft: {
                           lg: 10,
                           md: 7,
@@ -304,20 +303,20 @@ export default function FishSupplyTable({
                       component="th"
                       scope="row"
                     >
-                      {fish?.creator?.hatchery[0]?.fishSpecie ?? ""}
+                      {fish?.creator?.hatchery[0]?.fishSpecie ?? ''}
                     </TableCell>
                     <TableCell
                       sx={{
-                        borderBottomColor: "#F5F6F8",
+                        borderBottomColor: '#F5F6F8',
                         borderBottomWidth: 2,
-                        color: "#06A198",
+                        color: '#06A198',
                         fontWeight: 500,
-                        textWrap: "nowrap",
+                        textWrap: 'nowrap',
                         p: 0,
                       }}
                     >
-                      <Box display={"flex"} alignItems={"center"} gap={1.5}>
-                        {fish?.batchNumber ?? ""}
+                      <Box display={'flex'} alignItems={'center'} gap={1.5}>
+                        {fish?.batchNumber ?? ''}
                         {/* {`${fish.hatchingDate}-${
                           fish.creator?.hatchery[0]?.code
                         }-${
@@ -330,18 +329,18 @@ export default function FishSupplyTable({
                     </TableCell>
                     <TableCell
                       sx={{
-                        borderBottomColor: "#F5F6F8",
+                        borderBottomColor: '#F5F6F8',
                         borderBottomWidth: 2,
-                        color: "#555555",
+                        color: '#555555',
                         fontWeight: 500,
-                        textWrap: "nowrap",
+                        textWrap: 'nowrap',
                       }}
                     >
                       <Box
-                        display={"flex"}
+                        display={'flex'}
                         gap={0.5}
-                        alignItems={"center"}
-                        width={"100%"}
+                        alignItems={'center'}
+                        width={'100%'}
                       >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -366,15 +365,15 @@ export default function FishSupplyTable({
                             />
                           </g>
                         </svg>
-                        {fish.broodstockMale ? fish.broodstockMale : "N/A"}
+                        {fish.broodstockMale ? fish.broodstockMale : 'N/A'}
                       </Box>
 
                       <Box
-                        display={"flex"}
+                        display={'flex'}
                         mt={0.3}
                         gap={0.5}
-                        alignItems={"center"}
-                        width={"100%"}
+                        alignItems={'center'}
+                        width={'100%'}
                       >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -395,97 +394,97 @@ export default function FishSupplyTable({
                             d="M352 800h320q32 0 32 32t-32 32H352q-32 0-32-32t32-32"
                           />
                         </svg>
-                        {fish.broodstockFemale ? fish.broodstockFemale : "N/A"}
+                        {fish.broodstockFemale ? fish.broodstockFemale : 'N/A'}
                       </Box>
                     </TableCell>
                     <TableCell
                       sx={{
-                        borderBottomColor: "#F5F6F8",
+                        borderBottomColor: '#F5F6F8',
                         borderBottomWidth: 2,
-                        color: "#555555",
+                        color: '#555555',
                         fontWeight: 500,
-                        textWrap: "nowrap",
+                        textWrap: 'nowrap',
                       }}
                     >
                       {fish?.spawningDate}
                     </TableCell>
                     <TableCell
                       sx={{
-                        borderBottomColor: "#F5F6F8",
+                        borderBottomColor: '#F5F6F8',
                         borderBottomWidth: 2,
-                        color: "#555555",
+                        color: '#555555',
                         fontWeight: 500,
-                        textWrap: "nowrap",
+                        textWrap: 'nowrap',
                       }}
                     >
                       {fish.hatchingDate}
                     </TableCell>
                     <TableCell
                       sx={{
-                        borderBottomColor: "#F5F6F8",
+                        borderBottomColor: '#F5F6F8',
                         borderBottomWidth: 2,
-                        color: "#555555",
+                        color: '#555555',
                         fontWeight: 500,
-                        textWrap: "nowrap",
+                        textWrap: 'nowrap',
                       }}
                     >
-                      {fish.status === "Harvested" ? "N/A" : fish.age}
-                    </TableCell>{" "}
+                      {fish.status === 'Harvested' ? 'N/A' : fish.age}
+                    </TableCell>{' '}
                     <TableCell
                       sx={{
-                        borderBottomColor: "#F5F6F8",
+                        borderBottomColor: '#F5F6F8',
                         borderBottomWidth: 2,
-                        color: "#555555",
+                        color: '#555555',
                         fontWeight: 500,
-                        textWrap: "nowrap",
+                        textWrap: 'nowrap',
                       }}
                     >
                       {fish?.creator?.hatchery[0]?.name}
-                    </TableCell>{" "}
+                    </TableCell>{' '}
                     <TableCell
                       sx={{
-                        borderBottomColor: "#F5F6F8",
+                        borderBottomColor: '#F5F6F8',
                         borderBottomWidth: 2,
-                        color: "#555555",
+                        color: '#555555',
                         fontWeight: 500,
-                        textWrap: "nowrap",
+                        textWrap: 'nowrap',
                       }}
                     >
                       {fish?.farm?.name}
-                    </TableCell>{" "}
+                    </TableCell>{' '}
                     <TableCell
                       sx={{
-                        borderBottomColor: "#F5F6F8",
+                        borderBottomColor: '#F5F6F8',
                         borderBottomWidth: 2,
-                        color: "#555555",
+                        color: '#555555',
                         fontWeight: 500,
-                        textWrap: "nowrap",
+                        textWrap: 'nowrap',
                       }}
                     >
                       {fish.status}
                     </TableCell>
-                    {(role === "SUPERADMIN" || permisions) && (
+                    {(role === 'SUPERADMIN' || permisions) && (
                       <TableCell
                         sx={{
-                          borderBottomColor: "#F5F6F8",
+                          borderBottomColor: '#F5F6F8',
                           borderBottomWidth: 2,
-                          color: "#555555",
+                          color: '#555555',
                           fontWeight: 500,
-                          textWrap: "nowrap",
+                          textWrap: 'nowrap',
                         }}
                         className="cursor-pointer"
                       >
                         <Button
                           id="basic-button"
-                          aria-controls={open ? "basic-menu" : undefined}
+                          aria-controls={open ? 'basic-menu' : undefined}
                           aria-haspopup="true"
-                          aria-expanded={open ? "true" : undefined}
+                          aria-expanded={open ? 'true' : undefined}
                           onClick={(e) => handleClick(e, fish)}
                           className="table-edit-option"
                           sx={{
-                            background: "transparent",
-                            color: "#555555",
-                            boxShadow: "none",
+                            background: 'transparent',
+                            color: '#555555',
+                            boxShadow: 'none',
                           }}
                         >
                           <svg
@@ -507,11 +506,11 @@ export default function FishSupplyTable({
                           open={open}
                           onClose={handleClose}
                           MenuListProps={{
-                            "aria-labelledby": "basic-button",
+                            'aria-labelledby': 'basic-button',
                           }}
                           sx={{
-                            position: "absolute",
-                            left: "-10px",
+                            position: 'absolute',
+                            left: '-10px',
                           }}
                         >
                           <MenuItem onClick={handleEdit}>
@@ -537,7 +536,7 @@ export default function FishSupplyTable({
                             </Stack>
                           </MenuItem>
 
-                          <Divider sx={{ borderColor: "#9797971A", my: 0.5 }} />
+                          <Divider sx={{ borderColor: '#9797971A', my: 0.5 }} />
                         </Menu>
                       </TableCell>
                     )}
@@ -546,7 +545,7 @@ export default function FishSupplyTable({
               })
             ) : (
               <TableRow>
-                <TableCell colSpan={10} sx={{ textAlign: "center" }}>
+                <TableCell colSpan={10} sx={{ textAlign: 'center' }}>
                   No Data Found
                 </TableCell>
               </TableRow>

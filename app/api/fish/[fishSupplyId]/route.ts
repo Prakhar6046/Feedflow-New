@@ -1,6 +1,6 @@
-import prisma from "@/prisma/prisma";
-import { NextRequest, NextResponse } from "next/server";
-import { verifyAndRefreshToken } from "@/app/_lib/auth/verifyAndRefreshToken";
+import prisma from '@/prisma/prisma';
+import { NextRequest, NextResponse } from 'next/server';
+import { verifyAndRefreshToken } from '@/app/_lib/auth/verifyAndRefreshToken';
 
 export const GET = async (request: NextRequest, context: { params: any }) => {
   const user = await verifyAndRefreshToken(request);
@@ -8,17 +8,17 @@ export const GET = async (request: NextRequest, context: { params: any }) => {
     return new NextResponse(
       JSON.stringify({
         status: false,
-        message: "Unauthorized: Token missing or invalid",
+        message: 'Unauthorized: Token missing or invalid',
       }),
-      { status: 401 }
+      { status: 401 },
     );
   }
   const fishSupplyId = context.params.fishSupplyId;
 
   if (!fishSupplyId) {
     return new NextResponse(
-      JSON.stringify({ message: "Invalid or missing fish supply Id" }),
-      { status: 400 }
+      JSON.stringify({ message: 'Invalid or missing fish supply Id' }),
+      { status: 400 },
     );
   }
   try {
@@ -41,9 +41,9 @@ export const PUT = async (request: NextRequest, context: { params: any }) => {
     return new NextResponse(
       JSON.stringify({
         status: false,
-        message: "Unauthorized: Token missing or invalid",
+        message: 'Unauthorized: Token missing or invalid',
       }),
-      { status: 401 }
+      { status: 401 },
     );
   }
   try {
@@ -51,8 +51,8 @@ export const PUT = async (request: NextRequest, context: { params: any }) => {
     const body = await request.json();
     if (!fishSupplyId) {
       return new NextResponse(
-        JSON.stringify({ message: "Invalid or missing fish supply Id" }),
-        { status: 400 }
+        JSON.stringify({ message: 'Invalid or missing fish supply Id' }),
+        { status: 400 },
       );
     }
     await prisma.fishSupply.update({
@@ -62,11 +62,11 @@ export const PUT = async (request: NextRequest, context: { params: any }) => {
     return new NextResponse(
       JSON.stringify({
         status: true,
-        message: "Fish Supply Updated Successfully",
+        message: 'Fish Supply Updated Successfully',
       }),
       {
         status: 200,
-      }
+      },
     );
   } catch (error) {
     return new NextResponse(JSON.stringify({ status: false, error }), {

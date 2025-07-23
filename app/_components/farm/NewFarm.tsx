@@ -1,26 +1,26 @@
-"use client";
-import { Farm } from "@/app/_typeModels/Farm";
-import { SingleUser } from "@/app/_typeModels/User";
-import { Box, Divider, Grid, Step, StepLabel, Stepper } from "@mui/material";
-import { getCookie, setCookie } from "cookies-next";
-import { useEffect, useState } from "react";
-import FarmInformation from "./FarmInformation";
-import FeedProfiles from "./FeedProfiles";
-import ProductionParaMeter from "./ProductionParameter";
-import ProductionUnits from "./ProductionUnits";
-import { FeedProduct } from "@/app/_typeModels/Feed";
-import { FeedSupplier } from "@/app/_typeModels/Organization";
+'use client';
+import { Farm } from '@/app/_typeModels/Farm';
+import { SingleUser } from '@/app/_typeModels/User';
+import { Box, Divider, Grid, Step, StepLabel, Stepper } from '@mui/material';
+import { getCookie, setCookie } from 'cookies-next';
+import { useEffect, useState } from 'react';
+import FarmInformation from './FarmInformation';
+import FeedProfiles from './FeedProfiles';
+import ProductionParaMeter from './ProductionParameter';
+import ProductionUnits from './ProductionUnits';
+import { FeedProduct } from '@/app/_typeModels/Feed';
+import { FeedSupplier } from '@/app/_typeModels/Organization';
 
 const steps = [
   {
-    label: "Farm",
+    label: 'Farm',
   },
-  { label: "Production Parameters" },
+  { label: 'Production Parameters' },
   {
-    label: "Feed profiles",
+    label: 'Feed profiles',
   },
   {
-    label: "Production Units",
+    label: 'Production Units',
   },
 ];
 interface Props {
@@ -37,23 +37,23 @@ export default function NewFarm({
   feedstores,
   feedSuppliers,
 }: Props) {
-  const activeStepIndex = Number(getCookie("activeStep"));
-  const token = getCookie("auth-token");
+  const activeStepIndex = Number(getCookie('activeStep'));
+  const token = getCookie('auth-token');
   const [activeStep, setActiveStep] = useState<number>(
-    activeStepIndex !== 0 ? activeStepIndex : 0
+    activeStepIndex !== 0 ? activeStepIndex : 0,
   );
 
   useEffect(() => {
-    setCookie("activeStep", activeStep);
+    setCookie('activeStep', activeStep);
   }, [activeStep]);
   return (
     <Grid
       container
       sx={{
-        width: "100%",
-        overflow: "hidden",
-        borderRadius: "14px",
-        boxShadow: "0px 0px 16px 5px #0000001A",
+        width: '100%',
+        overflow: 'hidden',
+        borderRadius: '14px',
+        boxShadow: '0px 0px 16px 5px #0000001A',
         p: 3,
       }}
     >
@@ -72,8 +72,8 @@ export default function NewFarm({
               <Step
                 key={step.label}
                 sx={{
-                  fontSize: "30px",
-                  cursor: "pointer",
+                  fontSize: '30px',
+                  cursor: 'pointer',
                 }}
                 onClick={() => setActiveStep(index)}
               >
@@ -88,16 +88,16 @@ export default function NewFarm({
         item
         xs={1}
         sx={{
-          display: "flex",
-          justifyContent: "center",
+          display: 'flex',
+          justifyContent: 'center',
         }}
       >
         <Divider
           orientation="vertical"
           flexItem
           sx={{
-            height: "100%",
-            borderColor: "#E6E7E9",
+            height: '100%',
+            borderColor: '#E6E7E9',
           }}
         />
       </Grid>

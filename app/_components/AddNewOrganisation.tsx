@@ -1,10 +1,10 @@
-"use client";
+'use client';
 // import UploadFileOutlinedIcon from '@mui/icons-material/UploadFileOutlined';
-import * as validationPattern from "@/app/_lib/utils/validationPatterns/index";
-import * as validationMessage from "@/app/_lib/utils/validationsMessage/index";
-import sendEmailIcon from "@/public/static/img/ic-send-email.svg";
-import sentEmailIcon from "@/public/static/img/ic-sent-email.svg";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import * as validationPattern from '@/app/_lib/utils/validationPatterns/index';
+import * as validationMessage from '@/app/_lib/utils/validationsMessage/index';
+import sendEmailIcon from '@/public/static/img/ic-send-email.svg';
+import sentEmailIcon from '@/public/static/img/ic-sent-email.svg';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import {
   Box,
   Button,
@@ -16,48 +16,48 @@ import {
   Stack,
   TextField,
   Typography,
-} from "@mui/material";
-import Select from "@mui/material/Select";
-import { styled } from "@mui/material/styles";
-import { useEffect, useRef, useState } from "react";
+} from '@mui/material';
+import Select from '@mui/material/Select';
+import { styled } from '@mui/material/styles';
+import { useEffect, useRef, useState } from 'react';
 
-import Image from "next/image";
-import { useRouter } from "next/navigation";
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import {
   Controller,
   SubmitHandler,
   useFieldArray,
   useForm,
-} from "react-hook-form";
-import toast from "react-hot-toast";
-import { deleteImage, handleUpload } from "../_lib/utils";
+} from 'react-hook-form';
+import toast from 'react-hot-toast';
+import { deleteImage, handleUpload } from '../_lib/utils';
 import {
   AddOrganizationFormInputs,
   SingleOrganisation,
-} from "../_typeModels/Organization";
-import { SingleUser } from "../_typeModels/User";
-import MapComponent from "./farm/MapComponent";
-import HatcheryForm from "./hatchery/HatcheryForm";
+} from '../_typeModels/Organization';
+import { SingleUser } from '../_typeModels/User';
+import MapComponent from './farm/MapComponent';
+import HatcheryForm from './hatchery/HatcheryForm';
 // import { useGetCookie } from "cookies-next";
-const VisuallyHiddenInput = styled("input")({
-  clip: "rect(0 0 0 0)",
-  clipPath: "inset(50%)",
+const VisuallyHiddenInput = styled('input')({
+  clip: 'rect(0 0 0 0)',
+  clipPath: 'inset(50%)',
   height: 1,
-  overflow: "hidden",
-  position: "absolute",
+  overflow: 'hidden',
+  position: 'absolute',
   bottom: 0,
   left: 0,
-  whiteSpace: "nowrap",
+  whiteSpace: 'nowrap',
   width: 1,
 });
 
 export const OrganisationType = [
-  "Fish Producer",
-  "Fish Farm",
-  "Hatchery",
-  "Feed Supplier",
-  "Testing Facility",
-  "Unspecified",
+  'Fish Producer',
+  'Fish Farm',
+  'Hatchery',
+  'Feed Supplier',
+  'Testing Facility',
+  'Unspecified',
 ];
 interface Props {
   organisations: SingleOrganisation[];
@@ -67,8 +67,8 @@ interface Props {
   authToken: any;
 }
 export const PermissionType = [
-  { label: "Admin", value: "ADMIN" },
-  { label: "No Admin", value: "NONADMIN" },
+  { label: 'Admin', value: 'ADMIN' },
+  { label: 'No Admin', value: 'NONADMIN' },
 ];
 const AddNewOrganisation = ({
   organisations,
@@ -78,7 +78,7 @@ const AddNewOrganisation = ({
   authToken,
 }: Props) => {
   // const token = useGetCookie("auth-token");
-  const [profilePic, setProfilePic] = useState<String>();
+  const [profilePic, setProfilePic] = useState<string>();
   const router = useRouter();
   const [isHatcherySelected, setIsHatcherySelected] = useState<boolean>(false);
   const [organisationCount, setOrganisationCount] = useState<number>(0);
@@ -87,7 +87,7 @@ const AddNewOrganisation = ({
   const [addressInformation, setAddressInformation] = useState<any>();
   const [useAddress, setUseAddress] = useState<boolean>(false);
   const [searchedAddress, setSearchedAddress] = useState<any>();
-  const [altitude, setAltitude] = useState<String>("");
+  const [altitude, setAltitude] = useState<string>('');
   const [inviteSent, setInviteSent] = useState<{ [key: number]: boolean }>({});
   const handleInviteUser = (invite: boolean, index: number) => {
     if (!invite) {
@@ -113,28 +113,28 @@ const AddNewOrganisation = ({
     formState: { errors },
   } = useForm<AddOrganizationFormInputs>({
     defaultValues: {
-      contacts: [{ name: "", role: "", email: "", phone: "", permission: "" }],
+      contacts: [{ name: '', role: '', email: '', phone: '', permission: '' }],
     },
-    mode: "onChange",
+    mode: 'onChange',
   });
   const editableRef: any = useRef(null);
 
   const handleOrgPrefixChange = () => {
-    const prefix = editableRef.current?.innerText || "ORG-";
+    const prefix = editableRef.current?.innerText || 'ORG-';
     const fullCode = `${prefix}${Number(organisationCount) + 1}`;
-    setValue("organisationCode", fullCode);
+    setValue('organisationCode', fullCode);
   };
 
   const onSubmit: SubmitHandler<AddOrganizationFormInputs> = async (data) => {
     // Prevent API call if one is already in progress
 
-    const hasAdmin = watch("contacts").some(
-      (contact) => contact.permission === "ADMIN"
+    const hasAdmin = watch('contacts').some(
+      (contact) => contact.permission === 'ADMIN',
     );
 
     if (!hasAdmin) {
       toast.dismiss();
-      toast.error("At least one admin is required for this organisation.");
+      toast.error('At least one admin is required for this organisation.');
       return;
     }
     if (isApiCallInProgress) return;
@@ -142,10 +142,10 @@ const AddNewOrganisation = ({
     try {
       if (data && loggedUser) {
         data.createdBy = loggedUser.organisationId;
-        const response = await fetch("/api/add-organisation", {
-          method: "POST",
+        const response = await fetch('/api/add-organisation', {
+          method: 'POST',
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
             // Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({ ...data, imageUrl: profilePic }),
@@ -153,25 +153,25 @@ const AddNewOrganisation = ({
         const responseData = await response.json();
         if (responseData.status) {
           toast.success(responseData.message);
-          router.push("/dashboard/organisation");
+          router.push('/dashboard/organisation');
           reset();
         } else {
           toast.error(responseData.error);
         }
       }
     } catch (error) {
-      toast.error("Something went wrong. Please try again.");
+      toast.error('Something went wrong. Please try again.');
     } finally {
       setIsApiCallInProgress(false);
     }
   };
   const { fields, append, remove } = useFieldArray({
     control,
-    name: "contacts",
+    name: 'contacts',
   });
 
   const AddContactField = () => {
-    const contacts = watch("contacts");
+    const contacts = watch('contacts');
     if (contacts) {
       const lastContact = contacts[contacts.length - 1];
 
@@ -182,55 +182,55 @@ const AddNewOrganisation = ({
         lastContact.email &&
         lastContact.phone
       ) {
-        append({ name: "", role: "", email: "", phone: "", permission: "" });
+        append({ name: '', role: '', email: '', phone: '', permission: '' });
       } else {
         toast.dismiss();
-        toast.error("Please fill previous contact details.");
+        toast.error('Please fill previous contact details.');
       }
     }
   };
 
   useEffect(() => {
-    if (watch("organisationType") === "Hatchery") {
+    if (watch('organisationType') === 'Hatchery') {
       setIsHatcherySelected(true);
     } else {
       setIsHatcherySelected(false);
     }
-  }, [watch("organisationType")]);
+  }, [watch('organisationType')]);
   useEffect(() => {
     if (addressInformation && useAddress) {
-      setValue("address", addressInformation.address);
-      setValue("city", addressInformation.city);
-      setValue("postCode", addressInformation.postcode);
-      setValue("province", addressInformation.state);
-      setValue("country", addressInformation.country);
+      setValue('address', addressInformation.address);
+      setValue('city', addressInformation.city);
+      setValue('postCode', addressInformation.postcode);
+      setValue('province', addressInformation.state);
+      setValue('country', addressInformation.country);
 
       setUseAddress(false);
     }
   }, [addressInformation, useAddress]);
 
   useEffect(() => {
-    if (type === "fishProducers") {
-      setValue("organisationType", "Fish Producer");
+    if (type === 'fishProducers') {
+      setValue('organisationType', 'Fish Producer');
     }
   }, [type]);
 
   useEffect(() => {
     if (organisationCount) {
       const fullCode = `ORG-${Number(organisationCount) + 1}`;
-      setValue("organisationCode", fullCode);
+      setValue('organisationCode', fullCode);
     }
   }, [organisationCount]);
 
   useEffect(() => {
     const getORGCount = async () => {
       const data = await fetch(`/api/organisation/count`, {
-        method: "GET",
+        method: 'GET',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
           Authorization: `Bearer ${authToken}`,
         },
-        cache: "no-store",
+        cache: 'no-store',
       });
       const res = await data.json();
       setOrganisationCount(res?.data);
@@ -242,8 +242,8 @@ const AddNewOrganisation = ({
   return (
     <Stack
       sx={{
-        borderRadius: "14px",
-        boxShadow: "0px 0px 16px 5px #0000001A",
+        borderRadius: '14px',
+        boxShadow: '0px 0px 16px 5px #0000001A',
         mt: 4,
       }}
     >
@@ -255,7 +255,7 @@ const AddNewOrganisation = ({
           },
           fontSize: 20,
           fontWeight: 600,
-          borderColor: "#0000001A",
+          borderColor: '#0000001A',
         }}
       >
         Information
@@ -278,21 +278,21 @@ const AddNewOrganisation = ({
           md={5}
           xs={12}
           sx={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "flex-start",
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'flex-start',
             gap: 3,
             alignItems: {
-              xs: "center",
+              xs: 'center',
             },
           }}
         >
-          {" "}
+          {' '}
           <Typography
             variant="h6"
             color="rgb(99, 115, 129)"
             fontSize={14}
-            alignSelf={"flex-start"}
+            alignSelf={'flex-start'}
           >
             Profile Picture
           </Typography>
@@ -303,32 +303,32 @@ const AddNewOrganisation = ({
             tabIndex={-1}
             style={{
               backgroundImage: `url(${profilePic})`,
-              backgroundSize: "100% 100%",
+              backgroundSize: '100% 100%',
             }}
             startIcon={!profilePic && <CloudUploadIcon />}
             className="upload-file-input1 "
             sx={{
-              textTransform: "unset",
+              textTransform: 'unset',
               fontSize: 12,
               width: 140,
               height: 140,
               borderRadius: 100,
-              border: "7px solid white",
-              outline: "1px dashed rgba(145, 158, 171, 0.32)",
-              backgroundColor: "rgb(244, 246, 248)",
-              boxShadow: "none",
-              color: "rgb(99, 115, 129)",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-              position: "relative",
+              border: '7px solid white',
+              outline: '1px dashed rgba(145, 158, 171, 0.32)',
+              backgroundColor: 'rgb(244, 246, 248)',
+              boxShadow: 'none',
+              color: 'rgb(99, 115, 129)',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+              position: 'relative',
             }}
           >
-            <Box>{!profilePic && "Upload Photo"}</Box>
+            <Box>{!profilePic && 'Upload Photo'}</Box>
             <VisuallyHiddenInput
               type="file"
-              {...register("image", {
+              {...register('image', {
                 onChange: (e) =>
                   handleUpload(e.target.files, profilePic, setProfilePic),
               })}
@@ -336,23 +336,23 @@ const AddNewOrganisation = ({
             />
           </Button>
           {profilePic && (
-            <Box display={"flex"} gap="10px" alignItems={"center"} mt={"2px"}>
+            <Box display={'flex'} gap="10px" alignItems={'center'} mt={'2px'}>
               <Button
                 component="label"
                 variant="contained"
                 sx={{
-                  background: "#06A19B",
-                  color: "#fff",
+                  background: '#06A19B',
+                  color: '#fff',
                   fontWeight: 600,
-                  padding: "4px",
-                  textTransform: "capitalize",
-                  borderRadius: "10px",
-                  border: "1px solid #06A19B",
+                  padding: '4px',
+                  textTransform: 'capitalize',
+                  borderRadius: '10px',
+                  border: '1px solid #06A19B',
                   // position: "absolute",
                   // bottom: "1%",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "2px",
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '2px',
                 }}
               >
                 <svg
@@ -369,7 +369,7 @@ const AddNewOrganisation = ({
                 Edit
                 <VisuallyHiddenInput
                   type="file"
-                  {...register("image", {
+                  {...register('image', {
                     onChange: (e) =>
                       handleUpload(e.target.files, profilePic, setProfilePic),
                   })}
@@ -383,22 +383,22 @@ const AddNewOrganisation = ({
                   deleteImage({ image: profilePic }, setProfilePic)
                 }
                 sx={{
-                  background: "#D71818",
+                  background: '#D71818',
                   fontWeight: 600,
-                  padding: "4px",
-                  width: "fit-content",
-                  textTransform: "capitalize",
-                  borderRadius: "10px",
-                  color: "#fff",
-                  border: "1px solid #D71818",
-                  boxShadow: "none",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: "2px",
+                  padding: '4px',
+                  width: 'fit-content',
+                  textTransform: 'capitalize',
+                  borderRadius: '10px',
+                  color: '#fff',
+                  border: '1px solid #D71818',
+                  boxShadow: 'none',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '2px',
                 }}
               >
-                {" "}
+                {' '}
                 <svg
                   width="14"
                   height="14"
@@ -424,21 +424,21 @@ const AddNewOrganisation = ({
             </Box>
           )}
           <Box
-            display={"flex"}
-            justifyContent={"center"}
-            alignItems={"center"}
-            flexDirection={"row"}
+            display={'flex'}
+            justifyContent={'center'}
+            alignItems={'center'}
+            flexDirection={'row'}
             sx={{
               width: {
-                md: "90%",
-                xs: "100%",
+                md: '90%',
+                xs: '100%',
               },
             }}
           >
             <Typography
               variant="body1"
               fontSize={12}
-              textAlign={"center"}
+              textAlign={'center'}
               margin="0 auto"
               color="#979797"
             >
@@ -466,27 +466,27 @@ const AddNewOrganisation = ({
                 label="Organisation Name *"
                 type="text"
                 className="form-input"
-                {...register("organisationName", {
+                {...register('organisationName', {
                   required: true,
                   pattern: validationPattern.alphabetsNumbersAndSpacesPattern,
-                  validate: (value: String) => {
+                  validate: (value: string) => {
                     const isUnique = organisations.every((val) => {
                       return val.name.toLowerCase() !== value.toLowerCase();
                     });
                     return (
                       isUnique ||
-                      "Please enter a unique name. The name you entered is not available."
+                      'Please enter a unique name. The name you entered is not available.'
                     );
                   },
                 })}
                 focused
                 sx={{
-                  width: "100%",
+                  width: '100%',
                 }}
               />
               {errors &&
                 errors.organisationName &&
-                errors.organisationName.type === "required" && (
+                errors.organisationName.type === 'required' && (
                   <Typography
                     variant="body2"
                     color="red"
@@ -498,7 +498,7 @@ const AddNewOrganisation = ({
                 )}
               {errors &&
                 errors.organisationName &&
-                errors.organisationName.type === "pattern" && (
+                errors.organisationName.type === 'pattern' && (
                   <Typography
                     variant="body2"
                     color="red"
@@ -510,7 +510,7 @@ const AddNewOrganisation = ({
                 )}
               {errors &&
                 errors.organisationName &&
-                errors.organisationName.type === "validate" && (
+                errors.organisationName.type === 'validate' && (
                   <Typography
                     variant="body2"
                     color="red"
@@ -522,46 +522,46 @@ const AddNewOrganisation = ({
                 )}
             </Box>
             <Stack
-              display={"flex"}
-              justifyContent={"flex-start"}
-              direction={"row"}
+              display={'flex'}
+              justifyContent={'flex-start'}
+              direction={'row'}
               sx={{
-                width: "100%",
+                width: '100%',
                 marginBottom: 2,
                 gap: 1.5,
               }}
             >
-              <Box width={"100%"} position={"relative"}>
+              <Box width={'100%'} position={'relative'}>
                 <TextField
                   label="Organisation Code *"
                   type="text"
                   className="form-input org-code"
-                  {...register("organisationCode", {
+                  {...register('organisationCode', {
                     required: true,
                     // pattern: validationPattern.alphabetsNumbersAndSpacesPattern,
                   })}
                   focused
                   sx={{
-                    width: "100%",
+                    width: '100%',
                   }}
                 />
 
                 <Box
                   sx={{
-                    height: "1.4375em",
-                    paddingInline: "14px",
-                    display: "flex",
+                    height: '1.4375em',
+                    paddingInline: '14px',
+                    display: 'flex',
                     gap: 0.5,
-                    alignItems: "center",
-                    position: "absolute",
+                    alignItems: 'center',
+                    position: 'absolute',
                     left: 0,
-                    top: "50%",
-                    transform: "translate(0, -50%)",
+                    top: '50%',
+                    transform: 'translate(0, -50%)',
                   }}
                 >
                   <Typography
                     variant="body1"
-                    component={"p"}
+                    component={'p'}
                     contentEditable
                     suppressContentEditableWarning
                     ref={editableRef}
@@ -578,7 +578,7 @@ const AddNewOrganisation = ({
 
                 {errors &&
                   errors.organisationCode &&
-                  errors.organisationCode.type === "required" && (
+                  errors.organisationCode.type === 'required' && (
                     <Typography
                       variant="body2"
                       color="red"
@@ -603,7 +603,7 @@ const AddNewOrganisation = ({
                     labelId="demo-simple-select-label"
                     id="demo-simple-select"
                     label="Organisation Type *"
-                    value={field.value ?? ""}
+                    value={field.value ?? ''}
                     onChange={field.onChange}
                     disabled={!!type}
                   >
@@ -633,8 +633,8 @@ const AddNewOrganisation = ({
               />
             )}
             <Box
-              display={"flex"}
-              alignItems={"center"}
+              display={'flex'}
+              alignItems={'center'}
               justifyContent="space-between"
               marginTop={3}
               marginBottom={2}
@@ -657,32 +657,32 @@ const AddNewOrganisation = ({
               />
             </Box>
             <Stack
-              display={"flex"}
-              justifyContent={"flex-start"}
-              direction={"row"}
+              display={'flex'}
+              justifyContent={'flex-start'}
+              direction={'row'}
               sx={{
-                width: "100%",
+                width: '100%',
                 marginBottom: 2,
                 gap: 1.5,
               }}
             >
-              <Box width={"100%"}>
+              <Box width={'100%'}>
                 <TextField
                   label="Address *"
                   type="text"
                   className="form-input"
-                  {...register("address", {
+                  {...register('address', {
                     required: true,
                     pattern: validationPattern.addressPattern,
                   })}
                   focused
                   sx={{
-                    width: "100%",
+                    width: '100%',
                   }}
                 />
                 {errors &&
                   errors.address &&
-                  errors.address.type === "required" && (
+                  errors.address.type === 'required' && (
                     <Typography
                       variant="body2"
                       color="red"
@@ -694,7 +694,7 @@ const AddNewOrganisation = ({
                   )}
                 {errors &&
                   errors.address &&
-                  errors.address.type === "pattern" && (
+                  errors.address.type === 'pattern' && (
                     <Typography
                       variant="body2"
                       color="red"
@@ -706,22 +706,22 @@ const AddNewOrganisation = ({
                   )}
               </Box>
 
-              <Box width={"100%"}>
+              <Box width={'100%'}>
                 <TextField
                   label="City *"
                   type="text"
                   className="form-input"
-                  {...register("city", {
+                  {...register('city', {
                     required: true,
                     pattern:
                       validationPattern.alphabetsSpacesAndSpecialCharsPattern,
                   })}
                   focused
                   sx={{
-                    width: "100%",
+                    width: '100%',
                   }}
                 />
-                {errors && errors.city && errors.city.type === "required" && (
+                {errors && errors.city && errors.city.type === 'required' && (
                   <Typography
                     variant="body2"
                     color="red"
@@ -731,7 +731,7 @@ const AddNewOrganisation = ({
                     {validationMessage.required}
                   </Typography>
                 )}
-                {errors && errors.city && errors.city.type === "pattern" && (
+                {errors && errors.city && errors.city.type === 'pattern' && (
                   <Typography
                     variant="body2"
                     color="red"
@@ -744,33 +744,33 @@ const AddNewOrganisation = ({
               </Box>
             </Stack>
             <Stack
-              display={"flex"}
-              justifyContent={"flex-start"}
-              direction={"row"}
+              display={'flex'}
+              justifyContent={'flex-start'}
+              direction={'row'}
               sx={{
-                width: "100%",
+                width: '100%',
                 marginBottom: 2,
                 gap: 1.5,
               }}
             >
-              <Box width={"100%"}>
+              <Box width={'100%'}>
                 <TextField
                   label="Province *"
                   type="text"
                   className="form-input"
-                  {...register("province", {
+                  {...register('province', {
                     required: true,
                     pattern:
                       validationPattern.alphabetsSpacesAndSpecialCharsPattern,
                   })}
                   focused
                   sx={{
-                    width: "100%",
+                    width: '100%',
                   }}
                 />
                 {errors &&
                   errors.province &&
-                  errors.province.type === "required" && (
+                  errors.province.type === 'required' && (
                     <Typography
                       variant="body2"
                       color="red"
@@ -782,7 +782,7 @@ const AddNewOrganisation = ({
                   )}
                 {errors &&
                   errors.province &&
-                  errors.province.type === "pattern" && (
+                  errors.province.type === 'pattern' && (
                     <Typography
                       variant="body2"
                       color="red"
@@ -794,23 +794,23 @@ const AddNewOrganisation = ({
                   )}
               </Box>
 
-              <Box width={"100%"}>
+              <Box width={'100%'}>
                 <TextField
                   label="Post Code *"
                   type="text"
                   className="form-input"
-                  {...register("postCode", {
+                  {...register('postCode', {
                     required: true,
                     pattern: validationPattern.onlyNumbersPattern,
                   })}
                   focused
                   sx={{
-                    width: "100%",
+                    width: '100%',
                   }}
                 />
                 {errors &&
                   errors.postCode &&
-                  errors.postCode.type === "required" && (
+                  errors.postCode.type === 'required' && (
                     <Typography
                       variant="body2"
                       color="red"
@@ -822,7 +822,7 @@ const AddNewOrganisation = ({
                   )}
                 {errors &&
                   errors.postCode &&
-                  errors.postCode.type === "pattern" && (
+                  errors.postCode.type === 'pattern' && (
                     <Typography
                       variant="body2"
                       color="red"
@@ -835,32 +835,32 @@ const AddNewOrganisation = ({
               </Box>
             </Stack>
             <Stack
-              display={"flex"}
-              justifyContent={"flex-start"}
-              direction={"row"}
+              display={'flex'}
+              justifyContent={'flex-start'}
+              direction={'row'}
               sx={{
-                width: "100%",
+                width: '100%',
                 marginBottom: 2,
                 gap: 1.5,
               }}
             >
-              <Box width={"50%"}>
+              <Box width={'50%'}>
                 <TextField
                   label="Country *"
                   type="text"
                   className="form-input"
-                  {...register("country", {
+                  {...register('country', {
                     required: true,
                     pattern: validationPattern.alphabetsAndSpacesPattern,
                   })}
                   focused
                   sx={{
-                    width: "100%",
+                    width: '100%',
                   }}
                 />
                 {errors &&
                   errors.country &&
-                  errors.country.type === "required" && (
+                  errors.country.type === 'required' && (
                     <Typography
                       variant="body2"
                       color="red"
@@ -872,7 +872,7 @@ const AddNewOrganisation = ({
                   )}
                 {errors &&
                   errors.country &&
-                  errors.country.type === "pattern" && (
+                  errors.country.type === 'pattern' && (
                     <Typography
                       variant="body2"
                       color="red"
@@ -897,27 +897,27 @@ const AddNewOrganisation = ({
             {fields.map((item, index) => (
               <Stack
                 key={item.id}
-                display={"flex"}
-                direction={"row"}
+                display={'flex'}
+                direction={'row'}
                 sx={{
-                  width: "100%",
+                  width: '100%',
                   marginBottom: 2,
                   gap: 1.5,
                   flexWrap: {
-                    lg: "nowrap",
-                    xs: "wrap",
+                    lg: 'nowrap',
+                    xs: 'wrap',
                   },
                   justifyContent: {
-                    md: "center",
+                    md: 'center',
                   },
                 }}
               >
                 <Box
                   sx={{
                     width: {
-                      lg: "100%",
-                      md: "48.4%",
-                      xs: "100%",
+                      lg: '100%',
+                      md: '48.4%',
+                      xs: '100%',
                     },
                   }}
                 >
@@ -931,7 +931,7 @@ const AddNewOrganisation = ({
                     })}
                     focused
                     sx={{
-                      width: "100%",
+                      width: '100%',
                     }}
                   />
 
@@ -939,7 +939,7 @@ const AddNewOrganisation = ({
                     errors?.contacts &&
                     errors?.contacts[index] &&
                     errors?.contacts[index]?.name &&
-                    errors?.contacts[index]?.name.type === "required" && (
+                    errors?.contacts[index]?.name.type === 'required' && (
                       <Typography
                         variant="body2"
                         color="red"
@@ -953,7 +953,7 @@ const AddNewOrganisation = ({
                     errors?.contacts &&
                     errors?.contacts[index] &&
                     errors?.contacts[index]?.name &&
-                    errors?.contacts[index]?.name.type === "pattern" && (
+                    errors?.contacts[index]?.name.type === 'pattern' && (
                       <Typography
                         variant="body2"
                         color="red"
@@ -968,9 +968,9 @@ const AddNewOrganisation = ({
                 <Box
                   sx={{
                     width: {
-                      lg: "100%",
-                      md: "48.4%",
-                      xs: "100%",
+                      lg: '100%',
+                      md: '48.4%',
+                      xs: '100%',
                     },
                   }}
                 >
@@ -1020,7 +1020,7 @@ const AddNewOrganisation = ({
                     errors?.contacts &&
                     errors?.contacts[index] &&
                     errors?.contacts[index]?.permission &&
-                    errors?.contacts[index]?.permission.type === "required" && (
+                    errors?.contacts[index]?.permission.type === 'required' && (
                       <Typography
                         variant="body2"
                         color="red"
@@ -1034,9 +1034,9 @@ const AddNewOrganisation = ({
                 <Box
                   sx={{
                     width: {
-                      lg: "100%",
-                      md: "48.4%",
-                      xs: "100%",
+                      lg: '100%',
+                      md: '48.4%',
+                      xs: '100%',
                     },
                   }}
                 >
@@ -1050,14 +1050,14 @@ const AddNewOrganisation = ({
                     })}
                     focused
                     sx={{
-                      width: "100%",
+                      width: '100%',
                     }}
                   />
                   {errors &&
                     errors?.contacts &&
                     errors?.contacts[index] &&
                     errors?.contacts[index]?.role &&
-                    errors?.contacts[index]?.role.type === "required" && (
+                    errors?.contacts[index]?.role.type === 'required' && (
                       <Typography
                         variant="body2"
                         color="red"
@@ -1071,9 +1071,9 @@ const AddNewOrganisation = ({
                 <Box
                   sx={{
                     width: {
-                      lg: "100%",
-                      md: "48.4%",
-                      xs: "100%",
+                      lg: '100%',
+                      md: '48.4%',
+                      xs: '100%',
                     },
                   }}
                 >
@@ -1089,10 +1089,10 @@ const AddNewOrganisation = ({
                           (f, i) =>
                             i === index ||
                             String(f.email).toLowerCase() !==
-                              String(value).toLowerCase()
+                              String(value).toLowerCase(),
                         );
                         if (!isUnique) {
-                          return "Please enter a unique email.This email is already used in contacts information";
+                          return 'Please enter a unique email.This email is already used in contacts information';
                         }
 
                         return true;
@@ -1100,14 +1100,14 @@ const AddNewOrganisation = ({
                     })}
                     focused
                     sx={{
-                      width: "100%",
+                      width: '100%',
                     }}
                   />
                   {errors &&
                     errors?.contacts &&
                     errors?.contacts[index] &&
                     errors?.contacts[index]?.email &&
-                    errors?.contacts[index]?.email.type === "required" && (
+                    errors?.contacts[index]?.email.type === 'required' && (
                       <Typography
                         variant="body2"
                         color="red"
@@ -1121,7 +1121,7 @@ const AddNewOrganisation = ({
                     errors?.contacts &&
                     errors?.contacts[index] &&
                     errors?.contacts[index]?.email &&
-                    errors?.contacts[index]?.email.type === "pattern" && (
+                    errors?.contacts[index]?.email.type === 'pattern' && (
                       <Typography
                         variant="body2"
                         color="red"
@@ -1135,7 +1135,7 @@ const AddNewOrganisation = ({
                     errors?.contacts &&
                     errors?.contacts[index] &&
                     errors?.contacts[index]?.email &&
-                    errors?.contacts[index]?.email.type === "validate" && (
+                    errors?.contacts[index]?.email.type === 'validate' && (
                       <Typography
                         variant="body2"
                         color="red"
@@ -1150,9 +1150,9 @@ const AddNewOrganisation = ({
                 <Box
                   sx={{
                     width: {
-                      lg: "100%",
-                      md: "48.4%",
-                      xs: "100%",
+                      lg: '100%',
+                      md: '48.4%',
+                      xs: '100%',
                     },
                   }}
                 >
@@ -1166,14 +1166,14 @@ const AddNewOrganisation = ({
                     })}
                     focused
                     sx={{
-                      width: "100%",
+                      width: '100%',
                     }}
                   />
                   {errors &&
                     errors?.contacts &&
                     errors?.contacts[index] &&
                     errors?.contacts[index]?.phone &&
-                    errors?.contacts[index]?.phone.type === "required" && (
+                    errors?.contacts[index]?.phone.type === 'required' && (
                       <Typography
                         variant="body2"
                         color="red"
@@ -1187,7 +1187,7 @@ const AddNewOrganisation = ({
                     errors?.contacts &&
                     errors?.contacts[index] &&
                     errors?.contacts[index]?.phone &&
-                    errors?.contacts[index]?.phone.type === "pattern" && (
+                    errors?.contacts[index]?.phone.type === 'pattern' && (
                       <Typography
                         variant="body2"
                         color="red"
@@ -1199,45 +1199,45 @@ const AddNewOrganisation = ({
                     )}
                 </Box>
                 <Stack
-                  display={"flex"}
-                  justifyContent={"center"}
-                  alignItems={"center"}
-                  flexDirection={"row"}
-                  gap={"20px"}
-                  minWidth={"67px"}
+                  display={'flex'}
+                  justifyContent={'center'}
+                  alignItems={'center'}
+                  flexDirection={'row'}
+                  gap={'20px'}
+                  minWidth={'67px'}
                 >
                   <Box
-                    display={"flex"}
-                    justifyContent={"center"}
-                    alignItems={"center"}
+                    display={'flex'}
+                    justifyContent={'center'}
+                    alignItems={'center'}
                     onClick={() =>
                       handleInviteUser(Boolean(item.invite), index)
                     }
                   >
                     <Image
-                      title={item.invite ? "Invited" : "Invite"}
+                      title={item.invite ? 'Invited' : 'Invite'}
                       src={
                         item.invite
                           ? sentEmailIcon
                           : inviteSent[index]
-                          ? sentEmailIcon
-                          : sendEmailIcon
+                            ? sentEmailIcon
+                            : sendEmailIcon
                       }
                       alt="Send Email Icon"
                       style={{
-                        cursor: item.invite ? "not-allowed" : "pointer",
+                        cursor: item.invite ? 'not-allowed' : 'pointer',
                       }}
                     />
                   </Box>
 
                   <Box
-                    display={"flex"}
-                    justifyContent={"center"}
-                    alignItems={"center"}
+                    display={'flex'}
+                    justifyContent={'center'}
+                    alignItems={'center'}
                     // width={150}
                     sx={{
-                      visibility: index === 0 ? "hidden" : "",
-                      cursor: "pointer",
+                      visibility: index === 0 ? 'hidden' : '',
+                      cursor: 'pointer',
                       // width: {
                       //   lg: 150,
                       //   xs: "auto",
@@ -1266,23 +1266,23 @@ const AddNewOrganisation = ({
 
             <Divider
               sx={{
-                borderColor: "#979797",
+                borderColor: '#979797',
                 my: 1,
               }}
             />
             <Stack
               p={1.5}
-              direction={"row"}
+              direction={'row'}
               borderRadius={3}
               mt={2}
-              color={"#06a19b"}
+              color={'#06a19b'}
               fontSize={14}
               fontWeight={500}
-              display={"flex"}
-              alignItems={"center"}
-              justifyContent={"center"}
+              display={'flex'}
+              alignItems={'center'}
+              justifyContent={'center'}
               gap={0.5}
-              border={"2px dashed #06a19b"}
+              border={'2px dashed #06a19b'}
               className="add-contact-btn"
               onClick={() => AddContactField()}
             >
@@ -1305,14 +1305,14 @@ const AddNewOrganisation = ({
               disabled={isApiCallInProgress}
               variant="contained"
               sx={{
-                background: "#06A19B",
+                background: '#06A19B',
                 fontWeight: 600,
-                padding: "6px 16px",
-                width: "fit-content",
-                textTransform: "capitalize",
-                borderRadius: "8px",
-                marginLeft: "auto",
-                display: "block",
+                padding: '6px 16px',
+                width: 'fit-content',
+                textTransform: 'capitalize',
+                borderRadius: '8px',
+                marginLeft: 'auto',
+                display: 'block',
                 marginTop: 2,
               }}
             >

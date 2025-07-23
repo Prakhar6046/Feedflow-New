@@ -1,6 +1,5 @@
-import { capitalizeFirstLetter } from "@/app/_lib/utils";
-import prisma from "@/prisma/prisma";
-import { NextRequest, NextResponse } from "next/server";
+import prisma from '@/prisma/prisma';
+import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(req: NextRequest) {
   try {
@@ -9,8 +8,8 @@ export async function POST(req: NextRequest) {
 
     if (!email || !name || !organisationId) {
       return NextResponse.json(
-        { error: "Please provide all data" },
-        { status: 400 }
+        { error: 'Please provide all data' },
+        { status: 400 },
       );
     }
     const normalizedEmail = email.toLowerCase();
@@ -25,10 +24,10 @@ export async function POST(req: NextRequest) {
     if (checkEmailExist) {
       return new NextResponse(
         JSON.stringify({
-          message: "User is already part of this organisation",
+          message: 'User is already part of this organisation',
           status: false,
         }),
-        { status: 400 }
+        { status: 400 },
       );
     } else {
       const results = await prisma.user.create({
@@ -47,20 +46,20 @@ export async function POST(req: NextRequest) {
           name: name,
           organisationId: Number(organisationId),
           userId: results.id,
-          permission: "NONADMIN",
+          permission: 'NONADMIN',
         },
       });
       return NextResponse.json({
-        message: "User created successfully",
+        message: 'User created successfully',
         data: results,
         status: true,
       });
     }
   } catch (error) {
-    console.error("Error sending email:", error);
+    console.error('Error sending email:', error);
     return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 }
+      { error: 'Internal Server Error' },
+      { status: 500 },
     );
   }
 }

@@ -1,11 +1,11 @@
-export type ThemeMode = "light" | "dark" | "system";
-export type ThemeLayout = "vertical" | "horizontal" | "mini";
+export type ThemeMode = 'light' | 'dark' | 'system';
+export type ThemeLayout = 'vertical' | 'horizontal' | 'mini';
 export type ThemeStretch = boolean;
 
 export type SettingsValueProps = {
   themeMode: ThemeMode;
   themeLayout: ThemeLayout;
-  autoThemeMode: Boolean;
+  autoThemeMode: boolean;
   themeStretch: ThemeStretch;
 };
 

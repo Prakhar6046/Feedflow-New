@@ -1,8 +1,8 @@
-"use client";
-import { Farm } from "@/app/_typeModels/Farm";
-import { breadcrumsAction } from "@/lib/features/breadcrum/breadcrumSlice";
-import { farmAction, selectFarmLoading } from "@/lib/features/farm/farmSlice";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+'use client';
+import { Farm } from '@/app/_typeModels/Farm';
+import { breadcrumsAction } from '@/lib/features/breadcrum/breadcrumSlice';
+import { selectFarmLoading } from '@/lib/features/farm/farmSlice';
+import { useAppDispatch, useAppSelector } from '@/lib/hooks';
 import {
   Box,
   Button,
@@ -11,26 +11,26 @@ import {
   Stack,
   TableSortLabel,
   Typography,
-} from "@mui/material";
-import Paper from "@mui/material/Paper";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import { getCookie, setCookie, deleteCookie } from "cookies-next";
-import { usePathname, useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
-import Loader from "../Loader";
-import { selectRole } from "@/lib/features/user/userSlice";
+} from '@mui/material';
+import Paper from '@mui/material/Paper';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import { getCookie, setCookie } from 'cookies-next';
+import { usePathname, useRouter } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
+import Loader from '../Loader';
+import { selectRole } from '@/lib/features/user/userSlice';
 import {
   farmTableHead,
   farmTableHeadMember,
-} from "@/app/_lib/utils/tableHeadData";
-import { getLocalItem, removeLocalItem } from "@/app/_lib/utils";
-import Image from "next/image";
-import { SingleUser } from "@/app/_typeModels/User";
+} from '@/app/_lib/utils/tableHeadData';
+import { getLocalItem, removeLocalItem } from '@/app/_lib/utils';
+import Image from 'next/image';
+import { SingleUser } from '@/app/_typeModels/User';
 
 interface Props {
   farms: Farm[];
@@ -41,17 +41,17 @@ export default function FarmTable({ farms, permisions }: Props) {
   const pathName = usePathname();
   const dispatch = useAppDispatch();
   const role = useAppSelector(selectRole);
-  const [order, setOrder] = React.useState("asc");
-  const [orderBy, setOrderBy] = React.useState("organisation");
+  const [order, setOrder] = React.useState('asc');
+  const [orderBy, setOrderBy] = React.useState('organisation');
   const [farmsData, setFarmsData] = useState<Farm[]>();
   const loading = useAppSelector(selectFarmLoading);
-  const loggedUser: any = getCookie("logged-user");
+  const loggedUser: any = getCookie('logged-user');
   const user: SingleUser = JSON.parse(loggedUser);
   const [selectedFarm, setSelectedFarm] = useState<any>(null);
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
-    null
+    null,
   );
-  const [sortDataFromLocal, setSortDataFromLocal] = React.useState<any>("");
+  const [sortDataFromLocal, setSortDataFromLocal] = React.useState<any>('');
 
   useEffect(() => {
     if (pathName) {
@@ -60,23 +60,23 @@ export default function FarmTable({ farms, permisions }: Props) {
   }, [pathName]);
   const handleClick = (
     event: React.MouseEvent<HTMLButtonElement>,
-    farm: any
+    farm: any,
   ) => {
     setAnchorEl(event.currentTarget);
     setSelectedFarm(farm);
   };
   const handleEdit = () => {
     if (selectedFarm) {
-      removeLocalItem("farmData");
-      removeLocalItem("farmProductionUnits");
-      removeLocalItem("productionParametes");
-      removeLocalItem("productionParamtertsUnitsArray");
-      removeLocalItem("feedProfiles");
-      removeLocalItem("feedProfileId");
-      removeLocalItem("productionUnitsFeedProfiles");
+      removeLocalItem('farmData');
+      removeLocalItem('farmProductionUnits');
+      removeLocalItem('productionParametes');
+      removeLocalItem('productionParamtertsUnitsArray');
+      removeLocalItem('feedProfiles');
+      removeLocalItem('feedProfileId');
+      removeLocalItem('productionUnitsFeedProfiles');
       router.push(`/dashboard/farm/${selectedFarm.id}`);
-      setCookie("isEditFarm", true);
-      setCookie("activeStep", 0);
+      setCookie('isEditFarm', true);
+      setCookie('activeStep', 0);
     }
   };
   const handleClose = () => {
@@ -105,7 +105,7 @@ export default function FarmTable({ farms, permisions }: Props) {
     return (
       <TableHead>
         <TableRow>
-          {(role == "SUPERADMIN" || permisions
+          {(role == 'SUPERADMIN' || permisions
             ? farmTableHead
             : farmTableHeadMember
           ).map((headCell, idx, headCells) => (
@@ -115,13 +115,13 @@ export default function FarmTable({ farms, permisions }: Props) {
                 idx === headCells.length - 1
                   ? false
                   : orderBy === headCell.id
-                  ? order
-                  : false
+                    ? order
+                    : false
               }
               sx={{
                 borderBottom: 0,
-                color: "#67737F",
-                background: "#F5F6F8",
+                color: '#67737F',
+                background: '#F5F6F8',
                 fontSize: {
                   md: 16,
                   xs: 14,
@@ -139,7 +139,7 @@ export default function FarmTable({ farms, permisions }: Props) {
               ) : (
                 <TableSortLabel
                   active={orderBy === headCell.id}
-                  direction={orderBy === headCell.id ? order : "asc"}
+                  direction={orderBy === headCell.id ? order : 'asc'}
                   onClick={createSortHandler(headCell.id)}
                 >
                   {headCell.label}
@@ -154,21 +154,21 @@ export default function FarmTable({ farms, permisions }: Props) {
 
   const handleRequestSort = (
     _: React.MouseEvent<HTMLButtonElement> | null,
-    property: string
+    property: string,
   ) => {
-    const isAsc = orderBy === property && order === "asc";
-    setOrder(isAsc ? "desc" : "asc");
+    const isAsc = orderBy === property && order === 'asc';
+    setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
     dispatch(
       breadcrumsAction.handleSort({
-        direction: isAsc ? "desc" : "asc",
+        direction: isAsc ? 'desc' : 'asc',
         column: property,
-      })
+      }),
     );
     if (farms) {
       const sortedData = [...farms].sort((farm1: any, farm2: any) => {
-        const orderType = order === "asc" ? 1 : -1;
-        if (property !== "productUnits") {
+        const orderType = order === 'asc' ? 1 : -1;
+        if (property !== 'productUnits') {
           if (farm1.name < farm2.name) return -1 * orderType;
           if (farm1.name > farm2.name) return 1 * orderType;
           return 0;
@@ -193,8 +193,8 @@ export default function FarmTable({ farms, permisions }: Props) {
       // handleRequestSort(null, data.column);
       if (farms) {
         const sortedData = [...farms].sort((farm1: any, farm2: any) => {
-          const orderType = data.direction === "asc" ? -1 : 1;
-          if (data.column !== "productUnits") {
+          const orderType = data.direction === 'asc' ? -1 : 1;
+          if (data.column !== 'productUnits') {
             if (farm1.name < farm2.name) return -1 * orderType;
             if (farm1.name > farm2.name) return 1 * orderType;
             return 0;
@@ -223,16 +223,16 @@ export default function FarmTable({ farms, permisions }: Props) {
   return (
     <Paper
       sx={{
-        width: "100%",
-        overflow: "hidden",
-        borderRadius: "14px",
-        boxShadow: "0px 0px 16px 5px #0000001A",
+        width: '100%',
+        overflow: 'hidden',
+        borderRadius: '14px',
+        boxShadow: '0px 0px 16px 5px #0000001A',
         mt: 4,
       }}
     >
       <TableContainer
         sx={{
-          maxHeight: "72.5vh",
+          maxHeight: '72.5vh',
         }}
       >
         <Table stickyHeader aria-label="sticky table">
@@ -247,18 +247,18 @@ export default function FarmTable({ farms, permisions }: Props) {
                 return (
                   <TableRow
                     key={i}
-                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                   >
                     <TableCell
                       // align="center"
                       sx={{
-                        borderBottomColor: "#F5F6F8",
+                        borderBottomColor: '#F5F6F8',
                         borderBottomWidth: 2,
-                        color: "#555555",
+                        color: '#555555',
                         maxWidth: 250,
                         pr: 2,
                         fontWeight: 500,
-                        wordBreak: "break-all",
+                        wordBreak: 'break-all',
                         paddingLeft: {
                           lg: 10,
                           md: 7,
@@ -268,13 +268,13 @@ export default function FarmTable({ farms, permisions }: Props) {
                       component="th"
                       scope="row"
                     >
-                      {farm.name ?? ""}
+                      {farm.name ?? ''}
                     </TableCell>
                     <TableCell
                       sx={{
-                        borderBottomColor: "#F5F6F8",
+                        borderBottomColor: '#F5F6F8',
                         borderBottomWidth: 2,
-                        color: "#555555",
+                        color: '#555555',
                         fontWeight: 500,
                         paddingLeft: {
                           // lg: 10,
@@ -285,29 +285,29 @@ export default function FarmTable({ farms, permisions }: Props) {
                       component="th"
                       scope="row"
                     >
-                      <Box display={"flex"} alignItems={"center"} gap={1.5}>
+                      <Box display={'flex'} alignItems={'center'} gap={1.5}>
                         {farm.organisation?.imageUrl &&
-                        farm.organisation?.imageUrl !== "null" ? (
+                        farm.organisation?.imageUrl !== 'null' ? (
                           <Image
                             src={String(farm.organisation.imageUrl)}
                             width={40}
                             height={40}
                             style={{
-                              borderRadius: "8px",
-                              objectFit: "contain",
+                              borderRadius: '8px',
+                              objectFit: 'contain',
                             }}
                             alt="img not found"
                           />
                         ) : (
                           <Box
-                            display={"flex"}
-                            justifyContent={"center"}
-                            alignItems={"center"}
-                            bgcolor={"rgba(145, 158, 171, 0.24)"}
+                            display={'flex'}
+                            justifyContent={'center'}
+                            alignItems={'center'}
+                            bgcolor={'rgba(145, 158, 171, 0.24)'}
                             sx={{
                               width: 40,
                               height: 40,
-                              borderRadius: "8px",
+                              borderRadius: '8px',
                             }}
                           >
                             <svg
@@ -332,24 +332,24 @@ export default function FarmTable({ farms, permisions }: Props) {
                     </TableCell>
                     <TableCell
                       sx={{
-                        borderBottomColor: "#F5F6F8",
+                        borderBottomColor: '#F5F6F8',
                         borderBottomWidth: 2,
-                        color: "#555555",
+                        color: '#555555',
                         fontWeight: 500,
                         p: 0,
                       }}
                       className="cursor-pointer"
                     >
-                      {farm?.productionUnits?.length ?? ""}
+                      {farm?.productionUnits?.length ?? ''}
                     </TableCell>
 
-                    {(role === "SUPERADMIN" || permisions) && (
+                    {(role === 'SUPERADMIN' || permisions) && (
                       <TableCell
                         // align="center"
                         sx={{
-                          borderBottomColor: "#F5F6F8",
+                          borderBottomColor: '#F5F6F8',
                           borderBottomWidth: 2,
-                          color: "#555555",
+                          color: '#555555',
                           fontWeight: 500,
                         }}
                         className="cursor-pointer"
@@ -357,15 +357,15 @@ export default function FarmTable({ farms, permisions }: Props) {
                       >
                         <Button
                           id="basic-button"
-                          aria-controls={open ? "basic-menu" : undefined}
+                          aria-controls={open ? 'basic-menu' : undefined}
                           aria-haspopup="true"
-                          aria-expanded={open ? "true" : undefined}
+                          aria-expanded={open ? 'true' : undefined}
                           onClick={(e) => handleClick(e, farm)}
                           className="table-edit-option"
                           sx={{
-                            background: "transparent",
-                            color: "#555555",
-                            boxShadow: "none",
+                            background: 'transparent',
+                            color: '#555555',
+                            boxShadow: 'none',
                           }}
                         >
                           <svg
@@ -387,11 +387,11 @@ export default function FarmTable({ farms, permisions }: Props) {
                           open={open}
                           onClose={handleClose}
                           MenuListProps={{
-                            "aria-labelledby": "basic-button",
+                            'aria-labelledby': 'basic-button',
                           }}
                           sx={{
-                            position: "absolute",
-                            left: "-10px",
+                            position: 'absolute',
+                            left: '-10px',
                           }}
                         >
                           <MenuItem onClick={handleEdit}>
@@ -424,7 +424,7 @@ export default function FarmTable({ farms, permisions }: Props) {
               })
             ) : (
               <TableRow>
-                <TableCell colSpan={4} sx={{ textAlign: "center" }}>
+                <TableCell colSpan={4} sx={{ textAlign: 'center' }}>
                   No Data Found
                 </TableCell>
               </TableRow>

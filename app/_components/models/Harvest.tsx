@@ -7,16 +7,16 @@ import {
   Stack,
   TextField,
   Typography,
-} from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
+} from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 
 const style = {
-  position: "absolute" as "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
+  position: 'absolute' as const,
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
   width: 400,
-  bgcolor: "background.paper",
+  bgcolor: 'background.paper',
   boxShadow: 24,
 };
 
@@ -46,7 +46,7 @@ const HarvestModal: React.FC<Props> = ({ setOpen, open }) => {
         >
           <IconButton
             onClick={handleClose}
-            sx={{ color: "inherit", marginLeft: "auto" }}
+            sx={{ color: 'inherit', marginLeft: 'auto' }}
           >
             <CloseIcon />
           </IconButton>
@@ -59,7 +59,7 @@ const HarvestModal: React.FC<Props> = ({ setOpen, open }) => {
                 label="Fish Farm *"
                 type="text"
                 className="form-input"
-                sx={{ width: "100%" }}
+                sx={{ width: '100%' }}
               />
               <Typography
                 variant="body2"
@@ -73,7 +73,7 @@ const HarvestModal: React.FC<Props> = ({ setOpen, open }) => {
                 label="Biomass (kg) *"
                 type="text"
                 className="form-input"
-                sx={{ width: "100%" }}
+                sx={{ width: '100%' }}
               />
               <Typography
                 variant="body2"
@@ -87,7 +87,7 @@ const HarvestModal: React.FC<Props> = ({ setOpen, open }) => {
                 label="Count *"
                 type="text"
                 className="form-input"
-                sx={{ width: "100%" }}
+                sx={{ width: '100%' }}
               />
               <Typography
                 variant="body2"
@@ -101,7 +101,7 @@ const HarvestModal: React.FC<Props> = ({ setOpen, open }) => {
                 label="Mean Weight*"
                 type="text"
                 className="form-input"
-                sx={{ width: "100%" }}
+                sx={{ width: '100%' }}
               />
               <Typography
                 variant="body2"
@@ -115,7 +115,7 @@ const HarvestModal: React.FC<Props> = ({ setOpen, open }) => {
                 label="Mean Length*"
                 type="text"
                 className="form-input"
-                sx={{ width: "100%" }}
+                sx={{ width: '100%' }}
               />
               <Typography
                 variant="body2"
@@ -129,22 +129,22 @@ const HarvestModal: React.FC<Props> = ({ setOpen, open }) => {
 
         <Box
           padding={3}
-          display={"flex"}
-          alignItems={"center"}
-          textAlign={"center"}
-          justifyContent={"center"}
+          display={'flex'}
+          alignItems={'center'}
+          textAlign={'center'}
+          justifyContent={'center'}
           gap="40px"
         >
           <Button
             type="button"
             variant="contained"
             sx={{
-              background: "#06A19B",
-              fontWeight: "bold",
-              padding: "8px 20px",
-              width: "fit-content",
-              textTransform: "capitalize",
-              borderRadius: "12px",
+              background: '#06A19B',
+              fontWeight: 'bold',
+              padding: '8px 20px',
+              width: 'fit-content',
+              textTransform: 'capitalize',
+              borderRadius: '12px',
             }}
           >
             HARVEST
@@ -154,12 +154,12 @@ const HarvestModal: React.FC<Props> = ({ setOpen, open }) => {
             variant="contained"
             onClick={handleClose}
             sx={{
-              background: "#06A19B",
-              fontWeight: "bold",
-              padding: "8px 20px",
-              width: "fit-content",
-              textTransform: "capitalize",
-              borderRadius: "12px",
+              background: '#06A19B',
+              fontWeight: 'bold',
+              padding: '8px 20px',
+              width: 'fit-content',
+              textTransform: 'capitalize',
+              borderRadius: '12px',
             }}
           >
             CANCEL

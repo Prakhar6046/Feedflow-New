@@ -1,5 +1,5 @@
-"use client";
-import React, { useEffect, useState } from "react";
+'use client';
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   Button,
@@ -10,40 +10,39 @@ import {
   Select,
   TextField,
   Typography,
-} from "@mui/material";
-import * as validationPattern from "@/app/_lib/utils/validationPatterns/index";
-import * as validationMessage from "@/app/_lib/utils/validationsMessage/index";
-import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { Dayjs } from "dayjs";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { useRouter } from "next/navigation";
-import { FishSupply } from "@/app/_typeModels/fishSupply";
-import { Farm } from "@/app/_typeModels/Farm";
-import toast from "react-hot-toast";
-import { getCookie } from "cookies-next";
-import { getDayMonthDifference } from "@/app/_lib/utils";
+} from '@mui/material';
+import * as validationPattern from '@/app/_lib/utils/validationPatterns/index';
+import * as validationMessage from '@/app/_lib/utils/validationsMessage/index';
+import { Controller, SubmitHandler, useForm } from 'react-hook-form';
+import { Dayjs } from 'dayjs';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { useRouter } from 'next/navigation';
+import { Farm } from '@/app/_typeModels/Farm';
+import toast from 'react-hot-toast';
+import { getCookie } from 'cookies-next';
+import { getDayMonthDifference } from '@/app/_lib/utils';
 interface FormInputs {
-  fishFarm: String;
-  productionUnit: String;
-  batchNumber: String;
-  biomass: String;
+  fishFarm: string;
+  productionUnit: string;
+  batchNumber: string;
+  biomass: string;
   age: Dayjs | null;
-  fishCount: String;
-  meanLength: String;
-  meanWeight: String;
+  fishCount: string;
+  meanLength: string;
+  meanWeight: string;
   // stockingDensityKG: String;
   // stockingDensityNM: String;
-  stockingLevel: String;
+  stockingLevel: string;
 }
 interface Props {
   farms: Farm[];
 }
 function AddUnitForm({ farms }: Props) {
-  let mCubed = "m\u00B3";
+  const mCubed = 'm\u00B3';
   const [selectedFarm, setSelectedFarm] = useState<any>(null);
-  const loggedUser: any = getCookie("logged-user");
+  const loggedUser: any = getCookie('logged-user');
   const user = JSON.parse(loggedUser);
   const router = useRouter();
   const {
@@ -75,21 +74,21 @@ function AddUnitForm({ farms }: Props) {
         fishFarmId: fishFarm,
         productionUnitId: productionUnit,
         age: getDayMonthDifference(data.age),
-        stockingLevel: "",
+        stockingLevel: '',
         stockingDensityKG: String(
-          Number(data.biomass) / Number(farm?.capacity)
+          Number(data.biomass) / Number(farm?.capacity),
         ),
         stockingDensityNM: String(
-          Number(data.fishCount) / Number(farm?.capacity)
+          Number(data.fishCount) / Number(farm?.capacity),
         ),
         ...restData,
       };
 
-      const token = getCookie("auth-token");
+      const token = getCookie('auth-token');
       const response = await fetch(`/api/production`, {
-        method: "POST",
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(payload),
@@ -98,7 +97,7 @@ function AddUnitForm({ farms }: Props) {
       toast.success(responseData.message);
 
       if (responseData.status) {
-        router.push("/dashboard/production");
+        router.push('/dashboard/production');
       }
     }
   };
@@ -129,28 +128,28 @@ function AddUnitForm({ farms }: Props) {
         <form onSubmit={handleSubmit(onSubmit)}>
           <Grid container spacing={2}>
             <Grid item lg={6} xs={12}>
-              <Box mb={2} width={"100%"}>
+              <Box mb={2} width={'100%'}>
                 <FormControl fullWidth className="form-input">
                   <InputLabel
                     id="feed-supply-select-label1"
-                    sx={{ color: "black" }}
+                    sx={{ color: 'black' }}
                   >
                     Fish Farmer *
                   </InputLabel>
                   <Select
                     labelId="feed-supply-select-label1"
                     id="feed-supply-select1"
-                    {...register("fishFarm", {
-                      required: watch("fishFarm") ? false : true,
-                      onChange: (e) => setValue("fishFarm", e.target.value),
+                    {...register('fishFarm', {
+                      required: watch('fishFarm') ? false : true,
+                      onChange: (e) => setValue('fishFarm', e.target.value),
                     })}
                     onChange={(e) => {
                       setSelectedFarm(e.target.value); // Set selected farm
-                      setValue("fishFarm", e.target.value);
-                      setValue("productionUnit", ""); // Reset production unit when fish farm changes
+                      setValue('fishFarm', e.target.value);
+                      setValue('productionUnit', ''); // Reset production unit when fish farm changes
                     }}
                     label="Fish Farmer *"
-                    value={watch("fishFarm") || ""}
+                    value={watch('fishFarm') || ''}
                   >
                     {farms?.map((farm: Farm) => {
                       return (
@@ -162,7 +161,7 @@ function AddUnitForm({ farms }: Props) {
                   </Select>
                   {errors &&
                     errors.fishFarm &&
-                    errors.fishFarm.type === "required" && (
+                    errors.fishFarm.type === 'required' && (
                       <Typography
                         variant="body2"
                         color="red"
@@ -176,7 +175,7 @@ function AddUnitForm({ farms }: Props) {
               </Box>
             </Grid>
             <Grid item lg={6} xs={12}>
-              <Box mb={2} width={"100%"}>
+              <Box mb={2} width={'100%'}>
                 <FormControl fullWidth className="form-input">
                   <InputLabel id="feed-supply-select-label2">
                     Production Unit *
@@ -184,13 +183,13 @@ function AddUnitForm({ farms }: Props) {
                   <Select
                     labelId="feed-supply-select-label2"
                     id="feed-supply-select2"
-                    {...register("productionUnit", {
-                      required: watch("productionUnit") ? false : true,
+                    {...register('productionUnit', {
+                      required: watch('productionUnit') ? false : true,
                       onChange: (e) =>
-                        setValue("productionUnit", e.target.value),
+                        setValue('productionUnit', e.target.value),
                     })}
                     label="Production Unit *"
-                    value={watch("productionUnit") || ""}
+                    value={watch('productionUnit') || ''}
                   >
                     {productionUnits.length > 0 ? (
                       productionUnits.map((unit) => (
@@ -206,7 +205,7 @@ function AddUnitForm({ farms }: Props) {
                   </Select>
                   {errors &&
                     errors.productionUnit &&
-                    errors.productionUnit.type === "required" && (
+                    errors.productionUnit.type === 'required' && (
                       <Typography
                         variant="body2"
                         color="red"
@@ -227,24 +226,24 @@ function AddUnitForm({ farms }: Props) {
               </Box>
             </Grid>
             <Grid item lg={6} xs={12}>
-              <Box mb={2} width={"100%"}>
+              <Box mb={2} width={'100%'}>
                 <TextField
                   label="Batch Number *"
                   type="text"
                   className="form-input"
                   // focused={altitude ? true : false}
-                  {...register("batchNumber", {
+                  {...register('batchNumber', {
                     required: true,
                     // pattern: validationPattern.negativeNumberWithDot,
                   })}
                   sx={{
-                    width: "100%",
+                    width: '100%',
                   }}
                 />
 
                 {errors &&
                   errors.batchNumber &&
-                  errors.batchNumber.type === "required" && (
+                  errors.batchNumber.type === 'required' && (
                     <Typography
                       variant="body2"
                       color="red"
@@ -259,37 +258,37 @@ function AddUnitForm({ farms }: Props) {
                 {validationMessage.NegativeNumberWithDot}
               </Typography>
             )}  */}
-              </Box>{" "}
+              </Box>{' '}
             </Grid>
             <Grid item lg={6} xs={12}>
-              <Box mb={2} width={"100%"}>
-                <Box position={"relative"}>
+              <Box mb={2} width={'100%'}>
+                <Box position={'relative'}>
                   <TextField
                     label="Biomass *"
                     type="text"
                     className="form-input"
                     // focused={altitude ? true : false}
-                    {...register("biomass", {
+                    {...register('biomass', {
                       required: true,
                       pattern: validationPattern.numbersWithDot,
                       maxLength: 10,
                     })}
                     sx={{
-                      width: "100%",
+                      width: '100%',
                     }}
                   />
                   <Typography
                     variant="body2"
                     color="#555555AC"
                     sx={{
-                      position: "absolute",
+                      position: 'absolute',
                       right: 6,
-                      top: "50%",
-                      transform: "translate(-6px, -50%)",
-                      backgroundColor: "#fff",
+                      top: '50%',
+                      transform: 'translate(-6px, -50%)',
+                      backgroundColor: '#fff',
                       height: 30,
-                      display: "grid",
-                      placeItems: "center",
+                      display: 'grid',
+                      placeItems: 'center',
                       zIndex: 1,
                       pl: 1,
                     }}
@@ -299,7 +298,7 @@ function AddUnitForm({ farms }: Props) {
 
                   {errors &&
                     errors.biomass &&
-                    errors.biomass.type === "required" && (
+                    errors.biomass.type === 'required' && (
                       <Typography
                         variant="body2"
                         color="red"
@@ -311,7 +310,7 @@ function AddUnitForm({ farms }: Props) {
                     )}
                   {errors &&
                     errors.biomass &&
-                    errors.biomass.type === "pattern" && (
+                    errors.biomass.type === 'pattern' && (
                       <Typography
                         variant="body2"
                         color="red"
@@ -323,7 +322,7 @@ function AddUnitForm({ farms }: Props) {
                     )}
                   {errors &&
                     errors.biomass &&
-                    errors.biomass.type === "maxLength" && (
+                    errors.biomass.type === 'maxLength' && (
                       <Typography
                         variant="body2"
                         color="red"
@@ -362,25 +361,25 @@ function AddUnitForm({ farms }: Props) {
               </Box>
             </Grid>
             <Grid item lg={6} xs={12}>
-              <Box mb={2} width={"100%"}>
+              <Box mb={2} width={'100%'}>
                 <TextField
                   label="Fish Count *"
                   type="text"
                   className="form-input"
                   // focused={altitude ? true : false}
-                  {...register("fishCount", {
+                  {...register('fishCount', {
                     required: true,
                     pattern: validationPattern.numbersWithDot,
                     maxLength: 10,
                   })}
                   sx={{
-                    width: "100%",
+                    width: '100%',
                   }}
                 />
 
                 {errors &&
                   errors.fishCount &&
-                  errors.fishCount.type === "required" && (
+                  errors.fishCount.type === 'required' && (
                     <Typography
                       variant="body2"
                       color="red"
@@ -392,7 +391,7 @@ function AddUnitForm({ farms }: Props) {
                   )}
                 {errors &&
                   errors.fishCount &&
-                  errors.fishCount.type === "pattern" && (
+                  errors.fishCount.type === 'pattern' && (
                     <Typography
                       variant="body2"
                       color="red"
@@ -404,7 +403,7 @@ function AddUnitForm({ farms }: Props) {
                   )}
                 {errors &&
                   errors.fishCount &&
-                  errors.fishCount.type === "maxLength" && (
+                  errors.fishCount.type === 'maxLength' && (
                     <Typography
                       variant="body2"
                       color="red"
@@ -421,7 +420,7 @@ function AddUnitForm({ farms }: Props) {
                 <Controller
                   name="age"
                   control={control}
-                  rules={{ required: "This field is required." }}
+                  rules={{ required: 'This field is required.' }}
                   render={({ field, fieldState: { error } }) => (
                     <>
                       <DatePicker
@@ -429,7 +428,7 @@ function AddUnitForm({ farms }: Props) {
                         label="Age *"
                         className="form-input"
                         sx={{
-                          width: "100%",
+                          width: '100%',
                         }}
                         onChange={(date) => {
                           field.onChange(date);
@@ -452,35 +451,35 @@ function AddUnitForm({ farms }: Props) {
               </LocalizationProvider>
             </Grid>
             <Grid item lg={6} xs={12}>
-              <Box mb={2} width={"100%"}>
-                <Box position={"relative"}>
+              <Box mb={2} width={'100%'}>
+                <Box position={'relative'}>
                   <TextField
                     label="Mean Weight *"
                     type="text"
                     className="form-input"
                     // focused={altitude ? true : false}
-                    {...register("meanWeight", {
+                    {...register('meanWeight', {
                       required: true,
                       pattern: validationPattern.numbersWithDot,
                       maxLength: 10,
                     })}
                     sx={{
-                      width: "100%",
+                      width: '100%',
                     }}
                   />
                   <Typography
                     variant="body2"
                     color="#555555AC"
                     sx={{
-                      position: "absolute",
+                      position: 'absolute',
                       right: 6,
-                      top: "50%",
-                      transform: "translate(-6px, -50%)",
-                      backgroundColor: "#fff",
+                      top: '50%',
+                      transform: 'translate(-6px, -50%)',
+                      backgroundColor: '#fff',
                       height: 30,
-                      display: "grid",
+                      display: 'grid',
 
-                      placeItems: "center",
+                      placeItems: 'center',
                       zIndex: 1,
                       pl: 1,
                     }}
@@ -490,7 +489,7 @@ function AddUnitForm({ farms }: Props) {
 
                   {errors &&
                     errors.meanWeight &&
-                    errors.meanWeight.type === "required" && (
+                    errors.meanWeight.type === 'required' && (
                       <Typography
                         variant="body2"
                         color="red"
@@ -502,7 +501,7 @@ function AddUnitForm({ farms }: Props) {
                     )}
                   {errors &&
                     errors.meanWeight &&
-                    errors.meanWeight.type === "pattern" && (
+                    errors.meanWeight.type === 'pattern' && (
                       <Typography
                         variant="body2"
                         color="red"
@@ -514,7 +513,7 @@ function AddUnitForm({ farms }: Props) {
                     )}
                   {errors &&
                     errors.meanWeight &&
-                    errors.meanWeight.type === "maxLength" && (
+                    errors.meanWeight.type === 'maxLength' && (
                       <Typography
                         variant="body2"
                         color="red"
@@ -528,35 +527,35 @@ function AddUnitForm({ farms }: Props) {
               </Box>
             </Grid>
             <Grid item lg={6} xs={12}>
-              <Box mb={2} width={"100%"}>
-                <Box position={"relative"}>
+              <Box mb={2} width={'100%'}>
+                <Box position={'relative'}>
                   <TextField
                     label="Mean Length *"
                     type="text"
                     className="form-input"
                     // focused={altitude ? true : false}
-                    {...register("meanLength", {
+                    {...register('meanLength', {
                       required: true,
                       pattern: validationPattern.numbersWithDot,
                       maxLength: 10,
                     })}
                     sx={{
-                      width: "100%",
+                      width: '100%',
                     }}
                   />
                   <Typography
                     variant="body2"
                     color="#555555AC"
                     sx={{
-                      position: "absolute",
+                      position: 'absolute',
                       right: 6,
-                      top: "50%",
-                      transform: "translate(-6px, -50%)",
-                      backgroundColor: "#fff",
+                      top: '50%',
+                      transform: 'translate(-6px, -50%)',
+                      backgroundColor: '#fff',
                       height: 30,
-                      display: "grid",
+                      display: 'grid',
 
-                      placeItems: "center",
+                      placeItems: 'center',
                       zIndex: 1,
                       pl: 1,
                     }}
@@ -566,7 +565,7 @@ function AddUnitForm({ farms }: Props) {
 
                   {errors &&
                     errors.meanLength &&
-                    errors.meanLength.type === "required" && (
+                    errors.meanLength.type === 'required' && (
                       <Typography
                         variant="body2"
                         color="red"
@@ -578,7 +577,7 @@ function AddUnitForm({ farms }: Props) {
                     )}
                   {errors &&
                     errors.meanLength &&
-                    errors.meanLength.type === "pattern" && (
+                    errors.meanLength.type === 'pattern' && (
                       <Typography
                         variant="body2"
                         color="red"
@@ -590,7 +589,7 @@ function AddUnitForm({ farms }: Props) {
                     )}
                   {errors &&
                     errors.meanLength &&
-                    errors.meanLength.type === "maxLength" && (
+                    errors.meanLength.type === 'maxLength' && (
                       <Typography
                         variant="body2"
                         color="red"
@@ -653,34 +652,34 @@ function AddUnitForm({ farms }: Props) {
           </Box> */}
 
             <Grid item xs={6}>
-              <Box mb={2} width={"100%"}>
-                <Box position={"relative"}>
+              <Box mb={2} width={'100%'}>
+                <Box position={'relative'}>
                   <TextField
                     label="% Stocked *"
                     type="text"
                     className="form-input"
                     disabled
                     // focused={altitude ? true : false}
-                    {...register("stockingLevel", {
+                    {...register('stockingLevel', {
                       // required: true,
                       // pattern: validationPattern.numbersWithDot,
                     })}
                     sx={{
-                      width: "100%",
+                      width: '100%',
                     }}
                   />
                   <Typography
                     variant="body2"
                     color="#555555AC"
                     sx={{
-                      position: "absolute",
+                      position: 'absolute',
                       right: 6,
-                      top: "50%",
-                      transform: "translate(-6px, -50%)",
-                      backgroundColor: "#fff",
+                      top: '50%',
+                      transform: 'translate(-6px, -50%)',
+                      backgroundColor: '#fff',
                       height: 30,
-                      display: "grid",
-                      placeItems: "center",
+                      display: 'grid',
+                      placeItems: 'center',
                       zIndex: 1,
                       pl: 1,
                     }}
@@ -716,18 +715,18 @@ function AddUnitForm({ farms }: Props) {
             </Grid>
           </Grid>
 
-          <Box display={"flex"} justifyContent="flex-end" mt={2}>
+          <Box display={'flex'} justifyContent="flex-end" mt={2}>
             <Button
               type="submit"
               variant="contained"
               sx={{
-                background: "#06A19B",
+                background: '#06A19B',
                 fontWeight: 600,
-                padding: "6px 16px",
-                width: "fit-content",
-                textTransform: "capitalize",
-                borderRadius: "8px",
-                textAlign: "end",
+                padding: '6px 16px',
+                width: 'fit-content',
+                textTransform: 'capitalize',
+                borderRadius: '8px',
+                textAlign: 'end',
               }}
             >
               Add

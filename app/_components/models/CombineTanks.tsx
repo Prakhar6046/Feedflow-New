@@ -1,12 +1,12 @@
-import { Box, Button, Modal, Stack, Typography } from "@mui/material";
+import { Box, Button, Modal, Stack, Typography } from '@mui/material';
 
 const style = {
-  position: "absolute" as "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
+  position: 'absolute' as const,
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
   width: 400,
-  bgcolor: "background.paper",
+  bgcolor: 'background.paper',
   boxShadow: 24,
 };
 
@@ -26,18 +26,18 @@ const CombineTanks: React.FC<Props> = ({ setOpen, open }) => {
       aria-describedby="modal-modal-description"
     >
       <Stack sx={style}>
-        <Box padding={2} textAlign={"center"}>
+        <Box padding={2} textAlign={'center'}>
           <Typography
             variant="h2"
             component="h2"
             sx={{
-              fontWeight: "bold",
-              fontSize: "20px",
-              color: "#06A19B",
+              fontWeight: 'bold',
+              fontSize: '20px',
+              color: '#06A19B',
               my: 2,
-              textAlign: "center",
-              borderBlockEnd: "1px solid #06A19B",
-              marginInline: "50px",
+              textAlign: 'center',
+              borderBlockEnd: '1px solid #06A19B',
+              marginInline: '50px',
             }}
           >
             Combine Tanks / Units
@@ -45,9 +45,9 @@ const CombineTanks: React.FC<Props> = ({ setOpen, open }) => {
           <Typography
             component="p"
             sx={{
-              fontWeight: "semibold",
-              fontSize: "16px",
-              color: "#fffff",
+              fontWeight: 'semibold',
+              fontSize: '16px',
+              color: '#fffff',
               my: 2,
             }}
           >
@@ -56,21 +56,21 @@ const CombineTanks: React.FC<Props> = ({ setOpen, open }) => {
           </Typography>
           <Box
             padding={2}
-            display={"flex"}
-            alignItems={"center"}
-            justifyContent={"space-between"}
+            display={'flex'}
+            alignItems={'center'}
+            justifyContent={'space-between'}
           >
             <Button
               type="button"
               variant="contained"
               sx={{
-                background: "#06A19B",
-                fontWeight: "bold",
-                padding: "8px 20px",
-                width: "fit-content",
-                textTransform: "capitalize",
-                borderRadius: "12px",
-                display: "block",
+                background: '#06A19B',
+                fontWeight: 'bold',
+                padding: '8px 20px',
+                width: 'fit-content',
+                textTransform: 'capitalize',
+                borderRadius: '12px',
+                display: 'block',
               }}
             >
               COMBINE
@@ -79,13 +79,13 @@ const CombineTanks: React.FC<Props> = ({ setOpen, open }) => {
               type="button"
               variant="contained"
               sx={{
-                background: "#06A19B",
-                fontWeight: "bold",
-                padding: "8px 20px",
-                width: "fit-content",
-                textTransform: "capitalize",
-                borderRadius: "12px",
-                display: "block",
+                background: '#06A19B',
+                fontWeight: 'bold',
+                padding: '8px 20px',
+                width: 'fit-content',
+                textTransform: 'capitalize',
+                borderRadius: '12px',
+                display: 'block',
               }}
             >
               CANCEL

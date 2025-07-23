@@ -1,10 +1,10 @@
-"use clinet";
-import { setLocalItem } from "@/app/_lib/utils";
-import * as ValidationPatterns from "@/app/_lib/utils/validationPatterns";
-import * as ValidationMessages from "@/app/_lib/utils/validationsMessage";
-import { FarmGroup } from "@/app/_typeModels/production";
-import { selectSelectedFarms } from "@/lib/features/commonFilters/commonFilters";
-import { useAppSelector } from "@/lib/hooks";
+'use clinet';
+import { setLocalItem } from '@/app/_lib/utils';
+import * as ValidationPatterns from '@/app/_lib/utils/validationPatterns';
+import * as ValidationMessages from '@/app/_lib/utils/validationsMessage';
+import { FarmGroup } from '@/app/_typeModels/production';
+import { selectSelectedFarms } from '@/lib/features/commonFilters/commonFilters';
+import { useAppSelector } from '@/lib/hooks';
 import {
   Box,
   Button,
@@ -17,12 +17,12 @@ import {
   Stack,
   TextField,
   Typography,
-} from "@mui/material";
-import dayjs from "dayjs";
-import { useRouter } from "next/navigation";
-import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import toast from "react-hot-toast";
-import { FishFeedingData } from "./AdHoc";
+} from '@mui/material';
+import dayjs from 'dayjs';
+import { useRouter } from 'next/navigation';
+import { Controller, SubmitHandler, useForm } from 'react-hook-form';
+import toast from 'react-hot-toast';
+import { FishFeedingData } from './AdHoc';
 
 interface Props {
   productionData: FarmGroup[] | undefined;
@@ -45,16 +45,16 @@ export interface FarmsFishGrowth {
   fishGrowthData: FishFeedingData[];
 }
 export const timeIntervalOptions = [
-  { id: 1, label: "Daily", value: 1 },
-  { id: 2, label: "Weekly", value: 7 },
-  { id: 3, label: "Bi-Weekly", value: 14 },
-  { id: 4, label: "Monthly", value: 30 },
+  { id: 1, label: 'Daily', value: 1 },
+  { id: 2, label: 'Weekly', value: 7 },
+  { id: 3, label: 'Bi-Weekly', value: 14 },
+  { id: 4, label: 'Monthly', value: 30 },
 ];
 export const tempSelectionOptions = [
-  { label: "Use Farm Profile", value: "default" },
+  { label: 'Use Farm Profile', value: 'default' },
   {
-    label: "Specify",
-    value: "new",
+    label: 'Specify',
+    value: 'new',
   },
 ];
 function FeedingPlan({ productionData, startDate, endDate }: Props) {
@@ -74,21 +74,21 @@ function FeedingPlan({ productionData, startDate, endDate }: Props) {
       // startDate: dayjs().format("YYYY-MM-DD"),
       timeInterval: 1,
       // period: 30,
-      tempSelection: "default",
+      tempSelection: 'default',
       adjustmentFactor: 0.05,
     },
-    mode: "onChange",
+    mode: 'onChange',
   });
   const onSubmit: SubmitHandler<FormInputs> = (data) => {
-    const formattedDate = dayjs(startDate).format("YYYY-MM-DD");
-    const diffInDays = dayjs(endDate).diff(dayjs(startDate), "day");
+    const formattedDate = dayjs(startDate).format('YYYY-MM-DD');
+    const diffInDays = dayjs(endDate).diff(dayjs(startDate), 'day');
     if (!selectedDropDownfarms?.length) {
       toast.dismiss();
-      toast.error("Select at least one farm.");
+      toast.error('Select at least one farm.');
       return;
     }
     if (productionData?.length === 0) {
-      console.log("empty data");
+      console.log('empty data');
       return;
     }
 
@@ -102,8 +102,8 @@ function FeedingPlan({ productionData, startDate, endDate }: Props) {
       timeInterval: data.timeInterval,
       temp: data.temp,
     };
-    setLocalItem("feedPredictionData", payload);
-    router.push("/dashboard/feedPrediction/feedingPlan");
+    setLocalItem('feedPredictionData', payload);
+    router.push('/dashboard/feedPrediction/feedingPlan');
     // const fishGrowthData: any = productionData?.map((production) =>
     //   production.units.map((unit) => {
 
@@ -138,30 +138,30 @@ function FeedingPlan({ productionData, startDate, endDate }: Props) {
         }}
       />
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Grid container spacing={2} mb={5} alignItems={"center"}>
+        <Grid container spacing={2} mb={5} alignItems={'center'}>
           <Grid item xl={2} lg={4} md={4} sm={6} xs={12}>
-            <Box position={"relative"}>
+            <Box position={'relative'}>
               <TextField
                 label="Fish Weight *"
                 type="text"
-                {...register("fishWeight", {
+                {...register('fishWeight', {
                   required: true,
                 })}
                 className="form-input"
                 focused
                 sx={{
-                  width: "100%",
+                  width: '100%',
                 }}
               />
               <Typography
                 variant="body1"
                 color="#555555AC"
                 sx={{
-                  position: "absolute",
+                  position: 'absolute',
                   right: 13,
-                  top: "30%",
-                  backgroundColor: "white",
-                  paddingInline: "5px",
+                  top: '30%',
+                  backgroundColor: 'white',
+                  paddingInline: '5px',
                 }}
               >
                 g
@@ -174,11 +174,11 @@ function FeedingPlan({ productionData, startDate, endDate }: Props) {
                   color="red"
                   fontSize={13}
                   mt={0.5}
-                  position={"absolute"}
+                  position={'absolute'}
                 >
-                  {errors.fishWeight.type === "required"
+                  {errors.fishWeight.type === 'required'
                     ? ValidationMessages.required
-                    : ""}
+                    : ''}
                 </Typography>
               )}
             </Box>
@@ -226,31 +226,31 @@ function FeedingPlan({ productionData, startDate, endDate }: Props) {
               />
             </FormControl>
           </Grid>
-          {watch("tempSelection") !== "default" && (
+          {watch('tempSelection') !== 'default' && (
             <Grid item xl={2} lg={4} md={4} sm={6} xs={12}>
-              <Box position={"relative"}>
+              <Box position={'relative'}>
                 <TextField
                   label="Average Temperature *"
                   type="text"
-                  {...register("temp", {
+                  {...register('temp', {
                     required: true,
                     pattern: ValidationPatterns.numbersWithDot,
                   })}
                   className="form-input"
                   focused
                   sx={{
-                    width: "100%",
+                    width: '100%',
                   }}
                 />
                 <Typography
                   variant="body1"
                   color="#555555AC"
                   sx={{
-                    position: "absolute",
+                    position: 'absolute',
                     right: 13,
-                    top: "30%",
-                    backgroundColor: "white",
-                    paddingInline: "5px",
+                    top: '30%',
+                    backgroundColor: 'white',
+                    paddingInline: '5px',
                   }}
                 >
                   °C
@@ -262,31 +262,31 @@ function FeedingPlan({ productionData, startDate, endDate }: Props) {
                   color="red"
                   fontSize={13}
                   mt={0.5}
-                  position={"absolute"}
+                  position={'absolute'}
                 >
-                  {errors.temp.type === "required"
+                  {errors.temp.type === 'required'
                     ? ValidationMessages.required
-                    : errors.temp.type === "pattern"
-                    ? ValidationMessages.OnlyNumbersWithDot
-                    : ""}
+                    : errors.temp.type === 'pattern'
+                      ? ValidationMessages.OnlyNumbersWithDot
+                      : ''}
                 </Typography>
               )}
             </Grid>
           )}
 
           <Grid item xl={2} lg={4} md={4} sm={6} xs={12}>
-            <Box position={"relative"}>
+            <Box position={'relative'}>
               <TextField
                 label="Total Number Of Fish *"
                 type="text"
-                {...register("numberOfFishs", {
+                {...register('numberOfFishs', {
                   required: true,
                   pattern: ValidationPatterns.numbersWithDot,
                 })}
                 className="form-input"
                 focused
                 sx={{
-                  width: "100%",
+                  width: '100%',
                 }}
               />
             </Box>
@@ -296,41 +296,41 @@ function FeedingPlan({ productionData, startDate, endDate }: Props) {
                 color="red"
                 fontSize={13}
                 mt={0.5}
-                position={"absolute"}
+                position={'absolute'}
               >
-                {errors.numberOfFishs.type === "required"
+                {errors.numberOfFishs.type === 'required'
                   ? ValidationMessages.required
-                  : errors.numberOfFishs.type === "pattern"
-                  ? ValidationMessages.OnlyNumbersWithDot
-                  : ""}
+                  : errors.numberOfFishs.type === 'pattern'
+                    ? ValidationMessages.OnlyNumbersWithDot
+                    : ''}
               </Typography>
             )}
           </Grid>
           <Grid item xl={2} lg={4} md={4} sm={6} xs={12}>
-            <Box position={"relative"}>
-              <Box position={"relative"}>
+            <Box position={'relative'}>
+              <Box position={'relative'}>
                 <TextField
                   label="Adjustment Factor *"
                   type="text"
-                  {...register("adjustmentFactor", {
+                  {...register('adjustmentFactor', {
                     required: true,
                     pattern: ValidationPatterns.numbersWithDot,
                   })}
                   className="form-input"
                   focused
                   sx={{
-                    width: "100%",
+                    width: '100%',
                   }}
                 />
                 <Typography
                   variant="body1"
                   color="#555555AC"
                   sx={{
-                    position: "absolute",
+                    position: 'absolute',
                     right: 13,
-                    top: "30%",
-                    backgroundColor: "white",
-                    paddingInline: "5px",
+                    top: '30%',
+                    backgroundColor: 'white',
+                    paddingInline: '5px',
                   }}
                 >
                   %
@@ -343,35 +343,35 @@ function FeedingPlan({ productionData, startDate, endDate }: Props) {
                 color="red"
                 fontSize={13}
                 mt={0.5}
-                position={"absolute"}
+                position={'absolute'}
               >
-                {errors.adjustmentFactor.type === "required"
+                {errors.adjustmentFactor.type === 'required'
                   ? ValidationMessages.required
-                  : errors.adjustmentFactor.type === "pattern"
-                  ? ValidationMessages.OnlyNumbersWithDot
-                  : ""}
+                  : errors.adjustmentFactor.type === 'pattern'
+                    ? ValidationMessages.OnlyNumbersWithDot
+                    : ''}
               </Typography>
             )}
           </Grid>
         </Grid>
         <Box
           sx={{
-            display: "flex",
-            justifyContent: "end",
+            display: 'flex',
+            justifyContent: 'end',
           }}
         >
           <Button
             type="submit"
             variant="contained"
             sx={{
-              background: "#06A19B",
+              background: '#06A19B',
               fontWeight: 600,
-              padding: "6px 16px",
-              width: "fit-content",
-              textTransform: "capitalize",
-              borderRadius: "8px",
-              marginLeft: "auto",
-              display: "block",
+              padding: '6px 16px',
+              width: 'fit-content',
+              textTransform: 'capitalize',
+              borderRadius: '8px',
+              marginLeft: 'auto',
+              display: 'block',
               my: 3,
             }}
           >

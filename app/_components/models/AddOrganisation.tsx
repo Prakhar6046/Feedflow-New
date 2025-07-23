@@ -5,20 +5,20 @@ import {
   Stack,
   TextField,
   Typography,
-} from "@mui/material";
-import Image from "next/image";
-import closeIcon from "@/public/static/img/icons/ic-close.svg";
-import { useForm, SubmitHandler } from "react-hook-form";
-import toast from "react-hot-toast";
-import { getCookie } from "cookies-next";
+} from '@mui/material';
+import Image from 'next/image';
+import closeIcon from '@/public/static/img/icons/ic-close.svg';
+import { useForm, SubmitHandler } from 'react-hook-form';
+import toast from 'react-hot-toast';
+import { getCookie } from 'cookies-next';
 
 const style = {
-  position: "absolute" as "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
+  position: 'absolute' as const,
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
   width: 400,
-  bgcolor: "background.paper",
+  bgcolor: 'background.paper',
   boxShadow: 24,
 };
 
@@ -46,12 +46,12 @@ const AddOrganization: React.FC<Props> = ({ setOpen, open }) => {
   const handleClose = () => setOpen(false);
 
   const onSubmit: SubmitHandler<FormInputs> = async (data) => {
-    const token = getCookie("auth-token");
+    const token = getCookie('auth-token');
     if (data.email) {
-      const response = await fetch("/api/add-organisation", {
-        method: "POST",
+      const response = await fetch('/api/add-organisation', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(data),
@@ -82,10 +82,10 @@ const AddOrganization: React.FC<Props> = ({ setOpen, open }) => {
           display="flex"
           justifyContent="space-between"
           gap={2}
-          alignItems={"center"}
+          alignItems={'center'}
           sx={{
-            borderTopLeftRadius: "14px",
-            borderTopRightRadius: "14px",
+            borderTopLeftRadius: '14px',
+            borderTopRightRadius: '14px',
           }}
         >
           <Typography
@@ -105,7 +105,7 @@ const AddOrganization: React.FC<Props> = ({ setOpen, open }) => {
             alignItems="center"
             sx={{
               opacity: 0.5,
-              cursor: "pointer",
+              cursor: 'pointer',
             }}
             onClick={handleClose}
           >
@@ -123,9 +123,9 @@ const AddOrganization: React.FC<Props> = ({ setOpen, open }) => {
               sx={{
                 marginBottom: 2,
               }}
-              {...register("name", { required: true })}
+              {...register('name', { required: true })}
               error={!!errors.name}
-              helperText={errors.name ? "Name is required" : ""}
+              helperText={errors.name ? 'Name is required' : ''}
             />
             <TextField
               label="Email"
@@ -136,15 +136,15 @@ const AddOrganization: React.FC<Props> = ({ setOpen, open }) => {
               sx={{
                 marginBottom: 2,
               }}
-              {...register("email", {
-                required: "Email is required",
+              {...register('email', {
+                required: 'Email is required',
                 pattern: {
                   value: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
-                  message: "Invalid email address",
+                  message: 'Invalid email address',
                 },
               })}
               error={!!errors.email}
-              helperText={errors.email ? errors.email.message : ""}
+              helperText={errors.email ? errors.email.message : ''}
             />
             <TextField
               label="Contact Person"
@@ -155,10 +155,10 @@ const AddOrganization: React.FC<Props> = ({ setOpen, open }) => {
               sx={{
                 marginBottom: 2,
               }}
-              {...register("contactPerson", { required: true })}
+              {...register('contactPerson', { required: true })}
               error={!!errors.contactPerson}
               helperText={
-                errors.contactPerson ? "Contact Person is required" : ""
+                errors.contactPerson ? 'Contact Person is required' : ''
               }
             />
             <TextField
@@ -170,16 +170,16 @@ const AddOrganization: React.FC<Props> = ({ setOpen, open }) => {
               }}
               className="form-input"
               type="text"
-              {...register("contactNumber", {
-                required: "Contact Number is required",
+              {...register('contactNumber', {
+                required: 'Contact Number is required',
                 pattern: {
                   value: /^[0-9]+$/,
-                  message: "Invalid contact number",
+                  message: 'Invalid contact number',
                 },
               })}
               error={!!errors.contactNumber}
               helperText={
-                errors.contactNumber ? errors.contactNumber.message : ""
+                errors.contactNumber ? errors.contactNumber.message : ''
               }
             />
             <TextField
@@ -188,26 +188,26 @@ const AddOrganization: React.FC<Props> = ({ setOpen, open }) => {
               fullWidth
               className="form-input"
               type="text"
-              {...register("organisationCode", {
-                required: "Organisation Code is required",
+              {...register('organisationCode', {
+                required: 'Organisation Code is required',
               })}
               error={!!errors.organisationCode}
               helperText={
-                errors.organisationCode ? errors.organisationCode.message : ""
+                errors.organisationCode ? errors.organisationCode.message : ''
               }
             />
             <Button
               type="submit"
               variant="contained"
               sx={{
-                background: "#06A19B",
-                fontWeight: "bold",
-                padding: "8px 24px",
-                width: "fit-content",
-                textTransform: "capitalize",
-                borderRadius: "12px",
-                marginLeft: "auto",
-                display: "block",
+                background: '#06A19B',
+                fontWeight: 'bold',
+                padding: '8px 24px',
+                width: 'fit-content',
+                textTransform: 'capitalize',
+                borderRadius: '12px',
+                marginLeft: 'auto',
+                display: 'block',
                 marginTop: 3,
               }}
             >

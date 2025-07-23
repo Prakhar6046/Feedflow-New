@@ -8,11 +8,11 @@ import {
   productionIntensity,
   species,
   units,
-} from "@/app/_lib/utils";
-import * as validationPattern from "@/app/_lib/utils/validationPatterns/index";
-import * as validationMessage from "@/app/_lib/utils/validationsMessage/index";
-import { feedAction, selectIsEditFeed } from "@/lib/features/feed/feedSlice";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+} from '@/app/_lib/utils';
+import * as validationPattern from '@/app/_lib/utils/validationPatterns/index';
+import * as validationMessage from '@/app/_lib/utils/validationsMessage/index';
+import { feedAction, selectIsEditFeed } from '@/lib/features/feed/feedSlice';
+import { useAppDispatch, useAppSelector } from '@/lib/hooks';
 import {
   Box,
   Button,
@@ -24,61 +24,61 @@ import {
   Stack,
   TextField,
   Typography,
-} from "@mui/material";
-import { getCookie } from "cookies-next";
-import { NextPage } from "next";
-import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
-import toast from "react-hot-toast";
-import Loader from "../Loader";
-import NutritionalGuarantee from "./NutritionalGuarantee";
+} from '@mui/material';
+import { getCookie } from 'cookies-next';
+import { NextPage } from 'next';
+import { useRouter } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import toast from 'react-hot-toast';
+import Loader from '../Loader';
+import NutritionalGuarantee from './NutritionalGuarantee';
 // import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 interface Props {
-  feedSupplyId?: String;
+  feedSupplyId?: string;
 }
 interface nutritionalGuarantee {
-  moisture: { kg: String; value: String };
-  crudeProtein: { kg: String; value: String };
-  crudeFat: { kg: String; value: String };
-  crudeAsh: { kg: String; value: String };
-  calcium: { kg: String; value: String };
-  phosphorous: { kg: String; value: String };
-  carbohydrates: { kg: String; value: String };
-  metabolizableEnergy: { kg: String; value: String };
-  crudeFiber: { kg: String; value: String };
+  moisture: { kg: string; value: string };
+  crudeProtein: { kg: string; value: string };
+  crudeFat: { kg: string; value: string };
+  crudeAsh: { kg: string; value: string };
+  calcium: { kg: string; value: string };
+  phosphorous: { kg: string; value: string };
+  carbohydrates: { kg: string; value: string };
+  metabolizableEnergy: { kg: string; value: string };
+  crudeFiber: { kg: string; value: string };
 }
 export interface FormInputs {
-  feedIngredients: String;
-  feedingGuide: String;
-  productionIntensity: String;
-  unit: String;
-  feedingPhase: String;
-  lifeStage: String;
-  shelfLife: String;
-  productCode: String;
-  feedSupplierCode: String;
-  brandCode: String;
-  productNameCode: String;
-  productFormatCode: String;
-  animalSizeInLength: String;
-  animalSizeInWeight: String;
-  specie: String;
-  nutritionalPurpose: String;
-  nutritionalClass: String;
-  particleSize: String;
-  productFormat: String;
-  productName: String;
-  brandName: String;
-  feedSupplier: String;
+  feedIngredients: string;
+  feedingGuide: string;
+  productionIntensity: string;
+  unit: string;
+  feedingPhase: string;
+  lifeStage: string;
+  shelfLife: string;
+  productCode: string;
+  feedSupplierCode: string;
+  brandCode: string;
+  productNameCode: string;
+  productFormatCode: string;
+  animalSizeInLength: string;
+  animalSizeInWeight: string;
+  specie: string;
+  nutritionalPurpose: string;
+  nutritionalClass: string;
+  particleSize: string;
+  productFormat: string;
+  productName: string;
+  brandName: string;
+  feedSupplier: string;
   nutritionalGuarantee: nutritionalGuarantee;
 }
 const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
   const dispatch = useAppDispatch();
   const router = useRouter();
-  const loggedUser: any = getCookie("logged-user");
-  const token = getCookie("auth-token");
+  const loggedUser: any = getCookie('logged-user');
+  const token = getCookie('auth-token');
   const [month, setMonth] = React.useState(new Date());
   const [loading, setLoading] = useState<boolean>(false);
   const [feedSuppliers, setFeedSuppliers] = useState<any>();
@@ -97,7 +97,7 @@ const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
     getValues,
     trigger,
     formState: { errors },
-  } = useForm<FormInputs>({ mode: "onChange" });
+  } = useForm<FormInputs>({ mode: 'onChange' });
   const onSubmit: SubmitHandler<FormInputs> = async (data) => {
     // Prevent API call if one is already in progress
     if (isApiCallInProgress) return;
@@ -108,11 +108,11 @@ const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
       const loggedUserData = JSON.parse(loggedUser);
       if (data) {
         const response = await fetch(
-          isEditFeed ? "/api/feedSupply/edit-feed" : "/api/feedSupply/new-feed",
+          isEditFeed ? '/api/feedSupply/edit-feed' : '/api/feedSupply/new-feed',
           {
-            method: isEditFeed ? "PUT" : "POST",
+            method: isEditFeed ? 'PUT' : 'POST',
             headers: {
-              "Content-Type": "application/json",
+              'Content-Type': 'application/json',
               Authorization: `Bearer ${token}`,
             },
             body: isEditFeed
@@ -127,7 +127,7 @@ const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
                   createdBy: String(loggedUserData.id),
                   organisationId: loggedUserData.organisationId,
                 }),
-          }
+          },
         );
         const res = await response.json();
         if (res.status) {
@@ -135,20 +135,20 @@ const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
           if (isEditFeed) {
             dispatch(feedAction.resetState());
             reset();
-            router.push("/dashboard/feedSupply");
+            router.push('/dashboard/feedSupply');
           }
           reset();
         }
       }
     } catch (error) {
-      toast.error("Something went wrong. Please try again.");
+      toast.error('Something went wrong. Please try again.');
     } finally {
       setIsApiCallInProgress(false);
     }
   };
   const getFeedSuppliers = async () => {
     const response = await fetch(`/api/organisation/feedSuppliers`, {
-      method: "GET",
+      method: 'GET',
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -158,7 +158,7 @@ const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
   };
   const getFeed = async () => {
     const data = await fetch(`/api/feedSupply/${feedSupplyId}`, {
-      method: "GET",
+      method: 'GET',
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -170,13 +170,13 @@ const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
 
   useEffect(() => {
     if (
-      watch("nutritionalGuarantee.moisture.kg") &&
-      watch("nutritionalGuarantee.crudeProtein.kg") &&
-      watch("nutritionalGuarantee.crudeFat.kg") &&
-      watch("nutritionalGuarantee.crudeAsh.kg") &&
-      watch("nutritionalGuarantee.crudeFiber.kg")
+      watch('nutritionalGuarantee.moisture.kg') &&
+      watch('nutritionalGuarantee.crudeProtein.kg') &&
+      watch('nutritionalGuarantee.crudeFat.kg') &&
+      watch('nutritionalGuarantee.crudeAsh.kg') &&
+      watch('nutritionalGuarantee.crudeFiber.kg')
     ) {
-      clearErrors("nutritionalGuarantee.carbohydrates.kg");
+      clearErrors('nutritionalGuarantee.carbohydrates.kg');
       const nutritionalGuarantee = getValues().nutritionalGuarantee;
       const value =
         100 -
@@ -186,14 +186,14 @@ const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
         Number(nutritionalGuarantee?.crudeFat?.kg) +
         Number(nutritionalGuarantee?.crudeAsh?.kg);
 
-      setValue("nutritionalGuarantee.carbohydrates.kg", String(value));
+      setValue('nutritionalGuarantee.carbohydrates.kg', String(value));
     }
   }, [
-    watch("nutritionalGuarantee.moisture.kg"),
-    watch("nutritionalGuarantee.crudeProtein.kg"),
-    watch("nutritionalGuarantee.crudeFat.kg"),
-    watch("nutritionalGuarantee.crudeAsh.kg"),
-    watch("nutritionalGuarantee.crudeFiber.kg"),
+    watch('nutritionalGuarantee.moisture.kg'),
+    watch('nutritionalGuarantee.crudeProtein.kg'),
+    watch('nutritionalGuarantee.crudeFat.kg'),
+    watch('nutritionalGuarantee.crudeAsh.kg'),
+    watch('nutritionalGuarantee.crudeFiber.kg'),
   ]);
   useEffect(() => {
     setLoading(true);
@@ -211,34 +211,34 @@ const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
   }, []);
   useEffect(() => {
     if (editFeedSpecification) {
-      setValue("feedIngredients", editFeedSpecification?.feedIngredients);
-      setValue("feedingGuide", editFeedSpecification?.feedingGuide);
+      setValue('feedIngredients', editFeedSpecification?.feedIngredients);
+      setValue('feedingGuide', editFeedSpecification?.feedingGuide);
       setValue(
-        "productionIntensity",
-        editFeedSpecification?.productionIntensity
+        'productionIntensity',
+        editFeedSpecification?.productionIntensity,
       );
-      setValue("unit", editFeedSpecification?.unit);
-      setValue("feedingPhase", editFeedSpecification?.feedingPhase);
-      setValue("lifeStage", editFeedSpecification?.lifeStage);
-      setValue("shelfLife", editFeedSpecification?.shelfLife);
-      setValue("productCode", editFeedSpecification?.productCode);
-      setValue("feedSupplierCode", editFeedSpecification?.feedSupplierCode);
-      setValue("brandCode", editFeedSpecification?.brandCode);
-      setValue("productNameCode", editFeedSpecification?.productNameCode);
-      setValue("productFormatCode", editFeedSpecification?.productFormatCode);
-      setValue("animalSizeInLength", editFeedSpecification?.animalSizeInLength);
-      setValue("animalSizeInWeight", editFeedSpecification?.animalSizeInWeight);
-      setValue("specie", editFeedSpecification?.specie);
-      setValue("nutritionalPurpose", editFeedSpecification?.nutritionalPurpose);
-      setValue("nutritionalClass", editFeedSpecification?.nutritionalClass);
-      setValue("particleSize", editFeedSpecification?.particleSize);
-      setValue("productFormat", editFeedSpecification?.productFormat);
-      setValue("productName", editFeedSpecification?.productName);
-      setValue("brandName", editFeedSpecification?.brandName);
-      setValue("feedSupplier", editFeedSpecification?.feedSupplier);
+      setValue('unit', editFeedSpecification?.unit);
+      setValue('feedingPhase', editFeedSpecification?.feedingPhase);
+      setValue('lifeStage', editFeedSpecification?.lifeStage);
+      setValue('shelfLife', editFeedSpecification?.shelfLife);
+      setValue('productCode', editFeedSpecification?.productCode);
+      setValue('feedSupplierCode', editFeedSpecification?.feedSupplierCode);
+      setValue('brandCode', editFeedSpecification?.brandCode);
+      setValue('productNameCode', editFeedSpecification?.productNameCode);
+      setValue('productFormatCode', editFeedSpecification?.productFormatCode);
+      setValue('animalSizeInLength', editFeedSpecification?.animalSizeInLength);
+      setValue('animalSizeInWeight', editFeedSpecification?.animalSizeInWeight);
+      setValue('specie', editFeedSpecification?.specie);
+      setValue('nutritionalPurpose', editFeedSpecification?.nutritionalPurpose);
+      setValue('nutritionalClass', editFeedSpecification?.nutritionalClass);
+      setValue('particleSize', editFeedSpecification?.particleSize);
+      setValue('productFormat', editFeedSpecification?.productFormat);
+      setValue('productName', editFeedSpecification?.productName);
+      setValue('brandName', editFeedSpecification?.brandName);
+      setValue('feedSupplier', editFeedSpecification?.feedSupplier);
       setValue(
-        "nutritionalGuarantee",
-        editFeedSpecification?.nutritionalGuarantee
+        'nutritionalGuarantee',
+        editFeedSpecification?.nutritionalGuarantee,
       );
     }
   }, [editFeedSpecification]);
@@ -274,14 +274,14 @@ const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
                   <Select
                     labelId="feed-supply-select-label1"
                     id="feed-supply-select1"
-                    {...register("feedSupplier", {
+                    {...register('feedSupplier', {
                       required: true,
                     })}
                     label="Feed Supplier *"
-                    value={watch("feedSupplier") || ""}
+                    value={watch('feedSupplier') || ''}
                     onChange={(e) => {
-                      setValue("feedSupplier", e.target.value);
-                      trigger("feedSupplier");
+                      setValue('feedSupplier', e.target.value);
+                      trigger('feedSupplier');
                     }}
                   >
                     {feedSuppliers?.map((supplier: any) => {
@@ -294,7 +294,7 @@ const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
                   </Select>
                   {errors &&
                     errors.feedSupplier &&
-                    errors.feedSupplier.type === "required" && (
+                    errors.feedSupplier.type === 'required' && (
                       <Typography
                         variant="body2"
                         color="red"
@@ -312,19 +312,19 @@ const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
                   label="Feed Supplier Code *"
                   type="text"
                   className="form-input"
-                  {...register("feedSupplierCode", {
+                  {...register('feedSupplierCode', {
                     required: true,
                     pattern:
                       validationPattern.alphabetsNumbersAndSpacesPattern2,
                   })}
                   focused
                   sx={{
-                    width: "100%",
+                    width: '100%',
                   }}
                 />
                 {errors &&
                   errors.feedSupplierCode &&
-                  errors.feedSupplierCode.type === "required" && (
+                  errors.feedSupplierCode.type === 'required' && (
                     <Typography
                       variant="body2"
                       color="red"
@@ -336,7 +336,7 @@ const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
                   )}
                 {errors &&
                   errors.feedSupplierCode &&
-                  errors.feedSupplierCode.type === "pattern" && (
+                  errors.feedSupplierCode.type === 'pattern' && (
                     <Typography
                       variant="body2"
                       color="red"
@@ -353,18 +353,18 @@ const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
                   label="Brand Name *"
                   type="text"
                   className="form-input"
-                  {...register("brandName", {
+                  {...register('brandName', {
                     required: true,
                     pattern: validationPattern.alphabetsAndSpacesPattern,
                   })}
                   focused
                   sx={{
-                    width: "100%",
+                    width: '100%',
                   }}
                 />
                 {errors &&
                   errors.brandName &&
-                  errors.brandName.type === "required" && (
+                  errors.brandName.type === 'required' && (
                     <Typography
                       variant="body2"
                       color="red"
@@ -376,7 +376,7 @@ const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
                   )}
                 {errors &&
                   errors.brandName &&
-                  errors.brandName.type === "pattern" && (
+                  errors.brandName.type === 'pattern' && (
                     <Typography
                       variant="body2"
                       color="red"
@@ -393,19 +393,19 @@ const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
                   label="Brand Code *"
                   type="text"
                   className="form-input"
-                  {...register("brandCode", {
+                  {...register('brandCode', {
                     required: true,
                     pattern:
                       validationPattern.alphabetsNumbersAndSpacesPattern2,
                   })}
                   focused
                   sx={{
-                    width: "100%",
+                    width: '100%',
                   }}
                 />
                 {errors &&
                   errors.brandCode &&
-                  errors.brandCode.type === "required" && (
+                  errors.brandCode.type === 'required' && (
                     <Typography
                       variant="body2"
                       color="red"
@@ -417,7 +417,7 @@ const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
                   )}
                 {errors &&
                   errors.brandCode &&
-                  errors.brandCode.type === "pattern" && (
+                  errors.brandCode.type === 'pattern' && (
                     <Typography
                       variant="body2"
                       color="red"
@@ -434,18 +434,18 @@ const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
                   label="Product Name *"
                   type="text"
                   className="form-input"
-                  {...register("productName", {
+                  {...register('productName', {
                     required: true,
                     pattern: validationPattern.alphabetsAndSpacesPattern,
                   })}
                   focused
                   sx={{
-                    width: "100%",
+                    width: '100%',
                   }}
                 />
                 {errors &&
                   errors.productName &&
-                  errors.productName.type === "required" && (
+                  errors.productName.type === 'required' && (
                     <Typography
                       variant="body2"
                       color="red"
@@ -457,7 +457,7 @@ const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
                   )}
                 {errors &&
                   errors.productName &&
-                  errors.productName.type === "pattern" && (
+                  errors.productName.type === 'pattern' && (
                     <Typography
                       variant="body2"
                       color="red"
@@ -474,19 +474,19 @@ const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
                   label="Product Code *"
                   type="text"
                   className="form-input"
-                  {...register("productCode", {
+                  {...register('productCode', {
                     required: true,
                     pattern:
                       validationPattern.alphabetsNumbersAndSpacesPattern2,
                   })}
                   focused
                   sx={{
-                    width: "100%",
+                    width: '100%',
                   }}
                 />
                 {errors &&
                   errors.productCode &&
-                  errors.productCode.type === "required" && (
+                  errors.productCode.type === 'required' && (
                     <Typography
                       variant="body2"
                       color="red"
@@ -498,7 +498,7 @@ const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
                   )}
                 {errors &&
                   errors.productCode &&
-                  errors.productCode.type === "pattern" && (
+                  errors.productCode.type === 'pattern' && (
                     <Typography
                       variant="body2"
                       color="red"
@@ -515,19 +515,19 @@ const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
                   label="Product Name Code *"
                   type="text"
                   className="form-input"
-                  {...register("productNameCode", {
+                  {...register('productNameCode', {
                     required: true,
                     pattern:
                       validationPattern.alphabetsNumbersAndSpacesPattern2,
                   })}
                   focused
                   sx={{
-                    width: "100%",
+                    width: '100%',
                   }}
                 />
                 {errors &&
                   errors.productNameCode &&
-                  errors.productNameCode.type === "required" && (
+                  errors.productNameCode.type === 'required' && (
                     <Typography
                       variant="body2"
                       color="red"
@@ -539,7 +539,7 @@ const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
                   )}
                 {errors &&
                   errors.productNameCode &&
-                  errors.productNameCode.type === "pattern" && (
+                  errors.productNameCode.type === 'pattern' && (
                     <Typography
                       variant="body2"
                       color="red"
@@ -560,13 +560,13 @@ const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
                     labelId="feed-supply-select-label2"
                     id="feed-supply-select2"
                     label="Product Format *"
-                    {...register("productFormat", {
+                    {...register('productFormat', {
                       required: true,
                     })}
-                    value={watch("productFormat") || ""}
+                    value={watch('productFormat') || ''}
                     onChange={(e) => {
-                      setValue("productFormat", e.target.value);
-                      trigger("productFormat");
+                      setValue('productFormat', e.target.value);
+                      trigger('productFormat');
                     }}
                   >
                     {ProductFormatCode.map((format, i) => {
@@ -579,7 +579,7 @@ const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
                   </Select>
                   {errors &&
                     errors.productFormat &&
-                    errors.productFormat.type === "required" && (
+                    errors.productFormat.type === 'required' && (
                       <Typography
                         variant="body2"
                         color="red"
@@ -597,19 +597,19 @@ const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
                   label="Product Format Code *"
                   type="text"
                   className="form-input"
-                  {...register("productFormatCode", {
+                  {...register('productFormatCode', {
                     required: true,
                     pattern:
                       validationPattern.alphabetsNumbersAndSpacesPattern2,
                   })}
                   focused
                   sx={{
-                    width: "100%",
+                    width: '100%',
                   }}
                 />
                 {errors &&
                   errors.productFormatCode &&
-                  errors.productFormatCode.type === "required" && (
+                  errors.productFormatCode.type === 'required' && (
                     <Typography
                       variant="body2"
                       color="red"
@@ -621,7 +621,7 @@ const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
                   )}
                 {errors &&
                   errors.productFormatCode &&
-                  errors.productFormatCode.type === "pattern" && (
+                  errors.productFormatCode.type === 'pattern' && (
                     <Typography
                       variant="body2"
                       color="red"
@@ -635,23 +635,23 @@ const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
 
               <Grid item md={6} xs={12}>
                 <Box
-                  display={"flex"}
+                  display={'flex'}
                   gap={2}
-                  alignItems={"center"}
-                  position={"relative"}
+                  alignItems={'center'}
+                  position={'relative'}
                 >
                   <TextField
                     label="Particle Size *"
                     type="text"
                     className="form-input"
-                    {...register("particleSize", {
+                    {...register('particleSize', {
                       required: true,
                       pattern: validationPattern.numbersWithDot,
                       maxLength: 10,
                     })}
                     focused
                     sx={{
-                      width: "100%",
+                      width: '100%',
                     }}
                   />
 
@@ -659,14 +659,14 @@ const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
                     variant="body2"
                     color="#555555AC"
                     sx={{
-                      position: "absolute",
+                      position: 'absolute',
                       right: 6,
-                      top: "50%",
-                      transform: "translate(-6px, -50%)",
-                      backgroundColor: "#fff",
+                      top: '50%',
+                      transform: 'translate(-6px, -50%)',
+                      backgroundColor: '#fff',
                       height: 30,
-                      display: "grid",
-                      placeItems: "center",
+                      display: 'grid',
+                      placeItems: 'center',
                       zIndex: 1,
                       pl: 1,
                     }}
@@ -676,7 +676,7 @@ const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
                 </Box>
                 {errors &&
                   errors.particleSize &&
-                  errors.particleSize.type === "required" && (
+                  errors.particleSize.type === 'required' && (
                     <Typography
                       variant="body2"
                       color="red"
@@ -688,7 +688,7 @@ const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
                   )}
                 {errors &&
                   errors.particleSize &&
-                  errors.particleSize.type === "pattern" && (
+                  errors.particleSize.type === 'pattern' && (
                     <Typography
                       variant="body2"
                       color="red"
@@ -700,7 +700,7 @@ const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
                   )}
                 {errors &&
                   errors.particleSize &&
-                  errors.particleSize.type === "maxLength" && (
+                  errors.particleSize.type === 'maxLength' && (
                     <Typography
                       variant="body2"
                       color="red"
@@ -721,13 +721,13 @@ const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
                     labelId="feed-supply-select-label3"
                     id="feed-supply-select3"
                     label="Nutritional Class *"
-                    {...register("nutritionalClass", {
+                    {...register('nutritionalClass', {
                       required: true,
                     })}
-                    value={watch("nutritionalClass") || ""}
+                    value={watch('nutritionalClass') || ''}
                     onChange={(e) => {
-                      setValue("nutritionalClass", e.target.value);
-                      trigger("nutritionalClass");
+                      setValue('nutritionalClass', e.target.value);
+                      trigger('nutritionalClass');
                     }}
                   >
                     {nutritionalClass.map((nutritional, i) => {
@@ -740,7 +740,7 @@ const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
                   </Select>
                   {errors &&
                     errors.nutritionalClass &&
-                    errors.nutritionalClass.type === "required" && (
+                    errors.nutritionalClass.type === 'required' && (
                       <Typography
                         variant="body2"
                         color="red"
@@ -762,13 +762,13 @@ const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
                     labelId="feed-supply-select-label4"
                     id="feed-supply-select4"
                     label="Nutritional Purpose *"
-                    {...register("nutritionalPurpose", {
+                    {...register('nutritionalPurpose', {
                       required: true,
                     })}
-                    value={watch("nutritionalPurpose") || ""}
+                    value={watch('nutritionalPurpose') || ''}
                     onChange={(e) => {
-                      setValue("nutritionalPurpose", e.target.value);
-                      trigger("nutritionalPurpose");
+                      setValue('nutritionalPurpose', e.target.value);
+                      trigger('nutritionalPurpose');
                     }}
                   >
                     {nutritionalPurpose.map((intensity, i) => {
@@ -781,7 +781,7 @@ const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
                   </Select>
                   {errors &&
                     errors.nutritionalPurpose &&
-                    errors.nutritionalPurpose.type === "required" && (
+                    errors.nutritionalPurpose.type === 'required' && (
                       <Typography
                         variant="body2"
                         color="red"
@@ -809,13 +809,13 @@ const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
                     labelId="feed-supply-select-label5"
                     id="feed-supply-select5"
                     label="Species *"
-                    {...register("specie", {
+                    {...register('specie', {
                       required: true,
                     })}
-                    value={watch("specie") || ""}
+                    value={watch('specie') || ''}
                     onChange={(e) => {
-                      setValue("specie", e.target.value);
-                      trigger("specie");
+                      setValue('specie', e.target.value);
+                      trigger('specie');
                     }}
                   >
                     {species.map((specie, i) => {
@@ -828,7 +828,7 @@ const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
                   </Select>
                   {errors &&
                     errors.specie &&
-                    errors.specie.type === "required" && (
+                    errors.specie.type === 'required' && (
                       <Typography
                         variant="body2"
                         color="red"
@@ -843,23 +843,23 @@ const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
 
               <Grid item md={6} xs={12}>
                 <Box
-                  display={"flex"}
+                  display={'flex'}
                   gap={2}
-                  alignItems={"center"}
-                  position={"relative"}
+                  alignItems={'center'}
+                  position={'relative'}
                 >
                   <TextField
                     label="Animal Size (Length) *"
                     type="text"
                     className="form-input"
-                    {...register("animalSizeInLength", {
+                    {...register('animalSizeInLength', {
                       required: true,
                       pattern: validationPattern.numbersWithDot,
                       maxLength: 10,
                     })}
                     focused
                     sx={{
-                      width: "100%",
+                      width: '100%',
                     }}
                   />
 
@@ -867,14 +867,14 @@ const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
                     variant="body2"
                     color="#555555AC"
                     sx={{
-                      position: "absolute",
+                      position: 'absolute',
                       right: 6,
-                      top: "50%",
-                      transform: "translate(-6px, -50%)",
-                      backgroundColor: "#fff",
+                      top: '50%',
+                      transform: 'translate(-6px, -50%)',
+                      backgroundColor: '#fff',
                       height: 30,
-                      display: "grid",
-                      placeItems: "center",
+                      display: 'grid',
+                      placeItems: 'center',
                       zIndex: 1,
                       pl: 1,
                     }}
@@ -884,7 +884,7 @@ const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
                 </Box>
                 {errors &&
                   errors.animalSizeInLength &&
-                  errors.animalSizeInLength.type === "required" && (
+                  errors.animalSizeInLength.type === 'required' && (
                     <Typography
                       variant="body2"
                       color="red"
@@ -896,7 +896,7 @@ const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
                   )}
                 {errors &&
                   errors.animalSizeInLength &&
-                  errors.animalSizeInLength.type === "pattern" && (
+                  errors.animalSizeInLength.type === 'pattern' && (
                     <Typography
                       variant="body2"
                       color="red"
@@ -908,7 +908,7 @@ const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
                   )}
                 {errors &&
                   errors.animalSizeInLength &&
-                  errors.animalSizeInLength.type === "maxLength" && (
+                  errors.animalSizeInLength.type === 'maxLength' && (
                     <Typography
                       variant="body2"
                       color="red"
@@ -922,23 +922,23 @@ const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
 
               <Grid item md={6} xs={12}>
                 <Box
-                  display={"flex"}
+                  display={'flex'}
                   gap={2}
-                  alignItems={"center"}
-                  position={"relative"}
+                  alignItems={'center'}
+                  position={'relative'}
                 >
                   <TextField
                     label="Animal Size (Weight) *"
                     type="text"
                     className="form-input"
-                    {...register("animalSizeInWeight", {
+                    {...register('animalSizeInWeight', {
                       required: true,
                       pattern: validationPattern.numbersWithDot,
                       maxLength: 10,
                     })}
                     focused
                     sx={{
-                      width: "100%",
+                      width: '100%',
                     }}
                   />
 
@@ -946,14 +946,14 @@ const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
                     variant="body2"
                     color="#555555AC"
                     sx={{
-                      position: "absolute",
+                      position: 'absolute',
                       right: 6,
-                      top: "50%",
-                      transform: "translate(-6px, -50%)",
-                      backgroundColor: "#fff",
+                      top: '50%',
+                      transform: 'translate(-6px, -50%)',
+                      backgroundColor: '#fff',
                       height: 30,
-                      display: "grid",
-                      placeItems: "center",
+                      display: 'grid',
+                      placeItems: 'center',
                       zIndex: 1,
                       pl: 1,
                     }}
@@ -963,7 +963,7 @@ const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
                 </Box>
                 {errors &&
                   errors.animalSizeInWeight &&
-                  errors.animalSizeInWeight.type === "required" && (
+                  errors.animalSizeInWeight.type === 'required' && (
                     <Typography
                       variant="body2"
                       color="red"
@@ -975,7 +975,7 @@ const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
                   )}
                 {errors &&
                   errors.animalSizeInWeight &&
-                  errors.animalSizeInWeight.type === "pattern" && (
+                  errors.animalSizeInWeight.type === 'pattern' && (
                     <Typography
                       variant="body2"
                       color="red"
@@ -987,7 +987,7 @@ const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
                   )}
                 {errors &&
                   errors.animalSizeInWeight &&
-                  errors.animalSizeInWeight.type === "maxLength" && (
+                  errors.animalSizeInWeight.type === 'maxLength' && (
                     <Typography
                       variant="body2"
                       color="red"
@@ -1007,14 +1007,14 @@ const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
                   <Select
                     labelId="feed-supply-select-label6"
                     id="feed-supply-select6"
-                    {...register("productionIntensity", {
+                    {...register('productionIntensity', {
                       required: true,
                     })}
                     label="Production Intensity *"
-                    value={watch("productionIntensity") || ""}
+                    value={watch('productionIntensity') || ''}
                     onChange={(e) => {
-                      setValue("productionIntensity", e.target.value);
-                      trigger("productionIntensity");
+                      setValue('productionIntensity', e.target.value);
+                      trigger('productionIntensity');
                     }}
                   >
                     {productionIntensity.map((intensity, i) => {
@@ -1027,7 +1027,7 @@ const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
                   </Select>
                   {errors &&
                     errors.productionIntensity &&
-                    errors.productionIntensity.type === "required" && (
+                    errors.productionIntensity.type === 'required' && (
                       <Typography
                         variant="body2"
                         color="red"
@@ -1046,14 +1046,14 @@ const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
                   <Select
                     labelId="feed-supply-select-label7"
                     id="feed-supply-select7"
-                    {...register("unit", {
+                    {...register('unit', {
                       required: true,
                     })}
                     label="Unit *"
-                    value={watch("unit") !== "None" ? watch("unit") : ""}
+                    value={watch('unit') !== 'None' ? watch('unit') : ''}
                     onChange={(e) => {
-                      setValue("unit", e.target.value);
-                      trigger("unit");
+                      setValue('unit', e.target.value);
+                      trigger('unit');
                     }}
                   >
                     {units.map((unit, i) => {
@@ -1064,7 +1064,7 @@ const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
                       );
                     })}
                   </Select>
-                  {errors && errors.unit && errors.unit.type === "required" && (
+                  {errors && errors.unit && errors.unit.type === 'required' && (
                     <Typography
                       variant="body2"
                       color="red"
@@ -1085,18 +1085,18 @@ const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
                   <Select
                     labelId="feed-supply-select-label8"
                     id="feed-supply-select8"
-                    {...register("feedingPhase", {
+                    {...register('feedingPhase', {
                       required: true,
                     })}
                     label="Feeding Phase *"
                     value={
-                      watch("feedingPhase") !== "None"
-                        ? watch("feedingPhase")
-                        : ""
+                      watch('feedingPhase') !== 'None'
+                        ? watch('feedingPhase')
+                        : ''
                     }
                     onChange={(e) => {
-                      setValue("feedingPhase", e.target.value);
-                      trigger("feedingPhase");
+                      setValue('feedingPhase', e.target.value);
+                      trigger('feedingPhase');
                     }}
                   >
                     {feedingPhase.map((intensity, i) => {
@@ -1109,7 +1109,7 @@ const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
                   </Select>
                   {errors &&
                     errors.feedingPhase &&
-                    errors.feedingPhase.type === "required" && (
+                    errors.feedingPhase.type === 'required' && (
                       <Typography
                         variant="body2"
                         color="red"
@@ -1131,15 +1131,15 @@ const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
                     labelId="feed-supply-select-label9"
                     id="feed-supply-select9"
                     label="Life Stage *"
-                    {...register("lifeStage", {
+                    {...register('lifeStage', {
                       required: true,
                     })}
                     value={
-                      watch("lifeStage") !== "None" ? watch("lifeStage") : ""
+                      watch('lifeStage') !== 'None' ? watch('lifeStage') : ''
                     }
                     onChange={(e) => {
-                      setValue("lifeStage", e.target.value);
-                      trigger("lifeStage");
+                      setValue('lifeStage', e.target.value);
+                      trigger('lifeStage');
                     }}
                   >
                     {lifeStage.map((stage, i) => {
@@ -1152,7 +1152,7 @@ const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
                   </Select>
                   {errors &&
                     errors.lifeStage &&
-                    errors.lifeStage.type === "required" && (
+                    errors.lifeStage.type === 'required' && (
                       <Typography
                         variant="body2"
                         color="red"
@@ -1167,37 +1167,37 @@ const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
 
               <Grid item md={6} xs={12}>
                 <Box
-                  display={"flex"}
+                  display={'flex'}
                   gap={2}
-                  alignItems={"center"}
-                  position={"relative"}
+                  alignItems={'center'}
+                  position={'relative'}
                 >
                   <TextField
                     label="Shelf Live (from date of manufacturing) *"
                     type="number"
                     className="form-input custom-field"
-                    {...register("shelfLife", {
+                    {...register('shelfLife', {
                       required: true,
                       pattern: validationPattern.numbersWithDot,
                       maxLength: 10,
                     })}
                     focused
                     sx={{
-                      width: "100%",
+                      width: '100%',
                     }}
                   />
                   <Typography
                     variant="body2"
                     color="#555555AC"
                     sx={{
-                      position: "absolute",
+                      position: 'absolute',
                       right: 6,
-                      top: "50%",
-                      transform: "translate(-6px, -50%)",
-                      backgroundColor: "#fff",
+                      top: '50%',
+                      transform: 'translate(-6px, -50%)',
+                      backgroundColor: '#fff',
                       height: 30,
-                      display: "grid",
-                      placeItems: "center",
+                      display: 'grid',
+                      placeItems: 'center',
                       zIndex: 1,
                       pl: 1,
                     }}
@@ -1207,7 +1207,7 @@ const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
                 </Box>
                 {errors &&
                   errors.shelfLife &&
-                  errors.shelfLife.type === "required" && (
+                  errors.shelfLife.type === 'required' && (
                     <Typography
                       variant="body2"
                       color="red"
@@ -1219,7 +1219,7 @@ const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
                   )}
                 {errors &&
                   errors.shelfLife &&
-                  errors.shelfLife.type === "pattern" && (
+                  errors.shelfLife.type === 'pattern' && (
                     <Typography
                       variant="body2"
                       color="red"
@@ -1231,7 +1231,7 @@ const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
                   )}
                 {errors &&
                   errors.shelfLife &&
-                  errors.shelfLife.type === "maxLength" && (
+                  errors.shelfLife.type === 'maxLength' && (
                     <Typography
                       variant="body2"
                       color="red"
@@ -1252,19 +1252,19 @@ const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
                   multiline
                   rows={5}
                   className="form-input"
-                  {...register("feedIngredients", {
+                  {...register('feedIngredients', {
                     required: true,
                     pattern:
                       validationPattern.alphabetsSpacesAndSpecialCharsPattern,
                   })}
                   sx={{
-                    width: "100%",
-                    marginBlock: "20px",
+                    width: '100%',
+                    marginBlock: '20px',
                   }}
                 />
                 {errors &&
                   errors.feedIngredients &&
-                  errors.feedIngredients.type === "required" && (
+                  errors.feedIngredients.type === 'required' && (
                     <Typography
                       variant="body2"
                       color="red"
@@ -1276,7 +1276,7 @@ const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
                   )}
                 {errors &&
                   errors.feedIngredients &&
-                  errors.feedIngredients.type === "pattern" && (
+                  errors.feedIngredients.type === 'pattern' && (
                     <Typography
                       variant="body2"
                       color="red"
@@ -1298,17 +1298,17 @@ const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
                   rows={5}
                   className="form-input"
                   sx={{
-                    width: "100%",
-                    marginBlock: "20px",
+                    width: '100%',
+                    marginBlock: '20px',
                   }}
-                  {...register("feedingGuide", {
+                  {...register('feedingGuide', {
                     required: true,
                     pattern: validationPattern.alphabetsAndSpacesPattern,
                   })}
                 />
                 {errors &&
                   errors.feedingGuide &&
-                  errors.feedingGuide.type === "required" && (
+                  errors.feedingGuide.type === 'required' && (
                     <Typography
                       variant="body2"
                       color="red"
@@ -1320,7 +1320,7 @@ const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
                   )}
                 {errors &&
                   errors.feedingGuide &&
-                  errors.feedingGuide.type === "pattern" && (
+                  errors.feedingGuide.type === 'pattern' && (
                     <Typography
                       variant="body2"
                       color="red"
@@ -1344,9 +1344,9 @@ const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
 
             <Box>
               <Box
-                display={"flex"}
-                justifyContent={"flex-end"}
-                alignItems={"center"}
+                display={'flex'}
+                justifyContent={'flex-end'}
+                alignItems={'center'}
                 gap={3}
                 mt={3}
               >
@@ -1355,17 +1355,17 @@ const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
                   variant="contained"
                   disabled={isApiCallInProgress}
                   sx={{
-                    color: "#fff",
-                    background: "#06A19B",
+                    color: '#fff',
+                    background: '#06A19B',
                     fontWeight: 600,
-                    padding: "6px 16px",
-                    width: "fit-content",
-                    textTransform: "capitalize",
-                    borderRadius: "8px",
-                    border: "1px solid #06A19B",
+                    padding: '6px 16px',
+                    width: 'fit-content',
+                    textTransform: 'capitalize',
+                    borderRadius: '8px',
+                    border: '1px solid #06A19B',
                   }}
                 >
-                  {isEditFeed ? "Edit feed" : "Add feed"}
+                  {isEditFeed ? 'Edit feed' : 'Add feed'}
                 </Button>
               </Box>
             </Box>

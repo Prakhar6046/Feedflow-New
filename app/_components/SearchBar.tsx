@@ -1,33 +1,33 @@
-"use client";
-import { Box, TextField } from "@mui/material";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
-import { useDebouncedCallback } from "use-debounce";
+'use client';
+import { Box, TextField } from '@mui/material';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
+import { useDebouncedCallback } from 'use-debounce';
 function SearchBar() {
   const searchParams = useSearchParams();
   const pathName = usePathname();
   const { replace } = useRouter();
-  const [searchedValue, setSearchedValue] = useState<string>("");
+  const [searchedValue, setSearchedValue] = useState<string>('');
   const handleSearch = useDebouncedCallback((val: string) => {
     const params = new URLSearchParams(searchParams);
     if (val.length) {
-      params.set("query", val);
+      params.set('query', val);
     } else {
-      params.delete("query");
+      params.delete('query');
     }
     replace(`${pathName}?${params.toString()}`);
   }, 2000);
   const handleClear = () => {
     const params = new URLSearchParams(searchParams);
-    setSearchedValue("");
-    params.delete("query");
+    setSearchedValue('');
+    params.delete('query');
     replace(`${pathName}?${params.toString()}`);
   };
   useEffect(() => {
     if (searchedValue) {
       handleSearch(searchedValue);
     } else {
-      handleSearch("");
+      handleSearch('');
     }
   }, [searchedValue, handleSearch]);
   return (
@@ -37,8 +37,8 @@ function SearchBar() {
         className="search-filter"
         sx={{
           width: {
-            md: "fit-content",
-            xs: "100%",
+            md: 'fit-content',
+            xs: '100%',
           },
         }}
       >
@@ -50,8 +50,8 @@ function SearchBar() {
           value={searchedValue}
           sx={{
             width: {
-              md: "fit-content",
-              xs: "100%",
+              md: 'fit-content',
+              xs: '100%',
             },
           }}
         />
@@ -86,7 +86,7 @@ function SearchBar() {
           color="white"
           width="fit-content"
           onClick={handleClear}
-          style={{ cursor: "pointer" }}
+          style={{ cursor: 'pointer' }}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"

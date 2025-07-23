@@ -1,8 +1,8 @@
-import nodemailer from "nodemailer";
+import nodemailer from 'nodemailer';
 export const InvitationEmail = async (user: any) => {
   try {
-    let transporter: any = nodemailer.createTransport({
-      service: "gmail", // You can use any other email service provider
+    const transporter: any = nodemailer.createTransport({
+      service: 'gmail', // You can use any other email service provider
       auth: {
         user: process.env.EMAIL_USER, // Your email address
         pass: process.env.EMAIL_PASS, // Your email password or app-specific password
@@ -12,8 +12,8 @@ export const InvitationEmail = async (user: any) => {
     const mailOptions = {
       from: process.env.EMAIL_USER, // Sender address
       to: user.email, // List of recipients
-      subject: "Welcome!", // Subject line
-      text: "Thank you for signing up!", // Plain text body
+      subject: 'Welcome!', // Subject line
+      text: 'Thank you for signing up!', // Plain text body
       html: `<!DOCTYPE html>
       <html lang="en">
         <head>

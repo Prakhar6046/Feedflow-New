@@ -1,8 +1,7 @@
-import { verifyAndRefreshToken } from "@/app/_lib/auth/verifyAndRefreshToken";
-import { InvitationEmail } from "@/app/_lib/emailTemplate/invitationEmail";
-import prisma from "@/prisma/prisma";
-import { Prisma } from "@prisma/client";
-import { NextRequest, NextResponse } from "next/server";
+import { verifyAndRefreshToken } from '@/app/_lib/auth/verifyAndRefreshToken';
+import prisma from '@/prisma/prisma';
+import { Prisma } from '@prisma/client';
+import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
@@ -11,9 +10,9 @@ export async function POST(req: NextRequest) {
     return new NextResponse(
       JSON.stringify({
         status: false,
-        message: "Unauthorized: Token missing or invalid",
+        message: 'Unauthorized: Token missing or invalid',
       }),
-      { status: 401 }
+      { status: 401 },
     );
   }
   try {
@@ -27,9 +26,9 @@ export async function POST(req: NextRequest) {
       return NextResponse.json(
         {
           status: false,
-          message: "All required payload missing or invalid",
+          message: 'All required payload missing or invalid',
         },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -43,7 +42,7 @@ export async function POST(req: NextRequest) {
           status: false,
           message: `A farm named "${body?.name}" already exists. Please use a different name.`,
         },
-        { status: 409 }
+        { status: 409 },
       );
     }
     const newFarmAddress = await prisma.farmAddress.create({
@@ -128,7 +127,7 @@ export async function POST(req: NextRequest) {
             }
             return null;
           })
-          .filter((entry: any) => entry !== null)
+          .filter((entry: any) => entry !== null),
       ),
     });
     await prisma.feedProfile.create({
@@ -149,32 +148,32 @@ export async function POST(req: NextRequest) {
               };
             }
             return null;
-          }).filter((entry: any) => entry !== null)
+          }).filter((entry: any) => entry !== null),
         ),
       });
     }
 
     return NextResponse.json({
-      message: "Farm created successfully",
-      data: "farm",
+      message: 'Farm created successfully',
+      data: 'farm',
       status: true,
     });
   } catch (error: unknown) {
-    console.error("Error:", error);
+    console.error('Error:', error);
 
-    let errorMessage = "An unexpected error occurred";
+    let errorMessage = 'An unexpected error occurred';
     let statusCode = 500;
 
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      if (error.code === "P2002") {
+      if (error.code === 'P2002') {
         errorMessage = `Farm with name "${body.name}" already exists.`;
         statusCode = 409;
       }
     } else if (error instanceof Error) {
       errorMessage = error.message;
-    } else if (typeof error === "string") {
+    } else if (typeof error === 'string') {
       errorMessage = error;
-    } else if (typeof error === "object" && error !== null) {
+    } else if (typeof error === 'object' && error !== null) {
       errorMessage = JSON.stringify(error);
     }
 

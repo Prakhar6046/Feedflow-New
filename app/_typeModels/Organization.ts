@@ -1,54 +1,54 @@
-import { SingleUser } from "./User";
+import { SingleUser } from './User';
 
 export interface OrganizationInitialState {
   isLoading: boolean;
   organisations: Organisation[];
 }
 export interface Organisation {
-  id: Number;
-  name: String;
-  contactNumber: String;
-  contactPerson: String;
-  image: String;
-  organisationCode: String;
-  createdAt: String;
-  updatedAt: String;
+  id: number;
+  name: string;
+  contactNumber: string;
+  contactPerson: string;
+  image: string;
+  organisationCode: string;
+  createdAt: string;
+  updatedAt: string;
 }
 export interface OrganizationAddress {
-  id: String;
-  name: String;
-  street: String;
-  province: String;
-  city: String;
-  postCode: String;
-  createdAt: String;
-  updatedAt: String;
-  organisationId: String;
+  id: string;
+  name: string;
+  street: string;
+  province: string;
+  city: string;
+  postCode: string;
+  createdAt: string;
+  updatedAt: string;
+  organisationId: string;
 }
 export interface OrganizationContact {
-  id: String;
-  name: String;
-  email: String;
-  phone: String;
-  role: String;
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  role: string;
   permission: string;
-  createdAt: String;
-  updatedAt: String;
-  organisationId: String;
+  createdAt: string;
+  updatedAt: string;
+  organisationId: string;
   invite: boolean;
 }
 export interface SingleOrganisation {
-  id: Number;
-  name: String;
-  contactNumber: String;
-  contactPerson: String;
-  image?: String;
-  imageUrl?: String;
-  organisationCode: String;
-  createdAt: String;
-  updatedAt: String;
-  addressId?: String;
-  contactId?: String;
+  id: number;
+  name: string;
+  contactNumber: string;
+  contactPerson: string;
+  image?: string;
+  imageUrl?: string;
+  organisationCode: string;
+  createdAt: string;
+  updatedAt: string;
+  addressId?: string;
+  contactId?: string;
   address?: OrganizationAddress;
   contact?: OrganizationContact[];
   users?: SingleUser[];
@@ -56,16 +56,16 @@ export interface SingleOrganisation {
 }
 
 export interface AddOrganizationFormInputs {
-  organisationName: String;
+  organisationName: string;
   image: FileList;
-  organisationCode: String;
-  address: String;
-  country: String;
-  province: String;
-  city: String;
-  postCode: String;
-  organisationType: String;
-  createdBy: Number;
+  organisationCode: string;
+  address: string;
+  country: string;
+  province: string;
+  city: string;
+  postCode: string;
+  organisationType: string;
+  createdBy: number;
   contacts: {
     name: string;
     role: string;
@@ -76,10 +76,10 @@ export interface AddOrganizationFormInputs {
     newInvite?: boolean;
   }[];
 
-  hatcheryName?: String;
-  hatcheryCode?: String;
-  fishSpecie?: String;
-  hatcheryAltitude?: String;
+  hatcheryName?: string;
+  hatcheryCode?: string;
+  fishSpecie?: string;
+  hatcheryAltitude?: string;
 }
 
 export interface OrganizationData {

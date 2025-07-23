@@ -1,19 +1,18 @@
-"use client";
-import { Box, Button, Stack, Tooltip } from "@mui/material";
-import Breadcrumbs from "@mui/material/Breadcrumbs";
-import Typography from "@mui/material/Typography";
+'use client';
+import { Box, Button, Stack, Tooltip } from '@mui/material';
+import Breadcrumbs from '@mui/material/Breadcrumbs';
+import Typography from '@mui/material/Typography';
 
-import Link from "next/link";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import Link from 'next/link';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
-import { selectSort } from "@/lib/features/breadcrum/breadcrumSlice";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import { getCookie, setCookie } from "cookies-next";
-import { useDebounce } from "../hooks/useDebounce";
-import SearchBar from "./SearchBar";
-import { getLocalItem, removeLocalItem, setLocalItem } from "../_lib/utils";
-import { Permissions } from "../_typeModels/User";
+import { selectSort } from '@/lib/features/breadcrum/breadcrumSlice';
+import { useAppDispatch, useAppSelector } from '@/lib/hooks';
+import { getCookie, setCookie } from 'cookies-next';
+import { useDebounce } from '../hooks/useDebounce';
+import SearchBar from './SearchBar';
+import { getLocalItem, removeLocalItem, setLocalItem } from '../_lib/utils';
 interface Props {
   heading: string;
   buttonName?: string;
@@ -35,43 +34,43 @@ export default function BasicBreadcrumbs({
   permissions,
   extraButton,
 }: Props) {
-  const role = getCookie("role");
+  const role = getCookie('role');
   const pathName = usePathname();
 
   const search = useSearchParams();
   const router = useRouter();
   const [updatedPathName, setUpdatedPathName] = useState<string>();
   const sortvalue = useAppSelector(selectSort);
-  const loggedUser: any = getCookie("logged-user");
+  const loggedUser: any = getCookie('logged-user');
   const [open, setOpen] = useState(false);
-  const [status, setStatus] = useState("");
-  const [currentRole, setCurrentRole] = useState<string>("");
-  const [searchQuery, setSearchQuery] = useState<string>("");
-  const [isSort, setIsSort] = useState<Boolean>(false);
-  const [sortDataFromLocal, setSortDataFromLocal] = useState<any>("");
+  const [status, setStatus] = useState('');
+  const [currentRole, setCurrentRole] = useState<string>('');
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [isSort, setIsSort] = useState<boolean>(false);
+  const [sortDataFromLocal, setSortDataFromLocal] = useState<any>('');
   const debouncedSearchQuery = useDebounce(searchQuery);
   const dispatch = useAppDispatch();
 
   const handleClear = () => {
-    setSearchQuery("");
+    setSearchQuery('');
   };
   const handleClick = () => {
-    if (pathName === "/dashboard/feedSupply") {
-      if (currentRole === "SUPERADMIN") {
-        setCookie("activeStep", 0);
-      } else if (currentRole === "Feed Supplier") {
-        setCookie("activeStep", 1);
+    if (pathName === '/dashboard/feedSupply') {
+      if (currentRole === 'SUPERADMIN') {
+        setCookie('activeStep', 0);
+      } else if (currentRole === 'Feed Supplier') {
+        setCookie('activeStep', 1);
       }
     } else {
-      setCookie("activeStep", 0);
+      setCookie('activeStep', 0);
     }
-    removeLocalItem("farmData");
-    removeLocalItem("farmProductionUnits");
-    removeLocalItem("productionParametes");
-    removeLocalItem("productionParamtertsUnitsArray");
-    removeLocalItem("feedProfiles");
-    removeLocalItem("feedProfileId");
-    removeLocalItem("productionUnitsFeedProfiles");
+    removeLocalItem('farmData');
+    removeLocalItem('farmProductionUnits');
+    removeLocalItem('productionParametes');
+    removeLocalItem('productionParamtertsUnitsArray');
+    removeLocalItem('feedProfiles');
+    removeLocalItem('feedProfileId');
+    removeLocalItem('productionUnitsFeedProfiles');
     router.push(String(buttonRoute));
   };
 
@@ -101,17 +100,17 @@ export default function BasicBreadcrumbs({
       setUpdatedPathName(pathName);
       setSortDataFromLocal(getLocalItem(pathName));
     }
-    if (pathName === "/dashboard/farm") {
-      setCookie("isEditFarm", false);
+    if (pathName === '/dashboard/farm') {
+      setCookie('isEditFarm', false);
     }
   }, [pathName]);
 
   useEffect(() => {
-    if (search.get("tab") && pathName) {
-      const tab = search.get("tab");
+    if (search.get('tab') && pathName) {
+      const tab = search.get('tab');
       setUpdatedPathName(`${pathName}?tab=${tab}`);
     }
-  }, [search.get("tab")]);
+  }, [search.get('tab')]);
 
   return (
     <>
@@ -119,25 +118,25 @@ export default function BasicBreadcrumbs({
       <Stack
         marginTop={1}
         sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          flexDirection: "row",
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexDirection: 'row',
           rowGap: 1,
           columnGap: 5,
-          flexWrap: "wrap",
+          flexWrap: 'wrap',
         }}
       >
         <Box>
           {/* Main Heading */}
           <Typography
             variant="h2"
-            marginBottom={"4px"}
+            marginBottom={'4px'}
             fontWeight={600}
             sx={{
               fontSize: {
-                md: "1.5rem",
-                xs: "1.25rem",
+                md: '1.5rem',
+                xs: '1.25rem',
               },
             }}
           >
@@ -160,7 +159,7 @@ export default function BasicBreadcrumbs({
                     key={link.name}
                     href={link.link}
                     className={`nav-links ${
-                      link.link === `${updatedPathName}` ? "active-link" : ""
+                      link.link === `${updatedPathName}` ? 'active-link' : ''
                     }`}
                   >
                     {link.name}
@@ -171,23 +170,23 @@ export default function BasicBreadcrumbs({
           )}
         </Box>
 
-        {currentRole === "SUPERADMIN" ? (
-          <Box sx={{ display: "flex", gap: 2 }}>
+        {currentRole === 'SUPERADMIN' ? (
+          <Box sx={{ display: 'flex', gap: 2 }}>
             {buttonName && (
               <Button
                 variant="contained"
                 onClick={handleClick}
                 sx={{
-                  background: "#06A19B",
+                  background: '#06A19B',
                   fontWeight: 600,
-                  padding: "8px 20px",
-                  width: "fit-content",
-                  textTransform: "capitalize",
-                  borderRadius: "8px",
-                  textWrap: "nowrap",
-                  display: "flex",
+                  padding: '8px 20px',
+                  width: 'fit-content',
+                  textTransform: 'capitalize',
+                  borderRadius: '8px',
+                  textWrap: 'nowrap',
+                  display: 'flex',
                   gap: 1,
-                  alignItems: "center",
+                  alignItems: 'center',
                 }}
               >
                 <svg
@@ -213,40 +212,40 @@ export default function BasicBreadcrumbs({
                 variant="contained"
                 onClick={() => router.push(extraButton?.route)}
                 sx={{
-                  background: "#06A19B",
+                  background: '#06A19B',
                   fontWeight: 600,
-                  padding: "8px 20px",
-                  width: "fit-content",
-                  textTransform: "capitalize",
-                  borderRadius: "8px",
-                  textWrap: "nowrap",
-                  display: "flex",
+                  padding: '8px 20px',
+                  width: 'fit-content',
+                  textTransform: 'capitalize',
+                  borderRadius: '8px',
+                  textWrap: 'nowrap',
+                  display: 'flex',
                   gap: 1,
-                  alignItems: "center",
+                  alignItems: 'center',
                 }}
               >
                 {extraButton?.buttonName}
               </Button>
             )}
           </Box>
-        ) : pathName === "/dashboard/organisation" ? (
+        ) : pathName === '/dashboard/organisation' ? (
           permissions &&
           buttonName &&
-          buttonName !== "Add Organization" && (
+          buttonName !== 'Add Organization' && (
             <Button
               variant="contained"
               onClick={handleClick}
               sx={{
-                background: "#06A19B",
+                background: '#06A19B',
                 fontWeight: 600,
-                padding: "8px 20px",
-                width: "fit-content",
-                textTransform: "capitalize",
-                borderRadius: "8px",
-                textWrap: "nowrap",
-                display: "flex",
+                padding: '8px 20px',
+                width: 'fit-content',
+                textTransform: 'capitalize',
+                borderRadius: '8px',
+                textWrap: 'nowrap',
+                display: 'flex',
                 gap: 1,
-                alignItems: "center",
+                alignItems: 'center',
               }}
             >
               <svg
@@ -269,21 +268,21 @@ export default function BasicBreadcrumbs({
         ) : (
           permissions &&
           buttonName &&
-          buttonName !== "Add Organization" && (
+          buttonName !== 'Add Organization' && (
             <Button
               variant="contained"
               onClick={handleClick}
               sx={{
-                background: "#06A19B",
+                background: '#06A19B',
                 fontWeight: 600,
-                padding: "8px 20px",
-                width: "fit-content",
-                textTransform: "capitalize",
-                borderRadius: "8px",
-                textWrap: "nowrap",
-                display: "flex",
+                padding: '8px 20px',
+                width: 'fit-content',
+                textTransform: 'capitalize',
+                borderRadius: '8px',
+                textWrap: 'nowrap',
+                display: 'flex',
                 gap: 1,
-                alignItems: "center",
+                alignItems: 'center',
               }}
             >
               <svg
@@ -308,23 +307,23 @@ export default function BasicBreadcrumbs({
       {/* Breadcrumb Section End */}
 
       {/* Search Section Start */}
-      {pathName !== "/dashboard" && (
+      {pathName !== '/dashboard' && (
         <Stack
           marginBlock={2}
           display="flex"
           gap={1}
           sx={{
             flexDirection: {
-              md: "row",
-              xs: "column",
+              md: 'row',
+              xs: 'column',
             },
             justifyContent: {
-              md: "space-between",
-              xs: "flex-end",
+              md: 'space-between',
+              xs: 'flex-end',
             },
             alignItems: {
-              md: "center",
-              xs: "flex-start",
+              md: 'center',
+              xs: 'flex-start',
             },
             marginTop: {
               sm: 2,
@@ -339,8 +338,8 @@ export default function BasicBreadcrumbs({
             gap={2}
             sx={{
               width: {
-                md: "fit-content",
-                xs: "100%",
+                md: 'fit-content',
+                xs: '100%',
               },
             }}
           >
@@ -361,7 +360,7 @@ export default function BasicBreadcrumbs({
                 color="white"
                 width="fit-content"
                 onClick={handleClear}
-                style={{ cursor: "pointer" }}
+                style={{ cursor: 'pointer' }}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -395,8 +394,8 @@ export default function BasicBreadcrumbs({
               flexDirection="column"
               gap={0.5}
               sx={{
-                width: { md: "fit-content", xs: "100%" },
-                textAlign: "end",
+                width: { md: 'fit-content', xs: '100%' },
+                textAlign: 'end',
               }}
             >
               <Box
@@ -408,20 +407,20 @@ export default function BasicBreadcrumbs({
                 <Tooltip
                   title="This will remember any sorting, filter and which page you were on even if you navigate away from the page."
                   placement="top"
-                  style={{ color: "red" }}
+                  style={{ color: 'red' }}
                 >
                   <Box
                     padding={1}
                     borderRadius={1.8}
                     width="fit-content"
                     boxShadow="0px 0px 10px 0px #0000001A;"
-                    border={"1px solid #0000001A"}
+                    border={'1px solid #0000001A'}
                     display="flex"
                     justifyContent="center"
                     alignItems="center"
                     className="cursor-pointer custom-hover-effect"
                     onClick={() => {
-                      handleRememberSort(), setIsSort(!isSort);
+                      (handleRememberSort(), setIsSort(!isSort));
                     }}
                   >
                     {isSort ? (

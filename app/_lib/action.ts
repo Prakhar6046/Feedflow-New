@@ -1,8 +1,8 @@
-import { revalidatePath } from "next/cache";
+import { revalidatePath } from 'next/cache';
 // import { GetToken } from "./cookiesGetter";
-import { fetchWithAuth } from "./auth/fetchWithAuth";
+import { fetchWithAuth } from './auth/fetchWithAuth';
 // import { getCookie } from "cookies-next";
-import { cookies } from "next/headers";
+import { cookies } from 'next/headers';
 // const token = await GetToken();
 export const getOrganisations = async (payload: {
   role?: string;
@@ -12,24 +12,24 @@ export const getOrganisations = async (payload: {
   refreshToken?: string;
 }) => {
   const cookieStore = cookies();
-  const token: any = cookieStore.get("auth-token")?.value;
+  const token: any = cookieStore.get('auth-token')?.value;
   try {
     const res = await fetchWithAuth(
       `${process.env.BASE_URL}/api/organisation${
         payload.organisationId && payload.role
           ? `?organisationId=${payload.organisationId}&role=${payload.role}&tab=${payload?.tab}&query=${payload.query}`
           : payload?.tab
-          ? `?tab=${payload?.tab}`
-          : `?query=${payload.query}`
+            ? `?tab=${payload?.tab}`
+            : `?query=${payload.query}`
       }`,
       {
-        method: "GET",
+        method: 'GET',
       },
       token,
       true,
-      payload.refreshToken
+      payload.refreshToken,
     );
-    revalidatePath("/dashboard/organisation?tab=all");
+    revalidatePath('/dashboard/organisation?tab=all');
     return await res.json();
   } catch (error) {
     return error;
@@ -38,17 +38,17 @@ export const getOrganisations = async (payload: {
 
 export const getOrganisationCount = async (refreshToken?: string) => {
   const cookieStore = cookies();
-  const token: any = cookieStore.get("auth-token")?.value;
+  const token: any = cookieStore.get('auth-token')?.value;
   try {
     const res = await fetchWithAuth(
       `${process.env.BASE_URL}/api/organisation/count`,
       {
-        method: "GET",
-        cache: "no-store",
+        method: 'GET',
+        cache: 'no-store',
       },
       token,
       true,
-      refreshToken
+      refreshToken,
     );
     return await res.json();
   } catch (error) {
@@ -58,17 +58,17 @@ export const getOrganisationCount = async (refreshToken?: string) => {
 
 export const getAllOrganisations = async (refreshToken?: string) => {
   const cookieStore = cookies();
-  const token: any = cookieStore.get("auth-token")?.value;
+  const token: any = cookieStore.get('auth-token')?.value;
   try {
     const res = await fetchWithAuth(
       `${process.env.BASE_URL}/api/organisation/all`,
       {
-        method: "GET",
-        cache: "no-store",
+        method: 'GET',
+        cache: 'no-store',
       },
       token,
       true,
-      refreshToken
+      refreshToken,
     );
     return await res.json();
   } catch (error) {
@@ -78,16 +78,16 @@ export const getAllOrganisations = async (refreshToken?: string) => {
 
 export const getUsers = async (payload: any & { refreshToken?: string }) => {
   const cookieStore = cookies();
-  const token: any = cookieStore.get("auth-token")?.value;
+  const token: any = cookieStore.get('auth-token')?.value;
   try {
     const res = await fetchWithAuth(
       `${process.env.BASE_URL}/api/users?role=${payload.role}&organisationId=${payload.organisationId}&query=${payload.query}`,
       {
-        method: "GET",
+        method: 'GET',
       },
       token,
       true,
-      payload.refreshToken
+      payload.refreshToken,
     );
     return await res.json();
   } catch (error) {
@@ -97,16 +97,16 @@ export const getUsers = async (payload: any & { refreshToken?: string }) => {
 
 export const getUser = async (userId: string, refreshToken?: string) => {
   const cookieStore = cookies();
-  const token: any = cookieStore.get("auth-token")?.value;
+  const token: any = cookieStore.get('auth-token')?.value;
   try {
     const res = await fetchWithAuth(
       `${process.env.BASE_URL}/api/user/${userId}`,
       {
-        method: "GET",
+        method: 'GET',
       },
       token,
       true,
-      refreshToken
+      refreshToken,
     );
     revalidatePath(`/dashboard/user/${userId}`);
     return await res.json();
@@ -117,20 +117,20 @@ export const getUser = async (userId: string, refreshToken?: string) => {
 
 export const AddNewFeedSupply = async (
   formData: any,
-  refreshToken?: string
+  refreshToken?: string,
 ) => {
   const cookieStore = cookies();
-  const token: any = cookieStore.get("auth-token")?.value;
+  const token: any = cookieStore.get('auth-token')?.value;
   try {
     const res = await fetchWithAuth(
       `${process.env.BASE_URL}/api/feedSupply/new-feed`,
       {
-        method: "POST",
+        method: 'POST',
         body: JSON.stringify(formData),
       },
       token,
       true,
-      refreshToken
+      refreshToken,
     );
     revalidatePath(`/dashboard/feedSupply`);
     return await res.json();
@@ -146,17 +146,17 @@ export const getFeedSupplys = async (payload: {
   refreshToken?: string;
 }) => {
   const cookieStore = cookies();
-  const token: any = cookieStore.get("auth-token")?.value;
+  const token: any = cookieStore.get('auth-token')?.value;
   try {
     const res = await fetchWithAuth(
       `${process.env.BASE_URL}/api/feedSupply?role=${payload.role}&organisationId=${payload.organisationId}&query=${payload.query}`,
       {
-        method: "GET",
-        cache: "no-store",
+        method: 'GET',
+        cache: 'no-store',
       },
       token,
       true,
-      payload.refreshToken
+      payload.refreshToken,
     );
     revalidatePath(`/dashboard/feedSupply`);
     return await res.json();
@@ -172,18 +172,18 @@ export const getFishSupply = async (payload: {
   refreshToken?: string;
 }) => {
   const cookieStore = cookies();
-  const token: any = cookieStore.get("auth-token")?.value;
+  const token: any = cookieStore.get('auth-token')?.value;
   try {
     const res = await fetchWithAuth(
       `${process.env.BASE_URL}/api/fish?role=${payload.role}&organisationId=${payload.organisationId}&query=${payload.query}`,
       {
-        method: "GET",
+        method: 'GET',
       },
       token,
       true,
-      payload.refreshToken
+      payload.refreshToken,
     );
-    revalidatePath("/dashboard/fishSupply");
+    revalidatePath('/dashboard/fishSupply');
     return await res.json();
   } catch (error) {
     return error;
@@ -199,17 +199,17 @@ export const getFarms = async (payload: {
   refreshToken?: string;
 }) => {
   const cookieStore = cookies();
-  const token: any = cookieStore.get("auth-token")?.value;
+  const token: any = cookieStore.get('auth-token')?.value;
   try {
     const res = await fetchWithAuth(
       `${process.env.BASE_URL}/api/farm?role=${payload.role}&organisationId=${payload.organisationId}&query=${payload.query}&filter=${payload.noFilter}&tab=${payload.tab}`,
       {
-        method: "GET",
-        cache: "no-store",
+        method: 'GET',
+        cache: 'no-store',
       },
       token,
       true,
-      payload.refreshToken
+      payload.refreshToken,
     );
     revalidatePath(`/dashboard/farm`);
     return await res.json();
@@ -220,20 +220,20 @@ export const getFarms = async (payload: {
 
 export const getFarmMangers = async (
   organisationId?: string,
-  refreshToken?: string
+  refreshToken?: string,
 ) => {
   const cookieStore = cookies();
-  const token: any = cookieStore.get("auth-token")?.value;
+  const token: any = cookieStore.get('auth-token')?.value;
   try {
     const res = await fetchWithAuth(
       `${process.env.BASE_URL}/api/farm/managers?organisationId=${organisationId}`,
       {
-        method: "GET",
-        cache: "no-store",
+        method: 'GET',
+        cache: 'no-store',
       },
       token,
       true,
-      refreshToken
+      refreshToken,
     );
     return await res.json();
   } catch (error) {
@@ -243,17 +243,17 @@ export const getFarmMangers = async (
 
 export const getOrganisationForhatchery = async (refreshToken?: string) => {
   const cookieStore = cookies();
-  const token: any = cookieStore.get("auth-token")?.value;
+  const token: any = cookieStore.get('auth-token')?.value;
   try {
     const res = await fetchWithAuth(
       `${process.env.BASE_URL}/api/organisation/hatchery`,
       {
-        method: "GET",
-        cache: "no-store",
+        method: 'GET',
+        cache: 'no-store',
       },
       token,
       true,
-      refreshToken
+      refreshToken,
     );
     return await res.json();
   } catch (error) {
@@ -270,17 +270,17 @@ export const getProductions = async (payload: {
   refreshToken?: string;
 }) => {
   const cookieStore = cookies();
-  const token: any = cookieStore.get("auth-token")?.value;
+  const token: any = cookieStore.get('auth-token')?.value;
   try {
     const res = await fetchWithAuth(
       `${process.env.BASE_URL}/api/production?role=${payload.role}&organisationId=${payload.organisationId}&query=${payload.query}&filter=${payload.noFilter}&userId=${payload.userId}`,
       {
-        method: "GET",
-        cache: "no-store",
+        method: 'GET',
+        cache: 'no-store',
       },
       token,
       true,
-      payload.refreshToken
+      payload.refreshToken,
     );
     revalidatePath(`/dashboard/farmManager`);
     return await res.json();
@@ -297,17 +297,17 @@ export const getBatches = async (payload: {
   refreshToken?: string;
 }) => {
   const cookieStore = cookies();
-  const token: any = cookieStore.get("auth-token")?.value;
+  const token: any = cookieStore.get('auth-token')?.value;
   try {
     const res = await fetchWithAuth(
       `${process.env.BASE_URL}/api/production/batches`,
       {
-        method: "GET",
-        cache: "no-store",
+        method: 'GET',
+        cache: 'no-store',
       },
       token,
       true,
-      payload.refreshToken
+      payload.refreshToken,
     );
     revalidatePath(`/dashboard/production`);
     return await res.json();
@@ -324,17 +324,17 @@ export const getSampleEnvironment = async (payload: {
   refreshToken?: string;
 }) => {
   const cookieStore = cookies();
-  const token: any = cookieStore.get("auth-token")?.value;
+  const token: any = cookieStore.get('auth-token')?.value;
   try {
     const res = await fetchWithAuth(
       `${process.env.BASE_URL}/api/sample/sampleEnvironment?role=${payload.role}&organisationId=${payload.organisationId}&query=${payload.query}&filter=${payload.noFilter}`,
       {
-        method: "GET",
-        cache: "no-store",
+        method: 'GET',
+        cache: 'no-store',
       },
       token,
       true,
-      payload.refreshToken
+      payload.refreshToken,
     );
     revalidatePath(`/dashboard/sample`);
     return await res.json();
@@ -351,17 +351,17 @@ export const getSampleStock = async (payload: {
   refreshToken?: string;
 }) => {
   const cookieStore = cookies();
-  const token: any = cookieStore.get("auth-token")?.value;
+  const token: any = cookieStore.get('auth-token')?.value;
   try {
     const res = await fetchWithAuth(
       `${process.env.BASE_URL}/api/sample/sampleStock?role=${payload.role}&organisationId=${payload.organisationId}&query=${payload.query}&filter=${payload.noFilter}`,
       {
-        method: "GET",
-        cache: "no-store",
+        method: 'GET',
+        cache: 'no-store',
       },
       token,
       true,
-      payload.refreshToken
+      payload.refreshToken,
     );
     revalidatePath(`/dashboard/sample`);
     return await res.json();
@@ -372,17 +372,17 @@ export const getSampleStock = async (payload: {
 
 export const getGrowthModels = async (refreshToken?: string) => {
   const cookieStore = cookies();
-  const token: any = cookieStore.get("auth-token")?.value;
+  const token: any = cookieStore.get('auth-token')?.value;
   try {
     const res = await fetchWithAuth(
       `${process.env.BASE_URL}/api/growth-model`,
       {
-        method: "GET",
-        cache: "no-store",
+        method: 'GET',
+        cache: 'no-store',
       },
       token,
       true,
-      refreshToken
+      refreshToken,
     );
     return await res.json();
   } catch (error) {
@@ -397,17 +397,17 @@ export const getFeedStores = async (payload: {
   refreshToken?: string;
 }) => {
   const cookieStore = cookies();
-  const token: any = cookieStore.get("auth-token")?.value;
+  const token: any = cookieStore.get('auth-token')?.value;
   try {
     const res = await fetchWithAuth(
       `${process.env.BASE_URL}/api/feed-store?role=${payload.role}&organisationId=${payload.organisationId}&query=${payload.query}`,
       {
-        method: "GET",
-        cache: "no-store",
+        method: 'GET',
+        cache: 'no-store',
       },
       token,
       true,
-      payload.refreshToken
+      payload.refreshToken,
     );
     return await res.json();
   } catch (error) {
@@ -417,17 +417,17 @@ export const getFeedStores = async (payload: {
 
 export const getFeedSuppliers = async (refreshToken?: string) => {
   const cookieStore = cookies();
-  const token: any = cookieStore.get("auth-token")?.value;
+  const token: any = cookieStore.get('auth-token')?.value;
   try {
     const res = await fetchWithAuth(
       `${process.env.BASE_URL}/api/organisation/feedSuppliers`,
       {
-        method: "GET",
-        cache: "no-store",
+        method: 'GET',
+        cache: 'no-store',
       },
       token,
       true,
-      refreshToken
+      refreshToken,
     );
     return await res.json();
   } catch (error) {

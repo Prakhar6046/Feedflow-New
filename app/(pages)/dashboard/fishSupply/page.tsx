@@ -1,17 +1,17 @@
-import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
-import FishSupplyTable from "@/app/_components/table/FishSupplyTable";
-import { getFishSupply } from "@/app/_lib/action";
+import BasicBreadcrumbs from '@/app/_components/Breadcrumbs';
+import FishSupplyTable from '@/app/_components/table/FishSupplyTable';
+import { getFishSupply } from '@/app/_lib/action';
 import {
   fishTableHead,
   fishTableHeadMember,
-} from "@/app/_lib/utils/tableHeadData";
-import { SingleUser } from "@/app/_typeModels/User";
-import { Box } from "@mui/material";
-import { getCookie } from "cookies-next";
-import { Metadata } from "next";
-import { cookies } from "next/headers";
+} from '@/app/_lib/utils/tableHeadData';
+import { SingleUser } from '@/app/_typeModels/User';
+import { Box } from '@mui/material';
+import { getCookie } from 'cookies-next';
+import { Metadata } from 'next';
+import { cookies } from 'next/headers';
 export const metadata: Metadata = {
-  title: "Fish Supply",
+  title: 'Fish Supply',
 };
 export default async function Page({
   searchParams,
@@ -20,9 +20,9 @@ export default async function Page({
     query?: string;
   };
 }) {
-  const query = searchParams?.query || "";
-  const loggedUser: any = getCookie("logged-user", { cookies });
-  const refreshToken: any = getCookie("refresh-token", { cookies });
+  const query = searchParams?.query || '';
+  const loggedUser: any = getCookie('logged-user', { cookies });
+  const refreshToken: any = getCookie('refresh-token', { cookies });
   const user: SingleUser = JSON.parse(loggedUser);
 
   const fishSupply = await getFishSupply({
@@ -34,20 +34,20 @@ export default async function Page({
   return (
     <>
       <BasicBreadcrumbs
-        heading={"Fish Supply"}
-        buttonName={"New Fish Supply"}
+        heading={'Fish Supply'}
+        buttonName={'New Fish Supply'}
         isTable={true}
         buttonRoute="/dashboard/fishSupply/new"
         links={[
-          { name: "Dashboard", link: "/dashboard" },
-          { name: "Fish Supply", link: "/dashboard/fishSupply" },
+          { name: 'Dashboard', link: '/dashboard' },
+          { name: 'Fish Supply', link: '/dashboard/fishSupply' },
         ]}
         permissions={user?.permissions?.createFishSupply}
       />
       <Box className="hatchery-table">
         <FishSupplyTable
           tableData={
-            user?.role === "SUPERADMIN" || user?.permissions?.editFishSupply
+            user?.role === 'SUPERADMIN' || user?.permissions?.editFishSupply
               ? fishTableHead
               : fishTableHeadMember
           }

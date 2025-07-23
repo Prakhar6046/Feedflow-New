@@ -1,6 +1,6 @@
-import * as validationPattern from "@/app/_lib/utils/validationPatterns/index";
-import * as validationMessage from "@/app/_lib/utils/validationsMessage/index";
-import { Close as CloseIcon } from "@mui/icons-material"; // Use Material-UI's Close icon directly
+import * as validationPattern from '@/app/_lib/utils/validationPatterns/index';
+import * as validationMessage from '@/app/_lib/utils/validationsMessage/index';
+import { Close as CloseIcon } from '@mui/icons-material'; // Use Material-UI's Close icon directly
 import {
   Box,
   Button,
@@ -11,23 +11,22 @@ import {
   Stack,
   TextField,
   Typography,
-} from "@mui/material";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { Dayjs } from "dayjs";
-import { useRouter } from "next/navigation";
-import React, { useState } from "react";
-import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import toast from "react-hot-toast";
-import { getCookie } from "cookies-next";
+} from '@mui/material';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { Dayjs } from 'dayjs';
+import { useRouter } from 'next/navigation';
+import React, { useState } from 'react';
+import { Controller, SubmitHandler, useForm } from 'react-hook-form';
+import toast from 'react-hot-toast';
 const style = {
-  position: "absolute" as "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
+  position: 'absolute' as const,
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
   width: 400,
-  bgcolor: "background.paper",
+  bgcolor: 'background.paper',
   boxShadow: 24,
 };
 
@@ -37,9 +36,9 @@ interface Props {
 }
 interface InputTypes {
   date: Dayjs | null;
-  do: String;
-  ammonia: String;
-  TSs: String;
+  do: string;
+  ammonia: string;
+  TSs: string;
 }
 const SamplingEnvironmentCal: React.FC<Props> = ({ setOpen, open }) => {
   const router = useRouter();
@@ -62,7 +61,7 @@ const SamplingEnvironmentCal: React.FC<Props> = ({ setOpen, open }) => {
     setFocus,
     getFieldState,
   } = useForm<InputTypes>({
-    mode: "onChange",
+    mode: 'onChange',
   });
 
   const onSubmit: SubmitHandler<InputTypes> = async (data) => {
@@ -95,7 +94,7 @@ const SamplingEnvironmentCal: React.FC<Props> = ({ setOpen, open }) => {
       //   );
       // }
     } catch (error) {
-      toast.error("Something went wrong. Please try again.");
+      toast.error('Something went wrong. Please try again.');
     } finally {
       setIsApiCallInProgress(false);
     }
@@ -126,9 +125,9 @@ const SamplingEnvironmentCal: React.FC<Props> = ({ setOpen, open }) => {
           <IconButton
             onClick={handleClose}
             sx={{
-              color: "inherit",
-              background: "transparent",
-              margin: "2",
+              color: 'inherit',
+              background: 'transparent',
+              margin: '2',
             }}
           >
             <CloseIcon />
@@ -158,7 +157,7 @@ const SamplingEnvironmentCal: React.FC<Props> = ({ setOpen, open }) => {
                     <Controller
                       name="date"
                       control={control}
-                      rules={{ required: "This field is required." }}
+                      rules={{ required: 'This field is required.' }}
                       render={({ field, fieldState: { error } }) => (
                         <>
                           <DatePicker
@@ -166,7 +165,7 @@ const SamplingEnvironmentCal: React.FC<Props> = ({ setOpen, open }) => {
                             label="Date * "
                             className="form-input"
                             sx={{
-                              width: "100%",
+                              width: '100%',
                             }}
                             onChange={(date) => {
                               field.onChange(date);
@@ -190,16 +189,16 @@ const SamplingEnvironmentCal: React.FC<Props> = ({ setOpen, open }) => {
                 </Grid>
                 <Grid xs={6} md={3} item>
                   <Box
-                    display={"flex"}
+                    display={'flex'}
                     gap={2}
-                    alignItems={"center"}
-                    position={"relative"}
+                    alignItems={'center'}
+                    position={'relative'}
                   >
                     <TextField
                       label="Do *"
                       type="text"
                       className="form-input"
-                      sx={{ width: "100%" }}
+                      sx={{ width: '100%' }}
                       {...register(`do`, {
                         required: true,
                         pattern: validationPattern.numbersWithDot,
@@ -232,7 +231,7 @@ const SamplingEnvironmentCal: React.FC<Props> = ({ setOpen, open }) => {
                     fontSize={13}
                     mt={0.5}
                   ></Typography>
-                  {errors && errors.do && errors.do.type === "required" && (
+                  {errors && errors.do && errors.do.type === 'required' && (
                     <Typography
                       variant="body2"
                       color="red"
@@ -242,7 +241,7 @@ const SamplingEnvironmentCal: React.FC<Props> = ({ setOpen, open }) => {
                       {validationMessage.required}
                     </Typography>
                   )}
-                  {errors && errors.do && errors.do.type === "pattern" && (
+                  {errors && errors.do && errors.do.type === 'pattern' && (
                     <Typography
                       variant="body2"
                       color="red"
@@ -252,7 +251,7 @@ const SamplingEnvironmentCal: React.FC<Props> = ({ setOpen, open }) => {
                       {validationMessage.OnlyNumbersWithDot}
                     </Typography>
                   )}
-                  {errors && errors.do && errors.do.type === "maxLength" && (
+                  {errors && errors.do && errors.do.type === 'maxLength' && (
                     <Typography
                       variant="body2"
                       color="red"
@@ -265,16 +264,16 @@ const SamplingEnvironmentCal: React.FC<Props> = ({ setOpen, open }) => {
                 </Grid>
                 <Grid xs={6} md={3} item>
                   <Box
-                    display={"flex"}
+                    display={'flex'}
                     gap={2}
-                    alignItems={"center"}
-                    position={"relative"}
+                    alignItems={'center'}
+                    position={'relative'}
                   >
                     <TextField
                       label="Ammonia *"
                       type="text"
                       className="form-input"
-                      sx={{ width: "100%" }}
+                      sx={{ width: '100%' }}
                       {...register(`ammonia`, {
                         required: true,
                         pattern: validationPattern.numbersWithDot,
@@ -309,7 +308,7 @@ const SamplingEnvironmentCal: React.FC<Props> = ({ setOpen, open }) => {
                   ></Typography>
                   {errors &&
                     errors.ammonia &&
-                    errors.ammonia.type === "required" && (
+                    errors.ammonia.type === 'required' && (
                       <Typography
                         variant="body2"
                         color="red"
@@ -321,7 +320,7 @@ const SamplingEnvironmentCal: React.FC<Props> = ({ setOpen, open }) => {
                     )}
                   {errors &&
                     errors.ammonia &&
-                    errors.ammonia.type === "pattern" && (
+                    errors.ammonia.type === 'pattern' && (
                       <Typography
                         variant="body2"
                         color="red"
@@ -333,7 +332,7 @@ const SamplingEnvironmentCal: React.FC<Props> = ({ setOpen, open }) => {
                     )}
                   {errors &&
                     errors.ammonia &&
-                    errors.ammonia.type === "maxLength" && (
+                    errors.ammonia.type === 'maxLength' && (
                       <Typography
                         variant="body2"
                         color="red"
@@ -346,16 +345,16 @@ const SamplingEnvironmentCal: React.FC<Props> = ({ setOpen, open }) => {
                 </Grid>
                 <Grid xs={6} md={3} item>
                   <Box
-                    display={"flex"}
+                    display={'flex'}
                     gap={2}
-                    alignItems={"center"}
-                    position={"relative"}
+                    alignItems={'center'}
+                    position={'relative'}
                   >
                     <TextField
                       label="TSS *"
                       type="text"
                       className="form-input"
-                      sx={{ width: "100%" }}
+                      sx={{ width: '100%' }}
                       {...register(`TSs`, {
                         required: true,
                         pattern: validationPattern.numbersWithDot,
@@ -388,7 +387,7 @@ const SamplingEnvironmentCal: React.FC<Props> = ({ setOpen, open }) => {
                     fontSize={13}
                     mt={0.5}
                   ></Typography>
-                  {errors && errors.TSs && errors.TSs.type === "required" && (
+                  {errors && errors.TSs && errors.TSs.type === 'required' && (
                     <Typography
                       variant="body2"
                       color="red"
@@ -398,7 +397,7 @@ const SamplingEnvironmentCal: React.FC<Props> = ({ setOpen, open }) => {
                       {validationMessage.required}
                     </Typography>
                   )}
-                  {errors && errors.TSs && errors.TSs.type === "pattern" && (
+                  {errors && errors.TSs && errors.TSs.type === 'pattern' && (
                     <Typography
                       variant="body2"
                       color="red"
@@ -408,7 +407,7 @@ const SamplingEnvironmentCal: React.FC<Props> = ({ setOpen, open }) => {
                       {validationMessage.OnlyNumbersWithDot}
                     </Typography>
                   )}
-                  {errors && errors.TSs && errors.TSs.type === "maxLength" && (
+                  {errors && errors.TSs && errors.TSs.type === 'maxLength' && (
                     <Typography
                       variant="body2"
                       color="red"
@@ -425,39 +424,39 @@ const SamplingEnvironmentCal: React.FC<Props> = ({ setOpen, open }) => {
             <Divider
               orientation="vertical"
               sx={{
-                height: "100%",
-                borderBottom: "2px solid #E6E7E9 !important",
-                borderRight: "none !important",
-                width: "100%",
-                marginLeft: "12px",
-                paddingBlock: "10px",
+                height: '100%',
+                borderBottom: '2px solid #E6E7E9 !important',
+                borderRight: 'none !important',
+                width: '100%',
+                marginLeft: '12px',
+                paddingBlock: '10px',
               }}
             />
           </Box>
           <Box
             display="flex"
             justifyContent="flex-end"
-            alignItems={"flex-end"}
+            alignItems={'flex-end'}
             gap="10px"
             padding={3}
-            margin={"40px"}
+            margin={'40px'}
           >
             <Button
               className=""
               type="submit"
               variant="contained"
               sx={{
-                background: "#06A19B",
-                fontWeight: "bold",
-                padding: "8px 20px",
+                background: '#06A19B',
+                fontWeight: 'bold',
+                padding: '8px 20px',
                 width: {
-                  xs: "50%",
-                  lg: "fit-content",
+                  xs: '50%',
+                  lg: 'fit-content',
                 },
-                textTransform: "capitalize",
-                borderRadius: "12px",
+                textTransform: 'capitalize',
+                borderRadius: '12px',
 
-                marginBlock: "10px",
+                marginBlock: '10px',
               }}
             >
               Save

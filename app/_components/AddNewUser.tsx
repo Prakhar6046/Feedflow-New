@@ -1,5 +1,5 @@
-"use client";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+'use client';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import {
   Box,
   FormControl,
@@ -11,45 +11,45 @@ import {
   Stack,
   TextField,
   Typography,
-} from "@mui/material";
-import Button from "@mui/material/Button";
-import { styled } from "@mui/material/styles";
-import { useEffect, useState } from "react";
+} from '@mui/material';
+import Button from '@mui/material/Button';
+import { styled } from '@mui/material/styles';
+import { useEffect, useState } from 'react';
 
-import Loader from "@/app/_components/Loader";
-import { SubmitHandler, useForm } from "react-hook-form";
+import Loader from '@/app/_components/Loader';
+import { SubmitHandler, useForm } from 'react-hook-form';
 
-import { getCookie } from "cookies-next";
-import { useRouter } from "next/navigation";
-import toast from "react-hot-toast";
-import { SingleOrganisation } from "../_typeModels/Organization";
-import { AddUserFormInputs, SingleUser } from "../_typeModels/User";
-import { deleteImage, handleUpload } from "../_lib/utils";
-import UserPermission from "./user/UserPermission";
+import { getCookie } from 'cookies-next';
+import { useRouter } from 'next/navigation';
+import toast from 'react-hot-toast';
+import { SingleOrganisation } from '../_typeModels/Organization';
+import { AddUserFormInputs, SingleUser } from '../_typeModels/User';
+import { deleteImage, handleUpload } from '../_lib/utils';
+import UserPermission from './user/UserPermission';
 
 interface Props {
   organisations?: SingleOrganisation[];
 }
-const VisuallyHiddenInput = styled("input")({
-  clip: "rect(0 0 0 0)",
-  clipPath: "inset(50%)",
+const VisuallyHiddenInput = styled('input')({
+  clip: 'rect(0 0 0 0)',
+  clipPath: 'inset(50%)',
   height: 1,
-  overflow: "hidden",
-  position: "absolute",
+  overflow: 'hidden',
+  position: 'absolute',
   bottom: 0,
   left: 0,
-  whiteSpace: "nowrap",
+  whiteSpace: 'nowrap',
   width: 1,
 });
 
 export default function AddNewUser({ organisations }: Props) {
   const router = useRouter();
-  const loggedUser: any = getCookie("logged-user");
+  const loggedUser: any = getCookie('logged-user');
   const [userData, setUserData] = useState<{ data: SingleUser }>();
-  const [selectedOrganisation, setSelectedOrganisation] = useState<any>("");
+  const [selectedOrganisation, setSelectedOrganisation] = useState<any>('');
   const [loading, setLoading] = useState<boolean>(false);
-  const [currentUserId, setCurrentUserId] = useState<Number>();
-  const [profilePic, setProfilePic] = useState<String>();
+  const [currentUserId, setCurrentUserId] = useState<number>();
+  const [profilePic, setProfilePic] = useState<string>();
   const [imagePath, setImagePath] = useState<FileList>();
   const [error, setError] = useState<string | null>(null);
   const [isApiCallInProgress, setIsApiCallInProgress] =
@@ -70,11 +70,11 @@ export default function AddNewUser({ organisations }: Props) {
 
     try {
       if (data.email && data.name && data.organisationId) {
-        const token = getCookie("auth-token");
-        const response = await fetch("/api/add-new-user", {
-          method: "POST",
+        const token = getCookie('auth-token');
+        const response = await fetch('/api/add-new-user', {
+          method: 'POST',
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({ ...data, image: profilePic }),
@@ -83,13 +83,13 @@ export default function AddNewUser({ organisations }: Props) {
         if (responseData.status) {
           if (imagePath) {
             const formData = new FormData();
-            formData.append("image", imagePath[0]);
-            const oldImageName = profilePic?.split("/").pop()?.split(".")[0];
-            formData.append("oldImageName", oldImageName || "");
-            formData.append("userId", responseData.data.id);
+            formData.append('image', imagePath[0]);
+            const oldImageName = profilePic?.split('/').pop()?.split('.')[0];
+            formData.append('oldImageName', oldImageName || '');
+            formData.append('userId', responseData.data.id);
 
             const response = await fetch(`/api/profile-pic/upload`, {
-              method: "POST",
+              method: 'POST',
               headers: {
                 Authorization: `Bearer ${token}`,
               },
@@ -105,18 +105,18 @@ export default function AddNewUser({ organisations }: Props) {
         if (response.ok) {
           toast.dismiss();
           toast.success(responseData.message);
-          router.push("/dashboard/user");
+          router.push('/dashboard/user');
           reset();
         }
       }
     } catch (error) {
-      toast.error("Something went wrong. Please try again.");
+      toast.error('Something went wrong. Please try again.');
     } finally {
       setIsApiCallInProgress(false);
     }
   };
   const handleChange = (event: SelectChangeEvent) => {
-    clearErrors("organisationId");
+    clearErrors('organisationId');
     setSelectedOrganisation(event.target.value as string);
   };
   useEffect(() => {
@@ -139,8 +139,8 @@ export default function AddNewUser({ organisations }: Props) {
         <form onSubmit={handleSubmit(onSubmit)}>
           <Stack
             sx={{
-              borderRadius: "14px",
-              boxShadow: "0px 0px 5px #C5C5C5",
+              borderRadius: '14px',
+              boxShadow: '0px 0px 5px #C5C5C5',
               mt: 4,
               padding: 3,
             }}
@@ -151,21 +151,21 @@ export default function AddNewUser({ organisations }: Props) {
                 md={3}
                 xs={12}
                 sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "flex-start",
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'flex-start',
                   gap: {
                     // sm: 5,
                     // xs: 3,
                   },
-                  alignItems: "center",
+                  alignItems: 'center',
                 }}
               >
                 <Typography
                   variant="h6"
                   color="rgb(99, 115, 129)"
                   fontSize={14}
-                  alignSelf={"flex-start"}
+                  alignSelf={'flex-start'}
                 >
                   Profile Picture
                 </Typography>
@@ -173,7 +173,7 @@ export default function AddNewUser({ organisations }: Props) {
                   component="label"
                   style={{
                     backgroundImage: `url(${profilePic})`,
-                    backgroundSize: "100% 100%",
+                    backgroundSize: '100% 100%',
                   }}
                   role={undefined}
                   variant="contained"
@@ -181,27 +181,27 @@ export default function AddNewUser({ organisations }: Props) {
                   startIcon={!profilePic && <CloudUploadIcon />}
                   className="upload-file-input1"
                   sx={{
-                    textTransform: "unset",
+                    textTransform: 'unset',
                     fontSize: 12,
                     width: 140,
                     height: 140,
                     borderRadius: 100,
-                    border: "7px solid white",
-                    outline: "1px dashed rgba(145, 158, 171, 0.32)",
-                    backgroundColor: "rgb(244, 246, 248)",
-                    boxShadow: "none",
-                    color: "rgb(99, 115, 129)",
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    position: "relative",
+                    border: '7px solid white',
+                    outline: '1px dashed rgba(145, 158, 171, 0.32)',
+                    backgroundColor: 'rgb(244, 246, 248)',
+                    boxShadow: 'none',
+                    color: 'rgb(99, 115, 129)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    position: 'relative',
                   }}
                 >
-                  {!profilePic && "Upload photo"}
+                  {!profilePic && 'Upload photo'}
                   <VisuallyHiddenInput
                     type="file"
-                    {...register("image", {
+                    {...register('image', {
                       onChange: (e) =>
                         handleUpload(e.target.files, profilePic, setProfilePic),
                     })}
@@ -210,27 +210,27 @@ export default function AddNewUser({ organisations }: Props) {
                 </Button>
                 {profilePic && (
                   <Box
-                    display={"flex"}
+                    display={'flex'}
                     gap="10px"
-                    alignItems={"center"}
-                    my={"10px"}
+                    alignItems={'center'}
+                    my={'10px'}
                   >
                     <Button
                       component="label"
                       variant="contained"
                       sx={{
-                        background: "#06A19B",
-                        color: "#fff",
+                        background: '#06A19B',
+                        color: '#fff',
                         fontWeight: 600,
-                        padding: "4px",
-                        textTransform: "capitalize",
-                        borderRadius: "10px",
-                        border: "1px solid #06A19B",
+                        padding: '4px',
+                        textTransform: 'capitalize',
+                        borderRadius: '10px',
+                        border: '1px solid #06A19B',
                         // position: "absolute",
                         // bottom: "1%",
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "2px",
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '2px',
                       }}
                     >
                       <svg
@@ -247,12 +247,12 @@ export default function AddNewUser({ organisations }: Props) {
                       Edit
                       <VisuallyHiddenInput
                         type="file"
-                        {...register("image", {
+                        {...register('image', {
                           onChange: (e) =>
                             handleUpload(
                               e.target.files,
                               profilePic,
-                              setProfilePic
+                              setProfilePic,
                             ),
                         })}
                         accept=".jpg,.jpeg,.png,.svg"
@@ -266,22 +266,22 @@ export default function AddNewUser({ organisations }: Props) {
                         deleteImage({ image: profilePic }, setProfilePic)
                       }
                       sx={{
-                        background: "#D71818",
+                        background: '#D71818',
                         fontWeight: 600,
-                        padding: "4px",
-                        width: "fit-content",
-                        textTransform: "capitalize",
-                        borderRadius: "10px",
-                        color: "#fff",
-                        border: "1px solid #D71818",
-                        boxShadow: "none",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        gap: "2px",
+                        padding: '4px',
+                        width: 'fit-content',
+                        textTransform: 'capitalize',
+                        borderRadius: '10px',
+                        color: '#fff',
+                        border: '1px solid #D71818',
+                        boxShadow: 'none',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '2px',
                       }}
                     >
-                      {" "}
+                      {' '}
                       <svg
                         width="14"
                         height="14"
@@ -309,7 +309,7 @@ export default function AddNewUser({ organisations }: Props) {
                 <Typography
                   variant="body1"
                   fontSize={12}
-                  textAlign={"center"}
+                  textAlign={'center'}
                   margin="0 auto"
                   color="#979797"
                 >
@@ -332,25 +332,25 @@ export default function AddNewUser({ organisations }: Props) {
                   fontWeight={500}
                   color="black"
                   fontSize={16}
-                  alignSelf={"flex-start"}
+                  alignSelf={'flex-start'}
                   marginBottom={1}
                 >
                   Information
                 </Typography>
-                <Box mb={2} width={"100%"}>
+                <Box mb={2} width={'100%'}>
                   <TextField
                     label="Name *"
                     type="text"
                     className="form-input"
                     focused
-                    {...register("name", {
+                    {...register('name', {
                       required: true,
                     })}
                     sx={{
-                      width: "100%",
+                      width: '100%',
                     }}
                   />
-                  {errors && errors.name && errors.name.type === "required" && (
+                  {errors && errors.name && errors.name.type === 'required' && (
                     <Typography
                       variant="body2"
                       color="red"
@@ -361,22 +361,22 @@ export default function AddNewUser({ organisations }: Props) {
                     </Typography>
                   )}
                 </Box>
-                <Box width={"100%"} mb={2}>
+                <Box width={'100%'} mb={2}>
                   <TextField
-                    label={"Email *"}
+                    label={'Email *'}
                     type="email"
                     className="form-input"
-                    {...register("email", {
+                    {...register('email', {
                       required: true,
                     })}
                     focused
                     sx={{
-                      width: "100%",
+                      width: '100%',
                     }}
                   />
                   {errors &&
                     errors.email &&
-                    errors.email.type === "required" && (
+                    errors.email.type === 'required' && (
                       <Typography
                         variant="body2"
                         color="red"
@@ -387,7 +387,7 @@ export default function AddNewUser({ organisations }: Props) {
                       </Typography>
                     )}
                 </Box>
-                <Box mb={2} width={"100%"}>
+                <Box mb={2} width={'100%'}>
                   <FormControl fullWidth className="form-input" focused>
                     <InputLabel
                       id="demo-simple-select-label"
@@ -401,9 +401,9 @@ export default function AddNewUser({ organisations }: Props) {
                       value={selectedOrganisation}
                       label="Organisation *"
                       sx={{
-                        width: "100%",
+                        width: '100%',
                       }}
-                      {...register("organisationId", {
+                      {...register('organisationId', {
                         required: true,
                       })}
                       onChange={handleChange}
@@ -418,7 +418,7 @@ export default function AddNewUser({ organisations }: Props) {
                     </Select>
                     {errors &&
                       errors.organisationId &&
-                      errors.organisationId.type === "required" && (
+                      errors.organisationId.type === 'required' && (
                         <Typography
                           variant="body2"
                           color="red"
@@ -445,14 +445,14 @@ export default function AddNewUser({ organisations }: Props) {
             variant="contained"
             disabled={isApiCallInProgress}
             sx={{
-              background: "#06A19B",
+              background: '#06A19B',
               fontWeight: 600,
-              padding: "6px 16px",
-              width: "fit-content",
-              textTransform: "capitalize",
-              borderRadius: "8px",
-              marginLeft: "auto",
-              display: "block",
+              padding: '6px 16px',
+              width: 'fit-content',
+              textTransform: 'capitalize',
+              borderRadius: '8px',
+              marginLeft: 'auto',
+              display: 'block',
               marginTop: 5,
             }}
           >

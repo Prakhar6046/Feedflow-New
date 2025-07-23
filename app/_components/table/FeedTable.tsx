@@ -1,6 +1,6 @@
-"use client";
-import { feedAction } from "@/lib/features/feed/feedSlice";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+'use client';
+import { feedAction } from '@/lib/features/feed/feedSlice';
+import { useAppDispatch, useAppSelector } from '@/lib/hooks';
 import {
   Button,
   Menu,
@@ -8,25 +8,24 @@ import {
   Stack,
   TableSortLabel,
   Typography,
-} from "@mui/material";
-import Paper from "@mui/material/Paper";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import { usePathname, useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
-import { FeedSupply } from "../feedSupply/FeedSelection";
-import { selectRole } from "@/lib/features/user/userSlice";
+} from '@mui/material';
+import Paper from '@mui/material/Paper';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import { usePathname, useRouter } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
+import { FeedSupply } from '../feedSupply/FeedSelection';
+import { selectRole } from '@/lib/features/user/userSlice';
 import {
   feedSupplyTableHead,
   feedSupplyTableHeadMember,
-} from "@/app/_lib/utils/tableHeadData";
-import { breadcrumsAction } from "@/lib/features/breadcrum/breadcrumSlice";
-import { getCookie } from "cookies-next";
-import { getLocalItem } from "@/app/_lib/utils";
+} from '@/app/_lib/utils/tableHeadData';
+import { breadcrumsAction } from '@/lib/features/breadcrum/breadcrumSlice';
+import { getLocalItem } from '@/app/_lib/utils';
 
 interface Props {
   feeds: FeedSupply[];
@@ -41,12 +40,12 @@ export default function FeedTable({ feeds }: Props) {
   const [feedsData, setFeedsData] = useState<any>();
   const [selectedFeed, setSelectedFeed] = useState<any>(null);
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
-    null
+    null,
   );
   const role = useAppSelector(selectRole);
-  const [order, setOrder] = React.useState("asc");
-  const [orderBy, setOrderBy] = React.useState("productName");
-  const [sortDataFromLocal, setSortDataFromLocal] = React.useState<any>("");
+  const [order, setOrder] = React.useState('asc');
+  const [orderBy, setOrderBy] = React.useState('productName');
+  const [sortDataFromLocal, setSortDataFromLocal] = React.useState<any>('');
 
   useEffect(() => {
     if (pathName) {
@@ -56,7 +55,7 @@ export default function FeedTable({ feeds }: Props) {
 
   const handleClick = (
     event: React.MouseEvent<HTMLButtonElement>,
-    farm: any
+    farm: any,
   ) => {
     setAnchorEl(event.currentTarget);
     setSelectedFeed(farm);
@@ -85,7 +84,7 @@ export default function FeedTable({ feeds }: Props) {
     return (
       <TableHead>
         <TableRow>
-          {(role !== "MEMBER"
+          {(role !== 'MEMBER'
             ? feedSupplyTableHead
             : feedSupplyTableHeadMember
           ).map((headCell, idx, headCells) => (
@@ -95,14 +94,14 @@ export default function FeedTable({ feeds }: Props) {
                 idx === headCells.length - 1
                   ? false
                   : orderBy === headCell.id
-                  ? order
-                  : false
+                    ? order
+                    : false
               }
               // align="center"
               sx={{
                 borderBottom: 0,
-                color: "#67737F",
-                background: "#F5F6F8",
+                color: '#67737F',
+                background: '#F5F6F8',
                 fontSize: {
                   md: 16,
                   xs: 14,
@@ -120,7 +119,7 @@ export default function FeedTable({ feeds }: Props) {
               ) : (
                 <TableSortLabel
                   active={orderBy === headCell.id}
-                  direction={orderBy === headCell.id ? order : "asc"}
+                  direction={orderBy === headCell.id ? order : 'asc'}
                   onClick={createSortHandler(headCell.id)}
                 >
                   {headCell.label}
@@ -135,33 +134,33 @@ export default function FeedTable({ feeds }: Props) {
 
   const handleRequestSort = (
     _: React.MouseEvent<HTMLButtonElement> | null,
-    property: string
+    property: string,
   ) => {
-    const isAsc = orderBy === property && order === "asc";
-    setOrder(isAsc ? "desc" : "asc");
+    const isAsc = orderBy === property && order === 'asc';
+    setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
     dispatch(
       breadcrumsAction.handleSort({
-        direction: isAsc ? "desc" : "asc",
+        direction: isAsc ? 'desc' : 'asc',
         column: property,
-      })
+      }),
     );
 
     if (feeds) {
       const sortedData = [...feeds].sort((feed1: any, feed2: any) => {
-        const orderType = order === "asc" ? 1 : -1;
-        if (property === "productName") {
+        const orderType = order === 'asc' ? 1 : -1;
+        if (property === 'productName') {
           if (feed1.productName < feed2.productName) return -1 * orderType;
           if (feed1.productName > feed2.productName) return 1 * orderType;
-        } else if (property === "productCode") {
+        } else if (property === 'productCode') {
           if (feed1.productCode < feed2.productCode) return -1 * orderType;
           if (feed1.productCode > feed2.productCode) return 1 * orderType;
-        } else if (property === "productionIntensity") {
+        } else if (property === 'productionIntensity') {
           if (feed1.productionIntensity < feed2.productionIntensity)
             return -1 * orderType;
           if (feed1.productionIntensity > feed2.productionIntensity)
             return 1 * orderType;
-        } else if (property === "feedingPhase") {
+        } else if (property === 'feedingPhase') {
           if (feed1.feedingPhase < feed2.feedingPhase) return -1 * orderType;
           if (feed1.feedingPhase > feed2.feedingPhase) return 1 * orderType;
         }
@@ -171,7 +170,7 @@ export default function FeedTable({ feeds }: Props) {
     }
   };
   useEffect(() => {
-    if (pathName === "/dashboard/feedSupply") {
+    if (pathName === '/dashboard/feedSupply') {
       dispatch(feedAction.resetState());
     }
   }, [pathName]);
@@ -188,19 +187,19 @@ export default function FeedTable({ feeds }: Props) {
       // handleRequestSort(null, data.column);
       if (feeds) {
         const sortedData = [...feeds].sort((feed1: any, feed2: any) => {
-          const orderType = data.direction === "asc" ? -1 : 1;
-          if (data.column === "productName") {
+          const orderType = data.direction === 'asc' ? -1 : 1;
+          if (data.column === 'productName') {
             if (feed1.productName < feed2.productName) return -1 * orderType;
             if (feed1.productName > feed2.productName) return 1 * orderType;
-          } else if (data.column === "productCode") {
+          } else if (data.column === 'productCode') {
             if (feed1.productCode < feed2.productCode) return -1 * orderType;
             if (feed1.productCode > feed2.productCode) return 1 * orderType;
-          } else if (data.column === "productionIntensity") {
+          } else if (data.column === 'productionIntensity') {
             if (feed1.productionIntensity < feed2.productionIntensity)
               return -1 * orderType;
             if (feed1.productionIntensity > feed2.productionIntensity)
               return 1 * orderType;
-          } else if (data.column === "feedingPhase") {
+          } else if (data.column === 'feedingPhase') {
             if (feed1.feedingPhase < feed2.feedingPhase) return -1 * orderType;
             if (feed1.feedingPhase > feed2.feedingPhase) return 1 * orderType;
           }
@@ -216,16 +215,16 @@ export default function FeedTable({ feeds }: Props) {
   return (
     <Paper
       sx={{
-        width: "100%",
-        overflow: "hidden",
-        borderRadius: "14px",
-        boxShadow: "0px 0px 16px 5px #0000001A",
+        width: '100%',
+        overflow: 'hidden',
+        borderRadius: '14px',
+        boxShadow: '0px 0px 16px 5px #0000001A',
         mt: 4,
       }}
     >
       <TableContainer
         sx={{
-          maxHeight: "72.5vh",
+          maxHeight: '72.5vh',
         }}
       >
         <Table stickyHeader aria-label="sticky table">
@@ -269,14 +268,14 @@ export default function FeedTable({ feeds }: Props) {
                 return (
                   <TableRow
                     key={i}
-                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                   >
                     <TableCell
                       // align="center"
                       sx={{
-                        borderBottomColor: "#F5F6F8",
+                        borderBottomColor: '#F5F6F8',
                         borderBottomWidth: 2,
-                        color: "#555555",
+                        color: '#555555',
                         fontWeight: 500,
                         paddingLeft: {
                           lg: 10,
@@ -287,64 +286,64 @@ export default function FeedTable({ feeds }: Props) {
                       component="th"
                       scope="row"
                     >
-                      {feed.productName ?? ""}
+                      {feed.productName ?? ''}
                     </TableCell>
 
                     <TableCell
                       // align="center"
                       sx={{
-                        borderBottomColor: "#F5F6F8",
+                        borderBottomColor: '#F5F6F8',
                         borderBottomWidth: 2,
-                        color: "#555555",
+                        color: '#555555',
                         fontWeight: 500,
                         pl: 0,
                       }}
                     >
-                      {feed.productCode ?? ""}
+                      {feed.productCode ?? ''}
                     </TableCell>
                     <TableCell
                       // align="center"
                       sx={{
-                        borderBottomColor: "#F5F6F8",
+                        borderBottomColor: '#F5F6F8',
                         borderBottomWidth: 2,
-                        color: "#555555",
+                        color: '#555555',
                         fontWeight: 500,
                         pl: 0,
                       }}
                     >
-                      {feed.productionIntensity ?? ""}
+                      {feed.productionIntensity ?? ''}
                     </TableCell>
                     <TableCell
                       // align="center"
                       sx={{
-                        borderBottomColor: "#F5F6F8",
+                        borderBottomColor: '#F5F6F8',
                         borderBottomWidth: 2,
-                        color: "#555555",
+                        color: '#555555',
                         fontWeight: 500,
                         pl: 0,
                       }}
                     >
-                      {feed.feedingPhase ?? ""}
+                      {feed.feedingPhase ?? ''}
                     </TableCell>
                     <TableCell
                       // align="center"
                       sx={{
-                        borderBottomColor: "#F5F6F8",
+                        borderBottomColor: '#F5F6F8',
                         borderBottomWidth: 2,
-                        color: "#555555",
+                        color: '#555555',
                         fontWeight: 500,
                         pl: 0,
                       }}
                     >
-                      {feed.specie ?? ""}
+                      {feed.specie ?? ''}
                     </TableCell>
-                    {role !== "MEMBER" && (
+                    {role !== 'MEMBER' && (
                       <TableCell
                         // align="center"
                         sx={{
-                          borderBottomColor: "#F5F6F8",
+                          borderBottomColor: '#F5F6F8',
                           borderBottomWidth: 2,
-                          color: "#555555",
+                          color: '#555555',
                           fontWeight: 500,
                         }}
                         className="cursor-pointer"
@@ -352,15 +351,15 @@ export default function FeedTable({ feeds }: Props) {
                       >
                         <Button
                           id="basic-button"
-                          aria-controls={open ? "basic-menu" : undefined}
+                          aria-controls={open ? 'basic-menu' : undefined}
                           aria-haspopup="true"
-                          aria-expanded={open ? "true" : undefined}
+                          aria-expanded={open ? 'true' : undefined}
                           onClick={(e) => handleClick(e, feed)}
                           className="table-edit-option"
                           sx={{
-                            background: "transparent",
-                            color: "#555555",
-                            boxShadow: "none",
+                            background: 'transparent',
+                            color: '#555555',
+                            boxShadow: 'none',
                           }}
                         >
                           <svg
@@ -382,11 +381,11 @@ export default function FeedTable({ feeds }: Props) {
                           open={open}
                           onClose={handleClose}
                           MenuListProps={{
-                            "aria-labelledby": "basic-button",
+                            'aria-labelledby': 'basic-button',
                           }}
                           sx={{
-                            position: "absolute",
-                            left: "-1px",
+                            position: 'absolute',
+                            left: '-1px',
                           }}
                         >
                           <MenuItem onClick={handleEdit}>
@@ -419,7 +418,7 @@ export default function FeedTable({ feeds }: Props) {
               })
             ) : (
               <TableRow>
-                <TableCell colSpan={6} sx={{ textAlign: "center" }}>
+                <TableCell colSpan={6} sx={{ textAlign: 'center' }}>
                   No Data Found
                 </TableCell>
               </TableRow>

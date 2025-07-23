@@ -1,9 +1,9 @@
-import { getChartPredictedValues, setLocalItem } from "@/app/_lib/utils";
-import { Farm } from "@/app/_typeModels/Farm";
+import { getChartPredictedValues, setLocalItem } from '@/app/_lib/utils';
+import { Farm } from '@/app/_typeModels/Farm';
 import {
   Production,
   WaterManageHistoryGroup,
-} from "@/app/_typeModels/production";
+} from '@/app/_typeModels/production';
 import {
   Box,
   Button,
@@ -14,15 +14,15 @@ import {
   DialogTitle,
   FormControlLabel,
   Grid,
-} from "@mui/material";
-import dayjs from "dayjs";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import WaterTempChart from "../../charts/WaterTempChart";
+} from '@mui/material';
+import dayjs from 'dayjs';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import WaterTempChart from '../../charts/WaterTempChart';
 
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
-import toast from "react-hot-toast";
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
+import toast from 'react-hot-toast';
 type Iprops = {
   productions: Production[];
   groupedData: WaterManageHistoryGroup;
@@ -32,14 +32,14 @@ type Iprops = {
   waterId: string;
 };
 export type IdealRangeKeys =
-  | "DO"
-  | "ph"
-  | "NH4"
-  | "NO2"
-  | "NO3"
-  | "TSS"
-  | "waterTemp"
-  | "visibility";
+  | 'DO'
+  | 'ph'
+  | 'NH4'
+  | 'NO2'
+  | 'NO3'
+  | 'TSS'
+  | 'waterTemp'
+  | 'visibility';
 function WaterHistoryCharts({
   productions,
   groupedData,
@@ -57,14 +57,14 @@ function WaterHistoryCharts({
   const [predictedData, setPredictedData] = useState<any>(null);
 
   type IdealRangeKeys =
-    | "DO"
-    | "ph"
-    | "NH4"
-    | "NO2"
-    | "NO3"
-    | "TSS"
-    | "waterTemp"
-    | "visibility";
+    | 'DO'
+    | 'ph'
+    | 'NH4'
+    | 'NO2'
+    | 'NO3'
+    | 'TSS'
+    | 'waterTemp'
+    | 'visibility';
 
   const chartOptions: {
     key: string;
@@ -72,17 +72,17 @@ function WaterHistoryCharts({
     title: string;
   }[] = [
     {
-      key: "waterTempChart",
-      yDataKey: "waterTemp",
-      title: "Water Temperature",
+      key: 'waterTempChart',
+      yDataKey: 'waterTemp',
+      title: 'Water Temperature',
     },
-    { key: "dissolvedOxgChart", yDataKey: "DO", title: "Dissolved Oxygen" },
-    { key: "TSS", yDataKey: "TSS", title: "TSS" },
-    { key: "ammonia", yDataKey: "NH4", title: "Ammonia" },
-    { key: "nitrate", yDataKey: "NO3", title: "Nitrate" },
-    { key: "nitrite", yDataKey: "NO2", title: "Nitrite" },
-    { key: "ph", yDataKey: "ph", title: "PH" },
-    { key: "visibility", yDataKey: "visibility", title: "Visibility" },
+    { key: 'dissolvedOxgChart', yDataKey: 'DO', title: 'Dissolved Oxygen' },
+    { key: 'TSS', yDataKey: 'TSS', title: 'TSS' },
+    { key: 'ammonia', yDataKey: 'NH4', title: 'Ammonia' },
+    { key: 'nitrate', yDataKey: 'NO3', title: 'Nitrate' },
+    { key: 'nitrite', yDataKey: 'NO2', title: 'Nitrite' },
+    { key: 'ph', yDataKey: 'ph', title: 'PH' },
+    { key: 'visibility', yDataKey: 'visibility', title: 'Visibility' },
   ];
   useEffect(() => {
     if (groupedData?.units && farms) {
@@ -92,20 +92,20 @@ function WaterHistoryCharts({
         ?.flatMap(
           (unit) =>
             unit.waterManageHistory?.map((history) => {
-              const datePart = String(history.currentDate).split("T")[0];
+              const datePart = String(history.currentDate).split('T')[0];
               return dayjs(datePart).isValid() ? datePart : null;
-            }) || []
+            }) || [],
         )
         .filter(Boolean);
 
-      const diffInDays = dayjs(endDate).diff(dayjs(startDate), "day");
+      const diffInDays = dayjs(endDate).diff(dayjs(startDate), 'day');
       setDateDiff(diffInDays);
 
-      const startD = dayjs(startDate).startOf("day");
-      const endD = dayjs(endDate).startOf("day");
+      const startD = dayjs(startDate).startOf('day');
+      const endD = dayjs(endDate).startOf('day');
 
       const filteredTimestamps: any = createdAtArray.filter((timestamp) => {
-        const date = dayjs(timestamp).startOf("day");
+        const date = dayjs(timestamp).startOf('day');
         return date >= startD && date <= endD;
       });
 
@@ -117,13 +117,13 @@ function WaterHistoryCharts({
     setSelectedCharts((prev) =>
       prev.includes(key)
         ? prev.filter((chartKey) => chartKey !== key)
-        : [...prev, key]
+        : [...prev, key],
     );
   };
   const previewCharts = () => {
     if (!selectedCharts?.length) {
       toast.dismiss();
-      toast.error("Please select at least one chart to preview.");
+      toast.error('Please select at least one chart to preview.');
       return;
     }
     const data = {
@@ -135,7 +135,7 @@ function WaterHistoryCharts({
       endDate: endDate,
       dateDiff: dateDiff,
     };
-    setLocalItem("waterPreviewData", data);
+    setLocalItem('waterPreviewData', data);
     router.push(`/dashboard/production/water/${waterId}/chartPreview`);
   };
   useEffect(() => {
@@ -148,8 +148,8 @@ function WaterHistoryCharts({
     <div>
       <Box
         sx={{
-          display: "flex",
-          justifyContent: "end",
+          display: 'flex',
+          justifyContent: 'end',
           marginRight: -3,
           marginBottom: 2,
         }}
@@ -157,12 +157,12 @@ function WaterHistoryCharts({
         <Button
           variant="contained"
           sx={{
-            background: "#06A19B",
-            fontWeight: "600",
-            padding: "8px 24px",
-            width: "fit-content",
-            textTransform: "capitalize",
-            borderRadius: "8px",
+            background: '#06A19B',
+            fontWeight: '600',
+            padding: '8px 24px',
+            width: 'fit-content',
+            textTransform: 'capitalize',
+            borderRadius: '8px',
             fontSize: 16,
           }}
           onClick={() => setIsModalOpen(true)}
@@ -174,7 +174,7 @@ function WaterHistoryCharts({
       <Dialog
         open={isModalOpen}
         onClose={() => {
-          setIsModalOpen(false), setSelectedCharts([]);
+          (setIsModalOpen(false), setSelectedCharts([]));
         }}
       >
         <DialogTitle>Select Charts</DialogTitle>
@@ -190,8 +190,8 @@ function WaterHistoryCharts({
                   icon={<RadioButtonUncheckedIcon />}
                   checkedIcon={<CheckCircleIcon />}
                   sx={{
-                    "&.Mui-checked": {
-                      color: "#06A19B",
+                    '&.Mui-checked': {
+                      color: '#06A19B',
                     },
                   }}
                 />
@@ -209,12 +209,12 @@ function WaterHistoryCharts({
             type="button"
             variant="contained"
             sx={{
-              background: "#06A19B",
+              background: '#06A19B',
               fontWeight: 600,
-              padding: "6px 16px",
-              width: "fit-content",
-              textTransform: "capitalize",
-              borderRadius: "8px",
+              padding: '6px 16px',
+              width: 'fit-content',
+              textTransform: 'capitalize',
+              borderRadius: '8px',
             }}
             onClick={() => {
               setSelectedCharts(chartOptions.map((chart) => chart.key));
@@ -226,12 +226,12 @@ function WaterHistoryCharts({
             type="button"
             variant="contained"
             sx={{
-              background: "#06A19B",
+              background: '#06A19B',
               fontWeight: 600,
-              padding: "6px 16px",
-              width: "fit-content",
-              textTransform: "capitalize",
-              borderRadius: "8px",
+              padding: '6px 16px',
+              width: 'fit-content',
+              textTransform: 'capitalize',
+              borderRadius: '8px',
             }}
             onClick={previewCharts}
           >
@@ -241,18 +241,18 @@ function WaterHistoryCharts({
           <Button
             type="button"
             onClick={() => {
-              setIsModalOpen(false), setSelectedCharts([]);
+              (setIsModalOpen(false), setSelectedCharts([]));
             }}
             variant="contained"
             sx={{
-              background: "#fff",
-              color: "#06A19B",
+              background: '#fff',
+              color: '#06A19B',
               fontWeight: 600,
-              padding: "6px 16px",
-              width: "fit-content",
-              textTransform: "capitalize",
-              borderRadius: "8px",
-              border: "1px solid #06A19B",
+              padding: '6px 16px',
+              width: 'fit-content',
+              textTransform: 'capitalize',
+              borderRadius: '8px',
+              border: '1px solid #06A19B',
             }}
           >
             Cancel
@@ -270,13 +270,13 @@ function WaterHistoryCharts({
                 ydata={groupedData.units.flatMap(
                   (unit) =>
                     unit.waterManageHistory?.map(
-                      (history: any) => history[yDataKey]
-                    ) || []
+                      (history: any) => history[yDataKey],
+                    ) || [],
                 )}
                 predictedValues={
                   predictedData?.find(
                     (val: { key: string; values: string[] }) =>
-                      val.key === yDataKey
+                      val.key === yDataKey,
                   )?.values || []
                 }
                 maxVal={

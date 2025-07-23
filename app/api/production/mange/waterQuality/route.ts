@@ -1,5 +1,5 @@
-import prisma from "@/prisma/prisma";
-import { NextRequest, NextResponse } from "next/server";
+import prisma from '@/prisma/prisma';
+import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(req: NextRequest) {
   try {
@@ -71,13 +71,13 @@ export async function POST(req: NextRequest) {
       }
     }
     return NextResponse.json({
-      message: "Water Added successfully",
+      message: 'Water Added successfully',
       status: true,
     });
   } catch (error) {
     return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 }
+      { error: 'Internal Server Error' },
+      { status: 500 },
     );
   }
 }

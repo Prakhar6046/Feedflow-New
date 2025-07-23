@@ -1,5 +1,5 @@
-"use client";
-import { useAppDispatch } from "@/lib/hooks";
+'use client';
+import { useAppDispatch } from '@/lib/hooks';
 import {
   Box,
   Divider,
@@ -9,77 +9,77 @@ import {
   ListItemIcon,
   Stack,
   Typography,
-} from "@mui/material";
-import { getCookie } from "cookies-next";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import Loader from "../Loader";
-import { FeedProduct } from "@/app/_typeModels/Feed";
-import { FeedSupplier } from "@/app/_typeModels/Organization";
+} from '@mui/material';
+import { getCookie } from 'cookies-next';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import Loader from '../Loader';
+import { FeedProduct } from '@/app/_typeModels/Feed';
+import { FeedSupplier } from '@/app/_typeModels/Organization';
 
 export interface FeedSupply {
-  id: String;
-  feedIngredients: String;
-  feedingGuide: String;
-  productionIntensity: String;
-  unit: String;
-  feedingPhase: String;
-  lifeStage: String;
-  shelfLife: String;
-  productCode: String;
-  feedSupplierCode: String;
-  brandCode: String;
-  productNameCode: String;
-  productFormatCode: String;
-  animalSizeInLength: String;
-  animalSizeInWeight: String;
-  specie: String;
-  nutritionalPurpose: String;
-  nutritionalClass: String;
-  particleSize: String;
-  productFormat: String;
-  productName: String;
-  brandName: String;
-  feedSupplier: String;
+  id: string;
+  feedIngredients: string;
+  feedingGuide: string;
+  productionIntensity: string;
+  unit: string;
+  feedingPhase: string;
+  lifeStage: string;
+  shelfLife: string;
+  productCode: string;
+  feedSupplierCode: string;
+  brandCode: string;
+  productNameCode: string;
+  productFormatCode: string;
+  animalSizeInLength: string;
+  animalSizeInWeight: string;
+  specie: string;
+  nutritionalPurpose: string;
+  nutritionalClass: string;
+  particleSize: string;
+  productFormat: string;
+  productName: string;
+  brandName: string;
+  feedSupplier: string;
   nutritionalGuarantee: {
     calcium: {
-      kg: String;
-      value: String;
+      kg: string;
+      value: string;
     };
     crudeAsh: {
-      kg: String;
-      value: String;
+      kg: string;
+      value: string;
     };
     crudeFat: {
-      kg: String;
-      value: String;
+      kg: string;
+      value: string;
     };
     moisture: {
-      kg: String;
-      value: String;
+      kg: string;
+      value: string;
     };
     phosphorous: {
-      kg: String;
-      value: String;
+      kg: string;
+      value: string;
     };
     crudeProtein: {
-      kg: String;
-      value: String;
+      kg: string;
+      value: string;
     };
     carbohydrates: {
-      kg: String;
-      value: String;
+      kg: string;
+      value: string;
     };
     metabolizableEnergy: {
-      kg: String;
-      value: String;
+      kg: string;
+      value: string;
     };
-    crudeFiber: { kg: String; value: String };
+    crudeFiber: { kg: string; value: string };
   };
-  updatedBy: String;
-  createdBy: String;
-  createdAt: String;
-  updatedAt: String;
+  updatedBy: string;
+  createdBy: string;
+  createdAt: string;
+  updatedAt: string;
 }
 type Iprops = {
   data: FeedProduct[];
@@ -88,9 +88,9 @@ type Iprops = {
 const FeedSelection = ({ data, feedSuppliers }: Iprops) => {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const loggedUserDataLocal: any = getCookie("logged-user");
+  const loggedUserDataLocal: any = getCookie('logged-user');
   const loggedUser = JSON.parse(loggedUserDataLocal);
-  const token = getCookie("auth-token");
+  const token = getCookie('auth-token');
 
   const [feedSupply, setFeedSupply] = useState<FeedSupply[]>();
   const [feedStores, setFeedStores] = useState<FeedProduct[]>();
@@ -102,17 +102,17 @@ const FeedSelection = ({ data, feedSuppliers }: Iprops) => {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      }
+      },
     );
     return response.json();
   };
-  const getNutritionalValue = (val: String) => {
-    if (val === "Minimum") {
-      return "Min";
-    } else if (val === "Maximum") {
-      return "Max";
+  const getNutritionalValue = (val: string) => {
+    if (val === 'Minimum') {
+      return 'Min';
+    } else if (val === 'Maximum') {
+      return 'Max';
     } else {
-      return "Typ";
+      return 'Typ';
     }
   };
 
@@ -151,35 +151,35 @@ const FeedSelection = ({ data, feedSuppliers }: Iprops) => {
 
       <Box
         sx={{
-          width: "100%",
-          overflowX: "auto",
+          width: '100%',
+          overflowX: 'auto',
         }}
       >
         <Grid
           container
           spacing={2}
           sx={{
-            flexWrap: "nowrap",
+            flexWrap: 'nowrap',
             minWidth: 1000,
-            pb: "16px",
+            pb: '16px',
           }}
         >
           {feedStores?.length ? (
             feedStores?.map((supply) => {
               const supplierName = feedSuppliers?.find((supplier: any) =>
-                supply?.ProductSupplier?.includes(supplier?.id)
+                supply?.ProductSupplier?.includes(supplier?.id),
               )?.name;
               return (
                 <Grid item xs="auto" key={Number(supply?.id)}>
                   <Box
-                    position={"relative"}
-                    border={"1px solid #555555AC"}
+                    position={'relative'}
+                    border={'1px solid #555555AC'}
                     borderRadius={3}
                     p={2}
                     sx={{
-                      width: "ft-content",
-                      maxWidth: "370px",
-                      height: "100%",
+                      width: 'ft-content',
+                      maxWidth: '370px',
+                      height: '100%',
                     }}
                   >
                     {/* <Box
@@ -223,12 +223,12 @@ const FeedSelection = ({ data, feedSuppliers }: Iprops) => {
 
                     <Box>
                       <Box
-                        display={"flex"}
+                        display={'flex'}
                         gap={1}
-                        alignItems={"flex-start"}
-                        justifyContent={"space-between"}
+                        alignItems={'flex-start'}
+                        justifyContent={'space-between'}
                       >
-                        <Box textAlign={"center"}>
+                        <Box textAlign={'center'}>
                           <Typography
                             color="#06a19b"
                             variant="h6"
@@ -249,21 +249,21 @@ const FeedSelection = ({ data, feedSuppliers }: Iprops) => {
                         </Box>
 
                         <Box
-                          bgcolor={"rgba(6, 161, 155, 0.15)"}
+                          bgcolor={'rgba(6, 161, 155, 0.15)'}
                           p={1.5}
                           borderRadius={1.5}
-                          display={"flex"}
-                          flexDirection={"column"}
-                          justifyContent={"center"}
-                          alignItems={"center"}
+                          display={'flex'}
+                          flexDirection={'column'}
+                          justifyContent={'center'}
+                          alignItems={'center'}
                         >
                           <Typography
                             color="#06a19b"
                             variant="h6"
                             fontWeight={600}
                             fontSize={20}
-                            display={"flex"}
-                            alignItems={"end"}
+                            display={'flex'}
+                            alignItems={'end'}
                             lineHeight={1}
                             gap={1}
                           >
@@ -292,7 +292,7 @@ const FeedSelection = ({ data, feedSuppliers }: Iprops) => {
 
                       <Divider
                         sx={{
-                          borderColor: "#06a19bBC",
+                          borderColor: '#06a19bBC',
                           borderWidth: 1,
                           my: 1.5,
                           borderRadius: 50,
@@ -305,7 +305,7 @@ const FeedSelection = ({ data, feedSuppliers }: Iprops) => {
                           variant="h6"
                           fontWeight={500}
                           fontSize={14}
-                          textAlign={"center"}
+                          textAlign={'center'}
                         >
                           {` ${supply?.nutritionalClass} Feed for ${supply?.suitableSpecies} production.`}
                           <br />
@@ -313,18 +313,18 @@ const FeedSelection = ({ data, feedSuppliers }: Iprops) => {
                         </Typography>
 
                         <Box
-                          display={"flex"}
-                          justifyContent={"center"}
-                          alignItems={"stretch"}
+                          display={'flex'}
+                          justifyContent={'center'}
+                          alignItems={'stretch'}
                           gap={1}
                           mt={1}
                         >
-                          <Box display={"grid"} alignItems={"stretch"}>
+                          <Box display={'grid'} alignItems={'stretch'}>
                             <Box
-                              display={"flex"}
-                              flexDirection={"column"}
-                              justifyContent={"center"}
-                              alignItems={"center"}
+                              display={'flex'}
+                              flexDirection={'column'}
+                              justifyContent={'center'}
+                              alignItems={'center'}
                               gap={0.5}
                             >
                               <Typography
@@ -332,13 +332,13 @@ const FeedSelection = ({ data, feedSuppliers }: Iprops) => {
                                 variant="h6"
                                 fontWeight={500}
                                 fontSize={14}
-                                textAlign={"center"}
+                                textAlign={'center'}
                               >
                                 Feeding Phase
                               </Typography>
 
                               <Box
-                                bgcolor={"rgba(6, 161, 155, 0.15)"}
+                                bgcolor={'rgba(6, 161, 155, 0.15)'}
                                 p={1.5}
                                 borderRadius={1.5}
                                 width={160}
@@ -346,20 +346,20 @@ const FeedSelection = ({ data, feedSuppliers }: Iprops) => {
                                 <List
                                   sx={{
                                     p: 0,
-                                    display: "flex",
-                                    justifyContent: "center",
-                                    alignItems: "center",
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
                                     columnGap: 1,
-                                    flexWrap: "wrap",
+                                    flexWrap: 'wrap',
                                   }}
                                 >
                                   <ListItem
                                     sx={{
                                       p: 0,
-                                      color: "#06a19b",
+                                      color: '#06a19b',
                                       fontWeight: 600,
                                       fontSize: 16,
-                                      width: "fit-content",
+                                      width: 'fit-content',
                                     }}
                                   >
                                     {supply?.suitabilityUnit}
@@ -368,19 +368,19 @@ const FeedSelection = ({ data, feedSuppliers }: Iprops) => {
                                   <ListItem
                                     sx={{
                                       p: 0,
-                                      color: "#06a19b",
+                                      color: '#06a19b',
                                       fontWeight: 600,
                                       fontSize: 16,
-                                      width: "fit-content",
+                                      width: 'fit-content',
                                     }}
                                   >
                                     <ListItemIcon
                                       sx={{
                                         p: 0,
-                                        minWidth: "fit-content",
+                                        minWidth: 'fit-content',
                                         mr: 1,
                                         fontSize: 6,
-                                        color: "#06a19b",
+                                        color: '#06a19b',
                                       }}
                                     >
                                       ⬤
@@ -391,19 +391,19 @@ const FeedSelection = ({ data, feedSuppliers }: Iprops) => {
                                   <ListItem
                                     sx={{
                                       p: 0,
-                                      color: "#06a19b",
+                                      color: '#06a19b',
                                       fontWeight: 600,
                                       fontSize: 16,
-                                      width: "fit-content",
+                                      width: 'fit-content',
                                     }}
                                   >
                                     <ListItemIcon
                                       sx={{
                                         p: 0,
-                                        minWidth: "fit-content",
+                                        minWidth: 'fit-content',
                                         mr: 1,
                                         fontSize: 6,
-                                        color: "#06a19b",
+                                        color: '#06a19b',
                                       }}
                                     >
                                       ⬤
@@ -415,10 +415,10 @@ const FeedSelection = ({ data, feedSuppliers }: Iprops) => {
                             </Box>
                           </Box>
 
-                          <Box display={"grid"} alignItems={"stretch"}>
+                          <Box display={'grid'} alignItems={'stretch'}>
                             <Box
-                              display={"flex"}
-                              flexDirection={"column"}
+                              display={'flex'}
+                              flexDirection={'column'}
                               gap={0.5}
                             >
                               <Typography
@@ -426,30 +426,30 @@ const FeedSelection = ({ data, feedSuppliers }: Iprops) => {
                                 variant="h6"
                                 fontWeight={500}
                                 fontSize={14}
-                                textAlign={"center"}
+                                textAlign={'center'}
                                 sx={{
-                                  textWrap: "nowrap",
+                                  textWrap: 'nowrap',
                                 }}
                               >
                                 Fish Size Class
                               </Typography>
 
                               <Box
-                                bgcolor={"rgba(6, 161, 155, 0.15)"}
+                                bgcolor={'rgba(6, 161, 155, 0.15)'}
                                 p={1.5}
                                 borderRadius={1.5}
                                 width={160}
-                                height={"100%"}
-                                display={"flex"}
-                                justifyContent={"center"}
-                                alignItems={"center"}
+                                height={'100%'}
+                                display={'flex'}
+                                justifyContent={'center'}
+                                alignItems={'center'}
                               >
                                 <Typography
                                   color="#06a19b"
                                   variant="h6"
                                   fontWeight={600}
                                   fontSize={16}
-                                  textAlign={"center"}
+                                  textAlign={'center'}
                                 >
                                   {/* 5 - 30g */}
                                   {`${supply?.fishSizeG} g`}
@@ -462,7 +462,7 @@ const FeedSelection = ({ data, feedSuppliers }: Iprops) => {
 
                       <Divider
                         sx={{
-                          borderColor: "#06a19bBC",
+                          borderColor: '#06a19bBC',
                           borderWidth: 1,
                           my: 1.5,
                           borderRadius: 50,
@@ -493,7 +493,7 @@ const FeedSelection = ({ data, feedSuppliers }: Iprops) => {
                             </Typography>
                           </Grid>
 
-                          <Grid item xs={6} textAlign={"right"}>
+                          <Grid item xs={6} textAlign={'right'}>
                             <Typography
                               variant="subtitle1"
                               fontWeight={600}
@@ -517,7 +517,7 @@ const FeedSelection = ({ data, feedSuppliers }: Iprops) => {
                             </Typography>
                           </Grid>
 
-                          <Grid item xs={6} textAlign={"right"}>
+                          <Grid item xs={6} textAlign={'right'}>
                             <Typography
                               variant="subtitle1"
                               fontWeight={600}
@@ -540,7 +540,7 @@ const FeedSelection = ({ data, feedSuppliers }: Iprops) => {
                             </Typography>
                           </Grid>
 
-                          <Grid item xs={6} textAlign={"right"}>
+                          <Grid item xs={6} textAlign={'right'}>
                             <Typography
                               variant="subtitle1"
                               fontWeight={600}
@@ -563,7 +563,7 @@ const FeedSelection = ({ data, feedSuppliers }: Iprops) => {
                             </Typography>
                           </Grid>
 
-                          <Grid item xs={6} textAlign={"right"}>
+                          <Grid item xs={6} textAlign={'right'}>
                             <Typography
                               variant="subtitle1"
                               fontWeight={600}
@@ -586,7 +586,7 @@ const FeedSelection = ({ data, feedSuppliers }: Iprops) => {
                             </Typography>
                           </Grid>
 
-                          <Grid item xs={6} textAlign={"right"}>
+                          <Grid item xs={6} textAlign={'right'}>
                             <Typography
                               variant="subtitle1"
                               fontWeight={600}
@@ -609,7 +609,7 @@ const FeedSelection = ({ data, feedSuppliers }: Iprops) => {
                             </Typography>
                           </Grid>
 
-                          <Grid item xs={6} textAlign={"right"}>
+                          <Grid item xs={6} textAlign={'right'}>
                             <Typography
                               variant="subtitle1"
                               fontWeight={600}
@@ -632,7 +632,7 @@ const FeedSelection = ({ data, feedSuppliers }: Iprops) => {
                             </Typography>
                           </Grid>
 
-                          <Grid item xs={6} textAlign={"right"}>
+                          <Grid item xs={6} textAlign={'right'}>
                             <Typography
                               variant="subtitle1"
                               fontWeight={600}
@@ -646,7 +646,7 @@ const FeedSelection = ({ data, feedSuppliers }: Iprops) => {
 
                       <Divider
                         sx={{
-                          borderColor: "#06a19bBC",
+                          borderColor: '#06a19bBC',
                           borderWidth: 1,
                           my: 1.5,
                           borderRadius: 50,
@@ -669,7 +669,7 @@ const FeedSelection = ({ data, feedSuppliers }: Iprops) => {
                           fontSize={14}
                           color="#000"
                           mt={0.5}
-                          textAlign={"justify"}
+                          textAlign={'justify'}
                         >
                           {supply?.feedIngredients}
                         </Typography>
@@ -677,7 +677,7 @@ const FeedSelection = ({ data, feedSuppliers }: Iprops) => {
 
                       <Divider
                         sx={{
-                          borderColor: "#06a19bBC",
+                          borderColor: '#06a19bBC',
                           borderWidth: 1,
                           my: 1.5,
                           borderRadius: 50,
@@ -707,7 +707,7 @@ const FeedSelection = ({ data, feedSuppliers }: Iprops) => {
 
                       <Divider
                         sx={{
-                          borderColor: "#06a19bBC",
+                          borderColor: '#06a19bBC',
                           borderWidth: 1,
                           my: 1.5,
                           borderRadius: 50,
@@ -719,14 +719,14 @@ const FeedSelection = ({ data, feedSuppliers }: Iprops) => {
                         fontWeight={600}
                         fontSize={18}
                         color="#06a19b"
-                        textAlign={"center"}
+                        textAlign={'center'}
                       >
                         Shelf Life: {supply?.shelfLifeMonths} months
                       </Typography>
 
                       <Divider
                         sx={{
-                          borderColor: "#06a19bBC",
+                          borderColor: '#06a19bBC',
                           borderWidth: 1,
                           my: 1.5,
                           borderRadius: 50,

@@ -1,15 +1,15 @@
-"use client";
+'use client';
 // import Typography from "@/app/_components/theme/overrides/Typography";
-import { Box, Button, Stack, TextField, Typography } from "@mui/material";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { useForm, SubmitHandler } from "react-hook-form";
-import logo from "@/public/static/img/logo.svg";
-import { setCookie, getCookie } from "cookies-next";
-import EyeOpened from "@/public/static/img/icons/ic-eye-open.svg";
-import EyeClosed from "@/public/static/img/icons/ic-eye-closed.svg";
-import { useState } from "react";
-import toast from "react-hot-toast";
+import { Box, Button, Stack, TextField, Typography } from '@mui/material';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { useForm, SubmitHandler } from 'react-hook-form';
+import logo from '@/public/static/img/logo.svg';
+import { getCookie } from 'cookies-next';
+import EyeOpened from '@/public/static/img/icons/ic-eye-open.svg';
+import EyeClosed from '@/public/static/img/icons/ic-eye-closed.svg';
+import { useState } from 'react';
+import toast from 'react-hot-toast';
 interface IFormInput {
   password: string;
   confirmPassword: string;
@@ -29,15 +29,15 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
     if (data.password && params.organisationId) {
-      const token = getCookie("auth-token");
+      const token = getCookie('auth-token');
       const payload = {
         userId: params.organisationId,
         password: data.password,
       };
-      const response = await fetch("/api/add-new-user/setPassword", {
-        method: "POST",
+      const response = await fetch('/api/add-new-user/setPassword', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(payload),
@@ -46,23 +46,23 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
       toast.success(responseData.message);
 
       if (responseData.status) {
-        router.push("/auth/login");
+        router.push('/auth/login');
       }
     }
   };
 
   // Watch the password field to validate confirmPassword
-  const password = watch("password");
+  const password = watch('password');
 
   return (
     <Stack
-      display={"flex"}
-      justifyContent={"center"}
-      alignItems={"center"}
-      minHeight={"100vh"}
+      display={'flex'}
+      justifyContent={'center'}
+      alignItems={'center'}
+      minHeight={'100vh'}
       sx={{
         background:
-          "linear-gradient(349.33deg, rgba(6, 161, 155, 0.4) -27.15%, rgba(2, 59, 57, 0) 103.57%)",
+          'linear-gradient(349.33deg, rgba(6, 161, 155, 0.4) -27.15%, rgba(2, 59, 57, 0) 103.57%)',
         px: 3,
       }}
     >
@@ -72,12 +72,12 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
             lg: 5,
             xs: 3,
           },
-          border: "1px solid #06A19B",
-          borderRadius: "14px",
-          background: "#fff",
+          border: '1px solid #06A19B',
+          borderRadius: '14px',
+          background: '#fff',
           minWidth: {
             sm: 500,
-            xs: "100%",
+            xs: '100%',
           },
         }}
       >
@@ -87,11 +87,11 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
           variant="h5"
           fontWeight={600}
           marginBottom={4}
-          textTransform={"capitalize"}
+          textTransform={'capitalize'}
           sx={{
             fontSize: {
-              md: "24px",
-              xs: "20px",
+              md: '24px',
+              xs: '20px',
             },
           }}
         >
@@ -100,33 +100,33 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
 
         <Box position="relative" className="login-inputs">
           <form onSubmit={handleSubmit(onSubmit)}>
-            <Box position={"relative"} mb={3}>
+            <Box position={'relative'} mb={3}>
               <TextField
                 label="Password *"
-                type={showPassword ? "text" : "password"}
+                type={showPassword ? 'text' : 'password'}
                 // focused
                 className="form-input"
                 sx={{
-                  width: "100%",
+                  width: '100%',
                   // marginBottom: 4,
                 }}
                 id="password"
-                {...register("password", {
-                  required: "Password is required",
+                {...register('password', {
+                  required: 'Password is required',
                   minLength: {
                     value: 8,
-                    message: "Password must be at least 8 characters",
+                    message: 'Password must be at least 8 characters',
                   },
                 })}
               />
 
               <Box
-                bgcolor={"white"}
+                bgcolor={'white'}
                 sx={{
-                  position: "absolute",
-                  right: "7px",
-                  top: errors?.password ? "35%" : "50%",
-                  transform: "translate(-7px,-50%)",
+                  position: 'absolute',
+                  right: '7px',
+                  top: errors?.password ? '35%' : '50%',
+                  transform: 'translate(-7px,-50%)',
                   width: 20,
                   height: 20,
                 }}
@@ -137,7 +137,7 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
                   width={20}
                   height={20}
                   alt="Eye Icon"
-                  style={{ cursor: "pointer" }}
+                  style={{ cursor: 'pointer' }}
                 />
               </Box>
               {errors.password && (
@@ -146,31 +146,31 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
                 </Typography>
               )}
             </Box>
-            <Box position={"relative"} mb={5}>
+            <Box position={'relative'} mb={5}>
               <TextField
                 label="Confirm Password *"
-                type={showConfirmPassword ? "text" : "password"}
+                type={showConfirmPassword ? 'text' : 'password'}
                 className="form-input"
                 // focused
                 sx={{
-                  width: "100%",
+                  width: '100%',
                   // marginBottom: 3,
                 }}
                 id="confirmPassword"
-                {...register("confirmPassword", {
-                  required: "Please confirm your password",
+                {...register('confirmPassword', {
+                  required: 'Please confirm your password',
                   validate: (value) =>
-                    value === password || "Passwords do not match",
+                    value === password || 'Passwords do not match',
                 })}
               />
 
               <Box
-                bgcolor={"white"}
+                bgcolor={'white'}
                 sx={{
-                  position: "absolute",
-                  right: "7px",
-                  top: errors?.confirmPassword ? "35%" : "50%",
-                  transform: "translate(-7px,-50%)",
+                  position: 'absolute',
+                  right: '7px',
+                  top: errors?.confirmPassword ? '35%' : '50%',
+                  transform: 'translate(-7px,-50%)',
                   width: 20,
                   height: 20,
                 }}
@@ -181,7 +181,7 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
                   width={20}
                   height={20}
                   alt="Eye Icon"
-                  style={{ cursor: "pointer" }}
+                  style={{ cursor: 'pointer' }}
                 />
               </Box>
               {errors.confirmPassword && (
@@ -210,12 +210,12 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
             <Button
               variant="contained"
               sx={{
-                background: "#06A19B",
-                fontWeight: "600",
-                padding: "10px 24px",
-                width: "100%",
-                textTransform: "capitalize",
-                borderRadius: "8px",
+                background: '#06A19B',
+                fontWeight: '600',
+                padding: '10px 24px',
+                width: '100%',
+                textTransform: 'capitalize',
+                borderRadius: '8px',
                 fontSize: 18,
               }}
               type="submit"

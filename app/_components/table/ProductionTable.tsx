@@ -1,11 +1,11 @@
-"use client";
-import TransferModal from "@/app/_components/models/FarmManager";
+'use client';
+import TransferModal from '@/app/_components/models/FarmManager';
 import {
   exportProductionTableToXlsx,
   getLocalItem,
   ProductionSortTables,
   setLocalItem,
-} from "@/app/_lib/utils";
+} from '@/app/_lib/utils';
 import {
   farmManagerFishHead,
   farmManagerFishHeadMember,
@@ -13,12 +13,12 @@ import {
   farmManagerWaterHeadMember,
   feedingHead,
   feedingHeadMember,
-} from "@/app/_lib/utils/tableHeadData";
-import { Farm } from "@/app/_typeModels/Farm";
-import { FarmGroup, Production } from "@/app/_typeModels/production";
-import { breadcrumsAction } from "@/lib/features/breadcrum/breadcrumSlice";
-import { selectRole } from "@/lib/features/user/userSlice";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+} from '@/app/_lib/utils/tableHeadData';
+import { Farm } from '@/app/_typeModels/Farm';
+import { FarmGroup, Production } from '@/app/_typeModels/production';
+import { breadcrumsAction } from '@/lib/features/breadcrum/breadcrumSlice';
+import { selectRole } from '@/lib/features/user/userSlice';
+import { useAppDispatch, useAppSelector } from '@/lib/hooks';
 import {
   Box,
   Button,
@@ -30,34 +30,34 @@ import {
   TableSortLabel,
   Tooltip,
   Typography,
-} from "@mui/material";
+} from '@mui/material';
 
-import { useBreakpoint } from "@/app/hooks/useBreakPoint";
-import { selectSelectedAverage } from "@/lib/features/commonFilters/commonFilters";
-import TabContext from "@mui/lab/TabContext";
-import TabList from "@mui/lab/TabList";
-import Paper from "@mui/material/Paper";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import { getCookie, setCookie } from "cookies-next";
-import html2canvas from "html2canvas";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import React, { useEffect, useRef, useState } from "react";
-import { createRoot } from "react-dom/client";
-import Loader from "../Loader";
-import AddFeedFed from "../models/AddFeedFed";
-import Test from "../models/Test";
-import WaterQualityParameter from "../models/WaterQualityParameter";
-import ProductionManagerFilter from "../ProductionManagerFilter";
+import { useBreakpoint } from '@/app/hooks/useBreakPoint';
+import { selectSelectedAverage } from '@/lib/features/commonFilters/commonFilters';
+import TabContext from '@mui/lab/TabContext';
+import TabList from '@mui/lab/TabList';
+import Paper from '@mui/material/Paper';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import { getCookie, setCookie } from 'cookies-next';
+import html2canvas from 'html2canvas';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import React, { useEffect, useRef, useState } from 'react';
+import { createRoot } from 'react-dom/client';
+import Loader from '../Loader';
+import AddFeedFed from '../models/AddFeedFed';
+import Test from '../models/Test';
+import WaterQualityParameter from '../models/WaterQualityParameter';
+import ProductionManagerFilter from '../ProductionManagerFilter';
 
 interface Props {
   productions: Production[];
   farms: Farm[];
-  batches: { batchNumber: String; id: Number }[];
+  batches: { batchNumber: string; id: number }[];
 }
 
 export default function ProductionTable({
@@ -72,17 +72,17 @@ export default function ProductionTable({
   const pathName = usePathname();
   const role = useAppSelector(selectRole);
   const searchParams = useSearchParams();
-  const isFish = searchParams.get("isFish");
-  const isWater = searchParams.get("isWater");
+  const isFish = searchParams.get('isFish');
+  const isWater = searchParams.get('isWater');
   const [production, setProduction] = useState<any>();
-  const loggedUser: any = getCookie("logged-user");
+  const loggedUser: any = getCookie('logged-user');
   const [selectedView, setSelectedView] = useState<string>();
   const [selectedFarm, setSelectedFarm] = useState<any>();
   const [isHistoryDisabled, setIsHistoryDisabled] = useState<boolean>(false);
   const [isFeedFedModalOpen, setIsFeedFedModalOpen] = useState<boolean>(false);
   const [isReportDownload, setIsReportDownload] = useState<boolean>(false);
   const [selectedProduction, setSelectedProduction] = useState<any>(
-    production ?? null
+    production ?? null,
   );
   const [tableHead, setTableHead] = useState<
     {
@@ -93,29 +93,29 @@ export default function ProductionTable({
     }[]
   >();
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
-    null
+    null,
   );
 
   const [test, setTest] = useState<boolean>(false);
 
   const [openTransferModal, setOpenTransferModal] = useState<boolean>(
-    isFish ? true : false
+    isFish ? true : false,
   );
   const [openWaterQualityModal, setOpenWaterQualityModal] = useState<boolean>(
-    isWater ? true : false
+    isWater ? true : false,
   );
 
   const [productionData, setProductionData] = useState<FarmGroup[]>();
-  const [order, setOrder] = React.useState("asc");
-  const [orderBy, setOrderBy] = React.useState("Farm");
-  const [sortDataFromLocal, setSortDataFromLocal] = React.useState<any>("");
+  const [order, setOrder] = React.useState('asc');
+  const [orderBy, setOrderBy] = React.useState('Farm');
+  const [sortDataFromLocal, setSortDataFromLocal] = React.useState<any>('');
   const selectedAverage = useAppSelector(selectSelectedAverage);
 
   const handleClose = () => {
     setAnchorEl(null);
   };
   const handleFishManageHistory = (unit: any) => {
-    if (selectedView == "fish") {
+    if (selectedView == 'fish') {
       router.push(`/dashboard/production/fish/${unit.productionUnit.id}`);
     } else {
       router.push(`/dashboard/production/water/${unit.productionUnit.id}`);
@@ -123,39 +123,39 @@ export default function ProductionTable({
   };
   const captureScreenshot = async () => {
     setIsReportDownload(true);
-    const tempContainer = document.createElement("div");
+    const tempContainer = document.createElement('div');
     document.body.appendChild(tempContainer);
-    const chartDiv = document.createElement("div");
+    const chartDiv = document.createElement('div');
     tempContainer.appendChild(chartDiv);
     const root = createRoot(chartDiv);
     root.render(
       <Paper
         ref={captureRef}
         style={{
-          maxWidth: "100vw",
-          width: "100%",
-          height: "100%",
-          fontFamily: "Arial, sans-serif",
-          margin: "auto",
+          maxWidth: '100vw',
+          width: '100%',
+          height: '100%',
+          fontFamily: 'Arial, sans-serif',
+          margin: 'auto',
         }}
       >
         <div
           style={{
-            padding: "12px 20px",
-            backgroundColor: "rgb(6,161,155)",
-            boxShadow: "0 0 3px rgb(6, 161, 155)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
+            padding: '12px 20px',
+            backgroundColor: 'rgb(6,161,155)',
+            boxShadow: '0 0 3px rgb(6, 161, 155)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
           }}
         >
           <img src="/static/img/logo-bigone.jpg" alt="Logo" width={200} />
           <div>
             <h6
               style={{
-                marginBottom: "4px",
-                fontSize: "16px",
-                color: "white",
+                marginBottom: '4px',
+                fontSize: '16px',
+                color: 'white',
               }}
             >
               Production Report
@@ -164,25 +164,25 @@ export default function ProductionTable({
         </div>
         <TableContainer
           sx={{
-            overflow: "auto",
+            overflow: 'auto',
           }}
         >
           <Table
             stickyHeader
             aria-label="sticky table"
-            sx={{ background: "#FFF" }}
+            sx={{ background: '#FFF' }}
           >
             <TableHead
               sx={{
-                textAlign: "center",
-                textWrap: "nowrap",
+                textAlign: 'center',
+                textWrap: 'nowrap',
               }}
             >
               <TableRow></TableRow>
             </TableHead>
             <EnhancedTableHead
               sx={{
-                backgroundColor: "red",
+                backgroundColor: 'red',
               }}
             />
             <TableBody>
@@ -192,18 +192,18 @@ export default function ProductionTable({
                     <TableRow
                       key={farm.units[i].id.toString()}
                       sx={{
-                        "&:last-child td, &:last-child th": { border: 0 },
+                        '&:last-child td, &:last-child th': { border: 0 },
                       }}
                     >
                       <TableCell
                         sx={{
-                          color: "#555555",
-                          paddingRight: "20px",
+                          color: '#555555',
+                          paddingRight: '20px',
                           maxWidth: 250,
-                          borderBottomColor: "#F5F6F8",
+                          borderBottomColor: '#F5F6F8',
                           borderBottomWidth: 2,
                           fontWeight: 700,
-                          textWrap: "nowrap",
+                          textWrap: 'nowrap',
                           paddingLeft: {
                             lg: 10,
                             md: 3,
@@ -212,8 +212,8 @@ export default function ProductionTable({
                           pr: 2,
                         }}
                       >
-                        <Box sx={{ display: "flex", alignItems: "center" }}>
-                          {farm.farm ?? ""}
+                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                          {farm.farm ?? ''}
                         </Box>
                       </TableCell>
 
@@ -221,11 +221,11 @@ export default function ProductionTable({
                         className="table-padding"
                         sx={{
                           borderBottomWidth: 2,
-                          borderBottomColor: "#F5F6F8",
-                          color: "#555555",
+                          borderBottomColor: '#F5F6F8',
+                          color: '#555555',
                           fontWeight: 500,
                           pl: 0,
-                          textWrap: "nowrap",
+                          textWrap: 'nowrap',
                         }}
                       >
                         {farm.units.map((unit, i) => {
@@ -237,16 +237,16 @@ export default function ProductionTable({
                                 sx={{
                                   fontWeight: 500,
                                   fontSize: 14,
-                                  display: "flex",
-                                  alignItems: "center",
-                                  justifyContent: "space-between",
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'space-between',
                                   gap: 1,
-                                  backgroundColor: "#F5F6F8",
-                                  borderTopLeftRadius: "8px",
-                                  borderBottomLeftRadius: "8px",
-                                  padding: "8px 12px",
-                                  margin: "8px 0",
-                                  textWrap: "nowrap",
+                                  backgroundColor: '#F5F6F8',
+                                  borderTopLeftRadius: '8px',
+                                  borderBottomLeftRadius: '8px',
+                                  padding: '8px 12px',
+                                  margin: '8px 0',
+                                  textWrap: 'nowrap',
                                 }}
                               >
                                 {unit.productionUnit.name}
@@ -259,38 +259,40 @@ export default function ProductionTable({
                         className="table-padding"
                         sx={{
                           borderBottomWidth: 2,
-                          borderBottomColor: "#ececec",
-                          color: "#555555",
+                          borderBottomColor: '#ececec',
+                          color: '#555555',
                           fontWeight: 500,
                           pl: 0,
-                          textWrap: "wrap",
+                          textWrap: 'wrap',
                         }}
                       >
                         {farm.units?.map((unit: any, i) => {
                           const value =
-                            selectedView === "water"
-                              ? selectedAverage === "Monthly average"
+                            selectedView === 'water'
+                              ? selectedAverage === 'Monthly average'
                                 ? String(
-                                    unit.monthlyAveragesWater?.waterTemp
-                                  ) || ""
-                                : selectedAverage === "Yearly average"
-                                ? String(unit.yearlyAveragesWater?.waterTemp) ||
-                                  ""
-                                : selectedAverage === "All-time average"
-                                ? String(
-                                    unit.allTimeAveragesWater?.waterTemp
-                                  ) || ""
-                                : selectedAverage === "Individual average"
-                                ? String(
-                                    unit.individualAveragesWater?.waterTemp
-                                  ) || ""
-                                : unit.waterTemp ?? ""
+                                    unit.monthlyAveragesWater?.waterTemp,
+                                  ) || ''
+                                : selectedAverage === 'Yearly average'
+                                  ? String(
+                                      unit.yearlyAveragesWater?.waterTemp,
+                                    ) || ''
+                                  : selectedAverage === 'All-time average'
+                                    ? String(
+                                        unit.allTimeAveragesWater?.waterTemp,
+                                      ) || ''
+                                    : selectedAverage === 'Individual average'
+                                      ? String(
+                                          unit.individualAveragesWater
+                                            ?.waterTemp,
+                                        ) || ''
+                                      : (unit.waterTemp ?? '')
                               : unit?.fishSupply?.batchNumber.length;
 
                           // Calculate padding based on whether a value exists
                           const paddingValue = value
-                            ? "8px 12px 8px 0"
-                            : "19px 12px 19px 0";
+                            ? '8px 12px 8px 0'
+                            : '19px 12px 19px 0';
                           return (
                             <Typography
                               key={i}
@@ -298,10 +300,10 @@ export default function ProductionTable({
                               sx={{
                                 fontWeight: 500,
                                 fontSize: 14,
-                                backgroundColor: "#F5F6F8",
+                                backgroundColor: '#F5F6F8',
                                 padding: paddingValue,
-                                margin: "8px 0",
-                                textWrap: "nowrap",
+                                margin: '8px 0',
+                                textWrap: 'nowrap',
                               }}
                             >
                               {value}
@@ -313,32 +315,35 @@ export default function ProductionTable({
                         className="table-padding"
                         sx={{
                           borderBottomWidth: 2,
-                          borderBottomColor: "#ececec",
-                          color: "#555555",
+                          borderBottomColor: '#ececec',
+                          color: '#555555',
                           fontWeight: 500,
                           pl: 0,
                           p: 0,
-                          textWrap: "wrap",
+                          textWrap: 'wrap',
                         }}
                       >
                         {farm.units.map((unit, i) => {
                           const value =
-                            selectedView === "water"
-                              ? selectedAverage === "Monthly average"
-                                ? String(unit.monthlyAveragesWater?.DO) || ""
-                                : selectedAverage === "Yearly average"
-                                ? String(unit.yearlyAveragesWater?.DO) || ""
-                                : selectedAverage === "All-time average"
-                                ? String(unit.allTimeAveragesWater?.DO) || ""
-                                : selectedAverage === "Individual average"
-                                ? String(unit.individualAveragesWater?.DO) || ""
-                                : unit.DO ?? ""
+                            selectedView === 'water'
+                              ? selectedAverage === 'Monthly average'
+                                ? String(unit.monthlyAveragesWater?.DO) || ''
+                                : selectedAverage === 'Yearly average'
+                                  ? String(unit.yearlyAveragesWater?.DO) || ''
+                                  : selectedAverage === 'All-time average'
+                                    ? String(unit.allTimeAveragesWater?.DO) ||
+                                      ''
+                                    : selectedAverage === 'Individual average'
+                                      ? String(
+                                          unit.individualAveragesWater?.DO,
+                                        ) || ''
+                                      : (unit.DO ?? '')
                               : unit?.fishSupply?.age;
 
                           // Calculate padding based on whether a value exists
                           const paddingValue = value
-                            ? "8px 12px 8px 0"
-                            : "19px 12px 19px 0";
+                            ? '8px 12px 8px 0'
+                            : '19px 12px 19px 0';
                           return (
                             <Typography
                               key={i}
@@ -347,9 +352,9 @@ export default function ProductionTable({
                                 fontWeight: 500,
                                 fontSize: 14,
                                 padding: paddingValue,
-                                backgroundColor: "#F5F6F8",
-                                margin: "8px 0",
-                                textWrap: "nowrap",
+                                backgroundColor: '#F5F6F8',
+                                margin: '8px 0',
+                                textWrap: 'nowrap',
                               }}
                             >
                               {value}
@@ -361,41 +366,46 @@ export default function ProductionTable({
                         className="table-padding"
                         sx={{
                           borderBottomWidth: 2,
-                          borderBottomColor: "#ececec",
-                          color: "#555555",
+                          borderBottomColor: '#ececec',
+                          color: '#555555',
                           fontWeight: 500,
                           pl: 0,
-                          textWrap: "wrap",
+                          textWrap: 'wrap',
                         }}
                       >
                         {farm.units.map((unit, i) => {
                           // Determine the value to display
                           const value =
-                            selectedView === "water"
-                              ? selectedAverage === "Monthly average"
-                                ? String(unit.monthlyAveragesWater?.TSS) || ""
-                                : selectedAverage === "Yearly average"
-                                ? String(unit.yearlyAveragesWater?.TSS) || ""
-                                : selectedAverage === "All-time average"
-                                ? String(unit.allTimeAveragesWater?.TSS) || ""
-                                : selectedAverage === "Individual average"
-                                ? String(unit.individualAveragesWater?.TSS) ||
-                                  ""
-                                : unit.TSS ?? ""
-                              : selectedAverage === "Monthly average"
-                              ? String(unit.monthlyAverages?.fishCount) || ""
-                              : selectedAverage === "Yearly average"
-                              ? String(unit.yearlyAverages?.fishCount) || ""
-                              : selectedAverage === "All-time average"
-                              ? String(unit.allTimeAverages?.fishCount) || ""
-                              : selectedAverage === "Individual average"
-                              ? String(unit.individualAverages?.fishCount) || ""
-                              : unit?.fishCount ?? "";
+                            selectedView === 'water'
+                              ? selectedAverage === 'Monthly average'
+                                ? String(unit.monthlyAveragesWater?.TSS) || ''
+                                : selectedAverage === 'Yearly average'
+                                  ? String(unit.yearlyAveragesWater?.TSS) || ''
+                                  : selectedAverage === 'All-time average'
+                                    ? String(unit.allTimeAveragesWater?.TSS) ||
+                                      ''
+                                    : selectedAverage === 'Individual average'
+                                      ? String(
+                                          unit.individualAveragesWater?.TSS,
+                                        ) || ''
+                                      : (unit.TSS ?? '')
+                              : selectedAverage === 'Monthly average'
+                                ? String(unit.monthlyAverages?.fishCount) || ''
+                                : selectedAverage === 'Yearly average'
+                                  ? String(unit.yearlyAverages?.fishCount) || ''
+                                  : selectedAverage === 'All-time average'
+                                    ? String(unit.allTimeAverages?.fishCount) ||
+                                      ''
+                                    : selectedAverage === 'Individual average'
+                                      ? String(
+                                          unit.individualAverages?.fishCount,
+                                        ) || ''
+                                      : (unit?.fishCount ?? '');
 
                           // Calculate padding based on whether a value exists
                           const paddingValue = value
-                            ? "8px 12px 8px 0"
-                            : "19px 12px 19px 0";
+                            ? '8px 12px 8px 0'
+                            : '19px 12px 19px 0';
 
                           return (
                             <Typography
@@ -404,10 +414,10 @@ export default function ProductionTable({
                               sx={{
                                 fontWeight: 500,
                                 fontSize: 14,
-                                backgroundColor: "#F5F6F8",
+                                backgroundColor: '#F5F6F8',
                                 padding: paddingValue,
-                                margin: "8px 0",
-                                textWrap: "nowrap",
+                                margin: '8px 0',
+                                textWrap: 'nowrap',
                               }}
                             >
                               {value}
@@ -418,42 +428,47 @@ export default function ProductionTable({
                       <TableCell
                         className="table-padding"
                         sx={{
-                          borderBottomColor: "#ececec",
+                          borderBottomColor: '#ececec',
                           borderBottomWidth: 2,
-                          color: "#555555",
+                          color: '#555555',
                           fontWeight: 500,
                           pl: 0,
-                          textWrap: "nowrap",
+                          textWrap: 'nowrap',
                         }}
                       >
                         {farm.units.map((unit, i) => {
                           // Determine the value to display
                           const value =
-                            selectedView === "water"
-                              ? selectedAverage === "Monthly average"
-                                ? String(unit.monthlyAveragesWater?.NH4) || ""
-                                : selectedAverage === "Yearly average"
-                                ? String(unit.yearlyAveragesWater?.NH4) || ""
-                                : selectedAverage === "All-time average"
-                                ? String(unit.allTimeAveragesWater?.NH4) || ""
-                                : selectedAverage === "Individual average"
-                                ? String(unit.individualAveragesWater?.NH4) ||
-                                  ""
-                                : unit.NH4 ?? ""
-                              : selectedAverage === "Monthly average"
-                              ? String(unit.monthlyAverages?.biomass) || ""
-                              : selectedAverage === "Yearly average"
-                              ? String(unit.yearlyAverages?.biomass) || ""
-                              : selectedAverage === "All-time average"
-                              ? String(unit.allTimeAverages?.biomass) || ""
-                              : selectedAverage === "Individual average"
-                              ? String(unit.individualAverages?.biomass) || ""
-                              : unit.biomass ?? "";
+                            selectedView === 'water'
+                              ? selectedAverage === 'Monthly average'
+                                ? String(unit.monthlyAveragesWater?.NH4) || ''
+                                : selectedAverage === 'Yearly average'
+                                  ? String(unit.yearlyAveragesWater?.NH4) || ''
+                                  : selectedAverage === 'All-time average'
+                                    ? String(unit.allTimeAveragesWater?.NH4) ||
+                                      ''
+                                    : selectedAverage === 'Individual average'
+                                      ? String(
+                                          unit.individualAveragesWater?.NH4,
+                                        ) || ''
+                                      : (unit.NH4 ?? '')
+                              : selectedAverage === 'Monthly average'
+                                ? String(unit.monthlyAverages?.biomass) || ''
+                                : selectedAverage === 'Yearly average'
+                                  ? String(unit.yearlyAverages?.biomass) || ''
+                                  : selectedAverage === 'All-time average'
+                                    ? String(unit.allTimeAverages?.biomass) ||
+                                      ''
+                                    : selectedAverage === 'Individual average'
+                                      ? String(
+                                          unit.individualAverages?.biomass,
+                                        ) || ''
+                                      : (unit.biomass ?? '');
 
                           // Calculate padding based on whether a value exists
                           const paddingValue = value
-                            ? "8px 12px 8px 0"
-                            : "19px 12px 19px 0";
+                            ? '8px 12px 8px 0'
+                            : '19px 12px 19px 0';
 
                           return (
                             <Typography
@@ -462,10 +477,10 @@ export default function ProductionTable({
                               sx={{
                                 fontWeight: 500,
                                 fontSize: 14,
-                                backgroundColor: "#F5F6F8",
+                                backgroundColor: '#F5F6F8',
                                 padding: paddingValue,
-                                margin: "8px 0",
-                                textWrap: "nowrap",
+                                margin: '8px 0',
+                                textWrap: 'nowrap',
                               }}
                             >
                               {value}
@@ -476,43 +491,49 @@ export default function ProductionTable({
                       <TableCell
                         className="table-padding"
                         sx={{
-                          borderBottomColor: "#ececec",
+                          borderBottomColor: '#ececec',
                           borderBottomWidth: 2,
-                          color: "#555555",
+                          color: '#555555',
                           fontWeight: 500,
                           pl: 0,
-                          textWrap: "nowrap",
+                          textWrap: 'nowrap',
                         }}
                       >
                         {farm.units.map((unit, i) => {
                           // Determine the value to display
                           const value =
-                            selectedView === "water"
-                              ? selectedAverage === "Monthly average"
-                                ? String(unit.monthlyAveragesWater?.NO3) || ""
-                                : selectedAverage === "Yearly average"
-                                ? String(unit.yearlyAveragesWater?.NO3) || ""
-                                : selectedAverage === "All-time average"
-                                ? String(unit.allTimeAveragesWater?.NO3) || ""
-                                : selectedAverage === "Individual average"
-                                ? String(unit.individualAveragesWater?.NO3) ||
-                                  ""
-                                : unit.NO3 ?? ""
-                              : selectedAverage === "Monthly average"
-                              ? String(unit.monthlyAverages?.meanWeight) || ""
-                              : selectedAverage === "Yearly average"
-                              ? String(unit.yearlyAverages?.meanWeight) || ""
-                              : selectedAverage === "All-time average"
-                              ? String(unit.allTimeAverages?.meanWeight) || ""
-                              : selectedAverage === "Individual average"
-                              ? String(unit.individualAverages?.meanWeight) ||
-                                ""
-                              : unit.meanWeight ?? "";
+                            selectedView === 'water'
+                              ? selectedAverage === 'Monthly average'
+                                ? String(unit.monthlyAveragesWater?.NO3) || ''
+                                : selectedAverage === 'Yearly average'
+                                  ? String(unit.yearlyAveragesWater?.NO3) || ''
+                                  : selectedAverage === 'All-time average'
+                                    ? String(unit.allTimeAveragesWater?.NO3) ||
+                                      ''
+                                    : selectedAverage === 'Individual average'
+                                      ? String(
+                                          unit.individualAveragesWater?.NO3,
+                                        ) || ''
+                                      : (unit.NO3 ?? '')
+                              : selectedAverage === 'Monthly average'
+                                ? String(unit.monthlyAverages?.meanWeight) || ''
+                                : selectedAverage === 'Yearly average'
+                                  ? String(unit.yearlyAverages?.meanWeight) ||
+                                    ''
+                                  : selectedAverage === 'All-time average'
+                                    ? String(
+                                        unit.allTimeAverages?.meanWeight,
+                                      ) || ''
+                                    : selectedAverage === 'Individual average'
+                                      ? String(
+                                          unit.individualAverages?.meanWeight,
+                                        ) || ''
+                                      : (unit.meanWeight ?? '');
 
                           // Calculate padding based on whether a value exists
                           const paddingValue = value
-                            ? "8px 12px 8px 0"
-                            : "19px 12px 19px 0";
+                            ? '8px 12px 8px 0'
+                            : '19px 12px 19px 0';
 
                           return (
                             <Typography
@@ -521,10 +542,10 @@ export default function ProductionTable({
                               sx={{
                                 fontWeight: 500,
                                 fontSize: 14,
-                                backgroundColor: "#F5F6F8",
+                                backgroundColor: '#F5F6F8',
                                 padding: paddingValue,
-                                margin: "8px 0",
-                                textWrap: "nowrap",
+                                margin: '8px 0',
+                                textWrap: 'nowrap',
                               }}
                             >
                               {value}
@@ -535,44 +556,50 @@ export default function ProductionTable({
                       <TableCell
                         className="table-padding"
                         sx={{
-                          borderBottomColor: "#ececec",
+                          borderBottomColor: '#ececec',
                           borderBottomWidth: 2,
-                          color: "#555555",
+                          color: '#555555',
                           fontWeight: 500,
 
                           pl: 0,
-                          textWrap: "nowrap",
+                          textWrap: 'nowrap',
                         }}
                       >
                         {farm.units.map((unit, i) => {
                           // Determine the value to display
                           const value =
-                            selectedView === "water"
-                              ? selectedAverage === "Monthly average"
-                                ? String(unit.monthlyAveragesWater?.NO2) || ""
-                                : selectedAverage === "Yearly average"
-                                ? String(unit.yearlyAveragesWater?.NO2) || ""
-                                : selectedAverage === "All-time average"
-                                ? String(unit.allTimeAveragesWater?.NO2) || ""
-                                : selectedAverage === "Individual average"
-                                ? String(unit.individualAveragesWater?.NO2) ||
-                                  ""
-                                : unit.NO2 ?? ""
-                              : selectedAverage === "Monthly average"
-                              ? String(unit.monthlyAverages?.meanLength) || ""
-                              : selectedAverage === "Yearly average"
-                              ? String(unit.yearlyAverages?.meanLength) || ""
-                              : selectedAverage === "All-time average"
-                              ? String(unit.allTimeAverages?.meanLength) || ""
-                              : selectedAverage === "Individual average"
-                              ? String(unit.individualAverages?.meanLength) ||
-                                ""
-                              : unit.meanLength ?? "";
+                            selectedView === 'water'
+                              ? selectedAverage === 'Monthly average'
+                                ? String(unit.monthlyAveragesWater?.NO2) || ''
+                                : selectedAverage === 'Yearly average'
+                                  ? String(unit.yearlyAveragesWater?.NO2) || ''
+                                  : selectedAverage === 'All-time average'
+                                    ? String(unit.allTimeAveragesWater?.NO2) ||
+                                      ''
+                                    : selectedAverage === 'Individual average'
+                                      ? String(
+                                          unit.individualAveragesWater?.NO2,
+                                        ) || ''
+                                      : (unit.NO2 ?? '')
+                              : selectedAverage === 'Monthly average'
+                                ? String(unit.monthlyAverages?.meanLength) || ''
+                                : selectedAverage === 'Yearly average'
+                                  ? String(unit.yearlyAverages?.meanLength) ||
+                                    ''
+                                  : selectedAverage === 'All-time average'
+                                    ? String(
+                                        unit.allTimeAverages?.meanLength,
+                                      ) || ''
+                                    : selectedAverage === 'Individual average'
+                                      ? String(
+                                          unit.individualAverages?.meanLength,
+                                        ) || ''
+                                      : (unit.meanLength ?? '');
 
                           // Calculate padding based on whether a value exists
                           const paddingValue = value
-                            ? "8px 12px 8px 0"
-                            : "19px 12px 19px 0";
+                            ? '8px 12px 8px 0'
+                            : '19px 12px 19px 0';
 
                           return (
                             <Typography
@@ -581,10 +608,10 @@ export default function ProductionTable({
                               sx={{
                                 fontWeight: 500,
                                 fontSize: 14,
-                                backgroundColor: "#F5F6F8",
+                                backgroundColor: '#F5F6F8',
                                 padding: paddingValue,
-                                margin: "8px 0",
-                                textWrap: "nowrap",
+                                margin: '8px 0',
+                                textWrap: 'nowrap',
                               }}
                             >
                               {value}
@@ -595,50 +622,58 @@ export default function ProductionTable({
                       <TableCell
                         className="table-padding"
                         sx={{
-                          borderBottomColor: "#ececec",
+                          borderBottomColor: '#ececec',
                           borderBottomWidth: 2,
-                          color: "#555555",
+                          color: '#555555',
                           fontWeight: 500,
                           pl: 0,
-                          textWrap: "nowrap",
+                          textWrap: 'nowrap',
                         }}
                       >
                         {farm.units.map((unit, i) => {
                           // Determine the value to display
                           const value =
-                            selectedView === "water"
-                              ? selectedAverage === "Monthly average"
-                                ? String(unit.monthlyAveragesWater?.ph) || ""
-                                : selectedAverage === "Yearly average"
-                                ? String(unit.yearlyAveragesWater?.ph) || ""
-                                : selectedAverage === "All-time average"
-                                ? String(unit.allTimeAveragesWater?.ph) || ""
-                                : selectedAverage === "Individual average"
-                                ? String(unit.individualAveragesWater?.ph) || ""
-                                : unit.ph ?? ""
-                              : selectedAverage === "Monthly average"
-                              ? Number(
-                                  unit.monthlyAverages?.stockingDensityKG || 0
-                                ).toFixed(2)
-                              : selectedAverage === "Yearly average"
-                              ? Number(
-                                  unit.yearlyAverages?.stockingDensityKG || 0
-                                ).toFixed(2)
-                              : selectedAverage === "All-time average"
-                              ? Number(
-                                  unit.allTimeAverages?.stockingDensityKG || 0
-                                ).toFixed(2)
-                              : selectedAverage === "Individual average"
-                              ? Number(
-                                  unit.individualAverages?.stockingDensityKG ||
-                                    0
-                                ).toFixed(2)
-                              : Number(unit.stockingDensityKG || 0).toFixed(2);
+                            selectedView === 'water'
+                              ? selectedAverage === 'Monthly average'
+                                ? String(unit.monthlyAveragesWater?.ph) || ''
+                                : selectedAverage === 'Yearly average'
+                                  ? String(unit.yearlyAveragesWater?.ph) || ''
+                                  : selectedAverage === 'All-time average'
+                                    ? String(unit.allTimeAveragesWater?.ph) ||
+                                      ''
+                                    : selectedAverage === 'Individual average'
+                                      ? String(
+                                          unit.individualAveragesWater?.ph,
+                                        ) || ''
+                                      : (unit.ph ?? '')
+                              : selectedAverage === 'Monthly average'
+                                ? Number(
+                                    unit.monthlyAverages?.stockingDensityKG ||
+                                      0,
+                                  ).toFixed(2)
+                                : selectedAverage === 'Yearly average'
+                                  ? Number(
+                                      unit.yearlyAverages?.stockingDensityKG ||
+                                        0,
+                                    ).toFixed(2)
+                                  : selectedAverage === 'All-time average'
+                                    ? Number(
+                                        unit.allTimeAverages
+                                          ?.stockingDensityKG || 0,
+                                      ).toFixed(2)
+                                    : selectedAverage === 'Individual average'
+                                      ? Number(
+                                          unit.individualAverages
+                                            ?.stockingDensityKG || 0,
+                                        ).toFixed(2)
+                                      : Number(
+                                          unit.stockingDensityKG || 0,
+                                        ).toFixed(2);
 
                           // Calculate padding based on whether a value exists
                           const paddingValue = value
-                            ? "8px 12px 8px 0"
-                            : "19px 12px 19px 0";
+                            ? '8px 12px 8px 0'
+                            : '19px 12px 19px 0';
 
                           return (
                             <Typography
@@ -647,10 +682,10 @@ export default function ProductionTable({
                               sx={{
                                 fontWeight: 500,
                                 fontSize: 14,
-                                backgroundColor: "#F5F6F8",
+                                backgroundColor: '#F5F6F8',
                                 padding: paddingValue,
-                                margin: "8px 0",
-                                textWrap: "nowrap",
+                                margin: '8px 0',
+                                textWrap: 'nowrap',
                               }}
                             >
                               {value}
@@ -661,58 +696,64 @@ export default function ProductionTable({
                       <TableCell
                         className="table-padding"
                         sx={{
-                          borderBottomColor: "#ececec",
+                          borderBottomColor: '#ececec',
                           borderBottomWidth: 2,
-                          color: "#555555",
+                          color: '#555555',
                           fontWeight: 500,
                           pl: 0,
-                          textWrap: "nowrap",
+                          textWrap: 'nowrap',
                         }}
                       >
                         {farm.units.map((unit, i) => {
                           // Determine the value to display
                           const value =
-                            selectedView === "water"
-                              ? selectedAverage === "Monthly average"
+                            selectedView === 'water'
+                              ? selectedAverage === 'Monthly average'
                                 ? String(
-                                    unit.monthlyAveragesWater?.visibility
-                                  ) || ""
-                                : selectedAverage === "Yearly average"
-                                ? String(
-                                    unit.yearlyAveragesWater?.visibility
-                                  ) || ""
-                                : selectedAverage === "All-time average"
-                                ? String(
-                                    unit.allTimeAveragesWater?.visibility
-                                  ) || ""
-                                : selectedAverage === "Individual average"
-                                ? String(
-                                    unit.individualAveragesWater?.visibility
-                                  ) || ""
-                                : unit.visibility ?? ""
-                              : selectedAverage === "Monthly average"
-                              ? Number(
-                                  unit.monthlyAverages?.stockingDensityNM || 0
-                                ).toFixed(2)
-                              : selectedAverage === "Yearly average"
-                              ? Number(
-                                  unit.yearlyAverages?.stockingDensityNM || 0
-                                ).toFixed(2)
-                              : selectedAverage === "All-time average"
-                              ? Number(
-                                  unit.allTimeAverages?.stockingDensityNM || 0
-                                ).toFixed(2)
-                              : selectedAverage === "Individual average"
-                              ? Number(
-                                  unit.individualAverages?.stockingDensityNM ||
-                                    0
-                                ).toFixed(2)
-                              : Number(unit.stockingDensityNM || 0).toFixed(2);
+                                    unit.monthlyAveragesWater?.visibility,
+                                  ) || ''
+                                : selectedAverage === 'Yearly average'
+                                  ? String(
+                                      unit.yearlyAveragesWater?.visibility,
+                                    ) || ''
+                                  : selectedAverage === 'All-time average'
+                                    ? String(
+                                        unit.allTimeAveragesWater?.visibility,
+                                      ) || ''
+                                    : selectedAverage === 'Individual average'
+                                      ? String(
+                                          unit.individualAveragesWater
+                                            ?.visibility,
+                                        ) || ''
+                                      : (unit.visibility ?? '')
+                              : selectedAverage === 'Monthly average'
+                                ? Number(
+                                    unit.monthlyAverages?.stockingDensityNM ||
+                                      0,
+                                  ).toFixed(2)
+                                : selectedAverage === 'Yearly average'
+                                  ? Number(
+                                      unit.yearlyAverages?.stockingDensityNM ||
+                                        0,
+                                    ).toFixed(2)
+                                  : selectedAverage === 'All-time average'
+                                    ? Number(
+                                        unit.allTimeAverages
+                                          ?.stockingDensityNM || 0,
+                                      ).toFixed(2)
+                                    : selectedAverage === 'Individual average'
+                                      ? Number(
+                                          unit.individualAverages
+                                            ?.stockingDensityNM || 0,
+                                        ).toFixed(2)
+                                      : Number(
+                                          unit.stockingDensityNM || 0,
+                                        ).toFixed(2);
 
                           // Calculate padding based on whether a value exists
                           const paddingValue = value
-                            ? "8px 12px 8px 0"
-                            : "19px 12px 19px 0";
+                            ? '8px 12px 8px 0'
+                            : '19px 12px 19px 0';
 
                           return (
                             <Typography
@@ -721,10 +762,10 @@ export default function ProductionTable({
                               sx={{
                                 fontWeight: 500,
                                 fontSize: 14,
-                                backgroundColor: "#F5F6F8",
+                                backgroundColor: '#F5F6F8',
                                 padding: paddingValue,
-                                margin: "8px 0",
-                                textWrap: "nowrap",
+                                margin: '8px 0',
+                                textWrap: 'nowrap',
                               }}
                             >
                               {value}
@@ -733,16 +774,16 @@ export default function ProductionTable({
                         })}
                       </TableCell>
 
-                      {selectedView !== "water" && (
+                      {selectedView !== 'water' && (
                         <TableCell
                           className="table-padding"
                           sx={{
-                            borderBottomColor: "#ececec",
+                            borderBottomColor: '#ececec',
                             borderBottomWidth: 2,
-                            color: "#555555",
+                            color: '#555555',
                             fontWeight: 500,
                             pl: 0,
-                            textWrap: "nowrap",
+                            textWrap: 'nowrap',
                           }}
                         >
                           {farm.units.map((unit, i) => {
@@ -753,14 +794,14 @@ export default function ProductionTable({
                                 sx={{
                                   fontWeight: 500,
                                   fontSize: 14,
-                                  backgroundColor: "#F5F6F8",
-                                  padding: "8px 12px 8px 0",
-                                  margin: "8px 0",
+                                  backgroundColor: '#F5F6F8',
+                                  padding: '8px 12px 8px 0',
+                                  margin: '8px 0',
                                   // marginBottom: "10px",
-                                  textWrap: "nowrap",
+                                  textWrap: 'nowrap',
                                 }}
                               >
-                                {Number(unit.stockingLevel) ?? ""}
+                                {Number(unit.stockingLevel) ?? ''}
                               </Typography>
                             );
                           })}
@@ -771,7 +812,7 @@ export default function ProductionTable({
                 })
               ) : (
                 <TableRow>
-                  <TableCell colSpan={13} sx={{ textAlign: "center" }}>
+                  <TableCell colSpan={13} sx={{ textAlign: 'center' }}>
                     No Data Found
                   </TableCell>
                 </TableRow>
@@ -779,22 +820,22 @@ export default function ProductionTable({
             </TableBody>
           </Table>
         </TableContainer>
-      </Paper>
+      </Paper>,
     );
     await new Promise((resolve) => setTimeout(resolve, 800));
     const canvas = await html2canvas(chartDiv);
-    const imgData = canvas.toDataURL("image/png");
-    const link = document.createElement("a");
+    const imgData = canvas.toDataURL('image/png');
+    const link = document.createElement('a');
     link.href = imgData;
     link.download = `${
-      selectedView === "fish" ? "Fish" : "Water"
+      selectedView === 'fish' ? 'Fish' : 'Water'
     } Report ${new Date()
-      .toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
+      .toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
       })
-      .replace(/[\s,\/]+/g, "_")}.png`;
+      .replace(/[\s,\/]+/g, '_')}.png`;
     link.click();
     root.unmount();
     tempContainer.removeChild(chartDiv);
@@ -804,27 +845,27 @@ export default function ProductionTable({
   const handleClick = (
     event: React.MouseEvent<HTMLButtonElement>,
     unit: any,
-    isManage: boolean
+    isManage: boolean,
   ) => {
     const selectedProd = productions.find((pro) => pro.id === unit.id);
     const currentParams = new URLSearchParams(searchParams);
     setAnchorEl(event.currentTarget);
     if (currentParams.size) {
-      currentParams.delete("isFish");
-      currentParams.delete("isWater");
+      currentParams.delete('isFish');
+      currentParams.delete('isWater');
     }
     if (isManage) {
-      currentParams.set("isFish", "true");
+      currentParams.set('isFish', 'true');
       const newPath = `${window.location.pathname}?${currentParams.toString()}`;
       router.replace(newPath);
       setOpenTransferModal(true);
     } else {
-      currentParams.set("isWater", "true");
+      currentParams.set('isWater', 'true');
       const newPath = `${window.location.pathname}?${currentParams.toString()}`;
       router.replace(newPath);
       setOpenWaterQualityModal(true);
     }
-    setLocalItem("productionData", selectedProd);
+    setLocalItem('productionData', selectedProd);
     setSelectedProduction(selectedProd);
   };
 
@@ -841,7 +882,7 @@ export default function ProductionTable({
       <TableHead
         className="prod-action"
         sx={{
-          textWrap: "nowrap",
+          textWrap: 'nowrap',
         }}
       >
         <TableRow>
@@ -853,14 +894,14 @@ export default function ProductionTable({
                   idx === headCells.length - 1
                     ? false
                     : orderBy === headCell.id
-                    ? order
-                    : false
+                      ? order
+                      : false
                 }
                 // align="center"
                 sx={{
                   borderBottom: 0,
-                  color: "#67737F",
-                  background: "#F5F6F8",
+                  color: '#67737F',
+                  background: '#F5F6F8',
                   fontSize: {
                     md: 16,
                     xs: 14,
@@ -874,9 +915,9 @@ export default function ProductionTable({
                 }}
               >
                 {idx === headCells.length - 1 ||
-                (selectedView === "fish" && idx === 2) ||
-                (selectedView === "fish" && idx === 3) ? (
-                  breakpoint === "lg" ? (
+                (selectedView === 'fish' && idx === 2) ||
+                (selectedView === 'fish' && idx === 3) ? (
+                  breakpoint === 'lg' ? (
                     headCell.smallLabel
                   ) : (
                     headCell.label
@@ -884,10 +925,10 @@ export default function ProductionTable({
                 ) : (
                   <TableSortLabel
                     active={orderBy === headCell.id}
-                    direction={orderBy === headCell.id ? order : "asc"}
+                    direction={orderBy === headCell.id ? order : 'asc'}
                     onClick={createSortHandler(headCell.id)}
                   >
-                    {breakpoint === "lg" ? headCell.smallLabel : headCell.label}
+                    {breakpoint === 'lg' ? headCell.smallLabel : headCell.label}
                   </TableSortLabel>
                 )}
               </TableCell>
@@ -899,16 +940,16 @@ export default function ProductionTable({
   }
   const handleRequestSort = (
     _: React.MouseEvent<HTMLButtonElement> | null,
-    property: string
+    property: string,
   ) => {
-    const isAsc = orderBy === property && order === "asc";
-    setOrder(isAsc ? "desc" : "asc");
+    const isAsc = orderBy === property && order === 'asc';
+    setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
     dispatch(
       breadcrumsAction.handleSort({
-        direction: isAsc ? "desc" : "asc",
+        direction: isAsc ? 'desc' : 'asc',
         column: property,
-      })
+      }),
     );
     if (groupedData && selectedView) {
       const sortedData = ProductionSortTables(
@@ -916,14 +957,14 @@ export default function ProductionTable({
         order,
         property,
         selectedView,
-        false
+        false,
       );
       setProductionData(sortedData);
     }
   };
 
   const CreateXlsxReport = (
-    e: React.MouseEvent<HTMLSpanElement, MouseEvent>
+    e: React.MouseEvent<HTMLSpanElement, MouseEvent>,
   ) => {
     const headers: any = tableHead
       ?.slice(0, -1)
@@ -933,7 +974,7 @@ export default function ProductionTable({
   const groupedData: FarmGroup[] = productions?.reduce((result: any, item) => {
     // Find or create a farm group
     let farmGroup: any = result.find(
-      (group: any) => group.farm === item.farm.name
+      (group: any) => group.farm === item.farm.name,
     );
     if (!farmGroup) {
       farmGroup = { farm: item.farm.name, units: [] };
@@ -979,7 +1020,7 @@ export default function ProductionTable({
 
   const handleChange = (event: any, newValue: string) => {
     setSelectedView(newValue);
-    setCookie("productionCurrentView", newValue);
+    setCookie('productionCurrentView', newValue);
     router.refresh();
   };
 
@@ -989,13 +1030,13 @@ export default function ProductionTable({
     }
   }, [pathName]);
   useEffect(() => {
-    const selectView = getCookie("productionCurrentView");
+    const selectView = getCookie('productionCurrentView');
     if (selectView) {
       setSelectedView(selectView);
     } else {
-      setCookie("productionCurrentView", "fish");
+      setCookie('productionCurrentView', 'fish');
     }
-  }, [getCookie("productionCurrentView")]);
+  }, [getCookie('productionCurrentView')]);
 
   useEffect(() => {
     if (sortDataFromLocal) {
@@ -1008,7 +1049,7 @@ export default function ProductionTable({
           data.direction,
           data.column,
           selectedView,
-          true
+          true,
         );
         setProductionData(sortedData);
       }
@@ -1017,20 +1058,20 @@ export default function ProductionTable({
 
   useEffect(() => {
     const user = JSON.parse(loggedUser);
-    if (selectedView === "fish") {
-      if (user.role !== "MEMBER") {
+    if (selectedView === 'fish') {
+      if (user.role !== 'MEMBER') {
         setTableHead(farmManagerFishHead);
       } else {
         setTableHead(farmManagerFishHeadMember);
       }
-    } else if (selectedView === "water") {
-      if (user.role !== "MEMBER") {
+    } else if (selectedView === 'water') {
+      if (user.role !== 'MEMBER') {
         setTableHead(farmManagerWaterHead);
       } else {
         setTableHead(farmManagerWaterHeadMember);
       }
     } else {
-      if (user.role !== "MEMBER") {
+      if (user.role !== 'MEMBER') {
         setTableHead(feedingHead);
       } else {
         setTableHead(feedingHeadMember);
@@ -1038,8 +1079,8 @@ export default function ProductionTable({
     }
   }, [selectedView]);
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const storedData = getLocalItem("productionData");
+    if (typeof window !== 'undefined') {
+      const storedData = getLocalItem('productionData');
       if (storedData) {
         setProduction(storedData);
       }
@@ -1054,28 +1095,28 @@ export default function ProductionTable({
 
   useEffect(() => {
     if (isReportDownload) {
-      document.body.style.position = "fixed";
-      document.body.style.width = "100%";
-      document.body.style.overflow = "hidden";
+      document.body.style.position = 'fixed';
+      document.body.style.width = '100%';
+      document.body.style.overflow = 'hidden';
     } else {
-      document.body.style.position = "";
-      document.body.style.width = "";
-      document.body.style.overflow = "";
+      document.body.style.position = '';
+      document.body.style.width = '';
+      document.body.style.overflow = '';
     }
 
     return () => {
-      document.body.style.position = "";
-      document.body.style.width = "";
-      document.body.style.overflow = "";
+      document.body.style.position = '';
+      document.body.style.width = '';
+      document.body.style.overflow = '';
     };
   }, [isReportDownload]);
   if (isReportDownload) {
     return (
       <Box
         sx={{
-          position: "absolute",
-          width: "100%",
-          height: "100%",
+          position: 'absolute',
+          width: '100%',
+          height: '100%',
         }}
       >
         <Loader />
@@ -1085,22 +1126,22 @@ export default function ProductionTable({
 
   return (
     <>
-      <Box sx={{ width: "100%", typography: "body1", mt: 5 }}>
-        <TabContext value={selectedView ? selectedView : "fish"}>
+      <Box sx={{ width: '100%', typography: 'body1', mt: 5 }}>
+        <TabContext value={selectedView ? selectedView : 'fish'}>
           <Stack
-            display={"flex"}
+            display={'flex'}
             rowGap={2}
             columnGap={5}
             mb={2}
-            justifyContent={"space-between"}
+            justifyContent={'space-between'}
             sx={{
               flexDirection: {
-                md: "row",
-                xs: "column",
+                md: 'row',
+                xs: 'column',
               },
               alignItems: {
-                md: "center",
-                xs: "start",
+                md: 'center',
+                xs: 'start',
               },
             }}
           >
@@ -1113,29 +1154,29 @@ export default function ProductionTable({
                 <Tab
                   label="Fish"
                   value="fish"
-                  className={selectedView === "fish" ? "active-tab" : ""}
+                  className={selectedView === 'fish' ? 'active-tab' : ''}
                 />
                 <Tab
                   label="Water"
                   value="water"
-                  className={selectedView === "water" ? "active-tab" : ""}
+                  className={selectedView === 'water' ? 'active-tab' : ''}
                 />
                 <Tab
                   label="Feeding"
                   value="feeding"
-                  className={selectedView === "feeding" ? "active-tab" : ""}
+                  className={selectedView === 'feeding' ? 'active-tab' : ''}
                 />
               </TabList>
             </Box>
 
             <Box
-              display={"flex"}
+              display={'flex'}
               gap={1.5}
-              alignItems={"center"}
+              alignItems={'center'}
               sx={{
                 alignSelf: {
-                  md: "center",
-                  xs: "end",
+                  md: 'center',
+                  xs: 'end',
                 },
               }}
             >
@@ -1144,20 +1185,20 @@ export default function ProductionTable({
                 type="button"
                 variant="contained"
                 sx={{
-                  background: "#06A19B",
+                  background: '#06A19B',
                   fontWeight: 600,
-                  padding: "6px 16px",
-                  width: "fit-content",
-                  textTransform: "capitalize",
-                  borderRadius: "8px",
-                  color: "white",
-                  boxShadow: "none",
-                  "&:hover": {
-                    boxShadow: "none",
+                  padding: '6px 16px',
+                  width: 'fit-content',
+                  textTransform: 'capitalize',
+                  borderRadius: '8px',
+                  color: 'white',
+                  boxShadow: 'none',
+                  '&:hover': {
+                    boxShadow: 'none',
                   },
                 }}
                 onClick={() =>
-                  router.push("/dashboard/production/createReport")
+                  router.push('/dashboard/production/createReport')
                 }
               >
                 Create All Report
@@ -1169,18 +1210,18 @@ export default function ProductionTable({
                   type="button"
                   variant="contained"
                   sx={{
-                    background: "#fff",
-                    color: "#06A19B",
+                    background: '#fff',
+                    color: '#06A19B',
                     fontWeight: 600,
-                    padding: "6px",
-                    width: "fit-content",
-                    minWidth: "fit-content",
-                    textTransform: "capitalize",
-                    borderRadius: "8px",
-                    border: "1px solid #06A19B",
-                    boxShadow: "none",
-                    "&:hover": {
-                      boxShadow: "none",
+                    padding: '6px',
+                    width: 'fit-content',
+                    minWidth: 'fit-content',
+                    textTransform: 'capitalize',
+                    borderRadius: '8px',
+                    border: '1px solid #06A19B',
+                    boxShadow: 'none',
+                    '&:hover': {
+                      boxShadow: 'none',
                     },
                   }}
                   onClick={captureScreenshot}
@@ -1212,24 +1253,24 @@ export default function ProductionTable({
 
       <Paper
         sx={{
-          width: "100%",
-          overflow: "auto",
-          borderRadius: "14px",
-          boxShadow: "0px 0px 16px 5px #0000001A",
-          textAlign: "center",
+          width: '100%',
+          overflow: 'auto',
+          borderRadius: '14px',
+          boxShadow: '0px 0px 16px 5px #0000001A',
+          textAlign: 'center',
           mt: 4,
         }}
       >
         <TableContainer
           sx={{
-            overflow: "auto",
+            overflow: 'auto',
           }}
         >
           <Table stickyHeader aria-label="sticky table">
             <TableHead
               sx={{
-                textAlign: "center",
-                textWrap: "nowrap",
+                textAlign: 'center',
+                textWrap: 'nowrap',
               }}
             >
               <TableRow></TableRow>
@@ -1238,7 +1279,7 @@ export default function ProductionTable({
               order={order}
               orderBy={orderBy}
               sx={{
-                backgroundColor: "red",
+                backgroundColor: 'red',
               }}
               onRequestSort={handleRequestSort}
             />
@@ -1249,18 +1290,18 @@ export default function ProductionTable({
                     <TableRow
                       key={i}
                       sx={{
-                        "&:last-child td, &:last-child th": { border: 0 },
+                        '&:last-child td, &:last-child th': { border: 0 },
                       }}
                     >
                       <TableCell
                         sx={{
-                          color: "#555555",
-                          paddingRight: "20px",
+                          color: '#555555',
+                          paddingRight: '20px',
                           maxWidth: 250,
-                          borderBottomColor: "#F5F6F8",
+                          borderBottomColor: '#F5F6F8',
                           borderBottomWidth: 2,
                           fontWeight: 700,
-                          textWrap: "nowrap",
+                          textWrap: 'nowrap',
                           paddingLeft: {
                             lg: 10,
                             md: 3,
@@ -1269,19 +1310,19 @@ export default function ProductionTable({
                           pr: 2,
                         }}
                       >
-                        <Box sx={{ display: "flex", alignItems: "center" }}>
-                          {farm.farm ?? ""}
+                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                          {farm.farm ?? ''}
                         </Box>
                       </TableCell>
                       <TableCell
                         className="table-padding"
                         sx={{
                           borderBottomWidth: 2,
-                          borderBottomColor: "#F5F6F8",
-                          color: "#555555",
+                          borderBottomColor: '#F5F6F8',
+                          color: '#555555',
                           fontWeight: 500,
                           pl: 0,
-                          textWrap: "nowrap",
+                          textWrap: 'nowrap',
                         }}
                       >
                         {farm.units.map((unit, i) => {
@@ -1293,16 +1334,16 @@ export default function ProductionTable({
                                 sx={{
                                   fontWeight: 500,
                                   fontSize: 14,
-                                  display: "flex",
-                                  alignItems: "center",
-                                  justifyContent: "space-between",
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'space-between',
                                   gap: 1,
-                                  backgroundColor: "#F5F6F8",
-                                  borderTopLeftRadius: "8px",
-                                  borderBottomLeftRadius: "8px",
-                                  padding: "8px 12px",
-                                  margin: "8px 0",
-                                  textWrap: "nowrap",
+                                  backgroundColor: '#F5F6F8',
+                                  borderTopLeftRadius: '8px',
+                                  borderBottomLeftRadius: '8px',
+                                  padding: '8px 12px',
+                                  margin: '8px 0',
+                                  textWrap: 'nowrap',
                                 }}
                               >
                                 {unit.productionUnit.name}
@@ -1315,38 +1356,40 @@ export default function ProductionTable({
                         className="table-padding"
                         sx={{
                           borderBottomWidth: 2,
-                          borderBottomColor: "#ececec",
-                          color: "#555555",
+                          borderBottomColor: '#ececec',
+                          color: '#555555',
                           fontWeight: 500,
                           pl: 0,
-                          textWrap: "wrap",
+                          textWrap: 'wrap',
                         }}
                       >
                         {farm.units?.map((unit: any, i) => {
                           const value =
-                            selectedView === "water"
-                              ? selectedAverage === "Monthly average"
+                            selectedView === 'water'
+                              ? selectedAverage === 'Monthly average'
                                 ? String(
-                                    unit.monthlyAveragesWater?.waterTemp
-                                  ) || ""
-                                : selectedAverage === "Yearly average"
-                                ? String(unit.yearlyAveragesWater?.waterTemp) ||
-                                  ""
-                                : selectedAverage === "All-time average"
-                                ? String(
-                                    unit.allTimeAveragesWater?.waterTemp
-                                  ) || ""
-                                : selectedAverage === "Individual average"
-                                ? String(
-                                    unit.individualAveragesWater?.waterTemp
-                                  ) || ""
-                                : unit.waterTemp ?? ""
+                                    unit.monthlyAveragesWater?.waterTemp,
+                                  ) || ''
+                                : selectedAverage === 'Yearly average'
+                                  ? String(
+                                      unit.yearlyAveragesWater?.waterTemp,
+                                    ) || ''
+                                  : selectedAverage === 'All-time average'
+                                    ? String(
+                                        unit.allTimeAveragesWater?.waterTemp,
+                                      ) || ''
+                                    : selectedAverage === 'Individual average'
+                                      ? String(
+                                          unit.individualAveragesWater
+                                            ?.waterTemp,
+                                        ) || ''
+                                      : (unit.waterTemp ?? '')
                               : unit?.fishSupply?.batchNumber;
 
                           // Calculate padding based on whether a value exists
                           const paddingValue = value
-                            ? "8px 12px 8px 0"
-                            : "19px 12px 19px 0";
+                            ? '8px 12px 8px 0'
+                            : '19px 12px 19px 0';
                           return (
                             <Typography
                               key={i}
@@ -1354,10 +1397,10 @@ export default function ProductionTable({
                               sx={{
                                 fontWeight: 500,
                                 fontSize: 14,
-                                backgroundColor: "#F5F6F8",
+                                backgroundColor: '#F5F6F8',
                                 padding: paddingValue,
-                                margin: "8px 0",
-                                textWrap: "nowrap",
+                                margin: '8px 0',
+                                textWrap: 'nowrap',
                               }}
                             >
                               {value}
@@ -1369,32 +1412,35 @@ export default function ProductionTable({
                         className="table-padding"
                         sx={{
                           borderBottomWidth: 2,
-                          borderBottomColor: "#ececec",
-                          color: "#555555",
+                          borderBottomColor: '#ececec',
+                          color: '#555555',
                           fontWeight: 500,
                           pl: 0,
                           p: 0,
-                          textWrap: "wrap",
+                          textWrap: 'wrap',
                         }}
                       >
                         {farm.units.map((unit, i) => {
                           const value =
-                            selectedView === "water"
-                              ? selectedAverage === "Monthly average"
-                                ? String(unit.monthlyAveragesWater?.DO) || ""
-                                : selectedAverage === "Yearly average"
-                                ? String(unit.yearlyAveragesWater?.DO) || ""
-                                : selectedAverage === "All-time average"
-                                ? String(unit.allTimeAveragesWater?.DO) || ""
-                                : selectedAverage === "Individual average"
-                                ? String(unit.individualAveragesWater?.DO) || ""
-                                : unit.DO ?? ""
+                            selectedView === 'water'
+                              ? selectedAverage === 'Monthly average'
+                                ? String(unit.monthlyAveragesWater?.DO) || ''
+                                : selectedAverage === 'Yearly average'
+                                  ? String(unit.yearlyAveragesWater?.DO) || ''
+                                  : selectedAverage === 'All-time average'
+                                    ? String(unit.allTimeAveragesWater?.DO) ||
+                                      ''
+                                    : selectedAverage === 'Individual average'
+                                      ? String(
+                                          unit.individualAveragesWater?.DO,
+                                        ) || ''
+                                      : (unit.DO ?? '')
                               : unit?.fishSupply?.age;
 
                           // Calculate padding based on whether a value exists
                           const paddingValue = value
-                            ? "8px 12px 8px 0"
-                            : "19px 12px 19px 0";
+                            ? '8px 12px 8px 0'
+                            : '19px 12px 19px 0';
                           return (
                             <Typography
                               key={i}
@@ -1403,9 +1449,9 @@ export default function ProductionTable({
                                 fontWeight: 500,
                                 fontSize: 14,
                                 padding: paddingValue,
-                                backgroundColor: "#F5F6F8",
-                                margin: "8px 0",
-                                textWrap: "nowrap",
+                                backgroundColor: '#F5F6F8',
+                                margin: '8px 0',
+                                textWrap: 'nowrap',
                               }}
                             >
                               {value}
@@ -1417,41 +1463,46 @@ export default function ProductionTable({
                         className="table-padding"
                         sx={{
                           borderBottomWidth: 2,
-                          borderBottomColor: "#ececec",
-                          color: "#555555",
+                          borderBottomColor: '#ececec',
+                          color: '#555555',
                           fontWeight: 500,
                           pl: 0,
-                          textWrap: "wrap",
+                          textWrap: 'wrap',
                         }}
                       >
                         {farm.units.map((unit, i) => {
                           // Determine the value to display
                           const value =
-                            selectedView === "water"
-                              ? selectedAverage === "Monthly average"
-                                ? String(unit.monthlyAveragesWater?.TSS) || ""
-                                : selectedAverage === "Yearly average"
-                                ? String(unit.yearlyAveragesWater?.TSS) || ""
-                                : selectedAverage === "All-time average"
-                                ? String(unit.allTimeAveragesWater?.TSS) || ""
-                                : selectedAverage === "Individual average"
-                                ? String(unit.individualAveragesWater?.TSS) ||
-                                  ""
-                                : unit.TSS ?? ""
-                              : selectedAverage === "Monthly average"
-                              ? String(unit.monthlyAverages?.fishCount) || ""
-                              : selectedAverage === "Yearly average"
-                              ? String(unit.yearlyAverages?.fishCount) || ""
-                              : selectedAverage === "All-time average"
-                              ? String(unit.allTimeAverages?.fishCount) || ""
-                              : selectedAverage === "Individual average"
-                              ? String(unit.individualAverages?.fishCount) || ""
-                              : unit?.fishCount ?? "";
+                            selectedView === 'water'
+                              ? selectedAverage === 'Monthly average'
+                                ? String(unit.monthlyAveragesWater?.TSS) || ''
+                                : selectedAverage === 'Yearly average'
+                                  ? String(unit.yearlyAveragesWater?.TSS) || ''
+                                  : selectedAverage === 'All-time average'
+                                    ? String(unit.allTimeAveragesWater?.TSS) ||
+                                      ''
+                                    : selectedAverage === 'Individual average'
+                                      ? String(
+                                          unit.individualAveragesWater?.TSS,
+                                        ) || ''
+                                      : (unit.TSS ?? '')
+                              : selectedAverage === 'Monthly average'
+                                ? String(unit.monthlyAverages?.fishCount) || ''
+                                : selectedAverage === 'Yearly average'
+                                  ? String(unit.yearlyAverages?.fishCount) || ''
+                                  : selectedAverage === 'All-time average'
+                                    ? String(unit.allTimeAverages?.fishCount) ||
+                                      ''
+                                    : selectedAverage === 'Individual average'
+                                      ? String(
+                                          unit.individualAverages?.fishCount,
+                                        ) || ''
+                                      : (unit?.fishCount ?? '');
 
                           // Calculate padding based on whether a value exists
                           const paddingValue = value
-                            ? "8px 12px 8px 0"
-                            : "19px 12px 19px 0";
+                            ? '8px 12px 8px 0'
+                            : '19px 12px 19px 0';
 
                           return (
                             <Typography
@@ -1460,10 +1511,10 @@ export default function ProductionTable({
                               sx={{
                                 fontWeight: 500,
                                 fontSize: 14,
-                                backgroundColor: "#F5F6F8",
+                                backgroundColor: '#F5F6F8',
                                 padding: paddingValue,
-                                margin: "8px 0",
-                                textWrap: "nowrap",
+                                margin: '8px 0',
+                                textWrap: 'nowrap',
                               }}
                             >
                               {value}
@@ -1474,42 +1525,47 @@ export default function ProductionTable({
                       <TableCell
                         className="table-padding"
                         sx={{
-                          borderBottomColor: "#ececec",
+                          borderBottomColor: '#ececec',
                           borderBottomWidth: 2,
-                          color: "#555555",
+                          color: '#555555',
                           fontWeight: 500,
                           pl: 0,
-                          textWrap: "nowrap",
+                          textWrap: 'nowrap',
                         }}
                       >
                         {farm.units.map((unit, i) => {
                           // Determine the value to display
                           const value =
-                            selectedView === "water"
-                              ? selectedAverage === "Monthly average"
-                                ? String(unit.monthlyAveragesWater?.NH4) || ""
-                                : selectedAverage === "Yearly average"
-                                ? String(unit.yearlyAveragesWater?.NH4) || ""
-                                : selectedAverage === "All-time average"
-                                ? String(unit.allTimeAveragesWater?.NH4) || ""
-                                : selectedAverage === "Individual average"
-                                ? String(unit.individualAveragesWater?.NH4) ||
-                                  ""
-                                : unit.NH4 ?? ""
-                              : selectedAverage === "Monthly average"
-                              ? String(unit.monthlyAverages?.biomass) || ""
-                              : selectedAverage === "Yearly average"
-                              ? String(unit.yearlyAverages?.biomass) || ""
-                              : selectedAverage === "All-time average"
-                              ? String(unit.allTimeAverages?.biomass) || ""
-                              : selectedAverage === "Individual average"
-                              ? String(unit.individualAverages?.biomass) || ""
-                              : unit.biomass ?? "";
+                            selectedView === 'water'
+                              ? selectedAverage === 'Monthly average'
+                                ? String(unit.monthlyAveragesWater?.NH4) || ''
+                                : selectedAverage === 'Yearly average'
+                                  ? String(unit.yearlyAveragesWater?.NH4) || ''
+                                  : selectedAverage === 'All-time average'
+                                    ? String(unit.allTimeAveragesWater?.NH4) ||
+                                      ''
+                                    : selectedAverage === 'Individual average'
+                                      ? String(
+                                          unit.individualAveragesWater?.NH4,
+                                        ) || ''
+                                      : (unit.NH4 ?? '')
+                              : selectedAverage === 'Monthly average'
+                                ? String(unit.monthlyAverages?.biomass) || ''
+                                : selectedAverage === 'Yearly average'
+                                  ? String(unit.yearlyAverages?.biomass) || ''
+                                  : selectedAverage === 'All-time average'
+                                    ? String(unit.allTimeAverages?.biomass) ||
+                                      ''
+                                    : selectedAverage === 'Individual average'
+                                      ? String(
+                                          unit.individualAverages?.biomass,
+                                        ) || ''
+                                      : (unit.biomass ?? '');
 
                           // Calculate padding based on whether a value exists
                           const paddingValue = value
-                            ? "8px 12px 8px 0"
-                            : "19px 12px 19px 0";
+                            ? '8px 12px 8px 0'
+                            : '19px 12px 19px 0';
 
                           return (
                             <Typography
@@ -1518,10 +1574,10 @@ export default function ProductionTable({
                               sx={{
                                 fontWeight: 500,
                                 fontSize: 14,
-                                backgroundColor: "#F5F6F8",
+                                backgroundColor: '#F5F6F8',
                                 padding: paddingValue,
-                                margin: "8px 0",
-                                textWrap: "nowrap",
+                                margin: '8px 0',
+                                textWrap: 'nowrap',
                               }}
                             >
                               {value}
@@ -1532,43 +1588,49 @@ export default function ProductionTable({
                       <TableCell
                         className="table-padding"
                         sx={{
-                          borderBottomColor: "#ececec",
+                          borderBottomColor: '#ececec',
                           borderBottomWidth: 2,
-                          color: "#555555",
+                          color: '#555555',
                           fontWeight: 500,
                           pl: 0,
-                          textWrap: "nowrap",
+                          textWrap: 'nowrap',
                         }}
                       >
                         {farm.units.map((unit, i) => {
                           // Determine the value to display
                           const value =
-                            selectedView === "water"
-                              ? selectedAverage === "Monthly average"
-                                ? String(unit.monthlyAveragesWater?.NO3) || ""
-                                : selectedAverage === "Yearly average"
-                                ? String(unit.yearlyAveragesWater?.NO3) || ""
-                                : selectedAverage === "All-time average"
-                                ? String(unit.allTimeAveragesWater?.NO3) || ""
-                                : selectedAverage === "Individual average"
-                                ? String(unit.individualAveragesWater?.NO3) ||
-                                  ""
-                                : unit.NO3 ?? ""
-                              : selectedAverage === "Monthly average"
-                              ? String(unit.monthlyAverages?.meanWeight) || ""
-                              : selectedAverage === "Yearly average"
-                              ? String(unit.yearlyAverages?.meanWeight) || ""
-                              : selectedAverage === "All-time average"
-                              ? String(unit.allTimeAverages?.meanWeight) || ""
-                              : selectedAverage === "Individual average"
-                              ? String(unit.individualAverages?.meanWeight) ||
-                                ""
-                              : unit.meanWeight ?? "";
+                            selectedView === 'water'
+                              ? selectedAverage === 'Monthly average'
+                                ? String(unit.monthlyAveragesWater?.NO3) || ''
+                                : selectedAverage === 'Yearly average'
+                                  ? String(unit.yearlyAveragesWater?.NO3) || ''
+                                  : selectedAverage === 'All-time average'
+                                    ? String(unit.allTimeAveragesWater?.NO3) ||
+                                      ''
+                                    : selectedAverage === 'Individual average'
+                                      ? String(
+                                          unit.individualAveragesWater?.NO3,
+                                        ) || ''
+                                      : (unit.NO3 ?? '')
+                              : selectedAverage === 'Monthly average'
+                                ? String(unit.monthlyAverages?.meanWeight) || ''
+                                : selectedAverage === 'Yearly average'
+                                  ? String(unit.yearlyAverages?.meanWeight) ||
+                                    ''
+                                  : selectedAverage === 'All-time average'
+                                    ? String(
+                                        unit.allTimeAverages?.meanWeight,
+                                      ) || ''
+                                    : selectedAverage === 'Individual average'
+                                      ? String(
+                                          unit.individualAverages?.meanWeight,
+                                        ) || ''
+                                      : (unit.meanWeight ?? '');
 
                           // Calculate padding based on whether a value exists
                           const paddingValue = value
-                            ? "8px 12px 8px 0"
-                            : "19px 12px 19px 0";
+                            ? '8px 12px 8px 0'
+                            : '19px 12px 19px 0';
 
                           return (
                             <Typography
@@ -1577,10 +1639,10 @@ export default function ProductionTable({
                               sx={{
                                 fontWeight: 500,
                                 fontSize: 14,
-                                backgroundColor: "#F5F6F8",
+                                backgroundColor: '#F5F6F8',
                                 padding: paddingValue,
-                                margin: "8px 0",
-                                textWrap: "nowrap",
+                                margin: '8px 0',
+                                textWrap: 'nowrap',
                               }}
                             >
                               {value}
@@ -1591,43 +1653,49 @@ export default function ProductionTable({
                       <TableCell
                         className="table-padding"
                         sx={{
-                          borderBottomColor: "#ececec",
+                          borderBottomColor: '#ececec',
                           borderBottomWidth: 2,
-                          color: "#555555",
+                          color: '#555555',
                           fontWeight: 500,
                           pl: 0,
-                          textWrap: "nowrap",
+                          textWrap: 'nowrap',
                         }}
                       >
                         {farm.units.map((unit, i) => {
                           // Determine the value to display
                           const value =
-                            selectedView === "water"
-                              ? selectedAverage === "Monthly average"
-                                ? String(unit.monthlyAveragesWater?.NO2) || ""
-                                : selectedAverage === "Yearly average"
-                                ? String(unit.yearlyAveragesWater?.NO2) || ""
-                                : selectedAverage === "All-time average"
-                                ? String(unit.allTimeAveragesWater?.NO2) || ""
-                                : selectedAverage === "Individual average"
-                                ? String(unit.individualAveragesWater?.NO2) ||
-                                  ""
-                                : unit.NO2 ?? ""
-                              : selectedAverage === "Monthly average"
-                              ? String(unit.monthlyAverages?.meanLength) || ""
-                              : selectedAverage === "Yearly average"
-                              ? String(unit.yearlyAverages?.meanLength) || ""
-                              : selectedAverage === "All-time average"
-                              ? String(unit.allTimeAverages?.meanLength) || ""
-                              : selectedAverage === "Individual average"
-                              ? String(unit.individualAverages?.meanLength) ||
-                                ""
-                              : unit.meanLength ?? "";
+                            selectedView === 'water'
+                              ? selectedAverage === 'Monthly average'
+                                ? String(unit.monthlyAveragesWater?.NO2) || ''
+                                : selectedAverage === 'Yearly average'
+                                  ? String(unit.yearlyAveragesWater?.NO2) || ''
+                                  : selectedAverage === 'All-time average'
+                                    ? String(unit.allTimeAveragesWater?.NO2) ||
+                                      ''
+                                    : selectedAverage === 'Individual average'
+                                      ? String(
+                                          unit.individualAveragesWater?.NO2,
+                                        ) || ''
+                                      : (unit.NO2 ?? '')
+                              : selectedAverage === 'Monthly average'
+                                ? String(unit.monthlyAverages?.meanLength) || ''
+                                : selectedAverage === 'Yearly average'
+                                  ? String(unit.yearlyAverages?.meanLength) ||
+                                    ''
+                                  : selectedAverage === 'All-time average'
+                                    ? String(
+                                        unit.allTimeAverages?.meanLength,
+                                      ) || ''
+                                    : selectedAverage === 'Individual average'
+                                      ? String(
+                                          unit.individualAverages?.meanLength,
+                                        ) || ''
+                                      : (unit.meanLength ?? '');
 
                           // Calculate padding based on whether a value exists
                           const paddingValue = value
-                            ? "8px 12px 8px 0"
-                            : "19px 12px 19px 0";
+                            ? '8px 12px 8px 0'
+                            : '19px 12px 19px 0';
 
                           return (
                             <Typography
@@ -1636,10 +1704,10 @@ export default function ProductionTable({
                               sx={{
                                 fontWeight: 500,
                                 fontSize: 14,
-                                backgroundColor: "#F5F6F8",
+                                backgroundColor: '#F5F6F8',
                                 padding: paddingValue,
-                                margin: "8px 0",
-                                textWrap: "nowrap",
+                                margin: '8px 0',
+                                textWrap: 'nowrap',
                               }}
                             >
                               {value}
@@ -1650,50 +1718,58 @@ export default function ProductionTable({
                       <TableCell
                         className="table-padding"
                         sx={{
-                          borderBottomColor: "#ececec",
+                          borderBottomColor: '#ececec',
                           borderBottomWidth: 2,
-                          color: "#555555",
+                          color: '#555555',
                           fontWeight: 500,
                           pl: 0,
-                          textWrap: "nowrap",
+                          textWrap: 'nowrap',
                         }}
                       >
                         {farm.units.map((unit, i) => {
                           // Determine the value to display
                           const value =
-                            selectedView === "water"
-                              ? selectedAverage === "Monthly average"
-                                ? String(unit.monthlyAveragesWater?.ph) || ""
-                                : selectedAverage === "Yearly average"
-                                ? String(unit.yearlyAveragesWater?.ph) || ""
-                                : selectedAverage === "All-time average"
-                                ? String(unit.allTimeAveragesWater?.ph) || ""
-                                : selectedAverage === "Individual average"
-                                ? String(unit.individualAveragesWater?.ph) || ""
-                                : unit.ph ?? ""
-                              : selectedAverage === "Monthly average"
-                              ? Number(
-                                  unit.monthlyAverages?.stockingDensityKG || 0
-                                ).toFixed(2)
-                              : selectedAverage === "Yearly average"
-                              ? Number(
-                                  unit.yearlyAverages?.stockingDensityKG || 0
-                                ).toFixed(2)
-                              : selectedAverage === "All-time average"
-                              ? Number(
-                                  unit.allTimeAverages?.stockingDensityKG || 0
-                                ).toFixed(2)
-                              : selectedAverage === "Individual average"
-                              ? Number(
-                                  unit.individualAverages?.stockingDensityKG ||
-                                    0
-                                ).toFixed(2)
-                              : Number(unit.stockingDensityKG || 0).toFixed(2);
+                            selectedView === 'water'
+                              ? selectedAverage === 'Monthly average'
+                                ? String(unit.monthlyAveragesWater?.ph) || ''
+                                : selectedAverage === 'Yearly average'
+                                  ? String(unit.yearlyAveragesWater?.ph) || ''
+                                  : selectedAverage === 'All-time average'
+                                    ? String(unit.allTimeAveragesWater?.ph) ||
+                                      ''
+                                    : selectedAverage === 'Individual average'
+                                      ? String(
+                                          unit.individualAveragesWater?.ph,
+                                        ) || ''
+                                      : (unit.ph ?? '')
+                              : selectedAverage === 'Monthly average'
+                                ? Number(
+                                    unit.monthlyAverages?.stockingDensityKG ||
+                                      0,
+                                  ).toFixed(2)
+                                : selectedAverage === 'Yearly average'
+                                  ? Number(
+                                      unit.yearlyAverages?.stockingDensityKG ||
+                                        0,
+                                    ).toFixed(2)
+                                  : selectedAverage === 'All-time average'
+                                    ? Number(
+                                        unit.allTimeAverages
+                                          ?.stockingDensityKG || 0,
+                                      ).toFixed(2)
+                                    : selectedAverage === 'Individual average'
+                                      ? Number(
+                                          unit.individualAverages
+                                            ?.stockingDensityKG || 0,
+                                        ).toFixed(2)
+                                      : Number(
+                                          unit.stockingDensityKG || 0,
+                                        ).toFixed(2);
 
                           // Calculate padding based on whether a value exists
                           const paddingValue = value
-                            ? "8px 12px 8px 0"
-                            : "19px 12px 19px 0";
+                            ? '8px 12px 8px 0'
+                            : '19px 12px 19px 0';
 
                           return (
                             <Typography
@@ -1702,10 +1778,10 @@ export default function ProductionTable({
                               sx={{
                                 fontWeight: 500,
                                 fontSize: 14,
-                                backgroundColor: "#F5F6F8",
+                                backgroundColor: '#F5F6F8',
                                 padding: paddingValue,
-                                margin: "8px 0",
-                                textWrap: "nowrap",
+                                margin: '8px 0',
+                                textWrap: 'nowrap',
                               }}
                             >
                               {value}
@@ -1716,58 +1792,64 @@ export default function ProductionTable({
                       <TableCell
                         className="table-padding"
                         sx={{
-                          borderBottomColor: "#ececec",
+                          borderBottomColor: '#ececec',
                           borderBottomWidth: 2,
-                          color: "#555555",
+                          color: '#555555',
                           fontWeight: 500,
                           pl: 0,
-                          textWrap: "nowrap",
+                          textWrap: 'nowrap',
                         }}
                       >
                         {farm.units.map((unit, i) => {
                           // Determine the value to display
                           const value =
-                            selectedView === "water"
-                              ? selectedAverage === "Monthly average"
+                            selectedView === 'water'
+                              ? selectedAverage === 'Monthly average'
                                 ? String(
-                                    unit.monthlyAveragesWater?.visibility
-                                  ) || ""
-                                : selectedAverage === "Yearly average"
-                                ? String(
-                                    unit.yearlyAveragesWater?.visibility
-                                  ) || ""
-                                : selectedAverage === "All-time average"
-                                ? String(
-                                    unit.allTimeAveragesWater?.visibility
-                                  ) || ""
-                                : selectedAverage === "Individual average"
-                                ? String(
-                                    unit.individualAveragesWater?.visibility
-                                  ) || ""
-                                : unit.visibility ?? ""
-                              : selectedAverage === "Monthly average"
-                              ? Number(
-                                  unit.monthlyAverages?.stockingDensityNM || 0
-                                ).toFixed(2)
-                              : selectedAverage === "Yearly average"
-                              ? Number(
-                                  unit.yearlyAverages?.stockingDensityNM || 0
-                                ).toFixed(2)
-                              : selectedAverage === "All-time average"
-                              ? Number(
-                                  unit.allTimeAverages?.stockingDensityNM || 0
-                                ).toFixed(2)
-                              : selectedAverage === "Individual average"
-                              ? Number(
-                                  unit.individualAverages?.stockingDensityNM ||
-                                    0
-                                ).toFixed(2)
-                              : Number(unit.stockingDensityNM || 0).toFixed(2);
+                                    unit.monthlyAveragesWater?.visibility,
+                                  ) || ''
+                                : selectedAverage === 'Yearly average'
+                                  ? String(
+                                      unit.yearlyAveragesWater?.visibility,
+                                    ) || ''
+                                  : selectedAverage === 'All-time average'
+                                    ? String(
+                                        unit.allTimeAveragesWater?.visibility,
+                                      ) || ''
+                                    : selectedAverage === 'Individual average'
+                                      ? String(
+                                          unit.individualAveragesWater
+                                            ?.visibility,
+                                        ) || ''
+                                      : (unit.visibility ?? '')
+                              : selectedAverage === 'Monthly average'
+                                ? Number(
+                                    unit.monthlyAverages?.stockingDensityNM ||
+                                      0,
+                                  ).toFixed(2)
+                                : selectedAverage === 'Yearly average'
+                                  ? Number(
+                                      unit.yearlyAverages?.stockingDensityNM ||
+                                        0,
+                                    ).toFixed(2)
+                                  : selectedAverage === 'All-time average'
+                                    ? Number(
+                                        unit.allTimeAverages
+                                          ?.stockingDensityNM || 0,
+                                      ).toFixed(2)
+                                    : selectedAverage === 'Individual average'
+                                      ? Number(
+                                          unit.individualAverages
+                                            ?.stockingDensityNM || 0,
+                                        ).toFixed(2)
+                                      : Number(
+                                          unit.stockingDensityNM || 0,
+                                        ).toFixed(2);
 
                           // Calculate padding based on whether a value exists
                           const paddingValue = value
-                            ? "8px 12px 8px 0"
-                            : "19px 12px 19px 0";
+                            ? '8px 12px 8px 0'
+                            : '19px 12px 19px 0';
 
                           return (
                             <Typography
@@ -1776,10 +1858,10 @@ export default function ProductionTable({
                               sx={{
                                 fontWeight: 500,
                                 fontSize: 14,
-                                backgroundColor: "#F5F6F8",
+                                backgroundColor: '#F5F6F8',
                                 padding: paddingValue,
-                                margin: "8px 0",
-                                textWrap: "nowrap",
+                                margin: '8px 0',
+                                textWrap: 'nowrap',
                               }}
                             >
                               {value}
@@ -1787,16 +1869,16 @@ export default function ProductionTable({
                           );
                         })}
                       </TableCell>
-                      {selectedView !== "water" && (
+                      {selectedView !== 'water' && (
                         <TableCell
                           className="table-padding"
                           sx={{
-                            borderBottomColor: "#ececec",
+                            borderBottomColor: '#ececec',
                             borderBottomWidth: 2,
-                            color: "#555555",
+                            color: '#555555',
                             fontWeight: 500,
                             pl: 0,
-                            textWrap: "nowrap",
+                            textWrap: 'nowrap',
                           }}
                         >
                           {farm.units.map((unit, i) => {
@@ -1807,29 +1889,29 @@ export default function ProductionTable({
                                 sx={{
                                   fontWeight: 500,
                                   fontSize: 14,
-                                  backgroundColor: "#F5F6F8",
-                                  padding: "8px 12px 8px 0",
-                                  margin: "8px 0",
+                                  backgroundColor: '#F5F6F8',
+                                  padding: '8px 12px 8px 0',
+                                  margin: '8px 0',
                                   // marginBottom: "10px",
-                                  textWrap: "nowrap",
+                                  textWrap: 'nowrap',
                                 }}
                               >
-                                {Number(unit.stockingLevel) ?? ""}
+                                {Number(unit.stockingLevel) ?? ''}
                               </Typography>
                             );
                           })}
                         </TableCell>
                       )}
-                      {selectedView !== "water" && selectedView === "fish" && (
+                      {selectedView !== 'water' && selectedView === 'fish' && (
                         <TableCell
                           className="table-padding"
                           sx={{
-                            borderBottomColor: "#ececec",
+                            borderBottomColor: '#ececec',
                             borderBottomWidth: 2,
-                            color: "#555555",
+                            color: '#555555',
                             fontWeight: 500,
                             pl: 0,
-                            textWrap: "nowrap",
+                            textWrap: 'nowrap',
                           }}
                         >
                           {farm.units.map((unit, i) => {
@@ -1840,29 +1922,29 @@ export default function ProductionTable({
                                 sx={{
                                   fontWeight: 500,
                                   fontSize: 14,
-                                  backgroundColor: "#F5F6F8",
-                                  padding: "8px 12px 8px 0",
-                                  margin: "8px 0",
+                                  backgroundColor: '#F5F6F8',
+                                  padding: '8px 12px 8px 0',
+                                  margin: '8px 0',
                                   // marginBottom: "10px",
-                                  textWrap: "nowrap",
+                                  textWrap: 'nowrap',
                                 }}
                               >
-                                {Number(unit.stockingLevel) ?? ""}
+                                {Number(unit.stockingLevel) ?? ''}
                               </Typography>
                             );
                           })}
                         </TableCell>
                       )}
-                      {selectedView === "feeding" && (
+                      {selectedView === 'feeding' && (
                         <TableCell
                           className="table-padding"
                           sx={{
-                            borderBottomColor: "#ececec",
+                            borderBottomColor: '#ececec',
                             borderBottomWidth: 2,
-                            color: "#555555",
+                            color: '#555555',
                             fontWeight: 500,
                             pl: 0,
-                            textWrap: "nowrap",
+                            textWrap: 'nowrap',
                           }}
                         >
                           {farm.units.map((unit, i) => {
@@ -1873,10 +1955,10 @@ export default function ProductionTable({
                                 sx={{
                                   fontWeight: 500,
                                   fontSize: 14,
-                                  backgroundColor: "#F5F6F8",
-                                  padding: "8px 12px 8px 0",
-                                  margin: "8px 0",
-                                  textWrap: "nowrap",
+                                  backgroundColor: '#F5F6F8',
+                                  padding: '8px 12px 8px 0',
+                                  margin: '8px 0',
+                                  textWrap: 'nowrap',
                                 }}
                               >
                                 FEEd FED
@@ -1885,16 +1967,16 @@ export default function ProductionTable({
                           })}
                         </TableCell>
                       )}
-                      {selectedView === "feeding" && (
+                      {selectedView === 'feeding' && (
                         <TableCell
                           className="table-padding"
                           sx={{
-                            borderBottomColor: "#ececec",
+                            borderBottomColor: '#ececec',
                             borderBottomWidth: 2,
-                            color: "#555555",
+                            color: '#555555',
                             fontWeight: 500,
                             pl: 0,
-                            textWrap: "nowrap",
+                            textWrap: 'nowrap',
                           }}
                         >
                           {farm.units.map((unit, i) => {
@@ -1905,11 +1987,11 @@ export default function ProductionTable({
                                 sx={{
                                   fontWeight: 500,
                                   fontSize: 14,
-                                  backgroundColor: "#F5F6F8",
-                                  padding: "8px 12px 8px 0",
-                                  margin: "8px 0",
+                                  backgroundColor: '#F5F6F8',
+                                  padding: '8px 12px 8px 0',
+                                  margin: '8px 0',
                                   // marginBottom: "10px",
-                                  textWrap: "nowrap",
+                                  textWrap: 'nowrap',
                                 }}
                               >
                                 FCR
@@ -1918,15 +2000,15 @@ export default function ProductionTable({
                           })}
                         </TableCell>
                       )}
-                      {role !== "MEMBER" && (
+                      {role !== 'MEMBER' && (
                         <TableCell
                           sx={{
-                            borderBottomColor: "#ececec",
+                            borderBottomColor: '#ececec',
                             borderBottomWidth: 2,
-                            color: "#555555",
+                            color: '#555555',
                             fontWeight: 500,
                             pl: 0,
-                            textWrap: "nowrap",
+                            textWrap: 'nowrap',
                           }}
                           className="cursor-pointer table-padding"
                         >
@@ -1937,28 +2019,28 @@ export default function ProductionTable({
                                 sx={{
                                   fontWeight: 500,
                                   fontSize: 14,
-                                  backgroundColor: "#F5F6F8",
-                                  padding: "4.5px ",
-                                  margin: "8px 0",
-                                  textWrap: "nowrap",
+                                  backgroundColor: '#F5F6F8',
+                                  padding: '4.5px ',
+                                  margin: '8px 0',
+                                  textWrap: 'nowrap',
                                 }}
                               >
                                 <Button
                                   id="basic-button"
                                   aria-controls={
-                                    open ? "basic-menu" : undefined
+                                    open ? 'basic-menu' : undefined
                                   }
                                   aria-haspopup="true"
-                                  aria-expanded={open ? "true" : undefined}
+                                  aria-expanded={open ? 'true' : undefined}
                                   onClick={(e) => {
-                                    setSelectedFarm(unit),
-                                      setAnchorEl(e.currentTarget);
+                                    (setSelectedFarm(unit),
+                                      setAnchorEl(e.currentTarget));
                                   }}
                                   className="table-edit-option"
                                   sx={{
-                                    background: "transparent",
-                                    color: "#555555",
-                                    boxShadow: "none",
+                                    background: 'transparent',
+                                    color: '#555555',
+                                    boxShadow: 'none',
                                   }}
                                 >
                                   <svg
@@ -1980,23 +2062,23 @@ export default function ProductionTable({
                                   open={open}
                                   onClose={handleClose}
                                   MenuListProps={{
-                                    "aria-labelledby": "basic-button",
+                                    'aria-labelledby': 'basic-button',
                                   }}
                                   sx={{
-                                    position: "absolute",
-                                    left: "-10px",
+                                    position: 'absolute',
+                                    left: '-10px',
                                   }}
                                 >
-                                  {selectedView !== "feeding" ? (
+                                  {selectedView !== 'feeding' ? (
                                     <Stack>
                                       <MenuItem
                                         onClick={(e: any) => {
                                           handleClick(
                                             e,
                                             selectedFarm,
-                                            selectedView === "fish"
+                                            selectedView === 'fish'
                                               ? true
-                                              : false
+                                              : false,
                                           );
                                           setAnchorEl(null);
                                         }}
@@ -2007,7 +2089,7 @@ export default function ProductionTable({
                                           alignItems="center"
                                           direction="row"
                                         >
-                                          {selectedView === "water" ? (
+                                          {selectedView === 'water' ? (
                                             <svg
                                               xmlns="http://www.w3.org/2000/svg"
                                               width="1.25em"
@@ -2053,7 +2135,7 @@ export default function ProductionTable({
 
                                       <Divider
                                         sx={{
-                                          borderColor: "#9797971A",
+                                          borderColor: '#9797971A',
                                           my: 0.5,
                                         }}
                                       />
@@ -2092,7 +2174,7 @@ export default function ProductionTable({
                                       </MenuItem>
                                       <Divider
                                         sx={{
-                                          borderColor: "#9797971A",
+                                          borderColor: '#9797971A',
                                           my: 0.5,
                                         }}
                                       />
@@ -2131,13 +2213,13 @@ export default function ProductionTable({
 
                                   <Divider
                                     sx={{
-                                      borderColor: "#9797971A",
+                                      borderColor: '#9797971A',
                                       my: 0.5,
                                     }}
                                   />
                                   <MenuItem
                                     onClick={() => {
-                                      setAnchorEl(null), setTest(true);
+                                      (setAnchorEl(null), setTest(true));
                                     }}
                                     sx={{
                                       width: 190,
@@ -2177,7 +2259,7 @@ export default function ProductionTable({
                 })
               ) : (
                 <TableRow>
-                  <TableCell colSpan={13} sx={{ textAlign: "center" }}>
+                  <TableCell colSpan={13} sx={{ textAlign: 'center' }}>
                     No Data Found
                   </TableCell>
                 </TableRow>

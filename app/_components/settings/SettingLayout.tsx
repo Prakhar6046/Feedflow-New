@@ -1,8 +1,8 @@
-import { RadioGroup } from "@mui/material";
-import { LayoutIcon, MaskControl, StyledCard, StyledWrap } from "./styles";
-import useSettings from "@/app/hooks/useSettings";
+import { RadioGroup } from '@mui/material';
+import { LayoutIcon, MaskControl, StyledCard, StyledWrap } from './styles';
+import useSettings from '@/app/hooks/useSettings';
 
-const OPTIONS = ["vertical", "horizontal", "mini"] as const;
+const OPTIONS = ['vertical', 'horizontal', 'mini'] as const;
 
 export default function LayoutOptions() {
   const { themeLayout, onChangeLayout } = useSettings();
@@ -13,7 +13,7 @@ export default function LayoutOptions() {
       value={themeLayout}
       onChange={onChangeLayout}
     >
-      <StyledWrap sx={{ gridTemplateColumns: "repeat(3, 1fr)" }}>
+      <StyledWrap sx={{ gridTemplateColumns: 'repeat(3, 1fr)' }}>
         {OPTIONS.map((layout) => (
           <StyledCard
             key={layout}

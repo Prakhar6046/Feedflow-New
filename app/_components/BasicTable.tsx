@@ -1,10 +1,10 @@
-"use client";
-import { breadcrumsAction } from "@/lib/features/breadcrum/breadcrumSlice";
-import { selectOrganisationLoading } from "@/lib/features/organisation/organisationSlice";
-import { selectRole } from "@/lib/features/user/userSlice";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import TabContext from "@mui/lab/TabContext";
-import TabList from "@mui/lab/TabList";
+'use client';
+import { breadcrumsAction } from '@/lib/features/breadcrum/breadcrumSlice';
+import { selectOrganisationLoading } from '@/lib/features/organisation/organisationSlice';
+import { selectRole } from '@/lib/features/user/userSlice';
+import { useAppDispatch, useAppSelector } from '@/lib/hooks';
+import TabContext from '@mui/lab/TabContext';
+import TabList from '@mui/lab/TabList';
 import {
   Box,
   Button,
@@ -14,29 +14,28 @@ import {
   Tab,
   TableSortLabel,
   Typography,
-} from "@mui/material";
-import Paper from "@mui/material/Paper";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Image from "next/image";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
-import toast from "react-hot-toast";
-import { getLocalItem } from "../_lib/utils";
-import userBlock from "../../public/static/img/user-block.svg";
-import userUnBlock from "../../public/static/img/user-unblock.svg";
+} from '@mui/material';
+import Paper from '@mui/material/Paper';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Image from 'next/image';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
+import { getLocalItem } from '../_lib/utils';
+import userBlock from '../../public/static/img/user-block.svg';
+import userUnBlock from '../../public/static/img/user-unblock.svg';
 
 import {
   organisationTableHead,
   organisationTableHeadMember,
-} from "../_lib/utils/tableHeadData";
-import { SingleOrganisation } from "../_typeModels/Organization";
-import { Permissions } from "../_typeModels/User";
-import { getCookie } from "cookies-next";
+} from '../_lib/utils/tableHeadData';
+import { SingleOrganisation } from '../_typeModels/Organization';
+import { getCookie } from 'cookies-next';
 interface Props {
   organisations: SingleOrganisation[];
   userRole: string;
@@ -52,11 +51,11 @@ export default function BasicTable({
   const pathName = usePathname();
   const searchParams = useSearchParams();
   const dispatch = useAppDispatch();
-  const [order, setOrder] = useState("asc");
-  const loggedUser = getCookie("logged-user");
+  const [order, setOrder] = useState('asc');
+  const loggedUser = getCookie('logged-user');
   const loginUser = loggedUser && JSON.parse(loggedUser);
-  const [orderBy, setOrderBy] = useState("organisation");
-  const [selectedView, setSelectedView] = useState<string>("all");
+  const [orderBy, setOrderBy] = useState('organisation');
+  const [selectedView, setSelectedView] = useState<string>('all');
   const role = useAppSelector(selectRole);
   const loading = useAppSelector(selectOrganisationLoading);
   const [selectedOrganisation, setSelectedOrganisation] =
@@ -64,13 +63,13 @@ export default function BasicTable({
   const [organisationData, setOrganisationData] =
     useState<SingleOrganisation[]>();
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
-    null
+    null,
   );
-  const [sortDataFromLocal, setSortDataFromLocal] = React.useState<any>("");
+  const [sortDataFromLocal, setSortDataFromLocal] = React.useState<any>('');
 
   const handleClick = (
     event: React.MouseEvent<HTMLButtonElement>,
-    organisation: SingleOrganisation
+    organisation: SingleOrganisation,
   ) => {
     setAnchorEl(event.currentTarget);
     setSelectedOrganisation(organisation);
@@ -86,11 +85,11 @@ export default function BasicTable({
   const handleInviteOrganisation = async () => {
     setAnchorEl(null);
     if (selectedOrganisation) {
-      const token = getCookie("auth-token");
-      const response = await fetch("/api/invite/organisation", {
-        method: "POST",
+      const token = getCookie('auth-token');
+      const response = await fetch('/api/invite/organisation', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
@@ -111,13 +110,13 @@ export default function BasicTable({
 
     if (selectedOrganisation) {
       const user = selectedOrganisation?.users?.find(
-        (user) => user.role === "ADMIN" || user.role === "SUPERADMIN"
+        (user) => user.role === 'ADMIN' || user.role === 'SUPERADMIN',
       );
-      const token = getCookie("auth-token");
-      const response = await fetch("/api/users", {
-        method: "PATCH",
+      const token = getCookie('auth-token');
+      const response = await fetch('/api/users', {
+        method: 'PATCH',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
@@ -142,7 +141,7 @@ export default function BasicTable({
     return (
       <TableHead>
         <TableRow>
-          {(role === "SUPERADMIN" || permissions
+          {(role === 'SUPERADMIN' || permissions
             ? organisationTableHead
             : organisationTableHeadMember
           ).map((headCell, idx, headCells) => (
@@ -152,13 +151,13 @@ export default function BasicTable({
                 idx === headCells.length - 1
                   ? false
                   : orderBy === headCell.id
-                  ? order
-                  : false
+                    ? order
+                    : false
               }
               sx={{
                 borderBottom: 0,
-                color: "#67737F",
-                background: "#F5F6F8",
+                color: '#67737F',
+                background: '#F5F6F8',
                 fontSize: {
                   md: 16,
                   xs: 14,
@@ -176,7 +175,7 @@ export default function BasicTable({
               ) : (
                 <TableSortLabel
                   active={orderBy === headCell.id}
-                  direction={orderBy === headCell.id ? order : "asc"}
+                  direction={orderBy === headCell.id ? order : 'asc'}
                   onClick={createSortHandler(headCell.id)}
                 >
                   {headCell.label}
@@ -192,36 +191,36 @@ export default function BasicTable({
     setSelectedView(newValue);
 
     const newParams = new URLSearchParams(searchParams.toString());
-    newParams.set("tab", newValue);
+    newParams.set('tab', newValue);
     router.push(`?${newParams.toString()}`);
   };
   const open = Boolean(anchorEl);
   const handleRequestSort = (
     _: React.MouseEvent<HTMLButtonElement> | null,
-    property: string
+    property: string,
   ) => {
-    const isAsc = orderBy === property && order === "asc";
-    setOrder(isAsc ? "desc" : "asc");
+    const isAsc = orderBy === property && order === 'asc';
+    setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
     dispatch(
       breadcrumsAction.handleSort({
-        direction: isAsc ? "desc" : "asc",
+        direction: isAsc ? 'desc' : 'asc',
         column: property,
-      })
+      }),
     );
     if (organisations) {
       const sortedData = [...organisations].sort(
         (
           organisation1: SingleOrganisation,
-          organisation2: SingleOrganisation
+          organisation2: SingleOrganisation,
         ) => {
-          const orderType = order === "asc" ? 1 : -1;
-          if (property === "name") {
+          const orderType = order === 'asc' ? 1 : -1;
+          if (property === 'name') {
             if (organisation1.name < organisation2.name) return -1 * orderType;
             if (organisation1.name > organisation2.name) return 1 * orderType;
             return 0;
           } else if (
-            property === "contactPerson" &&
+            property === 'contactPerson' &&
             organisation1.contact &&
             organisation2.contact
           ) {
@@ -232,7 +231,7 @@ export default function BasicTable({
             return 0;
           }
           return 0;
-        }
+        },
       );
 
       setOrganisationData(sortedData);
@@ -254,16 +253,16 @@ export default function BasicTable({
         const sortedData = [...organisations].sort(
           (
             organisation1: SingleOrganisation,
-            organisation2: SingleOrganisation
+            organisation2: SingleOrganisation,
           ) => {
-            const orderType = data.direction === "asc" ? -1 : 1;
-            if (data.column === "name") {
+            const orderType = data.direction === 'asc' ? -1 : 1;
+            if (data.column === 'name') {
               if (organisation1.name < organisation2.name)
                 return -1 * orderType;
               if (organisation1.name > organisation2.name) return 1 * orderType;
               return 0;
             } else if (
-              data.column === "contactPerson" &&
+              data.column === 'contactPerson' &&
               organisation1.contact &&
               organisation2.contact
             ) {
@@ -274,7 +273,7 @@ export default function BasicTable({
               return 0;
             }
             return 0;
-          }
+          },
         );
 
         setOrganisationData(sortedData);
@@ -292,11 +291,11 @@ export default function BasicTable({
     router.refresh();
   }, [router]);
   useEffect(() => {
-    const tabParam = searchParams.get("tab");
+    const tabParam = searchParams.get('tab');
 
     if (!tabParam) {
       const newParams = new URLSearchParams(searchParams.toString());
-      newParams.set("tab", "all");
+      newParams.set('tab', 'all');
       router.replace(`?${newParams.toString()}`);
     } else {
       setSelectedView(tabParam);
@@ -305,22 +304,22 @@ export default function BasicTable({
 
   return (
     <>
-      <Box sx={{ width: "100%", typography: "body1", mt: 5 }}>
+      <Box sx={{ width: '100%', typography: 'body1', mt: 5 }}>
         <TabContext value={String(selectedView)}>
           <Stack
-            display={"flex"}
+            display={'flex'}
             rowGap={2}
             columnGap={5}
             mb={2}
-            justifyContent={"space-between"}
+            justifyContent={'space-between'}
             sx={{
               flexDirection: {
-                md: "row",
-                xs: "column",
+                md: 'row',
+                xs: 'column',
               },
               alignItems: {
-                md: "center",
-                xs: "start",
+                md: 'center',
+                xs: 'start',
               },
             }}
           >
@@ -333,20 +332,20 @@ export default function BasicTable({
                 <Tab
                   label="All"
                   value="all"
-                  className={selectedView === "all" ? "active-tab" : ""}
+                  className={selectedView === 'all' ? 'active-tab' : ''}
                 />
                 <Tab
                   label="Feed Suppliers"
                   value="feedSuppliers"
                   className={
-                    selectedView === "feedSuppliers" ? "active-tab" : ""
+                    selectedView === 'feedSuppliers' ? 'active-tab' : ''
                   }
                 />
                 <Tab
                   label="Fish Producers"
                   value="fishProducers"
                   className={
-                    selectedView === "fishProducers" ? "active-tab" : ""
+                    selectedView === 'fishProducers' ? 'active-tab' : ''
                   }
                 />
               </TabList>
@@ -356,16 +355,16 @@ export default function BasicTable({
       </Box>
       <Paper
         sx={{
-          width: "100%",
-          overflow: "hidden",
-          borderRadius: "14px",
-          boxShadow: "0px 0px 16px 5px #0000001A",
+          width: '100%',
+          overflow: 'hidden',
+          borderRadius: '14px',
+          boxShadow: '0px 0px 16px 5px #0000001A',
           mt: 4,
         }}
       >
         <TableContainer
           sx={{
-            maxHeight: "72.5vh",
+            maxHeight: '72.5vh',
           }}
         >
           <Table stickyHeader aria-label="sticky table">
@@ -380,13 +379,13 @@ export default function BasicTable({
                   return (
                     <TableRow
                       key={i}
-                      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                      sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                     >
                       <TableCell
                         sx={{
-                          borderBottomColor: "#F5F6F8",
+                          borderBottomColor: '#F5F6F8',
                           borderBottomWidth: 2,
-                          color: "#555555",
+                          color: '#555555',
                           fontWeight: 500,
                           paddingLeft: {
                             lg: 10,
@@ -397,29 +396,29 @@ export default function BasicTable({
                         component="th"
                         scope="row"
                       >
-                        <Box display={"flex"} alignItems={"center"} gap={1.5}>
+                        <Box display={'flex'} alignItems={'center'} gap={1.5}>
                           {organisation?.imageUrl &&
-                          organisation?.imageUrl !== "null" ? (
+                          organisation?.imageUrl !== 'null' ? (
                             <Image
                               src={String(organisation.imageUrl)}
                               width={40}
                               height={40}
                               style={{
-                                borderRadius: "8px",
-                                objectFit: "contain",
+                                borderRadius: '8px',
+                                objectFit: 'contain',
                               }}
                               alt="img not found"
                             />
                           ) : (
                             <Box
-                              display={"flex"}
-                              justifyContent={"center"}
-                              alignItems={"center"}
-                              bgcolor={"rgba(145, 158, 171, 0.24)"}
+                              display={'flex'}
+                              justifyContent={'center'}
+                              alignItems={'center'}
+                              bgcolor={'rgba(145, 158, 171, 0.24)'}
                               sx={{
                                 width: 40,
                                 height: 40,
-                                borderRadius: "8px",
+                                borderRadius: '8px',
                               }}
                             >
                               <svg
@@ -444,71 +443,71 @@ export default function BasicTable({
                       </TableCell>
                       <TableCell
                         sx={{
-                          borderBottomColor: "#F5F6F8",
+                          borderBottomColor: '#F5F6F8',
                           borderBottomWidth: 2,
-                          color: "#555555",
+                          color: '#555555',
                           fontWeight: 500,
                           pl: 0,
                         }}
                       >
                         {organisation?.contact?.find(
                           (contact) =>
-                            contact.permission === "ADMIN" ||
-                            contact.permission === "SUPERADMIN"
-                        )?.email ?? ""}
+                            contact.permission === 'ADMIN' ||
+                            contact.permission === 'SUPERADMIN',
+                        )?.email ?? ''}
                       </TableCell>
                       <TableCell
                         sx={{
-                          borderBottomColor: "#F5F6F8",
+                          borderBottomColor: '#F5F6F8',
                           borderBottomWidth: 2,
-                          color: "#555555",
+                          color: '#555555',
                           fontWeight: 500,
                           pl: 0,
                         }}
                       >
                         {organisation?.contact?.find(
                           (contact) =>
-                            contact.permission === "ADMIN" ||
-                            contact.permission === "SUPERADMIN"
-                        )?.phone ?? ""}
+                            contact.permission === 'ADMIN' ||
+                            contact.permission === 'SUPERADMIN',
+                        )?.phone ?? ''}
                       </TableCell>
                       <TableCell
                         sx={{
-                          borderBottomColor: "#F5F6F8",
+                          borderBottomColor: '#F5F6F8',
                           borderBottomWidth: 2,
-                          color: "#555555",
+                          color: '#555555',
                           fontWeight: 500,
                           pl: 0,
                         }}
                       >
                         {organisation?.contact?.find(
                           (contact) =>
-                            contact.permission === "ADMIN" ||
-                            contact.permission === "SUPERADMIN"
-                        )?.name ?? ""}
+                            contact.permission === 'ADMIN' ||
+                            contact.permission === 'SUPERADMIN',
+                        )?.name ?? ''}
                       </TableCell>
                       <TableCell
                         sx={{
-                          borderBottomColor: "#F5F6F8",
+                          borderBottomColor: '#F5F6F8',
                           borderBottomWidth: 2,
-                          color: "#555555",
+                          color: '#555555',
                           fontWeight: 500,
                           pl: 0,
                         }}
                       >
                         {organisation?.users?.find(
                           (user) =>
-                            user.role === "ADMIN" || user.role === "SUPERADMIN"
+                            user.role === 'ADMIN' || user.role === 'SUPERADMIN',
                         )?.access
-                          ? "True"
-                          : "False"}
+                          ? 'True'
+                          : 'False'}
                       </TableCell>
-                      {role !== "MEMBER" && (
+                      {role !== 'MEMBER' && (
                         <TableCell
                           sx={{
-                            borderBottomColor: "#F5F6F8",
+                            borderBottomColor: '#F5F6F8',
                             borderBottomWidth: 2,
-                            color: "#555555",
+                            color: '#555555',
                             fontWeight: 500,
                           }}
                           className="cursor-pointer"
@@ -516,15 +515,15 @@ export default function BasicTable({
                         >
                           <Button
                             id="basic-button"
-                            aria-controls={open ? "basic-menu" : undefined}
+                            aria-controls={open ? 'basic-menu' : undefined}
                             aria-haspopup="true"
-                            aria-expanded={open ? "true" : undefined}
+                            aria-expanded={open ? 'true' : undefined}
                             onClick={(e) => handleClick(e, organisation)}
                             className="table-edit-option"
                             sx={{
-                              background: "transparent",
-                              color: "#555555",
-                              boxShadow: "none",
+                              background: 'transparent',
+                              color: '#555555',
+                              boxShadow: 'none',
                             }}
                           >
                             <svg
@@ -546,21 +545,21 @@ export default function BasicTable({
                             open={open}
                             onClose={handleClose}
                             MenuListProps={{
-                              "aria-labelledby": "basic-button",
+                              'aria-labelledby': 'basic-button',
                             }}
                             sx={{
-                              position: "absolute",
-                              left: "-10px",
+                              position: 'absolute',
+                              left: '-10px',
                             }}
                           >
                             <MenuItem
                               onClick={handleEdit}
                               disabled={
-                                userRole === "SUPERADMIN"
+                                userRole === 'SUPERADMIN'
                                   ? false
                                   : permissions
-                                  ? false
-                                  : true
+                                    ? false
+                                    : true
                               }
                             >
                               <Stack
@@ -590,10 +589,11 @@ export default function BasicTable({
                               onClick={handleRestrictAccess}
                               disabled={
                                 selectedOrganisation?.users?.some(
-                                  (user) => user.role === "SUPERADMIN"
+                                  (user) => user.role === 'SUPERADMIN',
                                 ) ||
                                 selectedOrganisation?.users?.some(
-                                  (user) => user.role === "ADMIN" && user.invite
+                                  (user) =>
+                                    user.role === 'ADMIN' && user.invite,
                                 )
                               }
                             >
@@ -608,7 +608,7 @@ export default function BasicTable({
                                   src={
                                     selectedOrganisation?.users?.find(
                                       (val) =>
-                                        val.role === "ADMIN" && val.access
+                                        val.role === 'ADMIN' && val.access,
                                     )
                                       ? userUnBlock
                                       : userBlock
@@ -617,23 +617,23 @@ export default function BasicTable({
 
                                 <Typography variant="subtitle2">
                                   {selectedOrganisation?.users?.find(
-                                    (val) => val.role === "ADMIN" && val.access
+                                    (val) => val.role === 'ADMIN' && val.access,
                                   )
-                                    ? "Access Restricted"
-                                    : "Access Unrestrict"}
+                                    ? 'Access Restricted'
+                                    : 'Access Unrestrict'}
                                 </Typography>
                               </Stack>
                             </MenuItem>
-                            {userRole === "SUPERADMIN" && (
+                            {userRole === 'SUPERADMIN' && (
                               <MenuItem
                                 onClick={handleInviteOrganisation}
                                 disabled={
                                   selectedOrganisation?.users?.some(
-                                    (user) => user.role === "SUPERADMIN"
+                                    (user) => user.role === 'SUPERADMIN',
                                   ) ||
                                   selectedOrganisation?.users?.some(
                                     (user) =>
-                                      user.role === "ADMIN" && user.invite
+                                      user.role === 'ADMIN' && user.invite,
                                   )
                                 }
                               >
@@ -658,10 +658,10 @@ export default function BasicTable({
                                   <Typography variant="subtitle2">
                                     {selectedOrganisation?.users?.find(
                                       (val) =>
-                                        val.role === "ADMIN" && val.invite
+                                        val.role === 'ADMIN' && val.invite,
                                     )
-                                      ? "Invited"
-                                      : "Invite"}
+                                      ? 'Invited'
+                                      : 'Invite'}
                                   </Typography>
                                 </Stack>
                               </MenuItem>
@@ -674,7 +674,7 @@ export default function BasicTable({
                 })
               ) : (
                 <TableRow>
-                  <TableCell colSpan={6} sx={{ textAlign: "center" }}>
+                  <TableCell colSpan={6} sx={{ textAlign: 'center' }}>
                     No Data Found
                   </TableCell>
                 </TableRow>

@@ -1,16 +1,16 @@
-"use client"; // Ensure this line is at the very top of the file
+'use client'; // Ensure this line is at the very top of the file
 
-import { useEffect, useState } from "react";
-import { Divider, IconButton, Stack, Typography } from "@mui/material";
-import { alpha } from "@mui/material/styles";
-import SettingFullscreen from "./SettingFullscreen";
-import SettingLayout from "./SettingLayout";
-import SettingStretch from "./SettingStretch";
-import { IconButtonAnimate } from "../animate";
-import Iconify from "../iconify";
-import MenuPopover from "../menu-popover";
-import Scrollbar from "../scrollbar/Scrollbar";
-import SettingMode from "./SettingMode";
+import { useEffect, useState } from 'react';
+import { Divider, IconButton, Stack, Typography } from '@mui/material';
+import { alpha } from '@mui/material/styles';
+import SettingFullscreen from './SettingFullscreen';
+import SettingLayout from './SettingLayout';
+import SettingStretch from './SettingStretch';
+import { IconButtonAnimate } from '../animate';
+import Iconify from '../iconify';
+import MenuPopover from '../menu-popover';
+import Scrollbar from '../scrollbar/Scrollbar';
+import SettingMode from './SettingMode';
 
 const ITEM_HEIGHT = 64;
 
@@ -19,12 +19,12 @@ export default function SettingsButton() {
 
   useEffect(() => {
     if (open) {
-      document.body.style.overflow = "hidden";
+      document.body.style.overflow = 'hidden';
     } else {
-      document.body.style.overflow = "";
+      document.body.style.overflow = '';
     }
     return () => {
-      document.body.style.overflow = "";
+      document.body.style.overflow = '';
     };
   }, [open]);
 
@@ -39,7 +39,7 @@ export default function SettingsButton() {
   return (
     <>
       <IconButtonAnimate
-        color={open ? "primary" : "default"}
+        color={open ? 'primary' : 'default'}
         onClick={handleOpen}
         sx={{
           width: 40,
@@ -48,12 +48,12 @@ export default function SettingsButton() {
             bgcolor: (theme) =>
               alpha(
                 theme.palette.primary.main,
-                theme.palette.action.focusOpacity
+                theme.palette.action.focusOpacity,
               ),
           }),
         }}
       >
-        <Iconify icon={"eva:options-2-fill"} width={20} height={20} />
+        <Iconify icon={'eva:options-2-fill'} width={20} height={20} />
       </IconButtonAnimate>
 
       <MenuPopover
@@ -64,7 +64,7 @@ export default function SettingsButton() {
           mt: 1.5,
           ml: 0.75,
           width: 320,
-          "& .MuiMenuItem-root": {
+          '& .MuiMenuItem-root': {
             px: 1.5,
             height: ITEM_HEIGHT,
             borderRadius: 0.75,
@@ -82,11 +82,11 @@ export default function SettingsButton() {
           </Typography>
 
           <IconButton onClick={handleClose}>
-            <Iconify icon={"eva:close-fill"} width={20} height={20} />
+            <Iconify icon={'eva:close-fill'} width={20} height={20} />
           </IconButton>
         </Stack>
 
-        <Divider sx={{ borderStyle: "dashed" }} />
+        <Divider sx={{ borderStyle: 'dashed' }} />
 
         <Scrollbar sx={{ flexGrow: 1 }}>
           <Stack spacing={3} sx={{ p: 3 }}>

@@ -1,32 +1,28 @@
-"use client";
-import React, { useEffect, useState } from "react";
-import Box from "@mui/material/Box";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import { Avatar, Stack, Typography } from "@mui/material";
-import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import Image from "next/image";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import SampleIcon from "@/public/static/img/ic-sample.svg";
-import {
-  selectSwitchSidebar,
-  sidebarAction,
-} from "@/lib/features/sidebar/sidebarSlice";
-import { getCookie, setCookie } from "cookies-next";
-import { LoggedUser } from "../AccountPopover";
-import Logo from "@/public/static/img/logo.svg";
-import { farmAction } from "@/lib/features/farm/farmSlice";
+'use client';
+import React, { useEffect, useState } from 'react';
+import Box from '@mui/material/Box';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import { Avatar, Stack, Typography } from '@mui/material';
+import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
+import Image from 'next/image';
+import { useAppDispatch } from '@/lib/hooks';
+import { sidebarAction } from '@/lib/features/sidebar/sidebarSlice';
+import { getCookie, setCookie } from 'cookies-next';
+import { LoggedUser } from '../AccountPopover';
+import Logo from '@/public/static/img/logo.svg';
+import { farmAction } from '@/lib/features/farm/farmSlice';
 const ExpandedSidebar = () => {
   const router = useRouter();
-  const loggedUser: any = getCookie("logged-user");
+  const loggedUser: any = getCookie('logged-user');
   const [loggedUserData, setLoggedUserData] = useState<LoggedUser>();
   const [userData, setUserData] = useState<LoggedUser>();
   const [loading, setLoading] = useState<boolean>(false);
-  const [activePage, setActivePage] = useState<String>("");
+  const [activePage, setActivePage] = useState<string>('');
   const dispatch = useAppDispatch();
   const pathName = usePathname();
   useEffect(() => {
@@ -44,9 +40,9 @@ const ExpandedSidebar = () => {
     setLoading(true);
     const getUser = async () => {
       try {
-        const token = getCookie("auth-token");
+        const token = getCookie('auth-token');
         const response = await fetch(`/api/users/${loggedUserData.id}`, {
-          method: "GET",
+          method: 'GET',
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -55,7 +51,7 @@ const ExpandedSidebar = () => {
         setUserData(data.data);
         setLoading(false);
       } catch (error) {
-        console.error("Error fetching user data:", error);
+        console.error('Error fetching user data:', error);
         setLoading(false);
       }
     };
@@ -65,36 +61,36 @@ const ExpandedSidebar = () => {
     <Stack
       className="sidebar"
       sx={{
-        position: "fixed",
-        top: "0",
-        left: "0",
+        position: 'fixed',
+        top: '0',
+        left: '0',
         // height: "100vh !important",
-        height: "100% !important",
-        overflowY: "auto",
-        overflowX: "hidden",
+        height: '100% !important',
+        overflowY: 'auto',
+        overflowX: 'hidden',
         background:
-          "linear-gradient(349.33deg, rgba(6, 161, 155, 0.4) -27.15%, rgba(2, 59, 57, 0) 103.57%)",
+          'linear-gradient(349.33deg, rgba(6, 161, 155, 0.4) -27.15%, rgba(2, 59, 57, 0) 103.57%)',
       }}
     >
       <Box
-        position={"relative"}
+        position={'relative'}
         paddingBlock={3}
         paddingInline={2.5}
-        height={"100%"}
+        height={'100%'}
         sx={{
           width: 280,
-          transition: "width 1s !important",
+          transition: 'width 1s !important',
         }}
         role="presentation"
       >
         <Box
           sx={{
-            display: "flex",
-            justifyContent: "flex-start",
-            alignItems: "center",
+            display: 'flex',
+            justifyContent: 'flex-start',
+            alignItems: 'center',
           }}
           className="cursor-pointer"
-          onClick={() => router.push("/dashboard")}
+          onClick={() => router.push('/dashboard')}
         >
           <Image src={Logo} alt="Logo" width={50} height={40} />
         </Box>
@@ -102,33 +98,33 @@ const ExpandedSidebar = () => {
           <h6>Loading....</h6>
         ) : (
           <Box
-            display={"flex"}
-            alignItems={"center"}
+            display={'flex'}
+            alignItems={'center'}
             gap={1.5}
             paddingInline={1.4}
             paddingBlock={1}
             my={3}
-            bgcolor={"rgba(145, 158, 171, 0.12)"}
+            bgcolor={'rgba(145, 158, 171, 0.12)'}
             borderRadius={3}
           >
             {userData ? (
               userData?.imageUrl ? (
                 <Box
-                  display={"flex"}
-                  justifyContent={"center"}
-                  alignItems={"center"}
+                  display={'flex'}
+                  justifyContent={'center'}
+                  alignItems={'center'}
                   // bgcolor={"rgba(145, 158, 171, 0.24)"}
                   sx={{
                     width: 40,
                     height: 40,
-                    borderRadius: "8px",
+                    borderRadius: '8px',
                   }}
                   style={{
                     backgroundImage: `url(${userData?.imageUrl})`,
-                    backgroundSize: "contain",
-                    backgroundPosition: "center",
-                    backgroundRepeat: "no-repeat",
-                    margin: "0 !important",
+                    backgroundSize: 'contain',
+                    backgroundPosition: 'center',
+                    backgroundRepeat: 'no-repeat',
+                    margin: '0 !important',
                   }}
                 ></Box>
               ) : (
@@ -141,14 +137,14 @@ const ExpandedSidebar = () => {
               )
             ) : (
               <Box
-                display={"flex"}
-                justifyContent={"center"}
-                alignItems={"center"}
-                bgcolor={"rgba(145, 158, 171, 0.24)"}
+                display={'flex'}
+                justifyContent={'center'}
+                alignItems={'center'}
+                bgcolor={'rgba(145, 158, 171, 0.24)'}
                 sx={{
                   width: 40,
                   height: 40,
-                  borderRadius: "8px",
+                  borderRadius: '8px',
                 }}
               >
                 <svg
@@ -170,20 +166,20 @@ const ExpandedSidebar = () => {
 
             <Box>
               <Typography variant="subtitle2" fontWeight={600}>
-                {userData ? userData?.name : "Demo"}
+                {userData ? userData?.name : 'Demo'}
               </Typography>
               <Typography
                 variant="body2"
                 fontSize={12}
                 fontWeight={400}
                 sx={{
-                  whiteSpace: "nowrap",
-                  width: "165px",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
+                  whiteSpace: 'nowrap',
+                  width: '165px',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
                 }}
               >
-                {userData ? userData?.email : "Demo"}
+                {userData ? userData?.email : 'Demo'}
               </Typography>
             </Box>
           </Box>
@@ -195,35 +191,35 @@ const ExpandedSidebar = () => {
             fontSize={12}
             fontWeight={600}
             pl={2}
-            textTransform={"uppercase"}
+            textTransform={'uppercase'}
             letterSpacing={0.5}
             mb={1}
           >
             My Feedflow
           </Typography>
 
-          <Link href={"/dashboard"} className="nav-links">
+          <Link href={'/dashboard'} className="nav-links">
             <ListItem
               sx={{
                 paddingX: 0,
               }}
             >
               <ListItemButton
-                className={activePage === "/dashboard" ? "active" : ""}
+                className={activePage === '/dashboard' ? 'active' : ''}
                 sx={{
-                  display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "center",
-                  alignItems: "center",
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  alignItems: 'center',
                   gap: 1.7,
                 }}
               >
                 <ListItemIcon
                   sx={{
-                    display: "grid",
-                    placeItems: "center",
+                    display: 'grid',
+                    placeItems: 'center',
                     marginRight: 0,
-                    minWidth: "fit-content",
+                    minWidth: 'fit-content',
                   }}
                 >
                   <svg
@@ -257,14 +253,14 @@ const ExpandedSidebar = () => {
             fontWeight={600}
             pl={2}
             mt={3}
-            textTransform={"uppercase"}
+            textTransform={'uppercase'}
             letterSpacing={0.5}
             mb={1}
           >
             SETUP
           </Typography>
 
-          <Link href={"/dashboard/fishSupply"} className="nav-links">
+          <Link href={'/dashboard/fishSupply'} className="nav-links">
             <ListItem
               sx={{
                 paddingX: 0,
@@ -273,22 +269,22 @@ const ExpandedSidebar = () => {
             >
               <ListItemButton
                 className={
-                  activePage.startsWith("/dashboard/fishSupply") ? "active" : ""
+                  activePage.startsWith('/dashboard/fishSupply') ? 'active' : ''
                 }
                 sx={{
-                  display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "center",
-                  alignItems: "center",
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  alignItems: 'center',
                   gap: 1.7,
                 }}
               >
                 <ListItemIcon
                   sx={{
-                    display: "grid",
-                    placeItems: "center",
+                    display: 'grid',
+                    placeItems: 'center',
                     marginRight: 0,
-                    minWidth: "fit-content",
+                    minWidth: 'fit-content',
                   }}
                 >
                   <svg
@@ -323,9 +319,9 @@ const ExpandedSidebar = () => {
           </Link>
 
           <Link
-            href={"/dashboard/farm"}
+            href={'/dashboard/farm'}
             className="nav-links"
-            onClick={() => setCookie("isEditFarm", false)}
+            onClick={() => setCookie('isEditFarm', false)}
           >
             <ListItem
               sx={{
@@ -335,22 +331,22 @@ const ExpandedSidebar = () => {
             >
               <ListItemButton
                 className={
-                  activePage.startsWith("/dashboard/farm") ? "active" : ""
+                  activePage.startsWith('/dashboard/farm') ? 'active' : ''
                 }
                 sx={{
-                  display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "center",
-                  alignItems: "center",
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  alignItems: 'center',
                   gap: 1.7,
                 }}
               >
                 <ListItemIcon
                   sx={{
-                    display: "grid",
-                    placeItems: "center",
+                    display: 'grid',
+                    placeItems: 'center',
                     marginRight: 0,
-                    minWidth: "fit-content",
+                    minWidth: 'fit-content',
                   }}
                 >
                   <svg
@@ -377,7 +373,7 @@ const ExpandedSidebar = () => {
             </ListItem>
           </Link>
 
-          <Link href={"/dashboard/feedSupply"} className="nav-links">
+          <Link href={'/dashboard/feedSupply'} className="nav-links">
             <ListItem
               sx={{
                 paddingX: 0,
@@ -386,22 +382,22 @@ const ExpandedSidebar = () => {
             >
               <ListItemButton
                 className={
-                  activePage.startsWith("/dashboard/feedSupply") ? "active" : ""
+                  activePage.startsWith('/dashboard/feedSupply') ? 'active' : ''
                 }
                 sx={{
-                  display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "center",
-                  alignItems: "center",
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  alignItems: 'center',
                   gap: 1.7,
                 }}
               >
                 <ListItemIcon
                   sx={{
-                    display: "grid",
-                    placeItems: "center",
+                    display: 'grid',
+                    placeItems: 'center',
                     marginRight: 0,
-                    minWidth: "fit-content",
+                    minWidth: 'fit-content',
                   }}
                 >
                   <svg
@@ -434,7 +430,7 @@ const ExpandedSidebar = () => {
             fontWeight={600}
             pl={2}
             mt={3}
-            textTransform={"uppercase"}
+            textTransform={'uppercase'}
             letterSpacing={0.5}
             mb={1}
           >
@@ -442,7 +438,7 @@ const ExpandedSidebar = () => {
           </Typography>
 
           <Link
-            href={"/dashboard/production"}
+            href={'/dashboard/production'}
             className="nav-links"
             onClick={() => dispatch(farmAction.resetState())}
           >
@@ -454,22 +450,22 @@ const ExpandedSidebar = () => {
             >
               <ListItemButton
                 className={
-                  activePage.startsWith("/dashboard/production") ? "active" : ""
+                  activePage.startsWith('/dashboard/production') ? 'active' : ''
                 }
                 sx={{
-                  display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "center",
-                  alignItems: "center",
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  alignItems: 'center',
                   gap: 1.7,
                 }}
               >
                 <ListItemIcon
                   sx={{
-                    display: "grid",
-                    placeItems: "center",
+                    display: 'grid',
+                    placeItems: 'center',
                     marginRight: 0,
-                    minWidth: "fit-content",
+                    minWidth: 'fit-content',
                   }}
                 >
                   <svg
@@ -565,7 +561,7 @@ const ExpandedSidebar = () => {
           </Link> */}
 
           <Link
-            href={"/dashboard/feedPrediction"}
+            href={'/dashboard/feedPrediction'}
             className="nav-links"
             onClick={() => dispatch(farmAction.resetState())}
           >
@@ -577,24 +573,24 @@ const ExpandedSidebar = () => {
             >
               <ListItemButton
                 className={
-                  activePage.startsWith("/dashboard/feedPrediction")
-                    ? "active"
-                    : ""
+                  activePage.startsWith('/dashboard/feedPrediction')
+                    ? 'active'
+                    : ''
                 }
                 sx={{
-                  display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "center",
-                  alignItems: "center",
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  alignItems: 'center',
                   gap: 1.7,
                 }}
               >
                 <ListItemIcon
                   sx={{
-                    display: "grid",
-                    placeItems: "center",
+                    display: 'grid',
+                    placeItems: 'center',
                     marginRight: 0,
-                    minWidth: "fit-content",
+                    minWidth: 'fit-content',
                   }}
                 >
                   <svg
@@ -633,14 +629,14 @@ const ExpandedSidebar = () => {
             fontWeight={600}
             pl={2}
             mt={3}
-            textTransform={"uppercase"}
+            textTransform={'uppercase'}
             letterSpacing={0.5}
             mb={1}
           >
             Admin
           </Typography>
 
-          <Link href={"/dashboard/organisation?tab=all"} className="nav-links">
+          <Link href={'/dashboard/organisation?tab=all'} className="nav-links">
             <ListItem
               sx={{
                 paddingX: 0,
@@ -649,24 +645,24 @@ const ExpandedSidebar = () => {
             >
               <ListItemButton
                 className={
-                  activePage.startsWith("/dashboard/organisation?tab=all")
-                    ? "active"
-                    : ""
+                  activePage.startsWith('/dashboard/organisation?tab=all')
+                    ? 'active'
+                    : ''
                 }
                 sx={{
-                  display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "center",
-                  alignItems: "center",
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  alignItems: 'center',
                   gap: 1.7,
                 }}
               >
                 <ListItemIcon
                   sx={{
-                    display: "grid",
-                    placeItems: "center",
+                    display: 'grid',
+                    placeItems: 'center',
                     marginRight: 0,
-                    minWidth: "fit-content",
+                    minWidth: 'fit-content',
                   }}
                 >
                   <svg
@@ -693,7 +689,7 @@ const ExpandedSidebar = () => {
             </ListItem>
           </Link>
 
-          <Link href={"/dashboard/user"} className="nav-links">
+          <Link href={'/dashboard/user'} className="nav-links">
             <ListItem
               sx={{
                 paddingX: 0,
@@ -701,22 +697,22 @@ const ExpandedSidebar = () => {
             >
               <ListItemButton
                 className={
-                  activePage.startsWith("/dashboard/user") ? "active" : ""
+                  activePage.startsWith('/dashboard/user') ? 'active' : ''
                 }
                 sx={{
-                  display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "center",
-                  alignItems: "center",
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  alignItems: 'center',
                   gap: 1.7,
                 }}
               >
                 <ListItemIcon
                   sx={{
-                    display: "grid",
-                    placeItems: "center",
+                    display: 'grid',
+                    placeItems: 'center',
                     marginRight: 0,
-                    minWidth: "fit-content",
+                    minWidth: 'fit-content',
                   }}
                 >
                   <svg
@@ -742,9 +738,9 @@ const ExpandedSidebar = () => {
               </ListItemButton>
             </ListItem>
           </Link>
-          {loggedUserData?.role === "SUPERADMIN" && (
+          {loggedUserData?.role === 'SUPERADMIN' && (
             <Link
-              href={"/dashboard/growthModel"}
+              href={'/dashboard/growthModel'}
               className="nav-links"
               onClick={() => dispatch(farmAction.resetState())}
             >
@@ -756,24 +752,24 @@ const ExpandedSidebar = () => {
               >
                 <ListItemButton
                   className={
-                    activePage.startsWith("/dashboard/growthModel")
-                      ? "active"
-                      : ""
+                    activePage.startsWith('/dashboard/growthModel')
+                      ? 'active'
+                      : ''
                   }
                   sx={{
-                    display: "flex",
-                    flexDirection: "row",
-                    justifyContent: "center",
-                    alignItems: "center",
+                    display: 'flex',
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                    alignItems: 'center',
                     gap: 1.7,
                   }}
                 >
                   <ListItemIcon
                     sx={{
-                      display: "grid",
-                      placeItems: "center",
+                      display: 'grid',
+                      placeItems: 'center',
                       marginRight: 0,
-                      minWidth: "fit-content",
+                      minWidth: 'fit-content',
                     }}
                   >
                     <svg
@@ -808,17 +804,17 @@ const ExpandedSidebar = () => {
           )}
         </List>
         <Box
-          position={"absolute"}
+          position={'absolute'}
           top={35}
           right={3}
           sx={{
-            cursor: "pointer",
-            transform: "rotate(180deg) translateY(5px)",
+            cursor: 'pointer',
+            transform: 'rotate(180deg) translateY(5px)',
           }}
           onClick={() => dispatch(sidebarAction.handleSwitchSidebar(false))}
         >
           <Image
-            src={"/static/img/icons/ic-expand-sidebar.svg"}
+            src={'/static/img/icons/ic-expand-sidebar.svg'}
             width={17}
             height={17}
             alt="Sidebar Expand Icon"

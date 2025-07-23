@@ -1,7 +1,7 @@
-import prisma from "@/prisma/prisma";
-import { NextRequest, NextResponse } from "next/server";
-import bcrypt from "bcryptjs";
-import { verifyAndRefreshToken } from "@/app/_lib/auth/verifyAndRefreshToken";
+import prisma from '@/prisma/prisma';
+import { NextRequest, NextResponse } from 'next/server';
+import bcrypt from 'bcryptjs';
+import { verifyAndRefreshToken } from '@/app/_lib/auth/verifyAndRefreshToken';
 
 export const GET = async (request: NextRequest, context: { params: any }) => {
   const user = await verifyAndRefreshToken(request);
@@ -9,16 +9,16 @@ export const GET = async (request: NextRequest, context: { params: any }) => {
     return new NextResponse(
       JSON.stringify({
         status: false,
-        message: "Unauthorized: Token missing or invalid",
+        message: 'Unauthorized: Token missing or invalid',
       }),
-      { status: 401 }
+      { status: 401 },
     );
   }
   const userId = context.params.userId;
   if (!userId) {
     return new NextResponse(
-      JSON.stringify({ message: "Invalid or missing userId" }),
-      { status: 400 }
+      JSON.stringify({ message: 'Invalid or missing userId' }),
+      { status: 400 },
     );
   }
   try {
@@ -48,8 +48,8 @@ export async function PUT(req: NextRequest, context: { params: any }) {
   const user = await verifyAndRefreshToken(req);
   if (user.status === 401) {
     return NextResponse.json(
-      { status: false, message: "Unauthorized: Token missing or invalid" },
-      { status: 401 }
+      { status: false, message: 'Unauthorized: Token missing or invalid' },
+      { status: 401 },
     );
   }
   try {
@@ -62,7 +62,7 @@ export async function PUT(req: NextRequest, context: { params: any }) {
     });
 
     if (!userData) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 });
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
     // Accept JSON body
@@ -106,14 +106,14 @@ export async function PUT(req: NextRequest, context: { params: any }) {
     });
 
     return new NextResponse(
-      JSON.stringify({ message: "Profile successfully updated!" }),
-      { status: 200 }
+      JSON.stringify({ message: 'Profile successfully updated!' }),
+      { status: 200 },
     );
   } catch (error) {
     console.error(error);
     return NextResponse.json(
-      { error: "Something went wrong" },
-      { status: 500 }
+      { error: 'Something went wrong' },
+      { status: 500 },
     );
   }
 }

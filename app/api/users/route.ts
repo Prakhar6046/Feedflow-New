@@ -1,24 +1,24 @@
-import prisma from "@/prisma/prisma";
-import { NextRequest, NextResponse } from "next/server";
-import { verifyAndRefreshToken } from "@/app/_lib/auth/verifyAndRefreshToken";
+import prisma from '@/prisma/prisma';
+import { NextRequest, NextResponse } from 'next/server';
+import { verifyAndRefreshToken } from '@/app/_lib/auth/verifyAndRefreshToken';
 
 export const GET = async (request: NextRequest) => {
   const user = await verifyAndRefreshToken(request);
   if (user.status === 401) {
     return NextResponse.json(
-      { status: false, message: "Unauthorized: Token missing or invalid" },
-      { status: 401 }
+      { status: false, message: 'Unauthorized: Token missing or invalid' },
+      { status: 401 },
     );
   }
   try {
     const searchParams = request.nextUrl.searchParams;
-    const role = searchParams.get("role");
-    const query = searchParams.get("query");
+    const role = searchParams.get('role');
+    const query = searchParams.get('query');
 
-    const organisationId = searchParams.get("organisationId");
+    const organisationId = searchParams.get('organisationId');
     let users;
 
-    if (role === "SUPERADMIN") {
+    if (role === 'SUPERADMIN') {
       users = await prisma.user.findMany({
         where: {
           id: { not: 1 },
@@ -27,7 +27,7 @@ export const GET = async (request: NextRequest) => {
               ? {
                   OR: [
                     {
-                      name: { contains: query, mode: "insensitive" },
+                      name: { contains: query, mode: 'insensitive' },
                     },
                   ],
                 }
@@ -43,7 +43,7 @@ export const GET = async (request: NextRequest) => {
           },
         },
         orderBy: {
-          createdAt: "desc", // Sort by createdAt in descending order
+          createdAt: 'desc', // Sort by createdAt in descending order
         },
       });
     } else {
@@ -58,7 +58,7 @@ export const GET = async (request: NextRequest) => {
           },
         },
         orderBy: {
-          createdAt: "desc", // Sort by createdAt in descending order
+          createdAt: 'desc', // Sort by createdAt in descending order
         },
       });
     }
@@ -77,28 +77,28 @@ export const DELETE = async (request: NextRequest) => {
   const user = await verifyAndRefreshToken(request);
   if (user.status === 401) {
     return NextResponse.json(
-      { status: false, message: "Unauthorized: Token missing or invalid" },
-      { status: 401 }
+      { status: false, message: 'Unauthorized: Token missing or invalid' },
+      { status: 401 },
     );
   }
   try {
     const searchParams = request.nextUrl.searchParams;
-    const role = searchParams.get("role");
+    const role = searchParams.get('role');
     const userId = await request.json();
 
     const deletedUser = await prisma.user.delete({
-      where: { role: { not: "SUPERADMIN" }, id: Number(userId) },
+      where: { role: { not: 'SUPERADMIN' }, id: Number(userId) },
     });
 
     return new NextResponse(
       JSON.stringify({
         status: true,
         data: deletedUser,
-        message: "User Deleted Successfully",
+        message: 'User Deleted Successfully',
       }),
       {
         status: 200,
-      }
+      },
     );
   } catch (error) {
     return new NextResponse(JSON.stringify({ status: false, error }), {
@@ -111,8 +111,8 @@ export const PATCH = async (request: NextRequest) => {
   const user = await verifyAndRefreshToken(request);
   if (user.status === 401) {
     return NextResponse.json(
-      { status: false, message: "Unauthorized: Token missing or invalid" },
-      { status: 401 }
+      { status: false, message: 'Unauthorized: Token missing or invalid' },
+      { status: 401 },
     );
   }
   try {
@@ -120,8 +120,8 @@ export const PATCH = async (request: NextRequest) => {
 
     if (!id) {
       return NextResponse.json(
-        { error: "Invalid or missing Organisation id." },
-        { status: 404 }
+        { error: 'Invalid or missing Organisation id.' },
+        { status: 404 },
       );
     }
 
@@ -131,8 +131,8 @@ export const PATCH = async (request: NextRequest) => {
 
     if (!organisation) {
       return NextResponse.json(
-        { error: "Organisation not found." },
-        { status: 404 }
+        { error: 'Organisation not found.' },
+        { status: 404 },
       );
     }
 
@@ -143,7 +143,7 @@ export const PATCH = async (request: NextRequest) => {
         where: { id: Number(userId) },
       });
 
-      if (!user || user.role === "SUPERADMIN") continue;
+      if (!user || user.role === 'SUPERADMIN') continue;
 
       const updatedUser = await prisma.user.update({
         where: { id: Number(userId) },
@@ -168,8 +168,8 @@ export const PATCH = async (request: NextRequest) => {
     console.error(error);
 
     return new NextResponse(
-      JSON.stringify({ status: false, error: "Internal Server Error" }),
-      { status: 500 }
+      JSON.stringify({ status: false, error: 'Internal Server Error' }),
+      { status: 500 },
     );
   }
 };

@@ -1,17 +1,17 @@
-import BasicBreadcrumbs from "@/app/_components/Breadcrumbs";
-import Loader from "@/app/_components/Loader";
-import { Metadata, NextPage } from "next";
-import { Suspense } from "react";
+import BasicBreadcrumbs from '@/app/_components/Breadcrumbs';
+import Loader from '@/app/_components/Loader';
+import { Metadata, NextPage } from 'next';
+import { Suspense } from 'react';
 
 interface Props {}
 export const metadata: Metadata = {
-  title: "Dashboard",
+  title: 'Dashboard',
 };
 const Page: NextPage<Props> = ({}) => {
   return (
     <div>
       <Suspense fallback={<Loader />}>
-        <BasicBreadcrumbs heading={"Dashboard"} />
+        <BasicBreadcrumbs heading={'Dashboard'} />
       </Suspense>
     </div>
   );

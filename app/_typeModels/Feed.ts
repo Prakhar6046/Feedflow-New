@@ -1,9 +1,9 @@
-import { FeedSupply } from "../_components/feedSupply/FeedSelection";
+import { FeedSupply } from '../_components/feedSupply/FeedSelection';
 
 export interface FeedInitialState {
-  isLoading: Boolean;
+  isLoading: boolean;
   editFeed: FeedSupply;
-  isEditFeed: Boolean;
+  isEditFeed: boolean;
 }
 export interface FeedProduct {
   organaisationId: number;

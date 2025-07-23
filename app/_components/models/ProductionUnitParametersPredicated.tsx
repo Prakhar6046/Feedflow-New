@@ -1,37 +1,30 @@
-import { getLocalItem, setLocalItem, Years } from "@/app/_lib/utils";
-import { waterQualityPredictedHead } from "@/app/_lib/utils/tableHeadData";
-import * as validationPattern from "@/app/_lib/utils/validationPatterns/index";
-import * as validationMessage from "@/app/_lib/utils/validationsMessage/index";
-import { GrowthModel, ProductionParaMeterType } from "@/app/_typeModels/Farm";
-import { selectFarm } from "@/lib/features/farm/farmSlice";
-import { useAppSelector } from "@/lib/hooks";
+import { getLocalItem, setLocalItem, Years } from '@/app/_lib/utils';
+import { waterQualityPredictedHead } from '@/app/_lib/utils/tableHeadData';
+import * as validationPattern from '@/app/_lib/utils/validationPatterns/index';
+import * as validationMessage from '@/app/_lib/utils/validationsMessage/index';
+import { ProductionParaMeterType } from '@/app/_typeModels/Farm';
+import { selectFarm } from '@/lib/features/farm/farmSlice';
+import { useAppSelector } from '@/lib/hooks';
 import {
   Box,
   Button,
-  Checkbox,
-  FormControl,
-  FormControlLabel,
-  FormHelperText,
   Grid,
   IconButton,
-  InputLabel,
-  MenuItem,
   Modal,
-  Select,
   Stack,
   Typography,
-} from "@mui/material";
-import Paper from "@mui/material/Paper";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import { getCookie } from "cookies-next";
-import { useEffect, useState } from "react";
-import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { CloseIcon } from "../theme/overrides/CustomIcons";
+} from '@mui/material';
+import Paper from '@mui/material/Paper';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import { getCookie } from 'cookies-next';
+import { useEffect, useState } from 'react';
+import { Controller, SubmitHandler, useForm } from 'react-hook-form';
+import { CloseIcon } from '../theme/overrides/CustomIcons';
 
 interface Props {
   productionParaMeter?: ProductionParaMeterType[];
@@ -48,14 +41,14 @@ interface FormData {
   modelId: number;
 }
 const style = {
-  position: "absolute" as "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
+  position: 'absolute' as const,
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
   width: 400,
-  bgcolor: "background.paper",
+  bgcolor: 'background.paper',
   boxShadow: 24,
-  padding: "5px 25px",
+  padding: '5px 25px',
 };
 
 const ProductionUnitParametersPredicated: React.FC<Props> = ({
@@ -65,7 +58,7 @@ const ProductionUnitParametersPredicated: React.FC<Props> = ({
   selectedUnitName,
   setSelectedUnitName,
 }) => {
-  const isEditFarm = getCookie("isEditFarm");
+  const isEditFarm = getCookie('isEditFarm');
 
   const farm = useAppSelector(selectFarm);
 
@@ -87,92 +80,92 @@ const ProductionUnitParametersPredicated: React.FC<Props> = ({
     },
   });
   const allWatchObject = {
-    predictedValues: watch("predictedValues"),
-    idealRange: watch("idealRange"),
-    modelId: watch("modelId"),
+    predictedValues: watch('predictedValues'),
+    idealRange: watch('idealRange'),
+    modelId: watch('modelId'),
   };
 
   const onSubmit: SubmitHandler<FormData> = (data) => {
     const productionParamtertsUnitsArray = getLocalItem(
-      "productionParamtertsUnitsArray"
+      'productionParamtertsUnitsArray',
     );
 
     const updatedData = productionParamtertsUnitsArray?.filter(
-      (data: any) => data.unitName !== selectedUnitName
+      (data: any) => data.unitName !== selectedUnitName,
     );
 
     const payload = {
       unitName: selectedUnitName,
       predictedValues: {
-        waterTemp: data?.predictedValues["Water Temperature °C"],
-        DO: data?.predictedValues["Dissolved Oxygen (DO) mg/L"],
-        TSS: data?.predictedValues["Total Suspended solids (TSS)"],
-        NH4: data?.predictedValues["Ammonia (NH₄) mg/L"],
-        NO3: data?.predictedValues["Nitrate (NO₃) mg/L"],
-        NO2: data?.predictedValues["Nitrite (NO₂) mg/L"],
-        ph: data?.predictedValues["pH"],
-        visibility: data?.predictedValues["Visibility cm"],
+        waterTemp: data?.predictedValues['Water Temperature °C'],
+        DO: data?.predictedValues['Dissolved Oxygen (DO) mg/L'],
+        TSS: data?.predictedValues['Total Suspended solids (TSS)'],
+        NH4: data?.predictedValues['Ammonia (NH₄) mg/L'],
+        NO3: data?.predictedValues['Nitrate (NO₃) mg/L'],
+        NO2: data?.predictedValues['Nitrite (NO₂) mg/L'],
+        ph: data?.predictedValues['pH'],
+        visibility: data?.predictedValues['Visibility cm'],
       },
       idealRange: {
-        waterTemp: data?.idealRange["Water Temperature °C"],
-        DO: data?.idealRange["Dissolved Oxygen (DO) mg/L"],
-        TSS: data?.idealRange["Total Suspended solids (TSS)"],
-        NH4: data?.idealRange["Ammonia (NH₄) mg/L"],
-        NO3: data?.idealRange["Nitrate (NO₃) mg/L"],
-        NO2: data?.idealRange["Nitrite (NO₂) mg/L"],
-        ph: data?.idealRange["pH"],
-        visibility: data?.idealRange["Visibility cm"],
+        waterTemp: data?.idealRange['Water Temperature °C'],
+        DO: data?.idealRange['Dissolved Oxygen (DO) mg/L'],
+        TSS: data?.idealRange['Total Suspended solids (TSS)'],
+        NH4: data?.idealRange['Ammonia (NH₄) mg/L'],
+        NO3: data?.idealRange['Nitrate (NO₃) mg/L'],
+        NO2: data?.idealRange['Nitrite (NO₂) mg/L'],
+        ph: data?.idealRange['pH'],
+        visibility: data?.idealRange['Visibility cm'],
       },
     };
 
     updatedData.push(payload);
-    setLocalItem("productionParamtertsUnitsArray", updatedData);
+    setLocalItem('productionParamtertsUnitsArray', updatedData);
     setOpen(false);
-    setSelectedUnitName("");
+    setSelectedUnitName('');
     reset();
   };
 
   useEffect(() => {
-    if (typeof window !== "undefined" && selectedUnitName) {
-      const formData = getLocalItem("productionParametes");
+    if (typeof window !== 'undefined' && selectedUnitName) {
+      const formData = getLocalItem('productionParametes');
       if (formData) {
         setFormProductionParameters(formData);
-        setValue("predictedValues", formProductionParameters?.predictedValues);
-        setValue("idealRange", formProductionParameters?.idealRange);
+        setValue('predictedValues', formProductionParameters?.predictedValues);
+        setValue('idealRange', formProductionParameters?.idealRange);
       }
     }
   }, [selectedUnitName]);
   useEffect(() => {
     const productionParamtertsUnitsArray = getLocalItem(
-      "productionParamtertsUnitsArray"
+      'productionParamtertsUnitsArray',
     );
 
     const updatedData = productionParamtertsUnitsArray?.find(
-      (data: any) => data.unitName === selectedUnitName
+      (data: any) => data.unitName === selectedUnitName,
     );
     if (updatedData) {
       const predictedValues = {
-        "Water Temperature °C": updatedData?.predictedValues?.waterTemp,
-        "Dissolved Oxygen (DO) mg/L": updatedData?.predictedValues?.DO,
-        "Total Suspended solids (TSS)": updatedData?.predictedValues?.TSS,
-        "Ammonia (NH₄) mg/L": updatedData?.predictedValues?.NH4,
-        "Nitrate (NO₃) mg/L": updatedData?.predictedValues?.NO3,
-        "Nitrite (NO₂) mg/L": updatedData?.predictedValues?.NO2,
+        'Water Temperature °C': updatedData?.predictedValues?.waterTemp,
+        'Dissolved Oxygen (DO) mg/L': updatedData?.predictedValues?.DO,
+        'Total Suspended solids (TSS)': updatedData?.predictedValues?.TSS,
+        'Ammonia (NH₄) mg/L': updatedData?.predictedValues?.NH4,
+        'Nitrate (NO₃) mg/L': updatedData?.predictedValues?.NO3,
+        'Nitrite (NO₂) mg/L': updatedData?.predictedValues?.NO2,
         pH: updatedData?.predictedValues?.ph,
-        "Visibility cm": updatedData?.predictedValues?.visibility,
+        'Visibility cm': updatedData?.predictedValues?.visibility,
       };
       const idealRange = {
-        "Water Temperature °C": updatedData?.predictedValues?.waterTemp,
-        "Dissolved Oxygen (DO) mg/L": updatedData?.predictedValues?.DO,
-        "Total Suspended solids (TSS)": updatedData?.predictedValues?.TSS,
-        "Ammonia (NH₄) mg/L": updatedData?.predictedValues?.NH4,
-        "Nitrate (NO₃) mg/L": updatedData?.predictedValues?.NO3,
-        "Nitrite (NO₂) mg/L": updatedData?.predictedValues?.NO2,
+        'Water Temperature °C': updatedData?.predictedValues?.waterTemp,
+        'Dissolved Oxygen (DO) mg/L': updatedData?.predictedValues?.DO,
+        'Total Suspended solids (TSS)': updatedData?.predictedValues?.TSS,
+        'Ammonia (NH₄) mg/L': updatedData?.predictedValues?.NH4,
+        'Nitrate (NO₃) mg/L': updatedData?.predictedValues?.NO3,
+        'Nitrite (NO₂) mg/L': updatedData?.predictedValues?.NO2,
         pH: updatedData?.predictedValues?.ph,
-        "Visibility cm": updatedData?.predictedValues?.visibility,
+        'Visibility cm': updatedData?.predictedValues?.visibility,
       };
-      setValue("predictedValues", predictedValues);
-      setValue("idealRange", idealRange);
+      setValue('predictedValues', predictedValues);
+      setValue('idealRange', idealRange);
     }
 
     // else {
@@ -183,10 +176,10 @@ const ProductionUnitParametersPredicated: React.FC<Props> = ({
 
   useEffect(() => {
     const productionParamtertsUnitsArray = getLocalItem(
-      "productionParamtertsUnitsArray"
+      'productionParamtertsUnitsArray',
     );
     const currentUnit = productionParamtertsUnitsArray?.find(
-      (val: any) => val.unitName === selectedUnitName
+      (val: any) => val.unitName === selectedUnitName,
     );
     if (
       isEditFarm &&
@@ -203,112 +196,112 @@ const ProductionUnitParametersPredicated: React.FC<Props> = ({
           // Creating the idealRange object for Min and Max
           const prediction = unit.YearBasedPredicationProductionUnit[0];
           const idealRange = {
-            "Water Temperature °C": {
-              Min: prediction?.idealRange?.waterTemp?.Min || "",
-              Max: prediction?.idealRange?.waterTemp?.Max || "",
+            'Water Temperature °C': {
+              Min: prediction?.idealRange?.waterTemp?.Min || '',
+              Max: prediction?.idealRange?.waterTemp?.Max || '',
             },
-            "Dissolved Oxygen (DO) mg/L": {
-              Min: prediction?.idealRange?.DO?.Min || "",
-              Max: prediction?.idealRange?.DO?.Max || "",
+            'Dissolved Oxygen (DO) mg/L': {
+              Min: prediction?.idealRange?.DO?.Min || '',
+              Max: prediction?.idealRange?.DO?.Max || '',
             },
-            "Total Suspended solids (TSS)": {
-              Min: prediction?.idealRange?.TSS?.Min || "",
-              Max: prediction?.idealRange?.TSS?.Max || "",
+            'Total Suspended solids (TSS)': {
+              Min: prediction?.idealRange?.TSS?.Min || '',
+              Max: prediction?.idealRange?.TSS?.Max || '',
             },
-            "Ammonia (NH₄) mg/L": {
-              Min: prediction?.idealRange?.NH4?.Min || "",
-              Max: prediction?.idealRange?.NH4?.Max || "",
+            'Ammonia (NH₄) mg/L': {
+              Min: prediction?.idealRange?.NH4?.Min || '',
+              Max: prediction?.idealRange?.NH4?.Max || '',
             },
-            "Nitrate (NO₃) mg/L": {
-              Min: prediction?.idealRange?.NO3?.Min || "",
-              Max: prediction?.idealRange?.NO3?.Max || "",
+            'Nitrate (NO₃) mg/L': {
+              Min: prediction?.idealRange?.NO3?.Min || '',
+              Max: prediction?.idealRange?.NO3?.Max || '',
             },
-            "Nitrite (NO₂) mg/L": {
-              Min: prediction?.idealRange?.NO2?.Min || "",
-              Max: prediction?.idealRange?.NO2?.Max || "",
+            'Nitrite (NO₂) mg/L': {
+              Min: prediction?.idealRange?.NO2?.Min || '',
+              Max: prediction?.idealRange?.NO2?.Max || '',
             },
             pH: {
-              Min: prediction?.idealRange?.ph?.Min || "",
-              Max: prediction?.idealRange?.ph?.Max || "",
+              Min: prediction?.idealRange?.ph?.Min || '',
+              Max: prediction?.idealRange?.ph?.Max || '',
             },
-            "Visibility cm": {
-              Min: prediction?.idealRange?.visibility?.Min || "",
-              Max: prediction?.idealRange?.visibility?.Max || "",
+            'Visibility cm': {
+              Min: prediction?.idealRange?.visibility?.Min || '',
+              Max: prediction?.idealRange?.visibility?.Max || '',
             },
           };
           // Set the values in the form
-          setValue("idealRange", idealRange);
+          setValue('idealRange', idealRange);
 
           const predictedValues = {
-            "Water Temperature °C": { ...prediction?.waterTemp },
-            "Dissolved Oxygen (DO) mg/L": { ...prediction?.DO },
-            "Total Suspended solids (TSS)": { ...prediction?.TSS },
-            "Ammonia (NH₄) mg/L": { ...prediction?.NH4 },
-            "Nitrate (NO₃) mg/L": { ...prediction?.NO3 },
-            "Nitrite (NO₂) mg/L": { ...prediction?.NO2 },
+            'Water Temperature °C': { ...prediction?.waterTemp },
+            'Dissolved Oxygen (DO) mg/L': { ...prediction?.DO },
+            'Total Suspended solids (TSS)': { ...prediction?.TSS },
+            'Ammonia (NH₄) mg/L': { ...prediction?.NH4 },
+            'Nitrate (NO₃) mg/L': { ...prediction?.NO3 },
+            'Nitrite (NO₂) mg/L': { ...prediction?.NO2 },
             pH: { ...prediction?.ph },
-            "Visibility cm": { ...prediction?.visibility },
+            'Visibility cm': { ...prediction?.visibility },
           };
-          setValue("predictedValues", predictedValues);
+          setValue('predictedValues', predictedValues);
         }
       });
     } else if (productionParamtertsUnitsArray?.length && currentUnit) {
       const idealRange = {
-        "Water Temperature °C": {
-          Min: currentUnit?.idealRange?.waterTemp?.Min || "",
-          Max: currentUnit?.idealRange?.waterTemp?.Max || "",
+        'Water Temperature °C': {
+          Min: currentUnit?.idealRange?.waterTemp?.Min || '',
+          Max: currentUnit?.idealRange?.waterTemp?.Max || '',
         },
-        "Dissolved Oxygen (DO) mg/L": {
-          Min: currentUnit?.idealRange?.DO?.Min || "",
-          Max: currentUnit?.idealRange?.DO?.Max || "",
+        'Dissolved Oxygen (DO) mg/L': {
+          Min: currentUnit?.idealRange?.DO?.Min || '',
+          Max: currentUnit?.idealRange?.DO?.Max || '',
         },
-        "Total Suspended solids (TSS)": {
-          Min: currentUnit?.idealRange?.TSS?.Min || "",
-          Max: currentUnit?.idealRange?.TSS?.Max || "",
+        'Total Suspended solids (TSS)': {
+          Min: currentUnit?.idealRange?.TSS?.Min || '',
+          Max: currentUnit?.idealRange?.TSS?.Max || '',
         },
-        "Ammonia (NH₄) mg/L": {
-          Min: currentUnit?.idealRange?.NH4?.Min || "",
-          Max: currentUnit?.idealRange?.NH4?.Max || "",
+        'Ammonia (NH₄) mg/L': {
+          Min: currentUnit?.idealRange?.NH4?.Min || '',
+          Max: currentUnit?.idealRange?.NH4?.Max || '',
         },
-        "Nitrate (NO₃) mg/L": {
-          Min: currentUnit?.idealRange?.NO3?.Min || "",
-          Max: currentUnit?.idealRange?.NO3?.Max || "",
+        'Nitrate (NO₃) mg/L': {
+          Min: currentUnit?.idealRange?.NO3?.Min || '',
+          Max: currentUnit?.idealRange?.NO3?.Max || '',
         },
-        "Nitrite (NO₂) mg/L": {
-          Min: currentUnit?.idealRange?.NO2?.Min || "",
-          Max: currentUnit?.idealRange?.NO2?.Max || "",
+        'Nitrite (NO₂) mg/L': {
+          Min: currentUnit?.idealRange?.NO2?.Min || '',
+          Max: currentUnit?.idealRange?.NO2?.Max || '',
         },
         pH: {
-          Min: currentUnit?.idealRange?.ph?.Min || "",
-          Max: currentUnit?.idealRange?.ph?.Max || "",
+          Min: currentUnit?.idealRange?.ph?.Min || '',
+          Max: currentUnit?.idealRange?.ph?.Max || '',
         },
-        "Visibility cm": {
-          Min: currentUnit?.idealRange?.visibility?.Min || "",
-          Max: currentUnit?.idealRange?.visibility?.Max || "",
+        'Visibility cm': {
+          Min: currentUnit?.idealRange?.visibility?.Min || '',
+          Max: currentUnit?.idealRange?.visibility?.Max || '',
         },
       };
       // Set the values in the form
-      setValue("idealRange", idealRange);
+      setValue('idealRange', idealRange);
       const predictedValues = {
-        "Water Temperature °C": { ...currentUnit?.predictedValues?.waterTemp },
-        "Dissolved Oxygen (DO) mg/L": { ...currentUnit?.predictedValues?.DO },
-        "Total Suspended solids (TSS)": {
+        'Water Temperature °C': { ...currentUnit?.predictedValues?.waterTemp },
+        'Dissolved Oxygen (DO) mg/L': { ...currentUnit?.predictedValues?.DO },
+        'Total Suspended solids (TSS)': {
           ...currentUnit?.predictedValues?.TSS,
         },
-        "Ammonia (NH₄) mg/L": { ...currentUnit?.predictedValues?.NH4 },
-        "Nitrate (NO₃) mg/L": { ...currentUnit?.predictedValues?.NO3 },
-        "Nitrite (NO₂) mg/L": { ...currentUnit?.predictedValues?.NO2 },
+        'Ammonia (NH₄) mg/L': { ...currentUnit?.predictedValues?.NH4 },
+        'Nitrate (NO₃) mg/L': { ...currentUnit?.predictedValues?.NO3 },
+        'Nitrite (NO₂) mg/L': { ...currentUnit?.predictedValues?.NO2 },
         pH: { ...currentUnit?.predictedValues?.ph },
-        "Visibility cm": { ...currentUnit?.predictedValues?.visibility },
+        'Visibility cm': { ...currentUnit?.predictedValues?.visibility },
       };
-      setValue("predictedValues", predictedValues);
+      setValue('predictedValues', predictedValues);
     }
   }, [isEditFarm, editFarm, setValue, selectedUnitName]);
 
   const handleClose = () => {
     setOpen(false);
     reset();
-    setSelectedUnitName("");
+    setSelectedUnitName('');
   };
   return (
     <Modal
@@ -326,9 +319,9 @@ const ProductionUnitParametersPredicated: React.FC<Props> = ({
           <IconButton
             onClick={handleClose}
             sx={{
-              color: "inherit",
-              background: "transparent",
-              margin: "2",
+              color: 'inherit',
+              background: 'transparent',
+              margin: '2',
             }}
           >
             <CloseIcon />
@@ -337,10 +330,10 @@ const ProductionUnitParametersPredicated: React.FC<Props> = ({
         <form onSubmit={handleSubmit(onSubmit)}>
           <Paper
             sx={{
-              width: "100%",
-              overflow: "hidden",
-              borderRadius: "14px",
-              boxShadow: "0px 0px 16px 5px #0000001A",
+              width: '100%',
+              overflow: 'hidden',
+              borderRadius: '14px',
+              boxShadow: '0px 0px 16px 5px #0000001A',
             }}
           >
             <Grid container spacing={2}>
@@ -356,8 +349,8 @@ const ProductionUnitParametersPredicated: React.FC<Props> = ({
                     },
                     margin: 2,
                     textWrap: {
-                      lg: "nowrap",
-                      xs: "wrap",
+                      lg: 'nowrap',
+                      xs: 'wrap',
                     },
                   }}
                 >
@@ -368,10 +361,10 @@ const ProductionUnitParametersPredicated: React.FC<Props> = ({
                     <TableHead>
                       <TableRow
                         sx={{
-                          backgroundColor: "#06a19b",
-                          textAlign: "center",
-                          margin: "0",
-                          padding: "0",
+                          backgroundColor: '#06a19b',
+                          textAlign: 'center',
+                          margin: '0',
+                          padding: '0',
                         }}
                       >
                         <TableCell align="center"></TableCell>
@@ -380,7 +373,7 @@ const ProductionUnitParametersPredicated: React.FC<Props> = ({
                           return (
                             <TableCell
                               align="center"
-                              sx={{ color: "white" }}
+                              sx={{ color: 'white' }}
                               key={i}
                             >
                               {year}
@@ -394,20 +387,20 @@ const ProductionUnitParametersPredicated: React.FC<Props> = ({
                         <TableRow
                           key={i}
                           sx={{
-                            "&:last-child td, &:last-child th": { border: 0 },
-                            backgroundColor: "#F5F6F8",
-                            fontWeight: "700",
-                            padding: "0px",
-                            margin: "0px",
+                            '&:last-child td, &:last-child th': { border: 0 },
+                            backgroundColor: '#F5F6F8',
+                            fontWeight: '700',
+                            padding: '0px',
+                            margin: '0px',
                           }}
                         >
                           <TableCell
                             component="td"
                             scope="row"
                             sx={{
-                              margin: "0px",
-                              padding: "8px",
-                              textWrap: "nowrap",
+                              margin: '0px',
+                              padding: '8px',
+                              textWrap: 'nowrap',
                             }}
                           >
                             {head}
@@ -418,11 +411,11 @@ const ProductionUnitParametersPredicated: React.FC<Props> = ({
                               className=" table-border"
                               sx={{
                                 borderBottomWidth: 2,
-                                borderBottomColor: "#ececec",
-                                margin: "0",
-                                padding: "5px 1px",
-                                textWrap: "nowrap",
-                                textAlign: "center",
+                                borderBottomColor: '#ececec',
+                                margin: '0',
+                                padding: '5px 1px',
+                                textWrap: 'nowrap',
+                                textAlign: 'center',
                               }}
                             >
                               <Controller
@@ -440,20 +433,20 @@ const ProductionUnitParametersPredicated: React.FC<Props> = ({
                                     type="text"
                                     placeholder="0"
                                     style={{
-                                      maxWidth: "80px",
-                                      padding: "4px 2px",
-                                      border: "none",
-                                      textAlign: "center",
-                                      fontSize: "14px",
-                                      fontWeight: "500",
-                                      color: "#555555",
+                                      maxWidth: '80px',
+                                      padding: '4px 2px',
+                                      border: 'none',
+                                      textAlign: 'center',
+                                      fontSize: '14px',
+                                      fontWeight: '500',
+                                      color: '#555555',
                                     }}
                                     onInput={(e) => {
                                       const value = e.currentTarget.value;
                                       const regex = /^-?\d*\.?\d*$/;
                                       if (!regex.test(value)) {
                                         e.currentTarget.value =
-                                          field.value || "";
+                                          field.value || '';
                                       } else {
                                         field.onChange(value);
                                       }
@@ -469,12 +462,12 @@ const ProductionUnitParametersPredicated: React.FC<Props> = ({
                                   mt={0.5}
                                 >
                                   {errors?.predictedValues?.[head]?.[year]
-                                    .type === "pattern"
+                                    .type === 'pattern'
                                     ? validationMessage.NegativeNumberWithDot
                                     : errors?.predictedValues?.[head]?.[year]
-                                        .type === "maxLength"
-                                    ? validationMessage.numberMaxLength
-                                    : ""}
+                                          .type === 'maxLength'
+                                      ? validationMessage.numberMaxLength
+                                      : ''}
                                 </Typography>
                               )}
                             </TableCell>
@@ -498,8 +491,8 @@ const ProductionUnitParametersPredicated: React.FC<Props> = ({
                     },
                     margin: 2,
                     textWrap: {
-                      lg: "nowrap",
-                      xs: "wrap",
+                      lg: 'nowrap',
+                      xs: 'wrap',
                     },
                   }}
                 >
@@ -510,21 +503,21 @@ const ProductionUnitParametersPredicated: React.FC<Props> = ({
                     <TableHead>
                       <TableRow
                         sx={{
-                          backgroundColor: "#06a19b",
-                          textAlign: "center",
+                          backgroundColor: '#06a19b',
+                          textAlign: 'center',
                         }}
                       >
                         <TableCell
                           align="center"
                           sx={{
-                            color: "white",
-                            borderRight: "1px solid #F5F6F8",
+                            color: 'white',
+                            borderRight: '1px solid #F5F6F8',
                           }}
                         >
                           Min
                         </TableCell>
 
-                        <TableCell align="center" sx={{ color: "white" }}>
+                        <TableCell align="center" sx={{ color: 'white' }}>
                           Max
                         </TableCell>
                       </TableRow>
@@ -535,21 +528,21 @@ const ProductionUnitParametersPredicated: React.FC<Props> = ({
                         <TableRow
                           key={i}
                           sx={{
-                            "&:last-child td, &:last-child th": { border: 0 },
-                            backgroundColor: "#F5F6F8",
-                            fontWeight: "700",
+                            '&:last-child td, &:last-child th': { border: 0 },
+                            backgroundColor: '#F5F6F8',
+                            fontWeight: '700',
                           }}
                         >
-                          {(["Min", "Max"] as const).map((val, index) => (
+                          {(['Min', 'Max'] as const).map((val, index) => (
                             <TableCell
                               key={index}
                               className="table-border"
                               sx={{
                                 borderBottomWidth: 2,
-                                borderBottomColor: "#ececec",
-                                padding: "5px 1px",
-                                textWrap: "nowrap",
-                                textAlign: "center",
+                                borderBottomColor: '#ececec',
+                                padding: '5px 1px',
+                                textWrap: 'nowrap',
+                                textAlign: 'center',
                               }}
                             >
                               <Controller
@@ -577,21 +570,21 @@ const ProductionUnitParametersPredicated: React.FC<Props> = ({
                                     {...field}
                                     placeholder="0"
                                     style={{
-                                      maxWidth: "90px",
-                                      padding: "4px 2px",
-                                      textWrap: "nowrap",
-                                      border: "none",
-                                      textAlign: "center",
-                                      fontSize: "14px",
-                                      fontWeight: "500",
-                                      color: "#555555",
+                                      maxWidth: '90px',
+                                      padding: '4px 2px',
+                                      textWrap: 'nowrap',
+                                      border: 'none',
+                                      textAlign: 'center',
+                                      fontSize: '14px',
+                                      fontWeight: '500',
+                                      color: '#555555',
                                     }}
                                     onInput={(e) => {
                                       const value = e.currentTarget.value;
                                       const regex = /^-?\d*\.?\d*$/;
                                       if (!regex.test(value)) {
                                         e.currentTarget.value =
-                                          field.value || "";
+                                          field.value || '';
                                       } else {
                                         field.onChange(value);
                                       }
@@ -606,18 +599,18 @@ const ProductionUnitParametersPredicated: React.FC<Props> = ({
                                   fontSize={13}
                                   mt={0.5}
                                   style={{
-                                    width: "175px",
-                                    textWrap: "wrap",
+                                    width: '175px',
+                                    textWrap: 'wrap',
                                   }}
                                 >
                                   {errors?.idealRange?.[head]?.[val].type ===
-                                  "pattern"
+                                  'pattern'
                                     ? validationMessage.NegativeNumberWithDot
                                     : errors?.idealRange?.[head]?.[val].type ===
-                                      "maxLength"
-                                    ? validationMessage.numberMaxLength
-                                    : errors?.idealRange?.[head]?.[val]
-                                        ?.message}
+                                        'maxLength'
+                                      ? validationMessage.numberMaxLength
+                                      : errors?.idealRange?.[head]?.[val]
+                                          ?.message}
                                 </Typography>
                               )}
                             </TableCell>
@@ -632,9 +625,9 @@ const ProductionUnitParametersPredicated: React.FC<Props> = ({
           </Paper>
 
           <Box
-            display={"flex"}
-            justifyContent={"flex-end"}
-            alignItems={"center"}
+            display={'flex'}
+            justifyContent={'flex-end'}
+            alignItems={'center'}
             gap={3}
             mt={1}
           >
@@ -642,12 +635,12 @@ const ProductionUnitParametersPredicated: React.FC<Props> = ({
               type="submit"
               variant="contained"
               sx={{
-                background: "#06A19B",
+                background: '#06A19B',
                 fontWeight: 600,
-                padding: "6px 16px",
-                width: "fit-content",
-                textTransform: "capitalize",
-                borderRadius: "8px",
+                padding: '6px 16px',
+                width: 'fit-content',
+                textTransform: 'capitalize',
+                borderRadius: '8px',
               }}
             >
               Save
