@@ -62,7 +62,6 @@ const ProductionUnitParametersPredicated: React.FC<Props> = ({
   setOpen,
   open,
   editFarm,
-  productionParaMeter,
   selectedUnitName,
   setSelectedUnitName,
 }) => {
@@ -130,15 +129,19 @@ const ProductionUnitParametersPredicated: React.FC<Props> = ({
     setLocalItem("productionParamtertsUnitsArray", updatedData);
     setOpen(false);
     setSelectedUnitName("");
+    reset();
   };
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
+    if (typeof window !== "undefined" && selectedUnitName) {
       const formData = getLocalItem("productionParametes");
-
-      setFormProductionParameters(formData);
+      if (formData) {
+        setFormProductionParameters(formData);
+        setValue("predictedValues", formProductionParameters?.predictedValues);
+        setValue("idealRange", formProductionParameters?.idealRange);
+      }
     }
-  }, []);
+  }, [selectedUnitName]);
   useEffect(() => {
     const productionParamtertsUnitsArray = getLocalItem(
       "productionParamtertsUnitsArray"
@@ -170,10 +173,12 @@ const ProductionUnitParametersPredicated: React.FC<Props> = ({
       };
       setValue("predictedValues", predictedValues);
       setValue("idealRange", idealRange);
-    } else {
-      setValue("predictedValues", formProductionParameters?.predictedValues);
-      setValue("idealRange", formProductionParameters?.idealRange);
     }
+
+    // else {
+    //   setValue("predictedValues", formProductionParameters?.predictedValues);
+    //   setValue("idealRange", formProductionParameters?.idealRange);
+    // }
   }, [formProductionParameters, selectedUnitName, setValue]);
 
   useEffect(() => {
@@ -186,7 +191,7 @@ const ProductionUnitParametersPredicated: React.FC<Props> = ({
     if (
       isEditFarm &&
       editFarm &&
-      !productionParamtertsUnitsArray &&
+      productionParamtertsUnitsArray &&
       !currentUnit
     ) {
       editFarm?.productionUnits.map((unit: any, i: number) => {
@@ -302,6 +307,7 @@ const ProductionUnitParametersPredicated: React.FC<Props> = ({
 
   const handleClose = () => {
     setOpen(false);
+    reset();
     setSelectedUnitName("");
   };
   return (
@@ -553,16 +559,16 @@ const ProductionUnitParametersPredicated: React.FC<Props> = ({
                                   pattern:
                                     validationPattern.negativeNumberWithDot,
                                   maxLength: 10,
-                                  validate: (value) => {
-                                    const min = watch(`idealRange.${head}.Min`);
-                                    if (
-                                      val === "Max" &&
-                                      Number(value) < Number(min)
-                                    ) {
-                                      return "Max value cannot be less than Min value";
-                                    }
-                                    return true;
-                                  },
+                                  // validate: (value) => {
+                                  //   const min = watch(`idealRange.${head}.Min`);
+                                  //   if (
+                                  //     val === "Max" &&
+                                  //     Number(value) < Number(min)
+                                  //   ) {
+                                  //     return "Max value cannot be less than Min value";
+                                  //   }
+                                  //   return true;
+                                  // },
                                 }}
                                 render={({ field }) => (
                                   <input

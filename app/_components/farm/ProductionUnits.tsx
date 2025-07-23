@@ -41,6 +41,8 @@ import CalculateVolume from "../models/CalculateFarmVolume";
 import ProductionUnitParametersPredicated from "../models/ProductionUnitParametersPredicated";
 import { useRouter } from "next/navigation";
 import ProductionUnitFeedProfile from "../models/ProductionUnitFeedProfile";
+import { FeedProduct } from "@/app/_typeModels/Feed";
+import { FeedSupplier } from "@/app/_typeModels/Organization";
 interface Props {
   productionParaMeter?: ProductionParaMeterType[];
   growthModels?: any;
@@ -48,6 +50,8 @@ interface Props {
   setActiveStep: (val: number) => void;
   isEdit?: boolean;
   token: any;
+  feedStores: FeedProduct[];
+  feedSuppliers: FeedSupplier[];
 }
 
 const unitsTypes = [
@@ -66,6 +70,8 @@ const ProductionUnits: NextPage<Props> = ({
   growthModels,
   productionParaMeter,
   token,
+  feedStores,
+  feedSuppliers,
 }) => {
   uuidv4();
 
@@ -1042,6 +1048,8 @@ const ProductionUnits: NextPage<Props> = ({
         setOpen={setOpenUnitFeedProfileModal}
         selectedUnitName={selectedUnitName}
         setSelectedUnitName={setSelectedUnitName}
+        feedStores={feedStores}
+        feedSuppliers={feedSuppliers}
       />
       <CalculateVolume
         open={open}

@@ -168,6 +168,8 @@ const EditFarm = ({
             isEdit={isEdit}
             productionParaMeter={editFarm?.WaterQualityPredictedParameters}
             growthModels={growthModels}
+            feedStores={feedstores}
+            feedSuppliers={feedSuppliers}
             token={token}
           />
         )}

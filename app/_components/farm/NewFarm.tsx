@@ -128,6 +128,8 @@ export default function NewFarm({
           <ProductionUnits
             setActiveStep={setActiveStep}
             growthModels={growthModels}
+            feedStores={feedstores}
+            feedSuppliers={feedSuppliers}
             token={token}
           />
         )}

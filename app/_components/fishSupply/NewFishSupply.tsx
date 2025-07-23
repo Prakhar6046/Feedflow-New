@@ -135,7 +135,6 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
       setIsApiCallInProgress(false);
     }
   };
-  console.log("famrs", farms);
   useEffect(() => {
     setLoading(true);
 

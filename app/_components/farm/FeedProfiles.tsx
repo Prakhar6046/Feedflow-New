@@ -21,7 +21,7 @@ import {
   Typography,
 } from "@mui/material";
 import { NextPage } from "next";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 export const cellStyle = {
   borderBottomColor: "#F5F6F8",
@@ -30,27 +30,6 @@ export const cellStyle = {
   fontWeight: 500,
   whiteSpace: "nowrap",
   textAlign: "center",
-};
-export const radioValueMap: Record<string, Record<string, string>> = {
-  col1: {
-    opt1: "Tilapia PreStarter #2 (1>5)-Feed Supplier 1",
-    opt2: "Tilapia PreStarter #3 (5-20)-Feed Supplier 1",
-    opt3: "Tilapia Grower 2mm (25-40)-Feed Supplier 1",
-  },
-  col2: {
-    opt1: "Tilapia PreStarter #2 (1>5)-Feed Supplier 2",
-    opt2: "Tilapia PreStarter #3 (5-20)-Feed Supplier 2",
-    opt3: "Tilapia Grower 2mm (25-60)-Feed Supplier 2",
-  },
-  col3: {
-    opt1: "Tilapia Grower (50-250)-Feed Supplier 3",
-  },
-  col4: {
-    opt1: "Tilapia Finsher (200-500)-Feed Supplier 4",
-  },
-  col5: {
-    opt1: "Tilapia Breeder (>600)-Feed Supplier 5",
-  },
 };
 
 export const fishSizes = [
@@ -74,7 +53,9 @@ const FeedProfiles = ({
 }: Props) => {
   const { control, handleSubmit, watch, setValue } = useForm<FormValues>();
   const allFeedprofiles = watch();
-
+  const [radioValueMap, setRadioValueMap] = useState<
+    Record<string, Record<string, string>>
+  >({});
   const onSubmit: SubmitHandler<FormValues> = (data) => {
     setLocalItem("feedProfiles", data);
     setActiveStep(3);
@@ -83,7 +64,7 @@ const FeedProfiles = ({
   const renderRadioGroup = (
     rowName: string,
     columnName: string,
-    options: string[] = ["opt1", "opt2", "opt3"]
+    options: string[]
   ) => (
     <Controller
       name={rowName}
@@ -101,7 +82,7 @@ const FeedProfiles = ({
               radioValueMap[columnName]?.[opt] ?? `${columnName}_${opt}`;
             return (
               <FormControlLabel
-                key={value}
+                key={rowName}
                 value={value}
                 className="ic-radio"
                 control={
@@ -119,8 +100,8 @@ const FeedProfiles = ({
       )}
     />
   );
-  const groupedData = feedSuppliers?.reduce(
-    (acc: any[], supplier: FeedSupplier) => {
+  const groupedData = useMemo(() => {
+    return feedSuppliers?.reduce((acc: any[], supplier: FeedSupplier) => {
       const storesForSupplier = feedStores?.filter((store: any) =>
         store?.ProductSupplier?.includes(supplier.id)
       );
@@ -133,9 +114,27 @@ const FeedProfiles = ({
       }
 
       return acc;
-    },
-    []
-  );
+    }, []);
+  }, [feedSuppliers, feedStores]);
+
+  useEffect(() => {
+    if (!groupedData?.length) return;
+
+    const map: Record<string, Record<string, string>> = {};
+
+    groupedData?.forEach((group, index) => {
+      const colKey = `col${index + 1}`;
+      map[colKey] = {};
+
+      group?.stores?.forEach((store: FeedProduct, storeIndex: number) => {
+        const optKey = `opt${storeIndex + 1}`;
+        const label = `${store.productName} - ${group.supplier.name}`;
+        map[colKey][optKey] = label;
+      });
+    });
+
+    setRadioValueMap(map);
+  }, [groupedData]);
 
   useEffect(() => {
     if (editFarm) {
@@ -597,7 +596,6 @@ const FeedProfiles = ({
                           const options = group.stores.map(
                             (_: FeedProduct, i: number) => `opt${i + 1}`
                           );
-
                           return (
                             <TableCell sx={cellStyle} key={group.supplier.id}>
                               {renderRadioGroup(
