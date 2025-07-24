@@ -485,15 +485,15 @@ const AddNewOrganisation = ({
                 {...register('organisationName', {
                   required: true,
                   pattern: validationPattern.alphabetsNumbersAndSpacesPattern,
-                  validate: (value: string) => {
-                    const isUnique = organisations.every((val) => {
-                      return val.name.toLowerCase() !== value.toLowerCase();
-                    });
-                    return (
-                      isUnique ||
-                      'Please enter a unique name. The name you entered is not available.'
-                    );
-                  },
+                  // validate: (value: string) => {
+                  //   const isUnique = organisations?.every((val) => {
+                  //     return val.name.toLowerCase() !== value.toLowerCase();
+                  //   });
+                  //   return (
+                  //     isUnique ||
+                  //     'Please enter a unique name. The name you entered is not available.'
+                  //   );
+                  // },
                 })}
                 focused
                 sx={{

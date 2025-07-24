@@ -75,18 +75,18 @@ export async function POST(req: NextRequest) {
     });
 
     // Create contacts without userId initially
-    const contacts = await prisma.contact.createMany({
-      data: body.contacts.map((contact: any) => ({
-        name: capitalizeFirstLetter(contact.name),
-        email: contact.email.toLowerCase(),
-        phone: contact.phone,
-        role: contact.role,
-        organisationId: organisation.id,
-        permission: contact.permission,
-        userId: null,
-        invite: contact.newInvite,
-      })),
-    });
+    // const contacts = await prisma.contact.createMany({
+    //   data: body.contacts.map((contact: any) => ({
+    //     name: capitalizeFirstLetter(contact.name),
+    //     email: contact.email.toLowerCase(),
+    //     phone: contact.phone,
+    //     role: contact.role,
+    //     organisationId: organisation.id,
+    //     permission: contact.permission,
+    //     userId: null,
+    //     invite: contact.newInvite,
+    //   })),
+    // });
 
     // Create users and capture their IDs
     for (const contact of body.contacts) {
@@ -102,6 +102,18 @@ export async function POST(req: NextRequest) {
       });
 
       const userId = createdUser.id;
+      await prisma.contact.createMany({
+        data: body.contacts.map((contact: any) => ({
+          name: capitalizeFirstLetter(contact.name),
+          email: contact.email.toLowerCase(),
+          phone: contact.phone,
+          role: contact.role,
+          organisationId: organisation.id,
+          permission: contact.permission,
+          userId,
+          invite: contact.newInvite,
+        })),
+      });
       if (shouldSendInvite) {
         const mailOptions = {
           from: process.env.EMAIL_USER,
@@ -294,7 +306,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({
       message: 'Organisation added successfully',
-      data: { organisation, contacts, users },
+      data: { organisation, users },
       status: true,
     });
   } catch (error) {
