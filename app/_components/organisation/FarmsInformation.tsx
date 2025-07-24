@@ -22,7 +22,12 @@ interface Props {
   profilePic: string | any;
   setProfilePic: any;
   isHatcherySelected: boolean;
-  handleUpload: (file: any, profilePic: string, setProfilePic: any) => void;
+  handleUpload: (
+    file: any,
+    profilePic: string,
+    setProfilePic: any,
+    token: string,
+  ) => void;
   altitude: string;
   register: any;
   setValue: any;
@@ -45,6 +50,7 @@ const FarmsInformation = ({
 }: Props) => {
   const router = useRouter();
   const loggedUser: any = getCookie('logged-user');
+  const token = getCookie('auth-token');
   const user: SingleUser = JSON.parse(loggedUser);
   return organisationData?.Farm.length ? (
     organisationData?.Farm?.map((farm) => {
@@ -140,7 +146,12 @@ const FarmsInformation = ({
                   type="file"
                   {...register('image', {
                     onChange: (e: any) =>
-                      handleUpload(e.target.files, profilePic, setProfilePic),
+                      handleUpload(
+                        e.target.files,
+                        profilePic,
+                        setProfilePic,
+                        String(token),
+                      ),
                   })}
                   accept=".jpg,.jpeg,.png,.svg"
                 />
