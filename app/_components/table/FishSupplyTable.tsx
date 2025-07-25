@@ -53,7 +53,10 @@ export default function FishSupplyTable({
   const [selectedFishSupply, setSelectedFishSupply] = useState<FishSupply>();
   const role = useAppSelector(selectRole);
   const [sortedFishSupply, setSortedFishSupply] = useState<FishSupply[]>();
-  const [sortDataFromLocal, setSortDataFromLocal] = React.useState<any>('');
+  const [sortDataFromLocal, setSortDataFromLocal] = React.useState<{
+    direction: 'asc' | 'desc';
+    column: string;
+  }>({ direction: 'asc', column: '' });
 
   useEffect(() => {
     if (pathName) {

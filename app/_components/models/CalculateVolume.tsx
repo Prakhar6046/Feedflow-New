@@ -58,7 +58,6 @@ const CalculateVolume: React.FC<Props> = ({
   setRadius,
   setWidth,
   width,
-  calculatedValue,
 }) => {
   const [lengthError, setLengthError] = useState(false);
   const [widthError, setWidthError] = useState(false);
@@ -182,7 +181,10 @@ const CalculateVolume: React.FC<Props> = ({
       }
     }
   };
-  const handleBlur = (field: any, setError: any) => {
+  const handleBlur = (
+    field: string | undefined,
+    setError: (val: boolean) => void,
+  ) => {
     setError(field === '');
   };
 
@@ -318,7 +320,7 @@ const CalculateVolume: React.FC<Props> = ({
                     setLength(value); // Keep it as string to handle the decimal point
                   }
                 }}
-                onBlur={() => handleBlur(length, setLengthError)}
+                onBlur={() => handleBlur(length ?? '', setLengthError)}
                 error={lengthError}
                 helperText={lengthError ? 'This field is required' : ''}
               />
@@ -362,7 +364,7 @@ const CalculateVolume: React.FC<Props> = ({
                     setWidth(value); // Keep it as string to handle the decimal point
                   }
                 }}
-                onBlur={() => handleBlur(width, setWidthError)}
+                onBlur={() => handleBlur(width ?? '', setWidthError)}
                 error={widthError}
                 helperText={widthError ? 'This field is required' : ''}
               />
@@ -406,7 +408,7 @@ const CalculateVolume: React.FC<Props> = ({
                     setDepth(value); // Keep it as string to handle the decimal point
                   }
                 }}
-                onBlur={() => handleBlur(depth, setDepthError)}
+                onBlur={() => handleBlur(depth ?? '', setDepthError)}
                 error={depthError}
                 helperText={depthError ? 'This field is required' : ''}
               />
@@ -452,7 +454,7 @@ const CalculateVolume: React.FC<Props> = ({
                     setArea(value); // Keep it as string to handle the decimal point
                   }
                 }}
-                onBlur={() => handleBlur(area, setAreaError)}
+                onBlur={() => handleBlur(area ?? '', setAreaError)}
                 error={areaError}
                 helperText={areaError ? 'This field is required' : ''}
               />
@@ -496,7 +498,7 @@ const CalculateVolume: React.FC<Props> = ({
                     setDepth(value); // Keep it as string to handle the decimal point
                   }
                 }}
-                onBlur={() => handleBlur(depth, setDepthError)}
+                onBlur={() => handleBlur(depth ?? '', setDepthError)}
                 error={depthError}
                 helperText={depthError ? 'This field is required' : ''}
               />
@@ -542,7 +544,7 @@ const CalculateVolume: React.FC<Props> = ({
                     setLength(value); // Keep it as string to handle the decimal point
                   }
                 }}
-                onBlur={() => handleBlur(length, setLengthError)}
+                onBlur={() => handleBlur(length ?? '', setLengthError)}
                 error={lengthError}
                 helperText={lengthError ? 'This field is required' : ''}
               />
@@ -586,7 +588,7 @@ const CalculateVolume: React.FC<Props> = ({
                     setWidth(value); // Keep it as string to handle the decimal point
                   }
                 }}
-                onBlur={() => handleBlur(width, setWidthError)}
+                onBlur={() => handleBlur(width ?? '', setWidthError)}
                 error={widthError}
                 helperText={widthError ? 'This field is required' : ''}
               />
@@ -630,7 +632,7 @@ const CalculateVolume: React.FC<Props> = ({
                     setDepth(value); // Keep it as string to handle the decimal point
                   }
                 }}
-                onBlur={() => handleBlur(depth, setDepthError)}
+                onBlur={() => handleBlur(depth ?? '', setDepthError)}
                 error={depthError}
                 helperText={depthError ? 'This field is required' : ''}
               />
@@ -676,7 +678,7 @@ const CalculateVolume: React.FC<Props> = ({
                     setLength(value); // Keep it as string to handle the decimal point
                   }
                 }}
-                onBlur={() => handleBlur(length, setLengthError)}
+                onBlur={() => handleBlur(length ?? '', setLengthError)}
                 error={lengthError}
                 helperText={lengthError ? 'This field is required' : ''}
               />
@@ -720,7 +722,7 @@ const CalculateVolume: React.FC<Props> = ({
                     setWidth(value); // Keep it as string to handle the decimal point
                   }
                 }}
-                onBlur={() => handleBlur(width, setWidthError)}
+                onBlur={() => handleBlur(width ?? '', setWidthError)}
                 error={widthError}
                 helperText={widthError ? 'This field is required' : ''}
               />
@@ -765,7 +767,7 @@ const CalculateVolume: React.FC<Props> = ({
                     setHeigth(value); // Keep it as string to handle the decimal point
                   }
                 }}
-                onBlur={() => handleBlur(heigth, setHeigthError)}
+                onBlur={() => handleBlur(heigth ?? '', setHeigthError)}
                 error={heigthError}
                 helperText={heigthError ? 'This field is required' : ''}
               />

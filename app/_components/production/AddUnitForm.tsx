@@ -41,9 +41,9 @@ interface Props {
 }
 function AddUnitForm({ farms }: Props) {
   const mCubed = 'm\u00B3';
-  const [selectedFarm, setSelectedFarm] = useState<any>(null);
-  const loggedUser: any = getCookie('logged-user');
-  const user = JSON.parse(loggedUser);
+  const [selectedFarm, setSelectedFarm] = useState<string>('');
+  const loggedUser = getCookie('logged-user');
+  const user = JSON.parse(loggedUser ?? '');
   const router = useRouter();
   const {
     register,

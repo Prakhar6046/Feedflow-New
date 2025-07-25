@@ -20,36 +20,6 @@ export interface Organisation {
   updatedAt: string; // ISO string
   addressId: string;
 }
-export interface Farm {
-  name: string;
-  mangerId?: string[];
-  FarmManger?: {
-    userId: number;
-  }[];
-  addressLine1: string;
-  farmAltitude: string;
-  addressLine2: string;
-  province: string;
-  city: string;
-  zipCode: string;
-  country: string;
-  id?: string;
-  fishFarmer: string;
-  lat: string;
-  lng: string;
-  productionUnits?: {
-    name: string;
-    type: string;
-    capacity: string;
-    waterflowRate: string;
-    farmId: string;
-    id: any;
-    YearBasedPredicationProductionUnit: ProductionParaMeterType[];
-  }[];
-  production: Production[];
-  organisation: Organisation;
-  WaterQualityPredictedParameters: ProductionParaMeterType[];
-}
 export interface UnitsTypes {
   name: string | undefined;
   formula: string | undefined;
@@ -58,7 +28,7 @@ export interface UnitsTypes {
 }
 export interface CalculateType {
   output: number;
-  id: any;
+  id: number;
 }
 export interface ProductionUnitsFormTypes {
   productionUnits: {
@@ -66,7 +36,7 @@ export interface ProductionUnitsFormTypes {
     type: string;
     capacity: string;
     waterflowRate: string;
-    id: any;
+    id: number;
     unitId?: string;
   }[];
   area: string;
@@ -150,19 +120,104 @@ export interface GrowthModel {
   models: Models;
 }
 
-export interface Prediction {
+export interface FeedProfile {
   id: number;
-  waterQualityPredictedParameterId: number;
+  farmId: string;
   createdAt: string;
   updatedAt: string;
-  waterTemp: any;
-  DO: any;
-  TSS: any;
-  NH4: any;
-  NO3: any;
-  NO2: any;
-  ph: any;
-  visibility: any;
-  idealRange: any;
-  modelId: number;
+  profiles: {
+    selection_1: string;
+    selection_2: string;
+    selection_3: string;
+    selection_4: string;
+    selection_5: string;
+    selection_10: string;
+    selection_15: string;
+    selection_20: string;
+    selection_25: string;
+    selection_30: string;
+    selection_35: string;
+    selection_40: string;
+    selection_45: string;
+    selection_50: string;
+    selection_55: string;
+    selection_60: string;
+    selection_65: string;
+    selection_70: string;
+    selection_75: string;
+    selection_80: string;
+    selection_85: string;
+    selection_90: string;
+    selection_95: string;
+    selection_100: string;
+    selection_120: string;
+    selection_140: string;
+    selection_160: string;
+    selection_180: string;
+  };
+}
+
+export interface FarmAddress {
+  id: string;
+  addressLine1: string;
+  addressLine2: string;
+  province: string;
+  city: string;
+  zipCode?: string;
+  country?: string;
+}
+
+export interface Farm {
+  id?: string;
+  name: string;
+  mangerId?: string[];
+  FarmManger?: {
+    userId: number;
+  }[];
+
+  fishFarmer: string;
+  farmAltitude: string;
+  lat: string;
+  lng: string;
+
+  // Address Info
+  addressLine1: string;
+  addressLine2: string;
+  province: string;
+  city: string;
+  zipCode: string;
+  country: string;
+  farmAddressId?: string;
+  farmAddress?: FarmAddress;
+
+  // Relations
+  organisationId?: number;
+  organisation: Organisation;
+
+  production: Production[];
+  productionUnits: {
+    id: string;
+    name: string;
+    type: string;
+    capacity: string;
+    waterflowRate: string;
+    farmId: string;
+    YearBasedPredicationProductionUnit: ProductionParaMeterType[];
+    FeedProfileProductionUnit?: any[]; // Add proper type if needed
+  }[];
+
+  WaterQualityPredictedParameters: ProductionParaMeterType[];
+  FeedProfile?: FeedProfile[];
+
+  // Audit Fields
+  createdBy?: number | null;
+  updatedBy?: number | null;
+  createdAt?: string;
+  updatedAt?: string;
+}
+export interface TableHeadType {
+  id: string;
+  numeric: boolean;
+  disablePadding: boolean;
+  label: string;
 }

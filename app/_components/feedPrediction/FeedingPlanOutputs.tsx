@@ -6,7 +6,6 @@ import {
   getLocalItem,
 } from '@/app/_lib/utils';
 import { FarmGroup } from '@/app/_typeModels/production';
-import { useAppDispatch } from '@/lib/hooks';
 import {
   Box,
   Button,
@@ -45,16 +44,6 @@ import {
 } from '@mui/material';
 // import MenuItem from "@mui/material/MenuItem";
 
-interface FormInputs {
-  startDate: string;
-  timeInterval: number;
-  period: number;
-  fishWeight: number;
-  tempSelection: string;
-  temp: number;
-  numberOfFishs: number;
-  adjustmentFactor: number;
-}
 export interface FarmsFishGrowth {
   farm: string;
   unit: string;
@@ -76,19 +65,20 @@ export const tempSelectionOptions = [
   },
 ];
 function FeedingPlanOutput() {
-  const dispatch = useAppDispatch();
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
-  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
   const [loading, setLoading] = useState(false);
 
-  const [farmOption, setFarmOptions] = useState<any[]>([]);
-  const [unitOption, setUnitOptions] = useState<any[]>([]);
+  const [farmOption, setFarmOptions] = useState<
+    {
+      id: string;
+      option: string;
+    }[]
+  >([]);
+  const [unitOption, setUnitOptions] = useState<
+    {
+      id: number;
+      option: string;
+    }[]
+  >([]);
   const [startDate, setStartDate] = useState<string | null>(
     dayjs().toISOString(),
   );
@@ -110,8 +100,8 @@ function FeedingPlanOutput() {
       ?.filter(
         (val) => val.farmId == watch('farms') && val.unitId == watch('units'),
       )
-      .flatMap((growth: any) =>
-        growth.fishGrowthData.map((val: any) => ({
+      .flatMap((growth) =>
+        growth.fishGrowthData.map((val) => ({
           date: val.date,
           teamp: val.averageProjectedTemp,
           noOfFish: val.numberOfFish,
@@ -141,8 +131,8 @@ function FeedingPlanOutput() {
       ?.filter(
         (val) => val.farmId == watch('farms') && val.unitId == watch('units'),
       )
-      .flatMap((growth: any) =>
-        growth.fishGrowthData.map((val: any) => ({
+      .flatMap((growth) =>
+        growth.fishGrowthData.map((val) => ({
           date: val.date,
           teamp: val.averageProjectedTemp,
           noOfFish: val.numberOfFish,
@@ -159,7 +149,7 @@ function FeedingPlanOutput() {
       );
 
     setLoading(true);
-    const chunkArray = <T,>(arr: any, chunkSize: number): T[][] => {
+    const chunkArray = <T,>(arr: T[], chunkSize: number): T[][] => {
       const results: T[][] = [];
       for (let i = 0; i < arr.length; i += chunkSize) {
         results.push(arr.slice(i, i + chunkSize));
@@ -262,7 +252,7 @@ function FeedingPlanOutput() {
                     </tr>
                   </thead>
                   <tbody>
-                    {currentChunk?.map((row: any, index: number) => (
+                    {currentChunk?.map((row, index: number) => (
                       <tr key={index}>
                         <td
                           style={{
@@ -381,7 +371,7 @@ function FeedingPlanOutput() {
                     );
                     const intakeByFeedType: Record<string, number> = {};
 
-                    growth?.fishGrowthData?.forEach((item: any) => {
+                    growth?.fishGrowthData?.forEach((item) => {
                       const intake = parseFloat(item.feedIntake as string);
                       if (!intakeByFeedType[item.feedType]) {
                         intakeByFeedType[item.feedType] = 0;
@@ -654,7 +644,7 @@ function FeedingPlanOutput() {
   useEffect(() => {
     const data = getLocalItem('feedPredictionData');
     if (data) {
-      const customFarms: any = data?.productionData?.map((farm: any) => {
+      const customFarms = data?.productionData?.map((farm: any) => {
         return { option: farm.farm, id: farm.units[0].farm.id };
       });
       setStartDate(data?.startDate);
@@ -662,9 +652,9 @@ function FeedingPlanOutput() {
       setFarmOptions(customFarms);
       setValue('adjustmentFactor', data.adjustmentFactor);
       setFomData(data);
-      const fishGrowthData: any = data?.productionData?.map(
+      const fishGrowthData = data?.productionData?.map(
         (production: FarmGroup) =>
-          production.units.map((unit: any) => {
+          production.units.map((unit) => {
             const formattedDate = dayjs(data?.startDate).format('YYYY-MM-DD');
             const diffInDays = dayjs(data?.endDate).diff(
               dayjs(data?.startDate),
@@ -1154,7 +1144,7 @@ function FeedingPlanOutput() {
                 );
                 const intakeByFeedType: Record<string, number> = {};
 
-                growth?.fishGrowthData?.forEach((item: any) => {
+                growth?.fishGrowthData?.forEach((item) => {
                   const intake = parseFloat(item.feedIntake as string);
                   if (!intakeByFeedType[item.feedType]) {
                     intakeByFeedType[item.feedType] = 0;

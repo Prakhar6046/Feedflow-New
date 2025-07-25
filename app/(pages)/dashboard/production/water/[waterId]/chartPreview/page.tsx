@@ -1,6 +1,7 @@
 import BasicBreadcrumbs from '@/app/_components/Breadcrumbs';
 import WaterChartDownloadPreview from '@/app/_components/production/waterChartDownloadPreview/WaterChartDownloadPreview';
 import { getProductions } from '@/app/_lib/action';
+import { Production } from '@/app/_typeModels/production';
 import { cookies } from 'next/headers';
 export default async function Page({
   params,
@@ -12,11 +13,9 @@ export default async function Page({
   };
 }) {
   const query = searchParams?.query || '';
-  // const loggedUser: any = getCookie("logged-user", { cookies });
-  // const refreshToken: any = getCookie("refresh-token", { cookies });
   const cookieStore = cookies();
-  const loggedUser: any = cookieStore.get('logged-user')?.value;
-  const user = JSON.parse(loggedUser);
+  const loggedUser = cookieStore.get('logged-user')?.value;
+  const user = JSON.parse(loggedUser ?? '');
 
   const productions = await getProductions({
     role: user.role,
@@ -25,6 +24,7 @@ export default async function Page({
     noFilter: false,
     userId: user.id,
   });
+  console.log(productions);
 
   return (
     <>
@@ -48,7 +48,7 @@ export default async function Page({
 
       <WaterChartDownloadPreview
         productions={productions?.data?.filter(
-          (data: any) => data.productionUnitId === params.waterId,
+          (data: Production) => data.productionUnitId === params.waterId,
         )}
       />
     </>

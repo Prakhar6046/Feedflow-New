@@ -31,7 +31,6 @@ interface Iprops {
   xAxisData: string[];
   ydata: (string | undefined)[];
   title: string;
-
   startDate: string;
   endDate: string;
   dateDiff: number;
@@ -44,8 +43,8 @@ const FishChart = ({
   endDate,
   dateDiff,
 }: Iprops) => {
-  const chartRef = useRef<Chart | any>(null);
-  const getUnit = (diff: number): any => {
+  const chartRef = useRef<Chart<'line'> | any>(null);
+  const getUnit = (diff: number) => {
     if (diff <= 1) return 'hour'; // Use hourly granularity for 1 day or less
     if (diff <= 7) return 'day'; // Use daily granularity for up to a week
     if (diff <= 30) return 'week'; // Use weekly granularity for up to a month
@@ -59,7 +58,7 @@ const FishChart = ({
       {
         // yAxisID: "first",
         label: `${title} average`,
-        data: ydata || [1, 2, 34, 55],
+        data: ydata,
         backgroundColor: [
           'rgba(255, 99, 132, 0.2)',
           'rgba(255, 159, 64, 0.2)',
@@ -171,39 +170,52 @@ const FishChart = ({
     }
   };
 
-  const crosshairLable = (chart: any, mousemove: MouseEvent) => {
+  const crosshairLable = (chart: Chart, mousemove: MouseEvent): void => {
+    if (!chart || !chart.chartArea) return;
+
     const {
       ctx,
-      chartArea: { left, right, top, bottom, width, height },
+      chartArea: { right, bottom },
       scales: { x, y },
     } = chart;
+
     const coorX = mousemove.offsetX;
     const coorY = mousemove.offsetY;
-    const textWidth =
-      ctx.measureText(new Date(x.getValueForPixel(coorX)).toLocaleString())
-        .width + 10;
-    ctx.font = '13px sans-serif bold';
+
+    const xValue = x.getValueForPixel(coorX);
+    const yValue = y.getValueForPixel(coorY);
+
+    if (xValue == null || yValue == null) return;
+
+    ctx.save(); // always save before drawing
+
+    ctx.font = '13px sans-serif';
     ctx.textBaseline = 'middle';
     ctx.textAlign = 'center';
+
+    const xLabel = new Date(xValue).toLocaleString();
+    const textWidth = ctx.measureText(xLabel).width + 10;
+
+    // Y crosshair label
     ctx.beginPath();
     ctx.fillStyle = 'rgba(51,51,51,255)';
-    drawRoundedRect(ctx, right, coorY - 14, 40, 25, 4);
+    drawRoundedRect(ctx, right, coorY - 14, 40, 25, 4); // assumes drawRoundedRect is typed
+    ctx.fill();
     ctx.closePath();
+
     ctx.fillStyle = 'white';
-    ctx.fillText(y.getValueForPixel(coorY).toFixed(2), right + 20, coorY);
+    ctx.fillText(yValue.toFixed(2), right + 20, coorY);
+
+    // X crosshair label
     ctx.beginPath();
     ctx.fillStyle = 'rgba(51,51,51,255)';
     ctx.fillRect(coorX - textWidth / 2, bottom, textWidth, 20);
+    ctx.fill();
     ctx.closePath();
+
     ctx.fillStyle = 'white';
-    const nearestValue = x.getValueForPixel(coorX);
-    if (nearestValue !== undefined) {
-      ctx.fillText(
-        new Date(x.getValueForPixel(coorX)).toLocaleString(),
-        coorX,
-        bottom + 10,
-      );
-    }
+    ctx.fillText(xLabel, coorX, bottom + 10);
+
     ctx.restore();
   };
   const drawRoundedRect = (
@@ -212,32 +224,23 @@ const FishChart = ({
     y: number,
     width: number,
     height: number,
-    radius: any,
+    radius: number | { tl: number; tr: number; br: number; bl: number },
   ) => {
-    if (typeof radius === 'number') {
-      radius = { tl: radius, tr: radius, br: radius, bl: radius };
-    } else {
-      const defaultRadius: any = { tl: 0, tr: 0, br: 0, bl: 0 };
-      for (const side in defaultRadius) {
-        radius[side] = radius[side] || defaultRadius[side];
-      }
-    }
+    const r =
+      typeof radius === 'number'
+        ? { tl: radius, tr: radius, br: radius, bl: radius }
+        : { ...{ tl: 0, tr: 0, br: 0, bl: 0 }, ...radius };
+
     ctx.beginPath();
-    ctx.moveTo(x + radius.tl, y);
-    ctx.lineTo(x + width - radius.tr, y);
-    ctx.arcTo(x + width, y, x + width, y + radius.tr, radius.tr);
-    ctx.lineTo(x + width, y + height - radius.br);
-    ctx.arcTo(
-      x + width,
-      y + height,
-      x + width - radius.br,
-      y + height,
-      radius.br,
-    );
-    ctx.lineTo(x + radius.bl, y + height);
-    ctx.arcTo(x, y + height, x, y + height - radius.bl, radius.bl);
-    ctx.lineTo(x, y + radius.tl);
-    ctx.arcTo(x, y, x + radius.tl, y, radius.tl);
+    ctx.moveTo(x + r.tl, y);
+    ctx.lineTo(x + width - r.tr, y);
+    ctx.arcTo(x + width, y, x + width, y + r.tr, r.tr);
+    ctx.lineTo(x + width, y + height - r.br);
+    ctx.arcTo(x + width, y + height, x + width - r.br, y + height, r.br);
+    ctx.lineTo(x + r.bl, y + height);
+    ctx.arcTo(x, y + height, x, y + height - r.bl, r.bl);
+    ctx.lineTo(x, y + r.tl);
+    ctx.arcTo(x, y, x + r.tl, y, r.tl);
     ctx.closePath();
     ctx.fill();
   };
@@ -247,7 +250,7 @@ const FishChart = ({
       const {
         ctx,
         data,
-        chartArea: { left, right, top, bottom },
+        chartArea: { left, right },
         scales: { y },
       } = chart;
 
@@ -334,11 +337,13 @@ const FishChart = ({
           ctx.textAlign = 'center';
           ctx.textBaseline = 'middle';
 
-          const xValue: number | any = x.getValueForPixel(mousemove.offsetX); // X-axis value
+          const xValue: number | undefined = x.getValueForPixel(
+            mousemove.offsetX,
+          ); // X-axis value
           const yValue = y.getValueForPixel(mousemove.offsetY)?.toFixed(2); // Y-axis value
 
           ctx.fillText(
-            `Date: ${new Date(xValue).toLocaleDateString()}`,
+            `Date: ${new Date(xValue ?? new Date()).toLocaleDateString()}`,
             xTooltip + 75, // Center text horizontally
             yTooltip + 20, // Adjust vertical position
           );

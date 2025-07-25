@@ -32,7 +32,6 @@ const CalculateMeanWeigth = ({ open, setOpen, setAvgOfMeanWeight }: Props) => {
     register,
     control,
     setValue,
-    getValues,
     handleSubmit,
     watch,
     reset,

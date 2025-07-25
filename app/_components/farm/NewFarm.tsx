@@ -1,5 +1,5 @@
 'use client';
-import { Farm } from '@/app/_typeModels/Farm';
+import { Farm, GrowthModel } from '@/app/_typeModels/Farm';
 import { SingleUser } from '@/app/_typeModels/User';
 import { Box, Divider, Grid, Step, StepLabel, Stepper } from '@mui/material';
 import { getCookie, setCookie } from 'cookies-next';
@@ -25,7 +25,7 @@ const steps = [
 ];
 interface Props {
   farmMembers: SingleUser[];
-  growthModels: any;
+  growthModels: GrowthModel[];
   farms: Farm[];
   feedstores: FeedProduct[];
   feedSuppliers: FeedSupplier[];
@@ -130,7 +130,7 @@ export default function NewFarm({
             growthModels={growthModels}
             feedStores={feedstores}
             feedSuppliers={feedSuppliers}
-            token={token}
+            token={token ?? ''}
           />
         )}
       </Grid>

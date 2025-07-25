@@ -1,7 +1,6 @@
 'use client';
 import TransferModal from '@/app/_components/models/FarmManager';
 import {
-  exportProductionTableToXlsx,
   getLocalItem,
   ProductionSortTables,
   setLocalItem,
@@ -15,7 +14,11 @@ import {
   feedingHeadMember,
 } from '@/app/_lib/utils/tableHeadData';
 import { Farm } from '@/app/_typeModels/Farm';
-import { FarmGroup, Production } from '@/app/_typeModels/production';
+import {
+  FarmGroup,
+  FarmGroupUnit,
+  Production,
+} from '@/app/_typeModels/production';
 import { breadcrumsAction } from '@/lib/features/breadcrum/breadcrumSlice';
 import { selectRole } from '@/lib/features/user/userSlice';
 import { useAppDispatch, useAppSelector } from '@/lib/hooks';
@@ -74,16 +77,15 @@ export default function ProductionTable({
   const searchParams = useSearchParams();
   const isFish = searchParams.get('isFish');
   const isWater = searchParams.get('isWater');
-  const [production, setProduction] = useState<any>();
-  const loggedUser: any = getCookie('logged-user');
+  const [production, setProduction] = useState<Production>({} as Production);
+  const loggedUser = getCookie('logged-user');
   const [selectedView, setSelectedView] = useState<string>();
   const [selectedFarm, setSelectedFarm] = useState<any>();
-  const [isHistoryDisabled, setIsHistoryDisabled] = useState<boolean>(false);
   const [isFeedFedModalOpen, setIsFeedFedModalOpen] = useState<boolean>(false);
   const [isReportDownload, setIsReportDownload] = useState<boolean>(false);
-  const [selectedProduction, setSelectedProduction] = useState<any>(
-    production ?? null,
-  );
+  const [selectedProduction, setSelectedProduction] = useState<
+    Production | null | FarmGroupUnit
+  >(production ?? null);
   const [tableHead, setTableHead] = useState<
     {
       id: string;
@@ -108,7 +110,10 @@ export default function ProductionTable({
   const [productionData, setProductionData] = useState<FarmGroup[]>();
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('Farm');
-  const [sortDataFromLocal, setSortDataFromLocal] = React.useState<any>('');
+  const [sortDataFromLocal, setSortDataFromLocal] = React.useState<{
+    direction: 'asc' | 'desc';
+    column: string;
+  }>({ direction: 'asc', column: '' });
   const selectedAverage = useAppSelector(selectSelectedAverage);
 
   const handleClose = () => {
@@ -866,7 +871,7 @@ export default function ProductionTable({
       setOpenWaterQualityModal(true);
     }
     setLocalItem('productionData', selectedProd);
-    setSelectedProduction(selectedProd);
+    setProduction(selectedProd ?? ({} as Production));
   };
 
   const open = Boolean(anchorEl);
@@ -963,14 +968,6 @@ export default function ProductionTable({
     }
   };
 
-  const CreateXlsxReport = (
-    e: React.MouseEvent<HTMLSpanElement, MouseEvent>,
-  ) => {
-    const headers: any = tableHead
-      ?.slice(0, -1)
-      .map((headCell: any) => headCell.label);
-    exportProductionTableToXlsx(e, selectedView, headers, productionData);
-  };
   const groupedData: FarmGroup[] = productions?.reduce((result: any, item) => {
     // Find or create a farm group
     let farmGroup: any = result.find(
@@ -1057,7 +1054,7 @@ export default function ProductionTable({
   }, [sortDataFromLocal]);
 
   useEffect(() => {
-    const user = JSON.parse(loggedUser);
+    const user = JSON.parse(loggedUser ?? '');
     if (selectedView === 'fish') {
       if (user.role !== 'MEMBER') {
         setTableHead(farmManagerFishHead);
@@ -1081,6 +1078,8 @@ export default function ProductionTable({
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const storedData = getLocalItem('productionData');
+      console.log('sort', storedData);
+
       if (storedData) {
         setProduction(storedData);
       }
@@ -2143,7 +2142,7 @@ export default function ProductionTable({
                                   ) : (
                                     <Stack>
                                       <MenuItem
-                                        onClick={(e: any) => {
+                                        onClick={() => {
                                           setAnchorEl(null);
                                           setSelectedProduction(selectedFarm);
                                           setIsFeedFedModalOpen(true);
@@ -2272,7 +2271,7 @@ export default function ProductionTable({
       <TransferModal
         open={openTransferModal}
         setOpen={setOpenTransferModal}
-        selectedProduction={selectedProduction}
+        selectedProduction={production}
         farms={farms}
         batches={batches}
         productions={productions}
@@ -2288,7 +2287,7 @@ export default function ProductionTable({
       <WaterQualityParameter
         open={openWaterQualityModal}
         setOpen={setOpenWaterQualityModal}
-        selectedProduction={selectedProduction}
+        selectedProduction={production}
         farms={farms}
         productions={productions}
       />

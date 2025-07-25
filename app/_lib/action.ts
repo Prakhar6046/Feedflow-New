@@ -12,7 +12,7 @@ export const getOrganisations = async (payload: {
   refreshToken?: string;
 }) => {
   const cookieStore = cookies();
-  const token: any = cookieStore.get('auth-token')?.value;
+  const token = cookieStore.get('auth-token')?.value;
   try {
     const res = await fetchWithAuth(
       `${process.env.BASE_URL}/api/organisation${
@@ -38,7 +38,7 @@ export const getOrganisations = async (payload: {
 
 export const getOrganisationCount = async (refreshToken?: string) => {
   const cookieStore = cookies();
-  const token: any = cookieStore.get('auth-token')?.value;
+  const token = cookieStore.get('auth-token')?.value;
   try {
     const res = await fetchWithAuth(
       `${process.env.BASE_URL}/api/organisation/count`,
@@ -58,7 +58,7 @@ export const getOrganisationCount = async (refreshToken?: string) => {
 
 export const getAllOrganisations = async (refreshToken?: string) => {
   const cookieStore = cookies();
-  const token: any = cookieStore.get('auth-token')?.value;
+  const token = cookieStore.get('auth-token')?.value;
   try {
     const res = await fetchWithAuth(
       `${process.env.BASE_URL}/api/organisation/all`,
@@ -78,7 +78,7 @@ export const getAllOrganisations = async (refreshToken?: string) => {
 
 export const getUsers = async (payload: any & { refreshToken?: string }) => {
   const cookieStore = cookies();
-  const token: any = cookieStore.get('auth-token')?.value;
+  const token = cookieStore.get('auth-token')?.value;
   try {
     const res = await fetchWithAuth(
       `${process.env.BASE_URL}/api/users?role=${payload.role}&organisationId=${payload.organisationId}&query=${payload.query}`,
@@ -97,7 +97,7 @@ export const getUsers = async (payload: any & { refreshToken?: string }) => {
 
 export const getUser = async (userId: string, refreshToken?: string) => {
   const cookieStore = cookies();
-  const token: any = cookieStore.get('auth-token')?.value;
+  const token = cookieStore.get('auth-token')?.value;
   try {
     const res = await fetchWithAuth(
       `${process.env.BASE_URL}/api/user/${userId}`,
@@ -120,7 +120,7 @@ export const AddNewFeedSupply = async (
   refreshToken?: string,
 ) => {
   const cookieStore = cookies();
-  const token: any = cookieStore.get('auth-token')?.value;
+  const token = cookieStore.get('auth-token')?.value;
   try {
     const res = await fetchWithAuth(
       `${process.env.BASE_URL}/api/feedSupply/new-feed`,
@@ -146,7 +146,7 @@ export const getFeedSupplys = async (payload: {
   refreshToken?: string;
 }) => {
   const cookieStore = cookies();
-  const token: any = cookieStore.get('auth-token')?.value;
+  const token = cookieStore.get('auth-token')?.value;
   try {
     const res = await fetchWithAuth(
       `${process.env.BASE_URL}/api/feedSupply?role=${payload.role}&organisationId=${payload.organisationId}&query=${payload.query}`,
@@ -172,7 +172,7 @@ export const getFishSupply = async (payload: {
   refreshToken?: string;
 }) => {
   const cookieStore = cookies();
-  const token: any = cookieStore.get('auth-token')?.value;
+  const token = cookieStore.get('auth-token')?.value;
   try {
     const res = await fetchWithAuth(
       `${process.env.BASE_URL}/api/fish?role=${payload.role}&organisationId=${payload.organisationId}&query=${payload.query}`,
@@ -199,7 +199,7 @@ export const getFarms = async (payload: {
   refreshToken?: string;
 }) => {
   const cookieStore = cookies();
-  const token: any = cookieStore.get('auth-token')?.value;
+  const token = cookieStore.get('auth-token')?.value;
   try {
     const res = await fetchWithAuth(
       `${process.env.BASE_URL}/api/farm?role=${payload.role}&organisationId=${payload.organisationId}&query=${payload.query}&filter=${payload.noFilter}&tab=${payload.tab}`,
@@ -223,7 +223,7 @@ export const getFarmMangers = async (
   refreshToken?: string,
 ) => {
   const cookieStore = cookies();
-  const token: any = cookieStore.get('auth-token')?.value;
+  const token = cookieStore.get('auth-token')?.value;
   try {
     const res = await fetchWithAuth(
       `${process.env.BASE_URL}/api/farm/managers?organisationId=${organisationId}`,
@@ -243,7 +243,7 @@ export const getFarmMangers = async (
 
 export const getOrganisationForhatchery = async (refreshToken?: string) => {
   const cookieStore = cookies();
-  const token: any = cookieStore.get('auth-token')?.value;
+  const token = cookieStore.get('auth-token')?.value;
   try {
     const res = await fetchWithAuth(
       `${process.env.BASE_URL}/api/organisation/hatchery`,
@@ -270,7 +270,7 @@ export const getProductions = async (payload: {
   refreshToken?: string;
 }) => {
   const cookieStore = cookies();
-  const token: any = cookieStore.get('auth-token')?.value;
+  const token = cookieStore.get('auth-token')?.value;
   try {
     const res = await fetchWithAuth(
       `${process.env.BASE_URL}/api/production?role=${payload.role}&organisationId=${payload.organisationId}&query=${payload.query}&filter=${payload.noFilter}&userId=${payload.userId}`,
@@ -297,7 +297,7 @@ export const getBatches = async (payload: {
   refreshToken?: string;
 }) => {
   const cookieStore = cookies();
-  const token: any = cookieStore.get('auth-token')?.value;
+  const token = cookieStore.get('auth-token')?.value;
   try {
     const res = await fetchWithAuth(
       `${process.env.BASE_URL}/api/production/batches`,
@@ -324,7 +324,7 @@ export const getSampleEnvironment = async (payload: {
   refreshToken?: string;
 }) => {
   const cookieStore = cookies();
-  const token: any = cookieStore.get('auth-token')?.value;
+  const token = cookieStore.get('auth-token')?.value;
   try {
     const res = await fetchWithAuth(
       `${process.env.BASE_URL}/api/sample/sampleEnvironment?role=${payload.role}&organisationId=${payload.organisationId}&query=${payload.query}&filter=${payload.noFilter}`,
@@ -351,7 +351,7 @@ export const getSampleStock = async (payload: {
   refreshToken?: string;
 }) => {
   const cookieStore = cookies();
-  const token: any = cookieStore.get('auth-token')?.value;
+  const token = cookieStore.get('auth-token')?.value;
   try {
     const res = await fetchWithAuth(
       `${process.env.BASE_URL}/api/sample/sampleStock?role=${payload.role}&organisationId=${payload.organisationId}&query=${payload.query}&filter=${payload.noFilter}`,
@@ -372,7 +372,7 @@ export const getSampleStock = async (payload: {
 
 export const getGrowthModels = async (refreshToken?: string) => {
   const cookieStore = cookies();
-  const token: any = cookieStore.get('auth-token')?.value;
+  const token = cookieStore.get('auth-token')?.value;
   try {
     const res = await fetchWithAuth(
       `${process.env.BASE_URL}/api/growth-model`,
@@ -397,7 +397,7 @@ export const getFeedStores = async (payload: {
   refreshToken?: string;
 }) => {
   const cookieStore = cookies();
-  const token: any = cookieStore.get('auth-token')?.value;
+  const token = cookieStore.get('auth-token')?.value;
   try {
     const res = await fetchWithAuth(
       `${process.env.BASE_URL}/api/feed-store?role=${payload.role}&organisationId=${payload.organisationId}&query=${payload.query}`,
@@ -417,7 +417,7 @@ export const getFeedStores = async (payload: {
 
 export const getFeedSuppliers = async (refreshToken?: string) => {
   const cookieStore = cookies();
-  const token: any = cookieStore.get('auth-token')?.value;
+  const token = cookieStore.get('auth-token')?.value;
   try {
     const res = await fetchWithAuth(
       `${process.env.BASE_URL}/api/organisation/feedSuppliers`,

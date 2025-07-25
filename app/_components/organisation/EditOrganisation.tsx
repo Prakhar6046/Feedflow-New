@@ -922,6 +922,7 @@ const EditOrganisation = ({
                     setUseAddress={setUseAddress}
                     isCalAltitude={true}
                     setAltitude={setAltitude}
+                    token={token ?? ''}
                   />
                 </Box>
 

@@ -18,9 +18,9 @@ export default async function Page({
   // const loggedUser: any = getCookie("logged-user", { cookies });
   // const refreshToken: any = getCookie("refresh-token", { cookies });
   const cookieStore = cookies();
-  const loggedUser: any = cookieStore.get('logged-user')?.value;
+  const loggedUser = cookieStore.get('logged-user')?.value;
   const refreshToken = cookieStore.get('refresh-token')?.value;
-  const user: SingleUser = JSON.parse(loggedUser);
+  const user: SingleUser = JSON.parse(loggedUser ?? '');
   const farms = await getFarms({
     role: user?.role,
     organisationId: user?.organisationId,

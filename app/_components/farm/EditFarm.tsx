@@ -2,7 +2,7 @@
 import FarmInformation from '@/app/_components/farm/FarmInformation';
 import ProductionUnits from '@/app/_components/farm/ProductionUnits';
 import Loader from '@/app/_components/Loader';
-import { Farm } from '@/app/_typeModels/Farm';
+import { Farm, GrowthModel } from '@/app/_typeModels/Farm';
 import { SingleUser } from '@/app/_typeModels/User';
 import { Box, Divider, Grid, Step, StepLabel, Stepper } from '@mui/material';
 import { getCookie, setCookie } from 'cookies-next';
@@ -27,7 +27,7 @@ const steps = [
 interface Props {
   farmId: string;
   farmMembers: SingleUser[];
-  growthModels: any;
+  growthModels: GrowthModel[];
   farms: Farm[];
   isEdit?: boolean;
   feedstores: FeedProduct[];
@@ -73,6 +73,7 @@ const EditFarm = ({
     };
     getFarmData();
   }, []);
+  console.log('edit farm data', editFarm);
 
   if (loading) {
     return <Loader />;
@@ -170,7 +171,7 @@ const EditFarm = ({
             growthModels={growthModels}
             feedStores={feedstores}
             feedSuppliers={feedSuppliers}
-            token={token}
+            token={token ?? ''}
           />
         )}
       </Grid>

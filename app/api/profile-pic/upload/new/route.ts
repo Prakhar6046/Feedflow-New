@@ -15,8 +15,13 @@ export const POST = async (request: NextRequest) => {
   try {
     // Upload the image using multer
     const formData = await request.formData();
-    const image: any = formData.get('image');
-
+    const image = formData.get('image') as File | null;
+    if (!image) {
+      return NextResponse.json(
+        { status: false, message: 'Missing image or userId' },
+        { status: 400 },
+      );
+    }
     // Convert image to base64
     const buffer = Buffer.from(await image.arrayBuffer());
     const base64Image = `data:${image.type};base64,${buffer.toString(

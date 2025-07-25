@@ -15,18 +15,31 @@ import {
   TextField,
   Button,
 } from '@mui/material';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm, Controller, Control, FieldValues } from 'react-hook-form';
 import { useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { getCookie } from 'cookies-next';
+import { FeedSupplier } from '@/app/_typeModels/Organization';
+import { FeedProduct } from '@/app/_typeModels/Feed';
 
 interface Props {
-  feedSuppliers: any;
-  filteredStores: any;
+  feedSuppliers: FeedSupplier[];
+  filteredStores: FeedProduct[];
+}
+
+// Type for the suppliers array in the form
+interface Supplier {
+  supplierIds: string[];
+}
+
+// Type for the flat form data
+
+interface FlatFormData extends Record<string, unknown> {
+  suppliers?: Supplier[];
 }
 
 export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
-  const { control, handleSubmit, reset, setValue } = useForm();
+  const { control, handleSubmit, reset, setValue } = useForm<FlatFormData>();
 
   const excludedKeys = [
     'id',
@@ -39,11 +52,11 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
   useEffect(() => {
     if (filteredStores?.length) {
       // Prepare flat key-value for default values
-      const defaultValues: Record<string, any> = {};
-      filteredStores.forEach((item: any, colIndex: number) => {
+      const defaultValues: FlatFormData = {};
+      filteredStores.forEach((item, colIndex: number) => {
         Object.entries(item).forEach(([key, value]) => {
           if (!['createdAt', 'updatedAt', 'organaisationId'].includes(key)) {
-            defaultValues[`${key}-${colIndex}`] = value;
+            defaultValues[`${key}-${colIndex}`] = value as string | number;
           }
         });
       });
@@ -53,18 +66,20 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
 
   useEffect(() => {
     if (filteredStores) {
-      filteredStores?.map((store: any, i: number) => {
+      filteredStores?.map((store, i: number) => {
         return setValue(`suppliers[${i}].supplierIds`, store.ProductSupplier);
       });
     }
-  }, [filteredStores]);
+  }, [filteredStores, setValue]);
+
   if (!filteredStores || filteredStores.length === 0) return null;
 
   const keys = Object.keys(filteredStores[0]).filter(
     (key) => !excludedKeys.includes(key),
   );
-  function transformFeedProductsWithSuppliers(flatData: Record<string, any>) {
-    const result: any[] = [];
+
+  function transformFeedProductsWithSuppliers(flatData: FlatFormData) {
+    const result: Record<string, unknown>[] = [];
     const suppliersArray = flatData.suppliers || [];
 
     Object.keys(flatData).forEach((key) => {
@@ -85,10 +100,13 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
     }));
   }
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: FlatFormData) => {
     const payload = transformFeedProductsWithSuppliers(data);
     const updatedPayload = payload.map((feed) => {
-      const { ProductSupplier, supplierIds, ...rest } = feed;
+      const { ProductSupplier, supplierIds, ...rest } = feed as Record<
+        string,
+        unknown
+      > & { supplierIds?: string[]; ProductSupplier?: string };
       return { ...rest, ProductSupplier: supplierIds };
     });
 
@@ -105,7 +123,6 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
       if (response.ok) {
         const res = await response.json();
         toast.dismiss();
-
         toast.success(res.message);
       } else {
         toast.dismiss();
@@ -115,6 +132,7 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
       toast.error('Something went wrong. Please try again.');
     }
   };
+
   const firstRows = keys.slice(0, 2);
   const remainingRows = keys.slice(2);
 
@@ -177,8 +195,7 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
               </TableCell>
 
               {/* Dynamic Store Columns */}
-
-              {filteredStores.map((_: any, i: number) => (
+              {filteredStores.map((_: FeedProduct, i: number) => (
                 <TableCell
                   key={i}
                   sx={{
@@ -195,7 +212,7 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
                   >
                     <Controller
                       name={`suppliers[${i}].supplierIds`}
-                      control={control}
+                      control={control as unknown as Control<FieldValues>}
                       defaultValue={[]}
                       render={({ field }) => (
                         <Select
@@ -210,15 +227,18 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
                             minWidth: '270px',
                             height: '40px',
                           }}
-                          renderValue={(selected) =>
+                          renderValue={(selected: string[]) =>
                             feedSuppliers
-                              .filter((s: any) => selected.includes(s.id))
-                              .map((s: any) => s.name)
+                              .filter((s) => selected.includes(s.id.toString()))
+                              .map((s) => s.name)
                               .join(', ')
                           }
                         >
-                          {feedSuppliers.map((supplier: any) => (
-                            <MenuItem key={supplier.id} value={supplier.id}>
+                          {feedSuppliers.map((supplier) => (
+                            <MenuItem
+                              key={supplier.id}
+                              value={supplier.id.toString()}
+                            >
                               {supplier.name}
                             </MenuItem>
                           ))}
@@ -230,21 +250,6 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
                   <Divider
                     sx={{ borderBottomWidth: 1, transform: 'translateY(1px)' }}
                   />
-
-                  {/* <Controller
-                    name={`suppliers[${i}].brandName`}
-                    control={control}
-                    defaultValue={store.brandName || ""}
-                    render={({ field }) => (
-                      <TextField
-                        {...field}
-                        size="small"
-                        variant="outlined"
-                        fullWidth
-                        sx={{ fontSize: 13, px: 2 }}
-                      />
-                    )}
-                  /> */}
                 </TableCell>
               ))}
             </TableRow>
@@ -252,11 +257,11 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
             {firstRows.map((key) => (
               <TableRow key={key}>
                 <TableCell sx={{ background: '#FAFAFA' }}>{key}</TableCell>
-                {filteredStores.map((_: any, colIndex: number) => (
+                {filteredStores.map((_: FeedProduct, colIndex: number) => (
                   <TableCell key={colIndex} sx={{ background: '#FAFAFA' }}>
                     <Controller
                       name={`${key}-${colIndex}`}
-                      control={control}
+                      control={control as unknown as Control<FieldValues>}
                       render={({ field }) => (
                         <TextField {...field} size="small" fullWidth />
                       )}
@@ -271,11 +276,11 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
             {remainingRows.map((key) => (
               <TableRow key={key}>
                 <TableCell>{key}</TableCell>
-                {filteredStores.map((_: any, colIndex: number) => (
+                {filteredStores.map((_: FeedProduct, colIndex: number) => (
                   <TableCell key={colIndex}>
                     <Controller
                       name={`${key}-${colIndex}`}
-                      control={control}
+                      control={control as unknown as Control<FieldValues>}
                       render={({ field }) => (
                         <TextField {...field} size="small" fullWidth />
                       )}

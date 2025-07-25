@@ -1,5 +1,6 @@
 'use client';
-import { useAppDispatch } from '@/lib/hooks';
+import { FeedProduct } from '@/app/_typeModels/Feed';
+import { FeedSupplier } from '@/app/_typeModels/Organization';
 import {
   Box,
   Divider,
@@ -10,12 +11,7 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
-import { getCookie } from 'cookies-next';
-import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import Loader from '../Loader';
-import { FeedProduct } from '@/app/_typeModels/Feed';
-import { FeedSupplier } from '@/app/_typeModels/Organization';
 
 export interface FeedSupply {
   id: string;
@@ -86,53 +82,12 @@ type Iprops = {
   feedSuppliers: FeedSupplier[];
 };
 const FeedSelection = ({ data, feedSuppliers }: Iprops) => {
-  const router = useRouter();
-  const dispatch = useAppDispatch();
-  const loggedUserDataLocal: any = getCookie('logged-user');
-  const loggedUser = JSON.parse(loggedUserDataLocal);
-  const token = getCookie('auth-token');
-
-  const [feedSupply, setFeedSupply] = useState<FeedSupply[]>();
   const [feedStores, setFeedStores] = useState<FeedProduct[]>();
-  const [loading, setLoading] = useState<boolean>(false);
-  const getFeedSupplys = async () => {
-    const response = await fetch(
-      `/api/feedSupply?role=${loggedUser.role}&organisationId=${loggedUser.organisationId}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      },
-    );
-    return response.json();
-  };
-  const getNutritionalValue = (val: string) => {
-    if (val === 'Minimum') {
-      return 'Min';
-    } else if (val === 'Maximum') {
-      return 'Max';
-    } else {
-      return 'Typ';
-    }
-  };
-
-  // useEffect(() => {
-  //   setLoading(true);
-  //   const getFeedSupplyer = async () => {
-  //     const res = await getFeedSupplys();
-  //     setFeedSupply(res.data);
-  //     setLoading(false);
-  //   };
-  //   getFeedSupplyer();
-  // }, []);
 
   useEffect(() => {
     setFeedStores(data);
   }, [data]);
 
-  if (loading) {
-    return <Loader />;
-  }
   return (
     <Stack>
       <Typography
@@ -166,8 +121,9 @@ const FeedSelection = ({ data, feedSuppliers }: Iprops) => {
         >
           {feedStores?.length ? (
             feedStores?.map((supply) => {
-              const supplierName = feedSuppliers?.find((supplier: any) =>
-                supply?.ProductSupplier?.includes(supplier?.id),
+              const supplierName = feedSuppliers?.find(
+                (supplier: FeedSupplier) =>
+                  supply?.ProductSupplier?.includes(String(supplier?.id)),
               )?.name;
               return (
                 <Grid item xs="auto" key={Number(supply?.id)}>

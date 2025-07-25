@@ -19,9 +19,9 @@ export default async function Page({
 }) {
   const query = searchParams?.query || '';
   const tab = searchParams?.tab || 'all';
-  const loggedUser: any = getCookie('logged-user', { cookies });
-  const refreshToken: any = getCookie('refresh-token', { cookies });
-  const user: SingleUser = JSON.parse(loggedUser);
+  const loggedUser = getCookie('logged-user', { cookies });
+  const refreshToken = getCookie('refresh-token', { cookies });
+  const user: SingleUser = JSON.parse(loggedUser || '');
 
   const organisations = await getOrganisations({
     organisationId: Number(user?.organisationId),

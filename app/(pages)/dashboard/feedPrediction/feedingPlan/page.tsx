@@ -13,11 +13,11 @@ const Page: NextPage = async ({
 }) => {
   const query = searchParams?.query || '';
   const cookieStore = cookies();
-  const loggedUser: any = cookieStore.get('logged-user')?.value;
+  const loggedUser = cookieStore.get('logged-user')?.value;
   const refreshToken = cookieStore.get('refresh-token')?.value;
   // const loggedUser: any = getCookie("logged-user", { cookies });
   // const refreshToken: any = getCookie("refresh-token", { cookies });
-  const user = JSON.parse(loggedUser);
+  const user = JSON.parse(loggedUser ?? '');
   const farms = await getFarms({
     role: user.role,
     organisationId: user.organisationId,

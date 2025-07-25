@@ -1,11 +1,12 @@
 import { capitalizeFirstLetter } from '@/app/_lib/utils';
+import { Contact } from '@/app/_typeModels/Organization';
 import prisma from '@/prisma/prisma';
 import { NextRequest, NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
 
 export async function POST(req: NextRequest) {
   try {
-    const transporter: any = nodemailer.createTransport({
+    const transporter = nodemailer.createTransport({
       service: 'gmail', // You can use any other email service provider
       auth: {
         user: process.env.EMAIL_USER, // Your email address
@@ -21,8 +22,8 @@ export async function POST(req: NextRequest) {
       (org) => org.permission === 'ADMIN' || org.permission === 'SUPERADMIN',
     );
     const checkContactExist = body.contacts
-      .filter((contact: any) => !contact.id)
-      .map((contact: any) => contact.email)
+      .filter((contact: Contact) => !contact.id)
+      .map((contact: Contact) => contact.email)
       .filter((email: string | null | undefined): email is string =>
         Boolean(email),
       );
@@ -76,7 +77,7 @@ export async function POST(req: NextRequest) {
 
     // Create contacts without userId initially
     const contacts = await prisma.contact.createMany({
-      data: body.contacts.map((contact: any) => ({
+      data: body.contacts.map((contact: Contact) => ({
         name: capitalizeFirstLetter(contact.name),
         email: contact.email.toLowerCase(),
         phone: contact.phone,
@@ -250,7 +251,9 @@ export async function POST(req: NextRequest) {
     const users = await prisma.user.findMany({
       where: {
         email: {
-          in: body.contacts.map((contact: any) => contact.email.toLowerCase()),
+          in: body.contacts.map((contact: Contact) =>
+            contact.email.toLowerCase(),
+          ),
         },
       },
       select: { id: true, email: true },

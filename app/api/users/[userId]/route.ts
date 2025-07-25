@@ -2,8 +2,13 @@ import prisma from '@/prisma/prisma';
 import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 import { verifyAndRefreshToken } from '@/app/_lib/auth/verifyAndRefreshToken';
+interface ContextParams {
+  params: {
+    userId: string;
+  };
+}
 
-export const GET = async (request: NextRequest, context: { params: any }) => {
+export const GET = async (request: NextRequest, context: ContextParams) => {
   const user = await verifyAndRefreshToken(request);
   if (user.status === 401) {
     return new NextResponse(
@@ -44,7 +49,7 @@ export const GET = async (request: NextRequest, context: { params: any }) => {
   }
 };
 
-export async function PUT(req: NextRequest, context: { params: any }) {
+export async function PUT(req: NextRequest, context: ContextParams) {
   const user = await verifyAndRefreshToken(req);
   if (user.status === 401) {
     return NextResponse.json(

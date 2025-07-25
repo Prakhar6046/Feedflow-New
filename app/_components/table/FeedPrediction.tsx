@@ -7,12 +7,10 @@ import ProductionManagerFilter from '@/app/_components/ProductionManagerFilter';
 import { Farm } from '@/app/_typeModels/Farm';
 import { FarmGroup, Production } from '@/app/_typeModels/production';
 import {
-  selectAllFarms,
   selectEndDate,
   selectStartDate,
 } from '@/lib/features/commonFilters/commonFilters';
-import { selectCurrentFarmTab } from '@/lib/features/feedPrediction/feedPredictionSlice';
-import { useAppDispatch, useAppSelector } from '@/lib/hooks';
+import { useAppSelector } from '@/lib/hooks';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import { Box, Stack, Tab } from '@mui/material';
@@ -22,11 +20,8 @@ interface Props {
   farms: Farm[];
 }
 const FeedPredictionTable = ({ farms, productions }: Props) => {
-  const dispatch = useAppDispatch();
-  const allFarms = useAppSelector(selectAllFarms);
   const startDate = useAppSelector(selectStartDate);
   const endDate = useAppSelector(selectEndDate);
-  const currentFarmTab = useAppSelector(selectCurrentFarmTab);
   const [adHocData, setAdHocData] = useState<FishFeedingData[]>([]);
   const [loading, setLoading] = useState(false);
   const [selectedFeeding, setSelectedFeeding] = useState<string>('feedingPlan');

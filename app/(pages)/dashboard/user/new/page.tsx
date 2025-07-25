@@ -10,9 +10,9 @@ export const metadata: Metadata = {
   title: 'New User',
 };
 export default async function Page() {
-  const loggedUser: any = getCookie('logged-user', { cookies });
-  const refreshToken: any = getCookie('refresh-token', { cookies });
-  const user: SingleUser = JSON.parse(loggedUser);
+  const loggedUser = getCookie('logged-user', { cookies });
+  const refreshToken = getCookie('refresh-token', { cookies });
+  const user: SingleUser = JSON.parse(loggedUser || '');
   const organisations = await getOrganisations({
     organisationId: user?.organisationId,
     role: String(user?.role),

@@ -18,7 +18,7 @@ import Logo from '@/public/static/img/logo.svg';
 import { farmAction } from '@/lib/features/farm/farmSlice';
 const ExpandedSidebar = () => {
   const router = useRouter();
-  const loggedUser: any = getCookie('logged-user');
+  const loggedUser = getCookie('logged-user');
   const [loggedUserData, setLoggedUserData] = useState<LoggedUser>();
   const [userData, setUserData] = useState<LoggedUser>();
   const [loading, setLoading] = useState<boolean>(false);

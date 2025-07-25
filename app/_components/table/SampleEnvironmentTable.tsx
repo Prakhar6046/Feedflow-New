@@ -48,7 +48,10 @@ export default function SampleEnvironmentTable({
   const role = useAppSelector(selectRole);
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('Farm');
-  const [sortDataFromLocal, setSortDataFromLocal] = React.useState<any>('');
+  const [sortDataFromLocal, setSortDataFromLocal] = React.useState<{
+    direction: 'asc' | 'desc';
+    column: string;
+  }>({ direction: 'asc', column: '' });
 
   useEffect(() => {
     if (pathName) {

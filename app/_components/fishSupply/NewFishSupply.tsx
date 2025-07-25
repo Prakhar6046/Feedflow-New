@@ -49,7 +49,7 @@ interface FormInputs {
 }
 function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
   const router = useRouter();
-  const userData: any = getCookie('logged-user');
+  const userData = getCookie('logged-user');
   const token = getCookie('auth-token');
   const [loading, setLoading] = useState<boolean>(false);
   const [isApiCallInProgress, setIsApiCallInProgress] = useState(false);
@@ -79,7 +79,7 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
     if (isApiCallInProgress) return;
     setIsApiCallInProgress(true);
     try {
-      const loggedUserData = JSON.parse(userData);
+      const loggedUserData = JSON.parse(userData || '');
 
       const {
         hatchingDate,
@@ -128,7 +128,7 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
         toast.dismiss();
         toast.error('Somethig went wrong!');
       }
-    } catch (error) {
+    } catch {
       // console.error("Fish supply error:", error);
       toast.error('Something went wrong. Please try again.');
     } finally {

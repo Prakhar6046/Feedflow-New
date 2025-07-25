@@ -53,7 +53,7 @@ const style = {
 interface Props {
   setOpen: (open: boolean) => void;
   open: boolean;
-  selectedProduction: Production;
+  selectedProduction: Production | null | undefined;
   farms: Farm[];
   productions: Production[];
 }
@@ -206,9 +206,9 @@ const WaterQualityParameter: React.FC<Props> = ({
   const handleCloseAnchor = (field: string) => {
     if (field.length) {
       append({
-        id: selectedProduction?.id,
-        fishFarm: selectedProduction?.fishFarmId,
-        productionUnit: selectedProduction?.productionUnitId,
+        id: selectedProduction?.id ?? 0,
+        fishFarm: selectedProduction?.fishFarmId ?? '',
+        productionUnit: selectedProduction?.productionUnitId ?? '',
         DO: '',
         NH4: '',
         NO2: '',

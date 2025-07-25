@@ -28,8 +28,9 @@ import Select from '@mui/material/Select';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { Dayjs } from 'dayjs';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { getCookie } from 'cookies-next';
+import dayjs, { Dayjs } from 'dayjs';
+import { useRouter, useSearchParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import {
   Controller,
@@ -41,7 +42,6 @@ import toast from 'react-hot-toast';
 import CalculateMeanLength from './CalculateMeanLength';
 import CalculateMeanWeigth from './CalculateMeanWeigth';
 import Confirmation from './Confirmation';
-import { getCookie } from 'cookies-next';
 const style = {
   position: 'absolute' as const,
   top: '50%',
@@ -55,29 +55,30 @@ const style = {
 interface Props {
   setOpen: (open: boolean) => void;
   open: boolean;
-  selectedProduction: Production;
+  selectedProduction: Production | null;
   farms: Farm[];
   batches: { batchNumber: string; id: number }[];
   productions: Production[];
 }
-interface InputTypes {
-  manager: {
-    id: number;
-    fishFarm: string;
-    productionUnit: string;
-    biomass: string;
-    count: string;
-    meanWeight: string;
-    meanLength: string;
-    field?: string;
-    stockingDensityNM?: string;
-    stockingLevel?: string;
-    stockingDensityKG?: string;
-    batchNumber: string;
-    currentDate?: Dayjs | null;
-    totalWeight?: string;
-    noOfFish?: string;
-  }[];
+interface Manager {
+  id: number;
+  fishFarm: string;
+  productionUnit: string;
+  biomass: string;
+  count: string;
+  meanWeight: string;
+  meanLength: string;
+  field?: string;
+  stockingDensityNM?: string;
+  stockingLevel?: string;
+  stockingDensityKG?: string;
+  batchNumber: string;
+  currentDate?: Dayjs | null;
+  totalWeight?: string;
+  noOfFish?: string;
+}
+export interface InputTypes {
+  manager: Manager[];
 }
 const TransferModal: React.FC<Props> = ({
   setOpen,
@@ -94,21 +95,20 @@ const TransferModal: React.FC<Props> = ({
   //   selectedProduction?.organisation?.permissions.farms?.find(
   //     (per) => per?.farmId === selectedProduction?.fishFarmId
   //   );
-  const pathName = usePathname();
-  const [selectedFarm, setSelectedFarm] = useState<any>(null);
+  const [selectedFarm, setSelectedFarm] = useState<string>('');
   const [isEnteredBiomassGreater, setIsEnteredBiomassGreater] =
     useState<boolean>(false);
   const [isEnteredFishCountGreater, setIsEnteredFishCountGreater] =
     useState<boolean>(false);
   const [openConfirmationModal, setOpenConfirmationModal] =
     useState<boolean>(false);
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [isStockDeleted, setIsStockDeleted] = useState<boolean>(false);
   const [isMeanWeigthCal, setIsMeanWeigthCal] = useState<boolean>(false);
   const [isMeanLengthCal, setIsMeanLengthCal] = useState<boolean>(false);
   const [avgOfMeanWeight, setAvgOfMeanWeight] = useState<number>();
   const [avgOfMeanLength, setAvgOfMeanLength] = useState<number>();
-  const [formData, setFormData] = useState<any>();
+  const [formData, setFormData] = useState<Manager[] | null>([]);
   const [selectedMeanWeightId, setSelectedMeanWeightId] = useState<string>('');
   const [selectedMeanLengthId, setSelectedMeanLengthId] = useState<string>('');
   const [isApiCallInProgress, setIsApiCallInProgress] =
@@ -119,14 +119,11 @@ const TransferModal: React.FC<Props> = ({
     setValue,
     formState: { errors },
     watch,
-    trigger,
     clearErrors,
     reset,
     getValues,
     handleSubmit,
     control,
-    setFocus,
-    getFieldState,
   } = useForm<InputTypes>({
     mode: 'onChange',
     defaultValues: {
@@ -205,14 +202,14 @@ const TransferModal: React.FC<Props> = ({
       });
       if (!isEnteredBiomassGreater && !isEnteredFishCountGreater) {
         const addStockField = addDataInSample.map((data) => {
-          if (!data.field && !selectedProduction.batchNumberId) {
+          if (!data.field && !selectedProduction?.batchNumberId) {
             return { ...data, field: 'Stock' };
           } else {
             return data;
           }
         });
         const payload = {
-          organisationId: selectedProduction.organisationId,
+          organisationId: selectedProduction?.organisationId,
           data: addStockField,
         };
 
@@ -250,7 +247,7 @@ const TransferModal: React.FC<Props> = ({
     }
   };
 
-  const handleDelete = (item: any) => {
+  const handleDelete = (item: Manager) => {
     if (item.field !== 'Stock') {
       const currentIndex = fields.findIndex((field) => field.id === item.id);
       remove(currentIndex);
@@ -273,7 +270,7 @@ const TransferModal: React.FC<Props> = ({
     toast.dismiss();
   };
   const openAnchor = Boolean(anchorEl);
-  const handleClick = (event: any) => {
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
@@ -281,10 +278,10 @@ const TransferModal: React.FC<Props> = ({
     if (field.length) {
       append({
         id: 0,
-        fishFarm: selectedProduction.fishFarmId,
+        fishFarm: selectedProduction?.fishFarmId ?? '',
         productionUnit:
           field === 'Stock' || field === 'Harvest' || field === 'Mortalities'
-            ? selectedProduction?.productionUnitId
+            ? (selectedProduction?.productionUnitId ?? '')
             : '',
         biomass: '',
         count: '',
@@ -296,7 +293,7 @@ const TransferModal: React.FC<Props> = ({
         field,
         batchNumber:
           field === 'Harvest' || field === 'Mortalities'
-            ? selectedProduction.batchNumberId
+            ? (selectedProduction?.batchNumberId ?? '')
             : '',
       });
       setAnchorEl(null);
@@ -305,11 +302,11 @@ const TransferModal: React.FC<Props> = ({
     }
   };
 
-  const handleMeanWeight = (item: any) => {
+  const handleMeanWeight = (item: Manager) => {
     setSelectedMeanWeightId(String(item.id));
     setIsMeanWeigthCal(true);
   };
-  const handleMeanLength = (item: any) => {
+  const handleMeanLength = (item: Manager) => {
     setSelectedMeanLengthId(String(item.id));
     setIsMeanLengthCal(true);
   };
@@ -377,22 +374,26 @@ const TransferModal: React.FC<Props> = ({
 
   useEffect(() => {
     if ((isStockDeleted || selectedProduction) && !formData) {
-      const data: any = [
-        {
-          id: selectedProduction.id,
-          fishFarm: selectedProduction.fishFarmId,
-          productionUnit: selectedProduction?.productionUnitId,
-          biomass: selectedProduction.biomass,
-          count: selectedProduction.fishCount,
-          meanWeight: selectedProduction.meanWeight,
-          meanLength: selectedProduction.meanLength,
-          stockingDensityNM: selectedProduction.stockingDensityNM,
-          stockingLevel: selectedProduction.stockingLevel,
-          stockingDensityKG: selectedProduction.stockingDensityKG,
-          batchNumber: selectedProduction.batchNumberId,
-          currentDate: selectedProduction?.currentDate,
-        },
-      ];
+      const data: Manager[] = selectedProduction
+        ? [
+            {
+              id: selectedProduction.id ?? '',
+              fishFarm: selectedProduction.fishFarmId ?? '',
+              productionUnit: selectedProduction.productionUnitId ?? '',
+              biomass: selectedProduction.biomass ?? 0,
+              count: selectedProduction.fishCount ?? 0,
+              meanWeight: selectedProduction.meanWeight ?? 0,
+              meanLength: selectedProduction.meanLength ?? 0,
+              stockingDensityNM: selectedProduction.stockingDensityNM ?? 0,
+              stockingLevel: selectedProduction.stockingLevel ?? 0,
+              stockingDensityKG: selectedProduction.stockingDensityKG ?? 0,
+              batchNumber: selectedProduction.batchNumberId ?? '',
+              currentDate: selectedProduction.currentDate
+                ? dayjs(selectedProduction.currentDate)
+                : undefined,
+            },
+          ]
+        : [];
       setValue('manager', data);
     }
 
@@ -401,7 +402,7 @@ const TransferModal: React.FC<Props> = ({
     }
 
     setSelectedFarm(
-      formData ? formData[0]?.fishFarm : selectedProduction?.fishFarmId,
+      formData ? formData[0]?.fishFarm : (selectedProduction?.fishFarmId ?? ''),
     ); // Set the selected farm when manager is selected
     return () => {
       setIsStockDeleted(false);
@@ -2022,8 +2023,8 @@ const TransferModal: React.FC<Props> = ({
                                   field === 'Mortalities' ||
                                   field === 'Transfer' ||
                                   field === 'Sample'
-                                ? watchedFields[0].count &&
-                                  watchedFields[0].batchNumber
+                                ? watchedFields?.[0]?.count &&
+                                  watchedFields?.[0]?.batchNumber
                                   ? false
                                   : true
                                 : selectedProduction?.batchNumberId &&
@@ -2072,7 +2073,7 @@ const TransferModal: React.FC<Props> = ({
             setOpen={setOpenConfirmationModal}
             remove={remove}
             watchedFields={watchedFields}
-            selectedProductionFishaFarmId={selectedProduction?.fishFarmId}
+            selectedProductionFishaFarmId={selectedProduction?.fishFarmId ?? ''}
             setIsStockDeleted={setIsStockDeleted}
             clearErrors={clearErrors}
           />

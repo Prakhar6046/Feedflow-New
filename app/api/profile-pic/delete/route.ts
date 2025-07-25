@@ -38,8 +38,10 @@ export const DELETE = async (request: NextRequest) => {
     if (public_id && public_id !== '') {
       try {
         await cloudinary.uploader.destroy(public_id);
-      } catch (err: any) {
-        console.error(`Error deleting image: ${err.message}`);
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          console.error(`Error deleting image: ${err.message}`);
+        }
       }
     }
     return new NextResponse(

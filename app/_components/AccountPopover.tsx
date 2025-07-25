@@ -44,7 +44,6 @@ const AccountPopover = () => {
   const open = Boolean(anchorEl);
   const [loggedUserData, setLoggedUserData] = useState<LoggedUser>();
   const [userData, setUserData] = useState<LoggedUser>();
-  const [loading, setLoading] = useState<boolean>(false);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -72,7 +71,7 @@ const AccountPopover = () => {
     handleClose();
     router.push(route);
   };
-  const loggedUser: any = getCookie('logged-user');
+  const loggedUser = getCookie('logged-user');
   useEffect(() => {
     if (loggedUser) {
       const user = JSON.parse(loggedUser);
@@ -83,7 +82,6 @@ const AccountPopover = () => {
   }, [loggedUser]);
   useEffect(() => {
     if (!loggedUserData) return;
-    setLoading(true);
     const getUser = async () => {
       try {
         const response = await fetch(`/api/users/${loggedUserData.id}`, {
@@ -94,10 +92,8 @@ const AccountPopover = () => {
         });
         const data = await response.json();
         setUserData(data.data);
-        setLoading(false);
       } catch (error) {
         console.error('Error fetching user data:', error);
-        setLoading(false);
       }
     };
     getUser();

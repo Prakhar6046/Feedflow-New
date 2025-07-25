@@ -11,7 +11,6 @@ import { Box, Stack, Button, Grid, Typography } from '@mui/material';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { createRoot } from 'react-dom/client';
-import { useRouter } from 'next/navigation';
 import Loader from '../../Loader';
 import dayjs from 'dayjs';
 type ChartDataType = {
@@ -28,7 +27,6 @@ function FishChartDownloadPreview({
 }: {
   productions: Production[];
 }) {
-  const router = useRouter();
   const [isReportDownload, setIsReportDownload] = useState<boolean>(false);
   const [chartData, setChartData] = useState<ChartDataType>();
   const chartOptions = [

@@ -16,19 +16,28 @@ export const GET = async (req: NextRequest) => {
       );
     }
 
-    const payload = jwt.verify(refreshToken, JWT_REFRESH_SECRET);
+    const decoded = jwt.verify(refreshToken, JWT_REFRESH_SECRET);
 
-    const newAccessToken = jwt.sign(
-      { id: (payload as any).id, email: (payload as any).email },
-      JWT_SECRET,
-      { expiresIn: '15m' },
-    );
+    if (
+      typeof decoded === 'object' &&
+      decoded !== null &&
+      'id' in decoded &&
+      'email' in decoded
+    ) {
+      const payload = decoded as { id: number; email: string };
 
-    return NextResponse.json({ accessToken: newAccessToken });
+      const newAccessToken = jwt.sign(
+        { id: payload.id, email: payload.email },
+        JWT_SECRET,
+        { expiresIn: '15m' },
+      );
+      return NextResponse.json({ accessToken: newAccessToken });
+    } else {
+      throw new Error('Invalid refresh token');
+    }
   } catch (error) {
-    return NextResponse.json(
-      { error: 'Invalid or expired refresh token' },
-      { status: 403 },
-    );
+    return new NextResponse(JSON.stringify({ status: false, error }), {
+      status: 500,
+    });
   }
 };

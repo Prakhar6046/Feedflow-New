@@ -5,8 +5,8 @@ export interface FishSupply {
   id: number;
   organisation: number;
   batchNumber: string;
-  hatchingDate: Dayjs | any;
-  spawningDate: Dayjs | any;
+  hatchingDate: Dayjs | null;
+  spawningDate: Dayjs | null;
   spawningNumber: number;
   age: string;
   broodstockMale: string;

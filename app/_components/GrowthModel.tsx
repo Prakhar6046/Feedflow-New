@@ -31,8 +31,8 @@ interface InputType {
   // farm: String;
   // modelId: number;
 }
-function GrowthModel({ farms }: { farms: Farm[] }) {
-  const loggedUser: any = getCookie('logged-user');
+function GrowthModel({}: { farms: Farm[] }) {
+  const loggedUser = getCookie('logged-user');
   const token = getCookie('auth-token');
   const {
     register,
@@ -46,7 +46,7 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
     useState<boolean>(false);
   const [species, setSpecies] = useState('');
   const onSubmit: SubmitHandler<InputType> = async (data) => {
-    const user = JSON.parse(loggedUser);
+    const user = JSON.parse(loggedUser ?? '');
     if (user?.organisationId && data.name) {
       // Prevent API call if one is already in progress
       if (isApiCallInProgress) return;
@@ -71,7 +71,7 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
           setSpecies('');
           reset();
         }
-      } catch (error) {
+      } catch {
         toast.error('Something went wrong. Please try again.');
       } finally {
         setIsApiCallInProgress(false);

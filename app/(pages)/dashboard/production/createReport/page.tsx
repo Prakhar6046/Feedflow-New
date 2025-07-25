@@ -8,8 +8,8 @@ export const metadata: Metadata = {
   title: 'Create Report',
 };
 export default async function Page() {
-  const loggedUser: any = getCookie('logged-user', { cookies });
-  const user = JSON.parse(loggedUser);
+  const loggedUser = getCookie('logged-user', { cookies });
+  const user = JSON.parse(loggedUser || '');
   const farms = await getFarms({
     role: user?.role,
     organisationId: user?.organisationId,

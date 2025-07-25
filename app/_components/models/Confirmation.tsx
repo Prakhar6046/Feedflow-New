@@ -8,9 +8,11 @@ import {
 } from '@mui/material';
 import React from 'react';
 import { Close as CloseIcon } from '@mui/icons-material'; // Use Material-UI's Close icon directly
+import { UseFieldArrayRemove, UseFormClearErrors } from 'react-hook-form';
+import { InputTypes } from './FarmManager';
 
 // import { CloseIcon } from "../theme/overrides/CustomIcons";
-interface InputTypes {
+interface FormInputTypes {
   id: number;
   fishFarm: string;
   productionUnit: string;
@@ -27,11 +29,11 @@ interface InputTypes {
 interface Props {
   setOpen: (open: boolean) => void;
   open: boolean;
-  remove: any;
-  watchedFields: InputTypes[];
+  remove: UseFieldArrayRemove;
+  watchedFields: FormInputTypes[];
   selectedProductionFishaFarmId: string;
   setIsStockDeleted: (val: boolean) => void;
-  clearErrors: any;
+  clearErrors: UseFormClearErrors<InputTypes>;
 }
 const Confirmation = ({
   open,
@@ -48,7 +50,7 @@ const Confirmation = ({
   const handleDelete = () => {
     watchedFields.map((field, i) => {
       if (i !== 0 && field.fishFarm === selectedProductionFishaFarmId) {
-        remove(field.fishFarm);
+        remove(Number(field.fishFarm));
       }
     });
     setOpen(false);

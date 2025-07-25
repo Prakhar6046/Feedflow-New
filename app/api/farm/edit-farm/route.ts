@@ -1,5 +1,6 @@
 import { verifyAndRefreshToken } from '@/app/_lib/auth/verifyAndRefreshToken';
 import prisma from '@/prisma/prisma';
+import { ProductionUnit } from '@prisma/client';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(req: NextRequest) {
@@ -59,12 +60,12 @@ export async function POST(req: NextRequest) {
       include: { YearBasedPredicationProductionUnit: true },
     });
 
-    const existingProductions = await prisma.production.findMany({
-      where: { fishFarmId: updatedFarm.id },
-    });
+    // const existingProductions = await prisma.production.findMany({
+    //   where: { fishFarmId: updatedFarm.id },
+    // });
 
     // Prepare a list of unit ids from the request body for comparison
-    const unitIds = body.productionUnits.map((unit: any) => unit.id);
+    const unitIds = body.productionUnits.map((unit: ProductionUnit) => unit.id);
 
     const newUnits = [];
     const newProductions = [];
@@ -137,7 +138,7 @@ export async function POST(req: NextRequest) {
 
       // Handle production entries corresponding to the production unit
       const correspondingProduction = body.productions.find(
-        (p: any) => p.productionUnitId === unit.id,
+        (p: { productionUnitId?: number }) => p.productionUnitId === unit.id,
       );
 
       // Create or update production based on whether it's found or not
@@ -221,12 +222,12 @@ export async function POST(req: NextRequest) {
         `Year Based Predication record with ID ${yearBasedPredicationId} not found.`,
       );
     }
-    const updateProductionPredection = await prisma.yearBasedPredication.update(
-      {
-        where: { id: yearBasedPredicationId },
-        data: { ...paylaodForProductionParameter },
-      },
-    );
+    // const updateProductionPredection = await prisma.yearBasedPredication.update(
+    //   {
+    //     where: { id: yearBasedPredicationId },
+    //     data: { ...paylaodForProductionParameter },
+    //   },
+    // );
 
     //update feedProfile
     await prisma.feedProfile.update({
@@ -238,11 +239,9 @@ export async function POST(req: NextRequest) {
       data: updatedFarm,
       status: true,
     });
-  } catch (error: any) {
-    console.error('Error updating farm and production managers:', error);
-    return NextResponse.json(
-      { error: error.message || 'Internal Server Error' },
-      { status: 500 },
-    );
+  } catch (error) {
+    return new NextResponse(JSON.stringify({ status: false, error }), {
+      status: 500,
+    });
   }
 }

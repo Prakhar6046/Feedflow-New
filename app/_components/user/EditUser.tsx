@@ -35,13 +35,11 @@ type Iprops = {
 };
 function EditUser({ userId }: Iprops) {
   const router = useRouter();
-  const loggedUser: any = getCookie('logged-user');
   const token = getCookie('auth-token');
   const [isApiCallInProgress, setIsApiCallInProgress] =
     useState<boolean>(false);
   const [userData, setUserData] = useState<{ data: SingleUser }>();
   const [loading, setLoading] = useState<boolean>(false);
-  const [currentUserId, setCurrentUserId] = useState<number>();
   const [profilePic, setProfilePic] = useState<string>();
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [showConfirmPassword, setshowConfirmPassword] =
@@ -92,7 +90,7 @@ function EditUser({ userId }: Iprops) {
         resetField('confirmPassword');
         resetField('password');
       }
-    } catch (error) {
+    } catch {
       toast.error('Something went wrong. Please try again.');
     } finally {
       setIsApiCallInProgress(false);
@@ -104,7 +102,7 @@ function EditUser({ userId }: Iprops) {
       const user = async () => {
         setLoading(true);
         const token = getCookie('auth-token');
-        const data: any = await fetch(`/api/users/${userId}`, {
+        const data = await fetch(`/api/users/${userId}`, {
           method: 'GET',
           headers: {
             Authorization: `Bearer ${token}`,
@@ -117,12 +115,6 @@ function EditUser({ userId }: Iprops) {
       user();
     }
   }, [userId]);
-  useEffect(() => {
-    if (loggedUser) {
-      const user = JSON.parse(loggedUser);
-      setCurrentUserId(user.id);
-    }
-  }, [loggedUser]);
 
   useEffect(() => {
     if (userData) {

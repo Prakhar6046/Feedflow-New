@@ -3,6 +3,8 @@ import * as validationPattern from '@/app/_lib/utils/validationPatterns/index';
 import * as validationMessage from '@/app/_lib/utils/validationsMessage/index';
 import {
   CalculateType,
+  Farm,
+  GrowthModel,
   ProductionParaMeterType,
   ProductionUnitsFormTypes,
   UnitsTypes,
@@ -45,11 +47,11 @@ import { FeedProduct } from '@/app/_typeModels/Feed';
 import { FeedSupplier } from '@/app/_typeModels/Organization';
 interface Props {
   productionParaMeter?: ProductionParaMeterType[];
-  growthModels?: any;
-  editFarm?: any;
+  growthModels?: GrowthModel[];
+  editFarm?: Farm;
   setActiveStep: (val: number) => void;
   isEdit?: boolean;
-  token: any;
+  token: string;
   feedStores: FeedProduct[];
   feedSuppliers: FeedSupplier[];
 }
@@ -66,8 +68,6 @@ const unitsTypes = [
 const ProductionUnits: NextPage<Props> = ({
   setActiveStep,
   editFarm,
-  isEdit,
-  growthModels,
   productionParaMeter,
   token,
   feedStores,
@@ -77,7 +77,7 @@ const ProductionUnits: NextPage<Props> = ({
 
   const dispatch = useAppDispatch();
   const isEditFarm = getCookie('isEditFarm');
-  const userData: any = getCookie('logged-user');
+  const userData = getCookie('logged-user');
 
   const router = useRouter();
   const [selectedUnit, setSelectedUnit] = React.useState<UnitsTypes>();
@@ -151,7 +151,7 @@ const ProductionUnits: NextPage<Props> = ({
     }
   };
 
-  const handleCalculate = (item: any, index: any) => {
+  const handleCalculate = (item, index: number) => {
     if (item) {
       setopen(true);
       setValue('length', '');
@@ -190,27 +190,23 @@ const ProductionUnits: NextPage<Props> = ({
       if (isApiCallInProgress) return;
       setIsApiCallInProgress(true);
       try {
-        const loggedUserData = JSON.parse(userData);
+        const loggedUserData = JSON.parse(userData ?? '');
         let payload;
         let updatedProductionUnitsFeedProfile;
         let updatedProductionUnits;
         const filteredProductionUnits =
           productionParamtertsUnitsArrayLocal.filter(
-            (unit: {
-              unitName: string;
-              predictedValues: any;
-              idealRange: any;
-            }) =>
+            (unit: { unitName: string; predictedValues; idealRange }) =>
               data.productionUnits.some(
-                (param: any) => param.name === unit.unitName,
+                (param) => param.name === unit.unitName,
               ),
           );
 
         if (filteredProductionUnits) {
           updatedProductionUnits = filteredProductionUnits.map(
-            (filteredUnit: any) => {
+            (filteredUnit) => {
               const matchedUnit = editFarm?.productionUnits?.find(
-                (unit: any) => unit.name === filteredUnit.unitName,
+                (unit) => unit.name === filteredUnit.unitName,
               );
 
               if (matchedUnit) {
@@ -226,29 +222,29 @@ const ProductionUnits: NextPage<Props> = ({
 
         const filteredProductionUnitsFeedProfile =
           productionUnitsFeedProfilesLocal?.filter(
-            (unit: { unitName: string; feedProfile: any }) =>
+            (unit: { unitName: string; feedProfile }) =>
               data.productionUnits.some(
-                (param: any) => param.name === unit.unitName,
+                (param) => param.name === unit.unitName,
               ),
           );
 
         if (filteredProductionUnitsFeedProfile && editFarm) {
           updatedProductionUnitsFeedProfile =
-            filteredProductionUnitsFeedProfile?.map((filteredUnit: any) => {
+            filteredProductionUnitsFeedProfile?.map((filteredUnit) => {
               const matchedUnit = editFarm?.productionUnits?.find(
-                (unit: any) => unit.name === filteredUnit.unitName,
+                (unit) => unit.name === filteredUnit.unitName,
               );
 
               if (matchedUnit) {
                 return {
                   ...filteredUnit,
-                  id: matchedUnit?.FeedProfileProductionUnit[0]?.id,
+                  id: matchedUnit?.FeedProfileProductionUnit?.[0]?.id,
                 };
               }
               return filteredUnit;
             });
         }
-        const unitFeedProfiles: any = [];
+        const unitFeedProfiles = [];
         productionUnits?.map((unit) =>
           unitFeedProfiles.push({ unitName: unit.name, feedProfile }),
         );
@@ -492,7 +488,7 @@ const ProductionUnits: NextPage<Props> = ({
       !formProductionUnitsData &&
       !formProductionUnitsData?.productionUnitData
     ) {
-      setValue('productionUnits', editFarm?.productionUnits);
+      setValue('productionUnits', editFarm?.productionUnits ?? []);
     } else if (formProductionUnitsData) {
       if (
         formProductionUnitsData?.productionUnitData &&

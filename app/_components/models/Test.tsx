@@ -128,7 +128,7 @@ const Test: React.FC<Props> = ({
 
       return result;
     }, []);
-    return filteredFarm[0] ?? null;
+    return filteredFarm?.[0] ?? null;
   }, [productions]);
   const previewReport = () => {
     if (!selectedUnits?.length) {

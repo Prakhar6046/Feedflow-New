@@ -3,7 +3,7 @@ import { FarmGroup, Production } from '../_typeModels/production';
 import ExcelJS from 'exceljs';
 import { saveAs } from 'file-saver';
 import dayjs from 'dayjs';
-export const readableDate = (date: any) => {
+export const readableDate = (date: string) => {
   return new Date(date).toLocaleString('en-US', {
     dateStyle: 'medium',
     timeStyle: 'medium',
@@ -61,7 +61,7 @@ export const nutritionalGuarantee = ['Minimum', 'Maximum', 'Typical'];
 export function capitalizeFirstLetter(val: string) {
   return val.charAt(0).toUpperCase() + val.slice(1).toLowerCase();
 }
-export function getDayMonthDifference(targetDate: any) {
+export function getDayMonthDifference(targetDate: string) {
   const currentDate: any = new Date();
   const target: any = new Date(targetDate);
 
@@ -103,17 +103,6 @@ export const formattedDate = (date: string) => {
     timeStyle: 'medium',
     timeZone: 'UTC', // Adjust this to your desired timezone if needed
   });
-};
-
-// Format the date and time
-const options: any = {
-  year: 'numeric',
-  month: 'short',
-  day: 'numeric',
-  hour: 'numeric',
-  minute: 'numeric',
-  second: 'numeric',
-  hour12: true,
 };
 
 export const sanitizeIsoString = (isoString: string): string => {
@@ -526,7 +515,7 @@ export const getChartPredictedValues = (
   const end = new Date(endDate);
   const startMonth = start.getMonth();
   const endMonth = end.getMonth();
-  const monthMap: any = {
+  const monthMap: Record<number, string> = {
     0: 'Jan',
     1: 'Feb',
     2: 'Mar',

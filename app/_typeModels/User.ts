@@ -1,6 +1,6 @@
 export interface UserInitialState {
   isLoading: boolean;
-  users: any;
+  users: SingleUser[];
   role: string;
 }
 
@@ -19,6 +19,7 @@ export interface SingleUser {
   access: boolean;
   organisation: Organisation;
   permissions: Permissions;
+  userId?: number;
 }
 
 export interface FarmPermissions {

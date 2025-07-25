@@ -37,16 +37,18 @@ export default function FeedTable({ feeds }: Props) {
   const pathName = usePathname();
   // const sortDataFromLocal = window.localStorage.getItem(pathName);
   //   const loading = useAppSelector(selectFarmLoading);
-  const [feedsData, setFeedsData] = useState<any>();
-  const [selectedFeed, setSelectedFeed] = useState<any>(null);
+  const [feedsData, setFeedsData] = useState<FeedSupply[]>();
+  const [selectedFeed, setSelectedFeed] = useState<FeedSupply | null>(null);
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null,
   );
   const role = useAppSelector(selectRole);
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('productName');
-  const [sortDataFromLocal, setSortDataFromLocal] = React.useState<any>('');
-
+  const [sortDataFromLocal, setSortDataFromLocal] = React.useState<{
+    direction: 'asc' | 'desc';
+    column: string;
+  }>({ direction: 'asc', column: '' });
   useEffect(() => {
     if (pathName) {
       setSortDataFromLocal(getLocalItem(pathName));
@@ -55,7 +57,7 @@ export default function FeedTable({ feeds }: Props) {
 
   const handleClick = (
     event: React.MouseEvent<HTMLButtonElement>,
-    farm: any,
+    farm: FeedSupply,
   ) => {
     setAnchorEl(event.currentTarget);
     setSelectedFeed(farm);

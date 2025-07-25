@@ -2,9 +2,7 @@ import { getLocalItem, setLocalItem, Years } from '@/app/_lib/utils';
 import { waterQualityPredictedHead } from '@/app/_lib/utils/tableHeadData';
 import * as validationPattern from '@/app/_lib/utils/validationPatterns/index';
 import * as validationMessage from '@/app/_lib/utils/validationsMessage/index';
-import { ProductionParaMeterType } from '@/app/_typeModels/Farm';
-import { selectFarm } from '@/lib/features/farm/farmSlice';
-import { useAppSelector } from '@/lib/hooks';
+import { Farm, ProductionParaMeterType } from '@/app/_typeModels/Farm';
 import {
   Box,
   Button,
@@ -28,7 +26,7 @@ import { CloseIcon } from '../theme/overrides/CustomIcons';
 
 interface Props {
   productionParaMeter?: ProductionParaMeterType[];
-  editFarm?: any;
+  editFarm?: Farm;
   setOpen: (open: boolean) => void;
   open: boolean;
   selectedUnitName: string;
@@ -60,8 +58,6 @@ const ProductionUnitParametersPredicated: React.FC<Props> = ({
 }) => {
   const isEditFarm = getCookie('isEditFarm');
 
-  const farm = useAppSelector(selectFarm);
-
   const [formProductionParameters, setFormProductionParameters] =
     useState<any>();
 
@@ -79,11 +75,6 @@ const ProductionUnitParametersPredicated: React.FC<Props> = ({
       predictedValues: {},
     },
   });
-  const allWatchObject = {
-    predictedValues: watch('predictedValues'),
-    idealRange: watch('idealRange'),
-    modelId: watch('modelId'),
-  };
 
   const onSubmit: SubmitHandler<FormData> = (data) => {
     const productionParamtertsUnitsArray = getLocalItem(

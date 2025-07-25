@@ -11,8 +11,8 @@ export const GET = async (request: NextRequest) => {
     );
   }
   try {
-    const searchParams = request.nextUrl.searchParams;
-    const organisationId = searchParams.get('organisationId');
+    // const searchParams = request.nextUrl.searchParams;
+    // const organisationId = searchParams.get('organisationId');
     const hasFeedSupplierOrg = await prisma.organisation.findMany({
       where: { organisationType: 'Feed Supplier' },
     });

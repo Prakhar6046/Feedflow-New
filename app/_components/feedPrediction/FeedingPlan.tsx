@@ -18,7 +18,6 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import dayjs from 'dayjs';
 import { useRouter } from 'next/navigation';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
@@ -64,9 +63,7 @@ function FeedingPlan({ productionData, startDate, endDate }: Props) {
     register,
     handleSubmit,
     control,
-    setValue,
     watch,
-    reset,
     formState: { errors },
   } = useForm<FormInputs>({
     defaultValues: {
@@ -80,8 +77,8 @@ function FeedingPlan({ productionData, startDate, endDate }: Props) {
     mode: 'onChange',
   });
   const onSubmit: SubmitHandler<FormInputs> = (data) => {
-    const formattedDate = dayjs(startDate).format('YYYY-MM-DD');
-    const diffInDays = dayjs(endDate).diff(dayjs(startDate), 'day');
+    // const formattedDate = dayjs(startDate).format('YYYY-MM-DD');
+    // const diffInDays = dayjs(endDate).diff(dayjs(startDate), 'day');
     if (!selectedDropDownfarms?.length) {
       toast.dismiss();
       toast.error('Select at least one farm.');

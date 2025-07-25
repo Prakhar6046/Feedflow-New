@@ -19,7 +19,7 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import { getCookie, setCookie } from 'cookies-next';
+import { setCookie } from 'cookies-next';
 import { usePathname, useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import Loader from '../Loader';
@@ -30,7 +30,6 @@ import {
 } from '@/app/_lib/utils/tableHeadData';
 import { getLocalItem, removeLocalItem } from '@/app/_lib/utils';
 import Image from 'next/image';
-import { SingleUser } from '@/app/_typeModels/User';
 
 interface Props {
   farms: Farm[];
@@ -45,13 +44,14 @@ export default function FarmTable({ farms, permisions }: Props) {
   const [orderBy, setOrderBy] = React.useState('organisation');
   const [farmsData, setFarmsData] = useState<Farm[]>();
   const loading = useAppSelector(selectFarmLoading);
-  const loggedUser: any = getCookie('logged-user');
-  const user: SingleUser = JSON.parse(loggedUser);
   const [selectedFarm, setSelectedFarm] = useState<any>(null);
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null,
   );
-  const [sortDataFromLocal, setSortDataFromLocal] = React.useState<any>('');
+  const [sortDataFromLocal, setSortDataFromLocal] = React.useState<{
+    direction: 'asc' | 'desc';
+    column: string;
+  }>({ direction: 'asc', column: '' });
 
   useEffect(() => {
     if (pathName) {

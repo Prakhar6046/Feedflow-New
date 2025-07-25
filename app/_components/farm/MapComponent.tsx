@@ -4,6 +4,7 @@ import {
   useLoadScript,
   Marker,
   InfoWindow,
+  Libraries,
 } from '@react-google-maps/api';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
@@ -30,8 +31,41 @@ const defaultCenter = {
 };
 
 // Libraries to load
-const libraries: any = ['places'];
+const libraries: Libraries = ['places'];
+export type AddressInfo = {
+  address: string;
+  city: string;
+  state: string;
+  postcode: string;
+  country: string;
+  address2: string;
+};
+interface AddressComponent {
+  long_name: string;
+  short_name: string;
+  types: string[];
+}
 
+interface FormattedAddress {
+  address: string;
+  city: string;
+  state: string;
+  postcode: string;
+  country: string;
+  address2: string;
+}
+
+type MapComponentProps = {
+  setAddressInformation: (val: AddressInfo | null) => void;
+  setSearchedAddress?: (val: string) => void;
+  setUseAddress: (val: boolean) => void;
+  setAltitude: (val: string) => void;
+  isCalAltitude: boolean;
+  clearErrors?: (field: any) => void;
+  setLng?: (val: string) => void;
+  setLat?: (val: string) => void;
+  token?: string;
+};
 const MapComponent = ({
   setAddressInformation,
   setSearchedAddress,
@@ -42,15 +76,20 @@ const MapComponent = ({
   setLng,
   setLat,
   token,
-}: any) => {
-  const [selectedPosition, setSelectedPosition] = useState<any>(null);
+}: MapComponentProps) => {
+  const [selectedPosition, setSelectedPosition] = useState<{
+    lat: number;
+    lng: number;
+  } | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
-  const [locationData, setLocationData] = useState<any>(null);
+  const [locationData, setLocationData] = useState<string>('');
   const [openDialog, setOpenDialog] = useState(false);
   const [infoWindowOpen, setInfoWindowOpen] = useState(false);
 
   // **Added**: State for autocomplete suggestions
-  const [suggestions, setSuggestions] = useState<any[]>([]);
+  const [suggestions, setSuggestions] = useState<
+    google.maps.places.AutocompletePrediction[]
+  >([]);
 
   // Reference for the autocomplete service
   const autocompleteServiceRef =
@@ -98,10 +137,13 @@ const MapComponent = ({
 
   // Handle map click to place marker and fetch address
   const onMapClick = useCallback(
-    (event: any) => {
+    (event: google.maps.MapMouseEvent) => {
+      if (!event.latLng) return;
+
       const lat = event.latLng.lat();
       const lng = event.latLng.lng();
-      const newPosition: any = { lat, lng };
+      const newPosition: { lat: number; lng: number } = { lat, lng };
+
       setSelectedPosition(newPosition);
       setInfoWindowOpen(true);
       fetchReverseGeocode(lat, lng);
@@ -110,7 +152,7 @@ const MapComponent = ({
   );
 
   // Function to perform reverse geocoding using Google Maps Geocoding API
-  const fetchReverseGeocode = async (lat: any, lng: any) => {
+  const fetchReverseGeocode = async (lat: number, lng: number) => {
     try {
       const response = await fetch(
         `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=AIzaSyDKvMKD1DyMdxR7VgqjO428--aBf9wpkxw`,
@@ -129,12 +171,12 @@ const MapComponent = ({
             },
           );
           const res = await altitudeResponse.json();
-          clearErrors('farmAltitude');
-          clearErrors('lat');
-          clearErrors('lng');
+          clearErrors?.('farmAltitude');
+          clearErrors?.('lat');
+          clearErrors?.('lng');
           setAltitude(String(res?.results[0]?.elevation));
-          setLat(String(res?.results[0]?.location.lat));
-          setLng(String(res?.results[0]?.location.lng));
+          setLat?.(String(res?.results[0]?.location.lat));
+          setLng?.(String(res?.results[0]?.location.lng));
         }
         const address = data.results[0].formatted_address;
         setLocationData(address);
@@ -177,15 +219,15 @@ const MapComponent = ({
             },
           );
           const res = await altitudeResponse.json();
-          clearErrors('farmAltitude');
-          clearErrors('lat');
-          clearErrors('lng');
+          clearErrors?.('farmAltitude');
+          clearErrors?.('lat');
+          clearErrors?.('lng');
           setAltitude(String(res?.results[0]?.elevation));
-          setLat(String(res?.results[0]?.location.lat));
-          setLng(String(res?.results[0]?.location.lng));
+          setLat?.(String(res?.results[0]?.location.lat));
+          setLng?.(String(res?.results[0]?.location.lng));
         }
         const { lat, lng } = data.results[0].geometry.location;
-        const newPosition: any = { lat, lng };
+        const newPosition: { lat: number; lng: number } = { lat, lng };
         setSelectedPosition(newPosition);
         const formattedAddress = formatGoogleAddress(
           data.results[0].address_components,
@@ -205,7 +247,10 @@ const MapComponent = ({
     }
   };
 
-  const formatGoogleAddress = (components: any, completeAddress: any) => {
+  const formatGoogleAddress = (
+    components: AddressComponent[],
+    completeAddress: string,
+  ): FormattedAddress => {
     let address = '';
     let address2 = '';
     let city = '';
@@ -213,15 +258,15 @@ const MapComponent = ({
     let postcode = '';
     let country = '';
 
-    components.forEach((component: any) => {
+    components.forEach((component) => {
       if (component.types.includes('premise')) {
         address = component.long_name;
       } else if (component.types.includes('street_number')) {
-        address = address ? address : component.long_name; // Use street_number if premise is not available
+        address = address || component.long_name;
       } else if (component.types.includes('route')) {
         address = address
-          ? address + ' ' + component.long_name
-          : component.long_name; // Combine with existing address or use route
+          ? `${address} ${component.long_name}`
+          : component.long_name;
       } else if (component.types.includes('locality')) {
         city = component.long_name;
       } else if (component.types.includes('administrative_area_level_1')) {
@@ -235,12 +280,11 @@ const MapComponent = ({
         component.types.includes('sublocality')
       ) {
         address2 = address2
-          ? address2 + ', ' + component.long_name
+          ? `${address2}, ${component.long_name}`
           : component.long_name;
       }
     });
 
-    // Fallback to completeAddress if address is still empty
     if (!address) {
       address = completeAddress;
     }
@@ -290,7 +334,7 @@ const MapComponent = ({
               value={searchQuery}
               onChange={(e) => {
                 setSearchQuery(e.target.value);
-                setSearchedAddress(e.target.value);
+                setSearchedAddress?.(e.target.value);
                 fetchSuggestions(e.target.value); // **Added**: Fetch suggestions on input change
               }}
               placeholder="Search for a location"
@@ -359,7 +403,7 @@ const MapComponent = ({
                         onClick={async () => {
                           // **Added**: Handle suggestion selection
                           setSearchQuery(suggestion.description);
-                          setSearchedAddress(suggestion.description);
+                          setSearchedAddress?.(suggestion.description);
                           setSuggestions([]); // Clear suggestions
 
                           // Fetch place details to get lat and lng
@@ -374,7 +418,10 @@ const MapComponent = ({
                               ) {
                                 const { lat, lng } =
                                   results[0].geometry.location;
-                                const newPosition: any = {
+                                const newPosition: {
+                                  lat: number;
+                                  lng: number;
+                                } = {
                                   lat: lat(),
                                   lng: lng(),
                                 };
@@ -404,21 +451,21 @@ const MapComponent = ({
                                   )
                                     .then((altitudeRes) => altitudeRes.json())
                                     .then((altitudeData) => {
-                                      clearErrors('farmAltitude');
-                                      clearErrors('lat');
-                                      clearErrors('lng');
+                                      clearErrors?.('farmAltitude');
+                                      clearErrors?.('lat');
+                                      clearErrors?.('lng');
                                       setAltitude(
                                         String(
                                           altitudeData?.results[0]?.elevation,
                                         ),
                                       );
-                                      setLat(
+                                      setLat?.(
                                         String(
                                           altitudeData?.results[0]?.location
                                             .lat,
                                         ),
                                       );
-                                      setLng(
+                                      setLng?.(
                                         String(
                                           altitudeData?.results[0]?.location
                                             .lng,

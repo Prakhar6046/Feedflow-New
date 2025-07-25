@@ -43,6 +43,18 @@ interface FormInputs {
   adjustmentFactor: number;
   timeInterval: number;
 }
+type RawDataItem = {
+  date: string;
+  teamp: number;
+  noOfFish: number;
+  fishSize: string;
+  growth: number;
+  feedType: string;
+  feedSize: string;
+  estimatedFCR: number;
+  feedIntake: string;
+  feedingRate: string;
+};
 export interface FishFeedingData {
   date: string;
   days: number;
@@ -115,7 +127,7 @@ function AdHoc({ data, setData }: Iprops) {
     if (!data.length) {
       return;
     }
-    const formatedData = data?.map((val) => {
+    const formatedData: RawDataItem[] = data?.map((val) => {
       return {
         date: val.date,
         teamp: val.averageProjectedTemp,
@@ -131,7 +143,7 @@ function AdHoc({ data, setData }: Iprops) {
     });
 
     setLoading(true);
-    const chunkArray = <T,>(arr: any, chunkSize: number): T[][] => {
+    const chunkArray = <T,>(arr: T[], chunkSize: number): T[][] => {
       const results: T[][] = [];
       for (let i = 0; i < arr.length; i += chunkSize) {
         results.push(arr.slice(i, i + chunkSize));
@@ -341,7 +353,9 @@ function AdHoc({ data, setData }: Iprops) {
     pdf.save(`ad_hoc_data.pdf`);
     setLoading(false);
   };
-  const createxlsxFile = (e: React.MouseEvent<HTMLSpanElement, MouseEvent>) => {
+  const createxlsxFile = (
+    e: React.MouseEvent<HTMLSpanElement | HTMLButtonElement, MouseEvent>,
+  ) => {
     if (!data.length) {
       return;
     }

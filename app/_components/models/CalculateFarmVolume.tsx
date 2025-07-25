@@ -61,12 +61,12 @@ const CalculateVolume2: React.FC<Props> = ({
   setValue,
 }) => {
   const handleCalculate = () => {
-    (trigger('length'),
-      trigger('width'),
-      trigger('depth'),
-      trigger('area'),
-      trigger('radius'),
-      trigger('height'));
+    trigger('length');
+    trigger('width');
+    trigger('depth');
+    trigger('area');
+    trigger('radius');
+    trigger('height');
     const length = watch('length');
     const width = watch('width');
     const depth = watch('depth');

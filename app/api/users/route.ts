@@ -82,8 +82,8 @@ export const DELETE = async (request: NextRequest) => {
     );
   }
   try {
-    const searchParams = request.nextUrl.searchParams;
-    const role = searchParams.get('role');
+    // const searchParams = request.nextUrl.searchParams;
+    // const role = searchParams.get('role');
     const userId = await request.json();
 
     const deletedUser = await prisma.user.delete({

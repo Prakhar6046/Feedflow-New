@@ -14,9 +14,9 @@ export const GET = async (request: NextRequest) => {
         { status: 401 },
       );
     }
-    const searchParams = request.nextUrl.searchParams;
-    const role = searchParams.get('role');
-    const query = searchParams.get('query');
+    // const searchParams = request.nextUrl.searchParams;
+    // const role = searchParams.get('role');
+    // const query = searchParams.get('query');
 
     //getting all growth models
     const growthModels = await prisma.growthModel.findMany({

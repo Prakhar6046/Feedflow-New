@@ -1,8 +1,12 @@
 import prisma from '@/prisma/prisma';
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyAndRefreshToken } from '@/app/_lib/auth/verifyAndRefreshToken';
-
-export const GET = async (request: NextRequest, context: { params: any }) => {
+interface ContextParams {
+  params: {
+    feedSupplyId: string;
+  };
+}
+export const GET = async (request: NextRequest, context: ContextParams) => {
   const user = await verifyAndRefreshToken(request);
   if (user.status === 401) {
     return new NextResponse(
