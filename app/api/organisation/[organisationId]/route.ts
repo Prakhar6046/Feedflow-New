@@ -1,19 +1,8 @@
 import prisma from '@/prisma/prisma';
 import { NextRequest, NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
-import { verifyAndRefreshToken } from '@/app/_lib/auth/verifyAndRefreshToken';
 
 export const GET = async (request: NextRequest, context: { params: any }) => {
-  const user = await verifyAndRefreshToken(request);
-  if (user.status === 401) {
-    return new NextResponse(
-      JSON.stringify({
-        status: false,
-        message: 'Unauthorized: Token missing or invalid',
-      }),
-      { status: 401 },
-    );
-  }
   const organisationId = context.params.organisationId;
 
   if (!organisationId) {
@@ -44,13 +33,6 @@ export const GET = async (request: NextRequest, context: { params: any }) => {
 };
 
 export async function PUT(req: NextRequest, context: { params: any }) {
-  const user = await verifyAndRefreshToken(req);
-  if (user.status === 401) {
-    return NextResponse.json(
-      { status: false, message: 'Unauthorized: Token missing or invalid' },
-      { status: 401 },
-    );
-  }
   try {
     const transporter: any = nodemailer.createTransport({
       service: 'gmail', // You can use any other email service provider

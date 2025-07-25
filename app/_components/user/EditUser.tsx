@@ -80,7 +80,6 @@ function EditUser({ userId }: Iprops) {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(payload),
       });
@@ -103,12 +102,8 @@ function EditUser({ userId }: Iprops) {
     if (userId) {
       const user = async () => {
         setLoading(true);
-        const token = getCookie('auth-token');
         const data: any = await fetch(`/api/users/${userId}`, {
           method: 'GET',
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
         });
         const res = await data.json();
         setLoading(false);
@@ -250,12 +245,7 @@ function EditUser({ userId }: Iprops) {
                   type="file"
                   {...register('image', {
                     onChange: (e) =>
-                      handleUpload(
-                        e.target.files,
-                        profilePic,
-                        setProfilePic,
-                        String(token),
-                      ),
+                      handleUpload(e.target.files, profilePic, setProfilePic),
                   })}
                   accept=".jpg,.jpeg,.png,.svg"
                 />
@@ -305,7 +295,6 @@ function EditUser({ userId }: Iprops) {
                             e.target.files,
                             profilePic,
                             setProfilePic,
-                            String(token),
                           ),
                       })}
                       accept=".jpg,.jpeg,.png,.svg"
@@ -323,7 +312,6 @@ function EditUser({ userId }: Iprops) {
                           type: 'user',
                           image: userData?.data?.image,
                         },
-                        String(token),
                         setProfilePic,
                       )
                     }

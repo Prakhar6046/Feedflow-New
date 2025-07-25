@@ -1,24 +1,23 @@
 'use client';
 import {
+  Box,
+  Button,
+  Divider,
+  MenuItem,
+  Paper,
+  Select,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  Paper,
-  Typography,
-  Divider,
-  Box,
-  Select,
-  MenuItem,
   TextField,
-  Button,
+  Typography,
 } from '@mui/material';
-import { useForm, Controller } from 'react-hook-form';
 import { useEffect } from 'react';
+import { Controller, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
-import { getCookie } from 'cookies-next';
 
 interface Props {
   feedSuppliers: any;
@@ -93,12 +92,9 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
     });
 
     try {
-      const token = getCookie('auth-token');
       const response = await fetch(`/api/feed-store `, {
         method: 'PUT',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+
         body: JSON.stringify(updatedPayload),
       });
 

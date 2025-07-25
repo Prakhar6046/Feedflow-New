@@ -1,3 +1,4 @@
+import closeIcon from '@/public/static/img/icons/ic-close.svg';
 import {
   Box,
   Button,
@@ -6,18 +7,16 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import Image from 'next/image';
-import closeIcon from '@/public/static/img/icons/ic-close.svg';
-import { useForm, SubmitHandler } from 'react-hook-form';
+import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
+import Image from 'next/image';
 import { useState } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
 
-import toast from 'react-hot-toast';
 import { SingleOrganisation } from '@/app/_typeModels/Organization';
-import { getCookie } from 'cookies-next';
+import toast from 'react-hot-toast';
 const style = {
   position: 'absolute' as const,
   top: '50%',
@@ -53,7 +52,6 @@ const AddUser: React.FC<Props> = ({ setOpen, open, organisations }) => {
 
   const onSubmit: SubmitHandler<FormInputs> = async (data) => {
     if (data.email && data.name && data.organisationId) {
-      const token = getCookie('auth-token');
       const payload = {
         name: data.name,
         email: data.email,
@@ -63,7 +61,6 @@ const AddUser: React.FC<Props> = ({ setOpen, open, organisations }) => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(payload),
       });

@@ -33,7 +33,6 @@ interface InputType {
 }
 function GrowthModel({ farms }: { farms: Farm[] }) {
   const loggedUser: any = getCookie('logged-user');
-  const token = getCookie('auth-token');
   const {
     register,
     handleSubmit,
@@ -56,7 +55,6 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({
             model: data,

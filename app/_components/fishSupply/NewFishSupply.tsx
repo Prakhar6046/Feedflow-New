@@ -18,17 +18,17 @@ import {
   Typography,
 } from '@mui/material';
 
+import * as validationPattern from '@/app/_lib/utils/validationPatterns/index';
+import * as validationMessage from '@/app/_lib/utils/validationsMessage/index';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { getCookie } from 'cookies-next';
 import dayjs, { Dayjs } from 'dayjs';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import * as validationPattern from '@/app/_lib/utils/validationPatterns/index';
-import * as validationMessage from '@/app/_lib/utils/validationsMessage/index';
 import toast from 'react-hot-toast';
-import { getCookie } from 'cookies-next';
 interface Props {
   isEdit?: boolean;
   fishSupplyId?: string;
@@ -57,9 +57,6 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
   const getFishSupply = async () => {
     const response = await fetch(`/api/fish/${fishSupplyId}`, {
       method: 'GET',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
     });
     return response.json();
   };

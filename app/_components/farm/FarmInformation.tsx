@@ -19,13 +19,13 @@ import {
 import Select from '@mui/material/Select';
 import { NextPage } from 'next';
 
+import { getLocalItem, setLocalItem } from '@/app/_lib/utils';
+import { SingleUser } from '@/app/_typeModels/User';
+import { getCookie } from 'cookies-next';
 import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import Loader from '../Loader';
-import { getCookie } from 'cookies-next';
-import { SingleUser } from '@/app/_typeModels/User';
-import { getLocalItem, setLocalItem } from '@/app/_lib/utils';
 // import MapComponent from "./MapComponent";
 const MapComponent = dynamic(() => import('./MapComponent'), { ssr: false });
 interface Props {
@@ -81,9 +81,6 @@ const FarmInformation: NextPage<Props> = ({
   const getFarmers = async () => {
     const response = await fetch('/api/farm/fish-farmers', {
       method: 'GET',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
     });
     return response.json();
   };

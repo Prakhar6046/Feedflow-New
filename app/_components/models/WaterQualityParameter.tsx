@@ -26,9 +26,10 @@ import {
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { getCookie } from 'cookies-next';
 import { Dayjs } from 'dayjs';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
@@ -39,7 +40,6 @@ import {
   useForm,
 } from 'react-hook-form';
 import toast from 'react-hot-toast';
-import { getCookie } from 'cookies-next';
 const style = {
   position: 'absolute' as const,
   top: '50%',
@@ -162,7 +162,6 @@ const WaterQualityParameter: React.FC<Props> = ({
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify(payload),
         });

@@ -36,6 +36,7 @@ import {
 } from '../_lib/utils/tableHeadData';
 import { SingleOrganisation } from '../_typeModels/Organization';
 import { getCookie } from 'cookies-next';
+
 interface Props {
   organisations: SingleOrganisation[];
   userRole: string;
@@ -85,12 +86,10 @@ export default function BasicTable({
   const handleInviteOrganisation = async () => {
     setAnchorEl(null);
     if (selectedOrganisation) {
-      const token = getCookie('auth-token');
       const response = await fetch('/api/invite/organisation', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           organisationId: selectedOrganisation.id,
@@ -117,7 +116,6 @@ export default function BasicTable({
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           id: selectedOrganisation.id,

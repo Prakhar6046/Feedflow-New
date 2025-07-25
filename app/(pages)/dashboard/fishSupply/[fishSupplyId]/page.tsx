@@ -12,14 +12,11 @@ export default async function Page({
 }: {
   params: { fishSupplyId: string };
 }) {
-  const refreshToken: any = getCookie('refresh-token', { cookies });
-  const organisationForhatchery =
-    await getOrganisationForhatchery(refreshToken);
+  const organisationForhatchery = await getOrganisationForhatchery();
   const farms = await getFarms({
     noFilter: true,
     role: '',
     query: '',
-    refreshToken,
   });
   return (
     <>

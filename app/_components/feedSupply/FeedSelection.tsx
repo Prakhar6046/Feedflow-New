@@ -1,4 +1,6 @@
 'use client';
+import { FeedProduct } from '@/app/_typeModels/Feed';
+import { FeedSupplier } from '@/app/_typeModels/Organization';
 import { useAppDispatch } from '@/lib/hooks';
 import {
   Box,
@@ -14,8 +16,6 @@ import { getCookie } from 'cookies-next';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Loader from '../Loader';
-import { FeedProduct } from '@/app/_typeModels/Feed';
-import { FeedSupplier } from '@/app/_typeModels/Organization';
 
 export interface FeedSupply {
   id: string;
@@ -98,11 +98,7 @@ const FeedSelection = ({ data, feedSuppliers }: Iprops) => {
   const getFeedSupplys = async () => {
     const response = await fetch(
       `/api/feedSupply?role=${loggedUser.role}&organisationId=${loggedUser.organisationId}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      },
+      {},
     );
     return response.json();
   };

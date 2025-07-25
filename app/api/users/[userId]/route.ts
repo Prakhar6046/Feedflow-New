@@ -1,20 +1,10 @@
 import prisma from '@/prisma/prisma';
-import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
-import { verifyAndRefreshToken } from '@/app/_lib/auth/verifyAndRefreshToken';
+import { NextRequest, NextResponse } from 'next/server';
 
 export const GET = async (request: NextRequest, context: { params: any }) => {
-  const user = await verifyAndRefreshToken(request);
-  if (user.status === 401) {
-    return new NextResponse(
-      JSON.stringify({
-        status: false,
-        message: 'Unauthorized: Token missing or invalid',
-      }),
-      { status: 401 },
-    );
-  }
   const userId = context.params.userId;
+
   if (!userId) {
     return new NextResponse(
       JSON.stringify({ message: 'Invalid or missing userId' }),
@@ -45,13 +35,6 @@ export const GET = async (request: NextRequest, context: { params: any }) => {
 };
 
 export async function PUT(req: NextRequest, context: { params: any }) {
-  const user = await verifyAndRefreshToken(req);
-  if (user.status === 401) {
-    return NextResponse.json(
-      { status: false, message: 'Unauthorized: Token missing or invalid' },
-      { status: 401 },
-    );
-  }
   try {
     const userId = context.params.userId;
 

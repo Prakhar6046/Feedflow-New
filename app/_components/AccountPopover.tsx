@@ -39,7 +39,6 @@ export interface LoggedUser {
 const AccountPopover = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const token = getCookie('auth-token');
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const [loggedUserData, setLoggedUserData] = useState<LoggedUser>();
@@ -55,9 +54,6 @@ const AccountPopover = () => {
     toast.dismiss();
     const data = await fetch('/api/auth/logout', {
       method: 'GET',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
     });
     const response = await data.json();
     if (response.status) {
@@ -88,9 +84,6 @@ const AccountPopover = () => {
       try {
         const response = await fetch(`/api/users/${loggedUserData.id}`, {
           method: 'GET',
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
         });
         const data = await response.json();
         setUserData(data.data);

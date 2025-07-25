@@ -71,12 +71,10 @@ export default function AddNewUser({ organisations }: Props) {
 
     try {
       if (data.email && data.name && data.organisationId) {
-        const token = getCookie('auth-token');
         const response = await fetch('/api/add-new-user', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({ ...data, image: profilePic }),
         });
@@ -91,9 +89,7 @@ export default function AddNewUser({ organisations }: Props) {
 
             const response = await fetch(`/api/profile-pic/upload`, {
               method: 'POST',
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
+
               body: formData,
             });
             const updatedUser = await response.json();
@@ -204,12 +200,7 @@ export default function AddNewUser({ organisations }: Props) {
                     type="file"
                     {...register('image', {
                       onChange: (e) =>
-                        handleUpload(
-                          e.target.files,
-                          profilePic,
-                          setProfilePic,
-                          String(token),
-                        ),
+                        handleUpload(e.target.files, profilePic, setProfilePic),
                     })}
                     accept=".jpg,.jpeg,.png,.svg"
                   />
@@ -259,7 +250,6 @@ export default function AddNewUser({ organisations }: Props) {
                               e.target.files,
                               profilePic,
                               setProfilePic,
-                              String(token),
                             ),
                         })}
                         accept=".jpg,.jpeg,.png,.svg"
@@ -270,11 +260,7 @@ export default function AddNewUser({ organisations }: Props) {
                       type="button"
                       variant="contained"
                       onClick={() =>
-                        deleteImage(
-                          { image: profilePic },
-                          String(token),
-                          setProfilePic,
-                        )
+                        deleteImage({ image: profilePic }, setProfilePic)
                       }
                       sx={{
                         background: '#D71818',
