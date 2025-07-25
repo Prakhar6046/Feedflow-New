@@ -34,6 +34,7 @@ export const fishSizes = [
   1, 2, 3, 4, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85,
   90, 95, 100, 120, 140, 160, 180,
 ];
+
 interface Props {
   setActiveStep: (val: number) => void;
   editFarm?: any;
@@ -75,12 +76,12 @@ const FeedProfiles = ({
           alignItems="center"
           gap={2}
         >
-          {options.map((opt) => {
+          {options.map((opt, index) => {
             const value =
               radioValueMap[columnName]?.[opt] ?? `${columnName}_${opt}`;
             return (
               <FormControlLabel
-                key={rowName}
+                key={index}
                 value={value}
                 className="ic-radio"
                 control={
@@ -179,7 +180,7 @@ const FeedProfiles = ({
             }}
           >
             <TableContainer component={Paper} className="feed-profile-table">
-              <Table>
+              <Table stickyHeader>
                 <TableHead>
                   <TableRow>
                     <TableCell
@@ -200,10 +201,10 @@ const FeedProfiles = ({
                       Fish Size <br />
                       (g)
                     </TableCell>
-                    {groupedData?.map((tableHead, mainIndex) => {
+                    {groupedData?.map((tableHead) => {
                       return (
                         <TableCell
-                          key={mainIndex}
+                          key={tableHead.supplier.id}
                           sx={{
                             borderBottom: 0,
                             color: '#67737F',
@@ -239,356 +240,41 @@ const FeedProfiles = ({
                                 gap: 2,
                               }}
                             >
-                              {tableHead?.stores?.map(
-                                (store: FeedProduct, subIndex: number) => {
-                                  return (
-                                    <ListItem
-                                      key={subIndex}
-                                      disablePadding
-                                      sx={{
-                                        width: 'fit-content',
-                                      }}
+                              {tableHead?.stores?.map((store: FeedProduct) => {
+                                return (
+                                  <ListItem
+                                    key={store.id}
+                                    disablePadding
+                                    sx={{
+                                      width: 'fit-content',
+                                    }}
+                                  >
+                                    <Typography
+                                      variant="body2"
+                                      fontWeight={500}
+                                      textAlign={'center'}
+                                      minWidth={100}
                                     >
-                                      <Typography
-                                        variant="body2"
-                                        fontWeight={500}
-                                        textAlign={'center'}
-                                        minWidth={100}
-                                      >
-                                        {store?.productName}
-                                        <br />
-                                        (1&gt;5)
-                                      </Typography>
-                                    </ListItem>
-                                  );
-                                },
-                              )}
-
-                              {/* <ListItem
-                                disablePadding
-                                sx={{
-                                  width: "fit-content",
-                                }}
-                              >
-                                <Typography
-                                  variant="body2"
-                                  fontWeight={500}
-                                  textAlign={"center"}
-                                  minWidth={100}
-                                >
-                                  Tilapia PreStarter #3 <br />
-                                  (5-20)
-                                </Typography>
-                              </ListItem>
-
-                              <ListItem
-                                disablePadding
-                                sx={{
-                                  width: "fit-content",
-                                }}
-                              >
-                                <Typography
-                                  variant="body2"
-                                  fontWeight={500}
-                                  textAlign={"center"}
-                                  minWidth={100}
-                                >
-                                  Tilapia Grower 2mm
-                                  <br />
-                                  (25-40)
-                                </Typography>
-                              </ListItem> */}
+                                      {store?.productName}
+                                      <br />
+                                      (1&gt;5)
+                                    </Typography>
+                                  </ListItem>
+                                );
+                              })}
                             </List>
                           </Box>
                         </TableCell>
                       );
                     })}
-
-                    {/* <TableCell
-                      sx={{
-                        borderBottom: 0,
-                        color: '#67737F',
-                        background: '#F5F6F8',
-                        fontSize: {
-                          md: 16,
-                          xs: 14,
-                        },
-                        fontWeight: 600,
-                        textAlign: 'center',
-                        pr: '4px',
-                      }}
-                    >
-                      <Typography
-                        variant="body1"
-                        sx={{
-                          fontSize: {
-                            md: 16,
-                            xs: 14,
-                          },
-                          fontWeight: 600,
-                          background: '#06a19b',
-                          color: '#fff',
-                          p: 1,
-                          borderRadius: '8px',
-                          whiteSpace: 'nowrap',
-                        }}
-                      >
-                        Feed Supplier 2
-                      </Typography>
-                      <Box>
-                        <List
-                          sx={{
-                            display: 'flex',
-                            flexDirection: 'row',
-                            justifyContent: 'space-around',
-                            alignItems: 'center',
-                            gap: 2,
-                          }}
-                        >
-                          <ListItem
-                            disablePadding
-                            sx={{
-                              width: 'fit-content',
-                            }}
-                          >
-                            <Typography
-                              variant="body2"
-                              fontWeight={500}
-                              textAlign={'center'}
-                              minWidth={100}
-                            >
-                              Tilapia PreStarter #2 <br />
-                              (1&gt;5)
-                            </Typography>
-                          </ListItem>
-
-                          <ListItem
-                            disablePadding
-                            sx={{
-                              width: 'fit-content',
-                            }}
-                          >
-                            <Typography
-                              variant="body2"
-                              fontWeight={500}
-                              textAlign={'center'}
-                              minWidth={100}
-                            >
-                              Tilapia PreStarter #3 <br />
-                              (5-20)
-                            </Typography>
-                          </ListItem>
-
-                          <ListItem
-                            disablePadding
-                            sx={{
-                              width: 'fit-content',
-                            }}
-                          >
-                            <Typography
-                              variant="body2"
-                              fontWeight={500}
-                              textAlign={'center'}
-                              minWidth={100}
-                            >
-                              Tilapia Grower 2mm
-                              <br />
-                              (25-60)
-                            </Typography>
-                          </ListItem>
-                        </List>
-                      </Box>
-                    </TableCell>
-
-                    <TableCell
-                      sx={{
-                        borderBottom: 0,
-                        color: '#67737F',
-                        background: '#F5F6F8',
-                        fontSize: {
-                          md: 16,
-                          xs: 14,
-                        },
-                        fontWeight: 600,
-                        textAlign: 'center',
-                        pr: '4px',
-                        verticalAlign: 'baseline',
-                      }}
-                    >
-                      <Typography
-                        variant="body1"
-                        sx={{
-                          fontSize: {
-                            md: 16,
-                            xs: 14,
-                          },
-                          fontWeight: 600,
-                          background: '#06a19b',
-                          color: '#fff',
-                          p: 1,
-                          borderRadius: '8px',
-                          whiteSpace: 'nowrap',
-                        }}
-                      >
-                        Feed Supplier 3
-                      </Typography>
-                      <Box>
-                        <List
-                          sx={{
-                            display: 'flex',
-                            flexDirection: 'row',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                          }}
-                        >
-                          <ListItem
-                            disablePadding
-                            sx={{
-                              width: 'fit-content',
-                            }}
-                          >
-                            <Typography
-                              variant="body2"
-                              fontWeight={500}
-                              textAlign={'center'}
-                              minWidth={100}
-                            >
-                              Tilapia Grower <br />
-                              (50-250)
-                            </Typography>
-                          </ListItem>
-                        </List>
-                      </Box>
-                    </TableCell>
-
-                    <TableCell
-                      sx={{
-                        borderBottom: 0,
-                        color: '#67737F',
-                        background: '#F5F6F8',
-                        fontSize: {
-                          md: 16,
-                          xs: 14,
-                        },
-                        fontWeight: 600,
-                        textAlign: 'center',
-                        pr: '4px',
-                        verticalAlign: 'baseline',
-                      }}
-                    >
-                      <Typography
-                        variant="body1"
-                        sx={{
-                          fontSize: {
-                            md: 16,
-                            xs: 14,
-                          },
-                          fontWeight: 600,
-                          background: '#06a19b',
-                          color: '#fff',
-                          p: 1,
-                          borderRadius: '8px',
-                          whiteSpace: 'nowrap',
-                        }}
-                      >
-                        Feed Supplier 4
-                      </Typography>
-                      <Box>
-                        <List
-                          sx={{
-                            display: 'flex',
-                            flexDirection: 'row',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                          }}
-                        >
-                          <ListItem
-                            disablePadding
-                            sx={{
-                              width: 'fit-content',
-                            }}
-                          >
-                            <Typography
-                              variant="body2"
-                              fontWeight={500}
-                              textAlign={'center'}
-                              minWidth={100}
-                            >
-                              Tilapia Finsher <br />
-                              (200-500)
-                            </Typography>
-                          </ListItem>
-                        </List>
-                      </Box>
-                    </TableCell>
-
-                    <TableCell
-                      sx={{
-                        borderBottom: 0,
-                        color: '#67737F',
-                        background: '#F5F6F8',
-                        fontSize: {
-                          md: 16,
-                          xs: 14,
-                        },
-                        fontWeight: 600,
-                        textAlign: 'center',
-                        verticalAlign: 'baseline',
-                      }}
-                    >
-                      <Typography
-                        variant="body1"
-                        sx={{
-                          fontSize: {
-                            md: 16,
-                            xs: 14,
-                          },
-                          fontWeight: 600,
-                          background: '#06a19b',
-                          color: '#fff',
-                          p: 1,
-                          borderRadius: '8px',
-                          whiteSpace: 'nowrap',
-                        }}
-                      >
-                        Feed Supplier 5
-                      </Typography>
-                      <Box>
-                        <List
-                          sx={{
-                            display: 'flex',
-                            flexDirection: 'row',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                          }}
-                        >
-                          <ListItem
-                            disablePadding
-                            sx={{
-                              width: 'fit-content',
-                            }}
-                          >
-                            <Typography
-                              variant="body2"
-                              fontWeight={500}
-                              textAlign={'center'}
-                              minWidth={100}
-                            >
-                              Tilapia Breeder <br />
-                              (&gt;600)
-                            </Typography>
-                          </ListItem>
-                        </List>
-                      </Box>
-                    </TableCell> */}
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {fishSizes?.map((size) => {
+                  {fishSizes?.map((size, index) => {
                     const rowName = `selection_${size}`;
 
                     return (
-                      <TableRow key={size}>
+                      <TableRow key={`row-${index}`}>
                         <TableCell sx={cellStyle}>{size}</TableCell>
                         {groupedData?.map((group, index) => {
                           const options = group.stores.map(
