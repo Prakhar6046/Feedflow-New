@@ -41,7 +41,6 @@ const MapComponent = ({
   clearErrors,
   setLng,
   setLat,
-  token,
 }: any) => {
   const [selectedPosition, setSelectedPosition] = useState<any>(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -123,9 +122,7 @@ const MapComponent = ({
             `/api/farm/altitude?lat=${data.results[0].geometry.location.lat}&lng=${data.results[0].geometry.location.lng}`,
             {
               method: 'GET',
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
+              
             },
           );
           const res = await altitudeResponse.json();
@@ -171,9 +168,7 @@ const MapComponent = ({
             `/api/farm/altitude?lat=${data.results[0].geometry.location.lat}&lng=${data.results[0].geometry.location.lng}`,
             {
               method: 'GET',
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
+              
             },
           );
           const res = await altitudeResponse.json();
@@ -397,9 +392,7 @@ const MapComponent = ({
                                     `/api/farm/altitude?lat=${results[0].geometry.location.lat()}&lng=${results[0].geometry.location.lng()}`,
                                     {
                                       method: 'GET',
-                                      headers: {
-                                        Authorization: `Bearer ${token}`,
-                                      },
+                                     
                                     },
                                   )
                                     .then((altitudeRes) => altitudeRes.json())
