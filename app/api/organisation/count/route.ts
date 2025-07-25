@@ -1,6 +1,6 @@
 import prisma from '@/prisma/prisma';
 import { NextRequest, NextResponse } from 'next/server';
-
+export const dynamic = 'force-dynamic';
 export const GET = async (request: NextRequest) => {
   try {
     const organisationCount = await prisma.organisationCount.findUnique({
