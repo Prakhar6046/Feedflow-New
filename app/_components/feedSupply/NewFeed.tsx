@@ -112,7 +112,6 @@ const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
             method: isEditFeed ? 'PUT' : 'POST',
             headers: {
               'Content-Type': 'application/json',
-              Authorization: `Bearer ${token}`,
             },
             body: isEditFeed
               ? JSON.stringify({
@@ -148,9 +147,6 @@ const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
   const getFeedSuppliers = async () => {
     const response = await fetch(`/api/organisation/feedSuppliers`, {
       method: 'GET',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
     });
     const res = response.json();
     return res;
@@ -158,9 +154,6 @@ const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
   const getFeed = async () => {
     const data = await fetch(`/api/feedSupply/${feedSupplyId}`, {
       method: 'GET',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
     });
     if (data) {
     }

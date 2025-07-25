@@ -17,13 +17,11 @@ export default async function Page({
 }) {
   const query = searchParams?.query || '';
   const loggedUser = getCookie('logged-user', { cookies });
-  const refreshToken = getCookie('refresh-token', { cookies });
-  const user: SingleUser = JSON.parse(loggedUser || '');
+  const user: SingleUser = JSON.parse(loggedUser ?? '');
   const users = await getUsers({
     role: user.role,
     organisationId: user.organisationId,
     query,
-    refreshToken,
   });
 
   return (

@@ -1,5 +1,8 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import { getDayMonthDifference } from '@/app/_lib/utils';
+import * as validationPattern from '@/app/_lib/utils/validationPatterns/index';
+import * as validationMessage from '@/app/_lib/utils/validationsMessage/index';
+import { Farm } from '@/app/_typeModels/Farm';
 import {
   Box,
   Button,
@@ -11,18 +14,15 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import * as validationPattern from '@/app/_lib/utils/validationPatterns/index';
-import * as validationMessage from '@/app/_lib/utils/validationsMessage/index';
-import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import { Dayjs } from 'dayjs';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { useRouter } from 'next/navigation';
-import { Farm } from '@/app/_typeModels/Farm';
-import toast from 'react-hot-toast';
 import { getCookie } from 'cookies-next';
-import { getDayMonthDifference } from '@/app/_lib/utils';
+import { Dayjs } from 'dayjs';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { Controller, SubmitHandler, useForm } from 'react-hook-form';
+import toast from 'react-hot-toast';
 interface FormInputs {
   fishFarm: string;
   productionUnit: string;
@@ -84,12 +84,10 @@ function AddUnitForm({ farms }: Props) {
         ...restData,
       };
 
-      const token = getCookie('auth-token');
       const response = await fetch(`/api/production`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(payload),
       });

@@ -39,7 +39,7 @@ import { SingleUser } from '../_typeModels/User';
 import MapComponent, { AddressInfo } from './farm/MapComponent';
 import HatcheryForm from './hatchery/HatcheryForm';
 import { getCookie } from 'cookies-next';
-// import { useGetCookie } from "cookies-next";
+
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
   clipPath: 'inset(50%)',
@@ -145,7 +145,6 @@ const AddNewOrganisation = ({
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            // Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({ ...data, imageUrl: profilePic }),
         });
@@ -227,7 +226,6 @@ const AddNewOrganisation = ({
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${authToken}`,
         },
         cache: 'no-store',
       });
@@ -329,12 +327,7 @@ const AddNewOrganisation = ({
               type="file"
               {...register('image', {
                 onChange: (e) =>
-                  handleUpload(
-                    e.target.files,
-                    profilePic,
-                    setProfilePic,
-                    String(token),
-                  ),
+                  handleUpload(e.target.files, profilePic, setProfilePic),
               })}
               accept=".jpg,.jpeg,.png,.svg"
             />
@@ -375,12 +368,7 @@ const AddNewOrganisation = ({
                   type="file"
                   {...register('image', {
                     onChange: (e) =>
-                      handleUpload(
-                        e.target.files,
-                        profilePic,
-                        setProfilePic,
-                        String(token),
-                      ),
+                      handleUpload(e.target.files, profilePic, setProfilePic),
                   })}
                   accept=".jpg,.jpeg,.png,.svg"
                 />
@@ -389,11 +377,7 @@ const AddNewOrganisation = ({
                 type="button"
                 variant="contained"
                 onClick={() =>
-                  deleteImage(
-                    { image: profilePic },
-                    String(token),
-                    setProfilePic,
-                  )
+                  deleteImage({ image: profilePic }, setProfilePic)
                 }
                 sx={{
                   background: '#D71818',
@@ -482,15 +466,15 @@ const AddNewOrganisation = ({
                 {...register('organisationName', {
                   required: true,
                   pattern: validationPattern.alphabetsNumbersAndSpacesPattern,
-                  validate: (value: string) => {
-                    const isUnique = organisations.every((val) => {
-                      return val.name.toLowerCase() !== value.toLowerCase();
-                    });
-                    return (
-                      isUnique ||
-                      'Please enter a unique name. The name you entered is not available.'
-                    );
-                  },
+                  // validate: (value: string) => {
+                  //   const isUnique = organisations?.every((val) => {
+                  //     return val.name.toLowerCase() !== value.toLowerCase();
+                  //   });
+                  //   return (
+                  //     isUnique ||
+                  //     'Please enter a unique name. The name you entered is not available.'
+                  //   );
+                  // },
                 })}
                 focused
                 sx={{

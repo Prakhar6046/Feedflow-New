@@ -45,10 +45,10 @@ import {
 } from 'react-hook-form';
 import toast from 'react-hot-toast';
 
-import Image from 'next/image';
-import FarmsInformation from './FarmsInformation';
 import { SingleUser } from '@/app/_typeModels/User';
 import { getCookie } from 'cookies-next';
+import Image from 'next/image';
+import FarmsInformation from './FarmsInformation';
 export const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
   clipPath: 'inset(50%)',
@@ -114,9 +114,6 @@ const EditOrganisation = ({
     const token = getCookie('auth-token');
     const data = await fetch(`/api/organisation/${organisationId}`, {
       method: 'GET',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
     });
     if (data) {
       setLoading(false);
@@ -189,12 +186,9 @@ const EditOrganisation = ({
         formData.append('hatchery', JSON.stringify(hatchery));
       }
 
-      const token = getCookie('auth-token');
       const res = await fetch(`/api/organisation/${organisationId}`, {
         method: 'PUT',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+
         body: formData,
       });
 
@@ -430,12 +424,7 @@ const EditOrganisation = ({
                   type="file"
                   {...register('image', {
                     onChange: (e) =>
-                      handleUpload(
-                        e.target.files,
-                        profilePic,
-                        setProfilePic,
-                        String(token),
-                      ),
+                      handleUpload(e.target.files, profilePic, setProfilePic),
                   })}
                   accept=".jpg,.jpeg,.png,.svg"
                 />
@@ -485,7 +474,6 @@ const EditOrganisation = ({
                             e.target.files,
                             profilePic,
                             setProfilePic,
-                            String(token),
                           ),
                       })}
                       accept=".jpg,.jpeg,.png,.svg"
@@ -503,7 +491,6 @@ const EditOrganisation = ({
                           type: 'organisation',
                           image: organisationData?.image,
                         },
-                        String(token),
                         setProfilePic,
                       )
                     }

@@ -43,9 +43,6 @@ const ExpandedSidebar = () => {
         const token = getCookie('auth-token');
         const response = await fetch(`/api/users/${loggedUserData.id}`, {
           method: 'GET',
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
         });
         const data = await response.json();
         setUserData(data.data);

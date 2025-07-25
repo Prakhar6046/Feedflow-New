@@ -438,7 +438,6 @@ export const deleteImage = async (
     type?: string | undefined;
     image: string | undefined;
   },
-  token: string,
   setProfilePic: (val: string) => void,
 ) => {
   const response = await fetch(`/api/profile-pic/delete`, {
@@ -446,7 +445,6 @@ export const deleteImage = async (
     body: JSON.stringify(payload),
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
     },
   });
   if (response.ok) {
@@ -459,7 +457,6 @@ export const handleUpload = async (
   imagePath: FileList,
   profilePic: string | undefined,
   setProfilePic: (val: string) => void,
-  token: string,
 ) => {
   const file = imagePath[0];
   const allowedTypes = ['image/jpeg', 'image/png', 'image/svg+xml'];
@@ -490,10 +487,6 @@ export const handleUpload = async (
   const response = await fetch(`/api/profile-pic/upload/new`, {
     method: 'POST',
     body: formData,
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
   });
 
   if (response.ok) {

@@ -21,24 +21,21 @@ export default async function Page({
   };
 }) {
   const loggedUser = getCookie('logged-user', { cookies });
-  const refreshToken = getCookie('refresh-token', { cookies });
   const user = JSON.parse(loggedUser ?? '');
-  const farmManagers = await getFarmMangers(user.organisationId, refreshToken);
-  const growthModels = await getGrowthModels(refreshToken);
+  const farmManagers = await getFarmMangers(user.organisationId);
+  const growthModels = await getGrowthModels();
   const query = searchParams?.query || '';
   const farms = await getFarms({
     role: '',
     query,
     noFilter: true,
-    refreshToken,
   });
   const stores = await getFeedStores({
     role: user.role,
     organisationId: user.organisationId,
     query,
-    refreshToken,
   });
-  const feedSuppliers = await getFeedSuppliers(refreshToken);
+  const feedSuppliers = await getFeedSuppliers();
 
   return (
     <>

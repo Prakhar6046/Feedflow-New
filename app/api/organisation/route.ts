@@ -1,4 +1,3 @@
-import { verifyAndRefreshToken } from '@/app/_lib/auth/verifyAndRefreshToken';
 import prisma from '@/prisma/prisma';
 import { NextRequest, NextResponse } from 'next/server';
 import { Organisation } from '@prisma/client';
@@ -6,15 +5,6 @@ import { Prisma } from '@prisma/client';
 
 export const GET = async (request: NextRequest): Promise<NextResponse> => {
   try {
-    const user = await verifyAndRefreshToken(request);
-
-    if (user.status === 401) {
-      return NextResponse.json(
-        { status: false, message: 'Unauthorized: Token missing or invalid' },
-        { status: 401 },
-      );
-    }
-
     const searchParams = request.nextUrl.searchParams;
     const role = searchParams.get('role');
     const query = searchParams.get('query');

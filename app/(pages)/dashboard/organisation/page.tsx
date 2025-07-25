@@ -20,15 +20,13 @@ export default async function Page({
   const query = searchParams?.query || '';
   const tab = searchParams?.tab || 'all';
   const loggedUser = getCookie('logged-user', { cookies });
-  const refreshToken = getCookie('refresh-token', { cookies });
-  const user: SingleUser = JSON.parse(loggedUser || '');
+  const user: SingleUser = JSON.parse(loggedUser ?? '');
 
   const organisations = await getOrganisations({
     organisationId: Number(user?.organisationId),
     query,
     role: String(user?.role),
     tab,
-    refreshToken,
   });
 
   return (

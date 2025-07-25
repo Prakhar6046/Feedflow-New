@@ -9,6 +9,8 @@ import {
   ProductionUnitsFormTypes,
   UnitsTypes,
 } from '@/app/_typeModels/Farm';
+import { FeedProduct } from '@/app/_typeModels/Feed';
+import { FeedSupplier } from '@/app/_typeModels/Organization';
 import { farmAction } from '@/lib/features/farm/farmSlice';
 import { useAppDispatch } from '@/lib/hooks';
 import {
@@ -30,6 +32,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableRow from '@mui/material/TableRow';
 import { deleteCookie, getCookie } from 'cookies-next';
 import { NextPage } from 'next';
+import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import {
   Controller,
@@ -40,11 +43,8 @@ import {
 import toast from 'react-hot-toast';
 import { v4 as uuidv4 } from 'uuid';
 import CalculateVolume from '../models/CalculateFarmVolume';
-import ProductionUnitParametersPredicated from '../models/ProductionUnitParametersPredicated';
-import { useRouter } from 'next/navigation';
 import ProductionUnitFeedProfile from '../models/ProductionUnitFeedProfile';
-import { FeedProduct } from '@/app/_typeModels/Feed';
-import { FeedSupplier } from '@/app/_typeModels/Organization';
+import ProductionUnitParametersPredicated from '../models/ProductionUnitParametersPredicated';
 interface Props {
   productionParaMeter?: ProductionParaMeterType[];
   growthModels?: GrowthModel[];
@@ -387,7 +387,6 @@ const ProductionUnits: NextPage<Props> = ({
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: `Bearer ${token}`,
               },
               body: JSON.stringify(payload),
             },

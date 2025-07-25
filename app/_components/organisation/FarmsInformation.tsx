@@ -22,12 +22,7 @@ interface Props {
   profilePic: string | any;
   setProfilePic: any;
   isHatcherySelected: boolean;
-  handleUpload: (
-    file: any,
-    profilePic: string,
-    setProfilePic: any,
-    token: string,
-  ) => void;
+  handleUpload: (file: any, profilePic: string, setProfilePic: any) => void;
   altitude: string;
   register: any;
   setValue: any;
@@ -146,12 +141,7 @@ const FarmsInformation = ({
                   type="file"
                   {...register('image', {
                     onChange: (e: any) =>
-                      handleUpload(
-                        e.target.files,
-                        profilePic,
-                        setProfilePic,
-                        String(token),
-                      ),
+                      handleUpload(e.target.files, profilePic, setProfilePic),
                   })}
                   accept=".jpg,.jpeg,.png,.svg"
                 />

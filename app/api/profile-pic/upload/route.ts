@@ -2,17 +2,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/prisma/prisma';
 import cloudinary from '@/lib/cloudinary';
-import { verifyAndRefreshToken } from '@/app/_lib/auth/verifyAndRefreshToken';
 
 export const POST = async (request: NextRequest) => {
-  const user = await verifyAndRefreshToken(request);
-  if (user.status === 401) {
-    return NextResponse.json(
-      { status: false, message: 'Unauthorized: Token missing or invalid' },
-      { status: 401 },
-    );
-  }
-
   try {
     const formData = await request.formData();
     const image = formData.get('image') as File | null;

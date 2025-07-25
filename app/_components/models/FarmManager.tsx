@@ -28,7 +28,6 @@ import Select from '@mui/material/Select';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { getCookie } from 'cookies-next';
 import dayjs, { Dayjs } from 'dayjs';
 import { useRouter, useSearchParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
@@ -213,12 +212,10 @@ const TransferModal: React.FC<Props> = ({
           data: addStockField,
         };
 
-        const token = getCookie('auth-token');
         const response = await fetch('/api/production/mange', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify(payload),
         });

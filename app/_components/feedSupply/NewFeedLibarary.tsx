@@ -91,7 +91,7 @@ interface FeedFormFields {
 
 const NewFeedLibarary: NextPage<Props> = ({ feedSuppliers }) => {
   const router = useRouter();
-  const loggedUser = getCookie('logged-user');
+  const loggedUser = getCookie('logged-user') ?? '';
   const [isApiCallInProgress, setIsApiCallInProgress] =
     useState<boolean>(false);
   const {
@@ -127,14 +127,12 @@ const NewFeedLibarary: NextPage<Props> = ({ feedSuppliers }) => {
 
     try {
       const loggedUserData = JSON.parse(loggedUser ?? '');
-      const token = getCookie('auth-token');
 
       if (payload) {
         const response = await fetch('/api/feed-store', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({
             ...payload,

@@ -94,12 +94,10 @@ export default function UserTable({ users, permissions }: Props) {
   const handleInviteUser = async () => {
     setAnchorEl(null);
     if (selectedUser) {
-      const token = getCookie('auth-token');
       const response = await fetch('/api/invite/user', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           name: selectedUser.name,
@@ -121,9 +119,7 @@ export default function UserTable({ users, permissions }: Props) {
       const token = getCookie('auth-token');
       const response = await fetch('/api/users', {
         method: 'DELETE',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+
         body: String(selectedUser.id),
       });
       const res = await response.json();

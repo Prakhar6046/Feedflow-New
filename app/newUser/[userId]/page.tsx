@@ -1,7 +1,6 @@
 'use client';
 import { useRouter } from 'next/navigation';
-import { useForm, SubmitHandler } from 'react-hook-form';
-import { getCookie } from 'cookies-next';
+import { SubmitHandler, useForm } from 'react-hook-form';
 
 interface IFormInput {
   password: string;
@@ -19,7 +18,6 @@ const Page = ({ params }: { params: { userId: string } }) => {
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
     if (data.password && params.userId) {
-      const token = getCookie('auth-token');
       const payload = {
         userId: params.userId,
         password: data.password,
@@ -28,7 +26,6 @@ const Page = ({ params }: { params: { userId: string } }) => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(payload),
       });
