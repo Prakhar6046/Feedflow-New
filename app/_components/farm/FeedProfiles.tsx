@@ -1,6 +1,5 @@
 'use client';
 import { getLocalItem, setLocalItem } from '@/app/_lib/utils';
-import { Farm } from '@/app/_typeModels/Farm';
 import { FeedProduct } from '@/app/_typeModels/Feed';
 import { FeedSupplier } from '@/app/_typeModels/Organization';
 import {
@@ -38,16 +37,12 @@ export const fishSizes = [
 
 interface Props {
   setActiveStep: (val: number) => void;
-  editFarm?: Farm;
+  editFarm?: any;
   feedStores: FeedProduct[];
   feedSuppliers: FeedSupplier[];
 }
 interface FormValues {
   [key: string]: string;
-}
-interface GroupedData {
-  supplier: FeedSupplier;
-  stores: FeedProduct[];
 }
 const FeedProfiles = ({
   setActiveStep,
@@ -105,23 +100,20 @@ const FeedProfiles = ({
     />
   );
   const groupedData = useMemo(() => {
-    return feedSuppliers?.reduce(
-      (acc: GroupedData[], supplier: FeedSupplier) => {
-        const storesForSupplier = feedStores?.filter((store: FeedProduct) =>
-          store?.ProductSupplier?.includes(String(supplier.id)),
-        );
+    return feedSuppliers?.reduce((acc: any[], supplier: FeedSupplier) => {
+      const storesForSupplier = feedStores?.filter((store: any) =>
+        store?.ProductSupplier?.includes(supplier.id),
+      );
 
-        if (storesForSupplier?.length) {
-          acc.push({
-            supplier,
-            stores: storesForSupplier,
-          });
-        }
+      if (storesForSupplier?.length) {
+        acc.push({
+          supplier,
+          stores: storesForSupplier,
+        });
+      }
 
-        return acc;
-      },
-      [],
-    );
+      return acc;
+    }, []);
   }, [feedSuppliers, feedStores]);
 
   useEffect(() => {
@@ -145,13 +137,11 @@ const FeedProfiles = ({
 
   useEffect(() => {
     if (editFarm) {
-      const profiles = editFarm?.FeedProfile?.[0]?.profiles;
-      setLocalItem('feedProfileId', editFarm?.FeedProfile?.[0].id);
-      if (profiles) {
-        Object.entries(profiles).forEach(([key, value]) => {
-          setValue(key, String(value));
-        });
-      }
+      const profiles = editFarm.FeedProfile[0].profiles;
+      setLocalItem('feedProfileId', editFarm.FeedProfile[0].id);
+      Object.entries(profiles).forEach(([key, value]) => {
+        setValue(key, String(value));
+      });
     }
   }, [editFarm]);
 
