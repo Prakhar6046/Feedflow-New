@@ -14,19 +14,15 @@ const Page = async ({
   };
 }) => {
   const query = searchParams?.query || '';
-  // const loggedUser: any = getCookie("logged-user", { cookies });
-  // const refreshToken: any = getCookie("refresh-token", { cookies });
   const cookieStore = cookies();
   const loggedUser: any = cookieStore.get('logged-user')?.value;
-  const refreshToken = cookieStore.get('refresh-token')?.value;
   const userOrganisationType = JSON.parse(loggedUser);
   const stores = await getFeedStores({
     role: userOrganisationType.role,
     organisationId: userOrganisationType.organisationId,
     query,
-    refreshToken,
   });
-  const feedSuppliers = await getFeedSuppliers(refreshToken);
+  const feedSuppliers = await getFeedSuppliers();
 
   return (
     <div>
