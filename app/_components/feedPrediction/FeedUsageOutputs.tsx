@@ -23,7 +23,6 @@ import { FarmsFishGrowth } from './FeedingPlanOutputs';
 import FeedUsageTable from '../table/FeedUsageTable';
 import { FarmGroup, FarmGroupUnit } from '@/app/_typeModels/production';
 
-// Types
 interface FarmOption {
   id: string;
   option: string;
