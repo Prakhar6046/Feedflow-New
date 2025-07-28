@@ -72,6 +72,7 @@ model Organisation {
   FishManageHistory FishManageHistory[]
   GrowthModels      GrowthModel[]
   FeedStore         FeedStore[]
+  models            Model[]
 
   @@index([createdAt])
   @@index([updatedAt])
@@ -482,9 +483,33 @@ model Model {
   id                       Int                    @id @default(autoincrement())
   name                     String?
   specie                   String?
+  productionSystem         String?
+  adcCp                   Float?
+  adcCf                   Float?
+  adcNfe                  Float?
+  geCp                    Float?
+  geCf                    Float?
+  geNfe                   Float?
+  wasteFactor             Float?
+
+  temperatureCoefficient   String?
+  tgcA                    Float?
+  tgcB                    Float?
+  tgcC                    Float?
+  tgcD                    Float?
+  tgcE                    Float?
+  tFCRModel               String?
+  tFCRa                   Float?
+  tFCRb                   Float?
+  tFCRc                   Float?
   
-  createdAt                DateTime               @default(now())
-  updatedAt                DateTime               @updatedAt
+  // Metadata
+  organisationId           Int?
+  organisation             Organisation?  @relation(fields: [organisationId], references: [id])
+  createdBy                Int?
+  updatedBy                String?
+  createdAt                DateTime       @default(now())
+  updatedAt                DateTime       @updatedAt
   GrowthModel              GrowthModel[]
   YearBasedPredication     YearBasedPredication[]
 }
