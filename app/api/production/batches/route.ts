@@ -1,12 +1,12 @@
 import prisma from '@/prisma/prisma';
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 
-export const GET = async (request: NextRequest) => {
+export const GET = async () => {
   try {
-    const searchParams = request.nextUrl.searchParams;
-    const role = searchParams.get('role');
-    const organisationId = searchParams.get('organisationId');
-    const userId = searchParams.get('userId');
+    // const searchParams = request.nextUrl.searchParams;
+    // const role = searchParams.get('role');
+    // const organisationId = searchParams.get('organisationId');
+    // const userId = searchParams.get('userId');
 
     const fishSupply = await prisma.fishSupply.findMany({});
     return new NextResponse(

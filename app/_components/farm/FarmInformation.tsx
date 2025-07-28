@@ -3,6 +3,7 @@ import * as validationMessage from '@/app/_lib/utils/validationsMessage/index';
 import { Farm } from '@/app/_typeModels/Farm';
 import { farmAction } from '@/lib/features/farm/farmSlice';
 import { useAppDispatch } from '@/lib/hooks';
+import { SelectChangeEvent } from '@mui/material/Select'; // if you're using MUI's Select
 import {
   Box,
   Button,
@@ -26,10 +27,10 @@ import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import Loader from '../Loader';
-// import MapComponent from "./MapComponent";
+import { AddressInfo } from './MapComponent';
 const MapComponent = dynamic(() => import('./MapComponent'), { ssr: false });
 interface Props {
-  editFarm?: any;
+  editFarm?: Farm;
   setActiveStep: (val: number) => void;
   farmMembers: SingleUser[];
   farms: Farm[];
@@ -49,22 +50,19 @@ const FarmInformation: NextPage<Props> = ({
     setValue,
     watch,
     control,
-    trigger,
     clearErrors,
-    getValues,
-    reset,
   } = useForm<Farm>({ mode: 'onChange' });
-  const loggedUser: any = getCookie('logged-user');
+  const loggedUser = getCookie('logged-user');
 
-  const user = JSON.parse(loggedUser);
-  const [selectedSwtich, setSelectedSwtich] = useState<string>('address');
+  const user = JSON.parse(loggedUser ?? '');
+
   const [altitude, setAltitude] = useState<string>('');
   const [lat, setLat] = useState<string>('');
   const [lng, setLng] = useState<string>('');
-  const [formData, setFormData] = useState<any>();
-  const [addressInformation, setAddressInformation] = useState<any>();
+  const [formData, setFormData] = useState<Farm>();
+  const [addressInformation, setAddressInformation] =
+    useState<AddressInfo | null>();
   const [useAddress, setUseAddress] = useState<boolean>(false);
-  const [searchedAddress, setSearchedAddress] = useState<any>();
   const [fishFarmers, setFishFarmers] = useState<Farm[]>();
   const [loading, setLoading] = useState<boolean>(false);
   const selectedManagerIds = watch('mangerId') || [];
@@ -72,7 +70,7 @@ const FarmInformation: NextPage<Props> = ({
   const isEditFarm = getCookie('isEditFarm');
   const token = getCookie('auth-token');
 
-  const handleChange = (event: any) => {
+  const handleChange = (event: SelectChangeEvent<any>) => {
     const {
       target: { value },
     } = event;
@@ -92,22 +90,22 @@ const FarmInformation: NextPage<Props> = ({
   useEffect(() => {
     if (editFarm && !formData) {
       setValue('name', editFarm?.name);
-      (setValue(
+      setValue(
         'farmAltitude',
         String(Number(editFarm?.farmAltitude).toFixed(2)),
-      ),
-        setValue('addressLine1', editFarm?.farmAddress?.addressLine1));
+      );
+      setValue('addressLine1', editFarm?.farmAddress?.addressLine1 ?? '');
       setValue('addressLine2', editFarm?.farmAddress?.addressLine2 || '');
-      setValue('city', editFarm?.farmAddress?.city);
-      setValue('country', editFarm?.farmAddress?.country);
-      setValue('zipCode', editFarm?.farmAddress?.zipCode);
-      setValue('province', editFarm?.farmAddress?.province);
+      setValue('city', editFarm?.farmAddress?.city ?? '');
+      setValue('country', editFarm?.farmAddress?.country ?? '');
+      setValue('zipCode', editFarm?.farmAddress?.zipCode ?? '');
+      setValue('province', editFarm?.farmAddress?.province ?? '');
       setValue('fishFarmer', editFarm?.fishFarmer);
       setValue('lat', String(Number(editFarm?.lat).toFixed(2)));
       setValue('lng', String(Number(editFarm?.lng).toFixed(2)));
       if (editFarm.FarmManger) {
         const managerIds: string[] = [];
-        editFarm.FarmManger.map((user: any) => {
+        editFarm.FarmManger.map((user: { userId: number }) => {
           if (user.userId) {
             managerIds.push(String(user.userId));
           }
@@ -121,8 +119,8 @@ const FarmInformation: NextPage<Props> = ({
     if (formData && Object.keys(formData).length) {
       const data = formData;
       setValue('name', data?.name);
-      (setValue('farmAltitude', data?.farmAltitude),
-        setValue('addressLine1', data?.addressLine1));
+      setValue('farmAltitude', data?.farmAltitude);
+      setValue('addressLine1', data?.addressLine1);
       setValue('addressLine2', data?.addressLine2 || '');
       setValue('city', data?.city);
       setValue('country', data?.country);
@@ -136,18 +134,20 @@ const FarmInformation: NextPage<Props> = ({
   }, [formData, setValue]);
   useEffect(() => {
     if (addressInformation && useAddress) {
-      addressInformation.address && clearErrors('addressLine1');
-      addressInformation.address2 && clearErrors('addressLine2');
-      addressInformation.city && clearErrors('city');
-      addressInformation.country && clearErrors('country');
-      addressInformation.postcode && clearErrors('zipCode');
-      addressInformation.state && clearErrors('province');
+      if (addressInformation.address) clearErrors('addressLine1');
+      if (addressInformation.address2) clearErrors('addressLine2');
+      if (addressInformation.city) clearErrors('city');
+      if (addressInformation.country) clearErrors('country');
+      if (addressInformation.postcode) clearErrors('zipCode');
+      if (addressInformation.state) clearErrors('province');
+
       setValue('addressLine1', addressInformation.address);
       setValue('addressLine2', addressInformation.address2);
       setValue('city', addressInformation.city);
       setValue('country', addressInformation.country);
       setValue('zipCode', addressInformation.postcode);
       setValue('province', addressInformation.state);
+
       setUseAddress(false);
     }
   }, [addressInformation, useAddress]);
@@ -202,19 +202,19 @@ const FarmInformation: NextPage<Props> = ({
               className="form-input"
               {...register('name', {
                 required: true,
-                validate: (value: string) => {
-                  const isUnique = farms.every((val) => {
-                    if (editFarm && val.id === editFarm.id) {
-                      return true;
-                    }
-                    return val.name.toLowerCase() !== value.toLowerCase();
-                  });
+                // validate: (value: string) => {
+                //   const isUnique = farms?.every((val) => {
+                //     if (editFarm && val.id === editFarm.id) {
+                //       return true;
+                //     }
+                //     return val.name.toLowerCase() !== value.toLowerCase();
+                //   });
 
-                  return (
-                    isUnique ||
-                    'Please enter a unique farm name. The farm name you entered is not available.'
-                  );
-                },
+                //   return (
+                //     isUnique ||
+                //     'Please enter a unique farm name. The farm name you entered is not available.'
+                //   );
+                // },
                 maxLength: {
                   value: 150,
                   message: 'Input can contain a maximum of 150 characters.',
@@ -366,7 +366,7 @@ const FarmInformation: NextPage<Props> = ({
                 label="Fish Producer *"
                 value={watchFishFarmer || ''}
               >
-                {fishFarmers?.map((fish: any) => {
+                {fishFarmers?.map((fish) => {
                   return (
                     <MenuItem value={String(fish.id)} key={fish.id}>
                       {fish.name}
@@ -408,7 +408,7 @@ const FarmInformation: NextPage<Props> = ({
                       selected &&
                       selected.length &&
                       selected
-                        .map((id: any) => {
+                        .map((id: string) => {
                           const member = farmMembers.find(
                             (mem) => String(mem.id) === id,
                           );
@@ -461,257 +461,244 @@ const FarmInformation: NextPage<Props> = ({
           >
             <MapComponent
               setAddressInformation={setAddressInformation}
-              setSearchedAddress={setSearchedAddress}
               setAltitude={setAltitude}
               setLat={setLat}
               setLng={setLng}
               clearErrors={clearErrors}
               setUseAddress={setUseAddress}
               isCalAltitude={true}
-              token={token}
-              i
+              token={token ?? ''}
             />
           </Box>
-          {selectedSwtich === 'address' ? (
-            <>
+          <Box>
+            <Typography
+              variant="subtitle1"
+              color="black"
+              fontWeight={500}
+              marginTop={3}
+              marginBottom={2}
+            >
+              Address
+            </Typography>
+
+            <Typography variant="body2" color="#555555">
+              You can do an address lookup to the right
+            </Typography>
+          </Box>
+          <Grid container spacing={2} mt={0}>
+            <Grid item md={6} xs={12}>
               <Box>
-                <Typography
-                  variant="subtitle1"
-                  color="black"
-                  fontWeight={500}
-                  marginTop={3}
-                  marginBottom={2}
-                >
-                  Address
-                </Typography>
-
-                <Typography variant="body2" color="#555555">
-                  You can do an address lookup to the right
-                </Typography>
+                <TextField
+                  label="Address Line 1 *"
+                  type="text"
+                  className="form-input"
+                  {...register('addressLine1', {
+                    required: addressInformation?.address ? false : true,
+                  })}
+                  focused
+                  sx={{
+                    width: '100%',
+                  }}
+                />
+                {errors &&
+                  errors.addressLine1 &&
+                  errors.addressLine1.type === 'required' &&
+                  !addressInformation?.address && (
+                    <Typography
+                      variant="body2"
+                      color="red"
+                      fontSize={13}
+                      mt={0.5}
+                    >
+                      {validationMessage.required}
+                    </Typography>
+                  )}
               </Box>
+            </Grid>
 
-              <Grid container spacing={2} mt={0}>
-                <Grid item md={6} xs={12}>
-                  <Box>
-                    <TextField
-                      label="Address Line 1 *"
-                      type="text"
-                      className="form-input"
-                      {...register('addressLine1', {
-                        required: addressInformation?.address ? false : true,
-                      })}
-                      focused
-                      sx={{
-                        width: '100%',
-                      }}
-                    />
-                    {errors &&
-                      errors.addressLine1 &&
-                      errors.addressLine1.type === 'required' &&
-                      !addressInformation?.address && (
-                        <Typography
-                          variant="body2"
-                          color="red"
-                          fontSize={13}
-                          mt={0.5}
-                        >
-                          {validationMessage.required}
-                        </Typography>
-                      )}
-                  </Box>
-                </Grid>
+            <Grid item md={6} xs={12}>
+              <TextField
+                label="Address Line 2 "
+                type="text"
+                className="form-input"
+                {...register('addressLine2')}
+                focused
+                sx={{
+                  width: '100%',
+                }}
+              />
+            </Grid>
 
-                <Grid item md={6} xs={12}>
-                  <TextField
-                    label="Address Line 2 "
-                    type="text"
-                    className="form-input"
-                    {...register('addressLine2')}
-                    focused
-                    sx={{
-                      width: '100%',
-                    }}
-                  />
-                </Grid>
+            <Grid item md={6} xs={12}>
+              <Box>
+                <TextField
+                  label="City *"
+                  type="text"
+                  id="city"
+                  className="form-input"
+                  {...register('city', {
+                    required: true,
+                    pattern:
+                      validationPattern.alphabetsSpacesAndSpecialCharsPattern,
+                  })}
+                  focused
+                  sx={{
+                    width: '100%',
+                  }}
+                />
+                {errors && errors.city && errors.city.type === 'required' && (
+                  <Typography
+                    variant="body2"
+                    color="red"
+                    fontSize={13}
+                    mt={0.5}
+                  >
+                    {validationMessage.required}
+                  </Typography>
+                )}
+                {errors && errors.city && errors.city.type === 'pattern' && (
+                  <Typography
+                    variant="body2"
+                    color="red"
+                    fontSize={13}
+                    mt={0.5}
+                  >
+                    {validationMessage.alphabetswithSpecialCharacter}
+                  </Typography>
+                )}
+              </Box>
+            </Grid>
 
-                <Grid item md={6} xs={12}>
-                  <Box>
-                    <TextField
-                      label="City *"
-                      type="text"
-                      id="city"
-                      className="form-input"
-                      {...register('city', {
-                        required: true,
-                        pattern:
-                          validationPattern.alphabetsSpacesAndSpecialCharsPattern,
-                      })}
-                      focused
-                      sx={{
-                        width: '100%',
-                      }}
-                    />
-                    {errors &&
-                      errors.city &&
-                      errors.city.type === 'required' && (
-                        <Typography
-                          variant="body2"
-                          color="red"
-                          fontSize={13}
-                          mt={0.5}
-                        >
-                          {validationMessage.required}
-                        </Typography>
-                      )}
-                    {errors &&
-                      errors.city &&
-                      errors.city.type === 'pattern' && (
-                        <Typography
-                          variant="body2"
-                          color="red"
-                          fontSize={13}
-                          mt={0.5}
-                        >
-                          {validationMessage.alphabetswithSpecialCharacter}
-                        </Typography>
-                      )}
-                  </Box>
-                </Grid>
+            <Grid item md={6} xs={12}>
+              <Box>
+                <TextField
+                  label="State/Province *"
+                  type="text"
+                  className="form-input"
+                  {...register('province', {
+                    required: true,
+                    pattern:
+                      validationPattern.alphabetsSpacesAndSpecialCharsPattern,
+                  })}
+                  focused
+                  sx={{
+                    width: '100%',
+                  }}
+                />
+                {errors &&
+                  errors.province &&
+                  errors.province.type === 'required' && (
+                    <Typography
+                      variant="body2"
+                      color="red"
+                      fontSize={13}
+                      mt={0.5}
+                    >
+                      {validationMessage.required}
+                    </Typography>
+                  )}
+                {errors &&
+                  errors.province &&
+                  errors.province.type === 'pattern' && (
+                    <Typography
+                      variant="body2"
+                      color="red"
+                      fontSize={13}
+                      mt={0.5}
+                    >
+                      {validationMessage.alphabetswithSpecialCharacter}
+                    </Typography>
+                  )}
+              </Box>
+            </Grid>
 
-                <Grid item md={6} xs={12}>
-                  <Box>
-                    <TextField
-                      label="State/Province *"
-                      type="text"
-                      className="form-input"
-                      {...register('province', {
-                        required: true,
-                        pattern:
-                          validationPattern.alphabetsSpacesAndSpecialCharsPattern,
-                      })}
-                      focused
-                      sx={{
-                        width: '100%',
-                      }}
-                    />
-                    {errors &&
-                      errors.province &&
-                      errors.province.type === 'required' && (
-                        <Typography
-                          variant="body2"
-                          color="red"
-                          fontSize={13}
-                          mt={0.5}
-                        >
-                          {validationMessage.required}
-                        </Typography>
-                      )}
-                    {errors &&
-                      errors.province &&
-                      errors.province.type === 'pattern' && (
-                        <Typography
-                          variant="body2"
-                          color="red"
-                          fontSize={13}
-                          mt={0.5}
-                        >
-                          {validationMessage.alphabetswithSpecialCharacter}
-                        </Typography>
-                      )}
-                  </Box>
-                </Grid>
+            <Grid item md={6} xs={12}>
+              <Box>
+                <TextField
+                  label="Zip Code *"
+                  type="text"
+                  className="form-input"
+                  {...register('zipCode', {
+                    required: true,
+                    pattern: validationPattern.onlyNumbersPattern,
+                  })}
+                  focused
+                  sx={{
+                    width: '100%',
+                  }}
+                />
+                {errors &&
+                  errors.zipCode &&
+                  errors.zipCode.type === 'required' && (
+                    <Typography
+                      variant="body2"
+                      color="red"
+                      fontSize={13}
+                      mt={0.5}
+                    >
+                      {validationMessage.required}
+                    </Typography>
+                  )}
+                {errors &&
+                  errors.zipCode &&
+                  errors.zipCode.type === 'pattern' && (
+                    <Typography
+                      variant="body2"
+                      color="red"
+                      fontSize={13}
+                      mt={0.5}
+                    >
+                      {validationMessage.onlyNumbers}
+                    </Typography>
+                  )}
+              </Box>
+            </Grid>
 
-                <Grid item md={6} xs={12}>
-                  <Box>
-                    <TextField
-                      label="Zip Code *"
-                      type="text"
-                      className="form-input"
-                      {...register('zipCode', {
-                        required: true,
-                        pattern: validationPattern.onlyNumbersPattern,
-                      })}
-                      focused
-                      sx={{
-                        width: '100%',
-                      }}
-                    />
-                    {errors &&
-                      errors.zipCode &&
-                      errors.zipCode.type === 'required' && (
-                        <Typography
-                          variant="body2"
-                          color="red"
-                          fontSize={13}
-                          mt={0.5}
-                        >
-                          {validationMessage.required}
-                        </Typography>
-                      )}
-                    {errors &&
-                      errors.zipCode &&
-                      errors.zipCode.type === 'pattern' && (
-                        <Typography
-                          variant="body2"
-                          color="red"
-                          fontSize={13}
-                          mt={0.5}
-                        >
-                          {validationMessage.onlyNumbers}
-                        </Typography>
-                      )}
-                  </Box>
-                </Grid>
+            <Grid item md={6} xs={12}>
+              <Box></Box>
 
-                <Grid item md={6} xs={12}>
-                  <Box></Box>
-
-                  <Box>
-                    <TextField
-                      label="Country *"
-                      type="text"
-                      className="form-input"
-                      {...register('country', {
-                        required: true,
-                        pattern:
-                          validationPattern.alphabetsSpacesAndSpecialCharsPattern,
-                      })}
-                      focused
-                      sx={{
-                        width: '100%',
-                      }}
-                    />
-                    {errors &&
-                      errors.country &&
-                      errors.country.type === 'required' && (
-                        <Typography
-                          variant="body2"
-                          color="red"
-                          fontSize={13}
-                          mt={0.5}
-                        >
-                          {validationMessage.required}
-                        </Typography>
-                      )}
-                    {errors &&
-                      errors.country &&
-                      errors.country.type === 'pattern' && (
-                        <Typography
-                          variant="body2"
-                          color="red"
-                          fontSize={13}
-                          mt={0.5}
-                        >
-                          {validationMessage.alphabetswithSpecialCharacter}
-                        </Typography>
-                      )}
-                  </Box>
-                </Grid>
-              </Grid>
-            </>
-          ) : (
-            <>Coordinates</>
-          )}
+              <Box>
+                <TextField
+                  label="Country *"
+                  type="text"
+                  className="form-input"
+                  {...register('country', {
+                    required: true,
+                    pattern:
+                      validationPattern.alphabetsSpacesAndSpecialCharsPattern,
+                  })}
+                  focused
+                  sx={{
+                    width: '100%',
+                  }}
+                />
+                {errors &&
+                  errors.country &&
+                  errors.country.type === 'required' && (
+                    <Typography
+                      variant="body2"
+                      color="red"
+                      fontSize={13}
+                      mt={0.5}
+                    >
+                      {validationMessage.required}
+                    </Typography>
+                  )}
+                {errors &&
+                  errors.country &&
+                  errors.country.type === 'pattern' && (
+                    <Typography
+                      variant="body2"
+                      color="red"
+                      fontSize={13}
+                      mt={0.5}
+                    >
+                      {validationMessage.alphabetswithSpecialCharacter}
+                    </Typography>
+                  )}
+              </Box>
+            </Grid>
+          </Grid>
           <Box
             display={'flex'}
             justifyContent={'flex-end'}

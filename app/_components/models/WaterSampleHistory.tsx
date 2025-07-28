@@ -1,4 +1,5 @@
 import { convertDate } from '@/app/_lib/utils';
+import { TableHeadType } from '@/app/_typeModels/Farm';
 import {
   Production,
   WaterManageHistoryGroup,
@@ -31,7 +32,7 @@ const style = {
 interface Props {
   setOpen: (open: boolean) => void;
   open: boolean;
-  tableData: any;
+  tableData: TableHeadType[];
   productions: Production[];
 }
 const WaterSampleHistoryModal: React.FC<Props> = ({
@@ -48,7 +49,7 @@ const WaterSampleHistoryModal: React.FC<Props> = ({
     return (
       <TableHead className="prod-action">
         <TableRow>
-          {tableData.map((headCell: any, idx: number, headCells: any) => (
+          {tableData.map((headCell, idx: number) => (
             <TableCell
               key={headCell.id}
               // align="center"
@@ -77,13 +78,17 @@ const WaterSampleHistoryModal: React.FC<Props> = ({
     );
   }
 
-  const groupedData: any = productions?.reduce((result: any, item) => {
+  const groupedData: WaterManageHistoryGroup[] = productions?.reduce<
+    WaterManageHistoryGroup[]
+  >((result, item) => {
     // Find or create a farm group
-    let farmGroup: any = result.find(
-      (group: any) => group.farm === item.farm.name,
-    );
+    let farmGroup = result.find((group) => group.farm === item.farm.name);
     if (!farmGroup) {
-      farmGroup = { unit: item.productionUnit.name, units: [] };
+      farmGroup = {
+        farm: item.farm?.name,
+        unit: item.productionUnit.name,
+        units: [],
+      };
       result.push(farmGroup);
     }
 
@@ -96,7 +101,7 @@ const WaterSampleHistoryModal: React.FC<Props> = ({
       farm: item.farm,
       biomass: item.biomass,
       fishCount: item.fishCount,
-      batchNumberId: item.batchNumberId,
+      batchNumberId: Number(item.batchNumberId),
       age: item.age,
       meanLength: item.meanLength,
       meanWeight: item.meanWeight,
@@ -107,7 +112,7 @@ const WaterSampleHistoryModal: React.FC<Props> = ({
       updatedBy: item.updatedBy,
       createdAt: item.createdAt,
       updatedAt: item.updatedAt,
-      isManager: item.isManager,
+      isManager: item.isManager ?? false,
       field: item.field,
       fishManageHistory: item.FishManageHistory,
       waterManageHistory: item.WaterManageHistory,

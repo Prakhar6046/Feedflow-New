@@ -3,9 +3,8 @@ import Box from '@mui/material/Box';
 import { Stack } from '@mui/material';
 import loaderImg from '../../public/static/img/loader.png';
 import Image from 'next/image';
-interface Props {}
 
-const Loader: NextPage<Props> = ({}) => {
+const Loader: NextPage = () => {
   return (
     <Stack
       sx={{

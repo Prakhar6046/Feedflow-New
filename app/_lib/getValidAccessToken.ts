@@ -2,7 +2,7 @@ import { cookies } from 'next/headers';
 
 export const getValidAccessToken = async () => {
   const cookieStore = await cookies();
-  let accessToken = cookieStore.get('auth-token')?.value;
+  const accessToken = cookieStore.get('auth-token')?.value;
   const refreshToken = cookieStore.get('refresh-token')?.value;
 
   const res = await fetch(`${process.env.BASE_URL}/api/protected`, {

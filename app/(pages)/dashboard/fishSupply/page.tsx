@@ -21,8 +21,8 @@ export default async function Page({
   };
 }) {
   const query = searchParams?.query || '';
-  const loggedUser: any = getCookie('logged-user', { cookies });
-  const user: SingleUser = JSON.parse(loggedUser);
+  const loggedUser = getCookie('logged-user', { cookies });
+  const user: SingleUser = JSON.parse(loggedUser ?? '');
 
   const fishSupply = await getFishSupply({
     organisationId: user.organisationId,

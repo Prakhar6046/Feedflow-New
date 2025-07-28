@@ -36,7 +36,7 @@ import {
   SingleOrganisation,
 } from '../_typeModels/Organization';
 import { SingleUser } from '../_typeModels/User';
-import MapComponent from './farm/MapComponent';
+import MapComponent, { AddressInfo } from './farm/MapComponent';
 import HatcheryForm from './hatchery/HatcheryForm';
 import { getCookie } from 'cookies-next';
 
@@ -63,21 +63,14 @@ export const OrganisationType = [
 interface Props {
   organisations: SingleOrganisation[];
   type?: string;
-  // organisationCount: number;
   loggedUser: SingleUser;
-  authToken: any;
+  authToken: string;
 }
 export const PermissionType = [
   { label: 'Admin', value: 'ADMIN' },
   { label: 'No Admin', value: 'NONADMIN' },
 ];
-const AddNewOrganisation = ({
-  organisations,
-  type,
-  // organisationCount,
-  loggedUser,
-  authToken,
-}: Props) => {
+const AddNewOrganisation = ({ type, loggedUser }: Props) => {
   const token = getCookie('auth-token');
 
   const [profilePic, setProfilePic] = useState<string>();
@@ -86,9 +79,9 @@ const AddNewOrganisation = ({
   const [organisationCount, setOrganisationCount] = useState<number>(0);
   const [isApiCallInProgress, setIsApiCallInProgress] =
     useState<boolean>(false);
-  const [addressInformation, setAddressInformation] = useState<any>();
+  const [addressInformation, setAddressInformation] =
+    useState<AddressInfo | null>(null);
   const [useAddress, setUseAddress] = useState<boolean>(false);
-  const [searchedAddress, setSearchedAddress] = useState<any>();
   const [altitude, setAltitude] = useState<string>('');
   const [inviteSent, setInviteSent] = useState<{ [key: number]: boolean }>({});
   const handleInviteUser = (invite: boolean, index: number) => {
@@ -108,7 +101,6 @@ const AddNewOrganisation = ({
     setValue,
     handleSubmit,
     control,
-    clearErrors,
     watch,
     reset,
     trigger,
@@ -119,7 +111,7 @@ const AddNewOrganisation = ({
     },
     mode: 'onChange',
   });
-  const editableRef: any = useRef(null);
+  const editableRef = useRef<HTMLParagraphElement>(null);
 
   const handleOrgPrefixChange = () => {
     const prefix = editableRef.current?.innerText || 'ORG-';
@@ -160,7 +152,7 @@ const AddNewOrganisation = ({
           toast.error(responseData.error);
         }
       }
-    } catch (error) {
+    } catch {
       toast.error('Something went wrong. Please try again.');
     } finally {
       setIsApiCallInProgress(false);
@@ -650,10 +642,10 @@ const AddNewOrganisation = ({
 
               <MapComponent
                 setAddressInformation={setAddressInformation}
-                setSearchedAddress={setSearchedAddress}
                 setUseAddress={setUseAddress}
                 isCalAltitude={true}
                 setAltitude={setAltitude}
+                token={token ?? ''}
               />
             </Box>
             <Stack

@@ -3,20 +3,7 @@ import { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Growth Models',
 };
-export default async function Page({
-  searchParams,
-}: {
-  searchParams?: {
-    query?: string;
-  };
-}) {
-  const query = searchParams?.query || '';
-  // const farms = await getFarms({
-  //   role: "",
-  //   organisationId: "",
-  //   query,
-  //   noFilter: true,
-  // });
+export default async function Page() {
   return (
     <>
       <BasicBreadcrumbs

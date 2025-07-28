@@ -1,14 +1,10 @@
 'use client';
 import { getFullYear, getLocalItem } from '@/app/_lib/utils';
 import { Farm } from '@/app/_typeModels/Farm';
-import {
-  Production,
-  WaterManageHistoryGroup,
-} from '@/app/_typeModels/production';
+import { WaterManageHistoryGroup } from '@/app/_typeModels/production';
 import { Box, Button, Grid, Stack, Typography } from '@mui/material';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
-import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import WaterTempChart from '../../charts/WaterTempChart';
@@ -24,8 +20,7 @@ type ChartDataType = {
   endDate: string;
   dateDiff: number;
 };
-function WaterReportPreview({ productions }: { productions: Production[] }) {
-  const router = useRouter();
+function WaterReportPreview({ productions }: { productions: any }) {
   const [chartData, setChartData] = useState<ChartDataType>();
   const [isReportDownload, setIsReportDownload] = useState<boolean>(false);
   const chartOptions: {
@@ -271,41 +266,33 @@ function WaterReportPreview({ productions }: { productions: Production[] }) {
                   <WaterTempChart
                     key={key}
                     xAxisData={chartData?.xAxisData}
-                    // ydata={chartData?.groupedData.units.flatMap(
-                    //   (unit) =>
-                    //     unit.waterManageHistory?.map(
-                    //       (history: any) => history[yDataKey]
-                    //     ) || []
-                    // )}
                     ydata={
                       chartData?.groupedData
-                        ?.find((group: any) =>
+                        ?.find((group) =>
                           group.units?.some(
-                            (unit: any) =>
-                              unit.farm?.id === prodUnit.fishFarmId,
+                            (unit) => unit.farm?.id === prodUnit.fishFarmId,
                           ),
                         )
                         ?.units?.filter(
-                          (unit: any) => unit.farm?.id === prodUnit.fishFarmId,
+                          (unit) => unit.farm?.id === prodUnit.fishFarmId,
                         )
-                        ?.flatMap((unit: any) =>
+                        ?.flatMap((unit) =>
                           unit.waterManageHistory
-                            ?.map((history: any) => history[yDataKey])
+                            ?.map((history) => history[yDataKey])
                             ?.filter(
-                              (value: any) =>
-                                value !== null && value !== undefined,
+                              (value) => value !== null && value !== undefined,
                             ),
                         ) || []
                     }
                     maxVal={
                       prodUnit?.productionUnit
-                        ?.YearBasedPredicationProductionUnit[0]?.idealRange[
+                        ?.YearBasedPredicationProductionUnit?.[0]?.idealRange[
                         yDataKey
                       ]?.Max
                     }
                     minVal={
                       prodUnit?.productionUnit
-                        ?.YearBasedPredicationProductionUnit[0]?.idealRange[
+                        ?.YearBasedPredicationProductionUnit?.[0]?.idealRange[
                         yDataKey
                       ]?.Min
                     }
@@ -399,16 +386,16 @@ function WaterReportPreview({ productions }: { productions: Production[] }) {
                     {chartData?.groupedData
                       .find((group) =>
                         group.units.some(
-                          (unit: any) => unit?.farm?.id === prodUnit.fishFarmId,
+                          (unit) => unit?.farm?.id === prodUnit.fishFarmId,
                         ),
                       )
                       ?.units.filter(
-                        (unit: any) => unit?.farm?.id === prodUnit.fishFarmId,
+                        (unit) => unit?.farm?.id === prodUnit.fishFarmId,
                       )
                       .flatMap(
                         (unit: any) =>
                           unit.waterManageHistory?.map((history: any) => {
-                            const dateString: any = getFullYear(
+                            const dateString = getFullYear(
                               history?.currentDate,
                             );
                             const date = dayjs(dateString);
@@ -558,7 +545,7 @@ function WaterReportPreview({ productions }: { productions: Production[] }) {
       </Box>
       <Grid container>
         <Grid item xs>
-          {productions?.map((prodUnit) => (
+          {productions?.map((prodUnit: any) => (
             <Box key={Number(prodUnit.id)}>
               {chartData?.selectedCharts?.map((key: string) => {
                 const chartOption = chartOptions.find(
@@ -817,17 +804,17 @@ function WaterReportPreview({ productions }: { productions: Production[] }) {
                                 chartData?.groupedData
                                   ?.find((group) =>
                                     group.units?.some(
-                                      (unit: any) =>
+                                      (unit) =>
                                         unit.farm?.id === prodUnit.fishFarmId,
                                     ),
                                   )
                                   ?.units?.filter(
-                                    (unit: any) =>
+                                    (unit) =>
                                       unit.farm?.id === prodUnit.fishFarmId,
                                   )
                                   ?.flatMap((unit) =>
                                     unit.waterManageHistory
-                                      ?.map((history: any) => history[yDataKey])
+                                      ?.map((history) => history[yDataKey])
                                       ?.filter(
                                         (value) =>
                                           value !== null && value !== undefined,
@@ -939,19 +926,19 @@ function WaterReportPreview({ productions }: { productions: Production[] }) {
                               {chartData?.groupedData
                                 .find((group) =>
                                   group.units.some(
-                                    (unit: any) =>
+                                    (unit) =>
                                       unit?.farm?.id === prodUnit.fishFarmId,
                                   ),
                                 )
                                 ?.units.filter(
-                                  (unit: any) =>
+                                  (unit) =>
                                     unit?.farm?.id === prodUnit.fishFarmId,
                                 )
                                 .flatMap(
                                   (unit: any) =>
                                     unit.waterManageHistory?.map(
                                       (history: any) => {
-                                        const dateString: any = getFullYear(
+                                        const dateString = getFullYear(
                                           history?.currentDate,
                                         );
                                         const date = dayjs(dateString);

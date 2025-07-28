@@ -38,12 +38,24 @@ interface Props {
   permissions: boolean;
 }
 
-interface Data {
-  name: string;
-  code: string;
-  population: number;
-  size: number;
-  density: number;
+type Order = 'asc' | 'desc';
+
+interface HeadCell {
+  id: string;
+  label: string;
+}
+
+export interface EnhancedTableHeadProps {
+  order: Order;
+  orderBy: string;
+  onRequestSort: (
+    event: React.MouseEvent<HTMLButtonElement> | null,
+    property: string,
+  ) => void;
+  role?: string;
+  permissions?: boolean;
+  usersTableHead?: HeadCell[];
+  usersTableHeadMember?: HeadCell[];
 }
 
 export default function UserTable({ users, permissions }: Props) {
@@ -58,10 +70,13 @@ export default function UserTable({ users, permissions }: Props) {
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null,
   );
-  const [order, setOrder] = React.useState('asc');
+  const [order, setOrder] = React.useState<Order>('asc');
   const [orderBy, setOrderBy] = React.useState('name');
-  const [sortDataFromLocal, setSortDataFromLocal] = React.useState<any>('');
-  const handleEdit = (user: any) => {
+  const [sortDataFromLocal, setSortDataFromLocal] = React.useState<{
+    direction: Order;
+    column: string;
+  }>({ direction: 'asc', column: '' });
+  const handleEdit = () => {
     router.push(`/dashboard/user/${selectedUser?.id}`);
   };
   const handleClick = (
@@ -101,7 +116,6 @@ export default function UserTable({ users, permissions }: Props) {
   const handleDeleteUser = async () => {
     setAnchorEl(null);
     if (selectedUser) {
-      const token = getCookie('auth-token');
       const response = await fetch('/api/users', {
         method: 'DELETE',
 
@@ -110,19 +124,11 @@ export default function UserTable({ users, permissions }: Props) {
       const res = await response.json();
       if (res.status) {
         toast.success(res.message);
-        if (loggedUser) {
-          const loggedData = JSON.parse(loggedUser);
-          // const data = await getUsers({
-          //   role: loggedData.data.user.role,
-          //   organisationId: loggedData.data.user.organisationId,
-          // });
-          // setUsers(data.data);
-        }
       }
     }
   };
 
-  function EnhancedTableHead(data: any) {
+  function EnhancedTableHead(data: EnhancedTableHeadProps) {
     const { order, orderBy, onRequestSort } = data;
     const createSortHandler =
       (property: string) => (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -231,6 +237,7 @@ export default function UserTable({ users, permissions }: Props) {
       const data = sortDataFromLocal;
       setOrder(data.direction);
       setOrderBy(data.column);
+
       // handleRequestSort(null, data.column);
       if (users) {
         const sortedData = [...users].sort(

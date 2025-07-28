@@ -40,7 +40,7 @@ interface FormInputs {
 }
 
 const AddUser: React.FC<Props> = ({ setOpen, open, organisations }) => {
-  const [selectedOrganisation, setSelectedOrganisation] = useState<any>('');
+  const [selectedOrganisation, setSelectedOrganisation] = useState<string>('');
   const {
     register,
     handleSubmit,

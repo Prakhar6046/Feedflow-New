@@ -20,8 +20,8 @@ export default async function Page({
     query?: string;
   };
 }) {
-  const loggedUser: any = getCookie('logged-user', { cookies });
-  const user = JSON.parse(loggedUser);
+  const loggedUser = getCookie('logged-user', { cookies });
+  const user = JSON.parse(loggedUser ?? '');
   const farmManagers = await getFarmMangers(user.organisationId);
   const growthModels = await getGrowthModels();
   const query = searchParams?.query || '';

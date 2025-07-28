@@ -1,4 +1,4 @@
-import { Production } from '@/app/_typeModels/production';
+import { FarmGroupUnit, Production } from '@/app/_typeModels/production';
 import closeIcon from '@/public/static/img/icons/ic-close.svg';
 import { Box, Button, Grid, Modal, Stack, TextField } from '@mui/material';
 import Image from 'next/image';
@@ -18,7 +18,7 @@ const style = {
 interface Props {
   setOpen: (open: boolean) => void;
   open: boolean;
-  selectedProduction: Production;
+  selectedProduction: Production | FarmGroupUnit | null;
 }
 
 interface FormInputs {
@@ -33,12 +33,13 @@ const AddFeedFed: React.FC<Props> = ({ setOpen, open, selectedProduction }) => {
     handleSubmit,
     setValue,
     formState: { errors },
-    reset,
   } = useForm<FormInputs>();
 
   const handleClose = () => setOpen(false);
 
-  const onSubmit: SubmitHandler<FormInputs> = async (data) => {};
+  const onSubmit: SubmitHandler<FormInputs> = async (data) => {
+    console.log(data);
+  };
 
   useEffect(() => {
     if (selectedProduction) {

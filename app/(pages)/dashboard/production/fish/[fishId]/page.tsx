@@ -2,6 +2,7 @@ import BasicBreadcrumbs from '@/app/_components/Breadcrumbs';
 import FishManageHistoryTable from '@/app/_components/table/FishManageHistory';
 import { getProductions } from '@/app/_lib/action';
 import { fishManageHistoryHead } from '@/app/_lib/utils/tableHeadData';
+import { Production } from '@/app/_typeModels/production';
 import { getCookie } from 'cookies-next';
 import { Metadata } from 'next';
 import { cookies } from 'next/headers';
@@ -18,8 +19,8 @@ export default async function Page({
   };
 }) {
   const query = searchParams?.query || '';
-  const loggedUser: any = getCookie('logged-user', { cookies });
-  const user = JSON.parse(loggedUser);
+  const loggedUser = getCookie('logged-user', { cookies });
+  const user = JSON.parse(loggedUser || '');
   const productions = await getProductions({
     role: user.role,
     organisationId: user.organisationId,
@@ -46,7 +47,7 @@ export default async function Page({
       <FishManageHistoryTable
         tableData={fishManageHistoryHead}
         productions={productions?.data?.filter(
-          (data: any) => data.productionUnitId === params.fishId,
+          (data: Production) => data.productionUnitId === params.fishId,
         )}
         fishId={params.fishId}
       />

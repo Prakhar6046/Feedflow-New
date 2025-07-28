@@ -18,7 +18,6 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import dayjs from 'dayjs';
 import { useRouter } from 'next/navigation';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
@@ -50,6 +49,12 @@ export const timeIntervalOptions = [
   { id: 3, label: 'Bi-Weekly', value: 14 },
   { id: 4, label: 'Monthly', value: 30 },
 ];
+
+export const speciesOptions = [
+  { id: 1, label: 'Nile Tilapia', value: 'Nile Tilapia' },
+  { id: 2, label: 'African Catfish', value: 'African Catfish' },
+  { id: 3, label: 'Rainbow Trout', value: 'Rainbow Trout' },
+];
 export const tempSelectionOptions = [
   { label: 'Use Farm Profile', value: 'default' },
   {
@@ -64,9 +69,7 @@ function FeedingPlan({ productionData, startDate, endDate }: Props) {
     register,
     handleSubmit,
     control,
-    setValue,
     watch,
-    reset,
     formState: { errors },
   } = useForm<FormInputs>({
     defaultValues: {
@@ -80,8 +83,8 @@ function FeedingPlan({ productionData, startDate, endDate }: Props) {
     mode: 'onChange',
   });
   const onSubmit: SubmitHandler<FormInputs> = (data) => {
-    const formattedDate = dayjs(startDate).format('YYYY-MM-DD');
-    const diffInDays = dayjs(endDate).diff(dayjs(startDate), 'day');
+    // const formattedDate = dayjs(startDate).format('YYYY-MM-DD');
+    // const diffInDays = dayjs(endDate).diff(dayjs(startDate), 'day');
     if (!selectedDropDownfarms?.length) {
       toast.dismiss();
       toast.error('Select at least one farm.');

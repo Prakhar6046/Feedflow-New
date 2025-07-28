@@ -5,7 +5,7 @@ export async function PUT(req: NextRequest) {
   try {
     const body = await req.json();
     const { id, ...rest } = body;
-    if (!body.id) {
+    if (!id) {
       throw new Error('Feed ID is required for updating.');
     }
     const updatedFeed = await prisma.feedSupply.update({
@@ -18,11 +18,9 @@ export async function PUT(req: NextRequest) {
       data: updatedFeed,
       status: true,
     });
-  } catch (error: any) {
-    console.error('Error updating farm:', error);
-    return NextResponse.json(
-      { error: error.message || 'Internal Server Error' },
-      { status: 500 },
-    );
+  } catch (error) {
+    return new NextResponse(JSON.stringify({ status: false, error }), {
+      status: 500,
+    });
   }
 }

@@ -17,7 +17,6 @@ import { getCookie } from 'cookies-next';
 import React, { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
-import { Farm } from '../_typeModels/Farm';
 
 interface InputType {
   name: string;
@@ -31,8 +30,8 @@ interface InputType {
   // farm: String;
   // modelId: number;
 }
-function GrowthModel({ farms }: { farms: Farm[] }) {
-  const loggedUser: any = getCookie('logged-user');
+function GrowthModel() {
+  const loggedUser = getCookie('logged-user');
   const {
     register,
     handleSubmit,
@@ -40,12 +39,13 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
     clearErrors,
     formState: { errors },
   } = useForm<InputType>();
+  console.log(errors);
 
   const [isApiCallInProgress, setIsApiCallInProgress] =
     useState<boolean>(false);
   const [species, setSpecies] = useState('');
   const onSubmit: SubmitHandler<InputType> = async (data) => {
-    const user = JSON.parse(loggedUser);
+    const user = JSON.parse(loggedUser ?? '');
     if (user?.organisationId && data.name) {
       // Prevent API call if one is already in progress
       if (isApiCallInProgress) return;
@@ -69,7 +69,7 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
           setSpecies('');
           reset();
         }
-      } catch (error) {
+      } catch {
         toast.error('Something went wrong. Please try again.');
       } finally {
         setIsApiCallInProgress(false);

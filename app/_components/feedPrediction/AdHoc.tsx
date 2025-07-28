@@ -1,6 +1,8 @@
 'use client';
 import {
-  calculateFishGrowth,
+  calculateFishGrowthAfricanCatfish,
+  calculateFishGrowthRainBowTrout,
+  calculateFishGrowthTilapia,
   CommonFeedPredictionHead,
   exportFeedPredictionToXlsx,
   FeedPredictionHead,
@@ -30,7 +32,7 @@ import { createRoot } from 'react-dom/client';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import Loader from '../Loader';
 import FishGrowthTable from '../table/FishGrowthTable';
-import { timeIntervalOptions } from './FeedingPlan';
+import { speciesOptions, timeIntervalOptions } from './FeedingPlan';
 interface FormInputs {
   farm: string;
   unit: string;
@@ -42,7 +44,22 @@ interface FormInputs {
   numberOfFishs: number;
   adjustmentFactor: number;
   timeInterval: number;
+  species: 'Nile Tilapia' | 'African Catfish' | 'Rainbow Trout';
 }
+type RawDataItem = {
+  date: string;
+  teamp: number;
+  noOfFish: number;
+  fishSize: string;
+  growth: number;
+  feedType: string;
+  feedSize: string;
+  estimatedFCR: number;
+  feedIntake: string;
+  feedingRate: string;
+  numberOfFish: number;
+  averageProjectedTemp: number;
+};
 export interface FishFeedingData {
   date: string;
   days: number;
@@ -93,18 +110,46 @@ function AdHoc({ data, setData }: Iprops) {
     const formattedDate = dayjs(data.startDate).format('YYYY-MM-DD');
     const diffInDays = dayjs(data.endDate).diff(dayjs(data.startDate), 'day');
     if (data) {
-      setData(
-        calculateFishGrowth(
-          Number(data.fishWeight),
-          Number(data.temp),
-          Number(data.numberOfFishs),
-          Number(data.adjustmentFactor),
-          Number(diffInDays),
-          formattedDate,
-          1,
-          13.9,
-        ),
-      );
+      if (data.species === 'Rainbow Trout') {
+        setData(
+          calculateFishGrowthRainBowTrout(
+            Number(data.fishWeight),
+            Number(data.temp),
+            Number(data.numberOfFishs),
+            Number(data.adjustmentFactor),
+            Number(diffInDays),
+            formattedDate,
+            1,
+            13.9,
+          ),
+        );
+      } else if (data.species === 'African Catfish') {
+        setData(
+          calculateFishGrowthAfricanCatfish(
+            Number(data.fishWeight),
+            Number(data.temp),
+            Number(data.numberOfFishs),
+            Number(data.adjustmentFactor),
+            Number(diffInDays),
+            formattedDate,
+            1,
+            13.9,
+          ),
+        );
+      } else {
+        setData(
+          calculateFishGrowthTilapia(
+            Number(data.fishWeight),
+            Number(data.temp),
+            Number(data.numberOfFishs),
+            Number(data.adjustmentFactor),
+            Number(diffInDays),
+            formattedDate,
+            data?.timeInterval,
+            13.9,
+          ),
+        );
+      }
     }
   };
   const resetAdHocData = () => {
@@ -115,7 +160,7 @@ function AdHoc({ data, setData }: Iprops) {
     if (!data.length) {
       return;
     }
-    const formatedData = data?.map((val) => {
+    const formatedData: RawDataItem[] = data?.map((val) => {
       return {
         date: val.date,
         teamp: val.averageProjectedTemp,
@@ -127,11 +172,13 @@ function AdHoc({ data, setData }: Iprops) {
         estimatedFCR: val.estimatedFCR,
         feedIntake: val.feedIntake,
         feedingRate: val.feedingRate,
+        numberOfFish: val.numberOfFish,
+        averageProjectedTemp: val.averageProjectedTemp,
       };
     });
 
     setLoading(true);
-    const chunkArray = <T,>(arr: any, chunkSize: number): T[][] => {
+    const chunkArray = <T,>(arr: T[], chunkSize: number): T[][] => {
       const results: T[][] = [];
       for (let i = 0; i < arr.length; i += chunkSize) {
         results.push(arr.slice(i, i + chunkSize));
@@ -232,7 +279,7 @@ function AdHoc({ data, setData }: Iprops) {
                   </tr>
                 </thead>
                 <tbody>
-                  {currentChunk?.map((row: any, index: number) => (
+                  {currentChunk?.map((row, index: number) => (
                     <tr key={index}>
                       <td
                         style={{
@@ -341,7 +388,9 @@ function AdHoc({ data, setData }: Iprops) {
     pdf.save(`ad_hoc_data.pdf`);
     setLoading(false);
   };
-  const createxlsxFile = (e: React.MouseEvent<HTMLSpanElement, MouseEvent>) => {
+  const createxlsxFile = (
+    e: React.MouseEvent<HTMLSpanElement | HTMLButtonElement, MouseEvent>,
+  ) => {
     if (!data.length) {
       return;
     }
@@ -440,6 +489,26 @@ function AdHoc({ data, setData }: Iprops) {
                 {ValidationMessages.required}
               </Typography>
             )}
+          </Grid>
+
+          <Grid item lg={3} md={4} sm={6} xs={12}>
+            <FormControl className="form-input" fullWidth focused>
+              <InputLabel id="demo-simple-select-label">Speices *</InputLabel>
+              <Controller
+                name="species"
+                control={control}
+                defaultValue={'Nile Tilapia'}
+                render={({ field }) => (
+                  <Select {...field} label="Species *">
+                    {speciesOptions.map((option) => (
+                      <MenuItem value={option.value} key={option.id}>
+                        {option.label}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                )}
+              />
+            </FormControl>
           </Grid>
         </Grid>
 

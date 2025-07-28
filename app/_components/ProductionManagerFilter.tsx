@@ -45,16 +45,9 @@ interface Props {
   setProductionData: (val: FarmGroup[]) => void;
   reset: boolean;
 }
-
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250,
-    },
-  },
+type HistoryEntry = {
+  createdAt: string;
+  [key: string]: any;
 };
 function ProductionManagerFilter({
   selectedView,
@@ -73,13 +66,20 @@ function ProductionManagerFilter({
   const startDate = useAppSelector(selectStartDate);
   const endDate = useAppSelector(selectEndDate);
   const selectedAverage = useAppSelector(selectSelectedAverage);
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalOpenNext, setIsModalOpenNext] = useState(false);
-  const currentYear = dayjs().year();
-  const years = Array.from({ length: 6 }, (_, i) => currentYear - i);
-  const [farms, setFarms] = useState<any>([]);
-  const [units, setUnits] = useState<any>([]);
+  const [farms, setFarms] = useState<
+    {
+      id: string;
+      option: string;
+    }[]
+  >([]);
+  const [units, setUnits] = useState<
+    {
+      id: string;
+      option: string;
+    }[]
+  >([]);
 
   // const handleResetFilters = () => {
   //   dispatch(commonFilterAction.setSelectedDropDownfarms(allFarms));
@@ -107,7 +107,7 @@ function ProductionManagerFilter({
         detailedFarms: Farm[],
       ) => {
         return dynamicFarms.map((dynamicFarm) => {
-          const matchedFarm = detailedFarms.find(
+          const matchedFarm = detailedFarms?.find(
             (farm) => farm.id === dynamicFarm.id,
           );
           return {
@@ -133,7 +133,7 @@ function ProductionManagerFilter({
     // Utility: Filter by farms
     const filterByFarms = (
       data: FarmGroup[],
-      selectedFarms: { id: string; option: string }[] | any,
+      selectedFarms: { id: string; option: string }[],
     ) => {
       if (!selectedFarms?.length) return data;
       const selectedFarmIds = selectedFarms?.map(
@@ -142,8 +142,8 @@ function ProductionManagerFilter({
       return data
         .map((farm) => ({
           ...farm,
-          units: farm.units.filter((unit: any) =>
-            selectedFarmIds.includes(unit.farm?.id),
+          units: farm.units.filter((unit) =>
+            selectedFarmIds.includes(unit.farm.id ?? ''),
           ),
         }))
         .filter((farm) => farm.units.length > 0);
@@ -152,7 +152,7 @@ function ProductionManagerFilter({
     // Utility: Filter by units
     const filterByUnits = (
       data: FarmGroup[],
-      selectedUnits: { id: string; option: string }[] | any,
+      selectedUnits: { id: string; option: string }[],
     ) => {
       if (!selectedUnits?.length) return data;
       const selectedUnitIds = selectedUnits?.map(
@@ -182,37 +182,41 @@ function ProductionManagerFilter({
     // };
 
     // Utility: Filter by months
-    const filterByMonths = (
+    // const filterByMonths = (
+    //   data: FarmGroup[],
+    //   years: Array<number>,
+    //   startMonth: number,
+    //   endMonth: number,
+    // ) => {
+    //   if (!years.length || !startMonth || !endMonth) return data;
+
+    //   const startDates = years.map(
+    //     (year) => new Date(`${year}-${String(startMonth).padStart(2, '0')}-01`),
+    //   );
+    //   const endDates = years.map((year) => {
+    //     const end = new Date(`${year}-${String(endMonth).padStart(2, '0')}-01`);
+    //     end.setMonth(end.getMonth() + 1); // Include the end of the month
+    //     return end;
+    //   });
+
+    //   return data
+    //     .map((farm) => ({
+    //       ...farm,
+    //       units: farm.units.filter((unit) => {
+    //         const createdAt = new Date(unit.createdAt);
+    //         return startDates.some(
+    //           (start, index) =>
+    //             createdAt >= start && createdAt < endDates[index],
+    //         );
+    //       }),
+    //     }))
+    //     .filter((farm) => farm.units.length > 0);
+    // };
+    const filterByDates = (
       data: FarmGroup[],
-      years: Array<number>,
-      startMonth: number,
-      endMonth: number,
+      startDate: string,
+      endDate: string,
     ) => {
-      if (!years.length || !startMonth || !endMonth) return data;
-
-      const startDates = years.map(
-        (year) => new Date(`${year}-${String(startMonth).padStart(2, '0')}-01`),
-      );
-      const endDates = years.map((year) => {
-        const end = new Date(`${year}-${String(endMonth).padStart(2, '0')}-01`);
-        end.setMonth(end.getMonth() + 1); // Include the end of the month
-        return end;
-      });
-
-      return data
-        .map((farm) => ({
-          ...farm,
-          units: farm.units.filter((unit: any) => {
-            const createdAt = new Date(unit.createdAt);
-            return startDates.some(
-              (start, index) =>
-                createdAt >= start && createdAt < endDates[index],
-            );
-          }),
-        }))
-        .filter((farm) => farm.units.length > 0);
-    };
-    const filterByDates = (data: FarmGroup[], startDate: any, endDate: any) => {
       if (!startDate || !endDate) return data;
       const start = dayjs(startDate).format('YYYY-MM-DD');
       const end = dayjs(endDate).format('YYYY-MM-DD');
@@ -220,7 +224,7 @@ function ProductionManagerFilter({
       return data
         .map((farm) => ({
           ...farm,
-          units: farm.units.filter((unit: any) => {
+          units: farm.units.filter((unit) => {
             const created = dayjs(unit.createdAt).format('YYYY-MM-DD');
             return created >= start && created <= end;
           }),
@@ -229,43 +233,54 @@ function ProductionManagerFilter({
     };
     // Utility: Calculate averages
     const calculateAverages = (data: FarmGroup[], type: string) => {
-      const calculateIndividualAverages = (history: any, fields: any) => {
-        const totals = fields.reduce((acc: any, field: any) => {
-          acc[field] = 0;
-          return acc;
-        }, {});
+      const calculateIndividualAverages = (
+        history: HistoryEntry[] | undefined,
+        fields: string[],
+      ): Record<string, number> => {
+        const totals: Record<string, number> = fields.reduce(
+          (acc, field) => {
+            acc[field] = 0;
+            return acc;
+          },
+          {} as Record<string, number>,
+        );
         let count = 0;
 
-        history.forEach((entry: any) => {
-          fields.forEach((field: any) => {
+        history?.forEach((entry) => {
+          fields.forEach((field) => {
             totals[field] += parseFloat(entry[field]) || 0;
           });
           count += 1;
         });
 
-        return fields.reduce((averages: any, field: any) => {
-          averages[field] = count > 0 ? totals[field] / count : 0;
-          return averages;
-        }, {});
+        return fields.reduce(
+          (averages, field) => {
+            averages[field] = count > 0 ? totals[field] / count : 0;
+            return averages;
+          },
+          {} as Record<string, number>,
+        );
       };
 
       switch (type) {
         case 'Monthly average':
           return data.map((farm) => ({
             ...farm,
-            units: farm.units.map((unit: any) => ({
+            units: farm.units.map((unit) => ({
               ...unit,
               monthlyAverages: calculateIndividualAverages(
-                unit.fishManageHistory.filter((entry: any) => {
-                  const createdAt = new Date(entry.createdAt);
-                  const startMonth = dayjs(startDate).month() + 1;
-                  const endMonth = dayjs(endDate).month() + 1;
-                  return (
-                    createdAt.getMonth() + 1 >= Number(startMonth) &&
-                    createdAt.getMonth() + 1 <= Number(endMonth) &&
-                    selectedDropDownYears.includes(createdAt.getFullYear())
-                  );
-                }),
+                unit.fishManageHistory.filter(
+                  (entry: { createdAt: string }) => {
+                    const createdAt = new Date(entry.createdAt);
+                    const startMonth = dayjs(startDate).month() + 1;
+                    const endMonth = dayjs(endDate).month() + 1;
+                    return (
+                      createdAt.getMonth() + 1 >= Number(startMonth) &&
+                      createdAt.getMonth() + 1 <= Number(endMonth) &&
+                      selectedDropDownYears.includes(createdAt.getFullYear())
+                    );
+                  },
+                ),
                 [
                   'biomass',
                   'fishCount',
@@ -277,7 +292,7 @@ function ProductionManagerFilter({
               ),
 
               monthlyAveragesWater: calculateIndividualAverages(
-                unit.WaterManageHistoryAvgrage.filter((entry: any) => {
+                unit?.WaterManageHistoryAvgrage?.filter((entry) => {
                   const createdAt = new Date(entry.createdAt);
                   const startMonth = dayjs(startDate).month() + 1;
                   const endMonth = dayjs(endDate).month() + 1;
@@ -287,7 +302,6 @@ function ProductionManagerFilter({
                     selectedDropDownYears.includes(createdAt.getFullYear())
                   );
                 }),
-
                 [
                   'DO',
                   'NH4',
@@ -305,15 +319,17 @@ function ProductionManagerFilter({
         case 'Yearly average':
           return data.map((farm) => ({
             ...farm,
-            units: farm.units.map((unit: any) => ({
+            units: farm.units.map((unit) => ({
               ...unit,
               yearlyAverages: calculateIndividualAverages(
-                unit.fishManageHistory.filter((entry: any) => {
-                  const createdAt = new Date(entry.createdAt);
-                  return selectedDropDownYears.includes(
-                    createdAt.getFullYear(),
-                  );
-                }),
+                unit.fishManageHistory.filter(
+                  (entry: { createdAt: string }) => {
+                    const createdAt = new Date(entry.createdAt);
+                    return selectedDropDownYears.includes(
+                      createdAt.getFullYear(),
+                    );
+                  },
+                ),
                 [
                   'biomass',
                   'fishCount',
@@ -324,12 +340,14 @@ function ProductionManagerFilter({
                 ],
               ),
               yearlyAveragesWater: calculateIndividualAverages(
-                unit.WaterManageHistoryAvgrage.filter((entry: any) => {
-                  const createdAt = new Date(entry.createdAt);
-                  return selectedDropDownYears.includes(
-                    createdAt.getFullYear(),
-                  );
-                }),
+                unit?.WaterManageHistoryAvgrage?.filter(
+                  (entry: { createdAt: string }) => {
+                    const createdAt = new Date(entry.createdAt);
+                    return selectedDropDownYears.includes(
+                      createdAt.getFullYear(),
+                    );
+                  },
+                ),
                 [
                   'DO',
                   'NH4',
@@ -347,7 +365,7 @@ function ProductionManagerFilter({
         case 'All-time average':
           return data.map((farm) => ({
             ...farm,
-            units: farm.units.map((unit: any) => ({
+            units: farm.units.map((unit) => ({
               ...unit,
               allTimeAverages: calculateIndividualAverages(
                 unit.fishManageHistory || [],
@@ -379,7 +397,7 @@ function ProductionManagerFilter({
         case 'Individual average':
           return data.map((farm) => ({
             ...farm,
-            units: farm.units.map((unit: any) => ({
+            units: farm.units.map((unit) => ({
               ...unit,
               individualAverages: calculateIndividualAverages(
                 unit.fishManageHistory || [],
@@ -415,6 +433,8 @@ function ProductionManagerFilter({
 
     // Apply filters sequentially
     let filteredData = groupedData;
+    console.log('grouped data', groupedData);
+
     filteredData = filterByFarms(filteredData, selectedDropDownfarms);
     filteredData = filterByUnits(filteredData, selectedDropDownUnits);
     // filteredData = filterByYears(filteredData, selectedDropDownYears);
@@ -427,7 +447,10 @@ function ProductionManagerFilter({
     filteredData = filterByDates(filteredData, startDate, endDate);
 
     // Apply averages
-    const processedData = calculateAverages(filteredData, selectedAverage);
+    const processedData = calculateAverages(
+      filteredData as FarmGroup[],
+      selectedAverage,
+    ) as FarmGroup[];
 
     setProductionData(processedData);
   }, [
@@ -440,7 +463,7 @@ function ProductionManagerFilter({
   ]);
   useEffect(() => {
     if (farmsList) {
-      const customFarms: any = farmsList.map((farm: Farm) => {
+      const customFarms = farmsList.map((farm: Farm) => {
         return { option: farm.name, id: farm.id };
       });
       // customFarms.unshift({ code: "0", option: "All farms" });

@@ -1,6 +1,4 @@
-import { Theme } from '@mui/material/styles';
-
-export default function Link(theme: Theme) {
+export default function Link() {
   return {
     MuiLink: {
       defaultProps: {

@@ -26,6 +26,7 @@ import {
 } from '@/app/_lib/utils/tableHeadData';
 import { breadcrumsAction } from '@/lib/features/breadcrum/breadcrumSlice';
 import { getLocalItem } from '@/app/_lib/utils';
+import { EnhancedTableHeadProps } from '../UserTable';
 
 interface Props {
   feeds: FeedSupply[];
@@ -37,16 +38,18 @@ export default function FeedTable({ feeds }: Props) {
   const pathName = usePathname();
   // const sortDataFromLocal = window.localStorage.getItem(pathName);
   //   const loading = useAppSelector(selectFarmLoading);
-  const [feedsData, setFeedsData] = useState<any>();
-  const [selectedFeed, setSelectedFeed] = useState<any>(null);
+  const [feedsData, setFeedsData] = useState<FeedSupply[]>();
+  const [selectedFeed, setSelectedFeed] = useState<FeedSupply | null>(null);
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null,
   );
   const role = useAppSelector(selectRole);
-  const [order, setOrder] = React.useState('asc');
+  const [order, setOrder] = React.useState<'asc' | 'desc'>('asc');
   const [orderBy, setOrderBy] = React.useState('productName');
-  const [sortDataFromLocal, setSortDataFromLocal] = React.useState<any>('');
-
+  const [sortDataFromLocal, setSortDataFromLocal] = React.useState<{
+    direction: 'asc' | 'desc';
+    column: string;
+  }>({ direction: 'asc', column: '' });
   useEffect(() => {
     if (pathName) {
       setSortDataFromLocal(getLocalItem(pathName));
@@ -55,7 +58,7 @@ export default function FeedTable({ feeds }: Props) {
 
   const handleClick = (
     event: React.MouseEvent<HTMLButtonElement>,
-    farm: any,
+    farm: FeedSupply,
   ) => {
     setAnchorEl(event.currentTarget);
     setSelectedFeed(farm);
@@ -74,7 +77,7 @@ export default function FeedTable({ feeds }: Props) {
   useEffect(() => {
     router.refresh();
   }, [router]);
-  function EnhancedTableHead(data: any) {
+  function EnhancedTableHead(data: EnhancedTableHeadProps) {
     const { order, orderBy, onRequestSort } = data;
     const createSortHandler =
       (property: string) => (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -147,7 +150,7 @@ export default function FeedTable({ feeds }: Props) {
     );
 
     if (feeds) {
-      const sortedData = [...feeds].sort((feed1: any, feed2: any) => {
+      const sortedData = [...feeds].sort((feed1, feed2) => {
         const orderType = order === 'asc' ? 1 : -1;
         if (property === 'productName') {
           if (feed1.productName < feed2.productName) return -1 * orderType;
@@ -186,7 +189,7 @@ export default function FeedTable({ feeds }: Props) {
       setOrderBy(data.column);
       // handleRequestSort(null, data.column);
       if (feeds) {
-        const sortedData = [...feeds].sort((feed1: any, feed2: any) => {
+        const sortedData = [...feeds].sort((feed1, feed2) => {
           const orderType = data.direction === 'asc' ? -1 : 1;
           if (data.column === 'productName') {
             if (feed1.productName < feed2.productName) return -1 * orderType;

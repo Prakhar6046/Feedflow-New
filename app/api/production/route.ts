@@ -148,9 +148,8 @@ export async function POST(req: NextRequest) {
       status: true,
     });
   } catch (error) {
-    return NextResponse.json(
-      { error: 'Internal Server Error' },
-      { status: 500 },
-    );
+    return new NextResponse(JSON.stringify({ status: false, error }), {
+      status: 500,
+    });
   }
 }

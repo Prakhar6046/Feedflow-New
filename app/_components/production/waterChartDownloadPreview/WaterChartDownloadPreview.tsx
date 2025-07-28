@@ -16,7 +16,6 @@ import { Box, Grid, Stack, Typography, Button } from '@mui/material';
 import { createRoot } from 'react-dom/client';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
-import { useRouter } from 'next/navigation';
 import Loader from '../../Loader';
 import dayjs from 'dayjs';
 
@@ -29,14 +28,17 @@ type ChartDataType = {
   endDate: string;
   dateDiff: number;
 };
+export type PredictedValueResult = {
+  key: string;
+  values: number[];
+}[];
 function WaterChartDownloadPreview({
   productions,
 }: {
   productions: Production[];
 }) {
-  const router = useRouter();
   const [chartData, setChartData] = useState<ChartDataType>();
-  const [predictedData, setPredictedData] = useState<any>(null);
+  const [predictedData, setPredictedData] = useState<PredictedValueResult>([]);
   const [isReportDownload, setIsReportDownload] = useState<boolean>(false);
   const chartOptions: {
     key: string;
@@ -297,7 +299,7 @@ function WaterChartDownloadPreview({
                   ydata={chartData?.groupedData.units.flatMap(
                     (unit) =>
                       unit.waterManageHistory?.map(
-                        (history: any) => history[yDataKey],
+                        (history) => history[yDataKey],
                       ) || [],
                   )}
                   maxVal={
@@ -310,7 +312,7 @@ function WaterChartDownloadPreview({
                   }
                   predictedValues={
                     predictedData?.find(
-                      (val: { key: string; values: string[] }) =>
+                      (val: { key: string; values: number[] }) =>
                         val.key === yDataKey,
                     )?.values || []
                   }
@@ -369,25 +371,21 @@ function WaterChartDownloadPreview({
                   {chartData?.groupedData.units.flatMap((unit) => {
                     return (
                       unit.waterManageHistory
-                        ?.filter((value: any) => {
-                          const dateString: any = getFullYear(
-                            value?.currentDate,
-                          );
+                        ?.filter((value) => {
+                          const dateString = getFullYear(value?.currentDate);
                           const date = dayjs(dateString);
                           return (
                             date.unix() >= dayjs(chartData.startDate).unix() &&
                             date.unix() <= dayjs(chartData.endDate).unix()
                           );
                         })
-                        ?.map((history: any) => {
-                          const dateString: any = getFullYear(
-                            history?.currentDate,
-                          );
+                        ?.map((history) => {
+                          const dateString = getFullYear(history?.currentDate);
                           const date = dayjs(dateString);
                           const month = date.format('MMM');
-                          const predictions =
+                          const predictions: any =
                             productions[0]?.productionUnit
-                              ?.YearBasedPredicationProductionUnit?.[0] || {};
+                              ?.YearBasedPredicationProductionUnit?.[0];
                           const predictedValue =
                             predictions?.[yDataKey]?.[month] || '';
 
@@ -790,12 +788,12 @@ function WaterChartDownloadPreview({
                             ydata={chartData?.groupedData.units.flatMap(
                               (unit) =>
                                 unit.waterManageHistory?.map(
-                                  (history: any) => history[yDataKey],
+                                  (history) => history[yDataKey],
                                 ) || [],
                             )}
                             predictedValues={
                               predictedData?.find(
-                                (val: { key: string; values: string[] }) =>
+                                (val: { key: string; values: number[] }) =>
                                   val.key === yDataKey,
                               )?.values || []
                             }
@@ -868,8 +866,8 @@ function WaterChartDownloadPreview({
                             {chartData?.groupedData.units.flatMap((unit) => {
                               return (
                                 unit.waterManageHistory
-                                  ?.filter((value: any) => {
-                                    const dateString: any = getFullYear(
+                                  ?.filter((value) => {
+                                    const dateString = getFullYear(
                                       value?.currentDate,
                                     );
                                     const date = dayjs(dateString);
@@ -880,16 +878,15 @@ function WaterChartDownloadPreview({
                                         dayjs(chartData.endDate).unix()
                                     );
                                   })
-                                  ?.map((history: any) => {
-                                    const dateString: any = getFullYear(
+                                  ?.map((history) => {
+                                    const dateString = getFullYear(
                                       history?.currentDate,
                                     );
                                     const date = dayjs(dateString);
                                     const month = date.format('MMM');
-                                    const predictions =
+                                    const predictions: any =
                                       productions[0]?.productionUnit
-                                        ?.YearBasedPredicationProductionUnit?.[0] ||
-                                      {};
+                                        ?.YearBasedPredicationProductionUnit?.[0];
                                     const predictedValue =
                                       predictions?.[yDataKey]?.[month] || '';
 

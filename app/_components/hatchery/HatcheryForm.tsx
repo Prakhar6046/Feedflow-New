@@ -11,13 +11,22 @@ import {
 import React, { useEffect } from 'react';
 import * as validationPattern from '@/app/_lib/utils/validationPatterns/index';
 import * as validationMessage from '@/app/_lib/utils/validationsMessage/index';
+import {
+  UseFormRegister,
+  UseFormSetValue,
+  UseFormTrigger,
+  UseFormWatch,
+  FieldErrors,
+} from 'react-hook-form';
+import { AddOrganizationFormInputs } from '@/app/_typeModels/Organization';
+
 interface Props {
   altitude: string;
-  register: any;
-  setValue: any;
-  trigger: any;
-  watch: any;
-  errors?: any;
+  register: UseFormRegister<AddOrganizationFormInputs>;
+  setValue: UseFormSetValue<AddOrganizationFormInputs>;
+  trigger: UseFormTrigger<AddOrganizationFormInputs>;
+  watch: UseFormWatch<AddOrganizationFormInputs>;
+  errors?: FieldErrors<AddOrganizationFormInputs>;
 }
 function HatcheryForm({
   altitude,

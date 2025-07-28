@@ -1,7 +1,8 @@
+import { SingleUser } from '@/app/_typeModels/User';
 import nodemailer from 'nodemailer';
-export const InvitationEmail = async (user: any) => {
+export const InvitationEmail = async (user: SingleUser) => {
   try {
-    const transporter: any = nodemailer.createTransport({
+    const transporter = nodemailer.createTransport({
       service: 'gmail', // You can use any other email service provider
       auth: {
         user: process.env.EMAIL_USER, // Your email address

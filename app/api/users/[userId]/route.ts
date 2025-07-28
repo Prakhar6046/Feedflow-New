@@ -2,7 +2,13 @@ import prisma from '@/prisma/prisma';
 import bcrypt from 'bcryptjs';
 import { NextRequest, NextResponse } from 'next/server';
 
-export const GET = async (request: NextRequest, context: { params: any }) => {
+interface ContextParams {
+  params: {
+    userId: string;
+  };
+}
+
+export const GET = async (_request: NextRequest, context: ContextParams) => {
   const userId = context.params.userId;
 
   if (!userId) {
@@ -34,7 +40,7 @@ export const GET = async (request: NextRequest, context: { params: any }) => {
   }
 };
 
-export async function PUT(req: NextRequest, context: { params: any }) {
+export async function PUT(req: NextRequest, context: ContextParams) {
   try {
     const userId = context.params.userId;
 

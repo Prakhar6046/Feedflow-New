@@ -1,12 +1,8 @@
 import prisma from '@/prisma/prisma';
 import { NextRequest, NextResponse } from 'next/server';
 
-export const GET = async (request: NextRequest) => {
+export const GET = async () => {
   try {
-    const searchParams = request.nextUrl.searchParams;
-    const role = searchParams.get('role');
-    const query = searchParams.get('query');
-
     //getting all growth models
     const growthModels = await prisma.growthModel.findMany({
       include: { models: true },

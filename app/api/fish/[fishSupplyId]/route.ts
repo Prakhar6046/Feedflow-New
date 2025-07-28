@@ -1,7 +1,11 @@
 import prisma from '@/prisma/prisma';
 import { NextRequest, NextResponse } from 'next/server';
-
-export const GET = async (request: NextRequest, context: { params: any }) => {
+interface ContextParams {
+  params: {
+    fishSupplyId: string;
+  };
+}
+export const GET = async (request: NextRequest, context: ContextParams) => {
   const fishSupplyId = context.params.fishSupplyId;
 
   if (!fishSupplyId) {
@@ -24,7 +28,7 @@ export const GET = async (request: NextRequest, context: { params: any }) => {
   }
 };
 
-export const PUT = async (request: NextRequest, context: { params: any }) => {
+export const PUT = async (request: NextRequest, context: ContextParams) => {
   try {
     const fishSupplyId = context.params.fishSupplyId;
     const body = await request.json();

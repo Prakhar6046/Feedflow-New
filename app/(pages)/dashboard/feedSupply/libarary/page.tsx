@@ -4,8 +4,6 @@ import { getFeedStores, getFeedSuppliers } from '@/app/_lib/action';
 // import { getCookie } from "cookies-next";
 import { cookies } from 'next/headers';
 
-interface Props {}
-
 const Page = async ({
   searchParams,
 }: {
@@ -15,8 +13,8 @@ const Page = async ({
 }) => {
   const query = searchParams?.query || '';
   const cookieStore = cookies();
-  const loggedUser: any = cookieStore.get('logged-user')?.value;
-  const userOrganisationType = JSON.parse(loggedUser);
+  const loggedUser = cookieStore.get('logged-user')?.value;
+  const userOrganisationType = JSON.parse(loggedUser ?? '');
   const stores = await getFeedStores({
     role: userOrganisationType.role,
     organisationId: userOrganisationType.organisationId,

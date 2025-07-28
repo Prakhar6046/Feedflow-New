@@ -233,10 +233,8 @@ const NutritionalGuarantee = ({
                   fontWeight={500}
                   width="fit-content"
                   onClick={() => {
-                    {
-                      (setValue('nutritionalGuarantee.moisture.value', ''),
-                        setValue('nutritionalGuarantee.moisture.kg', ''));
-                    }
+                    setValue('nutritionalGuarantee.moisture.value', '');
+                    setValue('nutritionalGuarantee.moisture.kg', '');
                   }}
                   style={{ cursor: 'pointer' }}
                   sx={{
@@ -262,15 +260,23 @@ const NutritionalGuarantee = ({
                 fontSize={14}
                 fontWeight={500}
                 width="fit-content"
+                // onClick={() => {
+                //   {
+                //     (setValue('nutritionalGuarantee.moisture.value', ''),
+                //       setValue('nutritionalGuarantee.moisture.kg', ''));
+                //     clearErrors([
+                //       'nutritionalGuarantee.moisture.value',
+                //       'nutritionalGuarantee.moisture.kg',
+                //     ]);
+                //   }
+                // }}
                 onClick={() => {
-                  {
-                    (setValue('nutritionalGuarantee.moisture.value', ''),
-                      setValue('nutritionalGuarantee.moisture.kg', ''));
-                    clearErrors([
-                      'nutritionalGuarantee.moisture.value',
-                      'nutritionalGuarantee.moisture.kg',
-                    ]);
-                  }
+                  setValue('nutritionalGuarantee.moisture.value', '');
+                  setValue('nutritionalGuarantee.moisture.kg', '');
+                  clearErrors([
+                    'nutritionalGuarantee.moisture.value',
+                    'nutritionalGuarantee.moisture.kg',
+                  ]);
                 }}
                 style={{ cursor: 'pointer' }}
                 sx={{
@@ -484,10 +490,8 @@ const NutritionalGuarantee = ({
                   fontWeight={500}
                   width="fit-content"
                   onClick={() => {
-                    {
-                      (setValue('nutritionalGuarantee.crudeProtein.value', ''),
-                        setValue('nutritionalGuarantee.crudeProtein.kg', ''));
-                    }
+                    setValue('nutritionalGuarantee.crudeProtein.value', '');
+                    setValue('nutritionalGuarantee.crudeProtein.kg', '');
                   }}
                   style={{ cursor: 'pointer' }}
                   sx={{
@@ -514,14 +518,12 @@ const NutritionalGuarantee = ({
                 fontWeight={500}
                 width="fit-content"
                 onClick={() => {
-                  {
-                    (setValue('nutritionalGuarantee.crudeProtein.value', ''),
-                      setValue('nutritionalGuarantee.crudeProtein.kg', ''));
-                    clearErrors([
-                      'nutritionalGuarantee.crudeProtein.value',
-                      'nutritionalGuarantee.crudeProtein.kg',
-                    ]);
-                  }
+                  setValue('nutritionalGuarantee.crudeProtein.value', '');
+                  setValue('nutritionalGuarantee.crudeProtein.kg', '');
+                  clearErrors([
+                    'nutritionalGuarantee.crudeProtein.value',
+                    'nutritionalGuarantee.crudeProtein.kg',
+                  ]);
                 }}
                 style={{ cursor: 'pointer' }}
                 sx={{
@@ -733,10 +735,8 @@ const NutritionalGuarantee = ({
                   fontWeight={500}
                   width="fit-content"
                   onClick={() => {
-                    {
-                      (setValue('nutritionalGuarantee.crudeFat.value', ''),
-                        setValue('nutritionalGuarantee.crudeFat.kg', ''));
-                    }
+                    setValue('nutritionalGuarantee.crudeFat.value', '');
+                    setValue('nutritionalGuarantee.crudeFat.kg', '');
                   }}
                   style={{ cursor: 'pointer' }}
                   sx={{
@@ -764,14 +764,12 @@ const NutritionalGuarantee = ({
                 fontWeight={500}
                 width="fit-content"
                 onClick={() => {
-                  {
-                    (setValue('nutritionalGuarantee.crudeFat.value', ''),
-                      setValue('nutritionalGuarantee.crudeFat.kg', ''));
-                    clearErrors([
-                      'nutritionalGuarantee.crudeFat.value',
-                      'nutritionalGuarantee.crudeFat.kg',
-                    ]);
-                  }
+                  setValue('nutritionalGuarantee.crudeFat.value', '');
+                  setValue('nutritionalGuarantee.crudeFat.kg', '');
+                  clearErrors([
+                    'nutritionalGuarantee.crudeFat.value',
+                    'nutritionalGuarantee.crudeFat.kg',
+                  ]);
                 }}
                 style={{ cursor: 'pointer' }}
                 sx={{
@@ -983,10 +981,8 @@ const NutritionalGuarantee = ({
                   fontWeight={500}
                   width="fit-content"
                   onClick={() => {
-                    {
-                      (setValue('nutritionalGuarantee.crudeAsh.value', ''),
-                        setValue('nutritionalGuarantee.crudeAsh.kg', ''));
-                    }
+                    setValue('nutritionalGuarantee.crudeAsh.value', '');
+                    setValue('nutritionalGuarantee.crudeAsh.kg', '');
                   }}
                   style={{ cursor: 'pointer' }}
                   sx={{
@@ -1014,14 +1010,12 @@ const NutritionalGuarantee = ({
                 fontWeight={500}
                 width="fit-content"
                 onClick={() => {
-                  {
-                    (setValue('nutritionalGuarantee.crudeAsh.value', ''),
-                      setValue('nutritionalGuarantee.crudeAsh.kg', ''));
-                    clearErrors([
-                      'nutritionalGuarantee.crudeAsh.value',
-                      'nutritionalGuarantee.crudeAsh.kg',
-                    ]);
-                  }
+                  setValue('nutritionalGuarantee.crudeAsh.value', '');
+                  setValue('nutritionalGuarantee.crudeAsh.kg', '');
+                  clearErrors([
+                    'nutritionalGuarantee.crudeAsh.value',
+                    'nutritionalGuarantee.crudeAsh.kg',
+                  ]);
                 }}
                 style={{ cursor: 'pointer' }}
                 sx={{
@@ -1234,10 +1228,8 @@ const NutritionalGuarantee = ({
                   fontWeight={500}
                   width="fit-content"
                   onClick={() => {
-                    {
-                      (setValue('nutritionalGuarantee.crudeFiber.value', ''),
-                        setValue('nutritionalGuarantee.crudeFiber.kg', ''));
-                    }
+                    setValue('nutritionalGuarantee.crudeFiber.value', '');
+                    setValue('nutritionalGuarantee.crudeFiber.kg', '');
                   }}
                   style={{ cursor: 'pointer' }}
                   sx={{
@@ -1264,14 +1256,12 @@ const NutritionalGuarantee = ({
                 fontWeight={500}
                 width="fit-content"
                 onClick={() => {
-                  {
-                    (setValue('nutritionalGuarantee.crudeFiber.value', ''),
-                      setValue('nutritionalGuarantee.crudeFiber.kg', ''));
-                    clearErrors([
-                      'nutritionalGuarantee.crudeFiber.value',
-                      'nutritionalGuarantee.crudeFiber.kg',
-                    ]);
-                  }
+                  setValue('nutritionalGuarantee.crudeFiber.value', '');
+                  setValue('nutritionalGuarantee.crudeFiber.kg', '');
+                  clearErrors([
+                    'nutritionalGuarantee.crudeFiber.value',
+                    'nutritionalGuarantee.crudeFiber.kg',
+                  ]);
                 }}
                 style={{ cursor: 'pointer' }}
                 sx={{
@@ -1481,10 +1471,8 @@ const NutritionalGuarantee = ({
                   fontWeight={500}
                   width="fit-content"
                   onClick={() => {
-                    {
-                      (setValue('nutritionalGuarantee.calcium.value', ''),
-                        setValue('nutritionalGuarantee.calcium.kg', ''));
-                    }
+                    setValue('nutritionalGuarantee.calcium.value', '');
+                    setValue('nutritionalGuarantee.calcium.kg', '');
                   }}
                   style={{ cursor: 'pointer' }}
                   sx={{
@@ -1511,14 +1499,12 @@ const NutritionalGuarantee = ({
                 fontWeight={500}
                 width="fit-content"
                 onClick={() => {
-                  {
-                    (setValue('nutritionalGuarantee.calcium.value', ''),
-                      setValue('nutritionalGuarantee.calcium.kg', ''));
-                    clearErrors([
-                      'nutritionalGuarantee.calcium.value',
-                      'nutritionalGuarantee.calcium.kg',
-                    ]);
-                  }
+                  setValue('nutritionalGuarantee.calcium.value', '');
+                  setValue('nutritionalGuarantee.calcium.kg', '');
+                  clearErrors([
+                    'nutritionalGuarantee.calcium.value',
+                    'nutritionalGuarantee.calcium.kg',
+                  ]);
                 }}
                 style={{ cursor: 'pointer' }}
                 sx={{
@@ -1731,10 +1717,8 @@ const NutritionalGuarantee = ({
                   fontWeight={500}
                   width="fit-content"
                   onClick={() => {
-                    {
-                      (setValue('nutritionalGuarantee.phosphorous.value', ''),
-                        setValue('nutritionalGuarantee.phosphorous.kg', ''));
-                    }
+                    setValue('nutritionalGuarantee.phosphorous.value', '');
+                    setValue('nutritionalGuarantee.phosphorous.kg', '');
                   }}
                   style={{ cursor: 'pointer' }}
                   sx={{
@@ -1761,14 +1745,12 @@ const NutritionalGuarantee = ({
                 fontWeight={500}
                 width="fit-content"
                 onClick={() => {
-                  {
-                    (setValue('nutritionalGuarantee.phosphorous.value', ''),
-                      setValue('nutritionalGuarantee.phosphorous.kg', ''));
-                    clearErrors([
-                      'nutritionalGuarantee.phosphorous.value',
-                      'nutritionalGuarantee.phosphorous.kg',
-                    ]);
-                  }
+                  setValue('nutritionalGuarantee.phosphorous.value', '');
+                  setValue('nutritionalGuarantee.phosphorous.kg', '');
+                  clearErrors([
+                    'nutritionalGuarantee.phosphorous.value',
+                    'nutritionalGuarantee.phosphorous.kg',
+                  ]);
                 }}
                 style={{ cursor: 'pointer' }}
                 sx={{
@@ -1967,10 +1949,8 @@ const NutritionalGuarantee = ({
                   fontWeight={500}
                   width="fit-content"
                   onClick={() => {
-                    {
-                      setValue('nutritionalGuarantee.carbohydrates.value', '');
-                      // setValue("nutritionalGuarantee.carbohydrates.kg", "");
-                    }
+                    setValue('nutritionalGuarantee.carbohydrates.value', '');
+                    // setValue("nutritionalGuarantee.carbohydrates.kg", "");
                   }}
                   style={{ cursor: 'pointer' }}
                   sx={{
@@ -1997,14 +1977,12 @@ const NutritionalGuarantee = ({
                 fontWeight={500}
                 width="fit-content"
                 onClick={() => {
-                  {
-                    (setValue('nutritionalGuarantee.carbohydrates.value', ''),
-                      // setValue("nutritionalGuarantee.carbohydrates.kg", "");
-                      clearErrors([
-                        'nutritionalGuarantee.carbohydrates.value',
-                        'nutritionalGuarantee.carbohydrates.kg',
-                      ]));
-                  }
+                  setValue('nutritionalGuarantee.carbohydrates.value', '');
+                  // setValue("nutritionalGuarantee.carbohydrates.kg", "");
+                  clearErrors([
+                    'nutritionalGuarantee.carbohydrates.value',
+                    'nutritionalGuarantee.carbohydrates.kg',
+                  ]);
                 }}
                 style={{ cursor: 'pointer' }}
                 sx={{
@@ -2234,16 +2212,11 @@ const NutritionalGuarantee = ({
                   fontWeight={500}
                   width="fit-content"
                   onClick={() => {
-                    {
-                      (setValue(
-                        'nutritionalGuarantee.metabolizableEnergy.value',
-                        '',
-                      ),
-                        setValue(
-                          'nutritionalGuarantee.metabolizableEnergy.kg',
-                          '',
-                        ));
-                    }
+                    setValue(
+                      'nutritionalGuarantee.metabolizableEnergy.value',
+                      '',
+                    );
+                    setValue('nutritionalGuarantee.metabolizableEnergy.kg', '');
                   }}
                   style={{ cursor: 'pointer' }}
                   sx={{
@@ -2271,20 +2244,15 @@ const NutritionalGuarantee = ({
                 fontWeight={500}
                 width="fit-content"
                 onClick={() => {
-                  {
-                    (setValue(
-                      'nutritionalGuarantee.metabolizableEnergy.value',
-                      '',
-                    ),
-                      setValue(
-                        'nutritionalGuarantee.metabolizableEnergy.kg',
-                        '',
-                      ));
-                    clearErrors([
-                      'nutritionalGuarantee.metabolizableEnergy.value',
-                      'nutritionalGuarantee.metabolizableEnergy.kg',
-                    ]);
-                  }
+                  setValue(
+                    'nutritionalGuarantee.metabolizableEnergy.value',
+                    '',
+                  );
+                  setValue('nutritionalGuarantee.metabolizableEnergy.kg', '');
+                  clearErrors([
+                    'nutritionalGuarantee.metabolizableEnergy.value',
+                    'nutritionalGuarantee.metabolizableEnergy.kg',
+                  ]);
                 }}
                 style={{ cursor: 'pointer' }}
                 sx={{

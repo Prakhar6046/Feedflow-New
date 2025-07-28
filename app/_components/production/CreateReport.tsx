@@ -1,6 +1,8 @@
 'use client';
 import { getFullYear, setLocalItem } from '@/app/_lib/utils';
 import { Farm, ProductionParaMeterType } from '@/app/_typeModels/Farm';
+import { SingleOrganisation } from '@/app/_typeModels/Organization';
+import { Production } from '@/app/_typeModels/production';
 import {
   Box,
   Button,
@@ -20,7 +22,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 interface Props {
   farms: Farm[];
-  productions: any;
+  productions: Production[];
 }
 interface SelectedFarms {
   farm: string | undefined;
@@ -29,6 +31,88 @@ interface SelectedFarms {
     name: string;
     farmId: string;
     YearBasedPredicationProductionUnit: ProductionParaMeterType[];
+  }[];
+}
+
+interface GroupedData {
+  farm: string;
+  units: {
+    id: number;
+    productionUnit: {
+      YearBasedPredicationProductionUnit?: ProductionParaMeterType[];
+      id: string;
+      name: string;
+      type: string;
+      capacity: string;
+      waterflowRate: string;
+      createdAt: string;
+      updatedAt: string;
+      farmId: string;
+    };
+    fishSupply: {
+      batchNumber: string;
+      age: string;
+    };
+    organisation: SingleOrganisation;
+    farm: Farm;
+    biomass: string;
+    fishCount: string;
+    batchNumberId: number;
+    age: string;
+    meanLength: string;
+    meanWeight: string;
+    stockingDensityKG: string;
+    stockingDensityNM: string;
+    stockingLevel: string;
+    createdBy: string;
+    updatedBy: string;
+    createdAt: string;
+    updatedAt: string;
+    isManager?: boolean;
+    field?: string;
+    fishManageHistory: {
+      id: number;
+      fishFarmId: string;
+      productionUnitId: string;
+      biomass: string;
+      fishCount: string;
+      batchNumberId: number;
+      currentDate: string;
+      age: string;
+      meanLength: string;
+      meanWeight: string;
+      stockingDensityKG: string;
+      stockingDensityNM: string;
+      stockingLevel: string;
+      createdBy: string;
+      updatedBy: string;
+      createdAt: string;
+      updatedAt: string;
+      organisationId: number;
+      field: string;
+      productionId: number;
+    }[];
+    waterTemp: string;
+    DO: string;
+    TSS: string;
+    NH4: string;
+    NO3: string;
+    NO2: string;
+    ph: string;
+    visibility: string;
+    waterManageHistory?: {
+      id: number;
+      currentDate: string;
+      waterTemp: string;
+      DO: string;
+      TSS: string;
+      NH4: string;
+      NO3: string;
+      NO2: string;
+      ph: string;
+      visibility: string;
+      productionId: number;
+    }[];
   }[];
 }
 const fishUnits = [
@@ -55,19 +139,17 @@ function CreateReport({ farms, productions }: Props) {
   const [selectedView, setSelectedView] = useState<string>('fish');
   const startDate = dayjs().startOf('month').format();
   const endDate = dayjs().format();
-  const [xAxisData, setXAxisData] = useState<string[]>([]);
+  const [xAxisData, setXAxisData] = useState<string[] | void[]>([]);
   const [selectedFarms, setSelectedFarms] = useState<(string | undefined)[]>(
     [],
   );
   const [extractedData, setExtratedData] = useState<SelectedFarms[]>([]);
   const allFarmIds = farms?.map((prod) => prod.id);
   const allSelected = selectedFarms.length === allFarmIds?.length;
-  const groupedData: any = useMemo(() => {
-    const filteredFarm = productions?.reduce((result: any, item: any) => {
+  const groupedData: GroupedData[] = useMemo(() => {
+    const filteredFarm = productions?.reduce<GroupedData[]>((result, item) => {
       // Find or create a farm group
-      let farmGroup: any = result.find(
-        (group: any) => group.farm === item.farm.name,
-      );
+      let farmGroup = result.find((group) => group.farm === item.farm.name);
       if (!farmGroup) {
         farmGroup = { farm: item.productionUnit.name, units: [] };
         result.push(farmGroup);
@@ -82,7 +164,7 @@ function CreateReport({ farms, productions }: Props) {
         farm: item.farm,
         biomass: item.biomass,
         fishCount: item.fishCount,
-        batchNumberId: item.batchNumberId,
+        batchNumberId: Number(item.batchNumberId),
         age: item.age,
         meanLength: item.meanLength,
         meanWeight: item.meanWeight,
@@ -93,7 +175,7 @@ function CreateReport({ farms, productions }: Props) {
         updatedBy: item.updatedBy,
         createdAt: item.createdAt,
         updatedAt: item.updatedAt,
-        isManager: item.isManager,
+        isManager: item.isManager ?? false,
         field: item.field,
         fishManageHistory: item.FishManageHistory,
         waterTemp: item.waterTemp,
@@ -170,19 +252,19 @@ function CreateReport({ farms, productions }: Props) {
             })),
           }));
       };
-      const units: any = getSelectedFarmsData();
+      const units: SelectedFarms[] = getSelectedFarmsData();
       setExtratedData(units);
     }
   }, [selectedFarms]);
   useEffect(() => {
     if (groupedData?.length) {
-      let createdAtArray;
+      let createdAtArray = [];
       if (selectedView === 'water') {
-        createdAtArray = groupedData?.flatMap((group: any) =>
+        createdAtArray = groupedData?.flatMap((group) =>
           group.units
             ?.flatMap(
-              (unit: any) =>
-                unit.waterManageHistory?.map((history: any) => {
+              (unit) =>
+                unit.waterManageHistory?.map((history) => {
                   getFullYear(history?.currentDate);
                 }) || [],
             )
@@ -190,17 +272,17 @@ function CreateReport({ farms, productions }: Props) {
         );
       } else {
         createdAtArray = groupedData?.flatMap(
-          (group: any) =>
+          (group) =>
             group?.units?.flatMap(
-              (unit: any) =>
-                unit.fishManageHistory?.map(
-                  (history: any) => history.createdAt,
-                ) || [],
+              (unit) =>
+                unit.fishManageHistory?.map((history) => history.createdAt) ||
+                [],
             ) || [],
         );
       }
-
-      setXAxisData(createdAtArray);
+      if (createdAtArray?.length) {
+        setXAxisData(createdAtArray);
+      }
     }
   }, [productions, groupedData]);
 

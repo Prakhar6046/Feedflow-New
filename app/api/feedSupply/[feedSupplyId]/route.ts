@@ -1,7 +1,12 @@
 import prisma from '@/prisma/prisma';
 import { NextRequest, NextResponse } from 'next/server';
 
-export const GET = async (request: NextRequest, context: { params: any }) => {
+interface ContextParams {
+  params: {
+    feedSupplyId: string;
+  };
+}
+export const GET = async (_request: NextRequest, context: ContextParams) => {
   const feedId = context.params.feedSupplyId;
 
   if (!feedId) {

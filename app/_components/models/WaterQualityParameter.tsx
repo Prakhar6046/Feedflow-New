@@ -29,9 +29,8 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { getCookie } from 'cookies-next';
 import { Dayjs } from 'dayjs';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import {
   Controller,
@@ -53,60 +52,56 @@ const style = {
 interface Props {
   setOpen: (open: boolean) => void;
   open: boolean;
-  selectedProduction: Production;
+  selectedProduction: Production | null | undefined;
   farms: Farm[];
-  productions: Production[];
 }
 
-interface InputTypes {
-  water: {
-    id: number;
-    fishFarm: string;
-    productionUnit: string;
-    waterTemp?: string;
-    DO?: string;
-    TSS?: string;
-    NH4?: string;
-    NO3?: string;
-    NO2?: string;
-    ph?: string;
-    visibility?: string;
-    showDate?: boolean;
-    date?: Dayjs | null;
-  }[];
-}
+type WaterEntry = {
+  id: number;
+  fishFarm: string;
+  productionUnit: string;
+  waterTemp?: string;
+  DO?: string;
+  TSS?: string;
+  NH4?: string;
+  NO3?: string;
+  NO2?: string;
+  ph?: string;
+  visibility?: string;
+  showDate?: boolean;
+  date?: Dayjs | null;
+};
+
+type InputTypes = {
+  water: WaterEntry[];
+};
 const WaterQualityParameter: React.FC<Props> = ({
   setOpen,
   open,
   selectedProduction,
   farms,
-  productions,
 }) => {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const pathName = usePathname();
   const isWater = searchParams.get('isWater');
-  const [selectedFarm, setSelectedFarm] = useState<any>(null);
-  const [currentfarm, setCurrentFarm] = useState<any>(null);
+  const [selectedFarm, setSelectedFarm] = useState<string | null | undefined>(
+    null,
+  );
   const [anchorEl, setAnchorEl] = useState(null);
   const [isApiCallInProgress, setIsApiCallInProgress] =
     useState<boolean>(false);
-  const [formData, setFormData] = useState<any>();
-  const token = getCookie('auth-token');
+  const [formData, setFormData] = useState<WaterEntry[]>();
 
   const {
     register,
     setValue,
     formState: { errors },
     watch,
-    trigger,
     clearErrors,
     reset,
     getValues,
     handleSubmit,
     control,
-    setFocus,
-    getFieldState,
   } = useForm<InputTypes>({
     defaultValues: {
       water: [
@@ -133,7 +128,7 @@ const WaterQualityParameter: React.FC<Props> = ({
     control,
     name: 'water',
   });
-  const watchedFields = watch('water');
+  const watchedFields: InputTypes['water'] = watch('water');
 
   const onSubmit: SubmitHandler<InputTypes> = async (data) => {
     // Prevent API call if one is already in progress
@@ -178,7 +173,7 @@ const WaterQualityParameter: React.FC<Props> = ({
           router.refresh();
         }
       }
-    } catch (error) {
+    } catch {
       toast.error('Something went wrong. Please try again.');
     } finally {
       setIsApiCallInProgress(false);
@@ -205,9 +200,9 @@ const WaterQualityParameter: React.FC<Props> = ({
   const handleCloseAnchor = (field: string) => {
     if (field.length) {
       append({
-        id: selectedProduction?.id,
-        fishFarm: selectedProduction?.fishFarmId,
-        productionUnit: selectedProduction?.productionUnitId,
+        id: selectedProduction?.id ?? 0,
+        fishFarm: selectedProduction?.fishFarmId ?? '',
+        productionUnit: selectedProduction?.productionUnitId ?? '',
         DO: '',
         NH4: '',
         NO2: '',
@@ -240,7 +235,9 @@ const WaterQualityParameter: React.FC<Props> = ({
       setValue('water', formData);
     }
     setSelectedFarm(
-      formData ? formData[0]?.fishFarm : selectedProduction?.fishFarmId,
+      formData
+        ? (formData?.[0]?.fishFarm ?? '')
+        : selectedProduction?.fishFarmId,
     ); // Set the selected farm when manager is selected
   }, [selectedProduction, formData]);
 
@@ -278,9 +275,8 @@ const WaterQualityParameter: React.FC<Props> = ({
         updatedVisibility += Number(field.visibility);
       });
 
-      const totalFields = (field: string) => {
-        const length =
-          watchedFields.filter((data: any) => data[field]).length - 1;
+      const totalFields = (field: keyof WaterEntry) => {
+        const length = watchedFields.filter((data) => data[field]).length - 1;
         if (length) {
           return length;
         } else {

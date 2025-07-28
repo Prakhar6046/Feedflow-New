@@ -16,8 +16,8 @@ export default async function Page({
 }) {
   const query = searchParams?.query || '';
   const cookieStore = cookies();
-  const loggedUser: any = cookieStore.get('logged-user')?.value;
-  const user: SingleUser = JSON.parse(loggedUser);
+  const loggedUser = cookieStore.get('logged-user')?.value;
+  const user: SingleUser = JSON.parse(loggedUser ?? '');
   const farms = await getFarms({
     role: user?.role,
     organisationId: user?.organisationId,
