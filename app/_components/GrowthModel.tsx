@@ -22,6 +22,14 @@ import { Farm } from '../_typeModels/Farm';
 interface InputType {
   name: string;
   specie: string;
+  productionSystem: string;
+  adcCp: number;
+  adcCf: number;
+  adcNfe: number;
+  geCp: number;
+  geCf: number;
+  geNfe: number;
+  wasteFactor: number;
   temperatureCoefficient: string;
   growthEquationLength: string;
   growthEquationBodyWeight: string;
@@ -44,6 +52,14 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
   const [isApiCallInProgress, setIsApiCallInProgress] =
     useState<boolean>(false);
   const [species, setSpecies] = useState('');
+  const [productionSystem, setProductionSystem] = useState('');
+  const numericValidation = {
+    required: 'This field is required',
+    pattern: {
+      value: /^[0-9]*\.?[0-9]+$/,
+      message: 'Only numeric values are allowed',
+    },
+  };
   const onSubmit: SubmitHandler<InputType> = async (data) => {
     const user = JSON.parse(loggedUser);
     if (user?.organisationId && data.name) {
@@ -330,16 +346,16 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
                     type="text"
                     className="form-input"
                     focused
-                    // {...register("name", { required: true })}
-                    // error={!!errors.name}
-                    // sx={{
-                    //   width: "100%",
-                    // }}
+                    {...register("name", { required: true })}
+                    error={!!errors.name}
+                    sx={{
+                      width: "100%",
+                    }}
                   />
                 </FormControl>
-                {/* <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
                   {errors.name ? "This field is required." : ""}
-                </Typography> */}
+                </Typography>
               </Grid>
 
               <Grid item md={4} xs={12}>
@@ -366,6 +382,18 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
                     >
                       Tilapia (Oreochromis Nilotic x Aureus)
                     </MenuItem>
+                    <MenuItem
+                      value={'African Catfish'}
+                      key={'African Catfish'}
+                    >
+                      African Catfish
+                    </MenuItem>
+                    <MenuItem
+                      value={'Rainbow Trout'}
+                      key={'Rainbow Trout'}
+                    >
+                      Rainbow Trout
+                    </MenuItem>
                   </Select>
                   {errors.specie && (
                     <FormHelperText sx={{ color: '#d32f2f' }}></FormHelperText>
@@ -385,24 +413,30 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
                     labelId="feed-supply-select-label5"
                     id="feed-supply-select5"
                     label="Production Systems *"
-                    {...register('specie', {
+                    {...register('productionSystem', {
                       required: true,
                     })}
-                    value={species}
+                    value={productionSystem}
                     onChange={(e) => {
-                      setSpecies(e.target.value);
-                      clearErrors('specie');
+                      setProductionSystem(e.target.value);
+                      clearErrors('productionSystem');
                     }}
                   >
-                    <MenuItem
-                      value={' Tilapia (Oreochromis Nilotic x Aureus)'}
-                      key={'Tilapia (Oreochromis Nilotic x Aureus)'}
-                    >
-                      Tilapia (Oreochromis Nilotic x Aureus)
+                    <MenuItem value="General" key="General">General</MenuItem>
+                    <MenuItem value="Recirculation aquaculture system (RAS)" key="RAS">
+                      Recirculation aquaculture system (RAS)
                     </MenuItem>
+                    <MenuItem value="Green water / bio floc" key="GreenWater">
+                      Green water / bio floc
+                    </MenuItem>
+                    <MenuItem value="Intensive" key="Intensive">Intensive</MenuItem>
+                    <MenuItem value="Semi-intensive" key="SemiIntensive">Semi-intensive</MenuItem>
+                    <MenuItem value="Ponds" key="Ponds">Ponds</MenuItem>
+                    <MenuItem value="Raceways" key="Raceways">Raceways</MenuItem>
+                    <MenuItem value="Cages" key="Cages">Cages</MenuItem>
                   </Select>
-                  {errors.specie && (
-                    <FormHelperText sx={{ color: '#d32f2f' }}></FormHelperText>
+                  {errors.productionSystem && (
+                    <FormHelperText sx={{ color: '#d32f2f' }} />
                   )}
                 </FormControl>
                 <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
@@ -430,7 +464,7 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
                 marginBottom: 2,
               }}
             >
-              Gener
+              General
             </Typography>
             <Grid container spacing={2}>
               <Grid item md={4} xs={12}>
@@ -438,12 +472,13 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
                   <TextField
                     label="ADC CP *"
                     type="text"
-                    // {...register("fishWeight")}
                     className="form-input"
                     focused
                     sx={{
                       width: '100%',
                     }}
+                    error={!!errors.adcCp}
+                    {...register('adcCp', numericValidation)}
                   />
                   <Typography
                     variant="body1"
@@ -458,6 +493,9 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
                   >
                     %
                   </Typography>
+                  {errors.adcCp && (
+                    <FormHelperText error>{errors.adcCp.message}</FormHelperText>
+                  )}
                 </Box>
               </Grid>
 
@@ -466,12 +504,13 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
                   <TextField
                     label="ADC CF *"
                     type="text"
-                    // {...register("fishWeight")}
                     className="form-input"
                     focused
                     sx={{
                       width: '100%',
                     }}
+                    error={!!errors.adcCf}
+                    {...register('adcCf', numericValidation)}
                   />
                   <Typography
                     variant="body1"
@@ -486,6 +525,9 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
                   >
                     %
                   </Typography>
+                  {errors.adcCf && (
+                    <FormHelperText error>{errors.adcCf.message}</FormHelperText>
+                  )}
                 </Box>
               </Grid>
 
@@ -494,12 +536,13 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
                   <TextField
                     label="ADC NFE *"
                     type="text"
-                    // {...register("fishWeight")}
                     className="form-input"
                     focused
                     sx={{
                       width: '100%',
                     }}
+                    error={!!errors.adcNfe}
+                    {...register('adcNfe', numericValidation)}
                   />
                   <Typography
                     variant="body1"
@@ -514,6 +557,9 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
                   >
                     %
                   </Typography>
+                  {errors.adcNfe && (
+                    <FormHelperText error>{errors.adcNfe.message}</FormHelperText>
+                  )}
                 </Box>
               </Grid>
 
@@ -522,12 +568,13 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
                   <TextField
                     label="GE Coeff CP *"
                     type="text"
-                    // {...register("fishWeight")}
                     className="form-input"
                     focused
                     sx={{
                       width: '100%',
                     }}
+                    error={!!errors.geCp}
+                    {...register('geCp', numericValidation)}
                   />
                   <Typography
                     variant="body1"
@@ -542,6 +589,9 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
                   >
                     MJ/kg
                   </Typography>
+                  {errors.geCp && (
+                    <FormHelperText error>{errors.geCp.message}</FormHelperText>
+                  )}
                 </Box>
               </Grid>
 
@@ -550,12 +600,13 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
                   <TextField
                     label="GE Coeff CF *"
                     type="text"
-                    // {...register("fishWeight")}
                     className="form-input"
                     focused
                     sx={{
                       width: '100%',
                     }}
+                    error={!!errors.geCf}
+                    {...register('geCf', numericValidation)}
                   />
                   <Typography
                     variant="body1"
@@ -570,6 +621,9 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
                   >
                     MJ/kg
                   </Typography>
+                  {errors.geCf && (
+                    <FormHelperText error>{errors.geCf.message}</FormHelperText>
+                  )}
                 </Box>
               </Grid>
 
@@ -578,7 +632,8 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
                   <TextField
                     label="GE Coeff NFE *"
                     type="text"
-                    // {...register("fishWeight")}
+                    error={!!errors.geNfe}
+                    {...register('geNfe', numericValidation)}
                     className="form-input"
                     focused
                     sx={{
@@ -598,6 +653,9 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
                   >
                     MJ/kg
                   </Typography>
+                  {errors.geNfe && (
+                    <FormHelperText error>{errors.geNfe.message}</FormHelperText>
+                  )}
                 </Box>
               </Grid>
 
@@ -606,7 +664,8 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
                   <TextField
                     label="Waste Factor *"
                     type="text"
-                    // {...register("fishWeight")}
+                    error={!!errors.wasteFactor}
+                    {...register('wasteFactor', numericValidation)}
                     className="form-input"
                     focused
                     sx={{
@@ -626,6 +685,9 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
                   >
                     %
                   </Typography>
+                  {errors.wasteFactor && (
+                    <FormHelperText error>{errors.wasteFactor.message}</FormHelperText>
+                  )}
                 </Box>
               </Grid>
             </Grid>
@@ -710,11 +772,11 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
                     type="text"
                     className="form-input"
                     focused
-                    // {...register("name", { required: true })}
-                    // error={!!errors.name}
-                    // sx={{
-                    //   width: "100%",
-                    // }}
+                  // {...register("name", { required: true })}
+                  // error={!!errors.name}
+                  // sx={{
+                  //   width: "100%",
+                  // }}
                   />
                 </FormControl>
                 {/* <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
@@ -730,11 +792,11 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
                     type="text"
                     className="form-input"
                     focused
-                    // {...register("name", { required: true })}
-                    // error={!!errors.name}
-                    // sx={{
-                    //   width: "100%",
-                    // }}
+                  // {...register("name", { required: true })}
+                  // error={!!errors.name}
+                  // sx={{
+                  //   width: "100%",
+                  // }}
                   />
                 </FormControl>
                 {/* <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
@@ -750,11 +812,11 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
                     type="text"
                     className="form-input"
                     focused
-                    // {...register("name", { required: true })}
-                    // error={!!errors.name}
-                    // sx={{
-                    //   width: "100%",
-                    // }}
+                  // {...register("name", { required: true })}
+                  // error={!!errors.name}
+                  // sx={{
+                  //   width: "100%",
+                  // }}
                   />
                 </FormControl>
                 {/* <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
@@ -843,11 +905,11 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
                     type="text"
                     className="form-input"
                     focused
-                    // {...register("name", { required: true })}
-                    // error={!!errors.name}
-                    // sx={{
-                    //   width: "100%",
-                    // }}
+                  // {...register("name", { required: true })}
+                  // error={!!errors.name}
+                  // sx={{
+                  //   width: "100%",
+                  // }}
                   />
                 </FormControl>
                 {/* <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
@@ -863,11 +925,11 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
                     type="text"
                     className="form-input"
                     focused
-                    // {...register("name", { required: true })}
-                    // error={!!errors.name}
-                    // sx={{
-                    //   width: "100%",
-                    // }}
+                  // {...register("name", { required: true })}
+                  // error={!!errors.name}
+                  // sx={{
+                  //   width: "100%",
+                  // }}
                   />
                 </FormControl>
                 {/* <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
@@ -883,11 +945,11 @@ function GrowthModel({ farms }: { farms: Farm[] }) {
                     type="text"
                     className="form-input"
                     focused
-                    // {...register("name", { required: true })}
-                    // error={!!errors.name}
-                    // sx={{
-                    //   width: "100%",
-                    // }}
+                  // {...register("name", { required: true })}
+                  // error={!!errors.name}
+                  // sx={{
+                  //   width: "100%",
+                  // }}
                   />
                 </FormControl>
                 {/* <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
