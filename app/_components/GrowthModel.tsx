@@ -39,6 +39,7 @@ function GrowthModel() {
     clearErrors,
     formState: { errors },
   } = useForm<InputType>();
+  console.log(errors);
 
   const [isApiCallInProgress, setIsApiCallInProgress] =
     useState<boolean>(false);

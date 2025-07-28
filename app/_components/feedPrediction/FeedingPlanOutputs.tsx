@@ -1,6 +1,6 @@
 'use clinet';
 import {
-  calculateFishGrowth,
+  calculateFishGrowthTilapia,
   CommonFeedPredictionHead,
   exportFeedPredictionToXlsx,
   getLocalItem,
@@ -665,7 +665,7 @@ function FeedingPlanOutput() {
               farmId: unit?.farm?.id ?? '',
               unitId: unit.id,
               unit: unit.productionUnit.name,
-              fishGrowthData: calculateFishGrowth(
+              fishGrowthData: calculateFishGrowthTilapia(
                 Number(data?.fishWeight ?? 0),
                 data?.tempSelection === 'default'
                   ? Number(unit?.waterTemp ?? 0)

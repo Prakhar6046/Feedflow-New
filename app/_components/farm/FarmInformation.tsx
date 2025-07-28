@@ -202,19 +202,19 @@ const FarmInformation: NextPage<Props> = ({
               className="form-input"
               {...register('name', {
                 required: true,
-                validate: (value: string) => {
-                  const isUnique = farms?.every((val) => {
-                    if (editFarm && val.id === editFarm.id) {
-                      return true;
-                    }
-                    return val.name.toLowerCase() !== value.toLowerCase();
-                  });
+                // validate: (value: string) => {
+                //   const isUnique = farms?.every((val) => {
+                //     if (editFarm && val.id === editFarm.id) {
+                //       return true;
+                //     }
+                //     return val.name.toLowerCase() !== value.toLowerCase();
+                //   });
 
-                  return (
-                    isUnique ||
-                    'Please enter a unique farm name. The farm name you entered is not available.'
-                  );
-                },
+                //   return (
+                //     isUnique ||
+                //     'Please enter a unique farm name. The farm name you entered is not available.'
+                //   );
+                // },
                 maxLength: {
                   value: 150,
                   message: 'Input can contain a maximum of 150 characters.',

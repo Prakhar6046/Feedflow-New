@@ -107,7 +107,7 @@ function ProductionManagerFilter({
         detailedFarms: Farm[],
       ) => {
         return dynamicFarms.map((dynamicFarm) => {
-          const matchedFarm = detailedFarms.find(
+          const matchedFarm = detailedFarms?.find(
             (farm) => farm.id === dynamicFarm.id,
           );
           return {

@@ -49,6 +49,12 @@ export const timeIntervalOptions = [
   { id: 3, label: 'Bi-Weekly', value: 14 },
   { id: 4, label: 'Monthly', value: 30 },
 ];
+
+export const speciesOptions = [
+  { id: 1, label: 'Nile Tilapia', value: 'Nile Tilapia' },
+  { id: 2, label: 'African Catfish', value: 'African Catfish' },
+  { id: 3, label: 'Rainbow Trout', value: 'Rainbow Trout' },
+];
 export const tempSelectionOptions = [
   { label: 'Use Farm Profile', value: 'default' },
   {

@@ -1,5 +1,5 @@
-'use client';
-import { calculateFishGrowth, getLocalItem } from '@/app/_lib/utils';
+'use clinet';
+import { calculateFishGrowthTilapia, getLocalItem } from '@/app/_lib/utils';
 import { MultiSelect } from 'primereact/multiselect';
 import {
   Box,
@@ -130,7 +130,7 @@ const FeedUsageOutput: React.FC = () => {
             farmId: unit?.farm?.id || '',
             unitId: unit.id,
             unit: unit.productionUnit.name,
-            fishGrowthData: calculateFishGrowth(
+            fishGrowthData: calculateFishGrowthTilapia(
               Number(data?.fishWeight ?? 0),
               data?.tempSelection === 'default'
                 ? Number(unit?.waterTemp ?? 0)
