@@ -237,7 +237,7 @@ const TransferModal: React.FC<Props> = ({
           'Please enter biomass and fish count value less than selected production',
         );
       }
-    } catch (error) {
+    } catch {
       toast.error('Something went wrong. Please try again.');
     } finally {
       setIsApiCallInProgress(false);
@@ -716,12 +716,13 @@ const TransferModal: React.FC<Props> = ({
                                   })}
                                   onChange={(e) => {
                                     const selectedFishFarm = e.target.value;
-                                    (item.field === 'Stock' &&
+                                    if (item.field === 'Stock') {
                                       setValue(
                                         `manager.0.fishFarm`,
                                         e.target.value,
-                                      ),
-                                      setSelectedFarm(selectedFishFarm)); // Set selected farm for this specific entry
+                                      );
+                                      setSelectedFarm(selectedFishFarm);
+                                    } // Set selected farm for this specific entry
                                     setValue(
                                       `manager.${idx}.fishFarm`,
                                       selectedFishFarm,

@@ -18,11 +18,10 @@ import { useEffect, useState } from 'react';
 
 import { SubmitHandler, useForm } from 'react-hook-form';
 
-import { getCookie } from 'cookies-next';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import { SingleOrganisation } from '../_typeModels/Organization';
-import { AddUserFormInputs } from '../_typeModels/User';
+import { UserFormInputs } from '../_typeModels/User';
 import { deleteImage, handleUpload } from '../_lib/utils';
 import UserPermission from './user/UserPermission';
 
@@ -43,10 +42,8 @@ const VisuallyHiddenInput = styled('input')({
 
 export default function AddNewUser({ organisations }: Props) {
   const router = useRouter();
-  const token = getCookie('auth-token');
   const [selectedOrganisation, setSelectedOrganisation] = useState<string>('');
   const [profilePic, setProfilePic] = useState<string>();
-  const [imagePath, _setImagePath] = useState<FileList>();
   const [isApiCallInProgress, setIsApiCallInProgress] =
     useState<boolean>(false);
 
@@ -57,8 +54,8 @@ export default function AddNewUser({ organisations }: Props) {
     reset,
     control,
     formState: { errors },
-  } = useForm<AddUserFormInputs>();
-  const onSubmit: SubmitHandler<AddUserFormInputs> = async (data) => {
+  } = useForm<UserFormInputs>();
+  const onSubmit: SubmitHandler<UserFormInputs> = async (data) => {
     // Prevent API call if one is already in progress
     if (isApiCallInProgress) return;
     setIsApiCallInProgress(true);
@@ -74,21 +71,18 @@ export default function AddNewUser({ organisations }: Props) {
         });
         const responseData = await response.json();
         if (responseData.status) {
-          if (imagePath) {
-            const formData = new FormData();
-            formData.append('image', imagePath[0]);
-            const oldImageName = profilePic?.split('/').pop()?.split('.')[0];
-            formData.append('oldImageName', oldImageName || '');
-            formData.append('userId', responseData.data.id);
+          const formData = new FormData();
+          const oldImageName = profilePic?.split('/').pop()?.split('.')[0];
+          formData.append('oldImageName', oldImageName || '');
+          formData.append('userId', responseData.data.id);
 
-            const response = await fetch(`/api/profile-pic/upload`, {
-              method: 'POST',
+          const response = await fetch(`/api/profile-pic/upload`, {
+            method: 'POST',
 
-              body: formData,
-            });
-            const updatedUser = await response.json();
-            setProfilePic(updatedUser.data.imageUrl);
-          }
+            body: formData,
+          });
+          const updatedUser = await response.json();
+          setProfilePic(updatedUser.data.imageUrl);
         } else {
           toast.dismiss();
           toast.error(responseData.message);
@@ -421,7 +415,7 @@ export default function AddNewUser({ organisations }: Props) {
             oraginsationType={
               organisations?.find(
                 (org) => String(org?.id) === selectedOrganisation,
-              )?.organisationType
+              )?.organisationType ?? ''
             }
           />
           <Button

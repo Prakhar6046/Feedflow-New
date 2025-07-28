@@ -8,7 +8,7 @@ export interface FilterState {
     option: string;
   }[];
   allUnits: {
-    id: number;
+    id: string;
     option: string;
   }[];
   startDate: string;
@@ -19,7 +19,7 @@ export interface FilterState {
     option: string;
   }[];
   selectedDropDownUnits: {
-    id: number;
+    id: string;
     option: string;
   }[];
   selectedAverage: string;

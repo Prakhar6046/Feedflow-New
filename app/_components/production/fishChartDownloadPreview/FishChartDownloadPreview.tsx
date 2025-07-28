@@ -345,8 +345,8 @@ function FishChartDownloadPreview({
                   {chartData?.groupedData.units.flatMap((unit) => {
                     return (
                       unit.fishManageHistory
-                        ?.filter((value: any) => {
-                          const dateString: any = getFullYear(value?.createdAt);
+                        ?.filter((value) => {
+                          const dateString = getFullYear(value?.createdAt);
                           const date = dayjs(dateString);
                           return (
                             date.unix() >= dayjs(chartData.startDate).unix() &&
@@ -843,8 +843,8 @@ function FishChartDownloadPreview({
                             {chartData?.groupedData.units.flatMap((unit) => {
                               return (
                                 unit.fishManageHistory
-                                  ?.filter((value: any) => {
-                                    const dateString: any = getFullYear(
+                                  ?.filter((value) => {
+                                    const dateString = getFullYear(
                                       value?.createdAt,
                                     );
 
@@ -856,9 +856,9 @@ function FishChartDownloadPreview({
                                         dayjs(chartData.endDate).unix()
                                     );
                                   })
-                                  .map((history: any) => {
+                                  .map((history: any, idx) => {
                                     return (
-                                      <tr key={history.date}>
+                                      <tr key={idx}>
                                         <td
                                           style={{
                                             border: '1px solid #ccc',

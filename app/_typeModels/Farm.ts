@@ -196,7 +196,7 @@ export interface Farm {
 
   production: Production[];
   productionUnits: {
-    id: string;
+    id: any;
     name: string;
     type: string;
     capacity: string;

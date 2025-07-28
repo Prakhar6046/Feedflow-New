@@ -18,7 +18,20 @@ import TableRow from '@mui/material/TableRow';
 import { getCookie } from 'cookies-next';
 import { useEffect, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
+type WaterQualityKey =
+  | 'Water Temperature °C'
+  | 'Dissolved Oxygen (DO) mg/L'
+  | 'Total Suspended solids (TSS)'
+  | 'Ammonia (NH₄) mg/L'
+  | 'Nitrate (NO₃) mg/L'
+  | 'Nitrite (NO₂) mg/L'
+  | 'pH'
+  | 'Visibility cm';
 
+export interface predictedValuesData {
+  predictedValues: Record<WaterQualityKey, string | number>;
+  idealRange: Record<WaterQualityKey, string | number>;
+}
 interface Props {
   setActiveStep: (val: number) => void;
   productionParaMeter?: ProductionParaMeterType[];
@@ -285,7 +298,7 @@ export default function ProductionParaMeter({
                         >
                           {head}
                         </TableCell>
-                        {Years.map((year: string, index) => (
+                        {Years.map((year, index) => (
                           <TableCell
                             key={index}
                             className=" table-border"
@@ -334,7 +347,7 @@ export default function ProductionParaMeter({
                                 />
                               )}
                             />
-                            {errors?.predictedValues?.[head]?.[year] && (
+                            {errors?.predictedValues?.[head]?.[year as any] && (
                               <Typography
                                 variant="body2"
                                 color="error"
@@ -347,11 +360,13 @@ export default function ProductionParaMeter({
                                   textOverflow: 'ellipsis',
                                 }}
                               >
-                                {errors?.predictedValues?.[head]?.[year]
-                                  .type === 'pattern'
+                                {errors?.predictedValues?.[head as string]?.[
+                                  year as any
+                                ]?.type === 'pattern'
                                   ? validationMessage.NegativeNumberWithDot
-                                  : errors?.predictedValues?.[head]?.[year]
-                                        .type === 'maxLength'
+                                  : errors?.predictedValues?.[head as string]?.[
+                                        year as any
+                                      ]?.type === 'maxLength'
                                     ? validationMessage.numberMaxLength
                                     : ''}
                               </Typography>

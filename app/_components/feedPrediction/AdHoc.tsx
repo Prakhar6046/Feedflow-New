@@ -54,6 +54,8 @@ type RawDataItem = {
   estimatedFCR: number;
   feedIntake: string;
   feedingRate: string;
+  numberOfFish: number;
+  averageProjectedTemp: number;
 };
 export interface FishFeedingData {
   date: string;
@@ -139,6 +141,8 @@ function AdHoc({ data, setData }: Iprops) {
         estimatedFCR: val.estimatedFCR,
         feedIntake: val.feedIntake,
         feedingRate: val.feedingRate,
+        numberOfFish: val.numberOfFish,
+        averageProjectedTemp: val.averageProjectedTemp,
       };
     });
 
@@ -244,7 +248,7 @@ function AdHoc({ data, setData }: Iprops) {
                   </tr>
                 </thead>
                 <tbody>
-                  {currentChunk?.map((row: any, index: number) => (
+                  {currentChunk?.map((row, index: number) => (
                     <tr key={index}>
                       <td
                         style={{

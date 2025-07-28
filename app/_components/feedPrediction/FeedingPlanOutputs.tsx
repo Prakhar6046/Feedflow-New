@@ -42,6 +42,7 @@ import {
   TableHead,
   TableRow,
 } from '@mui/material';
+import { FeedPredictionData } from './FeedUsageOutputs';
 // import MenuItem from "@mui/material/MenuItem";
 
 export interface FarmsFishGrowth {
@@ -85,13 +86,7 @@ function FeedingPlanOutput() {
   const [endDate, setEndDate] = useState<string | null>(dayjs().toISOString());
   const [flatData, setFlatData] = useState<FarmsFishGrowth[]>([]);
   const [formData, setFomData] = useState<any>();
-  const {
-    control,
-    setValue,
-    watch,
-    register,
-    formState: { errors },
-  } = useForm();
+  const { control, setValue, watch, register } = useForm();
   const createxlsxFile = (e: React.MouseEvent<HTMLSpanElement, MouseEvent>) => {
     if (!flatData.length) {
       return;
@@ -145,6 +140,8 @@ function FeedingPlanOutput() {
           feedingRate: val.feedingRate,
           farmName: growth.farm,
           unitName: growth.unit,
+          numberOfFish: val.numberOfFish,
+          averageProjectedTemp: val.averageProjectedTemp,
         })),
       );
 
@@ -609,7 +606,7 @@ function FeedingPlanOutput() {
   };
 
   useEffect(() => {
-    const selectedFarm = watch('farms');
+    const selectedFarm: string = watch('farms');
 
     if (!selectedFarm && farmOption?.length > 0) {
       const defaultFarmId = farmOption[0].id;
@@ -618,9 +615,12 @@ function FeedingPlanOutput() {
     }
 
     if (selectedFarm) {
-      const getProductionUnits = (selectedFarm: any, detailedFarms: any) => {
+      const getProductionUnits = (
+        selectedFarm: string,
+        detailedFarms: FarmGroup[],
+      ) => {
         const matchedFarm = detailedFarms.find(
-          (farm: any) => farm.units[0].farm.id == selectedFarm,
+          (farm) => farm.units[0].farm.id == selectedFarm,
         );
         return {
           productionUnits: matchedFarm?.units || [],
@@ -629,7 +629,7 @@ function FeedingPlanOutput() {
 
       const result = getProductionUnits(selectedFarm, formData?.productionData);
 
-      const customUnits = result.productionUnits.map((unit: any) => ({
+      const customUnits = result.productionUnits.map((unit) => ({
         id: unit.id,
         option: unit?.productionUnit?.name,
       }));
@@ -642,10 +642,10 @@ function FeedingPlanOutput() {
     }
   }, [unitOption]);
   useEffect(() => {
-    const data = getLocalItem('feedPredictionData');
+    const data: FeedPredictionData | null = getLocalItem('feedPredictionData');
     if (data) {
-      const customFarms = data?.productionData?.map((farm: any) => {
-        return { option: farm.farm, id: farm.units[0].farm.id };
+      const customFarms = data?.productionData?.map((farm: FarmGroup) => {
+        return { option: farm.farm, id: farm.units[0].farm.id ?? '' };
       });
       setStartDate(data?.startDate);
       setEndDate(data?.endDate);
@@ -662,7 +662,7 @@ function FeedingPlanOutput() {
             );
             return {
               farm: production.farm,
-              farmId: unit?.farm?.id,
+              farmId: unit?.farm?.id ?? '',
               unitId: unit.id,
               unit: unit.productionUnit.name,
               fishGrowthData: calculateFishGrowth(
@@ -674,7 +674,7 @@ function FeedingPlanOutput() {
                 Number(data.adjustmentFactor),
                 Number(diffInDays),
                 formattedDate,
-                data?.timeInterval,
+                data?.timeInterval ?? 0,
                 13.47,
               ),
             };

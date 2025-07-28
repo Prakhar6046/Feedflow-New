@@ -54,7 +54,7 @@ const SamplingEnvironmentCal: React.FC<Props> = ({ setOpen, open }) => {
     mode: 'onChange',
   });
 
-  const onSubmit: SubmitHandler<InputTypes> = async (data) => {
+  const onSubmit: SubmitHandler<InputTypes> = async () => {
     // Prevent API call if one is already in progress
     if (isApiCallInProgress) return;
     setIsApiCallInProgress(true);
@@ -83,7 +83,7 @@ const SamplingEnvironmentCal: React.FC<Props> = ({ setOpen, open }) => {
       //     "Please enter biomass and fish count value less than selected production"
       //   );
       // }
-    } catch (error) {
+    } catch {
       toast.error('Something went wrong. Please try again.');
     } finally {
       setIsApiCallInProgress(false);

@@ -70,12 +70,7 @@ export const PermissionType = [
   { label: 'Admin', value: 'ADMIN' },
   { label: 'No Admin', value: 'NONADMIN' },
 ];
-const AddNewOrganisation = ({
-  organisations,
-  type,
-  loggedUser,
-  authToken,
-}: Props) => {
+const AddNewOrganisation = ({ type, loggedUser }: Props) => {
   const token = getCookie('auth-token');
 
   const [profilePic, setProfilePic] = useState<string>();

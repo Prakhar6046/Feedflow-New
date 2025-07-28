@@ -50,7 +50,6 @@ interface FormInputs {
 function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
   const router = useRouter();
   const userData = getCookie('logged-user');
-  const token = getCookie('auth-token');
   const [loading, setLoading] = useState<boolean>(false);
   const [isApiCallInProgress, setIsApiCallInProgress] = useState(false);
   const [fishSupply, setFishSupply] = useState<FishSupply>();
@@ -101,9 +100,9 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
       const payload = {
         hatchingDate: validHatchingDate,
         spawningDate: validSpawningDate,
-        organisation: Number(data.organisation),
-        spawningNumber: Number(data.spawningNumber),
-        productionUnits: data.productionUnits,
+        organisation: Number(organisation),
+        spawningNumber: Number(spawningNumber),
+        productionUnits: productionUnits,
         organisationId: loggedUserData.organisationId,
         ...restData,
       };
@@ -155,7 +154,7 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
   useEffect(() => {
     if (watch('hatchingDate')) {
       const age = getDayMonthDifference(
-        watch('hatchingDate')?.format('MM/DD/YYYY'),
+        watch('hatchingDate')?.format('MM/DD/YYYY') ?? '',
       );
       setValue('age', age);
     }

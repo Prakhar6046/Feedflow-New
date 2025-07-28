@@ -25,6 +25,7 @@ import React, { useEffect, useState } from 'react';
 import { selectRole } from '@/lib/features/user/userSlice';
 import { useAppSelector } from '@/lib/hooks';
 import { getLocalItem } from '@/app/_lib/utils';
+import { EnhancedTableHeadProps } from '../UserTable';
 interface Props {
   tableData: {
     id: string;
@@ -48,7 +49,7 @@ export default function FishSupplyTable({
   );
   const pathName = usePathname();
   // const sortDataFromLocal = "";
-  const [order, setOrder] = useState('asc');
+  const [order, setOrder] = useState<'asc' | 'desc'>('asc');
   const [orderBy, setOrderBy] = useState('spawningDate');
   const [selectedFishSupply, setSelectedFishSupply] = useState<FishSupply>();
   const role = useAppSelector(selectRole);
@@ -78,7 +79,7 @@ export default function FishSupplyTable({
       router.push(`/dashboard/fishSupply/${selectedFishSupply.id}`);
     }
   };
-  function EnhancedTableHead(data: any) {
+  function EnhancedTableHead(data: EnhancedTableHeadProps) {
     const { order, orderBy, onRequestSort } = data;
     const createSortHandler =
       (property: string) => (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -153,7 +154,7 @@ export default function FishSupplyTable({
         (fish1: FishSupply, fish2: FishSupply) => {
           const orderType = order === 'asc' ? 1 : -1;
           if (property === 'spawningDate') {
-            if (fish1.spawningDate < fish2.spawningDate) return -1 * orderType;
+            if (fish1?.spawningDate < fish2.spawningDate) return -1 * orderType;
             if (fish1.spawningDate > fish2.spawningDate) return 1 * orderType;
             return 0;
           } else if (property === 'hatchingDate') {

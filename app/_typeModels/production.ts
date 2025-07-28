@@ -138,6 +138,7 @@ export interface FarmGroupUnit {
     createdAt: string;
     updatedAt: string;
     farmId: string;
+    YearBasedPredicationProductionUnit?: ProductionParaMeterType[];
   };
   monthlyAverages?: MonthyFishAverage;
   yearlyAverages?: MonthyFishAverage;
@@ -147,7 +148,7 @@ export interface FarmGroupUnit {
   yearlyAveragesWater?: MonthyWaterAverage;
   allTimeAveragesWater?: MonthyWaterAverage;
   individualAveragesWater?: MonthyWaterAverage;
-  WaterManageHistoryAvgrage: {
+  WaterManageHistoryAvgrage?: {
     id: number;
     currentDate: string;
     waterTemp: string;
@@ -198,7 +199,11 @@ export interface FarmGroupUnit {
     batchNumber: string;
     age: string;
   };
-  farm: { name: string };
+  farm: Farm;
+  organisation: SingleOrganisation;
+  createdBy: string;
+  updatedBy: string;
+  updatedAt: string;
 }
 export interface FarmGroup {
   farm: string;
@@ -268,6 +273,7 @@ export interface FishManageHistoryGroup {
 }
 export interface WaterManageHistoryGroup {
   unit: string;
+  farm: string;
   units: {
     id: number;
     productionUnit: {

@@ -56,6 +56,7 @@ import AddFeedFed from '../models/AddFeedFed';
 import Test from '../models/Test';
 import WaterQualityParameter from '../models/WaterQualityParameter';
 import ProductionManagerFilter from '../ProductionManagerFilter';
+import { EnhancedTableHeadProps } from '../UserTable';
 
 interface Props {
   productions: Production[];
@@ -92,6 +93,7 @@ export default function ProductionTable({
       numeric: boolean;
       disablePadding: boolean;
       label: string;
+      smallLabel: string;
     }[]
   >();
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
@@ -108,7 +110,7 @@ export default function ProductionTable({
   );
 
   const [productionData, setProductionData] = useState<FarmGroup[]>();
-  const [order, setOrder] = React.useState('asc');
+  const [order, setOrder] = React.useState<'asc' | 'desc'>('asc');
   const [orderBy, setOrderBy] = React.useState('Farm');
   const [sortDataFromLocal, setSortDataFromLocal] = React.useState<{
     direction: 'asc' | 'desc';
@@ -119,7 +121,7 @@ export default function ProductionTable({
   const handleClose = () => {
     setAnchorEl(null);
   };
-  const handleFishManageHistory = (unit: any) => {
+  const handleFishManageHistory = (unit: FarmGroupUnit) => {
     if (selectedView == 'fish') {
       router.push(`/dashboard/production/fish/${unit.productionUnit.id}`);
     } else {
@@ -185,11 +187,11 @@ export default function ProductionTable({
             >
               <TableRow></TableRow>
             </TableHead>
-            <EnhancedTableHead
-              sx={{
-                backgroundColor: 'red',
-              }}
-            />
+            {/* <EnhancedTableHead
+            // sx={{
+            //   backgroundColor: 'red',
+            // }}
+            /> */}
             <TableBody>
               {productionData && productionData?.length > 0 ? (
                 productionData?.map((farm: FarmGroup, i: number) => {
@@ -271,7 +273,7 @@ export default function ProductionTable({
                           textWrap: 'wrap',
                         }}
                       >
-                        {farm.units?.map((unit: any, i) => {
+                        {farm.units?.map((unit, i) => {
                           const value =
                             selectedView === 'water'
                               ? selectedAverage === 'Monthly average'
@@ -849,7 +851,7 @@ export default function ProductionTable({
   };
   const handleClick = (
     event: React.MouseEvent<HTMLButtonElement>,
-    unit: any,
+    unit: FarmGroupUnit,
     isManage: boolean,
   ) => {
     const selectedProd = productions.find((pro) => pro.id === unit.id);
@@ -876,7 +878,7 @@ export default function ProductionTable({
 
   const open = Boolean(anchorEl);
 
-  function EnhancedTableHead(data: any) {
+  function EnhancedTableHead(data: EnhancedTableHeadProps) {
     const { order, orderBy, onRequestSort } = data;
     const createSortHandler =
       (property: string) => (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -891,7 +893,7 @@ export default function ProductionTable({
         }}
       >
         <TableRow>
-          {tableHead?.map((headCell: any, idx: number, headCells: any) => (
+          {tableHead?.map((headCell, idx: number, headCells) => (
             <Tooltip key={headCell.id} title={headCell.label}>
               <TableCell
                 key={headCell.id}
@@ -968,54 +970,55 @@ export default function ProductionTable({
     }
   };
 
-  const groupedData: FarmGroup[] = productions?.reduce((result: any, item) => {
-    // Find or create a farm group
-    let farmGroup: any = result.find(
-      (group: any) => group.farm === item.farm.name,
-    );
-    if (!farmGroup) {
-      farmGroup = { farm: item.farm.name, units: [] };
-      result.push(farmGroup);
-    }
+  const groupedData: FarmGroup[] = productions?.reduce(
+    (result: FarmGroup[], item) => {
+      // Find or create a farm group
+      let farmGroup = result.find((group) => group.farm === item.farm.name);
+      if (!farmGroup) {
+        farmGroup = { farm: item.farm.name, units: [] };
+        result.push(farmGroup);
+      }
 
-    // Add the current production unit and all related data to the group
-    farmGroup.units.push({
-      id: item.id,
-      productionUnit: item.productionUnit,
-      fishSupply: item.fishSupply,
-      organisation: item.organisation,
-      farm: item.farm,
-      biomass: item.biomass,
-      fishCount: item.fishCount,
-      batchNumberId: item.batchNumberId,
-      age: item.age,
-      meanLength: item.meanLength,
-      meanWeight: item.meanWeight,
-      stockingDensityKG: item.stockingDensityKG,
-      stockingDensityNM: item.stockingDensityNM,
-      stockingLevel: item.stockingLevel,
-      createdBy: item.createdBy,
-      updatedBy: item.updatedBy,
-      createdAt: item.createdAt,
-      updatedAt: item.updatedAt,
-      isManager: item.isManager,
-      field: item.field,
-      fishManageHistory: item.FishManageHistory,
-      waterTemp: item.waterTemp,
-      DO: item.DO,
-      TSS: item.TSS,
-      NH4: item.NH4,
-      NO3: item.NO3,
-      NO2: item.NO2,
-      ph: item.ph,
-      visibility: item.visibility,
-      WaterManageHistoryAvgrage: item.WaterManageHistoryAvgrage,
-    });
+      // Add the current production unit and all related data to the group
+      farmGroup.units.push({
+        id: item.id,
+        productionUnit: item.productionUnit,
+        fishSupply: item.fishSupply,
+        organisation: item.organisation,
+        farm: item.farm,
+        biomass: item.biomass,
+        fishCount: item.fishCount,
+        batchNumberId: Number(item.batchNumberId),
+        age: item.age,
+        meanLength: item.meanLength,
+        meanWeight: item.meanWeight,
+        stockingDensityKG: item.stockingDensityKG,
+        stockingDensityNM: item.stockingDensityNM,
+        stockingLevel: item.stockingLevel,
+        createdBy: item.createdBy,
+        updatedBy: item.updatedBy,
+        createdAt: item.createdAt,
+        updatedAt: item.updatedAt,
+        isManager: item.isManager ?? false,
+        field: item.field,
+        fishManageHistory: item.FishManageHistory,
+        waterTemp: item.waterTemp,
+        DO: item.DO,
+        TSS: item.TSS,
+        NH4: item.NH4,
+        NO3: item.NO3,
+        NO2: item.NO2,
+        ph: item.ph,
+        visibility: item.visibility,
+        WaterManageHistoryAvgrage: item.WaterManageHistoryAvgrage,
+      });
 
-    return result;
-  }, []);
+      return result;
+    },
+    [],
+  );
 
-  const handleChange = (event: any, newValue: string) => {
+  const handleChange = (newValue: string) => {
     setSelectedView(newValue);
     setCookie('productionCurrentView', newValue);
     router.refresh();
@@ -1146,7 +1149,7 @@ export default function ProductionTable({
           >
             <Box>
               <TabList
-                onChange={handleChange}
+                onChange={(_, value) => handleChange(value)}
                 aria-label="lab API tabs example"
                 className="production-tabs"
               >
@@ -1277,9 +1280,9 @@ export default function ProductionTable({
             <EnhancedTableHead
               order={order}
               orderBy={orderBy}
-              sx={{
-                backgroundColor: 'red',
-              }}
+              // sx={{
+              //   backgroundColor: 'red',
+              // }}
               onRequestSort={handleRequestSort}
             />
             <TableBody>
@@ -1362,7 +1365,7 @@ export default function ProductionTable({
                           textWrap: 'wrap',
                         }}
                       >
-                        {farm.units?.map((unit: any, i) => {
+                        {farm.units?.map((unit, i) => {
                           const value =
                             selectedView === 'water'
                               ? selectedAverage === 'Monthly average'
@@ -2289,7 +2292,6 @@ export default function ProductionTable({
         setOpen={setOpenWaterQualityModal}
         selectedProduction={production}
         farms={farms}
-        productions={productions}
       />
       <AddFeedFed
         open={isFeedFedModalOpen}

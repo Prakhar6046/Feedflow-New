@@ -27,10 +27,10 @@ import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import Loader from '../Loader';
-// import MapComponent from "./MapComponent";
+import { AddressInfo } from './MapComponent';
 const MapComponent = dynamic(() => import('./MapComponent'), { ssr: false });
 interface Props {
-  editFarm?: any;
+  editFarm?: Farm;
   setActiveStep: (val: number) => void;
   farmMembers: SingleUser[];
   farms: Farm[];
@@ -59,8 +59,9 @@ const FarmInformation: NextPage<Props> = ({
   const [altitude, setAltitude] = useState<string>('');
   const [lat, setLat] = useState<string>('');
   const [lng, setLng] = useState<string>('');
-  const [formData, setFormData] = useState<any>();
-  const [addressInformation, setAddressInformation] = useState<any>();
+  const [formData, setFormData] = useState<Farm>();
+  const [addressInformation, setAddressInformation] =
+    useState<AddressInfo | null>();
   const [useAddress, setUseAddress] = useState<boolean>(false);
   const [fishFarmers, setFishFarmers] = useState<Farm[]>();
   const [loading, setLoading] = useState<boolean>(false);
@@ -89,22 +90,22 @@ const FarmInformation: NextPage<Props> = ({
   useEffect(() => {
     if (editFarm && !formData) {
       setValue('name', editFarm?.name);
-      (setValue(
+      setValue(
         'farmAltitude',
         String(Number(editFarm?.farmAltitude).toFixed(2)),
-      ),
-        setValue('addressLine1', editFarm?.farmAddress?.addressLine1));
+      );
+      setValue('addressLine1', editFarm?.farmAddress?.addressLine1 ?? '');
       setValue('addressLine2', editFarm?.farmAddress?.addressLine2 || '');
-      setValue('city', editFarm?.farmAddress?.city);
-      setValue('country', editFarm?.farmAddress?.country);
-      setValue('zipCode', editFarm?.farmAddress?.zipCode);
-      setValue('province', editFarm?.farmAddress?.province);
+      setValue('city', editFarm?.farmAddress?.city ?? '');
+      setValue('country', editFarm?.farmAddress?.country ?? '');
+      setValue('zipCode', editFarm?.farmAddress?.zipCode ?? '');
+      setValue('province', editFarm?.farmAddress?.province ?? '');
       setValue('fishFarmer', editFarm?.fishFarmer);
       setValue('lat', String(Number(editFarm?.lat).toFixed(2)));
       setValue('lng', String(Number(editFarm?.lng).toFixed(2)));
       if (editFarm.FarmManger) {
         const managerIds: string[] = [];
-        editFarm.FarmManger.map((user: any) => {
+        editFarm.FarmManger.map((user: { userId: number }) => {
           if (user.userId) {
             managerIds.push(String(user.userId));
           }
@@ -118,8 +119,8 @@ const FarmInformation: NextPage<Props> = ({
     if (formData && Object.keys(formData).length) {
       const data = formData;
       setValue('name', data?.name);
-      (setValue('farmAltitude', data?.farmAltitude),
-        setValue('addressLine1', data?.addressLine1));
+      setValue('farmAltitude', data?.farmAltitude);
+      setValue('addressLine1', data?.addressLine1);
       setValue('addressLine2', data?.addressLine2 || '');
       setValue('city', data?.city);
       setValue('country', data?.country);
@@ -133,18 +134,20 @@ const FarmInformation: NextPage<Props> = ({
   }, [formData, setValue]);
   useEffect(() => {
     if (addressInformation && useAddress) {
-      addressInformation.address && clearErrors('addressLine1');
-      addressInformation.address2 && clearErrors('addressLine2');
-      addressInformation.city && clearErrors('city');
-      addressInformation.country && clearErrors('country');
-      addressInformation.postcode && clearErrors('zipCode');
-      addressInformation.state && clearErrors('province');
+      if (addressInformation.address) clearErrors('addressLine1');
+      if (addressInformation.address2) clearErrors('addressLine2');
+      if (addressInformation.city) clearErrors('city');
+      if (addressInformation.country) clearErrors('country');
+      if (addressInformation.postcode) clearErrors('zipCode');
+      if (addressInformation.state) clearErrors('province');
+
       setValue('addressLine1', addressInformation.address);
       setValue('addressLine2', addressInformation.address2);
       setValue('city', addressInformation.city);
       setValue('country', addressInformation.country);
       setValue('zipCode', addressInformation.postcode);
       setValue('province', addressInformation.state);
+
       setUseAddress(false);
     }
   }, [addressInformation, useAddress]);
@@ -200,7 +203,7 @@ const FarmInformation: NextPage<Props> = ({
               {...register('name', {
                 required: true,
                 validate: (value: string) => {
-                  const isUnique = farms.every((val) => {
+                  const isUnique = farms?.every((val) => {
                     if (editFarm && val.id === editFarm.id) {
                       return true;
                     }
@@ -363,7 +366,7 @@ const FarmInformation: NextPage<Props> = ({
                 label="Fish Producer *"
                 value={watchFishFarmer || ''}
               >
-                {fishFarmers?.map((fish: any) => {
+                {fishFarmers?.map((fish) => {
                   return (
                     <MenuItem value={String(fish.id)} key={fish.id}>
                       {fish.name}
@@ -405,7 +408,7 @@ const FarmInformation: NextPage<Props> = ({
                       selected &&
                       selected.length &&
                       selected
-                        .map((id: any) => {
+                        .map((id: string) => {
                           const member = farmMembers.find(
                             (mem) => String(mem.id) === id,
                           );

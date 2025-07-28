@@ -37,7 +37,7 @@ export const GET = async (_request: NextRequest, context: ContextParams) => {
   }
 };
 
-export async function PUT(req: NextRequest, context: { params: any }) {
+export async function PUT(req: NextRequest, context: ContextParams) {
   try {
     const transporter = nodemailer.createTransport({
       service: 'gmail', // You can use any other email service provider

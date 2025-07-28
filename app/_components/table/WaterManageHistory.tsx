@@ -131,7 +131,11 @@ const WaterManageHistoryTable: React.FC<Props> = ({
         // Find or create a farm group
         let farmGroup = result.find((group) => group.unit === item.farm.name);
         if (!farmGroup) {
-          farmGroup = { unit: item.productionUnit.name, units: [] };
+          farmGroup = {
+            unit: item.productionUnit.name,
+            farm: item.farm.name,
+            units: [],
+          };
           result.push(farmGroup);
         }
 
@@ -230,6 +234,7 @@ const WaterManageHistoryTable: React.FC<Props> = ({
       });
       const finalSortedData = {
         unit: groupedData?.unit,
+        farm: groupedData.farm,
         units: [
           {
             ...groupedData?.units[0],
@@ -293,6 +298,7 @@ const WaterManageHistoryTable: React.FC<Props> = ({
         });
         const finalSortedData = {
           unit: groupedData?.unit,
+          farm: groupedData?.farm,
           units: [
             {
               ...groupedData?.units[0],

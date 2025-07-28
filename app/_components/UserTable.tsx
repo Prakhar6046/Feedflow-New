@@ -116,7 +116,6 @@ export default function UserTable({ users, permissions }: Props) {
   const handleDeleteUser = async () => {
     setAnchorEl(null);
     if (selectedUser) {
-      const token = getCookie('auth-token');
       const response = await fetch('/api/users', {
         method: 'DELETE',
 

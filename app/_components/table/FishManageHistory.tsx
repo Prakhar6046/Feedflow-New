@@ -40,10 +40,7 @@ import { EnhancedTableHeadProps } from '../UserTable';
 // const TextField = React.forwardRef((props, ref) => (
 //   <MuiTextField {...props} ref={ref} size="small" />
 // ));
-const style = {
-  bgcolor: 'background.paper',
-  boxShadow: 24,
-};
+
 interface Props {
   tableData: TableHeadType[];
   productions: Production[];
@@ -65,8 +62,7 @@ const FishManageHistoryTable: React.FC<Props> = ({
     direction: 'asc' | 'desc';
     column: string;
   }>({ direction: 'asc', column: '' });
-  const [isWaterSampleHistory, setIsWaterSampleHistory] =
-    useState<boolean>(false);
+
   const [startDate, setStartDate] = useState<string>(
     dayjs().subtract(2, 'weeks').format(),
   );

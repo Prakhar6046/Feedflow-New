@@ -40,7 +40,6 @@ const ExpandedSidebar = () => {
     setLoading(true);
     const getUser = async () => {
       try {
-        const token = getCookie('auth-token');
         const response = await fetch(`/api/users/${loggedUserData.id}`, {
           method: 'GET',
         });

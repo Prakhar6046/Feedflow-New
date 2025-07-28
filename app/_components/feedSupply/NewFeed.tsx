@@ -79,7 +79,6 @@ const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const loggedUser = getCookie('logged-user');
-  const token = getCookie('auth-token');
   const [loading, setLoading] = useState<boolean>(false);
   const [feedSuppliers, setFeedSuppliers] = useState<FeedSupplier[]>();
   const isEditFeed = useAppSelector(selectIsEditFeed);

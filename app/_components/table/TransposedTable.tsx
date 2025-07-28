@@ -40,7 +40,9 @@ interface FlatFormData extends Record<string, unknown> {
 }
 
 export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
-  const { control, handleSubmit, reset, setValue } = useForm<FlatFormData>();
+  const { control, handleSubmit, reset, setValue } = useForm<any>({
+    defaultValues: { suppliers: [] },
+  });
 
   const excludedKeys = [
     'id',
@@ -67,7 +69,7 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
 
   useEffect(() => {
     if (filteredStores) {
-      filteredStores?.map((store, i: number) => {
+      filteredStores?.map((store: FeedProduct, i: number) => {
         return setValue(`suppliers[${i}].supplierIds`, store.ProductSupplier);
       });
     }
@@ -126,7 +128,7 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
         toast.dismiss();
         toast.error('Somethig went wrong!');
       }
-    } catch (error) {
+    } catch {
       toast.error('Something went wrong. Please try again.');
     }
   };

@@ -64,10 +64,8 @@ const ProductionUnitParametersPredicated: React.FC<Props> = ({
   const {
     control,
     handleSubmit,
-    watch,
-    register,
+
     setValue,
-    clearErrors,
     reset,
     formState: { errors },
   } = useForm<FormData>({
@@ -178,7 +176,7 @@ const ProductionUnitParametersPredicated: React.FC<Props> = ({
       productionParamtertsUnitsArray &&
       !currentUnit
     ) {
-      editFarm?.productionUnits.map((unit: any, i: number) => {
+      editFarm?.productionUnits.map((unit: any) => {
         if (
           unit.name === selectedUnitName &&
           unit.id ===

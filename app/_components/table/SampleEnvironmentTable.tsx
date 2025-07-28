@@ -1,18 +1,9 @@
 'use client';
-import { getLocalItem } from '@/app/_lib/utils';
-import { Farm } from '@/app/_typeModels/Farm';
-import { Production } from '@/app/_typeModels/production';
+import { Farm, TableHeadType } from '@/app/_typeModels/Farm';
 import { SampleEnvironment } from '@/app/_typeModels/sample';
 import { selectRole } from '@/lib/features/user/userSlice';
-import { useAppDispatch, useAppSelector } from '@/lib/hooks';
-import {
-  Button,
-  Menu,
-  MenuItem,
-  Stack,
-  TableSortLabel,
-  Typography,
-} from '@mui/material';
+import { useAppSelector } from '@/lib/hooks';
+import { Button, Menu, MenuItem, Stack, Typography } from '@mui/material';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -20,50 +11,30 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import { usePathname, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import SamplingEnvironmentCal from '../models/SamplingEnvironmentCal';
 interface Props {
-  tableData: any;
+  tableData: TableHeadType[];
   farms?: Farm[];
   sampleEnvironment: SampleEnvironment[];
 }
 export default function SampleEnvironmentTable({
   tableData,
-  farms,
   sampleEnvironment,
 }: Props) {
   const router = useRouter();
-  const dispatch = useAppDispatch();
-  const pathName = usePathname();
   // const sortDataFromLocal = "";
   //   const loading = useAppSelector(selectFarmLoading);
-  const [selectedProduction, setSelectedProduction] = useState<any>(null);
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null,
   );
   const [openSamplingEnvironmentCalModal, setOpenSamplingEnvironmentCalModal] =
     useState<boolean>(false);
-  const [productionData, setProductionData] = useState<Production[]>();
   const role = useAppSelector(selectRole);
-  const [order, setOrder] = React.useState('asc');
-  const [orderBy, setOrderBy] = React.useState('Farm');
-  const [sortDataFromLocal, setSortDataFromLocal] = React.useState<{
-    direction: 'asc' | 'desc';
-    column: string;
-  }>({ direction: 'asc', column: '' });
 
-  useEffect(() => {
-    if (pathName) {
-      setSortDataFromLocal(getLocalItem(pathName));
-    }
-  }, [pathName]);
-  const handleClick = (
-    event: React.MouseEvent<HTMLButtonElement>,
-    farm: any,
-  ) => {
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
-    setSelectedProduction(farm);
   };
   // const handleEdit = () => {
   //   if (selectedFeed) {
@@ -76,26 +47,13 @@ export default function SampleEnvironmentTable({
   };
   const open = Boolean(anchorEl);
 
-  function EnhancedTableHead(data: any) {
-    const { order, orderBy, onRequestSort } = data;
-    const createSortHandler =
-      (property: string) => (event: React.MouseEvent<HTMLButtonElement>) => {
-        onRequestSort(event, property);
-      };
-
+  function EnhancedTableHead() {
     return (
       <TableHead className="prod-action">
         <TableRow>
-          {tableData.map((headCell: any, idx: number, headCells: any) => (
+          {tableData.map((headCell, idx: number) => (
             <TableCell
               key={headCell.id}
-              sortDirection={
-                idx === headCells.length - 1
-                  ? false
-                  : orderBy === headCell.id
-                    ? order
-                    : false
-              }
               // align="center"
               sx={{
                 borderBottom: 0,
@@ -114,17 +72,7 @@ export default function SampleEnvironmentTable({
                 },
               }}
             >
-              {idx === headCells.length - 1 ? (
-                headCell.label
-              ) : (
-                <TableSortLabel
-                  active={orderBy === headCell.id}
-                  direction={orderBy === headCell.id ? order : 'asc'}
-                  onClick={createSortHandler(headCell.id)}
-                >
-                  {headCell.label}
-                </TableSortLabel>
-              )}
+              {headCell.label}
             </TableCell>
           ))}
         </TableRow>
@@ -156,11 +104,7 @@ export default function SampleEnvironmentTable({
             >
               <TableRow></TableRow>
             </TableHead>
-            <EnhancedTableHead
-              order={order}
-              orderBy={orderBy}
-              // onRequestSort={handleRequestSort}
-            />
+            <EnhancedTableHead />
             <TableBody>
               {sampleEnvironment && sampleEnvironment?.length > 0 ? (
                 sampleEnvironment.map(
@@ -270,7 +214,7 @@ export default function SampleEnvironmentTable({
                               aria-haspopup="true"
                               aria-expanded={open ? 'true' : undefined}
                               className="table-edit-option"
-                              onClick={(e) => handleClick(e, sample)}
+                              onClick={(e) => handleClick(e)}
                               sx={{
                                 background: 'transparent',
                                 color: 'red',

@@ -12,10 +12,12 @@ import toast from 'react-hot-toast';
 import { useEffect, useMemo, useState } from 'react';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
-import { Production } from '@/app/_typeModels/production';
+import { FarmGroupUnit, Production } from '@/app/_typeModels/production';
 import dayjs from 'dayjs';
 import { setLocalItem } from '@/app/_lib/utils';
 import { useRouter } from 'next/navigation';
+import { Farm, ProductionParaMeterType } from '@/app/_typeModels/Farm';
+import { SingleOrganisation } from '@/app/_typeModels/Organization';
 // const style = {
 //   position: "absolute" as "absolute",
 //   top: "50%",
@@ -31,9 +33,89 @@ interface Props {
   open: boolean;
   selectedView: string | undefined;
   productions: Production[];
-  selectedFarm: any;
+  selectedFarm: FarmGroupUnit;
 }
-
+interface GroupedData {
+  farm: string;
+  units: {
+    id: number;
+    productionUnit: {
+      YearBasedPredicationProductionUnit?: ProductionParaMeterType[];
+      id: string;
+      name: string;
+      type: string;
+      capacity: string;
+      waterflowRate: string;
+      createdAt: string;
+      updatedAt: string;
+      farmId: string;
+    };
+    fishSupply: {
+      batchNumber: string;
+      age: string;
+    };
+    organisation: SingleOrganisation;
+    farm: Farm;
+    biomass: string;
+    fishCount: string;
+    batchNumberId: number;
+    age: string;
+    meanLength: string;
+    meanWeight: string;
+    stockingDensityKG: string;
+    stockingDensityNM: string;
+    stockingLevel: string;
+    createdBy: string;
+    updatedBy: string;
+    createdAt: string;
+    updatedAt: string;
+    isManager?: boolean;
+    field?: string;
+    fishManageHistory: {
+      id: number;
+      fishFarmId: string;
+      productionUnitId: string;
+      biomass: string;
+      fishCount: string;
+      batchNumberId: number;
+      currentDate: string;
+      age: string;
+      meanLength: string;
+      meanWeight: string;
+      stockingDensityKG: string;
+      stockingDensityNM: string;
+      stockingLevel: string;
+      createdBy: string;
+      updatedBy: string;
+      createdAt: string;
+      updatedAt: string;
+      organisationId: number;
+      field: string;
+      productionId: number;
+    }[];
+    waterTemp: string;
+    DO: string;
+    TSS: string;
+    NH4: string;
+    NO3: string;
+    NO2: string;
+    ph: string;
+    visibility: string;
+    waterManageHistory?: {
+      id: number;
+      currentDate: string;
+      waterTemp: string;
+      DO: string;
+      TSS: string;
+      NH4: string;
+      NO3: string;
+      NO2: string;
+      ph: string;
+      visibility: string;
+      productionId: number;
+    }[];
+  }[];
+}
 const Test: React.FC<Props> = ({
   setOpen,
   open,
@@ -44,7 +126,7 @@ const Test: React.FC<Props> = ({
   const router = useRouter();
   const startDate = dayjs().startOf('month').format();
   const endDate = dayjs().format();
-  const [xAxisData, setXAxisData] = useState<string[]>([]);
+  const [xAxisData, setXAxisData] = useState<(string | null)[]>([]);
   const unitOptions =
     selectedView === 'fish'
       ? [
@@ -81,12 +163,10 @@ const Test: React.FC<Props> = ({
           { key: 'ph', yDataKey: 'ph', title: 'PH' },
           { key: 'visibility', yDataKey: 'visibility', title: 'Visibility' },
         ];
-  const groupedData: any = useMemo(() => {
-    const filteredFarm = productions?.reduce((result: any, item) => {
+  const groupedData: GroupedData = useMemo(() => {
+    const filteredFarm = productions?.reduce<GroupedData[]>((result, item) => {
       // Find or create a farm group
-      let farmGroup: any = result.find(
-        (group: any) => group.farm === item.farm.name,
-      );
+      let farmGroup = result.find((group) => group.farm === item.farm.name);
       if (!farmGroup) {
         farmGroup = { farm: item.productionUnit.name, units: [] };
         result.push(farmGroup);
@@ -101,7 +181,7 @@ const Test: React.FC<Props> = ({
         farm: item.farm,
         biomass: item.biomass,
         fishCount: item.fishCount,
-        batchNumberId: item.batchNumberId,
+        batchNumberId: Number(item.batchNumberId),
         age: item.age,
         meanLength: item.meanLength,
         meanWeight: item.meanWeight,
@@ -179,8 +259,8 @@ const Test: React.FC<Props> = ({
       if (selectedView === 'water') {
         createdAtArray = groupedData.units
           ?.flatMap(
-            (unit: any) =>
-              unit.waterManageHistory?.map((history: any) => {
+            (unit) =>
+              unit.waterManageHistory?.map((history) => {
                 const datePart = String(history.currentDate).split('T')[0];
                 return dayjs(datePart).isValid() ? datePart : null;
               }) || [],
@@ -188,9 +268,8 @@ const Test: React.FC<Props> = ({
           .filter(Boolean);
       } else {
         createdAtArray = groupedData.units.flatMap(
-          (unit: any) =>
-            unit.fishManageHistory?.map((history: any) => history.createdAt) ||
-            [],
+          (unit) =>
+            unit.fishManageHistory?.map((history) => history.createdAt) || [],
         );
       }
 
@@ -539,7 +618,8 @@ const Test: React.FC<Props> = ({
     <Dialog
       open={open}
       onClose={() => {
-        (setOpen(false), setSelectedUnits([]));
+        setOpen(false);
+        setSelectedUnits([]);
       }}
     >
       <DialogTitle>Select Units</DialogTitle>
@@ -610,7 +690,8 @@ const Test: React.FC<Props> = ({
           </Button>
           <Button
             onClick={() => {
-              (setOpen(false), setSelectedUnits([]));
+              setOpen(false);
+              setSelectedUnits([]);
             }}
             sx={{
               background: '#06A19B',

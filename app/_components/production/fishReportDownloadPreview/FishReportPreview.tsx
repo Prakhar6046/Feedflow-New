@@ -271,12 +271,11 @@ function FishReportPreview({ productions }: { productions: Production[] }) {
                       chartData?.groupedData
                         ?.find((group) =>
                           group.units?.some(
-                            (unit: any) =>
-                              unit.farm?.id === prodUnit.fishFarmId,
+                            (unit) => unit.farm?.id === prodUnit.fishFarmId,
                           ),
                         )
                         ?.units?.filter(
-                          (unit: any) => unit.farm?.id === prodUnit.fishFarmId,
+                          (unit) => unit.farm?.id === prodUnit.fishFarmId,
                         )
                         ?.flatMap((unit) =>
                           unit.fishManageHistory
@@ -352,16 +351,16 @@ function FishReportPreview({ productions }: { productions: Production[] }) {
                     {chartData?.groupedData
                       .find((group) =>
                         group.units.some(
-                          (unit: any) => unit?.farm?.id === prodUnit.fishFarmId,
+                          (unit) => unit?.farm?.id === prodUnit.fishFarmId,
                         ),
                       )
                       ?.units.filter(
-                        (unit: any) => unit?.farm?.id === prodUnit.fishFarmId,
+                        (unit) => unit?.farm?.id === prodUnit.fishFarmId,
                       )
                       .flatMap(
-                        (unit: any) =>
-                          unit.fishManageHistory?.map((history: any) => (
-                            <tr key={history.date}>
+                        (unit) =>
+                          unit.fishManageHistory?.map((history: any, idx) => (
+                            <tr key={idx}>
                               <td
                                 style={{
                                   border: '1px solid #ccc',
@@ -776,12 +775,12 @@ function FishReportPreview({ productions }: { productions: Production[] }) {
                                 chartData?.groupedData
                                   ?.find((group) =>
                                     group.units?.some(
-                                      (unit: any) =>
+                                      (unit) =>
                                         unit.farm?.id === prodUnit.fishFarmId,
                                     ),
                                   ) // Find the relevant group
                                   ?.units?.filter(
-                                    (unit: any) =>
+                                    (unit) =>
                                       unit.farm?.id === prodUnit.fishFarmId,
                                   ) // Filter units based on fishFarmId
                                   ?.flatMap((unit) =>
@@ -861,19 +860,19 @@ function FishReportPreview({ productions }: { productions: Production[] }) {
                               {chartData?.groupedData
                                 .find((group) =>
                                   group.units.some(
-                                    (unit: any) =>
+                                    (unit) =>
                                       unit?.farm?.id === prodUnit.fishFarmId,
                                   ),
                                 )
                                 ?.units.filter(
-                                  (unit: any) =>
+                                  (unit) =>
                                     unit?.farm?.id === prodUnit.fishFarmId,
                                 )
                                 .flatMap(
-                                  (unit: any) =>
+                                  (unit) =>
                                     unit.fishManageHistory?.map(
-                                      (history: any) => (
-                                        <tr key={history.date}>
+                                      (history: any, idx) => (
+                                        <tr key={idx}>
                                           <td
                                             style={{
                                               border: '1px solid #ccc',

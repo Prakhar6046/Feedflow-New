@@ -21,6 +21,7 @@ import { useForm } from 'react-hook-form';
 import { Paper } from '@mui/material';
 import { FarmsFishGrowth } from './FeedingPlanOutputs';
 import FeedUsageTable from '../table/FeedUsageTable';
+import { FarmGroup, FarmGroupUnit } from '@/app/_typeModels/production';
 
 // Types
 interface FarmOption {
@@ -33,24 +34,8 @@ interface UnitOption {
   option: string;
 }
 
-interface ProductionUnit {
-  id: number;
-  productionUnit: {
-    name: string;
-  };
-  farm: {
-    id: string;
-  };
-  fishCount?: number;
-  waterTemp?: number;
-}
-
-interface DetailedFarm {
-  units: ProductionUnit[];
-}
-
-interface FeedPredictionData {
-  productionData: DetailedFarm[];
+export interface FeedPredictionData {
+  productionData: FarmGroup[];
   startDate: string;
   endDate: string;
   adjustmentFactor: number;
@@ -63,7 +48,7 @@ interface FeedPredictionData {
 // import MenuItem from "@mui/material/MenuItem";
 
 const FeedUsageOutput: React.FC = () => {
-  const [farmList, setFarmList] = useState<DetailedFarm[]>([]);
+  const [farmList, setFarmList] = useState<FarmGroup[]>([]);
   const [farmOption, setFarmOptions] = useState<FarmOption[]>([]);
   const [unitOption, setUnitOptions] = useState<UnitOption[]>([]);
   const [selectedDropDownfarms, setSelectedDropDownfarms] = useState<
@@ -84,12 +69,12 @@ const FeedUsageOutput: React.FC = () => {
     if (selectedDropDownfarms) {
       const getProductionUnits = (
         dynamicFarms: FarmOption[],
-        detailedFarms: DetailedFarm[],
+        detailedFarms: FarmGroup[],
       ) => {
         return dynamicFarms.map((dynamicFarm) => {
           const matchedFarm = detailedFarms.find(
-            (farm: DetailedFarm) =>
-              farm.units?.[0]?.farm?.id === dynamicFarm.id,
+            (farm: FarmGroup) =>
+              farm.units?.[0]?.productionUnit?.farmId === dynamicFarm.id,
           );
           return {
             farmId: dynamicFarm.id,
@@ -100,7 +85,7 @@ const FeedUsageOutput: React.FC = () => {
       };
       const result = getProductionUnits(selectedDropDownfarms, farmList);
       const customUnits: UnitOption[] = result.flatMap((farm) =>
-        farm?.productionUnits.map((unit: ProductionUnit) => ({
+        farm?.productionUnits.map((unit: FarmGroupUnit) => ({
           id: unit.id,
           option: unit.productionUnit?.name,
         })),
@@ -122,8 +107,8 @@ const FeedUsageOutput: React.FC = () => {
     const data: FeedPredictionData | null = getLocalItem('feedPredictionData');
     if (data) {
       const customFarms: FarmOption[] = data?.productionData?.map(
-        (farm: any) => {
-          return { option: farm.farm, id: farm.units[0].farm.id };
+        (farm: FarmGroup) => {
+          return { option: farm.farm, id: farm.units[0].farm.id ?? '' };
         },
       );
       setFarmList(data?.productionData);
@@ -132,34 +117,33 @@ const FeedUsageOutput: React.FC = () => {
       setFarmOptions(customFarms);
       setSelectedDropDownfarms(customFarms);
       setValue('adjustmentFactor', data.adjustmentFactor);
-      const fishGrowthData: FarmsFishGrowth[][] = data?.productionData?.map(
-        (production: DetailedFarm) =>
-          production.units.map((unit: any) => {
-            const formattedDate = dayjs(data?.startDate).format('YYYY-MM-DD');
-            const diffInDays = dayjs(data?.endDate).diff(
-              dayjs(data?.startDate),
-              'day',
-            );
-            setValue('period', diffInDays);
-            return {
-              farm: unit?.farm?.name || '',
-              farmId: unit?.farm?.id,
-              unitId: unit.id,
-              unit: unit.productionUnit.name,
-              fishGrowthData: calculateFishGrowth(
-                Number(data?.fishWeight ?? 0),
-                data?.tempSelection === 'default'
-                  ? Number(unit?.waterTemp ?? 0)
-                  : Number(data?.temp),
-                Number(unit.fishCount ?? 0),
-                Number(data.adjustmentFactor),
-                Number(diffInDays),
-                formattedDate,
-                data?.timeInterval ?? 0,
-                13.47,
-              ),
-            };
-          }),
+      const fishGrowthData = data?.productionData?.map((production) =>
+        production.units.map((unit) => {
+          const formattedDate = dayjs(data?.startDate).format('YYYY-MM-DD');
+          const diffInDays = dayjs(data?.endDate).diff(
+            dayjs(data?.startDate),
+            'day',
+          );
+          setValue('period', diffInDays);
+          return {
+            farm: unit.farm.name || '',
+            farmId: unit?.farm?.id || '',
+            unitId: unit.id,
+            unit: unit.productionUnit.name,
+            fishGrowthData: calculateFishGrowth(
+              Number(data?.fishWeight ?? 0),
+              data?.tempSelection === 'default'
+                ? Number(unit?.waterTemp ?? 0)
+                : Number(data?.temp),
+              Number(unit.fishCount ?? 0),
+              Number(data.adjustmentFactor),
+              Number(diffInDays),
+              formattedDate,
+              data?.timeInterval ?? 0,
+              13.47,
+            ),
+          };
+        }),
       );
       if (fishGrowthData?.length) {
         setFlatData([...fishGrowthData].flat());

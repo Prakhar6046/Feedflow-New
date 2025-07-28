@@ -106,7 +106,7 @@ function OrganisationPermission({ control }: OrganisationPermissionProps) {
     name: 'permissions.farms',
   });
 
-  const loggedUser: any = getCookie('logged-user');
+  const loggedUser = getCookie('logged-user');
   const user: SingleUser = loggedUser ? JSON.parse(loggedUser) : {};
   const [allDisabled, setAllDisabled] = useState<boolean>(false);
 

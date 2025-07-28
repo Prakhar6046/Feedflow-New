@@ -69,7 +69,6 @@ const ProductionUnits: NextPage<Props> = ({
   setActiveStep,
   editFarm,
   productionParaMeter,
-  token,
   feedStores,
   feedSuppliers,
 }) => {
@@ -110,7 +109,7 @@ const ProductionUnits: NextPage<Props> = ({
           type: '',
           capacity: '',
           waterflowRate: '',
-          id: uuidv4(),
+          id: Number(uuidv4()),
         },
       ],
       area: '1',
@@ -142,7 +141,7 @@ const ProductionUnits: NextPage<Props> = ({
           capacity: '',
           type: '',
           waterflowRate: '',
-          id: uuidv4(),
+          id: Number(uuidv4()),
         });
       } else {
         toast.dismiss();
@@ -151,7 +150,7 @@ const ProductionUnits: NextPage<Props> = ({
     }
   };
 
-  const handleCalculate = (item, index: number) => {
+  const handleCalculate = (item: any, index: number) => {
     if (item) {
       setopen(true);
       setValue('length', '');
@@ -167,10 +166,10 @@ const ProductionUnits: NextPage<Props> = ({
       setSelectedUnit({
         name: getFormula?.name,
         formula: getFormula?.formula,
-        id: productionUnits[index].id,
+        id: productionUnits[index].id.toString(),
         index: index,
       });
-      setCalculatedValue({ output: 0, id: null });
+      setCalculatedValue({ output: 0, id: 0 });
     }
   };
 
@@ -196,7 +195,11 @@ const ProductionUnits: NextPage<Props> = ({
         let updatedProductionUnits;
         const filteredProductionUnits =
           productionParamtertsUnitsArrayLocal.filter(
-            (unit: { unitName: string; predictedValues; idealRange }) =>
+            (unit: {
+              unitName: string;
+              predictedValues: any;
+              idealRange: any;
+            }) =>
               data.productionUnits.some(
                 (param) => param.name === unit.unitName,
               ),
@@ -204,7 +207,7 @@ const ProductionUnits: NextPage<Props> = ({
 
         if (filteredProductionUnits) {
           updatedProductionUnits = filteredProductionUnits.map(
-            (filteredUnit) => {
+            (filteredUnit: any) => {
               const matchedUnit = editFarm?.productionUnits?.find(
                 (unit) => unit.name === filteredUnit.unitName,
               );
@@ -222,7 +225,7 @@ const ProductionUnits: NextPage<Props> = ({
 
         const filteredProductionUnitsFeedProfile =
           productionUnitsFeedProfilesLocal?.filter(
-            (unit: { unitName: string; feedProfile }) =>
+            (unit: { unitName: string; feedProfile: any }) =>
               data.productionUnits.some(
                 (param) => param.name === unit.unitName,
               ),
@@ -230,7 +233,7 @@ const ProductionUnits: NextPage<Props> = ({
 
         if (filteredProductionUnitsFeedProfile && editFarm) {
           updatedProductionUnitsFeedProfile =
-            filteredProductionUnitsFeedProfile?.map((filteredUnit) => {
+            filteredProductionUnitsFeedProfile?.map((filteredUnit: any) => {
               const matchedUnit = editFarm?.productionUnits?.find(
                 (unit) => unit.name === filteredUnit.unitName,
               );
@@ -244,7 +247,7 @@ const ProductionUnits: NextPage<Props> = ({
               return filteredUnit;
             });
         }
-        const unitFeedProfiles = [];
+        const unitFeedProfiles: any = [];
         productionUnits?.map((unit) =>
           unitFeedProfiles.push({ unitName: unit.name, feedProfile }),
         );
@@ -410,7 +413,7 @@ const ProductionUnits: NextPage<Props> = ({
         } else {
           toast.error('Please fill out the all feilds');
         }
-      } catch (error) {
+      } catch {
         toast.error('Something went wrong. Please try again.');
       } finally {
         setIsApiCallInProgress(false);
@@ -435,7 +438,7 @@ const ProductionUnits: NextPage<Props> = ({
           capacity: '',
           type: '',
           waterflowRate: '',
-          id: uuidv4(),
+          id: Number(uuidv4()),
         },
       ]);
     } else {
@@ -557,7 +560,7 @@ const ProductionUnits: NextPage<Props> = ({
                           name={`productionUnits.${index}.name`} // Dynamic field name
                           control={control}
                           defaultValue="" // Set default value if necessary
-                          render={({ field, fieldState: { error } }) => (
+                          render={({ field }) => (
                             <TextField
                               {...field} // Spread field props
                               label="Production Unit Name *"
@@ -999,11 +1002,8 @@ const ProductionUnits: NextPage<Props> = ({
                   border: '1px solid #06A19B',
                 }}
                 onClick={() => {
-                  (setActiveStep(2),
-                    setLocalItem(
-                      'farmProductionUnits',
-                      watch('productionUnits'),
-                    ));
+                  setActiveStep(2);
+                  setLocalItem('farmProductionUnits', watch('productionUnits'));
                 }}
               >
                 Previous

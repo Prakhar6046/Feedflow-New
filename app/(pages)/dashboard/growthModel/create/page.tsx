@@ -1,16 +1,10 @@
 import BasicBreadcrumbs from '@/app/_components/Breadcrumbs';
 import GrowthModel from '@/app/_components/GrowthModel';
-import { getFarms } from '@/app/_lib/action';
 import { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Create Growth Model',
 };
 export default async function Page() {
-  const farms = await getFarms({
-    role: '',
-    query: '',
-    noFilter: true,
-  });
   return (
     <>
       <BasicBreadcrumbs
@@ -22,7 +16,7 @@ export default async function Page() {
         ]}
         hideSearchInput
       />
-      <GrowthModel farms={farms?.data} />
+      <GrowthModel />
     </>
   );
 }

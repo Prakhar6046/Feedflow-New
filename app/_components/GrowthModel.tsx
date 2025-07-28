@@ -17,7 +17,6 @@ import { getCookie } from 'cookies-next';
 import React, { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
-import { Farm } from '../_typeModels/Farm';
 
 interface InputType {
   name: string;
@@ -31,7 +30,7 @@ interface InputType {
   // farm: String;
   // modelId: number;
 }
-function GrowthModel({ farms }: { farms: Farm[] }) {
+function GrowthModel() {
   const loggedUser = getCookie('logged-user');
   const {
     register,

@@ -1,32 +1,7 @@
 import BasicBreadcrumbs from '@/app/_components/Breadcrumbs';
 import FeedingOutputTable from '@/app/_components/table/FeedingOutputTable';
-import { getFarms, getProductions } from '@/app/_lib/action';
 import { NextPage } from 'next';
-import { cookies } from 'next/headers';
-const Page: NextPage = async ({
-  searchParams,
-}: {
-  searchParams?: {
-    query?: string;
-  };
-}) => {
-  const query = searchParams?.query || '';
-  const cookieStore = cookies();
-  const loggedUser = cookieStore.get('logged-user')?.value;
-  const user = JSON.parse(loggedUser ?? '');
-  const farms = await getFarms({
-    role: user.role,
-    organisationId: user.organisationId,
-    query: '',
-    noFilter: false,
-  });
-  const productions = await getProductions({
-    role: user.role,
-    organisationId: user.organisationId,
-    query,
-    noFilter: false,
-    userId: user.id,
-  });
+const Page: NextPage = async () => {
   return (
     <>
       <BasicBreadcrumbs
@@ -38,7 +13,7 @@ const Page: NextPage = async ({
           { name: 'Feeding Plan', link: '/dashboard/feedingPlan' },
         ]}
       />
-      <FeedingOutputTable farms={farms.data} productions={productions.data} />
+      <FeedingOutputTable />
     </>
   );
 };

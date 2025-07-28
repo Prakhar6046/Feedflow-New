@@ -83,8 +83,8 @@ export async function POST(req: NextRequest) {
       for (const existingPredictionUnit of body.productionParamtertsUnitsArray ||
         []) {
         if (unit.name === existingPredictionUnit.unitName) {
-          const { id, unitName, idealRange, ...rest } = existingPredictionUnit;
-
+          const { id, idealRange, ...rest } = existingPredictionUnit;
+          delete existingPredictionUnit.unitName;
           await prisma.yearBasedPredicationProductionUnit.upsert({
             where: { id: id || '', productionUnitId: unit.id || '' },
             update: {

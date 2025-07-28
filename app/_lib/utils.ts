@@ -61,7 +61,7 @@ export const nutritionalGuarantee = ['Minimum', 'Maximum', 'Typical'];
 export function capitalizeFirstLetter(val: string) {
   return val.charAt(0).toUpperCase() + val.slice(1).toLowerCase();
 }
-export function getDayMonthDifference(targetDate: string) {
+export function getDayMonthDifference(targetDate: any) {
   const currentDate: any = new Date();
   const target: any = new Date(targetDate);
 
@@ -501,7 +501,7 @@ export const getChartPredictedValues = (
   startDate: string,
   endDate: string,
 ) => {
-  const predictionUnit =
+  const predictionUnit: any =
     productions?.[0]?.productionUnit?.YearBasedPredicationProductionUnit?.[0];
 
   const start = new Date(startDate);
