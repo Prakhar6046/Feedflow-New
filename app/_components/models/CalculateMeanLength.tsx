@@ -31,7 +31,6 @@ const CalculateMeanLength = ({ open, setOpen, setAvgOfMeanLength }: Props) => {
     register,
     control,
     setValue,
-    getValues,
     handleSubmit,
     watch,
     reset,

@@ -3,14 +3,13 @@ import Loader from '@/app/_components/Loader';
 import { deleteImage, handleUpload } from '@/app/_lib/utils';
 import * as validationPattern from '@/app/_lib/utils/validationPatterns/index';
 import * as validationMessage from '@/app/_lib/utils/validationsMessage/index';
-import { SingleUser, UserEditFormInputs } from '@/app/_typeModels/User';
+import { SingleUser, UserFormInputs } from '@/app/_typeModels/User';
 import EyeClosed from '@/public/static/img/icons/ic-eye-closed.svg';
 import EyeOpened from '@/public/static/img/icons/ic-eye-open.svg';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { Box, Grid, Stack, TextField, Typography } from '@mui/material';
 import Button from '@mui/material/Button';
 import { styled } from '@mui/material/styles';
-import { getCookie } from 'cookies-next';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -35,13 +34,10 @@ type Iprops = {
 };
 function EditUser({ userId }: Iprops) {
   const router = useRouter();
-  const loggedUser: any = getCookie('logged-user');
-  const token = getCookie('auth-token');
   const [isApiCallInProgress, setIsApiCallInProgress] =
     useState<boolean>(false);
   const [userData, setUserData] = useState<{ data: SingleUser }>();
   const [loading, setLoading] = useState<boolean>(false);
-  const [currentUserId, setCurrentUserId] = useState<number>();
   const [profilePic, setProfilePic] = useState<string>();
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [showConfirmPassword, setshowConfirmPassword] =
@@ -56,13 +52,12 @@ function EditUser({ userId }: Iprops) {
     watch,
     control,
     formState: { errors },
-  } = useForm<UserEditFormInputs>({ mode: 'onTouched' });
-  const onSubmit: SubmitHandler<UserEditFormInputs> = async (data) => {
+  } = useForm<UserFormInputs>({ mode: 'onTouched' });
+  const onSubmit: SubmitHandler<UserFormInputs> = async (data) => {
     // Prevent API call if one is already in progress
     if (isApiCallInProgress) return;
     setIsApiCallInProgress(true);
     try {
-      const token = getCookie('auth-token');
       const payload = {
         name: data.name,
         email: data.email,
@@ -91,7 +86,7 @@ function EditUser({ userId }: Iprops) {
         resetField('confirmPassword');
         resetField('password');
       }
-    } catch (error) {
+    } catch {
       toast.error('Something went wrong. Please try again.');
     } finally {
       setIsApiCallInProgress(false);
@@ -102,7 +97,7 @@ function EditUser({ userId }: Iprops) {
     if (userId) {
       const user = async () => {
         setLoading(true);
-        const data: any = await fetch(`/api/users/${userId}`, {
+        const data = await fetch(`/api/users/${userId}`, {
           method: 'GET',
         });
         const res = await data.json();
@@ -112,12 +107,6 @@ function EditUser({ userId }: Iprops) {
       user();
     }
   }, [userId]);
-  useEffect(() => {
-    if (loggedUser) {
-      const user = JSON.parse(loggedUser);
-      setCurrentUserId(user.id);
-    }
-  }, [loggedUser]);
 
   useEffect(() => {
     if (userData) {
@@ -634,7 +623,9 @@ function EditUser({ userId }: Iprops) {
         </Stack>
         <UserPermission
           control={control}
-          oraginsationType={userData?.data?.organisation?.organisationType}
+          oraginsationType={
+            userData?.data?.organisation?.organisationType ?? ''
+          }
           userData={userData?.data?.permissions}
         />
         <Button

@@ -40,10 +40,9 @@ interface Props {
   farms: Farm[];
 }
 function AddUnitForm({ farms }: Props) {
-  const mCubed = 'm\u00B3';
-  const [selectedFarm, setSelectedFarm] = useState<any>(null);
-  const loggedUser: any = getCookie('logged-user');
-  const user = JSON.parse(loggedUser);
+  const [selectedFarm, setSelectedFarm] = useState<string>('');
+  const loggedUser = getCookie('logged-user');
+  const user = JSON.parse(loggedUser ?? '');
   const router = useRouter();
   const {
     register,
@@ -330,31 +329,6 @@ function AddUnitForm({ farms }: Props) {
                         {validationMessage.numberMaxLength}
                       </Typography>
                     )}
-                  {/* <Box mb={2} width={"100%"}>
-              <FormControl fullWidth className="form-input">
-                <InputLabel id="feed-supply-select-label1">
-                  Fish Farmer *
-                </InputLabel>
-                <Select
-                  labelId="feed-supply-select-label1"
-                  id="feed-supply-select1"
-                  {...register("fishFarmer", {
-                    required: watch("fishFarmer") ? false : true,
-                    onChange: (e) => setValue("fishFarmer", e.target.value),
-                  })}
-                  label="Feed Farmer *"
-                  value={watch("fishFarmer") || ""}
-                >
-                  {fishFarmers?.map((fish: any) => {
-                    return (
-                      <MenuItem value={String(fish.id)} key={fish.id}>
-                        {fish.name}
-                      </MenuItem>
-                    );
-                  })}
-                </Select>
-              </FormControl>
-            </Box> */}
                 </Box>
               </Box>
             </Grid>

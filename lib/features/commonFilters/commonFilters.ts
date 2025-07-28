@@ -2,8 +2,29 @@ import { averagesDropdown } from '@/app/_lib/utils';
 import { RootState } from '@/lib/store';
 import { createSlice } from '@reduxjs/toolkit';
 import dayjs from 'dayjs';
-
-const initialState: any = {
+export interface FilterState {
+  allFarms: {
+    id: string;
+    option: string;
+  }[];
+  allUnits: {
+    id: string;
+    option: string;
+  }[];
+  startDate: string;
+  endDate: string;
+  selectedDropDownYears: number[];
+  selectedDropDownfarms: {
+    id: string;
+    option: string;
+  }[];
+  selectedDropDownUnits: {
+    id: string;
+    option: string;
+  }[];
+  selectedAverage: string;
+}
+const initialState: FilterState = {
   allFarms: [],
   allUnits: [],
   startDate: dayjs().startOf('year').format(),
@@ -28,6 +49,8 @@ const commonFilterSlice = createSlice({
       state.selectedDropDownfarms = action.payload;
     },
     setSelectedDropDownUnits: (state, action) => {
+      console.log();
+
       state.selectedDropDownUnits = action.payload;
     },
     setSelectedDropDownYears: (state, action) => {

@@ -49,8 +49,7 @@ interface FormInputs {
 }
 function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
   const router = useRouter();
-  const userData: any = getCookie('logged-user');
-  const token = getCookie('auth-token');
+  const userData = getCookie('logged-user');
   const [loading, setLoading] = useState<boolean>(false);
   const [isApiCallInProgress, setIsApiCallInProgress] = useState(false);
   const [fishSupply, setFishSupply] = useState<FishSupply>();
@@ -76,7 +75,7 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
     if (isApiCallInProgress) return;
     setIsApiCallInProgress(true);
     try {
-      const loggedUserData = JSON.parse(userData);
+      const loggedUserData = JSON.parse(userData || '');
 
       const {
         hatchingDate,
@@ -101,9 +100,9 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
       const payload = {
         hatchingDate: validHatchingDate,
         spawningDate: validSpawningDate,
-        organisation: Number(data.organisation),
-        spawningNumber: Number(data.spawningNumber),
-        productionUnits: data.productionUnits,
+        organisation: Number(organisation),
+        spawningNumber: Number(spawningNumber),
+        productionUnits: productionUnits,
         organisationId: loggedUserData.organisationId,
         ...restData,
       };
@@ -125,7 +124,7 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
         toast.dismiss();
         toast.error('Somethig went wrong!');
       }
-    } catch (error) {
+    } catch {
       // console.error("Fish supply error:", error);
       toast.error('Something went wrong. Please try again.');
     } finally {
@@ -155,7 +154,7 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
   useEffect(() => {
     if (watch('hatchingDate')) {
       const age = getDayMonthDifference(
-        watch('hatchingDate')?.format('MM/DD/YYYY'),
+        watch('hatchingDate')?.format('MM/DD/YYYY') ?? '',
       );
       setValue('age', age);
     }

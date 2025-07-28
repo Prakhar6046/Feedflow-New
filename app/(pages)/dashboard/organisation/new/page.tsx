@@ -16,8 +16,8 @@ export default async function Page({
   };
 }) {
   const cookieStore = cookies();
-  const loggedUser: any = cookieStore.get('logged-user')?.value;
-  const token: any = cookieStore.get('auth-token')?.value;
+  const loggedUser = cookieStore.get('logged-user')?.value ?? '';
+  const token = cookieStore.get('auth-token')?.value ?? '';
 
   const organisations = await getAllOrganisations();
   const type = searchParams?.type || '';

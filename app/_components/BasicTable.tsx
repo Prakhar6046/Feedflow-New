@@ -1,6 +1,5 @@
 'use client';
 import { breadcrumsAction } from '@/lib/features/breadcrum/breadcrumSlice';
-import { selectOrganisationLoading } from '@/lib/features/organisation/organisationSlice';
 import { selectRole } from '@/lib/features/user/userSlice';
 import { useAppDispatch, useAppSelector } from '@/lib/hooks';
 import TabContext from '@mui/lab/TabContext';
@@ -24,7 +23,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Image from 'next/image';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
+import React, { SyntheticEvent, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { getLocalItem } from '../_lib/utils';
 import userBlock from '../../public/static/img/user-block.svg';
@@ -36,7 +35,7 @@ import {
 } from '../_lib/utils/tableHeadData';
 import { SingleOrganisation } from '../_typeModels/Organization';
 import { getCookie } from 'cookies-next';
-
+import { EnhancedTableHeadProps } from './UserTable';
 interface Props {
   organisations: SingleOrganisation[];
   userRole: string;
@@ -52,13 +51,12 @@ export default function BasicTable({
   const pathName = usePathname();
   const searchParams = useSearchParams();
   const dispatch = useAppDispatch();
-  const [order, setOrder] = useState('asc');
+  const [order, setOrder] = useState<'asc' | 'desc'>('asc');
   const loggedUser = getCookie('logged-user');
   const loginUser = loggedUser && JSON.parse(loggedUser);
   const [orderBy, setOrderBy] = useState('organisation');
   const [selectedView, setSelectedView] = useState<string>('all');
   const role = useAppSelector(selectRole);
-  const loading = useAppSelector(selectOrganisationLoading);
   const [selectedOrganisation, setSelectedOrganisation] =
     useState<SingleOrganisation | null>(null);
   const [organisationData, setOrganisationData] =
@@ -66,7 +64,10 @@ export default function BasicTable({
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null,
   );
-  const [sortDataFromLocal, setSortDataFromLocal] = React.useState<any>('');
+  const [sortDataFromLocal, setSortDataFromLocal] = React.useState<{
+    direction: 'asc' | 'desc';
+    column: string;
+  }>({ direction: 'asc', column: '' });
 
   const handleClick = (
     event: React.MouseEvent<HTMLButtonElement>,
@@ -80,7 +81,7 @@ export default function BasicTable({
     setAnchorEl(null);
     setSelectedOrganisation(null);
   };
-  const handleEdit = (user: any) => {
+  const handleEdit = () => {
     router.push(`/dashboard/organisation/${selectedOrganisation?.id}`);
   };
   const handleInviteOrganisation = async () => {
@@ -108,10 +109,6 @@ export default function BasicTable({
     setAnchorEl(null);
 
     if (selectedOrganisation) {
-      const user = selectedOrganisation?.users?.find(
-        (user) => user.role === 'ADMIN' || user.role === 'SUPERADMIN',
-      );
-      const token = getCookie('auth-token');
       const response = await fetch('/api/users', {
         method: 'PATCH',
         headers: {
@@ -129,7 +126,7 @@ export default function BasicTable({
       }
     }
   };
-  function EnhancedTableHead(data: any) {
+  function EnhancedTableHead(data: EnhancedTableHeadProps) {
     const { order, orderBy, onRequestSort } = data;
     const createSortHandler =
       (property: string) => (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -185,7 +182,7 @@ export default function BasicTable({
       </TableHead>
     );
   }
-  const handleChange = (_event: any, newValue: string) => {
+  const handleChange = (_event: SyntheticEvent, newValue: string) => {
     setSelectedView(newValue);
 
     const newParams = new URLSearchParams(searchParams.toString());

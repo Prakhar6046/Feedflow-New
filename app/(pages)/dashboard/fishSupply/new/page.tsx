@@ -8,8 +8,8 @@ export const metadata: Metadata = {
 };
 export default async function Page() {
   const cookieStore = cookies();
-  const loggedUser: any = cookieStore.get('logged-user')?.value;
-  const user = JSON.parse(loggedUser);
+  const loggedUser = cookieStore.get('logged-user')?.value;
+  const user = JSON.parse(loggedUser ?? '');
   const organisationForhatchery = await getOrganisationForhatchery();
   const farms = await getFarms({
     noFilter: true,

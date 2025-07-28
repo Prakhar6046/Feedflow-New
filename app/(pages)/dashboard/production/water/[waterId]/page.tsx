@@ -2,6 +2,7 @@ import BasicBreadcrumbs from '@/app/_components/Breadcrumbs';
 import WaterManageHistoryTable from '@/app/_components/table/WaterManageHistory';
 import { getFarms, getProductions } from '@/app/_lib/action';
 import { waterManageHistoryHead } from '@/app/_lib/utils/tableHeadData';
+import { Production } from '@/app/_typeModels/production';
 import { Metadata } from 'next';
 import { cookies } from 'next/headers';
 export const metadata: Metadata = {
@@ -19,8 +20,8 @@ export default async function Page({
   const query = searchParams?.query || '';
 
   const cookieStore = cookies();
-  const loggedUser: any = cookieStore.get('logged-user')?.value;
-  const user = JSON.parse(loggedUser);
+  const loggedUser = cookieStore.get('logged-user')?.value;
+  const user = JSON.parse(loggedUser ?? '');
   const productions = await getProductions({
     role: user.role,
     organisationId: user.organisationId,
@@ -53,7 +54,7 @@ export default async function Page({
       <WaterManageHistoryTable
         tableData={waterManageHistoryHead}
         productions={productions?.data?.filter(
-          (data: any) => data.productionUnitId === params.waterId,
+          (data: Production) => data.productionUnitId === params.waterId,
         )}
         waterId={params.waterId}
         farms={farms.data}

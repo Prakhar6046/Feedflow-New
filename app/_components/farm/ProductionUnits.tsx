@@ -3,6 +3,8 @@ import * as validationPattern from '@/app/_lib/utils/validationPatterns/index';
 import * as validationMessage from '@/app/_lib/utils/validationsMessage/index';
 import {
   CalculateType,
+  Farm,
+  GrowthModel,
   ProductionParaMeterType,
   ProductionUnitsFormTypes,
   UnitsTypes,
@@ -45,11 +47,11 @@ import ProductionUnitFeedProfile from '../models/ProductionUnitFeedProfile';
 import ProductionUnitParametersPredicated from '../models/ProductionUnitParametersPredicated';
 interface Props {
   productionParaMeter?: ProductionParaMeterType[];
-  growthModels?: any;
-  editFarm?: any;
+  growthModels?: GrowthModel[];
+  editFarm?: Farm;
   setActiveStep: (val: number) => void;
   isEdit?: boolean;
-  token: any;
+  token: string;
   feedStores: FeedProduct[];
   feedSuppliers: FeedSupplier[];
 }
@@ -66,10 +68,7 @@ const unitsTypes = [
 const ProductionUnits: NextPage<Props> = ({
   setActiveStep,
   editFarm,
-  isEdit,
-  growthModels,
   productionParaMeter,
-  token,
   feedStores,
   feedSuppliers,
 }) => {
@@ -77,7 +76,7 @@ const ProductionUnits: NextPage<Props> = ({
 
   const dispatch = useAppDispatch();
   const isEditFarm = getCookie('isEditFarm');
-  const userData: any = getCookie('logged-user');
+  const userData = getCookie('logged-user');
 
   const router = useRouter();
   const [selectedUnit, setSelectedUnit] = React.useState<UnitsTypes>();
@@ -110,7 +109,7 @@ const ProductionUnits: NextPage<Props> = ({
           type: '',
           capacity: '',
           waterflowRate: '',
-          id: uuidv4(),
+          id: Number(uuidv4()),
         },
       ],
       area: '1',
@@ -142,7 +141,7 @@ const ProductionUnits: NextPage<Props> = ({
           capacity: '',
           type: '',
           waterflowRate: '',
-          id: uuidv4(),
+          id: Number(uuidv4()),
         });
       } else {
         toast.dismiss();
@@ -151,7 +150,7 @@ const ProductionUnits: NextPage<Props> = ({
     }
   };
 
-  const handleCalculate = (item: any, index: any) => {
+  const handleCalculate = (item: any, index: number) => {
     if (item) {
       setopen(true);
       setValue('length', '');
@@ -167,10 +166,10 @@ const ProductionUnits: NextPage<Props> = ({
       setSelectedUnit({
         name: getFormula?.name,
         formula: getFormula?.formula,
-        id: productionUnits[index].id,
+        id: productionUnits[index].id.toString(),
         index: index,
       });
-      setCalculatedValue({ output: 0, id: null });
+      setCalculatedValue({ output: 0, id: 0 });
     }
   };
 
@@ -190,7 +189,7 @@ const ProductionUnits: NextPage<Props> = ({
       if (isApiCallInProgress) return;
       setIsApiCallInProgress(true);
       try {
-        const loggedUserData = JSON.parse(userData);
+        const loggedUserData = JSON.parse(userData ?? '');
         let payload;
         let updatedProductionUnitsFeedProfile;
         let updatedProductionUnits;
@@ -202,7 +201,7 @@ const ProductionUnits: NextPage<Props> = ({
               idealRange: any;
             }) =>
               data.productionUnits.some(
-                (param: any) => param.name === unit.unitName,
+                (param) => param.name === unit.unitName,
               ),
           );
 
@@ -210,7 +209,7 @@ const ProductionUnits: NextPage<Props> = ({
           updatedProductionUnits = filteredProductionUnits.map(
             (filteredUnit: any) => {
               const matchedUnit = editFarm?.productionUnits?.find(
-                (unit: any) => unit.name === filteredUnit.unitName,
+                (unit) => unit.name === filteredUnit.unitName,
               );
 
               if (matchedUnit) {
@@ -228,7 +227,7 @@ const ProductionUnits: NextPage<Props> = ({
           productionUnitsFeedProfilesLocal?.filter(
             (unit: { unitName: string; feedProfile: any }) =>
               data.productionUnits.some(
-                (param: any) => param.name === unit.unitName,
+                (param) => param.name === unit.unitName,
               ),
           );
 
@@ -236,13 +235,13 @@ const ProductionUnits: NextPage<Props> = ({
           updatedProductionUnitsFeedProfile =
             filteredProductionUnitsFeedProfile?.map((filteredUnit: any) => {
               const matchedUnit = editFarm?.productionUnits?.find(
-                (unit: any) => unit.name === filteredUnit.unitName,
+                (unit) => unit.name === filteredUnit.unitName,
               );
 
               if (matchedUnit) {
                 return {
                   ...filteredUnit,
-                  id: matchedUnit?.FeedProfileProductionUnit[0]?.id,
+                  id: matchedUnit?.FeedProfileProductionUnit?.[0]?.id,
                 };
               }
               return filteredUnit;
@@ -414,7 +413,7 @@ const ProductionUnits: NextPage<Props> = ({
         } else {
           toast.error('Please fill out the all feilds');
         }
-      } catch (error) {
+      } catch {
         toast.error('Something went wrong. Please try again.');
       } finally {
         setIsApiCallInProgress(false);
@@ -439,7 +438,7 @@ const ProductionUnits: NextPage<Props> = ({
           capacity: '',
           type: '',
           waterflowRate: '',
-          id: uuidv4(),
+          id: Number(uuidv4()),
         },
       ]);
     } else {
@@ -491,7 +490,7 @@ const ProductionUnits: NextPage<Props> = ({
       !formProductionUnitsData &&
       !formProductionUnitsData?.productionUnitData
     ) {
-      setValue('productionUnits', editFarm?.productionUnits);
+      setValue('productionUnits', editFarm?.productionUnits ?? []);
     } else if (formProductionUnitsData) {
       if (
         formProductionUnitsData?.productionUnitData &&
@@ -561,7 +560,7 @@ const ProductionUnits: NextPage<Props> = ({
                           name={`productionUnits.${index}.name`} // Dynamic field name
                           control={control}
                           defaultValue="" // Set default value if necessary
-                          render={({ field, fieldState: { error } }) => (
+                          render={({ field }) => (
                             <TextField
                               {...field} // Spread field props
                               label="Production Unit Name *"
@@ -1003,11 +1002,8 @@ const ProductionUnits: NextPage<Props> = ({
                   border: '1px solid #06A19B',
                 }}
                 onClick={() => {
-                  (setActiveStep(2),
-                    setLocalItem(
-                      'farmProductionUnits',
-                      watch('productionUnits'),
-                    ));
+                  setActiveStep(2);
+                  setLocalItem('farmProductionUnits', watch('productionUnits'));
                 }}
               >
                 Previous

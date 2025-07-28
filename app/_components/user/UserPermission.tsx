@@ -1,4 +1,4 @@
-import { SingleUser } from '@/app/_typeModels/User';
+import { SingleUser, UserFormInputs } from '@/app/_typeModels/User';
 import {
   Box,
   FormControlLabel,
@@ -75,8 +75,8 @@ const IOSSwitch = styled((props: SwitchProps) => (
 }));
 
 interface UserPermissionProps {
-  control: Control<any>;
-  oraginsationType: string | any;
+  control: Control<UserFormInputs>;
+  oraginsationType: string;
   userData?: any;
 }
 function UserPermission({
@@ -84,7 +84,7 @@ function UserPermission({
   oraginsationType,
   userData,
 }: UserPermissionProps) {
-  const loggedUser: any = getCookie('logged-user');
+  const loggedUser = getCookie('logged-user');
   const user: SingleUser = loggedUser ? JSON.parse(loggedUser) : {};
   const [allDisabled, setAllDisabled] = useState<boolean>(false);
 

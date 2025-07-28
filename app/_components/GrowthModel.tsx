@@ -182,7 +182,7 @@ function GrowthModel({
   }, [selectedModel, selectedFCRModel, setValue]);
 
   const onSubmit: SubmitHandler<InputType> = async (data) => {
-    const user = JSON.parse(loggedUser);
+    const user = JSON.parse(loggedUser ?? '');
     if (user?.organisationId && data.name) {
       // Prevent API call if one is already in progress
       if (isApiCallInProgress) return;

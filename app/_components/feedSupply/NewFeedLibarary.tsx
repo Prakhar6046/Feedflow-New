@@ -85,12 +85,13 @@ interface Props {
   feedSuppliers: FeedSupplier[];
 }
 
-type FeedFormFields = {
-  [key: string]: string | number;
-};
+interface FeedFormFields {
+  [key: string]: string | number | null | undefined;
+}
+
 const NewFeedLibarary: NextPage<Props> = ({ feedSuppliers }) => {
   const router = useRouter();
-  const loggedUser: any = getCookie('logged-user');
+  const loggedUser = getCookie('logged-user') ?? '';
   const [isApiCallInProgress, setIsApiCallInProgress] =
     useState<boolean>(false);
   const {
@@ -101,8 +102,8 @@ const NewFeedLibarary: NextPage<Props> = ({ feedSuppliers }) => {
     formState: { errors },
   } = useForm<FeedFormFields>({ mode: 'onChange' });
 
-  const createPayload = (formData: Record<string, any>) => {
-    const payload: Record<string, any> = {};
+  const createPayload = (formData: FeedFormFields) => {
+    const payload: FeedFormFields = {};
 
     fields.forEach((field) => {
       const value = formData[field.name];
@@ -125,7 +126,7 @@ const NewFeedLibarary: NextPage<Props> = ({ feedSuppliers }) => {
     setIsApiCallInProgress(true);
 
     try {
-      const loggedUserData = JSON.parse(loggedUser);
+      const loggedUserData = JSON.parse(loggedUser ?? '');
 
       if (payload) {
         const response = await fetch('/api/feed-store', {
@@ -145,7 +146,7 @@ const NewFeedLibarary: NextPage<Props> = ({ feedSuppliers }) => {
           reset();
         }
       }
-    } catch (error) {
+    } catch {
       toast.error('Something went wrong. Please try again.');
     } finally {
       setIsApiCallInProgress(false);
@@ -155,7 +156,7 @@ const NewFeedLibarary: NextPage<Props> = ({ feedSuppliers }) => {
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Grid container spacing={2}>
-        {fields?.map((field, i) => (
+        {fields?.map((field) => (
           <Grid item xs={12} sm={6} key={field.name}>
             {field?.type === 'select' ? (
               <FormControl fullWidth className="form-input" focused>
@@ -174,12 +175,14 @@ const NewFeedLibarary: NextPage<Props> = ({ feedSuppliers }) => {
                       label={field.name}
                       renderValue={(selected: any) =>
                         feedSuppliers
-                          ?.filter((s: any) => selected.includes(s.id))
-                          ?.map((s: any) => s.name)
+                          ?.filter((s: FeedSupplier) =>
+                            selected.includes(String(s.id)),
+                          )
+                          ?.map((s: FeedSupplier) => s.name)
                           ?.join(', ')
                       }
                     >
-                      {feedSuppliers?.map((supplier: any) => (
+                      {feedSuppliers?.map((supplier: FeedSupplier) => (
                         <MenuItem key={supplier.id} value={supplier.id}>
                           {supplier.name}
                         </MenuItem>

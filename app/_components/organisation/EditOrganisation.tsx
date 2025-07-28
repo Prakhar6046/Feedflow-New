@@ -8,7 +8,7 @@ import {
   OrganisationType,
   PermissionType,
 } from '@/app/_components/AddNewOrganisation';
-import MapComponent from '@/app/_components/farm/MapComponent';
+import MapComponent, { AddressInfo } from '@/app/_components/farm/MapComponent';
 import HatcheryForm from '@/app/_components/hatchery/HatcheryForm';
 import Loader from '@/app/_components/Loader';
 import { deleteImage, handleUpload } from '@/app/_lib/utils';
@@ -66,12 +66,7 @@ type Iprops = {
   userRole: string;
   loggedUser: SingleUser;
 };
-const EditOrganisation = ({
-  organisationId,
-  organisations,
-  userRole,
-  loggedUser,
-}: Iprops) => {
+const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [organisationData, setOrganisationData] = useState<OrganizationData>();
@@ -80,11 +75,11 @@ const EditOrganisation = ({
   const [altitude, setAltitude] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
   const [profilePic, setProfilePic] = useState<string>();
-  const [addressInformation, setAddressInformation] = useState<any>();
+  const [addressInformation, setAddressInformation] =
+    useState<AddressInfo | null>();
   const [isApiCallInProgress, setIsApiCallInProgress] =
     useState<boolean>(false);
   const [useAddress, setUseAddress] = useState<boolean>(false);
-  const [searchedAddress, setSearchedAddress] = useState<any>();
   const [selectedView, setSelectedView] = useState<string>(
     'organisationInformation',
   );
@@ -103,7 +98,7 @@ const EditOrganisation = ({
     }
   };
 
-  const handleChange = (_event: any, newValue: string) => {
+  const handleChange = (newValue: string) => {
     setSelectedView(newValue);
     const newParams = new URLSearchParams(searchParams.toString());
     newParams.set('tab', newValue);
@@ -111,7 +106,6 @@ const EditOrganisation = ({
   };
   const getOrganisation = async () => {
     setLoading(true);
-    const token = getCookie('auth-token');
     const data = await fetch(`/api/organisation/${organisationId}`, {
       method: 'GET',
     });
@@ -152,7 +146,7 @@ const EditOrganisation = ({
 
     try {
       let hatchery;
-      const address: any = {
+      const address = {
         address: data.address,
         city: data.city,
         province: data.province,
@@ -201,7 +195,7 @@ const EditOrganisation = ({
         const data = await res.json();
         toast.error(data.error);
       }
-    } catch (error) {
+    } catch {
       toast.error('Something went wrong. Please try again.');
     } finally {
       setIsApiCallInProgress(false);
@@ -308,7 +302,7 @@ const EditOrganisation = ({
           >
             <Box>
               <TabList
-                onChange={handleChange}
+                onChange={(_, value) => handleChange(value)}
                 aria-label="lab API tabs example"
                 className="production-tabs"
               >
@@ -905,10 +899,10 @@ const EditOrganisation = ({
                 <Box display={'flex'} justifyContent={'end'} width={'100%'}>
                   <MapComponent
                     setAddressInformation={setAddressInformation}
-                    setSearchedAddress={setSearchedAddress}
                     setUseAddress={setUseAddress}
                     isCalAltitude={true}
                     setAltitude={setAltitude}
+                    token={token ?? ''}
                   />
                 </Box>
 
@@ -1338,7 +1332,7 @@ const EditOrganisation = ({
       ) : (
         <FarmsInformation
           organisationData={organisationData}
-          profilePic={profilePic}
+          profilePic={profilePic ?? ''}
           altitude={altitude}
           handleUpload={handleUpload}
           isHatcherySelected={isHatcherySelected}

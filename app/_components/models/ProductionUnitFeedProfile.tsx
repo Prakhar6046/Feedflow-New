@@ -1,6 +1,6 @@
 'use client';
 import { getLocalItem, setLocalItem } from '@/app/_lib/utils';
-import { ProductionParaMeterType } from '@/app/_typeModels/Farm';
+import { Farm, ProductionParaMeterType } from '@/app/_typeModels/Farm';
 import {
   Box,
   Button,
@@ -30,7 +30,7 @@ import { FeedSupplier } from '@/app/_typeModels/Organization';
 
 interface Props {
   productionParaMeter?: ProductionParaMeterType[];
-  editFarm?: any;
+  editFarm?: Farm;
   setOpen: (open: boolean) => void;
   open: boolean;
   selectedUnitName: string;
@@ -41,6 +41,7 @@ interface Props {
 interface FormData {
   [key: string]: string;
 }
+
 const style = {
   position: 'absolute' as const,
   top: '50%',
@@ -51,6 +52,11 @@ const style = {
   boxShadow: 24,
   padding: '5px 25px',
 };
+
+interface ProductionUnitFeedProfileData {
+  unitName: string;
+  feedProfile: FormData;
+}
 
 const ProductionUnitFeedProfile: React.FC<Props> = ({
   setOpen,
@@ -65,21 +71,22 @@ const ProductionUnitFeedProfile: React.FC<Props> = ({
   const [radioValueMap, setRadioValueMap] = useState<
     Record<string, Record<string, string>>
   >({});
-  const [formProductionFeedProfile, setFormProductionFeedProfile] =
-    useState<any>();
+  const [formProductionFeedProfile, setFormProductionFeedProfile] = useState<
+    FormData | undefined
+  >();
 
-  const { control, handleSubmit, watch, setValue, reset } = useForm<FormData>();
+  const { control, handleSubmit, setValue, reset } = useForm<FormData>();
 
   const onSubmit: SubmitHandler<FormData> = (formData) => {
-    const productionUnitsFeedProfilesArray = getLocalItem(
-      'productionUnitsFeedProfiles',
-    );
+    const productionUnitsFeedProfilesArray: ProductionUnitFeedProfileData[] =
+      getLocalItem('productionUnitsFeedProfiles') || [];
     const { data, ...rest } = formData;
 
     const updatedData = productionUnitsFeedProfilesArray?.filter(
-      (data: any) => data.unitName !== selectedUnitName,
+      (data: ProductionUnitFeedProfileData) =>
+        data.unitName !== selectedUnitName,
     );
-    const payload = {
+    const payload: ProductionUnitFeedProfileData = {
       unitName: selectedUnitName,
       feedProfile: {
         ...rest,
@@ -96,7 +103,7 @@ const ProductionUnitFeedProfile: React.FC<Props> = ({
 
   useEffect(() => {
     if (typeof window !== 'undefined' && selectedUnitName) {
-      const formData = getLocalItem('feedProfiles');
+      const formData: FormData | null = getLocalItem('feedProfiles');
       if (formData) {
         setFormProductionFeedProfile(formData);
         Object?.entries(formData).forEach(([key, value]) => {
@@ -104,15 +111,15 @@ const ProductionUnitFeedProfile: React.FC<Props> = ({
         });
       }
     }
-  }, [selectedUnitName]);
+  }, [selectedUnitName, setValue]);
 
   useEffect(() => {
-    const productionUnitsFeedProfilesArray = getLocalItem(
-      'productionUnitsFeedProfiles',
-    );
+    const productionUnitsFeedProfilesArray: ProductionUnitFeedProfileData[] =
+      getLocalItem('productionUnitsFeedProfiles') || [];
 
     const updatedData = productionUnitsFeedProfilesArray?.find(
-      (data: any) => data.unitName === selectedUnitName,
+      (data: ProductionUnitFeedProfileData) =>
+        data.unitName === selectedUnitName,
     );
     if (updatedData) {
       Object.entries(updatedData?.feedProfile).forEach(([key, value]) => {
@@ -122,11 +129,10 @@ const ProductionUnitFeedProfile: React.FC<Props> = ({
   }, [formProductionFeedProfile, selectedUnitName, setValue]);
 
   useEffect(() => {
-    const formProductionFeedProfileArray = getLocalItem(
-      'productionUnitsFeedProfiles',
-    );
+    const formProductionFeedProfileArray: ProductionUnitFeedProfileData[] =
+      getLocalItem('productionUnitsFeedProfiles') || [];
     const currentUnit = formProductionFeedProfileArray?.find(
-      (val: any) => val.unitName === selectedUnitName,
+      (val: ProductionUnitFeedProfileData) => val.unitName === selectedUnitName,
     );
     if (
       isEditFarm &&
@@ -134,16 +140,16 @@ const ProductionUnitFeedProfile: React.FC<Props> = ({
       formProductionFeedProfileArray &&
       !currentUnit
     ) {
-      editFarm?.productionUnits.map((unit: any, i: number) => {
+      editFarm?.productionUnits?.map((unit) => {
         if (
           unit.name === selectedUnitName &&
-          unit.id === unit.FeedProfileProductionUnit[0]?.productionUnitId
+          unit.id === unit.FeedProfileProductionUnit?.[0]?.productionUnitId
         ) {
-          Object.entries(unit?.FeedProfileProductionUnit[0]?.profiles).forEach(
-            ([key, value]) => {
-              setValue(key, String(value));
-            },
-          );
+          Object.entries(
+            unit?.FeedProfileProductionUnit?.[0]?.profiles || {},
+          ).forEach(([key, value]) => {
+            setValue(key, String(value));
+          });
         }
       });
     } else if (formProductionFeedProfileArray?.length && currentUnit) {
@@ -152,6 +158,7 @@ const ProductionUnitFeedProfile: React.FC<Props> = ({
       });
     }
   }, [isEditFarm, editFarm, setValue, selectedUnitName]);
+
   const renderRadioGroup = (
     rowName: string,
     columnName: string,
@@ -191,21 +198,28 @@ const ProductionUnitFeedProfile: React.FC<Props> = ({
       )}
     />
   );
+
   const groupedData = useMemo(() => {
-    return feedSuppliers?.reduce((acc: any[], supplier: FeedSupplier) => {
-      const storesForSupplier = feedStores?.filter((store: any) =>
-        store?.ProductSupplier?.includes(supplier.id),
-      );
+    return feedSuppliers?.reduce(
+      (
+        acc: { supplier: FeedSupplier; stores: FeedProduct[] }[],
+        supplier: FeedSupplier,
+      ) => {
+        const storesForSupplier = feedStores?.filter((store: FeedProduct) =>
+          store?.ProductSupplier?.includes(String(supplier.id)),
+        );
 
-      if (storesForSupplier?.length) {
-        acc.push({
-          supplier,
-          stores: storesForSupplier,
-        });
-      }
+        if (storesForSupplier?.length) {
+          acc.push({
+            supplier,
+            stores: storesForSupplier,
+          });
+        }
 
-      return acc;
-    }, []);
+        return acc;
+      },
+      [] as { supplier: FeedSupplier; stores: FeedProduct[] }[],
+    );
   }, [feedSuppliers, feedStores]);
 
   useEffect(() => {
@@ -226,20 +240,21 @@ const ProductionUnitFeedProfile: React.FC<Props> = ({
 
     setRadioValueMap(map);
   }, [groupedData]);
+
   const handleClose = () => {
     setOpen(false);
     reset();
     setSelectedUnitName('');
   };
+
   return (
     <Modal
       open={open}
-      // onClose={handleClose}
       aria-labelledby="parent-modal-title"
       aria-describedby="parent-modal-description"
       className="modal-positioning"
       BackdropProps={{
-        onClick: (event) => event.stopPropagation(), // Prevents closing on backdrop click
+        onClick: (event) => event.stopPropagation(),
       }}
     >
       <Stack sx={style}>
@@ -265,7 +280,6 @@ const ProductionUnitFeedProfile: React.FC<Props> = ({
             }}
           >
             <Stack>
-              {/* <form onSubmit={handleSubmit(onSubmit)}> */}
               <Typography
                 variant="h6"
                 fontWeight={700}
@@ -414,8 +428,6 @@ const ProductionUnitFeedProfile: React.FC<Props> = ({
                   </Table>
                 </TableContainer>
               </Paper>
-
-              {/* </form> */}
             </Stack>
           </Paper>
 

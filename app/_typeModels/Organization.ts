@@ -81,7 +81,18 @@ export interface AddOrganizationFormInputs {
   fishSpecie?: string;
   hatcheryAltitude?: string;
 }
-
+export interface Hatchery {
+  id: string;
+  name: string;
+  code: string;
+  altitude: string;
+  fishSpecie: string;
+  createdBy?: number | null;
+  updatedBy?: string | null;
+  createdAt: string; // ISO date string from the DB
+  updatedAt: string;
+  organisationId?: number | null;
+}
 export interface OrganizationData {
   id: number;
   image: string;
@@ -96,7 +107,7 @@ export interface OrganizationData {
   addressId: string;
   address: Address;
   contact: Contact[];
-  hatchery: any[];
+  hatchery: Hatchery[];
   Farm: Farm[];
 }
 
@@ -127,6 +138,7 @@ export interface Contact {
   createdAt: string;
   updatedAt: string;
   organisationId: number;
+  newInvite: boolean;
 }
 
 export interface Farm {

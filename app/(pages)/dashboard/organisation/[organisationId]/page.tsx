@@ -10,8 +10,8 @@ export const metadata: Metadata = {
 };
 const Page = async ({ params }: { params: { organisationId: string } }) => {
   const organisations = await getAllOrganisations();
-  const loggedUser: any = getCookie('logged-user', { cookies });
-  const user: SingleUser = JSON.parse(loggedUser);
+  const loggedUser = getCookie('logged-user', { cookies });
+  const user: SingleUser = JSON.parse(loggedUser || '');
   return (
     <>
       <BasicBreadcrumbs

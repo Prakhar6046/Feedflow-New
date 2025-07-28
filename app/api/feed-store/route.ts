@@ -2,13 +2,8 @@ import { FeedProduct } from '@/app/_typeModels/Feed';
 import prisma from '@/prisma/prisma';
 import { NextRequest, NextResponse } from 'next/server';
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
-    const searchParams = request.nextUrl.searchParams;
-    const role = searchParams.get('role');
-    const organisationId = searchParams.get('organisationId');
-    const query = searchParams.get('query');
-
     const feedStores = await prisma.feedStore.findMany({
       orderBy: {
         createdAt: 'asc',
@@ -22,10 +17,9 @@ export async function GET(request: NextRequest) {
       }),
     );
   } catch (error) {
-    return NextResponse.json(
-      { error: 'Internal Server Error' },
-      { status: 500 },
-    );
+    return new NextResponse(JSON.stringify({ status: false, error }), {
+      status: 500,
+    });
   }
 }
 export async function PUT(request: NextRequest) {
@@ -48,10 +42,9 @@ export async function PUT(request: NextRequest) {
       }),
     );
   } catch (error) {
-    return NextResponse.json(
-      { error: 'Internal Server Error' },
-      { status: 500 },
-    );
+    return new NextResponse(JSON.stringify({ status: false, error }), {
+      status: 500,
+    });
   }
 }
 export async function POST(request: NextRequest) {
@@ -74,9 +67,8 @@ export async function POST(request: NextRequest) {
       }),
     );
   } catch (error) {
-    return NextResponse.json(
-      { error: 'Internal Server Error' },
-      { status: 500 },
-    );
+    return new NextResponse(JSON.stringify({ status: false, error }), {
+      status: 500,
+    });
   }
 }

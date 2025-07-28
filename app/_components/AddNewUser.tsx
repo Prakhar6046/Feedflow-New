@@ -16,14 +16,12 @@ import Button from '@mui/material/Button';
 import { styled } from '@mui/material/styles';
 import { useEffect, useState } from 'react';
 
-import Loader from '@/app/_components/Loader';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
-import { getCookie } from 'cookies-next';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import { SingleOrganisation } from '../_typeModels/Organization';
-import { AddUserFormInputs, SingleUser } from '../_typeModels/User';
+import { UserFormInputs } from '../_typeModels/User';
 import { deleteImage, handleUpload } from '../_lib/utils';
 import UserPermission from './user/UserPermission';
 
@@ -44,15 +42,8 @@ const VisuallyHiddenInput = styled('input')({
 
 export default function AddNewUser({ organisations }: Props) {
   const router = useRouter();
-  const loggedUser: any = getCookie('logged-user');
-  const token = getCookie('auth-token');
-  const [userData, setUserData] = useState<{ data: SingleUser }>();
-  const [selectedOrganisation, setSelectedOrganisation] = useState<any>('');
-  const [loading, setLoading] = useState<boolean>(false);
-  const [currentUserId, setCurrentUserId] = useState<number>();
+  const [selectedOrganisation, setSelectedOrganisation] = useState<string>('');
   const [profilePic, setProfilePic] = useState<string>();
-  const [imagePath, setImagePath] = useState<FileList>();
-  const [error, setError] = useState<string | null>(null);
   const [isApiCallInProgress, setIsApiCallInProgress] =
     useState<boolean>(false);
 
@@ -63,8 +54,8 @@ export default function AddNewUser({ organisations }: Props) {
     reset,
     control,
     formState: { errors },
-  } = useForm<AddUserFormInputs>();
-  const onSubmit: SubmitHandler<AddUserFormInputs> = async (data) => {
+  } = useForm<UserFormInputs>();
+  const onSubmit: SubmitHandler<UserFormInputs> = async (data) => {
     // Prevent API call if one is already in progress
     if (isApiCallInProgress) return;
     setIsApiCallInProgress(true);
@@ -80,21 +71,18 @@ export default function AddNewUser({ organisations }: Props) {
         });
         const responseData = await response.json();
         if (responseData.status) {
-          if (imagePath) {
-            const formData = new FormData();
-            formData.append('image', imagePath[0]);
-            const oldImageName = profilePic?.split('/').pop()?.split('.')[0];
-            formData.append('oldImageName', oldImageName || '');
-            formData.append('userId', responseData.data.id);
+          const formData = new FormData();
+          const oldImageName = profilePic?.split('/').pop()?.split('.')[0];
+          formData.append('oldImageName', oldImageName || '');
+          formData.append('userId', responseData.data.id);
 
-            const response = await fetch(`/api/profile-pic/upload`, {
-              method: 'POST',
+          const response = await fetch(`/api/profile-pic/upload`, {
+            method: 'POST',
 
-              body: formData,
-            });
-            const updatedUser = await response.json();
-            setProfilePic(updatedUser.data.imageUrl);
-          }
+            body: formData,
+          });
+          const updatedUser = await response.json();
+          setProfilePic(updatedUser.data.imageUrl);
         } else {
           toast.dismiss();
           toast.error(responseData.message);
@@ -106,7 +94,7 @@ export default function AddNewUser({ organisations }: Props) {
           reset();
         }
       }
-    } catch (error) {
+    } catch {
       toast.error('Something went wrong. Please try again.');
     } finally {
       setIsApiCallInProgress(false);
@@ -116,19 +104,11 @@ export default function AddNewUser({ organisations }: Props) {
     clearErrors('organisationId');
     setSelectedOrganisation(event.target.value as string);
   };
-  useEffect(() => {
-    if (loggedUser) {
-      const user = JSON.parse(loggedUser);
-      setCurrentUserId(user.id);
-    }
-  }, [loggedUser]);
 
   useEffect(() => {
     router.refresh();
   }, []);
-  if (loading) {
-    return <Loader />;
-  }
+
   return (
     <>
       <Stack pb={5}>
@@ -433,8 +413,9 @@ export default function AddNewUser({ organisations }: Props) {
           <UserPermission
             control={control}
             oraginsationType={
-              organisations?.find((org) => org?.id === selectedOrganisation)
-                ?.organisationType
+              organisations?.find(
+                (org) => String(org?.id) === selectedOrganisation,
+              )?.organisationType ?? ''
             }
           />
           <Button

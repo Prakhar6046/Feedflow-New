@@ -11,10 +11,10 @@ const Page: NextPage = async ({
   };
 }) => {
   const cookieStore = cookies(); // ✅ this is safe here in server component
-  const loggedUser: any = cookieStore.get('logged-user')?.value;
+  const loggedUser = cookieStore.get('logged-user')?.value;
   const query = searchParams?.query || '';
 
-  const user = JSON.parse(loggedUser);
+  const user = JSON.parse(loggedUser ?? '');
   const farms = await getFarms({
     role: user.role,
     organisationId: user.organisationId,

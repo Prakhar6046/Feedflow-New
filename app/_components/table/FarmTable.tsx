@@ -19,7 +19,7 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import { getCookie, setCookie } from 'cookies-next';
+import { setCookie } from 'cookies-next';
 import { usePathname, useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import Loader from '../Loader';
@@ -30,7 +30,7 @@ import {
 } from '@/app/_lib/utils/tableHeadData';
 import { getLocalItem, removeLocalItem } from '@/app/_lib/utils';
 import Image from 'next/image';
-import { SingleUser } from '@/app/_typeModels/User';
+import { EnhancedTableHeadProps } from '../UserTable';
 
 interface Props {
   farms: Farm[];
@@ -41,17 +41,18 @@ export default function FarmTable({ farms, permisions }: Props) {
   const pathName = usePathname();
   const dispatch = useAppDispatch();
   const role = useAppSelector(selectRole);
-  const [order, setOrder] = React.useState('asc');
+  const [order, setOrder] = React.useState<'asc' | 'desc'>('asc');
   const [orderBy, setOrderBy] = React.useState('organisation');
   const [farmsData, setFarmsData] = useState<Farm[]>();
   const loading = useAppSelector(selectFarmLoading);
-  const loggedUser: any = getCookie('logged-user');
-  const user: SingleUser = JSON.parse(loggedUser);
-  const [selectedFarm, setSelectedFarm] = useState<any>(null);
+  const [selectedFarm, setSelectedFarm] = useState<Farm | null>(null);
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null,
   );
-  const [sortDataFromLocal, setSortDataFromLocal] = React.useState<any>('');
+  const [sortDataFromLocal, setSortDataFromLocal] = React.useState<{
+    direction: 'asc' | 'desc';
+    column: string;
+  }>({ direction: 'asc', column: '' });
 
   useEffect(() => {
     if (pathName) {
@@ -60,7 +61,7 @@ export default function FarmTable({ farms, permisions }: Props) {
   }, [pathName]);
   const handleClick = (
     event: React.MouseEvent<HTMLButtonElement>,
-    farm: any,
+    farm: Farm,
   ) => {
     setAnchorEl(event.currentTarget);
     setSelectedFarm(farm);
@@ -95,7 +96,7 @@ export default function FarmTable({ farms, permisions }: Props) {
     }
   }, [sortDataFromLocal]);
 
-  function EnhancedTableHead(data: any) {
+  function EnhancedTableHead(data: EnhancedTableHeadProps) {
     const { order, orderBy, onRequestSort } = data;
     const createSortHandler =
       (property: string) => (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -166,16 +167,16 @@ export default function FarmTable({ farms, permisions }: Props) {
       }),
     );
     if (farms) {
-      const sortedData = [...farms].sort((farm1: any, farm2: any) => {
+      const sortedData = [...farms].sort((farm1, farm2) => {
         const orderType = order === 'asc' ? 1 : -1;
         if (property !== 'productUnits') {
           if (farm1.name < farm2.name) return -1 * orderType;
           if (farm1.name > farm2.name) return 1 * orderType;
           return 0;
         } else {
-          if (farm1.productUnits.length < farm2.productUnits.length)
+          if (farm1.productionUnits.length < farm2.productionUnits.length)
             return -1 * orderType;
-          if (farm1.productUnits.length > farm2.productUnits.length)
+          if (farm1.productionUnits.length > farm2.productionUnits.length)
             return 1 * orderType;
           return 0;
         }
@@ -192,16 +193,16 @@ export default function FarmTable({ farms, permisions }: Props) {
       setOrderBy(data.column);
       // handleRequestSort(null, data.column);
       if (farms) {
-        const sortedData = [...farms].sort((farm1: any, farm2: any) => {
+        const sortedData = [...farms].sort((farm1, farm2) => {
           const orderType = data.direction === 'asc' ? -1 : 1;
           if (data.column !== 'productUnits') {
             if (farm1.name < farm2.name) return -1 * orderType;
             if (farm1.name > farm2.name) return 1 * orderType;
             return 0;
           } else {
-            if (farm1.productUnits.length < farm2.productUnits.length)
+            if (farm1.productionUnits.length < farm2.productionUnits.length)
               return -1 * orderType;
-            if (farm1.productUnits.length > farm2.productUnits.length)
+            if (farm1.productionUnits.length > farm2.productionUnits.length)
               return 1 * orderType;
             return 0;
           }
@@ -327,7 +328,7 @@ export default function FarmTable({ farms, permisions }: Props) {
                           </Box>
                         )}
 
-                        {farm.organisation.name}
+                        {farm?.organisation?.name}
                       </Box>
                     </TableCell>
                     <TableCell

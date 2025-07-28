@@ -1,10 +1,10 @@
 import prisma from '@/prisma/prisma';
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 
-export const GET = async (request: NextRequest) => {
+export const GET = async () => {
   try {
-    const searchParams = request.nextUrl.searchParams;
-    const role = searchParams.get('role');
+    // const searchParams = request.nextUrl.searchParams;
+    // const role = searchParams.get('role');
     const organisations = await prisma.organisation.findMany({});
 
     return new NextResponse(

@@ -1,4 +1,4 @@
-import { Farm } from './Farm';
+import { Farm, ProductionParaMeterType } from './Farm';
 import { SingleOrganisation } from './Organization';
 
 export interface Production {
@@ -36,12 +36,14 @@ export interface Production {
   ph: string;
   visibility: string;
   productionUnit: {
-    YearBasedPredicationProductionUnit?: any;
+    YearBasedPredicationProductionUnit?: ProductionParaMeterType[];
     id: string;
     name: string;
     type: string;
     capacity: string;
     waterflowRate: string;
+    createdAt: string;
+    updatedAt: string;
     farmId: string;
   };
   fishSupply: {
@@ -73,6 +75,7 @@ export interface Production {
     ph: string;
     visibility: string;
     productionId: number;
+    createdAt: string;
   }[];
   FishManageHistory: {
     id: number;
@@ -115,10 +118,39 @@ export interface MonthyWaterAverage {
   visibility: number;
   waterTemp: number;
 }
-export interface FarmGroup {
-  farm: string;
-  units: {
+export interface FarmGroupUnit {
+  id: number;
+  waterTemp: string;
+  DO: string;
+  TSS: string;
+  NH4: string;
+  NO3: string;
+  NO2: string;
+  ph: string;
+  createdAt: string;
+  visibility: string;
+  productionUnit: {
+    id: string;
+    name: string;
+    type: string;
+    capacity: string;
+    waterflowRate: string;
+    createdAt: string;
+    updatedAt: string;
+    farmId: string;
+    YearBasedPredicationProductionUnit?: ProductionParaMeterType[];
+  };
+  monthlyAverages?: MonthyFishAverage;
+  yearlyAverages?: MonthyFishAverage;
+  allTimeAverages?: MonthyFishAverage;
+  individualAverages?: MonthyFishAverage;
+  monthlyAveragesWater?: MonthyWaterAverage;
+  yearlyAveragesWater?: MonthyWaterAverage;
+  allTimeAveragesWater?: MonthyWaterAverage;
+  individualAveragesWater?: MonthyWaterAverage;
+  WaterManageHistoryAvgrage?: {
     id: number;
+    currentDate: string;
     waterTemp: string;
     DO: string;
     TSS: string;
@@ -126,46 +158,59 @@ export interface FarmGroup {
     NO3: string;
     NO2: string;
     ph: string;
-    createdAt: string;
     visibility: string;
-    productionUnit: {
-      id: string;
-      name: string;
-      type: string;
-      capacity: string;
-      waterflowRate: string;
-      createdAt: string;
-      updatedAt: string;
-      farmId: string;
-    };
-    monthlyAverages?: MonthyFishAverage;
-    yearlyAverages?: MonthyFishAverage;
-    allTimeAverages?: MonthyFishAverage;
-    individualAverages?: MonthyFishAverage;
-    monthlyAveragesWater?: MonthyWaterAverage;
-    yearlyAveragesWater?: MonthyWaterAverage;
-    allTimeAveragesWater?: MonthyWaterAverage;
-    individualAveragesWater?: MonthyWaterAverage;
-    WaterManageHistoryAvgrage: any;
-    fishManageHistory: any;
+    productionId: number;
+    createdAt: string;
+  }[];
+  fishManageHistory: {
+    id: number;
+    fishFarmId: string;
+    productionUnitId: string;
     biomass: string;
     fishCount: string;
     batchNumberId: number;
+    currentDate: string;
     age: string;
-    field?: string;
     meanLength: string;
     meanWeight: string;
     stockingDensityKG: string;
     stockingDensityNM: string;
     stockingLevel: string;
-    isManager: boolean;
-    fishSupply: {
-      batchNumber: string;
-      age: string;
-    };
+    createdBy: string;
+    updatedBy: string;
+    createdAt: string;
+    updatedAt: string;
+    organisationId: number;
+    field: string;
+    productionId: number;
   }[];
+  biomass: string;
+  fishCount: string;
+  batchNumberId: number;
+  age: string;
+  field?: string;
+  meanLength: string;
+  meanWeight: string;
+  stockingDensityKG: string;
+  stockingDensityNM: string;
+  stockingLevel: string;
+  isManager: boolean;
+  fishSupply: {
+    batchNumber: string;
+    age: string;
+  };
+  farm: Farm;
+  organisation: SingleOrganisation;
+  createdBy: string;
+  updatedBy: string;
+  updatedAt: string;
+}
+export interface FarmGroup {
+  farm: string;
+  units: FarmGroupUnit[];
 }
 [];
+
 export interface FishManageHistoryGroup {
   farm: string;
   units: {
@@ -191,6 +236,13 @@ export interface FishManageHistoryGroup {
     stockingDensityNM: string;
     stockingLevel: string;
     isManager: boolean;
+    organisation: SingleOrganisation;
+    createdBy: string;
+    updatedBy: string;
+    createdAt: string;
+    updatedAt: string;
+    currentDate: string;
+    farm: Farm;
     fishSupply: {
       batchNumber: string;
       age: string;
@@ -221,6 +273,7 @@ export interface FishManageHistoryGroup {
 }
 export interface WaterManageHistoryGroup {
   unit: string;
+  farm: string;
   units: {
     id: number;
     productionUnit: {
@@ -288,6 +341,33 @@ export interface WaterManageHistoryGroup {
       productionId: number;
       visibility: string;
       waterTemp: string;
+    }[];
+    organisation: SingleOrganisation;
+    farm: Farm;
+    createdBy: string;
+    updatedBy: string;
+    updatedAt: string;
+    fishManageHistory: {
+      id: number;
+      fishFarmId: string;
+      productionUnitId: string;
+      biomass: string;
+      fishCount: string;
+      batchNumberId: number;
+      currentDate: string;
+      age: string;
+      meanLength: string;
+      meanWeight: string;
+      stockingDensityKG: string;
+      stockingDensityNM: string;
+      stockingLevel: string;
+      createdBy: string;
+      updatedBy: string;
+      createdAt: string;
+      updatedAt: string;
+      organisationId: number;
+      field: string;
+      productionId: number;
     }[];
   }[];
 }

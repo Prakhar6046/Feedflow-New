@@ -1,8 +1,7 @@
 import { NextPage } from 'next';
 import Loader from '@/app/_components/Loader';
-interface Props {}
 
-const Loading: NextPage<Props> = ({}) => {
+const Loading: NextPage = () => {
   return <Loader />;
 };
 

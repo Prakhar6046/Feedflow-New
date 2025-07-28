@@ -8,9 +8,8 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 import { selectSort } from '@/lib/features/breadcrum/breadcrumSlice';
-import { useAppDispatch, useAppSelector } from '@/lib/hooks';
+import { useAppSelector } from '@/lib/hooks';
 import { getCookie, setCookie } from 'cookies-next';
-import { useDebounce } from '../hooks/useDebounce';
 import SearchBar from './SearchBar';
 import { getLocalItem, removeLocalItem, setLocalItem } from '../_lib/utils';
 interface Props {
@@ -41,16 +40,14 @@ export default function BasicBreadcrumbs({
   const router = useRouter();
   const [updatedPathName, setUpdatedPathName] = useState<string>();
   const sortvalue = useAppSelector(selectSort);
-  const loggedUser: any = getCookie('logged-user');
-  const [open, setOpen] = useState(false);
-  const [status, setStatus] = useState('');
+
   const [currentRole, setCurrentRole] = useState<string>('');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [isSort, setIsSort] = useState<boolean>(false);
-  const [sortDataFromLocal, setSortDataFromLocal] = useState<any>('');
-  const debouncedSearchQuery = useDebounce(searchQuery);
-  const dispatch = useAppDispatch();
-
+  const [sortDataFromLocal, setSortDataFromLocal] = useState<{
+    direction: 'asc' | 'desc';
+    column: string;
+  }>({ direction: 'asc', column: '' });
   const handleClear = () => {
     setSearchQuery('');
   };
@@ -420,7 +417,8 @@ export default function BasicBreadcrumbs({
                     alignItems="center"
                     className="cursor-pointer custom-hover-effect"
                     onClick={() => {
-                      (handleRememberSort(), setIsSort(!isSort));
+                      handleRememberSort();
+                      setIsSort(!isSort);
                     }}
                   >
                     {isSort ? (
@@ -453,7 +451,7 @@ export default function BasicBreadcrumbs({
               </Box>
 
               <Typography variant="body1" color="#979797" fontSize={14}>
-                {status}
+                {/* {status} */}
               </Typography>
             </Box>
           )}
