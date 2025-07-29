@@ -19,9 +19,13 @@ import {
   TableHead,
   TableRow,
   Typography,
+  FormControl,
+  InputLabel,
 } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
+import { MultiSelect } from 'primereact/multiselect';
+
 export const cellStyle = {
   borderBottomColor: '#F5F6F8',
   borderBottomWidth: 2,
@@ -42,11 +46,15 @@ interface Props {
   feedStores: FeedProduct[];
   feedSuppliers: FeedSupplier[];
 }
+export interface SupplierOptions {
+  id: number;
+  option: string;
+}
 interface FormValues {
   [key: string]: string;
 }
-interface GroupedSupplierStores {
-  supplier: FeedSupplier;
+export interface GroupedSupplierStores {
+  supplier: SupplierOptions;
   stores: FeedProduct[];
 }
 const FeedProfiles = ({
@@ -60,6 +68,10 @@ const FeedProfiles = ({
   const [radioValueMap, setRadioValueMap] = useState<
     Record<string, Record<string, string>>
   >({});
+  const [supplierOptions, setSupplierOptions] = useState<SupplierOptions[]>([]);
+  const [selectedSupplier, setSelectedSupplier] = useState<SupplierOptions[]>(
+    [],
+  );
   const onSubmit: SubmitHandler<FormValues> = (data) => {
     setLocalItem('feedProfiles', data);
     setActiveStep(3);
@@ -105,10 +117,10 @@ const FeedProfiles = ({
     />
   );
   const groupedData: GroupedSupplierStores[] = useMemo(() => {
-    return feedSuppliers?.reduce(
-      (acc: GroupedSupplierStores[], supplier: FeedSupplier) => {
+    return selectedSupplier?.reduce(
+      (acc: GroupedSupplierStores[], supplier: SupplierOptions) => {
         const storesForSupplier = feedStores?.filter((store) =>
-          store?.ProductSupplier?.includes(String(supplier.id)),
+          store?.ProductSupplier?.includes(supplier.id),
         );
 
         if (storesForSupplier?.length) {
@@ -122,7 +134,7 @@ const FeedProfiles = ({
       },
       [],
     );
-  }, [feedSuppliers, feedStores]);
+  }, [selectedSupplier, feedStores]);
 
   useEffect(() => {
     if (!groupedData?.length) return;
@@ -135,7 +147,7 @@ const FeedProfiles = ({
 
       group?.stores?.forEach((store: FeedProduct, storeIndex: number) => {
         const optKey = `opt${storeIndex + 1}`;
-        const label = `${store.productName} - ${group.supplier.name}`;
+        const label = `${store.productName} - ${group.supplier.option}`;
         map[colKey][optKey] = label;
       });
     });
@@ -152,7 +164,15 @@ const FeedProfiles = ({
       });
     }
   }, [editFarm]);
-
+  useEffect(() => {
+    if (feedSuppliers?.length) {
+      const options = feedSuppliers?.map((supplier) => {
+        return { option: supplier.name, id: supplier?.id };
+      });
+      setSupplierOptions(options);
+      setSelectedSupplier(options);
+    }
+  }, [feedSuppliers]);
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const formData = getLocalItem('feedProfiles');
@@ -166,19 +186,57 @@ const FeedProfiles = ({
     <>
       <Stack>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <Typography
-            variant="h6"
-            fontWeight={700}
+          <Box
             sx={{
-              fontSize: {
-                md: 24,
-                xs: 20,
-              },
-              marginBottom: 2,
+              display: 'flex',
+              gap: 2,
+              width: '100%',
+              flexWrap: 'wrap',
+              justifyContent: 'space-between',
             }}
           >
-            Feed Profile
-          </Typography>
+            <Typography
+              variant="h6"
+              fontWeight={700}
+              sx={{
+                fontSize: {
+                  md: 24,
+                  xs: 20,
+                },
+                marginBottom: 2,
+              }}
+            >
+              Feed Profile
+            </Typography>
+            <Box>
+              <FormControl fullWidth className="form-input selected" focused>
+                <InputLabel id="feed-supplier-select" className="custom-input">
+                  Feed Suppliers
+                </InputLabel>
+                <MultiSelect
+                  value={selectedSupplier}
+                  onChange={(e) => setSelectedSupplier(e.value)}
+                  selectAllLabel="Select All"
+                  options={supplierOptions}
+                  optionLabel="option"
+                  display="chip"
+                  placeholder="Select Feed Suppliers"
+                  dropdownIcon={
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="10"
+                      height="10"
+                      viewBox="0 0 15 15"
+                    >
+                      <path fill="currentColor" d="M7.5 12L0 4h15z" />
+                    </svg>
+                  }
+                  maxSelectedLabels={3}
+                  className="w-100 max-w-100 custom-select"
+                />
+              </FormControl>
+            </Box>
+          </Box>
           <Paper
             sx={{
               width: '100%',
@@ -236,7 +294,7 @@ const FeedProfiles = ({
                               whiteSpace: 'nowrap',
                             }}
                           >
-                            {tableHead?.supplier?.name}
+                            {tableHead?.supplier?.option}
                           </Typography>
                           <Box>
                             <List

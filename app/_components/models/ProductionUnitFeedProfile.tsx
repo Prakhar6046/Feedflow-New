@@ -12,6 +12,8 @@ import {
   Radio,
   Stack,
   Typography,
+  FormControl,
+  InputLabel,
 } from '@mui/material';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
@@ -23,10 +25,16 @@ import TableRow from '@mui/material/TableRow';
 import { getCookie } from 'cookies-next';
 import { useEffect, useMemo, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import { cellStyle, fishSizes } from '../farm/FeedProfiles';
+import {
+  cellStyle,
+  fishSizes,
+  GroupedSupplierStores,
+  SupplierOptions,
+} from '../farm/FeedProfiles';
 import { CloseIcon } from '../theme/overrides/CustomIcons';
 import { FeedProduct } from '@/app/_typeModels/Feed';
 import { FeedSupplier } from '@/app/_typeModels/Organization';
+import { MultiSelect } from 'primereact/multiselect';
 
 interface Props {
   productionParaMeter?: ProductionParaMeterType[];
@@ -71,6 +79,10 @@ const ProductionUnitFeedProfile: React.FC<Props> = ({
   const [radioValueMap, setRadioValueMap] = useState<
     Record<string, Record<string, string>>
   >({});
+  const [supplierOptions, setSupplierOptions] = useState<SupplierOptions[]>([]);
+  const [selectedSupplier, setSelectedSupplier] = useState<SupplierOptions[]>(
+    [],
+  );
   const [formProductionFeedProfile, setFormProductionFeedProfile] = useState<
     FormData | undefined
   >();
@@ -199,14 +211,11 @@ const ProductionUnitFeedProfile: React.FC<Props> = ({
     />
   );
 
-  const groupedData = useMemo(() => {
-    return feedSuppliers?.reduce(
-      (
-        acc: { supplier: FeedSupplier; stores: FeedProduct[] }[],
-        supplier: FeedSupplier,
-      ) => {
-        const storesForSupplier = feedStores?.filter((store: FeedProduct) =>
-          store?.ProductSupplier?.includes(String(supplier.id)),
+  const groupedData: GroupedSupplierStores[] = useMemo(() => {
+    return selectedSupplier?.reduce(
+      (acc: GroupedSupplierStores[], supplier: SupplierOptions) => {
+        const storesForSupplier = feedStores?.filter((store) =>
+          store?.ProductSupplier?.includes(supplier.id),
         );
 
         if (storesForSupplier?.length) {
@@ -218,9 +227,9 @@ const ProductionUnitFeedProfile: React.FC<Props> = ({
 
         return acc;
       },
-      [] as { supplier: FeedSupplier; stores: FeedProduct[] }[],
+      [],
     );
-  }, [feedSuppliers, feedStores]);
+  }, [selectedSupplier, feedStores]);
 
   useEffect(() => {
     if (!groupedData?.length) return;
@@ -233,14 +242,22 @@ const ProductionUnitFeedProfile: React.FC<Props> = ({
 
       group?.stores?.forEach((store: FeedProduct, storeIndex: number) => {
         const optKey = `opt${storeIndex + 1}`;
-        const label = `${store.productName} - ${group.supplier.name}`;
+        const label = `${store.productName} - ${group.supplier.option}`;
         map[colKey][optKey] = label;
       });
     });
 
     setRadioValueMap(map);
   }, [groupedData]);
-
+  useEffect(() => {
+    if (feedSuppliers?.length) {
+      const options = feedSuppliers?.map((supplier) => {
+        return { option: supplier.name, id: supplier?.id };
+      });
+      setSupplierOptions(options);
+      setSelectedSupplier(options);
+    }
+  }, [feedSuppliers]);
   const handleClose = () => {
     setOpen(false);
     reset();
@@ -280,19 +297,64 @@ const ProductionUnitFeedProfile: React.FC<Props> = ({
             }}
           >
             <Stack>
-              <Typography
-                variant="h6"
-                fontWeight={700}
+              <Box
                 sx={{
-                  fontSize: {
-                    md: 24,
-                    xs: 20,
-                  },
-                  marginBottom: 2,
+                  display: 'flex',
+                  gap: 2,
+                  width: '100%',
+                  flexWrap: 'wrap',
+                  justifyContent: 'space-between',
                 }}
               >
-                Feed Profile
-              </Typography>
+                <Typography
+                  variant="h6"
+                  fontWeight={700}
+                  sx={{
+                    fontSize: {
+                      md: 24,
+                      xs: 20,
+                    },
+                    marginBottom: 2,
+                  }}
+                >
+                  Feed Profile
+                </Typography>
+                <Box>
+                  <FormControl
+                    fullWidth
+                    className="form-input selected"
+                    focused
+                  >
+                    <InputLabel
+                      id="feed-supplier-select"
+                      className="custom-input"
+                    >
+                      Feed Suppliers
+                    </InputLabel>
+                    <MultiSelect
+                      value={selectedSupplier}
+                      onChange={(e) => setSelectedSupplier(e.value)}
+                      selectAllLabel="Select All"
+                      options={supplierOptions}
+                      optionLabel="option"
+                      display="chip"
+                      placeholder="Select Feed Suppliers"
+                      dropdownIcon={
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="10"
+                          height="10"
+                          viewBox="0 0 15 15"
+                        >
+                          <path fill="currentColor" d="M7.5 12L0 4h15z" />
+                        </svg>
+                      }
+                      maxSelectedLabels={3}
+                      className="w-100 max-w-100 custom-select"
+                    />
+                  </FormControl>
+                </Box>
+              </Box>
               <Paper
                 sx={{
                   width: '100%',
@@ -354,7 +416,7 @@ const ProductionUnitFeedProfile: React.FC<Props> = ({
                                   whiteSpace: 'nowrap',
                                 }}
                               >
-                                {tableHead?.supplier?.name}
+                                {tableHead?.supplier?.option}
                               </Typography>
                               <Box>
                                 <List
