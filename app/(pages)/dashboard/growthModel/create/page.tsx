@@ -17,10 +17,7 @@ export default function CreateGrowthModelPage() {
           { name: 'Create Model', link: '/dashboard/growthModel/create' },
         ]}
       />
-      <GrowthModel 
-        farms={[]} 
-        editMode={false}
-      />
+      <GrowthModel farms={[]} editMode={false} />
     </>
   );
 }

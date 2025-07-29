@@ -414,12 +414,11 @@ const WaterTempChart = ({
       chart.canvas.addEventListener('mousemove', (e) => tooltipPosition(e));
 
       const tooltipPosition = (mousemove: MouseEvent) => {
-        let xTooltip, yTooltip;
         const rightSide = right - mousemove.offsetX;
 
-        xTooltip =
+        const xTooltip =
           rightSide <= 170 ? mousemove.offsetX - 170 : mousemove.offsetX + 20;
-        yTooltip =
+        const yTooltip =
           mousemove.offsetY <= 90
             ? mousemove.offsetY + 20
             : mousemove.offsetY - 60;

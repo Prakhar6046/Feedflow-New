@@ -212,6 +212,8 @@ const ProductionUnitFeedProfile: React.FC<Props> = ({
   );
 
   const groupedData: GroupedSupplierStores[] = useMemo(() => {
+    console.log('selected suppliers', selectedSupplier);
+
     return selectedSupplier?.reduce(
       (acc: GroupedSupplierStores[], supplier: SupplierOptions) => {
         const storesForSupplier = feedStores?.filter((store) =>
@@ -270,9 +272,6 @@ const ProductionUnitFeedProfile: React.FC<Props> = ({
       aria-labelledby="parent-modal-title"
       aria-describedby="parent-modal-description"
       className="modal-positioning"
-      BackdropProps={{
-        onClick: (event) => event.stopPropagation(),
-      }}
     >
       <Stack sx={style}>
         <Box display="flex" justifyContent="flex-end" padding={2}>
@@ -295,7 +294,6 @@ const ProductionUnitFeedProfile: React.FC<Props> = ({
               borderRadius: '14px',
               boxShadow: 'none',
               p: 4,
-              pb: 0
             }}
           >
             <Stack>
@@ -348,6 +346,7 @@ const ProductionUnitFeedProfile: React.FC<Props> = ({
                         </svg>
                       }
                       maxSelectedLabels={3}
+                      appendTo="self"
                       className="w-100 max-w-100 custom-select"
                     />
                   </FormControl>
@@ -364,7 +363,6 @@ const ProductionUnitFeedProfile: React.FC<Props> = ({
                 <TableContainer
                   component={Paper}
                   className="feed-profile-table sm"
-
                 >
                   <Table stickyHeader={true}>
                     <TableHead>

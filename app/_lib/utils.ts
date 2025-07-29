@@ -764,27 +764,7 @@ export const exportFeedPredictionToXlsx = async (
       ];
   // Add headers to the sheet
   worksheet.addRow(headers);
-  // Convert data into an array of rows
-  // data.forEach((row: any) => {
-  //   worksheet.addRow([
-  //     row.date,
-  //     row.days,
-  //     row.waterTemp,
-  //     row.fishWeight,
-  //     row.numberOfFish,
-  //     row.biomass,
-  //     row.stockingDensityNM3,
-  //     row.stockingDensityKg,
-  //     row.feedPhase,
-  //     row.feedProtein,
-  //     row.feedDE,
-  //     row.feedPrice,
-  //     row.growth,
-  //     row.estimatedFCR,
-  //     row.partitionedFCR,
-  //     row.feedIntake,
-  //   ]);
-  // });
+
   data.forEach((row: any) => {
     worksheet.addRow(Object.values(row));
   });
@@ -868,7 +848,7 @@ export const CommonFeedPredictionHead = [
 export function calculateFishGrowthTilapia(
   fishWeight: number,
   temp: number,
-  numberOfFishs: any,
+  numberOfFishs: number,
   expectedWaste: number,
   period: number,
   startDate: string,
@@ -880,9 +860,9 @@ export function calculateFishGrowthTilapia(
   const IBW = fishWeight;
   const T = temp;
   let prevWeight = IBW;
-  let prevNumberOfFish: any = numberOfFishs;
-  let prevFishSize: any = IBW;
-  let prevGrowth: any = 0;
+  let prevNumberOfFish: number = numberOfFishs;
+  let prevFishSize: number = IBW;
+  let prevGrowth: number | string = 0;
   const newData = [];
 
   function calculateNoOfFish(
@@ -984,7 +964,7 @@ export function calculateFishGrowthTilapia(
       date: calculateDate(startDate, day),
       days: day,
       averageProjectedTemp: T,
-      numberOfFish: prevNumberOfFish.toFixed(2),
+      numberOfFish: Number(prevNumberOfFish.toFixed(2)),
       expectedWaste,
       fishSize: prevFishSize.toFixed(3),
       growth: prevGrowth,
@@ -1011,7 +991,7 @@ export function calculateFishGrowthTilapia(
 
     // Store new data
     newData.push(newRow);
-    prevFishSize = prevFishSize.toFixed(3);
+    prevFishSize = Number(prevFishSize.toFixed(3));
     prevGrowth = prevGrowth;
     prevWeight = FBW;
     prevFeedIntake = prevFeedIntake;
@@ -1034,9 +1014,9 @@ export function calculateFishGrowthRainBowTrout(
   const IBW = fishWeight;
   const T = temp;
   let prevWeight = IBW;
-  let prevNumberOfFish: any = numberOfFishs;
-  let prevFishSize: any = IBW;
-  let prevGrowth: any = 0;
+  let prevNumberOfFish = numberOfFishs;
+  let prevFishSize: number = IBW;
+  let prevGrowth: number | string = 0;
   const newData = [];
 
   function calculateNoOfFish(
@@ -1167,7 +1147,7 @@ export function calculateFishGrowthRainBowTrout(
 
     // Store new data
     newData.push(newRow);
-    prevFishSize = prevFishSize.toFixed(3);
+    prevFishSize = Number(prevFishSize.toFixed(3));
     prevGrowth = prevGrowth;
     prevWeight = FBW;
     prevFeedIntake = prevFeedIntake;
@@ -1179,7 +1159,7 @@ export function calculateFishGrowthRainBowTrout(
 export function calculateFishGrowthAfricanCatfish(
   fishWeight: number,
   temp: number,
-  numberOfFishs: any,
+  numberOfFishs: number,
   expectedWaste: number,
   period: number,
   startDate: string,
@@ -1189,9 +1169,9 @@ export function calculateFishGrowthAfricanCatfish(
   const IBW = fishWeight;
   const T = temp;
   let prevWeight = IBW;
-  let prevNumberOfFish: any = numberOfFishs;
+  let prevNumberOfFish: number = numberOfFishs;
   let prevFishSize: any = IBW;
-  let prevGrowth: any = 0;
+  let prevGrowth: number | string = 0;
   const newData = [];
 
   function calculateNoOfFish(
@@ -1251,7 +1231,7 @@ export function calculateFishGrowthAfricanCatfish(
     return Math.pow(Math.pow(IBW, b) + (TGC / 100) * sum_td, 1 / b);
   }
 
-  function calculateEstFCR(fishSize: number, DE: number): any {
+  function calculateEstFCR(fishSize: number, DE: number) {
     return Number(((0.009 * fishSize + 12.45) * 1.03) / DE).toFixed(2);
   }
 
@@ -1290,7 +1270,7 @@ export function calculateFishGrowthAfricanCatfish(
       date: calculateDate(startDate, day),
       days: day,
       averageProjectedTemp: T,
-      numberOfFish: prevNumberOfFish.toFixed(2),
+      numberOfFish: Number(prevNumberOfFish.toFixed(2)),
       expectedWaste,
       fishSize: prevFishSize.toFixed(3),
       growth: prevGrowth,
@@ -1308,7 +1288,7 @@ export function calculateFishGrowthAfricanCatfish(
       feedProtein: 400,
       feedDE: 13.47,
       feedPrice: 32,
-      estimatedFCR: estfcr,
+      estimatedFCR: Number(estfcr),
       feedIntake: prevFeedIntake,
       partitionedFCR: 0.0,
       feedingRate: prevFeedingRate.toFixed(2),
@@ -1317,7 +1297,7 @@ export function calculateFishGrowthAfricanCatfish(
 
     // Store new data
     newData.push(newRow);
-    prevFishSize = prevFishSize.toFixed(3);
+    prevFishSize = Number(prevFishSize.toFixed(3));
     prevGrowth = prevGrowth;
     prevWeight = FBW;
     prevFeedIntake = prevFeedIntake;

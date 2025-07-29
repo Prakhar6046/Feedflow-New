@@ -201,7 +201,11 @@ const FeedProfiles = ({
               Feed Profile
             </Typography>
             <Box>
-              <FormControl sx={{ width: 600 }} className="form-input selected" focused>
+              <FormControl
+                sx={{ width: 600 }}
+                className="form-input selected"
+                focused
+              >
                 <InputLabel id="feed-supplier-select" className="custom-input">
                   Feed Suppliers
                 </InputLabel>

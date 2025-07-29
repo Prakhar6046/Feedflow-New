@@ -79,12 +79,15 @@ const TGCFormulas: Record<
 };
 
 const FeedConversionRatioModels = ['linear'] as const;
-type FeedConversionRatioModel = typeof FeedConversionRatioModels[number];
+type FeedConversionRatioModel = (typeof FeedConversionRatioModels)[number];
 
-const tFCRFormulas: Record<FeedConversionRatioModel, {
-  formula: string;
-  defaultValues: Partial<Pick<InputType, 'tFCRa' | 'tFCRb' | 'tFCRc'>>;
-}> = {
+const tFCRFormulas: Record<
+  FeedConversionRatioModel,
+  {
+    formula: string;
+    defaultValues: Partial<Pick<InputType, 'tFCRa' | 'tFCRb' | 'tFCRc'>>;
+  }
+> = {
   linear: {
     formula: 'tFCR = a + b * IBW^c',
     defaultValues: {
@@ -95,12 +98,12 @@ const tFCRFormulas: Record<FeedConversionRatioModel, {
   },
 };
 
-function GrowthModel({ 
-  farms, 
-  editMode = false, 
-  modelData = null, 
-  modelId = null 
-}: { 
+function GrowthModel({
+  farms,
+  editMode = false,
+  modelData = null,
+  modelId = null,
+}: {
   farms: Farm[];
   editMode?: boolean;
   modelData?: any;
@@ -135,7 +138,8 @@ function GrowthModel({
       message: 'Only numeric values are allowed',
     },
   };
-  const [selectedFCRModel, setSelectedFCRModel] = useState<FeedConversionRatioModel>('linear');
+  const [selectedFCRModel, setSelectedFCRModel] =
+    useState<FeedConversionRatioModel>('linear');
   const selectedModel = watch('temperatureCoefficient');
 
   // Pre-fill form data when in edit mode
@@ -151,7 +155,10 @@ function GrowthModel({
       setValue('geCf', modelData.geCf || 0);
       setValue('geNfe', modelData.geNfe || 0);
       setValue('wasteFactor', modelData.wasteFactor || 0);
-      setValue('temperatureCoefficient', modelData.temperatureCoefficient || 'logarithmic');
+      setValue(
+        'temperatureCoefficient',
+        modelData.temperatureCoefficient || 'logarithmic',
+      );
       setValue('a', modelData.tgcA || 0);
       setValue('b', modelData.tgcB || 0);
       setValue('c', modelData.tgcC || 0);
@@ -161,7 +168,7 @@ function GrowthModel({
       setValue('tFCRa', modelData.tFCRa || 0);
       setValue('tFCRb', modelData.tFCRb || 0);
       setValue('tFCRc', modelData.tFCRc || 0);
-      
+
       setSpecies(modelData.specie || '');
       setProductionSystem(modelData.productionSystem || '');
       setSelectedFCRModel(modelData.tFCRModel || 'linear');
@@ -172,12 +179,12 @@ function GrowthModel({
     // Set TGC defaults
     const defaults = TGCFormulas[selectedModel].defaultValues;
     Object.entries(defaults).forEach(([key, val]) =>
-      setValue(key as keyof InputType, val!)
+      setValue(key as keyof InputType, val!),
     );
     // Set tFCR defaults
     const fcrDefaults = tFCRFormulas[selectedFCRModel].defaultValues;
     Object.entries(fcrDefaults).forEach(([key, val]) =>
-      setValue(key as keyof InputType, val as any)
+      setValue(key as keyof InputType, val as any),
     );
   }, [selectedModel, selectedFCRModel, setValue]);
 
@@ -189,13 +196,11 @@ function GrowthModel({
       setIsApiCallInProgress(true);
       setLoading(true);
       try {
-        const url = editMode 
-          ? `/api/growth-model` 
-          : '/api/growth-model';
-        
+        const url = editMode ? `/api/growth-model` : '/api/growth-model';
+
         const method = editMode ? 'PUT' : 'POST';
-        
-        const body = editMode 
+
+        const body = editMode
           ? {
               modelId: modelId,
               model: {
@@ -259,11 +264,16 @@ function GrowthModel({
         if (response.ok) {
           const result = await response.json();
           toast.dismiss();
-          toast.success(result.message || (editMode ? 'Growth model updated successfully' : 'Growth model created successfully'));
+          toast.success(
+            result.message ||
+              (editMode
+                ? 'Growth model updated successfully'
+                : 'Growth model created successfully'),
+          );
           setSpecies('');
           setProductionSystem('');
           reset();
-          
+
           // Navigate to the growth model list after successful save (both create and edit)
           router.push('/dashboard/growthModel');
         } else {
@@ -315,21 +325,28 @@ function GrowthModel({
                 <Grid container spacing={2}>
                   <Grid item md={4} xs={12}>
                     <FormControl fullWidth className="form-input" focused>
-                      <InputLabel id="feed-supply-select-label5">Name *</InputLabel>
+                      <InputLabel id="feed-supply-select-label5">
+                        Name *
+                      </InputLabel>
                       <TextField
                         label="Name *"
                         type="text"
                         className="form-input"
                         focused
-                        {...register("name", { required: true })}
+                        {...register('name', { required: true })}
                         error={!!errors.name}
                         sx={{
-                          width: "100%",
+                          width: '100%',
                         }}
                       />
                     </FormControl>
-                    <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
-                      {errors.name ? "This field is required." : ""}
+                    <Typography
+                      variant="body2"
+                      color="red"
+                      fontSize={13}
+                      mt={0.5}
+                    >
+                      {errors.name ? 'This field is required.' : ''}
                     </Typography>
                   </Grid>
 
@@ -363,18 +380,22 @@ function GrowthModel({
                         >
                           African Catfish
                         </MenuItem>
-                        <MenuItem
-                          value={'Rainbow Trout'}
-                          key={'Rainbow Trout'}
-                        >
+                        <MenuItem value={'Rainbow Trout'} key={'Rainbow Trout'}>
                           Rainbow Trout
                         </MenuItem>
                       </Select>
                       {errors.specie && (
-                        <FormHelperText sx={{ color: '#d32f2f' }}></FormHelperText>
+                        <FormHelperText
+                          sx={{ color: '#d32f2f' }}
+                        ></FormHelperText>
                       )}
                     </FormControl>
-                    <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                    <Typography
+                      variant="body2"
+                      color="red"
+                      fontSize={13}
+                      mt={0.5}
+                    >
                       {errors.specie ? 'This field is required.' : ''}
                     </Typography>
                   </Grid>
@@ -397,24 +418,47 @@ function GrowthModel({
                           clearErrors('productionSystem');
                         }}
                       >
-                        <MenuItem value="General" key="General">General</MenuItem>
-                        <MenuItem value="Recirculation aquaculture system (RAS)" key="RAS">
+                        <MenuItem value="General" key="General">
+                          General
+                        </MenuItem>
+                        <MenuItem
+                          value="Recirculation aquaculture system (RAS)"
+                          key="RAS"
+                        >
                           Recirculation aquaculture system (RAS)
                         </MenuItem>
-                        <MenuItem value="Green water / bio floc" key="GreenWater">
+                        <MenuItem
+                          value="Green water / bio floc"
+                          key="GreenWater"
+                        >
                           Green water / bio floc
                         </MenuItem>
-                        <MenuItem value="Intensive" key="Intensive">Intensive</MenuItem>
-                        <MenuItem value="Semi-intensive" key="SemiIntensive">Semi-intensive</MenuItem>
-                        <MenuItem value="Ponds" key="Ponds">Ponds</MenuItem>
-                        <MenuItem value="Raceways" key="Raceways">Raceways</MenuItem>
-                        <MenuItem value="Cages" key="Cages">Cages</MenuItem>
+                        <MenuItem value="Intensive" key="Intensive">
+                          Intensive
+                        </MenuItem>
+                        <MenuItem value="Semi-intensive" key="SemiIntensive">
+                          Semi-intensive
+                        </MenuItem>
+                        <MenuItem value="Ponds" key="Ponds">
+                          Ponds
+                        </MenuItem>
+                        <MenuItem value="Raceways" key="Raceways">
+                          Raceways
+                        </MenuItem>
+                        <MenuItem value="Cages" key="Cages">
+                          Cages
+                        </MenuItem>
                       </Select>
                       {errors.productionSystem && (
                         <FormHelperText sx={{ color: '#d32f2f' }} />
                       )}
                     </FormControl>
-                    <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                    <Typography
+                      variant="body2"
+                      color="red"
+                      fontSize={13}
+                      mt={0.5}
+                    >
                       {errors.specie ? 'This field is required.' : ''}
                     </Typography>
                   </Grid>
@@ -470,7 +514,9 @@ function GrowthModel({
                         %
                       </Typography>
                       {errors.adcCp && (
-                        <FormHelperText error>{errors.adcCp.message}</FormHelperText>
+                        <FormHelperText error>
+                          {errors.adcCp.message}
+                        </FormHelperText>
                       )}
                     </Box>
                   </Grid>
@@ -503,7 +549,9 @@ function GrowthModel({
                         %
                       </Typography>
                       {errors.adcCf && (
-                        <FormHelperText error>{errors.adcCf.message}</FormHelperText>
+                        <FormHelperText error>
+                          {errors.adcCf.message}
+                        </FormHelperText>
                       )}
                     </Box>
                   </Grid>
@@ -536,7 +584,9 @@ function GrowthModel({
                         %
                       </Typography>
                       {errors.adcNfe && (
-                        <FormHelperText error>{errors.adcNfe.message}</FormHelperText>
+                        <FormHelperText error>
+                          {errors.adcNfe.message}
+                        </FormHelperText>
                       )}
                     </Box>
                   </Grid>
@@ -569,7 +619,9 @@ function GrowthModel({
                         MJ/kg
                       </Typography>
                       {errors.geCp && (
-                        <FormHelperText error>{errors.geCp.message}</FormHelperText>
+                        <FormHelperText error>
+                          {errors.geCp.message}
+                        </FormHelperText>
                       )}
                     </Box>
                   </Grid>
@@ -602,7 +654,9 @@ function GrowthModel({
                         MJ/kg
                       </Typography>
                       {errors.geCf && (
-                        <FormHelperText error>{errors.geCf.message}</FormHelperText>
+                        <FormHelperText error>
+                          {errors.geCf.message}
+                        </FormHelperText>
                       )}
                     </Box>
                   </Grid>
@@ -635,7 +689,9 @@ function GrowthModel({
                         MJ/kg
                       </Typography>
                       {errors.geNfe && (
-                        <FormHelperText error>{errors.geNfe.message}</FormHelperText>
+                        <FormHelperText error>
+                          {errors.geNfe.message}
+                        </FormHelperText>
                       )}
                     </Box>
                   </Grid>
@@ -668,7 +724,9 @@ function GrowthModel({
                         %
                       </Typography>
                       {errors.wasteFactor && (
-                        <FormHelperText error>{errors.wasteFactor.message}</FormHelperText>
+                        <FormHelperText error>
+                          {errors.wasteFactor.message}
+                        </FormHelperText>
                       )}
                     </Box>
                   </Grid>
@@ -703,12 +761,17 @@ function GrowthModel({
                       </InputLabel>
                       <Select
                         labelId="feed-supply-select-label5"
-                           label="Model *"
+                        label="Model *"
                         id="feed-supply-select5"
-                        {...register('temperatureCoefficient', { required: true })}
+                        {...register('temperatureCoefficient', {
+                          required: true,
+                        })}
                         value={selectedModel}
                         onChange={(e) => {
-                          setValue('temperatureCoefficient', e.target.value as CoefficientModel);
+                          setValue(
+                            'temperatureCoefficient',
+                            e.target.value as CoefficientModel,
+                          );
                           clearErrors('temperatureCoefficient');
                         }}
                       >
@@ -740,24 +803,26 @@ function GrowthModel({
                       <Typography variant="body1" component={'span'}>
                         {selectedModel === 'logarithmic' && (
                           <>
-                            {watch('a') ?? 'a'} × ln(T - {watch('b') ?? 'b'}) + {watch('c') ?? 'c'}
+                            {watch('a') ?? 'a'} × ln(T - {watch('b') ?? 'b'}) +{' '}
+                            {watch('c') ?? 'c'}
                           </>
                         )}
                         {selectedModel === 'quadratic' && (
                           <>
-                            {watch('a') ?? 'a'} × T² + {watch('b') ?? 'b'} × T + {watch('c') ?? 'c'}
+                            {watch('a') ?? 'a'} × T² + {watch('b') ?? 'b'} × T +{' '}
+                            {watch('c') ?? 'c'}
                           </>
                         )}
                         {selectedModel === 'polynomial' && (
                           <>
-                            {watch('a') ?? 'a'} × T^0.125 + {watch('b') ?? 'b'} × T^0.25 +{' '}
-                            {watch('c') ?? 'c'} × T^0.5 + {watch('d') ?? 'd'} × T + {watch('e') ?? 'e'}
+                            {watch('a') ?? 'a'} × T^0.125 + {watch('b') ?? 'b'}{' '}
+                            × T^0.25 + {watch('c') ?? 'c'} × T^0.5 +{' '}
+                            {watch('d') ?? 'd'} × T + {watch('e') ?? 'e'}
                           </>
                         )}
                       </Typography>
                     </Typography>
                   </Grid>
-
 
                   {(['a', 'b', 'c'] as const).map((field) => (
                     <Grid item md={4} xs={12} key={field}>
@@ -774,7 +839,12 @@ function GrowthModel({
                         />
                       </FormControl>
                       {errors[field] && (
-                        <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                        <Typography
+                          variant="body2"
+                          color="red"
+                          fontSize={13}
+                          mt={0.5}
+                        >
                           This field is required.
                         </Typography>
                       )}
@@ -797,13 +867,17 @@ function GrowthModel({
                           />
                         </FormControl>
                         {errors[field] && (
-                          <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                          <Typography
+                            variant="body2"
+                            color="red"
+                            fontSize={13}
+                            mt={0.5}
+                          >
                             This field is required.
                           </Typography>
                         )}
                       </Grid>
                     ))}
-
                 </Grid>
               </Box>
 
@@ -838,13 +912,17 @@ function GrowthModel({
                         id="feed-supply-select5"
                         label="Model *"
                         value={selectedFCRModel}
-                        onChange={e => {
-                          setSelectedFCRModel(e.target.value as FeedConversionRatioModel);
+                        onChange={(e) => {
+                          setSelectedFCRModel(
+                            e.target.value as FeedConversionRatioModel,
+                          );
                           // clearErrors if you add validation
                         }}
                       >
-                        {FeedConversionRatioModels.map(model => (
-                          <MenuItem value={model} key={model}>{model.charAt(0).toUpperCase() + model.slice(1)}</MenuItem>
+                        {FeedConversionRatioModels.map((model) => (
+                          <MenuItem value={model} key={model}>
+                            {model.charAt(0).toUpperCase() + model.slice(1)}
+                          </MenuItem>
                         ))}
                       </Select>
                     </FormControl>
@@ -852,14 +930,19 @@ function GrowthModel({
                   <Grid item md={8} xs={12} sx={{ alignSelf: 'center' }}>
                     <Typography variant="body1" fontWeight={600} mb={1}>
                       <Typography variant="body1" component={'span'}>
-                        {tFCRFormulas[selectedFCRModel].formula.replace('a', String(watch('tFCRa') ?? 'a')).replace('b', String(watch('tFCRb') ?? 'b')).replace('c', String(watch('tFCRc') ?? 'c'))}
+                        {tFCRFormulas[selectedFCRModel].formula
+                          .replace('a', String(watch('tFCRa') ?? 'a'))
+                          .replace('b', String(watch('tFCRb') ?? 'b'))
+                          .replace('c', String(watch('tFCRc') ?? 'c'))}
                       </Typography>
                     </Typography>
                   </Grid>
                   {(['tFCRa', 'tFCRb', 'tFCRc'] as const).map((field) => (
                     <Grid item md={4} xs={12} key={field}>
                       <FormControl fullWidth className="form-input" focused>
-                        <InputLabel id={`label-fcr-${field}`}>{field.replace('tFCR', '')}</InputLabel>
+                        <InputLabel id={`label-fcr-${field}`}>
+                          {field.replace('tFCR', '')}
+                        </InputLabel>
                         <TextField
                           label={field.replace('tFCR', '')}
                           type="number"
@@ -871,7 +954,12 @@ function GrowthModel({
                         />
                       </FormControl>
                       {errors[field] && (
-                        <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                        <Typography
+                          variant="body2"
+                          color="red"
+                          fontSize={13}
+                          mt={0.5}
+                        >
                           {errors[field]?.message}
                         </Typography>
                       )}
