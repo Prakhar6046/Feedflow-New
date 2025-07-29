@@ -186,15 +186,7 @@ const FeedProfiles = ({
     <>
       <Stack>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <Box
-            sx={{
-              display: 'flex',
-              gap: 2,
-              width: '100%',
-              flexWrap: 'wrap',
-              justifyContent: 'space-between',
-            }}
-          >
+          <Box sx={{ mb: 3 }}>
             <Typography
               variant="h6"
               fontWeight={700}
@@ -209,7 +201,7 @@ const FeedProfiles = ({
               Feed Profile
             </Typography>
             <Box>
-              <FormControl fullWidth className="form-input selected" focused>
+              <FormControl sx={{ width: 600 }} className="form-input selected" focused>
                 <InputLabel id="feed-supplier-select" className="custom-input">
                   Feed Suppliers
                 </InputLabel>

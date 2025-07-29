@@ -292,18 +292,14 @@ const ProductionUnitFeedProfile: React.FC<Props> = ({
             sx={{
               width: '100%',
               overflow: 'hidden',
-              borderRadius: '14px',
-              boxShadow: '0px 0px 16px 5px #0000001A',
+              boxShadow: 'none',
+              p: 4
             }}
           >
             <Stack>
               <Box
                 sx={{
-                  display: 'flex',
-                  gap: 2,
-                  width: '100%',
-                  flexWrap: 'wrap',
-                  justifyContent: 'space-between',
+                  mb: 3,
                 }}
               >
                 <Typography
@@ -321,7 +317,7 @@ const ProductionUnitFeedProfile: React.FC<Props> = ({
                 </Typography>
                 <Box>
                   <FormControl
-                    fullWidth
+                    sx={{ width: 600 }}
                     className="form-input selected"
                     focused
                   >

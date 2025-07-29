@@ -16,6 +16,8 @@ import {
 import { useEffect, useState } from 'react';
 import { MultiSelect } from 'primereact/multiselect';
 
+
+
 export interface FeedSupply {
   id: string;
   feedIngredients: string;
@@ -124,7 +126,7 @@ const FeedSelection = ({ data, feedSuppliers }: Iprops) => {
 
   return (
     <Stack>
-      <Box sx={{ display: 'flex', gap: 2, width: '100%', flexWrap: 'wrap' }}>
+      <Box>
         <Typography
           variant="h6"
           fontWeight={700}
@@ -139,7 +141,9 @@ const FeedSelection = ({ data, feedSuppliers }: Iprops) => {
           Feed Selection
         </Typography>
         <Box>
-          <FormControl fullWidth className="form-input selected" focused>
+          <FormControl className="form-input selected" focused style={{
+            width: 600
+          }}>
             <InputLabel id="feed-supplier-select" className="custom-input">
               Feed Suppliers
             </InputLabel>
@@ -162,7 +166,7 @@ const FeedSelection = ({ data, feedSuppliers }: Iprops) => {
                 </svg>
               }
               maxSelectedLabels={3}
-              className="w-100 max-w-100 custom-select"
+              className="custom-select"
             />
           </FormControl>
         </Box>
@@ -172,6 +176,7 @@ const FeedSelection = ({ data, feedSuppliers }: Iprops) => {
         sx={{
           width: '100%',
           overflowX: 'auto',
+          mt: 3
         }}
       >
         <Grid
