@@ -51,7 +51,7 @@ type RawDataItem = {
   teamp: number;
   noOfFish: number;
   fishSize: string;
-  growth: number;
+  growth: number | string;
   feedType: string;
   feedSize: string;
   estimatedFCR: number;
@@ -75,7 +75,7 @@ export interface FishFeedingData {
   feedType: string;
   feedingRate: string;
   fishSize: string;
-  growth: number;
+  growth: number | string;
   numberOfFish: number;
   partitionedFCR: number;
 }

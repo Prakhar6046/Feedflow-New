@@ -10,8 +10,11 @@ import {
   ListItemIcon,
   Stack,
   Typography,
+  FormControl,
+  InputLabel,
 } from '@mui/material';
 import { useEffect, useState } from 'react';
+import { MultiSelect } from 'primereact/multiselect';
 
 export interface FeedSupply {
   id: string;
@@ -83,31 +86,99 @@ type Iprops = {
 };
 const FeedSelection = ({ data, feedSuppliers }: Iprops) => {
   const [feedStores, setFeedStores] = useState<FeedProduct[]>();
+  const [supplierOptions, setSupplierOptions] = useState<
+    {
+      id: number;
+      option: string;
+    }[]
+  >([]);
+  const [selectedSupplier, setSelectedSupplier] = useState<
+    {
+      id: number;
+      option: string;
+    }[]
+  >([]);
 
   useEffect(() => {
-    setFeedStores(data);
-  }, [data]);
+    if (selectedSupplier?.length && data?.length) {
+      const selectedIds = selectedSupplier.map((s) => s.id);
+      const filteredStores = data?.filter((store) =>
+        store?.ProductSupplier?.some((supplierId) =>
+          selectedIds.includes(supplierId),
+        ),
+      );
+      setFeedStores(filteredStores);
+    } else {
+      setFeedStores([]);
+    }
+  }, [selectedSupplier, data]);
+  useEffect(() => {
+    if (feedSuppliers?.length) {
+      const options = feedSuppliers?.map((supplier) => {
+        return { option: supplier.name, id: supplier?.id };
+      });
+      setSupplierOptions(options);
+      setSelectedSupplier(options);
+    }
+  }, [feedSuppliers]);
 
   return (
     <Stack>
-      <Typography
-        variant="h6"
-        fontWeight={700}
-        sx={{
-          fontSize: {
-            md: 24,
-            xs: 20,
-          },
-          marginBottom: 3,
-        }}
-      >
-        Feed Selection
-      </Typography>
+      <Box>
+        <Typography
+          variant="h6"
+          fontWeight={700}
+          sx={{
+            fontSize: {
+              md: 24,
+              xs: 20,
+            },
+            marginBottom: 3,
+          }}
+        >
+          Feed Selection
+        </Typography>
+        <Box>
+          <FormControl
+            className="form-input selected"
+            focused
+            style={{
+              width: 600,
+            }}
+          >
+            <InputLabel id="feed-supplier-select" className="custom-input">
+              Feed Suppliers
+            </InputLabel>
+            <MultiSelect
+              value={selectedSupplier}
+              onChange={(e) => setSelectedSupplier(e.value)}
+              selectAllLabel="Select All"
+              options={supplierOptions}
+              optionLabel="option"
+              display="chip"
+              placeholder="Select Feed Suppliers"
+              dropdownIcon={
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="10"
+                  height="10"
+                  viewBox="0 0 15 15"
+                >
+                  <path fill="currentColor" d="M7.5 12L0 4h15z" />
+                </svg>
+              }
+              maxSelectedLabels={3}
+              className="custom-select"
+            />
+          </FormControl>
+        </Box>
+      </Box>
 
       <Box
         sx={{
           width: '100%',
           overflowX: 'auto',
+          mt: 3,
         }}
       >
         <Grid
@@ -121,9 +192,8 @@ const FeedSelection = ({ data, feedSuppliers }: Iprops) => {
         >
           {feedStores?.length ? (
             feedStores?.map((supply) => {
-              const supplierName = feedSuppliers?.find(
-                (supplier: FeedSupplier) =>
-                  supply?.ProductSupplier?.includes(String(supplier?.id)),
+              const supplierName = feedSuppliers?.find((supplier) =>
+                supply?.ProductSupplier?.includes(supplier?.id),
               )?.name;
               return (
                 <Grid item xs="auto" key={Number(supply?.id)}>
@@ -709,40 +779,6 @@ const FeedSelection = ({ data, feedSuppliers }: Iprops) => {
           )}
         </Grid>
       </Box>
-
-      {/* <Box>
-        <Box
-          display={"flex"}
-          alignItems={"center"}
-          mt={3}
-          gap={2}
-          flexWrap={"wrap"}
-          justifyContent={"end"}
-          width={"100%"}
-        >
-          <Box
-            display={"flex"}
-            justifyContent={"flex-end"}
-            alignItems={"center"}
-            gap={3}
-          >
-            <Button
-              type="button"
-              variant="contained"
-              sx={{
-                background: "#06A19B",
-                fontWeight: 600,
-                padding: "6px 16px",
-                width: "fit-content",
-                textTransform: "capitalize",
-                borderRadius: "8px",
-              }}
-            >
-              Next
-            </Button>
-          </Box>
-        </Box>
-      </Box> */}
     </Stack>
   );
 };

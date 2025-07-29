@@ -2221,7 +2221,8 @@ export default function ProductionTable({
                                   />
                                   <MenuItem
                                     onClick={() => {
-                                      (setAnchorEl(null), setTest(true));
+                                      setAnchorEl(null);
+                                      setTest(true);
                                     }}
                                     sx={{
                                       width: 190,

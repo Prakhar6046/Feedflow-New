@@ -9,10 +9,13 @@ export const metadata: Metadata = {
 
 async function getModelData(modelId: string) {
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/growth-model?id=${modelId}&type=models`, {
-      cache: 'no-store',
-    });
-    
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/growth-model?id=${modelId}&type=models`,
+      {
+        cache: 'no-store',
+      },
+    );
+
     if (response.ok) {
       const data = await response.json();
       return data.data;
@@ -58,12 +61,12 @@ export default async function EditGrowthModelPage({
           { name: 'Edit Model', link: `/dashboard/growthModel/${modelId}` },
         ]}
       />
-      <GrowthModel 
-        farms={[]} 
+      <GrowthModel
+        farms={[]}
         editMode={true}
         modelData={modelData}
         modelId={modelId}
       />
     </>
   );
-} 
+}
