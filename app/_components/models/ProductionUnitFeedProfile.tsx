@@ -292,8 +292,10 @@ const ProductionUnitFeedProfile: React.FC<Props> = ({
             sx={{
               width: '100%',
               overflow: 'hidden',
+              borderRadius: '14px',
               boxShadow: 'none',
-              p: 4
+              p: 4,
+              pb: 0
             }}
           >
             <Stack>
@@ -361,7 +363,8 @@ const ProductionUnitFeedProfile: React.FC<Props> = ({
               >
                 <TableContainer
                   component={Paper}
-                  className="feed-profile-table"
+                  className="feed-profile-table sm"
+
                 >
                   <Table stickyHeader={true}>
                     <TableHead>
