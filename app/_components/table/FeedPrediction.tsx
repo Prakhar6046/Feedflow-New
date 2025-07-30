@@ -141,7 +141,7 @@ const FeedPredictionTable = ({ farms, productions }: Props) => {
       ) : selectedFeeding === 'feedingSummary' ? (
         <FeedingSummary />
       ) : (
-        <AdHoc data={adHocData} setData={setAdHocData} />
+        <AdHoc data={adHocData} setData={setAdHocData} farms={farms} />
       )}
     </>
   );

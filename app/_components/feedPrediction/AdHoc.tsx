@@ -120,7 +120,7 @@ function AdHoc({ data, setData }: Iprops) {
             Number(diffInDays),
             formattedDate,
             1,
-            13.9,
+            13.47,
           ),
         );
       } else if (data.species === 'African Catfish') {

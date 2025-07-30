@@ -1,5 +1,7 @@
 'use clinet';
 import {
+  calculateFishGrowthAfricanCatfish,
+  calculateFishGrowthRainBowTrout,
   calculateFishGrowthTilapia,
   CommonFeedPredictionHead,
   exportFeedPredictionToXlsx,
@@ -665,18 +667,44 @@ function FeedingPlanOutput() {
               farmId: unit?.farm?.id ?? '',
               unitId: unit.id,
               unit: unit.productionUnit.name,
-              fishGrowthData: calculateFishGrowthTilapia(
-                Number(data?.fishWeight ?? 0),
-                data?.tempSelection === 'default'
-                  ? Number(unit?.waterTemp ?? 0)
-                  : Number(data?.temp),
-                Number(unit.fishCount ?? 0),
-                Number(data.adjustmentFactor),
-                Number(diffInDays),
-                formattedDate,
-                data?.timeInterval ?? 0,
-                13.47,
-              ),
+              fishGrowthData: data?.species === 'Rainbow Trout'
+                ? calculateFishGrowthRainBowTrout(
+                    Number(data?.fishWeight ?? 0),
+                    data?.tempSelection === 'default'
+                      ? Number(unit?.waterTemp ?? 0)
+                      : Number(data?.temp),
+                    Number(unit.fishCount ?? 0),
+                    Number(data.adjustmentFactor),
+                    Number(diffInDays),
+                    formattedDate,
+                    data?.timeInterval ?? 0,
+                    13.47,
+                  )
+                : data?.species === 'African Catfish'
+                ? calculateFishGrowthAfricanCatfish(
+                    Number(data?.fishWeight ?? 0),
+                    data?.tempSelection === 'default'
+                      ? Number(unit?.waterTemp ?? 0)
+                      : Number(data?.temp),
+                    Number(unit.fishCount ?? 0),
+                    Number(data.adjustmentFactor),
+                    Number(diffInDays),
+                    formattedDate,
+                    data?.timeInterval ?? 0,
+                    13.47,
+                  )
+                : calculateFishGrowthTilapia(
+                    Number(data?.fishWeight ?? 0),
+                    data?.tempSelection === 'default'
+                      ? Number(unit?.waterTemp ?? 0)
+                      : Number(data?.temp),
+                    Number(unit.fishCount ?? 0),
+                    Number(data.adjustmentFactor),
+                    Number(diffInDays),
+                    formattedDate,
+                    data?.timeInterval ?? 0,
+                    13.47,
+                  ),
             };
           }),
       );

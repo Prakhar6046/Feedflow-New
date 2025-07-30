@@ -880,6 +880,7 @@ export function calculateFishGrowthTilapia(
     temperatureJ5: number,
     constantE7: number,
   ) {
+
     const rootVolume = Math.pow(volumeM4, 1 / 3);
     const logPart = -0.003206 + 0.001705 * Math.log(temperatureJ5 - 11.25);
     const addition = rootVolume + logPart * constantE7 * temperatureJ5;
@@ -1011,6 +1012,7 @@ export function calculateFishGrowthRainBowTrout(
   timeInterval: number,
   DE: number,
 ) {
+  console.log('-----',fishWeight, temp, numberOfFishs, expectedWaste, period, startDate, timeInterval, DE);
   const IBW = fishWeight;
   const T = temp;
   let prevWeight = IBW;
@@ -1024,13 +1026,13 @@ export function calculateFishGrowthRainBowTrout(
     growthRateL4: number,
     timeH5: number,
   ) {
-    const growthMultiplier = growthRateL4 / 100 + 1;
-    const growthComponent = Math.pow(growthMultiplier, timeH5) - 1;
-    const fishSize = initialSizeK4 * (1 - growthComponent);
+    // Rainbow trout formula: K4*(1-(POWER(L4/100+1,H5)-1))
+    const fishSize = initialSizeK4 * (2 - Math.pow(growthRateL4 / 100 + 1, timeH5));
     return fishSize;
   }
 
   const calculateFishSize = (fishSize: number, temp: number) => {
+
     const part1 = Math.pow(fishSize, 0.333333);
     const part2 =
       4.283547943 * Math.pow(temp, 0.125) +
@@ -1038,7 +1040,6 @@ export function calculateFishGrowthRainBowTrout(
       0.4443081526 * Math.pow(temp, 0.5) +
       -0.011762442 * Math.pow(temp, 1) +
       -1.805789941;
-
     const combined = Math.pow(part1 + part2 * temp, 3);
     return combined;
   };
@@ -1048,14 +1049,22 @@ export function calculateFishGrowthRainBowTrout(
     temperature: number,
     DE: number,
   ): any {
-    const A = Math.pow(fishSize, 1 / 3);
-    const B = -0.003206 + 0.001705 * Math.log(temperature - 11.25);
-    const C = A + B * temperature;
-    const D = Math.pow(C, 3) / fishSize - 1;
+    // Rainbow trout feeding rate formula from Excel
+    const part1 = Math.pow(fishSize, 0.333333);
+    const part2 =
+      4.283547943 * Math.pow(temperature, 0.125) +
+      -2.919678112 * Math.pow(temperature, 0.25) +
+      0.4443081526 * Math.pow(temperature, 0.5) +
+      -0.011762442 * Math.pow(temperature, 1) +
+      -1.805789941;
 
-    const estFCR = (0.009 * fishSize + 12.45) / (DE / 1.03);
+    const numerator = Math.pow(part1 + part2 * temperature, 3);
+    const denominator = fishSize;
+    const left = (numerator / denominator) - 1;
 
-    const feedingRate = D * estFCR * 100;
+    const right = (-28.29 + 38.95 * Math.pow(fishSize, 0.01903)) / (DE / 1.03);
+
+    const feedingRate = left * right * 100;
 
     return feedingRate;
   }
@@ -1081,9 +1090,14 @@ export function calculateFishGrowthRainBowTrout(
     return Math.pow(Math.pow(IBW, b) + (TGC / 100) * sum_td, 1 / b);
   }
 
-  function calculateEstFCR(fishSize: number, DE: number): any {
-    return Number(((0.009 * fishSize + 12.45) * 1.03) / DE).toFixed(2);
+  function calculateEstFCR(fishSize: number, DE: number, e10: number): number {
+    const numerator = 38.95 * Math.pow(fishSize, 0.01903) - 28.29;
+    const denominator = DE / (1 + e10);
+    const result = numerator / denominator;
+  
+    return Number(result.toFixed(2));
   }
+  
 
   function calculateGrowth(newFishSize: number, prevFishSize: number) {
     return newFishSize - prevFishSize;
@@ -1100,9 +1114,9 @@ export function calculateFishGrowthRainBowTrout(
 
     prevNumberOfFish =
       day !== 1
-        ? calculateNoOfFish(prevNumberOfFish, 0.05, 7)
+        ? calculateNoOfFish(prevNumberOfFish, 0.05, 1)
         : prevNumberOfFish;
-    const estfcr = calculateEstFCR(prevFishSize, DE);
+    const estfcr = calculateEstFCR(prevFishSize, DE, 0.03);
     prevFishSize =
       day === 1 ? prevFishSize : calculateFishSize(prevFishSize, 14);
 
@@ -1166,6 +1180,7 @@ export function calculateFishGrowthAfricanCatfish(
   timeInterval: number,
   DE: number,
 ) {
+  console.log('-----',fishWeight, temp, numberOfFishs, expectedWaste, period, startDate, timeInterval, DE);
   const IBW = fishWeight;
   const T = temp;
   let prevWeight = IBW;
@@ -1178,38 +1193,44 @@ export function calculateFishGrowthAfricanCatfish(
     initialSizeK4: number,
     growthRateL4: number,
     timeH5: number,
-  ) {
-    const growthMultiplier = growthRateL4 / 100 + 1;
-    const growthComponent = Math.pow(growthMultiplier, timeH5) - 1;
-    const fishSize = initialSizeK4 * (1 - growthComponent);
-    return fishSize;
+  ): number {
+    const powerComponent = Math.pow(growthRateL4 / 100 + 1, timeH5);
+    const fishRemaining = initialSizeK4 * (1 - (powerComponent - 1));
+    return fishRemaining;
   }
-  const calculateFishSize = (fishSize: number, temp: number) => {
-    const part1 = Math.pow(fishSize, 0.333333);
+  
+  const calculateFishSize = (fishSize: number, temp: number): number => {
+    const part1 = Math.pow(fishSize, 1 / 3);
     const part2 =
       (-0.00001496 * Math.pow(temp, 2) + 0.0008244 * temp - 0.009494) * temp;
-
+  
     const result = Math.pow(part1 + part2, 3);
     return result;
   };
-
+  
   function calculateFeedingRate(
     fishSize: number,
     temperature: number,
-    DE: number,
-  ): any {
-    const A = Math.pow(fishSize, 1 / 3);
-    const B = -0.003206 + 0.001705 * Math.log(temperature - 11.25);
-    const C = A + B * temperature;
-    const D = Math.pow(C, 3) / fishSize - 1;
+    DE: number
+  ): number {
+    const part1 = Math.pow(fishSize, 1 / 3);
+    const part2 =
+      (-0.00001496 * Math.pow(temperature, 2) +
+        0.0008244 * temperature -
+        0.009494) *
+      temperature;
+  
+    const numerator = Math.pow(part1 + part2, 3);
+  
+    const left = numerator / fishSize - 1;
 
-    const estFCR = (0.009 * fishSize + 12.45) / (DE / 1.03);
+    const right =
+      (9.794 * Math.pow(fishSize, 0.0726)) / (DE / 1.03);
 
-    const feedingRate = D * estFCR * 100;
-
+    const feedingRate = left * right * 100;
+  
     return feedingRate;
   }
-
   function calculateFW(
     IBW: number,
     b: number,
@@ -1231,9 +1252,15 @@ export function calculateFishGrowthAfricanCatfish(
     return Math.pow(Math.pow(IBW, b) + (TGC / 100) * sum_td, 1 / b);
   }
 
-  function calculateEstFCR(fishSize: number, DE: number) {
-    return Number(((0.009 * fishSize + 12.45) * 1.03) / DE).toFixed(2);
+  function calculateEstFCR(fishSize: number, DE: number): number {
+    const numerator = 9.794 * Math.pow(fishSize, 0.0726);
+    const denominator = DE / 1.03;
+  
+    const result = numerator / denominator;
+  
+    return Number(result.toFixed(2));
   }
+  
 
   function calculateGrowth(newFishSize: number, prevFishSize: number) {
     return newFishSize - prevFishSize;
@@ -1250,15 +1277,14 @@ export function calculateFishGrowthAfricanCatfish(
 
     prevNumberOfFish =
       day !== 1
-        ? calculateNoOfFish(prevNumberOfFish, 0.05, 7)
+        ? calculateNoOfFish(prevNumberOfFish, 0.05, 1)
         : prevNumberOfFish;
     const estfcr = calculateEstFCR(prevFishSize, DE);
     prevFishSize =
       day === 1 ? prevFishSize : calculateFishSize(prevFishSize, 20);
 
-    let prevFeedingRate = parseFloat(
-      calculateFeedingRate(prevFishSize, temp, DE),
-    );
+      let prevFeedingRate = calculateFeedingRate(prevFishSize, temp, DE);
+
     let prevFeedIntake = ((prevFeedingRate * prevFishSize) / 100).toFixed(3);
 
     prevGrowth =

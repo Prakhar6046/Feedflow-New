@@ -42,6 +42,7 @@ export interface FeedPredictionData {
   tempSelection?: string;
   temp?: number;
   timeInterval?: number;
+  species?: 'Nile Tilapia' | 'African Catfish' | 'Rainbow Trout';
 }
 
 // import MenuItem from "@mui/material/MenuItem";
