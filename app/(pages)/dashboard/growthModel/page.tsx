@@ -28,10 +28,8 @@ export default async function GrowthModelPage() {
 
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/growth-model?organisationId=${organisationId}`,
-      {
-        cache: 'no-store',
-      },
+      `${process.env.BASE_URL}/api/growth-model?organisationId=${organisationId}`,
+      { cache: 'no-store' }
     );
 
     if (response.ok) {

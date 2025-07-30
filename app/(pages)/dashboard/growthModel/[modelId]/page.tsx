@@ -10,10 +10,8 @@ export const metadata: Metadata = {
 async function getModelData(modelId: string) {
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/growth-model?id=${modelId}&type=models`,
-      {
-        cache: 'no-store',
-      },
+      `${process.env.BASE_URL}/api/growth-model?id=${modelId}&type=models`,
+      { cache: 'no-store' }
     );
 
     if (response.ok) {

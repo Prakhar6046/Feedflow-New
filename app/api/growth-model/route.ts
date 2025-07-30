@@ -105,6 +105,7 @@ export async function GET(request: NextRequest) {
         include: { organisation: true },
         orderBy: { createdAt: 'desc' },
       });
+      console.log('models',models);
 
       return NextResponse.json({ data: models });
     }
@@ -119,7 +120,7 @@ export async function GET(request: NextRequest) {
           organisation: true,
         },
       });
-
+      console.log('growthModel',growthModel);
       if (!growthModel) {
         return NextResponse.json(
           { error: 'Growth Model not found' },
@@ -146,7 +147,7 @@ export async function GET(request: NextRequest) {
       },
       orderBy: { createdAt: 'desc' },
     });
-
+    console.log('growthModels',growthModels);
     return NextResponse.json({ data: growthModels });
   } catch (error) {
     console.error('Error fetching growth models:', error);
