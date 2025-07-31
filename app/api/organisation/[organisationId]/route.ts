@@ -31,7 +31,13 @@ export const GET = async (_request: NextRequest, context: ContextParams) => {
       status: 200,
     });
   } catch (error) {
-    return new NextResponse(JSON.stringify({ status: false, error }), {
+    let errorMessage = 'Unknown error';
+    if (error && typeof error === 'object' && 'message' in error) {
+      errorMessage = (error as any).message;
+    } else {
+      errorMessage = String(error);
+    }
+    return new NextResponse(JSON.stringify({ status: false, error: errorMessage }), {
       status: 500,
     });
   }
@@ -183,7 +189,9 @@ export async function PUT(req: NextRequest, context: ContextParams) {
             email: contact.email,
             phone: contact.phone,
             permission: contact.permission,
-            userId,
+            user: {
+              connect: { id: userId },   
+            },
             organisation: { connect: { id: organisation.id } },
             invite: contact.newInvite,
           },
@@ -396,8 +404,16 @@ export async function PUT(req: NextRequest, context: ContextParams) {
       { status: 200 },
     );
   } catch (error) {
-    return new NextResponse(JSON.stringify({ status: false, error }), {
-      status: 500,
-    });
+    console.error('Organisation PUT error:', error);
+    let errorMessage = 'Unknown error';
+    if (error && typeof error === 'object' && 'message' in error) {
+      errorMessage = (error as any).message;
+    } else {
+      errorMessage = String(error);
+    }
+    return new NextResponse(
+      JSON.stringify({ status: false, error: errorMessage }),
+      { status: 500 }
+    );
   }
 }

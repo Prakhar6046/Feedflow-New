@@ -393,9 +393,10 @@ export default function BasicTable({
                       >
                         <Box display={'flex'} alignItems={'center'} gap={1.5}>
                           {organisation?.imageUrl &&
-                          organisation?.imageUrl !== 'null' ? (
+                          organisation?.imageUrl !== 'null' &&
+                          organisation?.imageUrl !== 'undefined' ? (
                             <Image
-                              src={String(organisation.imageUrl)}
+                              src={organisation.imageUrl}
                               width={40}
                               height={40}
                               style={{
@@ -600,6 +601,8 @@ export default function BasicTable({
                               >
                                 <Image
                                   alt="user-block"
+                                  width={20}
+                                  height={20}
                                   src={
                                     selectedOrganisation?.users?.find(
                                       (val) =>

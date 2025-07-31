@@ -18,7 +18,7 @@ const Loader: NextPage = () => {
       <Box sx={{ display: 'flex' }}>
         <div className="loader-container">
           <div className="loader-inner">
-            <Image src={loaderImg} className="loader" alt="loader" />
+            <Image src={loaderImg} className="loader" alt="loader" width={50} height={50} />
           </div>
           <div></div>
           <div></div>
