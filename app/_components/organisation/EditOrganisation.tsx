@@ -47,8 +47,8 @@ import toast from 'react-hot-toast';
 
 import { SingleUser } from '@/app/_typeModels/User';
 import { getCookie } from 'cookies-next';
-import Image from 'next/image';
 import FarmsInformation from './FarmsInformation';
+import Image from 'next/image';
 export const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
   clipPath: 'inset(50%)',
@@ -140,10 +140,8 @@ const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
   });
   const selectedOrganisationType = watch('organisationType');
   const onSubmit: SubmitHandler<AddOrganizationFormInputs> = async (data) => {
-    // Prevent API call if one is already in progress
     if (isApiCallInProgress) return;
     setIsApiCallInProgress(true);
-
     try {
       let hatchery;
       const address = {
@@ -161,7 +159,6 @@ const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
           fishSpecie: data.fishSpecie,
         };
       }
-
       const formData = new FormData();
       formData.append('name', String(data.organisationName));
       formData.append('invitedBy', String(loggedUser?.organisationId));
@@ -171,7 +168,6 @@ const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
       formData.append('contacts', JSON.stringify(data.contacts));
       formData.append('imageUrl', String(profilePic));
       formData.append('invitedBy', String(loggedUser?.organisationId));
-
       if (isHatcherySelected && organisationData) {
         formData.append(
           'hatcheryId',
@@ -179,23 +175,33 @@ const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
         );
         formData.append('hatchery', JSON.stringify(hatchery));
       }
-
+      console.log('Submitting organisation form:', {
+        organisationId,
+        organisationName: data.organisationName,
+        organisationCode: data.organisationCode,
+        organisationType: data.organisationType,
+        address,
+        contacts: data.contacts,
+        imageUrl: profilePic,
+        hatchery,
+      });
       const res = await fetch(`/api/organisation/${organisationId}`, {
         method: 'PUT',
-
         body: formData,
       });
-
+      console.log('API response status:', res.status);
       if (res.ok) {
         const updatedOrganisation = await res.json();
-
+        console.log('API response data:', updatedOrganisation);
         toast.success(updatedOrganisation.message);
         router.push('/dashboard/organisation');
       } else {
         const data = await res.json();
+        console.error('API error response:', data);
         toast.error(data.error);
       }
-    } catch {
+    } catch (err) {
+      console.error('API call failed:', err);
       toast.error('Something went wrong. Please try again.');
     } finally {
       setIsApiCallInProgress(false);
@@ -670,7 +676,7 @@ const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
                     {...register('organisationType')}
                     disabled
                     value={selectedOrganisationType || ''}
-                    // onChange={(e) => handleChange(e, item)}
+                  // onChange={(e) => handleChange(e, item)}
                   >
                     {OrganisationType.map((organisation, i) => {
                       return (
@@ -1027,7 +1033,7 @@ const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
                         errors?.contacts[index] &&
                         errors?.contacts[index]?.permission &&
                         errors?.contacts[index]?.permission.type ===
-                          'required' && (
+                        'required' && (
                           <Typography
                             variant="body2"
                             color="red"
@@ -1097,7 +1103,7 @@ const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
                               (f, i) =>
                                 i === index ||
                                 String(f.email).toLowerCase() !==
-                                  String(value).toLowerCase(),
+                                String(value).toLowerCase(),
                             );
                             if (!isUnique) {
                               return 'Please enter a unique email.This email is already used in contacts information';
@@ -1217,6 +1223,8 @@ const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
                     >
                       <Image
                         title={item.invite ? 'Invited' : 'Invite'}
+                        width={20}
+                        height={20}
                         src={
                           item.invite
                             ? sentEmailIcon
@@ -1236,9 +1244,8 @@ const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
                       alignItems={'center'}
                       width={150}
                       sx={{
-                        cursor: `  ${
-                          item.role !== 'Admin' ? 'pointer' : 'not-allowed'
-                        }`,
+                        cursor: `  ${item.role !== 'Admin' ? 'pointer' : 'not-allowed'
+                          }`,
                         width: {
                           lg: 150,
                           xs: 'auto',
@@ -1257,11 +1264,10 @@ const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
                         <g fill="none">
                           <path d="m12.593 23.258l-.011.002l-.071.035l-.02.004l-.014-.004l-.071-.035q-.016-.005-.024.005l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.017-.018m.265-.113l-.013.002l-.185.093l-.01.01l-.003.011l.018.43l.005.012l.008.007l.201.093q.019.005.029-.008l.004-.014l-.034-.614q-.005-.018-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.614q.001.018.017.024l.015-.002l.201-.093l.01-.008l.004-.011l.017-.43l-.003-.012l-.01-.01z" />
                           <path
-                            fill={`${
-                              item.permission !== 'ADMIN'
+                            fill={`${item.permission !== 'ADMIN'
                                 ? '#ff0000'
                                 : '#808080'
-                            }`}
+                              }`}
                             d="M14.28 2a2 2 0 0 1 1.897 1.368L16.72 5H20a1 1 0 1 1 0 2l-.003.071l-.867 12.143A3 3 0 0 1 16.138 22H7.862a3 3 0 0 1-2.992-2.786L4.003 7.07L4 7a1 1 0 0 1 0-2h3.28l.543-1.632A2 2 0 0 1 9.721 2zm3.717 5H6.003l.862 12.071a1 1 0 0 0 .997.929h8.276a1 1 0 0 0 .997-.929zM10 10a1 1 0 0 1 .993.883L11 11v5a1 1 0 0 1-1.993.117L9 16v-5a1 1 0 0 1 1-1m4 0a1 1 0 0 1 1 1v5a1 1 0 1 1-2 0v-5a1 1 0 0 1 1-1m.28-6H9.72l-.333 1h5.226z"
                           />
                         </g>

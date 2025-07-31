@@ -117,6 +117,8 @@ export default function Page() {
                 <Image
                   src={logo}
                   alt="Logo"
+                  width={200}
+                  height={80}
                   style={{
                     width: '100%',
                     height: 'auto',
