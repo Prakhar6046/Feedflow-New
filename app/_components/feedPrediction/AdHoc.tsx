@@ -33,6 +33,7 @@ import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import Loader from '../Loader';
 import FishGrowthTable from '../table/FishGrowthTable';
 import { speciesOptions, timeIntervalOptions } from './FeedingPlan';
+import { Farm } from '@/app/_typeModels/Farm';
 interface FormInputs {
   farm: string;
   unit: string;
@@ -82,6 +83,7 @@ export interface FishFeedingData {
 type Iprops = {
   data: FishFeedingData[];
   setData: (val: FishFeedingData[]) => void;
+  farms: Farm[];
 };
 
 function AdHoc({ data, setData }: Iprops) {
