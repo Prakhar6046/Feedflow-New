@@ -462,12 +462,24 @@ export default function GrowthModelTable({
               sx: {
                 borderRadius: '12px',
                 boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)',
-                minWidth: 120,
+                minWidth: 140,
+                paddingY: 1,
+                overflow: 'hidden',
               },
             }}
           >
-            <MenuItem onClick={handleEdit}>
-              <Stack direction="row" spacing={1} alignItems="center">
+            <MenuItem
+              sx={{
+                px: 2,
+                py: 1,
+                '&:hover': {
+                  backgroundColor: '#F0F4FF',
+                  svg: { color: '#1E40AF' },
+                  '.edit-text': { color: '#1E40AF' },
+                },
+              }}
+              onClick={handleEdit} >
+              <Stack direction="row" spacing={1.5} alignItems="center">
                 <Box
                   component="svg"
                   width={16}
@@ -484,8 +496,18 @@ export default function GrowthModelTable({
               </Stack>
             </MenuItem>
             <Divider />
-            <MenuItem onClick={handleDelete}>
-              <Stack direction="row" spacing={1} alignItems="center">
+            <MenuItem
+              sx={{
+                px: 2,
+                py: 1,
+                '&:hover': {
+                  backgroundColor: '#FFF1F1',
+                  svg: { color: '#D32F2F' },
+                  '.delete-text': { color: '#D32F2F' },
+                },
+              }}
+              onClick={handleDelete}>
+              <Stack direction="row" spacing={1.5} alignItems="center">
                 <Box
                   component="svg"
                   width={16}
