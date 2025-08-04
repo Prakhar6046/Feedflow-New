@@ -501,7 +501,7 @@ export default function AddNewUser({ organisations }: Props) {
           <Button
             type="submit"
             variant="contained"
-            disabled={isApiCallInProgress || !isValid}
+            disabled={isApiCallInProgress}
             sx={{
               background: '#06A19B',
               fontWeight: 600,

@@ -697,11 +697,11 @@ const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
                       {errors?.organisationName?.message}
                     </Typography>
                   )}
-                   {errors?.organisationName?.type === 'validate' && (
-                      <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
-                        {errors.organisationName.message}
-                      </Typography>
-                    )}
+                  {errors?.organisationName?.type === 'validate' && (
+                    <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                      {errors.organisationName.message}
+                    </Typography>
+                  )}
                 </Box>
                 <Stack
                   display={'flex'}
@@ -741,7 +741,7 @@ const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
                           {validationMessage.required}
                         </Typography>
                       )}
-                       {errors?.organisationCode?.type === 'validate' && (
+                    {errors?.organisationCode?.type === 'validate' && (
                       <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
                         {errors.organisationCode.message}
                       </Typography>
@@ -1066,7 +1066,7 @@ const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
                           {validationMessage.countryPatternmessage}
                         </Typography>
                       )}
-                      {errors?.country?.type === 'validate' && (
+                    {errors?.country?.type === 'validate' && (
                       <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
                         {errors.country.message}
                       </Typography>
@@ -1122,28 +1122,24 @@ const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
                           className="form-input"
                           {...register(`contacts.${index}.name` as const, {
                             required: true,
-                            pattern: validationPattern.alphabetsAndSpacesPattern,
-
+                            pattern: {
+                              value: validationPattern.alphabetsAndSpacesPattern,
+                              message: 'Input must contain only alphabets',
+                            },
                           })}
                           focused
                           sx={{
                             width: '100%',
                           }}
                         />
-                        {errors &&
-                          errors?.contacts &&
-                          errors?.contacts[index] &&
-                          errors?.contacts[index]?.name &&
-                          errors?.contacts[index]?.name.type === 'required' && (
-                            <Typography
-                              variant="body2"
-                              color="red"
-                              fontSize={13}
-                              mt={0.5}
-                            >
-                              {validationMessage.required}
-                            </Typography>
-                          )}
+                        {errors?.contacts?.[index]?.name && (
+                          <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                            {errors.contacts[index].name.type === 'required'
+                              ? validationMessage.required
+                              : errors.contacts[index].name.message}
+                          </Typography>
+                        )}
+
                       </Box>
                       <Box
                         sx={{

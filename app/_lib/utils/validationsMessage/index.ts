@@ -28,4 +28,4 @@ export const NegativeNumberWithDot = 'Input must contain only numbers.';
 export const numberWithCommaDot = 'Input must contain only numbers.';
 export const numberMaxLength = 'Input can have only 10 digits number.';
 export const namePatternMessage = 'Input must contain only alphabets';
-
+export const onlyAlphabets = 'Input must contain only alphabets';
