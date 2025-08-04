@@ -1,6 +1,7 @@
 'use client';
 import { breadcrumsAction } from '@/lib/features/breadcrum/breadcrumSlice';
 import { useAppDispatch } from '@/lib/hooks';
+import toast from 'react-hot-toast';
 import {
   Box,
   Button,
@@ -132,8 +133,11 @@ export default function GrowthModelTable({
         );
 
         if (response.ok) {
+           toast.success('Growth model deleted successfully');
           router.refresh();
         } else {
+           toast.error('Failed to delete growth model');
+
           console.error('Failed to delete growth model');
         }
       } catch (error) {
@@ -486,11 +490,11 @@ export default function GrowthModelTable({
                   height={16}
                   viewBox="0 0 24 24"
                   fill="currentColor"
-                  sx={{ color: '#555555' }}
+                  sx={{ color: '#060606ff' }}
                 >
                   <path d="M3 21v-4.25L16.2 3.575q.3-.275.663-.425t.762-.15t.775.15t.65.45L20.425 5q.3.275.438.65T21 6.4q0 .4-.137.763t-.438.662L7.25 21zM17.6 7.8L19 6.4L17.6 5l-1.4 1.4z" />
                 </Box>
-                <Typography sx={{ fontSize: '14px', color: '#555555' }}>
+                <Typography sx={{ fontSize: '14px', color: '#080808ff' }}>
                   Edit
                 </Typography>
               </Stack>
@@ -514,11 +518,11 @@ export default function GrowthModelTable({
                   height={16}
                   viewBox="0 0 24 24"
                   fill="currentColor"
-                  sx={{ color: '#FF6B6B' }}
+                  sx={{ color: '#ff0000', fontWeight: 600 }}
                 >
                   <path d="M7 21q-.825 0-1.412-.587T5 19V6q-.425 0-.712-.288T4 5q0-.425.288-.712T5 4h4q0-.425.288-.712T10 3h4q.425 0 .713.288T15 4h4q.425 0 .713.288T20 5q0 .425-.288.713T19 6v13q0 .825-.587 1.413T17 21zM7 6v13h10V6z" />
                 </Box>
-                <Typography sx={{ fontSize: '14px', color: '#FF6B6B' }}>
+                <Typography sx={{ fontSize: '14px', fontWeight: 600, color: '#ff0000' }}>
                   Delete
                 </Typography>
               </Stack>
