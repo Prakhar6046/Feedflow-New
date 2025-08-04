@@ -653,6 +653,7 @@ const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
                     {...register('organisationName', {
                       required: true,
                       pattern: validationPattern.alphabetsNumbersAndSpacesPattern,
+                      validate: (value) => value.trim() !== '' || 'Spaces only are not allowed',
                       // validate: (value: String) => {
                       //   const isUnique = organisations?.every((val) => {
                       //     if (val.id === Number(organisationId)) {
@@ -696,6 +697,11 @@ const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
                       {errors?.organisationName?.message}
                     </Typography>
                   )}
+                   {errors?.organisationName?.type === 'validate' && (
+                      <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                        {errors.organisationName.message}
+                      </Typography>
+                    )}
                 </Box>
                 <Stack
                   display={'flex'}
@@ -715,6 +721,7 @@ const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
                       className="form-input"
                       {...register('organisationCode', {
                         required: true,
+                        validate: (value) => value.trim() !== '' || 'Spaces only are not allowed',
                       })}
                       // disabled
                       sx={{
@@ -734,6 +741,11 @@ const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
                           {validationMessage.required}
                         </Typography>
                       )}
+                       {errors?.organisationCode?.type === 'validate' && (
+                      <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                        {errors.organisationCode.message}
+                      </Typography>
+                    )}
                   </Box>
                 </Stack>
                 <FormControl className="form-input" fullWidth focused>
@@ -819,6 +831,7 @@ const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
                       {...register('address', {
                         required: true,
                         pattern: validationPattern.addressPattern,
+                        validate: (value) => value.trim() !== '' || 'Spaces only are not allowed',
                       })}
                       focused
                       sx={{
@@ -849,6 +862,11 @@ const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
                           {validationMessage.AddressMessage}
                         </Typography>
                       )}
+                    {errors?.address?.type === 'validate' && (
+                      <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                        {errors.address.message}
+                      </Typography>
+                    )}
                   </Box>
 
                   <Box width={'100%'}>
@@ -858,6 +876,7 @@ const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
                       className="form-input"
                       {...register('city', {
                         required: true,
+                        validate: (value) => value.trim() !== '' || 'Spaces only are not allowed',
                         pattern:
                           validationPattern.alphabetsSpacesAndSpecialCharsPattern,
                       })}
@@ -886,6 +905,11 @@ const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
                         {validationMessage.alphabetswithSpecialCharacter}
                       </Typography>
                     )}
+                    {errors?.city?.type === 'validate' && (
+                      <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                        {errors.city.message}
+                      </Typography>
+                    )}
                   </Box>
                 </Stack>
 
@@ -907,6 +931,7 @@ const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
                       {...register('province', {
                         required: true,
                         pattern: validationPattern.alphabetsSpacesAndSpecialCharsPattern,
+                        validate: (value) => value.trim() !== '' || 'Spaces only are not allowed',
                       })}
                       focused
                       sx={{
@@ -938,6 +963,11 @@ const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
                           {validationMessage.alphabetswithSpecialCharacter}
                         </Typography>
                       )}
+                    {errors?.province?.type === 'validate' && (
+                      <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                        {errors.province.message}
+                      </Typography>
+                    )}
                   </Box>
 
                   <Box width={'100%'}>
@@ -948,6 +978,7 @@ const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
                       {...register('postCode', {
                         required: true,
                         pattern: validationPattern.postCodePattern,
+                        validate: (value) => value.trim() !== '' || 'Spaces only are not allowed',
                         maxLength: 10,
                       })}
                       focused
@@ -979,6 +1010,11 @@ const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
                           {validationMessage.onlyAlphabetsNumbers}
                         </Typography>
                       )}
+                    {errors?.postCode?.type === 'validate' && (
+                      <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                        {errors.postCode.message}
+                      </Typography>
+                    )}
                   </Box>
                 </Stack>
                 <Stack
@@ -999,6 +1035,7 @@ const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
                       {...register('country', {
                         required: true,
                         pattern: validationPattern.countryPattern,
+                        validate: (value) => value.trim() !== '' || 'Spaces only are not allowed',
                       })}
                       focused
                       sx={{
@@ -1029,6 +1066,11 @@ const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
                           {validationMessage.countryPatternmessage}
                         </Typography>
                       )}
+                      {errors?.country?.type === 'validate' && (
+                      <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                        {errors.country.message}
+                      </Typography>
+                    )}
                   </Box>
                 </Stack>
 
@@ -1081,6 +1123,7 @@ const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
                           {...register(`contacts.${index}.name` as const, {
                             required: true,
                             pattern: validationPattern.alphabetsAndSpacesPattern,
+
                           })}
                           focused
                           sx={{
