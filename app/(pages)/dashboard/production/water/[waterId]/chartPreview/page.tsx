@@ -24,7 +24,6 @@ export default async function Page({
     noFilter: false,
     userId: user.id,
   });
-  console.log(productions);
 
   return (
     <>

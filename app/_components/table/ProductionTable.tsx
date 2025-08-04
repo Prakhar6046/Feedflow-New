@@ -1081,8 +1081,6 @@ export default function ProductionTable({
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const storedData = getLocalItem('productionData');
-      console.log('sort', storedData);
-
       if (storedData) {
         setProduction(storedData);
       }

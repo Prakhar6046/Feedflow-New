@@ -433,7 +433,6 @@ function ProductionManagerFilter({
 
     // Apply filters sequentially
     let filteredData = groupedData;
-    console.log('grouped data', groupedData);
 
     filteredData = filterByFarms(filteredData, selectedDropDownfarms);
     filteredData = filterByUnits(filteredData, selectedDropDownUnits);

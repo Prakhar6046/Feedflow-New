@@ -855,7 +855,6 @@ export function calculateFishGrowthTilapia(
   timeInterval: number,
   DE: number,
 ) {
-  console.log(timeInterval);
 
   const IBW = fishWeight;
   const T = temp;
@@ -1012,7 +1011,6 @@ export function calculateFishGrowthRainBowTrout(
   timeInterval: number,
   DE: number,
 ) {
-  console.log('-----',fishWeight, temp, numberOfFishs, expectedWaste, period, startDate, timeInterval, DE);
   const IBW = fishWeight;
   const T = temp;
   let prevWeight = IBW;
@@ -1180,7 +1178,6 @@ export function calculateFishGrowthAfricanCatfish(
   timeInterval: number,
   DE: number,
 ) {
-  console.log('-----',fishWeight, temp, numberOfFishs, expectedWaste, period, startDate, timeInterval, DE);
   const IBW = fishWeight;
   const T = temp;
   let prevWeight = IBW;

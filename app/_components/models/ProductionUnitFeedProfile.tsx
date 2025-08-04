@@ -212,7 +212,6 @@ const ProductionUnitFeedProfile: React.FC<Props> = ({
   );
 
   const groupedData: GroupedSupplierStores[] = useMemo(() => {
-    console.log('selected suppliers', selectedSupplier);
 
     return selectedSupplier?.reduce(
       (acc: GroupedSupplierStores[], supplier: SupplierOptions) => {
