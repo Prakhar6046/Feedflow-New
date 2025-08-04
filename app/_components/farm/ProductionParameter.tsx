@@ -365,8 +365,8 @@ export default function ProductionParaMeter({
                                 ]?.type === 'pattern'
                                   ? validationMessage.NegativeNumberWithDot
                                   : errors?.predictedValues?.[head as string]?.[
-                                        year as any
-                                      ]?.type === 'maxLength'
+                                    year as any
+                                  ]?.type === 'maxLength'
                                     ? validationMessage.numberMaxLength
                                     : ''}
                               </Typography>
@@ -453,16 +453,22 @@ export default function ProductionParaMeter({
                                 pattern:
                                   validationPattern.negativeNumberWithDot,
                                 maxLength: 10,
-                                // validate: (value) => {
-                                //   const min = watch(`idealRange.${head}.Min`);
-                                //   if (
-                                //     val === "Max" &&
-                                //     Number(value) < Number(min)
-                                //   ) {
-                                //     return "Max value cannot be less than Min value";
-                                //   }
-                                //   return true;
-                                // },
+                                validate: (value) => {
+                                  const min = watch(`idealRange.${head}.Min`);
+                                  const max = value;
+
+                                  // If either is empty, do not validate relationship
+                                  if (min === '' || max === '') {
+                                    return true;
+                                  }
+
+                                  // If both are present, validate that Max >= Min
+                                  if (val === 'Max' && parseFloat(max) < parseFloat(min)) {
+                                    return 'Max value cannot be less than Min value';
+                                  }
+
+                                  return true;
+                                },
                               }}
                               render={({ field }) => (
                                 <input
@@ -503,16 +509,14 @@ export default function ProductionParaMeter({
                                   textWrap: 'wrap',
                                 }}
                               >
-                                {errors?.idealRange?.[head]?.[val].type ===
-                                'pattern'
+                                {errors?.idealRange?.[head]?.[val].type === 'pattern'
                                   ? validationMessage.NegativeNumberWithDot
-                                  : errors?.idealRange?.[head]?.[val].type ===
-                                      'maxLength'
+                                  : errors?.idealRange?.[head]?.[val].type === 'maxLength'
                                     ? validationMessage.numberMaxLength
-                                    : errors?.idealRange?.[head]?.[val]
-                                        ?.message}
+                                    : errors?.idealRange?.[head]?.[val]?.message}
                               </Typography>
                             )}
+
                           </TableCell>
                         ))}
                       </TableRow>

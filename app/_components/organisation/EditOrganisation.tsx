@@ -123,7 +123,7 @@ const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
     watch,
     trigger,
     clearErrors,
-     formState: { errors, isDirty, isValid },
+    formState: { errors, isDirty, isValid },
   } = useForm<AddOrganizationFormInputs>({
     mode: 'onChange',
     defaultValues: {
@@ -140,32 +140,31 @@ const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
     },
   });
   const selectedOrganisationType = watch('organisationType');
-const handleInviteUser = async (index: number) => {
-  const contact = watch(`contacts.${index}`);
-  const currentlyInvited = contact.invite;
+  const handleInviteUser = async (index: number) => {
+    const contact = watch(`contacts.${index}`);
+    const currentlyInvited = contact.invite;
 
-  if (!isContactComplete(contact)) {
-    toast.error('Please fill all required fields before marking for invite.');
-    return;
-  }
+    if (!isContactComplete(contact)) {
+      toast.error('Please fill all required fields before marking for invite.');
+      return;
+    }
 
-  setValue(`contacts.${index}.invite`, !currentlyInvited, {
-    shouldDirty: true,
-    shouldTouch: true,
-    shouldValidate: true,
-  });
+    setValue(`contacts.${index}.invite`, !currentlyInvited, {
+      shouldDirty: true,
+      shouldTouch: true,
+      shouldValidate: true,
+    });
 
-  setInviteSent((prev) => ({
-    ...prev,
-    [index]: !currentlyInvited,
-  }));
+    setInviteSent((prev) => ({
+      ...prev,
+      [index]: !currentlyInvited,
+    }));
 
-  // Force validation for the full contacts array if needed
-  await trigger(`contacts`);
-};
+    // Force validation for the full contacts array if needed
+    await trigger(`contacts`);
+  };
 
   const onSubmit: SubmitHandler<AddOrganizationFormInputs> = async (data) => {
-    debugger;
     console.log('Form submitted with data:', data);
     // Prevent API call if one is already in progress
     const hasAdmin = watch('contacts').some(
@@ -654,6 +653,7 @@ const handleInviteUser = async (index: number) => {
                     {...register('organisationName', {
                       required: true,
                       pattern: validationPattern.alphabetsNumbersAndSpacesPattern,
+                      validate: (value) => value.trim() !== '' || 'Spaces only are not allowed',
                       // validate: (value: String) => {
                       //   const isUnique = organisations?.every((val) => {
                       //     if (val.id === Number(organisationId)) {
@@ -697,6 +697,11 @@ const handleInviteUser = async (index: number) => {
                       {errors?.organisationName?.message}
                     </Typography>
                   )}
+                   {errors?.organisationName?.type === 'validate' && (
+                      <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                        {errors.organisationName.message}
+                      </Typography>
+                    )}
                 </Box>
                 <Stack
                   display={'flex'}
@@ -716,6 +721,7 @@ const handleInviteUser = async (index: number) => {
                       className="form-input"
                       {...register('organisationCode', {
                         required: true,
+                        validate: (value) => value.trim() !== '' || 'Spaces only are not allowed',
                       })}
                       // disabled
                       sx={{
@@ -735,6 +741,11 @@ const handleInviteUser = async (index: number) => {
                           {validationMessage.required}
                         </Typography>
                       )}
+                       {errors?.organisationCode?.type === 'validate' && (
+                      <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                        {errors.organisationCode.message}
+                      </Typography>
+                    )}
                   </Box>
                 </Stack>
                 <FormControl className="form-input" fullWidth focused>
@@ -820,6 +831,7 @@ const handleInviteUser = async (index: number) => {
                       {...register('address', {
                         required: true,
                         pattern: validationPattern.addressPattern,
+                        validate: (value) => value.trim() !== '' || 'Spaces only are not allowed',
                       })}
                       focused
                       sx={{
@@ -850,6 +862,11 @@ const handleInviteUser = async (index: number) => {
                           {validationMessage.AddressMessage}
                         </Typography>
                       )}
+                    {errors?.address?.type === 'validate' && (
+                      <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                        {errors.address.message}
+                      </Typography>
+                    )}
                   </Box>
 
                   <Box width={'100%'}>
@@ -859,6 +876,7 @@ const handleInviteUser = async (index: number) => {
                       className="form-input"
                       {...register('city', {
                         required: true,
+                        validate: (value) => value.trim() !== '' || 'Spaces only are not allowed',
                         pattern:
                           validationPattern.alphabetsSpacesAndSpecialCharsPattern,
                       })}
@@ -887,6 +905,11 @@ const handleInviteUser = async (index: number) => {
                         {validationMessage.alphabetswithSpecialCharacter}
                       </Typography>
                     )}
+                    {errors?.city?.type === 'validate' && (
+                      <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                        {errors.city.message}
+                      </Typography>
+                    )}
                   </Box>
                 </Stack>
 
@@ -908,6 +931,7 @@ const handleInviteUser = async (index: number) => {
                       {...register('province', {
                         required: true,
                         pattern: validationPattern.alphabetsSpacesAndSpecialCharsPattern,
+                        validate: (value) => value.trim() !== '' || 'Spaces only are not allowed',
                       })}
                       focused
                       sx={{
@@ -939,6 +963,11 @@ const handleInviteUser = async (index: number) => {
                           {validationMessage.alphabetswithSpecialCharacter}
                         </Typography>
                       )}
+                    {errors?.province?.type === 'validate' && (
+                      <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                        {errors.province.message}
+                      </Typography>
+                    )}
                   </Box>
 
                   <Box width={'100%'}>
@@ -949,6 +978,7 @@ const handleInviteUser = async (index: number) => {
                       {...register('postCode', {
                         required: true,
                         pattern: validationPattern.postCodePattern,
+                        validate: (value) => value.trim() !== '' || 'Spaces only are not allowed',
                         maxLength: 10,
                       })}
                       focused
@@ -980,6 +1010,11 @@ const handleInviteUser = async (index: number) => {
                           {validationMessage.onlyAlphabetsNumbers}
                         </Typography>
                       )}
+                    {errors?.postCode?.type === 'validate' && (
+                      <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                        {errors.postCode.message}
+                      </Typography>
+                    )}
                   </Box>
                 </Stack>
                 <Stack
@@ -1000,6 +1035,7 @@ const handleInviteUser = async (index: number) => {
                       {...register('country', {
                         required: true,
                         pattern: validationPattern.countryPattern,
+                        validate: (value) => value.trim() !== '' || 'Spaces only are not allowed',
                       })}
                       focused
                       sx={{
@@ -1030,6 +1066,11 @@ const handleInviteUser = async (index: number) => {
                           {validationMessage.countryPatternmessage}
                         </Typography>
                       )}
+                      {errors?.country?.type === 'validate' && (
+                      <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                        {errors.country.message}
+                      </Typography>
+                    )}
                   </Box>
                 </Stack>
 
@@ -1082,6 +1123,7 @@ const handleInviteUser = async (index: number) => {
                           {...register(`contacts.${index}.name` as const, {
                             required: true,
                             pattern: validationPattern.alphabetsAndSpacesPattern,
+
                           })}
                           focused
                           sx={{
@@ -1344,7 +1386,7 @@ const handleInviteUser = async (index: number) => {
                         justifyContent="center"
                         alignItems="center"
                         sx={{
-                          cursor: isDisabled ? 'not-allowed' : 'pointer',
+                          cursor: isDisabled || watch(`contacts.${index}.invite`) ? 'not-allowed' : 'pointer',
                         }}
                       >
                         <Image
@@ -1360,14 +1402,17 @@ const handleInviteUser = async (index: number) => {
                           }
                           alt="Send Email Icon"
                           onClick={() => {
-                            if (!isDisabled) {
+                            if (!isDisabled && !watch(`contacts.${index}.invite`)) {
                               handleInviteUser(index);
                             }
                           }}
+
                           style={{
-                            opacity: isDisabled ? 0.4 : 1,
-                            cursor: isDisabled ? 'not-allowed' : 'pointer',
+                            opacity: isDisabled || watch(`contacts.${index}.invite`) ? 0.4 : 1,
+                            cursor: isDisabled || watch(`contacts.${index}.invite`) ? 'not-allowed' : 'pointer',
+                            pointerEvents: isDisabled || watch(`contacts.${index}.invite`) ? 'none' : 'auto',
                           }}
+
                         />
 
                       </Box>
