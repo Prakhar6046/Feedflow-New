@@ -16,3 +16,4 @@ export const negativeNumberWithDot = /^\s*-?\d+(\.\d+)?(e[+-]?\d+)?\s*$/i;
 export const numberWithCommaDot = /^\s*(\d+(?:[\.\,]\d{2})?)\s*$/;
 export const onlyNumbersPattern = /^\s*[0-9]*\s*$/;
 export const postCodePattern=/^[a-zA-Z0-9\s]*$/;
+export const namePattern = /^[A-Za-z\s]+$/;

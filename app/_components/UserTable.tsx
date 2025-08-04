@@ -118,12 +118,14 @@ export default function UserTable({ users, permissions }: Props) {
     if (selectedUser) {
       const response = await fetch('/api/users', {
         method: 'DELETE',
-
         body: String(selectedUser.id),
       });
       const res = await response.json();
       if (res.status) {
         toast.success(res.message);
+        router.refresh();
+      } else {
+        toast.error(res.message || "Failed to delete user.");
       }
     }
   };

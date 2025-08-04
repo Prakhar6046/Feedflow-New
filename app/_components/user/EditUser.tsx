@@ -397,22 +397,36 @@ function EditUser({ userId }: Iprops) {
                   className="form-input"
                   {...register('name', {
                     required: true,
+                    pattern: {
+                      value: validationPattern.namePattern,
+                      message: validationMessage.namePatternMessage,
+                    },
+                    validate: (value) =>
+                      value.trim() !== '' || 'Name cannot be empty or just spaces.',
                   })}
+
                   focused
                   sx={{
                     width: '100%',
                   }}
                 />
-                {errors && errors.name && errors.name.type === 'required' && (
-                  <Typography
-                    variant="body2"
-                    color="red"
-                    fontSize={13}
-                    mt={0.5}
-                  >
+                {errors?.name?.type === 'required' && (
+                  <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
                     This field is required.
                   </Typography>
                 )}
+                {errors?.name?.type === 'pattern' && (
+                  <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                    {errors.name.message}
+                  </Typography>
+                )}
+                {errors?.name?.type === 'validate' && (
+                  <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                    {errors.name.message}
+                  </Typography>
+                )}
+
+
               </Box>
               <Box mb={2} width={'100%'}>
                 <TextField
@@ -426,6 +440,7 @@ function EditUser({ userId }: Iprops) {
                   }}
                   {...register('email', {
                     required: true,
+                    pattern: validationPattern.emailPattern,
                   })}
                   sx={{
                     width: '100%',
@@ -435,14 +450,15 @@ function EditUser({ userId }: Iprops) {
                     },
                   }}
                 />
-                {errors && errors.email && errors.email.type === 'required' && (
-                  <Typography
-                    variant="body2"
-                    color="red"
-                    fontSize={13}
-                    mt={0.5}
-                  >
-                    This field is required.
+                {errors?.email?.type === 'required' && (
+                  <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                    {validationMessage.required}
+                  </Typography>
+                )}
+
+                {errors?.email?.type === 'pattern' && (
+                  <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                    {validationMessage.emailPatternMessage}
                   </Typography>
                 )}
               </Box>

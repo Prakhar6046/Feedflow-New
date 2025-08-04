@@ -110,7 +110,7 @@ model Contact {
   role           String?
   permission     UserRole      @default(NONADMIN)
   userId         Int           @default(1)
-  user           User          @relation(fields: [userId], references: [id])
+  user           User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
   invite         Boolean       @default(false)

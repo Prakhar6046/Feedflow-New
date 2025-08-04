@@ -75,7 +75,6 @@ export interface AddOrganizationFormInputs {
     invite?: boolean;
     newInvite?: boolean;
   }[];
-
   hatcheryName?: string;
   hatcheryCode?: string;
   fishSpecie?: string;

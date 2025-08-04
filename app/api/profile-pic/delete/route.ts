@@ -34,7 +34,7 @@ export const DELETE = async (request: NextRequest) => {
       }
     }
     return new NextResponse(
-      JSON.stringify({ message: 'Image delete successfully', status: true }),
+      JSON.stringify({ message: 'Image deleted successfully', status: true }),
       {
         status: 200,
       },
