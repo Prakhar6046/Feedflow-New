@@ -77,6 +77,7 @@ const AddNewOrganisation = ({ type, loggedUser }: Props) => {
   const router = useRouter();
   const [isHatcherySelected, setIsHatcherySelected] = useState<boolean>(false);
   const [organisationCount, setOrganisationCount] = useState<number>(0);
+  console.log('organisationCount',organisationCount)
   const [isApiCallInProgress, setIsApiCallInProgress] =
     useState<boolean>(false);
   const [addressInformation, setAddressInformation] =
@@ -104,6 +105,7 @@ const AddNewOrganisation = ({ type, loggedUser }: Props) => {
     watch,
     reset,
     trigger,
+     clearErrors,
     formState: { errors },
   } = useForm<AddOrganizationFormInputs>({
     defaultValues: {
@@ -209,10 +211,10 @@ const AddNewOrganisation = ({ type, loggedUser }: Props) => {
       setValue('postCode', addressInformation.postcode);
       setValue('province', addressInformation.state);
       setValue('country', addressInformation.country);
-
+       clearErrors(['address', 'city', 'postCode', 'country','province']);
       setUseAddress(false);
     }
-  }, [addressInformation, useAddress]);
+  }, [addressInformation, useAddress,clearErrors]);
 
   useEffect(() => {
     if (type === 'fishProducers') {
@@ -658,6 +660,8 @@ const AddNewOrganisation = ({ type, loggedUser }: Props) => {
                 isCalAltitude={true}
                 setAltitude={setAltitude}
                 token={token ?? ''}
+                clearErrors={clearErrors}
+
               />
             </Box>
             <Stack
@@ -1225,7 +1229,6 @@ const AddNewOrganisation = ({ type, loggedUser }: Props) => {
                             : 'not-allowed',
                       }}
                       onClick={() => {
-                        debugger
                         if (!item.invite && !isDisabled) {
                           handleInviteUser(true, index);
                         }

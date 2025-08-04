@@ -454,13 +454,22 @@ export default function Page() {
                   textTransform: 'capitalize',
                   borderRadius: '4px',
                 }}
+                // onClick={() => window.open('https://www.nutritionhub.co.za', '_blank')}
               >
                 Contact Us
               </Button>
 
-              <Typography variant="body1" color="#fff">
+              <Typography
+                component="a"
+                href="https://www.nutritionhub.co.za"
+                target="_blank"
+                rel="noopener noreferrer"
+                variant="body1"
+                color="#fff"
+              >
                 www.nutritionhub.co.za
               </Typography>
+
             </Box>
           </Box>
 

@@ -450,7 +450,7 @@ export const deleteImage = async (
   if (response.ok) {
     setProfilePic('');
     toast.dismiss();
-    toast.success('Image delete successfully');
+    toast.success('Image deleted successfully');
   }
 };
 export const handleUpload = async (

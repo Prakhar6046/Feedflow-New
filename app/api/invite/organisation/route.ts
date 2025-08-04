@@ -50,6 +50,16 @@ export async function POST(req: NextRequest) {
     if (createdUsers.length === 0) {
       return NextResponse.json({ error: 'No users found' }, { status: 404 });
     }
+    await prisma.contact.updateMany({
+      where: {
+        id: {
+          in: createdUsers.map((user) => user.id),
+        },
+      },
+      data: {
+        invite: true,
+      },
+    });
 
     // Sending emails to all created users
     const emailPromises = createdUsers.map(async (user) => {

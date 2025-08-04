@@ -1,5 +1,7 @@
 'use client';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import * as validationPattern from '@/app/_lib/utils/validationPatterns/index';
+import * as validationMessage from '@/app/_lib/utils/validationsMessage/index';
 import {
   Box,
   FormControl,
@@ -53,53 +55,119 @@ export default function AddNewUser({ organisations }: Props) {
     clearErrors,
     reset,
     control,
-    formState: { errors },
-  } = useForm<UserFormInputs>();
+    formState: { errors, isValid },
+  } = useForm<UserFormInputs>({ mode: 'onChange' });
+
+  // const onSubmit: SubmitHandler<UserFormInputs> = async (data) => {
+  //   // Prevent API call if one is already in progress
+  //   if (isApiCallInProgress) return;
+  //   setIsApiCallInProgress(true);
+
+  //   try {
+  //     if (data.email && data.name && data.organisationId) {
+  //       const response = await fetch('/api/add-new-user', {
+  //         method: 'POST',
+  //         headers: {
+  //           'Content-Type': 'application/json',
+  //         },
+  //         body: JSON.stringify({ ...data, image: profilePic || '' }),
+  //       });
+  //       const responseData = await response.json();
+  //       if (!response.ok || !responseData.status) {
+  //         toast.dismiss();
+  //         toast.error(responseData.message || 'Failed to create user');
+  //         return;
+  //       }
+  //        const newUser = responseData.data;
+  //       if (responseData.status) {
+  //         const formData = new FormData();
+  //         const oldImageName = profilePic?.split('/').pop()?.split('.')[0];
+  //         formData.append('oldImageName', oldImageName || '');
+  //         formData.append('userId', responseData.data.id);
+
+  //         const response = await fetch(`/api/profile-pic/upload`, {
+  //           method: 'POST',
+
+  //           body: formData,
+  //         });
+  //         const updatedUser = await response.json();
+  //         setProfilePic(updatedUser.data.imageUrl);
+  //       } else {
+  //         toast.dismiss();
+  //         toast.error(responseData.message);
+  //       }
+  //       if (response.ok) {
+  //         toast.dismiss();
+  //         toast.success(responseData.message);
+  //         router.push('/dashboard/user');
+  //         reset();
+  //       }
+  //     }
+  //   } catch {
+  //     toast.error('Something went wrong. Please try again.');
+  //   } finally {
+  //     setIsApiCallInProgress(false);
+  //   }
+  // };
   const onSubmit: SubmitHandler<UserFormInputs> = async (data) => {
-    // Prevent API call if one is already in progress
     if (isApiCallInProgress) return;
     setIsApiCallInProgress(true);
 
     try {
-      if (data.email && data.name && data.organisationId) {
-        const response = await fetch('/api/add-new-user', {
+      const response = await fetch('/api/add-new-user', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...data,
+          image: profilePic || '',
+        }),
+      });
+
+      const responseData = await response.json();
+
+      if (!response.ok || !responseData.status) {
+        toast.dismiss();
+        toast.error(responseData.message || 'Failed to create user');
+        return;
+      }
+
+      const newUser = responseData.data;
+
+      // Upload profile picture only if image was provided
+      if (profilePic) {
+        const formData = new FormData();
+        const oldImageName = profilePic?.split('/').pop()?.split('.')[0];
+        formData.append('oldImageName', oldImageName || '');
+        formData.append('userId', newUser.id);
+
+        const imageUploadRes = await fetch(`/api/profile-pic/upload`, {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ ...data, image: profilePic }),
+          body: formData,
         });
-        const responseData = await response.json();
-        if (responseData.status) {
-          const formData = new FormData();
-          const oldImageName = profilePic?.split('/').pop()?.split('.')[0];
-          formData.append('oldImageName', oldImageName || '');
-          formData.append('userId', responseData.data.id);
 
-          const response = await fetch(`/api/profile-pic/upload`, {
-            method: 'POST',
+        const updatedUser = await imageUploadRes.json();
 
-            body: formData,
-          });
-          const updatedUser = await response.json();
+        if (imageUploadRes.ok && updatedUser?.data?.imageUrl) {
           setProfilePic(updatedUser.data.imageUrl);
-        } else {
-          toast.dismiss();
-          toast.error(responseData.message);
-        }
-        if (response.ok) {
-          toast.dismiss();
-          toast.success(responseData.message);
-          router.push('/dashboard/user');
-          reset();
         }
       }
-    } catch {
+
+      toast.dismiss();
+      toast.success(responseData.message || 'User created successfully');
+      router.push('/dashboard/user');
+      reset();
+      setProfilePic('');
+      setSelectedOrganisation('');
+    } catch (error) {
+      console.error(error);
       toast.error('Something went wrong. Please try again.');
     } finally {
       setIsApiCallInProgress(false);
     }
   };
+
   const handleChange = (event: SelectChangeEvent) => {
     clearErrors('organisationId');
     setSelectedOrganisation(event.target.value as string);
@@ -322,21 +390,33 @@ export default function AddNewUser({ organisations }: Props) {
                     focused
                     {...register('name', {
                       required: true,
+                      pattern: {
+                        value: validationPattern.namePattern,
+                        message: validationMessage.namePatternMessage,
+                      },
+                      validate: (value) =>
+                        value.trim() !== '' || 'Name cannot be empty or just spaces.',
                     })}
                     sx={{
                       width: '100%',
                     }}
                   />
-                  {errors && errors.name && errors.name.type === 'required' && (
-                    <Typography
-                      variant="body2"
-                      color="red"
-                      fontSize={13}
-                      mt={0.5}
-                    >
+                  {errors?.name?.type === 'required' && (
+                    <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
                       This field is required.
                     </Typography>
                   )}
+                  {errors?.name?.type === 'pattern' && (
+                    <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                      {errors.name.message}
+                    </Typography>
+                  )}
+                  {errors?.name?.type === 'validate' && (
+                    <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                      {errors.name.message}
+                    </Typography>
+                  )}
+
                 </Box>
                 <Box width={'100%'} mb={2}>
                   <TextField
@@ -345,24 +425,24 @@ export default function AddNewUser({ organisations }: Props) {
                     className="form-input"
                     {...register('email', {
                       required: true,
+                      pattern: validationPattern.emailPattern,
                     })}
                     focused
                     sx={{
                       width: '100%',
                     }}
                   />
-                  {errors &&
-                    errors.email &&
-                    errors.email.type === 'required' && (
-                      <Typography
-                        variant="body2"
-                        color="red"
-                        fontSize={13}
-                        mt={0.5}
-                      >
-                        This field is required.
-                      </Typography>
-                    )}
+                  {errors?.email?.type === 'required' && (
+                    <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                      {validationMessage.required}
+                    </Typography>
+                  )}
+
+                  {errors?.email?.type === 'pattern' && (
+                    <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                      {validationMessage.emailPatternMessage}
+                    </Typography>
+                  )}
                 </Box>
                 <Box mb={2} width={'100%'}>
                   <FormControl fullWidth className="form-input" focused>
@@ -421,7 +501,7 @@ export default function AddNewUser({ organisations }: Props) {
           <Button
             type="submit"
             variant="contained"
-            disabled={isApiCallInProgress}
+            disabled={isApiCallInProgress || !isValid}
             sx={{
               background: '#06A19B',
               fontWeight: 600,

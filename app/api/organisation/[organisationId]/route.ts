@@ -74,13 +74,14 @@ export async function PUT(req: NextRequest, context: ContextParams) {
     const organisationType = formData.get('organisationType') as string;
     const addressRaw = formData.get('address');
     const contactsRaw = formData.get('contacts');
-
+    const hatcheryRaw = formData.get('hatchery');
+    const hatcheryIdRaw = formData.get('hatcheryId');
     const addressData = addressRaw ? JSON.parse(addressRaw.toString()) : null;
     const contactsData = contactsRaw
       ? JSON.parse(contactsRaw.toString())
       : null;
-    // const hatcheryId = JSON.parse(formData.get('hatcheryId') as string);
-    const hatchery = JSON.parse(formData.get('hatchery') as string);
+    const hatchery = hatcheryRaw ? JSON.parse(hatcheryRaw.toString()) : null;
+    const hatcheryId = hatcheryIdRaw ? JSON.parse(hatcheryIdRaw.toString()) : null;
     const imageUrl = formData.get('imageUrl') as string;
     const invitedById = formData.get('invitedBy') as string;
     const invitedByOrg = await prisma.organisation.findUnique({
@@ -105,7 +106,7 @@ export async function PUT(req: NextRequest, context: ContextParams) {
 
     if (users.length) {
       return NextResponse.json(
-        { error: 'User already exist with some email' },
+        { error: 'User already exist with same email' },
         { status: 409 },
       );
     }
@@ -131,22 +132,23 @@ export async function PUT(req: NextRequest, context: ContextParams) {
       },
     });
     if (hatchery) {
-      // const updatedHatchery = await prisma.hatchery.upsert({
-      //   where: { id: hatcheryId || '' },
-      //   update: {
-      //     name: hatchery.name,
-      //     altitude: hatchery.altitude,
-      //     code: hatchery.code,
-      //     fishSpecie: hatchery.fishSpecie,
-      //   },
-      //   create: {
-      //     name: hatchery.name ?? '',
-      //     altitude: hatchery.altitude ?? '',
-      //     code: hatchery.code ?? '',
-      //     fishSpecie: hatchery.fishSpecie ?? '',
-      //     createdBy: organisation.id,
-      //   },
-      // });
+      await prisma.hatchery.upsert({
+        where: { id: hatcheryId || '' },
+        update: {
+          name: hatchery.name,
+          code: hatchery.code,
+          altitude: hatchery.altitude,
+          fishSpecie: hatchery.fishSpecie,
+        },
+        create: {
+          name: hatchery.name,
+          code: hatchery.code,
+          altitude: hatchery.altitude,
+          fishSpecie: hatchery.fishSpecie,
+          createdBy: organisation.id,
+           organisationId: organisation.id,
+        },
+      });
     }
 
     // Handle contacts update or create
@@ -190,7 +192,7 @@ export async function PUT(req: NextRequest, context: ContextParams) {
             phone: contact.phone,
             permission: contact.permission,
             user: {
-              connect: { id: userId },   
+              connect: { id: userId },
             },
             organisation: { connect: { id: organisation.id } },
             invite: contact.newInvite,

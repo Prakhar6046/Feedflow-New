@@ -36,6 +36,7 @@ import {
 import { SingleOrganisation } from '../_typeModels/Organization';
 import { getCookie } from 'cookies-next';
 import { EnhancedTableHeadProps } from './UserTable';
+import Loader from './Loader';
 interface Props {
   organisations: SingleOrganisation[];
   userRole: string;
@@ -57,6 +58,7 @@ export default function BasicTable({
   const [orderBy, setOrderBy] = useState('organisation');
   const [selectedView, setSelectedView] = useState<string>('all');
   const role = useAppSelector(selectRole);
+  const [inviteLoading, setInviteLoading] = useState(false);
   const [selectedOrganisation, setSelectedOrganisation] =
     useState<SingleOrganisation | null>(null);
   const [organisationData, setOrganisationData] =
@@ -86,7 +88,11 @@ export default function BasicTable({
   };
   const handleInviteOrganisation = async () => {
     setAnchorEl(null);
-    if (selectedOrganisation) {
+    if (!selectedOrganisation) return;
+
+    setInviteLoading(true);
+
+    try {
       const response = await fetch('/api/invite/organisation', {
         method: 'POST',
         headers: {
@@ -98,11 +104,19 @@ export default function BasicTable({
           createdBy: loginUser?.id,
         }),
       });
+
+      const res = await response.json();
+
       if (response.ok) {
-        const res = await response.json();
-        toast.success(res.message);
+        toast.success(res.message || 'Invitation sent');
         router.refresh();
+      } else {
+        toast.error(res.error || 'Failed to send invitation');
       }
+    } catch (err) {
+      toast.error('Something went wrong!');
+    } finally {
+      setInviteLoading(false);
     }
   };
   const handleRestrictAccess = async () => {
@@ -296,7 +310,9 @@ export default function BasicTable({
       setSelectedView(tabParam);
     }
   }, []);
-
+  if (inviteLoading) {
+    return <Loader />;
+  }
   return (
     <>
       <Box sx={{ width: '100%', typography: 'body1', mt: 5 }}>
@@ -371,6 +387,7 @@ export default function BasicTable({
             <TableBody>
               {organisationData && organisationData.length > 0 ? (
                 organisationData?.map((organisation, i) => {
+                  console.log('organisationData', organisationData)
                   return (
                     <TableRow
                       key={i}
@@ -393,8 +410,8 @@ export default function BasicTable({
                       >
                         <Box display={'flex'} alignItems={'center'} gap={1.5}>
                           {organisation?.imageUrl &&
-                          organisation?.imageUrl !== 'null' &&
-                          organisation?.imageUrl !== 'undefined' ? (
+                            organisation?.imageUrl !== 'null' &&
+                            organisation?.imageUrl !== 'undefined' ? (
                             <Image
                               src={organisation.imageUrl}
                               width={40}
@@ -507,7 +524,7 @@ export default function BasicTable({
                             fontWeight: 500,
                           }}
                           className="cursor-pointer"
-                          // onClick={() => handleEdit(user)}
+                        // onClick={() => handleEdit(user)}
                         >
                           <Button
                             id="basic-button"
@@ -584,7 +601,7 @@ export default function BasicTable({
                             <MenuItem
                               onClick={handleRestrictAccess}
                               disabled={
-                                selectedOrganisation?.users?.some(
+                                selectedOrganisation?.contact?.some(
                                   (user) => user.role === 'SUPERADMIN',
                                 ) ||
                                 selectedOrganisation?.users?.some(
@@ -626,12 +643,10 @@ export default function BasicTable({
                               <MenuItem
                                 onClick={handleInviteOrganisation}
                                 disabled={
-                                  selectedOrganisation?.users?.some(
-                                    (user) => user.role === 'SUPERADMIN',
-                                  ) ||
-                                  selectedOrganisation?.users?.some(
-                                    (user) =>
-                                      user.role === 'ADMIN' && user.invite,
+                                  selectedOrganisation?.contact?.some(
+                                    (contact) =>
+                                      contact.permission === 'SUPERADMIN' ||
+                                      (contact.permission === 'ADMIN' && contact.invite)
                                   )
                                 }
                               >
@@ -654,13 +669,13 @@ export default function BasicTable({
                                   </svg>
 
                                   <Typography variant="subtitle2">
-                                    {selectedOrganisation?.users?.find(
-                                      (val) =>
-                                        val.role === 'ADMIN' && val.invite,
+                                    {selectedOrganisation?.contact?.find(
+                                      (val) => val.permission === 'ADMIN' && val.invite
                                     )
                                       ? 'Invited'
                                       : 'Invite'}
                                   </Typography>
+
                                 </Stack>
                               </MenuItem>
                             )}
