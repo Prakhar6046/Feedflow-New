@@ -16,14 +16,12 @@ export default async function GrowthModelPage() {
 
   if (loggedUser) {
     try {
-      const user: SingleUser = JSON.parse(loggedUser);
-      console.log('user', user);
+      const user: SingleUser = JSON.parse(loggedUser)
       organisationId = user.organisationId;
     } catch (error) {
       console.error('Error parsing user data:', error);
     }
   }
-  console.log('organisationId', organisationId);
   let growthModels = [];
 
   try {

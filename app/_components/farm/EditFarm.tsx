@@ -70,7 +70,6 @@ const EditFarm = ({
     };
     getFarmData();
   }, []);
-  console.log('edit farm data', editFarm);
 
   if (loading) {
     return <Loader />;

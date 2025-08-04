@@ -77,7 +77,6 @@ const AddNewOrganisation = ({ type, loggedUser }: Props) => {
   const router = useRouter();
   const [isHatcherySelected, setIsHatcherySelected] = useState<boolean>(false);
   const [organisationCount, setOrganisationCount] = useState<number>(0);
-  console.log('organisationCount',organisationCount)
   const [isApiCallInProgress, setIsApiCallInProgress] =
     useState<boolean>(false);
   const [addressInformation, setAddressInformation] =
@@ -85,18 +84,18 @@ const AddNewOrganisation = ({ type, loggedUser }: Props) => {
   const [useAddress, setUseAddress] = useState<boolean>(false);
   const [altitude, setAltitude] = useState<string>('');
   const [inviteSent, setInviteSent] = useState<{ [key: number]: boolean }>({});
-  const handleInviteUser = (invite: boolean, index: number) => {
-    if (!invite) {
-      setInviteSent((prev) => {
-        const newInviteState = !prev[index];
-        setValue(`contacts.${index}.newInvite`, newInviteState);
-        return {
-          ...prev,
-          [index]: newInviteState,
-        };
-      });
-    }
-  };
+  // const handleInviteUser = (invite: boolean, index: number) => {
+  //   if (!invite) {
+  //     setInviteSent((prev) => {
+  //       const newInviteState = !prev[index];
+  //       setValue(`contacts.${index}.newInvite`, newInviteState);
+  //       return {
+  //         ...prev,
+  //         [index]: newInviteState,
+  //       };
+  //     });
+  //   }
+  // };
   const {
     register,
     setValue,
@@ -105,15 +104,39 @@ const AddNewOrganisation = ({ type, loggedUser }: Props) => {
     watch,
     reset,
     trigger,
-     clearErrors,
-    formState: { errors },
+    clearErrors,
+    formState: { errors, isDirty, isValid },
   } = useForm<AddOrganizationFormInputs>({
     defaultValues: {
-      contacts: [{ name: '', role: '', email: '', phone: '', permission: '' }],
+      contacts: [{ name: '', role: '', email: '', phone: '', permission: '', invite: false, }],
     },
     mode: 'onChange',
   });
   const editableRef = useRef<HTMLParagraphElement>(null);
+  const handleInviteUser = async (index: number) => {
+    const contact = watch(`contacts.${index}`);
+    const currentlyInvited = contact.invite;
+
+    if (!isContactComplete(contact)) {
+      toast.error('Please fill all required fields before marking for invite.');
+      return;
+    }
+
+    setValue(`contacts.${index}.invite`, !currentlyInvited, {
+      shouldDirty: true,
+      shouldTouch: true,
+      shouldValidate: true,
+    });
+
+    setInviteSent((prev) => ({
+      ...prev,
+      [index]: !currentlyInvited,
+    }));
+
+    // Force validation for the full contacts array if needed
+    await trigger(`contacts`);
+  };
+
 
   const isContactComplete = (contact: any) => {
     return (
@@ -134,10 +157,8 @@ const AddNewOrganisation = ({ type, loggedUser }: Props) => {
   };
 
   const onSubmit: SubmitHandler<AddOrganizationFormInputs> = async (data) => {
-    // Prevent API call if one is already in progress
-
     const hasAdmin = watch('contacts').some(
-      (contact) => contact.permission === 'ADMIN',
+      (contact) => contact.permission === 'ADMIN'
     );
 
     if (!hasAdmin) {
@@ -145,11 +166,14 @@ const AddNewOrganisation = ({ type, loggedUser }: Props) => {
       toast.error('At least one admin is required for this organisation.');
       return;
     }
+
     if (isApiCallInProgress) return;
     setIsApiCallInProgress(true);
+
     try {
       if (data && loggedUser) {
         data.createdBy = loggedUser.organisationId;
+
         const response = await fetch('/api/add-organisation', {
           method: 'POST',
           headers: {
@@ -157,21 +181,55 @@ const AddNewOrganisation = ({ type, loggedUser }: Props) => {
           },
           body: JSON.stringify({ ...data, imageUrl: profilePic }),
         });
+
         const responseData = await response.json();
-        if (responseData.status) {
-          toast.success(responseData.message);
-          router.push('/dashboard/organisation');
-          reset();
-        } else {
-          toast.error(responseData.error);
+
+        if (!response.ok || !responseData.status) {
+          toast.error(responseData.error || 'Failed to add organisation');
+          return;
         }
+
+        const organisationId = responseData?.data?.organisation?.id;
+
+        if (!organisationId) {
+          toast.error('Organisation ID missing in response.');
+          return;
+        }
+
+        const contactsToInvite = data.contacts.filter((c) => c.invite);
+
+        if (contactsToInvite.length > 0) {
+          const inviteRes = await fetch('/api/invite/organisation', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              organisationId,
+              users: contactsToInvite,
+              createdBy: loggedUser.id,
+            }),
+          });
+
+          const inviteData = await inviteRes.json();
+
+          if (!inviteRes.ok || !inviteData.status) {
+            toast.error(inviteData.error || 'Failed to send invites');
+            return;
+          }
+        }
+
+        toast.success(responseData.message || 'Organisation created successfully');
+        router.push('/dashboard/organisation');
+        reset();
       }
-    } catch {
+    } catch (error) {
+      console.error('Error creating organisation:', error);
       toast.error('Something went wrong. Please try again.');
     } finally {
       setIsApiCallInProgress(false);
     }
   };
+
+
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'contacts',
@@ -211,10 +269,10 @@ const AddNewOrganisation = ({ type, loggedUser }: Props) => {
       setValue('postCode', addressInformation.postcode);
       setValue('province', addressInformation.state);
       setValue('country', addressInformation.country);
-       clearErrors(['address', 'city', 'postCode', 'country','province']);
+      clearErrors(['address', 'city', 'postCode', 'country', 'province']);
       setUseAddress(false);
     }
-  }, [addressInformation, useAddress,clearErrors]);
+  }, [addressInformation, useAddress, clearErrors]);
 
   useEffect(() => {
     if (type === 'fishProducers') {
@@ -1218,45 +1276,31 @@ const AddNewOrganisation = ({ type, loggedUser }: Props) => {
                     minWidth={'67px'}
                   >
                     <Box
-                      display={'flex'}
-                      justifyContent={'center'}
-                      alignItems={'center'}
+                      display="flex"
+                      justifyContent="center"
+                      alignItems="center"
                       sx={{
-                        cursor: item.invite
-                          ? 'not-allowed'
-                          : !isDisabled
-                            ? 'pointer'
-                            : 'not-allowed',
+                        cursor: !isDisabled ? 'pointer' : 'not-allowed',
                       }}
                       onClick={() => {
-                        if (!item.invite && !isDisabled) {
-                          handleInviteUser(true, index);
+                        if (!isDisabled) {
+                          handleInviteUser(index);
                         }
                       }}
                     >
-
                       <Image
-                        title={item.invite ? 'Invited' : 'Invite'}
+                        title={liveContact.invite ? 'Invited' : 'Invite'}
                         width={20}
                         height={20}
-                        src={
-                          item.invite
-                            ? sentEmailIcon
-                            : inviteSent[index]
-                              ? sentEmailIcon
-                              : sendEmailIcon
-                        }
+                        src={liveContact.invite ? sentEmailIcon : sendEmailIcon}
                         alt="Send Email Icon"
                         style={{
-                          opacity: !isDisabled && !item.invite ? 1 : 0.4,
-                          cursor: item.invite
-                            ? 'not-allowed'
-                            : !isDisabled
-                              ? 'pointer'
-                              : 'not-allowed',
+                          opacity: !isDisabled ? 1 : 0.4,
+                          cursor: !isDisabled ? 'pointer' : 'not-allowed',
                         }}
                       />
                     </Box>
+
 
                     <Box
                       display={'flex'}

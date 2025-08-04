@@ -91,7 +91,6 @@ function FeedingPlan({ productionData, startDate, endDate }: Props) {
       return;
     }
     if (productionData?.length === 0) {
-      console.log('empty data');
       return;
     }
 

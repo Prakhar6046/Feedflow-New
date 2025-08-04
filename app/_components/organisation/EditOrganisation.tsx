@@ -123,7 +123,7 @@ const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
     watch,
     trigger,
     clearErrors,
-    formState: { errors },
+     formState: { errors, isDirty, isValid },
   } = useForm<AddOrganizationFormInputs>({
     mode: 'onChange',
     defaultValues: {
@@ -140,8 +140,33 @@ const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
     },
   });
   const selectedOrganisationType = watch('organisationType');
+const handleInviteUser = async (index: number) => {
+  const contact = watch(`contacts.${index}`);
+  const currentlyInvited = contact.invite;
+
+  if (!isContactComplete(contact)) {
+    toast.error('Please fill all required fields before marking for invite.');
+    return;
+  }
+
+  setValue(`contacts.${index}.invite`, !currentlyInvited, {
+    shouldDirty: true,
+    shouldTouch: true,
+    shouldValidate: true,
+  });
+
+  setInviteSent((prev) => ({
+    ...prev,
+    [index]: !currentlyInvited,
+  }));
+
+  // Force validation for the full contacts array if needed
+  await trigger(`contacts`);
+};
+
   const onSubmit: SubmitHandler<AddOrganizationFormInputs> = async (data) => {
-    console.log('datadatadata', data)
+    debugger;
+    console.log('Form submitted with data:', data);
     // Prevent API call if one is already in progress
     const hasAdmin = watch('contacts').some(
       (contact) => contact.permission === 'ADMIN',
@@ -198,7 +223,25 @@ const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
 
       if (res.ok) {
         const updatedOrganisation = await res.json();
+        const contactsToInvite = data.contacts.filter((c) => c.invite);
+        if (contactsToInvite.length > 0) {
+          const inviteRes = await fetch('/api/invite/organisation', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              organisationId: Number(organisationId),
+              users: contactsToInvite,
+              createdBy: loggedUser?.id,
+            }),
+          });
 
+          const inviteData = await inviteRes.json();
+          // if (inviteRes.ok) {
+          //   toast.success(inviteData.message || 'Invites sent successfully');
+          // } else {
+          //   toast.error(inviteData.error || 'Some invites failed to send');
+          // }
+        }
         toast.success(updatedOrganisation.message);
         router.push('/dashboard/organisation');
       } else {
@@ -251,48 +294,7 @@ const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
       contact.phone?.trim()
     );
   };
-  const handleInviteUser = async (index: number) => {
-    const contact = watch(`contacts.${index}`);
 
-    setInviteLoading(true);
-    if (!isContactComplete(contact)) {
-      toast.error('Please fill all required fields before inviting.');
-      return;
-    }
-
-    if (contact.invite || isApiCallInProgress) return;
-
-    setIsApiCallInProgress(true);
-    setInviteSent((prev) => ({ ...prev, [index]: true }));
-    setValue(`contacts.${index}.invite`, true);
-
-    try {
-      const response = await fetch('/api/invite/organisation', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          organisationId: Number(organisationId),
-          users: [contact],
-          createdBy: loggedUser?.id,
-        }),
-      });
-
-      const result = await response.json();
-
-      if (response.ok) {
-        toast.success(result.message || 'Invitation sent');
-      } else {
-        toast.error(result.error || 'Failed to send invitation');
-        setValue(`contacts.${index}.invite`, false);
-      }
-    } catch (error) {
-      toast.error('Something went wrong!');
-      setValue(`contacts.${index}.invite`, false);
-    } finally {
-      setInviteLoading(false);
-      setIsApiCallInProgress(false);
-    }
-  };
 
   useEffect(() => {
     if (watch('organisationType') === 'Hatchery') {
@@ -1044,7 +1046,6 @@ const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
                 </Typography>
 
                 {fields.map((item, index) => {
-                  console.log('fields', fields)
                   const liveContact = watch(`contacts.${index}`);
                   const isDisabled = !isContactComplete(liveContact);
                   return (
@@ -1339,42 +1340,38 @@ const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
                       </Box>
 
                       <Box
-                        display={'flex'}
-                        justifyContent={'center'}
-                        alignItems={'center'}
+                        display="flex"
+                        justifyContent="center"
+                        alignItems="center"
                         sx={{
-                          cursor: item.invite
-                            ? 'not-allowed'
-                            : !isDisabled
-                              ? 'pointer'
-                              : 'not-allowed',
-                        }}
-                        onClick={() => {
-                          if (!item.invite && !isDisabled) {
-                            handleInviteUser(index);
-                          }
+                          cursor: isDisabled ? 'not-allowed' : 'pointer',
                         }}
                       >
                         <Image
-                          title={item.invite ? 'Invited' : 'Invite'}
+                          title={
+                            watch(`contacts.${index}.invite`)
+                              ? 'Click to unmark invite'
+                              : 'Click to mark invite'
+                          }
                           src={
-                            item.invite
+                            watch(`contacts.${index}.invite`)
                               ? sentEmailIcon
-                              : inviteSent[index]
-                                ? sentEmailIcon
-                                : sendEmailIcon
+                              : sendEmailIcon
                           }
                           alt="Send Email Icon"
+                          onClick={() => {
+                            if (!isDisabled) {
+                              handleInviteUser(index);
+                            }
+                          }}
                           style={{
-                            opacity: !isDisabled && !item.invite ? 1 : 0.4,
-                            cursor: item.invite
-                              ? 'not-allowed'
-                              : !isDisabled
-                                ? 'pointer'
-                                : 'not-allowed',
+                            opacity: isDisabled ? 0.4 : 1,
+                            cursor: isDisabled ? 'not-allowed' : 'pointer',
                           }}
                         />
+
                       </Box>
+
                       <Box
                         display={'flex'}
                         justifyContent={'center'}
