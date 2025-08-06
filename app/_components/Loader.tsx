@@ -3,9 +3,8 @@ import Box from '@mui/material/Box';
 import { Stack } from '@mui/material';
 import loaderImg from '../../public/static/img/loader.png';
 import Image from 'next/image';
-interface Props {}
 
-const Loader: NextPage<Props> = ({}) => {
+const Loader: NextPage = () => {
   return (
     <Stack
       sx={{
@@ -19,7 +18,7 @@ const Loader: NextPage<Props> = ({}) => {
       <Box sx={{ display: 'flex' }}>
         <div className="loader-container">
           <div className="loader-inner">
-            <Image src={loaderImg} className="loader" alt="loader" />
+            <Image src={loaderImg} className="loader" alt="loader" width={50} height={50} />
           </div>
           <div></div>
           <div></div>

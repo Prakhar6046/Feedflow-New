@@ -46,18 +46,21 @@ export default function Page() {
       const data = await response.json();
 
       if (response.ok && data.data.user) {
-        const { organisation, password, ...rest } = data.data.user;
+        const { organisation, ...userWithoutPassword } = data.data.user;
+        delete userWithoutPassword.password;
 
         setCookie(
           'logged-user',
           JSON.stringify({
-            ...rest,
-            organisationType: data?.data?.user?.organisation?.organisationType,
+            ...userWithoutPassword,
+            organisationType: organisation?.organisationType,
           }),
           { maxAge: 60 * 60 * 24 * 1 }, // 1 day in seconds
         );
+
         dispatch(userAction.handleRole(data.data.user.role));
-        setCookie('role', data?.data?.user?.role, { maxAge: 60 * 60 * 24 * 1 });
+        setCookie('role', data.data.user.role, { maxAge: 60 * 60 * 24 * 1 });
+
         if (data.status) {
           router.push('/dashboard/organisation');
         }
@@ -114,6 +117,8 @@ export default function Page() {
                 <Image
                   src={logo}
                   alt="Logo"
+                  width={200}
+                  height={80}
                   style={{
                     width: '100%',
                     height: 'auto',
@@ -449,13 +454,22 @@ export default function Page() {
                   textTransform: 'capitalize',
                   borderRadius: '4px',
                 }}
+                // onClick={() => window.open('https://www.nutritionhub.co.za', '_blank')}
               >
                 Contact Us
               </Button>
 
-              <Typography variant="body1" color="#fff">
+              <Typography
+                component="a"
+                href="https://www.nutritionhub.co.za"
+                target="_blank"
+                rel="noopener noreferrer"
+                variant="body1"
+                color="#fff"
+              >
                 www.nutritionhub.co.za
               </Typography>
+
             </Box>
           </Box>
 

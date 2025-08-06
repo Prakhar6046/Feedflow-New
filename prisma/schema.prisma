@@ -72,6 +72,7 @@ model Organisation {
   FishManageHistory FishManageHistory[]
   GrowthModels      GrowthModel[]
   FeedStore         FeedStore[]
+  models            Model[]
 
   @@index([createdAt])
   @@index([updatedAt])
@@ -109,7 +110,7 @@ model Contact {
   role           String?
   permission     UserRole      @default(NONADMIN)
   userId         Int           @default(1)
-  user           User          @relation(fields: [userId], references: [id])
+  user           User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
   invite         Boolean       @default(false)
@@ -339,6 +340,7 @@ model FishSupply {
   farm              Farm                @relation(fields: [fishFarmId], references: [id])
   status            String
   productionUnits   String              @default("")
+  species           String?   
   createdBy         Int? // Optional field, nullable foreign key
   updatedBy         String?
   createdAt         DateTime            @default(now())
@@ -482,13 +484,33 @@ model Model {
   id                       Int                    @id @default(autoincrement())
   name                     String?
   specie                   String?
+  productionSystem         String?
+  adcCp                   Float?
+  adcCf                   Float?
+  adcNfe                  Float?
+  geCp                    Float?
+  geCf                    Float?
+  geNfe                   Float?
+  wasteFactor             Float?
+
   temperatureCoefficient   String?
-  growthEquationLength     String?
-  growthEquationBodyWeight String?
-  conditionFactor1         String?
-  conditionFactor2         String?
-  createdAt                DateTime               @default(now())
-  updatedAt                DateTime               @updatedAt
+  tgcA                    Float?
+  tgcB                    Float?
+  tgcC                    Float?
+  tgcD                    Float?
+  tgcE                    Float?
+  tFCRModel               String?
+  tFCRa                   Float?
+  tFCRb                   Float?
+  tFCRc                   Float?
+  
+  // Metadata
+  organisationId           Int?
+  organisation             Organisation?  @relation(fields: [organisationId], references: [id])
+  createdBy                Int?
+  updatedBy                String?
+  createdAt                DateTime       @default(now())
+  updatedAt                DateTime       @updatedAt
   GrowthModel              GrowthModel[]
   YearBasedPredication     YearBasedPredication[]
 }

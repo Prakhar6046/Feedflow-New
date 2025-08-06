@@ -8,7 +8,7 @@ import {
   OrganisationType,
   PermissionType,
 } from '@/app/_components/AddNewOrganisation';
-import MapComponent from '@/app/_components/farm/MapComponent';
+import MapComponent, { AddressInfo } from '@/app/_components/farm/MapComponent';
 import HatcheryForm from '@/app/_components/hatchery/HatcheryForm';
 import Loader from '@/app/_components/Loader';
 import { deleteImage, handleUpload } from '@/app/_lib/utils';
@@ -45,10 +45,10 @@ import {
 } from 'react-hook-form';
 import toast from 'react-hot-toast';
 
-import Image from 'next/image';
-import FarmsInformation from './FarmsInformation';
 import { SingleUser } from '@/app/_typeModels/User';
 import { getCookie } from 'cookies-next';
+import Image from 'next/image';
+import FarmsInformation from './FarmsInformation';
 export const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
   clipPath: 'inset(50%)',
@@ -66,12 +66,7 @@ type Iprops = {
   userRole: string;
   loggedUser: SingleUser;
 };
-const EditOrganisation = ({
-  organisationId,
-  organisations,
-  userRole,
-  loggedUser,
-}: Iprops) => {
+const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [organisationData, setOrganisationData] = useState<OrganizationData>();
@@ -80,30 +75,30 @@ const EditOrganisation = ({
   const [altitude, setAltitude] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
   const [profilePic, setProfilePic] = useState<string>();
-  const [addressInformation, setAddressInformation] = useState<any>();
+  const [addressInformation, setAddressInformation] =
+    useState<AddressInfo | null>();
   const [isApiCallInProgress, setIsApiCallInProgress] =
     useState<boolean>(false);
   const [useAddress, setUseAddress] = useState<boolean>(false);
-  const [searchedAddress, setSearchedAddress] = useState<any>();
   const [selectedView, setSelectedView] = useState<string>(
     'organisationInformation',
   );
   const [inviteSent, setInviteSent] = useState<{ [key: number]: boolean }>({});
+  const [inviteLoading, setInviteLoading] = useState(false);
+  // const handleInviteUser = (invite: boolean, index: number) => {
+  //   if (!invite) {
+  //     setInviteSent((prev) => {
+  //       const newInviteState = !prev[index];
+  //       setValue(`contacts.${index}.newInvite`, newInviteState);
+  //       return {
+  //         ...prev,
+  //         [index]: newInviteState,
+  //       };
+  //     });
+  //   }
+  // };
 
-  const handleInviteUser = (invite: boolean, index: number) => {
-    if (!invite) {
-      setInviteSent((prev) => {
-        const newInviteState = !prev[index];
-        setValue(`contacts.${index}.newInvite`, newInviteState);
-        return {
-          ...prev,
-          [index]: newInviteState,
-        };
-      });
-    }
-  };
-
-  const handleChange = (_event: any, newValue: string) => {
+  const handleChange = (newValue: string) => {
     setSelectedView(newValue);
     const newParams = new URLSearchParams(searchParams.toString());
     newParams.set('tab', newValue);
@@ -111,12 +106,8 @@ const EditOrganisation = ({
   };
   const getOrganisation = async () => {
     setLoading(true);
-    const token = getCookie('auth-token');
     const data = await fetch(`/api/organisation/${organisationId}`, {
       method: 'GET',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
     });
     if (data) {
       setLoading(false);
@@ -131,7 +122,8 @@ const EditOrganisation = ({
     control,
     watch,
     trigger,
-    formState: { errors },
+    clearErrors,
+    formState: { errors, isDirty, isValid },
   } = useForm<AddOrganizationFormInputs>({
     mode: 'onChange',
     defaultValues: {
@@ -148,14 +140,48 @@ const EditOrganisation = ({
     },
   });
   const selectedOrganisationType = watch('organisationType');
+  const handleInviteUser = async (index: number) => {
+    const contact = watch(`contacts.${index}`);
+    const currentlyInvited = contact.invite;
+
+    if (!isContactComplete(contact)) {
+      toast.error('Please fill all required fields before marking for invite.');
+      return;
+    }
+
+    setValue(`contacts.${index}.invite`, !currentlyInvited, {
+      shouldDirty: true,
+      shouldTouch: true,
+      shouldValidate: true,
+    });
+
+    setInviteSent((prev) => ({
+      ...prev,
+      [index]: !currentlyInvited,
+    }));
+
+    // Force validation for the full contacts array if needed
+    await trigger(`contacts`);
+  };
+
   const onSubmit: SubmitHandler<AddOrganizationFormInputs> = async (data) => {
+    console.log('Form submitted with data:', data);
     // Prevent API call if one is already in progress
+    const hasAdmin = watch('contacts').some(
+      (contact) => contact.permission === 'ADMIN',
+    );
+
+    if (!hasAdmin) {
+      toast.dismiss();
+      toast.error('At least one admin is required for this organisation.');
+      return;
+    }
     if (isApiCallInProgress) return;
     setIsApiCallInProgress(true);
 
     try {
       let hatchery;
-      const address: any = {
+      const address = {
         address: data.address,
         city: data.city,
         province: data.province,
@@ -181,33 +207,47 @@ const EditOrganisation = ({
       formData.append('imageUrl', String(profilePic));
       formData.append('invitedBy', String(loggedUser?.organisationId));
 
-      if (isHatcherySelected && organisationData) {
-        formData.append(
-          'hatcheryId',
-          JSON.stringify(organisationData?.hatchery[0]?.id ?? ''),
-        );
-        formData.append('hatchery', JSON.stringify(hatchery));
+      if (isHatcherySelected && organisationData?.hatchery?.[0]?.id) {
+        formData.append('hatcheryId', JSON.stringify(organisationData.hatchery[0].id));
       }
 
-      const token = getCookie('auth-token');
+      if (isHatcherySelected) {
+        formData.append('hatchery', JSON.stringify(hatchery));
+      }
       const res = await fetch(`/api/organisation/${organisationId}`, {
         method: 'PUT',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+
         body: formData,
       });
 
       if (res.ok) {
         const updatedOrganisation = await res.json();
+        const contactsToInvite = data.contacts.filter((c) => c.invite);
+        if (contactsToInvite.length > 0) {
+          const inviteRes = await fetch('/api/invite/organisation', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              organisationId: Number(organisationId),
+              users: contactsToInvite,
+              createdBy: loggedUser?.id,
+            }),
+          });
 
+          const inviteData = await inviteRes.json();
+          // if (inviteRes.ok) {
+          //   toast.success(inviteData.message || 'Invites sent successfully');
+          // } else {
+          //   toast.error(inviteData.error || 'Some invites failed to send');
+          // }
+        }
         toast.success(updatedOrganisation.message);
         router.push('/dashboard/organisation');
       } else {
         const data = await res.json();
         toast.error(data.error);
       }
-    } catch (error) {
+    } catch {
       toast.error('Something went wrong. Please try again.');
     } finally {
       setIsApiCallInProgress(false);
@@ -244,6 +284,17 @@ const EditOrganisation = ({
     }
   };
 
+  const isContactComplete = (contact: any) => {
+    return (
+      contact.name?.trim() &&
+      contact.permission &&
+      contact.role?.trim() &&
+      contact.email?.trim() &&
+      contact.phone?.trim()
+    );
+  };
+
+
   useEffect(() => {
     if (watch('organisationType') === 'Hatchery') {
       setIsHatcherySelected(true);
@@ -258,7 +309,7 @@ const EditOrganisation = ({
       setValue('postCode', addressInformation.postcode);
       setValue('province', addressInformation.state);
       setValue('country', addressInformation.country);
-
+      clearErrors(['address', 'city', 'postCode', 'country', 'province']);
       setUseAddress(false);
     }
   }, [addressInformation, useAddress]);
@@ -284,11 +335,24 @@ const EditOrganisation = ({
       setValue('postCode', String(organisationData.address?.postCode));
       setValue('country', organisationData?.address?.country);
       setValue('contacts', organisationData?.contact);
+      setProfilePic(organisationData.imageUrl);
       setValue('organisationType', organisationData?.organisationType);
+      if (
+        organisationData.organisationType?.toLowerCase() === 'hatchery' &&
+        Array.isArray(organisationData.hatchery) &&
+        organisationData.hatchery.length > 0
+      ) {
+        const hatchery = organisationData.hatchery[0];
+
+        setValue('hatcheryName', hatchery.name);
+        setValue('hatcheryCode', hatchery.code);
+        setValue('hatcheryAltitude', String(Number(hatchery.altitude).toFixed(2)));
+        setValue('fishSpecie', hatchery.fishSpecie);
+      }
     }
   }, [organisationData]);
 
-  if (loading) {
+  if (loading || inviteLoading) {
     return <Loader />;
   }
   return (
@@ -314,7 +378,7 @@ const EditOrganisation = ({
           >
             <Box>
               <TabList
-                onChange={handleChange}
+                onChange={(_, value) => handleChange(value)}
                 aria-label="lab API tabs example"
                 className="production-tabs"
               >
@@ -430,12 +494,7 @@ const EditOrganisation = ({
                   type="file"
                   {...register('image', {
                     onChange: (e) =>
-                      handleUpload(
-                        e.target.files,
-                        profilePic,
-                        setProfilePic,
-                        String(token),
-                      ),
+                      handleUpload(e.target.files, profilePic, setProfilePic),
                   })}
                   accept=".jpg,.jpeg,.png,.svg"
                 />
@@ -485,7 +544,6 @@ const EditOrganisation = ({
                             e.target.files,
                             profilePic,
                             setProfilePic,
-                            String(token),
                           ),
                       })}
                       accept=".jpg,.jpeg,.png,.svg"
@@ -503,7 +561,6 @@ const EditOrganisation = ({
                           type: 'organisation',
                           image: organisationData?.image,
                         },
-                        String(token),
                         setProfilePic,
                       )
                     }
@@ -595,6 +652,8 @@ const EditOrganisation = ({
                     focused
                     {...register('organisationName', {
                       required: true,
+                      pattern: validationPattern.alphabetsNumbersAndSpacesPattern,
+                      validate: (value) => value.trim() !== '' || 'Spaces only are not allowed',
                       // validate: (value: String) => {
                       //   const isUnique = organisations?.every((val) => {
                       //     if (val.id === Number(organisationId)) {
@@ -625,7 +684,7 @@ const EditOrganisation = ({
                         fontSize={13}
                         mt={0.5}
                       >
-                        This field is required.
+                        {validationMessage.OnlyAlphabetsandNumberMessage}
                       </Typography>
                     )}
                   {errors?.organisationName?.type === 'validate' && (
@@ -636,6 +695,11 @@ const EditOrganisation = ({
                       mt={0.5}
                     >
                       {errors?.organisationName?.message}
+                    </Typography>
+                  )}
+                  {errors?.organisationName?.type === 'validate' && (
+                    <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                      {errors.organisationName.message}
                     </Typography>
                   )}
                 </Box>
@@ -657,6 +721,7 @@ const EditOrganisation = ({
                       className="form-input"
                       {...register('organisationCode', {
                         required: true,
+                        validate: (value) => value.trim() !== '' || 'Spaces only are not allowed',
                       })}
                       // disabled
                       sx={{
@@ -673,9 +738,14 @@ const EditOrganisation = ({
                           fontSize={13}
                           mt={0.5}
                         >
-                          This field is required.
+                          {validationMessage.required}
                         </Typography>
                       )}
+                    {errors?.organisationCode?.type === 'validate' && (
+                      <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                        {errors.organisationCode.message}
+                      </Typography>
+                    )}
                   </Box>
                 </Stack>
                 <FormControl className="form-input" fullWidth focused>
@@ -689,7 +759,7 @@ const EditOrganisation = ({
                     {...register('organisationType')}
                     disabled
                     value={selectedOrganisationType || ''}
-                    // onChange={(e) => handleChange(e, item)}
+                  // onChange={(e) => handleChange(e, item)}
                   >
                     {OrganisationType.map((organisation, i) => {
                       return (
@@ -699,7 +769,13 @@ const EditOrganisation = ({
                       );
                     })}
                   </Select>
+                  {errors && errors.organisationType && (
+                    <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                      {validationMessage.required}
+                    </Typography>
+                  )}
                 </FormControl>
+
                 {isHatcherySelected && (
                   <HatcheryForm
                     altitude={altitude}
@@ -710,16 +786,32 @@ const EditOrganisation = ({
                     errors={errors}
                   />
                 )}
-                <Typography
-                  variant="subtitle1"
-                  fontWeight={500}
-                  color="black"
-                  fontSize={16}
+                <Box
+                  display={'flex'}
+                  alignItems={'center'}
+                  justifyContent="space-between"
                   marginTop={3}
                   marginBottom={2}
                 >
-                  Address
-                </Typography>
+                  <Typography
+                    variant="subtitle1"
+                    fontWeight={500}
+                    color="black"
+                    fontSize={16}
+                    marginTop={3}
+                    marginBottom={2}
+                  >
+                    Address
+                  </Typography>
+                  <MapComponent
+                    setAddressInformation={setAddressInformation}
+                    setUseAddress={setUseAddress}
+                    isCalAltitude={true}
+                    setAltitude={setAltitude}
+                    token={token ?? ''}
+                    clearErrors={clearErrors}
+                  />
+                </Box>
 
                 <Stack
                   display={'flex'}
@@ -738,6 +830,8 @@ const EditOrganisation = ({
                       className="form-input"
                       {...register('address', {
                         required: true,
+                        pattern: validationPattern.addressPattern,
+                        validate: (value) => value.trim() !== '' || 'Spaces only are not allowed',
                       })}
                       focused
                       sx={{
@@ -753,9 +847,26 @@ const EditOrganisation = ({
                           fontSize={13}
                           mt={0.5}
                         >
-                          This field is required.
+                          {validationMessage.required}
                         </Typography>
                       )}
+                    {errors &&
+                      errors.address &&
+                      errors.address.type === 'pattern' && (
+                        <Typography
+                          variant="body2"
+                          color="red"
+                          fontSize={13}
+                          mt={0.5}
+                        >
+                          {validationMessage.AddressMessage}
+                        </Typography>
+                      )}
+                    {errors?.address?.type === 'validate' && (
+                      <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                        {errors.address.message}
+                      </Typography>
+                    )}
                   </Box>
 
                   <Box width={'100%'}>
@@ -765,24 +876,40 @@ const EditOrganisation = ({
                       className="form-input"
                       {...register('city', {
                         required: true,
+                        validate: (value) => value.trim() !== '' || 'Spaces only are not allowed',
+                        pattern:
+                          validationPattern.alphabetsSpacesAndSpecialCharsPattern,
                       })}
                       focused
                       sx={{
                         width: '100%',
                       }}
                     />
-                    {errors &&
-                      errors.city &&
-                      errors.city.type === 'required' && (
-                        <Typography
-                          variant="body2"
-                          color="red"
-                          fontSize={13}
-                          mt={0.5}
-                        >
-                          This field is required.
-                        </Typography>
-                      )}
+                    {errors && errors.city && errors.city.type === 'required' && (
+                      <Typography
+                        variant="body2"
+                        color="red"
+                        fontSize={13}
+                        mt={0.5}
+                      >
+                        {validationMessage.required}
+                      </Typography>
+                    )}
+                    {errors && errors.city && errors.city.type === 'pattern' && (
+                      <Typography
+                        variant="body2"
+                        color="red"
+                        fontSize={13}
+                        mt={0.5}
+                      >
+                        {validationMessage.alphabetswithSpecialCharacter}
+                      </Typography>
+                    )}
+                    {errors?.city?.type === 'validate' && (
+                      <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                        {errors.city.message}
+                      </Typography>
+                    )}
                   </Box>
                 </Stack>
 
@@ -803,6 +930,8 @@ const EditOrganisation = ({
                       className="form-input"
                       {...register('province', {
                         required: true,
+                        pattern: validationPattern.alphabetsSpacesAndSpecialCharsPattern,
+                        validate: (value) => value.trim() !== '' || 'Spaces only are not allowed',
                       })}
                       focused
                       sx={{
@@ -819,9 +948,26 @@ const EditOrganisation = ({
                           fontSize={13}
                           mt={0.5}
                         >
-                          This field is required.
+                          {validationMessage.required}
                         </Typography>
                       )}
+                    {errors &&
+                      errors.province &&
+                      errors.province.type === 'pattern' && (
+                        <Typography
+                          variant="body2"
+                          color="red"
+                          fontSize={13}
+                          mt={0.5}
+                        >
+                          {validationMessage.alphabetswithSpecialCharacter}
+                        </Typography>
+                      )}
+                    {errors?.province?.type === 'validate' && (
+                      <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                        {errors.province.message}
+                      </Typography>
+                    )}
                   </Box>
 
                   <Box width={'100%'}>
@@ -831,7 +977,8 @@ const EditOrganisation = ({
                       className="form-input"
                       {...register('postCode', {
                         required: true,
-                        pattern: validationPattern.onlyNumbersPattern,
+                        pattern: validationPattern.postCodePattern,
+                        validate: (value) => value.trim() !== '' || 'Spaces only are not allowed',
                         maxLength: 10,
                       })}
                       focused
@@ -848,10 +995,9 @@ const EditOrganisation = ({
                           fontSize={13}
                           mt={0.5}
                         >
-                          This field is required.
+                          {validationMessage.required}
                         </Typography>
                       )}
-
                     {errors &&
                       errors.postCode &&
                       errors.postCode.type === 'pattern' && (
@@ -861,21 +1007,14 @@ const EditOrganisation = ({
                           fontSize={13}
                           mt={0.5}
                         >
-                          {validationMessage.onlyNumbers}
+                          {validationMessage.onlyAlphabetsNumbers}
                         </Typography>
                       )}
-                    {errors &&
-                      errors.postCode &&
-                      errors.postCode.type === 'maxLength' && (
-                        <Typography
-                          variant="body2"
-                          color="red"
-                          fontSize={13}
-                          mt={0.5}
-                        >
-                          {validationMessage.numberMaxLength}
-                        </Typography>
-                      )}
+                    {errors?.postCode?.type === 'validate' && (
+                      <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                        {errors.postCode.message}
+                      </Typography>
+                    )}
                   </Box>
                 </Stack>
                 <Stack
@@ -895,6 +1034,8 @@ const EditOrganisation = ({
                       className="form-input"
                       {...register('country', {
                         required: true,
+                        pattern: validationPattern.countryPattern,
+                        validate: (value) => value.trim() !== '' || 'Spaces only are not allowed',
                       })}
                       focused
                       sx={{
@@ -910,20 +1051,29 @@ const EditOrganisation = ({
                           fontSize={13}
                           mt={0.5}
                         >
-                          This field is required.
+                          {validationMessage.required}
                         </Typography>
                       )}
+                    {errors &&
+                      errors.country &&
+                      errors.country.type === 'pattern' && (
+                        <Typography
+                          variant="body2"
+                          color="red"
+                          fontSize={13}
+                          mt={0.5}
+                        >
+                          {validationMessage.countryPatternmessage}
+                        </Typography>
+                      )}
+                    {errors?.country?.type === 'validate' && (
+                      <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                        {errors.country.message}
+                      </Typography>
+                    )}
                   </Box>
                 </Stack>
-                <Box display={'flex'} justifyContent={'end'} width={'100%'}>
-                  <MapComponent
-                    setAddressInformation={setAddressInformation}
-                    setSearchedAddress={setSearchedAddress}
-                    setUseAddress={setUseAddress}
-                    isCalAltitude={true}
-                    setAltitude={setAltitude}
-                  />
-                </Box>
+
 
                 <Typography
                   variant="subtitle1"
@@ -936,358 +1086,373 @@ const EditOrganisation = ({
                   Feedflow Managers
                 </Typography>
 
-                {fields.map((item, index) => (
-                  <Stack
-                    key={item.id}
-                    display={'flex'}
-                    direction={'row'}
-                    sx={{
-                      width: '100%',
-                      marginBottom: 2,
-                      gap: 1.5,
-                      justifyContent: {
-                        md: 'center',
-                      },
-                      flexWrap: {
-                        lg: 'nowrap',
-                        xs: 'wrap',
-                      },
-                    }}
-                  >
-                    <Box
-                      sx={{
-                        width: {
-                          lg: '100%',
-                          md: '48.4%',
-                          xs: '100%',
-                        },
-                      }}
-                    >
-                      <TextField
-                        label="Name *"
-                        type="text"
-                        className="form-input"
-                        {...register(`contacts.${index}.name` as const, {
-                          required: true,
-                        })}
-                        focused
-                        sx={{
-                          width: '100%',
-                        }}
-                      />
-                      {errors &&
-                        errors?.contacts &&
-                        errors?.contacts[index] &&
-                        errors?.contacts[index]?.name &&
-                        errors?.contacts[index]?.name.type === 'required' && (
-                          <Typography
-                            variant="body2"
-                            color="red"
-                            fontSize={13}
-                            mt={0.5}
-                          >
-                            {validationMessage.required}
-                          </Typography>
-                        )}
-                    </Box>
-                    <Box
-                      sx={{
-                        width: {
-                          lg: '100%',
-                          md: '48.4%',
-                          xs: '100%',
-                        },
-                      }}
-                    >
-                      <FormControl className="form-input" fullWidth focused>
-                        <InputLabel id="demo-simple-select-label">
-                          Permission *
-                        </InputLabel>
-                        <Controller
-                          name={`contacts.${index}.permission`}
-                          control={control}
-                          rules={{
-                            required: true,
-                            // validate: (value) => {
-                            //   if (value === "Admin") {
-                            //     watch("contacts").forEach((_, idx) => {
-                            //       clearErrors(`contacts.${idx}.role`);
-                            //     });
-                            //     return true;
-                            //   }
-                            //   const hasAdmin = watch("contacts").some(
-                            //     (contact) => contact.role === "Admin"
-                            //   );
-
-                            //   if (!hasAdmin) {
-                            //     return "Please add an admin first, then add a member.";
-                            //   }
-                            //   return true;
-                            // },
-                          }}
-                          render={({ field }) => (
-                            <Select
-                              labelId="demo-simple-select-label"
-                              id="demo-simple-select"
-                              label="Permission *"
-                              {...field}
-                            >
-                              {PermissionType.map((permission, i) => (
-                                <MenuItem value={permission.value} key={i}>
-                                  {permission.label}
-                                </MenuItem>
-                              ))}
-                            </Select>
-                          )}
-                        />
-                      </FormControl>
-                      {errors &&
-                        errors?.contacts &&
-                        errors?.contacts[index] &&
-                        errors?.contacts[index]?.permission &&
-                        errors?.contacts[index]?.permission.type ===
-                          'required' && (
-                          <Typography
-                            variant="body2"
-                            color="red"
-                            fontSize={13}
-                            mt={0.5}
-                          >
-                            {validationMessage.required}
-                          </Typography>
-                        )}
-                    </Box>
-                    <Box
-                      sx={{
-                        width: {
-                          lg: '100%',
-                          md: '48.4%',
-                          xs: '100%',
-                        },
-                      }}
-                    >
-                      <TextField
-                        label="Role *"
-                        type="text"
-                        className="form-input"
-                        {...register(`contacts.${index}.role` as const, {
-                          required: true,
-                          pattern: validationPattern.addressPattern,
-                        })}
-                        focused
-                        sx={{
-                          width: '100%',
-                        }}
-                      />
-                      {errors &&
-                        errors?.contacts &&
-                        errors?.contacts[index] &&
-                        errors?.contacts[index]?.role &&
-                        errors?.contacts[index]?.role.type === 'required' && (
-                          <Typography
-                            variant="body2"
-                            color="red"
-                            fontSize={13}
-                            mt={0.5}
-                          >
-                            {validationMessage.required}
-                          </Typography>
-                        )}
-                    </Box>
-
-                    <Box
-                      sx={{
-                        width: {
-                          lg: '100%',
-                          md: '48.4%',
-                          xs: '100%',
-                        },
-                      }}
-                    >
-                      <TextField
-                        label="Email *"
-                        type="email"
-                        className="form-input"
-                        {...register(`contacts.${index}.email` as const, {
-                          required: true,
-                          pattern: validationPattern.emailPattern,
-                          validate: (value) => {
-                            const isUnique = fields.every(
-                              (f, i) =>
-                                i === index ||
-                                String(f.email).toLowerCase() !==
-                                  String(value).toLowerCase(),
-                            );
-                            if (!isUnique) {
-                              return 'Please enter a unique email.This email is already used in contacts information';
-                            }
-
-                            return true;
-                          },
-                        })}
-                        focused
-                        sx={{
-                          width: '100%',
-                        }}
-                      />
-                      {errors &&
-                        errors?.contacts &&
-                        errors?.contacts[index] &&
-                        errors?.contacts[index]?.email &&
-                        errors?.contacts[index]?.email.type === 'required' && (
-                          <Typography
-                            variant="body2"
-                            color="red"
-                            fontSize={13}
-                            mt={0.5}
-                          >
-                            {validationMessage.required}
-                          </Typography>
-                        )}
-                      {errors &&
-                        errors?.contacts &&
-                        errors?.contacts[index] &&
-                        errors?.contacts[index]?.email &&
-                        errors?.contacts[index]?.email.type === 'pattern' && (
-                          <Typography
-                            variant="body2"
-                            color="red"
-                            fontSize={13}
-                            mt={0.5}
-                          >
-                            {validationMessage.emailPatternMessage}
-                          </Typography>
-                        )}
-                      {errors &&
-                        errors?.contacts &&
-                        errors?.contacts[index] &&
-                        errors?.contacts[index]?.email &&
-                        errors?.contacts[index]?.email.type === 'validate' && (
-                          <Typography
-                            variant="body2"
-                            color="red"
-                            fontSize={13}
-                            mt={0.5}
-                          >
-                            {errors?.contacts[index]?.email.message}
-                          </Typography>
-                        )}
-                    </Box>
-
-                    <Box
-                      sx={{
-                        width: {
-                          lg: '100%',
-                          md: '48.4%',
-                          xs: '100%',
-                        },
-                      }}
-                    >
-                      <TextField
-                        label="Phone *"
-                        type="text"
-                        className="form-input"
-                        {...register(`contacts.${index}.phone` as const, {
-                          required: true,
-                          pattern: validationPattern.phonePattern,
-                        })}
-                        focused
-                        sx={{
-                          width: '100%',
-                        }}
-                      />
-                      {errors &&
-                        errors?.contacts &&
-                        errors?.contacts[index] &&
-                        errors?.contacts[index]?.phone &&
-                        errors?.contacts[index]?.phone.type === 'required' && (
-                          <Typography
-                            variant="body2"
-                            color="red"
-                            fontSize={13}
-                            mt={0.5}
-                          >
-                            {validationMessage.required}
-                          </Typography>
-                        )}
-                      {errors &&
-                        errors?.contacts &&
-                        errors?.contacts[index] &&
-                        errors?.contacts[index]?.phone &&
-                        errors?.contacts[index]?.phone.type === 'pattern' && (
-                          <Typography
-                            variant="body2"
-                            color="red"
-                            fontSize={13}
-                            mt={0.5}
-                          >
-                            {validationMessage.phonePatternMessage}
-                          </Typography>
-                        )}
-                    </Box>
-
-                    <Box
+                {fields.map((item, index) => {
+                  const liveContact = watch(`contacts.${index}`);
+                  const isDisabled = !isContactComplete(liveContact);
+                  return (
+                    <Stack
+                      key={item.id}
                       display={'flex'}
-                      justifyContent={'center'}
-                      alignItems={'center'}
-                      onClick={() =>
-                        handleInviteUser(Boolean(item.invite), index)
-                      }
+                      direction={'row'}
+                      sx={{
+                        width: '100%',
+                        marginBottom: 2,
+                        gap: 1.5,
+                        justifyContent: {
+                          md: 'center',
+                        },
+                        flexWrap: {
+                          lg: 'nowrap',
+                          xs: 'wrap',
+                        },
+                      }}
                     >
-                      <Image
-                        title={item.invite ? 'Invited' : 'Invite'}
-                        src={
-                          item.invite
-                            ? sentEmailIcon
-                            : inviteSent[index]
+                      <Box
+                        sx={{
+                          width: {
+                            lg: '100%',
+                            md: '48.4%',
+                            xs: '100%',
+                          },
+                        }}
+                      >
+                        <TextField
+                          label="Name *"
+                          type="text"
+                          className="form-input"
+                          {...register(`contacts.${index}.name` as const, {
+                            required: true,
+                            pattern: {
+                              value: validationPattern.alphabetsAndSpacesPattern,
+                              message: 'Input must contain only alphabets',
+                            },
+                          })}
+                          focused
+                          sx={{
+                            width: '100%',
+                          }}
+                        />
+                        {errors?.contacts?.[index]?.name && (
+                          <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                            {errors.contacts[index].name.type === 'required'
+                              ? validationMessage.required
+                              : errors.contacts[index].name.message}
+                          </Typography>
+                        )}
+
+                      </Box>
+                      <Box
+                        sx={{
+                          width: {
+                            lg: '100%',
+                            md: '48.4%',
+                            xs: '100%',
+                          },
+                        }}
+                      >
+                        <FormControl className="form-input" fullWidth focused>
+                          <InputLabel id="demo-simple-select-label">
+                            Permission *
+                          </InputLabel>
+                          <Controller
+                            name={`contacts.${index}.permission`}
+                            control={control}
+                            rules={{
+                              required: true,
+                              // validate: (value) => {
+                              //   if (value === "Admin") {
+                              //     watch("contacts").forEach((_, idx) => {
+                              //       clearErrors(`contacts.${idx}.role`);
+                              //     });
+                              //     return true;
+                              //   }
+                              //   const hasAdmin = watch("contacts").some(
+                              //     (contact) => contact.role === "Admin"
+                              //   );
+
+                              //   if (!hasAdmin) {
+                              //     return "Please add an admin first, then add a member.";
+                              //   }
+                              //   return true;
+                              // },
+                            }}
+                            render={({ field }) => (
+                              <Select
+                                labelId="demo-simple-select-label"
+                                id="demo-simple-select"
+                                label="Permission *"
+                                {...field}
+                              >
+                                {PermissionType.map((permission, i) => (
+                                  <MenuItem value={permission.value} key={i}>
+                                    {permission.label}
+                                  </MenuItem>
+                                ))}
+                              </Select>
+                            )}
+                          />
+                        </FormControl>
+                        {errors &&
+                          errors?.contacts &&
+                          errors?.contacts[index] &&
+                          errors?.contacts[index]?.permission &&
+                          errors?.contacts[index]?.permission.type ===
+                          'required' && (
+                            <Typography
+                              variant="body2"
+                              color="red"
+                              fontSize={13}
+                              mt={0.5}
+                            >
+                              {validationMessage.required}
+                            </Typography>
+                          )}
+                      </Box>
+                      <Box
+                        sx={{
+                          width: {
+                            lg: '100%',
+                            md: '48.4%',
+                            xs: '100%',
+                          },
+                        }}
+                      >
+                        <TextField
+                          label="Role *"
+                          type="text"
+                          className="form-input"
+                          {...register(`contacts.${index}.role` as const, {
+                            required: true,
+                            pattern: validationPattern.addressPattern,
+                          })}
+                          focused
+                          sx={{
+                            width: '100%',
+                          }}
+                        />
+                        {errors &&
+                          errors?.contacts &&
+                          errors?.contacts[index] &&
+                          errors?.contacts[index]?.role &&
+                          errors?.contacts[index]?.role.type === 'required' && (
+                            <Typography
+                              variant="body2"
+                              color="red"
+                              fontSize={13}
+                              mt={0.5}
+                            >
+                              {validationMessage.required}
+                            </Typography>
+                          )}
+                      </Box>
+
+                      <Box
+                        sx={{
+                          width: {
+                            lg: '100%',
+                            md: '48.4%',
+                            xs: '100%',
+                          },
+                        }}
+                      >
+                        <TextField
+                          label="Email *"
+                          type="email"
+                          className="form-input"
+                          {...register(`contacts.${index}.email` as const, {
+                            required: true,
+                            pattern: validationPattern.emailPattern,
+                            validate: (value) => {
+                              const isUnique = fields.every(
+                                (f, i) =>
+                                  i === index ||
+                                  String(f.email).toLowerCase() !==
+                                  String(value).toLowerCase(),
+                              );
+                              if (!isUnique) {
+                                return 'Please enter a unique email.This email is already used in contacts information';
+                              }
+
+                              return true;
+                            },
+                          })}
+                          focused
+                          sx={{
+                            width: '100%',
+                          }}
+                        />
+                        {errors &&
+                          errors?.contacts &&
+                          errors?.contacts[index] &&
+                          errors?.contacts[index]?.email &&
+                          errors?.contacts[index]?.email.type === 'required' && (
+                            <Typography
+                              variant="body2"
+                              color="red"
+                              fontSize={13}
+                              mt={0.5}
+                            >
+                              {validationMessage.required}
+                            </Typography>
+                          )}
+                        {errors &&
+                          errors?.contacts &&
+                          errors?.contacts[index] &&
+                          errors?.contacts[index]?.email &&
+                          errors?.contacts[index]?.email.type === 'pattern' && (
+                            <Typography
+                              variant="body2"
+                              color="red"
+                              fontSize={13}
+                              mt={0.5}
+                            >
+                              {validationMessage.emailPatternMessage}
+                            </Typography>
+                          )}
+                        {errors &&
+                          errors?.contacts &&
+                          errors?.contacts[index] &&
+                          errors?.contacts[index]?.email &&
+                          errors?.contacts[index]?.email.type === 'validate' && (
+                            <Typography
+                              variant="body2"
+                              color="red"
+                              fontSize={13}
+                              mt={0.5}
+                            >
+                              {errors?.contacts[index]?.email.message}
+                            </Typography>
+                          )}
+                      </Box>
+
+                      <Box
+                        sx={{
+                          width: {
+                            lg: '100%',
+                            md: '48.4%',
+                            xs: '100%',
+                          },
+                        }}
+                      >
+                        <TextField
+                          label="Phone *"
+                          type="text"
+                          className="form-input"
+                          {...register(`contacts.${index}.phone` as const, {
+                            required: true,
+                            pattern: validationPattern.phonePattern,
+                          })}
+                          focused
+                          sx={{
+                            width: '100%',
+                          }}
+                        />
+                        {errors &&
+                          errors?.contacts &&
+                          errors?.contacts[index] &&
+                          errors?.contacts[index]?.phone &&
+                          errors?.contacts[index]?.phone.type === 'required' && (
+                            <Typography
+                              variant="body2"
+                              color="red"
+                              fontSize={13}
+                              mt={0.5}
+                            >
+                              {validationMessage.required}
+                            </Typography>
+                          )}
+                        {errors &&
+                          errors?.contacts &&
+                          errors?.contacts[index] &&
+                          errors?.contacts[index]?.phone &&
+                          errors?.contacts[index]?.phone.type === 'pattern' && (
+                            <Typography
+                              variant="body2"
+                              color="red"
+                              fontSize={13}
+                              mt={0.5}
+                            >
+                              {validationMessage.phonePatternMessage}
+                            </Typography>
+                          )}
+                      </Box>
+
+                      <Box
+                        display="flex"
+                        justifyContent="center"
+                        alignItems="center"
+                        sx={{
+                          cursor: isDisabled || watch(`contacts.${index}.invite`) ? 'not-allowed' : 'pointer',
+                        }}
+                      >
+                        <Image
+                          title={
+                            watch(`contacts.${index}.invite`)
+                              ? 'Click to unmark invite'
+                              : 'Click to mark invite'
+                          }
+                          src={
+                            watch(`contacts.${index}.invite`)
                               ? sentEmailIcon
                               : sendEmailIcon
-                        }
-                        alt="Send Email Icon"
-                        style={{
-                          cursor: item.invite ? 'not-allowed' : 'pointer',
+                          }
+                          alt="Send Email Icon"
+                          onClick={() => {
+                            if (!isDisabled && !watch(`contacts.${index}.invite`)) {
+                              handleInviteUser(index);
+                            }
+                          }}
+
+                          style={{
+                            opacity: isDisabled || watch(`contacts.${index}.invite`) ? 0.4 : 1,
+                            cursor: isDisabled || watch(`contacts.${index}.invite`) ? 'not-allowed' : 'pointer',
+                            pointerEvents: isDisabled || watch(`contacts.${index}.invite`) ? 'none' : 'auto',
+                          }}
+
+                        />
+
+                      </Box>
+
+                      <Box
+                        display={'flex'}
+                        justifyContent={'center'}
+                        alignItems={'center'}
+                        width={150}
+                        sx={{
+                          cursor: `  ${item.role !== 'Admin' ? 'pointer' : 'not-allowed'
+                            }`,
+                          width: {
+                            lg: 150,
+                            xs: 'auto',
+                          },
+                          visibility: index === 0 ? 'hidden' : 'visible',
                         }}
-                      />
-                    </Box>
-                    <Box
-                      display={'flex'}
-                      justifyContent={'center'}
-                      alignItems={'center'}
-                      width={150}
-                      sx={{
-                        cursor: `  ${
-                          item.role !== 'Admin' ? 'pointer' : 'not-allowed'
-                        }`,
-                        width: {
-                          lg: 150,
-                          xs: 'auto',
-                        },
-                      }}
-                      onClick={() =>
-                        item.permission !== 'ADMIN' && remove(index)
-                      }
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="1.4em"
-                        height="1.4em"
-                        viewBox="0 0 24 24"
+                        onClick={() =>
+                          item.permission !== 'ADMIN' && remove(index)
+                        }
                       >
-                        <g fill="none">
-                          <path d="m12.593 23.258l-.011.002l-.071.035l-.02.004l-.014-.004l-.071-.035q-.016-.005-.024.005l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.017-.018m.265-.113l-.013.002l-.185.093l-.01.01l-.003.011l.018.43l.005.012l.008.007l.201.093q.019.005.029-.008l.004-.014l-.034-.614q-.005-.018-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.614q.001.018.017.024l.015-.002l.201-.093l.01-.008l.004-.011l.017-.43l-.003-.012l-.01-.01z" />
-                          <path
-                            fill={`${
-                              item.permission !== 'ADMIN'
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="1.4em"
+                          height="1.4em"
+                          viewBox="0 0 24 24"
+                        >
+                          <g fill="none">
+                            <path d="m12.593 23.258l-.011.002l-.071.035l-.02.004l-.014-.004l-.071-.035q-.016-.005-.024.005l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.017-.018m.265-.113l-.013.002l-.185.093l-.01.01l-.003.011l.018.43l.005.012l.008.007l.201.093q.019.005.029-.008l.004-.014l-.034-.614q-.005-.018-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.614q.001.018.017.024l.015-.002l.201-.093l.01-.008l.004-.011l.017-.43l-.003-.012l-.01-.01z" />
+                            <path
+                              fill={`${item.permission !== 'ADMIN'
                                 ? '#ff0000'
                                 : '#808080'
-                            }`}
-                            d="M14.28 2a2 2 0 0 1 1.897 1.368L16.72 5H20a1 1 0 1 1 0 2l-.003.071l-.867 12.143A3 3 0 0 1 16.138 22H7.862a3 3 0 0 1-2.992-2.786L4.003 7.07L4 7a1 1 0 0 1 0-2h3.28l.543-1.632A2 2 0 0 1 9.721 2zm3.717 5H6.003l.862 12.071a1 1 0 0 0 .997.929h8.276a1 1 0 0 0 .997-.929zM10 10a1 1 0 0 1 .993.883L11 11v5a1 1 0 0 1-1.993.117L9 16v-5a1 1 0 0 1 1-1m4 0a1 1 0 0 1 1 1v5a1 1 0 1 1-2 0v-5a1 1 0 0 1 1-1m.28-6H9.72l-.333 1h5.226z"
-                          />
-                        </g>
-                      </svg>
-                    </Box>
-                  </Stack>
-                ))}
+                                }`}
+                              d="M14.28 2a2 2 0 0 1 1.897 1.368L16.72 5H20a1 1 0 1 1 0 2l-.003.071l-.867 12.143A3 3 0 0 1 16.138 22H7.862a3 3 0 0 1-2.992-2.786L4.003 7.07L4 7a1 1 0 0 1 0-2h3.28l.543-1.632A2 2 0 0 1 9.721 2zm3.717 5H6.003l.862 12.071a1 1 0 0 0 .997.929h8.276a1 1 0 0 0 .997-.929zM10 10a1 1 0 0 1 .993.883L11 11v5a1 1 0 0 1-1.993.117L9 16v-5a1 1 0 0 1 1-1m4 0a1 1 0 0 1 1 1v5a1 1 0 1 1-2 0v-5a1 1 0 0 1 1-1m.28-6H9.72l-.333 1h5.226z"
+                            />
+                          </g>
+                        </svg>
+                      </Box>
+                    </Stack>
+                  );
+                })}
+
 
                 <Divider
                   sx={{
@@ -1351,7 +1516,7 @@ const EditOrganisation = ({
       ) : (
         <FarmsInformation
           organisationData={organisationData}
-          profilePic={profilePic}
+          profilePic={profilePic ?? ''}
           altitude={altitude}
           handleUpload={handleUpload}
           isHatcherySelected={isHatcherySelected}

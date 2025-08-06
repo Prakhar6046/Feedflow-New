@@ -370,6 +370,7 @@ const FarmInformation: NextPage<Props> = ({
                 value={watchFishFarmer || ''}
               >
                 {fishFarmers?.map((fish: any) => {
+                  console.log('fishFarmers')
                   return (
                     <MenuItem value={String(fish.id)} key={fish.id}>
                       {fish.name}
@@ -472,7 +473,6 @@ const FarmInformation: NextPage<Props> = ({
               setUseAddress={setUseAddress}
               isCalAltitude={true}
               token={token}
-              i
             />
           </Box>
           {selectedSwtich === 'address' ? (

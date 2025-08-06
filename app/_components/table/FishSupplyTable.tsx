@@ -25,6 +25,7 @@ import React, { useEffect, useState } from 'react';
 import { selectRole } from '@/lib/features/user/userSlice';
 import { useAppSelector } from '@/lib/hooks';
 import { getLocalItem } from '@/app/_lib/utils';
+import { log } from 'console';
 interface Props {
   tableData: {
     id: string;
@@ -183,6 +184,12 @@ export default function FishSupplyTable({
             if (fish1.status < fish2.status) return -1 * orderType;
             if (fish1.status > fish2.status) return 1 * orderType;
             return 0;
+          } else if (property === 'specie') {
+            const specie1 = fish1.species || fish1.creator?.hatchery[0]?.fishSpecie || '';
+            const specie2 = fish2.species || fish2.creator?.hatchery[0]?.fishSpecie || '';
+            if (specie1 < specie2) return -1 * orderType;
+            if (specie1 > specie2) return 1 * orderType;
+            return 0;
           }
           return 0;
         },
@@ -237,6 +244,12 @@ export default function FishSupplyTable({
               if (fish1.status < fish2.status) return -1 * orderType;
               if (fish1.status > fish2.status) return 1 * orderType;
               return 0;
+            } else if (data.column === 'specie') {
+              const specie1 = fish1.species || fish1.creator?.hatchery[0]?.fishSpecie || '';
+              const specie2 = fish2.species || fish2.creator?.hatchery[0]?.fishSpecie || '';
+              if (specie1 < specie2) return -1 * orderType;
+              if (specie1 > specie2) return 1 * orderType;
+              return 0;
             }
             return 0;
           },
@@ -279,6 +292,8 @@ export default function FishSupplyTable({
           <TableBody>
             {sortedFishSupply && sortedFishSupply.length > 0 ? (
               sortedFishSupply.map((fish: FishSupply, i: number) => {
+              console.log('sortedFishSupply',sortedFishSupply);
+              
                 return (
                   <TableRow
                     key={i}
@@ -303,7 +318,7 @@ export default function FishSupplyTable({
                       component="th"
                       scope="row"
                     >
-                      {fish?.creator?.hatchery[0]?.fishSpecie ?? ''}
+                       {(fish?.species || fish?.creator?.hatchery[0]?.fishSpecie) ?? ''}
                     </TableCell>
                     <TableCell
                       sx={{

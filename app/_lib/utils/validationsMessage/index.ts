@@ -1,3 +1,5 @@
+import { countryPattern } from "../validationPatterns";
+
 export const required = 'This field is required.';
 export const emailPatternMessage = 'Email pattern is wrong.';
 export const passwordPatternMessage =
@@ -8,12 +10,16 @@ export const phonePatternMessage = 'Input must contain only numbers.';
 export const phoneMaxLengthMessage = 'Phone number must be exactly 10 digits.';
 export const OnlyAlphabatsMessage = 'Input must contain only letters.';
 export const OnlyAlphabetsandNumberMessage =
-  'Input must start with a letter and can only contain letters, numbers, and spaces.';
+  "Only letters, numbers, spaces, and standard special characters are allowed.";
 export const AddressMessage =
-  'Input must  contain only letters, numbers,special chararters and spaces.';
+  'Input must  contain only letters, numbers,special characters and spaces.';
 export const onlyNumbers = 'Input must contain only numbers.';
+export const onlyAlphabetsNumbers="Only letters and numbers are allowed.";
+
 export const alphabetswithSpecialCharacter =
   'Input must contain only letters, spaces, and special characters.';
+export const countryPatternmessage = "Only letters, numbers, spaces, and standard special characters are allowed.";
+
 export const OnlyAlphabetsandNumberMessage2 =
   'Input must contain only letters, numbers, and spaces.';
 export const OnlyNumbersWithDot =
@@ -21,3 +27,5 @@ export const OnlyNumbersWithDot =
 export const NegativeNumberWithDot = 'Input must contain only numbers.';
 export const numberWithCommaDot = 'Input must contain only numbers.';
 export const numberMaxLength = 'Input can have only 10 digits number.';
+export const namePatternMessage = 'Input must contain only alphabets';
+export const onlyAlphabets = 'Input must contain only alphabets';

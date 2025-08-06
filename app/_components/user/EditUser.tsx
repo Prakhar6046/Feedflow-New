@@ -3,14 +3,13 @@ import Loader from '@/app/_components/Loader';
 import { deleteImage, handleUpload } from '@/app/_lib/utils';
 import * as validationPattern from '@/app/_lib/utils/validationPatterns/index';
 import * as validationMessage from '@/app/_lib/utils/validationsMessage/index';
-import { SingleUser, UserEditFormInputs } from '@/app/_typeModels/User';
+import { SingleUser, UserFormInputs } from '@/app/_typeModels/User';
 import EyeClosed from '@/public/static/img/icons/ic-eye-closed.svg';
 import EyeOpened from '@/public/static/img/icons/ic-eye-open.svg';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { Box, Grid, Stack, TextField, Typography } from '@mui/material';
 import Button from '@mui/material/Button';
 import { styled } from '@mui/material/styles';
-import { getCookie } from 'cookies-next';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -35,13 +34,10 @@ type Iprops = {
 };
 function EditUser({ userId }: Iprops) {
   const router = useRouter();
-  const loggedUser: any = getCookie('logged-user');
-  const token = getCookie('auth-token');
   const [isApiCallInProgress, setIsApiCallInProgress] =
     useState<boolean>(false);
   const [userData, setUserData] = useState<{ data: SingleUser }>();
   const [loading, setLoading] = useState<boolean>(false);
-  const [currentUserId, setCurrentUserId] = useState<number>();
   const [profilePic, setProfilePic] = useState<string>();
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [showConfirmPassword, setshowConfirmPassword] =
@@ -56,13 +52,12 @@ function EditUser({ userId }: Iprops) {
     watch,
     control,
     formState: { errors },
-  } = useForm<UserEditFormInputs>({ mode: 'onTouched' });
-  const onSubmit: SubmitHandler<UserEditFormInputs> = async (data) => {
+  } = useForm<UserFormInputs>({ mode: 'onTouched' });
+  const onSubmit: SubmitHandler<UserFormInputs> = async (data) => {
     // Prevent API call if one is already in progress
     if (isApiCallInProgress) return;
     setIsApiCallInProgress(true);
     try {
-      const token = getCookie('auth-token');
       const payload = {
         name: data.name,
         email: data.email,
@@ -80,7 +75,6 @@ function EditUser({ userId }: Iprops) {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(payload),
       });
@@ -92,7 +86,7 @@ function EditUser({ userId }: Iprops) {
         resetField('confirmPassword');
         resetField('password');
       }
-    } catch (error) {
+    } catch {
       toast.error('Something went wrong. Please try again.');
     } finally {
       setIsApiCallInProgress(false);
@@ -103,12 +97,8 @@ function EditUser({ userId }: Iprops) {
     if (userId) {
       const user = async () => {
         setLoading(true);
-        const token = getCookie('auth-token');
-        const data: any = await fetch(`/api/users/${userId}`, {
+        const data = await fetch(`/api/users/${userId}`, {
           method: 'GET',
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
         });
         const res = await data.json();
         setLoading(false);
@@ -117,12 +107,6 @@ function EditUser({ userId }: Iprops) {
       user();
     }
   }, [userId]);
-  useEffect(() => {
-    if (loggedUser) {
-      const user = JSON.parse(loggedUser);
-      setCurrentUserId(user.id);
-    }
-  }, [loggedUser]);
 
   useEffect(() => {
     if (userData) {
@@ -250,12 +234,7 @@ function EditUser({ userId }: Iprops) {
                   type="file"
                   {...register('image', {
                     onChange: (e) =>
-                      handleUpload(
-                        e.target.files,
-                        profilePic,
-                        setProfilePic,
-                        String(token),
-                      ),
+                      handleUpload(e.target.files, profilePic, setProfilePic),
                   })}
                   accept=".jpg,.jpeg,.png,.svg"
                 />
@@ -305,7 +284,6 @@ function EditUser({ userId }: Iprops) {
                             e.target.files,
                             profilePic,
                             setProfilePic,
-                            String(token),
                           ),
                       })}
                       accept=".jpg,.jpeg,.png,.svg"
@@ -323,7 +301,6 @@ function EditUser({ userId }: Iprops) {
                           type: 'user',
                           image: userData?.data?.image,
                         },
-                        String(token),
                         setProfilePic,
                       )
                     }
@@ -420,22 +397,36 @@ function EditUser({ userId }: Iprops) {
                   className="form-input"
                   {...register('name', {
                     required: true,
+                    pattern: {
+                      value: validationPattern.namePattern,
+                      message: validationMessage.namePatternMessage,
+                    },
+                    validate: (value) =>
+                      value.trim() !== '' || 'Name cannot be empty or just spaces.',
                   })}
+
                   focused
                   sx={{
                     width: '100%',
                   }}
                 />
-                {errors && errors.name && errors.name.type === 'required' && (
-                  <Typography
-                    variant="body2"
-                    color="red"
-                    fontSize={13}
-                    mt={0.5}
-                  >
+                {errors?.name?.type === 'required' && (
+                  <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
                     This field is required.
                   </Typography>
                 )}
+                {errors?.name?.type === 'pattern' && (
+                  <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                    {errors.name.message}
+                  </Typography>
+                )}
+                {errors?.name?.type === 'validate' && (
+                  <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                    {errors.name.message}
+                  </Typography>
+                )}
+
+
               </Box>
               <Box mb={2} width={'100%'}>
                 <TextField
@@ -449,6 +440,7 @@ function EditUser({ userId }: Iprops) {
                   }}
                   {...register('email', {
                     required: true,
+                    pattern: validationPattern.emailPattern,
                   })}
                   sx={{
                     width: '100%',
@@ -458,14 +450,15 @@ function EditUser({ userId }: Iprops) {
                     },
                   }}
                 />
-                {errors && errors.email && errors.email.type === 'required' && (
-                  <Typography
-                    variant="body2"
-                    color="red"
-                    fontSize={13}
-                    mt={0.5}
-                  >
-                    This field is required.
+                {errors?.email?.type === 'required' && (
+                  <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                    {validationMessage.required}
+                  </Typography>
+                )}
+
+                {errors?.email?.type === 'pattern' && (
+                  <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                    {validationMessage.emailPatternMessage}
                   </Typography>
                 )}
               </Box>
@@ -646,7 +639,9 @@ function EditUser({ userId }: Iprops) {
         </Stack>
         <UserPermission
           control={control}
-          oraginsationType={userData?.data?.organisation?.organisationType}
+          oraginsationType={
+            userData?.data?.organisation?.organisationType ?? ''
+          }
           userData={userData?.data?.permissions}
         />
         <Button

@@ -3,7 +3,7 @@ import { FarmGroup, Production } from '../_typeModels/production';
 import ExcelJS from 'exceljs';
 import { saveAs } from 'file-saver';
 import dayjs from 'dayjs';
-export const readableDate = (date: any) => {
+export const readableDate = (date: string) => {
   return new Date(date).toLocaleString('en-US', {
     dateStyle: 'medium',
     timeStyle: 'medium',
@@ -103,17 +103,6 @@ export const formattedDate = (date: string) => {
     timeStyle: 'medium',
     timeZone: 'UTC', // Adjust this to your desired timezone if needed
   });
-};
-
-// Format the date and time
-const options: any = {
-  year: 'numeric',
-  month: 'short',
-  day: 'numeric',
-  hour: 'numeric',
-  minute: 'numeric',
-  second: 'numeric',
-  hour12: true,
 };
 
 export const sanitizeIsoString = (isoString: string): string => {
@@ -449,7 +438,6 @@ export const deleteImage = async (
     type?: string | undefined;
     image: string | undefined;
   },
-  token: string,
   setProfilePic: (val: string) => void,
 ) => {
   const response = await fetch(`/api/profile-pic/delete`, {
@@ -457,20 +445,18 @@ export const deleteImage = async (
     body: JSON.stringify(payload),
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
     },
   });
   if (response.ok) {
     setProfilePic('');
     toast.dismiss();
-    toast.success('Image delete successfully');
+    toast.success('Image deleted successfully');
   }
 };
 export const handleUpload = async (
   imagePath: FileList,
   profilePic: string | undefined,
   setProfilePic: (val: string) => void,
-  token: string,
 ) => {
   const file = imagePath[0];
   const allowedTypes = ['image/jpeg', 'image/png', 'image/svg+xml'];
@@ -501,10 +487,6 @@ export const handleUpload = async (
   const response = await fetch(`/api/profile-pic/upload/new`, {
     method: 'POST',
     body: formData,
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
   });
 
   if (response.ok) {
@@ -519,14 +501,14 @@ export const getChartPredictedValues = (
   startDate: string,
   endDate: string,
 ) => {
-  const predictionUnit =
+  const predictionUnit: any =
     productions?.[0]?.productionUnit?.YearBasedPredicationProductionUnit?.[0];
 
   const start = new Date(startDate);
   const end = new Date(endDate);
   const startMonth = start.getMonth();
   const endMonth = end.getMonth();
-  const monthMap: any = {
+  const monthMap: Record<number, string> = {
     0: 'Jan',
     1: 'Feb',
     2: 'Mar',
@@ -782,27 +764,7 @@ export const exportFeedPredictionToXlsx = async (
       ];
   // Add headers to the sheet
   worksheet.addRow(headers);
-  // Convert data into an array of rows
-  // data.forEach((row: any) => {
-  //   worksheet.addRow([
-  //     row.date,
-  //     row.days,
-  //     row.waterTemp,
-  //     row.fishWeight,
-  //     row.numberOfFish,
-  //     row.biomass,
-  //     row.stockingDensityNM3,
-  //     row.stockingDensityKg,
-  //     row.feedPhase,
-  //     row.feedProtein,
-  //     row.feedDE,
-  //     row.feedPrice,
-  //     row.growth,
-  //     row.estimatedFCR,
-  //     row.partitionedFCR,
-  //     row.feedIntake,
-  //   ]);
-  // });
+
   data.forEach((row: any) => {
     worksheet.addRow(Object.values(row));
   });
@@ -883,22 +845,23 @@ export const CommonFeedPredictionHead = [
   'Feeding Rate',
 ];
 
-export function calculateFishGrowth(
+export function calculateFishGrowthTilapia(
   fishWeight: number,
   temp: number,
-  numberOfFishs: any,
+  numberOfFishs: number,
   expectedWaste: number,
   period: number,
   startDate: string,
   timeInterval: number,
   DE: number,
 ) {
+
   const IBW = fishWeight;
   const T = temp;
   let prevWeight = IBW;
-  let prevNumberOfFish: any = numberOfFishs;
-  let prevFishSize: any = IBW;
-  let prevGrowth: any = 0;
+  let prevNumberOfFish: number = numberOfFishs;
+  let prevFishSize: number = IBW;
+  let prevGrowth: number | string = 0;
   const newData = [];
 
   function calculateNoOfFish(
@@ -916,6 +879,7 @@ export function calculateFishGrowth(
     temperatureJ5: number,
     constantE7: number,
   ) {
+
     const rootVolume = Math.pow(volumeM4, 1 / 3);
     const logPart = -0.003206 + 0.001705 * Math.log(temperatureJ5 - 11.25);
     const addition = rootVolume + logPart * constantE7 * temperatureJ5;
@@ -1000,6 +964,174 @@ export function calculateFishGrowth(
       date: calculateDate(startDate, day),
       days: day,
       averageProjectedTemp: T,
+      numberOfFish: Number(prevNumberOfFish.toFixed(2)),
+      expectedWaste,
+      fishSize: prevFishSize.toFixed(3),
+      growth: prevGrowth,
+      feedType:
+        Number(prevFishSize.toFixed(3)) >= 200
+          ? 'SAF 6035 (2-3mm)'
+          : Number(prevFishSize.toFixed(3)) >= 50
+            ? 'Tilapia Starter #3'
+            : Number(prevFishSize.toFixed(3)) >= 25
+              ? 'Tilapia Starter #2'
+              : Number(prevFishSize.toFixed(3)) >= 5
+                ? 'Tilapia Starter #1'
+                : 'Tilapia Starter #0',
+      feedSize: prevWeight >= 50 ? '#3' : prevWeight >= 25 ? '#2' : '#1',
+      feedProtein: 400,
+      feedDE: 13.47,
+      feedPrice: 32,
+      estimatedFCR: estfcr,
+      feedIntake: prevFeedIntake,
+      partitionedFCR: 0.0,
+      feedingRate: prevFeedingRate.toFixed(2),
+      feedCost: 49409,
+    };
+
+    // Store new data
+    newData.push(newRow);
+    prevFishSize = Number(prevFishSize.toFixed(3));
+    prevGrowth = prevGrowth;
+    prevWeight = FBW;
+    prevFeedIntake = prevFeedIntake;
+    prevFeedingRate = prevFeedingRate;
+  }
+  const dayGap = console.log(newData);
+
+  return newData;
+}
+export function calculateFishGrowthRainBowTrout(
+  fishWeight: number,
+  temp: number,
+  numberOfFishs: any,
+  expectedWaste: number,
+  period: number,
+  startDate: string,
+  timeInterval: number,
+  DE: number,
+) {
+  const IBW = fishWeight;
+  const T = temp;
+  let prevWeight = IBW;
+  let prevNumberOfFish = numberOfFishs;
+  let prevFishSize: number = IBW;
+  let prevGrowth: number | string = 0;
+  const newData = [];
+
+  function calculateNoOfFish(
+    initialSizeK4: number,
+    growthRateL4: number,
+    timeH5: number,
+  ) {
+    // Rainbow trout formula: K4*(1-(POWER(L4/100+1,H5)-1))
+    const fishSize = initialSizeK4 * (2 - Math.pow(growthRateL4 / 100 + 1, timeH5));
+    return fishSize;
+  }
+
+  const calculateFishSize = (fishSize: number, temp: number) => {
+
+    const part1 = Math.pow(fishSize, 0.333333);
+    const part2 =
+      4.283547943 * Math.pow(temp, 0.125) +
+      -2.919678112 * Math.pow(temp, 0.25) +
+      0.4443081526 * Math.pow(temp, 0.5) +
+      -0.011762442 * Math.pow(temp, 1) +
+      -1.805789941;
+    const combined = Math.pow(part1 + part2 * temp, 3);
+    return combined;
+  };
+
+  function calculateFeedingRate(
+    fishSize: number,
+    temperature: number,
+    DE: number,
+  ): any {
+    // Rainbow trout feeding rate formula from Excel
+    const part1 = Math.pow(fishSize, 0.333333);
+    const part2 =
+      4.283547943 * Math.pow(temperature, 0.125) +
+      -2.919678112 * Math.pow(temperature, 0.25) +
+      0.4443081526 * Math.pow(temperature, 0.5) +
+      -0.011762442 * Math.pow(temperature, 1) +
+      -1.805789941;
+
+    const numerator = Math.pow(part1 + part2 * temperature, 3);
+    const denominator = fishSize;
+    const left = (numerator / denominator) - 1;
+
+    const right = (-28.29 + 38.95 * Math.pow(fishSize, 0.01903)) / (DE / 1.03);
+
+    const feedingRate = left * right * 100;
+
+    return feedingRate;
+  }
+
+  function calculateFW(
+    IBW: number,
+    b: number,
+    TGC: number,
+    tValues: number[],
+    dValues: number[],
+  ) {
+    if (tValues.length !== dValues.length) {
+      throw new Error('tValues and dValues must have the same length');
+    }
+
+    // Compute summation of t * d
+    const sum_td = tValues.reduce(
+      (sum, t, index) => sum + t * dValues[index],
+      0,
+    );
+
+    // Apply the formula
+    return Math.pow(Math.pow(IBW, b) + (TGC / 100) * sum_td, 1 / b);
+  }
+
+  function calculateEstFCR(fishSize: number, DE: number, e10: number): number {
+    const numerator = 38.95 * Math.pow(fishSize, 0.01903) - 28.29;
+    const denominator = DE / (1 + e10);
+    const result = numerator / denominator;
+  
+    return Number(result.toFixed(2));
+  }
+  
+
+  function calculateGrowth(newFishSize: number, prevFishSize: number) {
+    return newFishSize - prevFishSize;
+  }
+
+  function calculateDate(date: string, day: number) {
+    return dayjs(date, 'YYYY-MM-DD').add(day, 'day').format('DD-MM-YYYY');
+  }
+  // Loop through the days and calculate values
+  for (let day = 1; day <= period; day += 1) {
+    const oldFishSize = prevFishSize;
+
+    const FBW = calculateFW(prevWeight, 0.35, 0.16, [T], [7]);
+
+    prevNumberOfFish =
+      day !== 1
+        ? calculateNoOfFish(prevNumberOfFish, 0.05, 1)
+        : prevNumberOfFish;
+    const estfcr = calculateEstFCR(prevFishSize, DE, 0.03);
+    prevFishSize =
+      day === 1 ? prevFishSize : calculateFishSize(prevFishSize, 14);
+
+    let prevFeedingRate = parseFloat(
+      calculateFeedingRate(prevFishSize, temp, DE),
+    );
+    let prevFeedIntake = ((prevFeedingRate * prevFishSize) / 100).toFixed(3);
+
+    prevGrowth =
+      day === 1
+        ? prevFishSize - IBW
+        : calculateGrowth(prevFishSize, oldFishSize).toFixed(3);
+
+    const newRow = {
+      date: calculateDate(startDate, day),
+      days: day,
+      averageProjectedTemp: T,
       numberOfFish: prevNumberOfFish.toFixed(2),
       expectedWaste,
       fishSize: prevFishSize.toFixed(3),
@@ -1027,7 +1159,168 @@ export function calculateFishGrowth(
 
     // Store new data
     newData.push(newRow);
-    prevFishSize = prevFishSize.toFixed(3);
+    prevFishSize = Number(prevFishSize.toFixed(3));
+    prevGrowth = prevGrowth;
+    prevWeight = FBW;
+    prevFeedIntake = prevFeedIntake;
+    prevFeedingRate = prevFeedingRate;
+  }
+  return newData;
+}
+
+export function calculateFishGrowthAfricanCatfish(
+  fishWeight: number,
+  temp: number,
+  numberOfFishs: number,
+  expectedWaste: number,
+  period: number,
+  startDate: string,
+  timeInterval: number,
+  DE: number,
+) {
+  const IBW = fishWeight;
+  const T = temp;
+  let prevWeight = IBW;
+  let prevNumberOfFish: number = numberOfFishs;
+  let prevFishSize: any = IBW;
+  let prevGrowth: number | string = 0;
+  const newData = [];
+
+  function calculateNoOfFish(
+    initialSizeK4: number,
+    growthRateL4: number,
+    timeH5: number,
+  ): number {
+    const powerComponent = Math.pow(growthRateL4 / 100 + 1, timeH5);
+    const fishRemaining = initialSizeK4 * (1 - (powerComponent - 1));
+    return fishRemaining;
+  }
+  
+  const calculateFishSize = (fishSize: number, temp: number): number => {
+    const part1 = Math.pow(fishSize, 1 / 3);
+    const part2 =
+      (-0.00001496 * Math.pow(temp, 2) + 0.0008244 * temp - 0.009494) * temp;
+  
+    const result = Math.pow(part1 + part2, 3);
+    return result;
+  };
+  
+  function calculateFeedingRate(
+    fishSize: number,
+    temperature: number,
+    DE: number
+  ): number {
+    const part1 = Math.pow(fishSize, 1 / 3);
+    const part2 =
+      (-0.00001496 * Math.pow(temperature, 2) +
+        0.0008244 * temperature -
+        0.009494) *
+      temperature;
+  
+    const numerator = Math.pow(part1 + part2, 3);
+  
+    const left = numerator / fishSize - 1;
+
+    const right =
+      (9.794 * Math.pow(fishSize, 0.0726)) / (DE / 1.03);
+
+    const feedingRate = left * right * 100;
+  
+    return feedingRate;
+  }
+  function calculateFW(
+    IBW: number,
+    b: number,
+    TGC: number,
+    tValues: number[],
+    dValues: number[],
+  ) {
+    if (tValues.length !== dValues.length) {
+      throw new Error('tValues and dValues must have the same length');
+    }
+
+    // Compute summation of t * d
+    const sum_td = tValues.reduce(
+      (sum, t, index) => sum + t * dValues[index],
+      0,
+    );
+
+    // Apply the formula
+    return Math.pow(Math.pow(IBW, b) + (TGC / 100) * sum_td, 1 / b);
+  }
+
+  function calculateEstFCR(fishSize: number, DE: number): number {
+    const numerator = 9.794 * Math.pow(fishSize, 0.0726);
+    const denominator = DE / 1.03;
+  
+    const result = numerator / denominator;
+  
+    return Number(result.toFixed(2));
+  }
+  
+
+  function calculateGrowth(newFishSize: number, prevFishSize: number) {
+    return newFishSize - prevFishSize;
+  }
+
+  function calculateDate(date: string, day: number) {
+    return dayjs(date, 'YYYY-MM-DD').add(day, 'day').format('DD-MM-YYYY');
+  }
+  // Loop through the days and calculate values
+  for (let day = 1; day <= period; day += 1) {
+    const oldFishSize = prevFishSize;
+
+    const FBW = calculateFW(prevWeight, 0.35, 0.16, [T], [7]);
+
+    prevNumberOfFish =
+      day !== 1
+        ? calculateNoOfFish(prevNumberOfFish, 0.05, 1)
+        : prevNumberOfFish;
+    const estfcr = calculateEstFCR(prevFishSize, DE);
+    prevFishSize =
+      day === 1 ? prevFishSize : calculateFishSize(prevFishSize, 20);
+
+      let prevFeedingRate = calculateFeedingRate(prevFishSize, temp, DE);
+
+    let prevFeedIntake = ((prevFeedingRate * prevFishSize) / 100).toFixed(3);
+
+    prevGrowth =
+      day === 1
+        ? prevFishSize - IBW
+        : calculateGrowth(prevFishSize, oldFishSize).toFixed(3);
+
+    const newRow = {
+      date: calculateDate(startDate, day),
+      days: day,
+      averageProjectedTemp: T,
+      numberOfFish: Number(prevNumberOfFish.toFixed(2)),
+      expectedWaste,
+      fishSize: prevFishSize.toFixed(3),
+      growth: prevGrowth,
+      feedType:
+        Number(prevFishSize.toFixed(3)) >= 200
+          ? 'SAF 6035 (2-3mm)'
+          : Number(prevFishSize.toFixed(3)) >= 50
+            ? 'Tilapia Starter #3'
+            : Number(prevFishSize.toFixed(3)) >= 25
+              ? 'Tilapia Starter #2'
+              : Number(prevFishSize.toFixed(3)) >= 5
+                ? 'Tilapia Starter #1'
+                : 'Tilapia Starter #0',
+      feedSize: prevWeight >= 50 ? '#3' : prevWeight >= 25 ? '#2' : '#1',
+      feedProtein: 400,
+      feedDE: 13.47,
+      feedPrice: 32,
+      estimatedFCR: Number(estfcr),
+      feedIntake: prevFeedIntake,
+      partitionedFCR: 0.0,
+      feedingRate: prevFeedingRate.toFixed(2),
+      feedCost: 49409,
+    };
+
+    // Store new data
+    newData.push(newRow);
+    prevFishSize = Number(prevFishSize.toFixed(3));
     prevGrowth = prevGrowth;
     prevWeight = FBW;
     prevFeedIntake = prevFeedIntake;

@@ -1,19 +1,13 @@
 import prisma from '@/prisma/prisma';
 import { NextRequest, NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
-import { verifyAndRefreshToken } from '@/app/_lib/auth/verifyAndRefreshToken';
-
-export const GET = async (request: NextRequest, context: { params: any }) => {
-  const user = await verifyAndRefreshToken(request);
-  if (user.status === 401) {
-    return new NextResponse(
-      JSON.stringify({
-        status: false,
-        message: 'Unauthorized: Token missing or invalid',
-      }),
-      { status: 401 },
-    );
-  }
+import { Contact } from '@/app/_typeModels/Organization';
+interface ContextParams {
+  params: {
+    organisationId: string;
+  };
+}
+export const GET = async (_request: NextRequest, context: ContextParams) => {
   const organisationId = context.params.organisationId;
 
   if (!organisationId) {
@@ -37,22 +31,21 @@ export const GET = async (request: NextRequest, context: { params: any }) => {
       status: 200,
     });
   } catch (error) {
-    return new NextResponse(JSON.stringify({ status: false, error }), {
+    let errorMessage = 'Unknown error';
+    if (error && typeof error === 'object' && 'message' in error) {
+      errorMessage = (error as any).message;
+    } else {
+      errorMessage = String(error);
+    }
+    return new NextResponse(JSON.stringify({ status: false, error: errorMessage }), {
       status: 500,
     });
   }
 };
 
-export async function PUT(req: NextRequest, context: { params: any }) {
-  const user = await verifyAndRefreshToken(req);
-  if (user.status === 401) {
-    return NextResponse.json(
-      { status: false, message: 'Unauthorized: Token missing or invalid' },
-      { status: 401 },
-    );
-  }
+export async function PUT(req: NextRequest, context: ContextParams) {
   try {
-    const transporter: any = nodemailer.createTransport({
+    const transporter = nodemailer.createTransport({
       service: 'gmail', // You can use any other email service provider
       auth: {
         user: process.env.EMAIL_USER, // Your email address
@@ -79,10 +72,16 @@ export async function PUT(req: NextRequest, context: { params: any }) {
     const name = formData.get('name') as string;
     const organisationCode = formData.get('organisationCode') as string;
     const organisationType = formData.get('organisationType') as string;
-    const addressData = JSON.parse(formData.get('address') as any);
-    const contactsData = JSON.parse(formData.get('contacts') as any);
-    const hatcheryId = JSON.parse(formData.get('hatcheryId') as string);
-    const hatchery = JSON.parse(formData.get('hatchery') as string);
+    const addressRaw = formData.get('address');
+    const contactsRaw = formData.get('contacts');
+    const hatcheryRaw = formData.get('hatchery');
+    const hatcheryIdRaw = formData.get('hatcheryId');
+    const addressData = addressRaw ? JSON.parse(addressRaw.toString()) : null;
+    const contactsData = contactsRaw
+      ? JSON.parse(contactsRaw.toString())
+      : null;
+    const hatchery = hatcheryRaw ? JSON.parse(hatcheryRaw.toString()) : null;
+    const hatcheryId = hatcheryIdRaw ? JSON.parse(hatcheryIdRaw.toString()) : null;
     const imageUrl = formData.get('imageUrl') as string;
     const invitedById = formData.get('invitedBy') as string;
     const invitedByOrg = await prisma.organisation.findUnique({
@@ -94,8 +93,8 @@ export async function PUT(req: NextRequest, context: { params: any }) {
       (org) => org.permission === 'ADMIN' || org.permission === 'SUPERADMIN',
     );
     const checkContactExist = contactsData
-      .filter((contact: any) => !contact.id)
-      .map((contact: any) => contact.email)
+      .filter((contact: Contact) => !contact.id)
+      .map((contact: Contact) => contact.email)
       .filter((email: string | null | undefined): email is string =>
         Boolean(email),
       );
@@ -107,7 +106,7 @@ export async function PUT(req: NextRequest, context: { params: any }) {
 
     if (users.length) {
       return NextResponse.json(
-        { error: 'User already exist with some email' },
+        { error: 'User already exist with same email' },
         { status: 409 },
       );
     }
@@ -133,20 +132,21 @@ export async function PUT(req: NextRequest, context: { params: any }) {
       },
     });
     if (hatchery) {
-      const updatedHatchery = await prisma.hatchery.upsert({
+      await prisma.hatchery.upsert({
         where: { id: hatcheryId || '' },
         update: {
           name: hatchery.name,
-          altitude: hatchery.altitude,
           code: hatchery.code,
+          altitude: hatchery.altitude,
           fishSpecie: hatchery.fishSpecie,
         },
         create: {
-          name: hatchery.name ?? '',
-          altitude: hatchery.altitude ?? '',
-          code: hatchery.code ?? '',
-          fishSpecie: hatchery.fishSpecie ?? '',
+          name: hatchery.name,
+          code: hatchery.code,
+          altitude: hatchery.altitude,
+          fishSpecie: hatchery.fishSpecie,
           createdBy: organisation.id,
+           organisationId: organisation.id,
         },
       });
     }
@@ -191,7 +191,9 @@ export async function PUT(req: NextRequest, context: { params: any }) {
             email: contact.email,
             phone: contact.phone,
             permission: contact.permission,
-            userId,
+            user: {
+              connect: { id: userId },
+            },
             organisation: { connect: { id: organisation.id } },
             invite: contact.newInvite,
           },
@@ -357,7 +359,7 @@ export async function PUT(req: NextRequest, context: { params: any }) {
       select: { id: true, email: true },
     });
 
-    const updatedContacts = contactsData.map((contact: any) => {
+    const updatedContacts = contactsData.map((contact: Contact) => {
       const c = existingContacts.find((ex) => ex.email === contact.email);
       if (c?.email === contact.email) {
         return { ...contact, id: c?.id };
@@ -367,16 +369,19 @@ export async function PUT(req: NextRequest, context: { params: any }) {
     });
 
     const updatedContactIds = updatedContacts
-      .map((contact: any) => contact.id)
-      .filter((id: any) => id !== undefined && id !== null);
+      .map((contact: Contact) => contact.id)
+      .filter((id: number): id is number => id !== undefined && id !== null); // ✅ type guard
+
     const contactsToDelete = existingContacts
       .filter((contact) => !updatedContactIds.includes(contact.id))
       .map((contact) => contact.id);
-    const usersToDelete = existingContacts
+
+    const usersToDelete: any = existingContacts
       .filter((contact) => !updatedContactIds.includes(contact.id))
-      .map((contact: any) => contact.email);
+      .map((contact) => contact.email);
+
     // Delete the removed contacts
-    if (contactsToDelete.length > 0) {
+    if (contactsToDelete.length > 0 || usersToDelete.length > 0) {
       await prisma.contact.deleteMany({
         where: { id: { in: contactsToDelete } },
       });
@@ -401,9 +406,16 @@ export async function PUT(req: NextRequest, context: { params: any }) {
       { status: 200 },
     );
   } catch (error) {
-    return NextResponse.json(
-      { error: 'Something went wrong' },
-      { status: 500 },
+    console.error('Organisation PUT error:', error);
+    let errorMessage = 'Unknown error';
+    if (error && typeof error === 'object' && 'message' in error) {
+      errorMessage = (error as any).message;
+    } else {
+      errorMessage = String(error);
+    }
+    return new NextResponse(
+      JSON.stringify({ status: false, error: errorMessage }),
+      { status: 500 }
     );
   }
 }

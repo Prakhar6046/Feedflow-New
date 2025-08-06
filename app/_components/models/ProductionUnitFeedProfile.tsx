@@ -1,6 +1,6 @@
 'use client';
 import { getLocalItem, setLocalItem } from '@/app/_lib/utils';
-import { ProductionParaMeterType } from '@/app/_typeModels/Farm';
+import { Farm, ProductionParaMeterType } from '@/app/_typeModels/Farm';
 import {
   Box,
   Button,
@@ -12,6 +12,8 @@ import {
   Radio,
   Stack,
   Typography,
+  FormControl,
+  InputLabel,
 } from '@mui/material';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
@@ -23,14 +25,20 @@ import TableRow from '@mui/material/TableRow';
 import { getCookie } from 'cookies-next';
 import { useEffect, useMemo, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import { cellStyle, fishSizes } from '../farm/FeedProfiles';
+import {
+  cellStyle,
+  fishSizes,
+  GroupedSupplierStores,
+  SupplierOptions,
+} from '../farm/FeedProfiles';
 import { CloseIcon } from '../theme/overrides/CustomIcons';
 import { FeedProduct } from '@/app/_typeModels/Feed';
 import { FeedSupplier } from '@/app/_typeModels/Organization';
+import { MultiSelect } from 'primereact/multiselect';
 
 interface Props {
   productionParaMeter?: ProductionParaMeterType[];
-  editFarm?: any;
+  editFarm?: Farm;
   setOpen: (open: boolean) => void;
   open: boolean;
   selectedUnitName: string;
@@ -41,6 +49,7 @@ interface Props {
 interface FormData {
   [key: string]: string;
 }
+
 const style = {
   position: 'absolute' as const,
   top: '50%',
@@ -51,6 +60,11 @@ const style = {
   boxShadow: 24,
   padding: '5px 25px',
 };
+
+interface ProductionUnitFeedProfileData {
+  unitName: string;
+  feedProfile: FormData;
+}
 
 const ProductionUnitFeedProfile: React.FC<Props> = ({
   setOpen,
@@ -65,21 +79,26 @@ const ProductionUnitFeedProfile: React.FC<Props> = ({
   const [radioValueMap, setRadioValueMap] = useState<
     Record<string, Record<string, string>>
   >({});
-  const [formProductionFeedProfile, setFormProductionFeedProfile] =
-    useState<any>();
+  const [supplierOptions, setSupplierOptions] = useState<SupplierOptions[]>([]);
+  const [selectedSupplier, setSelectedSupplier] = useState<SupplierOptions[]>(
+    [],
+  );
+  const [formProductionFeedProfile, setFormProductionFeedProfile] = useState<
+    FormData | undefined
+  >();
 
-  const { control, handleSubmit, watch, setValue, reset } = useForm<FormData>();
+  const { control, handleSubmit, setValue, reset } = useForm<FormData>();
 
   const onSubmit: SubmitHandler<FormData> = (formData) => {
-    const productionUnitsFeedProfilesArray = getLocalItem(
-      'productionUnitsFeedProfiles',
-    );
+    const productionUnitsFeedProfilesArray: ProductionUnitFeedProfileData[] =
+      getLocalItem('productionUnitsFeedProfiles') || [];
     const { data, ...rest } = formData;
 
     const updatedData = productionUnitsFeedProfilesArray?.filter(
-      (data: any) => data.unitName !== selectedUnitName,
+      (data: ProductionUnitFeedProfileData) =>
+        data.unitName !== selectedUnitName,
     );
-    const payload = {
+    const payload: ProductionUnitFeedProfileData = {
       unitName: selectedUnitName,
       feedProfile: {
         ...rest,
@@ -96,7 +115,7 @@ const ProductionUnitFeedProfile: React.FC<Props> = ({
 
   useEffect(() => {
     if (typeof window !== 'undefined' && selectedUnitName) {
-      const formData = getLocalItem('feedProfiles');
+      const formData: FormData | null = getLocalItem('feedProfiles');
       if (formData) {
         setFormProductionFeedProfile(formData);
         Object?.entries(formData).forEach(([key, value]) => {
@@ -104,15 +123,15 @@ const ProductionUnitFeedProfile: React.FC<Props> = ({
         });
       }
     }
-  }, [selectedUnitName]);
+  }, [selectedUnitName, setValue]);
 
   useEffect(() => {
-    const productionUnitsFeedProfilesArray = getLocalItem(
-      'productionUnitsFeedProfiles',
-    );
+    const productionUnitsFeedProfilesArray: ProductionUnitFeedProfileData[] =
+      getLocalItem('productionUnitsFeedProfiles') || [];
 
     const updatedData = productionUnitsFeedProfilesArray?.find(
-      (data: any) => data.unitName === selectedUnitName,
+      (data: ProductionUnitFeedProfileData) =>
+        data.unitName === selectedUnitName,
     );
     if (updatedData) {
       Object.entries(updatedData?.feedProfile).forEach(([key, value]) => {
@@ -122,11 +141,10 @@ const ProductionUnitFeedProfile: React.FC<Props> = ({
   }, [formProductionFeedProfile, selectedUnitName, setValue]);
 
   useEffect(() => {
-    const formProductionFeedProfileArray = getLocalItem(
-      'productionUnitsFeedProfiles',
-    );
+    const formProductionFeedProfileArray: ProductionUnitFeedProfileData[] =
+      getLocalItem('productionUnitsFeedProfiles') || [];
     const currentUnit = formProductionFeedProfileArray?.find(
-      (val: any) => val.unitName === selectedUnitName,
+      (val: ProductionUnitFeedProfileData) => val.unitName === selectedUnitName,
     );
     if (
       isEditFarm &&
@@ -134,16 +152,16 @@ const ProductionUnitFeedProfile: React.FC<Props> = ({
       formProductionFeedProfileArray &&
       !currentUnit
     ) {
-      editFarm?.productionUnits.map((unit: any, i: number) => {
+      editFarm?.productionUnits?.map((unit) => {
         if (
           unit.name === selectedUnitName &&
-          unit.id === unit.FeedProfileProductionUnit[0]?.productionUnitId
+          unit.id === unit.FeedProfileProductionUnit?.[0]?.productionUnitId
         ) {
-          Object.entries(unit?.FeedProfileProductionUnit[0]?.profiles).forEach(
-            ([key, value]) => {
-              setValue(key, String(value));
-            },
-          );
+          Object.entries(
+            unit?.FeedProfileProductionUnit?.[0]?.profiles || {},
+          ).forEach(([key, value]) => {
+            setValue(key, String(value));
+          });
         }
       });
     } else if (formProductionFeedProfileArray?.length && currentUnit) {
@@ -152,6 +170,7 @@ const ProductionUnitFeedProfile: React.FC<Props> = ({
       });
     }
   }, [isEditFarm, editFarm, setValue, selectedUnitName]);
+
   const renderRadioGroup = (
     rowName: string,
     columnName: string,
@@ -191,22 +210,27 @@ const ProductionUnitFeedProfile: React.FC<Props> = ({
       )}
     />
   );
-  const groupedData = useMemo(() => {
-    return feedSuppliers?.reduce((acc: any[], supplier: FeedSupplier) => {
-      const storesForSupplier = feedStores?.filter((store: any) =>
-        store?.ProductSupplier?.includes(supplier.id),
-      );
 
-      if (storesForSupplier?.length) {
-        acc.push({
-          supplier,
-          stores: storesForSupplier,
-        });
-      }
+  const groupedData: GroupedSupplierStores[] = useMemo(() => {
 
-      return acc;
-    }, []);
-  }, [feedSuppliers, feedStores]);
+    return selectedSupplier?.reduce(
+      (acc: GroupedSupplierStores[], supplier: SupplierOptions) => {
+        const storesForSupplier = feedStores?.filter((store) =>
+          store?.ProductSupplier?.includes(String(supplier.id)),
+        );
+
+        if (storesForSupplier?.length) {
+          acc.push({
+            supplier,
+            stores: storesForSupplier,
+          });
+        }
+
+        return acc;
+      },
+      [],
+    );
+  }, [selectedSupplier, feedStores]);
 
   useEffect(() => {
     if (!groupedData?.length) return;
@@ -219,28 +243,34 @@ const ProductionUnitFeedProfile: React.FC<Props> = ({
 
       group?.stores?.forEach((store: FeedProduct, storeIndex: number) => {
         const optKey = `opt${storeIndex + 1}`;
-        const label = `${store.productName} - ${group.supplier.name}`;
+        const label = `${store.productName} - ${group.supplier.option}`;
         map[colKey][optKey] = label;
       });
     });
 
     setRadioValueMap(map);
   }, [groupedData]);
+  useEffect(() => {
+    if (feedSuppliers?.length) {
+      const options = feedSuppliers?.map((supplier) => {
+        return { option: supplier.name, id: supplier?.id };
+      });
+      setSupplierOptions(options);
+      setSelectedSupplier(options);
+    }
+  }, [feedSuppliers]);
   const handleClose = () => {
     setOpen(false);
     reset();
     setSelectedUnitName('');
   };
+
   return (
     <Modal
       open={open}
-      // onClose={handleClose}
       aria-labelledby="parent-modal-title"
       aria-describedby="parent-modal-description"
       className="modal-positioning"
-      BackdropProps={{
-        onClick: (event) => event.stopPropagation(), // Prevents closing on backdrop click
-      }}
     >
       <Stack sx={style}>
         <Box display="flex" justifyContent="flex-end" padding={2}>
@@ -261,24 +291,66 @@ const ProductionUnitFeedProfile: React.FC<Props> = ({
               width: '100%',
               overflow: 'hidden',
               borderRadius: '14px',
-              boxShadow: '0px 0px 16px 5px #0000001A',
+              boxShadow: 'none',
+              p: 4,
             }}
           >
             <Stack>
-              {/* <form onSubmit={handleSubmit(onSubmit)}> */}
-              <Typography
-                variant="h6"
-                fontWeight={700}
+              <Box
                 sx={{
-                  fontSize: {
-                    md: 24,
-                    xs: 20,
-                  },
-                  marginBottom: 2,
+                  mb: 3,
                 }}
               >
-                Feed Profile
-              </Typography>
+                <Typography
+                  variant="h6"
+                  fontWeight={700}
+                  sx={{
+                    fontSize: {
+                      md: 24,
+                      xs: 20,
+                    },
+                    marginBottom: 2,
+                  }}
+                >
+                  Feed Profile
+                </Typography>
+                <Box>
+                  <FormControl
+                    sx={{ width: 600 }}
+                    className="form-input selected"
+                    focused
+                  >
+                    <InputLabel
+                      id="feed-supplier-select"
+                      className="custom-input"
+                    >
+                      Feed Suppliers
+                    </InputLabel>
+                    <MultiSelect
+                      value={selectedSupplier}
+                      onChange={(e) => setSelectedSupplier(e.value)}
+                      selectAllLabel="Select All"
+                      options={supplierOptions}
+                      optionLabel="option"
+                      display="chip"
+                      placeholder="Select Feed Suppliers"
+                      dropdownIcon={
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="10"
+                          height="10"
+                          viewBox="0 0 15 15"
+                        >
+                          <path fill="currentColor" d="M7.5 12L0 4h15z" />
+                        </svg>
+                      }
+                      maxSelectedLabels={3}
+                      appendTo="self"
+                      className="w-100 max-w-100 custom-select"
+                    />
+                  </FormControl>
+                </Box>
+              </Box>
               <Paper
                 sx={{
                   width: '100%',
@@ -289,7 +361,7 @@ const ProductionUnitFeedProfile: React.FC<Props> = ({
               >
                 <TableContainer
                   component={Paper}
-                  className="feed-profile-table"
+                  className="feed-profile-table sm"
                 >
                   <Table stickyHeader={true}>
                     <TableHead>
@@ -340,7 +412,7 @@ const ProductionUnitFeedProfile: React.FC<Props> = ({
                                   whiteSpace: 'nowrap',
                                 }}
                               >
-                                {tableHead?.supplier?.name}
+                                {tableHead?.supplier?.option}
                               </Typography>
                               <Box>
                                 <List
@@ -414,8 +486,6 @@ const ProductionUnitFeedProfile: React.FC<Props> = ({
                   </Table>
                 </TableContainer>
               </Paper>
-
-              {/* </form> */}
             </Stack>
           </Paper>
 

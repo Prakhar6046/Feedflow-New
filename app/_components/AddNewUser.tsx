@@ -1,5 +1,7 @@
 'use client';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import * as validationPattern from '@/app/_lib/utils/validationPatterns/index';
+import * as validationMessage from '@/app/_lib/utils/validationsMessage/index';
 import {
   Box,
   FormControl,
@@ -16,14 +18,12 @@ import Button from '@mui/material/Button';
 import { styled } from '@mui/material/styles';
 import { useEffect, useState } from 'react';
 
-import Loader from '@/app/_components/Loader';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
-import { getCookie } from 'cookies-next';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import { SingleOrganisation } from '../_typeModels/Organization';
-import { AddUserFormInputs, SingleUser } from '../_typeModels/User';
+import { UserFormInputs } from '../_typeModels/User';
 import { deleteImage, handleUpload } from '../_lib/utils';
 import UserPermission from './user/UserPermission';
 
@@ -44,15 +44,8 @@ const VisuallyHiddenInput = styled('input')({
 
 export default function AddNewUser({ organisations }: Props) {
   const router = useRouter();
-  const loggedUser: any = getCookie('logged-user');
-  const token = getCookie('auth-token');
-  const [userData, setUserData] = useState<{ data: SingleUser }>();
-  const [selectedOrganisation, setSelectedOrganisation] = useState<any>('');
-  const [loading, setLoading] = useState<boolean>(false);
-  const [currentUserId, setCurrentUserId] = useState<number>();
+  const [selectedOrganisation, setSelectedOrganisation] = useState<string>('');
   const [profilePic, setProfilePic] = useState<string>();
-  const [imagePath, setImagePath] = useState<FileList>();
-  const [error, setError] = useState<string | null>(null);
   const [isApiCallInProgress, setIsApiCallInProgress] =
     useState<boolean>(false);
 
@@ -62,77 +55,128 @@ export default function AddNewUser({ organisations }: Props) {
     clearErrors,
     reset,
     control,
-    formState: { errors },
-  } = useForm<AddUserFormInputs>();
-  const onSubmit: SubmitHandler<AddUserFormInputs> = async (data) => {
-    // Prevent API call if one is already in progress
+    formState: { errors, isValid },
+  } = useForm<UserFormInputs>({ mode: 'onChange' });
+
+  // const onSubmit: SubmitHandler<UserFormInputs> = async (data) => {
+  //   // Prevent API call if one is already in progress
+  //   if (isApiCallInProgress) return;
+  //   setIsApiCallInProgress(true);
+
+  //   try {
+  //     if (data.email && data.name && data.organisationId) {
+  //       const response = await fetch('/api/add-new-user', {
+  //         method: 'POST',
+  //         headers: {
+  //           'Content-Type': 'application/json',
+  //         },
+  //         body: JSON.stringify({ ...data, image: profilePic || '' }),
+  //       });
+  //       const responseData = await response.json();
+  //       if (!response.ok || !responseData.status) {
+  //         toast.dismiss();
+  //         toast.error(responseData.message || 'Failed to create user');
+  //         return;
+  //       }
+  //        const newUser = responseData.data;
+  //       if (responseData.status) {
+  //         const formData = new FormData();
+  //         const oldImageName = profilePic?.split('/').pop()?.split('.')[0];
+  //         formData.append('oldImageName', oldImageName || '');
+  //         formData.append('userId', responseData.data.id);
+
+  //         const response = await fetch(`/api/profile-pic/upload`, {
+  //           method: 'POST',
+
+  //           body: formData,
+  //         });
+  //         const updatedUser = await response.json();
+  //         setProfilePic(updatedUser.data.imageUrl);
+  //       } else {
+  //         toast.dismiss();
+  //         toast.error(responseData.message);
+  //       }
+  //       if (response.ok) {
+  //         toast.dismiss();
+  //         toast.success(responseData.message);
+  //         router.push('/dashboard/user');
+  //         reset();
+  //       }
+  //     }
+  //   } catch {
+  //     toast.error('Something went wrong. Please try again.');
+  //   } finally {
+  //     setIsApiCallInProgress(false);
+  //   }
+  // };
+  const onSubmit: SubmitHandler<UserFormInputs> = async (data) => {
     if (isApiCallInProgress) return;
     setIsApiCallInProgress(true);
 
     try {
-      if (data.email && data.name && data.organisationId) {
-        const token = getCookie('auth-token');
-        const response = await fetch('/api/add-new-user', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ ...data, image: profilePic }),
-        });
-        const responseData = await response.json();
-        if (responseData.status) {
-          if (imagePath) {
-            const formData = new FormData();
-            formData.append('image', imagePath[0]);
-            const oldImageName = profilePic?.split('/').pop()?.split('.')[0];
-            formData.append('oldImageName', oldImageName || '');
-            formData.append('userId', responseData.data.id);
+      const response = await fetch('/api/add-new-user', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...data,
+          image: profilePic || '',
+        }),
+      });
 
-            const response = await fetch(`/api/profile-pic/upload`, {
-              method: 'POST',
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-              body: formData,
-            });
-            const updatedUser = await response.json();
-            setProfilePic(updatedUser.data.imageUrl);
-          }
-        } else {
-          toast.dismiss();
-          toast.error(responseData.message);
-        }
-        if (response.ok) {
-          toast.dismiss();
-          toast.success(responseData.message);
-          router.push('/dashboard/user');
-          reset();
+      const responseData = await response.json();
+
+      if (!response.ok || !responseData.status) {
+        toast.dismiss();
+        toast.error(responseData.message || 'Failed to create user');
+        return;
+      }
+
+      const newUser = responseData.data;
+
+      // Upload profile picture only if image was provided
+      if (profilePic) {
+        const formData = new FormData();
+        const oldImageName = profilePic?.split('/').pop()?.split('.')[0];
+        formData.append('oldImageName', oldImageName || '');
+        formData.append('userId', newUser.id);
+
+        const imageUploadRes = await fetch(`/api/profile-pic/upload`, {
+          method: 'POST',
+          body: formData,
+        });
+
+        const updatedUser = await imageUploadRes.json();
+
+        if (imageUploadRes.ok && updatedUser?.data?.imageUrl) {
+          setProfilePic(updatedUser.data.imageUrl);
         }
       }
+
+      toast.dismiss();
+      toast.success(responseData.message || 'User created successfully');
+      router.push('/dashboard/user');
+      reset();
+      setProfilePic('');
+      setSelectedOrganisation('');
     } catch (error) {
+      console.error(error);
       toast.error('Something went wrong. Please try again.');
     } finally {
       setIsApiCallInProgress(false);
     }
   };
+
   const handleChange = (event: SelectChangeEvent) => {
     clearErrors('organisationId');
     setSelectedOrganisation(event.target.value as string);
   };
-  useEffect(() => {
-    if (loggedUser) {
-      const user = JSON.parse(loggedUser);
-      setCurrentUserId(user.id);
-    }
-  }, [loggedUser]);
 
   useEffect(() => {
     router.refresh();
   }, []);
-  if (loading) {
-    return <Loader />;
-  }
+
   return (
     <>
       <Stack pb={5}>
@@ -204,12 +248,7 @@ export default function AddNewUser({ organisations }: Props) {
                     type="file"
                     {...register('image', {
                       onChange: (e) =>
-                        handleUpload(
-                          e.target.files,
-                          profilePic,
-                          setProfilePic,
-                          String(token),
-                        ),
+                        handleUpload(e.target.files, profilePic, setProfilePic),
                     })}
                     accept=".jpg,.jpeg,.png,.svg"
                   />
@@ -259,7 +298,6 @@ export default function AddNewUser({ organisations }: Props) {
                               e.target.files,
                               profilePic,
                               setProfilePic,
-                              String(token),
                             ),
                         })}
                         accept=".jpg,.jpeg,.png,.svg"
@@ -270,11 +308,7 @@ export default function AddNewUser({ organisations }: Props) {
                       type="button"
                       variant="contained"
                       onClick={() =>
-                        deleteImage(
-                          { image: profilePic },
-                          String(token),
-                          setProfilePic,
-                        )
+                        deleteImage({ image: profilePic }, setProfilePic)
                       }
                       sx={{
                         background: '#D71818',
@@ -356,21 +390,33 @@ export default function AddNewUser({ organisations }: Props) {
                     focused
                     {...register('name', {
                       required: true,
+                      pattern: {
+                        value: validationPattern.namePattern,
+                        message: validationMessage.namePatternMessage,
+                      },
+                      validate: (value) =>
+                        value.trim() !== '' || 'Name cannot be empty or just spaces.',
                     })}
                     sx={{
                       width: '100%',
                     }}
                   />
-                  {errors && errors.name && errors.name.type === 'required' && (
-                    <Typography
-                      variant="body2"
-                      color="red"
-                      fontSize={13}
-                      mt={0.5}
-                    >
+                  {errors?.name?.type === 'required' && (
+                    <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
                       This field is required.
                     </Typography>
                   )}
+                  {errors?.name?.type === 'pattern' && (
+                    <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                      {errors.name.message}
+                    </Typography>
+                  )}
+                  {errors?.name?.type === 'validate' && (
+                    <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                      {errors.name.message}
+                    </Typography>
+                  )}
+
                 </Box>
                 <Box width={'100%'} mb={2}>
                   <TextField
@@ -379,24 +425,24 @@ export default function AddNewUser({ organisations }: Props) {
                     className="form-input"
                     {...register('email', {
                       required: true,
+                      pattern: validationPattern.emailPattern,
                     })}
                     focused
                     sx={{
                       width: '100%',
                     }}
                   />
-                  {errors &&
-                    errors.email &&
-                    errors.email.type === 'required' && (
-                      <Typography
-                        variant="body2"
-                        color="red"
-                        fontSize={13}
-                        mt={0.5}
-                      >
-                        This field is required.
-                      </Typography>
-                    )}
+                  {errors?.email?.type === 'required' && (
+                    <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                      {validationMessage.required}
+                    </Typography>
+                  )}
+
+                  {errors?.email?.type === 'pattern' && (
+                    <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                      {validationMessage.emailPatternMessage}
+                    </Typography>
+                  )}
                 </Box>
                 <Box mb={2} width={'100%'}>
                   <FormControl fullWidth className="form-input" focused>
@@ -447,8 +493,9 @@ export default function AddNewUser({ organisations }: Props) {
           <UserPermission
             control={control}
             oraginsationType={
-              organisations?.find((org) => org?.id === selectedOrganisation)
-                ?.organisationType
+              organisations?.find(
+                (org) => String(org?.id) === selectedOrganisation,
+              )?.organisationType ?? ''
             }
           />
           <Button

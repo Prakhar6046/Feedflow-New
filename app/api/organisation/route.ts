@@ -1,18 +1,10 @@
-import { verifyAndRefreshToken } from '@/app/_lib/auth/verifyAndRefreshToken';
 import prisma from '@/prisma/prisma';
 import { NextRequest, NextResponse } from 'next/server';
-
-export const GET = async (request: NextRequest) => {
+import { Organisation } from '@prisma/client';
+import { Prisma } from '@prisma/client';
+export const dynamic = 'force-dynamic';
+export const GET = async (request: NextRequest): Promise<NextResponse> => {
   try {
-    const user = await verifyAndRefreshToken(request);
-    // If no user (token invalid or missing), return 401
-    if (user.status === 401) {
-      return NextResponse.json(
-        { status: false, message: 'Unauthorized: Token missing or invalid' },
-        { status: 401 },
-      );
-    }
-
     const searchParams = request.nextUrl.searchParams;
     const role = searchParams.get('role');
     const query = searchParams.get('query');
@@ -24,9 +16,9 @@ export const GET = async (request: NextRequest) => {
         ? 'Fish Producer'
         : tab === 'feedSuppliers'
           ? 'Feed Supplier'
-          : null;
+          : undefined;
 
-    const baseWhereClause: any = {
+    const baseWhereClause: Prisma.OrganisationWhereInput = {
       AND: [
         query
           ? {
@@ -45,14 +37,12 @@ export const GET = async (request: NextRequest) => {
       ],
     };
 
-    let organisations;
+    let organisations: Organisation[] | null;
 
     if (role === 'SUPERADMIN') {
       organisations = await prisma.organisation.findMany({
         include: { contact: true, users: true, hatchery: true },
-        orderBy: {
-          createdAt: 'desc',
-        },
+        orderBy: { createdAt: 'desc' },
         where: baseWhereClause,
       });
     } else {
@@ -62,23 +52,21 @@ export const GET = async (request: NextRequest) => {
             { id: Number(organisationId) },
             { createdBy: Number(organisationId) },
           ],
-          ...baseWhereClause,
+          AND: baseWhereClause.AND, // Must ensure logical nesting
         },
         include: { contact: true },
-        orderBy: {
-          createdAt: 'desc',
-        },
+        orderBy: { createdAt: 'desc' },
       });
     }
 
-    return new NextResponse(
-      JSON.stringify({ status: true, data: organisations }),
+    return NextResponse.json(
+      { status: true, data: organisations },
       { status: 200 },
     );
   } catch (error) {
     console.error('❌ Error in /api/organisation:', error);
-    return new NextResponse(
-      JSON.stringify({ status: false, error: 'Internal Server Error' }),
+    return NextResponse.json(
+      { status: false, error: 'Internal Server Error' },
       { status: 500 },
     );
   }

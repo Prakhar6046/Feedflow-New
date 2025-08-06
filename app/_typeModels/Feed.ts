@@ -8,7 +8,7 @@ export interface FeedInitialState {
 export interface FeedProduct {
   organaisationId: number;
   id: string;
-  ProductSupplier: string;
+ ProductSupplier: string[];
   brandName: string;
   productName: string;
   productFormat: string;

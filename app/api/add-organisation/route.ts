@@ -2,6 +2,7 @@ import { capitalizeFirstLetter } from '@/app/_lib/utils';
 import prisma from '@/prisma/prisma';
 import { NextRequest, NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
+import { User } from '@prisma/client';
 
 export async function POST(req: NextRequest) {
   try {
@@ -74,23 +75,10 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // Create contacts without userId initially
-    const contacts = await prisma.contact.createMany({
-      data: body.contacts.map((contact: any) => ({
-        name: capitalizeFirstLetter(contact.name),
-        email: contact.email.toLowerCase(),
-        phone: contact.phone,
-        role: contact.role,
-        organisationId: organisation.id,
-        permission: contact.permission,
-        userId: null,
-        invite: contact.newInvite,
-      })),
-    });
-
-    // Create users and capture their IDs
+    // Create users first and capture their IDs
+    const createdUsers: User[] = [];
     for (const contact of body.contacts) {
-      const shouldSendInvite = contact.newInvite;
+      const shouldSendInvite = contact.invite;
       const createdUser = await prisma.user.create({
         data: {
           email: contact.email.toLowerCase(),
@@ -100,6 +88,7 @@ export async function POST(req: NextRequest) {
           invite: shouldSendInvite ? shouldSendInvite : false,
         },
       });
+      createdUsers.push(createdUser);
 
       const userId = createdUser.id;
       if (shouldSendInvite) {
@@ -236,35 +225,19 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // await prisma.user.createMany({
-    //   data: body.contacts.map((user: any) => ({
-    //     email: user.email.toLowerCase(),
-    //     name: capitalizeFirstLetter(user.name),
-    //     organisationId: organisation.id,
-    //     role: user.permission?.toUpperCase(),
-    //   })),
-
-    // });
-
-    // Fetch the created users to get their IDs
-    const users = await prisma.user.findMany({
-      where: {
-        email: {
-          in: body.contacts.map((contact: any) => contact.email.toLowerCase()),
-        },
-      },
-      select: { id: true, email: true },
+    // Create contacts with the proper userId
+    const contacts = await prisma.contact.createMany({
+      data: body.contacts.map((contact: any, index: number) => ({
+        name: capitalizeFirstLetter(contact.name),
+        email: contact.email.toLowerCase(),
+        phone: contact.phone,
+        role: contact.role,
+        organisationId: organisation.id,
+        permission: contact.permission,
+        userId: createdUsers[index].id,
+        invite: contact.invite || false,
+      })),
     });
-
-    // Update contacts with the corresponding userId
-    await Promise.all(
-      users.map(async (user) => {
-        await prisma.contact.updateMany({
-          where: { email: user.email.toLowerCase() },
-          data: { userId: user.id },
-        });
-      }),
-    );
 
     if (body.hatcheryName) {
       await prisma.hatchery.create({
@@ -294,7 +267,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({
       message: 'Organisation added successfully',
-      data: { organisation, contacts, users },
+      data: { organisation, contacts, users: createdUsers },
       status: true,
     });
   } catch (error) {

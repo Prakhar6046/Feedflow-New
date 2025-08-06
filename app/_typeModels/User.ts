@@ -1,6 +1,6 @@
 export interface UserInitialState {
   isLoading: boolean;
-  users: any;
+  users: SingleUser[];
   role: string;
 }
 
@@ -19,10 +19,13 @@ export interface SingleUser {
   access: boolean;
   organisation: Organisation;
   permissions: Permissions;
+  userId?: number;
 }
 
 export interface FarmPermissions {
-  farmId: string; // or number, depending on your Farm model
+  id?: string;
+  farmId: string;
+  name: string;
   stock: boolean;
   transfer: boolean;
   harvest: boolean;
@@ -48,7 +51,7 @@ export interface Permissions {
   transferFishBetweenFarms: boolean;
   farms?: FarmPermissions[];
 }
-export interface UserEditFormInputs {
+export interface UserFormInputs {
   name: string;
   image: string;
   organisation: string;
