@@ -5,16 +5,19 @@ import { SingleUser } from '@/app/_typeModels/User';
 import { getCookie } from 'cookies-next';
 import { Metadata } from 'next';
 import { cookies } from 'next/headers';
+// import { getAllOrganisations } from "@/app/_lib/action";
 export const metadata: Metadata = {
   title: 'New User',
 };
 export default async function Page() {
-  const loggedUser = getCookie('logged-user', { cookies });
-  const user: SingleUser = JSON.parse(loggedUser ?? '');
+  const loggedUser: any = getCookie('logged-user', { cookies });
+  const refreshToken: any = getCookie('refresh-token', { cookies });
+  const user: SingleUser = JSON.parse(loggedUser);
   const organisations = await getOrganisations({
     organisationId: user?.organisationId,
     role: String(user?.role),
     query: '',
+    refreshToken,
   });
 
   return (

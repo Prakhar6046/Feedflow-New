@@ -24,31 +24,29 @@ export const verifyAndRefreshToken = async (req: Request): Promise<any> => {
     if (accessToken) {
       return true;
     }
-  } catch (err: unknown) {
-    if (err instanceof Error) {
-      if (err.name === 'TokenExpiredError') {
-        // 🔁 Try to refresh access token if refresh-token exists
-        if (!refreshToken)
-          throw new Error('Access token expired and no refresh token');
+  } catch (err: any) {
+    if (err.name === 'TokenExpiredError') {
+      // 🔁 Try to refresh access token if refresh-token exists
+      if (!refreshToken)
+        throw new Error('Access token expired and no refresh token');
 
-        try {
-          const decodedRefresh = jwt.verify(
-            refreshToken,
-            JWT_REFRESH_SECRET,
-          ) as any;
+      try {
+        const decodedRefresh = jwt.verify(
+          refreshToken,
+          JWT_REFRESH_SECRET,
+        ) as any;
 
-          // ✅ Generate new access token
-          const newAccessToken = jwt.sign(
-            { id: decodedRefresh.id, email: decodedRefresh.email },
-            JWT_SECRET,
-            { expiresIn: '15m' },
-          );
+        // ✅ Generate new access token
+        const newAccessToken = jwt.sign(
+          { id: decodedRefresh.id, email: decodedRefresh.email },
+          JWT_SECRET,
+          { expiresIn: '15m' },
+        );
 
-          // You can optionally set it in cookies or just return it
-          return jwt.verify(newAccessToken, JWT_SECRET);
-        } catch {
-          throw new Error('Refresh token expired or invalid');
-        }
+        // You can optionally set it in cookies or just return it
+        return jwt.verify(newAccessToken, JWT_SECRET);
+      } catch (refreshError) {
+        throw new Error('Refresh token expired or invalid');
       }
     }
 

@@ -216,7 +216,7 @@ const ProductionUnitFeedProfile: React.FC<Props> = ({
     return selectedSupplier?.reduce(
       (acc: GroupedSupplierStores[], supplier: SupplierOptions) => {
         const storesForSupplier = feedStores?.filter((store) =>
-          store?.ProductSupplier?.includes(supplier.id),
+          store?.ProductSupplier?.includes(String(supplier.id)),
         );
 
         if (storesForSupplier?.length) {

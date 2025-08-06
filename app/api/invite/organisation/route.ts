@@ -1,10 +1,9 @@
-import { SingleUser } from '@/app/_typeModels/User';
 import prisma from '@/prisma/prisma';
 import { NextRequest, NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
 
 export async function POST(req: NextRequest) {
-  const transporter = nodemailer.createTransport({
+  const transporter: any = nodemailer.createTransport({
     service: 'gmail', // You can use any other email service provider
     auth: {
       user: process.env.EMAIL_USER, // Your email address
@@ -35,7 +34,7 @@ export async function POST(req: NextRequest) {
     const createdUsers = await prisma.contact.findMany({
       where: {
         email: {
-          in: users.map((user: SingleUser) => user.email),
+          in: users.map((user: any) => user.email),
         },
       },
       select: {
@@ -50,21 +49,9 @@ export async function POST(req: NextRequest) {
     if (createdUsers.length === 0) {
       return NextResponse.json({ error: 'No users found' }, { status: 404 });
     }
-    await prisma.contact.updateMany({
-      where: {
-        id: {
-          in: createdUsers.map((user) => user.id),
-        },
-      },
-      data: {
-        invite: true,
-      },
-    });
 
     // Sending emails to all created users
-    const emailPromises = createdUsers.map(async (user) => {
-      if (!user.email) return;
-
+    const emailPromises = createdUsers.map(async (user: any) => {
       const mailOptions = {
         from: process.env.EMAIL_USER, // Sender address
         to: user.email, // Recipient email

@@ -11,22 +11,13 @@ import {
 import React, { useEffect } from 'react';
 import * as validationPattern from '@/app/_lib/utils/validationPatterns/index';
 import * as validationMessage from '@/app/_lib/utils/validationsMessage/index';
-import {
-  UseFormRegister,
-  UseFormSetValue,
-  UseFormTrigger,
-  UseFormWatch,
-  FieldErrors,
-} from 'react-hook-form';
-import { AddOrganizationFormInputs } from '@/app/_typeModels/Organization';
-
 interface Props {
   altitude: string;
-  register: UseFormRegister<AddOrganizationFormInputs>;
-  setValue: UseFormSetValue<AddOrganizationFormInputs>;
-  trigger: UseFormTrigger<AddOrganizationFormInputs>;
-  watch: UseFormWatch<AddOrganizationFormInputs>;
-  errors?: FieldErrors<AddOrganizationFormInputs>;
+  register: any;
+  setValue: any;
+  trigger: any;
+  watch: any;
+  errors?: any;
 }
 function HatcheryForm({
   altitude,
@@ -41,9 +32,6 @@ function HatcheryForm({
       setValue('hatcheryAltitude', String(Number(altitude).toFixed(2)));
     }
   }, [altitude]);
-  const noOnlySpaces = (message = 'Spaces only are not allowed') =>
-    (value?: string) =>
-      typeof value === 'string' && value.trim() !== '' || message;
 
   return (
     <Box width={'100%'}>
@@ -61,8 +49,8 @@ function HatcheryForm({
           mt: 2,
         }}
         focused
-      // focused={true}
-      // value={userData?.data.email ?? "Demo@gmail.com"}
+        // focused={true}
+        // value={userData?.data.email ?? "Demo@gmail.com"}
       />
       {errors &&
         errors.hatcheryName &&
@@ -78,11 +66,6 @@ function HatcheryForm({
             {validationMessage.OnlyAlphabatsMessage}
           </Typography>
         )}
-      {errors?.hatcheryName?.type === 'validate' && (
-        <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
-          {errors.hatcheryName.message}
-        </Typography>
-      )}
       <TextField
         label="Hatchery Code *"
         type="text"
@@ -90,7 +73,6 @@ function HatcheryForm({
         {...register('hatcheryCode', {
           required: true,
           pattern: validationPattern.alphabetsNumbersAndSpacesPattern,
-          validate: noOnlySpaces()
         })}
         // disabled
         sx={{
@@ -98,8 +80,8 @@ function HatcheryForm({
           mt: 2,
         }}
         focused
-      // focused={true}
-      // value={userData?.data.email ?? "Demo@gmail.com"}
+        // focused={true}
+        // value={userData?.data.email ?? "Demo@gmail.com"}
       />
       {errors &&
         errors.hatcheryCode &&
@@ -115,11 +97,6 @@ function HatcheryForm({
             {validationMessage.OnlyAlphabetsandNumberMessage}
           </Typography>
         )}
-      {errors?.hatcheryCode?.type === 'validate' && (
-        <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
-          {errors.hatcheryCode.message}
-        </Typography>
-      )}
       <Box position={'relative'}>
         <TextField
           label="Hatchery Altitude *"
@@ -128,7 +105,6 @@ function HatcheryForm({
           {...register('hatcheryAltitude', {
             required: true,
             pattern: validationPattern.numbersWithDot,
-            validate: noOnlySpaces(),
             maxLength: 10,
           })}
           // disabled
@@ -137,8 +113,8 @@ function HatcheryForm({
             mt: 2,
           }}
           focused
-        // focused={watch("hatcheryAltitude") ? true : false}
-        // value={userData?.data.email ?? "Demo@gmail.com"}
+          // focused={watch("hatcheryAltitude") ? true : false}
+          // value={userData?.data.email ?? "Demo@gmail.com"}
         />
         <Typography
           variant="body2"
@@ -179,11 +155,6 @@ function HatcheryForm({
               {validationMessage.numberMaxLength}
             </Typography>
           )}
-        {errors?.hatcheryAltitude?.type === 'validate' && (
-          <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
-            {errors.hatcheryAltitude.message}
-          </Typography>
-        )}
       </Box>
       <FormControl
         fullWidth
@@ -203,7 +174,6 @@ function HatcheryForm({
           }}
           {...register('fishSpecie', {
             required: true,
-            validate: noOnlySpaces()
           })}
           value={watch('fishSpecie') || ''}
           onChange={(e) => {

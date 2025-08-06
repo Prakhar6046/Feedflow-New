@@ -1,9 +1,25 @@
+import { verifyAndRefreshToken } from '@/app/_lib/auth/verifyAndRefreshToken';
 import { FeedProduct } from '@/app/_typeModels/Feed';
 import prisma from '@/prisma/prisma';
 import { NextRequest, NextResponse } from 'next/server';
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
+    const user = await verifyAndRefreshToken(request);
+    if (user.status === 401) {
+      return new NextResponse(
+        JSON.stringify({
+          status: false,
+          message: 'Unauthorized: Token missing or invalid',
+        }),
+        { status: 401 },
+      );
+    }
+    const searchParams = request.nextUrl.searchParams;
+    const role = searchParams.get('role');
+    const organisationId = searchParams.get('organisationId');
+    const query = searchParams.get('query');
+
     const feedStores = await prisma.feedStore.findMany({
       orderBy: {
         createdAt: 'asc',
@@ -17,13 +33,24 @@ export async function GET() {
       }),
     );
   } catch (error) {
-    return new NextResponse(JSON.stringify({ status: false, error }), {
-      status: 500,
-    });
+    return NextResponse.json(
+      { error: 'Internal Server Error' },
+      { status: 500 },
+    );
   }
 }
 export async function PUT(request: NextRequest) {
   try {
+    const user = await verifyAndRefreshToken(request);
+    if (user.status === 401) {
+      return new NextResponse(
+        JSON.stringify({
+          status: false,
+          message: 'Unauthorized: Token missing or invalid',
+        }),
+        { status: 401 },
+      );
+    }
     const body = await request.json();
 
     await Promise.all(
@@ -42,13 +69,24 @@ export async function PUT(request: NextRequest) {
       }),
     );
   } catch (error) {
-    return new NextResponse(JSON.stringify({ status: false, error }), {
-      status: 500,
-    });
+    return NextResponse.json(
+      { error: 'Internal Server Error' },
+      { status: 500 },
+    );
   }
 }
 export async function POST(request: NextRequest) {
   try {
+    const user = await verifyAndRefreshToken(request);
+    if (user.status === 401) {
+      return new NextResponse(
+        JSON.stringify({
+          status: false,
+          message: 'Unauthorized: Token missing or invalid',
+        }),
+        { status: 401 },
+      );
+    }
     const body = await request.json();
     const data = body;
 
@@ -67,8 +105,9 @@ export async function POST(request: NextRequest) {
       }),
     );
   } catch (error) {
-    return new NextResponse(JSON.stringify({ status: false, error }), {
-      status: 500,
-    });
+    return NextResponse.json(
+      { error: 'Internal Server Error' },
+      { status: 500 },
+    );
   }
 }

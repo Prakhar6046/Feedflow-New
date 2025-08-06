@@ -3,75 +3,63 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(req: NextRequest) {
   try {
-    const { email, name, organisationId, image, permissions } = await req.json();
+    const { email, name, organisationId, image, permissions } =
+      await req.json();
 
     if (!email || !name || !organisationId) {
       return NextResponse.json(
-        { message: 'Please provide all required fields.', status: false },
-        { status: 400 }
+        { error: 'Please provide all data' },
+        { status: 400 },
       );
     }
-
     const normalizedEmail = email.toLowerCase();
+    // const formattedName = capitalizeFirstLetter(name);
 
-    // Check if email already exists
-    const existingUser = await prisma.user.findUnique({
-      where: { email: normalizedEmail },
+    const checkEmailExistInOrganisation = await prisma.organisation.findUnique({
+      where: { id: organisationId },
     });
-
-    if (existingUser) {
-      return NextResponse.json(
-        {
-          message: 'A user with this email already exists.',
+    const checkEmailExist = await prisma.user.findUnique({
+      where: { email },
+    });
+    if (checkEmailExist) {
+      return new NextResponse(
+        JSON.stringify({
+          message: 'User is already part of this organisation',
           status: false,
-        },
-        { status: 400 }
+        }),
+        { status: 400 },
       );
-    }
-
-    // Proceed with user creation
-    const user = await prisma.user.create({
-      data: {
-        email: normalizedEmail,
-        name,
-        organisationId: Number(organisationId),
-        imageUrl: image || undefined, // Optional
-        permissions: permissions || {}, // Optional
-      },
-    });
-
-    await prisma.contact.create({
-      data: {
-        email: normalizedEmail,
-        name,
-        organisationId: Number(organisationId),
-        userId: user.id,
-        permission: 'NONADMIN',
-      },
-    });
-
-    return NextResponse.json({
-      message: 'User created successfully.',
-      data: user,
-      status: true,
-    });
-  } catch (error: any) {
-    console.error('Error creating user:', error);
-
-    // Handle known Prisma error (email uniqueness)
-    if (error.code === 'P2002') {
-      return NextResponse.json(
-        {
-          message: 'A user with this email already exists.',
-          status: false,
+    } else {
+      const results = await prisma.user.create({
+        data: {
+          email: normalizedEmail,
+          name: name,
+          organisationId: Number(organisationId),
+          imageUrl: image ?? undefined,
+          permissions: permissions ?? {},
         },
-        { status: 400 }
-      );
-    }
+      });
 
+      await prisma.contact.create({
+        data: {
+          email: normalizedEmail,
+          name: name,
+          organisationId: Number(organisationId),
+          userId: results.id,
+          permission: 'NONADMIN',
+        },
+      });
+      return NextResponse.json({
+        message: 'User created successfully',
+        data: results,
+        status: true,
+      });
+    }
+  } catch (error) {
+    console.error('Error sending email:', error);
     return NextResponse.json(
-      { message: 'Internal server error', status: false },
-      { status: 500 }
+      { error: 'Internal Server Error' },
+      { status: 500 },
     );
   }
 }

@@ -12,37 +12,28 @@ import {
 import HatcheryForm from '../hatchery/HatcheryForm';
 import { useRouter } from 'next/navigation';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import {
-  AddOrganizationFormInputs,
-  OrganizationData,
-} from '@/app/_typeModels/Organization';
+import { OrganizationData } from '@/app/_typeModels/Organization';
 import { VisuallyHiddenInput } from './EditOrganisation';
 import EmptyFarm from './EmptyFarm';
 import { getCookie, setCookie } from 'cookies-next';
 import { SingleUser } from '@/app/_typeModels/User';
-import {
-  FieldErrors,
-  UseFormRegister,
-  UseFormSetValue,
-  UseFormTrigger,
-  UseFormWatch,
-} from 'react-hook-form';
 interface Props {
   organisationData?: OrganizationData;
-  profilePic: string;
-  setProfilePic: (val: string) => void;
+  profilePic: string | any;
+  setProfilePic: any;
   isHatcherySelected: boolean;
   handleUpload: (
-    file: FileList,
+    file: any,
     profilePic: string,
-    setProfilePic: (val: string) => void,
+    setProfilePic: any,
+    token: string,
   ) => void;
   altitude: string;
-  register: UseFormRegister<AddOrganizationFormInputs>; // Replace `any` with your form type like `MyFormInputs`
-  setValue: UseFormSetValue<AddOrganizationFormInputs>; // Same here
-  trigger: UseFormTrigger<AddOrganizationFormInputs>;
-  watch: UseFormWatch<AddOrganizationFormInputs>;
-  errors?: FieldErrors<AddOrganizationFormInputs>;
+  register: any;
+  setValue: any;
+  trigger: any;
+  watch: any;
+  errors?: any;
 }
 const FarmsInformation = ({
   organisationData,
@@ -58,8 +49,9 @@ const FarmsInformation = ({
   errors,
 }: Props) => {
   const router = useRouter();
-  const loggedUser = getCookie('logged-user');
-  const user: SingleUser = JSON.parse(loggedUser ?? '');
+  const loggedUser: any = getCookie('logged-user');
+  const token = getCookie('auth-token');
+  const user: SingleUser = JSON.parse(loggedUser);
   return organisationData?.Farm.length ? (
     organisationData?.Farm?.map((farm) => {
       return (
@@ -153,10 +145,13 @@ const FarmsInformation = ({
                 <VisuallyHiddenInput
                   type="file"
                   {...register('image', {
-                    onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
-                      if (e.target.files)
-                        handleUpload(e.target.files, profilePic, setProfilePic);
-                    },
+                    onChange: (e: any) =>
+                      handleUpload(
+                        e.target.files,
+                        profilePic,
+                        setProfilePic,
+                        String(token),
+                      ),
                   })}
                   accept=".jpg,.jpeg,.png,.svg"
                 />

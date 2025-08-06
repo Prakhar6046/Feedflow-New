@@ -1,6 +1,17 @@
+import { verifyAndRefreshToken } from '@/app/_lib/auth/verifyAndRefreshToken';
 import { NextResponse } from 'next/server';
 
 export async function GET(request: Request) {
+  const user = await verifyAndRefreshToken(request);
+  if (user.status === 401) {
+    return new NextResponse(
+      JSON.stringify({
+        status: false,
+        message: 'Unauthorized: Token missing or invalid',
+      }),
+      { status: 401 },
+    );
+  }
   const { searchParams } = new URL(request.url);
   const lat = searchParams.get('lat');
   const lng = searchParams.get('lng');
@@ -19,8 +30,9 @@ export async function GET(request: Request) {
     const data = await response.json();
     return NextResponse.json(data);
   } catch (error) {
-    return new NextResponse(JSON.stringify({ status: false, error }), {
-      status: 500,
-    });
+    return NextResponse.json(
+      { error: 'Failed to fetch altitude' },
+      { status: 500 },
+    );
   }
 }

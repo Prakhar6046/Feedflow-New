@@ -1,7 +1,15 @@
 import prisma from '@/prisma/prisma';
 import { NextRequest, NextResponse } from 'next/server';
+import { verifyAndRefreshToken } from '@/app/_lib/auth/verifyAndRefreshToken';
 
 export const GET = async (request: NextRequest) => {
+  const user = await verifyAndRefreshToken(request);
+  if (user.status === 401) {
+    return NextResponse.json(
+      { status: false, message: 'Unauthorized: Token missing or invalid' },
+      { status: 401 },
+    );
+  }
   try {
     const searchParams = request.nextUrl.searchParams;
     const organisationId = searchParams.get('organisationId');
@@ -53,6 +61,13 @@ export const GET = async (request: NextRequest) => {
   }
 };
 export const POST = async (request: NextRequest) => {
+  const user = await verifyAndRefreshToken(request);
+  if (user.status === 401) {
+    return NextResponse.json(
+      { status: false, message: 'Unauthorized: Token missing or invalid' },
+      { status: 401 },
+    );
+  }
   try {
     const body = await request.json();
     // batchNumber: `${data.hatchingDate}-${
@@ -107,13 +122,28 @@ export const POST = async (request: NextRequest) => {
       );
     }
 
+    // Check if hatchery exists and has the required data
+    if (!isHatcheryExist.hatchery || isHatcheryExist.hatchery.length === 0) {
+      return new NextResponse(
+        JSON.stringify({
+          message: 'No hatchery found for this organisation',
+          status: false,
+        }),
+        {
+          status: 404,
+        },
+      );
+    }
+
+    const hatchery = isHatcheryExist.hatchery[0];
     const fishSupplyData = {
       ...body,
       createdBy: isHatcheryExist.id,
       organisationId: Number(body.organisationId),
-      batchNumber: `${body.hatchingDate}-${isHatcheryExist.hatchery[0].code}-${
+      batchNumber: `${body.hatchingDate}-${hatchery.code}-${
         body.spawningNumber
-      }-${isHatcheryExist.hatchery[0]?.fishSpecie.slice(0, 1)}`,
+      }-${hatchery.fishSpecie.slice(0, 1)}`,
+      species: body.species || null,
     };
     const newFishSupply = await prisma.fishSupply.create({
       data: fishSupplyData,

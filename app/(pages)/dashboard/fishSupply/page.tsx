@@ -21,13 +21,15 @@ export default async function Page({
   };
 }) {
   const query = searchParams?.query || '';
-  const loggedUser = getCookie('logged-user', { cookies });
-  const user: SingleUser = JSON.parse(loggedUser ?? '');
+  const loggedUser: any = getCookie('logged-user', { cookies });
+  const refreshToken: any = getCookie('refresh-token', { cookies });
+  const user: SingleUser = JSON.parse(loggedUser);
 
   const fishSupply = await getFishSupply({
     organisationId: user.organisationId,
     role: user.role,
     query,
+    refreshToken,
   });
   return (
     <>

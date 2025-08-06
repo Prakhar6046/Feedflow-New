@@ -2,7 +2,9 @@ import { getLocalItem, setLocalItem, Years } from '@/app/_lib/utils';
 import { waterQualityPredictedHead } from '@/app/_lib/utils/tableHeadData';
 import * as validationPattern from '@/app/_lib/utils/validationPatterns/index';
 import * as validationMessage from '@/app/_lib/utils/validationsMessage/index';
-import { Farm, ProductionParaMeterType } from '@/app/_typeModels/Farm';
+import { ProductionParaMeterType } from '@/app/_typeModels/Farm';
+import { selectFarm } from '@/lib/features/farm/farmSlice';
+import { useAppSelector } from '@/lib/hooks';
 import {
   Box,
   Button,
@@ -26,7 +28,7 @@ import { CloseIcon } from '../theme/overrides/CustomIcons';
 
 interface Props {
   productionParaMeter?: ProductionParaMeterType[];
-  editFarm?: Farm;
+  editFarm?: any;
   setOpen: (open: boolean) => void;
   open: boolean;
   selectedUnitName: string;
@@ -58,14 +60,18 @@ const ProductionUnitParametersPredicated: React.FC<Props> = ({
 }) => {
   const isEditFarm = getCookie('isEditFarm');
 
+  const farm = useAppSelector(selectFarm);
+
   const [formProductionParameters, setFormProductionParameters] =
     useState<any>();
 
   const {
     control,
     handleSubmit,
-
+    watch,
+    register,
     setValue,
+    clearErrors,
     reset,
     formState: { errors },
   } = useForm<FormData>({
@@ -73,6 +79,11 @@ const ProductionUnitParametersPredicated: React.FC<Props> = ({
       predictedValues: {},
     },
   });
+  const allWatchObject = {
+    predictedValues: watch('predictedValues'),
+    idealRange: watch('idealRange'),
+    modelId: watch('modelId'),
+  };
 
   const onSubmit: SubmitHandler<FormData> = (data) => {
     const productionParamtertsUnitsArray = getLocalItem(
@@ -176,7 +187,7 @@ const ProductionUnitParametersPredicated: React.FC<Props> = ({
       productionParamtertsUnitsArray &&
       !currentUnit
     ) {
-      editFarm?.productionUnits.map((unit: any) => {
+      editFarm?.productionUnits.map((unit: any, i: number) => {
         if (
           unit.name === selectedUnitName &&
           unit.id ===

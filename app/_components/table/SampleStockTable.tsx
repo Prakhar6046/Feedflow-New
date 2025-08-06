@@ -1,9 +1,18 @@
 'use client';
+import { getLocalItem } from '@/app/_lib/utils';
 import { Farm } from '@/app/_typeModels/Farm';
+import { Production } from '@/app/_typeModels/production';
 import { SampleStock } from '@/app/_typeModels/sample';
 import { selectRole } from '@/lib/features/user/userSlice';
-import { useAppSelector } from '@/lib/hooks';
-import { Button, Menu, MenuItem, Stack, Typography } from '@mui/material';
+import { useAppDispatch, useAppSelector } from '@/lib/hooks';
+import {
+  Button,
+  Menu,
+  MenuItem,
+  Stack,
+  TableSortLabel,
+  Typography,
+} from '@mui/material';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -11,27 +20,43 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import { useRouter } from 'next/navigation';
-import React, { useEffect } from 'react';
-interface TableHeadCell {
-  id: string;
-  label: string;
-}
-
+import { usePathname, useRouter } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
 interface Props {
-  tableData: TableHeadCell[];
+  tableData: any;
   farms?: Farm[];
   sampleStock: SampleStock[];
 }
-export default function SampleStockTable({ tableData, sampleStock }: Props) {
+export default function SampleStockTable({
+  tableData,
+  sampleStock,
+  farms,
+}: Props) {
   const router = useRouter();
+  const dispatch = useAppDispatch();
+  const pathName = usePathname();
+  // const sortDataFromLocal = "";
+  //   const loading = useAppSelector(selectFarmLoading);
+  const [selectedProduction, setSelectedProduction] = useState<any>(null);
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null,
   );
-
+  const [openTransferModal, setOpenTransferModal] = useState<boolean>(false);
+  const [productionData, setProductionData] = useState<Production[]>();
   const role = useAppSelector(selectRole);
+  const [order, setOrder] = React.useState('asc');
+  const [orderBy, setOrderBy] = React.useState('Farm');
+  const [sortDataFromLocal, setSortDataFromLocal] = React.useState<any>('');
 
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+  useEffect(() => {
+    if (pathName) {
+      setSortDataFromLocal(getLocalItem(pathName));
+    }
+  }, [pathName]);
+  const handleClick = (
+    event: React.MouseEvent<HTMLButtonElement>,
+    farm: any,
+  ) => {
     setAnchorEl(event.currentTarget);
     // setOpenTransferModal(true);
     // setSelectedProduction(farm);
@@ -47,25 +72,32 @@ export default function SampleStockTable({ tableData, sampleStock }: Props) {
   };
   const open = Boolean(anchorEl);
 
-  function EnhancedTableHead({}: {
-    order?: 'asc' | 'desc';
-    orderBy?: string;
-    onRequestSort?: (
-      event: React.MouseEvent<HTMLButtonElement>,
-      property: string,
-    ) => void;
-  }) {
+  function EnhancedTableHead(data: any) {
+    const { order, orderBy, onRequestSort } = data;
+    const createSortHandler =
+      (property: string) => (event: React.MouseEvent<HTMLButtonElement>) => {
+        onRequestSort(event, property);
+      };
+
     return (
       <TableHead className="prod-action">
         <TableRow>
-          {tableData.map((headCell: TableHeadCell, idx: number) => (
+          {tableData.map((headCell: any, idx: number, headCells: any) => (
             <TableCell
               key={headCell.id}
+              sortDirection={
+                idx === headCells.length - 1
+                  ? false
+                  : orderBy === headCell.id
+                    ? order
+                    : false
+              }
               // align="center"
               sx={{
                 borderBottom: 0,
                 color: '#67737F',
                 background: '#F5F6F8',
+
                 fontSize: {
                   md: 16,
                   xs: 14,
@@ -78,7 +110,17 @@ export default function SampleStockTable({ tableData, sampleStock }: Props) {
                 },
               }}
             >
-              {headCell.label}
+              {idx === headCells.length - 1 ? (
+                headCell.label
+              ) : (
+                <TableSortLabel
+                  active={orderBy === headCell.id}
+                  direction={orderBy === headCell.id ? order : 'asc'}
+                  onClick={createSortHandler(headCell.id)}
+                >
+                  {headCell.label}
+                </TableSortLabel>
+              )}
             </TableCell>
           ))}
         </TableRow>
@@ -111,8 +153,9 @@ export default function SampleStockTable({ tableData, sampleStock }: Props) {
               <TableRow></TableRow>
             </TableHead>
             <EnhancedTableHead
-
-            // onRequestSort={handleRequestSort}
+              order={order}
+              orderBy={orderBy}
+              // onRequestSort={handleRequestSort}
             />
             <TableBody>
               {sampleStock && sampleStock?.length > 0 ? (
@@ -222,7 +265,7 @@ export default function SampleStockTable({ tableData, sampleStock }: Props) {
                             aria-haspopup="true"
                             aria-expanded={open ? 'true' : undefined}
                             className="table-edit-option"
-                            onClick={(e) => handleClick(e)}
+                            onClick={(e) => handleClick(e, sample)}
                             sx={{
                               background: 'transparent',
                               color: 'red',

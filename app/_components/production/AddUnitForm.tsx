@@ -1,8 +1,5 @@
 'use client';
-import { getDayMonthDifference } from '@/app/_lib/utils';
-import * as validationPattern from '@/app/_lib/utils/validationPatterns/index';
-import * as validationMessage from '@/app/_lib/utils/validationsMessage/index';
-import { Farm } from '@/app/_typeModels/Farm';
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   Button,
@@ -14,15 +11,18 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import * as validationPattern from '@/app/_lib/utils/validationPatterns/index';
+import * as validationMessage from '@/app/_lib/utils/validationsMessage/index';
+import { Controller, SubmitHandler, useForm } from 'react-hook-form';
+import { Dayjs } from 'dayjs';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { getCookie } from 'cookies-next';
-import { Dayjs } from 'dayjs';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import { Controller, SubmitHandler, useForm } from 'react-hook-form';
+import { Farm } from '@/app/_typeModels/Farm';
 import toast from 'react-hot-toast';
+import { getCookie } from 'cookies-next';
+import { getDayMonthDifference } from '@/app/_lib/utils';
 interface FormInputs {
   fishFarm: string;
   productionUnit: string;
@@ -40,9 +40,10 @@ interface Props {
   farms: Farm[];
 }
 function AddUnitForm({ farms }: Props) {
-  const [selectedFarm, setSelectedFarm] = useState<string>('');
-  const loggedUser = getCookie('logged-user');
-  const user = JSON.parse(loggedUser ?? '');
+  const mCubed = 'm\u00B3';
+  const [selectedFarm, setSelectedFarm] = useState<any>(null);
+  const loggedUser: any = getCookie('logged-user');
+  const user = JSON.parse(loggedUser);
   const router = useRouter();
   const {
     register,
@@ -83,10 +84,12 @@ function AddUnitForm({ farms }: Props) {
         ...restData,
       };
 
+      const token = getCookie('auth-token');
       const response = await fetch(`/api/production`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(payload),
       });
@@ -329,6 +332,31 @@ function AddUnitForm({ farms }: Props) {
                         {validationMessage.numberMaxLength}
                       </Typography>
                     )}
+                  {/* <Box mb={2} width={"100%"}>
+              <FormControl fullWidth className="form-input">
+                <InputLabel id="feed-supply-select-label1">
+                  Fish Farmer *
+                </InputLabel>
+                <Select
+                  labelId="feed-supply-select-label1"
+                  id="feed-supply-select1"
+                  {...register("fishFarmer", {
+                    required: watch("fishFarmer") ? false : true,
+                    onChange: (e) => setValue("fishFarmer", e.target.value),
+                  })}
+                  label="Feed Farmer *"
+                  value={watch("fishFarmer") || ""}
+                >
+                  {fishFarmers?.map((fish: any) => {
+                    return (
+                      <MenuItem value={String(fish.id)} key={fish.id}>
+                        {fish.name}
+                      </MenuItem>
+                    );
+                  })}
+                </Select>
+              </FormControl>
+            </Box> */}
                 </Box>
               </Box>
             </Grid>

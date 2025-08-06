@@ -1,4 +1,4 @@
-export const StockIcon: React.FC<React.SVGProps<SVGSVGElement>> = () => (
+export const StockIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
   <svg
     width="24"
     height="24"

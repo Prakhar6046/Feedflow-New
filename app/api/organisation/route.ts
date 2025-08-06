@@ -2,7 +2,7 @@ import prisma from '@/prisma/prisma';
 import { NextRequest, NextResponse } from 'next/server';
 import { Organisation } from '@prisma/client';
 import { Prisma } from '@prisma/client';
-
+export const dynamic = 'force-dynamic';
 export const GET = async (request: NextRequest): Promise<NextResponse> => {
   try {
     const searchParams = request.nextUrl.searchParams;

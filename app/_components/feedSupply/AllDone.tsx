@@ -9,7 +9,7 @@ interface Props {
   isEdit: boolean | undefined;
 }
 
-const AllDone: NextPage<Props> = ({ isEdit }) => {
+const AllDone: NextPage<Props> = ({ setActiveStep, isEdit }) => {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const handleClick = () => {

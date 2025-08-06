@@ -502,7 +502,7 @@ function AdHoc({ data, setData }: Iprops) {
                 defaultValue={'Nile Tilapia'}
                 render={({ field }) => (
                   <Select {...field} label="Species *">
-                    {speciesOptions.map((option) => (
+                    {speciesOptions.map((option:any) => (
                       <MenuItem value={option.value} key={option.id}>
                         {option.label}
                       </MenuItem>

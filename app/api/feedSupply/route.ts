@@ -1,8 +1,19 @@
+import { verifyAndRefreshToken } from '@/app/_lib/auth/verifyAndRefreshToken';
 import prisma from '@/prisma/prisma';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(request: NextRequest) {
   try {
+    const user = await verifyAndRefreshToken(request);
+    if (user.status === 401) {
+      return new NextResponse(
+        JSON.stringify({
+          status: false,
+          message: 'Unauthorized: Token missing or invalid',
+        }),
+        { status: 401 },
+      );
+    }
     const searchParams = request.nextUrl.searchParams;
     const role = searchParams.get('role');
     const organisationId = searchParams.get('organisationId');
@@ -46,8 +57,9 @@ export async function GET(request: NextRequest) {
       }),
     );
   } catch (error) {
-    return new NextResponse(JSON.stringify({ status: false, error }), {
-      status: 500,
-    });
+    return NextResponse.json(
+      { error: 'Internal Server Error' },
+      { status: 500 },
+    );
   }
 }

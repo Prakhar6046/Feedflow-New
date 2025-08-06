@@ -9,34 +9,33 @@ import {
   Typography,
   Divider,
 } from '@mui/material';
-import { FarmsFishGrowth } from '../feedPrediction/FeedingPlanOutputs';
 
 const formatFeed = (kg: number) => {
   const bags = (kg / 20).toFixed(2);
   return `${kg.toFixed(2)} Kg (${bags} Bags)`;
 };
-type Iprops = {
-  flatData: FarmsFishGrowth[];
-};
-const FeedUsageTable = ({ flatData }: Iprops) => {
+
+const FeedUsageTable = ({ flatData }: any) => {
   const uniqueFeedTypes = Array.from(
     new Set(
-      flatData.flatMap((unit) => unit.fishGrowthData.map((d) => d.feedType)),
+      flatData.flatMap((unit: any) =>
+        unit.fishGrowthData.map((d: any) => d.feedType),
+      ),
     ),
   );
 
-  const unitColumns = flatData.map((unit) => ({
+  const unitColumns = flatData.map((unit: any) => ({
     label: `${unit.farm}-${unit.unit}`,
     fishGrowthData: unit.fishGrowthData,
   }));
 
   const tableData = uniqueFeedTypes.map((feedType) => {
-    const unitValues = unitColumns.map((unit) => {
+    const unitValues = unitColumns.map((unit: any) => {
       const feedItems = unit.fishGrowthData.filter(
-        (fd) => fd.feedType === feedType,
+        (fd: any) => fd.feedType === feedType,
       );
 
-      const totalKg = feedItems.reduce((sum: number, item) => {
+      const totalKg = feedItems.reduce((sum: number, item: any) => {
         const intake = parseFloat(item.feedIntake);
         return sum + (isNaN(intake) ? 0 : intake);
       }, 0);
@@ -44,7 +43,7 @@ const FeedUsageTable = ({ flatData }: Iprops) => {
       return totalKg;
     });
 
-    const totalIntake = unitValues.reduce((a: number, b: number) => a + b, 0);
+    const totalIntake = unitValues.reduce((a: any, b: any) => a + b, 0);
 
     return {
       feedType,
@@ -76,7 +75,7 @@ const FeedUsageTable = ({ flatData }: Iprops) => {
             >
               Feed
             </TableCell>
-            {unitColumns.map((unit, idx: number) => (
+            {unitColumns.map((unit: any, idx: number) => (
               <TableCell
                 key={idx}
                 sx={{
@@ -111,7 +110,7 @@ const FeedUsageTable = ({ flatData }: Iprops) => {
         </TableHead>
 
         <TableBody>
-          {tableData.map((row, rowIndex) => (
+          {tableData.map((row: any, rowIndex) => (
             <TableRow key={rowIndex}>
               {rowIndex === 0 && (
                 <TableCell
@@ -142,7 +141,7 @@ const FeedUsageTable = ({ flatData }: Iprops) => {
                 </Typography>
               </TableCell>
 
-              {row.unitValues.map((kg, idx: number) => (
+              {row.unitValues.map((kg: any, idx: number) => (
                 <TableCell key={idx}>
                   <Typography
                     sx={{
@@ -192,9 +191,9 @@ const FeedUsageTable = ({ flatData }: Iprops) => {
               </Typography>
             </TableCell>
 
-            {unitColumns.map((unit, idx: number) => {
+            {unitColumns.map((unit: any, idx: number) => {
               const unitTotal = unit.fishGrowthData.reduce(
-                (sum: number, item) => {
+                (sum: number, item: any) => {
                   const intake = parseFloat(item.feedIntake);
                   return sum + (isNaN(intake) ? 0 : intake);
                 },
@@ -232,9 +231,9 @@ const FeedUsageTable = ({ flatData }: Iprops) => {
                 }}
               >
                 {formatFeed(
-                  unitColumns.reduce((sum: number, unit) => {
+                  unitColumns.reduce((sum: any, unit: any) => {
                     const total = unit.fishGrowthData.reduce(
-                      (acc: number, item) => {
+                      (acc: number, item: any) => {
                         const intake = parseFloat(item.feedIntake);
                         return acc + (isNaN(intake) ? 0 : intake);
                       },

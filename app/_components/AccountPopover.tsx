@@ -39,10 +39,12 @@ export interface LoggedUser {
 const AccountPopover = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
+  const token = getCookie('auth-token');
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const [loggedUserData, setLoggedUserData] = useState<LoggedUser>();
   const [userData, setUserData] = useState<LoggedUser>();
+  const [loading, setLoading] = useState<boolean>(false);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -53,6 +55,9 @@ const AccountPopover = () => {
     toast.dismiss();
     const data = await fetch('/api/auth/logout', {
       method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
     const response = await data.json();
     if (response.status) {
@@ -67,7 +72,7 @@ const AccountPopover = () => {
     handleClose();
     router.push(route);
   };
-  const loggedUser = getCookie('logged-user');
+  const loggedUser: any = getCookie('logged-user');
   useEffect(() => {
     if (loggedUser) {
       const user = JSON.parse(loggedUser);
@@ -78,15 +83,21 @@ const AccountPopover = () => {
   }, [loggedUser]);
   useEffect(() => {
     if (!loggedUserData) return;
+    setLoading(true);
     const getUser = async () => {
       try {
         const response = await fetch(`/api/users/${loggedUserData.id}`, {
           method: 'GET',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         });
         const data = await response.json();
         setUserData(data.data);
+        setLoading(false);
       } catch (error) {
         console.error('Error fetching user data:', error);
+        setLoading(false);
       }
     };
     getUser();

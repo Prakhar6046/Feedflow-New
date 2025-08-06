@@ -18,7 +18,7 @@ import { LoggedUser } from '../AccountPopover';
 
 function ClosedSidebar() {
   const router = useRouter();
-  const loggedUser = getCookie('logged-user');
+  const loggedUser: any = getCookie('logged-user');
   const pathName = usePathname();
   const [activePage, setActivePage] = useState<string>('');
   const [loggedUserData, setLoggedUserData] = useState<LoggedUser>();

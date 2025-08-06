@@ -1,13 +1,13 @@
 import fs from 'fs/promises';
 import path from 'path';
 import { NextRequest, NextResponse } from 'next/server';
-import { createReadStream, ReadStream } from 'fs';
-interface ContextParams {
-  params: {
-    profileName: string;
-  };
-}
-export const GET = async (_request: NextRequest, context: ContextParams) => {
+import { createReadStream } from 'fs';
+
+export const GET = async (
+  request: NextRequest,
+  context: { params: any },
+  res: NextResponse,
+) => {
   try {
     const profileName = context.params.profileName;
     const directoryPath = './public/static/uploads/';
@@ -16,9 +16,9 @@ export const GET = async (_request: NextRequest, context: ContextParams) => {
     const ext = path.extname(filePath);
     const contentType = getContentType(ext);
 
-    const fileStream: ReadStream = createReadStream(filePath);
+    const fileStream: any = createReadStream(filePath);
 
-    return new NextResponse(fileStream as any, {
+    return new NextResponse(fileStream, {
       headers: { 'Content-Type': contentType },
     });
   } catch (error) {

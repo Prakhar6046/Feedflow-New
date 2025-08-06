@@ -20,22 +20,28 @@ export default async function Page({
     query?: string;
   };
 }) {
-  const loggedUser = getCookie('logged-user', { cookies });
-  const user = JSON.parse(loggedUser ?? '');
-  const farmManagers = await getFarmMangers(user.organisationId);
-  const growthModels = await getGrowthModels();
+  const loggedUser: any = getCookie('logged-user', { cookies });
+  const refreshToken: any = getCookie('refresh-token', { cookies });
+  const user = JSON.parse(loggedUser);
+  const farmManagers = await getFarmMangers(user.organisationId, refreshToken);
+  console.log('farmManagers',farmManagers)
+  const growthModels = await getGrowthModels(refreshToken);
   const query = searchParams?.query || '';
   const farms = await getFarms({
     role: '',
     query,
     noFilter: true,
+    refreshToken,
   });
+  
+  console.log('farmsfarms',farms);
   const stores = await getFeedStores({
     role: user.role,
     organisationId: user.organisationId,
     query,
+    refreshToken,
   });
-  const feedSuppliers = await getFeedSuppliers();
+  const feedSuppliers = await getFeedSuppliers(refreshToken);
 
   return (
     <>
@@ -49,7 +55,7 @@ export default async function Page({
         ]}
       />
 
-      <NewFarm
+      <NewFarm   
         farmMembers={farmManagers?.data?.users}
         growthModels={growthModels?.data}
         farms={farms?.data}

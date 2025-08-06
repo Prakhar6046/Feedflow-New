@@ -2,29 +2,8 @@ import { averagesDropdown } from '@/app/_lib/utils';
 import { RootState } from '@/lib/store';
 import { createSlice } from '@reduxjs/toolkit';
 import dayjs from 'dayjs';
-export interface FilterState {
-  allFarms: {
-    id: string;
-    option: string;
-  }[];
-  allUnits: {
-    id: string;
-    option: string;
-  }[];
-  startDate: string;
-  endDate: string;
-  selectedDropDownYears: number[];
-  selectedDropDownfarms: {
-    id: string;
-    option: string;
-  }[];
-  selectedDropDownUnits: {
-    id: string;
-    option: string;
-  }[];
-  selectedAverage: string;
-}
-const initialState: FilterState = {
+
+const initialState: any = {
   allFarms: [],
   allUnits: [],
   startDate: dayjs().startOf('year').format(),

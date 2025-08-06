@@ -1,6 +1,7 @@
 import BasicBreadcrumbs from '@/app/_components/Breadcrumbs';
 import { NextPage } from 'next';
 import FeedPredictionTable from '@/app/_components/table/FeedPrediction';
+// import { getCookie } from "cookies-next";
 import { cookies } from 'next/headers';
 import { getFarms, getProductions } from '@/app/_lib/action';
 const Page: NextPage = async ({
@@ -11,15 +12,18 @@ const Page: NextPage = async ({
   };
 }) => {
   const cookieStore = cookies(); // ✅ this is safe here in server component
-  const loggedUser = cookieStore.get('logged-user')?.value;
+  const loggedUser: any = cookieStore.get('logged-user')?.value;
+  const refreshToken = cookieStore.get('refresh-token')?.value;
   const query = searchParams?.query || '';
-
-  const user = JSON.parse(loggedUser ?? '');
+  // const loggedUser: any = getCookie("logged-user", { cookies });
+  // const refreshToken: any = getCookie("refresh-token", { cookies });
+  const user = JSON.parse(loggedUser);
   const farms = await getFarms({
     role: user.role,
     organisationId: user.organisationId,
     query: '',
     noFilter: false,
+    refreshToken,
   });
   const productions = await getProductions({
     role: user.role,
@@ -27,6 +31,7 @@ const Page: NextPage = async ({
     query,
     noFilter: false,
     userId: user.id,
+    refreshToken,
   });
   return (
     <>

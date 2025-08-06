@@ -1,13 +1,14 @@
 'use client';
 // import Typography from "@/app/_components/theme/overrides/Typography";
-import EyeClosed from '@/public/static/img/icons/ic-eye-closed.svg';
-import EyeOpened from '@/public/static/img/icons/ic-eye-open.svg';
-import logo from '@/public/static/img/logo.svg';
 import { Box, Button, Stack, TextField, Typography } from '@mui/material';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { useForm, SubmitHandler } from 'react-hook-form';
+import logo from '@/public/static/img/logo.svg';
+import { getCookie } from 'cookies-next';
+import EyeOpened from '@/public/static/img/icons/ic-eye-open.svg';
+import EyeClosed from '@/public/static/img/icons/ic-eye-closed.svg';
 import { useState } from 'react';
-import { SubmitHandler, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 interface IFormInput {
   password: string;
@@ -28,6 +29,7 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
     if (data.password && params.organisationId) {
+      const token = getCookie('auth-token');
       const payload = {
         userId: params.organisationId,
         password: data.password,
@@ -36,6 +38,7 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(payload),
       });

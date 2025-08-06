@@ -33,7 +33,6 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import Loader from '../Loader';
 import NutritionalGuarantee from './NutritionalGuarantee';
-import { FeedSupplier } from '@/app/_typeModels/Organization';
 // import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 interface Props {
@@ -78,10 +77,13 @@ export interface FormInputs {
 const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
   const dispatch = useAppDispatch();
   const router = useRouter();
-  const loggedUser = getCookie('logged-user');
+  const loggedUser: any = getCookie('logged-user');
+  const token = getCookie('auth-token');
+  const [month, setMonth] = React.useState(new Date());
   const [loading, setLoading] = useState<boolean>(false);
-  const [feedSuppliers, setFeedSuppliers] = useState<FeedSupplier[]>();
+  const [feedSuppliers, setFeedSuppliers] = useState<any>();
   const isEditFeed = useAppSelector(selectIsEditFeed);
+  const [isCarbohydrate, setIsCarbohydrate] = useState<boolean>(false);
   const [editFeedSpecification, setEditFeedSpecification] = useState<any>();
   const [isApiCallInProgress, setIsApiCallInProgress] =
     useState<boolean>(false);
@@ -103,7 +105,7 @@ const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
     setIsApiCallInProgress(true);
 
     try {
-      const loggedUserData = JSON.parse(loggedUser || '');
+      const loggedUserData = JSON.parse(loggedUser);
       if (data) {
         const response = await fetch(
           isEditFeed ? '/api/feedSupply/edit-feed' : '/api/feedSupply/new-feed',
@@ -111,6 +113,7 @@ const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
             method: isEditFeed ? 'PUT' : 'POST',
             headers: {
               'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`,
             },
             body: isEditFeed
               ? JSON.stringify({
@@ -137,7 +140,7 @@ const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
           reset();
         }
       }
-    } catch {
+    } catch (error) {
       toast.error('Something went wrong. Please try again.');
     } finally {
       setIsApiCallInProgress(false);
@@ -146,6 +149,9 @@ const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
   const getFeedSuppliers = async () => {
     const response = await fetch(`/api/organisation/feedSuppliers`, {
       method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
     const res = response.json();
     return res;
@@ -153,6 +159,9 @@ const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
   const getFeed = async () => {
     const data = await fetch(`/api/feedSupply/${feedSupplyId}`, {
       method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
     if (data) {
     }
@@ -275,7 +284,7 @@ const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
                       trigger('feedSupplier');
                     }}
                   >
-                    {feedSuppliers?.map((supplier) => {
+                    {feedSuppliers?.map((supplier: any) => {
                       return (
                         <MenuItem value={String(supplier.id)} key={supplier.id}>
                           {supplier.name}

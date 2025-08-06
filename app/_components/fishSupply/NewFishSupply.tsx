@@ -18,17 +18,17 @@ import {
   Typography,
 } from '@mui/material';
 
-import * as validationPattern from '@/app/_lib/utils/validationPatterns/index';
-import * as validationMessage from '@/app/_lib/utils/validationsMessage/index';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { getCookie } from 'cookies-next';
 import dayjs, { Dayjs } from 'dayjs';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
+import * as validationPattern from '@/app/_lib/utils/validationPatterns/index';
+import * as validationMessage from '@/app/_lib/utils/validationsMessage/index';
 import toast from 'react-hot-toast';
+import { getCookie } from 'cookies-next';
 interface Props {
   isEdit?: boolean;
   fishSupplyId?: string;
@@ -46,16 +46,21 @@ interface FormInputs {
   fishFarmId: string;
   status: string;
   productionUnits: string;
+  species: string;
 }
 function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
   const router = useRouter();
-  const userData = getCookie('logged-user');
+  const userData: any = getCookie('logged-user');
+  const token = getCookie('auth-token');
   const [loading, setLoading] = useState<boolean>(false);
   const [isApiCallInProgress, setIsApiCallInProgress] = useState(false);
   const [fishSupply, setFishSupply] = useState<FishSupply>();
   const getFishSupply = async () => {
     const response = await fetch(`/api/fish/${fishSupplyId}`, {
       method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
     return response.json();
   };
@@ -67,7 +72,7 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
     watch,
     formState: { errors },
   } = useForm<FormInputs>({
-    defaultValues: { hatchingDate: null, organisation: '' },
+    defaultValues: { hatchingDate: null, organisation: '', species: '' },
     mode: 'onChange',
   });
   const onSubmit: SubmitHandler<FormInputs> = async (data) => {
@@ -75,7 +80,7 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
     if (isApiCallInProgress) return;
     setIsApiCallInProgress(true);
     try {
-      const loggedUserData = JSON.parse(userData || '');
+      const loggedUserData = JSON.parse(userData);
 
       const {
         hatchingDate,
@@ -83,6 +88,7 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
         spawningNumber,
         organisation,
         productionUnits,
+        species,
         ...restData
       } = data;
       const validHatchingDate = hatchingDate?.isValid()
@@ -100,17 +106,22 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
       const payload = {
         hatchingDate: validHatchingDate,
         spawningDate: validSpawningDate,
-        organisation: Number(organisation),
-        spawningNumber: Number(spawningNumber),
-        productionUnits: productionUnits,
+        organisation: Number(data.organisation),
+        spawningNumber: Number(data.spawningNumber),
+        productionUnits: data.productionUnits,
+        species: data.species,
         organisationId: loggedUserData.organisationId,
         ...restData,
       };
 
-      const response = await fetch(
-        `${isEdit ? `/api/fish/${fishSupplyId}` : '/api/fish'} `,
+     const response = await fetch(
+         `${isEdit ? `/api/fish/${fishSupplyId}` : '/api/fish'}`,
         {
           method: isEdit ? 'PUT' : 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
           body: JSON.stringify(payload),
         },
       );
@@ -124,7 +135,7 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
         toast.dismiss();
         toast.error('Somethig went wrong!');
       }
-    } catch {
+    } catch (error) {
       // console.error("Fish supply error:", error);
       toast.error('Something went wrong. Please try again.');
     } finally {
@@ -154,7 +165,7 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
   useEffect(() => {
     if (watch('hatchingDate')) {
       const age = getDayMonthDifference(
-        watch('hatchingDate')?.format('MM/DD/YYYY') ?? '',
+        watch('hatchingDate')?.format('MM/DD/YYYY'),
       );
       setValue('age', age);
     }
@@ -172,6 +183,7 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
       setValue('status', fishSupply?.status);
       setValue('fishFarmId', fishSupply?.fishFarmId);
       setValue('productionUnits', String(fishSupply?.productionUnits));
+      setValue('species', fishSupply?.species || '');
     }
   }, [fishSupply]);
 
@@ -242,7 +254,7 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
                 >
                   {organisations?.map((organisation, i) => {
                     return (
-                      <MenuItem value={Number(organisation.id)} key={i}>
+                      <MenuItem value={String(organisation.id)} key={i}>
                         {organisation.name}
                       </MenuItem>
                     );
@@ -262,6 +274,48 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
                   )}
               </FormControl>
             </Box>
+          </Grid>
+
+          <Grid item sm={6} xs={12}>
+            <FormControl className="form-input" fullWidth focused>
+              <InputLabel id="demo-simple-select-label">
+                Species *
+              </InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                label="Species *"
+                value={watch('species') || ''}
+                {...register('species', {
+                  required: true,
+                  onChange: (e) => {
+                    setValue('species', e.target.value);
+                  },
+                })}
+              >
+                <MenuItem value="Tilapia (Oreochromis Nilotic x Aureus)">
+                  Tilapia (Oreochromis Nilotic x Aureus)
+                </MenuItem>
+                <MenuItem value="African Catfish">
+                  African Catfish
+                </MenuItem>
+                <MenuItem value="Rainbow Trout">
+                  Rainbow Trout
+                </MenuItem>
+              </Select>
+              {errors &&
+                errors.species &&
+                errors.species.type === 'required' && (
+                  <Typography
+                    variant="body2"
+                    color="red"
+                    fontSize={13}
+                    mt={0.5}
+                  >
+                    This field is required.
+                  </Typography>
+                )}
+            </FormControl>
           </Grid>
 
           <Grid item sm={6} xs={12}>

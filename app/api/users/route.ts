@@ -1,7 +1,15 @@
 import prisma from '@/prisma/prisma';
 import { NextRequest, NextResponse } from 'next/server';
+import { verifyAndRefreshToken } from '@/app/_lib/auth/verifyAndRefreshToken';
 
 export const GET = async (request: NextRequest) => {
+  const user = await verifyAndRefreshToken(request);
+  if (user.status === 401) {
+    return NextResponse.json(
+      { status: false, message: 'Unauthorized: Token missing or invalid' },
+      { status: 401 },
+    );
+  }
   try {
     const searchParams = request.nextUrl.searchParams;
     const role = searchParams.get('role');
@@ -66,39 +74,20 @@ export const GET = async (request: NextRequest) => {
 };
 
 export const DELETE = async (request: NextRequest) => {
+  const user = await verifyAndRefreshToken(request);
+  if (user.status === 401) {
+    return NextResponse.json(
+      { status: false, message: 'Unauthorized: Token missing or invalid' },
+      { status: 401 },
+    );
+  }
   try {
+    const searchParams = request.nextUrl.searchParams;
+    const role = searchParams.get('role');
     const userId = await request.json();
 
-    if (!userId || isNaN(Number(userId))) {
-      return new NextResponse(JSON.stringify({ status: false, message: 'Invalid user ID' }), {
-        status: 400,
-      });
-    }
-
-    // First, fetch the user
-    const user = await prisma.user.findUnique({
-      where: {
-        id: Number(userId),
-      },
-    });
-
-    if (!user) {
-      return new NextResponse(JSON.stringify({ status: false, message: 'User not found' }), {
-        status: 404,
-      });
-    }
-
-    if (user.role === 'SUPERADMIN') {
-      return new NextResponse(JSON.stringify({ status: false, message: 'Cannot delete SUPERADMIN user' }), {
-        status: 403,
-      });
-    }
-
-    // Proceed to delete
     const deletedUser = await prisma.user.delete({
-      where: {
-        id: Number(userId),
-      },
+      where: { role: { not: 'SUPERADMIN' }, id: Number(userId) },
     });
 
     return new NextResponse(
@@ -107,18 +96,25 @@ export const DELETE = async (request: NextRequest) => {
         data: deletedUser,
         message: 'User Deleted Successfully',
       }),
-      { status: 200 }
+      {
+        status: 200,
+      },
     );
-  } catch (error: any) {
-    console.error('DELETE user error:', error);
-    return new NextResponse(
-      JSON.stringify({ status: false, message: 'Internal Server Error', error: error.message }),
-      { status: 500 }
-    );
+  } catch (error) {
+    return new NextResponse(JSON.stringify({ status: false, error }), {
+      status: 500,
+    });
   }
 };
 
 export const PATCH = async (request: NextRequest) => {
+  const user = await verifyAndRefreshToken(request);
+  if (user.status === 401) {
+    return NextResponse.json(
+      { status: false, message: 'Unauthorized: Token missing or invalid' },
+      { status: 401 },
+    );
+  }
   try {
     const { id, users } = await request.json();
 

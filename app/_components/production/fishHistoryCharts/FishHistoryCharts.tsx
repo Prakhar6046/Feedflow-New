@@ -38,7 +38,7 @@ function FishHistoryCharts({
   fishId,
 }: Iprops) {
   const router = useRouter();
-  const [xAxisData, setXAxisData] = useState<string[]>([]);
+  const [xAxisData, setXAxisData] = useState<(string | any)[]>([]);
   const [dateDiff, setDateDiff] = useState<number>();
   const [selectedCharts, setSelectedCharts] = useState<string[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -62,27 +62,24 @@ function FishHistoryCharts({
 
   useEffect(() => {
     if (groupedData) {
-      const createdAtArray: string[] = groupedData.units.flatMap(
+      const createdAtArray = groupedData.units.flatMap(
         (unit) =>
-          unit.fishManageHistory?.map((history) => history.createdAt) ?? [],
+          unit.fishManageHistory?.map((history) => history.createdAt) || [],
       );
 
       const diffInDays = dayjs(endDate).diff(dayjs(startDate), 'day');
       setDateDiff(diffInDays);
-
       if (startDate && endDate && createdAtArray) {
         const startD = new Date(startDate);
         startD.setHours(0, 0, 0, 0);
         const endD = new Date(endDate);
         endD.setHours(0, 0, 0, 0);
-
-        const filteredTimestamps = createdAtArray.filter((timestamp) => {
+        const filteredTimestamps = createdAtArray?.filter((timestamp: any) => {
           if (timestamp) {
             const date = new Date(timestamp);
             date.setHours(0, 0, 0, 0);
             return date >= startD && date <= endD;
           }
-          return false;
         });
 
         setXAxisData(filteredTimestamps);

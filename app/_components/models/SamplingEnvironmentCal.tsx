@@ -16,6 +16,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { Dayjs } from 'dayjs';
+import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
@@ -40,21 +41,30 @@ interface InputTypes {
   TSs: string;
 }
 const SamplingEnvironmentCal: React.FC<Props> = ({ setOpen, open }) => {
+  const router = useRouter();
+  const [anchorEl, setAnchorEl] = useState(null);
+
   const [isApiCallInProgress, setIsApiCallInProgress] =
     useState<boolean>(false);
 
   const {
     register,
+    setValue,
     formState: { errors },
-
+    watch,
+    trigger,
+    clearErrors,
     reset,
+    getValues,
     handleSubmit,
     control,
+    setFocus,
+    getFieldState,
   } = useForm<InputTypes>({
     mode: 'onChange',
   });
 
-  const onSubmit: SubmitHandler<InputTypes> = async () => {
+  const onSubmit: SubmitHandler<InputTypes> = async (data) => {
     // Prevent API call if one is already in progress
     if (isApiCallInProgress) return;
     setIsApiCallInProgress(true);
@@ -83,7 +93,7 @@ const SamplingEnvironmentCal: React.FC<Props> = ({ setOpen, open }) => {
       //     "Please enter biomass and fish count value less than selected production"
       //   );
       // }
-    } catch {
+    } catch (error) {
       toast.error('Something went wrong. Please try again.');
     } finally {
       setIsApiCallInProgress(false);
@@ -92,6 +102,13 @@ const SamplingEnvironmentCal: React.FC<Props> = ({ setOpen, open }) => {
 
   const handleClose = () => {
     setOpen(false);
+  };
+  const openAnchor = Boolean(anchorEl);
+  const handleClick = (event: any) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleCloseAnchor = (field: string) => {
+    setAnchorEl(null);
   };
 
   return (

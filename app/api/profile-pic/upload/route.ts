@@ -2,19 +2,23 @@
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/prisma/prisma';
 import cloudinary from '@/lib/cloudinary';
+import { verifyAndRefreshToken } from '@/app/_lib/auth/verifyAndRefreshToken';
 
 export const POST = async (request: NextRequest) => {
+  const user = await verifyAndRefreshToken(request);
+  if (user.status === 401) {
+    return NextResponse.json(
+      { status: false, message: 'Unauthorized: Token missing or invalid' },
+      { status: 401 },
+    );
+  }
+
   try {
     const formData = await request.formData();
-    const image = formData.get('image') as File | null;
-    const userId = formData.get('userId') as string | null;
-    const oldImagePublicId = formData.get('oldImageName') as string | null;
-    if (!image || !userId) {
-      return NextResponse.json(
-        { status: false, message: 'Missing image or userId' },
-        { status: 400 },
-      );
-    }
+    const image: any = formData.get('image');
+    const userId: any = formData.get('userId');
+    const oldImagePublicId: any = formData.get('oldImageName'); // Using public_id from Cloudinary
+
     // Convert image to base64
     const buffer = Buffer.from(await image.arrayBuffer());
     const base64Image = `data:${image.type};base64,${buffer.toString(
@@ -25,12 +29,8 @@ export const POST = async (request: NextRequest) => {
     if (oldImagePublicId && oldImagePublicId !== '') {
       try {
         await cloudinary.uploader.destroy(oldImagePublicId);
-      } catch (err: unknown) {
-        if (err instanceof Error) {
-          console.error(`Error deleting old image: ${err.message}`);
-        } else {
-          console.error('Unknown error while deleting old image:', err);
-        }
+      } catch (err: any) {
+        console.error(`Error deleting old image: ${err.message}`);
       }
     }
 

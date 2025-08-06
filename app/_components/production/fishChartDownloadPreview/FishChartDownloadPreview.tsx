@@ -11,6 +11,7 @@ import { Box, Stack, Button, Grid, Typography } from '@mui/material';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { createRoot } from 'react-dom/client';
+import { useRouter } from 'next/navigation';
 import Loader from '../../Loader';
 import dayjs from 'dayjs';
 type ChartDataType = {
@@ -27,6 +28,7 @@ function FishChartDownloadPreview({
 }: {
   productions: Production[];
 }) {
+  const router = useRouter();
   const [isReportDownload, setIsReportDownload] = useState<boolean>(false);
   const [chartData, setChartData] = useState<ChartDataType>();
   const chartOptions = [
@@ -345,8 +347,8 @@ function FishChartDownloadPreview({
                   {chartData?.groupedData.units.flatMap((unit) => {
                     return (
                       unit.fishManageHistory
-                        ?.filter((value) => {
-                          const dateString = getFullYear(value?.createdAt);
+                        ?.filter((value: any) => {
+                          const dateString: any = getFullYear(value?.createdAt);
                           const date = dayjs(dateString);
                           return (
                             date.unix() >= dayjs(chartData.startDate).unix() &&
@@ -843,8 +845,8 @@ function FishChartDownloadPreview({
                             {chartData?.groupedData.units.flatMap((unit) => {
                               return (
                                 unit.fishManageHistory
-                                  ?.filter((value) => {
-                                    const dateString = getFullYear(
+                                  ?.filter((value: any) => {
+                                    const dateString: any = getFullYear(
                                       value?.createdAt,
                                     );
 
@@ -856,9 +858,9 @@ function FishChartDownloadPreview({
                                         dayjs(chartData.endDate).unix()
                                     );
                                   })
-                                  .map((history: any, idx) => {
+                                  .map((history: any) => {
                                     return (
-                                      <tr key={idx}>
+                                      <tr key={history.date}>
                                         <td
                                           style={{
                                             border: '1px solid #ccc',

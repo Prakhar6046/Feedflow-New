@@ -19,7 +19,7 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import { setCookie } from 'cookies-next';
+import { getCookie, setCookie } from 'cookies-next';
 import { usePathname, useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import Loader from '../Loader';
@@ -30,7 +30,7 @@ import {
 } from '@/app/_lib/utils/tableHeadData';
 import { getLocalItem, removeLocalItem } from '@/app/_lib/utils';
 import Image from 'next/image';
-import { EnhancedTableHeadProps } from '../UserTable';
+import { SingleUser } from '@/app/_typeModels/User';
 
 interface Props {
   farms: Farm[];
@@ -41,19 +41,18 @@ export default function FarmTable({ farms, permisions }: Props) {
   const pathName = usePathname();
   const dispatch = useAppDispatch();
   const role = useAppSelector(selectRole);
-  const [order, setOrder] = React.useState<'asc' | 'desc'>('asc');
+  const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('organisation');
   const [farmsData, setFarmsData] = useState<Farm[]>();
   const loading = useAppSelector(selectFarmLoading);
-  const [selectedFarm, setSelectedFarm] = useState<Farm | null>(null);
+  const loggedUser: any = getCookie('logged-user');
+  const user: SingleUser = JSON.parse(loggedUser);
+  const [selectedFarm, setSelectedFarm] = useState<any>(null);
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null,
   );
-  const [sortDataFromLocal, setSortDataFromLocal] = React.useState<{
-    direction: 'asc' | 'desc';
-    column: string;
-  }>({ direction: 'asc', column: '' });
-
+  const [sortDataFromLocal, setSortDataFromLocal] = React.useState<any>('');
+console.log('farmsfarmsfarms',farms)
   useEffect(() => {
     if (pathName) {
       setSortDataFromLocal(getLocalItem(pathName));
@@ -61,7 +60,7 @@ export default function FarmTable({ farms, permisions }: Props) {
   }, [pathName]);
   const handleClick = (
     event: React.MouseEvent<HTMLButtonElement>,
-    farm: Farm,
+    farm: any,
   ) => {
     setAnchorEl(event.currentTarget);
     setSelectedFarm(farm);
@@ -96,7 +95,7 @@ export default function FarmTable({ farms, permisions }: Props) {
     }
   }, [sortDataFromLocal]);
 
-  function EnhancedTableHead(data: EnhancedTableHeadProps) {
+  function EnhancedTableHead(data: any) {
     const { order, orderBy, onRequestSort } = data;
     const createSortHandler =
       (property: string) => (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -167,16 +166,16 @@ export default function FarmTable({ farms, permisions }: Props) {
       }),
     );
     if (farms) {
-      const sortedData = [...farms].sort((farm1, farm2) => {
+      const sortedData = [...farms].sort((farm1: any, farm2: any) => {
         const orderType = order === 'asc' ? 1 : -1;
         if (property !== 'productUnits') {
           if (farm1.name < farm2.name) return -1 * orderType;
           if (farm1.name > farm2.name) return 1 * orderType;
           return 0;
         } else {
-          if (farm1.productionUnits.length < farm2.productionUnits.length)
+          if (farm1.productUnits.length < farm2.productUnits.length)
             return -1 * orderType;
-          if (farm1.productionUnits.length > farm2.productionUnits.length)
+          if (farm1.productUnits.length > farm2.productUnits.length)
             return 1 * orderType;
           return 0;
         }
@@ -187,37 +186,33 @@ export default function FarmTable({ farms, permisions }: Props) {
     }
   };
   useEffect(() => {
-    if (sortDataFromLocal) {
-      const data = sortDataFromLocal;
-      setOrder(data.direction);
-      setOrderBy(data.column);
-      // handleRequestSort(null, data.column);
-      if (farms) {
-        const sortedData = [...farms].sort((farm1, farm2) => {
+    if (farms) {
+      if (sortDataFromLocal) {
+        const data = sortDataFromLocal;
+        setOrder(data.direction);
+        setOrderBy(data.column);
+        
+        const sortedData = [...farms].sort((farm1: any, farm2: any) => {
           const orderType = data.direction === 'asc' ? -1 : 1;
           if (data.column !== 'productUnits') {
             if (farm1.name < farm2.name) return -1 * orderType;
             if (farm1.name > farm2.name) return 1 * orderType;
             return 0;
           } else {
-            if (farm1.productionUnits.length < farm2.productionUnits.length)
+            if (farm1.productUnits?.length < farm2.productUnits?.length)
               return -1 * orderType;
-            if (farm1.productionUnits.length > farm2.productionUnits.length)
+            if (farm1.productUnits?.length > farm2.productUnits?.length)
               return 1 * orderType;
             return 0;
           }
-          // return 0;
         });
 
         setFarmsData(sortedData);
+      } else {
+        setFarmsData(farms);
       }
     }
-  }, [sortDataFromLocal]);
-  useEffect(() => {
-    if (farms && !sortDataFromLocal) {
-      setFarmsData(farms);
-    }
-  }, [farms]);
+  }, [farms, sortDataFromLocal]);
   if (loading) {
     return <Loader />;
   }
@@ -288,7 +283,8 @@ export default function FarmTable({ farms, permisions }: Props) {
                     >
                       <Box display={'flex'} alignItems={'center'} gap={1.5}>
                         {farm.organisation?.imageUrl &&
-                        farm.organisation?.imageUrl !== 'null' ? (
+                        farm.organisation?.imageUrl !== 'null' &&
+                        farm.organisation?.imageUrl !== '' ? (
                           <Image
                             src={String(farm.organisation.imageUrl)}
                             width={40}
@@ -298,6 +294,18 @@ export default function FarmTable({ farms, permisions }: Props) {
                               objectFit: 'contain',
                             }}
                             alt="img not found"
+                            onError={(e) => {
+                              // Fallback to default icon if image fails to load
+                              const target = e.target as HTMLImageElement;
+                              target.style.display = 'none';
+                              const parent = target.parentElement;
+                              if (parent) {
+                                const fallback = parent.querySelector('.fallback-icon') as HTMLElement;
+                                if (fallback) {
+                                  fallback.style.display = 'flex';
+                                }
+                              }
+                            }}
                           />
                         ) : (
                           <Box
@@ -310,6 +318,7 @@ export default function FarmTable({ farms, permisions }: Props) {
                               height: 40,
                               borderRadius: '8px',
                             }}
+                            className="fallback-icon"
                           >
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
@@ -327,8 +336,37 @@ export default function FarmTable({ farms, permisions }: Props) {
                             </svg>
                           </Box>
                         )}
+                        
+                        {/* Hidden fallback icon for when image fails to load */}
+                        <Box
+                          display={'none'}
+                          justifyContent={'center'}
+                          alignItems={'center'}
+                          bgcolor={'rgba(145, 158, 171, 0.24)'}
+                          sx={{
+                            width: 40,
+                            height: 40,
+                            borderRadius: '8px',
+                          }}
+                          className="fallback-icon"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="1.7em"
+                            height="1.7em"
+                            viewBox="0 0 24 24"
+                          >
+                            <g fill="none">
+                              <path d="m12.593 23.258l-.011.002l-.071.035l-.02.004l-.014-.004l-.071-.035q-.016-.005-.024.005l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.017-.018m.265-.113l-.013.002l-.185.093l-.01.01l-.003.011l.018.43l.005.012l.008.007l.201.093q.019.005.029-.008l.004-.014l-.034-.614q-.005-.018-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.614q.001.018.017.024l.015-.002l.201-.093l.01-.008l.004-.011l.017-.43l-.003-.012l-.01-.01z" />
+                              <path
+                                fill="#637381"
+                                d="M16 14a5 5 0 0 1 4.995 4.783L21 19v1a2 2 0 0 1-1.85 1.995L19 22H5a2 2 0 0 1-1.995-1.85L3 20v-1a5 5 0 0 1 4.783-4.995L8 14zM12 2a5 5 0 1 1 0 10a5 5 0 0 1 0-10"
+                              />
+                            </g>
+                          </svg>
+                        </Box>
 
-                        {farm?.organisation?.name}
+                        {farm?.organisation?.name || ''}
                       </Box>
                     </TableCell>
                     <TableCell

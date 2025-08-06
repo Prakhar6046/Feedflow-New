@@ -2,15 +2,15 @@
 import FarmInformation from '@/app/_components/farm/FarmInformation';
 import ProductionUnits from '@/app/_components/farm/ProductionUnits';
 import Loader from '@/app/_components/Loader';
-import { Farm, GrowthModel } from '@/app/_typeModels/Farm';
-import { FeedProduct } from '@/app/_typeModels/Feed';
-import { FeedSupplier } from '@/app/_typeModels/Organization';
+import { Farm } from '@/app/_typeModels/Farm';
 import { SingleUser } from '@/app/_typeModels/User';
 import { Box, Divider, Grid, Step, StepLabel, Stepper } from '@mui/material';
 import { getCookie, setCookie } from 'cookies-next';
 import { useEffect, useState } from 'react';
 import FeedProfiles from './FeedProfiles';
 import ProductionParaMeter from './ProductionParameter';
+import { FeedProduct } from '@/app/_typeModels/Feed';
+import { FeedSupplier } from '@/app/_typeModels/Organization';
 
 const steps = [
   {
@@ -27,7 +27,7 @@ const steps = [
 interface Props {
   farmId: string;
   farmMembers: SingleUser[];
-  growthModels: GrowthModel[];
+  growthModels: any;
   farms: Farm[];
   isEdit?: boolean;
   feedstores: FeedProduct[];
@@ -53,6 +53,9 @@ const EditFarm = ({
   const getFarm = async () => {
     const response = await fetch(`/api/farm/${farmId}`, {
       method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
     const res = await response.json();
     return res;
@@ -167,7 +170,7 @@ const EditFarm = ({
             growthModels={growthModels}
             feedStores={feedstores}
             feedSuppliers={feedSuppliers}
-            token={token ?? ''}
+            token={token}
           />
         )}
       </Grid>

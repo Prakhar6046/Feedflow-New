@@ -166,6 +166,18 @@ export interface FarmAddress {
   zipCode?: string;
   country?: string;
 }
+export interface Members {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  role: string;
+  permission: string;
+  userId: string;
+  createdAt: string;
+  updatedAt: string;
+  organisationId: number;
+}
 
 export interface Farm {
   id?: string;
@@ -193,7 +205,7 @@ export interface Farm {
   // Relations
   organisationId?: number;
   organisation: Organisation;
-
+  contact?: Members[];
   production: Production[];
   productionUnits: {
     id: any;

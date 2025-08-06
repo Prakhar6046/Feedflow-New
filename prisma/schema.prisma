@@ -340,6 +340,7 @@ model FishSupply {
   farm              Farm                @relation(fields: [fishFarmId], references: [id])
   status            String
   productionUnits   String              @default("")
+  species           String?   
   createdBy         Int? // Optional field, nullable foreign key
   updatedBy         String?
   createdAt         DateTime            @default(now())

@@ -20,22 +20,25 @@ export default async function Page({
   params: { farmId: string };
   searchParams?: { query?: string };
 }) {
-  const loggedUser = getCookie('logged-user', { cookies });
-  const user = JSON.parse(loggedUser ?? '');
-  const farmMembers = await getFarmMangers(user.organisationId);
-  const growthModels = await getGrowthModels();
+  const loggedUser: any = getCookie('logged-user', { cookies });
+  const refreshToken: any = getCookie('refresh-token', { cookies });
+  const user = JSON.parse(loggedUser);
+  const farmMembers = await getFarmMangers(user.organisationId, refreshToken);
+  const growthModels = await getGrowthModels(refreshToken);
   const query = searchParams?.query || '';
   const farms = await getFarms({
     role: '',
     query,
     noFilter: true,
+    refreshToken,
   });
   const stores = await getFeedStores({
     role: user.role,
     organisationId: user.organisationId,
     query,
+    refreshToken,
   });
-  const feedSuppliers = await getFeedSuppliers();
+  const feedSuppliers = await getFeedSuppliers(refreshToken);
   return (
     <>
       <BasicBreadcrumbs

@@ -34,15 +34,16 @@ import { getLocalItem } from '@/app/_lib/utils';
 import { getCookie, setCookie } from 'cookies-next';
 import { breadcrumsAction } from '@/lib/features/breadcrum/breadcrumSlice';
 import FishHistoryCharts from '../production/fishHistoryCharts/FishHistoryCharts';
-import { TableHeadType } from '@/app/_typeModels/Farm';
-import { EnhancedTableHeadProps } from '../UserTable';
 
 // const TextField = React.forwardRef((props, ref) => (
 //   <MuiTextField {...props} ref={ref} size="small" />
 // ));
-
+const style = {
+  bgcolor: 'background.paper',
+  boxShadow: 24,
+};
 interface Props {
-  tableData: TableHeadType[];
+  tableData: any;
   productions: Production[];
   fishId: string;
 }
@@ -53,21 +54,19 @@ const FishManageHistoryTable: React.FC<Props> = ({
 }) => {
   const dispatch = useAppDispatch();
   const pathName = usePathname();
-  const [order, setOrder] = useState<'asc' | 'desc'>('asc');
+  const [order, setOrder] = useState('asc');
   const [orderBy, setOrderBy] = useState('Farm');
   const [tab, setTab] = useState<string>('list');
   const [fishHistoryData, setFishHistoryData] =
     useState<FishManageHistoryGroup>();
-  const [sortDataFromLocal, setSortDataFromLocal] = React.useState<{
-    direction: 'asc' | 'desc';
-    column: string;
-  }>({ direction: 'asc', column: '' });
-
+  const [sortDataFromLocal, setSortDataFromLocal] = React.useState<any>('');
+  const [isWaterSampleHistory, setIsWaterSampleHistory] =
+    useState<boolean>(false);
   const [startDate, setStartDate] = useState<string>(
     dayjs().subtract(2, 'weeks').format(),
   );
   const [endDate, setEndDate] = useState<string>(dayjs().format());
-  function EnhancedTableHead(data: EnhancedTableHeadProps) {
+  function EnhancedTableHead(data: any) {
     const { order, orderBy, onRequestSort } = data;
     const createSortHandler =
       (property: string) => (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -77,7 +76,7 @@ const FishManageHistoryTable: React.FC<Props> = ({
     return (
       <TableHead className="prod-action">
         <TableRow>
-          {tableData.map((headCell, idx: number, headCells) => (
+          {tableData.map((headCell: any, idx: number, headCells: any) => (
             <TableCell
               key={headCell.id}
               sortDirection={
@@ -123,45 +122,44 @@ const FishManageHistoryTable: React.FC<Props> = ({
     );
   }
   const groupedData: FishManageHistoryGroup = useMemo(() => {
-    const filteredFarm = productions?.reduce<FishManageHistoryGroup[]>(
-      (result, item) => {
-        // Find or create a farm group
-        let farmGroup = result.find((group) => group.farm === item.farm.name);
-        if (!farmGroup) {
-          farmGroup = { farm: item.productionUnit.name, units: [] };
-          result.push(farmGroup);
-        }
+    const filteredFarm = productions?.reduce((result: any, item) => {
+      // Find or create a farm group
+      let farmGroup: any = result.find(
+        (group: any) => group.farm === item.farm.name,
+      );
+      if (!farmGroup) {
+        farmGroup = { farm: item.productionUnit.name, units: [] };
+        result.push(farmGroup);
+      }
 
-        // Add the current production unit and all related data to the group
-        farmGroup.units.push({
-          id: item.id,
-          productionUnit: item.productionUnit,
-          fishSupply: item.fishSupply,
-          organisation: item.organisation,
-          farm: item.farm,
-          biomass: item.biomass,
-          fishCount: item.fishCount,
-          batchNumberId: Number(item.batchNumberId),
-          age: item.age,
-          meanLength: item.meanLength,
-          meanWeight: item.meanWeight,
-          stockingDensityKG: item.stockingDensityKG,
-          stockingDensityNM: item.stockingDensityNM,
-          stockingLevel: item.stockingLevel,
-          createdBy: item.createdBy,
-          updatedBy: item.updatedBy,
-          createdAt: item.createdAt,
-          updatedAt: item.updatedAt,
-          isManager: item.isManager ?? false,
-          field: item.field,
-          fishManageHistory: item.FishManageHistory,
-          currentDate: item?.currentDate,
-        });
+      // Add the current production unit and all related data to the group
+      farmGroup.units.push({
+        id: item.id,
+        productionUnit: item.productionUnit,
+        fishSupply: item.fishSupply,
+        organisation: item.organisation,
+        farm: item.farm,
+        biomass: item.biomass,
+        fishCount: item.fishCount,
+        batchNumberId: item.batchNumberId,
+        age: item.age,
+        meanLength: item.meanLength,
+        meanWeight: item.meanWeight,
+        stockingDensityKG: item.stockingDensityKG,
+        stockingDensityNM: item.stockingDensityNM,
+        stockingLevel: item.stockingLevel,
+        createdBy: item.createdBy,
+        updatedBy: item.updatedBy,
+        createdAt: item.createdAt,
+        updatedAt: item.updatedAt,
+        isManager: item.isManager,
+        field: item.field,
+        fishManageHistory: item.FishManageHistory,
+        currentDate: item?.currentDate,
+      });
 
-        return result;
-      },
-      [],
-    );
+      return result;
+    }, []);
     return filteredFarm[0] ?? null;
   }, [productions]);
 

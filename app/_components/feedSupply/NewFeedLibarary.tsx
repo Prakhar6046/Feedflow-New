@@ -85,13 +85,12 @@ interface Props {
   feedSuppliers: FeedSupplier[];
 }
 
-interface FeedFormFields {
-  [key: string]: string | number | null | undefined;
-}
-
+type FeedFormFields = {
+  [key: string]: string | number;
+};
 const NewFeedLibarary: NextPage<Props> = ({ feedSuppliers }) => {
   const router = useRouter();
-  const loggedUser = getCookie('logged-user') ?? '';
+  const loggedUser: any = getCookie('logged-user');
   const [isApiCallInProgress, setIsApiCallInProgress] =
     useState<boolean>(false);
   const {
@@ -102,8 +101,8 @@ const NewFeedLibarary: NextPage<Props> = ({ feedSuppliers }) => {
     formState: { errors },
   } = useForm<FeedFormFields>({ mode: 'onChange' });
 
-  const createPayload = (formData: FeedFormFields) => {
-    const payload: FeedFormFields = {};
+  const createPayload = (formData: Record<string, any>) => {
+    const payload: Record<string, any> = {};
 
     fields.forEach((field) => {
       const value = formData[field.name];
@@ -126,13 +125,15 @@ const NewFeedLibarary: NextPage<Props> = ({ feedSuppliers }) => {
     setIsApiCallInProgress(true);
 
     try {
-      const loggedUserData = JSON.parse(loggedUser ?? '');
+      const loggedUserData = JSON.parse(loggedUser);
+      const token = getCookie('auth-token');
 
       if (payload) {
         const response = await fetch('/api/feed-store', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({
             ...payload,
@@ -146,7 +147,7 @@ const NewFeedLibarary: NextPage<Props> = ({ feedSuppliers }) => {
           reset();
         }
       }
-    } catch {
+    } catch (error) {
       toast.error('Something went wrong. Please try again.');
     } finally {
       setIsApiCallInProgress(false);
@@ -156,7 +157,7 @@ const NewFeedLibarary: NextPage<Props> = ({ feedSuppliers }) => {
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Grid container spacing={2}>
-        {fields?.map((field) => (
+        {fields?.map((field, i) => (
           <Grid item xs={12} sm={6} key={field.name}>
             {field?.type === 'select' ? (
               <FormControl fullWidth className="form-input" focused>
@@ -175,14 +176,12 @@ const NewFeedLibarary: NextPage<Props> = ({ feedSuppliers }) => {
                       label={field.name}
                       renderValue={(selected: any) =>
                         feedSuppliers
-                          ?.filter((s: FeedSupplier) =>
-                            selected.includes(String(s.id)),
-                          )
-                          ?.map((s: FeedSupplier) => s.name)
+                          ?.filter((s: any) => selected.includes(s.id))
+                          ?.map((s: any) => s.name)
                           ?.join(', ')
                       }
                     >
-                      {feedSuppliers?.map((supplier: FeedSupplier) => (
+                      {feedSuppliers?.map((supplier: any) => (
                         <MenuItem key={supplier.id} value={supplier.id}>
                           {supplier.name}
                         </MenuItem>

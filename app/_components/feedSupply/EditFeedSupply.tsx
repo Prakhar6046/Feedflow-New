@@ -1,10 +1,21 @@
 'use client';
 import NewFeed from '@/app/_components/feedSupply/NewFeed';
+import { selectIsEditFeed } from '@/lib/features/feed/feedSlice';
+import { useAppSelector } from '@/lib/hooks';
 import { Grid } from '@mui/material';
+import { useEffect, useState } from 'react';
 type Iprops = {
   feedSupplyId: string;
 };
 const EditFeedSupply = ({ feedSupplyId }: Iprops) => {
+  const [activeStep, setActiveStep] = useState<number>(0);
+  const isEditFeed = useAppSelector(selectIsEditFeed);
+
+  useEffect(() => {
+    if (isEditFeed) {
+      setActiveStep(1);
+    }
+  }, [isEditFeed]);
   return (
     <Grid
       container

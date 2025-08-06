@@ -1,11 +1,18 @@
 import prisma from '@/prisma/prisma';
 import { NextRequest, NextResponse } from 'next/server';
-interface ContextParams {
-  params: {
-    fishSupplyId: string;
-  };
-}
-export const GET = async (request: NextRequest, context: ContextParams) => {
+import { verifyAndRefreshToken } from '@/app/_lib/auth/verifyAndRefreshToken';
+
+export const GET = async (request: NextRequest, context: { params: any }) => {
+  const user = await verifyAndRefreshToken(request);
+  if (user.status === 401) {
+    return new NextResponse(
+      JSON.stringify({
+        status: false,
+        message: 'Unauthorized: Token missing or invalid',
+      }),
+      { status: 401 },
+    );
+  }
   const fishSupplyId = context.params.fishSupplyId;
 
   if (!fishSupplyId) {
@@ -28,7 +35,17 @@ export const GET = async (request: NextRequest, context: ContextParams) => {
   }
 };
 
-export const PUT = async (request: NextRequest, context: ContextParams) => {
+export const PUT = async (request: NextRequest, context: { params: any }) => {
+  const user = await verifyAndRefreshToken(request);
+  if (user.status === 401) {
+    return new NextResponse(
+      JSON.stringify({
+        status: false,
+        message: 'Unauthorized: Token missing or invalid',
+      }),
+      { status: 401 },
+    );
+  }
   try {
     const fishSupplyId = context.params.fishSupplyId;
     const body = await request.json();

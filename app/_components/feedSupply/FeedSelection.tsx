@@ -104,7 +104,7 @@ const FeedSelection = ({ data, feedSuppliers }: Iprops) => {
       const selectedIds = selectedSupplier.map((s) => s.id);
       const filteredStores = data?.filter((store) =>
         store?.ProductSupplier?.some((supplierId) =>
-          selectedIds.includes(supplierId),
+          selectedIds.includes(Number(supplierId)),
         ),
       );
       setFeedStores(filteredStores);
@@ -193,7 +193,7 @@ const FeedSelection = ({ data, feedSuppliers }: Iprops) => {
           {feedStores?.length ? (
             feedStores?.map((supply) => {
               const supplierName = feedSuppliers?.find((supplier) =>
-                supply?.ProductSupplier?.includes(supplier?.id),
+                supply?.ProductSupplier?.includes(String(supplier?.id)),
               )?.name;
               return (
                 <Grid item xs="auto" key={Number(supply?.id)}>

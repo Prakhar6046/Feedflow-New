@@ -16,8 +16,6 @@ import {
 import annotationPlugin from 'chartjs-plugin-annotation';
 import { useEffect, useRef } from 'react';
 import 'chartjs-adapter-date-fns';
-import { ChartDataset } from 'chart.js';
-import { Plugin } from 'chart.js';
 // Register Chart.js components and plugins
 ChartJS.register(
   LineElement,
@@ -34,12 +32,12 @@ interface Iprops {
   xAxisData: string[];
   ydata: (string | undefined)[];
   title: string;
-  maxVal: string | undefined;
-  minVal: string | undefined;
+  maxVal: any | undefined;
+  minVal: any | undefined;
   startDate: string;
   endDate: string;
   dateDiff: number;
-  predictedValues: number[] | string[];
+  predictedValues: any;
 }
 const WaterTempChart = ({
   xAxisData,
@@ -52,8 +50,8 @@ const WaterTempChart = ({
   dateDiff,
   predictedValues,
 }: Iprops) => {
-  const chartRef = useRef<Chart<'line'> | null>(null);
-  const getUnit = (diff: number) => {
+  const chartRef = useRef<Chart | any>(null);
+  const getUnit = (diff: number): any => {
     if (diff <= 1) return 'hour'; // Use hourly granularity for 1 day or less
     if (diff <= 7) return 'day'; // Use daily granularity for up to a week
     if (diff <= 30) return 'week'; // Use weekly granularity for up to a month
@@ -66,7 +64,7 @@ const WaterTempChart = ({
       {
         // yAxisID: "first",
         label: `${title} average`,
-        data: ydata,
+        data: ydata || [1, 2, 34, 55],
         backgroundColor: 'rgba(30, 144, 255, 0.2)', // Light blue fill
         borderColor: '#1E90FF',
         borderWidth: 2,
@@ -76,14 +74,14 @@ const WaterTempChart = ({
       {
         // yAxisID: "second",
         label: `Predicted Values`,
-        data: predictedValues,
+        data: predictedValues || ['20', '15', '34', '55'],
         backgroundColor: 'rgba(255, 165, 0, 0.2)', // Light orange fill
         borderColor: '#FFA500',
         borderWidth: 2,
         pointBackgroundColor: '#FFA500', // Fill circle with border color
         pointRadius: 5, // Increase radius
       },
-    ] as ChartDataset<'line'>[],
+    ],
   };
 
   const options: ChartOptions<'line'> = {
@@ -156,9 +154,9 @@ const WaterTempChart = ({
     },
   };
 
-  const backgroundPlugin: Plugin<'line'> = {
+  const backgroundPlugin = {
     id: 'backgroundColor',
-    beforeDraw: (chart) => {
+    beforeDraw: (chart: any) => {
       const {
         ctx,
         chartArea: { left, right, top },
@@ -188,7 +186,7 @@ const WaterTempChart = ({
         left,
         y.getPixelForValue(Number(minVal)),
         right - left,
-        y.getPixelForValue(Number(maxVal)) - y.getPixelForValue(Number(minVal)),
+        y.getPixelForValue(Number(maxVal)) - y.getPixelForValue(minVal),
       );
       ctx.restore();
     },
@@ -228,34 +226,39 @@ const WaterTempChart = ({
     }
   };
 
-  const crosshairLable = (chart: Chart, e: MouseEvent) => {
+  const crosshairLable = (chart: any, mousemove: MouseEvent) => {
     const {
       ctx,
-      chartArea: { left, right, top, bottom },
+      chartArea: { left, right, top, bottom, width, height },
+      scales: { x, y },
     } = chart;
-    const { offsetX, offsetY } = e;
-    chart.update('none');
-    ctx.save();
-
-    if (
-      offsetX >= left &&
-      offsetX <= right &&
-      offsetY >= top &&
-      offsetY <= bottom
-    ) {
-      ctx.setLineDash([3, 3]);
-      ctx.strokeStyle = '#666';
-      ctx.beginPath();
-      ctx.moveTo(left, offsetY);
-      ctx.lineTo(right, offsetY);
-      ctx.stroke();
-
-      ctx.beginPath();
-      ctx.moveTo(offsetX, top);
-      ctx.lineTo(offsetX, bottom);
-      ctx.stroke();
+    const coorX = mousemove.offsetX;
+    const coorY = mousemove.offsetY;
+    const textWidth =
+      ctx.measureText(new Date(x.getValueForPixel(coorX)).toLocaleString())
+        .width + 10;
+    ctx.font = '13px sans-serif bold';
+    ctx.textBaseline = 'middle';
+    ctx.textAlign = 'center';
+    ctx.beginPath();
+    ctx.fillStyle = 'rgba(51,51,51,255)';
+    drawRoundedRect(ctx, right, coorY - 14, 40, 25, 4);
+    ctx.closePath();
+    ctx.fillStyle = 'white';
+    ctx.fillText(y.getValueForPixel(coorY).toFixed(2), right + 20, coorY);
+    ctx.beginPath();
+    ctx.fillStyle = 'rgba(51,51,51,255)';
+    ctx.fillRect(coorX - textWidth / 2, bottom, textWidth, 20);
+    ctx.closePath();
+    ctx.fillStyle = 'white';
+    const nearestValue = x.getValueForPixel(coorX);
+    if (nearestValue !== undefined) {
+      ctx.fillText(
+        new Date(x.getValueForPixel(coorX)).toLocaleString(),
+        coorX,
+        bottom + 10,
+      );
     }
-
     ctx.restore();
   };
   const drawRoundedRect = (
@@ -264,29 +267,38 @@ const WaterTempChart = ({
     y: number,
     width: number,
     height: number,
-    radius: number | { tl: number; tr: number; br: number; bl: number },
+    radius: any,
   ) => {
-    const r =
-      typeof radius === 'number'
-        ? { tl: radius, tr: radius, br: radius, bl: radius }
-        : { ...{ tl: 0, tr: 0, br: 0, bl: 0 }, ...radius };
-
+    if (typeof radius === 'number') {
+      radius = { tl: radius, tr: radius, br: radius, bl: radius };
+    } else {
+      const defaultRadius: any = { tl: 0, tr: 0, br: 0, bl: 0 };
+      for (const side in defaultRadius) {
+        radius[side] = radius[side] || defaultRadius[side];
+      }
+    }
     ctx.beginPath();
-    ctx.moveTo(x + r.tl, y);
-    ctx.lineTo(x + width - r.tr, y);
-    ctx.arcTo(x + width, y, x + width, y + r.tr, r.tr);
-    ctx.lineTo(x + width, y + height - r.br);
-    ctx.arcTo(x + width, y + height, x + width - r.br, y + height, r.br);
-    ctx.lineTo(x + r.bl, y + height);
-    ctx.arcTo(x, y + height, x, y + height - r.bl, r.bl);
-    ctx.lineTo(x, y + r.tl);
-    ctx.arcTo(x, y, x + r.tl, y, r.tl);
+    ctx.moveTo(x + radius.tl, y);
+    ctx.lineTo(x + width - radius.tr, y);
+    ctx.arcTo(x + width, y, x + width, y + radius.tr, radius.tr);
+    ctx.lineTo(x + width, y + height - radius.br);
+    ctx.arcTo(
+      x + width,
+      y + height,
+      x + width - radius.br,
+      y + height,
+      radius.br,
+    );
+    ctx.lineTo(x + radius.bl, y + height);
+    ctx.arcTo(x, y + height, x, y + height - radius.bl, radius.bl);
+    ctx.lineTo(x, y + radius.tl);
+    ctx.arcTo(x, y, x + radius.tl, y, radius.tl);
     ctx.closePath();
     ctx.fill();
   };
-  const dottedLine: Plugin<'line'> = {
+  const dottedLine = {
     id: 'dottedLine',
-    beforeDatasetDraw(chart) {
+    beforeDatasetDraw(chart: any) {
       const {
         ctx,
         data,
@@ -295,9 +307,12 @@ const WaterTempChart = ({
       } = chart;
 
       // Calculate the average of the dataset
-      const dataset = data.datasets[0].data as number[];
+      const dataset = data?.datasets[0]?.data;
       const avg =
-        dataset.reduce((sum, val) => sum + Number(val), 0) / dataset.length;
+        dataset?.reduce(
+          (sum: string, value: string) => Number(sum) + Number(value),
+          0,
+        ) / dataset?.length;
 
       ctx.save();
       ctx.beginPath();
@@ -364,16 +379,18 @@ const WaterTempChart = ({
     },
   };
 
-  const minValPlugin: Plugin<'line'> = {
+  const minValPlugin = {
     id: 'minValPlugin',
     beforeDatasetDraw(chart: Chart) {
       const {
         ctx,
+        data,
         chartArea: { left, right },
         scales: { y },
       } = chart;
 
       // Calculate the average of the dataset
+      const dataset = data?.datasets[0]?.data;
       const minValue = Number(minVal);
 
       ctx.save();
@@ -402,7 +419,7 @@ const WaterTempChart = ({
     },
   };
   //custom tooltip plugin block
-  const customTooltip: Plugin<'line'> = {
+  const customTooltip = {
     id: 'customTooltip',
     afterDraw(chart: Chart) {
       const {
@@ -414,11 +431,12 @@ const WaterTempChart = ({
       chart.canvas.addEventListener('mousemove', (e) => tooltipPosition(e));
 
       const tooltipPosition = (mousemove: MouseEvent) => {
+        let xTooltip, yTooltip;
         const rightSide = right - mousemove.offsetX;
 
-        const xTooltip =
+        xTooltip =
           rightSide <= 170 ? mousemove.offsetX - 170 : mousemove.offsetX + 20;
-        const yTooltip =
+        yTooltip =
           mousemove.offsetY <= 90
             ? mousemove.offsetY + 20
             : mousemove.offsetY - 60;
@@ -449,13 +467,11 @@ const WaterTempChart = ({
           ctx.textAlign = 'center';
           ctx.textBaseline = 'middle';
 
-          const xValue: number | undefined = x.getValueForPixel(
-            mousemove.offsetX,
-          ); // X-axis value
+          const xValue: number | any = x.getValueForPixel(mousemove.offsetX); // X-axis value
           const yValue = y.getValueForPixel(mousemove.offsetY)?.toFixed(2); // Y-axis value
           const lineHeight = 20;
           ctx.fillText(
-            `Date: ${new Date(xValue ?? new Date()).toLocaleDateString()}`,
+            `Date: ${new Date(xValue).toLocaleDateString()}`,
             xTooltip + 75, // Center text horizontally
             yTooltip + 20, // Adjust vertical position
           );

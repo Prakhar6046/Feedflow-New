@@ -1,6 +1,7 @@
 import prisma from '@/prisma/prisma';
 import bcrypt from 'bcryptjs';
 import { NextRequest, NextResponse } from 'next/server';
+const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 export async function POST(req: NextRequest) {
   try {
     const { userId, password } = await req.json();
@@ -9,7 +10,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'User id not found' }, { status: 400 });
     }
     const encryptedPassword = bcrypt.hashSync(password, 8);
-    await prisma.user.update({
+    const user = await prisma.user.update({
       where: { id: Number(userId) },
       data: { password: encryptedPassword, invite: true },
     });
@@ -20,8 +21,9 @@ export async function POST(req: NextRequest) {
       status: true,
     });
   } catch (error) {
-    return new NextResponse(JSON.stringify({ status: false, error }), {
-      status: 500,
-    });
+    return NextResponse.json(
+      { error: 'Internal Server Error' },
+      { status: 500 },
+    );
   }
 }
