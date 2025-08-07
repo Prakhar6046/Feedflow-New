@@ -292,7 +292,7 @@ export default function FishSupplyTable({
           <TableBody>
             {sortedFishSupply && sortedFishSupply.length > 0 ? (
               sortedFishSupply.map((fish: FishSupply, i: number) => {
-              console.log('sortedFishSupply',sortedFishSupply);
+    
               
                 return (
                   <TableRow
@@ -308,7 +308,6 @@ export default function FishSupplyTable({
                         maxWidth: 250,
                         wordBreak: 'break-all',
                         pr: 2,
-                        textWrap: 'nowrap',
                         paddingLeft: {
                           lg: 10,
                           md: 7,

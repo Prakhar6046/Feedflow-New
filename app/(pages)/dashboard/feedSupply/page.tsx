@@ -14,19 +14,15 @@ export default async function Page({
   };
 }) {
   const query = searchParams?.query || '';
-  // const loggedUser: any = getCookie("logged-user", { cookies });
-  // const refreshToken: any = getCookie("refresh-token", { cookies });
   const cookieStore = cookies();
-  const loggedUser: any = cookieStore.get('logged-user')?.value;
-  const refreshToken = cookieStore.get('refresh-token')?.value;
-  const user = JSON.parse(loggedUser);
+  const loggedUser = cookieStore.get('logged-user')?.value;
+  const user = JSON.parse(loggedUser ?? '');
   const stores = await getFeedStores({
     role: user.role,
     organisationId: user.organisationId,
     query,
-    refreshToken,
   });
-  const feedSuppliers = await getFeedSuppliers(refreshToken);
+  const feedSuppliers = await getFeedSuppliers();
 
   return (
     <>

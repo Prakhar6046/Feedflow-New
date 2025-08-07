@@ -166,10 +166,10 @@ const ProductionUnits: NextPage<Props> = ({
       setSelectedUnit({
         name: getFormula?.name,
         formula: getFormula?.formula,
-        id: productionUnits[index].id.toString(),
+        id: String(productionUnits[index].id), // ensure this is a string
         index: index,
       });
-      setCalculatedValue({ output: 0, id: 0 });
+      setCalculatedValue({ output: 0, id: '0' });
     }
   };
 
@@ -472,9 +472,9 @@ const ProductionUnits: NextPage<Props> = ({
   }, []);
 
   useEffect(() => {
-    if (calculatedValue?.id && calculatedValue.output) {
+    if (calculatedValue && calculatedValue.id !== undefined) {
       const updatedFields = productionUnits.map((field) => {
-        if (field.id === calculatedValue.id) {
+        if (String(field.id) === String(calculatedValue.id)) {
           return { ...field, capacity: String(calculatedValue.output) };
         } else {
           return field;

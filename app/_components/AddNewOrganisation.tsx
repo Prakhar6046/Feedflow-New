@@ -164,9 +164,6 @@ const AddNewOrganisation = ({ type, loggedUser }: Props) => {
   };
 
   const onSubmit: SubmitHandler<AddOrganizationFormInputs> = async (data) => {
-    console.log('Form submitted with data:', data);
-    console.log('Contacts in submission:', data.contacts);
-    console.log('Number of contacts:', data.contacts.length);
     
     // Check for duplicate contacts
     const contactEmails = data.contacts.map(c => c.email?.toLowerCase()).filter(Boolean);
@@ -265,13 +262,11 @@ const AddNewOrganisation = ({ type, loggedUser }: Props) => {
   });
 
   const AddContactField = () => {
-    // Use fields from useFieldArray instead of watch to avoid stale data
-    console.log('AddContactField called, current fields length:', fields.length);
-    console.log('Current contacts from watch:', watch('contacts'));
-    
+
+
     if (fields.length > 0) {
       const lastContact = watch(`contacts.${fields.length - 1}`);
-      console.log('Last contact:', lastContact);
+
 
       if (
         lastContact &&
@@ -281,7 +276,7 @@ const AddNewOrganisation = ({ type, loggedUser }: Props) => {
         lastContact.phone?.trim() &&
         lastContact.permission
       ) {
-        console.log('Adding new contact, current fields length before append:', fields.length);
+
         append({ 
           name: '', 
           role: '', 
@@ -290,14 +285,13 @@ const AddNewOrganisation = ({ type, loggedUser }: Props) => {
           permission: '',
           invite: false 
         });
-        console.log('Added new contact, fields length after append:', fields.length);
+
       } else {
         toast.dismiss();
         toast.error('Please fill all required fields in the previous contact before adding a new one.');
       }
     } else {
-      // If no fields exist, add the first one
-      console.log('No fields exist, adding first contact');
+
       append({ 
         name: '', 
         role: '', 

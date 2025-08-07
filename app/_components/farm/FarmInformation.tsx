@@ -54,9 +54,10 @@ const FarmInformation: NextPage<Props> = ({
     getValues,
     reset,
   } = useForm<Farm>({ mode: 'onChange' });
-  const loggedUser: any = getCookie('logged-user');
 
-  const user = JSON.parse(loggedUser);
+  const loggedUser: any = getCookie('logged-user');
+  const user = JSON.parse(loggedUser || '{}');
+  const [selectedManagerIds, setSelectedManagerIds] = useState<string[]>([]);
   const [selectedSwtich, setSelectedSwtich] = useState<string>('address');
   const [altitude, setAltitude] = useState<string>('');
   const [lat, setLat] = useState<string>('');
@@ -65,9 +66,11 @@ const FarmInformation: NextPage<Props> = ({
   const [addressInformation, setAddressInformation] = useState<any>();
   const [useAddress, setUseAddress] = useState<boolean>(false);
   const [searchedAddress, setSearchedAddress] = useState<any>();
-  const [fishFarmers, setFishFarmers] = useState<Farm[]>();
+  const [fishFarmers, setFishFarmers] = useState<Farm[]>([]);
+  const [availableContacts, setAvailableContacts] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const selectedManagerIds = watch('mangerId') || [];
+
+  // const selectedManagerIds = watch('mangerId') || [];
   const watchFishFarmer = watch('fishFarmer');
   const isEditFarm = getCookie('isEditFarm');
   const token = getCookie('auth-token');
@@ -76,7 +79,7 @@ const FarmInformation: NextPage<Props> = ({
     const {
       target: { value },
     } = event;
-    setValue('mangerId', value);
+    setSelectedManagerIds(typeof value === 'string' ? value.split(',') : value);
   };
   const getFarmers = async () => {
     const response = await fetch('/api/farm/fish-farmers', {
@@ -88,18 +91,53 @@ const FarmInformation: NextPage<Props> = ({
     return response.json();
   };
   const onSubmit: SubmitHandler<Farm> = (data) => {
-    dispatch(farmAction.updateFarm(data));
-    setLocalItem('farmData', data);
+    const selectedContactObjects = availableContacts.filter((contact) =>
+      selectedManagerIds.includes(String(contact.id)),
+    );
+
+    const finalData = {
+      ...data,
+      mangerId: selectedManagerIds,
+      contact: selectedContactObjects,
+    };
+ 
+    dispatch(farmAction.updateFarm(finalData));
+    setLocalItem('farmData', finalData);
     setActiveStep(1);
   };
   useEffect(() => {
+    setLoading(true);
+    const fetchData = async () => {
+      const res = await getFarmers();
+      setFishFarmers(res.data);
+      setLoading(false);
+
+      if (typeof window !== 'undefined') {
+        const localFormData = getLocalItem('farmData');
+        setFormData(localFormData);
+      }
+    };
+    fetchData();
+  }, []);
+
+  // 🔁 When fish producer is selected, load their contacts
+  useEffect(() => {
+    const selectedProducer = fishFarmers?.find(
+      (producer) => String(producer.id) === String(watchFishFarmer),
+    );
+    if (selectedProducer) {
+      setAvailableContacts(selectedProducer.contact || []);
+    } else {
+      setAvailableContacts([]);
+    }
+  }, [watchFishFarmer, fishFarmers]);
+ 
+
+  useEffect(() => {
     if (editFarm && !formData) {
       setValue('name', editFarm?.name);
-      (setValue(
-        'farmAltitude',
-        String(Number(editFarm?.farmAltitude).toFixed(2)),
-      ),
-        setValue('addressLine1', editFarm?.farmAddress?.addressLine1));
+      setValue('farmAltitude', String(Number(editFarm?.farmAltitude).toFixed(2)));
+      setValue('addressLine1', editFarm?.farmAddress?.addressLine1);
       setValue('addressLine2', editFarm?.farmAddress?.addressLine2 || '');
       setValue('city', editFarm?.farmAddress?.city);
       setValue('country', editFarm?.farmAddress?.country);
@@ -108,24 +146,33 @@ const FarmInformation: NextPage<Props> = ({
       setValue('fishFarmer', editFarm?.fishFarmer);
       setValue('lat', String(Number(editFarm?.lat).toFixed(2)));
       setValue('lng', String(Number(editFarm?.lng).toFixed(2)));
+
+      // Load contacts if editing
+      const selectedProducer = farms.find(
+        (producer) => String(producer.id) === String(editFarm.fishFarmer),
+      );
+      if (selectedProducer) {
+        setAvailableContacts(selectedProducer.contact || []);
+      }
+
       if (editFarm.FarmManger) {
-        const managerIds: string[] = [];
-        editFarm.FarmManger.map((user: any) => {
-          if (user.userId) {
-            managerIds.push(String(user.userId));
-          }
-        });
-        setValue('mangerId', managerIds);
+        // Find the contact.id for each manager by matching userId to availableContacts
+        const managerContactIds: string[] = editFarm.FarmManger.map((manager: any) => {
+          const contact = availableContacts.find((c: any) => String(c.userId) === String(manager.userId));
+          return contact ? String(contact.id) : null;
+        }).filter(Boolean);
+        setSelectedManagerIds(managerContactIds);
       }
     }
-  }, [editFarm, formData]);
+  }, [editFarm, formData, farms]);
+  // ...
 
   useEffect(() => {
     if (formData && Object.keys(formData).length) {
       const data = formData;
       setValue('name', data?.name);
-      (setValue('farmAltitude', data?.farmAltitude),
-        setValue('addressLine1', data?.addressLine1));
+      setValue('farmAltitude', data?.farmAltitude);
+      setValue('addressLine1', data?.addressLine1);
       setValue('addressLine2', data?.addressLine2 || '');
       setValue('city', data?.city);
       setValue('country', data?.country);
@@ -134,9 +181,10 @@ const FarmInformation: NextPage<Props> = ({
       setValue('fishFarmer', data?.fishFarmer);
       setValue('lat', data?.lat);
       setValue('lng', data?.lng);
-      setValue('mangerId', data?.mangerId);
+      setSelectedManagerIds(data?.mangerId || []);
     }
   }, [formData, setValue]);
+
   useEffect(() => {
     if (addressInformation && useAddress) {
       addressInformation.address && clearErrors('addressLine1');
@@ -154,6 +202,7 @@ const FarmInformation: NextPage<Props> = ({
       setUseAddress(false);
     }
   }, [addressInformation, useAddress]);
+
   useEffect(() => {
     if (altitude || lat || lng) {
       setValue('farmAltitude', String(Number(altitude)?.toFixed(2)));
@@ -161,25 +210,10 @@ const FarmInformation: NextPage<Props> = ({
       setValue('lng', String(Number(lng)?.toFixed(2)));
     }
   }, [altitude, setValue, lat, lng]);
-
-  useEffect(() => {
-    setLoading(true);
-    const getFeedSupplyer = async () => {
-      const res = await getFarmers();
-      setFishFarmers(res.data);
-      setLoading(false);
-    };
-    getFeedSupplyer();
-
-    if (typeof window !== 'undefined') {
-      const formData = getLocalItem('farmData');
-      setFormData(formData);
-    }
-  }, []);
-
   if (loading) {
     return <Loader />;
   }
+
   return (
     <Stack>
       <Typography
@@ -370,7 +404,6 @@ const FarmInformation: NextPage<Props> = ({
                 value={watchFishFarmer || ''}
               >
                 {fishFarmers?.map((fish: any) => {
-                  console.log('fishFarmers')
                   return (
                     <MenuItem value={String(fish.id)} key={fish.id}>
                       {fish.name}
@@ -392,6 +425,7 @@ const FarmInformation: NextPage<Props> = ({
                 )}
             </FormControl>
           </Box>
+          {/* Manager Select (Dynamic based on selected fish producer's contacts) */}
           <Box mb={2} width={'100%'}>
             <FormControl fullWidth className="form-input" focused>
               <InputLabel id="feed-supply-select-label1">Manager</InputLabel>
@@ -402,53 +436,46 @@ const FarmInformation: NextPage<Props> = ({
                   <Select
                     {...field}
                     multiple
+                    label="Manager"
                     labelId="demo-multiple-name-label1"
                     id="demo-multiple-name"
-                    disabled={isEditFarm === 'true' ? true : false}
-                    label="Manager"
                     value={selectedManagerIds}
                     onChange={handleChange}
-                    renderValue={(selected) =>
-                      selected &&
-                      selected.length &&
-                      selected
-                        .map((id: any) => {
-                          const member = farmMembers.find(
-                            (mem) => String(mem.id) === id,
-                          );
-                          return member?.name || '';
-                        })
-                        .join(', ')
-                    } // Displays selected items as comma-separated values
+                    renderValue={(selected) => {
+                      if (!availableContacts || availableContacts.length === 0) {
+                        return '';
+                      }
+                      return (
+                        selected
+                          .map((id: any) => {
+                            const member = availableContacts.find(
+                              (mem) => String(mem.id) === id,
+                            );
+                            return member?.name || '';
+                          })
+                          .filter(Boolean)
+                          .join(', ')
+                      );
+                    }}
                   >
-                    {farmMembers?.filter((mem) => mem.id !== user.id).length ? (
-                      farmMembers
-                        .filter((mem) => mem.id !== user.id)
-                        .map((member) => {
-                          return (
-                            <MenuItem
-                              value={String(member.id)}
-                              key={String(member.id)}
-                            >
-                              <Checkbox
-                                checked={selectedManagerIds.includes(
-                                  String(member.id),
-                                )}
-                              />
-                              {member.name}
-                            </MenuItem>
-                          );
-                        })
+                    {availableContacts.length > 0 ? (
+                      availableContacts.map((contact) => (
+                        <MenuItem value={String(contact.id)} key={String(contact.id)}>
+                          <Checkbox
+                            checked={selectedManagerIds.includes(String(contact.id))}
+                          />
+                          {contact.name}
+                        </MenuItem>
+                      ))
                     ) : (
-                      <MenuItem disabled>No member found</MenuItem>
+                      <MenuItem disabled>No contacts available</MenuItem>
                     )}
                   </Select>
                 )}
               />
             </FormControl>
-
-            <Typography variant="body2" color="#555555;" marginBlock={2}>
-              Choose your farm manager
+            <Typography variant="body2" color="#555555" mt={1}>
+              Choose manager(s) from the selected Fish Producer
             </Typography>
           </Box>
           <Box

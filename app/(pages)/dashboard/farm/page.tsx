@@ -15,18 +15,14 @@ export default async function Page({
   };
 }) {
   const query = searchParams?.query || '';
-  // const loggedUser: any = getCookie("logged-user", { cookies });
-  // const refreshToken: any = getCookie("refresh-token", { cookies });
   const cookieStore = cookies();
-  const loggedUser: any = cookieStore.get('logged-user')?.value;
-  const refreshToken = cookieStore.get('refresh-token')?.value;
-  const user: SingleUser = JSON.parse(loggedUser);
+  const loggedUser = cookieStore.get('logged-user')?.value;
+  const user: SingleUser = JSON.parse(loggedUser ?? '');
   const farms = await getFarms({
     role: user?.role,
     organisationId: user?.organisationId,
     query,
     noFilter: false,
-    refreshToken,
   });
   return (
     <>
@@ -41,7 +37,7 @@ export default async function Page({
         ]}
         permissions={user?.permissions?.createFarms}
       />
-      <FarmTable
+      <FarmTable  
         farms={farms?.data}
         permisions={user?.permissions?.editFarms}
       />
