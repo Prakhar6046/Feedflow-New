@@ -73,9 +73,14 @@ export default function NewFarm({
                 key={step.label}
                 sx={{
                   fontSize: '30px',
-                  cursor: 'pointer',
+                  cursor: index <= activeStep ? 'pointer' : 'not-allowed',
+                  opacity: index <= activeStep ? 1 : 0.5,
                 }}
-                onClick={() => setActiveStep(index)}
+                // Only allow clicking on current or previous steps
+                onClick={() => {
+                  if (index <= activeStep) setActiveStep(index);
+                }}
+                disabled={index > activeStep}
               >
                 <StepLabel className="stepper">{step.label}</StepLabel>
               </Step>

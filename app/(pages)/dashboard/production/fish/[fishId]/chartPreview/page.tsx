@@ -1,6 +1,7 @@
 import BasicBreadcrumbs from '@/app/_components/Breadcrumbs';
 import FishChartDownloadPreview from '@/app/_components/production/fishChartDownloadPreview/FishChartDownloadPreview';
 import { getProductions } from '@/app/_lib/action';
+import { Production } from '@/app/_typeModels/production';
 // import { getCookie } from "cookies-next";
 import { cookies } from 'next/headers';
 export default async function Page({
@@ -14,8 +15,8 @@ export default async function Page({
 }) {
   const query = searchParams?.query || '';
   const cookieStore = cookies();
-  const loggedUser: any = cookieStore.get('logged-user')?.value;
-  const user = JSON.parse(loggedUser);
+  const loggedUser = cookieStore.get('logged-user')?.value;
+  const user = JSON.parse(loggedUser || '');
   const productions = await getProductions({
     role: user.role,
     organisationId: user.organisationId,
@@ -45,7 +46,7 @@ export default async function Page({
       />
       <FishChartDownloadPreview
         productions={productions?.data?.filter(
-          (data: any) => data.productionUnitId === params.fishId,
+          (data: Production) => data.productionUnitId === params.fishId,
         )}
       />
     </>

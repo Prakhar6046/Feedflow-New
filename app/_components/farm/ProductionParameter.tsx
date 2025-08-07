@@ -2,9 +2,11 @@ import { getLocalItem, setLocalItem, Years } from '@/app/_lib/utils';
 import { waterQualityPredictedHead } from '@/app/_lib/utils/tableHeadData';
 import * as validationPattern from '@/app/_lib/utils/validationPatterns/index';
 import * as validationMessage from '@/app/_lib/utils/validationsMessage/index';
-import { ProductionParaMeterType } from '@/app/_typeModels/Farm';
-import { selectFarm } from '@/lib/features/farm/farmSlice';
-import { useAppSelector } from '@/lib/hooks';
+import {
+  Farm,
+  GrowthModel,
+  ProductionParaMeterType,
+} from '@/app/_typeModels/Farm';
 import { Box, Button, Grid, Typography } from '@mui/material';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
@@ -16,12 +18,25 @@ import TableRow from '@mui/material/TableRow';
 import { getCookie } from 'cookies-next';
 import { useEffect, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
+type WaterQualityKey =
+  | 'Water Temperature °C'
+  | 'Dissolved Oxygen (DO) mg/L'
+  | 'Total Suspended solids (TSS)'
+  | 'Ammonia (NH₄) mg/L'
+  | 'Nitrate (NO₃) mg/L'
+  | 'Nitrite (NO₂) mg/L'
+  | 'pH'
+  | 'Visibility cm';
 
+export interface predictedValuesData {
+  predictedValues: Record<WaterQualityKey, string | number>;
+  idealRange: Record<WaterQualityKey, string | number>;
+}
 interface Props {
   setActiveStep: (val: number) => void;
   productionParaMeter?: ProductionParaMeterType[];
-  editFarm?: any;
-  growthModels: any;
+  editFarm?: Farm;
+  growthModels: GrowthModel[];
 }
 interface FormData {
   predictedValues: Record<string, Record<number, string>>;
@@ -33,11 +48,8 @@ export default function ProductionParaMeter({
   setActiveStep,
   productionParaMeter,
   editFarm,
-  growthModels,
 }: Props) {
   const isEditFarm = getCookie('isEditFarm');
-
-  const farm = useAppSelector(selectFarm);
 
   const [formProductionParameters, setFormProductionParameters] =
     useState<any>();
@@ -46,9 +58,7 @@ export default function ProductionParaMeter({
     control,
     handleSubmit,
     watch,
-    register,
     setValue,
-    clearErrors,
     formState: { errors },
   } = useForm<FormData>({
     defaultValues: {
@@ -145,7 +155,7 @@ export default function ProductionParaMeter({
       productionParaMeter &&
       productionParaMeter[0]?.YearBasedPredication
     ) {
-      const prediction: any = productionParaMeter[0].YearBasedPredication[0];
+      const prediction = productionParaMeter[0].YearBasedPredication[0];
 
       // Creating the idealRange object for Min and Max
       const idealRange = {
@@ -288,7 +298,7 @@ export default function ProductionParaMeter({
                         >
                           {head}
                         </TableCell>
-                        {Years.map((year: any, index) => (
+                        {Years.map((year, index) => (
                           <TableCell
                             key={index}
                             className=" table-border"
@@ -337,7 +347,7 @@ export default function ProductionParaMeter({
                                 />
                               )}
                             />
-                            {errors?.predictedValues?.[head]?.[year] && (
+                            {errors?.predictedValues?.[head]?.[year as any] && (
                               <Typography
                                 variant="body2"
                                 color="error"
@@ -350,11 +360,13 @@ export default function ProductionParaMeter({
                                   textOverflow: 'ellipsis',
                                 }}
                               >
-                                {errors?.predictedValues?.[head]?.[year]
-                                  .type === 'pattern'
+                                {errors?.predictedValues?.[head as string]?.[
+                                  year as any
+                                ]?.type === 'pattern'
                                   ? validationMessage.NegativeNumberWithDot
-                                  : errors?.predictedValues?.[head]?.[year]
-                                        .type === 'maxLength'
+                                  : errors?.predictedValues?.[head as string]?.[
+                                    year as any
+                                  ]?.type === 'maxLength'
                                     ? validationMessage.numberMaxLength
                                     : ''}
                               </Typography>
@@ -413,7 +425,7 @@ export default function ProductionParaMeter({
                   </TableHead>
 
                   <TableBody>
-                    {waterQualityPredictedHead.map((head: any, i) => (
+                    {waterQualityPredictedHead.map((head: string, i) => (
                       <TableRow
                         key={i}
                         sx={{
@@ -441,16 +453,22 @@ export default function ProductionParaMeter({
                                 pattern:
                                   validationPattern.negativeNumberWithDot,
                                 maxLength: 10,
-                                // validate: (value) => {
-                                //   const min = watch(`idealRange.${head}.Min`);
-                                //   if (
-                                //     val === "Max" &&
-                                //     Number(value) < Number(min)
-                                //   ) {
-                                //     return "Max value cannot be less than Min value";
-                                //   }
-                                //   return true;
-                                // },
+                                validate: (value) => {
+                                  const min = watch(`idealRange.${head}.Min`);
+                                  const max = value;
+
+                                  // If either is empty, do not validate relationship
+                                  if (min === '' || max === '') {
+                                    return true;
+                                  }
+
+                                  // If both are present, validate that Max >= Min
+                                  if (val === 'Max' && parseFloat(max) < parseFloat(min)) {
+                                    return 'Max value cannot be less than Min value';
+                                  }
+
+                                  return true;
+                                },
                               }}
                               render={({ field }) => (
                                 <input
@@ -491,16 +509,14 @@ export default function ProductionParaMeter({
                                   textWrap: 'wrap',
                                 }}
                               >
-                                {errors?.idealRange?.[head]?.[val].type ===
-                                'pattern'
+                                {errors?.idealRange?.[head]?.[val].type === 'pattern'
                                   ? validationMessage.NegativeNumberWithDot
-                                  : errors?.idealRange?.[head]?.[val].type ===
-                                      'maxLength'
+                                  : errors?.idealRange?.[head]?.[val].type === 'maxLength'
                                     ? validationMessage.numberMaxLength
-                                    : errors?.idealRange?.[head]?.[val]
-                                        ?.message}
+                                    : errors?.idealRange?.[head]?.[val]?.message}
                               </Typography>
                             )}
+
                           </TableCell>
                         ))}
                       </TableRow>

@@ -10,6 +10,7 @@ export const GET = async (request: NextRequest) => {
       { status: 401 },
     );
   }
+
   const searchParams = request.nextUrl.searchParams;
   const role = searchParams.get('role');
   const organisationId = searchParams.get('organisationId');
@@ -45,22 +46,49 @@ export const GET = async (request: NextRequest) => {
         AND: [
           query
             ? {
-                OR: [
-                  {
-                    name: { contains: query, mode: 'insensitive' },
-                  },
-                ],
-              }
+              OR: [
+                {
+                  name: { contains: query, mode: 'insensitive' },
+                },
+              ],
+            }
             : {},
         ],
       },
     });
-    return new NextResponse(JSON.stringify({ status: true, data: farms }), {
-      status: 200,
-    });
+
+    // Fetch fishFarmer organisation data for each farm
+    const enrichedFarms = await Promise.all(
+      farms.map(async (farm) => {
+        let fishFarmerOrganisation = null;
+        if (farm.fishFarmer) {
+          fishFarmerOrganisation = await prisma.organisation.findUnique({
+            where: { id: parseInt(farm.fishFarmer, 10) },
+            select: {
+              id: true,
+              name: true,
+              address: true,
+              image: true,
+              imageUrl: true,
+            },
+          });
+        }
+        return {
+          ...farm,
+          fishFarmerOrganisation,
+        };
+      })
+    );
+
+    return new NextResponse(
+      JSON.stringify({ status: true, data: enrichedFarms }),
+      { status: 200 }
+    );
   } catch (error) {
-    return new NextResponse(JSON.stringify({ status: false, error }), {
-      status: 500,
-    });
+    console.error('[FARM_LIST_ERROR]', error);
+    return new NextResponse(
+      JSON.stringify({ status: false, error: 'Internal server error' }),
+      { status: 500 }
+    );
   }
 };

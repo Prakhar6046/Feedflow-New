@@ -26,10 +26,10 @@ export interface UnitsTypes {
   id: string;
   index: number;
 }
-export interface CalculateType {
+export type CalculateType = {
   output: number;
-  id: number;
-}
+  id: string;
+};
 export interface ProductionUnitsFormTypes {
   productionUnits: {
     name: string;
@@ -179,6 +179,26 @@ export interface Members {
   organisationId: number;
 }
 
+export type FishProducer = {
+  id: number;
+  name: string;
+  address: {
+    id: string;
+    name: string;
+    street: string | null;
+    province: string;
+    city: string;
+    postCode: string;
+    country: string;
+    createdAt: string; 
+    updatedAt: string; 
+    organisationId: string | null;
+  };
+  image: string | null;
+  imageUrl: string;
+};
+
+
 export interface Farm {
   id?: string;
   name: string;
@@ -201,7 +221,7 @@ export interface Farm {
   country: string;
   farmAddressId?: string;
   farmAddress?: FarmAddress;
-
+  fishFarmerOrganisation?: FishProducer;
   // Relations
   organisationId?: number;
   organisation: Organisation;

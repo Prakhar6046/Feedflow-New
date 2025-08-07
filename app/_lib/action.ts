@@ -1,167 +1,142 @@
 import { revalidatePath } from 'next/cache';
-// import { GetToken } from "./cookiesGetter";
-import { fetchWithAuth } from './auth/fetchWithAuth';
-// import { getCookie } from "cookies-next";
-import { cookies } from 'next/headers';
-// const token = await GetToken();
+
+import { secureFetch } from './auth';
+
 export const getOrganisations = async (payload: {
   role?: string;
   organisationId?: number;
   query?: string;
   tab?: string;
-  refreshToken?: string;
 }) => {
-  const cookieStore = cookies();
-  const token: any = cookieStore.get('auth-token')?.value;
   try {
-    const res = await fetchWithAuth(
-      `${process.env.BASE_URL}/api/organisation${
-        payload.organisationId && payload.role
-          ? `?organisationId=${payload.organisationId}&role=${payload.role}&tab=${payload?.tab}&query=${payload.query}`
-          : payload?.tab
-            ? `?tab=${payload?.tab}`
-            : `?query=${payload.query}`
-      }`,
-      {
-        method: 'GET',
-      },
-      token,
-      true,
-      payload.refreshToken,
-    );
-    revalidatePath('/dashboard/organisation?tab=all');
+    const params = new URLSearchParams();
+    if (payload.organisationId)
+      params.append('organisationId', String(payload.organisationId));
+    if (payload.role) params.append('role', payload.role);
+    if (payload.tab) params.append('tab', payload.tab);
+    if (payload.query) params.append('query', payload.query);
+
+    const url = `${process.env.BASE_URL}/api/organisation?${params}`;
+
+    const res = await secureFetch(url, {
+      method: 'GET',
+      credentials: 'include',
+    });
+
+    if (!res.ok) throw new Error('Failed to fetch organisations');
+
     return await res.json();
   } catch (error) {
-    return error;
+    console.error('getOrganisations error:', error);
+    return { error: 'Something went wrong' };
   }
 };
 
-export const getOrganisationCount = async (refreshToken?: string) => {
-  const cookieStore = cookies();
-  const token: any = cookieStore.get('auth-token')?.value;
+export const getOrganisationCount = async () => {
   try {
-    const res = await fetchWithAuth(
-      `${process.env.BASE_URL}/api/organisation/count`,
-      {
-        method: 'GET',
-        cache: 'no-store',
-      },
-      token,
-      true,
-      refreshToken,
-    );
+    const url = `${process.env.BASE_URL}/api/organisation/count`;
+    const res = await secureFetch(url, {
+      method: 'GET',
+      cache: 'no-store',
+    });
     return await res.json();
   } catch (error) {
-    return error;
+    console.error('getOrganisationCount error:', error);
+    return { error: 'Something went wrong' };
   }
 };
 
-export const getAllOrganisations = async (refreshToken?: string) => {
-  const cookieStore = cookies();
-  const token: any = cookieStore.get('auth-token')?.value;
+export const getAllOrganisations = async () => {
   try {
-    const res = await fetchWithAuth(
-      `${process.env.BASE_URL}/api/organisation/all`,
-      {
-        method: 'GET',
-        cache: 'no-store',
-      },
-      token,
-      true,
-      refreshToken,
-    );
+    const url = `${process.env.BASE_URL}/api/organisation/all`;
+    const res = await secureFetch(url, {
+      method: 'GET',
+      cache: 'no-store',
+    });
     return await res.json();
   } catch (error) {
-    return error;
+    console.error('getAllOrganisations error:', error);
+    return { error: 'Something went wrong' };
   }
 };
 
-export const getUsers = async (payload: any & { refreshToken?: string }) => {
-  const cookieStore = cookies();
-  const token: any = cookieStore.get('auth-token')?.value;
+export const getUsers = async (payload: {
+  role?: string;
+  organisationId?: number;
+  query?: string;
+}) => {
   try {
-    const res = await fetchWithAuth(
-      `${process.env.BASE_URL}/api/users?role=${payload.role}&organisationId=${payload.organisationId}&query=${payload.query}`,
-      {
-        method: 'GET',
-      },
-      token,
-      true,
-      payload.refreshToken,
-    );
+    const params = new URLSearchParams();
+    if (payload.role) params.append('role', payload.role);
+    if (payload.organisationId)
+      params.append('organisationId', String(payload.organisationId));
+    if (payload.query) params.append('query', payload.query);
+
+    const url = `${process.env.BASE_URL}/api/users?${params}`;
+    const res = await secureFetch(url, {
+      method: 'GET',
+    });
     return await res.json();
   } catch (error) {
-    return error;
+    console.error('getUsers error:', error);
+    return { error: 'Something went wrong' };
   }
 };
 
-export const getUser = async (userId: string, refreshToken?: string) => {
-  const cookieStore = cookies();
-  const token: any = cookieStore.get('auth-token')?.value;
+export const getUser = async (userId: number) => {
   try {
-    const res = await fetchWithAuth(
-      `${process.env.BASE_URL}/api/user/${userId}`,
-      {
-        method: 'GET',
-      },
-      token,
-      true,
-      refreshToken,
-    );
+    const url = `${process.env.BASE_URL}/api/user/${userId}`;
+    const res = await secureFetch(url, {
+      method: 'GET',
+    });
     revalidatePath(`/dashboard/user/${userId}`);
     return await res.json();
   } catch (error) {
-    return error;
+    console.error('getUser error:', error);
+    return { error: 'Something went wrong' };
   }
 };
 
-export const AddNewFeedSupply = async (
-  formData: any,
-  refreshToken?: string,
-) => {
-  const cookieStore = cookies();
-  const token: any = cookieStore.get('auth-token')?.value;
+export const AddNewFeedSupply = async (formData: any) => {
   try {
-    const res = await fetchWithAuth(
-      `${process.env.BASE_URL}/api/feedSupply/new-feed`,
-      {
-        method: 'POST',
-        body: JSON.stringify(formData),
+    const url = `${process.env.BASE_URL}/api/feedSupply/new-feed`;
+    const res = await secureFetch(url, {
+      method: 'POST',
+      body: JSON.stringify(formData),
+      headers: {
+        'Content-Type': 'application/json', // Assuming JSON body
       },
-      token,
-      true,
-      refreshToken,
-    );
+    });
     revalidatePath(`/dashboard/feedSupply`);
     return await res.json();
   } catch (error) {
-    return error;
+    console.error('AddNewFeedSupply error:', error);
+    return { error: 'Something went wrong' };
   }
 };
 
 export const getFeedSupplys = async (payload: {
-  role: string;
-  organisationId: string;
-  query: string;
-  refreshToken?: string;
+  role?: string;
+  organisationId?: string;
+  query?: string;
 }) => {
-  const cookieStore = cookies();
-  const token: any = cookieStore.get('auth-token')?.value;
   try {
-    const res = await fetchWithAuth(
-      `${process.env.BASE_URL}/api/feedSupply?role=${payload.role}&organisationId=${payload.organisationId}&query=${payload.query}`,
-      {
-        method: 'GET',
-        cache: 'no-store',
-      },
-      token,
-      true,
-      payload.refreshToken,
-    );
+    const params = new URLSearchParams();
+    if (payload.role) params.append('role', payload.role);
+    if (payload.organisationId)
+      params.append('organisationId', payload.organisationId);
+    if (payload.query) params.append('query', payload.query);
+
+    const url = `${process.env.BASE_URL}/api/feedSupply?${params}`;
+    const res = await secureFetch(url, {
+      method: 'GET',
+      cache: 'no-store',
+    });
     revalidatePath(`/dashboard/feedSupply`);
     return await res.json();
   } catch (error) {
-    return error;
+    console.error('getFeedSupplys error:', error);
+    return { error: 'Something went wrong' };
   }
 };
 
@@ -169,24 +144,23 @@ export const getFishSupply = async (payload: {
   role?: string;
   organisationId?: number;
   query?: string;
-  refreshToken?: string;
 }) => {
-  const cookieStore = cookies();
-  const token: any = cookieStore.get('auth-token')?.value;
   try {
-    const res = await fetchWithAuth(
-      `${process.env.BASE_URL}/api/fish?role=${payload.role}&organisationId=${payload.organisationId}&query=${payload.query}`,
-      {
-        method: 'GET',
-      },
-      token,
-      true,
-      payload.refreshToken,
-    );
+    const params = new URLSearchParams();
+    if (payload.role) params.append('role', payload.role);
+    if (payload.organisationId)
+      params.append('organisationId', String(payload.organisationId));
+    if (payload.query) params.append('query', payload.query);
+
+    const url = `${process.env.BASE_URL}/api/fish?${params}`;
+    const res = await secureFetch(url, {
+      method: 'GET',
+    });
     revalidatePath('/dashboard/fishSupply');
     return await res.json();
   } catch (error) {
-    return error;
+    console.error('getFishSupply error:', error);
+    return { error: 'Something went wrong' };
   }
 };
 
@@ -196,68 +170,60 @@ export const getFarms = async (payload: {
   query?: string;
   noFilter?: boolean;
   tab?: string;
-  refreshToken?: string;
 }) => {
-  const cookieStore = cookies();
-  const token: any = cookieStore.get('auth-token')?.value;
   try {
-    const res = await fetchWithAuth(
-      `${process.env.BASE_URL}/api/farm?role=${payload.role}&organisationId=${payload.organisationId}&query=${payload.query}&filter=${payload.noFilter}&tab=${payload.tab}`,
-      {
-        method: 'GET',
-        cache: 'no-store',
-      },
-      token,
-      true,
-      payload.refreshToken,
-    );
+    const params = new URLSearchParams();
+    if (payload.role) params.append('role', payload.role);
+    if (payload.organisationId)
+      params.append('organisationId', String(payload.organisationId));
+    if (payload.query) params.append('query', payload.query);
+    if (payload.noFilter !== undefined)
+      params.append('filter', String(payload.noFilter)); // Renamed from 'noFilter' to 'filter' as per your original URL
+    if (payload.tab) params.append('tab', payload.tab);
+
+    const url = `${process.env.BASE_URL}/api/farm?${params}`;  
+    const res = await secureFetch(url, {
+      method: 'GET',
+      cache: 'no-store',
+    });
     revalidatePath(`/dashboard/farm`);
+     
     return await res.json();
+   
   } catch (error) {
-    return error;
+    console.error('getFarms error:', error);
+    return { error: 'Something went wrong' };
   }
 };
 
-export const getFarmMangers = async (
-  organisationId?: string,
-  refreshToken?: string,
-) => {
-  const cookieStore = cookies();
-  const token: any = cookieStore.get('auth-token')?.value;
+export const getFarmMangers = async (organisationId?: string) => {
   try {
-    const res = await fetchWithAuth(
-      `${process.env.BASE_URL}/api/farm/managers?organisationId=${organisationId}`,
-      {
-        method: 'GET',
-        cache: 'no-store',
-      },
-      token,
-      true,
-      refreshToken,
-    );
+    const params = new URLSearchParams();
+    if (organisationId) params.append('organisationId', organisationId);
+
+    const url = `${process.env.BASE_URL}/api/farm/managers?${params}`;
+    const res = await secureFetch(url, {
+      method: 'GET',
+      cache: 'no-store',
+    });
     return await res.json();
   } catch (error) {
-    return error;
+    console.error('getFarmMangers error:', error);
+    return { error: 'Something went wrong' };
   }
 };
 
-export const getOrganisationForhatchery = async (refreshToken?: string) => {
-  const cookieStore = cookies();
-  const token: any = cookieStore.get('auth-token')?.value;
+export const getOrganisationForhatchery = async () => {
   try {
-    const res = await fetchWithAuth(
-      `${process.env.BASE_URL}/api/organisation/hatchery`,
-      {
-        method: 'GET',
-        cache: 'no-store',
-      },
-      token,
-      true,
-      refreshToken,
-    );
+    const url = `${process.env.BASE_URL}/api/organisation/hatchery`;
+    const res = await secureFetch(url, {
+      method: 'GET',
+      cache: 'no-store',
+    });
     return await res.json();
   } catch (error) {
-    return error;
+    console.error('getOrganisationForhatchery error:', error);
+    return { error: 'Something went wrong' };
   }
 };
 
@@ -267,25 +233,27 @@ export const getProductions = async (payload: {
   query?: string;
   noFilter?: boolean;
   userId?: string;
-  refreshToken?: string;
 }) => {
-  const cookieStore = cookies();
-  const token: any = cookieStore.get('auth-token')?.value;
   try {
-    const res = await fetchWithAuth(
-      `${process.env.BASE_URL}/api/production?role=${payload.role}&organisationId=${payload.organisationId}&query=${payload.query}&filter=${payload.noFilter}&userId=${payload.userId}`,
-      {
-        method: 'GET',
-        cache: 'no-store',
-      },
-      token,
-      true,
-      payload.refreshToken,
-    );
-    revalidatePath(`/dashboard/farmManager`);
+    const params = new URLSearchParams();
+    if (payload.role) params.append('role', payload.role);
+    if (payload.organisationId)
+      params.append('organisationId', payload.organisationId);
+    if (payload.query) params.append('query', payload.query);
+    if (payload.noFilter !== undefined)
+      params.append('filter', String(payload.noFilter));
+    if (payload.userId) params.append('userId', payload.userId);
+
+    const url = `${process.env.BASE_URL}/api/production?${params}`;
+    const res = await secureFetch(url, {
+      method: 'GET',
+      cache: 'no-store',
+    });
+    revalidatePath(`/dashboard/farmManager`); // or `/dashboard/production` depending on typical revalidation
     return await res.json();
   } catch (error) {
-    return error;
+    console.error('getProductions error:', error);
+    return { error: 'Something went wrong' };
   }
 };
 
@@ -294,25 +262,28 @@ export const getBatches = async (payload: {
   organisationId?: string;
   query?: string;
   noFilter?: boolean;
-  refreshToken?: string;
 }) => {
-  const cookieStore = cookies();
-  const token: any = cookieStore.get('auth-token')?.value;
   try {
-    const res = await fetchWithAuth(
-      `${process.env.BASE_URL}/api/production/batches`,
-      {
-        method: 'GET',
-        cache: 'no-store',
-      },
-      token,
-      true,
-      payload.refreshToken,
-    );
+    const params = new URLSearchParams();
+    // Note: Your original `getBatches` URL does not seem to use these parameters in the URL directly,
+    // but I'm adding them for consistency if you intend to use them.
+    if (payload.role) params.append('role', payload.role);
+    if (payload.organisationId)
+      params.append('organisationId', payload.organisationId);
+    if (payload.query) params.append('query', payload.query);
+    if (payload.noFilter !== undefined)
+      params.append('filter', String(payload.noFilter));
+
+    const url = `${process.env.BASE_URL}/api/production/batches?${params}`; // Appending params for consistency
+    const res = await secureFetch(url, {
+      method: 'GET',
+      cache: 'no-store',
+    });
     revalidatePath(`/dashboard/production`);
     return await res.json();
   } catch (error) {
-    return error;
+    console.error('getBatches error:', error);
+    return { error: 'Something went wrong' };
   }
 };
 
@@ -321,25 +292,26 @@ export const getSampleEnvironment = async (payload: {
   organisationId?: string;
   query?: string;
   noFilter?: boolean;
-  refreshToken?: string;
 }) => {
-  const cookieStore = cookies();
-  const token: any = cookieStore.get('auth-token')?.value;
   try {
-    const res = await fetchWithAuth(
-      `${process.env.BASE_URL}/api/sample/sampleEnvironment?role=${payload.role}&organisationId=${payload.organisationId}&query=${payload.query}&filter=${payload.noFilter}`,
-      {
-        method: 'GET',
-        cache: 'no-store',
-      },
-      token,
-      true,
-      payload.refreshToken,
-    );
+    const params = new URLSearchParams();
+    if (payload.role) params.append('role', payload.role);
+    if (payload.organisationId)
+      params.append('organisationId', payload.organisationId);
+    if (payload.query) params.append('query', payload.query);
+    if (payload.noFilter !== undefined)
+      params.append('filter', String(payload.noFilter));
+
+    const url = `${process.env.BASE_URL}/api/sample/sampleEnvironment?${params}`;
+    const res = await secureFetch(url, {
+      method: 'GET',
+      cache: 'no-store',
+    });
     revalidatePath(`/dashboard/sample`);
     return await res.json();
   } catch (error) {
-    return error;
+    console.error('getSampleEnvironment error:', error);
+    return { error: 'Something went wrong' };
   }
 };
 
@@ -348,45 +320,40 @@ export const getSampleStock = async (payload: {
   organisationId?: string;
   query?: string;
   noFilter?: boolean;
-  refreshToken?: string;
 }) => {
-  const cookieStore = cookies();
-  const token: any = cookieStore.get('auth-token')?.value;
   try {
-    const res = await fetchWithAuth(
-      `${process.env.BASE_URL}/api/sample/sampleStock?role=${payload.role}&organisationId=${payload.organisationId}&query=${payload.query}&filter=${payload.noFilter}`,
-      {
-        method: 'GET',
-        cache: 'no-store',
-      },
-      token,
-      true,
-      payload.refreshToken,
-    );
+    const params = new URLSearchParams();
+    if (payload.role) params.append('role', payload.role);
+    if (payload.organisationId)
+      params.append('organisationId', payload.organisationId);
+    if (payload.query) params.append('query', payload.query);
+    if (payload.noFilter !== undefined)
+      params.append('filter', String(payload.noFilter));
+
+    const url = `${process.env.BASE_URL}/api/sample/sampleStock?${params}`;
+    const res = await secureFetch(url, {
+      method: 'GET',
+      cache: 'no-store',
+    });
     revalidatePath(`/dashboard/sample`);
     return await res.json();
   } catch (error) {
-    return error;
+    console.error('getSampleStock error:', error);
+    return { error: 'Something went wrong' };
   }
 };
 
-export const getGrowthModels = async (refreshToken?: string) => {
-  const cookieStore = cookies();
-  const token: any = cookieStore.get('auth-token')?.value;
+export const getGrowthModels = async () => {
   try {
-    const res = await fetchWithAuth(
-      `${process.env.BASE_URL}/api/growth-model`,
-      {
-        method: 'GET',
-        cache: 'no-store',
-      },
-      token,
-      true,
-      refreshToken,
-    );
+    const url = `${process.env.BASE_URL}/api/growth-model`;
+    const res = await secureFetch(url, {
+      method: 'GET',
+      cache: 'no-store',
+    });
     return await res.json();
   } catch (error) {
-    return error;
+    console.error('getGrowthModels error:', error);
+    return { error: 'Something went wrong' };
   }
 };
 
@@ -394,43 +361,36 @@ export const getFeedStores = async (payload: {
   role?: string;
   organisationId?: string;
   query?: string;
-  refreshToken?: string;
 }) => {
-  const cookieStore = cookies();
-  const token: any = cookieStore.get('auth-token')?.value;
   try {
-    const res = await fetchWithAuth(
-      `${process.env.BASE_URL}/api/feed-store?role=${payload.role}&organisationId=${payload.organisationId}&query=${payload.query}`,
-      {
-        method: 'GET',
-        cache: 'no-store',
-      },
-      token,
-      true,
-      payload.refreshToken,
-    );
+    const params = new URLSearchParams();
+    if (payload.role) params.append('role', payload.role);
+    if (payload.organisationId)
+      params.append('organisationId', payload.organisationId);
+    if (payload.query) params.append('query', payload.query);
+
+    const url = `${process.env.BASE_URL}/api/feed-store?${params}`;
+    const res = await secureFetch(url, {
+      method: 'GET',
+      cache: 'no-store',
+    });
     return await res.json();
   } catch (error) {
-    return error;
+    console.error('getFeedStores error:', error);
+    return { error: 'Something went wrong' };
   }
 };
 
-export const getFeedSuppliers = async (refreshToken?: string) => {
-  const cookieStore = cookies();
-  const token: any = cookieStore.get('auth-token')?.value;
+export const getFeedSuppliers = async () => {
   try {
-    const res = await fetchWithAuth(
-      `${process.env.BASE_URL}/api/organisation/feedSuppliers`,
-      {
-        method: 'GET',
-        cache: 'no-store',
-      },
-      token,
-      true,
-      refreshToken,
-    );
+    const url = `${process.env.BASE_URL}/api/organisation/feedSuppliers`;
+    const res = await secureFetch(url, {
+      method: 'GET',
+      cache: 'no-store',
+    });
     return await res.json();
   } catch (error) {
-    return error;
+    console.error('getFeedSuppliers error:', error);
+    return { error: 'Something went wrong' };
   }
 };

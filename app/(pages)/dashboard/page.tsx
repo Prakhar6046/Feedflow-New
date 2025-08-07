@@ -3,11 +3,10 @@ import Loader from '@/app/_components/Loader';
 import { Metadata, NextPage } from 'next';
 import { Suspense } from 'react';
 
-interface Props {}
 export const metadata: Metadata = {
   title: 'Dashboard',
 };
-const Page: NextPage<Props> = ({}) => {
+const Page: NextPage = () => {
   return (
     <div>
       <Suspense fallback={<Loader />}>
