@@ -166,7 +166,7 @@ const ProductionUnits: NextPage<Props> = ({
       setSelectedUnit({
         name: getFormula?.name,
         formula: getFormula?.formula,
-        id: String(productionUnits[index].id), // ensure this is a string
+        id: String(productionUnits[index].id), 
         index: index,
       });
       setCalculatedValue({ output: 0, id: '0' });

@@ -1,7 +1,13 @@
 import BasicBreadcrumbs from '@/app/_components/Breadcrumbs';
 import FeedingOutputTable from '@/app/_components/table/FeedingOutputTable';
+
 import { NextPage } from 'next';
+
 const Page: NextPage = async () => {
+  // Placeholder values until getProductions and getFarms are implemented
+  const productions = [];
+  const farms = [];
+
   return (
     <>
       <BasicBreadcrumbs
@@ -13,7 +19,7 @@ const Page: NextPage = async () => {
           { name: 'Feeding Plan', link: '/dashboard/feedingPlan' },
         ]}
       />
-      <FeedingOutputTable />
+      <FeedingOutputTable productions={productions} farms={farms} />
     </>
   );
 };
