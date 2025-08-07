@@ -148,7 +148,7 @@ const CalculateVolume: React.FC<Props> = ({
       } else {
       }
       if (selectedUnit?.id) {
-        setCalculatedValue({ output: Number(output), id: Number(selectedUnit.id )});
+        setCalculatedValue({ output: Number(output), id: String(selectedUnit.id )});
       }
       setOpen(false);
     } else {
