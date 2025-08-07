@@ -100,7 +100,7 @@ const FarmInformation: NextPage<Props> = ({
       mangerId: selectedManagerIds,
       contact: selectedContactObjects,
     };
- 
+
     dispatch(farmAction.updateFarm(finalData));
     setLocalItem('farmData', finalData);
     setActiveStep(1);
@@ -131,41 +131,45 @@ const FarmInformation: NextPage<Props> = ({
       setAvailableContacts([]);
     }
   }, [watchFishFarmer, fishFarmers]);
- 
+
 
   useEffect(() => {
-    if (editFarm && !formData) {
-      setValue('name', editFarm?.name);
-      setValue('farmAltitude', String(Number(editFarm?.farmAltitude).toFixed(2)));
-      setValue('addressLine1', editFarm?.farmAddress?.addressLine1);
-      setValue('addressLine2', editFarm?.farmAddress?.addressLine2 || '');
-      setValue('city', editFarm?.farmAddress?.city);
-      setValue('country', editFarm?.farmAddress?.country);
-      setValue('zipCode', editFarm?.farmAddress?.zipCode);
-      setValue('province', editFarm?.farmAddress?.province);
-      setValue('fishFarmer', editFarm?.fishFarmer);
-      setValue('lat', String(Number(editFarm?.lat).toFixed(2)));
-      setValue('lng', String(Number(editFarm?.lng).toFixed(2)));
+    // Guard: Only run when all necessary data is available
+    if (!editFarm || !fishFarmers.length || formData) return;
 
-      // Load contacts if editing
-      const selectedProducer = farms.find(
-        (producer) => String(producer.id) === String(editFarm.fishFarmer),
-      );
-      if (selectedProducer) {
-        setAvailableContacts(selectedProducer.contact || []);
-      }
+    // Set basic form fields
+    setValue('name', editFarm?.name);
+    setValue('farmAltitude', String(Number(editFarm?.farmAltitude).toFixed(2)));
+    setValue('addressLine1', editFarm?.farmAddress?.addressLine1 || '');
+    setValue('addressLine2', editFarm?.farmAddress?.addressLine2 || '');
+    setValue('city', editFarm?.farmAddress?.city || '');
+    setValue('country', editFarm?.farmAddress?.country || '');
+    setValue('zipCode', editFarm?.farmAddress?.zipCode || '');
+    setValue('province', editFarm?.farmAddress?.province || '');
+    setValue('fishFarmer', editFarm?.fishFarmer);
+    setValue('lat', String(Number(editFarm?.lat).toFixed(2)));
+    setValue('lng', String(Number(editFarm?.lng).toFixed(2)));
+
+    // Find contacts from selected fish farmer
+    const selectedProducer = fishFarmers.find(
+      (producer) => String(producer.id) === String(editFarm.fishFarmer)
+    );
+
+    if (selectedProducer) {
+      setAvailableContacts(selectedProducer.contact || []);
 
       if (editFarm.FarmManger) {
-        // Find the contact.id for each manager by matching userId to availableContacts
         const managerContactIds: string[] = editFarm.FarmManger.map((manager: any) => {
-          const contact = availableContacts.find((c: any) => String(c.userId) === String(manager.userId));
+          const contact = selectedProducer.contact?.find(
+            (c: any) => String(c.userId) === String(manager.userId)
+          );
           return contact ? String(contact.id) : null;
         }).filter(Boolean);
         setSelectedManagerIds(managerContactIds);
       }
     }
-  }, [editFarm, formData, farms]);
-  // ...
+  }, [editFarm, fishFarmers, formData, setValue]);
+
 
   useEffect(() => {
     if (formData && Object.keys(formData).length) {
