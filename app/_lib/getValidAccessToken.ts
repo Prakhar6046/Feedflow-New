@@ -1,7 +1,7 @@
 import { cookies } from 'next/headers';
 
 export const getValidAccessToken = async () => {
-  const cookieStore = await cookies();
+  const cookieStore = cookies();
   const accessToken = cookieStore.get('auth-token')?.value;
   const refreshToken = cookieStore.get('refresh-token')?.value;
 
@@ -11,33 +11,33 @@ export const getValidAccessToken = async () => {
     },
   });
 
-  // If token is expired
+  if (res.ok) {
+    return accessToken;
+  }
+
   if (res.status === 401 && refreshToken) {
+    console.log('[getValidAccessToken] Access token expired. Attempting refresh...');
+
     const refreshRes = await fetch(`${process.env.BASE_URL}/api/auth/refresh`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      credentials: 'include',
-      body: JSON.stringify(refreshToken),
+      body: JSON.stringify({ refreshToken }), 
     });
 
-    if (!refreshRes.ok) throw new Error('Refresh token invalid');
-
-    const data = await refreshRes.json();
-
-    if (data.accessToken) {
-      // Store access token in cookie (not HTTP-only)
-      //   cookieStore.set('auth-token', data.accessToken, {
-      //     maxAge: 60 * 15, // 15 mins
-      //     path: '/',
-      //   });
-
-      return data.accessToken;
+    if (!refreshRes.ok) {
+      throw new Error('Refresh token invalid');
     }
 
-    throw new Error('Could not refresh access token');
+    const data = await refreshRes.json();
+ 
+
+    if (data.accessToken) {
+      return data.accessToken;
+    }
+    throw new Error('Unable to refresh access token');
   }
 
-  return accessToken?.toString();
+  throw new Error('No valid access or refresh token');
 };

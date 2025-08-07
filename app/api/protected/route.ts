@@ -10,7 +10,10 @@ export async function GET(req: Request) {
   try {
     const user = verifyAccessToken(token);
     return NextResponse.json({ message: 'This is protected', user });
-  } catch {
-    return NextResponse.json({ error: 'Token expired' }, { status: 401 });
+  } catch (err: any) {
+    if (err.name === 'TokenExpiredError') {
+      return NextResponse.json({ error: 'Token expired' }, { status: 401 });
+    }
+    return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
   }
 }
