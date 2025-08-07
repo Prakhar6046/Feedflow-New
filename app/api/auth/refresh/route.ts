@@ -1,34 +1,33 @@
+import { signAccessToken, verifyRefreshToken } from '@/app/_lib/jwt';
+import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
-import jwt from 'jsonwebtoken';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'access-secret-key';
-const JWT_REFRESH_SECRET =
-  process.env.JWT_REFRESH_SECRET || 'refresh-secret-key';
+export async function POST(req: NextRequest) {
+  const refreshToken = await req.json();
 
-export const GET = async (req: NextRequest) => {
+  if (!refreshToken) {
+    return NextResponse.json({ error: 'No refresh token' }, { status: 401 });
+  }
+
   try {
-    const refreshToken = req.cookies.get('refresh-token')?.value;
+    const user = verifyRefreshToken(refreshToken) as any;
+    const newAccessToken = signAccessToken({
+      userId: user.userId,
+      email: user.email,
+    });
 
-    if (!refreshToken) {
-      return NextResponse.json(
-        { error: 'No refresh token provided' },
-        { status: 401 },
-      );
-    }
-
-    const payload = jwt.verify(refreshToken, JWT_REFRESH_SECRET);
-
-    const newAccessToken = jwt.sign(
-      { id: (payload as any).id, email: (payload as any).email },
-      JWT_SECRET,
-      { expiresIn: '15m' },
-    );
-
+    cookies().set('auth-token', newAccessToken, {
+      httpOnly: false,
+      path: '/',
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 60 * 15,
+    });
     return NextResponse.json({ accessToken: newAccessToken });
-  } catch (error) {
+  } catch {
     return NextResponse.json(
-      { error: 'Invalid or expired refresh token' },
-      { status: 403 },
+      { error: 'Invalid refresh token' },
+      { status: 401 },
     );
   }
-};
+}

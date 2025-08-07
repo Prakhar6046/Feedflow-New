@@ -1,7 +1,5 @@
 'use server';
-
-import { getValidAccessToken } from "../getValidAccessToken";
-
+import { getValidAccessToken } from '../getValidAccessToken';
 
 export const secureFetch = async (url: string, options: RequestInit = {}) => {
   const accessToken = await getValidAccessToken();

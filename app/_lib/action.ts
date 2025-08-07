@@ -181,15 +181,13 @@ export const getFarms = async (payload: {
       params.append('filter', String(payload.noFilter)); // Renamed from 'noFilter' to 'filter' as per your original URL
     if (payload.tab) params.append('tab', payload.tab);
 
-    const url = `${process.env.BASE_URL}/api/farm?${params}`;  
+    const url = `${process.env.BASE_URL}/api/farm?${params}`;
     const res = await secureFetch(url, {
       method: 'GET',
       cache: 'no-store',
     });
     revalidatePath(`/dashboard/farm`);
-     
     return await res.json();
-   
   } catch (error) {
     console.error('getFarms error:', error);
     return { error: 'Something went wrong' };
