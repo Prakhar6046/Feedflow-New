@@ -121,6 +121,7 @@ export interface Contact {
   name: string;
   email: string;
   phone: string;
+  invite: boolean;
   role: string;
   permission: string;
   userId: string;

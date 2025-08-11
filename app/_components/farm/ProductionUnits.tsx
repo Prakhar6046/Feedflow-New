@@ -88,6 +88,7 @@ const ProductionUnits: NextPage<Props> = ({
   const [selectedUnitName, setSelectedUnitName] = useState<string>('');
   const [calculatedValue, setCalculatedValue] = useState<CalculateType>();
   const [formProductionUnitsData, setFormProductionUnitsData] = useState<any>();
+  const [productionSystem, setProductionSystem] = useState<string>('');
   const [isApiCallInProgress, setIsApiCallInProgress] =
     useState<boolean>(false);
 
@@ -107,6 +108,7 @@ const ProductionUnits: NextPage<Props> = ({
         {
           name: '',
           type: '',
+          productionSystem: '',
           capacity: '',
           waterflowRate: '',
           id: Number(uuidv4()),
@@ -133,6 +135,7 @@ const ProductionUnits: NextPage<Props> = ({
         lastProductionUnit &&
         lastProductionUnit.name &&
         lastProductionUnit.type &&
+        lastProductionUnit?.productionSystem &&
         lastProductionUnit.capacity &&
         lastProductionUnit.waterflowRate
       ) {
@@ -140,6 +143,7 @@ const ProductionUnits: NextPage<Props> = ({
           name: '',
           capacity: '',
           type: '',
+          productionSystem: '',
           waterflowRate: '',
           id: Number(uuidv4()),
         });
@@ -166,7 +170,7 @@ const ProductionUnits: NextPage<Props> = ({
       setSelectedUnit({
         name: getFormula?.name,
         formula: getFormula?.formula,
-        id: String(productionUnits[index].id), 
+        id: String(productionUnits[index].id),
         index: index,
       });
       setCalculatedValue({ output: 0, id: '0' });
@@ -381,10 +385,9 @@ const ProductionUnits: NextPage<Props> = ({
 
         if (Object.keys(payload).length && payload.name) {
           const response = await fetch(
-            `${
-              isEditFarm === 'true'
-                ? '/api/farm/edit-farm'
-                : '/api/farm/add-farm'
+            `${isEditFarm === 'true'
+              ? '/api/farm/edit-farm'
+              : '/api/farm/add-farm'
             }`,
             {
               method: 'POST',
@@ -437,6 +440,7 @@ const ProductionUnits: NextPage<Props> = ({
           name: '',
           capacity: '',
           type: '',
+          productionSystem: '',
           waterflowRate: '',
           id: Number(uuidv4()),
         },
@@ -512,7 +516,11 @@ const ProductionUnits: NextPage<Props> = ({
     setValue('radius', '1');
     setValue('width', '1');
   }, [formProductionUnitsData]);
-
+  // useEffect(() => {
+  //   if (editFarm) {
+  //     setValue('productionUnits', editFarm.productionUnits ?? []);
+  //   }
+  // }, [editFarm]);
   return (
     <Stack>
       <Typography
@@ -628,7 +636,7 @@ const ProductionUnits: NextPage<Props> = ({
                                 labelId={`demo-simple-select-label-${index}`}
                                 id={`demo-simple-select-${index}`}
                                 label="Production Unit Type *"
-                                {...field} // Spread the field props for value and onChange
+                                {...field}
                                 sx={{
                                   minWidth: '200px',
                                   width: '100%',
@@ -659,7 +667,52 @@ const ProductionUnits: NextPage<Props> = ({
                             )}
                         </FormControl>
                       </TableCell>
-
+                      {/* Production System */}
+                      <TableCell sx={{
+                          border: 0,
+                          pl: 0,
+                          pr: 1,
+                        }}>
+                        <Controller
+                          name={`productionUnits.${index}.productionSystem`}
+                          control={control}
+                          rules={{ required: 'Production System is required' }}
+                          render={({ field }) => (
+                            <FormControl fullWidth focused  className="form-input prod-unit">
+                              <InputLabel>Production System Type *</InputLabel>
+                              <Select {...field} label="Production System Type *"
+                                sx={{
+                                  minWidth: '200px',
+                                  width: '100%',
+                                }}
+                                // labelId={`demo-simple-select-label-${index}`}
+                                // id={`demo-simple-select-${index}`}
+                              >
+                                <MenuItem value="">-- Select --</MenuItem>
+                                <MenuItem value="General">General</MenuItem>
+                                <MenuItem value="Recirculation aquaculture system (RAS)">
+                                  Recirculation aquaculture system (RAS)
+                                </MenuItem>
+                                <MenuItem value="Green water / bio floc">
+                                  Green water / bio floc
+                                </MenuItem>
+                                <MenuItem value="Intensive">Intensive</MenuItem>
+                                <MenuItem value="Semi-intensive">
+                                  Semi-intensive
+                                </MenuItem>
+                                <MenuItem value="Ponds">Ponds</MenuItem>
+                                <MenuItem value="Raceways">Raceways</MenuItem>
+                                <MenuItem value="Cages">Cages</MenuItem>
+                              </Select>
+                            </FormControl>
+                          )}
+                        />
+                        {errors?.productionUnits?.[index]?.productionSystem && (
+                          <Typography color="red" fontSize={13}>
+                            {errors.productionUnits[index].productionSystem?.message}
+                          </Typography>
+                        )}
+                      </TableCell>
                       <TableCell
                         sx={{
                           border: 0,
@@ -740,13 +793,13 @@ const ProductionUnits: NextPage<Props> = ({
                               mt={0.5}
                             >
                               {errors.productionUnits[index]?.capacity.type ===
-                              'required'
+                                'required'
                                 ? validationMessage.required
                                 : errors.productionUnits[index]?.capacity
-                                      .type === 'pattern'
+                                  .type === 'pattern'
                                   ? validationMessage.OnlyNumbersWithDot
                                   : errors.productionUnits[index]?.capacity
-                                        .type === 'maxLength'
+                                    .type === 'maxLength'
                                     ? validationMessage.numberMaxLength
                                     : ''}
                             </Typography>
@@ -810,10 +863,10 @@ const ProductionUnits: NextPage<Props> = ({
                               .type === 'required'
                               ? validationMessage.required
                               : errors?.productionUnits?.[index]?.waterflowRate
-                                    .type === 'pattern'
+                                .type === 'pattern'
                                 ? validationMessage.onlyNumbers
                                 : errors?.productionUnits?.[index]
-                                      ?.waterflowRate.type === 'maxLength'
+                                  ?.waterflowRate.type === 'maxLength'
                                   ? validationMessage.numberMaxLength
                                   : ''}
                           </Typography>
@@ -853,21 +906,19 @@ const ProductionUnits: NextPage<Props> = ({
                             viewBox="0 0 24 24"
                           >
                             <path
-                              fill={`${
-                                productionUnits[index]?.name
-                                  ? '#06A19B'
-                                  : '#808080'
-                              }`}
+                              fill={`${productionUnits[index]?.name
+                                ? '#06A19B'
+                                : '#808080'
+                                }`}
                               fill-rule="evenodd"
                               d="M18.955 1.25c-.433 0-.83 0-1.152.043c-.356.048-.731.16-1.04.47s-.422.684-.47 1.04c-.043.323-.043.72-.043 1.152v13.09c0 .433 0 .83.043 1.152c.048.356.16.731.47 1.04s.684.422 1.04.47c.323.043.72.043 1.152.043h.09c.433 0 .83 0 1.152-.043c.356-.048.731-.16 1.04-.47s.422-.684.47-1.04c.043-.323.043-.72.043-1.152V3.955c0-.433 0-.83-.043-1.152c-.048-.356-.16-.731-.47-1.04s-.684-.422-1.04-.47c-.323-.043-.72-.043-1.152-.043zm-1.13 1.572l-.002.001l-.001.003l-.005.01a.7.7 0 0 0-.037.167c-.028.21-.03.504-.03.997v13c0 .493.002.787.03.997a.7.7 0 0 0 .042.177l.001.003l.003.001l.003.002l.007.003c.022.009.07.024.167.037c.21.028.504.03.997.03s.787-.002.997-.03a.7.7 0 0 0 .177-.042l.003-.001l.001-.003l.005-.01a.7.7 0 0 0 .037-.167c.028-.21.03-.504.03-.997V4c0-.493-.002-.787-.03-.997a.7.7 0 0 0-.042-.177l-.001-.003l-.003-.001l-.01-.005a.7.7 0 0 0-.167-.037c-.21-.028-.504-.03-.997-.03s-.787.002-.997.03a.7.7 0 0 0-.177.042M11.955 4.25h.09c.433 0 .83 0 1.152.043c.356.048.731.16 1.04.47s.422.684.47 1.04c.043.323.043.72.043 1.152v10.09c0 .433 0 .83-.043 1.152c-.048.356-.16.731-.47 1.04s-.684.422-1.04.47c-.323.043-.72.043-1.152.043h-.09c-.432 0-.83 0-1.152-.043c-.356-.048-.731-.16-1.04-.47s-.422-.684-.47-1.04c-.043-.323-.043-.72-.043-1.152V6.955c0-.433 0-.83.043-1.152c.048-.356.16-.731.47-1.04s.684-.422 1.04-.47c.323-.043.72-.043 1.152-.043m-1.132 1.573l.003-.001l-.003 12.355l-.001-.003l-.005-.01a.7.7 0 0 1-.037-.167c-.028-.21-.03-.504-.03-.997V7c0-.493.002-.787.03-.997a.7.7 0 0 1 .042-.177zm0 12.354l.003-12.355l.003-.002l.007-.003a.7.7 0 0 1 .167-.037c.21-.028.504-.03.997-.03s.787.002.997.03a.7.7 0 0 1 .177.042l.003.001l.001.003l.005.01c.009.022.024.07.037.167c.028.21.03.504.03.997v10c0 .493-.002.787-.03.997a.7.7 0 0 1-.042.177l-.001.003l-.003.001l-.01.005a.7.7 0 0 1-.167.037c-.21.028-.504.03-.997.03s-.787-.002-.997-.03a.7.7 0 0 1-.177-.042zM4.955 8.25c-.433 0-.83 0-1.152.043c-.356.048-.731.16-1.04.47s-.422.684-.47 1.04c-.043.323-.043.72-.043 1.152v6.09c0 .433 0 .83.043 1.152c.048.356.16.731.47 1.04s.684.422 1.04.47c.323.043.72.043 1.152.043h.09c.433 0 .83 0 1.152-.043c.356-.048.731-.16 1.04-.47s.422-.684.47-1.04c.043-.323.043-.72.043-1.152v-6.09c0-.433 0-.83-.043-1.152c-.048-.356-.16-.731-.47-1.04s-.684-.422-1.04-.47c-.323-.043-.72-.043-1.152-.043zm-1.13 1.572l-.002.001l-.001.003l-.005.01a.7.7 0 0 0-.037.167c-.028.21-.03.504-.03.997v6c0 .493.002.787.03.997a.7.7 0 0 0 .042.177v.002l.004.002l.01.005c.022.009.07.024.167.037c.21.028.504.03.997.03s.787-.002.997-.03a.7.7 0 0 0 .177-.042l.003-.001l.001-.003l.002-.004l.003-.006a.7.7 0 0 0 .037-.167c.028-.21.03-.504.03-.997v-6c0-.493-.002-.787-.03-.997a.7.7 0 0 0-.042-.177l-.001-.003l-.003-.001l-.01-.005a.7.7 0 0 0-.167-.037c-.21-.028-.504-.03-.997-.03s-.787.002-.997.03a.7.7 0 0 0-.177.042"
                               clip-rule="evenodd"
                             />
                             <path
-                              fill={`${
-                                productionUnits[index]?.name
-                                  ? '#06A19B'
-                                  : '#808080'
-                              }`}
+                              fill={`${productionUnits[index]?.name
+                                ? '#06A19B'
+                                : '#808080'
+                                }`}
                               d="M3 21.25a.75.75 0 0 0 0 1.5h18a.75.75 0 0 0 0-1.5z"
                             />
                           </svg>
@@ -907,11 +958,10 @@ const ProductionUnits: NextPage<Props> = ({
                             viewBox="0 0 256 256"
                           >
                             <path
-                              fill={`${
-                                productionUnits[index]?.name
-                                  ? '#06A19B'
-                                  : '#808080'
-                              }`}
+                              fill={`${productionUnits[index]?.name
+                                ? '#06A19B'
+                                : '#808080'
+                                }`}
                               d="M230.33 141.06a24.43 24.43 0 0 0-21.24-4.23l-41.84 9.62A28 28 0 0 0 140 112H89.94a31.82 31.82 0 0 0-22.63 9.37L44.69 144H16a16 16 0 0 0-16 16v40a16 16 0 0 0 16 16h104a8 8 0 0 0 1.94-.24l64-16a7 7 0 0 0 1.19-.4L226 182.82l.44-.2a24.6 24.6 0 0 0 3.93-41.56ZM16 160h24v40H16Zm203.43 8.21l-38 16.18L119 200H56v-44.69l22.63-22.62A15.86 15.86 0 0 1 89.94 128H140a12 12 0 0 1 0 24h-28a8 8 0 0 0 0 16h32a8.3 8.3 0 0 0 1.79-.2l67-15.41l.31-.08a8.6 8.6 0 0 1 6.3 15.9ZM164 96a36 36 0 0 0 5.9-.48a36 36 0 1 0 28.22-47A36 36 0 1 0 164 96m60-12a20 20 0 1 1-20-20a20 20 0 0 1 20 20m-60-44a20 20 0 0 1 19.25 14.61a36 36 0 0 0-15 24.93A20.4 20.4 0 0 1 164 80a20 20 0 0 1 0-40"
                             />
                           </svg>

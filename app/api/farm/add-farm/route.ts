@@ -5,6 +5,7 @@ import { NextRequest, NextResponse } from 'next/server';
 type ProductionUnitInput = {
   name: string;
   type: string;
+  productionSystem: string;
   capacity: string;
   waterflowRate: string;
 };
@@ -135,6 +136,7 @@ export async function POST(req: NextRequest) {
         data: {
           name: unit.name,
           type: unit.type,
+          productionSystem: unit.productionSystem,
           capacity: unit.capacity,
           waterflowRate: unit.waterflowRate,
           farmId: farm.id,

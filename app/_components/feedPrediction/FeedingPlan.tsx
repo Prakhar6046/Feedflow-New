@@ -55,6 +55,14 @@ export const speciesOptions = [
   { id: 2, label: 'African Catfish', value: 'African Catfish' },
   { id: 3, label: 'Rainbow Trout', value: 'Rainbow Trout' },
 ];
+export const productionSystemOptions = [
+  { id: 1, label: 'Recirculating Aquaculture System (RAS)', value: 'RAS' },
+  { id: 5, label: 'Green Water / Bio Floc', value: 'Green Water / Bio Floc' },
+  { id: 3, label: 'Intensive', value: 'Intensive' },
+  { id: 4, label: 'Ponds', value: 'Ponds' },
+  { id: 5, label: 'Raceways', value: 'Raceways' },
+  { id: 6, label: 'Cages', value: 'Cages' },
+];
 export const tempSelectionOptions = [
   { label: 'Use Farm Profile', value: 'default' },
   {

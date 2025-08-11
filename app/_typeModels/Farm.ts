@@ -34,6 +34,7 @@ export interface ProductionUnitsFormTypes {
   productionUnits: {
     name: string;
     type: string;
+    productionSystem: string;
     capacity: string;
     waterflowRate: string;
     id: number;
@@ -190,8 +191,8 @@ export type FishProducer = {
     city: string;
     postCode: string;
     country: string;
-    createdAt: string; 
-    updatedAt: string; 
+    createdAt: string;
+    updatedAt: string;
     organisationId: string | null;
   };
   image: string | null;
@@ -231,6 +232,7 @@ export interface Farm {
     id: any;
     name: string;
     type: string;
+    productionSystem: string;
     capacity: string;
     waterflowRate: string;
     farmId: string;

@@ -8,9 +8,6 @@ export const POST = async (request: Request) => {
   try {
     const { email, password } = await request.json();
     const normalizedEmail = email.toLowerCase();
-    const tokenPayload = { email };
-    const accessToken = signAccessToken(tokenPayload);
-    const refreshToken = signRefreshToken(tokenPayload);
     const user = await prisma.user.findUnique({
       where: { email: normalizedEmail },
       include: { organisation: { include: { Farm: true, contact: true } } },
@@ -31,27 +28,30 @@ export const POST = async (request: Request) => {
       );
     }
 
-    const response = NextResponse.json({
-      status: true,
-      data: { token: accessToken, user },
-    });
+    const tokenPayload = { userId: user.id, email: user.email };
+    const accessToken = signAccessToken(tokenPayload);
+    const refreshToken = signRefreshToken(tokenPayload);
+
+    // Set access token cookie
     cookies().set('auth-token', accessToken, {
       httpOnly: true,
       path: '/',
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
-      maxAge: 60 * 60 * 24 * 1,
+      maxAge: 60 * 15, // 15 minutes
     });
-    // Set refresh token cookie
     cookies().set('refresh-token', refreshToken, {
       httpOnly: true,
       path: '/',
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
+      secure: false, // Use false for localhost
+      sameSite: 'lax', // Use lax for development
       maxAge: 60 * 60 * 24 * 7,
     });
 
-    return response;
+    return NextResponse.json({
+      status: true,
+      data: { user },
+    });
   } catch (error) {
     return NextResponse.json({ status: false, error }, { status: 500 });
   }

@@ -32,7 +32,7 @@ import { createRoot } from 'react-dom/client';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import Loader from '../Loader';
 import FishGrowthTable from '../table/FishGrowthTable';
-import { speciesOptions, timeIntervalOptions } from './FeedingPlan';
+import { productionSystemOptions, speciesOptions, timeIntervalOptions } from './FeedingPlan';
 import { Farm } from '@/app/_typeModels/Farm';
 interface FormInputs {
   farm: string;
@@ -45,7 +45,8 @@ interface FormInputs {
   numberOfFishs: number;
   adjustmentFactor: number;
   timeInterval: number;
-  species: 'Nile Tilapia' | 'African Catfish' | 'Rainbow Trout';
+  species: string;
+  productionSystem: string;
 }
 type RawDataItem = {
   date: string;
@@ -499,10 +500,10 @@ function AdHoc({ data, setData }: Iprops) {
               <Controller
                 name="species"
                 control={control}
-                defaultValue={'Nile Tilapia'}
+                defaultValue={''}
                 render={({ field }) => (
                   <Select {...field} label="Species *">
-                    {speciesOptions.map((option:any) => (
+                    {speciesOptions.map((option: any) => (
                       <MenuItem value={option.value} key={option.id}>
                         {option.label}
                       </MenuItem>
@@ -512,7 +513,34 @@ function AdHoc({ data, setData }: Iprops) {
               />
             </FormControl>
           </Grid>
+          {/* Production System Dropdown */}
+          <Grid item lg={3} md={4} sm={6} xs={12}>
+            <FormControl className="form-input" fullWidth focused>
+              <InputLabel id="production-system-label">Production System *</InputLabel>
+              <Controller
+                name="productionSystem"
+                control={control}
+                defaultValue={''}
+                rules={{ required: true }}
+                render={({ field }) => (
+                  <Select {...field} labelId="production-system-label" label="Production System *">
+                    {productionSystemOptions.map((option) => (
+                      <MenuItem value={option.value} key={option.id}>
+                        {option.label}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                )}
+              />
+            </FormControl>
+            {errors.productionSystem && (
+              <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                {ValidationMessages.required}
+              </Typography>
+            )}
+          </Grid>
         </Grid>
+
 
         <Grid container spacing={3} mt={2} mb={5} alignItems={'start'}>
           <Grid item lg={3} md={4} sm={6} xs={12}>
