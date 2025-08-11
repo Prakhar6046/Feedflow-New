@@ -193,8 +193,10 @@ const FeedSelection = ({ data, feedSuppliers }: Iprops) => {
           {feedStores?.length ? (
             feedStores?.map((supply) => {
               const supplierName = feedSuppliers?.find((supplier) =>
-                supply?.ProductSupplier?.includes(String(supplier?.id)),
+                supply?.ProductSupplier?.map(String).includes(String(supplier?.id))
               )?.name;
+
+              console.log('supplierName', supplierName);
               return (
                 <Grid item xs="auto" key={Number(supply?.id)}>
                   <Box
