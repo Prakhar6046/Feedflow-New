@@ -108,13 +108,13 @@ const AddNewOrganisation = ({ type, loggedUser }: Props) => {
     formState: { errors, isDirty, isValid },
   } = useForm<AddOrganizationFormInputs>({
     defaultValues: {
-      contacts: [{ 
-        name: '', 
-        role: '', 
-        email: '', 
-        phone: '', 
-        permission: '', 
-        invite: false 
+      contacts: [{
+        name: '',
+        role: '',
+        email: '',
+        phone: '',
+        permission: '',
+        invite: false
       }],
     },
     mode: 'onChange',
@@ -164,7 +164,7 @@ const AddNewOrganisation = ({ type, loggedUser }: Props) => {
   };
 
   const onSubmit: SubmitHandler<AddOrganizationFormInputs> = async (data) => {
-    
+
     // Check for duplicate contacts
     const contactEmails = data.contacts.map(c => c.email?.toLowerCase()).filter(Boolean);
     const uniqueEmails = new Set(contactEmails);
@@ -172,7 +172,7 @@ const AddNewOrganisation = ({ type, loggedUser }: Props) => {
       toast.error('Duplicate email addresses found in contacts. Please remove duplicates.');
       return;
     }
-    
+
     const hasAdmin = data.contacts.some(
       (contact) => contact.permission === 'ADMIN'
     );
@@ -237,13 +237,13 @@ const AddNewOrganisation = ({ type, loggedUser }: Props) => {
         router.push('/dashboard/organisation');
         // Reset form with default values to ensure clean state
         reset({
-          contacts: [{ 
-            name: '', 
-            role: '', 
-            email: '', 
-            phone: '', 
-            permission: '', 
-            invite: false 
+          contacts: [{
+            name: '',
+            role: '',
+            email: '',
+            phone: '',
+            permission: '',
+            invite: false
           }]
         });
       }
@@ -277,13 +277,13 @@ const AddNewOrganisation = ({ type, loggedUser }: Props) => {
         lastContact.permission
       ) {
 
-        append({ 
-          name: '', 
-          role: '', 
-          email: '', 
-          phone: '', 
+        append({
+          name: '',
+          role: '',
+          email: '',
+          phone: '',
           permission: '',
-          invite: false 
+          invite: false
         });
 
       } else {
@@ -292,13 +292,13 @@ const AddNewOrganisation = ({ type, loggedUser }: Props) => {
       }
     } else {
 
-      append({ 
-        name: '', 
-        role: '', 
-        email: '', 
-        phone: '', 
+      append({
+        name: '',
+        role: '',
+        email: '',
+        phone: '',
         permission: '',
-        invite: false 
+        invite: false
       });
     }
   };
@@ -586,6 +586,7 @@ const AddNewOrganisation = ({ type, loggedUser }: Props) => {
                 className="form-input"
                 {...register('organisationName', {
                   required: true,
+                  validate: (value) => value.trim() !== '' || 'Spaces only are not allowed',
                   pattern: validationPattern.alphabetsNumbersAndSpacesPattern,
                   // validate: (value: string) => {
                   //   const isUnique = organisations?.every((val) => {
@@ -656,6 +657,7 @@ const AddNewOrganisation = ({ type, loggedUser }: Props) => {
                   className="form-input org-code"
                   {...register('organisationCode', {
                     required: true,
+                    validate: (value) => value.trim() !== '' || 'Spaces only are not allowed',
                     // pattern: validationPattern.alphabetsNumbersAndSpacesPattern,
                   })}
                   focused
@@ -793,6 +795,7 @@ const AddNewOrganisation = ({ type, loggedUser }: Props) => {
                   className="form-input"
                   {...register('address', {
                     required: true,
+                    validate: (value) => value.trim() !== '' || 'Spaces only are not allowed',
                     pattern: validationPattern.addressPattern,
                   })}
                   focused
@@ -833,6 +836,7 @@ const AddNewOrganisation = ({ type, loggedUser }: Props) => {
                   className="form-input"
                   {...register('city', {
                     required: true,
+                    validate: (value) => value.trim() !== '' || 'Spaces only are not allowed',
                     pattern:
                       validationPattern.alphabetsSpacesAndSpecialCharsPattern,
                   })}
@@ -880,6 +884,7 @@ const AddNewOrganisation = ({ type, loggedUser }: Props) => {
                   className="form-input"
                   {...register('province', {
                     required: true,
+                    validate: (value) => value.trim() !== '' || 'Spaces only are not allowed',
                     pattern:
                       validationPattern.alphabetsSpacesAndSpecialCharsPattern,
                   })}
@@ -921,6 +926,7 @@ const AddNewOrganisation = ({ type, loggedUser }: Props) => {
                   className="form-input"
                   {...register('postCode', {
                     required: true,
+                    validate: (value) => value.trim() !== '' || 'Spaces only are not allowed',
                     pattern: validationPattern.postCodePattern,
                   })}
                   focused
@@ -971,6 +977,7 @@ const AddNewOrganisation = ({ type, loggedUser }: Props) => {
                   className="form-input"
                   {...register('country', {
                     required: true,
+                    validate: (value) => value.trim() !== '' || 'Spaces only are not allowed',
                     pattern: validationPattern.countryPattern,
                   })}
                   focused
@@ -1050,6 +1057,7 @@ const AddNewOrganisation = ({ type, loggedUser }: Props) => {
                       className="form-input"
                       {...register(`contacts.${index}.name` as const, {
                         required: true,
+                        validate: (value) => value.trim() !== '' || 'Spaces only are not allowed',
                         pattern: validationPattern.alphabetsAndSpacesPattern,
                       })}
                       focused
@@ -1169,6 +1177,7 @@ const AddNewOrganisation = ({ type, loggedUser }: Props) => {
                       className="form-input"
                       {...register(`contacts.${index}.role` as const, {
                         required: true,
+                        validate: (value) => value.trim() !== '' || 'Spaces only are not allowed',
                         pattern: validationPattern.addressPattern,
                       })}
                       focused
@@ -1208,18 +1217,26 @@ const AddNewOrganisation = ({ type, loggedUser }: Props) => {
                         required: true,
                         pattern: validationPattern.emailPattern,
                         validate: (value) => {
+                          const trimmedValue = String(value).trim();
+
+                          // Reject if there are spaces anywhere in the email
+                          if (/\s/.test(trimmedValue)) {
+                            return 'Email should not contain spaces';
+                          }
+
                           const isUnique = fields.every(
                             (f, i) =>
                               i === index ||
-                              String(f.email).toLowerCase() !==
-                              String(value).toLowerCase(),
+                              String(f.email).trim().toLowerCase() !== trimmedValue.toLowerCase()
                           );
+
                           if (!isUnique) {
-                            return 'Please enter a unique email.This email is already used in contacts information';
+                            return 'Please enter a unique email. This email is already used in contacts information';
                           }
 
                           return true;
                         },
+
                       })}
                       focused
                       sx={{
@@ -1285,6 +1302,7 @@ const AddNewOrganisation = ({ type, loggedUser }: Props) => {
                       className="form-input"
                       {...register(`contacts.${index}.phone` as const, {
                         required: true,
+                        validate: (value) => value.trim() !== '' || 'Spaces only are not allowed',
                         pattern: validationPattern.phonePattern,
                       })}
                       focused
