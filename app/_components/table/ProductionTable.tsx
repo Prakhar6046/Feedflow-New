@@ -1301,7 +1301,7 @@ export default function ProductionTable({
                           borderBottomColor: '#F5F6F8',
                           borderBottomWidth: 2,
                           fontWeight: 700,
-                          textWrap: 'nowrap',
+                          // textWrap: 'nowrap',
                           paddingLeft: {
                             lg: 10,
                             md: 3,

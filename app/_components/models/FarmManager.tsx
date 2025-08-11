@@ -607,7 +607,7 @@ const TransferModal: React.FC<Props> = ({
         sx={{
           px: 5,
         }}
-        // onBackdropClick={() => reset()}
+      // onBackdropClick={() => reset()}
       >
         <Stack sx={style}>
           <Box display="flex" justifyContent="flex-end" padding={2}>
@@ -680,9 +680,8 @@ const TransferModal: React.FC<Props> = ({
                             <Box width={'100%'}>
                               <FormControl
                                 fullWidth
-                                className={`form-input ${
-                                  idx === 0 && 'selected'
-                                }`}
+                                className={`form-input ${idx === 0 && 'selected'
+                                  }`}
                                 focused
                               >
                                 <InputLabel id="">Fish Farm *</InputLabel>
@@ -702,9 +701,9 @@ const TransferModal: React.FC<Props> = ({
                                     input: {
                                       readOnly:
                                         item.field === 'Stock' ||
-                                        item.field === 'Harvest' ||
-                                        item.field === 'Mortalities' ||
-                                        idx === 0
+                                          item.field === 'Harvest' ||
+                                          item.field === 'Mortalities' ||
+                                          idx === 0
                                           ? true
                                           : false,
                                     },
@@ -712,7 +711,7 @@ const TransferModal: React.FC<Props> = ({
                                   {...register(`manager.${idx}.fishFarm`, {
                                     required:
                                       watch(`manager.${idx}.fishFarm`) &&
-                                      idx !== 0
+                                        idx !== 0
                                         ? false
                                         : true,
                                   })}
@@ -750,7 +749,7 @@ const TransferModal: React.FC<Props> = ({
                                   idx !== 0 &&
                                   errors?.manager[idx].fishFarm &&
                                   errors?.manager[idx].fishFarm.type ===
-                                    'required' && (
+                                  'required' && (
                                     <Typography
                                       variant="body2"
                                       color="red"
@@ -782,9 +781,8 @@ const TransferModal: React.FC<Props> = ({
                             <Box width={'100%'}>
                               <FormControl
                                 fullWidth
-                                className={`form-input ${
-                                  idx === 0 && 'selected'
-                                }`}
+                                className={`form-input ${idx === 0 && 'selected'
+                                  }`}
                                 focused
                               >
                                 <InputLabel id="">Production Unit *</InputLabel>
@@ -817,9 +815,9 @@ const TransferModal: React.FC<Props> = ({
                                     input: {
                                       readOnly:
                                         item.field === 'Stock' ||
-                                        item.field === 'Harvest' ||
-                                        item.field === 'Mortalities' ||
-                                        idx === 0
+                                          item.field === 'Harvest' ||
+                                          item.field === 'Mortalities' ||
+                                          idx === 0
                                           ? true
                                           : false,
                                     },
@@ -865,7 +863,7 @@ const TransferModal: React.FC<Props> = ({
                                             key={unit.id}
                                             disabled={
                                               item.field === 'Transfer' &&
-                                              selectedProduction?.productionUnitId ===
+                                                selectedProduction?.productionUnitId ===
                                                 unit.id
                                                 ? true
                                                 : false
@@ -919,9 +917,8 @@ const TransferModal: React.FC<Props> = ({
                             <Box mb={2} width={'100%'}>
                               <FormControl
                                 fullWidth
-                                className={`form-input ${
-                                  idx === 0 && 'selected'
-                                }`}
+                                className={`form-input ${idx === 0 && 'selected'
+                                  }`}
                                 focused
                               >
                                 <InputLabel id="">Batch No. *</InputLabel>
@@ -941,8 +938,8 @@ const TransferModal: React.FC<Props> = ({
                                     input: {
                                       readOnly:
                                         item.field === 'Harvest' ||
-                                        item.field === 'Mortalities' ||
-                                        idx === 0
+                                          item.field === 'Mortalities' ||
+                                          idx === 0
                                           ? true
                                           : false,
                                     },
@@ -950,7 +947,7 @@ const TransferModal: React.FC<Props> = ({
                                   {...register(`manager.${idx}.batchNumber`, {
                                     required:
                                       watch(`manager.${idx}.batchNumber`) &&
-                                      idx !== 0
+                                        idx !== 0
                                         ? false
                                         : true,
                                     onChange: (e) =>
@@ -1094,10 +1091,10 @@ const TransferModal: React.FC<Props> = ({
                                   mt={0.5}
                                 >
                                   {errors.manager[idx].noOfFish?.type ===
-                                  'required'
+                                    'required'
                                     ? validationMessage.required
                                     : errors.manager[idx].noOfFish?.type ===
-                                        'maxLength'
+                                      'maxLength'
                                       ? validationMessage.numberMaxLength
                                       : ''}
                                 </Typography>
@@ -1178,16 +1175,15 @@ const TransferModal: React.FC<Props> = ({
                               <TextField
                                 label="Biomass *"
                                 type="text"
-                                className={`form-input ${
-                                  idx === 0 && 'selected'
-                                }`}
+                                className={`form-input ${idx === 0 && 'selected'
+                                  }`}
                                 // disabled={idx === 0 ? true : false}
                                 slotProps={{
                                   input: {
                                     readOnly:
                                       (watchedFields[idx].field !== 'Sample' &&
                                         !watchedFields[idx].productionUnit) ||
-                                      idx === 0
+                                        idx === 0
                                         ? true
                                         : false,
                                   },
@@ -1235,7 +1231,7 @@ const TransferModal: React.FC<Props> = ({
                               errors.manager[idx] &&
                               errors.manager[idx].biomass &&
                               errors.manager[idx].biomass.type ===
-                                'required' && (
+                              'required' && (
                                 <Typography
                                   variant="body2"
                                   color="red"
@@ -1250,7 +1246,7 @@ const TransferModal: React.FC<Props> = ({
                               errors.manager[idx] &&
                               errors.manager[idx].biomass &&
                               errors.manager[idx].biomass.type ===
-                                'pattern' && (
+                              'pattern' && (
                                 <Typography
                                   variant="body2"
                                   color="red"
@@ -1265,7 +1261,7 @@ const TransferModal: React.FC<Props> = ({
                               errors.manager[idx] &&
                               errors.manager[idx].biomass &&
                               errors.manager[idx].biomass.type ===
-                                'maxLength' && (
+                              'maxLength' && (
                                 <Typography
                                   variant="body2"
                                   color="red"
@@ -1290,9 +1286,8 @@ const TransferModal: React.FC<Props> = ({
                             <TextField
                               label="Fish Count *"
                               type="text"
-                              className={`form-input ${
-                                idx === 0 && 'selected'
-                              }`}
+                              className={`form-input ${idx === 0 && 'selected'
+                                }`}
                               sx={{ width: '100%' }}
                               // disabled={idx === 0 ? true : false}
 
@@ -1301,7 +1296,7 @@ const TransferModal: React.FC<Props> = ({
                                   readOnly:
                                     (watchedFields[idx].field !== 'Sample' &&
                                       !watchedFields[idx].productionUnit) ||
-                                    idx === 0
+                                      idx === 0
                                       ? true
                                       : false,
                                 },
@@ -1368,7 +1363,7 @@ const TransferModal: React.FC<Props> = ({
                               errors.manager[idx] &&
                               errors.manager[idx].count &&
                               errors.manager[idx].count.type ===
-                                'maxLength' && (
+                              'maxLength' && (
                                 <Typography
                                   variant="body2"
                                   color="red"
@@ -1434,9 +1429,8 @@ const TransferModal: React.FC<Props> = ({
                             <TextField
                               label="Mean Weights *"
                               type="text"
-                              className={`form-input ${
-                                idx === 0 && 'selected'
-                              }`}
+                              className={`form-input ${idx === 0 && 'selected'
+                                }`}
                               sx={{
                                 width: '100%',
                               }}
@@ -1446,7 +1440,7 @@ const TransferModal: React.FC<Props> = ({
                               {...register(`manager.${idx}.meanWeight`, {
                                 required:
                                   watch(`manager.${idx}.meanWeight`) &&
-                                  idx !== 0
+                                    idx !== 0
                                     ? false
                                     : true,
                                 pattern: validationPattern.numbersWithDot,
@@ -1483,7 +1477,7 @@ const TransferModal: React.FC<Props> = ({
                             errors.manager[idx] &&
                             errors.manager[idx].meanWeight &&
                             errors.manager[idx].meanWeight.type ===
-                              'required' && (
+                            'required' && (
                               <Typography
                                 variant="body2"
                                 color="red"
@@ -1498,7 +1492,7 @@ const TransferModal: React.FC<Props> = ({
                             errors.manager[idx] &&
                             errors.manager[idx].meanWeight &&
                             errors.manager[idx].meanWeight.type ===
-                              'pattern' && (
+                            'pattern' && (
                               <Typography
                                 variant="body2"
                                 color="red"
@@ -1513,7 +1507,7 @@ const TransferModal: React.FC<Props> = ({
                             errors.manager[idx] &&
                             errors.manager[idx].meanWeight &&
                             errors.manager[idx].meanWeight.type ===
-                              'maxLength' && (
+                            'maxLength' && (
                               <Typography
                                 variant="body2"
                                 color="red"
@@ -1572,9 +1566,8 @@ const TransferModal: React.FC<Props> = ({
                             <TextField
                               label="Mean Length *"
                               type="text"
-                              className={`form-input ${
-                                idx === 0 && 'selected'
-                              }`}
+                              className={`form-input ${idx === 0 && 'selected'
+                                }`}
                               sx={{
                                 width: '100%',
                               }}
@@ -1586,7 +1579,7 @@ const TransferModal: React.FC<Props> = ({
                                 {
                                   required:
                                     watch(`manager.${idx}.meanLength`) &&
-                                    idx !== 0
+                                      idx !== 0
                                       ? false
                                       : true,
                                   pattern: validationPattern.numbersWithDot,
@@ -1624,7 +1617,7 @@ const TransferModal: React.FC<Props> = ({
                               errors.manager[idx] &&
                               errors.manager[idx].meanLength &&
                               errors.manager[idx].meanLength.type ===
-                                'required' && (
+                              'required' && (
                                 <Typography
                                   variant="body2"
                                   color="red"
@@ -1639,7 +1632,7 @@ const TransferModal: React.FC<Props> = ({
                               errors.manager[idx] &&
                               errors.manager[idx].meanLength &&
                               errors.manager[idx].meanLength.type ===
-                                'pattern' && (
+                              'pattern' && (
                                 <Typography
                                   variant="body2"
                                   color="red"
@@ -1654,7 +1647,7 @@ const TransferModal: React.FC<Props> = ({
                               errors.manager[idx] &&
                               errors.manager[idx].meanLength &&
                               errors.manager[idx].meanLength.type ===
-                                'maxLength' && (
+                              'maxLength' && (
                                 <Typography
                                   variant="body2"
                                   color="red"
@@ -1684,9 +1677,8 @@ const TransferModal: React.FC<Props> = ({
                               <TextField
                                 label={`Stocking Density *`}
                                 type="text"
-                                className={`form-input ${
-                                  idx === 0 && 'selected'
-                                }`}
+                                className={`form-input ${idx === 0 && 'selected'
+                                  }`}
                                 // disabled={
                                 //   idx === 0 ||
                                 //   item.field !== "Harvest" ||
@@ -1745,7 +1737,7 @@ const TransferModal: React.FC<Props> = ({
                               errors.manager[idx] &&
                               errors.manager[idx].stockingDensityKG &&
                               errors.manager[idx].stockingDensityKG.type ===
-                                'required' && (
+                              'required' && (
                                 <Typography
                                   variant="body2"
                                   color="red"
@@ -1760,7 +1752,7 @@ const TransferModal: React.FC<Props> = ({
                               errors.manager[idx] &&
                               errors.manager[idx].stockingDensityKG &&
                               errors.manager[idx].stockingDensityKG.type ===
-                                'pattern' && (
+                              'pattern' && (
                                 <Typography
                                   variant="body2"
                                   color="red"
@@ -1790,9 +1782,8 @@ const TransferModal: React.FC<Props> = ({
                               <TextField
                                 label={`Stocking Density *`}
                                 type="text"
-                                className={`form-input ${
-                                  idx === 0 && 'selected'
-                                }`}
+                                className={`form-input ${idx === 0 && 'selected'
+                                  }`}
                                 slotProps={{
                                   input: { readOnly: true },
                                 }}
@@ -1844,7 +1835,7 @@ const TransferModal: React.FC<Props> = ({
                               errors.manager[idx] &&
                               errors.manager[idx].stockingDensityNM &&
                               errors.manager[idx].stockingDensityNM.type ===
-                                'required' && (
+                              'required' && (
                                 <Typography
                                   variant="body2"
                                   color="red"
@@ -1859,7 +1850,7 @@ const TransferModal: React.FC<Props> = ({
                               errors.manager[idx] &&
                               errors.manager[idx].stockingDensityNM &&
                               errors.manager[idx].stockingDensityNM.type ===
-                                'pattern' && (
+                              'pattern' && (
                                 <Typography
                                   variant="body2"
                                   color="red"
@@ -1883,9 +1874,8 @@ const TransferModal: React.FC<Props> = ({
                             <TextField
                               label="Stocking Level *"
                               type="text"
-                              className={`form-input ${
-                                idx === 0 && 'selected'
-                              }`}
+                              className={`form-input ${idx === 0 && 'selected'
+                                }`}
                               slotProps={{
                                 input: { readOnly: true },
                               }}
@@ -2005,39 +1995,42 @@ const TransferModal: React.FC<Props> = ({
                       onClick={() => handleCloseAnchor(field)}
                       key={i}
                       disabled={
-                        selectedProduction?.batchNumberId &&
-                        selectedProduction?.biomass &&
-                        selectedProduction?.fishCount &&
-                        selectedProduction?.meanLength &&
-                        selectedProduction?.meanWeight &&
                         field === 'Stock'
-                          ? true
-                          : watchedFields[1]?.field === 'Stock'
+                          ? false
+                          : selectedProduction?.batchNumberId &&
+                            selectedProduction?.biomass &&
+                            selectedProduction?.fishCount &&
+                            selectedProduction?.meanLength &&
+                            selectedProduction?.meanWeight &&
+                            field === 'Stock'
                             ? true
-                            : field === 'Stock' &&
+                            : watchedFields[1]?.field === 'Stock'
+                              ? true
+                              : field === 'Stock' &&
                                 selectedProduction?.batchNumberId &&
                                 selectedProduction?.fishCount
-                              ? true
-                              : field === 'Harvest' ||
+                                ? true
+                                : field === 'Harvest' ||
                                   field === 'Mortalities' ||
                                   field === 'Transfer' ||
                                   field === 'Sample'
-                                ? watchedFields[0].count &&
-                                  watchedFields[0].batchNumber
-                                  ? false
-                                  : true
-                                : selectedProduction?.batchNumberId &&
+                                  ? watchedFields[0].count &&
+                                    watchedFields[0].batchNumber
+                                    ? false
+                                    : true
+                                  : selectedProduction?.batchNumberId &&
                                     selectedProduction?.biomass &&
                                     selectedProduction?.fishCount &&
                                     selectedProduction?.meanLength &&
                                     selectedProduction?.meanWeight
-                                  ? false
-                                  : watchedFields.find(
-                                        (field) => field.field === 'Stock',
-                                      ) && field === 'Stock'
-                                    ? true
-                                    : false
+                                    ? false
+                                    : watchedFields.find(
+                                      (field) => field.field === 'Stock',
+                                    ) && field === 'Stock'
+                                      ? true
+                                      : false
                       }
+
                     >
                       {field}
                     </MenuItem>
