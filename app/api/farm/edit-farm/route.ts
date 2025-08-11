@@ -110,6 +110,7 @@ export async function POST(req: NextRequest) {
         update: {
           name: unit.name,
           type: unit.type,
+          productionSystem: unit.productionSystem,
           capacity: unit.capacity,
           waterflowRate: unit.waterflowRate,
           farmId: updatedFarm.id,
@@ -117,6 +118,7 @@ export async function POST(req: NextRequest) {
         create: {
           name: unit.name,
           type: unit.type,
+          productionSystem: unit.productionSystem,
           capacity: unit.capacity,
           waterflowRate: unit.waterflowRate,
           farmId: updatedFarm.id,

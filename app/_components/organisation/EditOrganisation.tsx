@@ -70,6 +70,7 @@ const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [organisationData, setOrganisationData] = useState<OrganizationData>();
+  console.log('organisationData', organisationData);
   const token = getCookie('auth-token');
   const [isHatcherySelected, setIsHatcherySelected] = useState<boolean>(false);
   const [altitude, setAltitude] = useState<string>('');
@@ -140,28 +141,29 @@ const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
     },
   });
   const selectedOrganisationType = watch('organisationType');
-  const handleInviteUser = async (index: number) => {
+  const handleInviteUser = (index: number) => {
     const contact = watch(`contacts.${index}`);
-    const currentlyInvited = contact.invite;
 
+    // Check if the contact has been invited from the API response
+    const isAlreadyInvited = contact.invite;
+
+    if (isAlreadyInvited) {
+      toast.error('This user has already been invited.');
+      return;
+    }
+
+    // Check if all required fields are filled for a new invite
     if (!isContactComplete(contact)) {
       toast.error('Please fill all required fields before marking for invite.');
       return;
     }
 
-    setValue(`contacts.${index}.invite`, !currentlyInvited, {
+    // Toggle the `newInvite` status in the form state
+    setValue(`contacts.${index}.newInvite`, !contact.newInvite, {
       shouldDirty: true,
       shouldTouch: true,
       shouldValidate: true,
     });
-
-    setInviteSent((prev) => ({
-      ...prev,
-      [index]: !currentlyInvited,
-    }));
-
-    // Force validation for the full contacts array if needed
-    await trigger(`contacts`);
   };
 
   const onSubmit: SubmitHandler<AddOrganizationFormInputs> = async (data) => {
@@ -1088,7 +1090,10 @@ const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
 
                 {fields.map((item, index) => {
                   const liveContact = watch(`contacts.${index}`);
-                  const isDisabled = !isContactComplete(liveContact);
+                  const hasBeenInvited = liveContact.invite; // From API
+                  const isMarkedForInvite = liveContact.newInvite; // Toggled by user
+                  const isDisabledForInvite = hasBeenInvited || !isContactComplete(liveContact);
+                  const isSentIconVisible = hasBeenInvited || isMarkedForInvite;
                   return (
                     <Stack
                       key={item.id}
@@ -1382,35 +1387,30 @@ const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
                         justifyContent="center"
                         alignItems="center"
                         sx={{
-                          cursor: isDisabled || watch(`contacts.${index}.invite`) ? 'not-allowed' : 'pointer',
+                          cursor: isDisabledForInvite ? 'not-allowed' : 'pointer',
                         }}
                       >
                         <Image
                           title={
-                            watch(`contacts.${index}.invite`)
-                              ? 'Click to unmark invite'
-                              : 'Click to mark invite'
+                            hasBeenInvited
+                              ? 'Already invited'
+                              : isMarkedForInvite
+                                ? 'Click to unmark invite'
+                                : 'Click to mark invite'
                           }
-                          src={
-                            watch(`contacts.${index}.invite`)
-                              ? sentEmailIcon
-                              : sendEmailIcon
-                          }
+                          src={isSentIconVisible ? sentEmailIcon : sendEmailIcon}
                           alt="Send Email Icon"
                           onClick={() => {
-                            if (!isDisabled && !watch(`contacts.${index}.invite`)) {
+                            if (!hasBeenInvited) {
                               handleInviteUser(index);
                             }
                           }}
-
                           style={{
-                            opacity: isDisabled || watch(`contacts.${index}.invite`) ? 0.4 : 1,
-                            cursor: isDisabled || watch(`contacts.${index}.invite`) ? 'not-allowed' : 'pointer',
-                            pointerEvents: isDisabled || watch(`contacts.${index}.invite`) ? 'none' : 'auto',
+                            opacity: isDisabledForInvite ? 0.4 : 1,
+                            cursor: isDisabledForInvite ? 'not-allowed' : 'pointer',
+                            pointerEvents: isDisabledForInvite ? 'none' : 'auto',
                           }}
-
                         />
-
                       </Box>
 
                       <Box

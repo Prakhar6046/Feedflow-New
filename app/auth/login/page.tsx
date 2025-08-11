@@ -22,7 +22,7 @@ export default function Page() {
   const [email, setEmail] = useState<string>(
     'abhishek.choudhary@ensuesoft.com',
   );
-  const [password, setPassword] = useState<string>('12345678');
+  const [password, setPassword] = useState<string>('->MF~E786YZg');
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
 
