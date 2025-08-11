@@ -2,7 +2,7 @@ import BasicBreadcrumbs from '@/app/_components/Breadcrumbs';
 import { Metadata } from 'next';
 import NewFeedLibarary from '@/app/_components/feedSupply/NewFeedLibarary';
 import { getFeedSuppliers } from '@/app/_lib/action';
-
+export const dynamic = 'force-dynamic';
 export const metadata: Metadata = {
   title: 'Feed Supply',
 };
