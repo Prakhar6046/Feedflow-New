@@ -16,6 +16,7 @@ import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import UserPermission from './UserPermission';
+import { getCookie } from 'cookies-next';
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -42,7 +43,7 @@ function EditUser({ userId }: Iprops) {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [showConfirmPassword, setshowConfirmPassword] =
     useState<boolean>(false);
-
+const token = getCookie('auth-token');
   const {
     register,
     setValue,
@@ -98,7 +99,12 @@ function EditUser({ userId }: Iprops) {
       const user = async () => {
         setLoading(true);
         const data = await fetch(`/api/users/${userId}`, {
-          method: 'GET',
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        cache: 'no-store',
         });
         const res = await data.json();
         setLoading(false);
@@ -107,7 +113,6 @@ function EditUser({ userId }: Iprops) {
       user();
     }
   }, [userId]);
-
   useEffect(() => {
     if (userData) {
       setValue('name', String(userData?.data?.name));
