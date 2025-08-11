@@ -1131,6 +1131,7 @@ const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
                               value: validationPattern.alphabetsAndSpacesPattern,
                               message: 'Input must contain only alphabets',
                             },
+                            validate: (value) => value.trim() !== '' || 'Spaces only are not allowed',
                           })}
                           focused
                           sx={{
@@ -1228,6 +1229,7 @@ const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
                           className="form-input"
                           {...register(`contacts.${index}.role` as const, {
                             required: true,
+                            validate: (value) => value.trim() !== '' || 'Spaces only are not allowed',
                             pattern: validationPattern.addressPattern,
                           })}
                           focused
@@ -1268,14 +1270,18 @@ const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
                             required: true,
                             pattern: validationPattern.emailPattern,
                             validate: (value) => {
+                              const trimmedValue = String(value).trim();
+                              if (/\s/.test(trimmedValue)) {
+                                return 'Email should not contain spaces';
+                              }
                               const isUnique = fields.every(
                                 (f, i) =>
                                   i === index ||
-                                  String(f.email).toLowerCase() !==
-                                  String(value).toLowerCase(),
+                                  String(f.email).trim().toLowerCase() !== trimmedValue.toLowerCase()
                               );
+
                               if (!isUnique) {
-                                return 'Please enter a unique email.This email is already used in contacts information';
+                                return 'Please enter a unique email. This email is already used in contacts information';
                               }
 
                               return true;
@@ -1345,6 +1351,7 @@ const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
                           className="form-input"
                           {...register(`contacts.${index}.phone` as const, {
                             required: true,
+                            validate: (value) => value.trim() !== '' || 'Spaces only are not allowed',
                             pattern: validationPattern.phonePattern,
                           })}
                           focused
