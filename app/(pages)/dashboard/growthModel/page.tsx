@@ -66,6 +66,10 @@ export default async function GrowthModelPage() {
         ]}
         buttonName="Add Model"
         buttonRoute="/dashboard/growthModel/create"
+        extraButton={{
+          buttonName: 'Species & Production System',
+          route: '/dashboard/growthModel/species-production-system',
+        }}
       />
       <div>
         <GrowthModelTable
