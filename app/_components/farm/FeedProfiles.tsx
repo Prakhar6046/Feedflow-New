@@ -120,16 +120,16 @@ const FeedProfiles = ({
     return selectedSupplier?.reduce(
       (acc: GroupedSupplierStores[], supplier: SupplierOptions) => {
         const storesForSupplier = feedStores?.filter((store) =>
-          store?.ProductSupplier?.includes(String(supplier.id)),
+          store?.ProductSupplier?.some(
+            (prodSupplierId: string) => Number(prodSupplierId) === supplier.id
+          )
         );
-
         if (storesForSupplier?.length) {
           acc.push({
             supplier,
             stores: storesForSupplier,
           });
         }
-
         return acc;
       },
       [],
@@ -166,9 +166,10 @@ const FeedProfiles = ({
   }, [editFarm]);
   useEffect(() => {
     if (feedSuppliers?.length) {
-      const options = feedSuppliers?.map((supplier) => {
-        return { option: supplier.name, id: supplier?.id };
-      });
+      const options = feedSuppliers?.map((supplier) => ({
+        option: supplier.name,
+        id: Number(supplier.id), // Ensure id is a number
+      }));
       setSupplierOptions(options);
       setSelectedSupplier(options);
     }

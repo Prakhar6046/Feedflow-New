@@ -212,20 +212,19 @@ const ProductionUnitFeedProfile: React.FC<Props> = ({
   );
 
   const groupedData: GroupedSupplierStores[] = useMemo(() => {
-
     return selectedSupplier?.reduce(
       (acc: GroupedSupplierStores[], supplier: SupplierOptions) => {
         const storesForSupplier = feedStores?.filter((store) =>
-          store?.ProductSupplier?.includes(String(supplier.id)),
+          store?.ProductSupplier?.some(
+            (prodSupplierId: string) => Number(prodSupplierId) === supplier.id
+          )
         );
-
         if (storesForSupplier?.length) {
           acc.push({
             supplier,
             stores: storesForSupplier,
           });
         }
-
         return acc;
       },
       [],
