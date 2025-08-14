@@ -29,11 +29,13 @@ import * as validationPattern from '@/app/_lib/utils/validationPatterns/index';
 import * as validationMessage from '@/app/_lib/utils/validationsMessage/index';
 import toast from 'react-hot-toast';
 import { getCookie } from 'cookies-next';
+import { Species } from '../feedSupply/NewFeedLibarary';
 interface Props {
   isEdit?: boolean;
   fishSupplyId?: string;
   farms?: Farm[];
   organisations?: SingleOrganisation[];
+  speciesList: Species[];
 }
 interface FormInputs {
   organisation: string;
@@ -46,9 +48,9 @@ interface FormInputs {
   fishFarmId: string;
   status: string;
   productionUnits: string;
-  species: string;
+  speciesId: string;
 }
-function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
+function NewFishSupply({ isEdit, fishSupplyId, farms, organisations, speciesList }: Props) {
   const router = useRouter();
   const userData: any = getCookie('logged-user');
   const token = getCookie('auth-token');
@@ -72,10 +74,11 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
     watch,
     formState: { errors },
   } = useForm<FormInputs>({
-    defaultValues: { hatchingDate: null, organisation: '', species: '' },
+    defaultValues: { hatchingDate: null, organisation: '', speciesId: '' },
     mode: 'onChange',
   });
   const onSubmit: SubmitHandler<FormInputs> = async (data) => {
+    console.log('Form data:', data);
     // Prevent API call if one is already in progress
     if (isApiCallInProgress) return;
     setIsApiCallInProgress(true);
@@ -88,7 +91,7 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
         spawningNumber,
         organisation,
         productionUnits,
-        species,
+        speciesId,
         ...restData
       } = data;
       const validHatchingDate = hatchingDate?.isValid()
@@ -109,13 +112,13 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
         organisation: Number(data.organisation),
         spawningNumber: Number(data.spawningNumber),
         productionUnits: data.productionUnits,
-        species: data.species,
+        speciesId: data.speciesId,
         organisationId: loggedUserData.organisationId,
         ...restData,
       };
 
-     const response = await fetch(
-         `${isEdit ? `/api/fish/${fishSupplyId}` : '/api/fish'}`,
+      const response = await fetch(
+        `${isEdit ? `/api/fish/${fishSupplyId}` : '/api/fish'}`,
         {
           method: isEdit ? 'PUT' : 'POST',
           headers: {
@@ -183,7 +186,7 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
       setValue('status', fishSupply?.status);
       setValue('fishFarmId', fishSupply?.fishFarmId);
       setValue('productionUnits', String(fishSupply?.productionUnits));
-      setValue('species', fishSupply?.species || '');
+      setValue('speciesId', fishSupply?.speciesId || '');
     }
   }, [fishSupply]);
 
@@ -285,27 +288,27 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations }: Props) {
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
                 label="Species *"
-                value={watch('species') || ''}
-                {...register('species', {
+                value={watch('speciesId') || ''}
+                {...register('speciesId', {
                   required: true,
                   onChange: (e) => {
-                    setValue('species', e.target.value);
+                    setValue('speciesId', e.target.value);
                   },
                 })}
               >
-                <MenuItem value="Tilapia (Oreochromis Nilotic x Aureus)">
-                  Tilapia (Oreochromis Nilotic x Aureus)
-                </MenuItem>
-                <MenuItem value="African Catfish">
-                  African Catfish
-                </MenuItem>
-                <MenuItem value="Rainbow Trout">
-                  Rainbow Trout
-                </MenuItem>
+                {speciesList && speciesList.length > 0 ? (
+                  speciesList.map((sp) => (
+                    <MenuItem key={sp.id} value={sp.id}>
+                      {sp.name}
+                    </MenuItem>
+                  ))
+                ) : (
+                  <MenuItem disabled>No species available</MenuItem>
+                )}
               </Select>
               {errors &&
-                errors.species &&
-                errors.species.type === 'required' && (
+                errors.speciesId &&
+                errors.speciesId.type === 'required' && (
                   <Typography
                     variant="body2"
                     color="red"

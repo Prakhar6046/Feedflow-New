@@ -24,6 +24,7 @@ export const GET = async (request: NextRequest, context: { params: any }) => {
   try {
     const data = await prisma.fishSupply.findUnique({
       where: { id: Number(fishSupplyId) },
+      include: { species: true }
     });
     return new NextResponse(JSON.stringify({ status: true, data }), {
       status: 200,
@@ -49,6 +50,15 @@ export const PUT = async (request: NextRequest, context: { params: any }) => {
   try {
     const fishSupplyId = context.params.fishSupplyId;
     const body = await request.json();
+    if (!body.speciesId) {
+      return NextResponse.json({ message: 'Species ID is required', status: false }, { status: 400 });
+    }
+
+    const species = await prisma.species.findUnique({ where: { id: body.speciesId } });
+    if (!species) {
+      return NextResponse.json({ message: 'Species not found', status: false }, { status: 404 });
+    }
+
     if (!fishSupplyId) {
       return new NextResponse(
         JSON.stringify({ message: 'Invalid or missing fish supply Id' }),
