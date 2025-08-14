@@ -1,13 +1,15 @@
 import BasicBreadcrumbs from '@/app/_components/Breadcrumbs';
 import { Metadata } from 'next';
 import NewFeedLibarary from '@/app/_components/feedSupply/NewFeedLibarary';
-import { getFeedSuppliers } from '@/app/_lib/action';
+import { getFeedSuppliers, getspeciesList } from '@/app/_lib/action';
 export const dynamic = 'force-dynamic';
 export const metadata: Metadata = {
   title: 'Feed Supply',
 };
 export default async function Page() {
   const feedSuppliers = await getFeedSuppliers();
+    const speciesList = await getspeciesList();
+
   return (
     <>
       <BasicBreadcrumbs
@@ -21,7 +23,7 @@ export default async function Page() {
           { name: 'New', link: '/dashboard/feedSupply/libarary/new' },
         ]}
       />
-      <NewFeedLibarary feedSuppliers={feedSuppliers?.data} />
+      <NewFeedLibarary feedSuppliers={feedSuppliers?.data} speciesList={speciesList}/>
     </>
   );
 }

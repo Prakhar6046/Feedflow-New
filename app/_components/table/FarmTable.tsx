@@ -52,7 +52,6 @@ export default function FarmTable({ farms, permisions }: Props) {
     null,
   );
   const [sortDataFromLocal, setSortDataFromLocal] = React.useState<any>('');
-
   // useEffect(() => {
   //   const cookie = document.cookie
   //     .split('; ')

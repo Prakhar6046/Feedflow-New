@@ -6,6 +6,7 @@ import {
 } from '@mui/material';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
+import { getCookie } from 'cookies-next';
 
 interface Species {
     id: string;
@@ -29,9 +30,15 @@ export default function SpeciesTable() {
     const [orderBy, setOrderBy] = useState<keyof Species>('name');
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [selectedId, setSelectedId] = useState<string | null>(null);
-
+    const token = getCookie('auth-token');
     const fetchData = async () => {
-        const res = await fetch('/api/species');
+        const res = await fetch('/api/species', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+            },
+        });
         setData(await res.json());
     };
 

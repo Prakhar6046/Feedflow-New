@@ -5,7 +5,6 @@ export async function GET(
   req: Request,
   { params }: { params: { id: string } }
 ) {
-  console.log('params:', params);
 
   const system = await prisma.productionSystem.findUnique({
     where: { id: params.id },

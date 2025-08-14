@@ -392,3 +392,16 @@ export const getFeedSuppliers = async () => {
     return { error: 'Something went wrong' };
   }
 };
+export const getspeciesList = async () => {
+  try {
+    const url = `${process.env.BASE_URL}/api/species`;
+    const res = await secureFetch(url, {
+      method: 'GET',
+      cache: 'no-store',
+    });
+    return await res.json();
+  } catch (error) {
+    console.error('getSpeciesList error:', error);
+    return { error: 'Something went wrong' };
+  }
+};

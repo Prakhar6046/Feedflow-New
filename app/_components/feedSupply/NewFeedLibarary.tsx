@@ -25,7 +25,9 @@ const fields = [
   { name: 'productName', label: 'Product Name *', type: 'text' },
   { name: 'productFormat', label: 'Product Format *', type: 'text' },
   { name: 'particleSize', label: 'Particle Size *', type: 'string' },
-  { name: 'fishSizeG', label: 'Fish Size (g) *', type: 'number' },
+  { name: 'speciesId', label: 'Species *', type: 'species-select' },
+  { name: 'minFishSizeG', label: 'Min Fish Size (g) *', type: 'number' },
+  { name: 'maxFishSizeG', label: 'Max Fish Size (g) *', type: 'number' },
   { name: 'nutritionalClass', label: 'Nutritional Class *', type: 'text' },
   { name: 'nutritionalPurpose', label: 'Nutritional Purpose *', type: 'text' },
   { name: 'suitableSpecies', label: 'Suitable Species *', type: 'text' },
@@ -80,15 +82,21 @@ const fields = [
   { name: 'deNFE', label: 'DE NFE *', type: 'number' },
   { name: 'de', label: 'DE *', type: 'number' },
 ];
-
+export interface Species {
+  id: string;
+  name: string;
+  createdAt: string;
+  updatedAt: string;
+};
 interface Props {
   feedSuppliers: FeedSupplier[];
+  speciesList: Species[];
 }
 
 type FeedFormFields = {
   [key: string]: string | number;
 };
-const NewFeedLibarary: NextPage<Props> = ({ feedSuppliers }) => {
+const NewFeedLibarary: NextPage<Props> = ({ feedSuppliers, speciesList }) => {
   const router = useRouter();
   const loggedUser: any = getCookie('logged-user');
   const [isApiCallInProgress, setIsApiCallInProgress] =
@@ -186,6 +194,30 @@ const NewFeedLibarary: NextPage<Props> = ({ feedSuppliers }) => {
                           {supplier.name}
                         </MenuItem>
                       ))}
+                    </Select>
+                  )}
+                />
+              </FormControl>
+            ) : field.type === 'species-select' ? (
+              <FormControl fullWidth className="form-input" focused>
+                <InputLabel>{field.label}</InputLabel>
+                <Controller
+                  name={field.name}
+                  control={control}
+                  defaultValue=""
+                  rules={{ required: true }}
+                  render={({ field }) => (
+                    <Select {...field} label={field.name} fullWidth>
+                      {speciesList && speciesList.length > 0 ? (
+                        speciesList.map((sp) => (
+                          <MenuItem key={sp.id} value={sp.id}>
+                            {sp.name}
+                          </MenuItem>
+                        ))
+                      ) : (
+                        <MenuItem disabled>No species available</MenuItem>
+                      )}
+
                     </Select>
                   )}
                 />

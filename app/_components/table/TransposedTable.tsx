@@ -16,9 +16,11 @@ import {
   Button,
 } from '@mui/material';
 import { useForm, Controller } from 'react-hook-form';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { getCookie } from 'cookies-next';
+import { Species } from '../feedSupply/NewFeedLibarary';
+import { useRouter } from 'next/navigation';
 
 interface Props {
   feedSuppliers: any;
@@ -27,14 +29,33 @@ interface Props {
 
 export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
   const { control, handleSubmit, reset, setValue } = useForm();
-
+  const [speciesList, setSpeciesList] = useState<Species[]>([]);
+  const [isSaving, setIsSaving] = useState(false);
+  const token = getCookie('auth-token');
+const router = useRouter();
   const excludedKeys = [
     'id',
     'createdAt',
     'updatedAt',
     'organaisationId',
     'ProductSupplier',
+    'speciesId',
   ];
+
+  const fetchData = async () => {
+    const res = await fetch('/api/species', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    setSpeciesList(await res.json());
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   useEffect(() => {
     if (filteredStores?.length) {
@@ -46,6 +67,7 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
             defaultValues[`${key}-${colIndex}`] = value;
           }
         });
+        defaultValues[`speciesId-${colIndex}`] = item.speciesId || '';
       });
       reset(defaultValues);
     }
@@ -86,12 +108,12 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
   }
 
   const onSubmit = async (data: any) => {
+    setIsSaving(true); 
     const payload = transformFeedProductsWithSuppliers(data);
     const updatedPayload = payload.map((feed) => {
       const { ProductSupplier, supplierIds, ...rest } = feed;
       return { ...rest, ProductSupplier: supplierIds };
     });
-
     try {
       const token = getCookie('auth-token');
       const response = await fetch(`/api/feed-store `, {
@@ -105,14 +127,19 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
       if (response.ok) {
         const res = await response.json();
         toast.dismiss();
-
+        
         toast.success(res.message);
+        router.push('/dashboard/feedSupply/libarary');
+        router.refresh();
       } else {
         toast.dismiss();
         toast.error('Somethig went wrong!');
       }
     } catch (error) {
       toast.error('Something went wrong. Please try again.');
+    }
+    finally {
+      setIsSaving(false); 
     }
   };
   const firstRows = keys.slice(0, 2);
@@ -124,6 +151,7 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
         <Button
           type="submit"
           variant="contained"
+          disabled={isSaving}
           sx={{
             color: '#fff',
             background: '#06A19B',
@@ -135,7 +163,7 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
             border: '1px solid #06A19B',
           }}
         >
-          Save
+          {isSaving ? 'Saving...' : 'Save'}
         </Button>
       </Box>
 
@@ -268,6 +296,36 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
           </TableHead>
 
           <TableBody>
+            <TableRow>
+              <TableCell>Species</TableCell>
+              {filteredStores.map((store: any, colIndex: number) => (
+                <TableCell key={colIndex}>
+                  <Controller
+                    name={`speciesId-${colIndex}`}
+                    control={control}
+                    defaultValue={store.speciesId || ''}
+                    render={({ field }) => (
+                      <Select
+                        {...field}
+                        fullWidth
+                        size="small"
+                        displayEmpty
+                        sx={{ fontSize: 13 }}
+                      >
+                        <MenuItem value="">
+                          <em>Select Species</em>
+                        </MenuItem>
+                        {speciesList.map((species) => (
+                          <MenuItem key={species.id} value={species.id}>
+                            {species.name}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    )}
+                  />
+                </TableCell>
+              ))}
+            </TableRow>
             {remainingRows.map((key) => (
               <TableRow key={key}>
                 <TableCell>{key}</TableCell>
