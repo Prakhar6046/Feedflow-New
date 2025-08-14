@@ -14,7 +14,7 @@ export interface FishSupply {
   fishFarm: string;
   fishFarmId: string;
   status: string;
-  species?: string; 
+  speciesId?: string; 
   createdBy: number;
   updatedBy: string;
   createdAt: string;

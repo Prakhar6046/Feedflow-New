@@ -26,6 +26,7 @@ import { selectRole } from '@/lib/features/user/userSlice';
 import { useAppSelector } from '@/lib/hooks';
 import { getLocalItem } from '@/app/_lib/utils';
 import { log } from 'console';
+import { Species } from '../feedSupply/NewFeedLibarary';
 interface Props {
   tableData: {
     id: string;
@@ -35,13 +36,16 @@ interface Props {
   }[];
   fishSupply?: FishSupply[];
   permisions: boolean;
+  speciesList: Species[];
 }
 
 export default function FishSupplyTable({
   tableData,
   fishSupply,
   permisions,
+  speciesList,
 }: Props) {
+  console.log('FishSupplyTable rendered with data:', fishSupply);
   const router = useRouter();
   const dispatch = useAppDispatch();
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
@@ -113,10 +117,10 @@ export default function FishSupplyTable({
               }}
             >
               {idx === tableData.length - 1 ||
-              idx === 0 ||
-              idx === 1 ||
-              idx === 2 ||
-              idx === 5 ? (
+                idx === 0 ||
+                idx === 1 ||
+                idx === 2 ||
+                idx === 5 ? (
                 headCell.label
               ) : (
                 <TableSortLabel
@@ -184,9 +188,9 @@ export default function FishSupplyTable({
             if (fish1.status < fish2.status) return -1 * orderType;
             if (fish1.status > fish2.status) return 1 * orderType;
             return 0;
-          } else if (property === 'specie') {
-            const specie1 = fish1.species || fish1.creator?.hatchery[0]?.fishSpecie || '';
-            const specie2 = fish2.species || fish2.creator?.hatchery[0]?.fishSpecie || '';
+          } else if (property === 'speciesId') {
+            const specie1 = speciesList.find(s => s.id === (fish1.speciesId || fish1.creator?.hatchery[0]?.fishSpecie))?.name || '';
+            const specie2 = speciesList.find(s => s.id === (fish2.speciesId || fish2.creator?.hatchery[0]?.fishSpecie))?.name || '';
             if (specie1 < specie2) return -1 * orderType;
             if (specie1 > specie2) return 1 * orderType;
             return 0;
@@ -244,13 +248,14 @@ export default function FishSupplyTable({
               if (fish1.status < fish2.status) return -1 * orderType;
               if (fish1.status > fish2.status) return 1 * orderType;
               return 0;
-            } else if (data.column === 'specie') {
-              const specie1 = fish1.species || fish1.creator?.hatchery[0]?.fishSpecie || '';
-              const specie2 = fish2.species || fish2.creator?.hatchery[0]?.fishSpecie || '';
+            } else if (data.column === 'speciesId') {
+              const specie1 = speciesList.find(s => s.id === (fish1.speciesId || fish1.creator?.hatchery[0]?.fishSpecie))?.name || '';
+              const specie2 = speciesList.find(s => s.id === (fish2.speciesId || fish2.creator?.hatchery[0]?.fishSpecie))?.name || '';
               if (specie1 < specie2) return -1 * orderType;
               if (specie1 > specie2) return 1 * orderType;
               return 0;
             }
+
             return 0;
           },
         );
@@ -292,8 +297,11 @@ export default function FishSupplyTable({
           <TableBody>
             {sortedFishSupply && sortedFishSupply.length > 0 ? (
               sortedFishSupply.map((fish: FishSupply, i: number) => {
-    
-              
+                const speciesName = speciesList.find(
+                  (specie) => specie.id === (fish.speciesId || fish.creator?.hatchery[0]?.fishSpecie)
+                )?.name || '';
+
+
                 return (
                   <TableRow
                     key={i}
@@ -317,7 +325,7 @@ export default function FishSupplyTable({
                       component="th"
                       scope="row"
                     >
-                       {(fish?.species || fish?.creator?.hatchery[0]?.fishSpecie) ?? ''}
+                      {speciesName}
                     </TableCell>
                     <TableCell
                       sx={{

@@ -80,11 +80,12 @@ model Organisation {
 }
 
 model Species {
-  id         String      @id @default(uuid())
-  name       String      @unique
-  feedStores FeedStore[]
-  createdAt  DateTime    @default(now())
-  updatedAt  DateTime    @updatedAt
+  id           String       @id @default(uuid())
+  name         String       @unique
+  feedStores   FeedStore[]
+  fishSupplies FishSupply[] @relation("FishSupplySpecies")
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
 }
 
 model ProductionSystem {
@@ -356,7 +357,8 @@ model FishSupply {
   farm              Farm                @relation(fields: [fishFarmId], references: [id])
   status            String
   productionUnits   String              @default("")
-  species           String?
+  speciesId         String?
+  species           Species?            @relation("FishSupplySpecies", fields: [speciesId], references: [id])
   createdBy         Int? // Optional field, nullable foreign key
   updatedBy         String?
   createdAt         DateTime            @default(now())

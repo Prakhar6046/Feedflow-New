@@ -1,6 +1,6 @@
 import BasicBreadcrumbs from '@/app/_components/Breadcrumbs';
 import FishSupplyTable from '@/app/_components/table/FishSupplyTable';
-import { getFishSupply } from '@/app/_lib/action';
+import { getFishSupply, getspeciesList } from '@/app/_lib/action';
 import {
   fishTableHead,
   fishTableHeadMember,
@@ -23,7 +23,7 @@ export default async function Page({
   const query = searchParams?.query || '';
   const loggedUser = getCookie('logged-user', { cookies });
   const user: SingleUser = JSON.parse(loggedUser ?? '');
-
+const speciesList = await getspeciesList();
   const fishSupply = await getFishSupply({
     organisationId: user.organisationId,
     role: user.role,
@@ -51,6 +51,7 @@ export default async function Page({
           }
           fishSupply={fishSupply.data}
           permisions={user?.permissions?.editFishSupply}
+          speciesList={speciesList}
         />
       </Box>
     </>

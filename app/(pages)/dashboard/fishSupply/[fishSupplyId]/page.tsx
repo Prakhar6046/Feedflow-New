@@ -1,6 +1,6 @@
 import BasicBreadcrumbs from '@/app/_components/Breadcrumbs';
 import NewFishSupply from '@/app/_components/fishSupply/NewFishSupply';
-import { getFarms, getOrganisationForhatchery } from '@/app/_lib/action';
+import { getFarms, getOrganisationForhatchery, getspeciesList } from '@/app/_lib/action';
 import { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Edit Fish Supply',
@@ -11,6 +11,7 @@ export default async function Page({
   params: { fishSupplyId: string };
 }) {
   const organisationForhatchery = await getOrganisationForhatchery();
+   const speciesList = await getspeciesList();
   const farms = await getFarms({
     noFilter: true,
     role: '',
@@ -35,6 +36,7 @@ export default async function Page({
         fishSupplyId={params.fishSupplyId}
         farms={farms.data}
         organisations={organisationForhatchery.data}
+        speciesList={speciesList}
       />
     </>
   );
