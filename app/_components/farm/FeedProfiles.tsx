@@ -21,10 +21,12 @@ import {
   Typography,
   FormControl,
   InputLabel,
+  IconButton,
 } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { MultiSelect } from 'primereact/multiselect';
+import AutoFixHighIcon from '@mui/icons-material/AutoFixHigh';
 
 export const cellStyle = {
   borderBottomColor: '#F5F6F8',
@@ -34,6 +36,7 @@ export const cellStyle = {
   whiteSpace: 'nowrap',
   textAlign: 'center',
 };
+
 
 export const fishSizes = [
   1, 2, 3, 4, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85,
@@ -57,6 +60,7 @@ export interface GroupedSupplierStores {
   supplier: SupplierOptions;
   stores: FeedProduct[];
 }
+
 const FeedProfiles = ({
   setActiveStep,
   editFarm,
@@ -72,6 +76,16 @@ const FeedProfiles = ({
   const [selectedSupplier, setSelectedSupplier] = useState<SupplierOptions[]>(
     [],
   );
+
+  // Dynamic fish sizes based on maxFishSizeG
+  const newfishSizes = useMemo(() => {
+    if (!feedStores.length) return [];
+    const maxGlobalFishSize = Math.max(
+      ...feedStores.map((store) => store.maxFishSizeG || 0),
+    );
+    return fishSizes.filter((size) => size <= maxGlobalFishSize);
+  }, [feedStores]);
+
   const onSubmit: SubmitHandler<FormValues> = (data) => {
     setLocalItem('feedProfiles', data);
     setActiveStep(3);
@@ -116,13 +130,14 @@ const FeedProfiles = ({
       )}
     />
   );
+
   const groupedData: GroupedSupplierStores[] = useMemo(() => {
     return selectedSupplier?.reduce(
       (acc: GroupedSupplierStores[], supplier: SupplierOptions) => {
         const storesForSupplier = feedStores?.filter((store) =>
           store?.ProductSupplier?.some(
-            (prodSupplierId: string) => Number(prodSupplierId) === supplier.id
-          )
+            (prodSupplierId: string) => Number(prodSupplierId) === supplier.id,
+          ),
         );
         if (storesForSupplier?.length) {
           acc.push({
@@ -136,6 +151,34 @@ const FeedProfiles = ({
     );
   }, [selectedSupplier, feedStores]);
 
+  // New function to handle auto-selection
+const handleAutoSelect = (
+    store: FeedProduct,
+    supplierId: number,
+    storeIndex: number,
+  ) => {
+    // 1. Clear all existing selections first
+    fishSizes.forEach((size) => {
+      const rowName = `selection_${size}`;
+      setValue(rowName, '', { shouldDirty: true, shouldValidate: true });
+    });
+
+    // 2. Find the correct column key and the unique value for the new selection
+    const columnIndex = groupedData.findIndex(
+      (group) => group.supplier.id === supplierId,
+    );
+    const colKey = `col${columnIndex + 1}`;
+    const valueToSet = `${colKey}_${store.id}`;
+
+    // 3. Apply the new selection
+    fishSizes.forEach((size) => {
+      const rowName = `selection_${size}`;
+      if (size >= store.minFishSizeG && size <= store.maxFishSizeG) {
+        setValue(rowName, valueToSet, { shouldDirty: true, shouldValidate: true });
+      }
+    });
+  };
+
   useEffect(() => {
     if (!groupedData?.length) return;
 
@@ -148,7 +191,9 @@ const FeedProfiles = ({
       group?.stores?.forEach((store: FeedProduct, storeIndex: number) => {
         const optKey = `opt${storeIndex + 1}`;
         const label = `${store.productName} - ${group.supplier.option}`;
-        map[colKey][optKey] = label;
+        
+        // Use a unique value for each radio option, based on product ID
+        map[colKey][optKey] = `${colKey}_${store.id}`;
       });
     });
 
@@ -164,16 +209,18 @@ const FeedProfiles = ({
       });
     }
   }, [editFarm]);
+
   useEffect(() => {
     if (feedSuppliers?.length) {
       const options = feedSuppliers?.map((supplier) => ({
         option: supplier.name,
-        id: Number(supplier.id), // Ensure id is a number
+        id: Number(supplier.id),
       }));
       setSupplierOptions(options);
       setSelectedSupplier(options);
     }
   }, [feedSuppliers]);
+
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const formData = getLocalItem('feedProfiles');
@@ -183,7 +230,7 @@ const FeedProfiles = ({
         });
     }
   }, []);
-  
+
   return (
     <>
       <Stack>
@@ -304,28 +351,42 @@ const FeedProfiles = ({
                                 gap: 2,
                               }}
                             >
-                              {tableHead?.stores?.map((store: FeedProduct) => {
-                                return (
-                                  <ListItem
-                                    key={store.id}
-                                    disablePadding
-                                    sx={{
-                                      width: 'fit-content',
-                                    }}
-                                  >
-                                    <Typography
-                                      variant="body2"
-                                      fontWeight={500}
-                                      textAlign={'center'}
-                                      minWidth={100}
+                              {tableHead?.stores?.map(
+                                (store: FeedProduct, storeIndex: number) => {
+                                  return (
+                                    <ListItem
+                                      key={store.id}
+                                      disablePadding
+                                      sx={{
+                                        width: 'fit-content',
+                                      }}
                                     >
-                                      {store?.productName}
-                                      <br />
-                                      (1&gt;5)
-                                    </Typography>
-                                  </ListItem>
-                                );
-                              })}
+                                      <Typography
+                                        variant="body2"
+                                        fontWeight={500}
+                                        textAlign={'center'}
+                                        minWidth={100}
+                                      >
+                                        {store?.productName}
+                                        <br />
+                                        ({store.minFishSizeG}-{store.maxFishSizeG})
+                                        <IconButton
+                                          size="small"
+                                          onClick={() =>
+                                            handleAutoSelect(
+                                              store,
+                                              tableHead.supplier.id,
+                                              storeIndex,
+                                            )
+                                          }
+                                        >
+                                          <AutoFixHighIcon fontSize="small" />
+                                        </IconButton>
+                                      </Typography>
+                                    </ListItem>
+                                  );
+                                },
+                              )}
                             </List>
                           </Box>
                         </TableCell>
@@ -334,21 +395,24 @@ const FeedProfiles = ({
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {fishSizes?.map((size, index) => {
+                  {newfishSizes?.map((size, index) => {
                     const rowName = `selection_${size}`;
 
                     return (
                       <TableRow key={`row-${index}`}>
                         <TableCell sx={cellStyle}>{size}</TableCell>
-                        {groupedData?.map((group, index) => {
+                        {groupedData?.map((group, groupIndex) => {
                           const options = group.stores.map(
                             (_: FeedProduct, i: number) => `opt${i + 1}`,
                           );
                           return (
-                            <TableCell sx={cellStyle} key={group.supplier.id}>
+                            <TableCell
+                              sx={cellStyle}
+                              key={group.supplier.id}
+                            >
                               {renderRadioGroup(
                                 rowName,
-                                `col${index + 1}`,
+                                `col${groupIndex + 1}`,
                                 options,
                               )}
                             </TableCell>
@@ -361,7 +425,6 @@ const FeedProfiles = ({
               </Table>
             </TableContainer>
           </Paper>
-
           <Box
             display={'flex'}
             justifyContent={'flex-end'}

@@ -70,7 +70,6 @@ const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [organisationData, setOrganisationData] = useState<OrganizationData>();
-  console.log('organisationData', organisationData);
   const token = getCookie('auth-token');
   const [isHatcherySelected, setIsHatcherySelected] = useState<boolean>(false);
   const [altitude, setAltitude] = useState<string>('');

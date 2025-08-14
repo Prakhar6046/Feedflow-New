@@ -195,8 +195,6 @@ const FeedSelection = ({ data, feedSuppliers }: Iprops) => {
               const supplierName = feedSuppliers?.find((supplier) =>
                 supply?.ProductSupplier?.map(String).includes(String(supplier?.id))
               )?.name;
-
-              console.log('supplierName', supplierName);
               return (
                 <Grid item xs="auto" key={Number(supply?.id)}>
                   <Box
@@ -480,7 +478,7 @@ const FeedSelection = ({ data, feedSuppliers }: Iprops) => {
                                   textAlign={'center'}
                                 >
                                   {/* 5 - 30g */}
-                                  {`${supply?.fishSizeG} g`}
+                                  {`${supply?.minFishSizeG} - ${supply?.maxFishSizeG} g`}
                                 </Typography>
                               </Box>
                             </Box>

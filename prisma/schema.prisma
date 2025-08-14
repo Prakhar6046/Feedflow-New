@@ -80,10 +80,11 @@ model Organisation {
 }
 
 model Species {
-  id        String   @id @default(uuid())
-  name      String   @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id         String      @id @default(uuid())
+  name       String      @unique
+  feedStores FeedStore[]
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
 }
 
 model ProductionSystem {
@@ -557,7 +558,8 @@ model FeedStore {
   productName           String @default("Tilapia starter #0")
   productFormat         String @default("Mash")
   particleSize          String @default("#0")
-  fishSizeG             Float  @default(0.5)
+  minFishSizeG          Float  @default(0.5)
+  maxFishSizeG          Float  @default(1.0)
   nutritionalClass      String @default("Complete and balanced")
   nutritionalPurpose    String @default("Primary feed source")
   suitableSpecies       String @default("Tilapia")
@@ -594,6 +596,8 @@ model FeedStore {
   de              Float        @default(13.47)
   organaisationId Int          @default(1)
   organisation    Organisation @relation(fields: [organaisationId], references: [id])
+  speciesId       String?
+  species         Species?     @relation(fields: [speciesId], references: [id])
   createdAt       DateTime     @default(now())
   updatedAt       DateTime     @updatedAt
   // ProductSupplier ProductSupplier[]

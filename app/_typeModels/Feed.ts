@@ -5,6 +5,7 @@ export interface FeedInitialState {
   editFeed: FeedSupply;
   isEditFeed: boolean;
 }
+
 export interface FeedProduct {
   organaisationId: number;
   id: string;
@@ -13,7 +14,9 @@ export interface FeedProduct {
   productName: string;
   productFormat: string;
   particleSize: string;
-  fishSizeG: number;
+  maxFishSizeG: number;
+  minFishSizeG: number;
+  speciesId: string;
   nutritionalClass: string;
   nutritionalPurpose: string;
   suitableSpecies: string;
