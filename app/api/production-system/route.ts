@@ -1,9 +1,30 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/prisma/prisma';
+import { verifyAndRefreshToken } from '@/app/_lib/auth/verifyAndRefreshToken';
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  try {
+    const user = await verifyAndRefreshToken(request);
+    if (user.status === 401) {
+      return new NextResponse(
+        JSON.stringify({
+          status: false,
+          message: 'Unauthorized: Token missing or invalid',
+        }),
+        { status: 401 },
+      );
+    }
+
   const systems = await prisma.productionSystem.findMany({ orderBy: { createdAt: 'desc' } });
   return NextResponse.json(systems);
+  } catch (error) {
+    console.error("Error fetching productionSystem:", error);
+    return NextResponse.json(
+      { error: 'Internal Server Error' },
+      { status: 500 },
+    );
+  }
+
 }
 
 export async function POST(req: Request) {

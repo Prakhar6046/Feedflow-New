@@ -86,11 +86,13 @@ model Species {
   fishSupplies FishSupply[] @relation("FishSupplySpecies")
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
+  Model        Model[]
 }
 
 model ProductionSystem {
   id        String   @id @default(uuid())
   name      String   @unique
+  models    Model[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -499,17 +501,19 @@ model FarmManger {
 }
 
 model Model {
-  id               Int     @id @default(autoincrement())
-  name             String?
-  specie           String?
-  productionSystem String?
-  adcCp            Float?
-  adcCf            Float?
-  adcNfe           Float?
-  geCp             Float?
-  geCf             Float?
-  geNfe            Float?
-  wasteFactor      Float?
+  id                 Int               @id @default(autoincrement())
+  name               String?
+  specieId           String?
+  specie             Species?          @relation(fields: [specieId], references: [id])
+  productionSystemId String?
+  productionSystem   ProductionSystem? @relation(fields: [productionSystemId], references: [id])
+  adcCp              Float?
+  adcCf              Float?
+  adcNfe             Float?
+  geCp               Float?
+  geCf               Float?
+  geNfe              Float?
+  wasteFactor        Float?
 
   temperatureCoefficient String?
   tgcA                   Float?

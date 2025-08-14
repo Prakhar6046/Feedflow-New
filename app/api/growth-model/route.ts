@@ -17,8 +17,8 @@ export async function POST(request: NextRequest) {
     const createdModel = await prisma.model.create({
       data: {
         name: model.name,
-        specie: model.specie,
-        productionSystem: model.productionSystem,
+        specieId: model.specie,
+        productionSystemId: model.productionSystem,
         adcCp: parseFloat(model.adcCp) || 0,
         adcCf: parseFloat(model.adcCf) || 0,
         adcNfe: parseFloat(model.adcNfe) || 0,
@@ -171,8 +171,8 @@ export async function PUT(request: NextRequest) {
       where: { id: parseInt(modelId) },
       data: {
         name: model.name,
-        specie: model.specie,
-        productionSystem: model.productionSystem,
+        specieId: model.specie,
+        productionSystemId: model.productionSystem,
         adcCp: parseFloat(model.adcCp) || 0,
         adcCf: parseFloat(model.adcCf) || 0,
         adcNfe: parseFloat(model.adcNfe) || 0,

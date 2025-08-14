@@ -7,6 +7,7 @@ import {
 } from '@mui/material';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
+import { getCookie } from 'cookies-next';
 
 interface ProductionSystem {
     id: string;
@@ -30,9 +31,15 @@ export default function ProductionSystemTable() {
     const [orderBy, setOrderBy] = useState<keyof ProductionSystem>('name');
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [selectedId, setSelectedId] = useState<string | null>(null);
-
+    const token = getCookie('auth-token');
     const fetchData = async () => {
-        const res = await fetch('/api/production-system');
+        const res = await fetch('/api/production-system', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+            },
+        });
         setData(await res.json());
     };
 

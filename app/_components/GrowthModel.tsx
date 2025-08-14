@@ -20,6 +20,13 @@ import toast from 'react-hot-toast';
 import { Farm } from '../_typeModels/Farm';
 import Loader from './Loader';
 import { useRouter } from 'next/navigation';
+import { Species } from './feedSupply/NewFeedLibarary';
+export interface productionSystem {
+  id: string;
+  name: string;
+  createdAt: string;
+  updatedAt: string;
+};
 type CoefficientModel = 'logarithmic' | 'polynomial' | 'quadratic';
 interface InputType {
   name: string;
@@ -110,7 +117,13 @@ function GrowthModel({
   modelId?: string | null;
 }) {
   const loggedUser: any = getCookie('logged-user');
+  console.log('Logged User:', modelData);
   const router = useRouter();
+  const [speciesList, setSpeciesList] = useState<Species[]>([]);
+  const [productionSystemList, setProductionSystemList] = useState<productionSystem[]>([]);
+  console.log('Species List:', speciesList);
+  console.log('Production System List:', productionSystemList);
+  const token = getCookie('auth-token');
   const {
     register,
     handleSubmit,
@@ -141,6 +154,44 @@ function GrowthModel({
   const [selectedFCRModel, setSelectedFCRModel] =
     useState<FeedConversionRatioModel>('linear');
   const selectedModel = watch('temperatureCoefficient');
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [speciesRes, productionRes] = await Promise.all([
+          fetch('/api/species', {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`,
+            },
+          }),
+          fetch('/api/production-system', {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`,
+            },
+          }),
+        ]);
+
+
+        if (!speciesRes.ok) throw new Error('Failed to fetch species');
+        if (!productionRes.ok) throw new Error('Failed to fetch production system');
+
+        const speciesData = await speciesRes.json();
+        const productionData = await productionRes.json();
+
+        setSpeciesList(speciesData);
+        setProductionSystemList(productionData);
+
+        console.log('Production System Data:', productionData);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, [token]);
 
   // Pre-fill form data when in edit mode
   useEffect(() => {
@@ -202,57 +253,57 @@ function GrowthModel({
 
         const body = editMode
           ? {
-              modelId: modelId,
-              model: {
-                name: data.name,
-                specie: data.specie,
-                productionSystem: data.productionSystem,
-                adcCp: data.adcCp,
-                adcCf: data.adcCf,
-                adcNfe: data.adcNfe,
-                geCp: data.geCp,
-                geCf: data.geCf,
-                geNfe: data.geNfe,
-                wasteFactor: data.wasteFactor,
-                temperatureCoefficient: data.temperatureCoefficient,
-                a: data.a,
-                b: data.b,
-                c: data.c,
-                d: data.d,
-                e: data.e,
-                tFCRModel: data.tFCRModel,
-                tFCRa: data.tFCRa,
-                tFCRb: data.tFCRb,
-                tFCRc: data.tFCRc,
-              },
-              organisationId: user.organisationId,
-            }
+            modelId: modelId,
+            model: {
+              name: data.name,
+              specie: data.specie,
+              productionSystem: data.productionSystem,
+              adcCp: data.adcCp,
+              adcCf: data.adcCf,
+              adcNfe: data.adcNfe,
+              geCp: data.geCp,
+              geCf: data.geCf,
+              geNfe: data.geNfe,
+              wasteFactor: data.wasteFactor,
+              temperatureCoefficient: data.temperatureCoefficient,
+              a: data.a,
+              b: data.b,
+              c: data.c,
+              d: data.d,
+              e: data.e,
+              tFCRModel: data.tFCRModel,
+              tFCRa: data.tFCRa,
+              tFCRb: data.tFCRb,
+              tFCRc: data.tFCRc,
+            },
+            organisationId: user.organisationId,
+          }
           : {
-              model: {
-                name: data.name,
-                specie: data.specie,
-                productionSystem: data.productionSystem,
-                adcCp: data.adcCp,
-                adcCf: data.adcCf,
-                adcNfe: data.adcNfe,
-                geCp: data.geCp,
-                geCf: data.geCf,
-                geNfe: data.geNfe,
-                wasteFactor: data.wasteFactor,
-                temperatureCoefficient: data.temperatureCoefficient,
-                a: data.a,
-                b: data.b,
-                c: data.c,
-                d: data.d,
-                e: data.e,
-                tFCRModel: data.tFCRModel,
-                tFCRa: data.tFCRa,
-                tFCRb: data.tFCRb,
-                tFCRc: data.tFCRc,
-              },
-              organisationId: user.organisationId,
-            };
-
+            model: {
+              name: data.name,
+              specie: data.specie,
+              productionSystem: data.productionSystem,
+              adcCp: data.adcCp,
+              adcCf: data.adcCf,
+              adcNfe: data.adcNfe,
+              geCp: data.geCp,
+              geCf: data.geCf,
+              geNfe: data.geNfe,
+              wasteFactor: data.wasteFactor,
+              temperatureCoefficient: data.temperatureCoefficient,
+              a: data.a,
+              b: data.b,
+              c: data.c,
+              d: data.d,
+              e: data.e,
+              tFCRModel: data.tFCRModel,
+              tFCRa: data.tFCRa,
+              tFCRb: data.tFCRb,
+              tFCRc: data.tFCRc,
+            },
+            organisationId: user.organisationId,
+          };
+        console.log('Payload:', body);
         const response = await fetch(url, {
           method: method,
           headers: {
@@ -266,9 +317,9 @@ function GrowthModel({
           toast.dismiss();
           toast.success(
             result.message ||
-              (editMode
-                ? 'Growth model updated successfully'
-                : 'Growth model created successfully'),
+            (editMode
+              ? 'Growth model updated successfully'
+              : 'Growth model created successfully'),
           );
           setSpecies('');
           setProductionSystem('');
@@ -365,24 +416,19 @@ function GrowthModel({
                         value={species}
                         onChange={(e) => {
                           setSpecies(e.target.value);
+                          setValue('specie', e.target.value);
                           clearErrors('specie');
                         }}
                       >
-                        <MenuItem
-                          value={' Tilapia (Oreochromis Nilotic x Aureus)'}
-                          key={'Tilapia (Oreochromis Nilotic x Aureus)'}
-                        >
-                          Tilapia (Oreochromis Nilotic x Aureus)
-                        </MenuItem>
-                        <MenuItem
-                          value={'African Catfish'}
-                          key={'African Catfish'}
-                        >
-                          African Catfish
-                        </MenuItem>
-                        <MenuItem value={'Rainbow Trout'} key={'Rainbow Trout'}>
-                          Rainbow Trout
-                        </MenuItem>
+                        {speciesList && speciesList.length > 0 ? (
+                          speciesList.map((sp) => (
+                            <MenuItem key={sp.id} value={sp.id}>
+                              {sp.name}
+                            </MenuItem>
+                          ))
+                        ) : (
+                          <MenuItem disabled>No species available</MenuItem>
+                        )}
                       </Select>
                       {errors.specie && (
                         <FormHelperText
@@ -415,39 +461,19 @@ function GrowthModel({
                         value={productionSystem}
                         onChange={(e) => {
                           setProductionSystem(e.target.value);
+                          setValue('productionSystem', e.target.value);
                           clearErrors('productionSystem');
                         }}
                       >
-                        <MenuItem value="General" key="General">
-                          General
-                        </MenuItem>
-                        <MenuItem
-                          value="Recirculation aquaculture system (RAS)"
-                          key="RAS"
-                        >
-                          Recirculation aquaculture system (RAS)
-                        </MenuItem>
-                        <MenuItem
-                          value="Green water / bio floc"
-                          key="GreenWater"
-                        >
-                          Green water / bio floc
-                        </MenuItem>
-                        <MenuItem value="Intensive" key="Intensive">
-                          Intensive
-                        </MenuItem>
-                        <MenuItem value="Semi-intensive" key="SemiIntensive">
-                          Semi-intensive
-                        </MenuItem>
-                        <MenuItem value="Ponds" key="Ponds">
-                          Ponds
-                        </MenuItem>
-                        <MenuItem value="Raceways" key="Raceways">
-                          Raceways
-                        </MenuItem>
-                        <MenuItem value="Cages" key="Cages">
-                          Cages
-                        </MenuItem>
+                        {productionSystemList && productionSystemList.length > 0 ? (
+                          productionSystemList.map((sp) => (
+                            <MenuItem key={sp.id} value={sp.id}>
+                              {sp.name}
+                            </MenuItem>
+                          ))
+                        ) : (
+                          <MenuItem disabled>No species available</MenuItem>
+                        )}
                       </Select>
                       {errors.productionSystem && (
                         <FormHelperText sx={{ color: '#d32f2f' }} />
