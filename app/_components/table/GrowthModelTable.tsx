@@ -26,6 +26,9 @@ import { useAppSelector } from '@/lib/hooks';
 import { getLocalItem } from '@/app/_lib/utils';
 import Loader from '../Loader';
 import { EnhancedTableHeadProps } from '../UserTable';
+import { productionSystem } from '../GrowthModel';
+import { Species } from '../feedSupply/NewFeedLibarary';
+import { getCookie } from 'cookies-next';
 
 interface GrowthModel {
   id: number;
@@ -36,8 +39,8 @@ interface GrowthModel {
   models: {
     id: number;
     name: string;
-    specie: string;
-    productionSystem: string;
+    specieId: string;
+    productionSystemId: string;
     adcCp: number;
     adcCf: number;
     adcNfe: number;
@@ -90,6 +93,9 @@ export default function GrowthModelTable({
   const [selectedGrowthModel, setSelectedGrowthModel] = useState<GrowthModel>();
   const role = useAppSelector(selectRole);
   const [sortedGrowthModels, setSortedGrowthModels] = useState<GrowthModel[]>();
+  const [speciesList, setSpeciesList] = useState<Species[]>([]);
+  const [productionSystemList, setProductionSystemList] = useState<productionSystem[]>([]);
+   const token = getCookie('auth-token');
   const [sortDataFromLocal, setSortDataFromLocal] = React.useState<{
     direction: 'asc' | 'desc';
     column: string;
@@ -155,6 +161,45 @@ export default function GrowthModelTable({
         handleRequestSort(event, property);
       };
 
+        useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [speciesRes, productionRes] = await Promise.all([
+          fetch('/api/species', {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`,
+            },
+          }),
+          fetch('/api/production-system', {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`,
+            },
+          }),
+        ]);
+
+
+        if (!speciesRes.ok) throw new Error('Failed to fetch species');
+        if (!productionRes.ok) throw new Error('Failed to fetch production system');
+
+        const speciesData = await speciesRes.json();
+        const productionData = await productionRes.json();
+
+        setSpeciesList(speciesData);
+        setProductionSystemList(productionData);
+
+        console.log('Production System Data:', productionData);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, [token]);
+
     return (
       <TableHead>
         <TableRow>
@@ -218,16 +263,26 @@ export default function GrowthModelTable({
             if (model1.models.name > model2.models.name) return 1 * orderType;
             return 0;
           } else if (property === 'specie') {
-            if (model1.models.specie < model2.models.specie)
-              return -1 * orderType;
-            if (model1.models.specie > model2.models.specie)
-              return 1 * orderType;
+            const specie1 =
+              speciesList.find((s) => s.id === model1.models.specieId)?.name ||
+              '';
+            const specie2 =
+              speciesList.find((s) => s.id === model2.models.specieId)?.name ||
+              '';
+            if (specie1 < specie2) return -1 * orderType;
+            if (specie1 > specie2) return 1 * orderType;
             return 0;
           } else if (property === 'productionSystem') {
-            if (model1.models.productionSystem < model2.models.productionSystem)
-              return -1 * orderType;
-            if (model1.models.productionSystem > model2.models.productionSystem)
-              return 1 * orderType;
+            const system1 =
+              productionSystemList.find(
+                (p) => p.id === model1.models.productionSystemId,
+              )?.name || '';
+            const system2 =
+              productionSystemList.find(
+                (p) => p.id === model2.models.productionSystemId,
+              )?.name || '';
+            if (system1 < system2) return -1 * orderType;
+            if (system1 > system2) return 1 * orderType;
             return 0;
           } else if (property === 'createdAt') {
             if (model1.createdAt < model2.createdAt) return -1 * orderType;
@@ -257,21 +312,27 @@ export default function GrowthModelTable({
                 return -1 * orderType;
               if (model1.models.name > model2.models.name) return 1 * orderType;
               return 0;
-            } else if (data.column === 'specie') {
-              if (model1.models.specie < model2.models.specie)
-                return -1 * orderType;
-              if (model1.models.specie > model2.models.specie)
-                return 1 * orderType;
+            }  else if (data.column === 'specie') {
+              const specie1 =
+                speciesList.find((s) => s.id === model1.models.specieId)
+                  ?.name || '';
+              const specie2 =
+                speciesList.find((s) => s.id === model2.models.specieId)
+                  ?.name || '';
+              if (specie1 < specie2) return -1 * orderType;
+              if (specie1 > specie2) return 1 * orderType;
               return 0;
             } else if (data.column === 'productionSystem') {
-              if (
-                model1.models.productionSystem < model2.models.productionSystem
-              )
-                return -1 * orderType;
-              if (
-                model1.models.productionSystem > model2.models.productionSystem
-              )
-                return 1 * orderType;
+              const system1 =
+                productionSystemList.find(
+                  (p) => p.id === model1.models.productionSystemId,
+                )?.name || '';
+              const system2 =
+                productionSystemList.find(
+                  (p) => p.id === model2.models.productionSystemId,
+                )?.name || '';
+              if (system1 < system2) return -1 * orderType;
+              if (system1 > system2) return 1 * orderType;
               return 0;
             } else if (data.column === 'createdAt') {
               if (model1.createdAt < model2.createdAt) return -1 * orderType;
@@ -284,7 +345,7 @@ export default function GrowthModelTable({
         setSortedGrowthModels(sortedData);
       }
     }
-  }, [sortDataFromLocal]);
+  }, [sortDataFromLocal,speciesList,productionSystemList]);
 
   useEffect(() => {
     if (growthModels && !sortDataFromLocal) {
@@ -325,6 +386,14 @@ export default function GrowthModelTable({
               <TableBody>
                 {sortedGrowthModels && sortedGrowthModels.length > 0 ? (
                   sortedGrowthModels.map((model: GrowthModel, i: number) => {
+                    console.log('Model:', sortedGrowthModels);
+                    const speciesName =
+                      speciesList.find((s) => s.id === model.models.specieId)
+                        ?.name || '';
+                    const productionSystemName =
+                      productionSystemList.find(
+                        (p) => p.id === model.models.productionSystemId,
+                      )?.name || '';
                     return (
                       <TableRow
                         key={i}
@@ -362,7 +431,7 @@ export default function GrowthModelTable({
                             },
                           }}
                         >
-                          {model.models.specie}
+                          {speciesName}
                         </TableCell>
                         <TableCell
                           sx={{
@@ -378,7 +447,7 @@ export default function GrowthModelTable({
                             },
                           }}
                         >
-                          {model.models.productionSystem}
+                           {productionSystemName}
                         </TableCell>
                         <TableCell
                           sx={{

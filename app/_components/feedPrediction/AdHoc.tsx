@@ -34,6 +34,7 @@ import Loader from '../Loader';
 import FishGrowthTable from '../table/FishGrowthTable';
 import { productionSystemOptions, speciesOptions, timeIntervalOptions } from './FeedingPlan';
 import { Farm } from '@/app/_typeModels/Farm';
+import { Species } from '../feedSupply/NewFeedLibarary';
 interface FormInputs {
   farm: string;
   unit: string;
@@ -85,6 +86,7 @@ type Iprops = {
   data: FishFeedingData[];
   setData: (val: FishFeedingData[]) => void;
   farms: Farm[];
+  speciesList: Species[];
 };
 
 function AdHoc({ data, setData }: Iprops) {

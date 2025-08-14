@@ -14,6 +14,8 @@ import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import { Box, Stack, Tab } from '@mui/material';
 import { useEffect, useState } from 'react';
+import { Species } from '../feedSupply/NewFeedLibarary';
+import { getCookie } from 'cookies-next';
 interface Props {
   productions: Production[];
   farms: Farm[];
@@ -24,7 +26,8 @@ const FeedPredictionTable = ({ farms, productions }: Props) => {
   const [adHocData, setAdHocData] = useState<FishFeedingData[]>([]);
   const [selectedFeeding, setSelectedFeeding] = useState<string>('feedingPlan');
   const [productionData, setProductionData] = useState<FarmGroup[]>();
-
+    const [speciesList, setSpeciesList] = useState<Species[]>([]);
+    const token = getCookie('auth-token');
   const handleChange = (newValue: string) => {
     setSelectedFeeding(newValue);
   };
@@ -79,6 +82,20 @@ const FeedPredictionTable = ({ farms, productions }: Props) => {
     if (groupedData) {
       setProductionData(groupedData);
     }
+  }, []);
+  const fetchData = async () => {
+    const res = await fetch('/api/species', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    setSpeciesList(await res.json());
+  };
+
+  useEffect(() => {
+    fetchData();
   }, []);
 
   return (
@@ -141,7 +158,7 @@ const FeedPredictionTable = ({ farms, productions }: Props) => {
       ) : selectedFeeding === 'feedingSummary' ? (
         <FeedingSummary />
       ) : (
-        <AdHoc data={adHocData} setData={setAdHocData} farms={farms} />
+        <AdHoc data={adHocData} setData={setAdHocData} farms={farms} speciesList={speciesList}/>
       )}
     </>
   );
