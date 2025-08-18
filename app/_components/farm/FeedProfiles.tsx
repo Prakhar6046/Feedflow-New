@@ -316,7 +316,7 @@ const FeedProfiles = ({
                 marginBottom: 2,
               }}
             >
-              Feed Profile
+              Feed Profile1111
             </Typography>
             <Box>
               <FormControl
@@ -415,8 +415,8 @@ const FeedProfiles = ({
                               sx={{
                                 display: 'flex',
                                 flexDirection: 'row',
-                                justifyContent: 'space-around',
-                                alignItems: 'center',
+                                justifyContent: 'space-between',
+                                alignItems: 'start',
                                 gap: 2,
                               }}
                             >
@@ -436,24 +436,40 @@ const FeedProfiles = ({
                                         fontWeight={500}
                                         textAlign={'center'}
                                         minWidth={100}
+                                        minHeight={60}
                                       >
                                         {store?.productName}
                                         <br />
                                         ({store.minFishSizeG}-{store.maxFishSizeG})
                                       </Typography>
 
-                                        <IconButton
-                                          size="small"
-                                          onClick={() =>
-                                            handleAutoSelect(
-                                              store,
-                                              tableHead.supplier.id,
-                                              storeIndex,
-                                            )
-                                          }
-                                        >
-                                          <AutoFixHighIcon fontSize="small" />
-                                        </IconButton>
+                                      <IconButton
+                                        size="small"
+                                        onClick={() =>
+                                          handleAutoSelect(
+                                            store,
+                                            tableHead.supplier.id,
+                                            storeIndex,
+                                          )
+                                        }
+
+                                        sx={{
+                                          background: '#06A19B',
+                                          color: "#fff",
+                                          fontWeight: 600,
+                                          padding: '10px',
+                                          width: 'fit-content',
+                                          textTransform: 'capitalize',
+                                          borderRadius: '50px',
+                                          transform: 'scale(0.65)',
+                                          '&:hover': {
+                                            background: '#06A19B',
+                                            color: '#fff',
+                                          },
+                                        }}
+                                      >
+                                        <AutoFixHighIcon fontSize="small" />
+                                      </IconButton>
                                     </ListItem>
                                   );
                                 },
@@ -539,7 +555,7 @@ const FeedProfiles = ({
             </Button>
           </Box>
         </form>
-      </Stack>
+      </Stack >
     </>
   );
 };
