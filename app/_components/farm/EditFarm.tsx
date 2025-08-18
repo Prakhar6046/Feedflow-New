@@ -103,18 +103,26 @@ const EditFarm = ({
             {steps.map((step, index) => (
               <Step
                 key={step.label}
-                sx={{
-                  fontSize: '30px',
-                  cursor: index <= activeStep ? 'pointer' : 'not-allowed',
-                  opacity: index <= activeStep ? 1 : 0.5,
-                }}
-                // Only allow clicking on current or previous steps
-                onClick={() => {
-                  if (index <= activeStep) setActiveStep(index);
-                }}
-                disabled={index > activeStep}
+                // sx={{
+                //   fontSize: '30px',
+                //   cursor: index <= activeStep ? 'pointer' : 'not-allowed',
+                //   opacity: index <= activeStep ? 1 : 0.5,
+                // }}
+                // // Only allow clicking on current or previous steps
+                // onClick={() => {
+                //   if (index <= activeStep) setActiveStep(index);
+                // }}
+                // disabled={index > activeStep}
+                completed={activeStep > index}
               >
-                <StepLabel className="stepper">{step.label}</StepLabel>
+                <StepLabel className="stepper"
+                  onClick={() => setActiveStep(index)}
+                  sx={{
+                    cursor: 'pointer',
+                    fontWeight: activeStep === index ? 'bold' : 'normal',
+                  }}
+
+                >{step.label}</StepLabel>
               </Step>
             ))}
           </Stepper>
