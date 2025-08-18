@@ -26,6 +26,7 @@ export interface productionSystem {
   name: string;
   createdAt: string;
   updatedAt: string;
+  isFeatured: boolean;
 };
 type CoefficientModel = 'logarithmic' | 'polynomial' | 'quadratic';
 interface InputType {
@@ -117,12 +118,9 @@ function GrowthModel({
   modelId?: string | null;
 }) {
   const loggedUser: any = getCookie('logged-user');
-  console.log('Logged User:', modelData);
   const router = useRouter();
   const [speciesList, setSpeciesList] = useState<Species[]>([]);
   const [productionSystemList, setProductionSystemList] = useState<productionSystem[]>([]);
-  console.log('Species List:', speciesList);
-  console.log('Production System List:', productionSystemList);
   const token = getCookie('auth-token');
   const {
     register,
@@ -184,7 +182,6 @@ function GrowthModel({
         setSpeciesList(speciesData);
         setProductionSystemList(productionData);
 
-        console.log('Production System Data:', productionData);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -303,7 +300,6 @@ function GrowthModel({
             },
             organisationId: user.organisationId,
           };
-        console.log('Payload:', body);
         const response = await fetch(url, {
           method: method,
           headers: {

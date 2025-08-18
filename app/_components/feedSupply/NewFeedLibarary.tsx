@@ -87,6 +87,7 @@ export interface Species {
   name: string;
   createdAt: string;
   updatedAt: string;
+  isFeatured: boolean;
 };
 interface Props {
   feedSuppliers: FeedSupplier[];

@@ -87,14 +87,17 @@ model Species {
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
   Model        Model[]
+  isFeatured   Boolean      @default(false)
 }
 
 model ProductionSystem {
-  id        String   @id @default(uuid())
-  name      String   @unique
-  models    Model[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id             String           @id @default(uuid())
+  name           String           @unique
+  models         Model[]
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  isFeatured     Boolean          @default(false)
+  ProductionUnit ProductionUnit[]
 }
 
 model OrganisationCount {
@@ -178,8 +181,23 @@ model FeedProfile {
   farm      Farm     @relation(fields: [farmId], references: [id])
   profiles  Json?
 
+  feedLinks FeedProfileLink[]
+
   @@index([createdAt])
   @@index([updatedAt])
+}
+
+model FeedProfileLink {
+  id            Int         @id @default(autoincrement())
+  feedProfileId Int
+  feedProfile   FeedProfile @relation(fields: [feedProfileId], references: [id])
+  feedSupplyId  String
+  feedSupply    FeedSupply  @relation(fields: [feedSupplyId], references: [id])
+  feedStoreId   String
+  feedStore     FeedStore   @relation(fields: [feedStoreId], references: [id])
+
+  minFishSize Float
+  maxFishSize Float
 }
 
 model FeedProfileProductionUnit {
@@ -276,7 +294,8 @@ model ProductionUnit {
   id                                 String                               @id @default(cuid())
   name                               String
   type                               String
-  productionSystem                   String?
+  productionSystemId                 String?
+  productionSystem                   ProductionSystem?                     @relation(fields: [productionSystemId], references: [id])
   capacity                           String
   waterflowRate                      String
   createdAt                          DateTime                             @default(now())
@@ -293,7 +312,7 @@ model ProductionUnit {
 }
 
 model FeedSupply {
-  id                   String        @id @default(cuid())
+  id                   String            @id @default(cuid())
   feedIngredients      String
   feedingGuide         String
   productionIntensity  String
@@ -319,10 +338,11 @@ model FeedSupply {
   nutritionalGuarantee Json
   updatedBy            String?
   createdBy            String?
-  createdAt            DateTime      @default(now())
-  updatedAt            DateTime      @updatedAt
+  createdAt            DateTime          @default(now())
+  updatedAt            DateTime          @updatedAt
   organisationId       Int?
-  organisation         Organisation? @relation(fields: [organisationId], references: [id])
+  organisation         Organisation?     @relation(fields: [organisationId], references: [id])
+  feedProfileLinks     FeedProfileLink[]
 
   @@index([createdAt])
   @@index([updatedAt])
@@ -361,7 +381,7 @@ model FishSupply {
   productionUnits   String              @default("")
   speciesId         String?
   species           Species?            @relation("FishSupplySpecies", fields: [speciesId], references: [id])
-  createdBy         Int? // Optional field, nullable foreign key
+  createdBy         Int?
   updatedBy         String?
   createdAt         DateTime            @default(now())
   updatedAt         DateTime            @updatedAt
@@ -592,19 +612,19 @@ model FeedStore {
   geCoeffCP       Float
   geCoeffCF       Float
   geCoeffNFE      Float
-  ge              Float        @default(16.75)
-  digCP           Float        @default(3600)
-  digCF           Float        @default(450)
-  digNFE          Float        @default(1860)
-  deCP            Float        @default(8.50)
-  deCF            Float        @default(1.78)
-  deNFE           Float        @default(3.20)
-  de              Float        @default(13.47)
-  organaisationId Int          @default(1)
-  organisation    Organisation @relation(fields: [organaisationId], references: [id])
+  ge              Float             @default(16.75)
+  digCP           Float             @default(3600)
+  digCF           Float             @default(450)
+  digNFE          Float             @default(1860)
+  deCP            Float             @default(8.50)
+  deCF            Float             @default(1.78)
+  deNFE           Float             @default(3.20)
+  de              Float             @default(13.47)
+  organaisationId Int               @default(1)
+  organisation    Organisation      @relation(fields: [organaisationId], references: [id])
   speciesId       String?
-  species         Species?     @relation(fields: [speciesId], references: [id])
-  createdAt       DateTime     @default(now())
-  updatedAt       DateTime     @updatedAt
-  // ProductSupplier ProductSupplier[]
+  species         Species?          @relation(fields: [speciesId], references: [id])
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  FeedProfileLink FeedProfileLink[]
 }

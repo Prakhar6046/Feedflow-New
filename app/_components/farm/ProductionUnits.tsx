@@ -45,6 +45,7 @@ import { v4 as uuidv4 } from 'uuid';
 import CalculateVolume from '../models/CalculateFarmVolume';
 import ProductionUnitFeedProfile from '../models/ProductionUnitFeedProfile';
 import ProductionUnitParametersPredicated from '../models/ProductionUnitParametersPredicated';
+import { productionSystem } from '../GrowthModel';
 interface Props {
   productionParaMeter?: ProductionParaMeterType[];
   growthModels?: GrowthModel[];
@@ -88,7 +89,48 @@ const ProductionUnits: NextPage<Props> = ({
   const [selectedUnitName, setSelectedUnitName] = useState<string>('');
   const [calculatedValue, setCalculatedValue] = useState<CalculateType>();
   const [formProductionUnitsData, setFormProductionUnitsData] = useState<any>();
-  const [productionSystem, setProductionSystem] = useState<string>('');
+  const token = getCookie('auth-token');
+  const [productionSystemList, setProductionSystemList] = useState<productionSystem[]>([]);
+  const featuredproductionSystemList = React.useMemo(
+    () => productionSystemList.filter(sp => sp.isFeatured),
+    [productionSystemList]
+  );
+
+  console.log('featuredproductionSystemList', featuredproductionSystemList);
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const [speciesRes, productionRes] = await Promise.all([
+  //         fetch('/api/species', {
+  //           method: 'GET',
+  //           headers: {
+  //             'Content-Type': 'application/json',
+  //             'Authorization': `Bearer ${token}`,
+  //           },
+  //         }),
+  //         fetch('/api/production-system', {
+  //           method: 'GET',
+  //           headers: {
+  //             'Content-Type': 'application/json',
+  //             'Authorization': `Bearer ${token}`,
+  //           },
+  //         }),
+  //       ]);
+
+
+  //       if (!speciesRes.ok) throw new Error('Failed to fetch species');
+  //       if (!productionRes.ok) throw new Error('Failed to fetch production system');
+
+  //       const speciesData = await speciesRes.json();
+  //       const productionData = await productionRes.json();
+  //       setProductionSystemList(productionData);
+  //     } catch (error) {
+  //       console.error('Error fetching data:', error);
+  //     }
+  //   };
+
+  //   fetchData();
+  // }, [token]);
   const [isApiCallInProgress, setIsApiCallInProgress] =
     useState<boolean>(false);
 
@@ -103,25 +145,61 @@ const ProductionUnits: NextPage<Props> = ({
     formState: { errors },
   } = useForm<ProductionUnitsFormTypes>({
     mode: 'onChange',
-    defaultValues: {
-      productionUnits: [
-        {
-          name: '',
-          type: '',
-          productionSystem: '',
-          capacity: '',
-          waterflowRate: '',
-          id: Number(uuidv4()),
-        },
-      ],
-      area: '1',
-      depth: '1',
-      width: '1',
-      length: '1',
-      height: '1',
-      radius: '1',
-    },
   });
+  useEffect(() => {
+  const fetchData = async () => {
+    try {
+      const [speciesRes, productionRes] = await Promise.all([
+        fetch('/api/species', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        }),
+        fetch('/api/production-system', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        }),
+      ]);
+
+      if (!speciesRes.ok) throw new Error('Failed to fetch species');
+      if (!productionRes.ok) throw new Error('Failed to fetch production system');
+
+      const speciesData = await speciesRes.json();
+      const productionData = await productionRes.json();
+      setProductionSystemList(productionData);
+
+      // Once the data is fetched, set the form values
+      if (editFarm?.productionUnits) {
+        const unitsWithSystemId = editFarm.productionUnits.map((unit) => ({
+          ...unit,
+          productionSystem: unit.productionSystemId || '',
+        }));
+        setValue('productionUnits', unitsWithSystemId);
+      } else {
+        setValue('productionUnits', [
+          {
+            name: '',
+            type: '',
+            productionSystem: '',
+            capacity: '',
+            waterflowRate: '',
+            id: Number(uuidv4()),
+          },
+        ]);
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  fetchData();
+}, [token, editFarm, setValue]);
+  console.log('editFarm?.productionUnits', editFarm?.productionUnits);
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'productionUnits',
@@ -179,6 +257,7 @@ const ProductionUnits: NextPage<Props> = ({
 
   const onSubmit: SubmitHandler<ProductionUnitsFormTypes> = async (data) => {
     const farmData = getLocalItem('farmData');
+
     const farmPredictionValues = getLocalItem('productionParametes');
     const productionParamtertsUnitsArrayLocal = getLocalItem(
       'productionParamtertsUnitsArray',
@@ -197,6 +276,11 @@ const ProductionUnits: NextPage<Props> = ({
         let payload;
         let updatedProductionUnitsFeedProfile;
         let updatedProductionUnits;
+
+        const productionUnitsWithIds = data.productionUnits.map((unit) => ({
+          ...unit,
+          productionSystemId: unit.productionSystem,
+        }));
         const filteredProductionUnits =
           productionParamtertsUnitsArrayLocal.filter(
             (unit: {
@@ -308,7 +392,7 @@ const ProductionUnits: NextPage<Props> = ({
               country: farmData.country,
               id: editFarm.farmAddress?.id,
             },
-            productionUnits: data.productionUnits,
+            productionUnits: productionUnitsWithIds,
             name: farmData.name,
             farmAltitude: farmData.farmAltitude,
             fishFarmer: farmData.fishFarmer,
@@ -539,6 +623,7 @@ const ProductionUnits: NextPage<Props> = ({
       <form onSubmit={handleSubmit(onSubmit)}>
         <Box>
           {fields.map((item, index) => {
+            console.log('item', item);
             return (
               <TableContainer
                 key={item.id}
@@ -669,40 +754,37 @@ const ProductionUnits: NextPage<Props> = ({
                       </TableCell>
                       {/* Production System */}
                       <TableCell sx={{
-                          border: 0,
-                          pl: 0,
-                          pr: 1,
-                        }}>
+                        border: 0,
+                        pl: 0,
+                        pr: 1,
+                      }}>
                         <Controller
                           name={`productionUnits.${index}.productionSystem`}
                           control={control}
                           rules={{ required: 'Production System is required' }}
                           render={({ field }) => (
-                            <FormControl fullWidth focused  className="form-input prod-unit">
+                            <FormControl fullWidth focused className="form-input prod-unit">
                               <InputLabel>Production System Type *</InputLabel>
                               <Select {...field} label="Production System Type *"
                                 sx={{
                                   minWidth: '200px',
                                   width: '100%',
                                 }}
-                                // labelId={`demo-simple-select-label-${index}`}
-                                // id={`demo-simple-select-${index}`}
+                                value={field.value || ''}
+                                onChange={(e) => field.onChange(e.target.value)}
+                              // labelId={`demo-simple-select-label-${index}`}
+                              // id={`demo-simple-select-${index}`}
                               >
-                                <MenuItem value="">-- Select --</MenuItem>
-                                <MenuItem value="General">General</MenuItem>
-                                <MenuItem value="Recirculation aquaculture system (RAS)">
-                                  Recirculation aquaculture system (RAS)
-                                </MenuItem>
-                                <MenuItem value="Green water / bio floc">
-                                  Green water / bio floc
-                                </MenuItem>
-                                <MenuItem value="Intensive">Intensive</MenuItem>
-                                <MenuItem value="Semi-intensive">
-                                  Semi-intensive
-                                </MenuItem>
-                                <MenuItem value="Ponds">Ponds</MenuItem>
-                                <MenuItem value="Raceways">Raceways</MenuItem>
-                                <MenuItem value="Cages">Cages</MenuItem>
+                                {featuredproductionSystemList && featuredproductionSystemList.length > 0 ? (
+                                  featuredproductionSystemList.map((sp) => (
+                                    <MenuItem key={sp.id} value={sp.id}>
+                                      {sp.name}
+                                    </MenuItem>
+                                  ))
+                                ) : (
+                                  <MenuItem disabled>No Production System available</MenuItem>
+                                )}
+
                               </Select>
                             </FormControl>
                           )}

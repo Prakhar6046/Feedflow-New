@@ -51,12 +51,14 @@ interface FormInputs {
   speciesId: string;
 }
 function NewFishSupply({ isEdit, fishSupplyId, farms, organisations, speciesList }: Props) {
+  console.log('speciesList', speciesList);
   const router = useRouter();
   const userData: any = getCookie('logged-user');
   const token = getCookie('auth-token');
   const [loading, setLoading] = useState<boolean>(false);
   const [isApiCallInProgress, setIsApiCallInProgress] = useState(false);
   const [fishSupply, setFishSupply] = useState<FishSupply>();
+  const featuredSpecies = speciesList?.filter((sp) => sp.isFeatured);
   const getFishSupply = async () => {
     const response = await fetch(`/api/fish/${fishSupplyId}`, {
       method: 'GET',
@@ -78,7 +80,6 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations, speciesList
     mode: 'onChange',
   });
   const onSubmit: SubmitHandler<FormInputs> = async (data) => {
-    console.log('Form data:', data);
     // Prevent API call if one is already in progress
     if (isApiCallInProgress) return;
     setIsApiCallInProgress(true);
@@ -181,8 +182,7 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations, speciesList
       setValue('broodstockMale', fishSupply?.broodstockMale);
       setValue('organisation', String(fishSupply?.organisation));
       setValue('spawningDate', dayjs(fishSupply?.spawningDate));
-      setValue('hatchingDate', dayjs(fishSupply?.hatchingDate));
-      setValue('spawningNumber', String(fishSupply?.spawningNumber));
+      setValue('hatchingDate', dayjs(fishSupply?.hatchingDate));      setValue('spawningNumber', String(fishSupply?.spawningNumber));
       setValue('status', fishSupply?.status);
       setValue('fishFarmId', fishSupply?.fishFarmId);
       setValue('productionUnits', String(fishSupply?.productionUnits));
@@ -296,8 +296,8 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations, speciesList
                   },
                 })}
               >
-                {speciesList && speciesList.length > 0 ? (
-                  speciesList.map((sp) => (
+                {featuredSpecies && featuredSpecies.length > 0 ? (
+                  featuredSpecies.map((sp) => (
                     <MenuItem key={sp.id} value={sp.id}>
                       {sp.name}
                     </MenuItem>

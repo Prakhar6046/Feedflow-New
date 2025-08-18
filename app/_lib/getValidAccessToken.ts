@@ -16,7 +16,6 @@ export const getValidAccessToken = async () => {
   }
 
   if (res.status === 401 && refreshToken) {
-    console.log('[getValidAccessToken] Access token expired. Attempting refresh...');
 
     const refreshRes = await fetch(`${process.env.BASE_URL}/api/auth/refresh`, {
       method: 'POST',

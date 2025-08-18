@@ -35,6 +35,8 @@ import FishGrowthTable from '../table/FishGrowthTable';
 import { productionSystemOptions, speciesOptions, timeIntervalOptions } from './FeedingPlan';
 import { Farm } from '@/app/_typeModels/Farm';
 import { Species } from '../feedSupply/NewFeedLibarary';
+import { productionSystem } from '../GrowthModel';
+import { getCookie } from 'cookies-next';
 interface FormInputs {
   farm: string;
   unit: string;
@@ -110,6 +112,46 @@ function AdHoc({ data, setData }: Iprops) {
     },
     mode: 'onChange',
   });
+  const token = getCookie('auth-token');
+   const [speciesList, setSpeciesList] = useState<Species[]>([]);
+  const [productionSystemList, setProductionSystemList] = useState<productionSystem[]>([]);
+
+        useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [speciesRes, productionRes] = await Promise.all([
+          fetch('/api/species', {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`,
+            },
+          }),
+          fetch('/api/production-system', {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`,
+            },
+          }),
+        ]);
+
+
+        if (!speciesRes.ok) throw new Error('Failed to fetch species');
+        if (!productionRes.ok) throw new Error('Failed to fetch production system');
+
+        const speciesData = await speciesRes.json();
+        const productionData = await productionRes.json();
+
+        setSpeciesList(speciesData);
+        setProductionSystemList(productionData);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, [token]);
 
   const onSubmit: SubmitHandler<FormInputs> = (data) => {
     const formattedDate = dayjs(data.startDate).format('YYYY-MM-DD');
@@ -526,9 +568,9 @@ function AdHoc({ data, setData }: Iprops) {
                 rules={{ required: true }}
                 render={({ field }) => (
                   <Select {...field} labelId="production-system-label" label="Production System *">
-                    {productionSystemOptions.map((option) => (
-                      <MenuItem value={option.value} key={option.id}>
-                        {option.label}
+                    {productionSystemList.map((option) => (
+                      <MenuItem value={option.name} key={option.id}>
+                        {option.name}
                       </MenuItem>
                     ))}
                   </Select>

@@ -27,6 +27,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { MultiSelect } from 'primereact/multiselect';
 import AutoFixHighIcon from '@mui/icons-material/AutoFixHigh';
+import { Checklist, DoneAll } from '@mui/icons-material';
 
 export const cellStyle = {
   borderBottomColor: '#F5F6F8',
@@ -67,6 +68,7 @@ const FeedProfiles = ({
   feedStores,
   feedSuppliers,
 }: Props) => {
+
   const { control, handleSubmit, watch, setValue } = useForm<FormValues>();
   const allFeedprofiles = watch();
   const [radioValueMap, setRadioValueMap] = useState<
@@ -87,9 +89,50 @@ const FeedProfiles = ({
   }, [feedStores]);
 
   const onSubmit: SubmitHandler<FormValues> = (data) => {
-    setLocalItem('feedProfiles', data);
+    // Parse selected feed profiles into structured payload
+    const payload: {
+      supplierId: number;
+      storeId: String;
+      minFishSize: number;
+      maxFishSize: number;
+    }[] = [];
+
+    groupedData.forEach((group, groupIndex) => {
+      const colKey = `col${groupIndex + 1}`;
+
+      group.stores.forEach((store) => {
+        const valueKey = `${colKey}_${store.id}`;
+
+        // Find all fish sizes where this store was selected
+        const selectedSizes: number[] = [];
+        newfishSizes.forEach((size) => {
+          const rowName = `selection_${size}`;
+          if (data[rowName] === valueKey) {
+            selectedSizes.push(size);
+          }
+        });
+
+        if (selectedSizes.length) {
+          payload.push({
+            supplierId: group.supplier.id,
+            storeId: store.id,
+            minFishSize: Math.min(...selectedSizes),
+            maxFishSize: Math.max(...selectedSizes),
+          });
+        }
+      });
+    });
+    console.log('Structured Feed Profiles Payload:', payload);
+    // Save structured payload
+    setLocalItem('feedProfiles', payload);
+
+    if (editFarm?.FeedProfile?.[0]?.id) {
+      setLocalItem('feedProfileId', editFarm?.FeedProfile?.[0].id);
+    }
+
     setActiveStep(3);
   };
+
 
   const renderRadioGroup = (
     rowName: string,
@@ -152,7 +195,7 @@ const FeedProfiles = ({
   }, [selectedSupplier, feedStores]);
 
   // New function to handle auto-selection
-const handleAutoSelect = (
+  const handleAutoSelect = (
     store: FeedProduct,
     supplierId: number,
     storeIndex: number,
@@ -191,7 +234,7 @@ const handleAutoSelect = (
       group?.stores?.forEach((store: FeedProduct, storeIndex: number) => {
         const optKey = `opt${storeIndex + 1}`;
         const label = `${store.productName} - ${group.supplier.option}`;
-        
+
         // Use a unique value for each radio option, based on product ID
         map[colKey][optKey] = `${colKey}_${store.id}`;
       });
@@ -201,14 +244,33 @@ const handleAutoSelect = (
   }, [groupedData]);
 
   useEffect(() => {
-    if (editFarm) {
-      const profiles: any = editFarm.FeedProfile?.[0]?.profiles;
+    if (!editFarm || !groupedData?.length) return;
+
+    const rawProfiles = editFarm?.FeedProfile?.[0]?.profiles;
+    const profiles = Array.isArray(rawProfiles) ? rawProfiles : [];
+
+    profiles.forEach((profile) => {
+      const groupIndex = groupedData.findIndex(
+        (group) => group.supplier.id === profile.supplierId
+      );
+      if (groupIndex === -1) return;
+
+      const colKey = `col${groupIndex + 1}`;
+      const valueToSet = `${colKey}_${profile.storeId}`;
+
+      for (let size = profile.minFishSize; size <= profile.maxFishSize; size++) {
+        setValue(`selection_${size}`, valueToSet, {
+          shouldValidate: true,
+          shouldDirty: false,
+        });
+      }
+    });
+
+    if (editFarm?.FeedProfile?.[0]?.id) {
       setLocalItem('feedProfileId', editFarm?.FeedProfile?.[0].id);
-      Object.entries(profiles).forEach(([key, value]) => {
-        setValue(key, String(value));
-      });
     }
-  }, [editFarm]);
+  }, [editFarm, groupedData, setValue]);
+
 
   useEffect(() => {
     if (feedSuppliers?.length) {
@@ -247,7 +309,7 @@ const handleAutoSelect = (
                 marginBottom: 2,
               }}
             >
-              Feed Profile
+              Feed Profile1111
             </Typography>
             <Box>
               <FormControl
@@ -346,8 +408,8 @@ const handleAutoSelect = (
                               sx={{
                                 display: 'flex',
                                 flexDirection: 'row',
-                                justifyContent: 'space-around',
-                                alignItems: 'center',
+                                justifyContent: 'space-between',
+                                alignItems: 'start',
                                 gap: 2,
                               }}
                             >
@@ -359,6 +421,7 @@ const handleAutoSelect = (
                                       disablePadding
                                       sx={{
                                         width: 'fit-content',
+                                        flexDirection: "column"
                                       }}
                                     >
                                       <Typography
@@ -366,23 +429,42 @@ const handleAutoSelect = (
                                         fontWeight={500}
                                         textAlign={'center'}
                                         minWidth={100}
+                                        minHeight={65}
                                       >
                                         {store?.productName}
                                         <br />
                                         ({store.minFishSizeG}-{store.maxFishSizeG})
-                                        <IconButton
-                                          size="small"
-                                          onClick={() =>
-                                            handleAutoSelect(
-                                              store,
-                                              tableHead.supplier.id,
-                                              storeIndex,
-                                            )
-                                          }
-                                        >
-                                          <AutoFixHighIcon fontSize="small" />
-                                        </IconButton>
                                       </Typography>
+
+                                      <IconButton
+                                        size="small"
+                                        onClick={() =>
+                                          handleAutoSelect(
+                                            store,
+                                            tableHead.supplier.id,
+                                            storeIndex,
+                                          )
+                                        }
+
+                                        sx={{
+                                          background: '#06A19B',
+                                          color: "#fff",
+                                          fontWeight: 600,
+                                          padding: '8px',
+                                          width: 'fit-content',
+                                          textTransform: 'capitalize',
+                                          borderRadius: '50px',
+                                          transform: 'scale(0.75)',
+                                          '&:hover': {
+                                            background: '#06A19B',
+                                            color: '#fff',
+                                          },
+                                        }}
+                                      >
+                                        <DoneAll fontSize="small" />
+                                        {/* <Checklist fontSize="small" /> */}
+                                        {/* <AutoFixHighIcon fontSize="small" /> */}
+                                      </IconButton>
                                     </ListItem>
                                   );
                                 },
@@ -468,7 +550,7 @@ const handleAutoSelect = (
             </Button>
           </Box>
         </form>
-      </Stack>
+      </Stack >
     </>
   );
 };

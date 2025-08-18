@@ -8,8 +8,15 @@ export const metadata: Metadata = {
   title: 'Growth Models',
 };
 
-export default async function GrowthModelPage() {
+export default async function GrowthModelPage({
+  searchParams,
+}: {
+  searchParams?: {
+    query?: string;
+  };
+}) {
   // Get user data from cookie
+  const query = searchParams?.query || '';
   const loggedUser: any = getCookie('logged-user', { cookies });
 
   let organisationId = 0;
@@ -25,10 +32,12 @@ export default async function GrowthModelPage() {
   let growthModels = [];
 
   try {
-    const response = await fetch(
-      `${process.env.BASE_URL}/api/growth-model?organisationId=${organisationId}`,
-      { cache: 'no-store' }
-    );
+    let apiUrl = `${process.env.BASE_URL}/api/growth-model?organisationId=${organisationId}`;
+    if (query) {
+      apiUrl += `&query=${encodeURIComponent(query)}`;
+    }
+
+    const response = await fetch(apiUrl, { cache: 'no-store' });
 
     if (response.ok) {
       const data = await response.json();

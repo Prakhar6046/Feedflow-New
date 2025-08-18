@@ -25,7 +25,6 @@ import React, { useEffect, useState } from 'react';
 import { selectRole } from '@/lib/features/user/userSlice';
 import { useAppSelector } from '@/lib/hooks';
 import { getLocalItem } from '@/app/_lib/utils';
-import { log } from 'console';
 import { Species } from '../feedSupply/NewFeedLibarary';
 interface Props {
   tableData: {
@@ -45,7 +44,6 @@ export default function FishSupplyTable({
   permisions,
   speciesList,
 }: Props) {
-  console.log('FishSupplyTable rendered with data:', fishSupply);
   const router = useRouter();
   const dispatch = useAppDispatch();
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(

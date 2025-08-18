@@ -22,6 +22,7 @@ export const GET = async (request: NextRequest) => {
       include: {
         farmAddress: true,
         organisation: true,
+        FeedProfile: true,
         productionUnits: {
           include: {
             YearBasedPredicationProductionUnit: true,

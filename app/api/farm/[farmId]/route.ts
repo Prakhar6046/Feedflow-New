@@ -33,6 +33,7 @@ export const GET = async (request: NextRequest, context: { params: any }) => {
           include: {
             YearBasedPredicationProductionUnit: true,
             FeedProfileProductionUnit: true,
+            productionSystem: true,
           },
         },
         production: true,

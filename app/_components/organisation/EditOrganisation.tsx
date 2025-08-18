@@ -166,7 +166,6 @@ const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
   };
 
   const onSubmit: SubmitHandler<AddOrganizationFormInputs> = async (data) => {
-
     // Prevent API call if one is already in progress
     const hasAdmin = watch('contacts').some(
       (contact) => contact.permission === 'ADMIN',

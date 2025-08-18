@@ -2,16 +2,19 @@
 import React, { useEffect, useState } from 'react';
 import {
     Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
-    TableSortLabel, Button, Menu, MenuItem, Divider, Stack, Typography, Box
+    TableSortLabel, Button, Menu, MenuItem, Divider, Stack, Typography, Box, Tooltip
 } from '@mui/material';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import { getCookie } from 'cookies-next';
-
+import FeatureIcon from '@/public/features-svgrepo-com.svg';
+import unFeatureIcon from '@/public/features-svgrepo-com 1.svg';
+import Image from 'next/image';
 interface Species {
     id: string;
     name: string;
     createdAt: string;
+    isFeatured: boolean;
 }
 
 type Order = 'asc' | 'desc';
@@ -25,6 +28,7 @@ const headCells: HeadCell[] = [
 
 export default function SpeciesTable() {
     const [data, setData] = useState<Species[]>([]);
+    console.log('datadatadatadatadata', data);
     const [order, setOrder] = useState<Order>('asc');
     const router = useRouter();
     const [orderBy, setOrderBy] = useState<keyof Species>('name');
@@ -76,6 +80,29 @@ export default function SpeciesTable() {
         if (!selectedId) return;
         router.push(`/dashboard/growthModel/species-production-system/editSpecies/${selectedId}`);
     };
+    const handleToggleFeatured = async () => {
+        if (!selectedId) return;
+        try {
+            const res = await fetch(`/api/species/${selectedId}/feature`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
+                },
+            });
+            const result = await res.json();
+            if (res.ok) {
+                toast.success(result.message);
+                fetchData(); // refresh table
+            } else {
+                toast.error(result.error);
+            }
+        } catch (err) {
+            toast.error("Error toggling feature");
+        }
+        handleClose();
+    };
+
 
     return (
         <Paper sx={{ width: '100%', overflow: 'hidden', borderRadius: '14px', boxShadow: '0px 0px 16px 5px #0000001A', mt: 4 }}>
@@ -113,7 +140,26 @@ export default function SpeciesTable() {
                         {data.length ? data.map((item, i) => (
                             <TableRow key={i}>
                                 <TableCell sx={{ borderBottomColor: '#F5F6F8', borderBottomWidth: 2, color: '#555555', fontWeight: 500, paddingLeft: { lg: 10, md: 7, xs: 4 } }}>
-                                    {item.name}
+                                    <Stack display={"flex"} alignItems={"center"} gap={1} direction="row">
+                                        {item.isFeatured && (
+                                            <Tooltip title="Featured">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
+                                                    <g fill="none">
+                                                        <g clip-path="url(#SVGwDJxaeOQ)">
+                                                            <path fill="#06A19B" d="M21.95 10.605a1.75 1.75 0 0 1-.5.86l-3.3 3.22a.4.4 0 0 0-.08.12a.3.3 0 0 0 0 .14l.78 4.56c.065.336.03.684-.1 1a1.65 1.65 0 0 1-.61.77a1.83 1.83 0 0 1-.92.35h-.13a1.8 1.8 0 0 1-.84-.21l-4.1-2.14a.28.28 0 0 0-.28 0l-4.1 2.15a1.9 1.9 0 0 1-1 .21a1.83 1.83 0 0 1-.93-.35a1.75 1.75 0 0 1-.61-.78a1.8 1.8 0 0 1-.1-1l.78-4.55a.23.23 0 0 0 0-.14a.4.4 0 0 0-.07-.12l-3.3-3.24a1.8 1.8 0 0 1-.49-.85a1.75 1.75 0 0 1 0-1a1.81 1.81 0 0 1 1.49-1.21l4.5-.66a.18.18 0 0 0 .12-.05a.3.3 0 0 0 .09-.11l2.1-4.18c.143-.3.369-.553.65-.73a1.79 1.79 0 0 1 2.57.74l2.08 4.16a.4.4 0 0 0 .1.12a.2.2 0 0 0 .13.05l4.57.66c.332.05.644.192.9.41c.251.217.441.496.55.81c.106.32.124.662.05.99" stroke-width="0.5" stroke="#06A19B" />
+                                                        </g>
+                                                        <defs>
+                                                            <clipPath id="SVGwDJxaeOQ">
+                                                                <path fill="#fff" d="M2 2.395h20v19.21H2z" />
+                                                            </clipPath>
+                                                        </defs>
+                                                    </g>
+                                                </svg>
+                                            </Tooltip>
+                                        )}
+                                        {item.name}
+                                    </Stack>
+
                                 </TableCell>
                                 <TableCell sx={{ borderBottomColor: '#F5F6F8', borderBottomWidth: 2, color: '#555555', fontWeight: 500, pl: 0 }}>
                                     {new Date(item.createdAt).toLocaleDateString()}
@@ -170,6 +216,45 @@ export default function SpeciesTable() {
                         </Box>
                         <Typography sx={{ fontSize: '14px', color: '#080808ff' }}>
                             Edit
+                        </Typography>
+                    </Stack>
+                </MenuItem>
+                <Divider />
+
+                <MenuItem
+                    sx={{
+                        px: 2,
+                        py: 1,
+                        '&:hover': {
+                            backgroundColor: '#F0F4FF',
+                            svg: { color: '#1E40AF' },
+                            '.feature-text': { color: '#1E40AF' },
+                        },
+                    }}
+                    onClick={handleToggleFeatured}
+                >
+                    <Stack direction="row" spacing={1.5} alignItems="center">
+                        {data.find(s => s.id === selectedId)?.isFeatured ? (
+                            <Image
+                                src={FeatureIcon}
+                                alt="Feature Icon"
+                                width={16}
+                                height={16}
+                                className="feature-icon"
+                                style={{ color: '#060606ff' }}
+                            />
+                        ) : (
+                            <Image
+                                src={unFeatureIcon}
+                                alt="Feature Icon"
+                                width={16}
+                                height={16}
+                                className="feature-icon"
+                                style={{ color: '#060606ff' }}
+                            />
+                        )}
+                        <Typography className="feature-text" sx={{ fontSize: '14px', color: '#080808ff' }}>
+                            {data.find(s => s.id === selectedId)?.isFeatured ? "Unfeature" : "Feature"}
                         </Typography>
                     </Stack>
                 </MenuItem>

@@ -70,7 +70,6 @@ export const POST = async (request: NextRequest) => {
   }
   try {
     const body = await request.json();
-    console.log('Request body:', body);
     // batchNumber: `${data.hatchingDate}-${
     //   data.creator?.hatchery[0]?.code
     // }-${

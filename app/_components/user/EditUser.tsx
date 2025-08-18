@@ -43,7 +43,7 @@ function EditUser({ userId }: Iprops) {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [showConfirmPassword, setshowConfirmPassword] =
     useState<boolean>(false);
-const token = getCookie('auth-token');
+  const token = getCookie('auth-token');
   const {
     register,
     setValue,
@@ -99,12 +99,12 @@ const token = getCookie('auth-token');
       const user = async () => {
         setLoading(true);
         const data = await fetch(`/api/users/${userId}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        cache: 'no-store',
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          cache: 'no-store',
         });
         const res = await data.json();
         setLoading(false);
@@ -166,7 +166,7 @@ const token = getCookie('auth-token');
   }, [userData]);
 
   if (loading) {
-    return <Loader />;
+    return <Loader />
   }
   return (
     <Stack pb={5}>
@@ -647,7 +647,7 @@ const token = getCookie('auth-token');
           oraginsationType={
             userData?.data?.organisation?.organisationType ?? ''
           }
-          userData={userData?.data?.permissions}
+          userData={userData?.data?.role ?? ''}
         />
         <Button
           type="submit"
