@@ -30,9 +30,10 @@ interface Props {
 export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
   const { control, handleSubmit, reset, setValue } = useForm();
   const [speciesList, setSpeciesList] = useState<Species[]>([]);
+  const featuredSpecies = speciesList?.filter((sp) => sp.isFeatured);
   const [isSaving, setIsSaving] = useState(false);
   const token = getCookie('auth-token');
-const router = useRouter();
+  const router = useRouter();
   const excludedKeys = [
     'id',
     'createdAt',
@@ -108,7 +109,7 @@ const router = useRouter();
   }
 
   const onSubmit = async (data: any) => {
-    setIsSaving(true); 
+    setIsSaving(true);
     const payload = transformFeedProductsWithSuppliers(data);
     const updatedPayload = payload.map((feed) => {
       const { ProductSupplier, supplierIds, ...rest } = feed;
@@ -127,7 +128,7 @@ const router = useRouter();
       if (response.ok) {
         const res = await response.json();
         toast.dismiss();
-        
+
         toast.success(res.message);
         router.push('/dashboard/feedSupply/libarary');
         router.refresh();
@@ -139,7 +140,7 @@ const router = useRouter();
       toast.error('Something went wrong. Please try again.');
     }
     finally {
-      setIsSaving(false); 
+      setIsSaving(false);
     }
   };
   const firstRows = keys.slice(0, 2);
@@ -315,11 +316,15 @@ const router = useRouter();
                         <MenuItem value="">
                           <em>Select Species</em>
                         </MenuItem>
-                        {speciesList.map((species) => (
-                          <MenuItem key={species.id} value={species.id}>
-                            {species.name}
-                          </MenuItem>
-                        ))}
+                        {featuredSpecies && featuredSpecies.length > 0 ? (
+                          featuredSpecies.map((species) => (
+                            <MenuItem key={species.id} value={species.id}>
+                              {species.name}
+                            </MenuItem>
+                          ))
+                        ) : (
+                          <MenuItem disabled>No species available</MenuItem>
+                        )}
                       </Select>
                     )}
                   />
