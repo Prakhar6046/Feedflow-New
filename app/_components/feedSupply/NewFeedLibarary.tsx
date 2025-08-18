@@ -98,6 +98,7 @@ type FeedFormFields = {
   [key: string]: string | number;
 };
 const NewFeedLibarary: NextPage<Props> = ({ feedSuppliers, speciesList }) => {
+  const featuredSpecies = speciesList?.filter((sp) => sp.isFeatured);
   const router = useRouter();
   const loggedUser: any = getCookie('logged-user');
   const [isApiCallInProgress, setIsApiCallInProgress] =
@@ -209,8 +210,8 @@ const NewFeedLibarary: NextPage<Props> = ({ feedSuppliers, speciesList }) => {
                   rules={{ required: true }}
                   render={({ field }) => (
                     <Select {...field} label={field.name} fullWidth>
-                      {speciesList && speciesList.length > 0 ? (
-                        speciesList.map((sp) => (
+                      {featuredSpecies && featuredSpecies.length > 0 ? (
+                        featuredSpecies.map((sp) => (
                           <MenuItem key={sp.id} value={sp.id}>
                             {sp.name}
                           </MenuItem>
