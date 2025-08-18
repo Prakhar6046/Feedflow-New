@@ -27,6 +27,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { MultiSelect } from 'primereact/multiselect';
 import AutoFixHighIcon from '@mui/icons-material/AutoFixHigh';
+import { Checklist, DoneAll } from '@mui/icons-material';
 
 export const cellStyle = {
   borderBottomColor: '#F5F6F8',
@@ -436,7 +437,7 @@ const FeedProfiles = ({
                                         fontWeight={500}
                                         textAlign={'center'}
                                         minWidth={100}
-                                        minHeight={60}
+                                        minHeight={65}
                                       >
                                         {store?.productName}
                                         <br />
@@ -457,18 +458,20 @@ const FeedProfiles = ({
                                           background: '#06A19B',
                                           color: "#fff",
                                           fontWeight: 600,
-                                          padding: '10px',
+                                          padding: '8px',
                                           width: 'fit-content',
                                           textTransform: 'capitalize',
                                           borderRadius: '50px',
-                                          transform: 'scale(0.65)',
+                                          transform: 'scale(0.75)',
                                           '&:hover': {
                                             background: '#06A19B',
                                             color: '#fff',
                                           },
                                         }}
                                       >
-                                        <AutoFixHighIcon fontSize="small" />
+                                        <DoneAll fontSize="small" />
+                                        {/* <Checklist fontSize="small" /> */}
+                                        {/* <AutoFixHighIcon fontSize="small" /> */}
                                       </IconButton>
                                     </ListItem>
                                   );
