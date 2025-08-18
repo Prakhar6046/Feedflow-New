@@ -41,7 +41,6 @@ export async function POST(req: NextRequest) {
       productionParamtertsUnitsArray,
       FeedProfileUnits,
     } = body;
-
     if (
       !productionParameter ||
       !farmAddress ||
@@ -178,7 +177,7 @@ export async function POST(req: NextRequest) {
     });
 
     // Create feed profile
-    await prisma.feedProfile.create({
+    const newFeedProfile = await prisma.feedProfile.create({
       data: {
         farmId: farm.id,
         profiles: feedProfile,
@@ -204,6 +203,35 @@ export async function POST(req: NextRequest) {
         ),
       });
     }
+    if (body.supplierId && body.storeId) {
+      const supplier = await prisma.feedSupply.findUnique({
+        where: { id: String(body.supplierId) },
+      });
+
+      const store = await prisma.feedStore.findUnique({
+        where: { id: String(body.storeId) },
+      });
+
+      const clonedStore = await prisma.feedStore.create({
+        data: {
+          ...store,
+          id: undefined as any,
+          minFishSizeG: body.minFishSize ?? store.minFishSizeG,
+          maxFishSizeG: body.maxFishSize ?? store.maxFishSizeG,
+        },
+      });
+
+      await prisma.feedProfileLink.create({
+        data: {
+          feedProfileId: newFeedProfile.id,
+          feedSupplyId: supplier.id,
+          feedStoreId: clonedStore.id,
+          minFishSize: body.minFishSize,
+          maxFishSize: body.maxFishSize,
+        },
+      });
+    }
+
 
     return NextResponse.json({
       message: 'Farm created successfully',

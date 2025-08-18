@@ -71,9 +71,10 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const organisationId = searchParams.get('organisationId');
     const modelId = searchParams.get('id');
-    const type = searchParams.get('type'); // 'models' or 'growthModels'
+    const type = searchParams.get('type');
+    const query = searchParams.get('query'); // Added query extraction
 
-    // If type is 'models', return Model data (for the main growth model table)
+    // If type is 'models', return Model data
     if (type === 'models') {
       if (modelId) {
         // Get specific model
@@ -99,9 +100,17 @@ export async function GET(request: NextRequest) {
         );
       }
 
-      // Get all models for organisation
+      // Get all models for organisation with search filter
       const models = await prisma.model.findMany({
-        where: { organisationId: parseInt(organisationId) },
+        where: {
+          organisationId: parseInt(organisationId),
+          ...(query && {
+            name: {
+              contains: query,
+              mode: 'insensitive',
+            },
+          }),
+        },
         include: { organisation: true },
         orderBy: { createdAt: 'desc' },
       });
@@ -136,9 +145,19 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Get all growth models for organisation with populated model data
+    // Get all growth models for organisation with populated model data and search filter
     const growthModels = await prisma.growthModel.findMany({
-      where: { organisationId: parseInt(organisationId) },
+      where: {
+        organisationId: parseInt(organisationId),
+        ...(query && {
+          models: {
+            name: {
+              contains: query,
+              mode: 'insensitive',
+            },
+          },
+        }),
+      },
       include: {
         models: true,
         organisation: true,

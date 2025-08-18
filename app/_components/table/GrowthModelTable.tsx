@@ -95,7 +95,7 @@ export default function GrowthModelTable({
   const [sortedGrowthModels, setSortedGrowthModels] = useState<GrowthModel[]>();
   const [speciesList, setSpeciesList] = useState<Species[]>([]);
   const [productionSystemList, setProductionSystemList] = useState<productionSystem[]>([]);
-   const token = getCookie('auth-token');
+  const token = getCookie('auth-token');
   const [sortDataFromLocal, setSortDataFromLocal] = React.useState<{
     direction: 'asc' | 'desc';
     column: string;
@@ -126,42 +126,7 @@ export default function GrowthModelTable({
     }
     handleClose();
   };
-
-  const handleDelete = async () => {
-    if (selectedGrowthModel) {
-      setLoading(true);
-      try {
-        const response = await fetch(
-          `/api/growth-model?id=${selectedGrowthModel.models.id}`,
-          {
-            method: 'DELETE',
-          },
-        );
-
-        if (response.ok) {
-           toast.success('Growth model deleted successfully');
-          router.refresh();
-        } else {
-           toast.error('Failed to delete growth model');
-
-          console.error('Failed to delete growth model');
-        }
-      } catch (error) {
-        console.error('Error deleting growth model:', error);
-      } finally {
-        setLoading(false);
-      }
-    }
-    handleClose();
-  };
-
-  function EnhancedTableHead(data: EnhancedTableHeadProps) {
-    const createSortHandler =
-      (property: string) => (event: React.MouseEvent<HTMLButtonElement>) => {
-        handleRequestSort(event, property);
-      };
-
-        useEffect(() => {
+  useEffect(() => {
     const fetchData = async () => {
       try {
         const [speciesRes, productionRes] = await Promise.all([
@@ -191,7 +156,6 @@ export default function GrowthModelTable({
         setSpeciesList(speciesData);
         setProductionSystemList(productionData);
 
-        console.log('Production System Data:', productionData);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -200,6 +164,39 @@ export default function GrowthModelTable({
     fetchData();
   }, [token]);
 
+  const handleDelete = async () => {
+    if (selectedGrowthModel) {
+      setLoading(true);
+      try {
+        const response = await fetch(
+          `/api/growth-model?id=${selectedGrowthModel.models.id}`,
+          {
+            method: 'DELETE',
+          },
+        );
+
+        if (response.ok) {
+          toast.success('Growth model deleted successfully');
+          router.refresh();
+        } else {
+          toast.error('Failed to delete growth model');
+
+          console.error('Failed to delete growth model');
+        }
+      } catch (error) {
+        console.error('Error deleting growth model:', error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    handleClose();
+  };
+
+  function EnhancedTableHead(data: EnhancedTableHeadProps) {
+    const createSortHandler =
+      (property: string) => (event: React.MouseEvent<HTMLButtonElement>) => {
+        handleRequestSort(event, property);
+      };
     return (
       <TableHead>
         <TableRow>
@@ -312,7 +309,7 @@ export default function GrowthModelTable({
                 return -1 * orderType;
               if (model1.models.name > model2.models.name) return 1 * orderType;
               return 0;
-            }  else if (data.column === 'specie') {
+            } else if (data.column === 'specie') {
               const specie1 =
                 speciesList.find((s) => s.id === model1.models.specieId)
                   ?.name || '';
@@ -345,7 +342,7 @@ export default function GrowthModelTable({
         setSortedGrowthModels(sortedData);
       }
     }
-  }, [sortDataFromLocal,speciesList,productionSystemList]);
+  }, [sortDataFromLocal, speciesList, productionSystemList]);
 
   useEffect(() => {
     if (growthModels && !sortDataFromLocal) {
@@ -386,7 +383,7 @@ export default function GrowthModelTable({
               <TableBody>
                 {sortedGrowthModels && sortedGrowthModels.length > 0 ? (
                   sortedGrowthModels.map((model: GrowthModel, i: number) => {
-                    console.log('Model:', sortedGrowthModels);
+
                     const speciesName =
                       speciesList.find((s) => s.id === model.models.specieId)
                         ?.name || '';
@@ -447,7 +444,7 @@ export default function GrowthModelTable({
                             },
                           }}
                         >
-                           {productionSystemName}
+                          {productionSystemName}
                         </TableCell>
                         <TableCell
                           sx={{

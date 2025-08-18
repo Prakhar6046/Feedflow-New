@@ -59,6 +59,7 @@ export interface EnhancedTableHeadProps {
 }
 
 export default function UserTable({ users, permissions }: Props) {
+
   const dispatch = useAppDispatch();
   const router = useRouter();
   const pathName = usePathname();

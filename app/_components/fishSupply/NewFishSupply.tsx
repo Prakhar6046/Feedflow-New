@@ -78,7 +78,6 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations, speciesList
     mode: 'onChange',
   });
   const onSubmit: SubmitHandler<FormInputs> = async (data) => {
-    console.log('Form data:', data);
     // Prevent API call if one is already in progress
     if (isApiCallInProgress) return;
     setIsApiCallInProgress(true);

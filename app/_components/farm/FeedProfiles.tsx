@@ -67,6 +67,7 @@ const FeedProfiles = ({
   feedStores,
   feedSuppliers,
 }: Props) => {
+
   const { control, handleSubmit, watch, setValue } = useForm<FormValues>();
   const allFeedprofiles = watch();
   const [radioValueMap, setRadioValueMap] = useState<
@@ -87,9 +88,50 @@ const FeedProfiles = ({
   }, [feedStores]);
 
   const onSubmit: SubmitHandler<FormValues> = (data) => {
-    setLocalItem('feedProfiles', data);
+    // Parse selected feed profiles into structured payload
+    const payload: {
+      supplierId: number;
+      storeId: String;
+      minFishSize: number;
+      maxFishSize: number;
+    }[] = [];
+
+    groupedData.forEach((group, groupIndex) => {
+      const colKey = `col${groupIndex + 1}`;
+
+      group.stores.forEach((store) => {
+        const valueKey = `${colKey}_${store.id}`;
+
+        // Find all fish sizes where this store was selected
+        const selectedSizes: number[] = [];
+        newfishSizes.forEach((size) => {
+          const rowName = `selection_${size}`;
+          if (data[rowName] === valueKey) {
+            selectedSizes.push(size);
+          }
+        });
+
+        if (selectedSizes.length) {
+          payload.push({
+            supplierId: group.supplier.id,
+            storeId: store.id,
+            minFishSize: Math.min(...selectedSizes),
+            maxFishSize: Math.max(...selectedSizes),
+          });
+        }
+      });
+    });
+    console.log('Structured Feed Profiles Payload:', payload);
+    // Save structured payload
+    setLocalItem('feedProfiles', payload);
+
+    if (editFarm?.FeedProfile?.[0]?.id) {
+      setLocalItem('feedProfileId', editFarm?.FeedProfile?.[0].id);
+    }
+
     setActiveStep(3);
   };
+
 
   const renderRadioGroup = (
     rowName: string,
@@ -152,7 +194,7 @@ const FeedProfiles = ({
   }, [selectedSupplier, feedStores]);
 
   // New function to handle auto-selection
-const handleAutoSelect = (
+  const handleAutoSelect = (
     store: FeedProduct,
     supplierId: number,
     storeIndex: number,
@@ -191,7 +233,7 @@ const handleAutoSelect = (
       group?.stores?.forEach((store: FeedProduct, storeIndex: number) => {
         const optKey = `opt${storeIndex + 1}`;
         const label = `${store.productName} - ${group.supplier.option}`;
-        
+
         // Use a unique value for each radio option, based on product ID
         map[colKey][optKey] = `${colKey}_${store.id}`;
       });
@@ -201,14 +243,41 @@ const handleAutoSelect = (
   }, [groupedData]);
 
   useEffect(() => {
-    if (editFarm) {
-      const profiles: any = editFarm.FeedProfile?.[0]?.profiles;
+    if (!editFarm || !groupedData?.length) return;
+
+    const profiles = (editFarm?.FeedProfile?.[0]?.profiles || []) as {
+      storeId: string;
+      supplierId: number;
+      minFishSize: number;
+      maxFishSize: number;
+    }[];
+
+    profiles.forEach((profile) => {
+      // find which column this supplier belongs to
+      const groupIndex = groupedData.findIndex(
+        (group) => group.supplier.id === profile.supplierId
+      );
+
+      if (groupIndex === -1) return;
+      const colKey = `col${groupIndex + 1}`;
+      const valueToSet = `${colKey}_${profile.storeId}`;
+
+      // prefill all fish sizes in range
+      for (let size = profile.minFishSize; size <= profile.maxFishSize; size++) {
+        setValue(`selection_${size}`, valueToSet, {
+          shouldValidate: true,
+          shouldDirty: false,
+        });
+      }
+    });
+
+    // also save feedProfileId locally
+    if (editFarm?.FeedProfile?.[0]?.id) {
       setLocalItem('feedProfileId', editFarm?.FeedProfile?.[0].id);
-      Object.entries(profiles).forEach(([key, value]) => {
-        setValue(key, String(value));
-      });
     }
-  }, [editFarm]);
+  }, [editFarm, groupedData, setValue]);
+
+
 
   useEffect(() => {
     if (feedSuppliers?.length) {
@@ -359,6 +428,7 @@ const handleAutoSelect = (
                                       disablePadding
                                       sx={{
                                         width: 'fit-content',
+                                        flexDirection: "column"
                                       }}
                                     >
                                       <Typography
@@ -370,6 +440,8 @@ const handleAutoSelect = (
                                         {store?.productName}
                                         <br />
                                         ({store.minFishSizeG}-{store.maxFishSizeG})
+                                      </Typography>
+
                                         <IconButton
                                           size="small"
                                           onClick={() =>
@@ -382,7 +454,6 @@ const handleAutoSelect = (
                                         >
                                           <AutoFixHighIcon fontSize="small" />
                                         </IconButton>
-                                      </Typography>
                                     </ListItem>
                                   );
                                 },

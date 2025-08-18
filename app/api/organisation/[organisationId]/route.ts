@@ -146,7 +146,7 @@ export async function PUT(req: NextRequest, context: ContextParams) {
           altitude: hatchery.altitude,
           fishSpecie: hatchery.fishSpecie,
           createdBy: organisation.id,
-           organisationId: organisation.id,
+          organisationId: organisation.id,
         },
       });
     }
@@ -160,13 +160,25 @@ export async function PUT(req: NextRequest, context: ContextParams) {
       if (!contact.id) {
         // If userId is not provided, find or create a user
         if (!userId) {
-          const user = await prisma.user.findUnique({
+          let user = await prisma.user.findUnique({
             where: { email: contact.email },
             select: { id: true },
           });
 
+
           if (user) {
-            userId = user.id;
+            // Update user
+            user = await prisma.user.update({
+              where: { id: user.id },
+              data: {
+                email: contact.email,
+                name: contact.name,
+                role: contact.role?.toUpperCase(),
+                permissions: contact.permissions || '',
+                organisationId: organisation.id,
+                invite: contact.newInvite || false,
+              },
+            });
             // Update user's email if it's different
           } else {
             // If the user doesn't exist, create a new one and get the ID
@@ -174,6 +186,8 @@ export async function PUT(req: NextRequest, context: ContextParams) {
               data: {
                 email: contact.email,
                 name: contact.name,
+                role: contact.role?.toUpperCase(),
+                permissions: contact.permissions || '',
                 organisationId: Number(organisationId),
                 invite: shouldSendInvite ? shouldSendInvite : false,
               },
