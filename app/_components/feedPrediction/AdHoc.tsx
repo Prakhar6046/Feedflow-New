@@ -113,10 +113,12 @@ function AdHoc({ data, setData }: Iprops) {
     mode: 'onChange',
   });
   const token = getCookie('auth-token');
-   const [speciesList, setSpeciesList] = useState<Species[]>([]);
+  const [speciesList, setSpeciesList] = useState<Species[]>([]);
+  const featuredspeciesList = speciesList.filter((item) => item.isFeatured);
   const [productionSystemList, setProductionSystemList] = useState<productionSystem[]>([]);
+  const featuredproductionSystemList = productionSystemList.filter((item) => item.isFeatured);
 
-        useEffect(() => {
+  useEffect(() => {
     const fetchData = async () => {
       try {
         const [speciesRes, productionRes] = await Promise.all([
@@ -547,11 +549,15 @@ function AdHoc({ data, setData }: Iprops) {
                 defaultValue={''}
                 render={({ field }) => (
                   <Select {...field} label="Species *">
-                    {speciesOptions.map((option: any) => (
-                      <MenuItem value={option.value} key={option.id}>
-                        {option.label}
-                      </MenuItem>
-                    ))}
+                    {featuredspeciesList && featuredspeciesList.length > 0 ? (
+                      featuredspeciesList.map((sp) => (
+                        <MenuItem key={sp.id} value={sp.name}>
+                          {sp.name}
+                        </MenuItem>
+                      ))
+                    ) : (
+                      <MenuItem disabled>No species available</MenuItem>
+                    )}
                   </Select>
                 )}
               />
@@ -568,7 +574,7 @@ function AdHoc({ data, setData }: Iprops) {
                 rules={{ required: true }}
                 render={({ field }) => (
                   <Select {...field} labelId="production-system-label" label="Production System *">
-                    {productionSystemList.map((option) => (
+                    {featuredproductionSystemList.map((option) => (
                       <MenuItem value={option.name} key={option.id}>
                         {option.name}
                       </MenuItem>
