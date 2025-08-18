@@ -95,7 +95,9 @@ export default function GrowthModelTable({
   const role = useAppSelector(selectRole);
   const [sortedGrowthModels, setSortedGrowthModels] = useState<GrowthModel[]>();
   const [speciesList, setSpeciesList] = useState<Species[]>([]);
+  const featuredSpecies = speciesList?.filter((sp) => sp.isFeatured);
   const [productionSystemList, setProductionSystemList] = useState<productionSystem[]>([]);
+  const featuredProductionSystemList = productionSystemList?.filter((sp) => sp.isFeatured);
   const token = getCookie('auth-token');
   const [sortDataFromLocal, setSortDataFromLocal] = React.useState<{
     direction: 'asc' | 'desc';
@@ -262,21 +264,21 @@ export default function GrowthModelTable({
             return 0;
           } else if (property === 'specie') {
             const specie1 =
-              speciesList.find((s) => s.id === model1.models.specieId)?.name ||
+              featuredSpecies.find((s) => s.id === model1.models.specieId)?.name ||
               '';
             const specie2 =
-              speciesList.find((s) => s.id === model2.models.specieId)?.name ||
+              featuredSpecies.find((s) => s.id === model2.models.specieId)?.name ||
               '';
             if (specie1 < specie2) return -1 * orderType;
             if (specie1 > specie2) return 1 * orderType;
             return 0;
           } else if (property === 'productionSystem') {
             const system1 =
-              productionSystemList.find(
+              featuredProductionSystemList.find(
                 (p) => p.id === model1.models.productionSystemId,
               )?.name || '';
             const system2 =
-              productionSystemList.find(
+              featuredProductionSystemList.find(
                 (p) => p.id === model2.models.productionSystemId,
               )?.name || '';
             if (system1 < system2) return -1 * orderType;
@@ -312,21 +314,21 @@ export default function GrowthModelTable({
               return 0;
             } else if (data.column === 'specie') {
               const specie1 =
-                speciesList.find((s) => s.id === model1.models.specieId)
+                featuredSpecies.find((s) => s.id === model1.models.specieId)
                   ?.name || '';
               const specie2 =
-                speciesList.find((s) => s.id === model2.models.specieId)
+                featuredSpecies.find((s) => s.id === model2.models.specieId)
                   ?.name || '';
               if (specie1 < specie2) return -1 * orderType;
               if (specie1 > specie2) return 1 * orderType;
               return 0;
             } else if (data.column === 'productionSystem') {
               const system1 =
-                productionSystemList.find(
+                featuredProductionSystemList.find(
                   (p) => p.id === model1.models.productionSystemId,
                 )?.name || '';
               const system2 =
-                productionSystemList.find(
+                featuredProductionSystemList.find(
                   (p) => p.id === model2.models.productionSystemId,
                 )?.name || '';
               if (system1 < system2) return -1 * orderType;
@@ -343,7 +345,7 @@ export default function GrowthModelTable({
         setSortedGrowthModels(sortedData);
       }
     }
-  }, [sortDataFromLocal, speciesList, productionSystemList]);
+  }, [sortDataFromLocal, featuredSpecies, featuredProductionSystemList]);
 
   useEffect(() => {
     if (growthModels && !sortDataFromLocal) {
@@ -386,12 +388,17 @@ export default function GrowthModelTable({
                   sortedGrowthModels.map((model: GrowthModel, i: number) => {
 
                     const speciesName =
-                      speciesList.find((s) => s.id === model.models.specieId)
+                      featuredSpecies.find((s) => s.id === model.models.specieId)
                         ?.name || '';
                     const productionSystemName =
-                      productionSystemList.find(
+                      featuredProductionSystemList.find(
                         (p) => p.id === model.models.productionSystemId,
                       )?.name || '';
+                    const isDefaultProductionSystem = speciesList.some(
+                      (sp) =>
+                        sp.id === model.models.specieId &&
+                        sp.defaultProductionSystemId === model.models.productionSystemId
+                    );
                     return (
                       <TableRow
                         key={i}
@@ -414,26 +421,7 @@ export default function GrowthModelTable({
                             lineHeight: 0
                           }}
                         >
-
-                          <Stack display={"flex"} alignItems={"center"} gap={1} direction="row">
-                            <Tooltip title="Featured">
-                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
-                                <g fill="none">
-                                  <g clip-path="url(#SVGwDJxaeOQ)">
-                                    <path fill="#06A19B" d="M21.95 10.605a1.75 1.75 0 0 1-.5.86l-3.3 3.22a.4.4 0 0 0-.08.12a.3.3 0 0 0 0 .14l.78 4.56c.065.336.03.684-.1 1a1.65 1.65 0 0 1-.61.77a1.83 1.83 0 0 1-.92.35h-.13a1.8 1.8 0 0 1-.84-.21l-4.1-2.14a.28.28 0 0 0-.28 0l-4.1 2.15a1.9 1.9 0 0 1-1 .21a1.83 1.83 0 0 1-.93-.35a1.75 1.75 0 0 1-.61-.78a1.8 1.8 0 0 1-.1-1l.78-4.55a.23.23 0 0 0 0-.14a.4.4 0 0 0-.07-.12l-3.3-3.24a1.8 1.8 0 0 1-.49-.85a1.75 1.75 0 0 1 0-1a1.81 1.81 0 0 1 1.49-1.21l4.5-.66a.18.18 0 0 0 .12-.05a.3.3 0 0 0 .09-.11l2.1-4.18c.143-.3.369-.553.65-.73a1.79 1.79 0 0 1 2.57.74l2.08 4.16a.4.4 0 0 0 .1.12a.2.2 0 0 0 .13.05l4.57.66c.332.05.644.192.9.41c.251.217.441.496.55.81c.106.32.124.662.05.99" stroke-width="0.5" stroke="#06A19B" />
-                                  </g>
-                                  <defs>
-                                    <clipPath id="SVGwDJxaeOQ">
-                                      <path fill="#fff" d="M2 2.395h20v19.21H2z" />
-                                    </clipPath>
-                                  </defs>
-                                </g>
-                              </svg>
-                            </Tooltip>
-
-                            {model.models.name}
-                          </Stack>
-
+                          {model.models.name}
                         </TableCell>
                         <TableCell
                           sx={{
@@ -465,7 +453,28 @@ export default function GrowthModelTable({
                             },
                           }}
                         >
-                          {productionSystemName}
+                          <Stack display={"flex"} alignItems={"center"} gap={1} direction="row">
+                            <Typography>{productionSystemName}</Typography>
+
+                            {isDefaultProductionSystem && (
+                              <Tooltip
+                                title={`This is the default production system for ${speciesName}`}
+                              >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
+                                  <g fill="none">
+                                    <g clip-path="url(#SVGwDJxaeOQ)">
+                                      <path fill="#06A19B" d="M21.95 10.605a1.75 1.75 0 0 1-.5.86l-3.3 3.22a.4.4 0 0 0-.08.12a.3.3 0 0 0 0 .14l.78 4.56c.065.336.03.684-.1 1a1.65 1.65 0 0 1-.61.77a1.83 1.83 0 0 1-.92.35h-.13a1.8 1.8 0 0 1-.84-.21l-4.1-2.14a.28.28 0 0 0-.28 0l-4.1 2.15a1.9 1.9 0 0 1-1 .21a1.83 1.83 0 0 1-.93-.35a1.75 1.75 0 0 1-.61-.78a1.8 1.8 0 0 1-.1-1l.78-4.55a.23.23 0 0 0 0-.14a.4.4 0 0 0-.07-.12l-3.3-3.24a1.8 1.8 0 0 1-.49-.85a1.75 1.75 0 0 1 0-1a1.81 1.81 0 0 1 1.49-1.21l4.5-.66a.18.18 0 0 0 .12-.05a.3.3 0 0 0 .09-.11l2.1-4.18c.143-.3.369-.553.65-.73a1.79 1.79 0 0 1 2.57.74l2.08 4.16a.4.4 0 0 0 .1.12a.2.2 0 0 0 .13.05l4.57.66c.332.05.644.192.9.41c.251.217.441.496.55.81c.106.32.124.662.05.99" stroke-width="0.5" stroke="#06A19B" />
+                                    </g>
+                                    <defs>
+                                      <clipPath id="SVGwDJxaeOQ">
+                                        <path fill="#fff" d="M2 2.395h20v19.21H2z" />
+                                      </clipPath>
+                                    </defs>
+                                  </g>
+                                </svg>
+                              </Tooltip>
+                            )}
+                          </Stack>
                         </TableCell>
                         <TableCell
                           sx={{
@@ -586,6 +595,7 @@ export default function GrowthModelTable({
                 </Typography>
               </Stack>
             </MenuItem>
+
             <Divider />
             <MenuItem
               sx={{

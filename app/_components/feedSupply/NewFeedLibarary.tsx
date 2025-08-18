@@ -18,6 +18,7 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
+import { productionSystem } from '../GrowthModel';
 // import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 const fields = [
   { name: 'ProductSupplier', label: 'Product Supplier *', type: 'select' },
@@ -88,6 +89,8 @@ export interface Species {
   createdAt: string;
   updatedAt: string;
   isFeatured: boolean;
+  defaultProductionSystemId: string | null;
+  defaultProductionSystem?: productionSystem;
 };
 interface Props {
   feedSuppliers: FeedSupplier[];

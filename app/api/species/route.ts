@@ -14,7 +14,12 @@ export async function GET(request: NextRequest) {
         { status: 401 },
       );
     }
-    const species = await prisma.species.findMany({ orderBy: { createdAt: 'desc' } });
+    const species = await prisma.species.findMany({
+      orderBy: { createdAt: 'desc' },
+      include: {
+        defaultProductionSystem: true,
+      },
+    });
 
     return NextResponse.json(species);
   } catch (error) {
@@ -45,7 +50,7 @@ export async function POST(req: Request) {
     ) {
       return NextResponse.json(
         { error: 'Species name already exists. Please use a different name.' },
-        { status: 409 } 
+        { status: 409 }
       );
     }
 

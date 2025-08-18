@@ -80,24 +80,27 @@ model Organisation {
 }
 
 model Species {
-  id           String       @id @default(uuid())
-  name         String       @unique
-  feedStores   FeedStore[]
-  fishSupplies FishSupply[] @relation("FishSupplySpecies")
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @updatedAt
-  Model        Model[]
-  isFeatured   Boolean      @default(false)
+  id                        String            @id @default(uuid())
+  name                      String            @unique
+  feedStores                FeedStore[]
+  fishSupplies              FishSupply[]      @relation("FishSupplySpecies")
+  createdAt                 DateTime          @default(now())
+  updatedAt                 DateTime          @updatedAt
+  Model                     Model[]
+  isFeatured                Boolean           @default(false)
+  defaultProductionSystemId String?
+  defaultProductionSystem   ProductionSystem? @relation("DefaultSpeciesProductionSystem", fields: [defaultProductionSystemId], references: [id])
 }
 
 model ProductionSystem {
-  id             String           @id @default(uuid())
-  name           String           @unique
-  models         Model[]
-  createdAt      DateTime         @default(now())
-  updatedAt      DateTime         @updatedAt
-  isFeatured     Boolean          @default(false)
-  ProductionUnit ProductionUnit[]
+  id                String           @id @default(uuid())
+  name              String           @unique
+  models            Model[]
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+  isFeatured        Boolean          @default(false)
+  ProductionUnit    ProductionUnit[]
+  defaultForSpecies Species[]        @relation("DefaultSpeciesProductionSystem")
 }
 
 model OrganisationCount {
@@ -295,7 +298,7 @@ model ProductionUnit {
   name                               String
   type                               String
   productionSystemId                 String?
-  productionSystem                   ProductionSystem?                     @relation(fields: [productionSystemId], references: [id])
+  productionSystem                   ProductionSystem?                    @relation(fields: [productionSystemId], references: [id])
   capacity                           String
   waterflowRate                      String
   createdAt                          DateTime                             @default(now())
