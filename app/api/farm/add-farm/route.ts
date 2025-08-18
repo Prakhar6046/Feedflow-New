@@ -135,7 +135,7 @@ export async function POST(req: NextRequest) {
         data: {
           name: unit.name,
           type: unit.type,
-          productionSystem: unit.productionSystem,
+          productionSystemId: unit.productionSystem,
           capacity: unit.capacity,
           waterflowRate: unit.waterflowRate,
           farmId: farm.id,

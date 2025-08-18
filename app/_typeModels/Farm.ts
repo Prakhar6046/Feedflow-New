@@ -30,6 +30,7 @@ export type CalculateType = {
   output: number;
   id: string;
 };
+
 export interface ProductionUnitsFormTypes {
   productionUnits: {
     name: string;
@@ -233,6 +234,7 @@ export interface Farm {
     name: string;
     type: string;
     productionSystem: string;
+    productionSystemId?: string;
     capacity: string;
     waterflowRate: string;
     farmId: string;

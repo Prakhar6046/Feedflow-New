@@ -15,6 +15,7 @@ export async function POST(req: NextRequest) {
     //   );
     // }
     const body = await req.json();
+    console.log('Request body:', body);
     const { yearBasedPredicationId, modelId, ...productionParameterPayload } =
       body.productionParameter;
 
@@ -109,7 +110,7 @@ export async function POST(req: NextRequest) {
         update: {
           name: unit.name,
           type: unit.type,
-          productionSystem: unit.productionSystem,
+          productionSystemId: unit.productionSystem,
           capacity: unit.capacity,
           waterflowRate: unit.waterflowRate,
           farmId: updatedFarm.id,
@@ -117,7 +118,7 @@ export async function POST(req: NextRequest) {
         create: {
           name: unit.name,
           type: unit.type,
-          productionSystem: unit.productionSystem,
+          productionSystemId: unit.productionSystem,
           capacity: unit.capacity,
           waterflowRate: unit.waterflowRate,
           farmId: updatedFarm.id,

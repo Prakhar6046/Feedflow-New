@@ -26,6 +26,7 @@ export interface productionSystem {
   name: string;
   createdAt: string;
   updatedAt: string;
+  isFeatured: boolean;
 };
 type CoefficientModel = 'logarithmic' | 'polynomial' | 'quadratic';
 interface InputType {

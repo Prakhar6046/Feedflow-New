@@ -21,7 +21,7 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
     return NextResponse.json(updated);
   } catch (err) {
     if (
-      err  &&
+      err &&
       err.code === 'P2002'
     ) {
       return NextResponse.json(
@@ -36,6 +36,7 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
     );
   }
 }
+
 
 export async function DELETE(_: Request, { params }: { params: { id: string } }) {
   try {

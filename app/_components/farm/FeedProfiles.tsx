@@ -246,24 +246,18 @@ const FeedProfiles = ({
   useEffect(() => {
     if (!editFarm || !groupedData?.length) return;
 
-    const profiles = (editFarm?.FeedProfile?.[0]?.profiles || []) as {
-      storeId: string;
-      supplierId: number;
-      minFishSize: number;
-      maxFishSize: number;
-    }[];
+    const rawProfiles = editFarm?.FeedProfile?.[0]?.profiles;
+    const profiles = Array.isArray(rawProfiles) ? rawProfiles : [];
 
     profiles.forEach((profile) => {
-      // find which column this supplier belongs to
       const groupIndex = groupedData.findIndex(
         (group) => group.supplier.id === profile.supplierId
       );
-
       if (groupIndex === -1) return;
+
       const colKey = `col${groupIndex + 1}`;
       const valueToSet = `${colKey}_${profile.storeId}`;
 
-      // prefill all fish sizes in range
       for (let size = profile.minFishSize; size <= profile.maxFishSize; size++) {
         setValue(`selection_${size}`, valueToSet, {
           shouldValidate: true,
@@ -272,12 +266,10 @@ const FeedProfiles = ({
       }
     });
 
-    // also save feedProfileId locally
     if (editFarm?.FeedProfile?.[0]?.id) {
       setLocalItem('feedProfileId', editFarm?.FeedProfile?.[0].id);
     }
   }, [editFarm, groupedData, setValue]);
-
 
 
   useEffect(() => {

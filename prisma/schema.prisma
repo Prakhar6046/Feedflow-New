@@ -87,14 +87,17 @@ model Species {
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
   Model        Model[]
+  isFeatured   Boolean      @default(false)
 }
 
 model ProductionSystem {
-  id        String   @id @default(uuid())
-  name      String   @unique
-  models    Model[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id             String           @id @default(uuid())
+  name           String           @unique
+  models         Model[]
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  isFeatured     Boolean          @default(false)
+  ProductionUnit ProductionUnit[]
 }
 
 model OrganisationCount {
@@ -291,7 +294,8 @@ model ProductionUnit {
   id                                 String                               @id @default(cuid())
   name                               String
   type                               String
-  productionSystem                   String?
+  productionSystemId                 String?
+  productionSystem                   ProductionSystem?                     @relation(fields: [productionSystemId], references: [id])
   capacity                           String
   waterflowRate                      String
   createdAt                          DateTime                             @default(now())
