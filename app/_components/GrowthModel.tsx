@@ -2,8 +2,10 @@
 import {
   Box,
   Button,
+  Checkbox,
   Divider,
   FormControl,
+  FormControlLabel,
   FormHelperText,
   Grid,
   InputLabel,
@@ -117,10 +119,15 @@ function GrowthModel({
   modelData?: any;
   modelId?: string | null;
 }) {
+  console.log('GrowthModel component rendered', modelData);
   const loggedUser: any = getCookie('logged-user');
   const router = useRouter();
   const [speciesList, setSpeciesList] = useState<Species[]>([]);
+  const featuredSpecies = speciesList?.filter((sp) => sp.isFeatured);
+  console.log('Featured Species:', featuredSpecies);
   const [productionSystemList, setProductionSystemList] = useState<productionSystem[]>([]);
+  const featuredProductionSystemList = productionSystemList?.filter((sp) => sp.isFeatured);
+  const [setDefault, setSetDefault] = useState(false);
   const token = getCookie('auth-token');
   const {
     register,
@@ -142,6 +149,7 @@ function GrowthModel({
   const [loading, setLoading] = useState(false);
   const [species, setSpecies] = useState('');
   const [productionSystem, setProductionSystem] = useState('');
+  const [checkboxLabel, setCheckboxLabel] = useState("Set as default production system for selected species");
   const numericValidation = {
     required: 'This field is required',
     pattern: {
@@ -194,8 +202,8 @@ function GrowthModel({
   useEffect(() => {
     if (editMode && modelData) {
       setValue('name', modelData.name || '');
-      setValue('specie', modelData.specie || '');
-      setValue('productionSystem', modelData.productionSystem || '');
+      setValue('specie', modelData.specieId || '');
+      setValue('productionSystem', modelData.productionSystemId || '');
       setValue('adcCp', modelData.adcCp || 0);
       setValue('adcCf', modelData.adcCf || 0);
       setValue('adcNfe', modelData.adcNfe || 0);
@@ -217,11 +225,36 @@ function GrowthModel({
       setValue('tFCRb', modelData.tFCRb || 0);
       setValue('tFCRc', modelData.tFCRc || 0);
 
-      setSpecies(modelData.specie || '');
-      setProductionSystem(modelData.productionSystem || '');
+      setSpecies(modelData.specieId || '');
+      setProductionSystem(modelData.productionSystemId || '');
       setSelectedFCRModel(modelData.tFCRModel || 'linear');
     }
   }, [editMode, modelData, setValue]);
+
+  useEffect(() => {
+    if (species && productionSystem && speciesList.length > 0) {
+      const currentSpecies = speciesList.find(sp => sp.id === species);
+
+      if (currentSpecies) {
+        if (currentSpecies.defaultProductionSystemId === productionSystem) {
+          setSetDefault(true);
+          setCheckboxLabel("This is already the default production system for the selected species");
+        } else if (currentSpecies.defaultProductionSystemId) {
+          const defaultSystem = productionSystemList.find(ps => ps.id === currentSpecies.defaultProductionSystemId);
+          setSetDefault(false);
+          setCheckboxLabel(
+            `Currently, the default production system for this species is "${defaultSystem?.name}". Do you want to set the selected system as default?`
+          );
+        } else {
+          setSetDefault(false);
+          setCheckboxLabel("Set as default production system for selected species");
+        }
+      }
+    } else {
+      setSetDefault(false);
+      setCheckboxLabel("Set as default production system for selected species");
+    }
+  }, [species, productionSystem, speciesList, productionSystemList]);
 
   useEffect(() => {
     // Set TGC defaults
@@ -320,6 +353,23 @@ function GrowthModel({
           setSpecies('');
           setProductionSystem('');
           reset();
+          if (setDefault && data.specie && data.productionSystem) {
+            await fetch(`/api/growth-model/${data.specie}`, {
+              method: 'PUT',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+              },
+              body: JSON.stringify({ defaultProductionSystemId: data.productionSystem }),
+            }).then(async (res) => {
+              const resData = await res.json();
+              // if (res.ok) {
+              //   toast.success('Species default production system updated successfully.');
+              // } else {
+              //   toast.error(resData.message || 'Failed to update species default production system.');
+              // }
+            });
+          }
 
           // Navigate to the growth model list after successful save (both create and edit)
           router.push('/dashboard/growthModel');
@@ -416,8 +466,8 @@ function GrowthModel({
                           clearErrors('specie');
                         }}
                       >
-                        {speciesList && speciesList.length > 0 ? (
-                          speciesList.map((sp) => (
+                        {featuredSpecies && featuredSpecies.length > 0 ? (
+                          featuredSpecies.map((sp) => (
                             <MenuItem key={sp.id} value={sp.id}>
                               {sp.name}
                             </MenuItem>
@@ -461,8 +511,8 @@ function GrowthModel({
                           clearErrors('productionSystem');
                         }}
                       >
-                        {productionSystemList && productionSystemList.length > 0 ? (
-                          productionSystemList.map((sp) => (
+                        {featuredProductionSystemList && featuredProductionSystemList.length > 0 ? (
+                          featuredProductionSystemList.map((sp) => (
                             <MenuItem key={sp.id} value={sp.id}>
                               {sp.name}
                             </MenuItem>
@@ -485,6 +535,22 @@ function GrowthModel({
                     </Typography>
                   </Grid>
                 </Grid>
+              </Box>
+              <Box sx={{ mt: 2 }}>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      className="checkbox-style"
+                      checked={setDefault}
+                      onChange={(e) => setSetDefault(e.target.checked)}
+                      disabled={!species || !productionSystem}
+                    />
+                  }
+                  label={checkboxLabel || ""}
+                />
+                <FormHelperText>
+                  Only available after selecting both a species and a production system.
+                </FormHelperText>
               </Box>
 
               <Divider

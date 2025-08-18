@@ -48,6 +48,11 @@ body {
   box-shadow: none;
 }
 
+.Mui-checked{
+  color: #06a19b !important;
+transform: scale(1.25);
+}
+
 .table-edit-menu ul {
   padding: 0;
 }
