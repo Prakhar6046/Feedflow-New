@@ -149,6 +149,8 @@ const FeedProfiles = ({
           justifyContent="space-between"
           alignItems="center"
           gap={2}
+          paddingLeft={"16px"}
+          paddingRight={"4px"}
         >
           {options.map((opt, index) => {
             const value =
@@ -309,7 +311,7 @@ const FeedProfiles = ({
                 marginBottom: 2,
               }}
             >
-              Feed Profile1111
+              Feed Profile
             </Typography>
             <Box>
               <FormControl
@@ -447,19 +449,36 @@ const FeedProfiles = ({
                                         }
 
                                         sx={{
-                                          background: '#06A19B',
-                                          color: "#fff",
+                                          background: '#fff',
+                                          color: "#888",
                                           fontWeight: 600,
                                           padding: '8px',
                                           width: 'fit-content',
                                           textTransform: 'capitalize',
                                           borderRadius: '50px',
+                                          border: "1px solid #d5d5d5",
                                           transform: 'scale(0.75)',
                                           '&:hover': {
                                             background: '#06A19B',
                                             color: '#fff',
                                           },
                                         }}
+
+                                      // sx={{
+                                      //   background: '#06A19B',
+                                      //   color: "#fff",
+                                      //   fontWeight: 600,
+                                      //   padding: '8px',
+                                      //   width: 'fit-content',
+                                      //   textTransform: 'capitalize',
+                                      //   borderRadius: '50px',
+                                      //   transform: 'scale(0.75)',
+                                      //   border: "1px solid #06A19B",
+                                      //   '&:hover': {
+                                      //     background: '#06A19B',
+                                      //     color: '#fff',
+                                      //   },
+                                      // }}
                                       >
                                         <DoneAll fontSize="small" />
                                         {/* <Checklist fontSize="small" /> */}
