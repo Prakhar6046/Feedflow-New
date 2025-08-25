@@ -95,6 +95,7 @@ model Species {
 model ProductionSystem {
   id                String           @id @default(uuid())
   name              String           @unique
+  code              String?          @unique
   models            Model[]
   createdAt         DateTime         @default(now())
   updatedAt         DateTime         @updatedAt
@@ -566,6 +567,7 @@ model GrowthModel {
   organisation   Organisation? @relation(fields: [organisationId], references: [id])
   modelId        Int
   models         Model         @relation(fields: [modelId], references: [id])
+  isDefault      Boolean       @default(false)
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
 

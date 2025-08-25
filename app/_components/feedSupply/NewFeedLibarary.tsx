@@ -15,7 +15,7 @@ import {
 import { getCookie } from 'cookies-next';
 import { NextPage } from 'next';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { productionSystem } from '../GrowthModel';
@@ -111,8 +111,66 @@ const NewFeedLibarary: NextPage<Props> = ({ feedSuppliers, speciesList }) => {
     handleSubmit,
     reset,
     control,
+    watch,
+    setValue,
     formState: { errors },
   } = useForm<FeedFormFields>({ mode: 'onChange' });
+
+  const moistureGPerKg = watch("moistureGPerKg") || 0;
+  const crudeProtein = watch("crudeProteinGPerKg") || 0;
+  const crudeFatGPerKg = watch("crudeFatGPerKg") || 0;
+  const crudeFiber = watch("crudeFiberGPerKg") || 0;
+  const crudeAsh = watch("crudeAshGPerKg") || 0;
+  const nfe = watch("nfe") || 0;
+  const phosphorus = watch("phosphorusGPerKg") || 0;
+  const calcium = watch("calciumGPerKg") || 0;
+  const carbohydratesGPerKg = watch("carbohydratesGPerKg") || 0;
+  const geCoeffCP = watch("geCoeffCP") || 0;
+  const geCoeffCF = watch("geCoeffCF") || 0;
+  const geCoeffNFE = watch("geCoeffNFE") || 0;
+  const C55 = 90;
+  const C56 = 90;
+  const C58 = 60;
+  const carbohydrates =
+    (1000 - Number(moistureGPerKg)) -
+    (Number(crudeProtein) + Number(crudeFatGPerKg) + Number(crudeFiber) + Number(crudeAsh));
+  const calculateGE = (Number(crudeProtein) * Number(geCoeffCP) / 10 + Number(crudeFatGPerKg) * Number(geCoeffCF) / 10 + Number(nfe) * Number(geCoeffNFE) / 10) / 100;
+  const calculateDigCP = (Number(crudeProtein) / 10) * C55;
+  const calculateDigCF = (Number(crudeFatGPerKg) / 10) * C56;
+  const digNFE = (Number(nfe) / 10) * C58;
+  const deCP = (calculateDigCP * Number(geCoeffCP)) / 10000;
+  const deCF = (calculateDigCF * Number(geCoeffCF)) / 10000;
+  const deNFE = (digNFE * Number(geCoeffNFE)) / 10000;
+  const de = deCP + deCF + deNFE;
+  useEffect(() => {
+    setValue("carbohydratesGPerKg", carbohydrates);
+  }, [crudeFiber, crudeAsh, nfe, phosphorus, calcium, carbohydrates, setValue]);
+
+  useEffect(() => {
+    setValue("ge", calculateGE);
+  }, [crudeAsh, nfe, carbohydrates, geCoeffCP, geCoeffCF, geCoeffNFE, setValue]);
+  useEffect(() => {
+    setValue("digCP", calculateDigCP);
+  }, [crudeProtein, setValue]);
+  useEffect(() => {
+    setValue("digCF", calculateDigCF);
+  }, [crudeFatGPerKg, setValue]);
+  useEffect(() => {
+    setValue("digNFE", digNFE);
+  }, [nfe, setValue]);
+  useEffect(() => {
+    setValue("deCP", deCP);
+  }, [calculateDigCP, geCoeffCP, setValue]);
+  useEffect(() => {
+    setValue("deCF", deCF);
+  }, [calculateDigCF, geCoeffCF, setValue]);
+  useEffect(() => {
+    setValue("deNFE", deNFE);
+  }, [digNFE, geCoeffNFE, setValue]);
+  useEffect(() => {
+    setValue("de", de);
+  }, [deCP, deCF, deNFE, setValue]);
+
 
   const createPayload = (formData: Record<string, any>) => {
     const payload: Record<string, any> = {};
@@ -172,74 +230,165 @@ const NewFeedLibarary: NextPage<Props> = ({ feedSuppliers, speciesList }) => {
       <Grid container spacing={2}>
         {fields?.map((field, i) => (
           <Grid item xs={12} sm={6} key={field.name}>
-            {field?.type === 'select' ? (
-              <FormControl fullWidth className="form-input" focused>
-                <InputLabel id="feed-supply-select-label1">
-                  {field.label}
-                </InputLabel>
-                <Controller
-                  name={field.name}
-                  control={control}
-                  defaultValue={[] as never}
-                  render={({ field }) => (
-                    <Select
-                      multiple
-                      {...field}
-                      fullWidth
-                      label={field.name}
-                      renderValue={(selected: any) =>
-                        feedSuppliers
-                          ?.filter((s: any) => selected.includes(s.id))
-                          ?.map((s: any) => s.name)
-                          ?.join(', ')
-                      }
-                    >
-                      {feedSuppliers?.map((supplier: any) => (
-                        <MenuItem key={supplier.id} value={supplier.id}>
-                          {supplier.name}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  )}
-                />
-              </FormControl>
-            ) : field.type === 'species-select' ? (
-              <FormControl fullWidth className="form-input" focused>
-                <InputLabel>{field.label}</InputLabel>
-                <Controller
-                  name={field.name}
-                  control={control}
-                  defaultValue=""
-                  rules={{ required: true }}
-                  render={({ field }) => (
-                    <Select {...field} label={field.name} fullWidth>
-                      {featuredSpecies && featuredSpecies.length > 0 ? (
-                        featuredSpecies.map((sp) => (
-                          <MenuItem key={sp.id} value={sp.id}>
-                            {sp.name}
-                          </MenuItem>
-                        ))
-                      ) : (
-                        <MenuItem disabled>No species available</MenuItem>
-                      )}
-
-                    </Select>
-                  )}
-                />
-              </FormControl>
-            ) : (
+            {field.name === "digCP" ? (
               <TextField
                 label={field.label}
-                type={field.type}
+                type="number"
                 className="form-input"
-                focused
                 fullWidth
-                {...register(field.name, {
-                  required: true,
-                })}
-                error={!!errors[field.name]}
+                value={calculateDigCP}
+                disabled
               />
-            )}
+            ) :
+              field.name === "digCF" ? (
+                <TextField
+                  label={field.label}
+                  type="number"
+                  className="form-input"
+                  fullWidth
+                  value={calculateDigCF}
+                  disabled
+                  style={{ cursor: 'no-drop' }}
+                />
+              ) :
+                field.name === "digNFE" ? (
+                  <TextField
+                    label={field.label}
+                    type="number"
+                    className="form-input"
+                    fullWidth
+                    value={digNFE}
+                    disabled
+                  />
+                ) :
+                  field.name === "deCP" ? (
+                    <TextField
+                      label={field.label}
+                      type="number"
+                      className="form-input"
+                      fullWidth
+                      value={deCP}
+                      disabled
+                    />
+                  ) :
+                    field.name === "deCF" ? (
+                      <TextField
+                        label={field.label}
+                        type="number"
+                        className="form-input"
+                        fullWidth
+                        value={deCF}
+                        disabled
+                      />
+                    ) :
+                      field.name === "deNFE" ? (
+                        <TextField
+                          label={field.label}
+                          type="number"
+                          className="form-input"
+                          fullWidth
+                          value={deNFE}
+                          disabled
+                        />
+                      ) :
+                        field.name === "de" ? (
+                          <TextField
+                            label={field.label}
+                            type="number"
+                            className="form-input"
+                            fullWidth
+                            value={de}
+                            disabled
+                          />
+                        ) :
+                          field.name === "ge" ? (
+                            <TextField
+                              label={field.label}
+                              type="number"
+                              className="form-input"
+                              fullWidth
+                              value={calculateGE}
+                              disabled
+                            />
+                          ) :
+                            field.name === "carbohydratesGPerKg" ? (
+                              <TextField
+                                label={field.label}
+                                type="number"
+                                className="form-input"
+                                fullWidth
+                                value={carbohydrates}
+                                disabled
+                              />
+                            ) :
+                              field?.type === 'select' ? (
+                                <FormControl fullWidth className="form-input" focused>
+                                  <InputLabel id="feed-supply-select-label1">
+                                    {field.label}
+                                  </InputLabel>
+                                  <Controller
+                                    name={field.name}
+                                    control={control}
+                                    defaultValue={[] as never}
+                                    render={({ field }) => (
+                                      <Select
+                                        multiple
+                                        {...field}
+                                        fullWidth
+                                        label={field.name}
+                                        renderValue={(selected: any) =>
+                                          feedSuppliers
+                                            ?.filter((s: any) => selected.includes(s.id))
+                                            ?.map((s: any) => s.name)
+                                            ?.join(', ')
+                                        }
+                                      >
+                                        {feedSuppliers?.map((supplier: any) => (
+                                          <MenuItem key={supplier.id} value={supplier.id}>
+                                            {supplier.name}
+                                          </MenuItem>
+                                        ))}
+                                      </Select>
+                                    )}
+                                  />
+                                </FormControl>
+                              ) : field.type === 'species-select' ? (
+                                <FormControl fullWidth className="form-input" focused>
+                                  <InputLabel>{field.label}</InputLabel>
+                                  <Controller
+                                    name={field.name}
+                                    control={control}
+                                    defaultValue=""
+                                    rules={{ required: true }}
+                                    render={({ field }) => (
+                                      <Select {...field} label={field.name} fullWidth>
+                                        {featuredSpecies && featuredSpecies.length > 0 ? (
+                                          featuredSpecies.map((sp) => (
+                                            <MenuItem key={sp.id} value={sp.id}>
+                                              {sp.name}
+                                            </MenuItem>
+                                          ))
+                                        ) : (
+                                          <MenuItem disabled>No species available</MenuItem>
+                                        )}
+
+                                      </Select>
+                                    )}
+                                  />
+                                </FormControl>
+                              ) : (
+                                <TextField
+                                  label={field.label}
+                                  type={field.type}
+                                  className="form-input"
+                                  focused
+                                  fullWidth
+                                  {...register(field.name, {
+                                    required: true,
+                                  })}
+                                  error={!!errors[field.name]}
+                                />
+                              )}
 
             {errors[field.name]?.type === 'required' && (
               <Typography fontSize={13} color="red">

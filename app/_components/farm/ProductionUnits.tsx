@@ -256,6 +256,7 @@ const ProductionUnits: NextPage<Props> = ({
   };
 
   const onSubmit: SubmitHandler<ProductionUnitsFormTypes> = async (data) => {
+    console.log('data', data);
     const farmData = getLocalItem('farmData');
 
     const farmPredictionValues = getLocalItem('productionParametes');

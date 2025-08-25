@@ -13,6 +13,7 @@ import {
   Box,
   Button,
   FormControl,
+  FormHelperText,
   Grid,
   InputLabel,
   MenuItem,
@@ -36,7 +37,11 @@ import { productionSystemOptions, speciesOptions, timeIntervalOptions } from './
 import { Farm } from '@/app/_typeModels/Farm';
 import { Species } from '../feedSupply/NewFeedLibarary';
 import { productionSystem } from '../GrowthModel';
+import { OrganisationModelResponse } from '@/app/_typeModels/growthModel';
 import { getCookie } from 'cookies-next';
+import { SingleUser } from '@/app/_typeModels/User';
+import Cookies from 'js-cookie';
+import toast from 'react-hot-toast';
 interface FormInputs {
   farm: string;
   unit: string;
@@ -117,7 +122,35 @@ function AdHoc({ data, setData }: Iprops) {
   const featuredspeciesList = speciesList.filter((item) => item.isFeatured);
   const [productionSystemList, setProductionSystemList] = useState<productionSystem[]>([]);
   const featuredproductionSystemList = productionSystemList.filter((item) => item.isFeatured);
+  const [growthModelData, setGrowthModelData] = useState<OrganisationModelResponse[]>([]);
+  console.log('growthModelData', growthModelData);
+  const [organisationId, setOrganisationId] = useState<number>(0);
+  console.log('organisationId', organisationId);
 
+  const [selectedGrowthModel, setSelectedGrowthModel] = useState<OrganisationModelResponse | null>(
+    null,
+  );
+  console.log('selectedGrowthModel', selectedGrowthModel);
+  const [matchingModels, setMatchingModels] = useState<OrganisationModelResponse[]>([]);
+  console.log('matchingModels', matchingModels);
+  const selectedSpecies = watch('species');
+  const selectedProductionSystem = watch('productionSystem');
+  console.log('selectedSpecies', selectedSpecies);
+  console.log('selectedProductionSystem', selectedProductionSystem);
+
+  useEffect(() => {
+    const loggedUser = Cookies.get('logged-user');
+
+    if (loggedUser) {
+      try {
+        const user: SingleUser = JSON.parse(loggedUser);
+        console.log('Parsed user data:', user);
+        setOrganisationId(user.organisationId);
+      } catch (error) {
+        console.error('Error parsing user data:', error);
+      }
+    }
+  }, []);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -154,14 +187,90 @@ function AdHoc({ data, setData }: Iprops) {
 
     fetchData();
   }, [token]);
+  useEffect(() => {
+    if (organisationId > 0) {
+      const fetchModels = async () => {
+        try {
+          const res = await fetch(`/api/growth-model?organisationId=${organisationId}`, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          const data = await res.json();
+          setGrowthModelData(data.data || []);
+        } catch (error) {
+          console.error('Error fetching growth model data:', error);
+        }
+      };
+
+      fetchModels();
+    }
+  }, [organisationId, token]);
+  useEffect(() => {
+    if (!selectedSpecies || !selectedProductionSystem) {
+      setMatchingModels([]);
+      setSelectedGrowthModel(null);
+      return;
+    }
+
+    // Find the IDs for the selected species and production system
+    const speciesObj = speciesList.find((s) => s.id === (selectedSpecies));
+    const prodObj = productionSystemList.find((p) => p.id === (selectedProductionSystem));
+    console.log('speciesObj', speciesObj);
+    console.log('prodObj', prodObj);
+    if (!speciesObj || !prodObj) {
+      setMatchingModels([]);
+      setSelectedGrowthModel(null);
+      return;
+    }
+
+    // Filter growth models that match both speciesId and productionSystemId
+    const filtered = growthModelData.filter(
+      (gm) => gm.models.specieId === speciesObj.id && gm.models.productionSystemId === prodObj.id
+    );
+
+    if (filtered.length === 1) {
+      // Case 1: Exactly one matching model found
+      setMatchingModels(filtered);
+      setSelectedGrowthModel(filtered[0]);
+      toast.success('One gorwth model found');
+    } else if (filtered.length > 1) {
+      // Case 2: Multiple matching models found
+      setMatchingModels(filtered);
+      setSelectedGrowthModel(null);
+      toast.success('Multiple growth models found, please select one.');
+    } else {
+      // Case 3: No direct match, check for a default model for the species
+      const defaultModel = growthModelData.find(
+        (gm) => gm.models.specieId === speciesObj.id && gm.isDefault
+      );
+      if (defaultModel) {
+        setMatchingModels([defaultModel]);
+        setSelectedGrowthModel(defaultModel);
+        toast.success('No specific model found. Using the default growth model for this species.');
+      } else {
+        // Case 4: No direct match and no default model found
+        setMatchingModels([]);
+        setSelectedGrowthModel(null);
+        toast.error('No growth model available for the selected species and production system.');
+      }
+    }
+  }, [selectedSpecies, selectedProductionSystem, growthModelData, speciesList, productionSystemList]);
+
 
   const onSubmit: SubmitHandler<FormInputs> = (data) => {
     const formattedDate = dayjs(data.startDate).format('YYYY-MM-DD');
     const diffInDays = dayjs(data.endDate).diff(dayjs(data.startDate), 'day');
+    const speciesObj = speciesList.find((s) => s.id === data.species);
+    const speciesName = speciesObj?.name || '';
+
     if (data) {
-      if (data.species === 'Rainbow Trout') {
+      if (speciesName === 'Rainbow Trout') {
         setData(
           calculateFishGrowthRainBowTrout(
+            selectedGrowthModel,
             Number(data.fishWeight),
             Number(data.temp),
             Number(data.numberOfFishs),
@@ -172,9 +281,10 @@ function AdHoc({ data, setData }: Iprops) {
             13.47,
           ),
         );
-      } else if (data.species === 'African Catfish') {
+      } else if (speciesName === 'African Catfish') {
         setData(
           calculateFishGrowthAfricanCatfish(
+            selectedGrowthModel,
             Number(data.fishWeight),
             Number(data.temp),
             Number(data.numberOfFishs),
@@ -188,6 +298,7 @@ function AdHoc({ data, setData }: Iprops) {
       } else {
         setData(
           calculateFishGrowthTilapia(
+            selectedGrowthModel,
             Number(data.fishWeight),
             Number(data.temp),
             Number(data.numberOfFishs),
@@ -551,7 +662,7 @@ function AdHoc({ data, setData }: Iprops) {
                   <Select {...field} label="Species *">
                     {featuredspeciesList && featuredspeciesList.length > 0 ? (
                       featuredspeciesList.map((sp) => (
-                        <MenuItem key={sp.id} value={sp.name}>
+                        <MenuItem key={sp.id} value={sp.id}>
                           {sp.name}
                         </MenuItem>
                       ))
@@ -575,7 +686,7 @@ function AdHoc({ data, setData }: Iprops) {
                 render={({ field }) => (
                   <Select {...field} labelId="production-system-label" label="Production System *">
                     {featuredproductionSystemList.map((option) => (
-                      <MenuItem value={option.name} key={option.id}>
+                      <MenuItem value={option.id} key={option.id}>
                         {option.name}
                       </MenuItem>
                     ))}
@@ -589,6 +700,45 @@ function AdHoc({ data, setData }: Iprops) {
               </Typography>
             )}
           </Grid>
+          {/* Growth Model Selection */}
+          {matchingModels.length === 1 && selectedGrowthModel && (
+            <Grid item lg={3} md={4} sm={6} xs={12}>
+              <TextField
+                label="Growth Model"
+                value={selectedGrowthModel.models.name}
+                fullWidth
+                InputProps={{ readOnly: true }}
+              />
+            </Grid>
+          )}
+          {matchingModels.length > 1 && (
+            <Grid item lg={3} md={4} sm={6} xs={12}>
+              <FormControl className="form-input" fullWidth focused required
+                error={!selectedGrowthModel} >
+                <InputLabel id="growth-model-label">Select Growth Model *</InputLabel>
+                <Select
+                  labelId="growth-model-label" label="Select Growth Model *"
+                  value={selectedGrowthModel?.models.id || ''}
+                  onChange={(e) => {
+                    const chosen = matchingModels.find(
+                      (gm) => gm.models.id === Number(e.target.value),
+                    );
+                    if (chosen) setSelectedGrowthModel(chosen);
+                  }}
+                >
+                  {matchingModels.map((gm) => (
+                    <MenuItem key={gm.models.id} value={gm.models.id}>
+                      {gm.models.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+                {!selectedGrowthModel && (
+                  <FormHelperText>Please select a growth model</FormHelperText>
+                )}
+
+              </FormControl>
+            </Grid>
+          )}
         </Grid>
 
 

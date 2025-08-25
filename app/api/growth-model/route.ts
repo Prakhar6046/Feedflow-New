@@ -4,7 +4,7 @@ import prisma from '@/prisma/prisma';
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { model, organisationId } = body;
+    const { model, organisationId, isDefault } = body;
 
     if (!organisationId) {
       return NextResponse.json(
@@ -41,20 +41,41 @@ export async function POST(request: NextRequest) {
         updatedBy: '1',
       },
     });
+    if (isDefault && model.specie) {
+      // Check if a default already exists for this species in this organisation
+      const existingDefault = await prisma.growthModel.findFirst({
+        where: {
+          organisationId: parseInt(organisationId),
+          isDefault: true,
+          models: { specieId: model.specie },
+        },
+      });
 
-    // Create the growth model entry
+      if (existingDefault) {
+        return NextResponse.json(
+          {
+            status: false,
+            message: `This species already has a default Production System. Do you want to replace it?`,
+            existingDefaultId: existingDefault.id,
+          },
+          { status: 400 }
+        );
+      }
+    }
+
+
     const growthModel = await prisma.growthModel.create({
       data: {
         organisationId: parseInt(organisationId),
         modelId: createdModel.id,
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        isDefault: !!isDefault,
       },
       include: {
         models: true,
         organisation: true,
       },
     });
+
 
     return NextResponse.json({ data: growthModel });
   } catch (error) {
@@ -177,17 +198,66 @@ export async function GET(request: NextRequest) {
 export async function PUT(request: NextRequest) {
   try {
     const body = await request.json();
-    const { model, modelId } = body;
-
+    const { model, organisationId, modelId, isDefault } = body;
+    console.log('PUT request body:', body);
+    console.log('Model ID:', modelId, 'Organisation ID:', organisationId, model);
     if (!modelId) {
       return NextResponse.json(
         { error: 'Model ID is required' },
         { status: 400 },
       );
     }
+    if (!organisationId) {
+      return NextResponse.json(
+        { status: false, message: 'Organisation ID is required.' },
+        { status: 400 }
+      );
+    }
+    const growthModel = await prisma.growthModel.findUnique({
+      where: { id: parseInt(modelId) },
+      include: { models: true },
+    });
+
+    if (!growthModel) {
+      return NextResponse.json(
+        { error: `GrowthModel with ID ${modelId} not found.` },
+        { status: 404 }
+      );
+    }
+
+    if (isDefault && model.specie) {
+      // Check if another default exists for this species
+      const existingDefault = await prisma.growthModel.findFirst({
+        where: {
+          organisationId: parseInt(organisationId),
+          isDefault: true,
+          models: {
+            specieId: model.specie,
+          },
+          NOT: { id: parseInt(modelId) }, 
+        },
+      });
+
+      if (existingDefault) {
+        return NextResponse.json(
+          {
+            status: false,
+            message: `This species already has a default growth model. Do you want to replace it?`,
+            existingDefaultId: existingDefault.id,
+          },
+          { status: 400 }
+        );
+      }
+    }
+
+    const updatedGrowthModel = await prisma.growthModel.update({
+      where: { id: parseInt(modelId) },
+      data: { isDefault },
+    });
+
 
     const updatedModel = await prisma.model.update({
-      where: { id: parseInt(modelId) },
+      where: { id: growthModel.modelId },
       data: {
         name: model.name,
         specieId: model.specie,

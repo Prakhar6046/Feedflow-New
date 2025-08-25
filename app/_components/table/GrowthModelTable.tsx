@@ -34,6 +34,7 @@ import { getCookie } from 'cookies-next';
 interface GrowthModel {
   id: number;
   organisationId: number;
+  isDefault: boolean;
   modelId: number;
   createdAt: string;
   updatedAt: string;
@@ -125,7 +126,7 @@ export default function GrowthModelTable({
 
   const handleEdit = () => {
     if (selectedGrowthModel) {
-      router.push(`/dashboard/growthModel/${selectedGrowthModel.models.id}`);
+      router.push(`/dashboard/growthModel/${selectedGrowthModel.id}`);
     }
     handleClose();
   };
@@ -386,7 +387,7 @@ export default function GrowthModelTable({
               <TableBody>
                 {sortedGrowthModels && sortedGrowthModels.length > 0 ? (
                   sortedGrowthModels.map((model: GrowthModel, i: number) => {
-
+                     console.log('Model:', model);
                     const speciesName =
                       featuredSpecies.find((s) => s.id === model.models.specieId)
                         ?.name || '';
@@ -394,11 +395,7 @@ export default function GrowthModelTable({
                       featuredProductionSystemList.find(
                         (p) => p.id === model.models.productionSystemId,
                       )?.name || '';
-                    const isDefaultProductionSystem = speciesList.some(
-                      (sp) =>
-                        sp.id === model.models.specieId &&
-                        sp.defaultProductionSystemId === model.models.productionSystemId
-                    );
+                    
                     return (
                       <TableRow
                         key={i}
@@ -456,7 +453,7 @@ export default function GrowthModelTable({
                           <Stack display={"flex"} alignItems={"center"} gap={1} direction="row">
                             <Typography>{productionSystemName}</Typography>
 
-                            {isDefaultProductionSystem && (
+                            {model.isDefault && (
                               <Tooltip
                                 title={`This is the default production system for ${speciesName}`}
                               >

@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 async function getModelData(modelId: string) {
   try {
     const response = await fetch(
-      `${process.env.BASE_URL}/api/growth-model?id=${modelId}&type=models`,
+      `${process.env.BASE_URL}/api/growth-model?id=${modelId}`,
       { cache: 'no-store' }
     );
 
@@ -31,6 +31,7 @@ export default async function EditGrowthModelPage({
   params: { modelId: string };
 }) {
   const modelId = params.modelId;
+  console.log('Model ID:', modelId);
   const modelData = await getModelData(modelId);
 
   if (!modelData) {
