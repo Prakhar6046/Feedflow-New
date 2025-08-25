@@ -96,7 +96,7 @@ const MapComponent = ({
 
   // Load Google Maps script
   const { isLoaded, loadError } = useLoadScript({
-    googleMapsApiKey: 'AIzaSyDKvMKD1DyMdxR7VgqjO428--aBf9wpkxw',
+    googleMapsApiKey: process.env.GOOGLE_API_KEY || '',
     libraries,
   });
 
