@@ -22,6 +22,7 @@ import { Paper } from '@mui/material';
 import { FarmsFishGrowth } from './FeedingPlanOutputs';
 import FeedUsageTable from '../table/FeedUsageTable';
 import { FarmGroup, FarmGroupUnit } from '@/app/_typeModels/production';
+import { OrganisationModelResponse } from '@/app/_typeModels/growthModel';
 
 interface FarmOption {
   id: string;
@@ -57,6 +58,9 @@ const FeedUsageOutput: React.FC = () => {
   const [selectedDropDownUnits, setSelectedDropDownUnits] = useState<
     UnitOption[]
   >([]);
+    const [selectedGrowthModel, setSelectedGrowthModel] = useState<OrganisationModelResponse | null>(
+        null,
+      );
   const [startDate, setStartDate] = useState<string | null>(
     dayjs().toISOString(),
   );
@@ -131,6 +135,7 @@ const FeedUsageOutput: React.FC = () => {
             unitId: unit.id,
             unit: unit.productionUnit.name,
             fishGrowthData: calculateFishGrowthTilapia(
+              selectedGrowthModel,
               Number(data?.fishWeight ?? 0),
               data?.tempSelection === 'default'
                 ? Number(unit?.waterTemp ?? 0)
