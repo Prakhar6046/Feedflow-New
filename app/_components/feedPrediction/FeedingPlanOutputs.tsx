@@ -45,6 +45,7 @@ import {
   TableRow,
 } from '@mui/material';
 import { FeedPredictionData } from './FeedUsageOutputs';
+import { OrganisationModelResponse } from '@/app/_typeModels/growthModel';
 // import MenuItem from "@mui/material/MenuItem";
 
 export interface FarmsFishGrowth {
@@ -89,6 +90,9 @@ function FeedingPlanOutput() {
   const [flatData, setFlatData] = useState<FarmsFishGrowth[]>([]);
   const [formData, setFomData] = useState<any>();
   const { control, setValue, watch, register } = useForm();
+  const [selectedGrowthModel, setSelectedGrowthModel] = useState<OrganisationModelResponse | null>(
+      null,
+    );
   const createxlsxFile = (e: React.MouseEvent<HTMLSpanElement, MouseEvent>) => {
     if (!flatData.length) {
       return;
@@ -669,6 +673,7 @@ function FeedingPlanOutput() {
               unit: unit.productionUnit.name,
               fishGrowthData: data?.species === 'Rainbow Trout'
                 ? calculateFishGrowthRainBowTrout(
+                  selectedGrowthModel,
                     Number(data?.fishWeight ?? 0),
                     data?.tempSelection === 'default'
                       ? Number(unit?.waterTemp ?? 0)
@@ -682,6 +687,7 @@ function FeedingPlanOutput() {
                   )
                 : data?.species === 'African Catfish'
                 ? calculateFishGrowthAfricanCatfish(
+                  selectedGrowthModel,
                     Number(data?.fishWeight ?? 0),
                     data?.tempSelection === 'default'
                       ? Number(unit?.waterTemp ?? 0)
@@ -694,6 +700,7 @@ function FeedingPlanOutput() {
                     13.47,
                   )
                 : calculateFishGrowthTilapia(
+                  selectedGrowthModel,
                     Number(data?.fishWeight ?? 0),
                     data?.tempSelection === 'default'
                       ? Number(unit?.waterTemp ?? 0)
