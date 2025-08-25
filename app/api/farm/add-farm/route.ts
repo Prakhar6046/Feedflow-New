@@ -185,22 +185,17 @@ export async function POST(req: NextRequest) {
     });
 
     // Create per-unit feed profiles
-    if (FeedProfileUnits) {
+    if (FeedProfileUnits && Array.isArray(FeedProfileUnits)) {
       await prisma.feedProfileProductionUnit.createMany({
-        data: newProductUnits.flatMap((unit) =>
-          (FeedProfileUnits as FeedProfileUnit[])
-            .map((profile) =>
-              unit.name === profile.unitName
-                ? {
-                  productionUnitId: unit.id,
-                  profiles: profile.feedProfile,
-                }
-                : null,
-            )
-            .filter(
-              (entry): entry is Exclude<typeof entry, null> => entry !== null,
-            ),
-        ),
+        data: newProductUnits
+          .flatMap((unit) =>
+            (FeedProfileUnits)
+              .filter(profile => profile.unitName === unit.name)
+              .map(profile => ({
+                productionUnitId: unit.id,
+                profiles: profile.feedProfile,
+              }))
+          ),
       });
     }
     if (body.supplierId && body.storeId) {

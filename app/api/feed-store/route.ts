@@ -50,6 +50,42 @@ export async function GET(request: NextRequest) {
     );
   }
 }
+
+
+// Helper: convert value to number (if possible)
+function toNumber(value: any): number | null {
+  if (value === null || value === undefined || value === '') return null;
+  const num = Number(value);
+  return isNaN(num) ? null : num;
+}
+
+// List of numeric fields in FeedStore schema
+const numericFields: (keyof any)[] = [
+  'shelfLifeMonths',
+  'feedCost',
+  'moistureGPerKg',
+  'crudeProteinGPerKg',
+  'crudeFatGPerKg',
+  'crudeFiberGPerKg',
+  'crudeAshGPerKg',
+  'nfe',
+  'calciumGPerKg',
+  'phosphorusGPerKg',
+  'carbohydratesGPerKg',
+  'metabolizableEnergy',
+  'geCoeffCP',
+  'geCoeffCF',
+  'geCoeffNFE',
+  'ge',
+  'digCP',
+  'digCF',
+  'digNFE',
+  'deCP',
+  'deCF',
+  'deNFE',
+  'de',
+];
+
 export async function PUT(request: NextRequest) {
   try {
     const user = await verifyAndRefreshToken(request);
@@ -64,7 +100,7 @@ export async function PUT(request: NextRequest) {
     }
 
     const body = await request.json();
-
+  console.log('PUT request body:', body);
     // Validate speciesId values
     const validSpeciesIds = await prisma.species.findMany({
       select: { id: true },
@@ -81,17 +117,23 @@ export async function PUT(request: NextRequest) {
           throw new Error(`Invalid speciesId: ${item.speciesId}`);
         }
 
-        // Extract speciesId from item to handle relation separately
+        // Extract speciesId for relation
         const { speciesId, ...rest } = item;
 
-        // Prepare update data object
+        // Convert numeric string fields -> numbers
+        for (const field of numericFields) {
+          if (rest[field] !== undefined) {
+            rest[field] = toNumber(rest[field]);
+          }
+        }
+
+        // Build updateData
         const updateData: any = { ...rest };
 
-        // Handle relation update
+        // Handle relation
         if (speciesId) {
           updateData.species = { connect: { id: speciesId } };
         } else {
-          // Optionally disconnect species relation if speciesId is null/undefined
           updateData.species = { disconnect: true };
         }
 
@@ -105,13 +147,17 @@ export async function PUT(request: NextRequest) {
     return new NextResponse(
       JSON.stringify({
         status: true,
-        message: 'Feed store updated successfully.',
+        message: 'FeedStore updated successfully',
       }),
+      { status: 200 },
     );
-  } catch (error) {
-    console.error('Error updating feed store:', error);
-    return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Internal Server Error' },
+  } catch (error: any) {
+    console.error('Error updating FeedStore:', error);
+    return new NextResponse(
+      JSON.stringify({
+        status: false,
+        message: error.message || 'Something went wrong',
+      }),
       { status: 500 },
     );
   }

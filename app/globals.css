@@ -803,3 +803,7 @@ label {
 .feed-profile-table.sm {
   height: 420px !important;
 }
+
+.farm-radio-btn > div > label{
+  margin: 0 !important
+}

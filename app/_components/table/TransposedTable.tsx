@@ -15,8 +15,8 @@ import {
   TextField,
   Button,
 } from '@mui/material';
-import { useForm, Controller } from 'react-hook-form';
-import { useEffect, useState } from 'react';
+import { useForm, Controller, useWatch } from 'react-hook-form';
+import { useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 import { getCookie } from 'cookies-next';
 import { Species } from '../feedSupply/NewFeedLibarary';
@@ -81,6 +81,48 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
       });
     }
   }, [filteredStores]);
+   const watchedValues = useWatch({ control });
+  const calculatedValues = useMemo(() => {
+    if (!filteredStores || filteredStores.length === 0) return {};
+
+    const C55 = 90, C56 = 90, C58 = 60;
+    const values: Record<string, any> = {};
+
+    filteredStores.forEach((_, i) => {
+      const moisture = Number(watchedValues[`moistureGPerKg-${i}`]) || 0;
+      const cp = Number(watchedValues[`crudeProteinGPerKg-${i}`]) || 0;
+      const cfat = Number(watchedValues[`crudeFatGPerKg-${i}`]) || 0;
+      const cfiber = Number(watchedValues[`crudeFiberGPerKg-${i}`]) || 0;
+      const cash = Number(watchedValues[`crudeAshGPerKg-${i}`]) || 0;
+      const nfe = Number(watchedValues[`nfe-${i}`]) || 0;
+      
+      const geCP = Number(watchedValues[`geCoeffCP-${i}`]) || 0;
+      const geCF = Number(watchedValues[`geCoeffCF-${i}`]) || 0;
+      const geNFE = Number(watchedValues[`geCoeffNFE-${i}`]) || 0;
+
+      const carbohydrates = (1000 - moisture) - (cp + cfat + cfiber + cash);
+      const calculateGE = (cp * geCP / 10 + cfat * geCF / 10 + nfe * geNFE / 10) / 100;
+      const calculateDigCP = (cp / 10) * C55;
+      const calculateDigCF = (cfat / 10) * C56;
+      const calculateDigNFE = (nfe / 10) * C58;
+      const deCP = (calculateDigCP * geCP) / 10000;
+      const deCF = (calculateDigCF * geCF) / 10000;
+      const deNFE = (calculateDigNFE * geNFE) / 10000;
+      const de = deCP + deCF + deNFE;
+
+      values[`carbohydratesGPerKg-${i}`] = carbohydrates;
+      values[`ge-${i}`] = calculateGE;
+      values[`digCP-${i}`] = calculateDigCP;
+      values[`digCF-${i}`] = calculateDigCF;
+      values[`digNFE-${i}`] = calculateDigNFE;
+      values[`deCP-${i}`] = deCP;
+      values[`deCF-${i}`] = deCF;
+      values[`deNFE-${i}`] = deNFE;
+      values[`de-${i}`] = de;
+    });
+
+    return values;
+  }, [watchedValues, filteredStores]);
   if (!filteredStores || filteredStores.length === 0) return null;
 
   const keys = Object.keys(filteredStores[0]).filter(
@@ -109,12 +151,15 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
   }
 
   const onSubmit = async (data: any) => {
+    console.log('Form Data:', data);
     setIsSaving(true);
+    debugger
     const payload = transformFeedProductsWithSuppliers(data);
     const updatedPayload = payload.map((feed) => {
       const { ProductSupplier, supplierIds, ...rest } = feed;
       return { ...rest, ProductSupplier: supplierIds };
     });
+    console.log('Payload to submit:', updatedPayload);
     try {
       const token = getCookie('auth-token');
       const response = await fetch(`/api/feed-store `, {
@@ -145,6 +190,17 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
   };
   const firstRows = keys.slice(0, 2);
   const remainingRows = keys.slice(2);
+  const calculatedFields = [
+    'carbohydratesGPerKg',
+    'ge',
+    'digCP',
+    'digCF',
+    'digNFE',
+    'deCP',
+    'deCF',
+    'deNFE',
+    'de',
+  ];
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -331,7 +387,7 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
                 </TableCell>
               ))}
             </TableRow>
-            {remainingRows.map((key) => (
+           {remainingRows.map((key) => (
               <TableRow key={key}>
                 <TableCell>{key}</TableCell>
                 {filteredStores.map((_: any, colIndex: number) => (
@@ -339,9 +395,18 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
                     <Controller
                       name={`${key}-${colIndex}`}
                       control={control}
-                      render={({ field }) => (
-                        <TextField {...field} size="small" fullWidth />
-                      )}
+                      render={({ field }) => {
+                        const isCalculated = calculatedFields.includes(key);
+                        return (
+                          <TextField
+                            {...field}
+                            size="small"
+                            fullWidth
+                            disabled={isCalculated}
+                            value={isCalculated ? calculatedValues[`${key}-${colIndex}`] : field.value}
+                          />
+                        )
+                      }}
                     />
                   </TableCell>
                 ))}

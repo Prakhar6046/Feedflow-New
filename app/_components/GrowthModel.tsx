@@ -23,6 +23,7 @@ import { Farm } from '../_typeModels/Farm';
 import Loader from './Loader';
 import { useRouter } from 'next/navigation';
 import { Species } from './feedSupply/NewFeedLibarary';
+import { OrganisationModelResponse } from '../_typeModels/growthModel';
 export interface productionSystem {
   id: string;
   name: string;
@@ -89,7 +90,7 @@ const TGCFormulas: Record<
 };
 
 const FeedConversionRatioModels = ['linear'] as const;
-type FeedConversionRatioModel = (typeof FeedConversionRatioModels)[number];
+export type FeedConversionRatioModel = (typeof FeedConversionRatioModels)[number];
 
 const tFCRFormulas: Record<
   FeedConversionRatioModel,
@@ -116,7 +117,7 @@ function GrowthModel({
 }: {
   farms: Farm[];
   editMode?: boolean;
-  modelData?: any;
+  modelData?: OrganisationModelResponse;
   modelId?: string | null;
 }) {
   console.log('GrowthModel component rendered', modelData);
@@ -126,7 +127,9 @@ function GrowthModel({
   const featuredSpecies = speciesList?.filter((sp) => sp.isFeatured);
   console.log('Featured Species:', featuredSpecies);
   const [productionSystemList, setProductionSystemList] = useState<productionSystem[]>([]);
+  console.log('Production System List:', productionSystemList);
   const featuredProductionSystemList = productionSystemList?.filter((sp) => sp.isFeatured);
+  console.log('Featured Production Systems:', featuredProductionSystemList);
   const [setDefault, setSetDefault] = useState(false);
   const token = getCookie('auth-token');
   const {
@@ -201,60 +204,64 @@ function GrowthModel({
   // Pre-fill form data when in edit mode
   useEffect(() => {
     if (editMode && modelData) {
-      setValue('name', modelData.name || '');
-      setValue('specie', modelData.specieId || '');
-      setValue('productionSystem', modelData.productionSystemId || '');
-      setValue('adcCp', modelData.adcCp || 0);
-      setValue('adcCf', modelData.adcCf || 0);
-      setValue('adcNfe', modelData.adcNfe || 0);
-      setValue('geCp', modelData.geCp || 0);
-      setValue('geCf', modelData.geCf || 0);
-      setValue('geNfe', modelData.geNfe || 0);
-      setValue('wasteFactor', modelData.wasteFactor || 0);
+      setValue('name', modelData.models.name || '');
+      setValue('specie', modelData.models.specieId || '');
+      setValue('productionSystem', modelData.models.productionSystemId || '');
+      setValue('adcCp', modelData.models.adcCp || 0);
+      setValue('adcCf', modelData.models.adcCf || 0);
+      setValue('adcNfe', modelData.models.adcNfe || 0);
+      setValue('geCp', modelData.models.geCp || 0);
+      setValue('geCf', modelData.models.geCf || 0);
+      setValue('geNfe', modelData.models.geNfe || 0);
+      setValue('wasteFactor', modelData.models.wasteFactor || 0);
       setValue(
         'temperatureCoefficient',
-        modelData.temperatureCoefficient || 'logarithmic',
+        modelData.models.temperatureCoefficient || 'logarithmic',
       );
-      setValue('a', modelData.tgcA || 0);
-      setValue('b', modelData.tgcB || 0);
-      setValue('c', modelData.tgcC || 0);
-      setValue('d', modelData.tgcD || 0);
-      setValue('e', modelData.tgcE || 0);
-      setValue('tFCRModel', modelData.tFCRModel || 'linear');
-      setValue('tFCRa', modelData.tFCRa || 0);
-      setValue('tFCRb', modelData.tFCRb || 0);
-      setValue('tFCRc', modelData.tFCRc || 0);
+      setValue('a', modelData.models.tgcA || 0);
+      setValue('b', modelData.models.tgcB || 0);
+      setValue('c', modelData.models.tgcC || 0);
+      setValue('d', modelData.models.tgcD || 0);
+      setValue('e', modelData.models.tgcE || 0);
+      setValue('tFCRModel', modelData.models.tFCRModel || 'linear');
+      setValue('tFCRa', modelData.models.tFCRa || 0);
+      setValue('tFCRb', modelData.models.tFCRb || 0);
+      setValue('tFCRc', modelData.models.tFCRc || 0);
 
-      setSpecies(modelData.specieId || '');
-      setProductionSystem(modelData.productionSystemId || '');
-      setSelectedFCRModel(modelData.tFCRModel || 'linear');
+      setSpecies(modelData.models.specieId || '');
+      setProductionSystem(modelData.models.productionSystemId || '');
+      setSelectedFCRModel(modelData.models.tFCRModel || 'linear');
+      if (modelData.isDefault) {
+        setSetDefault(true);
+        setCheckboxLabel("This is the default production system for this species");
+      }
     }
   }, [editMode, modelData, setValue]);
 
-  useEffect(() => {
-    if (species && productionSystem && speciesList.length > 0) {
-      const currentSpecies = speciesList.find(sp => sp.id === species);
+  // useEffect(() => {
+  //   if (species && productionSystem && speciesList.length > 0) {
+  //     const currentSpecies = speciesList.find(sp => sp.id === species);
 
-      if (currentSpecies) {
-        if (currentSpecies.defaultProductionSystemId === productionSystem) {
-          setSetDefault(true);
-          setCheckboxLabel("This is already the default production system for the selected species");
-        } else if (currentSpecies.defaultProductionSystemId) {
-          const defaultSystem = productionSystemList.find(ps => ps.id === currentSpecies.defaultProductionSystemId);
-          setSetDefault(false);
-          setCheckboxLabel(
-            `Currently, the default production system for this species is "${defaultSystem?.name}". Do you want to set the selected system as default?`
-          );
-        } else {
-          setSetDefault(false);
-          setCheckboxLabel("Set as default production system for selected species");
-        }
-      }
-    } else {
-      setSetDefault(false);
-      setCheckboxLabel("Set as default production system for selected species");
-    }
-  }, [species, productionSystem, speciesList, productionSystemList]);
+  //     if (currentSpecies) {
+  //       if (currentSpecies.defaultProductionSystemId === productionSystem) {
+  //         setSetDefault(true);
+  //         setCheckboxLabel("This is already the default production system for the selected species");
+  //       } else if (currentSpecies.defaultProductionSystemId) {
+  //         const defaultSystem = productionSystemList.find(ps => ps.id === currentSpecies.defaultProductionSystemId);
+  //         setSetDefault(false);
+  //         setCheckboxLabel(
+  //           `Currently, the default production system for this species is "${defaultSystem?.name}". Do you want to set the selected system as default?`
+  //         );
+  //       } else {
+  //         setSetDefault(false);
+  //         setCheckboxLabel("Set as default production system for selected species");
+  //       }
+  //     }
+  //   } else {
+  //     setSetDefault(false);
+  //     setCheckboxLabel("Set as default production system for selected species");
+  //   }
+  // }, [species, productionSystem, speciesList, productionSystemList]);
 
   useEffect(() => {
     // Set TGC defaults
@@ -268,8 +275,9 @@ function GrowthModel({
       setValue(key as keyof InputType, val as any),
     );
   }, [selectedModel, selectedFCRModel, setValue]);
-
+  console.log('editMode:', editMode);
   const onSubmit: SubmitHandler<InputType> = async (data) => {
+    console.log('Form submitted with data:', data);
     const user = JSON.parse(loggedUser ?? '');
     if (user?.organisationId && data.name) {
       // Prevent API call if one is already in progress
@@ -284,6 +292,7 @@ function GrowthModel({
         const body = editMode
           ? {
             modelId: modelId,
+            isDefault: setDefault,
             model: {
               name: data.name,
               specie: data.specie,
@@ -331,6 +340,7 @@ function GrowthModel({
               tFCRb: data.tFCRb,
               tFCRc: data.tFCRc,
             },
+            isDefault: setDefault,
             organisationId: user.organisationId,
           };
         const response = await fetch(url, {
@@ -340,9 +350,9 @@ function GrowthModel({
           },
           body: JSON.stringify(body),
         });
-
+        const result = await response.json();
         if (response.ok) {
-          const result = await response.json();
+
           toast.dismiss();
           toast.success(
             result.message ||
@@ -352,30 +362,30 @@ function GrowthModel({
           );
           setSpecies('');
           setProductionSystem('');
+          setSetDefault(false);
           reset();
-          if (setDefault && data.specie && data.productionSystem) {
-            await fetch(`/api/growth-model/${data.specie}`, {
-              method: 'PUT',
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`,
-              },
-              body: JSON.stringify({ defaultProductionSystemId: data.productionSystem }),
-            }).then(async (res) => {
-              const resData = await res.json();
-              // if (res.ok) {
-              //   toast.success('Species default production system updated successfully.');
-              // } else {
-              //   toast.error(resData.message || 'Failed to update species default production system.');
-              // }
-            });
-          }
+          // if (setDefault && data.specie && data.productionSystem) {
+          //   await fetch(`/api/growth-model/${data.specie}`, {
+          //     method: 'PUT',
+          //     headers: {
+          //       'Content-Type': 'application/json',
+          //       'Authorization': `Bearer ${token}`,
+          //     },
+          //     body: JSON.stringify({ defaultProductionSystemId: data.productionSystem }),
+          //   }).then(async (res) => {
+          //     const resData = await res.json();
+          //     // if (res.ok) {
+          //     //   toast.success('Species default production system updated successfully.');
+          //     // } else {
+          //     //   toast.error(resData.message || 'Failed to update species default production system.');
+          //     // }
+          //   });
+          // }
 
           // Navigate to the growth model list after successful save (both create and edit)
           router.push('/dashboard/growthModel');
         } else {
-          const error = await response.json();
-          toast.error(error.error || 'Something went wrong. Please try again.');
+          toast.error(result.error || result.message || 'Something went wrong. Please try again.');
         }
       } catch (error) {
         console.error('Error saving growth model:', error);
@@ -552,6 +562,7 @@ function GrowthModel({
                   Only available after selecting both a species and a production system.
                 </FormHelperText>
               </Box>
+
 
               <Divider
                 sx={{

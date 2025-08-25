@@ -35,8 +35,27 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Name is required' }, { status: 400 });
     }
 
+    // Find the last created production system by code
+    const lastSystem = await prisma.productionSystem.findFirst({
+      orderBy: { createdAt: 'desc' },
+      select: { code: true },
+    });
+
+    let nextNumber = 1001;
+    if (lastSystem?.code) {
+      const match = lastSystem.code.match(/^PS(\d+)$/);
+      if (match) {
+        nextNumber = parseInt(match[1], 10) + 1;
+      }
+    }
+
+    const newCode = `PS${nextNumber}`;
+
     const newSystem = await prisma.productionSystem.create({
-      data: { name: name.trim() },
+      data: { 
+        name: name.trim(),
+        code: newCode,
+      },
     });
 
     return NextResponse.json(newSystem);
@@ -47,7 +66,7 @@ export async function POST(req: Request) {
     if (err && err.code === 'P2002') {
       return NextResponse.json(
         { error: `Production system with this ${err.meta?.target} already exists.` },
-        { status: 409 } 
+        { status: 409 }
       );
     }
 

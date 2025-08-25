@@ -55,7 +55,7 @@ export interface SupplierOptions {
   option: string;
 }
 interface FormValues {
-  [key: string]: string;
+  [key: string]: string[];
 }
 export interface GroupedSupplierStores {
   supplier: SupplierOptions;
@@ -78,7 +78,7 @@ const FeedProfiles = ({
   const [selectedSupplier, setSelectedSupplier] = useState<SupplierOptions[]>(
     [],
   );
-
+console.log('edit:', editFarm);
   // Dynamic fish sizes based on maxFishSizeG
   const newfishSizes = useMemo(() => {
     if (!feedStores.length) return [];
@@ -107,9 +107,12 @@ const FeedProfiles = ({
         const selectedSizes: number[] = [];
         newfishSizes.forEach((size) => {
           const rowName = `selection_${size}`;
-          if (data[rowName] === valueKey) {
-            selectedSizes.push(size);
-          }
+          newfishSizes.forEach((size) => {
+            const rowName = `selection_${size}`;
+            if (data[rowName]?.includes(valueKey)) {
+              selectedSizes.push(size);
+            }
+          });
         });
 
         if (selectedSizes.length) {
@@ -142,7 +145,7 @@ const FeedProfiles = ({
     <Controller
       name={rowName}
       control={control}
-      defaultValue=""
+      defaultValue={[]}
       render={({ field }) => (
         <Box
           display="flex"
@@ -153,8 +156,9 @@ const FeedProfiles = ({
           paddingRight={"4px"}
         >
           {options.map((opt, index) => {
-            const value =
-              radioValueMap[columnName]?.[opt] ?? `${columnName}_${opt}`;
+            const value = radioValueMap[columnName]?.[opt] ?? `${columnName}_${opt}`;
+            const isChecked = field.value?.includes(value);
+
             return (
               <FormControlLabel
                 key={index}
@@ -162,9 +166,18 @@ const FeedProfiles = ({
                 className="ic-radio"
                 control={
                   <Radio
-                    {...field}
-                    checked={field.value === value}
-                    onChange={() => field.onChange(value)}
+                    checked={isChecked}
+                    onChange={() => {
+                      let updated = [...(field.value || [])];
+                      if (isChecked) {
+                        // unselect
+                        updated = updated.filter((v) => v !== value);
+                      } else {
+                        // add new selection
+                        updated.push(value);
+                      }
+                      field.onChange(updated);
+                    }}
                   />
                 }
                 label=""
@@ -197,31 +210,40 @@ const FeedProfiles = ({
   }, [selectedSupplier, feedStores]);
 
   // New function to handle auto-selection
-  const handleAutoSelect = (
-    store: FeedProduct,
-    supplierId: number,
-    storeIndex: number,
-  ) => {
-    // 1. Clear all existing selections first
-    fishSizes.forEach((size) => {
-      const rowName = `selection_${size}`;
-      setValue(rowName, '', { shouldDirty: true, shouldValidate: true });
-    });
-
-    // 2. Find the correct column key and the unique value for the new selection
+  const handleAutoSelect = (store, supplierId, storeIndex) => {
     const columnIndex = groupedData.findIndex(
       (group) => group.supplier.id === supplierId,
     );
     const colKey = `col${columnIndex + 1}`;
     const valueToSet = `${colKey}_${store.id}`;
 
-    // 3. Apply the new selection
-    fishSizes.forEach((size) => {
+    // Check if any size in the store's range is already selected
+    const isAnySizeSelected = newfishSizes.some((size) => {
       const rowName = `selection_${size}`;
-      if (size >= store.minFishSizeG && size <= store.maxFishSizeG) {
-        setValue(rowName, valueToSet, { shouldDirty: true, shouldValidate: true });
-      }
+      const prev = watch(rowName) || [];
+      return prev.includes(valueToSet);
     });
+
+    if (isAnySizeSelected) {
+      // If any size is selected, unselect the entire range
+      newfishSizes.forEach((size) => {
+        const rowName = `selection_${size}`;
+        const prev = watch(rowName) || [];
+        const updated = prev.filter((v) => v !== valueToSet);
+        setValue(rowName, updated, { shouldDirty: true, shouldValidate: true });
+      });
+    } else {
+      // If no size is selected, select the entire range
+      newfishSizes.forEach((size) => {
+        const rowName = `selection_${size}`;
+        if (size >= store.minFishSizeG && size <= store.maxFishSizeG) {
+          const prev = watch(rowName) || [];
+          // Ensure we don't add duplicates
+          const updated = prev.includes(valueToSet) ? prev : [...prev, valueToSet];
+          setValue(rowName, updated, { shouldDirty: true, shouldValidate: true });
+        }
+      });
+    }
   };
 
   useEffect(() => {
@@ -261,10 +283,8 @@ const FeedProfiles = ({
       const valueToSet = `${colKey}_${profile.storeId}`;
 
       for (let size = profile.minFishSize; size <= profile.maxFishSize; size++) {
-        setValue(`selection_${size}`, valueToSet, {
-          shouldValidate: true,
-          shouldDirty: false,
-        });
+        const prev = watch(`selection_${size}`) || [];
+        setValue(`selection_${size}`, [...prev, valueToSet], { shouldValidate: true });
       }
     });
 
@@ -288,10 +308,17 @@ const FeedProfiles = ({
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const formData = getLocalItem('feedProfiles');
-      if (formData && Object.keys(formData).length)
-        Object.entries(formData)?.forEach(([key, value]) => {
-          setValue(key, String(value));
+      if (formData && Object.keys(formData).length) {
+        Object.entries(formData).forEach(([key, value]) => {
+          if (Array.isArray(value)) {
+            // already an array → set directly
+            setValue(key, value, { shouldValidate: true });
+          } else if (value) {
+            // single string → wrap in array
+            setValue(key, [String(value)], { shouldValidate: true });
+          }
         });
+      }
     }
   }, []);
 
@@ -417,6 +444,17 @@ const FeedProfiles = ({
                             >
                               {tableHead?.stores?.map(
                                 (store: FeedProduct, storeIndex: number) => {
+                                  const colIndex = groupedData.findIndex(
+                                    (g) => g.supplier.id === tableHead.supplier.id
+                                  );
+                                  const colKey = `col${colIndex + 1}`;
+                                  const valueToSet = `${colKey}_${store.id}`;
+
+                                  const isSelectedForStore = newfishSizes.some((size) => {
+                                    const rowName = `selection_${size}`;
+                                    const selected: string[] = watch(rowName) || [];
+                                    return selected.includes(valueToSet);
+                                  });
                                   return (
                                     <ListItem
                                       key={store.id}
@@ -448,37 +486,39 @@ const FeedProfiles = ({
                                           )
                                         }
 
-                                        sx={{
-                                          background: '#fff',
-                                          color: "#888",
-                                          fontWeight: 600,
-                                          padding: '8px',
-                                          width: 'fit-content',
-                                          textTransform: 'capitalize',
-                                          borderRadius: '50px',
-                                          border: "1px solid #d5d5d5",
-                                          transform: 'scale(0.75)',
-                                          '&:hover': {
-                                            background: '#06A19B',
-                                            color: '#fff',
-                                          },
-                                        }}
-
-                                      // sx={{
-                                      //   background: '#06A19B',
-                                      //   color: "#fff",
-                                      //   fontWeight: 600,
-                                      //   padding: '8px',
-                                      //   width: 'fit-content',
-                                      //   textTransform: 'capitalize',
-                                      //   borderRadius: '50px',
-                                      //   transform: 'scale(0.75)',
-                                      //   border: "1px solid #06A19B",
-                                      //   '&:hover': {
-                                      //     background: '#06A19B',
-                                      //     color: '#fff',
-                                      //   },
-                                      // }}
+                                        sx={
+                                          isSelectedForStore
+                                            ? {
+                                              background: '#06A19B',
+                                              color: '#fff',
+                                              fontWeight: 600,
+                                              padding: '8px',
+                                              width: 'fit-content',
+                                              textTransform: 'capitalize',
+                                              borderRadius: '50px',
+                                              transform: 'scale(0.75)',
+                                              border: '1px solid #06A19B',
+                                              '&:hover': {
+                                                background: '#06A19B',
+                                                color: '#fff',
+                                              },
+                                            }
+                                            : {
+                                              background: '#fff',
+                                              color: '#888',
+                                              fontWeight: 600,
+                                              padding: '8px',
+                                              width: 'fit-content',
+                                              textTransform: 'capitalize',
+                                              borderRadius: '50px',
+                                              border: '1px solid #d5d5d5',
+                                              transform: 'scale(0.75)',
+                                              '&:hover': {
+                                                background: '#06A19B',
+                                                color: '#fff',
+                                              },
+                                            }
+                                        }
                                       >
                                         <DoneAll fontSize="small" />
                                         {/* <Checklist fontSize="small" /> */}

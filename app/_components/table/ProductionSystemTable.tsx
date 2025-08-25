@@ -17,6 +17,7 @@ interface ProductionSystem {
     name: string;
     createdAt: string;
     isFeatured: boolean;
+    code?: string; 
 }
 
 type Order = 'asc' | 'desc';
