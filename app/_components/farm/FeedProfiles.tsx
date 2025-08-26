@@ -78,7 +78,6 @@ const FeedProfiles = ({
   const [selectedSupplier, setSelectedSupplier] = useState<SupplierOptions[]>(
     [],
   );
-  console.log('edit:', editFarm);
   // Dynamic fish sizes based on maxFishSizeG
   const newfishSizes = useMemo(() => {
     if (!feedStores.length) return [];
@@ -125,7 +124,6 @@ const FeedProfiles = ({
         }
       });
     });
-    console.log('Structured Feed Profiles Payload:', payload);
     // Save structured payload
     setLocalItem('feedProfiles', payload);
 

@@ -51,7 +51,7 @@ interface FormInputs {
   speciesId: string;
 }
 function NewFishSupply({ isEdit, fishSupplyId, farms, organisations, speciesList }: Props) {
-  console.log('speciesList', speciesList);
+
   const router = useRouter();
   const userData: any = getCookie('logged-user');
   const token = getCookie('auth-token');

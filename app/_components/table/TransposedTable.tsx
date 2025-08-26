@@ -151,7 +151,6 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
   }
 
   const onSubmit = async (data: any) => {
-    console.log('Form Data:', data);
     setIsSaving(true);
     debugger
     const payload = transformFeedProductsWithSuppliers(data);
@@ -159,7 +158,7 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
       const { ProductSupplier, supplierIds, ...rest } = feed;
       return { ...rest, ProductSupplier: supplierIds };
     });
-    console.log('Payload to submit:', updatedPayload);
+
     try {
       const token = getCookie('auth-token');
       const response = await fetch(`/api/feed-store `, {

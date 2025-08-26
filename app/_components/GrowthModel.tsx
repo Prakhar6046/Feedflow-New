@@ -120,16 +120,15 @@ function GrowthModel({
   modelData?: OrganisationModelResponse;
   modelId?: string | null;
 }) {
-  console.log('GrowthModel component rendered', modelData);
+
   const loggedUser: any = getCookie('logged-user');
   const router = useRouter();
   const [speciesList, setSpeciesList] = useState<Species[]>([]);
   const featuredSpecies = speciesList?.filter((sp) => sp.isFeatured);
-  console.log('Featured Species:', featuredSpecies);
   const [productionSystemList, setProductionSystemList] = useState<productionSystem[]>([]);
-  console.log('Production System List:', productionSystemList);
+  
   const featuredProductionSystemList = productionSystemList?.filter((sp) => sp.isFeatured);
-  console.log('Featured Production Systems:', featuredProductionSystemList);
+ 
   const [setDefault, setSetDefault] = useState(false);
   const token = getCookie('auth-token');
   const {
@@ -275,9 +274,8 @@ function GrowthModel({
       setValue(key as keyof InputType, val as any),
     );
   }, [selectedModel, selectedFCRModel, setValue]);
-  console.log('editMode:', editMode);
+ 
   const onSubmit: SubmitHandler<InputType> = async (data) => {
-    console.log('Form submitted with data:', data);
     const user = JSON.parse(loggedUser ?? '');
     if (user?.organisationId && data.name) {
       // Prevent API call if one is already in progress

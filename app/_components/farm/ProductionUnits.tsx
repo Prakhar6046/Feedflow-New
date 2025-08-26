@@ -74,7 +74,6 @@ const ProductionUnits: NextPage<Props> = ({
   feedSuppliers,
 }) => {
   uuidv4();
-
   const dispatch = useAppDispatch();
   const isEditFarm = getCookie('isEditFarm');
   const userData = getCookie('logged-user');
@@ -96,7 +95,6 @@ const ProductionUnits: NextPage<Props> = ({
     [productionSystemList]
   );
 
-  console.log('featuredproductionSystemList', featuredproductionSystemList);
   // useEffect(() => {
   //   const fetchData = async () => {
   //     try {
@@ -147,59 +145,58 @@ const ProductionUnits: NextPage<Props> = ({
     mode: 'onChange',
   });
   useEffect(() => {
-  const fetchData = async () => {
-    try {
-      const [speciesRes, productionRes] = await Promise.all([
-        fetch('/api/species', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-        }),
-        fetch('/api/production-system', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-        }),
-      ]);
-
-      if (!speciesRes.ok) throw new Error('Failed to fetch species');
-      if (!productionRes.ok) throw new Error('Failed to fetch production system');
-
-      const speciesData = await speciesRes.json();
-      const productionData = await productionRes.json();
-      setProductionSystemList(productionData);
-
-      // Once the data is fetched, set the form values
-      if (editFarm?.productionUnits) {
-        const unitsWithSystemId = editFarm.productionUnits.map((unit) => ({
-          ...unit,
-          productionSystem: unit.productionSystemId || '',
-        }));
-        setValue('productionUnits', unitsWithSystemId);
-      } else {
-        setValue('productionUnits', [
-          {
-            name: '',
-            type: '',
-            productionSystem: '',
-            capacity: '',
-            waterflowRate: '',
-            id: Number(uuidv4()),
-          },
+    const fetchData = async () => {
+      try {
+        const [speciesRes, productionRes] = await Promise.all([
+          fetch('/api/species', {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`,
+            },
+          }),
+          fetch('/api/production-system', {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`,
+            },
+          }),
         ]);
-      }
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-  };
 
-  fetchData();
-}, [token, editFarm, setValue]);
-  console.log('editFarm?.productionUnits', editFarm?.productionUnits);
+        if (!speciesRes.ok) throw new Error('Failed to fetch species');
+        if (!productionRes.ok) throw new Error('Failed to fetch production system');
+
+        const speciesData = await speciesRes.json();
+        const productionData = await productionRes.json();
+        setProductionSystemList(productionData);
+
+        // Once the data is fetched, set the form values
+        if (editFarm?.productionUnits) {
+          const unitsWithSystemId = editFarm.productionUnits.map((unit) => ({
+            ...unit,
+            productionSystem: unit.productionSystemId || '',
+          }));
+          setValue('productionUnits', unitsWithSystemId);
+        } else {
+          setValue('productionUnits', [
+            {
+              name: '',
+              type: '',
+              productionSystem: '',
+              capacity: '',
+              waterflowRate: '',
+              id: Number(uuidv4()),
+            },
+          ]);
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, [token, editFarm, setValue]);
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'productionUnits',
@@ -256,7 +253,6 @@ const ProductionUnits: NextPage<Props> = ({
   };
 
   const onSubmit: SubmitHandler<ProductionUnitsFormTypes> = async (data) => {
-    console.log('data', data);
     const farmData = getLocalItem('farmData');
 
     const farmPredictionValues = getLocalItem('productionParametes');
@@ -266,6 +262,7 @@ const ProductionUnits: NextPage<Props> = ({
     const productionUnitsFeedProfilesLocal = getLocalItem(
       'productionUnitsFeedProfiles',
     );
+
     const feedProfile = getLocalItem('feedProfiles');
 
     if (farmData && farmPredictionValues && data) {
@@ -275,71 +272,45 @@ const ProductionUnits: NextPage<Props> = ({
       try {
         const loggedUserData = JSON.parse(userData ?? '');
         let payload;
-        let updatedProductionUnitsFeedProfile;
-        let updatedProductionUnits;
+
 
         const productionUnitsWithIds = data.productionUnits.map((unit) => ({
           ...unit,
           productionSystemId: unit.productionSystem,
         }));
-        const filteredProductionUnits =
-          productionParamtertsUnitsArrayLocal.filter(
-            (unit: {
-              unitName: string;
-              predictedValues: any;
-              idealRange: any;
-            }) =>
-              data.productionUnits.some(
-                (param) => param.name === unit.unitName,
-              ),
-          );
-
-        if (filteredProductionUnits) {
-          updatedProductionUnits = filteredProductionUnits.map(
-            (filteredUnit: any) => {
-              const matchedUnit = editFarm?.productionUnits?.find(
-                (unit) => unit.name === filteredUnit.unitName,
-              );
-
-              if (matchedUnit) {
-                return {
-                  ...filteredUnit,
-                  id: matchedUnit.YearBasedPredicationProductionUnit[0]?.id,
-                };
-              }
-              return filteredUnit;
-            },
-          );
-        }
-
-        const filteredProductionUnitsFeedProfile =
-          productionUnitsFeedProfilesLocal?.filter(
-            (unit: { unitName: string; feedProfile: any }) =>
-              data.productionUnits.some(
-                (param) => param.name === unit.unitName,
-              ),
-          );
-
-        if (filteredProductionUnitsFeedProfile && editFarm) {
-          updatedProductionUnitsFeedProfile =
-            filteredProductionUnitsFeedProfile?.map((filteredUnit: any) => {
-              const matchedUnit = editFarm?.productionUnits?.find(
-                (unit) => unit.name === filteredUnit.unitName,
-              );
-
-              if (matchedUnit) {
-                return {
-                  ...filteredUnit,
-                  id: matchedUnit?.FeedProfileProductionUnit?.[0]?.id,
-                };
-              }
-              return filteredUnit;
-            });
-        }
-        const unitFeedProfiles: any = [];
-        productionUnits?.map((unit) =>
-          unitFeedProfiles.push({ unitName: unit.name, feedProfile }),
+        const updatedProductionUnits = productionParamtertsUnitsArrayLocal?.map(
+          (filteredUnit: any) => {
+            const matchedUnit = editFarm?.productionUnits?.find(
+              (unit) => unit.name === filteredUnit.unitName,
+            );
+            if (matchedUnit) {
+              return {
+                ...filteredUnit,
+                id: matchedUnit.YearBasedPredicationProductionUnit?.[0]?.id,
+              };
+            }
+            return filteredUnit;
+          },
         );
+
+        // CONSOLIDATED FEED PROFILE LOGIC
+        // This is the key change: create a single array of feed profiles for all units
+        const feedProfileUnitsPayload = data.productionUnits.map((unit) => {
+          // Find the specific feed profile for the current unit
+          const specificProfile = productionUnitsFeedProfilesLocal.find(
+            (p: { unitName: string }) => p.unitName === unit.name,
+          );
+
+          // If a specific profile exists, use it. Otherwise, use the main feedProfile.
+          const profileData = specificProfile ? specificProfile.feedProfile : feedProfile;
+          const profileId = specificProfile?.id; // The ID for the FeedProfileProductionUnit table
+
+          return {
+            unitName: unit.name,
+            feedProfile: profileData,
+            id: profileId,
+          };
+        });
 
         if (
           isEditFarm === 'true' &&
@@ -382,7 +353,7 @@ const ProductionUnits: NextPage<Props> = ({
               },
             },
             productionParamtertsUnitsArray: updatedProductionUnits ?? [],
-            FeedProfileUnits: updatedProductionUnitsFeedProfile ?? [],
+            FeedProfileUnits: feedProfileUnitsPayload,
 
             farmAddress: {
               addressLine1: farmData.addressLine1,
@@ -410,8 +381,7 @@ const ProductionUnits: NextPage<Props> = ({
         } else {
           payload = {
             productionParamtertsUnitsArray: updatedProductionUnits,
-            FeedProfileUnits:
-              filteredProductionUnitsFeedProfile ?? unitFeedProfiles,
+             FeedProfileUnits: feedProfileUnitsPayload,
 
             productionParameter: {
               ...farmPredictionValues,
@@ -467,7 +437,7 @@ const ProductionUnits: NextPage<Props> = ({
             feedProfile,
           };
         }
-
+     
         if (Object.keys(payload).length && payload.name) {
           const response = await fetch(
             `${isEditFarm === 'true'
@@ -478,6 +448,7 @@ const ProductionUnits: NextPage<Props> = ({
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
               },
               body: JSON.stringify(payload),
             },
@@ -624,7 +595,7 @@ const ProductionUnits: NextPage<Props> = ({
       <form onSubmit={handleSubmit(onSubmit)}>
         <Box>
           {fields.map((item, index) => {
-            console.log('item', item);
+        
             return (
               <TableContainer
                 key={item.id}
@@ -1178,6 +1149,7 @@ const ProductionUnits: NextPage<Props> = ({
         setSelectedUnitName={setSelectedUnitName}
         feedStores={feedStores}
         feedSuppliers={feedSuppliers}
+        productionUnits={editFarm?.productionUnits}
       />
       <CalculateVolume
         open={open}

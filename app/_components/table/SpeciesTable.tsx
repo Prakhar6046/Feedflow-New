@@ -28,7 +28,7 @@ const headCells: HeadCell[] = [
 
 export default function SpeciesTable() {
     const [data, setData] = useState<Species[]>([]);
-    console.log('datadatadatadatadata', data);
+
     const [order, setOrder] = useState<Order>('asc');
     const router = useRouter();
     const [orderBy, setOrderBy] = useState<keyof Species>('name');

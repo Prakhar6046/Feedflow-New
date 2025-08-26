@@ -4,18 +4,18 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(req: NextRequest) {
   try {
-    // const user = await verifyAndRefreshToken(req);
-    // if (user.status === 401) {
-    //   return new NextResponse(
-    //     JSON.stringify({
-    //       status: false,
-    //       message: 'Unauthorized: Token missing or invalid',
-    //     }),
-    //     { status: 401 },
-    //   );
-    // }
+  const user = await verifyAndRefreshToken(req);
+  if (user.status === 401) {
+    return new NextResponse(
+      JSON.stringify({
+        status: false,
+        message: 'Unauthorized: Token missing or invalid',
+      }),
+      { status: 401 },
+    );
+  }
     const body = await req.json();
-    console.log('Request body:', body);
+
     const { yearBasedPredicationId, modelId, ...productionParameterPayload } =
       body.productionParameter;
 
@@ -90,7 +90,7 @@ export async function POST(req: NextRequest) {
     // Fetch existing production units and productions from the database
     const existingUnits = await prisma.productionUnit.findMany({
       where: { farmId: updatedFarm.id },
-      include: { YearBasedPredicationProductionUnit: true },
+      include: { YearBasedPredicationProductionUnit: true, FeedProfileProductionUnit: true },
     });
 
     const existingProductions = await prisma.production.findMany({
@@ -126,17 +126,12 @@ export async function POST(req: NextRequest) {
       });
       newUnits.push(updatedUnit); // Store the updated or created production unit
 
-      for (const existingPredictionUnit of body.productionParamtertsUnitsArray ||
-        []) {
+      for (const existingPredictionUnit of body.productionParamtertsUnitsArray || []) {
         if (unit.name === existingPredictionUnit.unitName) {
           const { id, unitName, idealRange, ...rest } = existingPredictionUnit;
-
           await prisma.yearBasedPredicationProductionUnit.upsert({
             where: { id: id || '', productionUnitId: unit.id || '' },
-            update: {
-              ...rest.predictedValues,
-              idealRange,
-            },
+            update: { ...rest.predictedValues, idealRange },
             create: {
               productionUnitId: updatedUnit.id,
               ...(rest.predictedValues && idealRange
@@ -147,29 +142,37 @@ export async function POST(req: NextRequest) {
         }
       }
 
-      for (const existingPredictionUnit of body.FeedProfileUnits || []) {
-        if (unit.name === existingPredictionUnit.unitName) {
-          const { id, feedProfile } = existingPredictionUnit;
+      if (body.FeedProfileUnits && Array.isArray(body.FeedProfileUnits)) {
+        for (const unitProfile of body.FeedProfileUnits) {
+          // Find the newly created or updated production unit to get its ID
+          const matchedProductionUnit = existingUnits.find(u => u.name === unitProfile.unitName);
 
-          if (id) {
-            // ✅ If id exists, update
-            await prisma.feedProfileProductionUnit.update({
-              where: { id },
-              data: {
-                profiles: feedProfile,
-              },
-            });
-          } else {
-            // ✅ If id doesn't exist, create
-            await prisma.feedProfileProductionUnit.create({
-              data: {
-                productionUnitId: updatedUnit.id,
-                profiles: feedProfile,
-              },
-            });
+          if (matchedProductionUnit) {
+            // Find if a feed profile link already exists for this unit
+            const existingFeedUnit = matchedProductionUnit.FeedProfileProductionUnit.find(
+              fpu => fpu.feedProfileId === body.feedProfileId
+            );
+
+            if (existingFeedUnit) {
+              // Update the existing record if it exists
+              await prisma.feedProfileProductionUnit.update({
+                where: { id: existingFeedUnit.id },
+                data: { profiles: unitProfile.feedProfile },
+              });
+            } else {
+              // Create a new record if it doesn't exist
+              await prisma.feedProfileProductionUnit.create({
+                data: {
+                  productionUnitId: matchedProductionUnit.id,
+                  feedProfileId: body.feedProfileId,
+                  profiles: unitProfile.feedProfile,
+                },
+              });
+            }
           }
         }
       }
+
 
       // Handle production entries corresponding to the production unit
       const correspondingProduction = body.productions.find(
@@ -230,46 +233,38 @@ export async function POST(req: NextRequest) {
     );
 
     for (const unit of unitsToDelete) {
-      // Delete related production records first
-      await prisma.production.deleteMany({
-        where: { productionUnitId: unit.id },
-      });
+      await prisma.production.deleteMany({ where: { productionUnitId: unit.id } });
 
-      unit.YearBasedPredicationProductionUnit.map(async (data) => {
-        await prisma.yearBasedPredicationProductionUnit.delete({
-          where: { id: data.id },
-        });
-      });
+      for (const data of unit.YearBasedPredicationProductionUnit) {
+        await prisma.yearBasedPredicationProductionUnit.delete({ where: { id: data.id } });
+      }
+
       await prisma.feedProfileProductionUnit.deleteMany({
         where: { productionUnitId: unit.id },
       });
-      await prisma.productionUnit.delete({
-        where: { id: unit.id },
-      });
+
+      await prisma.productionUnit.delete({ where: { id: unit.id } });
     }
+
 
     const existingPredication = await prisma.yearBasedPredication.findUnique({
       where: { id: yearBasedPredicationId },
     });
-
     if (!existingPredication) {
-      throw new Error(
-        `Year Based Predication record with ID ${yearBasedPredicationId} not found.`,
-      );
+      throw new Error(`Year Based Predication record with ID ${yearBasedPredicationId} not found.`);
     }
-    const updateProductionPredection = await prisma.yearBasedPredication.update(
-      {
-        where: { id: yearBasedPredicationId },
-        data: { ...paylaodForProductionParameter },
-      },
-    );
+    await prisma.yearBasedPredication.update({
+      where: { id: yearBasedPredicationId },
+      data: { ...paylaodForProductionParameter },
+    });
 
- if (body.feedProfileId) {
+    if (body.feedProfileId) {
       await prisma.feedProfile.update({
         where: { id: body.feedProfileId },
         data: { profiles: body.feedProfile },
       });
     }
+
 
 
     return NextResponse.json({

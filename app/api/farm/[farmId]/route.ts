@@ -37,7 +37,13 @@ export const GET = async (request: NextRequest, context: { params: any }) => {
           },
         },
         production: true,
-        FeedProfile: true,
+        FeedProfile: {
+          include: {
+            units: true,
+            feedLinks: true,
+          },
+        },
+
         FarmManger: true,
         WaterQualityPredictedParameters: {
           include: { YearBasedPredication: true },

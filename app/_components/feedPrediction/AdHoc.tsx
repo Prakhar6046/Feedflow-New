@@ -123,20 +123,18 @@ function AdHoc({ data, setData }: Iprops) {
   const [productionSystemList, setProductionSystemList] = useState<productionSystem[]>([]);
   const featuredproductionSystemList = productionSystemList.filter((item) => item.isFeatured);
   const [growthModelData, setGrowthModelData] = useState<OrganisationModelResponse[]>([]);
-  console.log('growthModelData', growthModelData);
+
   const [organisationId, setOrganisationId] = useState<number>(0);
-  console.log('organisationId', organisationId);
+ 
 
   const [selectedGrowthModel, setSelectedGrowthModel] = useState<OrganisationModelResponse | null>(
     null,
   );
-  console.log('selectedGrowthModel', selectedGrowthModel);
+ 
   const [matchingModels, setMatchingModels] = useState<OrganisationModelResponse[]>([]);
-  console.log('matchingModels', matchingModels);
+
   const selectedSpecies = watch('species');
-  const selectedProductionSystem = watch('productionSystem');
-  console.log('selectedSpecies', selectedSpecies);
-  console.log('selectedProductionSystem', selectedProductionSystem);
+
 
   useEffect(() => {
     const loggedUser = Cookies.get('logged-user');
@@ -144,7 +142,7 @@ function AdHoc({ data, setData }: Iprops) {
     if (loggedUser) {
       try {
         const user: SingleUser = JSON.parse(loggedUser);
-        console.log('Parsed user data:', user);
+    
         setOrganisationId(user.organisationId);
       } catch (error) {
         console.error('Error parsing user data:', error);
@@ -218,8 +216,7 @@ function AdHoc({ data, setData }: Iprops) {
     // Find the IDs for the selected species and production system
     const speciesObj = speciesList.find((s) => s.id === (selectedSpecies));
     const prodObj = productionSystemList.find((p) => p.id === (selectedProductionSystem));
-    console.log('speciesObj', speciesObj);
-    console.log('prodObj', prodObj);
+
     if (!speciesObj || !prodObj) {
       setMatchingModels([]);
       setSelectedGrowthModel(null);

@@ -178,13 +178,13 @@ model Farm {
 }
 
 model FeedProfile {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id        Int                         @id @default(autoincrement())
+  createdAt DateTime                    @default(now())
+  updatedAt DateTime                    @updatedAt
   farmId    String
-  farm      Farm     @relation(fields: [farmId], references: [id])
+  farm      Farm                        @relation(fields: [farmId], references: [id])
   profiles  Json?
-
+  units     FeedProfileProductionUnit[]
   feedLinks FeedProfileLink[]
 
   @@index([createdAt])
@@ -209,8 +209,10 @@ model FeedProfileProductionUnit {
   createdAt        DateTime       @default(now())
   updatedAt        DateTime       @updatedAt
   profiles         Json?
-  productionUnitId String
-  ProductionUnit   ProductionUnit @relation(fields: [productionUnitId], references: [id])
+  productionUnitId String?
+  ProductionUnit   ProductionUnit? @relation(fields: [productionUnitId], references: [id])
+  feedProfileId    Int?
+  feedProfile      FeedProfile?   @relation(fields: [feedProfileId], references: [id])
 
   @@index([createdAt])
   @@index([updatedAt])

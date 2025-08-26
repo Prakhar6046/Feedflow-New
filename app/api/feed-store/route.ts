@@ -100,7 +100,7 @@ export async function PUT(request: NextRequest) {
     }
 
     const body = await request.json();
-  console.log('PUT request body:', body);
+
     // Validate speciesId values
     const validSpeciesIds = await prisma.species.findMany({
       select: { id: true },
