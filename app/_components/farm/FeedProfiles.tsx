@@ -549,6 +549,7 @@ console.log('edit:', editFarm);
                           return (
                             <TableCell
                               sx={cellStyle}
+                              className='farm-radio-btn'
                               key={group.supplier.id}
                             >
                               {renderRadioGroup(
