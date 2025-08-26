@@ -78,7 +78,7 @@ const FeedProfiles = ({
   const [selectedSupplier, setSelectedSupplier] = useState<SupplierOptions[]>(
     [],
   );
-console.log('edit:', editFarm);
+  console.log('edit:', editFarm);
   // Dynamic fish sizes based on maxFishSizeG
   const newfishSizes = useMemo(() => {
     if (!feedStores.length) return [];
@@ -398,6 +398,9 @@ console.log('edit:', editFarm);
                         },
                         fontWeight: 600,
                         verticalAlign: 'baseline',
+                        position: "sticky",
+                        left: 0,
+                        zIndex: 1000
                       }}
                     >
                       Fish Size <br />
@@ -541,7 +544,12 @@ console.log('edit:', editFarm);
 
                     return (
                       <TableRow key={`row-${index}`}>
-                        <TableCell sx={cellStyle}>{size}</TableCell>
+                        <TableCell style={{
+                          position: "sticky",
+                          left: 0,
+                          zIndex: 100,
+                          background: "#fff",
+                        }} sx={cellStyle}>{size}</TableCell>
                         {groupedData?.map((group, groupIndex) => {
                           const options = group.stores.map(
                             (_: FeedProduct, i: number) => `opt${i + 1}`,
