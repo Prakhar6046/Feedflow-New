@@ -134,7 +134,7 @@ function AdHoc({ data, setData }: Iprops) {
   const [matchingModels, setMatchingModels] = useState<OrganisationModelResponse[]>([]);
 
   const selectedSpecies = watch('species');
-
+const selectedProductionSystem = watch('productionSystem');
 
   useEffect(() => {
     const loggedUser = Cookies.get('logged-user');
