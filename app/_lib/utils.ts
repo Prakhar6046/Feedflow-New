@@ -887,7 +887,7 @@ export function calculateFishGrowthTilapia(
   timeInterval: number,
   DE: number,
 ) {
-  console.log('selectedGrowthModelselectedGrowthModelselectedGrowthModelselectedGrowthModelselectedGrowthModel', selectedGrowthModel);
+
   if (!selectedGrowthModel) {
     const IBW = fishWeight;
     const T = temp;

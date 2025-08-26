@@ -31,7 +31,7 @@ const headCells: HeadCell[] = [
 
 export default function ProductionSystemTable() {
     const [data, setData] = useState<ProductionSystem[]>([]);
-    console.log('datadatadatadatadata', data);
+
     const router = useRouter();
     const [order, setOrder] = useState<Order>('asc');
     const [orderBy, setOrderBy] = useState<keyof ProductionSystem>('name');

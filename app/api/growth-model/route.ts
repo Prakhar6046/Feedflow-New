@@ -199,8 +199,7 @@ export async function PUT(request: NextRequest) {
   try {
     const body = await request.json();
     const { model, organisationId, modelId, isDefault } = body;
-    console.log('PUT request body:', body);
-    console.log('Model ID:', modelId, 'Organisation ID:', organisationId, model);
+
     if (!modelId) {
       return NextResponse.json(
         { error: 'Model ID is required' },

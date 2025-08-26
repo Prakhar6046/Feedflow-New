@@ -1,6 +1,6 @@
 'use client';
 import { getLocalItem, setLocalItem } from '@/app/_lib/utils';
-import { Farm, ProductionParaMeterType } from '@/app/_typeModels/Farm';
+import { Farm, ProductionParaMeterType, productionUnits } from '@/app/_typeModels/Farm';
 import {
   Box,
   Button,
@@ -12,8 +12,6 @@ import {
   Radio,
   Stack,
   Typography,
-  FormControl,
-  InputLabel,
 } from '@mui/material';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
@@ -25,16 +23,11 @@ import TableRow from '@mui/material/TableRow';
 import { getCookie } from 'cookies-next';
 import { useEffect, useMemo, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import {
-  cellStyle,
-  fishSizes,
-  GroupedSupplierStores,
-  SupplierOptions,
-} from '../farm/FeedProfiles';
+import { cellStyle, fishSizes, GroupedSupplierStores, SupplierOptions } from '../farm/FeedProfiles';
 import { CloseIcon } from '../theme/overrides/CustomIcons';
 import { FeedProduct } from '@/app/_typeModels/Feed';
 import { FeedSupplier } from '@/app/_typeModels/Organization';
-import { MultiSelect } from 'primereact/multiselect';
+import { DoneAll } from '@mui/icons-material';
 
 interface Props {
   productionParaMeter?: ProductionParaMeterType[];
@@ -45,9 +38,21 @@ interface Props {
   setSelectedUnitName: (val: string) => void;
   feedStores: FeedProduct[];
   feedSuppliers: FeedSupplier[];
+  productionUnits: productionUnits[];
 }
+
 interface FormData {
-  [key: string]: string;
+  [key: string]: string[];
+}
+interface FeedProfileItem {
+  supplierId: number;
+  storeId: string;
+  minFishSize: number;
+  maxFishSize: number;
+}
+interface ProductionUnitFeedProfileData {
+  unitName: string;
+  feedProfile: FeedProfileItem[];
 }
 
 const style = {
@@ -61,135 +66,180 @@ const style = {
   padding: '5px 25px',
 };
 
-interface ProductionUnitFeedProfileData {
-  unitName: string;
-  feedProfile: FormData;
-}
-
 const ProductionUnitFeedProfile: React.FC<Props> = ({
   setOpen,
   open,
-  editFarm,
   selectedUnitName,
   setSelectedUnitName,
   feedStores,
   feedSuppliers,
+  productionUnits,
 }) => {
+
   const isEditFarm = getCookie('isEditFarm');
-  const [radioValueMap, setRadioValueMap] = useState<
-    Record<string, Record<string, string>>
-  >({});
+  const [radioValueMap, setRadioValueMap] = useState<Record<string, Record<string, string>>>({});
   const [supplierOptions, setSupplierOptions] = useState<SupplierOptions[]>([]);
-  const [selectedSupplier, setSelectedSupplier] = useState<SupplierOptions[]>(
-    [],
-  );
-  const [formProductionFeedProfile, setFormProductionFeedProfile] = useState<
-    FormData | undefined
-  >();
+  const [selectedSupplier, setSelectedSupplier] = useState<SupplierOptions[]>([]);
 
-  const { control, handleSubmit, setValue, reset } = useForm<FormData>();
+  const { control, handleSubmit, setValue, watch, reset } = useForm<FormData>();
 
-  const onSubmit: SubmitHandler<FormData> = (formData) => {
-    const productionUnitsFeedProfilesArray: ProductionUnitFeedProfileData[] =
-      getLocalItem('productionUnitsFeedProfiles') || [];
-    const { data, ...rest } = formData;
-
-    const updatedData = productionUnitsFeedProfilesArray?.filter(
-      (data: ProductionUnitFeedProfileData) =>
-        data.unitName !== selectedUnitName,
+  const groupedData: GroupedSupplierStores[] = useMemo(() => {
+    return selectedSupplier?.reduce(
+      (acc: GroupedSupplierStores[], supplier: SupplierOptions) => {
+        const storesForSupplier = feedStores?.filter((store) =>
+          store?.ProductSupplier?.some((prodSupplierId: string) => Number(prodSupplierId) === supplier.id)
+        );
+        if (storesForSupplier?.length) {
+          acc.push({ supplier, stores: storesForSupplier });
+        }
+        return acc;
+      }, []
     );
-    const payload: ProductionUnitFeedProfileData = {
-      unitName: selectedUnitName,
-      feedProfile: {
-        ...rest,
-      },
-    };
-
-    updatedData.push(payload);
-
-    setLocalItem('productionUnitsFeedProfiles', updatedData);
-    setOpen(false);
-    setSelectedUnitName('');
-    reset();
-  };
+  }, [selectedSupplier, feedStores]);
 
   useEffect(() => {
-    if (typeof window !== 'undefined' && selectedUnitName) {
-      const formData: FormData | null = getLocalItem('feedProfiles');
-      if (formData) {
-        setFormProductionFeedProfile(formData);
-        Object?.entries(formData).forEach(([key, value]) => {
-          setValue(key, String(value));
-        });
-      }
+    if (feedSuppliers?.length) {
+      const options = feedSuppliers.map((supplier) => ({
+        option: supplier.name,
+        id: supplier.id,
+      }));
+      setSupplierOptions(options);
+      setSelectedSupplier(options);
     }
-  }, [selectedUnitName, setValue]);
+  }, [feedSuppliers]);
 
   useEffect(() => {
-    const productionUnitsFeedProfilesArray: ProductionUnitFeedProfileData[] =
-      getLocalItem('productionUnitsFeedProfiles') || [];
+    if (!groupedData?.length) return;
 
-    const updatedData = productionUnitsFeedProfilesArray?.find(
-      (data: ProductionUnitFeedProfileData) =>
-        data.unitName === selectedUnitName,
-    );
-    if (updatedData) {
-      Object.entries(updatedData?.feedProfile).forEach(([key, value]) => {
-        setValue(key, String(value));
+    const map: Record<string, Record<string, string>> = {};
+    groupedData.forEach((group, index) => {
+      const colKey = `col${index + 1}`;
+      map[colKey] = {};
+      group.stores.forEach((store, storeIndex) => {
+        const optKey = `opt${storeIndex + 1}`;
+        map[colKey][optKey] = `${colKey}_${store.id}`;
       });
-    }
-  }, [formProductionFeedProfile, selectedUnitName, setValue]);
+    });
+    setRadioValueMap(map);
+  }, [groupedData]);
 
-  useEffect(() => {
-    const formProductionFeedProfileArray: ProductionUnitFeedProfileData[] =
-      getLocalItem('productionUnitsFeedProfiles') || [];
-    const currentUnit = formProductionFeedProfileArray?.find(
-      (val: ProductionUnitFeedProfileData) => val.unitName === selectedUnitName,
-    );
-    if (
-      isEditFarm &&
-      editFarm &&
-      formProductionFeedProfileArray &&
-      !currentUnit
-    ) {
-      editFarm?.productionUnits?.map((unit) => {
-        if (
-          unit.name === selectedUnitName &&
-          unit.id === unit.FeedProfileProductionUnit?.[0]?.productionUnitId
-        ) {
-          Object.entries(
-            unit?.FeedProfileProductionUnit?.[0]?.profiles || {},
-          ).forEach(([key, value]) => {
-            setValue(key, String(value));
-          });
+  // Set default selection: production unit or main feed profile
+ // Set default selection: production unit or main feed profile
+useEffect(() => {
+  if (!selectedUnitName || !groupedData?.length) {
+    return;
+  }
+  const units = productionUnits || [];
+const currentUnit = units.find((p) => p.name === selectedUnitName);
+  // Add conditional check here to handle 'add' scenario
+  if (!currentUnit) {
+    console.log('currentUnit not found. Likely in "add" mode, falling back to main feed profile.');
+  }
+
+  const productionUnitsFeedProfiles: ProductionUnitFeedProfileData[] =
+    getLocalItem('productionUnitsFeedProfiles') || [];
+
+  const currentUnitProfile = productionUnitsFeedProfiles.find(
+    (p) => p.unitName === selectedUnitName
+  );
+
+  let defaultProfileData: FormData = {};
+
+  // Check if a specific profile exists for the current unit
+  if (currentUnitProfile && currentUnitProfile.feedProfile) {
+    // Priority 1: Use data from localStorage for the specific unit
+    currentUnitProfile.feedProfile.forEach((item) => {
+      const { supplierId, storeId, minFishSize, maxFishSize } = item;
+      const colIndex = groupedData.findIndex((group) => group.supplier.id === supplierId);
+      if (colIndex !== -1) {
+        const colKey = `col${colIndex + 1}`;
+        for (let size = minFishSize; size <= maxFishSize; size++) {
+          const rowName = `selection_${size}`;
+          if (!defaultProfileData[rowName]) {
+            defaultProfileData[rowName] = [];
+          }
+          const valueToSet = `${colKey}_${storeId}`;
+          if (!defaultProfileData[rowName].includes(valueToSet)) {
+            defaultProfileData[rowName].push(valueToSet);
+          }
+        }
+      }
+    });
+  }
+  else if (currentUnit && currentUnit.FeedProfileProductionUnit && currentUnit.FeedProfileProductionUnit.length > 0) {
+    // Priority 2: Use data from the 'productionUnits' prop (Edit Mode)
+    const feedProfiles = currentUnit.FeedProfileProductionUnit[0]?.profiles;
+    if (feedProfiles) {
+      feedProfiles.forEach((item: FeedProfileItem) => {
+        const { supplierId, storeId, minFishSize, maxFishSize } = item;
+        const colIndex = groupedData.findIndex((group) => group.supplier.id === supplierId);
+        if (colIndex !== -1) {
+          const colKey = `col${colIndex + 1}`;
+          for (let size = minFishSize; size <= maxFishSize; size++) {
+            const rowName = `selection_${size}`;
+            if (!defaultProfileData[rowName]) {
+              defaultProfileData[rowName] = [];
+            }
+            const valueToSet = `${colKey}_${storeId}`;
+            if (!defaultProfileData[rowName].includes(valueToSet)) {
+              defaultProfileData[rowName].push(valueToSet);
+            }
+          }
         }
       });
-    } else if (formProductionFeedProfileArray?.length && currentUnit) {
-      Object.entries(currentUnit?.feedProfile).forEach(([key, value]) => {
-        setValue(key, String(value));
-      });
     }
-  }, [isEditFarm, editFarm, setValue, selectedUnitName]);
+  } else {
+    // Priority 3: Fallback to the main feed profile (Add Mode or no specific profile found)
+    const mainFeedProfile: any[] = getLocalItem('feedProfiles') || [];
+    mainFeedProfile.forEach((item) => {
+      const { supplierId, storeId, minFishSize, maxFishSize } = item;
+      const colIndex = groupedData.findIndex((group) => group.supplier.id === supplierId);
+      if (colIndex !== -1) {
+        const colKey = `col${colIndex + 1}`;
+        for (let size = minFishSize; size <= maxFishSize; size++) {
+          const rowName = `selection_${size}`;
+          if (!defaultProfileData[rowName]) {
+            defaultProfileData[rowName] = [];
+          }
+          const valueToSet = `${colKey}_${storeId}`;
+          if (!defaultProfileData[rowName].includes(valueToSet)) {
+            defaultProfileData[rowName].push(valueToSet);
+          }
+        }
+      }
+    });
+  }
 
-  const renderRadioGroup = (
-    rowName: string,
-    columnName: string,
-    options: string[] = ['opt1', 'opt2', 'opt3'],
-  ) => (
+  // Reset the form with the new default values
+  reset(defaultProfileData);
+
+}, [selectedUnitName, groupedData, reset, productionUnits]);
+
+  const handleAutoSelect = (store, supplierId) => {
+    const colIndex = groupedData.findIndex((g) => g.supplier.id === supplierId);
+    const colKey = `col${colIndex + 1}`;
+    const valueToSet = `${colKey}_${store.id}`;
+
+    fishSizes.forEach((size) => {
+      const rowName = `selection_${size}`;
+      if (size >= store.minFishSizeG && size <= store.maxFishSizeG) {
+        const prev: string[] = watch(rowName) || [];
+        const updated = prev.includes(valueToSet) ? prev.filter(v => v !== valueToSet) : [...prev, valueToSet];
+        setValue(rowName, updated, { shouldValidate: true });
+      }
+    });
+  };
+
+  const renderRadioGroup = (rowName: string, columnName: string, options: string[]) => (
     <Controller
       name={rowName}
       control={control}
-      defaultValue=""
+      defaultValue={[]}
       render={({ field }) => (
-        <Box
-          display="flex"
-          justifyContent="space-between"
-          alignItems="center"
-          gap={2}
-        >
+        <Box display="flex" justifyContent="space-between" alignItems="center" gap={2} paddingLeft={"16px"} paddingRight={"4px"}>
           {options.map((opt) => {
-            const value =
-              radioValueMap[columnName]?.[opt] ?? `${columnName}_${opt}`;
+            const value = radioValueMap[columnName]?.[opt] ?? `${columnName}_${opt}`;
+            const isChecked = field.value?.includes(value);
             return (
               <FormControlLabel
                 key={value}
@@ -197,9 +247,13 @@ const ProductionUnitFeedProfile: React.FC<Props> = ({
                 className="ic-radio"
                 control={
                   <Radio
-                    {...field}
-                    checked={field.value === value}
-                    onChange={() => field.onChange(value)}
+                    checked={isChecked}
+                    onChange={() => {
+                      let updated = [...(field.value || [])];
+                      if (isChecked) updated = updated.filter((v) => v !== value);
+                      else updated.push(value);
+                      field.onChange(updated);
+                    }}
                   />
                 }
                 label=""
@@ -211,53 +265,68 @@ const ProductionUnitFeedProfile: React.FC<Props> = ({
     />
   );
 
-  const groupedData: GroupedSupplierStores[] = useMemo(() => {
-    return selectedSupplier?.reduce(
-      (acc: GroupedSupplierStores[], supplier: SupplierOptions) => {
-        const storesForSupplier = feedStores?.filter((store) =>
-          store?.ProductSupplier?.some(
-            (prodSupplierId: string) => Number(prodSupplierId) === supplier.id
-          )
-        );
-        if (storesForSupplier?.length) {
-          acc.push({
-            supplier,
-            stores: storesForSupplier,
+  const onSubmit: SubmitHandler<FormData> = (data) => {
+    const result: {
+      supplierId: number;
+      storeId: string;
+      minFishSize: number;
+      maxFishSize: number;
+    }[] = [];
+
+    // Iterate over each fish size row to create the profile data
+    Object.entries(data).forEach(([rowName, selectedValues]) => {
+      const size = Number(rowName.replace('selection_', ''));
+
+      selectedValues.forEach((val) => {
+        const [colKey, storeId] = val.split('_');
+        const colIndex = parseInt(colKey.replace('col', '')) - 1;
+        const supplierId = groupedData[colIndex].supplier.id;
+
+        const existing = result.find(r => r.storeId === storeId && r.supplierId === supplierId);
+        if (existing) {
+          existing.minFishSize = Math.min(existing.minFishSize, size);
+          existing.maxFishSize = Math.max(existing.maxFishSize, size);
+        } else {
+          result.push({
+            supplierId,
+            storeId,
+            minFishSize: size,
+            maxFishSize: size
           });
         }
-        return acc;
-      },
-      [],
-    );
-  }, [selectedSupplier, feedStores]);
-
-  useEffect(() => {
-    if (!groupedData?.length) return;
-
-    const map: Record<string, Record<string, string>> = {};
-
-    groupedData?.forEach((group, index) => {
-      const colKey = `col${index + 1}`;
-      map[colKey] = {};
-
-      group?.stores?.forEach((store: FeedProduct, storeIndex: number) => {
-        const optKey = `opt${storeIndex + 1}`;
-        const label = `${store.productName} - ${group.supplier.option}`;
-        map[colKey][optKey] = label;
       });
     });
 
-    setRadioValueMap(map);
-  }, [groupedData]);
-  useEffect(() => {
-    if (feedSuppliers?.length) {
-      const options = feedSuppliers?.map((supplier) => {
-        return { option: supplier.name, id: supplier?.id };
-      });
-      setSupplierOptions(options);
-      setSelectedSupplier(options);
+    // Load existing production units profiles
+    const productionUnitsFeedProfiles: ProductionUnitFeedProfileData[] = getLocalItem('productionUnitsFeedProfiles') || [];
+
+    // Find the index of the current unit's profile
+    const unitIndex = productionUnitsFeedProfiles.findIndex(
+      (p) => p.unitName === selectedUnitName
+    );
+
+    // Create the new profile object for the current unit
+    const newProfile = {
+      unitName: selectedUnitName,
+      feedProfile: result,
+    };
+
+    if (unitIndex !== -1) {
+      // If the unit already has a profile, update it
+      productionUnitsFeedProfiles[unitIndex] = newProfile;
+    } else {
+      // Otherwise, add a new profile for the unit
+      productionUnitsFeedProfiles.push(newProfile);
     }
-  }, [feedSuppliers]);
+
+    setLocalItem('productionUnitsFeedProfiles', productionUnitsFeedProfiles);
+
+    setOpen(false);
+    setSelectedUnitName('');
+    reset();
+  };
+
+
   const handleClose = () => {
     setOpen(false);
     reset();
@@ -290,211 +359,156 @@ const ProductionUnitFeedProfile: React.FC<Props> = ({
               width: '100%',
               overflow: 'hidden',
               borderRadius: '14px',
-              boxShadow: 'none',
-              p: 4,
+              boxShadow: '0px 0px 16px 5px #0000001A',
             }}
           >
-            <Stack>
-              <Box
-                sx={{
-                  mb: 3,
-                }}
-              >
-                <Typography
-                  variant="h6"
-                  fontWeight={700}
-                  sx={{
-                    fontSize: {
-                      md: 24,
-                      xs: 20,
-                    },
-                    marginBottom: 2,
-                  }}
-                >
-                  Feed Profile
-                </Typography>
-                <Box>
-                  <FormControl
-                    sx={{ width: 600 }}
-                    className="form-input selected"
-                    focused
-                  >
-                    <InputLabel
-                      id="feed-supplier-select"
-                      className="custom-input"
+            <TableContainer component={Paper} className="feed-profile-table">
+              <Table stickyHeader>
+                <TableHead>
+                  <TableRow>
+                    <TableCell
+                      sx={{
+                        borderBottom: 0,
+                        color: '#67737F',
+                        background: '#F5F6F8',
+                        textAlign: 'center',
+                        pr: '4px',
+                        fontSize: { md: 16, xs: 14 },
+                        fontWeight: 600,
+                        verticalAlign: 'baseline',
+                        position: "sticky",
+                        left: 0,
+                        zIndex: 1000
+                      }}
                     >
-                      Feed Suppliers
-                    </InputLabel>
-                    <MultiSelect
-                      value={selectedSupplier}
-                      onChange={(e) => setSelectedSupplier(e.value)}
-                      selectAllLabel="Select All"
-                      options={supplierOptions}
-                      optionLabel="option"
-                      display="chip"
-                      placeholder="Select Feed Suppliers"
-                      dropdownIcon={
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="10"
-                          height="10"
-                          viewBox="0 0 15 15"
-                        >
-                          <path fill="currentColor" d="M7.5 12L0 4h15z" />
-                        </svg>
-                      }
-                      maxSelectedLabels={3}
-                      appendTo="self"
-                      className="w-100 max-w-100 custom-select"
-                    />
-                  </FormControl>
-                </Box>
-              </Box>
-              <Paper
-                sx={{
-                  width: '100%',
-                  overflow: 'hidden',
-                  borderRadius: '14px',
-                  boxShadow: '0px 0px 16px 5px #0000001A',
-                }}
-              >
-                <TableContainer
-                  component={Paper}
-                  className="feed-profile-table sm"
-                >
-                  <Table stickyHeader={true}>
-                    <TableHead>
-                      <TableRow>
-                        <TableCell
+                      Fish Size <br />(g)
+                    </TableCell>
+                    {groupedData?.map((group, colIndex) => (
+                      <TableCell
+                        key={group.supplier.id}
+                        sx={{
+                          borderBottom: 0,
+                          color: '#67737F',
+                          background: '#F5F6F8',
+                          textAlign: 'center',
+                          pr: '4px',
+                        }}
+                      >
+                        <Typography
+                          variant="body1"
                           sx={{
-                            borderBottom: 0,
-                            color: '#67737F',
-                            background: '#F5F6F8',
-                            textAlign: 'center',
-                            pr: '4px',
-                            fontSize: {
-                              md: 16,
-                              xs: 14,
-                            },
+                            fontSize: { md: 16, xs: 14 },
                             fontWeight: 600,
-                            verticalAlign: 'baseline',
+                            background: '#06a19b',
+                            color: '#fff',
+                            p: 1,
+                            borderRadius: '8px',
+                            whiteSpace: 'nowrap',
                           }}
                         >
-                          Fish Size <br />
-                          (g)
-                        </TableCell>
-
-                        {groupedData?.map((tableHead, mainIndex) => {
-                          return (
-                            <TableCell
-                              key={mainIndex}
-                              sx={{
-                                borderBottom: 0,
-                                color: '#67737F',
-                                background: '#F5F6F8',
-                                textAlign: 'center',
-                                pr: '4px',
-                              }}
-                            >
-                              <Typography
-                                variant="body1"
-                                sx={{
-                                  fontSize: {
-                                    md: 16,
-                                    xs: 14,
-                                  },
-                                  fontWeight: 600,
-                                  background: '#06a19b',
-                                  color: '#fff',
-                                  p: 1,
-                                  borderRadius: '8px',
-                                  whiteSpace: 'nowrap',
-                                }}
-                              >
-                                {tableHead?.supplier?.option}
-                              </Typography>
-                              <Box>
-                                <List
-                                  sx={{
-                                    display: 'flex',
-                                    flexDirection: 'row',
-                                    justifyContent: 'space-around',
-                                    alignItems: 'center',
-                                    gap: 2,
-                                  }}
+                          {group.supplier.option}
+                        </Typography>
+                        <Box>
+                          <List
+                            sx={{
+                              display: 'flex',
+                              flexDirection: 'row',
+                              justifyContent: 'space-between',
+                              alignItems: 'start',
+                              gap: 2,
+                            }}
+                          >
+                            {group.stores.map((store) => {
+                              const isSelectedForStore = fishSizes.some(size => {
+                                const rowName = `selection_${size}`;
+                                const selected: string[] = watch(rowName) || [];
+                                const colKey = `col${colIndex + 1}`;
+                                return selected.includes(`${colKey}_${store.id}`);
+                              });
+                              return (
+                                <ListItem
+                                  key={store.id}
+                                  disablePadding
+                                  sx={{ width: 'fit-content', flexDirection: "column" }}
                                 >
-                                  {tableHead?.stores?.map(
-                                    (store: FeedProduct, subIndex: number) => {
-                                      return (
-                                        <ListItem
-                                          key={subIndex}
-                                          disablePadding
-                                          sx={{
-                                            width: 'fit-content',
-                                          }}
-                                        >
-                                          <Typography
-                                            variant="body2"
-                                            fontWeight={500}
-                                            textAlign={'center'}
-                                            minWidth={100}
-                                          >
-                                            {store?.productName}
-                                            <br />
-                                            (1&gt;5)
-                                          </Typography>
-                                        </ListItem>
-                                      );
-                                    },
-                                  )}
-                                </List>
-                              </Box>
+                                  <Typography
+                                    variant="body2"
+                                    fontWeight={500}
+                                    textAlign={'center'}
+                                    minWidth={100}
+                                    minHeight={65}
+                                  >
+                                    {store.productName} ({store.minFishSizeG}-{store.maxFishSizeG})
+                                  </Typography>
+                                  <IconButton
+                                    size="small"
+                                    onClick={() => handleAutoSelect(store, group.supplier.id)}
+                                    sx={
+                                      isSelectedForStore
+                                        ? {
+                                          background: '#06A19B',
+                                          color: '#fff',
+                                          fontWeight: 600,
+                                          padding: '8px',
+                                          width: 'fit-content',
+                                          textTransform: 'capitalize',
+                                          borderRadius: '50px',
+                                          transform: 'scale(0.75)',
+                                          border: '1px solid #06A19B',
+                                          '&:hover': { background: '#06A19B', color: '#fff' },
+                                        }
+                                        : {
+                                          background: '#fff',
+                                          color: '#888',
+                                          fontWeight: 600,
+                                          padding: '8px',
+                                          width: 'fit-content',
+                                          textTransform: 'capitalize',
+                                          borderRadius: '50px',
+                                          border: '1px solid #d5d5d5',
+                                          transform: 'scale(0.75)',
+                                          '&:hover': { background: '#06A19B', color: '#fff' },
+                                        }
+                                    }
+                                  >
+                                    <DoneAll fontSize="small" />
+                                  </IconButton>
+                                </ListItem>
+                              );
+                            })}
+                          </List>
+                        </Box>
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {fishSizes.map((size) => {
+                    const rowName = `selection_${size}`;
+                    return (
+                      <TableRow key={size}>
+                        <TableCell style={{
+                          position: "sticky",
+                          left: 0,
+                          zIndex: 100,
+                          background: "#fff",
+                        }} sx={cellStyle}>{size}</TableCell>
+                        {groupedData.map((group, colIndex) => {
+                          const options = group.stores.map((_, i) => `opt${i + 1}`);
+                          return (
+                            <TableCell sx={cellStyle} key={group.supplier.id} className='farm-radio-btn'>
+                              {renderRadioGroup(rowName, `col${colIndex + 1}`, options)}
                             </TableCell>
                           );
                         })}
                       </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {fishSizes?.map((size) => {
-                        const rowName = `selection_${size}`;
-
-                        return (
-                          <TableRow key={size}>
-                            <TableCell sx={cellStyle}>{size}</TableCell>
-                            {groupedData?.map((group, index) => {
-                              const options = group.stores.map(
-                                (_: FeedProduct, i: number) => `opt${i + 1}`,
-                              );
-                              return (
-                                <TableCell
-                                  sx={cellStyle}
-                                  key={group.supplier.id}
-                                >
-                                  {renderRadioGroup(
-                                    rowName,
-                                    `col${index + 1}`,
-                                    options,
-                                  )}
-                                </TableCell>
-                              );
-                            })}
-                          </TableRow>
-                        );
-                      })}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-              </Paper>
-            </Stack>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </TableContainer>
           </Paper>
-
-          <Box
-            display={'flex'}
-            justifyContent={'flex-end'}
-            alignItems={'center'}
-            gap={3}
-            mt={4}
-          >
+          <Box display={'flex'} justifyContent={'flex-end'} alignItems={'center'} gap={3} mt={4}>
             <Button
               type="submit"
               variant="contained"

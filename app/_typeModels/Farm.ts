@@ -1,5 +1,19 @@
 import { Production } from './production';
+export interface FeedProfile {
+  storeId: string;
+  supplierId: number;
+  minFishSize: number;
+  maxFishSize: number;
+}
 
+export interface FeedProfileProductionUnit {
+  id: number;
+  createdAt: string;
+  updatedAt: string;
+  profiles: FeedProfile[];
+  productionUnitId: string;
+  feedProfileId: number;
+}
 export interface FarmInitialState {
   isLoading: boolean;
   farm: Farm;
@@ -239,7 +253,7 @@ export interface Farm {
     waterflowRate: string;
     farmId: string;
     YearBasedPredicationProductionUnit: ProductionParaMeterType[];
-    FeedProfileProductionUnit?: any[]; // Add proper type if needed
+    FeedProfileProductionUnit: FeedProfileProductionUnit[]; 
   }[];
 
   WaterQualityPredictedParameters: ProductionParaMeterType[];
@@ -257,3 +271,15 @@ export interface TableHeadType {
   disablePadding: boolean;
   label: string;
 }
+export interface productionUnits{
+    id: any;
+    name: string;
+    type: string;
+    productionSystem: string;
+    productionSystemId?: string;
+    capacity: string;
+    waterflowRate: string;
+    farmId: string;
+    YearBasedPredicationProductionUnit: ProductionParaMeterType[];
+    FeedProfileProductionUnit: FeedProfileProductionUnit[]; 
+  }

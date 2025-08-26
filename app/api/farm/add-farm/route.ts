@@ -184,19 +184,41 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // Create per-unit feed profiles
-    if (FeedProfileUnits && Array.isArray(FeedProfileUnits)) {
+    const feedProfileProductionUnitData = FeedProfileUnits.map(unitProfile => {
+      const matchedUnit = newProductUnits.find(unit => unit.name === unitProfile.unitName);
+      if (matchedUnit) {
+        return {
+          productionUnitId: matchedUnit.id,
+          feedProfileId: newFeedProfile.id,
+          profiles: unitProfile.feedProfile,
+        };
+      }
+      return null;
+    }).filter(Boolean);
+
+    if (feedProfileProductionUnitData.length > 0) {
       await prisma.feedProfileProductionUnit.createMany({
-        data: newProductUnits
-          .flatMap((unit) =>
-            (FeedProfileUnits)
-              .filter(profile => profile.unitName === unit.name)
-              .map(profile => ({
-                productionUnitId: unit.id,
-                profiles: profile.feedProfile,
-              }))
-          ),
+        data: feedProfileProductionUnitData as any,
       });
+    }
+
+
+    // If overrides provided, update them
+    if (FeedProfileUnits && Array.isArray(FeedProfileUnits)) {
+      for (const profile of FeedProfileUnits) {
+        const unit = newProductUnits.find(u => u.name === profile.unitName);
+        if (unit) {
+          await prisma.feedProfileProductionUnit.updateMany({
+            where: {
+              productionUnitId: unit.id,
+              feedProfileId: newFeedProfile.id,
+            },
+            data: {
+              profiles: profile.feedProfile,
+            },
+          });
+        }
+      }
     }
     if (body.supplierId && body.storeId) {
       const supplier = await prisma.feedSupply.findUnique({

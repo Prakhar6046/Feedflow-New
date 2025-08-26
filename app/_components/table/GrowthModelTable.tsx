@@ -387,7 +387,7 @@ export default function GrowthModelTable({
               <TableBody>
                 {sortedGrowthModels && sortedGrowthModels.length > 0 ? (
                   sortedGrowthModels.map((model: GrowthModel, i: number) => {
-                     console.log('Model:', model);
+                   
                     const speciesName =
                       featuredSpecies.find((s) => s.id === model.models.specieId)
                         ?.name || '';
