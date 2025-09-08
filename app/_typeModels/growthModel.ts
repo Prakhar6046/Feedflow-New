@@ -5,6 +5,7 @@ export interface OrganisationModelResponse {
   organisationId: number;
   modelId: number;
   isDefault: boolean;
+  useExistingModel: boolean;
   createdAt: string; // ISO Date
   updatedAt: string; // ISO Date
   models: Model;
@@ -16,6 +17,9 @@ export interface Model {
   name: string;
   specieId: string;
   productionSystemId: string;
+  cp: number;
+  nfe: number;
+  cf: number;
   adcCp: number;
   adcCf: number;
   adcNfe: number;

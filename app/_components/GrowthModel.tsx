@@ -19,7 +19,7 @@ import { getCookie } from 'cookies-next';
 import React, { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
-import { Farm} from '../_typeModels/Farm';
+import { Farm } from '../_typeModels/Farm';
 import Loader from './Loader';
 import { useRouter } from 'next/navigation';
 import { Species } from './feedSupply/NewFeedLibarary';
@@ -120,7 +120,7 @@ export const calculateDE = ({
   geCoeffCP,
   geCoeffCF,
   geCoeffNFE,
-  adcCP = 90, 
+  adcCP = 90,
   adcCF = 90,
   adcNFE = 60,
 }: {
@@ -130,7 +130,7 @@ export const calculateDE = ({
   geCoeffCP: number;
   geCoeffCF: number;
   geCoeffNFE: number;
-  adcCP?: number; 
+  adcCP?: number;
   adcCF?: number;
   adcNFE?: number;
 }) => {
@@ -160,7 +160,7 @@ function GrowthModel({
   modelId?: string | null;
 }) {
 
-console.log('modelData',modelData)
+  console.log('modelData', modelData)
   const loggedUser: any = getCookie('logged-user');
   const router = useRouter();
   const [speciesList, setSpeciesList] = useState<Species[]>([]);
@@ -169,39 +169,42 @@ console.log('modelData',modelData)
 
   const featuredProductionSystemList = productionSystemList?.filter((sp) => sp.isFeatured);
   // state to hold models
-const [growthModels, setGrowthModels] = useState<OrganisationModelResponse[]>([]);
- console.log('growthModelsgrowthModelsgrowthModels',growthModels)
-useEffect(() => {
-  const fetchGrowthModels = async () => {
-    let organisationId = 0;
+  const [growthModels, setGrowthModels] = useState<OrganisationModelResponse[]>([]);
+  console.log('growthModelsgrowthModelsgrowthModels', growthModels)
+  useEffect(() => {
+    const fetchGrowthModels = async () => {
+      let organisationId = 0;
 
-    if (loggedUser) {
+      if (loggedUser) {
+        try {
+          const user: SingleUser = JSON.parse(loggedUser);
+          organisationId = user.organisationId;
+        } catch (error) {
+          console.error("Error parsing user data:", error);
+        }
+      }
+
       try {
-        const user: SingleUser = JSON.parse(loggedUser);
-        organisationId = user.organisationId;
+        const apiUrl = `/api/growth-model?organisationId=${organisationId}`;
+        const response = await fetch(apiUrl, { cache: "no-store" });
+
+        if (response.ok) {
+          const data = await response.json();
+          setGrowthModels(data.data || []);
+        }
       } catch (error) {
-        console.error("Error parsing user data:", error);
+        console.error("Error fetching growth models:", error);
       }
-    }
+    };
 
-    try {
-      const apiUrl = `/api/growth-model?organisationId=${organisationId}`;
-      const response = await fetch(apiUrl, { cache: "no-store" });
-
-      if (response.ok) {
-        const data = await response.json();
-        setGrowthModels(data.data || []); // ✅ store in state
-      }
-    } catch (error) {
-      console.error("Error fetching growth models:", error);
-    }
-  };
-
-  fetchGrowthModels();
-}, [loggedUser]); // ✅ re-run if loggedUser changes
+    fetchGrowthModels();
+  }, [loggedUser]);
 
 
   const [setDefault, setSetDefault] = useState(false);
+  const [useExistingModel, setUseExistingModel] = useState(false);
+  const [showExistingModelCheckbox, setShowExistingModelCheckbox] = useState(false);
+  console.log('showExistingModelCheckboxshowExistingModelCheckbox', showExistingModelCheckbox)
   const token = getCookie('auth-token');
   const {
     register,
@@ -216,12 +219,12 @@ useEffect(() => {
       temperatureCoefficient: 'logarithmic',
       tFCRModel: 'linear',
       geCp: 23.6,
-      geCf:39.5,
-      geNfe:17.2,
-      adcCp:90,
-      adcCf:90,
-      adcNfe:60,
-      wasteFactor:3,
+      geCf: 39.5,
+      geNfe: 17.2,
+      adcCp: 90,
+      adcCf: 90,
+      adcNfe: 60,
+      wasteFactor: 3,
     },
   });
 
@@ -281,10 +284,15 @@ useEffect(() => {
 
   // Pre-fill form data when in edit mode
   useEffect(() => {
+
+    console.log('editModeeditModeeditMode', editMode, modelData)
     if (editMode && modelData) {
       setValue('name', modelData.models.name || '');
       setValue('specie', modelData.models.specieId || '');
       setValue('productionSystem', modelData.models.productionSystemId || '');
+      setValue('cp', modelData.models.cp || 0);
+      setValue('cf', modelData.models.cf || 0);
+      setValue('nfe', modelData.models.nfe || 0);
       setValue('adcCp', modelData.models.adcCp || 0);
       setValue('adcCf', modelData.models.adcCf || 0);
       setValue('adcNfe', modelData.models.adcNfe || 0);
@@ -313,33 +321,27 @@ useEffect(() => {
         setSetDefault(true);
         setCheckboxLabel("This is the default production system for this species");
       }
+      if (modelData.useExistingModel) {
+        setUseExistingModel(true);
+      }
     }
   }, [editMode, modelData, setValue]);
+  useEffect(() => {
+    if (species && productionSystem && growthModels.length > 0) {
+      console.log('Checking for duplicates...', growthModels);
+      const duplicate = growthModels.find(
+        (gm) =>
+          String(gm.models.specieId) === String(species) &&
+          String(gm.models.productionSystemId) === String(productionSystem)
+      );
+      console.log('Duplicate found:', duplicate);
+      console.log("Duplicate:", duplicate, "Edit mode:", editMode);
+      setShowExistingModelCheckbox(!!duplicate);
 
-  // useEffect(() => {
-  //   if (species && productionSystem && speciesList.length > 0) {
-  //     const currentSpecies = speciesList.find(sp => sp.id === species);
-
-  //     if (currentSpecies) {
-  //       if (currentSpecies.defaultProductionSystemId === productionSystem) {
-  //         setSetDefault(true);
-  //         setCheckboxLabel("This is already the default production system for the selected species");
-  //       } else if (currentSpecies.defaultProductionSystemId) {
-  //         const defaultSystem = productionSystemList.find(ps => ps.id === currentSpecies.defaultProductionSystemId);
-  //         setSetDefault(false);
-  //         setCheckboxLabel(
-  //           `Currently, the default production system for this species is "${defaultSystem?.name}". Do you want to set the selected system as default?`
-  //         );
-  //       } else {
-  //         setSetDefault(false);
-  //         setCheckboxLabel("Set as default production system for selected species");
-  //       }
-  //     }
-  //   } else {
-  //     setSetDefault(false);
-  //     setCheckboxLabel("Set as default production system for selected species");
-  //   }
-  // }, [species, productionSystem, speciesList, productionSystemList]);
+    } else {
+      setShowExistingModelCheckbox(false);
+    }
+  }, [species, productionSystem, growthModels, editMode]);
 
   useEffect(() => {
     // Set TGC defaults
@@ -355,18 +357,18 @@ useEffect(() => {
   }, [selectedModel, selectedFCRModel, setValue]);
 
   const onSubmit: SubmitHandler<InputType> = async (data) => {
-   const DE = calculateDE({
-  crudeProtein: data.cp,
-  crudeFatGPerKg: data.cf,
-  nfe: data.nfe,
-  geCoeffCP: data.geCp,
-  geCoeffCF: data.geCf,
-  geCoeffNFE: data.geNfe,
-  adcCP: data.adcCp,
-  adcCF: data.adcCf,
-  adcNFE: data.adcNfe,
-});
-    console.log('DEDEDEDEDE',DE)
+    const DE = calculateDE({
+      crudeProtein: data.cp,
+      crudeFatGPerKg: data.cf,
+      nfe: data.nfe,
+      geCoeffCP: data.geCp,
+      geCoeffCF: data.geCf,
+      geCoeffNFE: data.geNfe,
+      adcCP: data.adcCp,
+      adcCF: data.adcCf,
+      adcNFE: data.adcNfe,
+    });
+    console.log('DEDEDEDEDE', DE)
     const user = JSON.parse(loggedUser ?? '');
     if (user?.organisationId && data.name) {
       // Prevent API call if one is already in progress
@@ -382,10 +384,14 @@ useEffect(() => {
           ? {
             modelId: modelId,
             isDefault: setDefault,
+            useExistingModel: useExistingModel,
             model: {
               name: data.name,
               specie: data.specie,
               productionSystem: data.productionSystem,
+              cp: data.cp,
+              cf: data.cf,
+              nfe: data.nfe,
               adcCp: data.adcCp,
               adcCf: data.adcCf,
               adcNfe: data.adcNfe,
@@ -412,6 +418,9 @@ useEffect(() => {
               name: data.name,
               specie: data.specie,
               productionSystem: data.productionSystem,
+              cp: data.cp,
+              cf: data.cf,
+              nfe: data.nfe,
               adcCp: data.adcCp,
               adcCf: data.adcCf,
               adcNfe: data.adcNfe,
@@ -432,8 +441,10 @@ useEffect(() => {
               de: DE,
             },
             isDefault: setDefault,
+            useExistingModel: useExistingModel,
             organisationId: user.organisationId,
           };
+        console.log('bodybodybody', body)
         const response = await fetch(url, {
           method: method,
           headers: {
@@ -611,6 +622,7 @@ useEffect(() => {
                           setValue('productionSystem', e.target.value);
                           clearErrors('productionSystem');
                         }}
+
                       >
                         {featuredProductionSystemList && featuredProductionSystemList.length > 0 ? (
                           featuredProductionSystemList.map((sp) => (
@@ -652,6 +664,24 @@ useEffect(() => {
                 <FormHelperText>
                   Only available after selecting both a species and a production system.
                 </FormHelperText>
+                {showExistingModelCheckbox && (
+                  <Box sx={{ mt: 2 }}>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={useExistingModel}
+                          onChange={(e) => setUseExistingModel(e.target.checked)}
+                        />
+                      }
+                      label={
+                        editMode
+                          ? "Another model already exists for this species and production system. Tick if you want to use this model for addoc prediction."
+                          : "There is already a model for this species and production system. Tick if you want to use this model for addoc prediction."
+                      }
+                    />
+                  </Box>
+                )}
+
               </Box>
 
 
