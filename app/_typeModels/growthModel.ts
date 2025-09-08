@@ -33,6 +33,7 @@ export interface Model {
   tFCRa: number;
   tFCRb: number;
   tFCRc: number;
+  de:number;
   organisationId: number;
   createdBy: number;
   updatedBy: string | number;

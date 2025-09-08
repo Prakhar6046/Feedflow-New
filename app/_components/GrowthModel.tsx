@@ -19,11 +19,12 @@ import { getCookie } from 'cookies-next';
 import React, { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
-import { Farm } from '../_typeModels/Farm';
+import { Farm} from '../_typeModels/Farm';
 import Loader from './Loader';
 import { useRouter } from 'next/navigation';
 import { Species } from './feedSupply/NewFeedLibarary';
 import { OrganisationModelResponse } from '../_typeModels/growthModel';
+import { SingleUser } from '../_typeModels/User';
 export interface productionSystem {
   id: string;
   name: string;
@@ -36,6 +37,9 @@ interface InputType {
   name: string;
   specie: string;
   productionSystem: string;
+  cp: number;
+  cf: number;
+  nfe: number;
   adcCp: number;
   adcCf: number;
   adcNfe: number;
@@ -109,6 +113,41 @@ const tFCRFormulas: Record<
   },
 };
 
+export const calculateDE = ({
+  crudeProtein,
+  crudeFatGPerKg,
+  nfe,
+  geCoeffCP,
+  geCoeffCF,
+  geCoeffNFE,
+  adcCP = 90, 
+  adcCF = 90,
+  adcNFE = 60,
+}: {
+  crudeProtein: number;
+  crudeFatGPerKg: number;
+  nfe: number;
+  geCoeffCP: number;
+  geCoeffCF: number;
+  geCoeffNFE: number;
+  adcCP?: number; 
+  adcCF?: number;
+  adcNFE?: number;
+}) => {
+  // Step 1: Digestible values
+  const digCP = (crudeProtein / 10) * adcCP;
+  const digCF = (crudeFatGPerKg / 10) * adcCF;
+  const digNFE = (nfe / 10) * adcNFE;
+
+  // Step 2: DE contributions
+  const deCP = (digCP * geCoeffCP) / 10000;
+  const deCF = (digCF * geCoeffCF) / 10000;
+  const deNFE = (digNFE * geCoeffNFE) / 10000;
+
+  // Step 3: Total DE
+  return deCP + deCF + deNFE;
+};
+
 function GrowthModel({
   farms,
   editMode = false,
@@ -121,14 +160,47 @@ function GrowthModel({
   modelId?: string | null;
 }) {
 
+console.log('modelData',modelData)
   const loggedUser: any = getCookie('logged-user');
   const router = useRouter();
   const [speciesList, setSpeciesList] = useState<Species[]>([]);
   const featuredSpecies = speciesList?.filter((sp) => sp.isFeatured);
   const [productionSystemList, setProductionSystemList] = useState<productionSystem[]>([]);
-  
+
   const featuredProductionSystemList = productionSystemList?.filter((sp) => sp.isFeatured);
- 
+  // state to hold models
+const [growthModels, setGrowthModels] = useState<OrganisationModelResponse[]>([]);
+ console.log('growthModelsgrowthModelsgrowthModels',growthModels)
+useEffect(() => {
+  const fetchGrowthModels = async () => {
+    let organisationId = 0;
+
+    if (loggedUser) {
+      try {
+        const user: SingleUser = JSON.parse(loggedUser);
+        organisationId = user.organisationId;
+      } catch (error) {
+        console.error("Error parsing user data:", error);
+      }
+    }
+
+    try {
+      const apiUrl = `/api/growth-model?organisationId=${organisationId}`;
+      const response = await fetch(apiUrl, { cache: "no-store" });
+
+      if (response.ok) {
+        const data = await response.json();
+        setGrowthModels(data.data || []); // ✅ store in state
+      }
+    } catch (error) {
+      console.error("Error fetching growth models:", error);
+    }
+  };
+
+  fetchGrowthModels();
+}, [loggedUser]); // ✅ re-run if loggedUser changes
+
+
   const [setDefault, setSetDefault] = useState(false);
   const token = getCookie('auth-token');
   const {
@@ -143,6 +215,13 @@ function GrowthModel({
     defaultValues: {
       temperatureCoefficient: 'logarithmic',
       tFCRModel: 'linear',
+      geCp: 23.6,
+      geCf:39.5,
+      geNfe:17.2,
+      adcCp:90,
+      adcCf:90,
+      adcNfe:60,
+      wasteFactor:3,
     },
   });
 
@@ -274,8 +353,20 @@ function GrowthModel({
       setValue(key as keyof InputType, val as any),
     );
   }, [selectedModel, selectedFCRModel, setValue]);
- 
+
   const onSubmit: SubmitHandler<InputType> = async (data) => {
+   const DE = calculateDE({
+  crudeProtein: data.cp,
+  crudeFatGPerKg: data.cf,
+  nfe: data.nfe,
+  geCoeffCP: data.geCp,
+  geCoeffCF: data.geCf,
+  geCoeffNFE: data.geNfe,
+  adcCP: data.adcCp,
+  adcCF: data.adcCf,
+  adcNFE: data.adcNfe,
+});
+    console.log('DEDEDEDEDE',DE)
     const user = JSON.parse(loggedUser ?? '');
     if (user?.organisationId && data.name) {
       // Prevent API call if one is already in progress
@@ -312,6 +403,7 @@ function GrowthModel({
               tFCRa: data.tFCRa,
               tFCRb: data.tFCRb,
               tFCRc: data.tFCRc,
+              de: DE,
             },
             organisationId: user.organisationId,
           }
@@ -337,6 +429,7 @@ function GrowthModel({
               tFCRa: data.tFCRa,
               tFCRb: data.tFCRb,
               tFCRc: data.tFCRc,
+              de: DE,
             },
             isDefault: setDefault,
             organisationId: user.organisationId,
@@ -583,6 +676,108 @@ function GrowthModel({
                   General
                 </Typography>
                 <Grid container spacing={2}>
+                  <Grid item md={4} xs={12}>
+                    <Box position={'relative'}>
+                      <TextField
+                        label="CP*"
+                        type="number"
+                        className="form-input"
+                        focused
+                        inputProps={{ step: 'any' }}
+                        sx={{
+                          width: '100%',
+                        }}
+                        error={!!errors.adcCp}
+                        {...register('cp', numericValidation)}
+                      />
+                      <Typography
+                        variant="body1"
+                        color="#555555AC"
+                        sx={{
+                          position: 'absolute',
+                          right: 13,
+                          top: '30%',
+                          backgroundColor: 'white',
+                          paddingInline: '5px',
+                        }}
+                      >
+                        %
+                      </Typography>
+                      {errors.cp && (
+                        <FormHelperText error>
+                          {errors.cp.message}
+                        </FormHelperText>
+                      )}
+                    </Box>
+                  </Grid>
+                  <Grid item md={4} xs={12}>
+                    <Box position={'relative'}>
+                      <TextField
+                        label="CF*"
+                        type="number"
+                        className="form-input"
+                        focused
+                        inputProps={{ step: 'any' }}
+                        sx={{
+                          width: '100%',
+                        }}
+                        error={!!errors.adcCp}
+                        {...register('cf', numericValidation)}
+                      />
+                      <Typography
+                        variant="body1"
+                        color="#555555AC"
+                        sx={{
+                          position: 'absolute',
+                          right: 13,
+                          top: '30%',
+                          backgroundColor: 'white',
+                          paddingInline: '5px',
+                        }}
+                      >
+                        %
+                      </Typography>
+                      {errors.cf && (
+                        <FormHelperText error>
+                          {errors.cf.message}
+                        </FormHelperText>
+                      )}
+                    </Box>
+                  </Grid>
+                  <Grid item md={4} xs={12}>
+                    <Box position={'relative'}>
+                      <TextField
+                        label="NFE*"
+                        type="number"
+                        className="form-input"
+                        focused
+                        inputProps={{ step: 'any' }}
+                        sx={{
+                          width: '100%',
+                        }}
+                        error={!!errors.adcCp}
+                        {...register('nfe', numericValidation)}
+                      />
+                      <Typography
+                        variant="body1"
+                        color="#555555AC"
+                        sx={{
+                          position: 'absolute',
+                          right: 13,
+                          top: '30%',
+                          backgroundColor: 'white',
+                          paddingInline: '5px',
+                        }}
+                      >
+                        %
+                      </Typography>
+                      {errors.nfe && (
+                        <FormHelperText error>
+                          {errors.nfe.message}
+                        </FormHelperText>
+                      )}
+                    </Box>
+                  </Grid>
                   <Grid item md={4} xs={12}>
                     <Box position={'relative'}>
                       <TextField

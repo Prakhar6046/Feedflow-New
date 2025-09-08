@@ -7,6 +7,45 @@ interface ContextParams {
     organisationId: string;
   };
 }
+export const DELETE = async (_request: NextRequest, context: ContextParams) => {
+  const organisationId = context.params.organisationId;
+
+  if (!organisationId) {
+    return new NextResponse(JSON.stringify({ message: 'Invalid or missing organisationId' }), {
+      status: 400,
+    });
+  }
+
+  try {
+    // Delete organisation and cascade related tables if necessary
+    await prisma.$transaction([
+      prisma.contact.deleteMany({ where: { organisationId: Number(organisationId) } }),
+      prisma.user.deleteMany({ where: { organisationId: Number(organisationId) } }),
+      prisma.hatchery.deleteMany({ where: { organisationId: Number(organisationId) } }),
+      prisma.farm.deleteMany({ where: { organisationId: Number(organisationId) } }),
+      prisma.feedSupply.deleteMany({ where: { organisationId: Number(organisationId) } }),
+      prisma.model.deleteMany({ where: { organisationId: Number(organisationId) } }),
+      prisma.growthModel.deleteMany({ where: { organisationId: Number(organisationId) } }),
+      prisma.organisation.delete({ where: { id: Number(organisationId) } }),
+    ]);
+
+    return new NextResponse(
+      JSON.stringify({ status: true, message: 'Organisation and related records deleted successfully' }),
+      { status: 200 }
+    );
+  } catch (error) {
+    let errorMessage = 'Unknown error';
+    if (error && typeof error === 'object' && 'message' in error) {
+      errorMessage = (error as any).message;
+    } else {
+      errorMessage = String(error);
+    }
+
+    return new NextResponse(JSON.stringify({ status: false, error: errorMessage }), {
+      status: 500,
+    });
+  }
+};
 export const GET = async (_request: NextRequest, context: ContextParams) => {
   const organisationId = context.params.organisationId;
 
@@ -42,6 +81,7 @@ export const GET = async (_request: NextRequest, context: ContextParams) => {
     });
   }
 };
+
 
 export async function PUT(req: NextRequest, context: ContextParams) {
   try {

@@ -37,6 +37,7 @@ interface Props {
   permisions: boolean;
 }
 export default function FarmTable({ farms, permisions }: Props) {
+  console.log('farmsfarms',farms)
   const router = useRouter();
   const pathName = usePathname();
   const dispatch = useAppDispatch();

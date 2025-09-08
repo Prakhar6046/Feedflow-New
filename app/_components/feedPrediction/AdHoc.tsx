@@ -767,7 +767,7 @@ const selectedProductionSystem = watch('productionSystem');
                       slotProps={{
                         textField: { focused: true },
                       }}
-                      value={field.value ? dayjs(field.value) : null} // Ensure correct rendering
+                      value={field.value ? dayjs(field.value) : null} 
                       maxDate={dayjs(watch('endDate'))}
                     />
 

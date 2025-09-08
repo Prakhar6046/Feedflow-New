@@ -114,16 +114,31 @@ const NewFeedLibarary: NextPage<Props> = ({ feedSuppliers, speciesList }) => {
     watch,
     setValue,
     formState: { errors },
-  } = useForm<FeedFormFields>({ mode: 'onChange' });
+  } = useForm<FeedFormFields>({
+    mode: 'onChange',
+    defaultValues: {
+      geCoeffCP: 23.6,
+      geCoeffCF: 39.5,
+      geCoeffNFE: 17.2,
+      ge: 16.75,
+      digCP:3600,
+      digCF: 450,
+      digNFE: 2108,
+      deCP: 8.50,
+      deCF: 1.78,
+      deNFE: 3.63,
+      de: 0,
+    },
+  });
 
-  const moistureGPerKg = watch("moistureGPerKg") || 0;
-  const crudeProtein = watch("crudeProteinGPerKg") || 0;
-  const crudeFatGPerKg = watch("crudeFatGPerKg") || 0;
-  const crudeFiber = watch("crudeFiberGPerKg") || 0;
-  const crudeAsh = watch("crudeAshGPerKg") || 0;
-  const nfe = watch("nfe") || 0;
-  const phosphorus = watch("phosphorusGPerKg") || 0;
-  const calcium = watch("calciumGPerKg") || 0;
+  const moistureGPerKg = watch("moistureGPerKg") || 120;
+  const crudeProtein = watch("crudeProteinGPerKg") || 400;
+  const crudeFatGPerKg = watch("crudeFatGPerKg") || 50;
+  const crudeFiber = watch("crudeFiberGPerKg") || 40;
+  const crudeAsh = watch("crudeAshGPerKg") || 80;
+  const nfe = watch("nfe") || 310;
+  const phosphorus = watch("phosphorusGPerKg") || 7;
+  const calcium = watch("calciumGPerKg") ||30;
   const carbohydratesGPerKg = watch("carbohydratesGPerKg") || 0;
   const geCoeffCP = watch("geCoeffCP") || 0;
   const geCoeffCF = watch("geCoeffCF") || 0;

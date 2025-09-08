@@ -60,6 +60,7 @@ interface GrowthModel {
     tFCRa: number;
     tFCRb: number;
     tFCRc: number;
+    de:number;
     createdAt: string;
     updatedAt: string;
   };
