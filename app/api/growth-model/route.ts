@@ -4,7 +4,7 @@ import prisma from '@/prisma/prisma';
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { model, organisationId, isDefault } = body;
+    const { model, organisationId, isDefault, useExistingModel } = body;
 
     if (!organisationId) {
       return NextResponse.json(
@@ -19,6 +19,9 @@ export async function POST(request: NextRequest) {
         name: model.name,
         specieId: model.specie,
         productionSystemId: model.productionSystem,
+        cp: parseFloat(model.cp) || 0,
+        cf: parseFloat(model.cf) || 0,
+        nfe: parseFloat(model.nfe) || 0,
         adcCp: parseFloat(model.adcCp) || 0,
         adcCf: parseFloat(model.adcCf) || 0,
         adcNfe: parseFloat(model.adcNfe) || 0,
@@ -70,6 +73,7 @@ export async function POST(request: NextRequest) {
         organisationId: parseInt(organisationId),
         modelId: createdModel.id,
         isDefault: !!isDefault,
+        useExistingModel: !!useExistingModel,
       },
       include: {
         models: true,
@@ -199,7 +203,7 @@ export async function GET(request: NextRequest) {
 export async function PUT(request: NextRequest) {
   try {
     const body = await request.json();
-    const { model, organisationId, modelId, isDefault } = body;
+    const { model, organisationId, modelId, isDefault, useExistingModel } = body;
 
     if (!modelId) {
       return NextResponse.json(
@@ -234,7 +238,7 @@ export async function PUT(request: NextRequest) {
           models: {
             specieId: model.specie,
           },
-          NOT: { id: parseInt(modelId) }, 
+          NOT: { id: parseInt(modelId) },
         },
       });
 
@@ -250,10 +254,31 @@ export async function PUT(request: NextRequest) {
       }
     }
 
+    if (useExistingModel) {
+      const updatedGrowthModel = await prisma.growthModel.update({
+        where: { id: parseInt(modelId) },
+        data: {
+          isDefault: !!isDefault,
+          useExistingModel: !!useExistingModel,
+        },
+        include: {
+          models: true,
+          organisation: true,
+        },
+      });
+
+      return NextResponse.json({ data: updatedGrowthModel });
+    }
+
+    // ✅ Case 2: Update GrowthModel + underlying Model
     const updatedGrowthModel = await prisma.growthModel.update({
       where: { id: parseInt(modelId) },
-      data: { isDefault },
+      data: {
+        isDefault: !!isDefault,
+        useExistingModel: !!useExistingModel,
+      },
     });
+
 
 
     const updatedModel = await prisma.model.update({
@@ -262,6 +287,9 @@ export async function PUT(request: NextRequest) {
         name: model.name,
         specieId: model.specie,
         productionSystemId: model.productionSystem,
+        cp: parseFloat(model.cp) || 0,
+        cf: parseFloat(model.cf) || 0,
+        nfe: parseFloat(model.nfe) || 0,
         adcCp: parseFloat(model.adcCp) || 0,
         adcCf: parseFloat(model.adcCf) || 0,
         adcNfe: parseFloat(model.adcNfe) || 0,
@@ -288,7 +316,7 @@ export async function PUT(request: NextRequest) {
       },
     });
 
-    return NextResponse.json({ data: updatedModel });
+    return NextResponse.json({ data: updatedGrowthModel, updatedModel});
   } catch (error) {
     console.error('Error updating growth model:', error);
     return NextResponse.json(

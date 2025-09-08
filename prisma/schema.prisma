@@ -543,7 +543,7 @@ model Model {
   geCf               Float?
   geNfe              Float?
   wasteFactor        Float?
-
+  
   temperatureCoefficient String?
   tgcA                   Float?
   tgcB                   Float?
@@ -573,6 +573,7 @@ model GrowthModel {
   modelId        Int
   models         Model         @relation(fields: [modelId], references: [id])
   isDefault      Boolean       @default(false)
+  useExistingModel Boolean       @default(false)
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
 
