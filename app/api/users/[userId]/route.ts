@@ -3,6 +3,46 @@ import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 import { verifyAndRefreshToken } from '@/app/_lib/auth/verifyAndRefreshToken';
 
+
+interface ContextParams {
+  params: {
+    userId: string;
+  };
+}
+
+export const DELETE = async (_request: NextRequest, context: ContextParams) => {
+  const userId = context.params.userId;
+
+  if (!userId) {
+    return new NextResponse(JSON.stringify({ message: 'Invalid or missing userId' }), {
+      status: 400,
+    });
+  }
+
+  try {
+    await prisma.$transaction([
+      prisma.contact.deleteMany({ where: { userId: Number(userId) } }),
+      prisma.farmManger.deleteMany({ where: { userId: Number(userId) } }),
+      prisma.user.delete({ where: { id: Number(userId) } }),
+    ]);
+
+    return new NextResponse(
+      JSON.stringify({ status: true, message: 'User and related records deleted successfully' }),
+      { status: 200 }
+    );
+  } catch (error) {
+    let errorMessage = 'Unknown error';
+    if (error && typeof error === 'object' && 'message' in error) {
+      errorMessage = (error as any).message;
+    } else {
+      errorMessage = String(error);
+    }
+
+    return new NextResponse(JSON.stringify({ status: false, error: errorMessage }), {
+      status: 500,
+    });
+  }
+};
 export const GET = async (request: NextRequest, context: { params: any }) => {
   const user = await verifyAndRefreshToken(request);
   if (user.status === 401) {
