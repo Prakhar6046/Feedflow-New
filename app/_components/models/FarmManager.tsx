@@ -87,6 +87,7 @@ const TransferModal: React.FC<Props> = ({
   batches,
   productions,
 }) => {
+
   const searchParams = useSearchParams();
   const isFish = searchParams.get('isFish');
   const router = useRouter();

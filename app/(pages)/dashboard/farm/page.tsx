@@ -14,6 +14,7 @@ export default async function Page({
     query?: string;
   };
 }) {
+  
   const query = searchParams?.query || '';
   const cookieStore = cookies();
   const loggedUser = cookieStore.get('logged-user')?.value;

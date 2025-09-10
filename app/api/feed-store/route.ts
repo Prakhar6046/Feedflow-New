@@ -199,3 +199,53 @@ export async function POST(request: NextRequest) {
     );
   }
 }
+export async function DELETE(request: NextRequest) {
+  try {
+    const user = await verifyAndRefreshToken(request);
+    if (user.status === 401) {
+      return new NextResponse(
+        JSON.stringify({ status: false, message: 'Unauthorized' }),
+        { status: 401 },
+      );
+    }
+
+    const body = await request.json();
+    const { id, ids } = body;
+
+    // Normalize into an array of IDs
+    const deleteIds: string[] = [];
+    if (id) deleteIds.push(id);
+    if (Array.isArray(ids)) deleteIds.push(...ids);
+
+    if (deleteIds.length === 0) {
+      return new NextResponse(
+        JSON.stringify({
+          status: false,
+          message: 'FeedStore ID(s) are required',
+        }),
+        { status: 400 },
+      );
+    }
+
+    await prisma.feedStore.deleteMany({
+      where: { id: { in: deleteIds } },
+    });
+
+    return new NextResponse(
+      JSON.stringify({
+        status: true,
+        message: `Deleted ${deleteIds.length} FeedStore(s) successfully`,
+      }),
+      { status: 200 },
+    );
+  } catch (error: any) {
+    console.error('Error deleting FeedStore:', error);
+    return new NextResponse(
+      JSON.stringify({
+        status: false,
+        message: error.message || 'Something went wrong',
+      }),
+      { status: 500 },
+    );
+  }
+}
