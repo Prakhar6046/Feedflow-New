@@ -14,6 +14,8 @@ import {
   MenuItem,
   TextField,
   Button,
+  FormControlLabel,
+  Checkbox,
 } from '@mui/material';
 import { useForm, Controller, useWatch } from 'react-hook-form';
 import { useEffect, useMemo, useState } from 'react';
@@ -28,10 +30,13 @@ interface Props {
 }
 
 export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
+
   const { control, handleSubmit, reset, setValue } = useForm();
   const [speciesList, setSpeciesList] = useState<Species[]>([]);
   const featuredSpecies = speciesList?.filter((sp) => sp.isFeatured);
   const [isSaving, setIsSaving] = useState(false);
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [isDeleting, setIsDeleting] = useState(false);
   const token = getCookie('auth-token');
   const router = useRouter();
   const excludedKeys = [
@@ -48,7 +53,7 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
       },
     });
     setSpeciesList(await res.json());
@@ -81,11 +86,13 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
       });
     }
   }, [filteredStores]);
-   const watchedValues = useWatch({ control });
+  const watchedValues = useWatch({ control });
   const calculatedValues = useMemo(() => {
     if (!filteredStores || filteredStores.length === 0) return {};
 
-    const C55 = 90, C56 = 90, C58 = 60;
+    const C55 = 90,
+      C56 = 90,
+      C58 = 60;
     const values: Record<string, any> = {};
 
     filteredStores.forEach((_, i) => {
@@ -95,13 +102,14 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
       const cfiber = Number(watchedValues[`crudeFiberGPerKg-${i}`]) || 0;
       const cash = Number(watchedValues[`crudeAshGPerKg-${i}`]) || 0;
       const nfe = Number(watchedValues[`nfe-${i}`]) || 0;
-      
+
       const geCP = Number(watchedValues[`geCoeffCP-${i}`]) || 0;
       const geCF = Number(watchedValues[`geCoeffCF-${i}`]) || 0;
       const geNFE = Number(watchedValues[`geCoeffNFE-${i}`]) || 0;
 
-      const carbohydrates = (1000 - moisture) - (cp + cfat + cfiber + cash);
-      const calculateGE = (cp * geCP / 10 + cfat * geCF / 10 + nfe * geNFE / 10) / 100;
+      const carbohydrates = 1000 - moisture - (cp + cfat + cfiber + cash);
+      const calculateGE =
+        ((cp * geCP) / 10 + (cfat * geCF) / 10 + (nfe * geNFE) / 10) / 100;
       const calculateDigCP = (cp / 10) * C55;
       const calculateDigCF = (cfat / 10) * C56;
       const calculateDigNFE = (nfe / 10) * C58;
@@ -149,10 +157,15 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
       supplierIds: suppliersArray[index]?.supplierIds || [],
     }));
   }
+  const handleSelect = (id: string, checked: boolean) => {
+    setSelectedIds((prev) =>
+      checked ? [...prev, id] : prev.filter((item) => item !== id),
+    );
+  };
 
   const onSubmit = async (data: any) => {
     setIsSaving(true);
-    debugger
+    debugger;
     const payload = transformFeedProductsWithSuppliers(data);
     const updatedPayload = payload.map((feed) => {
       const { ProductSupplier, supplierIds, ...rest } = feed;
@@ -182,8 +195,7 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
       }
     } catch (error) {
       toast.error('Something went wrong. Please try again.');
-    }
-    finally {
+    } finally {
       setIsSaving(false);
     }
   };
@@ -200,10 +212,63 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
     'deNFE',
     'de',
   ];
+  const handleDelete = async () => {
+  if (selectedIds.length === 0) {
+    toast.error('Please select at least one feed to delete');
+    return;
+  }
+   setIsDeleting(true);
+
+  try {
+    const response = await fetch('/api/feed-store', {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body:
+        selectedIds.length === 1
+          ? JSON.stringify({ id: selectedIds[0] })   
+          : JSON.stringify({ ids: selectedIds }), 
+    });
+
+    const res = await response.json();
+    if (response.ok) {
+      toast.success(res.message);
+      setSelectedIds([]);   
+      router.refresh();     
+    } else {
+      toast.error(res.message || 'Failed to delete feed(s)');
+    }
+  } catch (error) {
+    toast.error('Something went wrong. Please try again.');
+  }finally {
+    setIsDeleting(false);
+  }
+
+};
+
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 1 }}>
+    <form onSubmit={handleSubmit(onSubmit)} className="bg-red-600">
+      <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 1, gap: 2 }}>
+        <Button
+          variant="contained"
+           onClick={handleDelete}
+           disabled={isDeleting}
+          sx={{
+            color: '#fff',
+            background: '#a10606ff',
+            fontWeight: 600,
+            padding: '6px 16px',
+            width: 'fit-content',
+            textTransform: 'capitalize',
+            borderRadius: '8px',
+            border: '1px solid #a10606ff',
+          }}
+        >
+           {isDeleting ? 'Deleting...' : 'Delete'}
+        </Button>
         <Button
           type="submit"
           variant="contained"
@@ -225,7 +290,7 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
 
       <TableContainer
         component={Paper}
-        sx={{ height: '550px', overflow: 'auto' }}
+        sx={{ height: 'calc(100vh - 262px)', overflow: 'auto' }}
       >
         <Table>
           <TableHead
@@ -236,6 +301,91 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
               zIndex: 12,
             }}
           >
+            <TableRow>
+              {/* Static Field Column Title */}
+              <TableCell
+                sx={{
+                  fontWeight: 500,
+                  background: '#FAFAFA',
+                  fontSize: 13,
+                  py: 1.2,
+                  px: 0,
+                }}
+              >
+                <Typography
+                  sx={{
+                    fontWeight: 500,
+                    background: '#FAFAFA',
+                    fontSize: 13,
+                    // py: 0.75,
+                    px: 2,
+                  }}
+                >
+                  Action
+                </Typography>
+              </TableCell>
+
+              {/* Dynamic Store Columns */}
+
+              {filteredStores.map((store: any, i: number) => (
+                <TableCell
+                  key={i}
+                  sx={{
+                    borderBottom: 0,
+                    p: 0,
+                    background: '#FAFAFA',
+                  }}
+                >
+                  <Box
+                    sx={{
+                      p: 2,
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        border: '1px solid #0000003f',
+                        px: 2,
+                        borderRadius: 1,
+                      }}
+                    >
+                      <FormControlLabel
+                        sx={{ minWidth: '100%' }}
+                        control={
+                          <Checkbox
+                            size="small"
+                            checked={selectedIds.includes(store.id)}
+                            onChange={(e) =>
+                              handleSelect(store.id, e.target.checked)
+                            }
+                          />
+                        }
+                        label="Select"
+                      />
+                    </Box>
+                  </Box>
+
+                  <Divider
+                    sx={{ borderBottomWidth: 1, transform: 'translateY(1px)' }}
+                  />
+
+                  {/* <Controller
+                    name={`suppliers[${i}].brandName`}
+                    control={control}
+                    defaultValue={store.brandName || ""}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        size="small"
+                        variant="outlined"
+                        fullWidth
+                        sx={{ fontSize: 13, px: 2 }}
+                      />
+                    )}
+                  /> */}
+                </TableCell>
+              ))}
+            </TableRow>
+
             <TableRow>
               {/* Static Field Column Title */}
               <TableCell
@@ -386,7 +536,7 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
                 </TableCell>
               ))}
             </TableRow>
-           {remainingRows.map((key) => (
+            {remainingRows.map((key) => (
               <TableRow key={key}>
                 <TableCell>{key}</TableCell>
                 {filteredStores.map((_: any, colIndex: number) => (
@@ -402,9 +552,13 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
                             size="small"
                             fullWidth
                             disabled={isCalculated}
-                            value={isCalculated ? calculatedValues[`${key}-${colIndex}`] : field.value}
+                            value={
+                              isCalculated
+                                ? calculatedValues[`${key}-${colIndex}`]
+                                : field.value
+                            }
                           />
-                        )
+                        );
                       }}
                     />
                   </TableCell>
