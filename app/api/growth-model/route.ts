@@ -4,8 +4,7 @@ import prisma from '@/prisma/prisma';
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { model, organisationId, isDefault, useExistingModel } = body;
-
+    const { model, organisationId, isDefault, useExistingModel, selectedFarms } = body;
     if (!organisationId) {
       return NextResponse.json(
         { error: 'Organisation ID is required' },
@@ -67,17 +66,22 @@ export async function POST(request: NextRequest) {
       }
     }
 
-
     const growthModel = await prisma.growthModel.create({
       data: {
         organisationId: parseInt(organisationId),
         modelId: createdModel.id,
         isDefault: !!isDefault,
         useExistingModel: !!useExistingModel,
+        selectedFarms: selectedFarms
+          ? {
+            create: selectedFarms.map((farmId: string) => ({ farmId })),
+          }
+          : undefined,
       },
       include: {
         models: true,
         organisation: true,
+        selectedFarms: { include: { farm: true } },
       },
     });
 
@@ -187,6 +191,7 @@ export async function GET(request: NextRequest) {
       include: {
         models: true,
         organisation: true,
+        selectedFarms: { include: { farm: true } },
       },
       orderBy: { createdAt: 'desc' },
     });
@@ -203,8 +208,8 @@ export async function GET(request: NextRequest) {
 export async function PUT(request: NextRequest) {
   try {
     const body = await request.json();
-    const { model, organisationId, modelId, isDefault, useExistingModel } = body;
-
+    const { model, organisationId, modelId, isDefault, useExistingModel,selectedFarms } = body;
+     console.log('selectedFarms',selectedFarms)
     if (!modelId) {
       return NextResponse.json(
         { error: 'Model ID is required' },
@@ -253,7 +258,15 @@ export async function PUT(request: NextRequest) {
         );
       }
     }
-
+    if (selectedFarms) {
+      await prisma.growthModelFarm.deleteMany({ where: { growthModelId: parseInt(modelId) } });
+      await prisma.growthModelFarm.createMany({
+        data: selectedFarms.map((farmId: string) => ({
+          growthModelId: parseInt(modelId),
+          farmId,
+        })),
+      });
+    }
     if (useExistingModel) {
       const updatedGrowthModel = await prisma.growthModel.update({
         where: { id: parseInt(modelId) },
@@ -316,7 +329,7 @@ export async function PUT(request: NextRequest) {
       },
     });
 
-    return NextResponse.json({ data: updatedGrowthModel, updatedModel});
+    return NextResponse.json({ data: updatedGrowthModel, updatedModel });
   } catch (error) {
     console.error('Error updating growth model:', error);
     return NextResponse.json(

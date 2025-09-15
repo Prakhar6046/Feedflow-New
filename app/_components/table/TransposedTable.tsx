@@ -30,8 +30,6 @@ interface Props {
 }
 
 export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
-  console.log('filteredStores', filteredStores)
-  console.log('feedSuppliers', feedSuppliers)
   const { control, handleSubmit, reset, setValue } = useForm();
   const [speciesList, setSpeciesList] = useState<Species[]>([]);
   const featuredSpecies = speciesList?.filter((sp) => sp.isFeatured);
@@ -171,7 +169,6 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
 
   const onSubmit = async (data: any) => {
     setIsSaving(true);
-    debugger;
     const payload = transformFeedProductsWithSuppliers(data);
     const updatedPayload = payload.map((feed) => {
       const { ProductSupplier, supplierIds, ...rest } = feed;
@@ -497,7 +494,7 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
 
             {firstRows.map((key) => (
               <TableRow key={key}>
-                <TableCell sx={{ background: '#FAFAFA' }}>{key}</TableCell>
+                <TableCell sx={{ background: '#FAFAFA' }}>{formatLabel(key)}</TableCell>
                 {filteredStores.map((_: any, colIndex: number) => (
                   <TableCell key={colIndex} sx={{ background: '#FAFAFA' }}>
                     <Controller

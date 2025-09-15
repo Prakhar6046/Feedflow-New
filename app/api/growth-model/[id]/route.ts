@@ -13,9 +13,8 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    // Fetch single growth model with all related data
-    const growthModel = await prisma.growthModel.findUnique({
-      where: { id: parseInt(modelId) },
+    const growthModel = await prisma.growthModel.findFirst({
+      where: { id: Number(modelId) },
       include: {
         models: {
           include: {
@@ -25,8 +24,15 @@ export async function GET(request: NextRequest) {
           },
         },
         organisation: true,
+        selectedFarms: {
+          include: { farm: true },
+        },
       },
     })
+
+
+
+    console.log(JSON.stringify(growthModel, null, 2))
 
     if (!growthModel) {
       return NextResponse.json(
@@ -35,7 +41,13 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    return NextResponse.json({ data: growthModel })
+    return NextResponse.json({
+      data: {
+        ...growthModel,
+        selectedFarms: growthModel.selectedFarms ?? [],
+      },
+    })
+
   } catch (error) {
     console.error('Error fetching single growth model:', error)
     return NextResponse.json(

@@ -172,6 +172,54 @@ export interface FeedProfile {
     selection_180: string;
   };
 }
+export type FishSupplyData = {
+  id: number;
+  batchNumber: string;
+  organisation: number;
+  hatchingDate: string;
+  spawningDate: string;
+  spawningNumber: number;
+  age: string;
+  broodstockMale: string;
+  broodstockFemale: string;
+  fishFarmId: string;
+  status: string;
+  productionUnits: string;
+  speciesId: string;
+  createdBy: number | null;
+  updatedBy: number | null;
+  createdAt: string;
+  updatedAt: string;
+  organisationId: number;
+  farmMangerId: number | null;
+};
+
+export type FishManageHistoryItem = {
+  id: number;
+  fishFarmId: string;
+  productionUnitId: string;
+  biomass: string;
+  fishCount: string;
+  batchNumberId: number;
+  currentDate: string | null;
+  age: string;
+  meanLength: string;
+  meanWeight: string;
+  stockingDensityKG: string;
+  stockingDensityNM: string;
+  stockingLevel: string | null;
+  createdBy: number | null;
+  updatedBy: number | null;
+  createdAt: string;
+  updatedAt: string;
+  organisationId: number | null;
+  field: string;
+  productionId: number;
+  fishSupplyId: number | null;
+  FishSupply: any | null; // keep nullable as in your data
+  speciesId: string | null;
+  fishSupplyData: FishSupplyData | null;
+};
 
 export interface FarmAddress {
   id: string;
@@ -227,7 +275,7 @@ export interface Farm {
   farmAltitude: string;
   lat: string;
   lng: string;
-
+  FishManageHistory : FishManageHistoryItem[];
   // Address Info
   addressLine1: string;
   addressLine2: string;

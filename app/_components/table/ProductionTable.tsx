@@ -53,6 +53,7 @@ import AddFeedFed from '../models/AddFeedFed';
 import Test from '../models/Test';
 import WaterQualityParameter from '../models/WaterQualityParameter';
 import ProductionManagerFilter from '../ProductionManagerFilter';
+import { Co2Sharp } from '@mui/icons-material';
 
 interface Props {
   productions: Production[];
@@ -106,6 +107,7 @@ export default function ProductionTable({
   );
 
   const [productionData, setProductionData] = useState<FarmGroup[]>();
+  console.log('productionData',productionData)
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('Farm');
   const [sortDataFromLocal, setSortDataFromLocal] = React.useState<any>('');
@@ -1285,6 +1287,7 @@ export default function ProductionTable({
             />
             <TableBody>
               {productionData && productionData?.length > 0 ? (
+         
                 productionData?.map((farm: FarmGroup, i: number) => {
                   return (
                     <TableRow

@@ -10,6 +10,7 @@ export interface OrganisationModelResponse {
   updatedAt: string; // ISO Date
   models: Model;
   organisation: Organisation;
+  selectedFarms:any;
 }
 type CoefficientModel = 'logarithmic' | 'polynomial' | 'quadratic';
 export interface Model {
