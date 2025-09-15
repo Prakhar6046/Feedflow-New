@@ -30,7 +30,8 @@ interface Props {
 }
 
 export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
-
+  console.log('filteredStores', filteredStores)
+  console.log('feedSuppliers', feedSuppliers)
   const { control, handleSubmit, reset, setValue } = useForm();
   const [speciesList, setSpeciesList] = useState<Species[]>([]);
   const featuredSpecies = speciesList?.filter((sp) => sp.isFeatured);
@@ -46,6 +47,7 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
     'organaisationId',
     'ProductSupplier',
     'speciesId',
+    'species'
   ];
 
   const fetchData = async () => {
@@ -55,7 +57,7 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`,
       },
-    });
+    }); 9 + 9 + 6
     setSpeciesList(await res.json());
   };
 
@@ -134,8 +136,12 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
   if (!filteredStores || filteredStores.length === 0) return null;
 
   const keys = Object.keys(filteredStores[0]).filter(
-    (key) => !excludedKeys.includes(key),
+    (key) =>
+      !excludedKeys.includes(key) &&
+      key !== 'feedIngredients' &&
+      key !== 'feedingGuide'
   );
+
   function transformFeedProductsWithSuppliers(flatData: Record<string, any>) {
     const result: any[] = [];
     const suppliersArray = flatData.suppliers || [];
@@ -213,49 +219,55 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
     'de',
   ];
   const handleDelete = async () => {
-  if (selectedIds.length === 0) {
-    toast.error('Please select at least one feed to delete');
-    return;
-  }
-   setIsDeleting(true);
-
-  try {
-    const response = await fetch('/api/feed-store', {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-      body:
-        selectedIds.length === 1
-          ? JSON.stringify({ id: selectedIds[0] })   
-          : JSON.stringify({ ids: selectedIds }), 
-    });
-
-    const res = await response.json();
-    if (response.ok) {
-      toast.success(res.message);
-      setSelectedIds([]);   
-      router.refresh();     
-    } else {
-      toast.error(res.message || 'Failed to delete feed(s)');
+    if (selectedIds.length === 0) {
+      toast.error('Please select at least one feed to delete');
+      return;
     }
-  } catch (error) {
-    toast.error('Something went wrong. Please try again.');
-  }finally {
-    setIsDeleting(false);
+    setIsDeleting(true);
+
+    try {
+      const response = await fetch('/api/feed-store', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body:
+          selectedIds.length === 1
+            ? JSON.stringify({ id: selectedIds[0] })
+            : JSON.stringify({ ids: selectedIds }),
+      });
+
+      const res = await response.json();
+      if (response.ok) {
+        toast.success(res.message);
+        setSelectedIds([]);
+        router.refresh();
+      } else {
+        toast.error(res.message || 'Failed to delete feed(s)');
+      }
+    } catch (error) {
+      toast.error('Something went wrong. Please try again.');
+    } finally {
+      setIsDeleting(false);
+    }
+
+  };
+
+  function formatLabel(key: string) {
+    return key
+      .replace(/([a-z])([A-Z])/g, "$1 $2")
+      .replace(/_/g, " ")
+      .replace(/\b\w/g, (char) => char.toUpperCase());
   }
-
-};
-
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="bg-red-600">
       <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 1, gap: 2 }}>
         <Button
           variant="contained"
-           onClick={handleDelete}
-           disabled={isDeleting}
+          onClick={handleDelete}
+          disabled={isDeleting}
           sx={{
             color: '#fff',
             background: '#a10606ff',
@@ -267,7 +279,7 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
             border: '1px solid #a10606ff',
           }}
         >
-           {isDeleting ? 'Deleting...' : 'Delete'}
+          {isDeleting ? 'Deleting...' : 'Delete'}
         </Button>
         <Button
           type="submit"
@@ -538,7 +550,7 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
             </TableRow>
             {remainingRows.map((key) => (
               <TableRow key={key}>
-                <TableCell>{key}</TableCell>
+                <TableCell>{formatLabel(key)}</TableCell>
                 {filteredStores.map((_: any, colIndex: number) => (
                   <TableCell key={colIndex}>
                     <Controller
@@ -565,6 +577,58 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
                 ))}
               </TableRow>
             ))}
+            <TableRow>
+              <TableCell>{formatLabel("feedIngredients")}</TableCell>
+              {filteredStores.map((_: any, colIndex: number) => (
+                <TableCell key={colIndex}>
+                  <Controller
+                    name={`feedIngredients-${colIndex}`}
+                    control={control}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        multiline
+                        focused
+                        minRows={4}
+                        maxRows={8}
+                        sx={{
+                          "& textarea": {
+                            resize: "none",
+                          },
+                        }}
+                        fullWidth
+                      />
+                    )}
+                  />
+                </TableCell>
+              ))}
+            </TableRow>
+            <TableRow>
+              <TableCell >{formatLabel("feedingGuide")}</TableCell>
+              {filteredStores.map((_: any, colIndex: number) => (
+                <TableCell key={colIndex} >
+                  <Controller
+                    name={`feedingGuide-${colIndex}`}
+                    control={control}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        multiline
+                        focused
+                        minRows={4}
+                        maxRows={8}
+                        sx={{
+                          "& textarea": {
+                            resize: "none",
+                          },
+                        }}
+                        fullWidth
+                      />
+                    )}
+                  />
+                </TableCell>
+              ))}
+            </TableRow>
           </TableBody>
         </Table>
       </TableContainer>

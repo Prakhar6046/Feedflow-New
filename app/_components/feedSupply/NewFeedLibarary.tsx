@@ -47,7 +47,6 @@ const fields = [
   { name: 'lifeStage', label: 'Life Stage *', type: 'text' },
   { name: 'shelfLifeMonths', label: 'Shelf Life (months) *', type: 'number' },
   { name: 'feedCost', label: 'Feed Cost *', type: 'number' },
-  { name: 'feedIngredients', label: 'Feed Ingredients *', type: 'text' },
   { name: 'moistureGPerKg', label: 'Moisture (g/kg) *', type: 'number' },
   {
     name: 'crudeProteinGPerKg',
@@ -70,7 +69,6 @@ const fields = [
     label: 'Metabolizable Energy *',
     type: 'number',
   },
-  { name: 'feedingGuide', label: 'Feeding Guide *', type: 'text' },
   { name: 'geCoeffCP', label: 'GE Coeff CP *', type: 'number' },
   { name: 'geCoeffCF', label: 'GE Coeff CF *', type: 'number' },
   { name: 'geCoeffNFE', label: 'GE Coeff NFE *', type: 'number' },
@@ -82,6 +80,10 @@ const fields = [
   { name: 'deCF', label: 'DE CF *', type: 'number' },
   { name: 'deNFE', label: 'DE NFE *', type: 'number' },
   { name: 'de', label: 'DE *', type: 'number' },
+  { name: 'empty', label: 'empty *', type: 'empty' },
+
+  { name: 'feedIngredients', label: 'Feed Ingredients *', type: 'text' },
+  { name: 'feedingGuide', label: 'Feeding Guide *', type: 'text' },
 ];
 export interface Species {
   id: string;
@@ -101,7 +103,7 @@ type FeedFormFields = {
   [key: string]: string | number;
 };
 const NewFeedLibarary: NextPage<Props> = ({ feedSuppliers, speciesList }) => {
-  
+
   const featuredSpecies = speciesList?.filter((sp) => sp.isFeatured);
   const router = useRouter();
   const loggedUser: any = getCookie('logged-user');
@@ -122,7 +124,7 @@ const NewFeedLibarary: NextPage<Props> = ({ feedSuppliers, speciesList }) => {
       geCoeffCF: 39.5,
       geCoeffNFE: 17.2,
       ge: 16.75,
-      digCP:3600,
+      digCP: 3600,
       digCF: 450,
       digNFE: 2108,
       deCP: 8.50,
@@ -139,7 +141,7 @@ const NewFeedLibarary: NextPage<Props> = ({ feedSuppliers, speciesList }) => {
   const crudeAsh = watch("crudeAshGPerKg") || 80;
   const nfe = watch("nfe") || 310;
   const phosphorus = watch("phosphorusGPerKg") || 7;
-  const calcium = watch("calciumGPerKg") ||30;
+  const calcium = watch("calciumGPerKg") || 30;
   const carbohydratesGPerKg = watch("carbohydratesGPerKg") || 0;
   const geCoeffCP = watch("geCoeffCP") || 0;
   const geCoeffCF = watch("geCoeffCF") || 0;
@@ -392,6 +394,28 @@ const NewFeedLibarary: NextPage<Props> = ({ feedSuppliers, speciesList }) => {
                                     )}
                                   />
                                 </FormControl>
+
+                              ) : field.name === 'empty' ? (
+                                <Box sx={{ visibility: "hidden" }}>
+                                  <TextField fullWidth disabled />
+                                </Box>
+                              ) : field.name === 'feedIngredients' || field.name === 'feedingGuide' ? (
+                                <TextField
+                                  label={field.label}
+                                  multiline
+                                  fullWidth
+                                  focused
+                                  {...register(field.name, { required: true })}
+                                  error={!!errors[field.name]}
+                                  minRows={4}
+                                  maxRows={8}
+                                  sx={{
+                                    "& textarea": {
+                                      resize: "none",
+                                    },
+                                  }}
+                                />
+
                               ) : (
                                 <TextField
                                   label={field.label}
@@ -405,7 +429,6 @@ const NewFeedLibarary: NextPage<Props> = ({ feedSuppliers, speciesList }) => {
                                   error={!!errors[field.name]}
                                 />
                               )}
-
             {errors[field.name]?.type === 'required' && (
               <Typography fontSize={13} color="red">
                 {validationMessage.required}

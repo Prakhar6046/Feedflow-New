@@ -160,6 +160,7 @@ function GrowthModel({
   modelId?: string | null;
 }) {
 
+  console.log('modelData', modelData)
   const loggedUser: any = getCookie('logged-user');
   const router = useRouter();
   const [speciesList, setSpeciesList] = useState<Species[]>([]);
@@ -168,11 +169,13 @@ function GrowthModel({
   const [allFarms, setAllFarms] = useState<Farm[]>([]);
   const [filteredFarms, setFilteredFarms] = useState<Farm[]>([]);
   const [selectedFarms, setSelectedFarms] = useState<string[]>([]);
-
+   console.log('allFarmsallFarms', allFarms)
+   console.log('filteredFarmsfilteredFarms', filteredFarms)
+   console.log('selectedFarmsselectedFarms', selectedFarms)
   const featuredProductionSystemList = productionSystemList?.filter((sp) => sp.isFeatured);
   // state to hold models
   const [growthModels, setGrowthModels] = useState<OrganisationModelResponse[]>([]);
-
+  console.log('growthModelsgrowthModelsgrowthModels', growthModels)
 
   useEffect(() => {
     const fetchFarms = async () => {
@@ -180,6 +183,7 @@ function GrowthModel({
         const res = await fetch("/api/farm/farms", { cache: "no-store" });
         if (!res.ok) throw new Error("Failed to fetch farms");
         const data = await res.json();
+        console.log('=============', data)
         setAllFarms(data.data || []);
       } catch (error) {
         console.error("Error fetching farms:", error);
@@ -235,6 +239,7 @@ function GrowthModel({
   const [setDefault, setSetDefault] = useState(false);
   const [useExistingModel, setUseExistingModel] = useState(false);
   const [showExistingModelCheckbox, setShowExistingModelCheckbox] = useState(false);
+  console.log('showExistingModelCheckboxshowExistingModelCheckbox', showExistingModelCheckbox)
   const token = getCookie('auth-token');
   const {
     register,
@@ -315,6 +320,7 @@ function GrowthModel({
   // Pre-fill form data when in edit mode
   useEffect(() => {
 
+    console.log('editModeeditModeeditMode', editMode, modelData)
     if (editMode && modelData) {
       setValue('name', modelData.models.name || '');
       setValue('specie', modelData.models.specieId || '');
@@ -357,13 +363,14 @@ function GrowthModel({
   }, [editMode, modelData, setValue]);
   useEffect(() => {
     if (species && productionSystem && growthModels.length > 0) {
-
+      console.log('Checking for duplicates...', growthModels);
       const duplicate = growthModels.find(
         (gm) =>
           String(gm.models.specieId) === String(species) &&
           String(gm.models.productionSystemId) === String(productionSystem)
       );
-
+      console.log('Duplicate found:', duplicate);
+      console.log("Duplicate:", duplicate, "Edit mode:", editMode);
       setShowExistingModelCheckbox(!!duplicate);
 
     } else {
