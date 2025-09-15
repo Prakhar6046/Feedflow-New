@@ -8,9 +8,11 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import * as validationPattern from '@/app/_lib/utils/validationPatterns/index';
 import * as validationMessage from '@/app/_lib/utils/validationsMessage/index';
+import { Species } from '../feedSupply/NewFeedLibarary';
+import { getCookie } from 'cookies-next';
 interface Props {
   altitude: string;
   register: any;
@@ -32,7 +34,23 @@ function HatcheryForm({
       setValue('hatcheryAltitude', String(Number(altitude).toFixed(2)));
     }
   }, [altitude]);
+  const token = getCookie('auth-token');
+  const [speciesList, setSpeciesList] = useState<Species[]>([]);
+  const featuredSpecies = speciesList?.filter((sp) => sp.isFeatured);
+  const fetchData = async () => {
+    const res = await fetch('/api/species', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    }); 9 + 9 + 6
+    setSpeciesList(await res.json());
+  };
 
+  useEffect(() => {
+    fetchData();
+  }, []);
   return (
     <Box width={'100%'}>
       <TextField
@@ -49,8 +67,8 @@ function HatcheryForm({
           mt: 2,
         }}
         focused
-        // focused={true}
-        // value={userData?.data.email ?? "Demo@gmail.com"}
+      // focused={true}
+      // value={userData?.data.email ?? "Demo@gmail.com"}
       />
       {errors &&
         errors.hatcheryName &&
@@ -80,8 +98,8 @@ function HatcheryForm({
           mt: 2,
         }}
         focused
-        // focused={true}
-        // value={userData?.data.email ?? "Demo@gmail.com"}
+      // focused={true}
+      // value={userData?.data.email ?? "Demo@gmail.com"}
       />
       {errors &&
         errors.hatcheryCode &&
@@ -113,8 +131,8 @@ function HatcheryForm({
             mt: 2,
           }}
           focused
-          // focused={watch("hatcheryAltitude") ? true : false}
-          // value={userData?.data.email ?? "Demo@gmail.com"}
+        // focused={watch("hatcheryAltitude") ? true : false}
+        // value={userData?.data.email ?? "Demo@gmail.com"}
         />
         <Typography
           variant="body2"
@@ -181,13 +199,18 @@ function HatcheryForm({
             trigger('fishSpecie');
           }}
         >
-          {species.map((specie, i) => {
-            return (
-              <MenuItem value={specie} key={i}>
-                {specie}
+          <MenuItem value="">
+            <em>Select Species</em>
+          </MenuItem>
+          {featuredSpecies && featuredSpecies.length > 0 ? (
+            featuredSpecies.map((species) => (
+              <MenuItem key={species.id} value={species.id}>
+                {species.name}
               </MenuItem>
-            );
-          })}
+            ))
+          ) : (
+            <MenuItem disabled>No species available</MenuItem>
+          )}
         </Select>
         {errors &&
           errors.fishSpecie &&

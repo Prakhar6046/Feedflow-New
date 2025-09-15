@@ -172,6 +172,7 @@ model Farm {
   WaterQualityPredictedParameters WaterQualityPredictedParameters[]
   FishSupply                      FishSupply[]
   FeedProfile                     FeedProfile[]
+  GrowthModelFarm                 GrowthModelFarm[]
 
   @@index([createdAt])
   @@index([updatedAt])
@@ -205,14 +206,14 @@ model FeedProfileLink {
 }
 
 model FeedProfileProductionUnit {
-  id               Int            @id @default(autoincrement())
-  createdAt        DateTime       @default(now())
-  updatedAt        DateTime       @updatedAt
+  id               Int             @id @default(autoincrement())
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
   profiles         Json?
   productionUnitId String?
   ProductionUnit   ProductionUnit? @relation(fields: [productionUnitId], references: [id])
   feedProfileId    Int?
-  feedProfile      FeedProfile?   @relation(fields: [feedProfileId], references: [id])
+  feedProfile      FeedProfile?    @relation(fields: [feedProfileId], references: [id])
 
   @@index([createdAt])
   @@index([updatedAt])
@@ -533,7 +534,7 @@ model Model {
   specie             Species?          @relation(fields: [specieId], references: [id])
   productionSystemId String?
   productionSystem   ProductionSystem? @relation(fields: [productionSystemId], references: [id])
-  cp                   Float?
+  cp                 Float?
   cf                 Float?
   nfe                Float?
   adcCp              Float?
@@ -543,7 +544,7 @@ model Model {
   geCf               Float?
   geNfe              Float?
   wasteFactor        Float?
-  
+
   temperatureCoefficient String?
   tgcA                   Float?
   tgcB                   Float?
@@ -556,29 +557,41 @@ model Model {
   tFCRc                  Float?
   de                     Float?
   // Metadata
-  organisationId       Int?
-  organisation         Organisation?          @relation(fields: [organisationId], references: [id])
-  createdBy            Int?
-  updatedBy            String?
-  createdAt            DateTime               @default(now())
-  updatedAt            DateTime               @updatedAt
-  GrowthModel          GrowthModel[]
-  YearBasedPredication YearBasedPredication[]
+  organisationId         Int?
+  organisation           Organisation?          @relation(fields: [organisationId], references: [id])
+  createdBy              Int?
+  updatedBy              String?
+  createdAt              DateTime               @default(now())
+  updatedAt              DateTime               @updatedAt
+  GrowthModel            GrowthModel[]
+  YearBasedPredication   YearBasedPredication[]
 }
 
 model GrowthModel {
-  id             Int           @id @default(autoincrement())
-  organisationId Int?
-  organisation   Organisation? @relation(fields: [organisationId], references: [id])
-  modelId        Int
-  models         Model         @relation(fields: [modelId], references: [id])
-  isDefault      Boolean       @default(false)
-  useExistingModel Boolean       @default(false)
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime      @updatedAt
+  id               Int               @id @default(autoincrement())
+  organisationId   Int?
+  organisation     Organisation?     @relation(fields: [organisationId], references: [id])
+  modelId          Int
+  models           Model             @relation(fields: [modelId], references: [id])
+  isDefault        Boolean           @default(false)
+  useExistingModel Boolean           @default(false)
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  selectedFarms    GrowthModelFarm[]
 
   @@index([createdAt])
   @@index([updatedAt])
+}
+
+model GrowthModelFarm {
+  id            Int         @id @default(autoincrement())
+  growthModel   GrowthModel @relation(fields: [growthModelId], references: [id])
+  growthModelId Int
+  farmId        String
+  farm          Farm        @relation(fields: [farmId], references: [id])
+
+  @@index([growthModelId])
+  @@index([farmId])
 }
 
 // model ProductSupplier {

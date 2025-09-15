@@ -85,6 +85,7 @@ export default function GrowthModelTable({
   growthModels,
   permisions,
 }: Props) {
+  console.log(growthModels);
   const router = useRouter();
   const dispatch = useAppDispatch();
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(

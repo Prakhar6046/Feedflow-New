@@ -32,7 +32,7 @@ export default async function EditGrowthModelPage({
 }) {
   const modelId = params.modelId;
   const modelData = await getModelData(modelId);
-
+  console.log('++++++',modelData)
   if (!modelData) {
     return (
       <div>

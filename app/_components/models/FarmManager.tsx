@@ -87,9 +87,6 @@ const TransferModal: React.FC<Props> = ({
   batches,
   productions,
 }) => {
-  console.log('selectedProductionselectedProduction', selectedProduction);
-  console.log('farmsfarmsfarms', farms);
-  console.log('batchesbatchesbatches', batches);
   const searchParams = useSearchParams();
   const isFish = searchParams.get('isFish');
   const router = useRouter();
@@ -116,7 +113,6 @@ const TransferModal: React.FC<Props> = ({
   const [selectedMeanLengthId, setSelectedMeanLengthId] = useState<string>('');
   const [isApiCallInProgress, setIsApiCallInProgress] =
     useState<boolean>(false);
-    console.log('isApiCallInProgressisApiCallInProgress', isApiCallInProgress);
   const [currentInput, setCurrentInput] = useState('');
   const {
     register,
@@ -160,7 +156,7 @@ const TransferModal: React.FC<Props> = ({
   });
   const watchedFields = watch('manager');
   const onSubmit: SubmitHandler<InputTypes> = async (data) => {
-    debugger;
+
     // Prevent API call if one is already in progress
     if (isApiCallInProgress) return;
     setIsApiCallInProgress(true);
@@ -220,7 +216,7 @@ const TransferModal: React.FC<Props> = ({
           organisationId: selectedProduction.organisationId,
           data: addStockField,
         };
-        console.log('payloadpayloadpayload', payload);
+
         const token = getCookie('auth-token');
         const response = await fetch('/api/production/mange', {
           method: 'POST',
@@ -2044,7 +2040,7 @@ const TransferModal: React.FC<Props> = ({
                 className=""
                 type="submit"
                 variant="contained"
-                disabled={watchedFields.length <= 1 ? true : false}
+                disabled={watchedFields.length <= 1 ? true : false || isApiCallInProgress}
                 sx={{
                   background: '#06A19B',
                   fontWeight: 'bold',

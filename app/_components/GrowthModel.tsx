@@ -159,8 +159,7 @@ function GrowthModel({
   modelData?: OrganisationModelResponse;
   modelId?: string | null;
 }) {
-
-  console.log('modelData', modelData)
+  console.log('modelData',modelData)
   const loggedUser: any = getCookie('logged-user');
   const router = useRouter();
   const [speciesList, setSpeciesList] = useState<Species[]>([]);
@@ -169,21 +168,36 @@ function GrowthModel({
   const [allFarms, setAllFarms] = useState<Farm[]>([]);
   const [filteredFarms, setFilteredFarms] = useState<Farm[]>([]);
   const [selectedFarms, setSelectedFarms] = useState<string[]>([]);
-   console.log('allFarmsallFarms', allFarms)
-   console.log('filteredFarmsfilteredFarms', filteredFarms)
-   console.log('selectedFarmsselectedFarms', selectedFarms)
+  const [availableFarms, setAvailableFarms] = useState<Farm[]>([]);
+  const [selectedFarmsForModel, setSelectedFarmsForModel] = useState<string[]>([]);
+
+  const summaryData = allFarms.flatMap((farm) =>
+    (farm.FishManageHistory || []).map((history) => {
+
+      const speciesId = history.fishSupplyData?.speciesId || null;
+
+      const productionUnit = (farm.productionUnits || []).find(
+        (pu) => pu.id === history.productionUnitId
+      );
+
+      return {
+        productionUnitId: history.productionUnitId,
+        productionSystemId: productionUnit?.productionSystemId || null,
+        speciesIds: speciesId ? [speciesId] : [],
+      };
+    })
+  );
   const featuredProductionSystemList = productionSystemList?.filter((sp) => sp.isFeatured);
   // state to hold models
   const [growthModels, setGrowthModels] = useState<OrganisationModelResponse[]>([]);
-  console.log('growthModelsgrowthModelsgrowthModels', growthModels)
-
+ 
   useEffect(() => {
     const fetchFarms = async () => {
       try {
         const res = await fetch("/api/farm/farms", { cache: "no-store" });
         if (!res.ok) throw new Error("Failed to fetch farms");
         const data = await res.json();
-        console.log('=============', data)
+
         setAllFarms(data.data || []);
       } catch (error) {
         console.error("Error fetching farms:", error);
@@ -239,7 +253,7 @@ function GrowthModel({
   const [setDefault, setSetDefault] = useState(false);
   const [useExistingModel, setUseExistingModel] = useState(false);
   const [showExistingModelCheckbox, setShowExistingModelCheckbox] = useState(false);
-  console.log('showExistingModelCheckboxshowExistingModelCheckbox', showExistingModelCheckbox)
+
   const token = getCookie('auth-token');
   const {
     register,
@@ -319,8 +333,6 @@ function GrowthModel({
 
   // Pre-fill form data when in edit mode
   useEffect(() => {
-
-    console.log('editModeeditModeeditMode', editMode, modelData)
     if (editMode && modelData) {
       setValue('name', modelData.models.name || '');
       setValue('specie', modelData.models.specieId || '');
@@ -363,14 +375,11 @@ function GrowthModel({
   }, [editMode, modelData, setValue]);
   useEffect(() => {
     if (species && productionSystem && growthModels.length > 0) {
-      console.log('Checking for duplicates...', growthModels);
       const duplicate = growthModels.find(
         (gm) =>
           String(gm.models.specieId) === String(species) &&
           String(gm.models.productionSystemId) === String(productionSystem)
       );
-      console.log('Duplicate found:', duplicate);
-      console.log("Duplicate:", duplicate, "Edit mode:", editMode);
       setShowExistingModelCheckbox(!!duplicate);
 
     } else {
@@ -403,7 +412,7 @@ function GrowthModel({
       adcCF: data.adcCf,
       adcNFE: data.adcNfe,
     });
-    console.log('DEDEDEDEDE', DE)
+
     const user = JSON.parse(loggedUser ?? '');
     if (user?.organisationId && data.name) {
       // Prevent API call if one is already in progress
@@ -420,6 +429,7 @@ function GrowthModel({
             modelId: modelId,
             isDefault: setDefault,
             useExistingModel: useExistingModel,
+            selectedFarms: selectedFarmsForModel,
             model: {
               name: data.name,
               specie: data.specie,
@@ -477,9 +487,10 @@ function GrowthModel({
             },
             isDefault: setDefault,
             useExistingModel: useExistingModel,
+            selectedFarms: selectedFarmsForModel,
             organisationId: user.organisationId,
           };
-        console.log('bodybodybody', body)
+         console.log('body',body)
         const response = await fetch(url, {
           method: method,
           headers: {
@@ -535,6 +546,22 @@ function GrowthModel({
       toast.error('Please fill in all required fields.');
     }
   };
+
+  useEffect(() => {
+    if (species && allFarms.length > 0) {
+      const filtered = allFarms.filter((farm) =>
+        (farm.FishManageHistory || []).some(
+          (history) => history.fishSupplyData?.speciesId === species
+        )
+      );
+      setAvailableFarms(filtered);
+      setSelectedFarmsForModel([]);
+    } else {
+      setAvailableFarms([]);
+      setSelectedFarmsForModel([]);
+    }
+  }, [species, allFarms]);
+
   return (
     <>
       {loading ? (
@@ -682,6 +709,41 @@ function GrowthModel({
                       {errors.specie ? 'This field is required.' : ''}
                     </Typography>
                   </Grid>
+                  {availableFarms.length > 0 && (
+                    <Grid item md={4} xs={12}>
+                      <FormControl fullWidth className="form-input" focused>
+                        <InputLabel id="farm-multi-select-label">Select Farms *</InputLabel>
+                        <Select
+                          labelId="farm-multi-select-label"
+                          label="Select Farms *"
+                          multiple
+                          value={selectedFarmsForModel}
+                          onChange={(e) => {
+                            const value = typeof e.target.value === 'string' ? e.target.value.split(',') : e.target.value;
+                            setSelectedFarmsForModel(value as string[]);
+                          }}
+                          renderValue={(selected) =>
+                            selected
+                              .map((id) => availableFarms.find((f) => f.id === id)?.name)
+                              .join(', ')
+                          }
+                        >
+                          {availableFarms.map((farm) => (
+                            <MenuItem key={farm.id} value={farm.id}>
+                              <Checkbox checked={selectedFarmsForModel.includes(farm.id)} />
+                              <Typography>{farm.name}</Typography>
+                            </MenuItem>
+                          ))}
+                        </Select>
+                        {selectedFarmsForModel.length === 0 && (
+                          <FormHelperText sx={{ color: '#d32f2f' }}>
+                            Please select at least one farm
+                          </FormHelperText>
+                        )}
+                      </FormControl>
+                    </Grid>
+                  )}
+
                 </Grid>
               </Box>
               <Box sx={{ mt: 2 }}>

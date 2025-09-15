@@ -17,13 +17,7 @@ export const GET = async () => {
         production: true,
         FishManageHistory: {
           include: {
-            FishSupply: {
-              include: {
-                species: true,          // include species info
-                FarmManger: true,       // include farm manager
-                organisationData: true, // include organisation reference
-              },
-            },
+            FishSupply: true, 
           },
         },
         WaterQualityPredictedParameters: {
@@ -33,7 +27,32 @@ export const GET = async () => {
       orderBy: { createdAt: 'desc' },
     });
 
-    return NextResponse.json({ status: true, data: farms }, { status: 200 });
+    const enrichedFarms = await Promise.all(
+      farms.map(async (farm) => {
+        const enrichedHistory = await Promise.all(
+          farm.FishManageHistory.map(async (history) => {
+            if (!history.batchNumberId) return history;
+
+            const fishSupply = await prisma.fishSupply.findFirst({
+              where: { id: history.batchNumberId },
+            });
+
+            return {
+              ...history,
+              speciesId: fishSupply?.speciesId ?? null,
+              fishSupplyData: fishSupply ?? null,
+            };
+          })
+        );
+
+        return {
+          ...farm,
+          FishManageHistory: enrichedHistory,
+        };
+      })
+    );
+
+    return NextResponse.json({ status: true, data: enrichedFarms }, { status: 200 });
   } catch (error) {
     console.error('[FARM_LIST_ERROR]', error);
     return NextResponse.json(
