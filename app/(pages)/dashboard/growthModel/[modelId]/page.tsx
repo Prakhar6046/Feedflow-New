@@ -8,22 +8,17 @@ export const metadata: Metadata = {
 };
 
 async function getModelData(modelId: string) {
-  try {
-    const response = await fetch(
-      `${process.env.BASE_URL}/api/growth-model?id=${modelId}`,
-      { cache: 'no-store' }
-    );
+  const response = await fetch(`${process.env.BASE_URL}/api/growth-model/${modelId}`, {
+    cache: 'no-store',
+  });
 
-    if (response.ok) {
-      const data = await response.json();
-      return data.data;
-    }
-    return null;
-  } catch (error) {
-    console.error('Error fetching model data:', error);
-    return null;
+  if (response.ok) {
+    const data = await response.json();
+    return data.data;
   }
+  return null;
 }
+
 
 export default async function EditGrowthModelPage({
   params,
@@ -32,7 +27,7 @@ export default async function EditGrowthModelPage({
 }) {
   const modelId = params.modelId;
   const modelData = await getModelData(modelId);
-  console.log('++++++',modelData)
+  console.log('++++++', modelData)
   if (!modelData) {
     return (
       <div>

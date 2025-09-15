@@ -159,7 +159,7 @@ function GrowthModel({
   modelData?: OrganisationModelResponse;
   modelId?: string | null;
 }) {
-  console.log('modelData',modelData)
+  console.log('modelData', modelData)
   const loggedUser: any = getCookie('logged-user');
   const router = useRouter();
   const [speciesList, setSpeciesList] = useState<Species[]>([]);
@@ -170,7 +170,7 @@ function GrowthModel({
   const [selectedFarms, setSelectedFarms] = useState<string[]>([]);
   const [availableFarms, setAvailableFarms] = useState<Farm[]>([]);
   const [selectedFarmsForModel, setSelectedFarmsForModel] = useState<string[]>([]);
-
+  console.log('selectedFarmsForModel', selectedFarmsForModel)
   const summaryData = allFarms.flatMap((farm) =>
     (farm.FishManageHistory || []).map((history) => {
 
@@ -187,10 +187,12 @@ function GrowthModel({
       };
     })
   );
+
+
   const featuredProductionSystemList = productionSystemList?.filter((sp) => sp.isFeatured);
   // state to hold models
   const [growthModels, setGrowthModels] = useState<OrganisationModelResponse[]>([]);
- 
+
   useEffect(() => {
     const fetchFarms = async () => {
       try {
@@ -490,7 +492,7 @@ function GrowthModel({
             selectedFarms: selectedFarmsForModel,
             organisationId: user.organisationId,
           };
-         console.log('body',body)
+        console.log('body', body)
         const response = await fetch(url, {
           method: method,
           headers: {
@@ -548,6 +550,14 @@ function GrowthModel({
   };
 
   useEffect(() => {
+    if (editMode && modelData?.selectedFarms) {
+      const farmIds = modelData.selectedFarms.map(f => f.farm.id);
+      setSelectedFarmsForModel(farmIds);
+    }
+  }, [editMode, modelData]);
+
+
+  useEffect(() => {
     if (species && allFarms.length > 0) {
       const filtered = allFarms.filter((farm) =>
         (farm.FishManageHistory || []).some(
@@ -555,12 +565,17 @@ function GrowthModel({
         )
       );
       setAvailableFarms(filtered);
-      setSelectedFarmsForModel([]);
+
+
+      if (!editMode) {
+        setSelectedFarmsForModel([]);
+      }
     } else {
       setAvailableFarms([]);
-      setSelectedFarmsForModel([]);
+      if (!editMode) setSelectedFarmsForModel([]);
     }
-  }, [species, allFarms]);
+  }, [species, allFarms, editMode]);
+
 
   return (
     <>
@@ -724,7 +739,9 @@ function GrowthModel({
                           }}
                           renderValue={(selected) =>
                             selected
-                              .map((id) => availableFarms.find((f) => f.id === id)?.name)
+                              .map((id) => availableFarms.find((f) => f.id === id))
+                              .filter(Boolean)
+                              .map(f => f!.name)
                               .join(', ')
                           }
                         >
