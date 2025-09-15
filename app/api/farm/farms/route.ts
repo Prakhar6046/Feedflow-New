@@ -15,7 +15,17 @@ export const GET = async () => {
           },
         },
         production: true,
-        FishManageHistory:true,
+        FishManageHistory: {
+          include: {
+            FishSupply: {
+              include: {
+                species: true,          // include species info
+                FarmManger: true,       // include farm manager
+                organisationData: true, // include organisation reference
+              },
+            },
+          },
+        },
         WaterQualityPredictedParameters: {
           include: { YearBasedPredication: true },
         },

@@ -28,7 +28,7 @@ import Select from '@mui/material/Select';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { Dayjs } from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import {
@@ -87,7 +87,9 @@ const TransferModal: React.FC<Props> = ({
   batches,
   productions,
 }) => {
-
+  console.log('selectedProductionselectedProduction', selectedProduction);
+  console.log('farmsfarmsfarms', farms);
+  console.log('batchesbatchesbatches', batches);
   const searchParams = useSearchParams();
   const isFish = searchParams.get('isFish');
   const router = useRouter();
@@ -114,6 +116,7 @@ const TransferModal: React.FC<Props> = ({
   const [selectedMeanLengthId, setSelectedMeanLengthId] = useState<string>('');
   const [isApiCallInProgress, setIsApiCallInProgress] =
     useState<boolean>(false);
+    console.log('isApiCallInProgressisApiCallInProgress', isApiCallInProgress);
   const [currentInput, setCurrentInput] = useState('');
   const {
     register,
@@ -157,6 +160,7 @@ const TransferModal: React.FC<Props> = ({
   });
   const watchedFields = watch('manager');
   const onSubmit: SubmitHandler<InputTypes> = async (data) => {
+    debugger;
     // Prevent API call if one is already in progress
     if (isApiCallInProgress) return;
     setIsApiCallInProgress(true);
@@ -216,7 +220,7 @@ const TransferModal: React.FC<Props> = ({
           organisationId: selectedProduction.organisationId,
           data: addStockField,
         };
-
+        console.log('payloadpayloadpayload', payload);
         const token = getCookie('auth-token');
         const response = await fetch('/api/production/mange', {
           method: 'POST',
@@ -282,7 +286,7 @@ const TransferModal: React.FC<Props> = ({
     if (field.length) {
       append({
         id: 0,
-        fishFarm: selectedProduction.fishFarmId,
+        fishFarm: selectedProduction?.fishFarmId || '',
         productionUnit:
           field === 'Stock' || field === 'Harvest' || field === 'Mortalities'
             ? selectedProduction?.productionUnitId
@@ -626,7 +630,7 @@ const TransferModal: React.FC<Props> = ({
           <form className="form-height" onSubmit={handleSubmit(onSubmit)}>
             {fields.map((item, idx) => {
               return (
-                <Box paddingInline={4} key={item.id}>
+                <Box paddingInline={4} key={item.id || idx}>
                   {idx !== 0 && (
                     <Box>
                       <Typography
@@ -1026,21 +1030,19 @@ const TransferModal: React.FC<Props> = ({
                                       sx={{
                                         width: '100%',
                                       }}
-                                      onChange={(date) => {
-                                        if (date && date.isValid()) {
-                                          field.onChange(date); // Set a valid Dayjs date
-                                          setValue(
-                                            `manager.${idx}.currentDate`,
-                                            date,
-                                          );
+                                      onChange={(date: Dayjs | null) => {
+                                        if (date && dayjs.isDayjs(date) && date.isValid()) {
+                                          field.onChange(date);
+                                          setValue(`manager.${idx}.currentDate`, date);
                                         } else {
-                                          field.onChange(null); // Clear the field if date is invalid
+                                          field.onChange(null);
                                         }
                                       }}
+
                                       slotProps={{
                                         textField: { focused: true },
                                       }}
-                                      value={field.value || null}
+                                      value={field.value ? dayjs(field.value) : null}
                                     />
                                     {error && (
                                       <Typography
@@ -2042,7 +2044,7 @@ const TransferModal: React.FC<Props> = ({
                 className=""
                 type="submit"
                 variant="contained"
-                disabled={watchedFields.length > 1 ? false : true}
+                disabled={watchedFields.length <= 1 ? true : false}
                 sx={{
                   background: '#06A19B',
                   fontWeight: 'bold',
