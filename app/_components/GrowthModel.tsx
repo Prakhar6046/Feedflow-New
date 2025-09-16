@@ -159,7 +159,6 @@ function GrowthModel({
   modelData?: OrganisationModelResponse;
   modelId?: string | null;
 }) {
-  console.log('modelData', modelData)
   const loggedUser: any = getCookie('logged-user');
   const router = useRouter();
   const [speciesList, setSpeciesList] = useState<Species[]>([]);
@@ -170,7 +169,7 @@ function GrowthModel({
   const [selectedFarms, setSelectedFarms] = useState<string[]>([]);
   const [availableFarms, setAvailableFarms] = useState<Farm[]>([]);
   const [selectedFarmsForModel, setSelectedFarmsForModel] = useState<string[]>([]);
-  console.log('selectedFarmsForModel', selectedFarmsForModel)
+
   const summaryData = allFarms.flatMap((farm) =>
     (farm.FishManageHistory || []).map((history) => {
 
@@ -492,7 +491,6 @@ function GrowthModel({
             selectedFarms: selectedFarmsForModel,
             organisationId: user.organisationId,
           };
-        console.log('body', body)
         const response = await fetch(url, {
           method: method,
           headers: {

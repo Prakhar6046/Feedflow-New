@@ -52,22 +52,6 @@ export default function FarmTable({ farms, permisions }: Props) {
     null,
   );
   const [sortDataFromLocal, setSortDataFromLocal] = React.useState<any>('');
-  // useEffect(() => {
-  //   const cookie = document.cookie
-  //     .split('; ')
-  //     .find((c) => c.startsWith('logged-user='));
-
-  //   if (cookie) {
-  //     try {
-  //       const value = cookie.split('=')[1];
-  //       const parsedUser = JSON.parse(decodeURIComponent(value));
-  //       console.log('Logged-in User:', parsedUser);
-  //       // setUser(parsedUser);
-  //     } catch (err) {
-  //       console.error('Failed to parse user cookie', err);
-  //     }
-  //   }
-  // }, []);
   useEffect(() => {
     if (pathName) {
       setSortDataFromLocal(getLocalItem(pathName));
