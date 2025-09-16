@@ -1,5 +1,5 @@
 'use clinet';
-import { calculateFishGrowthTilapia, getLocalItem } from '@/app/_lib/utils';
+import { calculateFishGrowthTilapia, calculateFishGrowthRainBowTrout, calculateFishGrowthAfricanCatfish, getLocalItem } from '@/app/_lib/utils';
 import { MultiSelect } from 'primereact/multiselect';
 import {
   Box,
@@ -17,6 +17,9 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import dayjs from 'dayjs';
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { getCookie } from 'cookies-next';
+import Cookies from 'js-cookie';
+import { SingleUser } from '@/app/_typeModels/User';
 
 import { Paper } from '@mui/material';
 import { FarmsFishGrowth } from './FeedingPlanOutputs';
@@ -58,9 +61,8 @@ const FeedUsageOutput: React.FC = () => {
   const [selectedDropDownUnits, setSelectedDropDownUnits] = useState<
     UnitOption[]
   >([]);
-    const [selectedGrowthModel, setSelectedGrowthModel] = useState<OrganisationModelResponse | null>(
-        null,
-      );
+  const [growthModelData, setGrowthModelData] = useState<OrganisationModelResponse[]>([]);
+  const [organisationId, setOrganisationId] = useState<number>(0);
   const [startDate, setStartDate] = useState<string | null>(
     dayjs().toISOString(),
   );
@@ -68,6 +70,120 @@ const FeedUsageOutput: React.FC = () => {
   const [flatData, setFlatData] = useState<FarmsFishGrowth[]>([]);
   const [filteredData, setFilteredData] = useState<FarmsFishGrowth[]>([]);
   const { setValue, register } = useForm();
+
+  // Fetch organisationId
+  useEffect(() => {
+    const loggedUser = Cookies.get('logged-user');
+    if (loggedUser) {
+      try {
+        const user: SingleUser = JSON.parse(loggedUser);
+        setOrganisationId(user.organisationId);
+      } catch (error) {
+        console.error('Error parsing user data:', error);
+      }
+    }
+  }, []);
+
+  // Fetch growth models for organisation
+  useEffect(() => {
+    if (!organisationId) return;
+    const fetchModels = async () => {
+      try {
+        const res = await fetch(`/api/growth-model?organisationId=${organisationId}`);
+        if (!res.ok) throw new Error('Failed to fetch growth models');
+        const data = await res.json();
+        setGrowthModelData(data.data || []);
+      } catch (error) {
+        console.error('Error fetching growth model data:', error);
+      }
+    };
+    fetchModels();
+  }, [organisationId]);
+
+  // Helper: select growth model per farm and unit
+  const selectGrowthModelForUnit = (
+    farm: any,
+    unit: any,
+  ): OrganisationModelResponse | null => {
+    try {
+      // Resolve speciesId prioritising unit-level history
+      const unitHistoryArr = unit?.fishManageHistory || unit?.FishManageHistory || [];
+      const unitHistory = Array.isArray(unitHistoryArr) && unitHistoryArr.length > 0 ? unitHistoryArr[0] : null;
+      let speciesId = unitHistory?.speciesId || unitHistory?.fishSupplyData?.speciesId || unitHistory?.fishSupplyData?.speciesID || null;
+
+      if (!speciesId) {
+        // Fallback: search farm-level history by productionUnitId
+        const farmHistory = (farm?.FishManageHistory || []).find(
+          (h: any) => String(h.productionUnitId) === String(unit?.productionUnit?.id)
+        );
+        speciesId = farmHistory?.speciesId || farmHistory?.fishSupplyData?.speciesId || farmHistory?.fishSupplyData?.speciesID || null;
+      }
+
+      // Resolve productionSystemId from farm.productionUnits by productionUnit.id
+      const prodUnit = (farm?.productionUnits || []).find(
+        (pu: any) => String(pu.id) === String(unit?.productionUnit?.id)
+      );
+      const productionSystemId = prodUnit?.productionSystemId || null;
+
+      if (!speciesId) {
+        // If no species found, use any default model as fallback
+        const anyDefault = growthModelData.find((gm) => gm.isDefault);
+        if (anyDefault) return anyDefault;
+        return null;
+      }
+
+      // Step 1: Find exact matches by species AND production system
+      const exactMatches = growthModelData.filter((gm) => {
+        const sameSpecies = gm.models.specieId === speciesId;
+        const sameProductionSystem = productionSystemId ? gm.models.productionSystemId === productionSystemId : true;
+        return sameSpecies && sameProductionSystem;
+      });
+
+      if (exactMatches.length === 1) {
+        return exactMatches[0];
+      }
+
+      if (exactMatches.length > 1) {
+        // If 2+ matches found → use the one with selectedFarms field that includes the current farm
+        const farmScoped = exactMatches.find((gm) => 
+          Array.isArray(gm.selectedFarms) && 
+          gm.selectedFarms.some((sf: any) => sf.farmId === farm?.id)
+        );
+        if (farmScoped) return farmScoped;
+        return exactMatches[0];
+      }
+
+      // Step 2: If no exact matches → try species-only matches first, then default
+      const speciesMatches = growthModelData.filter((gm) => gm.models.specieId === speciesId);
+      
+      if (speciesMatches.length === 1) {
+        return speciesMatches[0];
+      }
+      
+      if (speciesMatches.length > 1) {
+        // Multiple species matches - prefer farm-scoped, then default
+        const farmScoped = speciesMatches.find((gm) => 
+          Array.isArray(gm.selectedFarms) && 
+          gm.selectedFarms.some((sf: any) => sf.farmId === farm?.id)
+        );
+        if (farmScoped) return farmScoped;
+        
+        const speciesDefault = speciesMatches.find((gm) => gm.isDefault);
+        if (speciesDefault) return speciesDefault;
+        
+        return speciesMatches[0];
+      }
+
+      // Step 3: If no species matches at all → use any default model
+      const anyDefault = growthModelData.find((gm) => gm.isDefault);
+      if (anyDefault) return anyDefault;
+
+      return null;
+    } catch (e) {
+      console.error('Error selecting model for unit', e);
+      return null;
+    }
+  };
 
   useEffect(() => {
     if (selectedDropDownfarms) {
@@ -107,54 +223,86 @@ const FeedUsageOutput: React.FC = () => {
     setFilteredData(data);
   }, [selectedDropDownUnits, flatData]);
 
+  // Build table data ONLY after growth models are loaded and form data is ready
   useEffect(() => {
     const data: FeedPredictionData | null = getLocalItem('feedPredictionData');
-    if (data) {
-      const customFarms: FarmOption[] = data?.productionData?.map(
-        (farm: FarmGroup) => {
-          return { option: farm.farm, id: farm.units[0].farm.id ?? '' };
-        },
-      );
-      setFarmList(data?.productionData);
-      setStartDate(data?.startDate);
-      setEndDate(data?.endDate);
-      setFarmOptions(customFarms);
-      setSelectedDropDownfarms(customFarms);
-      setValue('adjustmentFactor', data.adjustmentFactor);
-      const fishGrowthData = data?.productionData?.map((production) =>
-        production.units.map((unit) => {
-          const formattedDate = dayjs(data?.startDate).format('YYYY-MM-DD');
-          const diffInDays = dayjs(data?.endDate).diff(
-            dayjs(data?.startDate),
-            'day',
-          );
-          setValue('period', diffInDays);
-          return {
-            farm: unit.farm.name || '',
-            farmId: unit?.farm?.id || '',
-            unitId: unit.id,
-            unit: unit.productionUnit.name,
-            fishGrowthData: calculateFishGrowthTilapia(
-              selectedGrowthModel,
-              Number(data?.fishWeight ?? 0),
-              data?.tempSelection === 'default'
-                ? Number(unit?.waterTemp ?? 0)
-                : Number(data?.temp),
-              Number(unit.fishCount ?? 0),
-              Number(data.adjustmentFactor),
-              Number(diffInDays),
-              formattedDate,
-              data?.timeInterval ?? 0,
-              13.47,
-            ),
-          };
-        }),
-      );
-      if (fishGrowthData?.length) {
-        setFlatData([...fishGrowthData].flat());
-      }
+    if (!data || !Array.isArray(growthModelData) || growthModelData.length === 0) {
+      return;
     }
-  }, [setValue]);
+
+    const customFarms: FarmOption[] = data?.productionData?.map(
+      (farm: FarmGroup) => {
+        return { option: farm.farm, id: farm.units[0].farm.id ?? '' };
+      },
+    );
+    setFarmList(data?.productionData);
+    setStartDate(data?.startDate);
+    setEndDate(data?.endDate);
+    setFarmOptions(customFarms);
+    setSelectedDropDownfarms(customFarms);
+    setValue('adjustmentFactor', data.adjustmentFactor);
+    
+    const fishGrowthData = data?.productionData?.map((production) =>
+      production.units.map((unit) => {
+        const formattedDate = dayjs(data?.startDate).format('YYYY-MM-DD');
+        const diffInDays = dayjs(data?.endDate).diff(
+          dayjs(data?.startDate),
+          'day',
+        );
+        setValue('period', diffInDays);
+        
+        const gm = selectGrowthModelForUnit(unit?.farm || production?.units?.[0]?.farm, unit);
+        
+        return {
+          farm: unit.farm.name || '',
+          farmId: unit?.farm?.id || '',
+          unitId: unit.id,
+          unit: unit.productionUnit.name,
+          fishGrowthData: data?.species === 'Rainbow Trout'
+            ? calculateFishGrowthRainBowTrout(
+              gm,
+                Number(data?.fishWeight ?? 0),
+                data?.tempSelection === 'default'
+                  ? Number(unit?.waterTemp ?? 25) 
+                  : Number(data?.temp ?? 25), 
+                Number(unit.fishCount ?? 0),
+                Number(data.adjustmentFactor),
+                Number(diffInDays),
+                formattedDate,
+                data?.timeInterval ?? 1, 
+              )
+            : data?.species === 'African Catfish'
+            ? calculateFishGrowthAfricanCatfish(
+              gm,
+                Number(data?.fishWeight ?? 0),
+                data?.tempSelection === 'default'
+                  ? Number(unit?.waterTemp ?? 25)
+                  : Number(data?.temp ?? 25), 
+                Number(unit.fishCount ?? 0),
+                Number(data.adjustmentFactor),
+                Number(diffInDays),
+                formattedDate,
+                data?.timeInterval ?? 1, 
+              )
+            : calculateFishGrowthTilapia(
+              gm,
+                Number(data?.fishWeight ?? 0),
+                data?.tempSelection === 'default'
+                  ? Number(unit?.waterTemp ?? 25) 
+                  : Number(data?.temp ?? 25), 
+                Number(unit.fishCount ?? 0),
+                Number(data.adjustmentFactor),
+                Number(diffInDays),
+                formattedDate,
+                data?.timeInterval ?? 1,
+              ),
+        };
+      }),
+    );
+    if (fishGrowthData?.length) {
+      setFlatData([...fishGrowthData].flat());
+    }
+  }, [growthModelData, setValue]);
   return (
     <Stack>
       <Box mb={5}>

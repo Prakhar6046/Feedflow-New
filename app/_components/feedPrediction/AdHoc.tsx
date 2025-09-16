@@ -130,8 +130,6 @@ function AdHoc({ data, setData }: Iprops) {
   const [selectedGrowthModel, setSelectedGrowthModel] = useState<OrganisationModelResponse | null>(
     null,
   );
- 
-  const [matchingModels, setMatchingModels] = useState<OrganisationModelResponse[]>([]);
 
   const selectedSpecies = watch('species');
 const selectedProductionSystem = watch('productionSystem');
@@ -208,52 +206,53 @@ const selectedProductionSystem = watch('productionSystem');
   }, [organisationId, token]);
   useEffect(() => {
     if (!selectedSpecies || !selectedProductionSystem) {
-      setMatchingModels([]);
       setSelectedGrowthModel(null);
       return;
     }
 
-    // Find the IDs for the selected species and production system
-    const speciesObj = speciesList.find((s) => s.id === (selectedSpecies));
-    const prodObj = productionSystemList.find((p) => p.id === (selectedProductionSystem));
+    const speciesObj = speciesList.find((s) => s.id === selectedSpecies);
+    const prodObj = productionSystemList.find((p) => p.id === selectedProductionSystem);
 
     if (!speciesObj || !prodObj) {
-      setMatchingModels([]);
       setSelectedGrowthModel(null);
       return;
     }
 
-    // Filter growth models that match both speciesId and productionSystemId
+    // Exact matches by species and production system
     const filtered = growthModelData.filter(
       (gm) => gm.models.specieId === speciesObj.id && gm.models.productionSystemId === prodObj.id
     );
 
     if (filtered.length === 1) {
-      // Case 1: Exactly one matching model found
-      setMatchingModels(filtered);
       setSelectedGrowthModel(filtered[0]);
-      toast.success('One gorwth model found');
-    } else if (filtered.length > 1) {
-      // Case 2: Multiple matching models found
-      setMatchingModels(filtered);
-      setSelectedGrowthModel(null);
-      toast.success('Multiple growth models found, please select one.');
-    } else {
-      // Case 3: No direct match, check for a default model for the species
-      const defaultModel = growthModelData.find(
-        (gm) => gm.models.specieId === speciesObj.id && gm.isDefault
-      );
-      if (defaultModel) {
-        setMatchingModels([defaultModel]);
-        setSelectedGrowthModel(defaultModel);
-        toast.success('No specific model found. Using the default growth model for this species.');
-      } else {
-        // Case 4: No direct match and no default model found
-        setMatchingModels([]);
-        setSelectedGrowthModel(null);
-        toast.error('No growth model available for the selected species and production system.');
+      return;
+    }
+
+    if (filtered.length > 1) {
+      const existingModel = filtered.find((gm) => gm.useExistingModel);
+      if (existingModel) {
+        setSelectedGrowthModel(existingModel);
+        return;
+      }
+      // Fallback to default for this species among all models
+      const defaultModelAmongFiltered = filtered.find((gm) => gm.isDefault);
+      if (defaultModelAmongFiltered) {
+        setSelectedGrowthModel(defaultModelAmongFiltered);
+        return;
       }
     }
+
+    // No direct match: use species default regardless of production system
+    const defaultModel = growthModelData.find(
+      (gm) => gm.models.specieId === speciesObj.id && gm.isDefault
+    );
+    if (defaultModel) {
+      setSelectedGrowthModel(defaultModel);
+      return;
+    }
+
+    setSelectedGrowthModel(null);
+    toast.error('No growth model available for the selected species and production system.');
   }, [selectedSpecies, selectedProductionSystem, growthModelData, speciesList, productionSystemList]);
 
 
@@ -262,6 +261,12 @@ const selectedProductionSystem = watch('productionSystem');
     const diffInDays = dayjs(data.endDate).diff(dayjs(data.startDate), 'day');
     const speciesObj = speciesList.find((s) => s.id === data.species);
     const speciesName = speciesObj?.name || '';
+
+    if (!selectedGrowthModel) {
+      toast.error('No growth model resolved for the selected species and production system.');
+      setData([]);
+      return;
+    }
 
     if (data) {
       if (speciesName === 'Rainbow Trout') {
@@ -274,8 +279,7 @@ const selectedProductionSystem = watch('productionSystem');
             Number(data.adjustmentFactor),
             Number(diffInDays),
             formattedDate,
-            1,
-            13.47,
+            data?.timeInterval,
           ),
         );
       } else if (speciesName === 'African Catfish') {
@@ -288,8 +292,7 @@ const selectedProductionSystem = watch('productionSystem');
             Number(data.adjustmentFactor),
             Number(diffInDays),
             formattedDate,
-            1,
-            13.9,
+            data?.timeInterval,
           ),
         );
       } else {
@@ -303,7 +306,6 @@ const selectedProductionSystem = watch('productionSystem');
             Number(diffInDays),
             formattedDate,
             data?.timeInterval,
-            13.9,
           ),
         );
       }
@@ -697,45 +699,7 @@ const selectedProductionSystem = watch('productionSystem');
               </Typography>
             )}
           </Grid>
-          {/* Growth Model Selection */}
-          {matchingModels.length === 1 && selectedGrowthModel && (
-            <Grid item lg={3} md={4} sm={6} xs={12}>
-              <TextField
-                label="Growth Model"
-                value={selectedGrowthModel.models.name}
-                fullWidth
-                InputProps={{ readOnly: true }}
-              />
-            </Grid>
-          )}
-          {matchingModels.length > 1 && (
-            <Grid item lg={3} md={4} sm={6} xs={12}>
-              <FormControl className="form-input" fullWidth focused required
-                error={!selectedGrowthModel} >
-                <InputLabel id="growth-model-label">Select Growth Model *</InputLabel>
-                <Select
-                  labelId="growth-model-label" label="Select Growth Model *"
-                  value={selectedGrowthModel?.models.id || ''}
-                  onChange={(e) => {
-                    const chosen = matchingModels.find(
-                      (gm) => gm.models.id === Number(e.target.value),
-                    );
-                    if (chosen) setSelectedGrowthModel(chosen);
-                  }}
-                >
-                  {matchingModels.map((gm) => (
-                    <MenuItem key={gm.models.id} value={gm.models.id}>
-                      {gm.models.name}
-                    </MenuItem>
-                  ))}
-                </Select>
-                {!selectedGrowthModel && (
-                  <FormHelperText>Please select a growth model</FormHelperText>
-                )}
-
-              </FormControl>
-            </Grid>
-          )}
+          {/* Growth model selection is automatic; no UI dropdown needed */}
         </Grid>
 
 

@@ -209,7 +209,6 @@ export async function PUT(request: NextRequest) {
   try {
     const body = await request.json();
     const { model, organisationId, modelId, isDefault, useExistingModel,selectedFarms } = body;
-     console.log('selectedFarms',selectedFarms)
     if (!modelId) {
       return NextResponse.json(
         { error: 'Model ID is required' },
@@ -267,24 +266,8 @@ export async function PUT(request: NextRequest) {
         })),
       });
     }
-    if (useExistingModel) {
-      const updatedGrowthModel = await prisma.growthModel.update({
-        where: { id: parseInt(modelId) },
-        data: {
-          isDefault: !!isDefault,
-          useExistingModel: !!useExistingModel,
-        },
-        include: {
-          models: true,
-          organisation: true,
-        },
-      });
-
-      return NextResponse.json({ data: updatedGrowthModel });
-    }
-
-    // ✅ Case 2: Update GrowthModel + underlying Model
-    const updatedGrowthModel = await prisma.growthModel.update({
+    // Always update GrowthModel flags
+    await prisma.growthModel.update({
       where: { id: parseInt(modelId) },
       data: {
         isDefault: !!isDefault,
@@ -292,9 +275,8 @@ export async function PUT(request: NextRequest) {
       },
     });
 
-
-
-    const updatedModel = await prisma.model.update({
+    // Always update underlying Model fields as provided
+    await prisma.model.update({
       where: { id: growthModel.modelId },
       data: {
         name: model.name,
@@ -324,12 +306,19 @@ export async function PUT(request: NextRequest) {
         updatedBy: '1',
         updatedAt: new Date(),
       },
+    });
+
+    // Return a unified, fully-populated GrowthModel object
+    const refreshed = await prisma.growthModel.findUnique({
+      where: { id: parseInt(modelId) },
       include: {
+        models: true,
         organisation: true,
+        selectedFarms: { include: { farm: true } },
       },
     });
 
-    return NextResponse.json({ data: updatedGrowthModel, updatedModel });
+    return NextResponse.json({ data: refreshed });
   } catch (error) {
     console.error('Error updating growth model:', error);
     return NextResponse.json(

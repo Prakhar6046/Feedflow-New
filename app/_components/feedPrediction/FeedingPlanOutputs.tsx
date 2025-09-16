@@ -27,7 +27,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import dayjs from 'dayjs';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { Controller, useForm } from 'react-hook-form';
 import FishGrowthChart from '../charts/FishGrowthChart';
@@ -46,6 +46,10 @@ import {
 } from '@mui/material';
 import { FeedPredictionData } from './FeedUsageOutputs';
 import { OrganisationModelResponse } from '@/app/_typeModels/growthModel';
+import { getCookie } from 'cookies-next';
+import Cookies from 'js-cookie';
+import { SingleUser } from '@/app/_typeModels/User';
+import toast from 'react-hot-toast';
 // import MenuItem from "@mui/material/MenuItem";
 
 export interface FarmsFishGrowth {
@@ -90,9 +94,9 @@ function FeedingPlanOutput() {
   const [flatData, setFlatData] = useState<FarmsFishGrowth[]>([]);
   const [formData, setFomData] = useState<any>();
   const { control, setValue, watch, register } = useForm();
-  const [selectedGrowthModel, setSelectedGrowthModel] = useState<OrganisationModelResponse | null>(
-      null,
-    );
+  const [growthModelData, setGrowthModelData] = useState<OrganisationModelResponse[]>([]);
+  const token = getCookie('auth-token');
+  const [organisationId, setOrganisationId] = useState<number>(0);
   const createxlsxFile = (e: React.MouseEvent<HTMLSpanElement, MouseEvent>) => {
     if (!flatData.length) {
       return;
@@ -611,6 +615,127 @@ function FeedingPlanOutput() {
     setLoading(false);
   };
 
+  // Fetch organisationId
+  useEffect(() => {
+    const loggedUser = Cookies.get('logged-user');
+    if (loggedUser) {
+      try {
+        const user: SingleUser = JSON.parse(loggedUser);
+        setOrganisationId(user.organisationId);
+      } catch (error) {
+        console.error('Error parsing user data:', error);
+      }
+    }
+  }, []);
+
+  // Fetch growth models for organisation
+  useEffect(() => {
+    if (!organisationId) return;
+    const fetchModels = async () => {
+      try {
+        const res = await fetch(`/api/growth-model?organisationId=${organisationId}`);
+        if (!res.ok) throw new Error('Failed to fetch growth models');
+        const data = await res.json();
+        setGrowthModelData(data.data || []);
+      } catch (error) {
+        console.error('Error fetching growth model data:', error);
+      }
+    };
+    fetchModels();
+  }, [organisationId]);
+
+  // Helper: select growth model per farm and unit
+  const selectGrowthModelForUnit = (
+    farm: any,
+    unit: any,
+  ): OrganisationModelResponse | null => {
+    try {
+
+
+      // Resolve speciesId prioritising unit-level history
+      const unitHistoryArr = unit?.fishManageHistory || unit?.FishManageHistory || [];
+      const unitHistory = Array.isArray(unitHistoryArr) && unitHistoryArr.length > 0 ? unitHistoryArr[0] : null;
+      let speciesId = unitHistory?.speciesId || unitHistory?.fishSupplyData?.speciesId || unitHistory?.fishSupplyData?.speciesID || null;
+
+      if (!speciesId) {
+        // Fallback: search farm-level history by productionUnitId
+        const farmHistory = (farm?.FishManageHistory || []).find(
+          (h: any) => String(h.productionUnitId) === String(unit?.productionUnit?.id)
+        );
+        speciesId = farmHistory?.speciesId || farmHistory?.fishSupplyData?.speciesId || farmHistory?.fishSupplyData?.speciesID || null;
+      }
+
+      // Resolve productionSystemId from farm.productionUnits by productionUnit.id
+      const prodUnit = (farm?.productionUnits || []).find(
+        (pu: any) => String(pu.id) === String(unit?.productionUnit?.id)
+      );
+      const productionSystemId = prodUnit?.productionSystemId || null;
+      if (!speciesId) {
+        // If no species found, use any default model as fallback
+        const anyDefault = growthModelData.find((gm) => gm.isDefault);
+        if (anyDefault) {
+          return anyDefault;
+        }
+        return null;
+      }
+
+      // Step 1: Find exact matches by species AND production system
+      const exactMatches = growthModelData.filter((gm) => {
+        const sameSpecies = gm.models.specieId === speciesId;
+        const sameProductionSystem = productionSystemId ? gm.models.productionSystemId === productionSystemId : true;
+        return sameSpecies && sameProductionSystem;
+      });
+      if (exactMatches.length === 1) {
+
+        return exactMatches[0];
+      }
+
+      if (exactMatches.length > 1) {
+        const farmScoped = exactMatches.find((gm) => 
+          Array.isArray(gm.selectedFarms) && 
+          gm.selectedFarms.some((sf: any) => sf.farmId === farm?.id)
+        );
+        if (farmScoped) {
+          return farmScoped;
+        }
+        return exactMatches[0];
+      }
+
+      // Step 2: If no exact matches → try species-only matches first, then default
+      const speciesMatches = growthModelData.filter((gm) => gm.models.specieId === speciesId); 
+      if (speciesMatches.length === 1) {
+        return speciesMatches[0];
+      }
+      
+      if (speciesMatches.length > 1) {
+        const farmScoped = speciesMatches.find((gm) => 
+          Array.isArray(gm.selectedFarms) && 
+          gm.selectedFarms.some((sf: any) => sf.farmId === farm?.id)
+        );
+        if (farmScoped) {
+          return farmScoped;
+        }
+        
+        const speciesDefault = speciesMatches.find((gm) => gm.isDefault);
+        if (speciesDefault) {
+          return speciesDefault;
+        }
+        
+        return speciesMatches[0];
+      }
+
+      // Step 3: If no species matches at all → use any default model
+      const anyDefault = growthModelData.find((gm) => gm.isDefault);
+      if (anyDefault) {
+        return anyDefault;
+      }
+      return null;
+    } catch (e) {
+      console.error('Error selecting model for unit', e);
+      return null;
+    }
+  };
+
   useEffect(() => {
     const selectedFarm: string = watch('farms');
 
@@ -658,68 +783,75 @@ function FeedingPlanOutput() {
       setFarmOptions(customFarms);
       setValue('adjustmentFactor', data.adjustmentFactor);
       setFomData(data);
-      const fishGrowthData = data?.productionData?.map(
-        (production: FarmGroup) =>
-          production.units.map((unit) => {
-            const formattedDate = dayjs(data?.startDate).format('YYYY-MM-DD');
-            const diffInDays = dayjs(data?.endDate).diff(
-              dayjs(data?.startDate),
-              'day',
-            );
-            return {
-              farm: production.farm,
-              farmId: unit?.farm?.id ?? '',
-              unitId: unit.id,
-              unit: unit.productionUnit.name,
-              fishGrowthData: data?.species === 'Rainbow Trout'
+    }
+  }, []);
+
+  // Build table data ONLY after growth models are loaded and form data is ready
+  useEffect(() => {
+    if (!formData || !Array.isArray(growthModelData) || growthModelData.length === 0) {
+      return;
+    }
+    const data: FeedPredictionData = formData;
+    const fishGrowthData = data?.productionData?.map(
+      (production: FarmGroup) =>
+        production.units.map((unit) => {
+          const formattedDate = dayjs(data?.startDate).format('YYYY-MM-DD');
+          const diffInDays = dayjs(data?.endDate).diff(
+            dayjs(data?.startDate),
+            'day',
+          );
+          // Resolve growth model for this farm+unit
+          const gm = selectGrowthModelForUnit(unit?.farm || production?.units?.[0]?.farm, unit);
+          return {
+            farm: production.farm,
+            farmId: unit?.farm?.id ?? '',
+            unitId: unit.id,
+            unit: unit.productionUnit.name,
+            fishGrowthData: data?.species === 'Rainbow Trout'
                 ? calculateFishGrowthRainBowTrout(
-                  selectedGrowthModel,
+                    gm,
                     Number(data?.fishWeight ?? 0),
                     data?.tempSelection === 'default'
-                      ? Number(unit?.waterTemp ?? 0)
-                      : Number(data?.temp),
+                      ? Number(unit?.waterTemp ?? 25) 
+                      : Number(data?.temp ?? 25), 
                     Number(unit.fishCount ?? 0),
                     Number(data.adjustmentFactor),
                     Number(diffInDays),
                     formattedDate,
-                    data?.timeInterval ?? 0,
-                    13.47,
+                    data?.timeInterval ?? 1,
                   )
                 : data?.species === 'African Catfish'
                 ? calculateFishGrowthAfricanCatfish(
-                  selectedGrowthModel,
+                     gm,
                     Number(data?.fishWeight ?? 0),
                     data?.tempSelection === 'default'
-                      ? Number(unit?.waterTemp ?? 0)
-                      : Number(data?.temp),
+                      ? Number(unit?.waterTemp ?? 25) 
+                      : Number(data?.temp ?? 25), 
                     Number(unit.fishCount ?? 0),
                     Number(data.adjustmentFactor),
                     Number(diffInDays),
                     formattedDate,
-                    data?.timeInterval ?? 0,
-                    13.47,
+                    data?.timeInterval ?? 1, 
                   )
-                : calculateFishGrowthTilapia(
-                  selectedGrowthModel,
-                    Number(data?.fishWeight ?? 0),
-                    data?.tempSelection === 'default'
-                      ? Number(unit?.waterTemp ?? 0)
-                      : Number(data?.temp),
-                    Number(unit.fishCount ?? 0),
-                    Number(data.adjustmentFactor),
-                    Number(diffInDays),
-                    formattedDate,
-                    data?.timeInterval ?? 0,
-                    13.47,
-                  ),
-            };
-          }),
-      );
-      if (fishGrowthData?.length) {
-        setFlatData([...fishGrowthData].flat());
-      }
+              : calculateFishGrowthTilapia(
+                  gm,
+                  Number(data?.fishWeight ?? 0),
+                  data?.tempSelection === 'default'
+                    ? Number(unit?.waterTemp ?? 25) 
+                    : Number(data?.temp ?? 25), 
+                  Number(unit.fishCount ?? 0),
+                  Number(data.adjustmentFactor),
+                  Number(diffInDays),
+                  formattedDate,
+                  data?.timeInterval ?? 1, 
+                ),
+          };
+        }),
+    );
+    if (fishGrowthData?.length) {
+      setFlatData([...fishGrowthData].flat());
     }
-  }, []);
+  }, [growthModelData, formData]);
   useEffect(() => {
     if (loading) {
       document.body.style.position = 'fixed';
