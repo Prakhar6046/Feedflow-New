@@ -15,7 +15,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import dayjs from 'dayjs';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { getCookie } from 'cookies-next';
 import Cookies from 'js-cookie';
@@ -26,6 +26,7 @@ import { FarmsFishGrowth } from './FeedingPlanOutputs';
 import FeedUsageTable from '../table/FeedUsageTable';
 import { FarmGroup, FarmGroupUnit } from '@/app/_typeModels/production';
 import { OrganisationModelResponse } from '@/app/_typeModels/growthModel';
+import PrintPreviewDialog from '../PrintPreviewDialog';
 
 interface FarmOption {
   id: string;
@@ -70,6 +71,10 @@ const FeedUsageOutput: React.FC = () => {
   const [flatData, setFlatData] = useState<FarmsFishGrowth[]>([]);
   const [filteredData, setFilteredData] = useState<FarmsFishGrowth[]>([]);
   const { setValue, register } = useForm();
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewHtml, setPreviewHtml] = useState<string | null>(null);
+  const [previewTitle, setPreviewTitle] = useState<string>('Print Preview');
+  const usageTableRef = useRef<HTMLDivElement | null>(null);
 
   // Fetch organisationId
   useEffect(() => {
@@ -145,8 +150,8 @@ const FeedUsageOutput: React.FC = () => {
 
       if (exactMatches.length > 1) {
         // If 2+ matches found → use the one with selectedFarms field that includes the current farm
-        const farmScoped = exactMatches.find((gm) => 
-          Array.isArray(gm.selectedFarms) && 
+        const farmScoped = exactMatches.find((gm) =>
+          Array.isArray(gm.selectedFarms) &&
           gm.selectedFarms.some((sf: any) => sf.farmId === farm?.id)
         );
         if (farmScoped) return farmScoped;
@@ -155,22 +160,22 @@ const FeedUsageOutput: React.FC = () => {
 
       // Step 2: If no exact matches → try species-only matches first, then default
       const speciesMatches = growthModelData.filter((gm) => gm.models.specieId === speciesId);
-      
+
       if (speciesMatches.length === 1) {
         return speciesMatches[0];
       }
-      
+
       if (speciesMatches.length > 1) {
         // Multiple species matches - prefer farm-scoped, then default
-        const farmScoped = speciesMatches.find((gm) => 
-          Array.isArray(gm.selectedFarms) && 
+        const farmScoped = speciesMatches.find((gm) =>
+          Array.isArray(gm.selectedFarms) &&
           gm.selectedFarms.some((sf: any) => sf.farmId === farm?.id)
         );
         if (farmScoped) return farmScoped;
-        
+
         const speciesDefault = speciesMatches.find((gm) => gm.isDefault);
         if (speciesDefault) return speciesDefault;
-        
+
         return speciesMatches[0];
       }
 
@@ -241,7 +246,7 @@ const FeedUsageOutput: React.FC = () => {
     setFarmOptions(customFarms);
     setSelectedDropDownfarms(customFarms);
     setValue('adjustmentFactor', data.adjustmentFactor);
-    
+
     const fishGrowthData = data?.productionData?.map((production) =>
       production.units.map((unit) => {
         const formattedDate = dayjs(data?.startDate).format('YYYY-MM-DD');
@@ -250,9 +255,9 @@ const FeedUsageOutput: React.FC = () => {
           'day',
         );
         setValue('period', diffInDays);
-        
+
         const gm = selectGrowthModelForUnit(unit?.farm || production?.units?.[0]?.farm, unit);
-        
+
         return {
           farm: unit.farm.name || '',
           farmId: unit?.farm?.id || '',
@@ -261,35 +266,35 @@ const FeedUsageOutput: React.FC = () => {
           fishGrowthData: data?.species === 'Rainbow Trout'
             ? calculateFishGrowthRainBowTrout(
               gm,
-                Number(data?.fishWeight ?? 0),
-                data?.tempSelection === 'default'
-                  ? Number(unit?.waterTemp ?? 25) 
-                  : Number(data?.temp ?? 25), 
-                Number(unit.fishCount ?? 0),
-                Number(data.adjustmentFactor),
-                Number(diffInDays),
-                formattedDate,
-                data?.timeInterval ?? 1, 
-              )
+              Number(data?.fishWeight ?? 0),
+              data?.tempSelection === 'default'
+                ? Number(unit?.waterTemp ?? 25)
+                : Number(data?.temp ?? 25),
+              Number(unit.fishCount ?? 0),
+              Number(data.adjustmentFactor),
+              Number(diffInDays),
+              formattedDate,
+              data?.timeInterval ?? 1,
+            )
             : data?.species === 'African Catfish'
-            ? calculateFishGrowthAfricanCatfish(
-              gm,
+              ? calculateFishGrowthAfricanCatfish(
+                gm,
                 Number(data?.fishWeight ?? 0),
                 data?.tempSelection === 'default'
                   ? Number(unit?.waterTemp ?? 25)
-                  : Number(data?.temp ?? 25), 
+                  : Number(data?.temp ?? 25),
                 Number(unit.fishCount ?? 0),
                 Number(data.adjustmentFactor),
                 Number(diffInDays),
                 formattedDate,
-                data?.timeInterval ?? 1, 
+                data?.timeInterval ?? 1,
               )
-            : calculateFishGrowthTilapia(
-              gm,
+              : calculateFishGrowthTilapia(
+                gm,
                 Number(data?.fishWeight ?? 0),
                 data?.tempSelection === 'default'
-                  ? Number(unit?.waterTemp ?? 25) 
-                  : Number(data?.temp ?? 25), 
+                  ? Number(unit?.waterTemp ?? 25)
+                  : Number(data?.temp ?? 25),
                 Number(unit.fishCount ?? 0),
                 Number(data.adjustmentFactor),
                 Number(diffInDays),
@@ -305,6 +310,13 @@ const FeedUsageOutput: React.FC = () => {
   }, [growthModelData, setValue]);
   return (
     <Stack>
+      <PrintPreviewDialog
+        open={previewOpen}
+        title={previewTitle}
+        html={previewHtml}
+        onClose={() => setPreviewOpen(false)}
+      />
+
       <Box mb={5}>
         <Grid container spacing={2} mt={1}>
           <Grid
@@ -367,9 +379,8 @@ const FeedUsageOutput: React.FC = () => {
             <Box sx={{ width: '100%' }}>
               <FormControl
                 fullWidth
-                className={`form-input ${
-                  selectedDropDownfarms?.length >= 1 && 'selected'
-                }`}
+                className={`form-input ${selectedDropDownfarms?.length >= 1 && 'selected'
+                  }`}
                 focused
               >
                 <InputLabel
@@ -484,14 +495,16 @@ const FeedUsageOutput: React.FC = () => {
               boxShadow: '0px 0px 16px 5px #0000001A',
             }}
           >
-            <FeedUsageTable flatData={filteredData} />
+            <Box ref={usageTableRef}>
+              <FeedUsageTable flatData={filteredData} />
+            </Box>
           </Paper>
           <Box
             mt={5}
             sx={{
               display: 'flex',
               justifyContent: 'end',
-              gap: 1.5,
+              gap: 1.5, pb: 5
             }}
           >
             <Button
@@ -527,6 +540,29 @@ const FeedUsageOutput: React.FC = () => {
               }}
             >
               Create PDF
+            </Button>
+            <Button
+              type="button"
+              variant="contained"
+              onClick={() => {
+                const node = usageTableRef.current;
+                if (!node) return;
+                setPreviewTitle('Feed Requirement / Usage');
+                setPreviewHtml(node.innerHTML);
+                setPreviewOpen(true);
+              }}
+              sx={{
+                background: '#fff',
+                color: '#06A19B',
+                fontWeight: 600,
+                padding: '6px 16px',
+                width: 'fit-content',
+                textTransform: 'capitalize',
+                borderRadius: '8px',
+                border: '1px solid #06A19B',
+              }}
+            >
+              Print
             </Button>
           </Box>
         </Grid>
