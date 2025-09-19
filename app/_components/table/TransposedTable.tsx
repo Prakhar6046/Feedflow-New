@@ -139,7 +139,7 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
       key !== 'feedIngredients' &&
       key !== 'feedingGuide'
   );
-
+    
   function transformFeedProductsWithSuppliers(flatData: Record<string, any>) {
     const result: any[] = [];
     const suppliersArray = flatData.suppliers || [];
@@ -171,8 +171,8 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
     setIsSaving(true);
     const payload = transformFeedProductsWithSuppliers(data);
     const updatedPayload = payload.map((feed) => {
-      const { ProductSupplier, supplierIds, ...rest } = feed;
-      return { ...rest, ProductSupplier: supplierIds };
+      const { ProductSupplier, supplierIds,minFishSizeG,maxFishSizeG, ...rest } = feed;
+      return { ...rest, ProductSupplier: supplierIds ,minFishSizeG:Number(minFishSizeG) ,maxFishSizeG:Number(maxFishSizeG) };
     });
 
     try {
