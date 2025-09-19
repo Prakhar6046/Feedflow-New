@@ -152,6 +152,62 @@ function FeedingPlanOutput() {
     setPreviewOpen(true);
   };
 
+  const handleGrowthTablePreview = () => {
+    if (!flatData.length) return;
+
+    const formatedData = flatData
+      ?.filter((val) => val.farmId == watch('farms') && val.unitId == watch('units'))
+      .flatMap((growth) =>
+        growth.fishGrowthData.map((val) => ({
+          date: val.date,
+          fishSize: val.fishSize,
+          averageProjectedTemp: val.averageProjectedTemp,
+          numberOfFish: val.numberOfFish,
+          growth: val.growth,
+          feedType: val.feedType,
+          feedSize: val.feedSize,
+          estimatedFCR: val.estimatedFCR,
+          feedIntake: val.feedIntake,
+          feedingRate: val.feedingRate,
+        }))
+      );
+
+    const previewHtmlContent = `
+      <div style="padding:20px; font-family: Arial, sans-serif;">
+        <h3 style="color:#06A19B;">Feeding Plan - Full Table</h3>
+        <table style="width:100%; border-collapse:collapse; font-size:12px; color:#333;">
+          <thead>
+            <tr>
+              ${CommonFeedPredictionHead.map((h) => `<th style=\"border:1px solid #ccc; padding:8px 12px; background:#efefef; text-align:left;\">${h}</th>`).join('')}
+            </tr>
+          </thead>
+          <tbody>
+            ${formatedData
+              .map((row) => `
+                <tr>
+                  <td style=\"border:1px solid #ccc; padding:8px 12px;\">${row.date}</td>
+                  <td style=\"border:1px solid #ccc; padding:8px 12px;\">${row.averageProjectedTemp}</td>
+                  <td style=\"border:1px solid #ccc; padding:8px 12px;\">${row.numberOfFish}</td>
+                  <td style=\"border:1px solid #ccc; padding:8px 12px;\">${row.fishSize}</td>
+                  <td style=\"border:1px solid #ccc; padding:8px 12px;\">${row.growth}</td>
+                  <td style=\"border:1px solid #ccc; padding:8px 12px;\">${row.feedType}</td>
+                  <td style=\"border:1px solid #ccc; padding:8px 12px;\">${row.feedSize}</td>
+                  <td style=\"border:1px solid #ccc; padding:8px 12px;\">${row.estimatedFCR}</td>
+                  <td style=\"border:1px solid #ccc; padding:8px 12px;\">${row.feedIntake}</td>
+                  <td style=\"border:1px solid #ccc; padding:8px 12px;\">${row.feedingRate}</td>
+                </tr>
+              `)
+              .join('')}
+          </tbody>
+        </table>
+      </div>
+    `;
+
+    setPreviewTitle('Feeding Plan - Full Table Preview');
+    setPreviewHtml(previewHtmlContent);
+    setPreviewOpen(true);
+  };
+
 
   const createxlsxFile = (e: React.MouseEvent<HTMLSpanElement, MouseEvent>) => {
     if (!flatData.length) {
@@ -1276,13 +1332,7 @@ function FeedingPlanOutput() {
                   <Button
                     type="button"
                     variant="contained"
-                    onClick={() => {
-                      const node = growthTableRef.current;
-                      if (!node) return;
-                      setPreviewTitle('Feeding Plan - Feeding Table');
-                      setPreviewHtml(node.innerHTML);
-                      setPreviewOpen(true);
-                    }}
+                    onClick={handleGrowthTablePreview}
                     sx={{
                       background: '#06A19B',
                       color: '#fff',
