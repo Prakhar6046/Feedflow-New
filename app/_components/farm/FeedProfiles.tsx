@@ -44,6 +44,8 @@ export const fishSizes = [
   90, 95, 100, 120, 140, 160, 180,
 ];
 
+const MAX_FISH_SIZE_CAP = 1000; 
+
 interface Props {
   setActiveStep: (val: number) => void;
   editFarm?: Farm;
@@ -78,13 +80,24 @@ const FeedProfiles = ({
   const [selectedSupplier, setSelectedSupplier] = useState<SupplierOptions[]>(
     [],
   );
-  // Dynamic fish sizes based on maxFishSizeG
+  // Dynamic fish sizes based on maxFishSizeG (auto-extend beyond base list)
   const newfishSizes = useMemo(() => {
-    if (!feedStores.length) return [];
+    if (!feedStores.length) return fishSizes;
     const maxGlobalFishSize = Math.max(
       ...feedStores.map((store) => store.maxFishSizeG || 0),
     );
-    return fishSizes.filter((size) => size <= maxGlobalFishSize);
+    const baseMax = fishSizes[fishSizes.length - 1] || 0;
+    const capRaw = Math.max(maxGlobalFishSize, baseMax);
+    const cap = Math.min(capRaw, MAX_FISH_SIZE_CAP);
+    const base = fishSizes.filter((size) => size <= cap);
+    const last = base[base.length - 1] || 0;
+    if (cap > last) {
+      const step = 5;
+      const extended = [...base];
+      for (let s = last + step; s <= cap; s += step) extended.push(s);
+      return extended;
+    }
+    return base;
   }, [feedStores]);
 
   const onSubmit: SubmitHandler<FormValues> = (data) => {
@@ -156,6 +169,10 @@ const FeedProfiles = ({
           {options.map((opt, index) => {
             const value = radioValueMap[columnName]?.[opt] ?? `${columnName}_${opt}`;
             const isChecked = field.value?.includes(value);
+            const columnIndex = Number(columnName.replace('col', '')) - 1;
+            // Extract storeId from value `${colKey}_${storeId}`
+            const storeId = String(value.split('_')[1] || '');
+            const store = getStoreByIdInColumn(columnIndex, storeId);
 
             return (
               <FormControlLabel
@@ -166,15 +183,43 @@ const FeedProfiles = ({
                   <Radio
                     checked={isChecked}
                     onChange={() => {
-                      let updated = [...(field.value || [])];
-                      if (isChecked) {
-                        // unselect
-                        updated = updated.filter((v) => v !== value);
-                      } else {
-                        // add new selection
-                        updated.push(value);
+                      // If we know the store in this column, apply range-aware toggle
+                      if (store) {
+                        const clickedSize = Number(field.name.replace('selection_', ''));
+                        // If clicking within declared store range: expand/shrink manually
+                        toggleManualAtRow(columnIndex, store, clickedSize);
+                        return;
                       }
-                      field.onChange(updated);
+                      // Fallback: single-row toggle with exclusivity
+                      const rowName = field.name;
+                      const prev: string[] = watch(rowName) || [];
+                      if (isChecked) {
+                        const updated = prev.filter((v) => v !== value);
+                        setValue(rowName, updated, { shouldDirty: true, shouldValidate: true });
+                      } else {
+                        const withoutAnyColumn = prev.filter((v) => !/^col\d+_/.test(v));
+                        const updated = [...withoutAnyColumn, value];
+                        setValue(rowName, updated, { shouldDirty: true, shouldValidate: true });
+                      }
+                    }}
+                    onClick={(e) => {
+                      if (!store) return;
+                      const clickedSize = Number(field.name.replace('selection_', ''));
+                      const existing = getSelectedSizesForStore(columnIndex, store.id);
+                      const valueToSet = `${`col${columnIndex + 1}`}_${store.id}`;
+                      // If exactly this single cell is selected, unselect it
+                      if (existing.length === 1 && existing[0] === clickedSize && isChecked) {
+                        const prev: string[] = watch(field.name) || [];
+                        const updated = prev.filter((v) => v !== valueToSet && v !== value);
+                        setValue(field.name, updated, { shouldDirty: true, shouldValidate: true });
+                        e.preventDefault();
+                        e.stopPropagation();
+                        return;
+                      }
+                      // Otherwise use range behavior; prevent default to avoid double-processing
+                      toggleManualAtRow(columnIndex, store, clickedSize);
+                      e.preventDefault();
+                      e.stopPropagation();
                     }}
                   />
                 }
@@ -207,41 +252,164 @@ const FeedProfiles = ({
     );
   }, [selectedSupplier, feedStores]);
 
-  // New function to handle auto-selection
-  const handleAutoSelect = (store, supplierId, storeIndex) => {
+  // Helpers for range-aware selection within a column (supplier)
+  const getColumnKeyBySupplierId = (supplierId: number) => {
     const columnIndex = groupedData.findIndex(
       (group) => group.supplier.id === supplierId,
     );
+    return { columnIndex, colKey: `col${columnIndex + 1}` };
+  };
+
+  const getStoreByIdInColumn = (columnIndex: number, storeId: string | number) => {
+    const group = groupedData[columnIndex];
+    if (!group) return undefined;
+    return group.stores.find((s) => String(s.id) === String(storeId));
+  };
+
+  // Ensure one selection per column per row and handle range toggling
+  const toggleStoreRangeInColumn = (columnIndex: number, store: FeedProduct) => {
     const colKey = `col${columnIndex + 1}`;
     const valueToSet = `${colKey}_${store.id}`;
 
-    // Check if any size in the store's range is already selected
-    const isAnySizeSelected = newfishSizes.some((size) => {
+    // Determine if any size in the store range is already selected
+    const anySelectedInRange = newfishSizes.some((size) => {
+      if (size < store.minFishSizeG || size > store.maxFishSizeG) return false;
       const rowName = `selection_${size}`;
       const prev = watch(rowName) || [];
       return prev.includes(valueToSet);
     });
 
-    if (isAnySizeSelected) {
-      // If any size is selected, unselect the entire range
+    if (anySelectedInRange) {
+      // Unselect entire range for this store
       newfishSizes.forEach((size) => {
+        if (size < store.minFishSizeG || size > store.maxFishSizeG) return;
         const rowName = `selection_${size}`;
         const prev = watch(rowName) || [];
-        const updated = prev.filter((v) => v !== valueToSet);
+        const updated = prev.filter((v: string) => v !== valueToSet);
         setValue(rowName, updated, { shouldDirty: true, shouldValidate: true });
       });
-    } else {
-      // If no size is selected, select the entire range
-      newfishSizes.forEach((size) => {
-        const rowName = `selection_${size}`;
-        if (size >= store.minFishSizeG && size <= store.maxFishSizeG) {
-          const prev = watch(rowName) || [];
-          // Ensure we don't add duplicates
-          const updated = prev.includes(valueToSet) ? prev : [...prev, valueToSet];
-          setValue(rowName, updated, { shouldDirty: true, shouldValidate: true });
-        }
-      });
+      return;
     }
+
+    // Select entire range for this store and remove conflicts across ALL columns for rows in range
+    newfishSizes.forEach((size) => {
+      const rowName = `selection_${size}`;
+      const prev: string[] = watch(rowName) || [];
+
+      if (size >= store.minFishSizeG && size <= store.maxFishSizeG) {
+        // Remove any selection from ANY column in this row (enforce single pick per fish size)
+        const withoutAnyColumn = prev.filter((v) => !/^col\d+_/.test(v));
+        const updated = withoutAnyColumn.includes(valueToSet)
+          ? withoutAnyColumn
+          : [...withoutAnyColumn, valueToSet];
+        setValue(rowName, updated, { shouldDirty: true, shouldValidate: true });
+      } else {
+        // Outside the new range, keep as-is
+      }
+    });
+  };
+
+  const getSelectedSizesForStore = (columnIndex: number, storeId: string | number) => {
+    const colKey = `col${columnIndex + 1}`;
+    const value = `${colKey}_${storeId}`;
+    const sizes: number[] = [];
+    newfishSizes.forEach((size) => {
+      const rowName = `selection_${size}`;
+      const prev: string[] = watch(rowName) || [];
+      if (prev.includes(value)) sizes.push(size);
+    });
+    return sizes;
+  };
+
+  // Manual click: expand/shrink selection range for a store anchored to clicked size
+  const toggleManualAtRow = (columnIndex: number, store: FeedProduct, clickedSize: number) => {
+    const colKey = `col${columnIndex + 1}`;
+    const valueToSet = `${colKey}_${store.id}`;
+
+    // Is clicked row already selected for this store?
+    const rowName = `selection_${clickedSize}`;
+    const rowPrev: string[] = watch(rowName) || [];
+    const isSelectedHere = rowPrev.includes(valueToSet);
+
+    if (isSelectedHere) {
+      // If clicked size is at the edge of the contiguous range, shrink only that edge
+      const existing = getSelectedSizesForStore(columnIndex, store.id).sort((a, b) => a - b);
+      if (existing.length) {
+        const idx = existing.indexOf(clickedSize);
+        let newMin = existing[0];
+        let newMax = existing[existing.length - 1];
+
+        if (idx === 0 && existing.length > 1) {
+          // clicked at min edge → bump min up by one step
+          newMin = existing[1];
+        } else if (idx === existing.length - 1 && existing.length > 1) {
+          // clicked at max edge → drop max down by one step
+          newMax = existing[existing.length - 2];
+        } else {
+          // clicked inside the range (middle) → clear full range (simple rule)
+          newfishSizes.forEach((size) => {
+            const rn = `selection_${size}`;
+            const prev: string[] = watch(rn) || [];
+            const updated = prev.filter((v) => v !== valueToSet);
+            setValue(rn, updated, { shouldDirty: true, shouldValidate: true });
+          });
+          return;
+        }
+
+        // Clear all, then re-apply the shrunken contiguous range
+        newfishSizes.forEach((size) => {
+          const rn = `selection_${size}`;
+          const prev: string[] = watch(rn) || [];
+          const updated = prev.filter((v) => v !== valueToSet);
+          setValue(rn, updated, { shouldDirty: true, shouldValidate: true });
+        });
+
+        if (newMin <= newMax) {
+          newfishSizes.forEach((size) => {
+            if (size < newMin || size > newMax) return;
+            const rn = `selection_${size}`;
+            const prev: string[] = watch(rn) || [];
+            const withoutAnyColumn = prev.filter((v) => !/^col\d+_/.test(v));
+            const updated = withoutAnyColumn.includes(valueToSet)
+              ? withoutAnyColumn
+              : [...withoutAnyColumn, valueToSet];
+            setValue(rn, updated, { shouldDirty: true, shouldValidate: true });
+          });
+        }
+        return;
+      }
+
+      // No existing tracked sizes somehow → just remove this row
+      const updated = rowPrev.filter((v) => v !== valueToSet);
+      setValue(rowName, updated, { shouldDirty: true, shouldValidate: true });
+      return;
+    }
+
+    // Expand to include clicked size, keeping the selection contiguous
+    const existing = getSelectedSizesForStore(columnIndex, store.id);
+    const minExisting = existing.length ? Math.min(...existing) : clickedSize;
+    const maxExisting = existing.length ? Math.max(...existing) : clickedSize;
+    const newMin = Math.min(minExisting, clickedSize);
+    const newMax = Math.max(maxExisting, clickedSize);
+
+    newfishSizes.forEach((size) => {
+      const rn = `selection_${size}`;
+      const prev: string[] = watch(rn) || [];
+      if (size >= newMin && size <= newMax) {
+        // enforce single pick per row across all suppliers
+        const withoutAnyColumn = prev.filter((v) => !/^col\d+_/.test(v));
+        const updated = withoutAnyColumn.includes(valueToSet)
+          ? withoutAnyColumn
+          : [...withoutAnyColumn, valueToSet];
+        setValue(rn, updated, { shouldDirty: true, shouldValidate: true });
+      }
+    });
+  };
+
+  const handleAutoSelect = (store, supplierId, storeIndex) => {
+    const { columnIndex } = getColumnKeyBySupplierId(supplierId);
+    if (columnIndex < 0) return;
+    toggleStoreRangeInColumn(columnIndex, store);
   };
 
   useEffect(() => {

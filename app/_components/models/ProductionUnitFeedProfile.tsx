@@ -29,6 +29,9 @@ import { FeedProduct } from '@/app/_typeModels/Feed';
 import { FeedSupplier } from '@/app/_typeModels/Organization';
 import { DoneAll } from '@mui/icons-material';
 
+// Hard cap to avoid huge tables caused by outlier max sizes
+const MAX_FISH_SIZE_CAP = 1000;
+
 interface Props {
   productionParaMeter?: ProductionParaMeterType[];
   editFarm?: Farm;
@@ -82,6 +85,26 @@ const ProductionUnitFeedProfile: React.FC<Props> = ({
   const [selectedSupplier, setSelectedSupplier] = useState<SupplierOptions[]>([]);
 
   const { control, handleSubmit, setValue, watch, reset } = useForm<FormData>();
+
+  // Dynamic fish sizes based on maxFishSizeG (auto-extend with cap)
+  const dynamicFishSizes = useMemo(() => {
+    if (!feedStores.length) return fishSizes;
+    const maxGlobalFishSize = Math.max(
+      ...feedStores.map((store) => store.maxFishSizeG || 0),
+    );
+    const baseMax = fishSizes[fishSizes.length - 1] || 0;
+    const capRaw = Math.max(maxGlobalFishSize, baseMax);
+    const cap = Math.min(capRaw, MAX_FISH_SIZE_CAP);
+    const base = fishSizes.filter((size) => size <= cap);
+    const last = base[base.length - 1] || 0;
+    if (cap > last) {
+      const step = 5;
+      const extended = [...base];
+      for (let s = last + step; s <= cap; s += step) extended.push(s);
+      return extended;
+    }
+    return base;
+  }, [feedStores]);
 
   const groupedData: GroupedSupplierStores[] = useMemo(() => {
     return selectedSupplier?.reduce(
@@ -215,19 +238,139 @@ const currentUnit = units.find((p) => p.name === selectedUnitName);
 
 }, [selectedUnitName, groupedData, reset, productionUnits]);
 
-  const handleAutoSelect = (store, supplierId) => {
-    const colIndex = groupedData.findIndex((g) => g.supplier.id === supplierId);
-    const colKey = `col${colIndex + 1}`;
+  // Helpers mirroring FeedProfiles behavior
+  const getStoreByIdInColumn = (columnIndex: number, storeId: string | number) => {
+    const group = groupedData[columnIndex];
+    if (!group) return undefined;
+    return group.stores.find((s) => String(s.id) === String(storeId));
+  };
+
+  const getSelectedSizesForStore = (columnIndex: number, storeId: string | number) => {
+    const colKey = `col${columnIndex + 1}`;
+    const value = `${colKey}_${storeId}`;
+    const sizes: number[] = [];
+    dynamicFishSizes.forEach((size) => {
+      const rowName = `selection_${size}`;
+      const prev: string[] = watch(rowName) || [];
+      if (prev.includes(value)) sizes.push(size);
+    });
+    return sizes;
+  };
+
+  const toggleStoreRangeInColumn = (columnIndex: number, store: FeedProduct) => {
+    const colKey = `col${columnIndex + 1}`;
     const valueToSet = `${colKey}_${store.id}`;
 
-    fishSizes.forEach((size) => {
+    // If any size in range is selected → unselect entire range
+    const anySelected = dynamicFishSizes.some((size) => {
+      if (size < store.minFishSizeG || size > store.maxFishSizeG) return false;
       const rowName = `selection_${size}`;
-      if (size >= store.minFishSizeG && size <= store.maxFishSizeG) {
+      const prev: string[] = watch(rowName) || [];
+      return prev.includes(valueToSet);
+    });
+
+    if (anySelected) {
+      dynamicFishSizes.forEach((size) => {
+        if (size < store.minFishSizeG || size > store.maxFishSizeG) return;
+        const rowName = `selection_${size}`;
         const prev: string[] = watch(rowName) || [];
-        const updated = prev.includes(valueToSet) ? prev.filter(v => v !== valueToSet) : [...prev, valueToSet];
-        setValue(rowName, updated, { shouldValidate: true });
+        const updated = prev.filter((v) => v !== valueToSet);
+        setValue(rowName, updated, { shouldDirty: true, shouldValidate: true });
+      });
+      return;
+    }
+
+    // Select full range and enforce exclusivity per row across all suppliers
+    dynamicFishSizes.forEach((size) => {
+      const rowName = `selection_${size}`;
+      const prev: string[] = watch(rowName) || [];
+      if (size >= store.minFishSizeG && size <= store.maxFishSizeG) {
+        const withoutAnyColumn = prev.filter((v) => !/^col\d+_/.test(v));
+        const updated = withoutAnyColumn.includes(valueToSet)
+          ? withoutAnyColumn
+          : [...withoutAnyColumn, valueToSet];
+        setValue(rowName, updated, { shouldDirty: true, shouldValidate: true });
       }
     });
+  };
+
+  const toggleManualAtRow = (columnIndex: number, store: FeedProduct, clickedSize: number) => {
+    const colKey = `col${columnIndex + 1}`;
+    const valueToSet = `${colKey}_${store.id}`;
+    const rowName = `selection_${clickedSize}`;
+    const rowPrev: string[] = watch(rowName) || [];
+    const isSelectedHere = rowPrev.includes(valueToSet);
+
+    if (isSelectedHere) {
+      const existing = getSelectedSizesForStore(columnIndex, store.id).sort((a, b) => a - b);
+      if (existing.length) {
+        const idx = existing.indexOf(clickedSize);
+        let newMin = existing[0];
+        let newMax = existing[existing.length - 1];
+        if (idx === 0 && existing.length > 1) {
+          newMin = existing[1];
+        } else if (idx === existing.length - 1 && existing.length > 1) {
+          newMax = existing[existing.length - 2];
+        } else {
+          // middle → clear entire range
+          dynamicFishSizes.forEach((size) => {
+            const rn = `selection_${size}`;
+            const prev: string[] = watch(rn) || [];
+            const updated = prev.filter((v) => v !== valueToSet);
+            setValue(rn, updated, { shouldDirty: true, shouldValidate: true });
+          });
+          return;
+        }
+
+        // Clear then re-apply shrunken range
+        dynamicFishSizes.forEach((size) => {
+          const rn = `selection_${size}`;
+          const prev: string[] = watch(rn) || [];
+          const updated = prev.filter((v) => v !== valueToSet);
+          setValue(rn, updated, { shouldDirty: true, shouldValidate: true });
+        });
+        if (newMin <= newMax) {
+          dynamicFishSizes.forEach((size) => {
+            if (size < newMin || size > newMax) return;
+            const rn = `selection_${size}`;
+            const prev: string[] = watch(rn) || [];
+            const withoutAnyColumn = prev.filter((v) => !/^col\d+_/.test(v));
+            const updated = withoutAnyColumn.includes(valueToSet)
+              ? withoutAnyColumn
+              : [...withoutAnyColumn, valueToSet];
+            setValue(rn, updated, { shouldDirty: true, shouldValidate: true });
+          });
+        }
+        return;
+      }
+      const updated = rowPrev.filter((v) => v !== valueToSet);
+      setValue(rowName, updated, { shouldDirty: true, shouldValidate: true });
+      return;
+    }
+
+    // Expand to include clicked size
+    const existing = getSelectedSizesForStore(columnIndex, store.id);
+    const minExisting = existing.length ? Math.min(...existing) : clickedSize;
+    const maxExisting = existing.length ? Math.max(...existing) : clickedSize;
+    const newMin = Math.min(minExisting, clickedSize);
+    const newMax = Math.max(maxExisting, clickedSize);
+    dynamicFishSizes.forEach((size) => {
+      const rn = `selection_${size}`;
+      const prev: string[] = watch(rn) || [];
+      if (size >= newMin && size <= newMax) {
+        const withoutAnyColumn = prev.filter((v) => !/^col\d+_/.test(v));
+        const updated = withoutAnyColumn.includes(valueToSet)
+          ? withoutAnyColumn
+          : [...withoutAnyColumn, valueToSet];
+        setValue(rn, updated, { shouldDirty: true, shouldValidate: true });
+      }
+    });
+  };
+
+  const handleAutoSelect = (store, supplierId) => {
+    const colIndex = groupedData.findIndex((g) => g.supplier.id === supplierId);
+    if (colIndex < 0) return;
+    toggleStoreRangeInColumn(colIndex, store);
   };
 
   const renderRadioGroup = (rowName: string, columnName: string, options: string[]) => (
@@ -249,10 +392,39 @@ const currentUnit = units.find((p) => p.name === selectedUnitName);
                   <Radio
                     checked={isChecked}
                     onChange={() => {
+                      const columnIndex = Number(columnName.replace('col', '')) - 1;
+                      const storeId = String((radioValueMap[columnName]?.[opt] ?? `${columnName}_${opt}`).split('_')[1] || '');
+                      const store = getStoreByIdInColumn(columnIndex, storeId);
+                      if (store) {
+                        const clickedSize = Number(field.name.replace('selection_', ''));
+                        toggleManualAtRow(columnIndex, store, clickedSize);
+                        return;
+                      }
+                      // fallback
                       let updated = [...(field.value || [])];
                       if (isChecked) updated = updated.filter((v) => v !== value);
                       else updated.push(value);
                       field.onChange(updated);
+                    }}
+                    onClick={(e) => {
+                      const columnIndex = Number(columnName.replace('col', '')) - 1;
+                      const storeId = String((radioValueMap[columnName]?.[opt] ?? `${columnName}_${opt}`).split('_')[1] || '');
+                      const store = getStoreByIdInColumn(columnIndex, storeId);
+                      if (!store) return;
+                      const clickedSize = Number(field.name.replace('selection_', ''));
+                      const existing = getSelectedSizesForStore(columnIndex, store.id);
+                      const valueToSet = `${`col${columnIndex + 1}`}_${store.id}`;
+                      if (existing.length === 1 && existing[0] === clickedSize && isChecked) {
+                        const prev: string[] = watch(field.name) || [];
+                        const updated = prev.filter((v) => v !== valueToSet && v !== value);
+                        setValue(field.name, updated, { shouldDirty: true, shouldValidate: true });
+                        e.preventDefault();
+                        e.stopPropagation();
+                        return;
+                      }
+                      toggleManualAtRow(columnIndex, store, clickedSize);
+                      e.preventDefault();
+                      e.stopPropagation();
                     }}
                   />
                 }
@@ -419,7 +591,7 @@ const currentUnit = units.find((p) => p.name === selectedUnitName);
                             }}
                           >
                             {group.stores.map((store) => {
-                              const isSelectedForStore = fishSizes.some(size => {
+                              const isSelectedForStore = dynamicFishSizes.some(size => {
                                 const rowName = `selection_${size}`;
                                 const selected: string[] = watch(rowName) || [];
                                 const colKey = `col${colIndex + 1}`;
@@ -483,7 +655,7 @@ const currentUnit = units.find((p) => p.name === selectedUnitName);
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {fishSizes.map((size) => {
+                  {dynamicFishSizes.map((size) => {
                     const rowName = `selection_${size}`;
                     return (
                       <TableRow key={size}>
