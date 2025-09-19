@@ -42,7 +42,11 @@ import Loader from '../Loader';
 import FishGrowthTable from '../table/FishGrowthTable';
 import FishGrowthChart from '../charts/FishGrowthChart';
 import PrintPreviewDialog from '../PrintPreviewDialog';
-import { productionSystemOptions, speciesOptions, timeIntervalOptions } from './FeedingPlan';
+import {
+  productionSystemOptions,
+  speciesOptions,
+  timeIntervalOptions,
+} from './FeedingPlan';
 import { Farm } from '@/app/_typeModels/Farm';
 import { Species } from '../feedSupply/NewFeedLibarary';
 import { productionSystem } from '../GrowthModel';
@@ -133,16 +137,20 @@ function AdHoc({ data, setData }: Iprops) {
   const token = getCookie('auth-token');
   const [speciesList, setSpeciesList] = useState<Species[]>([]);
   const featuredspeciesList = speciesList.filter((item) => item.isFeatured);
-  const [productionSystemList, setProductionSystemList] = useState<productionSystem[]>([]);
-  const featuredproductionSystemList = productionSystemList.filter((item) => item.isFeatured);
-  const [growthModelData, setGrowthModelData] = useState<OrganisationModelResponse[]>([]);
+  const [productionSystemList, setProductionSystemList] = useState<
+    productionSystem[]
+  >([]);
+  const featuredproductionSystemList = productionSystemList.filter(
+    (item) => item.isFeatured,
+  );
+  const [growthModelData, setGrowthModelData] = useState<
+    OrganisationModelResponse[]
+  >([]);
 
   const [organisationId, setOrganisationId] = useState<number>(0);
 
-
-  const [selectedGrowthModel, setSelectedGrowthModel] = useState<OrganisationModelResponse | null>(
-    null,
-  );
+  const [selectedGrowthModel, setSelectedGrowthModel] =
+    useState<OrganisationModelResponse | null>(null);
 
   const selectedSpecies = watch('species');
   const selectedProductionSystem = watch('productionSystem');
@@ -168,21 +176,21 @@ function AdHoc({ data, setData }: Iprops) {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`,
+              Authorization: `Bearer ${token}`,
             },
           }),
           fetch('/api/production-system', {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`,
+              Authorization: `Bearer ${token}`,
             },
           }),
         ]);
 
-
         if (!speciesRes.ok) throw new Error('Failed to fetch species');
-        if (!productionRes.ok) throw new Error('Failed to fetch production system');
+        if (!productionRes.ok)
+          throw new Error('Failed to fetch production system');
 
         const speciesData = await speciesRes.json();
         const productionData = await productionRes.json();
@@ -200,13 +208,16 @@ function AdHoc({ data, setData }: Iprops) {
     if (organisationId > 0) {
       const fetchModels = async () => {
         try {
-          const res = await fetch(`/api/growth-model?organisationId=${organisationId}`, {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${token}`,
+          const res = await fetch(
+            `/api/growth-model?organisationId=${organisationId}`,
+            {
+              method: 'GET',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+              },
             },
-          });
+          );
           const data = await res.json();
           setGrowthModelData(data.data || []);
         } catch (error) {
@@ -224,7 +235,9 @@ function AdHoc({ data, setData }: Iprops) {
     }
 
     const speciesObj = speciesList.find((s) => s.id === selectedSpecies);
-    const prodObj = productionSystemList.find((p) => p.id === selectedProductionSystem);
+    const prodObj = productionSystemList.find(
+      (p) => p.id === selectedProductionSystem,
+    );
 
     if (!speciesObj || !prodObj) {
       setSelectedGrowthModel(null);
@@ -233,7 +246,9 @@ function AdHoc({ data, setData }: Iprops) {
 
     // Exact matches by species and production system
     const filtered = growthModelData.filter(
-      (gm) => gm.models.specieId === speciesObj.id && gm.models.productionSystemId === prodObj.id
+      (gm) =>
+        gm.models.specieId === speciesObj.id &&
+        gm.models.productionSystemId === prodObj.id,
     );
 
     if (filtered.length === 1) {
@@ -257,7 +272,7 @@ function AdHoc({ data, setData }: Iprops) {
 
     // No direct match: use species default regardless of production system
     const defaultModel = growthModelData.find(
-      (gm) => gm.models.specieId === speciesObj.id && gm.isDefault
+      (gm) => gm.models.specieId === speciesObj.id && gm.isDefault,
     );
     if (defaultModel) {
       setSelectedGrowthModel(defaultModel);
@@ -265,9 +280,16 @@ function AdHoc({ data, setData }: Iprops) {
     }
 
     setSelectedGrowthModel(null);
-    toast.error('No growth model available for the selected species and production system.');
-  }, [selectedSpecies, selectedProductionSystem, growthModelData, speciesList, productionSystemList]);
-
+    toast.error(
+      'No growth model available for the selected species and production system.',
+    );
+  }, [
+    selectedSpecies,
+    selectedProductionSystem,
+    growthModelData,
+    speciesList,
+    productionSystemList,
+  ]);
 
   const onSubmit: SubmitHandler<FormInputs> = (data) => {
     const formattedDate = dayjs(data.startDate).format('YYYY-MM-DD');
@@ -276,7 +298,9 @@ function AdHoc({ data, setData }: Iprops) {
     const speciesName = speciesObj?.name || '';
 
     if (!selectedGrowthModel) {
-      toast.error('No growth model resolved for the selected species and production system.');
+      toast.error(
+        'No growth model resolved for the selected species and production system.',
+      );
       setData([]);
       return;
     }
@@ -589,7 +613,9 @@ function AdHoc({ data, setData }: Iprops) {
             </tr>
           </thead>
           <tbody>
-            ${formatedData.map((row) => `
+            ${formatedData
+              .map(
+                (row) => `
               <tr>
                 <td style=\"border:1px solid #ccc; padding:8px 12px;\">${row.date}</td>
                 <td style=\"border:1px solid #ccc; padding:8px 12px;\">${row.averageProjectedTemp}</td>
@@ -602,7 +628,9 @@ function AdHoc({ data, setData }: Iprops) {
                 <td style=\"border:1px solid #ccc; padding:8px 12px;\">${row.feedIntake}</td>
                 <td style=\"border:1px solid #ccc; padding:8px 12px;\">${row.feedingRate}</td>
               </tr>
-            `).join('')}
+            `,
+              )
+              .join('')}
           </tbody>
         </table>
       </div>
@@ -614,7 +642,10 @@ function AdHoc({ data, setData }: Iprops) {
 
   const handleGraphPreview = async () => {
     if (!data.length) return;
-    const formatedData = data.map((v) => ({ date: v.date, fishSize: v.fishSize }));
+    const formatedData = data.map((v) => ({
+      date: v.date,
+      fishSize: v.fishSize,
+    }));
 
     const tempDiv = document.createElement('div');
     document.body.appendChild(tempDiv);
@@ -624,7 +655,7 @@ function AdHoc({ data, setData }: Iprops) {
         xAxisData={formatedData.map((v) => v.date)}
         yData={formatedData.map((v) => v.fishSize)}
         graphTitle={`Ad-hoc Prediction`}
-      />
+      />,
     );
     await new Promise((r) => setTimeout(r, 500));
     const canvas = await html2canvas(tempDiv);
@@ -653,7 +684,7 @@ function AdHoc({ data, setData }: Iprops) {
         xAxisData={data.map((v) => v.date)}
         yData={data.map((v) => v.fishSize)}
         graphTitle={`Ad-hoc Prediction`}
-      />
+      />,
     );
     await new Promise((r) => setTimeout(r, 600));
     const canvas = await html2canvas(tempDiv);
@@ -675,9 +706,13 @@ function AdHoc({ data, setData }: Iprops) {
     const intakeByFeedType: Record<string, number> = {};
     data.forEach((i) => {
       const v = parseFloat(String(i.feedIntake));
-      intakeByFeedType[i.feedType] = (intakeByFeedType[i.feedType] || 0) + (isNaN(v) ? 0 : v);
+      intakeByFeedType[i.feedType] =
+        (intakeByFeedType[i.feedType] || 0) + (isNaN(v) ? 0 : v);
     });
-    const totalIntake = Object.values(intakeByFeedType).reduce((a, b) => a + b, 0);
+    const totalIntake = Object.values(intakeByFeedType).reduce(
+      (a, b) => a + b,
+      0,
+    );
     const totalBags = (totalIntake / 20).toFixed(2);
 
     const html = `
@@ -692,15 +727,15 @@ function AdHoc({ data, setData }: Iprops) {
           </thead>
           <tbody>
             ${uniqueFeedTypes
-        .map((feed) => {
-          const kg = (intakeByFeedType[feed] || 0).toFixed(2);
-          const bags = ((intakeByFeedType[feed] || 0) / 20).toFixed(2);
-          return `<tr>
+              .map((feed) => {
+                const kg = (intakeByFeedType[feed] || 0).toFixed(2);
+                const bags = ((intakeByFeedType[feed] || 0) / 20).toFixed(2);
+                return `<tr>
                   <td style=\"border:1px solid #ccc; padding:8px 12px;\">${feed}</td>
                   <td style=\"border:1px solid #ccc; padding:8px 12px;\">${kg} Kg (${bags} Bags)</td>
                 </tr>`;
-        })
-        .join('')}
+              })
+              .join('')}
             <tr>
               <td style=\"border:1px solid #ccc; padding:12px; font-weight:600; background:#06a19b; color:#fff;\">Total</td>
               <td style=\"border:1px solid #ccc; padding:12px; font-weight:600; background:#06a19b; color:#fff;\">${totalIntake.toFixed(2)} Kg (${totalBags} Bags)</td>
@@ -862,14 +897,20 @@ function AdHoc({ data, setData }: Iprops) {
           {/* Production System Dropdown */}
           <Grid item lg={3} md={4} sm={6} xs={12}>
             <FormControl className="form-input" fullWidth focused>
-              <InputLabel id="production-system-label">Production System *</InputLabel>
+              <InputLabel id="production-system-label">
+                Production System *
+              </InputLabel>
               <Controller
                 name="productionSystem"
                 control={control}
                 defaultValue={''}
                 rules={{ required: true }}
                 render={({ field }) => (
-                  <Select {...field} labelId="production-system-label" label="Production System *">
+                  <Select
+                    {...field}
+                    labelId="production-system-label"
+                    label="Production System *"
+                  >
                     {featuredproductionSystemList.map((option) => (
                       <MenuItem value={option.id} key={option.id}>
                         {option.name}
@@ -887,7 +928,6 @@ function AdHoc({ data, setData }: Iprops) {
           </Grid>
           {/* Growth model selection is automatic; no UI dropdown needed */}
         </Grid>
-
 
         <Grid container spacing={3} mt={2} mb={5} alignItems={'start'}>
           <Grid item lg={3} md={4} sm={6} xs={12}>
@@ -1397,103 +1437,98 @@ function AdHoc({ data, setData }: Iprops) {
       {data?.length !== 0 && (
         <Box>
           {/* Table actions and table first */}
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'flex-end',
+              alignItems: 'center',
+              flexWrap: 'wrap',
+              gap: 2,
+              marginBottom: 3,
+            }}
+          >
+            <Button
+              id="basic-button"
+              type="button"
+              variant="contained"
+              onClick={(e) => createxlsxFile(e)}
+              sx={{
+                background: '#06A19B',
+                color: '#fff',
+                fontWeight: 600,
+                padding: '6px 16px',
+                width: 'fit-content',
+                textTransform: 'capitalize',
+                borderRadius: '8px',
+              }}
+            >
+              Create .xlsx File
+            </Button>
 
-          <Grid container spacing={3} mt={2} mb={5} alignItems={'flex-end'}>
-            <Grid item lg={3} md={4} sm={6} xs={12}>
-              <Button
-                id="basic-button"
-                type="button"
-                variant="contained"
-                onClick={(e) => createxlsxFile(e)}
-                sx={{
-                  background: '#fff',
-                  color: '#06A19B',
-                  fontWeight: 600,
-                  padding: '6px 16px',
-                  width: 'fit-content',
-                  textTransform: 'capitalize',
-                  borderRadius: '8px',
-                  border: '1px solid #06A19B',
-                  marginBottom: '10px',
-                  marginTop: '10px',
+            <Button
+              id="basic-button"
+              type="button"
+              variant="contained"
+              onClick={CreateFeedPredictionPDF}
+              sx={{
+                background: '#fff',
+                color: '#06A19B',
+                fontWeight: 600,
+                padding: '6px 16px',
+                width: 'fit-content',
+                textTransform: 'capitalize',
+                borderRadius: '8px',
+                border: '1px solid #06A19B',
+                boxShadow: 'none',
+                '&:hover': {
                   boxShadow: 'none',
-                  '&:hover': {
-                    boxShadow: 'none',
-                  },
-                }}
-              >
-                Create .xlsx File
-              </Button>
-            </Grid>
-            <Grid item lg={3} md={4} sm={6} xs={12}>
-              <Button
-                id="basic-button"
-                type="button"
-                variant="contained"
-                onClick={CreateFeedPredictionPDF}
-                sx={{
-                  background: '#fff',
-                  color: '#06A19B',
-                  fontWeight: 600,
-                  padding: '6px 16px',
-                  width: 'fit-content',
-                  textTransform: 'capitalize',
-                  borderRadius: '8px',
-                  border: '1px solid #06A19B',
-                  marginBottom: '10px',
+                },
+              }}
+            >
+              Create PDF
+            </Button>
+
+            <Button
+              id="basic-button"
+              type="button"
+              variant="contained"
+              onClick={handleFullTablePreview}
+              sx={{
+                background: '#06A19B',
+                color: '#fff',
+                fontWeight: 600,
+                padding: '6px 16px',
+                width: 'fit-content',
+                textTransform: 'capitalize',
+                borderRadius: '8px',
+              }}
+            >
+              Print
+            </Button>
+
+            <Button
+              id="basic-button"
+              type="button"
+              onClick={resetAdHocData}
+              variant="contained"
+              sx={{
+                background: '#fff',
+                color: '#06A19B',
+                fontWeight: 600,
+                padding: '6px 16px',
+                width: 'fit-content',
+                textTransform: 'capitalize',
+                borderRadius: '8px',
+                border: '1px solid #06A19B',
+                boxShadow: 'none',
+                '&:hover': {
                   boxShadow: 'none',
-                  '&:hover': {
-                    boxShadow: 'none',
-                  },
-                }}
-              >
-                Create PDF
-              </Button>
-            </Grid>
-            <Grid item lg={3} md={4} sm={6} xs={12}>
-              <Button
-                id="basic-button"
-                type="button"
-                variant="contained"
-                onClick={handleFullTablePreview}
-                sx={{
-                  background: '#06A19B',
-                  color: '#fff',
-                  fontWeight: 600,
-                  padding: '6px 16px',
-                  width: 'fit-content',
-                  textTransform: 'capitalize',
-                  borderRadius: '8px',
-                }}
-              >
-                Print
-              </Button>
-            </Grid>
-            <Grid item lg={3} md={4} sm={6} xs={12}>
-              <Button
-                id="basic-button"
-                type="button"
-                onClick={resetAdHocData}
-                variant="contained"
-                sx={{
-                  background: '#fff',
-                  color: '#06A19B',
-                  fontWeight: 600,
-                  padding: '6px 16px',
-                  width: 'fit-content',
-                  textTransform: 'capitalize',
-                  borderRadius: '8px',
-                  border: '1px solid #06A19B',
-                  boxShadow: 'none',
-                  '&:hover': {
-                    boxShadow: 'none',
-                  },
-                }}
-              >
-                Reset
-              </Button>
-            </Grid>
-          </Grid>
+                },
+              }}
+            >
+              Reset
+            </Button>
+          </Box>
           <FishGrowthTable data={data} />
         </Box>
       )}
@@ -1508,12 +1543,24 @@ function AdHoc({ data, setData }: Iprops) {
                 yData={data?.map((v) => v.fishSize) || []}
                 graphTitle={`Ad-hoc Prediction`}
               />
-              <Box display={'flex'} gap={1.5} justifyContent={'flex-end'} mt={1.5}>
+              <Box
+                display={'flex'}
+                gap={1.5}
+                justifyContent={'flex-end'}
+                mt={1.5}
+              >
                 <Button
                   type="button"
                   variant="contained"
                   onClick={createGraphPDF}
-                  sx={{ background: '#06A19B', color: '#fff', fontWeight: 600, padding: '6px 16px', textTransform: 'capitalize', borderRadius: '8px' }}
+                  sx={{
+                    background: '#06A19B',
+                    color: '#fff',
+                    fontWeight: 600,
+                    padding: '6px 16px',
+                    textTransform: 'capitalize',
+                    borderRadius: '8px',
+                  }}
                 >
                   Create Pdf
                 </Button>
@@ -1521,49 +1568,149 @@ function AdHoc({ data, setData }: Iprops) {
                   type="button"
                   variant="contained"
                   onClick={handleGraphPreview}
-                  sx={{ background: '#fff', color: '#06A19B', fontWeight: 600, padding: '6px 16px', textTransform: 'capitalize', borderRadius: '8px', border: '1px solid #06A19B' }}
+                  sx={{
+                    background: '#fff',
+                    color: '#06A19B',
+                    fontWeight: 600,
+                    padding: '6px 16px',
+                    textTransform: 'capitalize',
+                    borderRadius: '8px',
+                    border: '1px solid #06A19B',
+                  }}
                 >
                   Print
                 </Button>
               </Box>
             </Grid>
             <Grid item xs={12} md={4}>
-              <TableContainer component={Paper} ref={feedSummaryRef} sx={{ overflow: 'hidden', borderRadius: '14px', boxShadow: '0px 0px 16px 5px #0000001A' }}>
+              <TableContainer
+                component={Paper}
+                ref={feedSummaryRef}
+                sx={{
+                  overflow: 'hidden',
+                  borderRadius: '14px',
+                  boxShadow: '0px 0px 16px 5px #0000001A',
+                }}
+              >
                 <Table stickyHeader>
                   <TableHead>
                     <TableRow>
-                      <TableCell sx={{ borderBottom: 0, color: '#fff', background: '#06a19b', fontWeight: 600 }}>Feed</TableCell>
-                      <TableCell sx={{ borderBottom: 0, color: '#fff', background: '#06a19b', fontWeight: 600 }}>Requirement</TableCell>
+                      <TableCell
+                        sx={{
+                          borderBottom: 0,
+                          color: '#fff',
+                          background: '#06a19b',
+                          fontWeight: 600,
+                        }}
+                      >
+                        Feed
+                      </TableCell>
+                      <TableCell
+                        sx={{
+                          borderBottom: 0,
+                          color: '#fff',
+                          background: '#06a19b',
+                          fontWeight: 600,
+                        }}
+                      >
+                        Requirement
+                      </TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {Array.from(new Set(data.map((i) => i.feedType))).map((feed) => {
-                      const intake = data.filter((i) => i.feedType === feed).reduce((sum, i) => sum + (parseFloat(String(i.feedIntake)) || 0), 0);
-                      const kg = intake.toFixed(2);
-                      const bags = (intake / 20).toFixed(2);
-                      return (
-                        <TableRow key={feed}>
-                          <TableCell sx={{ color: '#555555', fontWeight: 500 }}>{feed}</TableCell>
-                          <TableCell sx={{ color: '#555555', fontWeight: 500 }}>{`${kg} Kg (${bags} Bags)`}</TableCell>
-                        </TableRow>
-                      );
-                    })}
+                    {Array.from(new Set(data.map((i) => i.feedType))).map(
+                      (feed) => {
+                        const intake = data
+                          .filter((i) => i.feedType === feed)
+                          .reduce(
+                            (sum, i) =>
+                              sum + (parseFloat(String(i.feedIntake)) || 0),
+                            0,
+                          );
+                        const kg = intake.toFixed(2);
+                        const bags = (intake / 20).toFixed(2);
+                        return (
+                          <TableRow key={feed}>
+                            <TableCell
+                              sx={{ color: '#555555', fontWeight: 500 }}
+                            >
+                              {feed}
+                            </TableCell>
+                            <TableCell
+                              sx={{ color: '#555555', fontWeight: 500 }}
+                            >{`${kg} Kg (${bags} Bags)`}</TableCell>
+                          </TableRow>
+                        );
+                      },
+                    )}
                     {(() => {
-                      const total = data.reduce((sum, i) => sum + (parseFloat(String(i.feedIntake)) || 0), 0);
+                      const total = data.reduce(
+                        (sum, i) =>
+                          sum + (parseFloat(String(i.feedIntake)) || 0),
+                        0,
+                      );
                       const totalBags = (total / 20).toFixed(2);
                       return (
                         <TableRow>
-                          <TableCell sx={{ background: '#06a19b', color: '#fff', fontWeight: 600 }}>Total</TableCell>
-                          <TableCell sx={{ background: '#06a19b', color: '#fff', fontWeight: 600 }}>{`${total.toFixed(2)} Kg (${totalBags} Bags)`}</TableCell>
+                          <TableCell
+                            sx={{
+                              background: '#06a19b',
+                              color: '#fff',
+                              fontWeight: 600,
+                            }}
+                          >
+                            Total
+                          </TableCell>
+                          <TableCell
+                            sx={{
+                              background: '#06a19b',
+                              color: '#fff',
+                              fontWeight: 600,
+                            }}
+                          >{`${total.toFixed(2)} Kg (${totalBags} Bags)`}</TableCell>
                         </TableRow>
                       );
                     })()}
                   </TableBody>
                 </Table>
               </TableContainer>
-              <Box display={'flex'} gap={1.5} justifyContent={'flex-end'} mt={1.5}>
-                <Button type="button" variant="contained" onClick={createFeedSummaryPDF} sx={{ background: '#06A19B', color: '#fff', fontWeight: 600, padding: '6px 16px', textTransform: 'capitalize', borderRadius: '8px' }}>Create PDF</Button>
-                <Button type="button" variant="contained" onClick={handleFeedSummaryPreview} sx={{ background: '#fff', color: '#06A19B', fontWeight: 600, padding: '6px 16px', textTransform: 'capitalize', borderRadius: '8px', border: '1px solid #06A19B' }}>Print</Button>
+              <Box
+                display={'flex'}
+                gap={1.5}
+                justifyContent={'flex-end'}
+                mt={1.5}
+              >
+                <Button
+                  type="button"
+                  variant="contained"
+                  onClick={createFeedSummaryPDF}
+                  sx={{
+                    background: '#06A19B',
+                    color: '#fff',
+                    fontWeight: 600,
+                    padding: '6px 16px',
+                    textTransform: 'capitalize',
+                    borderRadius: '8px',
+                  }}
+                >
+                  Create PDF
+                </Button>
+                <Button
+                  type="button"
+                  variant="contained"
+                  onClick={handleFeedSummaryPreview}
+                  sx={{
+                    background: '#fff',
+                    color: '#06A19B',
+                    fontWeight: 600,
+                    padding: '6px 16px',
+                    textTransform: 'capitalize',
+                    borderRadius: '8px',
+                    border: '1px solid #06A19B',
+                  }}
+                >
+                  Print
+                </Button>
               </Box>
             </Grid>
           </Grid>
