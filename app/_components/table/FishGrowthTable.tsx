@@ -30,7 +30,10 @@ function FishGrowthTable({ data }: Props) {
     setPage(0);
   };
 
-  const paginatedData = data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+  const paginatedData = data.slice(
+    page * rowsPerPage,
+    page * rowsPerPage + rowsPerPage,
+  );
 
   return (
     <Paper
@@ -60,7 +63,6 @@ function FishGrowthTable({ data }: Props) {
               ].map((head, idx) => (
                 <TableCell
                   key={idx}
-
                   sx={{
                     borderBottom: 0,
                     color: '#67737F',
@@ -86,7 +88,8 @@ function FishGrowthTable({ data }: Props) {
                     borderBottomWidth: 2,
                     color: '#555555',
                     fontWeight: 500,
-                  }}>
+                  }}
+                >
                   {row.date}
                 </TableCell>
                 <TableCell
@@ -95,22 +98,28 @@ function FishGrowthTable({ data }: Props) {
                     borderBottomWidth: 2,
                     color: '#555555',
                     fontWeight: 500,
-                  }}>
+                  }}
+                >
                   {row.averageProjectedTemp}
                 </TableCell>
-                <TableCell sx={{
-                  borderBottomColor: '#F5F6F8',
-                  borderBottomWidth: 2,
-                  color: '#555555',
-                  fontWeight: 500,
-                }}>{row.numberOfFish}</TableCell>
                 <TableCell
                   sx={{
                     borderBottomColor: '#F5F6F8',
                     borderBottomWidth: 2,
                     color: '#555555',
                     fontWeight: 500,
-                  }}>
+                  }}
+                >
+                  {row.numberOfFish}
+                </TableCell>
+                <TableCell
+                  sx={{
+                    borderBottomColor: '#F5F6F8',
+                    borderBottomWidth: 2,
+                    color: '#555555',
+                    fontWeight: 500,
+                  }}
+                >
                   {row.fishSize}
                 </TableCell>
                 <TableCell
@@ -119,7 +128,8 @@ function FishGrowthTable({ data }: Props) {
                     borderBottomWidth: 2,
                     color: '#555555',
                     fontWeight: 500,
-                  }}>
+                  }}
+                >
                   {row.growth}
                 </TableCell>
                 <TableCell
@@ -128,7 +138,8 @@ function FishGrowthTable({ data }: Props) {
                     borderBottomWidth: 2,
                     color: '#555555',
                     fontWeight: 500,
-                  }}>
+                  }}
+                >
                   {row.feedType}
                 </TableCell>
                 <TableCell
@@ -137,7 +148,8 @@ function FishGrowthTable({ data }: Props) {
                     borderBottomWidth: 2,
                     color: '#555555',
                     fontWeight: 500,
-                  }}>
+                  }}
+                >
                   {row.feedSize}
                 </TableCell>
                 <TableCell
@@ -146,7 +158,8 @@ function FishGrowthTable({ data }: Props) {
                     borderBottomWidth: 2,
                     color: '#555555',
                     fontWeight: 500,
-                  }}>
+                  }}
+                >
                   {row.estimatedFCR}
                 </TableCell>
                 <TableCell
@@ -155,7 +168,8 @@ function FishGrowthTable({ data }: Props) {
                     borderBottomWidth: 2,
                     color: '#555555',
                     fontWeight: 500,
-                  }}>
+                  }}
+                >
                   {row.feedIntake}
                 </TableCell>
                 <TableCell
@@ -164,7 +178,8 @@ function FishGrowthTable({ data }: Props) {
                     borderBottomWidth: 2,
                     color: '#555555',
                     fontWeight: 500,
-                  }}>
+                  }}
+                >
                   {row.feedingRate}
                 </TableCell>
               </TableRow>
@@ -183,6 +198,10 @@ function FishGrowthTable({ data }: Props) {
         onRowsPerPageChange={handleChangeRowsPerPage}
         rowsPerPageOptions={[5, 10, 20, 50]}
         sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          background: 'transparent',
           '& .MuiTablePagination-toolbar': {
             background: 'rgba(255, 255, 255, 0.75)',
             backdropFilter: 'blur(8px)',
@@ -193,7 +212,6 @@ function FishGrowthTable({ data }: Props) {
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
-            boxShadow: '0px -4px 12px rgba(0,0,0,0.08)',
           },
           '& .MuiTablePagination-selectLabel': {
             color: '#06A19B',
@@ -207,16 +225,18 @@ function FishGrowthTable({ data }: Props) {
             fontWeight: 600,
             fontSize: '0.85rem',
           },
+          '& .MuiSelect-root': {
+            border: '1px solid #06A19B',
+            backgroundColor: 'rgba(6,161,155,0.1)',
+            paddingLeft: '0px!important',
+            paddingRight: '24px!important',
+          },
           '& .MuiTablePagination-select': {
             borderRadius: '20px',
-            border: '1px solid #06A19B',
             px: 2,
             py: 0.5,
             fontWeight: 600,
             fontSize: '0.85rem',
-            '&:hover': {
-              backgroundColor: 'rgba(6,161,155,0.1)',
-            },
           },
           '& .MuiTablePagination-actions': {
             display: 'flex',
@@ -243,7 +263,6 @@ function FishGrowthTable({ data }: Props) {
           },
         }}
       />
-
     </Paper>
   );
 }
