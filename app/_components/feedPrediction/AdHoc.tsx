@@ -1582,16 +1582,15 @@ function AdHoc({ data, setData }: Iprops) {
                 </Button>
               </Box>
             </Grid>
-            <Grid item xs={12} md={4}>
+            {/* <Grid item xs={12} md={4}>
               <TableContainer
                 component={Paper}
                 ref={feedSummaryRef}
                 sx={{
                   overflow: 'hidden',
                   borderRadius: '14px',
-                  boxShadow: '0px 0px 16px 5px #0000001A',
-                }}
-              >
+                  boxShadow: '0px 0px 16px 5px #0000001A'
+                }}>
                 <Table stickyHeader>
                   <TableHead>
                     <TableRow>
@@ -1600,49 +1599,106 @@ function AdHoc({ data, setData }: Iprops) {
                           borderBottom: 0,
                           color: '#fff',
                           background: '#06a19b',
+                          fontSize: {
+                            md: 16,
+                            xs: 14,
+                          },
                           fontWeight: 600,
                         }}
                       >
-                        Feed
+                        Supplier
                       </TableCell>
                       <TableCell
                         sx={{
                           borderBottom: 0,
                           color: '#fff',
                           background: '#06a19b',
+                          fontSize: {
+                            md: 16,
+                            xs: 14,
+                          },
                           fontWeight: 600,
                         }}
                       >
-                        Requirement
+                        Feed
                       </TableCell>
+                      <TableCell sx={{ borderBottom: 0, color: '#fff', background: '#06a19b', fontWeight: 600 }}>Requirement</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {Array.from(new Set(data.map((i) => i.feedType))).map(
-                      (feed) => {
-                        const intake = data
-                          .filter((i) => i.feedType === feed)
-                          .reduce(
-                            (sum, i) =>
-                              sum + (parseFloat(String(i.feedIntake)) || 0),
-                            0,
-                          );
-                        const kg = intake.toFixed(2);
-                        const bags = (intake / 20).toFixed(2);
-                        return (
-                          <TableRow key={feed}>
-                            <TableCell
-                              sx={{ color: '#555555', fontWeight: 500 }}
+                    {Array.from(new Set(data.map((i) => i.feedType))).map((feed) => {
+                      const intake = data.filter((i) => i.feedType === feed).reduce((sum, i) => sum + (parseFloat(String(i.feedIntake)) || 0), 0);
+                      const kg = intake.toFixed(2);
+                      const bags = (intake / 20).toFixed(2);
+                      return (
+                        <TableRow key={feed}>
+                          <TableCell
+                            sx={{
+                              borderBottomWidth: 0,
+                              color: '#555555',
+                              fontWeight: 500,
+                              whiteSpace: 'nowrap',
+                            }}
+                          >
+                            SA Feeds
+                          </TableCell>
+                          <TableCell sx={{
+                            borderBottomWidth: 0,
+                            color: '#555555',
+                            fontWeight: 500,
+                            whiteSpace: 'nowrap',
+                            p: 0,
+                          }}>
+                            <Typography
+                              variant="h6"
+                              sx={{
+                                fontWeight: 500,
+                                fontSize: 14,
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'space-between',
+                                gap: 1,
+                                backgroundColor: '#F5F6F8',
+                                borderTopLeftRadius: '8px',
+                                borderBottomLeftRadius: '8px',
+                                padding: '8px 12px',
+                                margin: '8px 0',
+                                textWrap: 'nowrap',
+                              }}
                             >
                               {feed}
-                            </TableCell>
-                            <TableCell
-                              sx={{ color: '#555555', fontWeight: 500 }}
-                            >{`${kg} Kg (${bags} Bags)`}</TableCell>
-                          </TableRow>
-                        );
-                      },
-                    )}
+                            </Typography>
+                          </TableCell>
+                          <TableCell
+                            sx={{
+                              borderBottomWidth: 0,
+                              color: '#555555',
+                              fontWeight: 500,
+                              whiteSpace: 'nowrap',
+                              p: 0,
+                            }}
+                          >
+                            <Typography
+                              variant="h6"
+                              sx={{
+                                fontWeight: 500,
+                                fontSize: 14,
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'space-between',
+                                gap: 1,
+                                backgroundColor: '#F5F6F8',
+                                padding: '8px 12px',
+                                margin: '8px 0',
+                                textWrap: 'nowrap',
+                              }}
+                            >
+                              {`${kg} Kg (${bags} Bags)`}
+                            </Typography>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
                     {(() => {
                       const total = data.reduce(
                         (sum, i) =>
@@ -1654,20 +1710,34 @@ function AdHoc({ data, setData }: Iprops) {
                         <TableRow>
                           <TableCell
                             sx={{
-                              background: '#06a19b',
-                              color: '#fff',
-                              fontWeight: 600,
+                              color: '#555555',
+                              fontWeight: 500,
+                              whiteSpace: 'nowrap',
                             }}
-                          >
-                            Total
-                          </TableCell>
+                          ></TableCell>
+                          <TableCell sx={{ background: '#06a19b', color: '#fff', fontWeight: 600 }}>Total</TableCell>
                           <TableCell
                             sx={{
-                              background: '#06a19b',
-                              color: '#fff',
-                              fontWeight: 600,
+                              color: '#555555',
+                              fontWeight: 500,
+                              whiteSpace: 'nowrap',
+                              p: 0,
                             }}
-                          >{`${total.toFixed(2)} Kg (${totalBags} Bags)`}</TableCell>
+                          >
+                            <Typography
+                              variant="h6"
+                              sx={{
+                                fontWeight: 500,
+                                fontSize: 14,
+                                padding: '16px 12px',
+                                textWrap: 'nowrap',
+                                background: '#06a19b',
+                                color: '#fff',
+                              }}
+                            >
+                              {`${total.toFixed(2)} Kg (${totalBags} Bags)`}
+                            </Typography>
+                          </TableCell>
                         </TableRow>
                       );
                     })()}
@@ -1712,7 +1782,7 @@ function AdHoc({ data, setData }: Iprops) {
                   Print
                 </Button>
               </Box>
-            </Grid>
+            </Grid> */}
           </Grid>
         </Box>
       )}
