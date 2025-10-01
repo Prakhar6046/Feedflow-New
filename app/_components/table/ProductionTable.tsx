@@ -107,6 +107,7 @@ export default function ProductionTable({
   );
 
   const [productionData, setProductionData] = useState<FarmGroup[]>();
+     console.log("productionData",productionData)
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('Farm');
   const [sortDataFromLocal, setSortDataFromLocal] = React.useState<any>('');
@@ -214,7 +215,7 @@ export default function ProductionTable({
                         }}
                       >
                         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                          {farm.farm ?? ''}
+                          {typeof farm?.farm === 'string' ? farm.farm : ''}
                         </Box>
                       </TableCell>
 
@@ -1313,7 +1314,7 @@ export default function ProductionTable({
                         }}
                       >
                         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                          {farm.farm ?? ''}
+                          {typeof farm?.farm === 'string' ? farm.farm : ''}
                         </Box>
                       </TableCell>
                       <TableCell

@@ -53,10 +53,10 @@ export async function POST(req: NextRequest) {
     // Sending emails to all created users
     const emailPromises = createdUsers.map(async (user: any) => {
       const mailOptions = {
-        from: process.env.EMAIL_USER, // Sender address
-        to: user.email, // Recipient email
-        subject: 'Welcome!', // Subject line
-        text: `Hi ${user.name}, you are invited to join Feedflow.`, // Plain text body
+        from: process.env.EMAIL_USER, 
+        to: user.email, 
+        subject: 'Welcome!', 
+        text: `Hi ${user.name}, you are invited to join Feedflow.`, 
         html: `<!DOCTYPE html>
 <html lang="en">
   <head>

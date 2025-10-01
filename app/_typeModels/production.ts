@@ -1,4 +1,4 @@
-import { Farm, ProductionParaMeterType } from './Farm';
+import { Farm, FeedProfileProductionUnit, ProductionParaMeterType } from './Farm';
 import { SingleOrganisation } from './Organization';
 
 export interface Production {
@@ -139,6 +139,7 @@ export interface FarmGroupUnit {
     updatedAt: string;
     farmId: string;
     YearBasedPredicationProductionUnit?: ProductionParaMeterType[];
+    FeedProfileProductionUnit?: FeedProfileProductionUnit[];
   };
   monthlyAverages?: MonthyFishAverage;
   yearlyAverages?: MonthyFishAverage;
@@ -206,7 +207,8 @@ export interface FarmGroupUnit {
   updatedAt: string;
 }
 export interface FarmGroup {
-  farm: string;
+  farm: Farm;
+  farmId: string;
   units: FarmGroupUnit[];
 }
 [];

@@ -1536,7 +1536,7 @@ function AdHoc({ data, setData }: Iprops) {
       {data?.length !== 0 && (
         <Box mt={3}>
           {/* Graph left, Supplier table right */}
-          <Grid container spacing={2} alignItems={'stretch'}>
+          <Grid container spacing={2} alignItems={'stretch'} mb={6}>
             <Grid item xs={12} md={8}>
               <FishGrowthChart
                 xAxisData={data?.map((v) => v.date) || []}

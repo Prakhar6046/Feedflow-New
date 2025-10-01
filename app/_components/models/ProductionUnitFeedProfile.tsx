@@ -445,28 +445,53 @@ const currentUnit = units.find((p) => p.name === selectedUnitName);
       maxFishSize: number;
     }[] = [];
 
-    // Iterate over each fish size row to create the profile data
-    Object.entries(data).forEach(([rowName, selectedValues]) => {
-      const size = Number(rowName.replace('selection_', ''));
+    // Build a quick index map for continuity checks
+    const sizeToIndex = new Map<number, number>();
+    dynamicFishSizes.forEach((s, i) => sizeToIndex.set(s, i));
 
+    // Collect selections per (supplierId, storeId)
+    const selectionsByStore: Record<string, { supplierId: number; storeId: string; sizes: number[] }>
+      = {};
+
+    Object.entries(data).forEach(([rowName, rawSelectedValues]) => {
+      const size = Number(rowName.replace('selection_', ''));
+      const selectedValues = (rawSelectedValues || []) as string[];
       selectedValues.forEach((val) => {
         const [colKey, storeId] = val.split('_');
-        const colIndex = parseInt(colKey.replace('col', '')) - 1;
+        const colIndex = parseInt(colKey.replace('col', ''), 10) - 1;
+        if (!groupedData[colIndex]) return;
         const supplierId = groupedData[colIndex].supplier.id;
-
-        const existing = result.find(r => r.storeId === storeId && r.supplierId === supplierId);
-        if (existing) {
-          existing.minFishSize = Math.min(existing.minFishSize, size);
-          existing.maxFishSize = Math.max(existing.maxFishSize, size);
-        } else {
-          result.push({
-            supplierId,
-            storeId,
-            minFishSize: size,
-            maxFishSize: size
-          });
+        const key = `${supplierId}_${storeId}`;
+        if (!selectionsByStore[key]) {
+          selectionsByStore[key] = { supplierId, storeId, sizes: [] };
         }
+        selectionsByStore[key].sizes.push(size);
       });
+    });
+
+    // For each store, split into contiguous runs (by index in dynamicFishSizes)
+    Object.values(selectionsByStore).forEach(({ supplierId, storeId, sizes }) => {
+      const uniqueSizes = Array.from(new Set(sizes))
+        .filter((s) => sizeToIndex.has(s))
+        .sort((a, b) => (sizeToIndex.get(a)! - sizeToIndex.get(b)!));
+
+      if (uniqueSizes.length === 0) return;
+
+      let runStart = uniqueSizes[0];
+      let prev = uniqueSizes[0];
+      for (let i = 1; i < uniqueSizes.length; i++) {
+        const current = uniqueSizes[i];
+        const prevIdx = sizeToIndex.get(prev)!;
+        const currentIdx = sizeToIndex.get(current)!;
+        const isContiguous = currentIdx === prevIdx + 1;
+        if (!isContiguous) {
+          result.push({ supplierId, storeId, minFishSize: runStart, maxFishSize: prev });
+          runStart = current;
+        }
+        prev = current;
+      }
+      // push last run
+      result.push({ supplierId, storeId, minFishSize: runStart, maxFishSize: prev });
     });
 
     // Load existing production units profiles

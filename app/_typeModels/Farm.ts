@@ -1,3 +1,4 @@
+import { FeedSupply } from '../_components/feedSupply/FeedSelection';
 import { Production } from './production';
 export interface FeedProfile {
   storeId: string;
@@ -6,11 +7,29 @@ export interface FeedProfile {
   maxFishSize: number;
 }
 
+export interface FarmFeedProfile {
+  id: number;
+  createdAt: string;
+  updatedAt: string;
+  farmId: string;
+  profiles: FeedProfile[];
+  feedLinks: FeedLink[];
+}
+export interface FeedLink {
+  id: number;
+  feedProfileId: number;
+  feedSupplyId: number;
+  feedStoreId: string;
+  minFishSize: number;
+  maxFishSize: number;
+  feedSupply: FeedSupply;
+}
 export interface FeedProfileProductionUnit {
   id: number;
   createdAt: string;
   updatedAt: string;
   profiles: FeedProfile[];
+  feedProfile:FarmFeedProfile;
   productionUnitId: string;
   feedProfileId: number;
 }
@@ -261,7 +280,18 @@ export type FishProducer = {
   image: string | null;
   imageUrl: string;
 };
-
+export interface ProductionUnit {
+  id: any;
+  name: string;
+  type: string;
+  productionSystem: string;
+  productionSystemId?: string;
+  capacity: string;
+  waterflowRate: string;
+  farmId: string;
+  YearBasedPredicationProductionUnit: ProductionParaMeterType[];
+  FeedProfileProductionUnit: FeedProfileProductionUnit[];
+}
 
 export interface Farm {
   id?: string;
@@ -291,18 +321,7 @@ export interface Farm {
   organisation: Organisation;
   contact?: Members[];
   production: Production[];
-  productionUnits: {
-    id: any;
-    name: string;
-    type: string;
-    productionSystem: string;
-    productionSystemId?: string;
-    capacity: string;
-    waterflowRate: string;
-    farmId: string;
-    YearBasedPredicationProductionUnit: ProductionParaMeterType[];
-    FeedProfileProductionUnit: FeedProfileProductionUnit[]; 
-  }[];
+  productionUnits: ProductionUnit[];
 
   WaterQualityPredictedParameters: ProductionParaMeterType[];
   FeedProfile?: FeedProfile[];

@@ -4,18 +4,18 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(req: NextRequest) {
   try {
-  const user = await verifyAndRefreshToken(req);
-  if (user.status === 401) {
-    return new NextResponse(
-      JSON.stringify({
-        status: false,
-        message: 'Unauthorized: Token missing or invalid',
-      }),
-      { status: 401 },
-    );
-  }
+    const user = await verifyAndRefreshToken(req);
+    if (user.status === 401) {
+      return new NextResponse(
+        JSON.stringify({
+          status: false,
+          message: 'Unauthorized: Token missing or invalid',
+        }),
+        { status: 401 },
+      );
+    }
     const body = await req.json();
-
+    console.log("+++++", body)
     const { yearBasedPredicationId, modelId, ...productionParameterPayload } =
       body.productionParameter;
 
@@ -264,9 +264,49 @@ export async function POST(req: NextRequest) {
         data: { profiles: body.feedProfile },
       });
     }
+    // 3. Update FeedProfileLink
+    if (Array.isArray(body.feedProfile)) {
+      for (const fp of body.feedProfile) {
+        console.log("Processing feed profile entry:", fp);
 
+        const store = await prisma.feedStore.findUnique({
+          where: { id: fp.storeId },
+        });
+        if (!store) continue;
+        console.log("Found store:", store.id);
 
+        // Check if the supplier organisation exists
+        const supplierOrg = await prisma.organisation.findUnique({
+          where: { id: fp.supplierId }, // directly Organisation ID
+        });
+        if (!supplierOrg || supplierOrg.organisationType !== 'Feed Supplier') {
+          console.log(`Organisation ID ${fp.supplierId} is not a feed supplier, skipping...`);
+          continue;
+        }
+        console.log("Found supplier organisation:", supplierOrg.id);
 
+        const minFishSize = fp.minFishSize ?? store.minFishSizeG;
+        const maxFishSize = fp.maxFishSize ?? store.maxFishSizeG;
+
+        await prisma.feedProfileLink.upsert({
+          where: {
+            feedProfileId_feedSupplyId_feedStoreId: {
+              feedProfileId: body.feedProfileId,
+              feedSupplyId: supplierOrg.id,
+              feedStoreId: store.id,
+            },
+          },
+          update: { minFishSize, maxFishSize },
+          create: {
+            feedProfileId: body.feedProfileId,
+            feedSupplyId: supplierOrg.id,
+            feedStoreId: store.id,
+            minFishSize,
+            maxFishSize,
+          },
+        });
+      }
+    }
     return NextResponse.json({
       message: 'Farm updated successfully',
       data: updatedFarm,
