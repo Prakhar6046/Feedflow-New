@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from 'next/server';
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
+    console.log("body",body);
 
     const dataArray = Array.isArray(body.data) ? body.data : [body.data];
 
@@ -16,6 +17,7 @@ export async function POST(req: NextRequest) {
           productionUnitId: data.productionUnit,
           fishCount: data.count,
           batchNumberId: data.batchNumber ? Number(data.batchNumber) : null,
+          fishSupplyId: data.batchNumber ? Number(data.batchNumber) : null,
           biomass: data.biomass,
           meanLength: data.meanLength,
           meanWeight: data.meanWeight,

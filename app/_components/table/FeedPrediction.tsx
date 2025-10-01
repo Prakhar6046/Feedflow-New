@@ -21,24 +21,31 @@ interface Props {
   farms: Farm[];
 }
 const FeedPredictionTable = ({ farms, productions }: Props) => {
+  console.log("farms",farms)
+  console.log("productions",productions)
   const startDate = useAppSelector(selectStartDate);
   const endDate = useAppSelector(selectEndDate);
   const [adHocData, setAdHocData] = useState<FishFeedingData[]>([]);
   const [selectedFeeding, setSelectedFeeding] = useState<string>('feedingPlan');
   const [productionData, setProductionData] = useState<FarmGroup[]>();
-    const [speciesList, setSpeciesList] = useState<Species[]>([]);
-    const token = getCookie('auth-token');
+  const [speciesList, setSpeciesList] = useState<Species[]>([]);
+  const token = getCookie('auth-token');
   const handleChange = (newValue: string) => {
     setSelectedFeeding(newValue);
   };
   const groupedData: FarmGroup[] = productions?.reduce(
     (result: FarmGroup[], item) => {
       // Find or create a farm group
-      let farmGroup = result.find((group) => group.farm === item.farm.name);
+      let farmGroup = result.find((group) => group.farmId === item.farm.id);
       if (!farmGroup) {
-        farmGroup = { farm: item.farm.name, units: [] };
+        farmGroup = {
+          farmId: item.farm.id,
+          farm: item.farm,
+          units: []
+        };
         result.push(farmGroup);
       }
+
 
       // Add the current production unit and all related data to the group
       farmGroup.units.push({
@@ -158,7 +165,7 @@ const FeedPredictionTable = ({ farms, productions }: Props) => {
       ) : selectedFeeding === 'feedingSummary' ? (
         <FeedingSummary />
       ) : (
-        <AdHoc data={adHocData} setData={setAdHocData} farms={farms} speciesList={speciesList}/>
+        <AdHoc data={adHocData} setData={setAdHocData} farms={farms} speciesList={speciesList} />
       )}
     </>
   );

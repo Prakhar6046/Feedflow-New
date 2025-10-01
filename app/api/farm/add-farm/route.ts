@@ -220,35 +220,50 @@ export async function POST(req: NextRequest) {
         }
       }
     }
-    if (body.supplierId && body.storeId) {
-      const supplier = await prisma.feedSupply.findUnique({
-        where: { id: String(body.supplierId) },
-      });
+    // Create feed profile links based on supplier organisations
+    if (Array.isArray(feedProfile)) {
+      for (const fp of feedProfile) {
+        console.log("Processing feed profile entry:", fp);
 
-      const store = await prisma.feedStore.findUnique({
-        where: { id: String(body.storeId) },
-      });
+        // Find store
+        const store = await prisma.feedStore.findUnique({
+          where: { id: fp.storeId },
+        });
+        if (!store) continue;
+        console.log("Found store:", store.id);
 
-      const clonedStore = await prisma.feedStore.create({
-        data: {
-          ...store,
-          id: undefined as any,
-          minFishSizeG: body.minFishSize ?? store.minFishSizeG,
-          maxFishSizeG: body.maxFishSize ?? store.maxFishSizeG,
-        },
-      });
+        // Find supplier organisation
+        const supplierOrg = await prisma.organisation.findUnique({
+          where: { id: fp.supplierId },
+        });
+        if (!supplierOrg || supplierOrg.organisationType !== "Feed Supplier") {
+          console.log(`Organisation ID ${fp.supplierId} is not a feed supplier, skipping...`);
+          continue;
+        }
+        console.log("Found supplier organisation:", supplierOrg.id);
 
-      await prisma.feedProfileLink.create({
-        data: {
-          feedProfileId: newFeedProfile.id,
-          feedSupplyId: supplier.id,
-          feedStoreId: clonedStore.id,
-          minFishSize: body.minFishSize,
-          maxFishSize: body.maxFishSize,
-        },
-      });
+        const minFishSize = fp.minFishSize ?? store.minFishSizeG;
+        const maxFishSize = fp.maxFishSize ?? store.maxFishSizeG;
+
+        await prisma.feedProfileLink.upsert({
+          where: {
+            feedProfileId_feedSupplyId_feedStoreId: {
+              feedProfileId: newFeedProfile.id,
+              feedSupplyId: supplierOrg.id,
+              feedStoreId: store.id,
+            },
+          },
+          update: { minFishSize, maxFishSize },
+          create: {
+            feedProfileId: newFeedProfile.id,
+            feedSupplyId: supplierOrg.id,
+            feedStoreId: store.id,
+            minFishSize,
+            maxFishSize,
+          },
+        });
+      }
     }
-
 
     return NextResponse.json({
       message: 'Farm created successfully',

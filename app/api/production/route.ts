@@ -21,10 +21,67 @@ export const GET = async (request: NextRequest) => {
   try {
     const productions = await prisma.production.findMany({
       include: {
-        farm: { include: { productionUnits: true } },
+        farm: {
+          include: {
+            productionUnits: {
+              include: {
+                FeedProfileProductionUnit: {
+                  include: {
+                    ProductionUnit: true,
+                    feedProfile: {
+                      include: {
+                        units: true,
+                        feedLinks:{
+                          include:{
+                          feedStore:true
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+            FeedProfile: {
+              include: {
+                feedLinks: {
+                  include: {
+                    feedSupply: true,
+                    feedStore: true,
+                    feedProfile: true,
+                  },
+                },
+                units: true,
+              },
+            },
+            FishManageHistory: {
+              include: {
+                FishSupply: true,
+              },
+            },
+          },
+        },
         organisation: true,
+
         productionUnit: {
-          include: { YearBasedPredicationProductionUnit: true },
+          include: {
+            YearBasedPredicationProductionUnit: true,
+            FeedProfileProductionUnit: {
+              include: {
+                feedProfile: {
+                  include: {
+                    units: true,
+                    feedLinks: {
+                      include: {
+                        feedSupply: true,
+                        feedStore: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
         },
         fishSupply: true,
 
@@ -34,9 +91,8 @@ export const GET = async (request: NextRequest) => {
           },
         },
         FishManageHistory: {
-          orderBy: {
-            id: 'asc',
-          },
+          orderBy: { id: 'asc' },
+          include: { FishSupply: true },
         },
         WaterManageHistoryAvgrage: {
           orderBy: {
@@ -82,6 +138,8 @@ export const GET = async (request: NextRequest) => {
         ],
       },
     });
+
+    console.log('productions', productions);
     let dataWithIsManager;
     if (role !== 'SUPERADMIN') {
       // currentUserFarms = get farms for current user here

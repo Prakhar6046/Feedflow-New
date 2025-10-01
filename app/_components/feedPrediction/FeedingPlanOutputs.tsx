@@ -100,14 +100,21 @@ function FeedingPlanOutput() {
   const [flatData, setFlatData] = useState<FarmsFishGrowth[]>([]);
   const [formData, setFomData] = useState<any>();
   const { control, setValue, watch, register } = useForm();
-  const [growthModelData, setGrowthModelData] = useState<OrganisationModelResponse[]>([]);
+  const [growthModelData, setGrowthModelData] = useState<
+    OrganisationModelResponse[]
+  >([]);
   const token = getCookie('auth-token');
   const [organisationId, setOrganisationId] = useState<number>(0);
+  // Selected dropdown values (declared early so hooks below can use them)
+  const selectedFarm = watch('farms');
+  const selectedUnit = watch('units');
   const handleGraphPreview = async () => {
     if (!flatData.length) return;
 
     const formatedData = flatData
-      ?.filter((val) => val.farmId == watch('farms') && val.unitId == watch('units'))
+      ?.filter(
+        (val) => val.farmId == watch('farms') && val.unitId == watch('units'),
+      )
       .flatMap((growth) =>
         growth.fishGrowthData.map((val) => ({
           date: val.date,
@@ -118,7 +125,7 @@ function FeedingPlanOutput() {
       );
 
     // Create a temporary container
-    const tempDiv = document.createElement("div");
+    const tempDiv = document.createElement('div');
     document.body.appendChild(tempDiv);
 
     const root = createRoot(tempDiv);
@@ -127,13 +134,13 @@ function FeedingPlanOutput() {
         xAxisData={formatedData.map((v) => v.date)}
         yData={formatedData.map((v) => v.fishSize)}
         graphTitle={`Farm: ${formatedData[0]?.farmName} Unit: ${formatedData[0]?.unitName}`}
-      />
+      />,
     );
 
     await new Promise((resolve) => setTimeout(resolve, 500)); // wait for chart render
 
     const canvas = await html2canvas(tempDiv);
-    const imgData = canvas.toDataURL("image/png");
+    const imgData = canvas.toDataURL('image/png');
 
     root.unmount();
     document.body.removeChild(tempDiv);
@@ -147,7 +154,7 @@ function FeedingPlanOutput() {
     </div>
   `;
 
-    setPreviewTitle("Feeding Plan Graph Preview");
+    setPreviewTitle('Feeding Plan Graph Preview');
     setPreviewHtml(previewHtmlContent);
     setPreviewOpen(true);
   };
@@ -156,7 +163,9 @@ function FeedingPlanOutput() {
     if (!flatData.length) return;
 
     const formatedData = flatData
-      ?.filter((val) => val.farmId == watch('farms') && val.unitId == watch('units'))
+      ?.filter(
+        (val) => val.farmId == watch('farms') && val.unitId == watch('units'),
+      )
       .flatMap((growth) =>
         growth.fishGrowthData.map((val) => ({
           date: val.date,
@@ -169,7 +178,7 @@ function FeedingPlanOutput() {
           estimatedFCR: val.estimatedFCR,
           feedIntake: val.feedIntake,
           feedingRate: val.feedingRate,
-        }))
+        })),
       );
 
     const previewHtmlContent = `
@@ -183,7 +192,8 @@ function FeedingPlanOutput() {
           </thead>
           <tbody>
             ${formatedData
-              .map((row) => `
+              .map(
+                (row) => `
                 <tr>
                   <td style=\"border:1px solid #ccc; padding:8px 12px;\">${row.date}</td>
                   <td style=\"border:1px solid #ccc; padding:8px 12px;\">${row.averageProjectedTemp}</td>
@@ -196,7 +206,8 @@ function FeedingPlanOutput() {
                   <td style=\"border:1px solid #ccc; padding:8px 12px;\">${row.feedIntake}</td>
                   <td style=\"border:1px solid #ccc; padding:8px 12px;\">${row.feedingRate}</td>
                 </tr>
-              `)
+              `,
+              )
               .join('')}
           </tbody>
         </table>
@@ -207,7 +218,6 @@ function FeedingPlanOutput() {
     setPreviewHtml(previewHtmlContent);
     setPreviewOpen(true);
   };
-
 
   const createxlsxFile = (e: React.MouseEvent<HTMLSpanElement, MouseEvent>) => {
     if (!flatData.length) {
@@ -487,7 +497,7 @@ function FeedingPlanOutput() {
                       new Set(
                         growth?.fishGrowthData?.map((item) => item.feedType),
                       ),
-                    );
+                    ).filter(Boolean);
                     const intakeByFeedType: Record<string, number> = {};
 
                     growth?.fishGrowthData?.forEach((item) => {
@@ -576,21 +586,17 @@ function FeedingPlanOutput() {
                                   key={idx}
                                   sx={{ backgroundColor: '#fff' }}
                                 >
-                                  {idx === 0 && (
-                                    <TableCell
-                                      rowSpan={uniqueFeedTypes.length}
-                                      sx={{
-                                        // borderBottomColor: "#F5F6F8",
-                                        borderBottomWidth: 0,
-                                        color: '#555555',
-                                        backgroundColor: '#fff',
-                                        fontWeight: 500,
-                                        whiteSpace: 'nowrap',
-                                      }}
-                                    >
-                                      SA Feeds
-                                    </TableCell>
-                                  )}
+                                  <TableCell
+                                    sx={{
+                                      borderBottomWidth: 0,
+                                      color: '#555555',
+                                      backgroundColor: '#fff',
+                                      fontWeight: 500,
+                                      whiteSpace: 'nowrap',
+                                    }}
+                                  >
+                                    {getSupplierName(feed)}
+                                  </TableCell>
                                   <TableCell
                                     sx={{
                                       // borderBottomColor: "#F5F6F8",
@@ -745,7 +751,9 @@ function FeedingPlanOutput() {
     if (!organisationId) return;
     const fetchModels = async () => {
       try {
-        const res = await fetch(`/api/growth-model?organisationId=${organisationId}`);
+        const res = await fetch(
+          `/api/growth-model?organisationId=${organisationId}`,
+        );
         if (!res.ok) throw new Error('Failed to fetch growth models');
         const data = await res.json();
         setGrowthModelData(data.data || []);
@@ -756,30 +764,66 @@ function FeedingPlanOutput() {
     fetchModels();
   }, [organisationId]);
 
+  // Resolve feedLinks for the currently selected farm + unit (unit-level first, farm-level fallback)
+  const currentFeedLinks = useMemo(() => {
+    try {
+      if (!formData || !selectedFarm || !selectedUnit) return [] as any[];
+      const farm = (formData.productionData || []).find(
+        (f: any) => String(f.farm.id) === String(selectedFarm),
+      );
+      const unit = farm?.units?.find((u: any) => String(u.id) === String(selectedUnit));
+      const unitLinks =
+        unit?.productionUnit?.FeedProfileProductionUnit?.[0]?.feedProfile?.feedLinks || [];
+      const farmLinks = farm?.farm?.FeedProfile?.[0]?.feedLinks || [];
+      return [...unitLinks, ...farmLinks];
+    } catch (e) {
+      return [] as any[];
+    }
+  }, [formData, selectedFarm, selectedUnit]);
+
+  // Helper: get supplier name by feed product name using current feedLinks
+  const getSupplierName = (feedProductName: string): string => {
+    const link = (currentFeedLinks || []).find(
+      (l: any) => l?.feedStore?.productName === feedProductName,
+    );
+    return link?.feedSupply?.name || '—';
+  };
+
   // Helper: select growth model per farm and unit
   const selectGrowthModelForUnit = (
     farm: any,
     unit: any,
   ): OrganisationModelResponse | null => {
     try {
-
-
       // Resolve speciesId prioritising unit-level history
-      const unitHistoryArr = unit?.fishManageHistory || unit?.FishManageHistory || [];
-      const unitHistory = Array.isArray(unitHistoryArr) && unitHistoryArr.length > 0 ? unitHistoryArr[0] : null;
-      let speciesId = unitHistory?.speciesId || unitHistory?.fishSupplyData?.speciesId || unitHistory?.fishSupplyData?.speciesID || null;
+      const unitHistoryArr =
+        unit?.fishManageHistory || unit?.FishManageHistory || [];
+      const unitHistory =
+        Array.isArray(unitHistoryArr) && unitHistoryArr.length > 0
+          ? unitHistoryArr[0]
+          : null;
+      let speciesId =
+        unitHistory?.speciesId ||
+        unitHistory?.fishSupplyData?.speciesId ||
+        unitHistory?.fishSupplyData?.speciesID ||
+        null;
 
       if (!speciesId) {
         // Fallback: search farm-level history by productionUnitId
         const farmHistory = (farm?.FishManageHistory || []).find(
-          (h: any) => String(h.productionUnitId) === String(unit?.productionUnit?.id)
+          (h: any) =>
+            String(h.productionUnitId) === String(unit?.productionUnit?.id),
         );
-        speciesId = farmHistory?.speciesId || farmHistory?.fishSupplyData?.speciesId || farmHistory?.fishSupplyData?.speciesID || null;
+        speciesId =
+          farmHistory?.speciesId ||
+          farmHistory?.fishSupplyData?.speciesId ||
+          farmHistory?.fishSupplyData?.speciesID ||
+          null;
       }
 
       // Resolve productionSystemId from farm.productionUnits by productionUnit.id
       const prodUnit = (farm?.productionUnits || []).find(
-        (pu: any) => String(pu.id) === String(unit?.productionUnit?.id)
+        (pu: any) => String(pu.id) === String(unit?.productionUnit?.id),
       );
       const productionSystemId = prodUnit?.productionSystemId || null;
       if (!speciesId) {
@@ -794,18 +838,20 @@ function FeedingPlanOutput() {
       // Step 1: Find exact matches by species AND production system
       const exactMatches = growthModelData.filter((gm) => {
         const sameSpecies = gm.models.specieId === speciesId;
-        const sameProductionSystem = productionSystemId ? gm.models.productionSystemId === productionSystemId : true;
+        const sameProductionSystem = productionSystemId
+          ? gm.models.productionSystemId === productionSystemId
+          : true;
         return sameSpecies && sameProductionSystem;
       });
       if (exactMatches.length === 1) {
-
         return exactMatches[0];
       }
 
       if (exactMatches.length > 1) {
-        const farmScoped = exactMatches.find((gm) =>
-          Array.isArray(gm.selectedFarms) &&
-          gm.selectedFarms.some((sf: any) => sf.farmId === farm?.id)
+        const farmScoped = exactMatches.find(
+          (gm) =>
+            Array.isArray(gm.selectedFarms) &&
+            gm.selectedFarms.some((sf: any) => sf.farmId === farm?.id),
         );
         if (farmScoped) {
           return farmScoped;
@@ -814,15 +860,18 @@ function FeedingPlanOutput() {
       }
 
       // Step 2: If no exact matches → try species-only matches first, then default
-      const speciesMatches = growthModelData.filter((gm) => gm.models.specieId === speciesId);
+      const speciesMatches = growthModelData.filter(
+        (gm) => gm.models.specieId === speciesId,
+      );
       if (speciesMatches.length === 1) {
         return speciesMatches[0];
       }
 
       if (speciesMatches.length > 1) {
-        const farmScoped = speciesMatches.find((gm) =>
-          Array.isArray(gm.selectedFarms) &&
-          gm.selectedFarms.some((sf: any) => sf.farmId === farm?.id)
+        const farmScoped = speciesMatches.find(
+          (gm) =>
+            Array.isArray(gm.selectedFarms) &&
+            gm.selectedFarms.some((sf: any) => sf.farmId === farm?.id),
         );
         if (farmScoped) {
           return farmScoped;
@@ -888,7 +937,7 @@ function FeedingPlanOutput() {
     const data: FeedPredictionData | null = getLocalItem('feedPredictionData');
     if (data) {
       const customFarms = data?.productionData?.map((farm: FarmGroup) => {
-        return { option: farm.farm, id: farm.units[0].farm.id ?? '' };
+        return { option: farm.farm?.name ?? '', id: farm.units[0].farm.id ?? '' };
       });
       setStartDate(data?.startDate);
       setEndDate(data?.endDate);
@@ -899,71 +948,89 @@ function FeedingPlanOutput() {
   }, []);
 
   // Build table data ONLY after growth models are loaded and form data is ready
+  console.log('units', selectedUnit);
+  console.log('farms', selectedFarm);
+  // Build table data ONLY after growth models are loaded and form data is ready
+  console.log('formData', formData);
   useEffect(() => {
-    if (!formData || !Array.isArray(growthModelData) || growthModelData.length === 0) {
+    if (!formData || !growthModelData.length || !selectedFarm || !selectedUnit)
       return;
-    }
-    const data: FeedPredictionData = formData;
-    const fishGrowthData = data?.productionData?.map(
-      (production: FarmGroup) =>
-        production.units.map((unit) => {
-          const formattedDate = dayjs(data?.startDate).format('YYYY-MM-DD');
-          const diffInDays = dayjs(data?.endDate).diff(
-            dayjs(data?.startDate),
-            'day',
-          );
-          // Resolve growth model for this farm+unit
-          const gm = selectGrowthModelForUnit(unit?.farm || production?.units?.[0]?.farm, unit);
-          return {
-            farm: production.farm,
-            farmId: unit?.farm?.id ?? '',
-            unitId: unit.id,
-            unit: unit.productionUnit.name,
-            fishGrowthData: data?.species === 'Rainbow Trout'
+
+    const selectedFlatData = formData.productionData.flatMap(
+      (farm: FarmGroup) => {
+        // Find the matched unit first
+        const matchedUnit = farm.units.find(
+          (unit) => unit.id === selectedUnit && farm.farm.id === selectedFarm,
+        );
+
+        if (!matchedUnit) return [];
+        // const matchedProductionUnit = farm.farm.productionUnits.find(
+        //   (pu) => pu.id === matchedUnit.productionUnit.id,
+        // );
+        // if (!matchedProductionUnit) return [];
+        const gm = selectGrowthModelForUnit(matchedUnit.farm, matchedUnit);
+        const formattedDate = dayjs(formData.startDate).format('YYYY-MM-DD');
+        const diffInDays = dayjs(formData.endDate).diff(
+          dayjs(formData.startDate),
+          'day',
+        );
+
+        console.log('matchedUnit', matchedUnit);
+        console.log('gm', gm);
+        return {
+          farm: farm.farm.name,
+          farmId: matchedUnit?.farm?.id ?? '',
+          unitId: matchedUnit.id,
+          unit: matchedUnit.productionUnit.name,
+          fishGrowthData:
+            formData.species === 'Rainbow Trout'
               ? calculateFishGrowthRainBowTrout(
-                gm,
-                Number(data?.fishWeight ?? 0),
-                data?.tempSelection === 'default'
-                  ? Number(unit?.waterTemp ?? 25)
-                  : Number(data?.temp ?? 25),
-                Number(unit.fishCount ?? 0),
-                Number(data.adjustmentFactor),
-                Number(diffInDays),
-                formattedDate,
-                data?.timeInterval ?? 1,
-              )
-              : data?.species === 'African Catfish'
-                ? calculateFishGrowthAfricanCatfish(
                   gm,
-                  Number(data?.fishWeight ?? 0),
-                  data?.tempSelection === 'default'
-                    ? Number(unit?.waterTemp ?? 25)
-                    : Number(data?.temp ?? 25),
-                  Number(unit.fishCount ?? 0),
-                  Number(data.adjustmentFactor),
+                  Number(formData.fishWeight ?? 0),
+                  formData.tempSelection === 'default'
+                    ? Number(matchedUnit.waterTemp ?? 25)
+                    : Number(formData.temp ?? 25),
+                  Number(matchedUnit.fishCount ?? 0),
+                  Number(formData.adjustmentFactor),
                   Number(diffInDays),
                   formattedDate,
-                  data?.timeInterval ?? 1,
+                  formData.timeInterval ?? 1,
+                  matchedUnit,
                 )
+              : formData.species === 'African Catfish'
+                ? calculateFishGrowthAfricanCatfish(
+                    gm,
+                    Number(formData.fishWeight ?? 0),
+                    formData.tempSelection === 'default'
+                      ? Number(matchedUnit.waterTemp ?? 25)
+                      : Number(formData.temp ?? 25),
+                    Number(matchedUnit.fishCount ?? 0),
+                    Number(formData.adjustmentFactor),
+                    Number(diffInDays),
+                    formattedDate,
+                    formData.timeInterval ?? 1,
+                    matchedUnit,
+                  )
                 : calculateFishGrowthTilapia(
-                  gm,
-                  Number(data?.fishWeight ?? 0),
-                  data?.tempSelection === 'default'
-                    ? Number(unit?.waterTemp ?? 25)
-                    : Number(data?.temp ?? 25),
-                  Number(unit.fishCount ?? 0),
-                  Number(data.adjustmentFactor),
-                  Number(diffInDays),
-                  formattedDate,
-                  data?.timeInterval ?? 1,
-                ),
-          };
-        }),
+                    gm,
+                    Number(formData.fishWeight ?? 0),
+                    formData.tempSelection === 'default'
+                      ? Number(matchedUnit.waterTemp ?? 25)
+                      : Number(formData.temp ?? 25),
+                    Number(matchedUnit.fishCount ?? 0),
+                    Number(formData.adjustmentFactor),
+                    Number(diffInDays),
+                    formattedDate,
+                    formData.timeInterval ?? 1,
+                    matchedUnit,
+                  ),
+        };
+      },
     );
-    if (fishGrowthData?.length) {
-      setFlatData([...fishGrowthData].flat());
-    }
-  }, [growthModelData, formData]);
+
+    setFlatData(selectedFlatData);
+  }, [selectedFarm, selectedUnit, formData, growthModelData]);
+
   useEffect(() => {
     if (loading) {
       document.body.style.position = 'fixed';
@@ -1172,9 +1239,7 @@ function FeedingPlanOutput() {
           gap: 1.5,
           mb: 2,
         }}
-      >
-
-      </Box>
+      ></Box>
 
       <Grid
         container
@@ -1399,7 +1464,14 @@ function FeedingPlanOutput() {
                 </Box>
               );
             })}
-          <Box display={"flex"} width={"100%"} flexDirection={"row"} alignItems={"center"} gap={2} justifyContent={"end"}>
+          <Box
+            display={'flex'}
+            width={'100%'}
+            flexDirection={'row'}
+            alignItems={'center'}
+            gap={2}
+            justifyContent={'end'}
+          >
             {/* <Button
               type="submit"
               variant="contained"
@@ -1473,7 +1545,9 @@ function FeedingPlanOutput() {
                 )
                 .map((growth, index) => {
                   const uniqueFeedTypes = Array.from(
-                    new Set(growth?.fishGrowthData?.map((item) => item.feedType)),
+                    new Set(
+                      growth?.fishGrowthData?.map((item) => item.feedType),
+                    ),
                   );
                   const intakeByFeedType: Record<string, number> = {};
 
@@ -1482,7 +1556,9 @@ function FeedingPlanOutput() {
                     if (!intakeByFeedType[item.feedType]) {
                       intakeByFeedType[item.feedType] = 0;
                     }
-                    intakeByFeedType[item.feedType] += isNaN(intake) ? 0 : intake;
+                    intakeByFeedType[item.feedType] += isNaN(intake)
+                      ? 0
+                      : intake;
                   });
                   const totalIntake: number = Object.values(
                     intakeByFeedType,

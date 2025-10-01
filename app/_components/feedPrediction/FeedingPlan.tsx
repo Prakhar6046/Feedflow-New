@@ -71,6 +71,7 @@ export const tempSelectionOptions = [
   },
 ];
 function FeedingPlan({ productionData, startDate, endDate }: Props) {
+  console.log("productionData",productionData)
   const router = useRouter();
   const selectedDropDownfarms = useAppSelector(selectSelectedFarms);
   const {
@@ -103,7 +104,12 @@ function FeedingPlan({ productionData, startDate, endDate }: Props) {
     }
 
     const payload = {
-      productionData: productionData,
+      productionData: productionData?.map((farm) => ({
+        farmId: farm.farmId,
+
+        farm: farm.farm,
+        units: farm.units,
+      })),
       fishWeight: data.fishWeight,
       tempSelection: data.tempSelection,
       adjustmentFactor: data.adjustmentFactor,

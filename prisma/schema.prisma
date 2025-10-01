@@ -6,8 +6,8 @@ generator client {
 
 datasource db {
   provider  = "postgresql"
-  url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
-  directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+  url       = env("POSTGRES_PRISMA_URL")
+  directUrl = env("POSTGRES_URL_NON_POOLING")
 }
 
 enum UserStatus {
@@ -73,6 +73,7 @@ model Organisation {
   GrowthModels      GrowthModel[]
   FeedStore         FeedStore[]
   models            Model[]
+  FeedProfileLink   FeedProfileLink[]
 
   @@index([createdAt])
   @@index([updatedAt])
@@ -193,16 +194,18 @@ model FeedProfile {
 }
 
 model FeedProfileLink {
-  id            Int         @id @default(autoincrement())
+  id            Int          @id @default(autoincrement())
   feedProfileId Int
-  feedProfile   FeedProfile @relation(fields: [feedProfileId], references: [id])
-  feedSupplyId  String
-  feedSupply    FeedSupply  @relation(fields: [feedSupplyId], references: [id])
-  feedStoreId   String
-  feedStore     FeedStore   @relation(fields: [feedStoreId], references: [id])
+  feedProfile   FeedProfile  @relation(fields: [feedProfileId], references: [id])
+  feedSupplyId  Int
+  feedSupply    Organisation @relation(fields: [feedSupplyId], references: [id])
+
+  feedStoreId String
+  feedStore   FeedStore @relation(fields: [feedStoreId], references: [id])
 
   minFishSize Float
   maxFishSize Float
+  @@unique([feedProfileId, feedSupplyId, feedStoreId])
 }
 
 model FeedProfileProductionUnit {
@@ -349,7 +352,7 @@ model FeedSupply {
   updatedAt            DateTime          @updatedAt
   organisationId       Int?
   organisation         Organisation?     @relation(fields: [organisationId], references: [id])
-  feedProfileLinks     FeedProfileLink[]
+
 
   @@index([createdAt])
   @@index([updatedAt])
@@ -464,7 +467,7 @@ model FishManageHistory {
   productionUnit    ProductionUnit? @relation(fields: [productionUnitId], references: [id])
   production        production?     @relation(fields: [productionId], references: [id])
   productionId      Int?
-  FishSupply        FishSupply?     @relation(fields: [fishSupplyId], references: [id])
+  FishSupply        FishSupply?     @relation(fields: [batchNumberId], references: [id])
   fishSupplyId      Int?
 
   @@index([createdAt])

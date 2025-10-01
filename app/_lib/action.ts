@@ -187,6 +187,7 @@ export const getFarms = async (payload: {
       cache: 'no-store',
     });
     revalidatePath(`/dashboard/farm`);
+
     return await res.json();
   } catch (error) {
     console.error('getFarms error:', error);
@@ -247,7 +248,7 @@ export const getProductions = async (payload: {
       method: 'GET',
       cache: 'no-store',
     });
-    revalidatePath(`/dashboard/farmManager`); // or `/dashboard/production` depending on typical revalidation
+    revalidatePath(`/dashboard/farmManager`); 
     return await res.json();
   } catch (error) {
     console.error('getProductions error:', error);

@@ -101,44 +101,38 @@ const FeedProfiles = ({
   }, [feedStores]);
 
   const onSubmit: SubmitHandler<FormValues> = (data) => {
-    // Parse selected feed profiles into structured payload
+    // Build structured payload strictly from current form selections
     const payload: {
       supplierId: number;
-      storeId: String;
+      storeId: string;
       minFishSize: number;
       maxFishSize: number;
     }[] = [];
 
     groupedData.forEach((group, groupIndex) => {
       const colKey = `col${groupIndex + 1}`;
-
       group.stores.forEach((store) => {
         const valueKey = `${colKey}_${store.id}`;
-
-        // Find all fish sizes where this store was selected
         const selectedSizes: number[] = [];
         newfishSizes.forEach((size) => {
           const rowName = `selection_${size}`;
-          newfishSizes.forEach((size) => {
-            const rowName = `selection_${size}`;
-            if (data[rowName]?.includes(valueKey)) {
-              selectedSizes.push(size);
-            }
-          });
+          if (data[rowName]?.includes(valueKey)) selectedSizes.push(size);
         });
 
         if (selectedSizes.length) {
           payload.push({
             supplierId: group.supplier.id,
-            storeId: store.id,
+            storeId: String(store.id),
             minFishSize: Math.min(...selectedSizes),
             maxFishSize: Math.max(...selectedSizes),
           });
         }
       });
     });
-    // Save structured payload
+
+    // Persist structured payload and keep a raw form snapshot for navigation
     setLocalItem('feedProfiles', payload);
+    setLocalItem('feedProfilesForm', data);
 
     if (editFarm?.FeedProfile?.[0]?.id) {
       setLocalItem('feedProfileId', editFarm?.FeedProfile?.[0].id);
@@ -473,20 +467,34 @@ const FeedProfiles = ({
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const formData = getLocalItem('feedProfiles');
+      // Load raw form snapshot, not the structured payload
+      const formData = getLocalItem('feedProfilesForm');
       if (formData && Object.keys(formData).length) {
         Object.entries(formData).forEach(([key, value]) => {
           if (Array.isArray(value)) {
-            // already an array → set directly
             setValue(key, value, { shouldValidate: true });
           } else if (value) {
-            // single string → wrap in array
             setValue(key, [String(value)], { shouldValidate: true });
           }
         });
       }
     }
   }, []);
+
+  // Re-apply snapshot whenever table suppliers/stores are ready, so returning to this step shows prior picks
+  useEffect(() => {
+    if (!groupedData?.length) return;
+    const formData = getLocalItem('feedProfilesForm');
+    if (formData && Object.keys(formData).length) {
+      Object.entries(formData).forEach(([key, value]) => {
+        if (Array.isArray(value)) {
+          setValue(key, value, { shouldValidate: true });
+        } else if (value) {
+          setValue(key, [String(value)], { shouldValidate: true });
+        }
+      });
+    }
+  }, [groupedData]);
 
   return (
     <>
@@ -753,7 +761,8 @@ const FeedProfiles = ({
               variant="contained"
               onClick={() => {
                 setActiveStep(1);
-                setLocalItem('feedProfiles', allFeedprofiles);
+                // Save only the raw form state so user can return
+                setLocalItem('feedProfilesForm', allFeedprofiles);
               }}
               sx={{
                 background: '#fff',
