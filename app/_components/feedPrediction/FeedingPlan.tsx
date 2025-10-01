@@ -71,7 +71,6 @@ export const tempSelectionOptions = [
   },
 ];
 function FeedingPlan({ productionData, startDate, endDate }: Props) {
-  console.log("productionData",productionData)
   const router = useRouter();
   const selectedDropDownfarms = useAppSelector(selectSelectedFarms);
   const {

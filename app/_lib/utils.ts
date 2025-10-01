@@ -955,7 +955,6 @@ export function calculateFishGrowthTilapia(
   const feedLinks =
     selectedFarm?.productionUnit.FeedProfileProductionUnit?.[0]?.feedProfile
       ?.feedLinks || [];
-  console.log('calculateFishGrowthTilapia', feedLinks);
   if (selectedGrowthModel) {
     const IBW = fishWeight;
     const T = temp;
@@ -1163,7 +1162,6 @@ export function calculateFishGrowthRainBowTrout(
   timeInterval: number,
   selectedFarm?: FarmGroupUnit,
 ) {
-  console.log('calculateFishGrowthRainBowTrout', selectedFarm);
   // Resolve feed profile links for the selected production unit, if available
   const feedLinks =
     selectedFarm?.productionUnit.FeedProfileProductionUnit?.[0]?.feedProfile
@@ -1358,7 +1356,6 @@ export function calculateFishGrowthAfricanCatfish(
   timeInterval: number,
   selectedFarm?: FarmGroupUnit,
 ) {
-  console.log('calculateFishGrowthAfricanCatfish', selectedFarm);
   // Resolve feed profile links for the selected production unit, if available
   const feedLinks =
     selectedFarm?.productionUnit.FeedProfileProductionUnit?.[0]?.feedProfile

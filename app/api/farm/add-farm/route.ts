@@ -223,14 +223,12 @@ export async function POST(req: NextRequest) {
     // Create feed profile links based on supplier organisations
     if (Array.isArray(feedProfile)) {
       for (const fp of feedProfile) {
-        console.log("Processing feed profile entry:", fp);
-
+  
         // Find store
         const store = await prisma.feedStore.findUnique({
           where: { id: fp.storeId },
         });
         if (!store) continue;
-        console.log("Found store:", store.id);
 
         // Find supplier organisation
         const supplierOrg = await prisma.organisation.findUnique({
@@ -240,7 +238,6 @@ export async function POST(req: NextRequest) {
           console.log(`Organisation ID ${fp.supplierId} is not a feed supplier, skipping...`);
           continue;
         }
-        console.log("Found supplier organisation:", supplierOrg.id);
 
         const minFishSize = fp.minFishSize ?? store.minFishSizeG;
         const maxFishSize = fp.maxFishSize ?? store.maxFishSizeG;

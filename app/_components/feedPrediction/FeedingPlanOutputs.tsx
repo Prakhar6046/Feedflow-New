@@ -947,11 +947,6 @@ function FeedingPlanOutput() {
     }
   }, []);
 
-  // Build table data ONLY after growth models are loaded and form data is ready
-  console.log('units', selectedUnit);
-  console.log('farms', selectedFarm);
-  // Build table data ONLY after growth models are loaded and form data is ready
-  console.log('formData', formData);
   useEffect(() => {
     if (!formData || !growthModelData.length || !selectedFarm || !selectedUnit)
       return;
@@ -975,8 +970,6 @@ function FeedingPlanOutput() {
           'day',
         );
 
-        console.log('matchedUnit', matchedUnit);
-        console.log('gm', gm);
         return {
           farm: farm.farm.name,
           farmId: matchedUnit?.farm?.id ?? '',

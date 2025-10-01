@@ -139,7 +139,6 @@ export const GET = async (request: NextRequest) => {
       },
     });
 
-    console.log('productions', productions);
     let dataWithIsManager;
     if (role !== 'SUPERADMIN') {
       // currentUserFarms = get farms for current user here
