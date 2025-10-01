@@ -126,20 +126,31 @@ function FeedingPlanOutput() {
 
     // Create a temporary container
     const tempDiv = document.createElement('div');
+    tempDiv.style.position = 'absolute';
+    tempDiv.style.left = '-9999px';
+    tempDiv.style.top = '-9999px';
+    tempDiv.style.width = '1200px';
+    tempDiv.style.height = '700px';
     document.body.appendChild(tempDiv);
 
     const root = createRoot(tempDiv);
+    const chartRef = React.createRef<any>();
     root.render(
       <FishGrowthChart
+        ref={chartRef}
         xAxisData={formatedData.map((v) => v.date)}
         yData={formatedData.map((v) => v.fishSize)}
         graphTitle={`Farm: ${formatedData[0]?.farmName} Unit: ${formatedData[0]?.unitName}`}
+        disableAnimation={true}
       />,
     );
 
-    await new Promise((resolve) => setTimeout(resolve, 500)); // wait for chart render
+   
+    await new Promise((resolve) => requestAnimationFrame(resolve));
+    chartRef.current?.update();
+    await new Promise((resolve) => setTimeout(resolve, 50));
 
-    const canvas = await html2canvas(tempDiv);
+     const canvas = await html2canvas(tempDiv, { scale: 2, useCORS: true });
     const imgData = canvas.toDataURL('image/png');
 
     root.unmount();
@@ -470,6 +481,7 @@ function FeedingPlanOutput() {
               </div>
             </div>
           ) : type === 'graph' ? (
+              
             <div style={{ width: '100%', padding: '20px' }}>
               <FishGrowthChart
                 xAxisData={formatedData?.map((value) => value?.date) || []}
@@ -771,9 +783,12 @@ function FeedingPlanOutput() {
       const farm = (formData.productionData || []).find(
         (f: any) => String(f.farm.id) === String(selectedFarm),
       );
-      const unit = farm?.units?.find((u: any) => String(u.id) === String(selectedUnit));
+      const unit = farm?.units?.find(
+        (u: any) => String(u.id) === String(selectedUnit),
+      );
       const unitLinks =
-        unit?.productionUnit?.FeedProfileProductionUnit?.[0]?.feedProfile?.feedLinks || [];
+        unit?.productionUnit?.FeedProfileProductionUnit?.[0]?.feedProfile
+          ?.feedLinks || [];
       const farmLinks = farm?.farm?.FeedProfile?.[0]?.feedLinks || [];
       return [...unitLinks, ...farmLinks];
     } catch (e) {
@@ -937,7 +952,10 @@ function FeedingPlanOutput() {
     const data: FeedPredictionData | null = getLocalItem('feedPredictionData');
     if (data) {
       const customFarms = data?.productionData?.map((farm: FarmGroup) => {
-        return { option: farm.farm?.name ?? '', id: farm.units[0].farm.id ?? '' };
+        return {
+          option: farm.farm?.name ?? '',
+          id: farm.units[0].farm.id ?? '',
+        };
       });
       setStartDate(data?.startDate);
       setEndDate(data?.endDate);

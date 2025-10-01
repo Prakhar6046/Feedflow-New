@@ -1,5 +1,5 @@
 'use client';
-import React, { useRef } from 'react';
+import React, { forwardRef, useImperativeHandle, useRef } from 'react';
 import {
   Chart as ChartJS,
   LineElement,
@@ -18,30 +18,32 @@ ChartJS.register(
   LinearScale,
   CategoryScale,
   Title,
-  Tooltip,
+  Tooltip
 );
+
 interface IProps {
   xAxisData: (string | undefined)[];
   yData: (string | undefined)[];
   graphTitle: string;
+  disableAnimation?: boolean;
 }
-const FishGrowthChart = ({ xAxisData, yData, graphTitle }: IProps) => {
-  const chartRef = useRef(null);
+
+
+const FishGrowthChart = forwardRef((props: IProps, ref) => {
+  const { xAxisData, yData, graphTitle, disableAnimation } = props;
+  const chartRef = useRef<any>(null);
+
+  // Expose `update` to parent via ref
+  useImperativeHandle(ref, () => ({
+    update: () => chartRef.current?.chartInstance?.update(),
+  }));
 
   const data = {
-    labels: xAxisData || [
-      'January',
-      'February',
-      'March',
-      'April',
-      'May',
-      'June',
-      'July',
-    ],
+    labels: xAxisData || [],
     datasets: [
       {
         label: 'Fish Weight (g)',
-        data: yData || [40, 35, 10, 38, 42, 80, 50],
+        data: yData || [],
         borderColor: 'rgba(18, 138, 134, 0.7)',
         borderWidth: 2,
         fill: false,
@@ -56,46 +58,29 @@ const FishGrowthChart = ({ xAxisData, yData, graphTitle }: IProps) => {
   const options: ChartOptions<'line'> = {
     responsive: true,
     maintainAspectRatio: false,
+    animation: disableAnimation ? { duration: 0 } : { duration: 800 },
     scales: {
-      x: {
-        grid: { display: false },
-        ticks: { color: '#999' },
-      },
-      y: {
-        grid: { color: 'rgba(200, 200, 200, 0.3)' },
-        ticks: { color: '#999' },
-      },
+      x: { grid: { display: false }, ticks: { color: '#999' } },
+      y: { grid: { color: 'rgba(200,200,200,0.3)' }, ticks: { color: '#999' } },
     },
     plugins: {
-      legend: {
-        display: true,
-      },
-      tooltip: {
-        enabled: true,
-        intersect: false,
-        mode: 'nearest',
-      },
+      legend: { display: true },
+      tooltip: { enabled: true, intersect: false, mode: 'nearest' },
       title: {
         display: true,
         text: `Fish Growth ${graphTitle}`,
         color: 'black',
-        font: {
-          size: 24,
-          weight: 'bold',
-        },
+        font: { size: 24, weight: 'bold' },
       },
     },
-    hover: {
-      mode: 'nearest',
-      intersect: false,
-    },
+    hover: { mode: 'nearest', intersect: false },
   };
 
   return (
-    <div style={{ height: '700px', width: '100%' }} className="mb-5">
-      <Line ref={chartRef} data={data} options={options} className="pb-5" />
+    <div style={{ height: '700px', width: '100%' }}>
+      <Line ref={chartRef} data={data} options={options} />
     </div>
   );
-};
+});
 
 export default FishGrowthChart;
