@@ -15,7 +15,6 @@ export async function POST(req: NextRequest) {
       );
     }
     const body = await req.json();
-    console.log("+++++", body)
     const { yearBasedPredicationId, modelId, ...productionParameterPayload } =
       body.productionParameter;
 
@@ -267,14 +266,10 @@ export async function POST(req: NextRequest) {
     // 3. Update FeedProfileLink
     if (Array.isArray(body.feedProfile)) {
       for (const fp of body.feedProfile) {
-        console.log("Processing feed profile entry:", fp);
-
         const store = await prisma.feedStore.findUnique({
           where: { id: fp.storeId },
         });
         if (!store) continue;
-        console.log("Found store:", store.id);
-
         // Check if the supplier organisation exists
         const supplierOrg = await prisma.organisation.findUnique({
           where: { id: fp.supplierId }, // directly Organisation ID
@@ -283,7 +278,6 @@ export async function POST(req: NextRequest) {
           console.log(`Organisation ID ${fp.supplierId} is not a feed supplier, skipping...`);
           continue;
         }
-        console.log("Found supplier organisation:", supplierOrg.id);
 
         const minFishSize = fp.minFishSize ?? store.minFishSizeG;
         const maxFishSize = fp.maxFishSize ?? store.maxFishSizeG;

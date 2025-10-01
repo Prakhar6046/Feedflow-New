@@ -58,7 +58,6 @@ const FarmInformation: NextPage<Props> = ({
   const loggedUser: any = getCookie('logged-user');
   const user = JSON.parse(loggedUser || '{}');
   const [selectedManagerIds, setSelectedManagerIds] = useState<string[]>([]);
-  console.log("selectedManagerIds",selectedManagerIds)
   const [selectedSwtich, setSelectedSwtich] = useState<string>('address');
   const [altitude, setAltitude] = useState<string>('');
   const [lat, setLat] = useState<string>('');

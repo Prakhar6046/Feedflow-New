@@ -107,7 +107,6 @@ export default function ProductionTable({
   );
 
   const [productionData, setProductionData] = useState<FarmGroup[]>();
-     console.log("productionData",productionData)
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('Farm');
   const [sortDataFromLocal, setSortDataFromLocal] = React.useState<any>('');

@@ -21,8 +21,6 @@ interface Props {
   farms: Farm[];
 }
 const FeedPredictionTable = ({ farms, productions }: Props) => {
-  console.log("farms",farms)
-  console.log("productions",productions)
   const startDate = useAppSelector(selectStartDate);
   const endDate = useAppSelector(selectEndDate);
   const [adHocData, setAdHocData] = useState<FishFeedingData[]>([]);
