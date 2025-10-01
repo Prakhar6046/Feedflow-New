@@ -35,7 +35,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import dayjs from 'dayjs';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import Loader from '../Loader';
@@ -642,33 +642,50 @@ function AdHoc({ data, setData }: Iprops) {
 
   const handleGraphPreview = async () => {
     if (!data.length) return;
+
     const formatedData = data.map((v) => ({
       date: v.date,
       fishSize: v.fishSize,
     }));
 
     const tempDiv = document.createElement('div');
+    tempDiv.style.position = 'absolute';
+    tempDiv.style.left = '-9999px';
+    tempDiv.style.top = '-9999px';
+    tempDiv.style.width = '1200px';
+    tempDiv.style.height = '700px';
     document.body.appendChild(tempDiv);
+
     const root = createRoot(tempDiv);
+    const chartRef = React.createRef<any>();
+
     root.render(
       <FishGrowthChart
+        ref={chartRef}
         xAxisData={formatedData.map((v) => v.date)}
         yData={formatedData.map((v) => v.fishSize)}
-        graphTitle={`Ad-hoc Prediction`}
+        graphTitle="Adhoc Prediction"
+        disableAnimation={true}
       />,
     );
-    await new Promise((r) => setTimeout(r, 500));
-    const canvas = await html2canvas(tempDiv);
+
+    await new Promise((resolve) => requestAnimationFrame(resolve));
+    chartRef.current?.update();
+    await new Promise((resolve) => setTimeout(resolve, 50));
+
+    const canvas = await html2canvas(tempDiv, { scale: 2, useCORS: true });
     const imgData = canvas.toDataURL('image/png');
+
     root.unmount();
     document.body.removeChild(tempDiv);
 
     const html = `
-      <div style="padding:20px; font-family: Arial, sans-serif;">
-        <h3 style="color:#06A19B;">Ad-hoc Prediction Graph</h3>
-        <img src="${imgData}" style="max-width:100%; border:1px solid #ccc; border-radius:8px;"/>
-      </div>
-    `;
+    <div style="padding:20px; font-family: Arial, sans-serif;">
+      <h3 style="color:#06A19B;">Ad-hoc Prediction Graph</h3>
+      <img src="${imgData}" style="width:100%; height:auto; border:1px solid #ccc; border-radius:8px;"/>
+    </div>
+  `;
+
     setPreviewTitle('Ad-hoc Graph Preview');
     setPreviewHtml(html);
     setPreviewOpen(true);
@@ -676,30 +693,66 @@ function AdHoc({ data, setData }: Iprops) {
 
   const createGraphPDF = async () => {
     if (!data.length) return;
+
     const tempDiv = document.createElement('div');
+    tempDiv.style.position = 'absolute';
+    tempDiv.style.left = '-9999px';
+    tempDiv.style.top = '-9999px';
+    tempDiv.style.width = '1200px';
+    tempDiv.style.height = '700px';
     document.body.appendChild(tempDiv);
+
     const root = createRoot(tempDiv);
+    const chartRef = React.createRef<any>();
+
     root.render(
       <FishGrowthChart
+        ref={chartRef}
         xAxisData={data.map((v) => v.date)}
         yData={data.map((v) => v.fishSize)}
-        graphTitle={`Ad-hoc Prediction`}
+        graphTitle="Ad-hoc Prediction"
+        disableAnimation={true}
       />,
     );
-    await new Promise((r) => setTimeout(r, 600));
-    const canvas = await html2canvas(tempDiv);
+
+    await new Promise((resolve) => requestAnimationFrame(resolve));
+    chartRef.current?.update();
+    await new Promise((resolve) => setTimeout(resolve, 50));
+
+    // Capture canvas
+    const canvas = await html2canvas(tempDiv, { scale: 2, useCORS: true });
     const imgData = canvas.toDataURL('image/png');
+
     root.unmount();
     document.body.removeChild(tempDiv);
+
+    // Create PDF
     const pdf = new jsPDF({ orientation: 'landscape' });
+
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+
+    const margin = 15; // padding around the chart
+
     const imgProps = pdf.getImageProperties(imgData);
-    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfWidth = pageWidth - margin * 2;
     const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-    pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-    pdf.save('ad_hoc_graph.pdf');
+
+    pdf.setFontSize(16);
+    pdf.setTextColor('#06A19B');
+    pdf.setFont(undefined, 'bold');
+    pdf.text('Ad-hoc Prediction Graph', pageWidth / 2, margin + 5, {
+      align: 'center',
+    });
+
+    pdf.setDrawColor(200);
+    pdf.setLineWidth(0.5);
+    pdf.rect(margin, margin + 10, pdfWidth, pdfHeight);
+    pdf.addImage(imgData, 'PNG', margin, margin + 10, pdfWidth, pdfHeight);
+
+    pdf.save('adhoc_graph.pdf');
   };
 
-  // Supplier/Feed summary preview and PDF (aggregated from ad-hoc data)
   const handleFeedSummaryPreview = () => {
     if (!data.length) return;
     const uniqueFeedTypes = Array.from(new Set(data.map((i) => i.feedType)));
@@ -1589,8 +1642,9 @@ function AdHoc({ data, setData }: Iprops) {
                 sx={{
                   overflow: 'hidden',
                   borderRadius: '14px',
-                  boxShadow: '0px 0px 16px 5px #0000001A'
-                }}>
+                  boxShadow: '0px 0px 16px 5px #0000001A',
+                }}
+              >
                 <Table stickyHeader>
                   <TableHead>
                     <TableRow>
@@ -1622,83 +1676,102 @@ function AdHoc({ data, setData }: Iprops) {
                       >
                         Feed
                       </TableCell>
-                      <TableCell sx={{ borderBottom: 0, color: '#fff', background: '#06a19b', fontWeight: 600 }}>Requirement</TableCell>
+                      <TableCell
+                        sx={{
+                          borderBottom: 0,
+                          color: '#fff',
+                          background: '#06a19b',
+                          fontWeight: 600,
+                        }}
+                      >
+                        Requirement
+                      </TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {Array.from(new Set(data.map((i) => i.feedType))).map((feed) => {
-                      const intake = data.filter((i) => i.feedType === feed).reduce((sum, i) => sum + (parseFloat(String(i.feedIntake)) || 0), 0);
-                      const kg = intake.toFixed(2);
-                      const bags = (intake / 20).toFixed(2);
-                      return (
-                        <TableRow key={feed}>
-                          <TableCell
-                            sx={{
-                              borderBottomWidth: 0,
-                              color: '#555555',
-                              fontWeight: 500,
-                              whiteSpace: 'nowrap',
-                            }}
-                          >
-                            SA Feeds
-                          </TableCell>
-                          <TableCell sx={{
-                            borderBottomWidth: 0,
-                            color: '#555555',
-                            fontWeight: 500,
-                            whiteSpace: 'nowrap',
-                            p: 0,
-                          }}>
-                            <Typography
-                              variant="h6"
+                    {Array.from(new Set(data.map((i) => i.feedType))).map(
+                      (feed) => {
+                        const intake = data
+                          .filter((i) => i.feedType === feed)
+                          .reduce(
+                            (sum, i) =>
+                              sum + (parseFloat(String(i.feedIntake)) || 0),
+                            0,
+                          );
+                        const kg = intake.toFixed(2);
+                        const bags = (intake / 20).toFixed(2);
+                        return (
+                          <TableRow key={feed}>
+                            <TableCell
                               sx={{
+                                borderBottomWidth: 0,
+                                color: '#555555',
                                 fontWeight: 500,
-                                fontSize: 14,
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'space-between',
-                                gap: 1,
-                                backgroundColor: '#F5F6F8',
-                                borderTopLeftRadius: '8px',
-                                borderBottomLeftRadius: '8px',
-                                padding: '8px 12px',
-                                margin: '8px 0',
-                                textWrap: 'nowrap',
+                                whiteSpace: 'nowrap',
                               }}
                             >
-                              {feed}
-                            </Typography>
-                          </TableCell>
-                          <TableCell
-                            sx={{
-                              borderBottomWidth: 0,
-                              color: '#555555',
-                              fontWeight: 500,
-                              whiteSpace: 'nowrap',
-                              p: 0,
-                            }}
-                          >
-                            <Typography
-                              variant="h6"
+                              SA Feeds
+                            </TableCell>
+                            <TableCell
                               sx={{
+                                borderBottomWidth: 0,
+                                color: '#555555',
                                 fontWeight: 500,
-                                fontSize: 14,
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'space-between',
-                                gap: 1,
-                                backgroundColor: '#F5F6F8',
-                                padding: '8px 12px',
-                                margin: '8px 0',
-                                textWrap: 'nowrap',
+                                whiteSpace: 'nowrap',
+                                p: 0,
                               }}
                             >
-                              {`${kg} Kg (${bags} Bags)`}
-                            </Typography>
-                          </TableCell>
-                        </TableRow>
-                      );
-                    })}
+                              <Typography
+                                variant="h6"
+                                sx={{
+                                  fontWeight: 500,
+                                  fontSize: 14,
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'space-between',
+                                  gap: 1,
+                                  backgroundColor: '#F5F6F8',
+                                  borderTopLeftRadius: '8px',
+                                  borderBottomLeftRadius: '8px',
+                                  padding: '8px 12px',
+                                  margin: '8px 0',
+                                  textWrap: 'nowrap',
+                                }}
+                              >
+                                {feed}
+                              </Typography>
+                            </TableCell>
+                            <TableCell
+                              sx={{
+                                borderBottomWidth: 0,
+                                color: '#555555',
+                                fontWeight: 500,
+                                whiteSpace: 'nowrap',
+                                p: 0,
+                              }}
+                            >
+                              <Typography
+                                variant="h6"
+                                sx={{
+                                  fontWeight: 500,
+                                  fontSize: 14,
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'space-between',
+                                  gap: 1,
+                                  backgroundColor: '#F5F6F8',
+                                  padding: '8px 12px',
+                                  margin: '8px 0',
+                                  textWrap: 'nowrap',
+                                }}
+                              >
+                                {`${kg} Kg (${bags} Bags)`}
+                              </Typography>
+                            </TableCell>
+                          </TableRow>
+                        );
+                      },
+                    )}
                     {(() => {
                       const total = data.reduce(
                         (sum, i) =>
@@ -1715,7 +1788,15 @@ function AdHoc({ data, setData }: Iprops) {
                               whiteSpace: 'nowrap',
                             }}
                           ></TableCell>
-                          <TableCell sx={{ background: '#06a19b', color: '#fff', fontWeight: 600 }}>Total</TableCell>
+                          <TableCell
+                            sx={{
+                              background: '#06a19b',
+                              color: '#fff',
+                              fontWeight: 600,
+                            }}
+                          >
+                            Total
+                          </TableCell>
                           <TableCell
                             sx={{
                               color: '#555555',
