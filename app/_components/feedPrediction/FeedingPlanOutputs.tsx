@@ -145,12 +145,11 @@ function FeedingPlanOutput() {
       />,
     );
 
-   
     await new Promise((resolve) => requestAnimationFrame(resolve));
     chartRef.current?.update();
     await new Promise((resolve) => setTimeout(resolve, 50));
 
-     const canvas = await html2canvas(tempDiv, { scale: 2, useCORS: true });
+    const canvas = await html2canvas(tempDiv, { scale: 2, useCORS: true });
     const imgData = canvas.toDataURL('image/png');
 
     root.unmount();
@@ -168,6 +167,64 @@ function FeedingPlanOutput() {
     setPreviewTitle('Feeding Plan Graph Preview');
     setPreviewHtml(previewHtmlContent);
     setPreviewOpen(true);
+  };
+  const generateTablePreviewHtml = (node: HTMLElement, title = 'Preview') => {
+    if (!node) return '';
+
+    // Basic CSS for table preview
+    const styles = `
+    body {
+      font-family: "Roboto", sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th {
+      background: #06a19b;
+      color: #fff;
+      font-weight: 600;
+      font-size: 16px;
+      padding: 8px 12px;
+      text-align: left;
+    }
+    td {
+      background: #F5F6F8;
+      color: #555555;
+      font-weight: 500;
+      font-size: 20px;
+      padding: 8px 12px;
+    }
+    .total-row td {
+      background: #06a19b !important;
+      color: #fff !important;
+      font-weight: 600;
+    }
+    .feed-cell, .supplier-cell {
+      border-radius: 8px;
+      padding: 8px 12px;
+      margin: 8px 0;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 4px;
+    }
+  `;
+    const html = `
+    <html>
+      <head>
+        <title>${title}</title>
+        <style>${styles}</style>
+      </head>
+      <body>
+        ${node.outerHTML}
+      </body>
+    </html>
+  `;
+
+    return html;
   };
 
   const handleGrowthTablePreview = () => {
@@ -198,7 +255,7 @@ function FeedingPlanOutput() {
         <table style="width:100%; border-collapse:collapse; font-size:12px; color:#333;">
           <thead>
             <tr>
-              ${CommonFeedPredictionHead.map((h) => `<th style=\"border:1px solid #ccc; padding:8px 12px; background:#efefef; text-align:left;\">${h}</th>`).join('')}
+              ${CommonFeedPredictionHead.map((h) => `<th style=\"border:1px solid #ccc; padding:8px 12px; background:#06A19B; text-align:left;\">${h}</th>`).join('')}
             </tr>
           </thead>
           <tbody>
@@ -481,7 +538,6 @@ function FeedingPlanOutput() {
               </div>
             </div>
           ) : type === 'graph' ? (
-              
             <div style={{ width: '100%', padding: '20px' }}>
               <FishGrowthChart
                 xAxisData={formatedData?.map((value) => value?.date) || []}
@@ -680,14 +736,29 @@ function FeedingPlanOutput() {
                                 }}
                               ></TableCell>
 
-                              <TableCell
+                                <TableCell
                                 sx={{
                                   color: '#555555',
                                   fontWeight: 500,
                                   whiteSpace: 'nowrap',
                                   p: 0,
                                 }}
-                              ></TableCell>
+                              >
+                                <Typography
+                                  variant="h6"
+                                  sx={{
+                                    fontWeight: 500,
+                                    fontSize: 14,
+                                    padding: '16px 12px',
+                                    // margin: "8px 0",
+                                    textWrap: 'nowrap',
+                                    background: '#06a19b',
+                                    color: '#fff',
+                                  }}
+                                >
+                                Total:
+                                </Typography>
+                              </TableCell>
 
                               <TableCell
                                 sx={{
@@ -1643,22 +1714,36 @@ function FeedingPlanOutput() {
                               intakeByFeedType[feed]?.toFixed(2) || 0;
                             const feedBags =
                               (intakeByFeedType[feed] / 20)?.toFixed(2) || 0;
+                            const suppliers = getSupplierName(feed);
+                            console.log('suppliers', suppliers);
                             return (
                               <TableRow key={idx}>
-                                {idx === 0 && (
-                                  <TableCell
-                                    rowSpan={uniqueFeedTypes.length}
+                                <TableCell
+                                  sx={{
+                                    borderBottomWidth: 0,
+                                    color: '#555555',
+                                    fontWeight: 500,
+                                    whiteSpace: 'nowrap',
+                                  }}
+                                >
+                                  <Typography
+                                    variant="h6"
                                     sx={{
-                                      // borderBottomColor: "#F5F6F8",
-                                      borderBottomWidth: 0,
-                                      color: '#555555',
                                       fontWeight: 500,
-                                      whiteSpace: 'nowrap',
+                                      fontSize: 14,
+                                      display: 'flex',
+                                      alignItems: 'center',
+                                      justifyContent: 'flex-start',
+                                      gap: 1,
+                                      backgroundColor: '#F5F6F8',
+                                      borderRadius: '8px',
+                                      padding: '8px 12px',
+                                      margin: '8px 0',
                                     }}
                                   >
-                                    SA Feeds
-                                  </TableCell>
-                                )}
+                                    {suppliers || 'N/A'}
+                                  </Typography>
+                                </TableCell>
                                 <TableCell
                                   sx={{
                                     // borderBottomColor: "#F5F6F8",
@@ -1737,8 +1822,22 @@ function FeedingPlanOutput() {
                                 whiteSpace: 'nowrap',
                                 p: 0,
                               }}
-                            ></TableCell>
-
+                            >
+                              <Typography
+                                variant="h6"
+                                sx={{
+                                  fontWeight: 500,
+                                  fontSize: 14,
+                                  padding: '16px 12px',
+                                  // margin: "8px 0",
+                                  textWrap: 'nowrap',
+                                  background: '#06a19b',
+                                  color: '#fff',
+                                }}
+                              >
+                                Total :
+                              </Typography>
+                            </TableCell>
                             <TableCell
                               sx={{
                                 color: '#555555',
@@ -1821,8 +1920,13 @@ function FeedingPlanOutput() {
               onClick={() => {
                 const node = feedTableRef.current;
                 if (!node) return;
+
+                const previewHtml = generateTablePreviewHtml(
+                  node,
+                  'Feed Requirement',
+                );
+                setPreviewHtml(previewHtml);
                 setPreviewTitle('Feed Requirement');
-                setPreviewHtml(node.innerHTML);
                 setPreviewOpen(true);
               }}
               sx={{
