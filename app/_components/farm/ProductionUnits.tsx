@@ -252,6 +252,7 @@ const ProductionUnits: NextPage<Props> = ({
     }
   };
 
+
   const onSubmit: SubmitHandler<ProductionUnitsFormTypes> = async (data) => {
     const farmData = getLocalItem('farmData');
 
@@ -464,6 +465,7 @@ const ProductionUnits: NextPage<Props> = ({
             removeLocalItem('productionParamtertsUnitsArray');
             removeLocalItem('feedProfiles');
             removeLocalItem('feedProfileId');
+             removeLocalItem('feedProfilesForm');
             removeLocalItem('productionUnitsFeedProfiles');
             router.push('/dashboard/farm');
           } else {
