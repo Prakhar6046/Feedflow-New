@@ -59,7 +59,6 @@ export interface EnhancedTableHeadProps {
 }
 
 export default function UserTable({ users, permissions }: Props) {
-
   const dispatch = useAppDispatch();
   const router = useRouter();
   const pathName = usePathname();
@@ -73,7 +72,7 @@ export default function UserTable({ users, permissions }: Props) {
   );
   const [order, setOrder] = React.useState<Order>('asc');
   const [orderBy, setOrderBy] = React.useState('name');
-    const token = getCookie('auth-token');
+  const token = getCookie('auth-token');
   const [sortDataFromLocal, setSortDataFromLocal] = React.useState<{
     direction: Order;
     column: string;
@@ -120,7 +119,7 @@ export default function UserTable({ users, permissions }: Props) {
     if (selectedUser) {
       const response = await fetch('/api/users', {
         method: 'DELETE',
-            headers: {
+        headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
@@ -131,7 +130,7 @@ export default function UserTable({ users, permissions }: Props) {
         toast.success(res.message);
         router.refresh();
       } else {
-        toast.error(res.message || "Failed to delete user.");
+        toast.error(res.message || 'Failed to delete user.');
       }
     }
   };
@@ -345,7 +344,9 @@ export default function UserTable({ users, permissions }: Props) {
                       scope="row"
                     >
                       <Box display={'flex'} alignItems={'center'} gap={1.5}>
-                        {user?.imageUrl && user?.imageUrl !== 'null' && user?.imageUrl !== 'undefined' ? (
+                        {user?.imageUrl &&
+                        user?.imageUrl !== 'null' &&
+                        user?.imageUrl !== 'undefined' ? (
                           <Image
                             src={user.imageUrl}
                             width={40}
