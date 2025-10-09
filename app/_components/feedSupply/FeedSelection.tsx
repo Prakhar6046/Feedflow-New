@@ -92,6 +92,7 @@ const FeedSelection = ({ data, feedSuppliers }: Iprops) => {
       option: string;
     }[]
   >([]);
+  console.log('supplierOptions', supplierOptions);
   const [selectedSupplier, setSelectedSupplier] = useState<
     {
       id: number;
@@ -112,6 +113,7 @@ const FeedSelection = ({ data, feedSuppliers }: Iprops) => {
       setFeedStores([]);
     }
   }, [selectedSupplier, data]);
+
   useEffect(() => {
     if (feedSuppliers?.length) {
       const options = feedSuppliers?.map((supplier) => {
@@ -121,7 +123,39 @@ const FeedSelection = ({ data, feedSuppliers }: Iprops) => {
       setSelectedSupplier(options);
     }
   }, [feedSuppliers]);
-
+  if (!feedStores || feedStores.length === 0) {
+    return (
+      <Box
+        sx={{
+          height: 'Object-fit',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          flexDirection: 'column',
+          p: 10,
+          backgroundColor: '#FAFAFA',
+          borderRadius: 2,
+          border: '1px solid #e0e0e0',
+        }}
+      >
+        <Typography
+          sx={{ textAlign: 'center' }}
+          variant="h6"
+          color="text.secondary"
+          gutterBottom
+        >
+          No Feed Data Available
+        </Typography>
+        <Typography
+          sx={{ textAlign: 'center' }}
+          variant="body1"
+          color="text.secondary"
+        >
+          Please add feed products to view and manage them here.
+        </Typography>
+      </Box>
+    );
+  }
   return (
     <Stack>
       <Box>
@@ -193,7 +227,9 @@ const FeedSelection = ({ data, feedSuppliers }: Iprops) => {
           {feedStores?.length ? (
             feedStores?.map((supply) => {
               const supplierName = feedSuppliers?.find((supplier) =>
-                supply?.ProductSupplier?.map(String).includes(String(supplier?.id))
+                supply?.ProductSupplier?.map(String).includes(
+                  String(supplier?.id),
+                ),
               )?.name;
               return (
                 <Grid item xs="auto" key={Number(supply?.id)}>
