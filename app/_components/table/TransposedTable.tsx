@@ -166,7 +166,11 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
       checked ? [...prev, id] : prev.filter((item) => item !== id),
     );
   };
-
+  // useEffect(() => {
+  //   if (!filteredStores || filteredStores.length === 0) {
+  //     router.push('/dashboard/feedSupply/libarary/new');
+  //   }
+  // }, [filteredStores, router]);
   const onSubmit = async (data: any) => {
     setIsSaving(true);
     const payload = transformFeedProductsWithSuppliers(data);
@@ -257,7 +261,30 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
       .replace(/_/g, " ")
       .replace(/\b\w/g, (char) => char.toUpperCase());
   }
-
+    if (!filteredStores || filteredStores.length === 0) {
+    return (
+      <Box
+        sx={{
+          height: '100%',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          flexDirection: 'column',
+          p: 10,
+          backgroundColor: '#FAFAFA',
+          borderRadius: 2,
+          border: '1px solid #e0e0e0',
+        }}
+      >
+        <Typography  sx={{textAlign:'center'}} variant="h6" color="text.secondary" gutterBottom>
+          No Feed Data Available 
+        </Typography>
+        <Typography sx={{textAlign:'center'}} variant="body1" color="text.secondary">
+          Please add feed products to view and manage them here.
+        </Typography>
+      </Box>
+    );
+  }
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="bg-red-600">
       <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 1, gap: 2 }}>
