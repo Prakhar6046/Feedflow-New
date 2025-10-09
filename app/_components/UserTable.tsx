@@ -73,6 +73,7 @@ export default function UserTable({ users, permissions }: Props) {
   );
   const [order, setOrder] = React.useState<Order>('asc');
   const [orderBy, setOrderBy] = React.useState('name');
+    const token = getCookie('auth-token');
   const [sortDataFromLocal, setSortDataFromLocal] = React.useState<{
     direction: Order;
     column: string;
@@ -119,6 +120,10 @@ export default function UserTable({ users, permissions }: Props) {
     if (selectedUser) {
       const response = await fetch('/api/users', {
         method: 'DELETE',
+            headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
         body: String(selectedUser.id),
       });
       const res = await response.json();
