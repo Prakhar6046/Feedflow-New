@@ -86,8 +86,16 @@ export const DELETE = async (request: NextRequest) => {
     const role = searchParams.get('role');
     const userId = await request.json();
 
+    const user = await prisma.user.findUnique({
+      where: { id: Number(userId) },
+    });
+
+    if (user.role === 'SUPERADMIN') {
+      throw new Error('Cannot delete SUPERADMIN user');
+    }
+
     const deletedUser = await prisma.user.delete({
-      where: { role: { not: 'SUPERADMIN' }, id: Number(userId) },
+      where: { id: Number(userId) },
     });
 
     return new NextResponse(
