@@ -40,6 +40,7 @@ import {
 } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { getCookie } from 'cookies-next';
+import { clientSecureFetch } from '../../_lib/clientSecureFetch';
 const style = {
   position: 'absolute' as const,
   top: '50%',
@@ -158,12 +159,8 @@ const WaterQualityParameter: React.FC<Props> = ({
           listData: updatedData.filter((_, idx) => idx !== 0),
         };
 
-        const response = await fetch('/api/production/mange/waterQuality', {
+        const response = await clientSecureFetch('/api/production/mange/waterQuality', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
           body: JSON.stringify(payload),
         });
 

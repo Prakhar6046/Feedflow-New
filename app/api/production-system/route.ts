@@ -15,20 +15,32 @@ export async function GET(request: NextRequest) {
       );
     }
 
-  const systems = await prisma.productionSystem.findMany({ orderBy: { createdAt: 'desc' } });
-  return NextResponse.json(systems);
+    const systems = await prisma.productionSystem.findMany({
+      orderBy: { createdAt: 'desc' },
+    });
+    return NextResponse.json(systems);
   } catch (error) {
-    console.error("Error fetching productionSystem:", error);
+    console.error('Error fetching productionSystem:', error);
     return NextResponse.json(
       { error: 'Internal Server Error' },
       { status: 500 },
     );
   }
-
 }
 
 export async function POST(req: Request) {
   try {
+    const user = await verifyAndRefreshToken(req);
+    if (user.status === 401) {
+      return new NextResponse(
+        JSON.stringify({
+          status: false,
+          message: 'Unauthorized: Token missing or invalid',
+        }),
+        { status: 401 },
+      );
+    }
+
     const { name } = await req.json();
 
     if (!name || !name.trim()) {
@@ -52,27 +64,28 @@ export async function POST(req: Request) {
     const newCode = `PS${nextNumber}`;
 
     const newSystem = await prisma.productionSystem.create({
-      data: { 
+      data: {
         name: name.trim(),
         code: newCode,
       },
     });
 
     return NextResponse.json(newSystem);
-
   } catch (err: any) {
     console.error('Error creating production system:', err);
 
     if (err && err.code === 'P2002') {
       return NextResponse.json(
-        { error: `Production system with this ${err.meta?.target} already exists.` },
-        { status: 409 }
+        {
+          error: `Production system with this ${err.meta?.target} already exists.`,
+        },
+        { status: 409 },
       );
     }
 
     return NextResponse.json(
       { error: 'Failed to create production system' },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

@@ -406,3 +406,31 @@ export const getspeciesList = async () => {
     return { error: 'Something went wrong' };
   }
 };
+
+
+export const getFarm = async (farmId: string) => {  
+  try {   
+    const url = `${process.env.BASE_URL}/api/farm/${farmId}`;
+    const res = await secureFetch(url, {
+      method: 'GET',  
+      cache: 'no-store',
+    }); 
+    return await res.json();  
+  } catch (error) {     
+    console.error('getFarm error:', error); 
+    return { error: 'Something went wrong' }; 
+  }       
+};  
+export const getFarmers = async () => {  
+  try {   
+    const url = `${process.env.BASE_URL}/api/farm/fish-farmers`;
+    const res = await secureFetch(url, {
+      method: 'GET',  
+      cache: 'no-store',
+    }); 
+    return await res.json();  
+  } catch (error) {     
+    console.error('getFarm error:', error); 
+    return { error: 'Something went wrong' }; 
+  }       
+}; 

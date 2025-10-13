@@ -16,6 +16,7 @@ import { getCookie, setCookie } from 'cookies-next';
 import { LoggedUser } from '../AccountPopover';
 import Logo from '@/public/static/img/logo.svg';
 import { farmAction } from '@/lib/features/farm/farmSlice';
+import { clientSecureFetch } from '@/app/_lib/clientSecureFetch';
 const ExpandedSidebar = () => {
   const router = useRouter();
   const loggedUser: any = getCookie('logged-user');
@@ -41,11 +42,8 @@ const ExpandedSidebar = () => {
     const getUser = async () => {
       try {
         const token = getCookie('auth-token');
-        const response = await fetch(`/api/users/${loggedUserData.id}`, {
+        const response = await clientSecureFetch(`/api/users/${loggedUserData.id}`, {
           method: 'GET',
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
         });
         const data = await response.json();
         setUserData(data.data);

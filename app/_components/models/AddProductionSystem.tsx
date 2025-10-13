@@ -4,6 +4,7 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { clientSecureFetch } from '../../_lib/clientSecureFetch';
 
 type FormInputs = { name: string };
 
@@ -30,15 +31,13 @@ export default function AddProductionSystem({
         try {
             let res;
             if (mode === 'add') {
-                res = await fetch('/api/production-system', {
+                res = await clientSecureFetch('/api/production-system', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(data),
                 });
             } else {
-                res = await fetch(`/api/production-system/${id}`, {
+                res = await clientSecureFetch(`/api/production-system/${id}`, {
                     method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(data),
                 });
             }

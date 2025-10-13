@@ -33,6 +33,8 @@ import { getLocalItem, removeLocalItem } from '@/app/_lib/utils';
 import Image from 'next/image';
 import { SingleUser } from '@/app/_typeModels/User';
 import toast from 'react-hot-toast';
+import { clientSecureFetch } from '@/app/_lib/clientSecureFetch';
+import { compareSync } from 'bcryptjs';
 
 interface Props {
   farms: Farm[];
@@ -98,16 +100,14 @@ export default function FarmTable({ farms, permisions }: Props) {
       setOrderBy(data.column);
     }
   }, [sortDataFromLocal]);
-
+  console.log('token', token);
+  
   const handleDeleteFarms = async (farmId: string) => {
     if (!farmId) return;
+
     try {
-      const response = await fetch(`/api/farm/${farmId}`, {
+      const response = await clientSecureFetch(`/api/farm/${farmId}`, {
         method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
       });
 
       const res = await response.json();
@@ -118,9 +118,11 @@ export default function FarmTable({ farms, permisions }: Props) {
       } else {
         toast.error(res.message || 'Failed to delete farm.');
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
-      toast.error('Something went wrong while deleting the farm.');
+      toast.error(
+        error.message || 'Something went wrong while deleting the farm.',
+      );
     }
   };
 

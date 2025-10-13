@@ -1,6 +1,7 @@
 import BasicBreadcrumbs from '@/app/_components/Breadcrumbs';
 import NewFarm from '@/app/_components/farm/NewFarm';
 import {
+  getFarmers,
   getFarmMangers,
   getFarms,
   getFeedStores,
@@ -36,7 +37,7 @@ export default async function Page({
     query,
   });
   const feedSuppliers = await getFeedSuppliers();
-
+    const fishFarmers = await getFarmers();
   return (
     <>
       <BasicBreadcrumbs
@@ -50,6 +51,7 @@ export default async function Page({
       />
 
       <NewFarm
+      fishFarmers={fishFarmers?.data}
         farmMembers={farmManagers?.data?.users}
         growthModels={growthModels?.data}
         farms={farms?.data}

@@ -29,6 +29,7 @@ export const GET = async (request: NextRequest, context: { params: any }) => {
       where: { id: farmId },
       include: {
         farmAddress: true,
+        organisation: true,
         productionUnits: {
           include: {
             YearBasedPredicationProductionUnit: true,
@@ -49,7 +50,9 @@ export const GET = async (request: NextRequest, context: { params: any }) => {
         },
       },
     });
-
+    if (farm.farmAddressId) {
+      await prisma.farmAddress.delete({ where: { id: farm.farmAddressId } });
+    }
     if (!farm) {
       return new NextResponse(
         JSON.stringify({ status: false, message: 'Farm not found' }),
@@ -104,46 +107,35 @@ export const DELETE = async (
   request: NextRequest,
   context: { params: any },
 ) => {
-  const user = await verifyAndRefreshToken(request);
-
-  if (user.status === 401) {
-    return new NextResponse(
-      JSON.stringify({
-        status: false,
-        message: 'Unauthorized: Token missing or invalid',
-      }),
-      { status: 401 },
-    );
-  }
-
-  if (user.role !== 'SUPERADMIN') {
-    return new NextResponse(
-      JSON.stringify({
-        status: false,
-        message: 'Forbidden: Only SUPERADMIN can delete farms',
-      }),
-      { status: 403 },
-    );
-  }
-
-  const farmId = context.params.farmId;
-  if (!farmId) {
-    return new NextResponse(
-      JSON.stringify({ status: false, message: 'Invalid or missing farmId' }),
-      { status: 400 },
-    );
-  }
-
   try {
+    const user = await verifyAndRefreshToken(request);
+
+    if (!user || user.role !== 'SUPERADMIN') {
+      return NextResponse.json(
+        {
+          status: false,
+          message: 'Forbidden: Only SUPERADMIN can delete farms',
+        },
+        { status: 403 },
+      );
+    }
+
+    const farmId = context.params.farmId;
+    if (!farmId) {
+      return NextResponse.json(
+        { status: false, message: 'Invalid or missing farmId' },
+        { status: 400 },
+      );
+    }
+
     const farm = await prisma.farm.findUnique({ where: { id: farmId } });
     if (!farm) {
-      return new NextResponse(
-        JSON.stringify({ status: false, message: 'Farm not found' }),
+      return NextResponse.json(
+        { status: false, message: 'Farm not found' },
         { status: 404 },
       );
     }
 
-    // Delete related data
     const productionUnitIds = (
       await prisma.productionUnit.findMany({
         where: { farmId },
@@ -158,6 +150,13 @@ export const DELETE = async (
       })
     ).map((fp) => fp.id);
 
+    const waterQualityIds = (
+      await prisma.waterQualityPredictedParameters.findMany({
+        where: { farmId },
+        select: { id: true },
+      })
+    ).map((wq) => wq.id);
+
     await prisma.$transaction([
       prisma.feedProfileProductionUnit.deleteMany({
         where: { productionUnitId: { in: productionUnitIds } },
@@ -169,33 +168,41 @@ export const DELETE = async (
         where: { feedProfileId: { in: feedProfileIds } },
       }),
       prisma.feedProfile.deleteMany({ where: { id: { in: feedProfileIds } } }),
+
+      // Water quality related
+      prisma.yearBasedPredication.deleteMany({
+        where: { waterQualityPredictedParameterId: { in: waterQualityIds } },
+      }),
       prisma.waterQualityPredictedParameters.deleteMany({ where: { farmId } }),
+
+      // Fish / production
       prisma.fishManageHistory.deleteMany({ where: { fishFarmId: farmId } }),
       prisma.fishSupply.deleteMany({ where: { fishFarmId: farmId } }),
       prisma.productionUnit.deleteMany({
         where: { id: { in: productionUnitIds } },
       }),
+
+      // Growth models, managers, addresses
       prisma.growthModelFarm.deleteMany({ where: { farmId } }),
       prisma.farmManger.deleteMany({ where: { farmId } }),
       prisma.farmAddress.deleteMany({ where: { id: farm.farmAddressId } }),
+
+      // Finally delete the farm
       prisma.farm.delete({ where: { id: farmId } }),
     ]);
 
-    return new NextResponse(
-      JSON.stringify({
-        status: true,
-        message: 'Farm and all related data deleted successfully',
-      }),
-      { status: 200 },
-    );
-  } catch (error) {
+    return NextResponse.json({
+      status: true,
+      message: 'Farm and all related data deleted successfully',
+    });
+  } catch (error: any) {
     console.error('[FARM_DELETE_ERROR]', error);
-    return new NextResponse(
-      JSON.stringify({
+    return NextResponse.json(
+      {
         status: false,
         message: 'Internal server error',
         error: error.message,
-      }),
+      },
       { status: 500 },
     );
   }

@@ -37,6 +37,7 @@ import {
 import { SingleOrganisation } from '../_typeModels/Organization';
 import { getCookie } from 'cookies-next';
 import DeleteConfirmation from './models/DeleteConfirmation';
+import { clientSecureFetch } from '../_lib/clientSecureFetch';
 
 interface Props {
   organisations: SingleOrganisation[];
@@ -89,12 +90,8 @@ export default function BasicTable({
     setAnchorEl(null);
     if (selectedOrganisation) {
       const token = getCookie('auth-token');
-      const response = await fetch('/api/invite/organisation', {
+      const response = await clientSecureFetch('/api/invite/organisation', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
         body: JSON.stringify({
           organisationId: selectedOrganisation.id,
           users: selectedOrganisation.contact,
@@ -116,12 +113,12 @@ export default function BasicTable({
         (user) => user.role === 'ADMIN' || user.role === 'SUPERADMIN',
       );
       const token = getCookie('auth-token');
-      const response = await fetch('/api/users', {
+      const response = await clientSecureFetch('/api/users', {
         method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
+        // headers: {
+        //   'Content-Type': 'application/json',
+        //   Authorization: `Bearer ${token}`,
+        // },
         body: JSON.stringify({
           id: selectedOrganisation.id,
           users: selectedOrganisation.users?.map((user) => user.id),
@@ -137,10 +134,8 @@ export default function BasicTable({
   const handleDeleteOrganisation = async () => {
     if (!selectedOrganisation) return;
     try {
-      const token = getCookie("auth-token");
-      const response = await fetch(`/api/organisation/${selectedOrganisation.id}`, {
+      const response = await clientSecureFetch(`/api/organisation/${selectedOrganisation.id}`, {
         method: "DELETE",
-        headers: { Authorization: `Bearer ${token}` },
       });
 
       if (response.ok) {

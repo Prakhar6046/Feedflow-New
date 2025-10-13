@@ -18,6 +18,7 @@ import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { SingleOrganisation } from '@/app/_typeModels/Organization';
 import { getCookie } from 'cookies-next';
+import { clientSecureFetch } from '../../_lib/clientSecureFetch';
 const style = {
   position: 'absolute' as const,
   top: '50%',
@@ -59,12 +60,8 @@ const AddUser: React.FC<Props> = ({ setOpen, open, organisations }) => {
         email: data.email,
         organisationId: data.organisationId,
       };
-      const response = await fetch('/api/add-new-user', {
+      const response = await clientSecureFetch('/api/add-new-user', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
         body: JSON.stringify(payload),
       });
       const responseData = await response.json();

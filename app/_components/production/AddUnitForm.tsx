@@ -22,6 +22,7 @@ import { useRouter } from 'next/navigation';
 import { Farm } from '@/app/_typeModels/Farm';
 import toast from 'react-hot-toast';
 import { getCookie } from 'cookies-next';
+import { clientSecureFetch } from '../../_lib/clientSecureFetch';
 import { getDayMonthDifference } from '@/app/_lib/utils';
 interface FormInputs {
   fishFarm: string;
@@ -85,12 +86,8 @@ function AddUnitForm({ farms }: Props) {
       };
 
       const token = getCookie('auth-token');
-      const response = await fetch(`/api/production`, {
+      const response = await clientSecureFetch(`/api/production`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
         body: JSON.stringify(payload),
       });
       const responseData = await response.json();

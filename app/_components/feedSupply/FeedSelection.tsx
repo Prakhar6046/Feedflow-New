@@ -93,6 +93,7 @@ const FeedSelection = ({ data, feedSuppliers }: Iprops) => {
     }[]
   >([]);
   console.log('supplierOptions', supplierOptions);
+  console.log('feedSuppliers with contact info', feedSuppliers);
   const [selectedSupplier, setSelectedSupplier] = useState<
     {
       id: number;
@@ -801,9 +802,39 @@ const FeedSelection = ({ data, feedSuppliers }: Iprops) => {
                         fontSize={14}
                         color="#000"
                       >
-                        Specialized Aquatic Feeds(Pty) Ltd. Corner Church and
-                        Stil St, Westcliff, Hermanus 7200, South Africa <br />
-                        Tel: +27 28 313 8581 / info@safeeds.co.za
+                        {(() => {
+                          const supplier = feedSuppliers?.find((supplier) =>
+                            supply?.ProductSupplier?.map(String).includes(
+                              String(supplier?.id),
+                            ),
+                          );
+                          
+                          if (supplier?.address && supplier?.contact?.[0]) {
+                            const address = supplier.address;
+                            const contact = supplier.contact[0];
+                            return (
+                              <>
+                                {supplier.name}
+                                {address.street && `, ${address.street}`}
+                                {address.city && `, ${address.city}`}
+                                {address.province && `, ${address.province}`}
+                                {address.postCode && `, ${address.postCode}`}
+                                <br />
+                                {contact.phone && `Tel: ${contact.phone}`}
+                                {contact.email && ` / ${contact.email}`}
+                              </>
+                            );
+                          }
+                          
+                          // Fallback to static text if no contact info available
+                          return (
+                            <>
+                              Specialized Aquatic Feeds(Pty) Ltd. Corner Church and
+                              Stil St, Westcliff, Hermanus 7200, South Africa <br />
+                              Tel: +27 28 313 8581 / info@safeeds.co.za
+                            </>
+                          );
+                        })()}
                       </Typography>
                     </Box>
                   </Box>

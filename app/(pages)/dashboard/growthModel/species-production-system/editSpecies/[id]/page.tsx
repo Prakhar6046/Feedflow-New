@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import AddSpecies from "@/app/_components/models/AddSpecies";
 import Loader from "@/app/_components/Loader";
+import { clientSecureFetch } from "@/app/_lib/clientSecureFetch";
 
 export default function EditSpeciesPage() {
   const { id } = useParams();
@@ -14,7 +15,7 @@ export default function EditSpeciesPage() {
   useEffect(() => {
     if (!id) return;
     (async () => {
-      const res = await fetch(`/api/species/${id}`);
+      const res = await clientSecureFetch(`/api/species/${id}`);
       const data = await res.json();
       setInitialData({ name: data.name });
       setLoading(false);

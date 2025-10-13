@@ -49,6 +49,7 @@ import { SingleUser } from '@/app/_typeModels/User';
 import { getCookie } from 'cookies-next';
 import Image from 'next/image';
 import FarmsInformation from './FarmsInformation';
+import { clientSecureFetch } from '@/app/_lib/clientSecureFetch';
 export const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
   clipPath: 'inset(50%)',
@@ -106,7 +107,7 @@ const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
   };
   const getOrganisation = async () => {
     setLoading(true);
-    const data = await fetch(`/api/organisation/${organisationId}`, {
+    const data = await clientSecureFetch(`/api/organisation/${organisationId}`, {
       method: 'GET',
     });
     if (data) {
@@ -216,7 +217,6 @@ const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
       }
       const res = await fetch(`/api/organisation/${organisationId}`, {
         method: 'PUT',
-
         body: formData,
       });
 
@@ -224,9 +224,8 @@ const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
         const updatedOrganisation = await res.json();
         const contactsToInvite = data.contacts.filter((c) => c.invite);
         if (contactsToInvite.length > 0) {
-          const inviteRes = await fetch('/api/invite/organisation', {
+          const inviteRes = await clientSecureFetch('/api/invite/organisation', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               organisationId: Number(organisationId),
               users: contactsToInvite,

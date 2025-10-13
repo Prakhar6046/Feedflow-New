@@ -41,6 +41,8 @@ interface FormInputs {
 export interface FarmsFishGrowth {
   farm: string;
   unit: string;
+  farmId: string;
+  unitId: number;
   fishGrowthData: FishFeedingData[];
 }
 export const timeIntervalOptions = [
@@ -91,6 +93,7 @@ function FeedingPlan({ productionData, startDate, endDate }: Props) {
     mode: 'onChange',
   });
   const onSubmit: SubmitHandler<FormInputs> = (data) => {
+    debugger
     // const formattedDate = dayjs(startDate).format('YYYY-MM-DD');
     // const diffInDays = dayjs(endDate).diff(dayjs(startDate), 'day');
     if (!selectedDropDownfarms?.length) {
@@ -99,6 +102,7 @@ function FeedingPlan({ productionData, startDate, endDate }: Props) {
       return;
     }
     if (productionData?.length === 0) {
+      console.log('No production data available for the selected farms.');
       return;
     }
 

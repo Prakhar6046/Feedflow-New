@@ -15,13 +15,14 @@ export async function POST(req: NextRequest) {
       );
     }
     const body = await req.json();
+    console.log('Received payload for updating farm:', body);
     const { yearBasedPredicationId, modelId, ...productionParameterPayload } =
       body.productionParameter;
 
     // Ensure that the farmAddress contains an id for updating
-    if (!body.farmAddress.id) {
-      throw new Error('Farm address ID is required for updating.');
-    }
+    // if (!body.farmAddress.id) {
+    //   throw new Error('Farm address ID is required for updating.');
+    // }
     if (!yearBasedPredicationId) {
       throw new Error('Year Based Predication ID is required for updating.');
     }
@@ -33,16 +34,43 @@ export async function POST(req: NextRequest) {
       modelId,
     };
     // Update the existing farm address
-    const updatedFarmAddress = await prisma.farmAddress.update({
-      where: { id: body.farmAddress.id },
-      data: { ...body.farmAddress },
-    });
+    let farmAddressId = body.farmAddress?.id;
+
+    if (!farmAddressId) {
+      // Create new farm address if ID is missing
+      const newFarmAddress = await prisma.farmAddress.create({
+        data: { ...body.farmAddress },
+      });
+      farmAddressId = newFarmAddress.id;
+    } else {
+      // Update existing farm address safely
+      const existingAddress = await prisma.farmAddress.findUnique({
+        where: { id: farmAddressId },
+      });
+
+      if (!existingAddress) {
+        // If address ID sent does not exist, create new
+        const newFarmAddress = await prisma.farmAddress.create({
+          data: { ...body.farmAddress },
+        });
+        farmAddressId = newFarmAddress.id;
+      } else {
+        await prisma.farmAddress.update({
+          where: { id: farmAddressId },
+          data: { ...body.farmAddress },
+        });
+      }
+    }
+    if (!body.id) {
+      throw new Error('Farm ID is required to update a farm.');
+    }
 
     // Update the existing farm
     const updatedFarm = await prisma.farm.update({
       where: { id: body.id },
       data: {
-        farmAddressId: updatedFarmAddress.id,
+        farmAddressId: farmAddressId,
+        fishFarmerId: Number(body.fishFarmer),
         name: body.name,
         farmAltitude: body.farmAltitude,
         lat: body.lat,
@@ -51,12 +79,12 @@ export async function POST(req: NextRequest) {
     });
 
     //updating existing farm manager
-    if (Array.isArray(body.mangerId)) {
+    if (Array.isArray(body.managerId)) {
       await prisma.farmManger.deleteMany({
         where: { farmId: updatedFarm.id },
       });
 
-      const filteredContactIds = body.mangerId
+      const filteredContactIds = body.managerId
         .filter((id: any) => !!id)
         .map((id: any) => String(id).trim());
 
@@ -89,7 +117,10 @@ export async function POST(req: NextRequest) {
     // Fetch existing production units and productions from the database
     const existingUnits = await prisma.productionUnit.findMany({
       where: { farmId: updatedFarm.id },
-      include: { YearBasedPredicationProductionUnit: true, FeedProfileProductionUnit: true },
+      include: {
+        YearBasedPredicationProductionUnit: true,
+        FeedProfileProductionUnit: true,
+      },
     });
 
     const existingProductions = await prisma.production.findMany({
@@ -125,7 +156,8 @@ export async function POST(req: NextRequest) {
       });
       newUnits.push(updatedUnit); // Store the updated or created production unit
 
-      for (const existingPredictionUnit of body.productionParamtertsUnitsArray || []) {
+      for (const existingPredictionUnit of body.productionParamtertsUnitsArray ||
+        []) {
         if (unit.name === existingPredictionUnit.unitName) {
           const { id, unitName, idealRange, ...rest } = existingPredictionUnit;
           await prisma.yearBasedPredicationProductionUnit.upsert({
@@ -144,13 +176,16 @@ export async function POST(req: NextRequest) {
       if (body.FeedProfileUnits && Array.isArray(body.FeedProfileUnits)) {
         for (const unitProfile of body.FeedProfileUnits) {
           // Find the newly created or updated production unit to get its ID
-          const matchedProductionUnit = existingUnits.find(u => u.name === unitProfile.unitName);
+          const matchedProductionUnit = existingUnits.find(
+            (u) => u.name === unitProfile.unitName,
+          );
 
           if (matchedProductionUnit) {
             // Find if a feed profile link already exists for this unit
-            const existingFeedUnit = matchedProductionUnit.FeedProfileProductionUnit.find(
-              fpu => fpu.feedProfileId === body.feedProfileId
-            );
+            const existingFeedUnit =
+              matchedProductionUnit.FeedProfileProductionUnit.find(
+                (fpu) => fpu.feedProfileId === body.feedProfileId,
+              );
 
             if (existingFeedUnit) {
               // Update the existing record if it exists
@@ -171,7 +206,6 @@ export async function POST(req: NextRequest) {
           }
         }
       }
-
 
       // Handle production entries corresponding to the production unit
       const correspondingProduction = body.productions.find(
@@ -232,10 +266,14 @@ export async function POST(req: NextRequest) {
     );
 
     for (const unit of unitsToDelete) {
-      await prisma.production.deleteMany({ where: { productionUnitId: unit.id } });
+      await prisma.production.deleteMany({
+        where: { productionUnitId: unit.id },
+      });
 
       for (const data of unit.YearBasedPredicationProductionUnit) {
-        await prisma.yearBasedPredicationProductionUnit.delete({ where: { id: data.id } });
+        await prisma.yearBasedPredicationProductionUnit.delete({
+          where: { id: data.id },
+        });
       }
 
       await prisma.feedProfileProductionUnit.deleteMany({
@@ -245,12 +283,13 @@ export async function POST(req: NextRequest) {
       await prisma.productionUnit.delete({ where: { id: unit.id } });
     }
 
-
     const existingPredication = await prisma.yearBasedPredication.findUnique({
       where: { id: yearBasedPredicationId },
     });
     if (!existingPredication) {
-      throw new Error(`Year Based Predication record with ID ${yearBasedPredicationId} not found.`);
+      throw new Error(
+        `Year Based Predication record with ID ${yearBasedPredicationId} not found.`,
+      );
     }
     await prisma.yearBasedPredication.update({
       where: { id: yearBasedPredicationId },
@@ -275,7 +314,9 @@ export async function POST(req: NextRequest) {
           where: { id: fp.supplierId }, // directly Organisation ID
         });
         if (!supplierOrg || supplierOrg.organisationType !== 'Feed Supplier') {
-          console.log(`Organisation ID ${fp.supplierId} is not a feed supplier, skipping...`);
+          console.log(
+            `Organisation ID ${fp.supplierId} is not a feed supplier, skipping...`,
+          );
           continue;
         }
 

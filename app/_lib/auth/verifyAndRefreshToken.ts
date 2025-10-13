@@ -22,7 +22,9 @@ export const verifyAndRefreshToken = async (req: Request): Promise<any> => {
 
   try {
     if (accessToken) {
-      return true;
+      const decoded = jwt.verify(accessToken, JWT_SECRET);
+      console.log('Decoded Access Token:', decoded);
+      return decoded;
     }
   } catch (err: unknown) {
     if (err instanceof Error) {

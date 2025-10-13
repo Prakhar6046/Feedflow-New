@@ -55,6 +55,7 @@ import { getCookie } from 'cookies-next';
 import { SingleUser } from '@/app/_typeModels/User';
 import Cookies from 'js-cookie';
 import toast from 'react-hot-toast';
+import { clientSecureFetch } from '@/app/_lib/clientSecureFetch';
 interface FormInputs {
   farm: string;
   unit: string;
@@ -172,19 +173,11 @@ function AdHoc({ data, setData }: Iprops) {
     const fetchData = async () => {
       try {
         const [speciesRes, productionRes] = await Promise.all([
-          fetch('/api/species', {
+          clientSecureFetch('/api/species', {
             method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${token}`,
-            },
           }),
-          fetch('/api/production-system', {
+          clientSecureFetch('/api/production-system', {
             method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${token}`,
-            },
           }),
         ]);
 

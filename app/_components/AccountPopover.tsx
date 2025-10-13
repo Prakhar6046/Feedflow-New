@@ -19,6 +19,7 @@ import { deleteCookie, getCookie } from 'cookies-next';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
+import { clientSecureFetch } from '../_lib/clientSecureFetch';
 export interface LoggedUser {
   id: number;
   name: string;
@@ -53,11 +54,8 @@ const AccountPopover = () => {
   };
   const handleLogout = async () => {
     toast.dismiss();
-    const data = await fetch('/api/auth/logout', {
+    const data = await clientSecureFetch('/api/auth/logout', {
       method: 'GET',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
     });
     const response = await data.json();
     if (response.status) {
@@ -86,11 +84,8 @@ const AccountPopover = () => {
     setLoading(true);
     const getUser = async () => {
       try {
-        const response = await fetch(`/api/users/${loggedUserData.id}`, {
+        const response = await clientSecureFetch(`/api/users/${loggedUserData.id}`, {
           method: 'GET',
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
         });
         const data = await response.json();
         setUserData(data.data);

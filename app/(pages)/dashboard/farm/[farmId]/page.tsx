@@ -1,6 +1,8 @@
 import BasicBreadcrumbs from '@/app/_components/Breadcrumbs';
 import EditFarm from '@/app/_components/farm/EditFarm';
 import {
+  getFarm,
+  getFarmers,
   getFarmMangers,
   getFarms,
   getFeedStores,
@@ -36,6 +38,8 @@ export default async function Page({
     query,
   });
   const feedSuppliers = await getFeedSuppliers();
+     const EditFarmData = await getFarm(params?.farmId);
+     const fishfarmers=await getFarmers();
   return (
     <>
       <BasicBreadcrumbs
@@ -48,6 +52,8 @@ export default async function Page({
         ]}
       />
       <EditFarm
+        EditFarmData={EditFarmData.data}
+        fishfarmers={fishfarmers?.data}
         farmId={params?.farmId}
         farmMembers={farmMembers?.data?.users}
         growthModels={growthModels?.data}

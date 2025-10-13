@@ -17,6 +17,7 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import UserPermission from './UserPermission';
 import { getCookie } from 'cookies-next';
+import { clientSecureFetch } from '@/app/_lib/clientSecureFetch';
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -72,11 +73,8 @@ function EditUser({ userId }: Iprops) {
         payload.password = data.password;
       }
 
-      const res = await fetch(`/api/users/${userId}`, {
+      const res = await clientSecureFetch(`/api/users/${userId}`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         body: JSON.stringify(payload),
       });
 
@@ -98,12 +96,8 @@ function EditUser({ userId }: Iprops) {
     if (userId) {
       const user = async () => {
         setLoading(true);
-        const data = await fetch(`/api/users/${userId}`, {
+        const data = await clientSecureFetch(`/api/users/${userId}`, {
           method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-          },
           cache: 'no-store',
         });
         const res = await data.json();

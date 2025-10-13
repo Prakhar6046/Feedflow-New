@@ -9,6 +9,7 @@ import {
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import { getCookie } from 'cookies-next';
+import { clientSecureFetch } from '../../_lib/clientSecureFetch';
 import FeatureIcon from '@/public/features-svgrepo-com.svg';
 import unFeatureIcon from '@/public/features-svgrepo-com 1.svg';
 import Image from 'next/image';
@@ -39,12 +40,8 @@ export default function ProductionSystemTable() {
     const [selectedId, setSelectedId] = useState<string | null>(null);
     const token = getCookie('auth-token');
     const fetchData = async () => {
-        const res = await fetch('/api/production-system', {
+        const res = await clientSecureFetch('/api/production-system', {
             method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`,
-            },
         });
         setData(await res.json());
     };
@@ -70,7 +67,7 @@ export default function ProductionSystemTable() {
 
     const handleDelete = async () => {
         if (!selectedId) return;
-        const res = await fetch(`/api/production-systems/${selectedId}`, { method: 'DELETE' });
+        const res = await clientSecureFetch(`/api/production-systems/${selectedId}`, { method: 'DELETE' });
         const result = await res.json();
         if (res.ok) {
             toast.success(result.message);
@@ -86,12 +83,8 @@ export default function ProductionSystemTable() {
     const handleToggleFeatured = async () => {
         if (!selectedId) return;
         try {
-            const res = await fetch(`/api/production-system/${selectedId}/feature`, {
+            const res = await clientSecureFetch(`/api/production-system/${selectedId}/feature`, {
                 method: "PATCH",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`,
-                },
             });
             const result = await res.json();
             if (res.ok) {

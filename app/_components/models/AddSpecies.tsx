@@ -4,6 +4,7 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { clientSecureFetch } from '@/app/_lib/clientSecureFetch';
 
 type FormInputs = { name: string };
 interface SpeciesFormProps {
@@ -26,15 +27,13 @@ export default function AddSpecies({ mode = 'add', id, initialData }: SpeciesFor
     try {
       let res;
       if (mode === 'add') {
-        res = await fetch('/api/species', {
+        res = await clientSecureFetch('/api/species', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(data),
         });
       } else {
-        res = await fetch(`/api/species/${id}`, {
+        res = await clientSecureFetch(`/api/species/${id}`, {
           method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(data),
         });
       }

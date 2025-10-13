@@ -26,6 +26,7 @@ import { SingleOrganisation } from '../_typeModels/Organization';
 import { UserFormInputs } from '../_typeModels/User';
 import { deleteImage, handleUpload } from '../_lib/utils';
 import UserPermission from './user/UserPermission';
+import { clientSecureFetch } from '../_lib/clientSecureFetch';
 
 interface Props {
   organisations?: SingleOrganisation[];
@@ -114,11 +115,8 @@ export default function AddNewUser({ organisations }: Props) {
     setIsApiCallInProgress(true);
 
     try {
-      const response = await fetch('/api/add-new-user', {
+      const response = await clientSecureFetch('/api/add-new-user', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         body: JSON.stringify({
           ...data,
           image: profilePic || '',

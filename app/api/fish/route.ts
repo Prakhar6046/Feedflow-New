@@ -61,7 +61,7 @@ export const GET = async (request: NextRequest) => {
   }
 };
 export const POST = async (request: NextRequest) => {
-  const user = await verifyAndRefreshToken(request);
+ const user = await verifyAndRefreshToken(request);
   if (user.status === 401) {
     return NextResponse.json(
       { status: false, message: 'Unauthorized: Token missing or invalid' },

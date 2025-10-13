@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/prisma/prisma';
+import { verifyAndRefreshToken } from '@/app/_lib/auth/verifyAndRefreshToken';
 
 export async function GET(_: Request, { params }: { params: { id: string } }) {
   const species = await prisma.species.findUnique({ where: { id: params.id } });
@@ -8,6 +9,16 @@ export async function GET(_: Request, { params }: { params: { id: string } }) {
 }
 export async function PUT(req: Request, { params }: { params: { id: string } }) {
   try {
+        const user = await verifyAndRefreshToken(req);
+        if (user.status === 401) {
+          return new NextResponse(
+            JSON.stringify({
+              status: false,
+              message: 'Unauthorized: Token missing or invalid',
+            }),
+            { status: 401 },
+          );
+        }
     const { name } = await req.json();
     if (!name || !name.trim()) {
       return NextResponse.json({ error: 'Name is required' }, { status: 400 });
@@ -38,8 +49,18 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
 }
 
 
-export async function DELETE(_: Request, { params }: { params: { id: string } }) {
+export async function DELETE(req: Request, { params }: { params: { id: string } }) {
   try {
+        const user = await verifyAndRefreshToken(req);
+    if (user.status === 401) {
+      return new NextResponse(
+        JSON.stringify({
+          status: false,
+          message: 'Unauthorized: Token missing or invalid',
+        }),
+        { status: 401 },
+      );
+    }
     await prisma.species.delete({ where: { id: params.id } });
     return NextResponse.json({ message: 'Deleted successfully' });
   } catch (err) {

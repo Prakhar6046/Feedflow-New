@@ -10,6 +10,7 @@ import { getCookie } from 'cookies-next';
 import FeatureIcon from '@/public/features-svgrepo-com.svg';
 import unFeatureIcon from '@/public/features-svgrepo-com 1.svg';
 import Image from 'next/image';
+import { clientSecureFetch } from '@/app/_lib/clientSecureFetch';
 interface Species {
     id: string;
     name: string;
@@ -36,12 +37,8 @@ export default function SpeciesTable() {
     const [selectedId, setSelectedId] = useState<string | null>(null);
     const token = getCookie('auth-token');
     const fetchData = async () => {
-        const res = await fetch('/api/species', {
+        const res = await clientSecureFetch('/api/species', {
             method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`,
-            },
         });
         setData(await res.json());
     };
@@ -83,12 +80,8 @@ export default function SpeciesTable() {
     const handleToggleFeatured = async () => {
         if (!selectedId) return;
         try {
-            const res = await fetch(`/api/species/${selectedId}/feature`, {
+            const res = await clientSecureFetch(`/api/species/${selectedId}/feature`, {
                 method: "PATCH",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`,
-                },
             });
             const result = await res.json();
             if (res.ok) {

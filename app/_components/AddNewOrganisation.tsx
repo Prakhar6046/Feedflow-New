@@ -39,6 +39,7 @@ import { SingleUser } from '../_typeModels/User';
 import MapComponent, { AddressInfo } from './farm/MapComponent';
 import HatcheryForm from './hatchery/HatcheryForm';
 import { getCookie } from 'cookies-next';
+import { clientSecureFetch } from '../_lib/clientSecureFetch';
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -54,7 +55,6 @@ const VisuallyHiddenInput = styled('input')({
 
 export const OrganisationType = [
   'Fish Producer',
-  'Fish Farm',
   'Hatchery',
   'Feed Supplier',
   'Testing Facility',
@@ -190,11 +190,8 @@ const AddNewOrganisation = ({ type, loggedUser }: Props) => {
       if (data && loggedUser) {
         data.createdBy = loggedUser.organisationId;
 
-        const response = await fetch('/api/add-organisation', {
+        const response = await clientSecureFetch('/api/add-organisation', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
           body: JSON.stringify({ ...data, imageUrl: profilePic }),
         });
 
@@ -215,9 +212,8 @@ const AddNewOrganisation = ({ type, loggedUser }: Props) => {
         const contactsToInvite = data.contacts.filter((c) => c.invite);
 
         if (contactsToInvite.length > 0) {
-          const inviteRes = await fetch('/api/invite/organisation', {
+          const inviteRes = await clientSecureFetch('/api/invite/organisation', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               organisationId,
               users: contactsToInvite,
@@ -337,11 +333,8 @@ const AddNewOrganisation = ({ type, loggedUser }: Props) => {
 
   useEffect(() => {
     const getORGCount = async () => {
-      const data = await fetch(`/api/organisation/count`, {
+      const data = await clientSecureFetch(`/api/organisation/count`, {
         method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         cache: 'no-store',
       });
       const res = await data.json();

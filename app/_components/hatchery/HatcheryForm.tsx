@@ -13,6 +13,7 @@ import * as validationPattern from '@/app/_lib/utils/validationPatterns/index';
 import * as validationMessage from '@/app/_lib/utils/validationsMessage/index';
 import { Species } from '../feedSupply/NewFeedLibarary';
 import { getCookie } from 'cookies-next';
+import { clientSecureFetch } from '@/app/_lib/clientSecureFetch';
 interface Props {
   altitude: string;
   register: any;
@@ -38,13 +39,9 @@ function HatcheryForm({
   const [speciesList, setSpeciesList] = useState<Species[]>([]);
   const featuredSpecies = speciesList?.filter((sp) => sp.isFeatured);
   const fetchData = async () => {
-    const res = await fetch('/api/species', {
+    const res = await clientSecureFetch('/api/species', {
       method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-    }); 9 + 9 + 6
+    });
     setSpeciesList(await res.json());
   };
 

@@ -13,6 +13,7 @@ import {
   Typography,
 } from '@mui/material';
 import { getCookie } from 'cookies-next';
+import { clientSecureFetch } from '../../_lib/clientSecureFetch';
 import { NextPage } from 'next';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -93,7 +94,7 @@ export interface Species {
   isFeatured: boolean;
   defaultProductionSystemId: string | null;
   defaultProductionSystem?: productionSystem;
-};
+}
 interface Props {
   feedSuppliers: FeedSupplier[];
   speciesList: Species[];
@@ -103,7 +104,6 @@ type FeedFormFields = {
   [key: string]: string | number;
 };
 const NewFeedLibarary: NextPage<Props> = ({ feedSuppliers, speciesList }) => {
-
   const featuredSpecies = speciesList?.filter((sp) => sp.isFeatured);
   const router = useRouter();
   const loggedUser: any = getCookie('logged-user');
@@ -127,32 +127,40 @@ const NewFeedLibarary: NextPage<Props> = ({ feedSuppliers, speciesList }) => {
       digCP: 3600,
       digCF: 450,
       digNFE: 2108,
-      deCP: 8.50,
+      deCP: 8.5,
       deCF: 1.78,
       deNFE: 3.63,
       de: 0,
     },
   });
 
-  const moistureGPerKg = watch("moistureGPerKg") || 120;
-  const crudeProtein = watch("crudeProteinGPerKg") || 400;
-  const crudeFatGPerKg = watch("crudeFatGPerKg") || 50;
-  const crudeFiber = watch("crudeFiberGPerKg") || 40;
-  const crudeAsh = watch("crudeAshGPerKg") || 80;
-  const nfe = watch("nfe") || 310;
-  const phosphorus = watch("phosphorusGPerKg") || 7;
-  const calcium = watch("calciumGPerKg") || 30;
-  const carbohydratesGPerKg = watch("carbohydratesGPerKg") || 0;
-  const geCoeffCP = watch("geCoeffCP") || 0;
-  const geCoeffCF = watch("geCoeffCF") || 0;
-  const geCoeffNFE = watch("geCoeffNFE") || 0;
+  const moistureGPerKg = watch('moistureGPerKg') || 120;
+  const crudeProtein = watch('crudeProteinGPerKg') || 400;
+  const crudeFatGPerKg = watch('crudeFatGPerKg') || 50;
+  const crudeFiber = watch('crudeFiberGPerKg') || 40;
+  const crudeAsh = watch('crudeAshGPerKg') || 80;
+  const nfe = watch('nfe') || 310;
+  const phosphorus = watch('phosphorusGPerKg') || 7;
+  const calcium = watch('calciumGPerKg') || 30;
+  const carbohydratesGPerKg = watch('carbohydratesGPerKg') || 0;
+  const geCoeffCP = watch('geCoeffCP') || 0;
+  const geCoeffCF = watch('geCoeffCF') || 0;
+  const geCoeffNFE = watch('geCoeffNFE') || 0;
   const C55 = 90;
   const C56 = 90;
   const C58 = 60;
   const carbohydrates =
-    (1000 - Number(moistureGPerKg)) -
-    (Number(crudeProtein) + Number(crudeFatGPerKg) + Number(crudeFiber) + Number(crudeAsh));
-  const calculateGE = (Number(crudeProtein) * Number(geCoeffCP) / 10 + Number(crudeFatGPerKg) * Number(geCoeffCF) / 10 + Number(nfe) * Number(geCoeffNFE) / 10) / 100;
+    1000 -
+    Number(moistureGPerKg) -
+    (Number(crudeProtein) +
+      Number(crudeFatGPerKg) +
+      Number(crudeFiber) +
+      Number(crudeAsh));
+  const calculateGE =
+    ((Number(crudeProtein) * Number(geCoeffCP)) / 10 +
+      (Number(crudeFatGPerKg) * Number(geCoeffCF)) / 10 +
+      (Number(nfe) * Number(geCoeffNFE)) / 10) /
+    100;
   const calculateDigCP = (Number(crudeProtein) / 10) * C55;
   const calculateDigCF = (Number(crudeFatGPerKg) / 10) * C56;
   const digNFE = (Number(nfe) / 10) * C58;
@@ -161,34 +169,41 @@ const NewFeedLibarary: NextPage<Props> = ({ feedSuppliers, speciesList }) => {
   const deNFE = (digNFE * Number(geCoeffNFE)) / 10000;
   const de = deCP + deCF + deNFE;
   useEffect(() => {
-    setValue("carbohydratesGPerKg", carbohydrates);
+    setValue('carbohydratesGPerKg', carbohydrates);
   }, [crudeFiber, crudeAsh, nfe, phosphorus, calcium, carbohydrates, setValue]);
 
   useEffect(() => {
-    setValue("ge", calculateGE);
-  }, [crudeAsh, nfe, carbohydrates, geCoeffCP, geCoeffCF, geCoeffNFE, setValue]);
+    setValue('ge', calculateGE);
+  }, [
+    crudeAsh,
+    nfe,
+    carbohydrates,
+    geCoeffCP,
+    geCoeffCF,
+    geCoeffNFE,
+    setValue,
+  ]);
   useEffect(() => {
-    setValue("digCP", calculateDigCP);
+    setValue('digCP', calculateDigCP);
   }, [crudeProtein, setValue]);
   useEffect(() => {
-    setValue("digCF", calculateDigCF);
+    setValue('digCF', calculateDigCF);
   }, [crudeFatGPerKg, setValue]);
   useEffect(() => {
-    setValue("digNFE", digNFE);
+    setValue('digNFE', digNFE);
   }, [nfe, setValue]);
   useEffect(() => {
-    setValue("deCP", deCP);
+    setValue('deCP', deCP);
   }, [calculateDigCP, geCoeffCP, setValue]);
   useEffect(() => {
-    setValue("deCF", deCF);
+    setValue('deCF', deCF);
   }, [calculateDigCF, geCoeffCF, setValue]);
   useEffect(() => {
-    setValue("deNFE", deNFE);
+    setValue('deNFE', deNFE);
   }, [digNFE, geCoeffNFE, setValue]);
   useEffect(() => {
-    setValue("de", de);
+    setValue('de', de);
   }, [deCP, deCF, deNFE, setValue]);
-
 
   const createPayload = (formData: Record<string, any>) => {
     const payload: Record<string, any> = {};
@@ -218,12 +233,8 @@ const NewFeedLibarary: NextPage<Props> = ({ feedSuppliers, speciesList }) => {
       const token = getCookie('auth-token');
 
       if (payload) {
-        const response = await fetch('/api/feed-store', {
+        const response = await clientSecureFetch('/api/feed-store', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
           body: JSON.stringify({
             ...payload,
             organaisationId: loggedUserData.organisationId,
@@ -246,205 +257,112 @@ const NewFeedLibarary: NextPage<Props> = ({ feedSuppliers, speciesList }) => {
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Grid container spacing={2}>
-        {fields?.map((field, i) => (
+        {fields.map((field) => (
           <Grid item xs={12} sm={6} key={field.name}>
-            {field.name === "digCP" ? (
+            {/* Calculated Fields */}
+            {['digCP', 'digCF', 'digNFE', 'deCP', 'deCF', 'deNFE', 'de', 'ge', 'carbohydratesGPerKg'].includes(field.name) ? (
               <TextField
                 label={field.label}
                 type="number"
                 className="form-input"
                 fullWidth
-                value={calculateDigCP}
+                value={
+                  field.name === 'digCP' ? calculateDigCP.toFixed(2) :
+                  field.name === 'digCF' ? calculateDigCF.toFixed(2) :
+                  field.name === 'digNFE' ? digNFE.toFixed(2) :
+                  field.name === 'deCP' ? deCP.toFixed(2) :
+                  field.name === 'deCF' ? deCF.toFixed(2) :
+                  field.name === 'deNFE' ? deNFE.toFixed(2) :
+                  field.name === 'de' ? de.toFixed(2) :
+                  calculateGE.toFixed(2)
+                }
                 disabled
               />
-            ) :
-              field.name === "digCF" ? (
-                <TextField
-                  label={field.label}
-                  type="number"
-                  className="form-input"
-                  fullWidth
-                  value={calculateDigCF}
-                  disabled
-                  style={{ cursor: 'no-drop' }}
-                />
-              ) :
-                field.name === "digNFE" ? (
-                  <TextField
-                    label={field.label}
-                    type="number"
-                    className="form-input"
-                    fullWidth
-                    value={digNFE}
-                    disabled
-                  />
-                ) :
-                  field.name === "deCP" ? (
-                    <TextField
-                      label={field.label}
-                      type="number"
-                      className="form-input"
+            ) : field.type === 'select' ? (
+              <FormControl fullWidth className="form-input" focused>
+                <InputLabel>{field.label}</InputLabel>
+                <Controller
+                  name={field.name}
+                  control={control}
+                  defaultValue={[] as never}
+                  render={({ field }) => (
+                    <Select
+                      multiple
+                      {...field}
                       fullWidth
-                      value={deCP}
-                      disabled
-                    />
-                  ) :
-                    field.name === "deCF" ? (
-                      <TextField
-                        label={field.label}
-                        type="number"
-                        className="form-input"
-                        fullWidth
-                        value={deCF}
-                        disabled
-                      />
-                    ) :
-                      field.name === "deNFE" ? (
-                        <TextField
-                          label={field.label}
-                          type="number"
-                          className="form-input"
-                          fullWidth
-                          value={deNFE}
-                          disabled
-                        />
-                      ) :
-                        field.name === "de" ? (
-                          <TextField
-                            label={field.label}
-                            type="number"
-                            className="form-input"
-                            fullWidth
-                            value={de}
-                            disabled
-                          />
-                        ) :
-                          field.name === "ge" ? (
-                            <TextField
-                              label={field.label}
-                              type="number"
-                              className="form-input"
-                              fullWidth
-                              value={calculateGE}
-                              disabled
-                            />
-                          ) :
-                            field.name === "carbohydratesGPerKg" ? (
-                              <TextField
-                                label={field.label}
-                                type="number"
-                                className="form-input"
-                                fullWidth
-                                value={carbohydrates}
-                                disabled
-                              />
-                            ) :
-                              field?.type === 'select' ? (
-                                <FormControl fullWidth className="form-input" focused>
-                                  <InputLabel id="feed-supply-select-label1">
-                                    {field.label}
-                                  </InputLabel>
-                                  <Controller
-                                    name={field.name}
-                                    control={control}
-                                    defaultValue={[] as never}
-                                    render={({ field }) => (
-                                      <Select
-                                        multiple
-                                        {...field}
-                                        fullWidth
-                                        label={field.name}
-                                        renderValue={(selected: any) =>
-                                          feedSuppliers
-                                            ?.filter((s: any) => selected.includes(s.id))
-                                            ?.map((s: any) => s.name)
-                                            ?.join(', ')
-                                        }
-                                      >
-                                        {feedSuppliers?.map((supplier: any) => (
-                                          <MenuItem key={supplier.id} value={supplier.id}>
-                                            {supplier.name}
-                                          </MenuItem>
-                                        ))}
-                                      </Select>
-                                    )}
-                                  />
-                                </FormControl>
-                              ) : field.type === 'species-select' ? (
-                                <FormControl fullWidth className="form-input" focused>
-                                  <InputLabel>{field.label}</InputLabel>
-                                  <Controller
-                                    name={field.name}
-                                    control={control}
-                                    defaultValue=""
-                                    rules={{ required: true }}
-                                    render={({ field }) => (
-                                      <Select {...field} label={field.name} fullWidth>
-                                        {featuredSpecies && featuredSpecies.length > 0 ? (
-                                          featuredSpecies.map((sp) => (
-                                            <MenuItem key={sp.id} value={sp.id}>
-                                              {sp.name}
-                                            </MenuItem>
-                                          ))
-                                        ) : (
-                                          <MenuItem disabled>No species available</MenuItem>
-                                        )}
+                      label={field.name}
+                      renderValue={(selected: any) =>
+                        feedSuppliers.filter((s: any) => selected.includes(s.id)).map((s: any) => s.name).join(', ')
+                      }
+                    >
+                      {feedSuppliers.map((supplier: any) => (
+                        <MenuItem key={supplier.id} value={supplier.id}>{supplier.name}</MenuItem>
+                      ))}
+                    </Select>
+                  )}
+                />
+              </FormControl>
+            ) : field.type === 'species-select' ? (
+              <FormControl fullWidth className="form-input" focused>
+                <InputLabel>{field.label}</InputLabel>
+                <Controller
+                  name={field.name}
+                  control={control}
+                  defaultValue=""
+                  rules={{ required: true }}
+                  render={({ field }) => (
+                    <Select {...field} label={field.name} fullWidth>
+                      {featuredSpecies.length > 0 ? featuredSpecies.map(sp => <MenuItem key={sp.id} value={sp.id}>{sp.name}</MenuItem>) : <MenuItem disabled>No species available</MenuItem>}
+                    </Select>
+                  )}
+                />
+              </FormControl>
+            ) : field.name === 'empty' ? (
+              <Box sx={{ visibility: 'hidden' }}><TextField fullWidth disabled /></Box>
+            ) : field.name === 'feedIngredients' || field.name === 'feedingGuide' ? (
+              <TextField
+                label={field.label}
+                multiline
+                fullWidth
+                className="form-input"
+                focused
+                {...register(field.name, { required: true })}
+                error={!!errors[field.name]}
+                minRows={4}
+                maxRows={8}
+                sx={{ '& textarea': { resize: 'none' } }}
+              />
+            ) : field.type === 'number' ? (
+              <TextField
+                label={field.label}
+                type="number"
+                fullWidth
+                className="form-input"
+                focused
+                {...register(field.name, { required: true, valueAsNumber: true })}
+                inputProps={{ step: '0.01' }} 
+                error={!!errors[field.name]}
+              />
+            ) : (
+              <TextField
+                label={field.label}
+                type={field.type}
+                className="form-input"
+                focused
+                fullWidth
+                {...register(field.name, { required: true })}
+                error={!!errors[field.name]}
+              />
+            )}
 
-                                      </Select>
-                                    )}
-                                  />
-                                </FormControl>
-
-                              ) : field.name === 'empty' ? (
-                                <Box sx={{ visibility: "hidden" }}>
-                                  <TextField fullWidth disabled />
-                                </Box>
-                              ) : field.name === 'feedIngredients' || field.name === 'feedingGuide' ? (
-                                <TextField
-                                  label={field.label}
-                                  multiline
-                                  fullWidth
-                                  focused
-                                  {...register(field.name, { required: true })}
-                                  error={!!errors[field.name]}
-                                  minRows={4}
-                                  maxRows={8}
-                                  sx={{
-                                    "& textarea": {
-                                      resize: "none",
-                                    },
-                                  }}
-                                />
-
-                              ) : (
-                                <TextField
-                                  label={field.label}
-                                  type={field.type}
-                                  className="form-input"
-                                  focused
-                                  fullWidth
-                                  {...register(field.name, {
-                                    required: true,
-                                  })}
-                                  error={!!errors[field.name]}
-                                />
-                              )}
             {errors[field.name]?.type === 'required' && (
-              <Typography fontSize={13} color="red">
-                {validationMessage.required}
-              </Typography>
+              <Typography fontSize={13} color="red">{validationMessage.required}</Typography>
             )}
           </Grid>
         ))}
 
         <Grid item xs={12}>
-          <Box
-            display={'flex'}
-            justifyContent={'flex-end'}
-            alignItems={'center'}
-            gap={3}
-            mt={3}
-          >
+          <Box display="flex" justifyContent="flex-end" alignItems="center" gap={3} mt={3}>
             <Button
               type="submit"
               variant="contained"

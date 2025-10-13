@@ -1,11 +1,21 @@
+import { verifyAndRefreshToken } from '@/app/_lib/auth/verifyAndRefreshToken';
 import prisma from '@/prisma/prisma';
 import { NextRequest, NextResponse } from 'next/server';
 
-export async function POST(req: NextRequest) {
+export async function POST(request: NextRequest) {
   try {
     const { email, name, organisationId, image, permissions } =
-      await req.json();
-
+      await request.json();
+    const user = await verifyAndRefreshToken(request);
+    if (user.status === 401) {
+      return new NextResponse(
+        JSON.stringify({
+          status: false,
+          message: 'Unauthorized: Token missing or invalid',
+        }),
+        { status: 401 },
+      );
+    }
     if (!email || !name || !organisationId) {
       return NextResponse.json(
         { error: 'Please provide all data' },

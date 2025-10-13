@@ -17,6 +17,7 @@ import ListItem from '@mui/material/ListItem'; // For individual suggestion
 import ListItemButton from '@mui/material/ListItemButton'; // For clickable suggestion
 import Paper from '@mui/material/Paper'; // For suggestions container
 import toast from 'react-hot-toast';
+import { clientSecureFetch } from '../../_lib/clientSecureFetch';
 
 // Define map container style
 const mapContainerStyle = {
@@ -160,7 +161,7 @@ const MapComponent = ({
 
       if (data.status === 'OK' && data.results.length > 0) {
         if (isCalAltitude && data.results[0].geometry) {
-          const altitudeResponse = await fetch(
+          const altitudeResponse = await clientSecureFetch(
             `/api/farm/altitude?lat=${data.results[0].geometry.location.lat}&lng=${data.results[0].geometry.location.lng}`,
             {
               method: 'GET',
@@ -205,7 +206,7 @@ const MapComponent = ({
 
       if (data.status === 'OK' && data.results.length > 0) {
         if (isCalAltitude && data.results[0].geometry) {
-          const altitudeResponse = await fetch(
+          const altitudeResponse = await clientSecureFetch(
             `/api/farm/altitude?lat=${data.results[0].geometry.location.lat}&lng=${data.results[0].geometry.location.lng}`,
             {
               method: 'GET',
@@ -433,7 +434,7 @@ const MapComponent = ({
                                   isCalAltitude &&
                                   results[0].geometry.location
                                 ) {
-                                  fetch(
+                                  clientSecureFetch(
                                     `/api/farm/altitude?lat=${results[0].geometry.location.lat()}&lng=${results[0].geometry.location.lng()}`,
                                     {
                                       method: 'GET',

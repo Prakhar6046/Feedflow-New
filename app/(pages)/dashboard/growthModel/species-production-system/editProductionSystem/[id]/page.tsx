@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import AddProductionSystem from "@/app/_components/models/AddProductionSystem";
 import Loader from "@/app/_components/Loader";
+import { clientSecureFetch } from "@/app/_lib/clientSecureFetch";
 
 export default function EditProductionSystemPage() {
   const { id } = useParams();
@@ -15,7 +16,7 @@ export default function EditProductionSystemPage() {
   useEffect(() => {
     if (!id) return;
     (async () => {
-      const res = await fetch(`/api/production-system/${id}`);
+      const res = await clientSecureFetch(`/api/production-system/${id}`);
       const data = await res.json();
       setInitialData({ name: data.name });
       setLoading(false);

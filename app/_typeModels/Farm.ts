@@ -296,7 +296,7 @@ export interface ProductionUnit {
 export interface Farm {
   id?: string;
   name: string;
-  mangerId?: string[];
+  managerId?: string[];
   FarmManger?: {
     userId: number;
   }[];
