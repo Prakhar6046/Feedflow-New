@@ -42,6 +42,7 @@ import CalculateMeanLength from './CalculateMeanLength';
 import CalculateMeanWeigth from './CalculateMeanWeigth';
 import Confirmation from './Confirmation';
 import { getCookie } from 'cookies-next';
+import { clientSecureFetch } from '../../_lib/clientSecureFetch';
 const style = {
   position: 'absolute' as const,
   top: '50%',
@@ -218,12 +219,8 @@ const TransferModal: React.FC<Props> = ({
         };
 
         const token = getCookie('auth-token');
-        const response = await fetch('/api/production/mange', {
+        const response = await clientSecureFetch('/api/production/mange', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
           body: JSON.stringify(payload),
         });
 

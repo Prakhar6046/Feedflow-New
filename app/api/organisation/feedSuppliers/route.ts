@@ -15,6 +15,10 @@ export const GET = async (request: NextRequest) => {
     const organisationId = searchParams.get('organisationId');
     const hasFeedSupplierOrg = await prisma.organisation.findMany({
       where: { organisationType: 'Feed Supplier' },
+      include: {
+        address: true,
+        contact: true,
+      },
     });
 
     return new NextResponse(

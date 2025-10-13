@@ -23,6 +23,7 @@ import toast from 'react-hot-toast';
 import { getCookie } from 'cookies-next';
 import { Species } from '../feedSupply/NewFeedLibarary';
 import { useRouter } from 'next/navigation';
+import { clientSecureFetch } from '@/app/_lib/clientSecureFetch';
 
 interface Props {
   feedSuppliers: any;
@@ -49,13 +50,9 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
   ];
 
   const fetchData = async () => {
-    const res = await fetch('/api/species', {
+    const res = await clientSecureFetch('/api/species', {
       method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-    }); 9 + 9 + 6
+    }); 
     setSpeciesList(await res.json());
   };
 
@@ -181,11 +178,8 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
 
     try {
       const token = getCookie('auth-token');
-      const response = await fetch(`/api/feed-store `, {
+      const response = await clientSecureFetch(`/api/feed-store `, {
         method: 'PUT',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
         body: JSON.stringify(updatedPayload),
       });
 
@@ -227,12 +221,8 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
     setIsDeleting(true);
 
     try {
-      const response = await fetch('/api/feed-store', {
+      const response = await clientSecureFetch('/api/feed-store', {
         method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
         body:
           selectedIds.length === 1
             ? JSON.stringify({ id: selectedIds[0] })

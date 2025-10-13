@@ -18,6 +18,7 @@ import dayjs from 'dayjs';
 import React, { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { getCookie } from 'cookies-next';
+import { clientSecureFetch } from '../../_lib/clientSecureFetch';
 import Cookies from 'js-cookie';
 import { SingleUser } from '@/app/_typeModels/User';
 
@@ -94,7 +95,7 @@ const FeedUsageOutput: React.FC = () => {
     if (!organisationId) return;
     const fetchModels = async () => {
       try {
-        const res = await fetch(`/api/growth-model?organisationId=${organisationId}`);
+        const res = await clientSecureFetch(`/api/growth-model?organisationId=${organisationId}`);
         if (!res.ok) throw new Error('Failed to fetch growth models');
         const data = await res.json();
         setGrowthModelData(data.data || []);

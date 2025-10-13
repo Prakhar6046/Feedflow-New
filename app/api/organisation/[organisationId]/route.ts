@@ -2,36 +2,67 @@ import prisma from '@/prisma/prisma';
 import { NextRequest, NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
 import { Contact } from '@/app/_typeModels/Organization';
+import { verifyAndRefreshToken } from '@/app/_lib/auth/verifyAndRefreshToken';
 interface ContextParams {
   params: {
     organisationId: string;
   };
 }
-export const DELETE = async (_request: NextRequest, context: ContextParams) => {
+export const DELETE = async (request: NextRequest, context: ContextParams) => {
+  const user = await verifyAndRefreshToken(request);
+  if (user.status === 401) {
+    return new NextResponse(
+      JSON.stringify({
+        status: false,
+        message: 'Unauthorized: Token missing or invalid',
+      }),
+      { status: 401 },
+    );
+  }
   const organisationId = context.params.organisationId;
 
   if (!organisationId) {
-    return new NextResponse(JSON.stringify({ message: 'Invalid or missing organisationId' }), {
-      status: 400,
-    });
+    return new NextResponse(
+      JSON.stringify({ message: 'Invalid or missing organisationId' }),
+      {
+        status: 400,
+      },
+    );
   }
 
   try {
     // Delete organisation and cascade related tables if necessary
     await prisma.$transaction([
-      prisma.contact.deleteMany({ where: { organisationId: Number(organisationId) } }),
-      prisma.user.deleteMany({ where: { organisationId: Number(organisationId) } }),
-      prisma.hatchery.deleteMany({ where: { organisationId: Number(organisationId) } }),
-      prisma.farm.deleteMany({ where: { organisationId: Number(organisationId) } }),
-      prisma.feedSupply.deleteMany({ where: { organisationId: Number(organisationId) } }),
-      prisma.model.deleteMany({ where: { organisationId: Number(organisationId) } }),
-      prisma.growthModel.deleteMany({ where: { organisationId: Number(organisationId) } }),
+      prisma.contact.deleteMany({
+        where: { organisationId: Number(organisationId) },
+      }),
+      prisma.user.deleteMany({
+        where: { organisationId: Number(organisationId) },
+      }),
+      prisma.hatchery.deleteMany({
+        where: { organisationId: Number(organisationId) },
+      }),
+      prisma.farm.deleteMany({
+        where: { organisationId: Number(organisationId) },
+      }),
+      prisma.feedSupply.deleteMany({
+        where: { organisationId: Number(organisationId) },
+      }),
+      prisma.model.deleteMany({
+        where: { organisationId: Number(organisationId) },
+      }),
+      prisma.growthModel.deleteMany({
+        where: { organisationId: Number(organisationId) },
+      }),
       prisma.organisation.delete({ where: { id: Number(organisationId) } }),
     ]);
 
     return new NextResponse(
-      JSON.stringify({ status: true, message: 'Organisation and related records deleted successfully' }),
-      { status: 200 }
+      JSON.stringify({
+        status: true,
+        message: 'Organisation and related records deleted successfully',
+      }),
+      { status: 200 },
     );
   } catch (error) {
     let errorMessage = 'Unknown error';
@@ -41,12 +72,25 @@ export const DELETE = async (_request: NextRequest, context: ContextParams) => {
       errorMessage = String(error);
     }
 
-    return new NextResponse(JSON.stringify({ status: false, error: errorMessage }), {
-      status: 500,
-    });
+    return new NextResponse(
+      JSON.stringify({ status: false, error: errorMessage }),
+      {
+        status: 500,
+      },
+    );
   }
 };
-export const GET = async (_request: NextRequest, context: ContextParams) => {
+export const GET = async (request: NextRequest, context: ContextParams) => {
+  const user = await verifyAndRefreshToken(request);
+  if (user.status === 401) {
+    return new NextResponse(
+      JSON.stringify({
+        status: false,
+        message: 'Unauthorized: Token missing or invalid',
+      }),
+      { status: 401 },
+    );
+  }
   const organisationId = context.params.organisationId;
 
   if (!organisationId) {
@@ -64,8 +108,34 @@ export const GET = async (_request: NextRequest, context: ContextParams) => {
         users: true,
         hatchery: true,
         Farm: { include: { farmAddress: true, FarmManger: true } },
+        FishFarms: { include: { farmAddress: true, FarmManger: true } },
       },
     });
+
+    // Combine farms from both relationships (owner and fish farmer)
+    if (data) {
+      const ownerFarms = data.Farm || [];
+      const fishFarmerFarms = data.FishFarms || [];
+      
+      // Create a Set to avoid duplicates based on farm ID
+      const farmMap = new Map();
+      
+      // Add owner farms
+      ownerFarms.forEach(farm => {
+        farmMap.set(farm.id, { ...farm, relationship: 'owner' });
+      });
+      
+      // Add fish farmer farms (only if not already added as owner)
+      fishFarmerFarms.forEach(farm => {
+        if (!farmMap.has(farm.id)) {
+          farmMap.set(farm.id, { ...farm, relationship: 'fishFarmer' });
+        }
+      });
+      
+      // Convert back to array and update the data
+      data.Farm = Array.from(farmMap.values());
+      delete data.FishFarms; // Remove the separate FishFarms field
+    }
     return new NextResponse(JSON.stringify({ status: true, data }), {
       status: 200,
     });
@@ -76,14 +146,17 @@ export const GET = async (_request: NextRequest, context: ContextParams) => {
     } else {
       errorMessage = String(error);
     }
-    return new NextResponse(JSON.stringify({ status: false, error: errorMessage }), {
-      status: 500,
-    });
+    return new NextResponse(
+      JSON.stringify({ status: false, error: errorMessage }),
+      {
+        status: 500,
+      },
+    );
   }
 };
 
+export async function PUT(request: NextRequest, context: ContextParams) {
 
-export async function PUT(req: NextRequest, context: ContextParams) {
   try {
     const transporter = nodemailer.createTransport({
       service: 'gmail', // You can use any other email service provider
@@ -108,7 +181,7 @@ export async function PUT(req: NextRequest, context: ContextParams) {
     }
 
     // Parse form data
-    const formData = await req.formData();
+    const formData = await request.formData();
     const name = formData.get('name') as string;
     const organisationCode = formData.get('organisationCode') as string;
     const organisationType = formData.get('organisationType') as string;
@@ -121,7 +194,9 @@ export async function PUT(req: NextRequest, context: ContextParams) {
       ? JSON.parse(contactsRaw.toString())
       : null;
     const hatchery = hatcheryRaw ? JSON.parse(hatcheryRaw.toString()) : null;
-    const hatcheryId = hatcheryIdRaw ? JSON.parse(hatcheryIdRaw.toString()) : null;
+    const hatcheryId = hatcheryIdRaw
+      ? JSON.parse(hatcheryIdRaw.toString())
+      : null;
     const imageUrl = formData.get('imageUrl') as string;
     const invitedById = formData.get('invitedBy') as string;
     const invitedByOrg = await prisma.organisation.findUnique({
@@ -204,7 +279,6 @@ export async function PUT(req: NextRequest, context: ContextParams) {
             where: { email: contact.email },
             select: { id: true },
           });
-
 
           if (user) {
             // Update user
@@ -469,7 +543,7 @@ export async function PUT(req: NextRequest, context: ContextParams) {
     }
     return new NextResponse(
       JSON.stringify({ status: false, error: errorMessage }),
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

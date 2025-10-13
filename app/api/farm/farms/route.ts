@@ -6,7 +6,6 @@ export const GET = async () => {
     const farms = await prisma.farm.findMany({
       include: {
         farmAddress: true,
-        organisation: true,
         FeedProfile: true,
         productionUnits: {
           include: {
@@ -17,7 +16,7 @@ export const GET = async () => {
         production: true,
         FishManageHistory: {
           include: {
-            FishSupply: true, 
+            FishSupply: true,
           },
         },
         WaterQualityPredictedParameters: {
@@ -42,17 +41,20 @@ export const GET = async () => {
               speciesId: fishSupply?.speciesId ?? null,
               fishSupplyData: fishSupply ?? null,
             };
-          })
+          }),
         );
 
         return {
           ...farm,
           FishManageHistory: enrichedHistory,
         };
-      })
+      }),
     );
 
-    return NextResponse.json({ status: true, data: enrichedFarms }, { status: 200 });
+    return NextResponse.json(
+      { status: true, data: enrichedFarms },
+      { status: 200 },
+    );
   } catch (error) {
     console.error('[FARM_LIST_ERROR]', error);
     return NextResponse.json(

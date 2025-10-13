@@ -24,6 +24,7 @@ const steps = [
   },
 ];
 interface Props {
+  fishFarmers: any;
   farmMembers: SingleUser[];
   growthModels: any;
   farms: Farm[];
@@ -31,6 +32,7 @@ interface Props {
   feedSuppliers: FeedSupplier[];
 }
 export default function NewFarm({
+  fishFarmers,
   farmMembers,
   growthModels,
   farms,
@@ -110,6 +112,7 @@ export default function NewFarm({
       <Grid item xl={9} md={8} xs={12} my={2}>
         {activeStep === 0 && (
           <FarmInformation
+            fishfarmers={fishFarmers}
             setActiveStep={setActiveStep}
             farmMembers={farmMembers}
             farms={farms}
@@ -135,7 +138,6 @@ export default function NewFarm({
             growthModels={growthModels}
             feedStores={feedstores}
             feedSuppliers={feedSuppliers}
-            token={token}
           />
         )}
       </Grid>

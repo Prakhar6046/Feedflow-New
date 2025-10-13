@@ -3,7 +3,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 import { verifyAndRefreshToken } from '@/app/_lib/auth/verifyAndRefreshToken';
 
-
 interface ContextParams {
   params: {
     userId: string;

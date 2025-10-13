@@ -32,6 +32,7 @@ import { breadcrumsAction } from '@/lib/features/breadcrum/breadcrumSlice';
 import { useAppDispatch } from '@/lib/hooks';
 import { useAppSelector } from '@/lib/hooks';
 import { selectRole } from '@/lib/features/user/userSlice';
+import { clientSecureFetch } from '../_lib/clientSecureFetch';
 
 interface Props {
   users: SingleUser[];
@@ -95,11 +96,8 @@ export default function UserTable({ users, permissions }: Props) {
   const handleInviteUser = async () => {
     setAnchorEl(null);
     if (selectedUser) {
-      const response = await fetch('/api/invite/user', {
+      const response = await clientSecureFetch('/api/invite/user', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         body: JSON.stringify({
           name: selectedUser.name,
           email: selectedUser.email,
@@ -117,12 +115,8 @@ export default function UserTable({ users, permissions }: Props) {
   const handleDeleteUser = async () => {
     setAnchorEl(null);
     if (selectedUser) {
-      const response = await fetch('/api/users', {
+      const response = await clientSecureFetch('/api/users', {
         method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
         body: String(selectedUser.id),
       });
       const res = await response.json();

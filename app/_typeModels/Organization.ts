@@ -159,4 +159,6 @@ export interface FeedSupplier {
   createdAt: string; // ISO date string
   updatedAt: string; // ISO date string
   addressId: string;
+  address?: OrganizationAddress;
+  contact?: OrganizationContact[];
 }

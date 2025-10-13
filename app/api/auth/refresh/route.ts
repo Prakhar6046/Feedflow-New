@@ -1,6 +1,6 @@
-import { signAccessToken, verifyRefreshToken } from '@/app/_lib/jwt';
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
+import { verifyRefreshToken, signAccessToken } from '@/app/_lib/jwt';
 
 export async function POST(req: NextRequest) {
   try {
@@ -8,7 +8,6 @@ export async function POST(req: NextRequest) {
     const refreshToken = body.refreshToken;
 
     if (!refreshToken) {
-      console.error('No refresh token in request body');
       return NextResponse.json({ error: 'No refresh token' }, { status: 401 });
     }
 
@@ -17,20 +16,21 @@ export async function POST(req: NextRequest) {
     const newAccessToken = signAccessToken({
       userId: user.userId,
       email: user.email,
+      role: user.role,
+      organizationId: user.organizationId,
     });
 
-    // Set new access token as httpOnly cookie
     cookies().set('auth-token', newAccessToken, {
-      httpOnly: true,
+      httpOnly: false, 
       path: '/',
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
-      maxAge: 60 * 15, // 15 minutes
+      maxAge: 60 * 15,
     });
 
     return NextResponse.json({ accessToken: newAccessToken });
-  } catch (error) {
-    console.error('Refresh token verification failed:', error);
+  } catch (err) {
+    console.error('Refresh token verification failed:', err);
     return NextResponse.json({ error: 'Invalid refresh token' }, { status: 401 });
   }
 }

@@ -1,3 +1,4 @@
+import { verifyAndRefreshToken } from '@/app/_lib/auth/verifyAndRefreshToken';
 import prisma from '@/prisma/prisma';
 import { Prisma } from '@prisma/client';
 import { NextRequest, NextResponse } from 'next/server';
@@ -21,9 +22,18 @@ type ProductionParameterUnit = {
   idealRange: string;
 };
 
-export async function POST(req: NextRequest) {
-  const body = await req.json();
-
+export async function POST(request: NextRequest) {
+  const body = await request.json();
+  const user = await verifyAndRefreshToken(request);
+  if (user.status === 401) {
+    return new NextResponse(
+      JSON.stringify({
+        status: false,
+        message: 'Unauthorized: Token missing or invalid',
+      }),
+      { status: 401 },
+    );
+  }
   try {
     const {
       productionParameter,
@@ -37,10 +47,11 @@ export async function POST(req: NextRequest) {
       lat,
       lng,
       farmAltitude,
-      mangerId,
+      managerId,
       productionParamtertsUnitsArray,
       FeedProfileUnits,
     } = body;
+    console.log('Received payload:', body);
     if (
       !productionParameter ||
       !farmAddress ||
@@ -75,11 +86,12 @@ export async function POST(req: NextRequest) {
     const newFarmAddress = await prisma.farmAddress.create({
       data: { ...farmAddress },
     });
-
+    console.log('New Farm Address:', newFarmAddress);
     // Create farm
     const farm = await prisma.farm.create({
       data: {
         farmAddressId: newFarmAddress.id,
+        fishFarmerId: Number(fishFarmer),
         name,
         farmAltitude,
         fishFarmer,
@@ -89,10 +101,10 @@ export async function POST(req: NextRequest) {
         userId,
       },
     });
-
+    console.log('New Farm:', farm);
     // Create farm managers from contact IDs by resolving to user IDs
-    if (Array.isArray(mangerId) && mangerId.length > 0) {
-      const filteredContactIds = mangerId
+    if (Array.isArray(managerId) && managerId.length > 0) {
+      const filteredContactIds = managerId
         .filter((id: any) => !!id)
         .map((id: any) => String(id))
         .filter((id: string) => id.trim().length > 0);
@@ -125,7 +137,6 @@ export async function POST(req: NextRequest) {
         }
       }
     }
-
 
     // Create production units
     const newProductUnits: { id: string; name: string }[] = [];
@@ -164,10 +175,10 @@ export async function POST(req: NextRequest) {
           .map((param) =>
             unit.name === param.unitName
               ? {
-                productionUnitId: unit.id,
-                ...param.predictedValues,
-                idealRange: param.idealRange,
-              }
+                  productionUnitId: unit.id,
+                  ...param.predictedValues,
+                  idealRange: param.idealRange,
+                }
               : null,
           )
           .filter(
@@ -184,17 +195,21 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    const feedProfileProductionUnitData = FeedProfileUnits.map(unitProfile => {
-      const matchedUnit = newProductUnits.find(unit => unit.name === unitProfile.unitName);
-      if (matchedUnit) {
-        return {
-          productionUnitId: matchedUnit.id,
-          feedProfileId: newFeedProfile.id,
-          profiles: unitProfile.feedProfile,
-        };
-      }
-      return null;
-    }).filter(Boolean);
+    const feedProfileProductionUnitData = FeedProfileUnits.map(
+      (unitProfile) => {
+        const matchedUnit = newProductUnits.find(
+          (unit) => unit.name === unitProfile.unitName,
+        );
+        if (matchedUnit) {
+          return {
+            productionUnitId: matchedUnit.id,
+            feedProfileId: newFeedProfile.id,
+            profiles: unitProfile.feedProfile,
+          };
+        }
+        return null;
+      },
+    ).filter(Boolean);
 
     if (feedProfileProductionUnitData.length > 0) {
       await prisma.feedProfileProductionUnit.createMany({
@@ -202,11 +217,10 @@ export async function POST(req: NextRequest) {
       });
     }
 
-
     // If overrides provided, update them
     if (FeedProfileUnits && Array.isArray(FeedProfileUnits)) {
       for (const profile of FeedProfileUnits) {
-        const unit = newProductUnits.find(u => u.name === profile.unitName);
+        const unit = newProductUnits.find((u) => u.name === profile.unitName);
         if (unit) {
           await prisma.feedProfileProductionUnit.updateMany({
             where: {
@@ -223,7 +237,6 @@ export async function POST(req: NextRequest) {
     // Create feed profile links based on supplier organisations
     if (Array.isArray(feedProfile)) {
       for (const fp of feedProfile) {
-  
         // Find store
         const store = await prisma.feedStore.findUnique({
           where: { id: fp.storeId },
@@ -234,8 +247,10 @@ export async function POST(req: NextRequest) {
         const supplierOrg = await prisma.organisation.findUnique({
           where: { id: fp.supplierId },
         });
-        if (!supplierOrg || supplierOrg.organisationType !== "Feed Supplier") {
-          console.log(`Organisation ID ${fp.supplierId} is not a feed supplier, skipping...`);
+        if (!supplierOrg || supplierOrg.organisationType !== 'Feed Supplier') {
+          console.log(
+            `Organisation ID ${fp.supplierId} is not a feed supplier, skipping...`,
+          );
           continue;
         }
 

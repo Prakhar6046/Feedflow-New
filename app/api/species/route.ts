@@ -23,7 +23,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(species);
   } catch (error) {
-    console.error("Error fetching species:", error);
+    console.error('Error fetching species:', error);
     return NextResponse.json(
       { error: 'Internal Server Error' },
       { status: 500 },
@@ -33,30 +33,37 @@ export async function GET(request: NextRequest) {
 
 export async function POST(req: Request) {
   try {
+    const user = await verifyAndRefreshToken(req);
+    if (user.status === 401) {
+      return new NextResponse(
+        JSON.stringify({
+          status: false,
+          message: 'Unauthorized: Token missing or invalid',
+        }),
+        { status: 401 },
+      );
+    }
     const { name } = await req.json();
     if (!name || !name.trim()) {
       return NextResponse.json({ error: 'Name is required' }, { status: 400 });
     }
 
     const newSpecies = await prisma.species.create({
-      data: { name: name.trim() }
+      data: { name: name.trim() },
     });
 
     return NextResponse.json(newSpecies);
   } catch (err) {
-    if (
-      err &&
-      err.code === 'P2002'
-    ) {
+    if (err && err.code === 'P2002') {
       return NextResponse.json(
         { error: 'Species name already exists. Please use a different name.' },
-        { status: 409 }
+        { status: 409 },
       );
     }
 
     return NextResponse.json(
       { error: 'Failed to create species' },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

@@ -26,9 +26,11 @@ import Loader from '../Loader';
 import { getCookie } from 'cookies-next';
 import { SingleUser } from '@/app/_typeModels/User';
 import { getLocalItem, setLocalItem } from '@/app/_lib/utils';
+import { clientSecureFetch } from '@/app/_lib/clientSecureFetch';
 // import MapComponent from "./MapComponent";
 const MapComponent = dynamic(() => import('./MapComponent'), { ssr: false });
 interface Props {
+  fishfarmers?: Farm[];
   editFarm?: any;
   setActiveStep: (val: number) => void;
   farmMembers: SingleUser[];
@@ -36,6 +38,7 @@ interface Props {
 }
 
 const FarmInformation: NextPage<Props> = ({
+  fishfarmers,
   setActiveStep,
   editFarm,
   farmMembers,
@@ -54,7 +57,7 @@ const FarmInformation: NextPage<Props> = ({
     getValues,
     reset,
   } = useForm<Farm>({ mode: 'onChange' });
-
+ console.log('fishfarmers', fishfarmers);
   const loggedUser: any = getCookie('logged-user');
   const user = JSON.parse(loggedUser || '{}');
   const [selectedManagerIds, setSelectedManagerIds] = useState<string[]>([]);
@@ -63,6 +66,7 @@ const FarmInformation: NextPage<Props> = ({
   const [lat, setLat] = useState<string>('');
   const [lng, setLng] = useState<string>('');
   const [formData, setFormData] = useState<any>();
+  console.log('formData', formData);
   const [addressInformation, setAddressInformation] = useState<any>();
   const [useAddress, setUseAddress] = useState<boolean>(false);
   const [searchedAddress, setSearchedAddress] = useState<any>();
@@ -70,7 +74,7 @@ const FarmInformation: NextPage<Props> = ({
   const [availableContacts, setAvailableContacts] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
-  // const selectedManagerIds = watch('mangerId') || [];
+  // const selectedManagerIds = watch('managerId') || [];
   const watchFishFarmer = watch('fishFarmer');
   const isEditFarm = getCookie('isEditFarm');
   const token = getCookie('auth-token');
@@ -81,15 +85,12 @@ const FarmInformation: NextPage<Props> = ({
     } = event;
     setSelectedManagerIds(typeof value === 'string' ? value.split(',') : value);
   };
-  const getFarmers = async () => {
-    const response = await fetch('/api/farm/fish-farmers', {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    return response.json();
-  };
+  // const getFarmers = async () => {
+  //   const response = await clientSecureFetch('/api/farm/fish-farmers', {
+  //     method: 'GET',
+  //   });
+  //   return response.json();
+  // };
   const onSubmit: SubmitHandler<Farm> = (data) => {
     const selectedContactObjects = availableContacts.filter((contact) =>
       selectedManagerIds.includes(String(contact.id)),
@@ -97,7 +98,7 @@ const FarmInformation: NextPage<Props> = ({
 
     const finalData = {
       ...data,
-      mangerId: selectedManagerIds,
+      managerId: selectedManagerIds,
       contact: selectedContactObjects,
     };
 
@@ -108,8 +109,7 @@ const FarmInformation: NextPage<Props> = ({
   useEffect(() => {
     setLoading(true);
     const fetchData = async () => {
-      const res = await getFarmers();
-      setFishFarmers(res.data);
+      setFishFarmers(fishfarmers);
       setLoading(false);
 
       if (typeof window !== 'undefined') {
@@ -135,7 +135,7 @@ const FarmInformation: NextPage<Props> = ({
 
   useEffect(() => {
     // Guard: Only run when all necessary data is available
-    if (!editFarm || !fishFarmers.length || formData) return;
+if (!editFarm || !(fishFarmers?.length) || formData) return;
 
     // Set basic form fields
     setValue('name', editFarm?.name);
@@ -185,7 +185,7 @@ const FarmInformation: NextPage<Props> = ({
       setValue('fishFarmer', data?.fishFarmer);
       setValue('lat', data?.lat);
       setValue('lng', data?.lng);
-      setSelectedManagerIds(data?.mangerId || []);
+      setSelectedManagerIds(data?.managerId || []);
     }
   }, [formData, setValue]);
 
@@ -434,7 +434,7 @@ const FarmInformation: NextPage<Props> = ({
             <FormControl fullWidth className="form-input" focused>
               <InputLabel id="feed-supply-select-label1">Manager</InputLabel>
               <Controller
-                name="mangerId"
+                name="managerId"
                 control={control}
                 render={({ field }) => (
                   <Select

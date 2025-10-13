@@ -46,13 +46,13 @@ import CalculateVolume from '../models/CalculateFarmVolume';
 import ProductionUnitFeedProfile from '../models/ProductionUnitFeedProfile';
 import ProductionUnitParametersPredicated from '../models/ProductionUnitParametersPredicated';
 import { productionSystem } from '../GrowthModel';
+import { clientSecureFetch } from '@/app/_lib/clientSecureFetch';
 interface Props {
   productionParaMeter?: ProductionParaMeterType[];
   growthModels?: GrowthModel[];
   editFarm?: Farm;
   setActiveStep: (val: number) => void;
   isEdit?: boolean;
-  token: string;
   feedStores: FeedProduct[];
   feedSuppliers: FeedSupplier[];
 }
@@ -74,6 +74,7 @@ const ProductionUnits: NextPage<Props> = ({
   feedSuppliers,
 }) => {
   uuidv4();
+  console.log('editFarm in production unit', editFarm);
   const dispatch = useAppDispatch();
   const isEditFarm = getCookie('isEditFarm');
   const userData = getCookie('logged-user');
@@ -148,19 +149,11 @@ const ProductionUnits: NextPage<Props> = ({
     const fetchData = async () => {
       try {
         const [speciesRes, productionRes] = await Promise.all([
-          fetch('/api/species', {
+          clientSecureFetch('/api/species', {
             method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${token}`,
-            },
           }),
-          fetch('/api/production-system', {
+          clientSecureFetch('/api/production-system', {
             method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${token}`,
-            },
           }),
         ]);
 
@@ -255,7 +248,7 @@ const ProductionUnits: NextPage<Props> = ({
 
   const onSubmit: SubmitHandler<ProductionUnitsFormTypes> = async (data) => {
     const farmData = getLocalItem('farmData');
-
+   console.log('farmData in production units', farmData);
     const farmPredictionValues = getLocalItem('productionParametes');
     const productionParamtertsUnitsArrayLocal = getLocalItem(
       'productionParamtertsUnitsArray',
@@ -265,7 +258,7 @@ const ProductionUnits: NextPage<Props> = ({
     );
 
     const feedProfile = getLocalItem('feedProfiles');
-
+    
     if (farmData && farmPredictionValues && data) {
       // Prevent API call if one is already in progress
       if (isApiCallInProgress) return;
@@ -315,9 +308,9 @@ const ProductionUnits: NextPage<Props> = ({
 
         if (
           isEditFarm === 'true' &&
-          editFarm?.farmAddress?.id &&
-          editFarm?.WaterQualityPredictedParameters[0]?.id
+          editFarm?.id
         ) {
+          console.log('+++++++++++++')
           payload = {
             productionParameter: {
               ...farmPredictionValues,
@@ -372,12 +365,13 @@ const ProductionUnits: NextPage<Props> = ({
             lat: farmData.lat,
             lng: farmData.lng,
             id: editFarm?.id,
-            organsationId: loggedUserData.organisationId,
+            organisationId: loggedUserData.organisationId,
+            organisationIds: [loggedUserData.organisationId, farmData.fishFarmer],
             productions: editFarm.production,
-            mangerId: farmData.mangerId ? farmData.mangerId : null,
+            managerId: farmData.managerId ? farmData.managerId : null,
             userId: loggedUserData.id,
             feedProfile,
-            feedProfileId: Number(getLocalItem('feedProfileId')),
+            feedProfileId: getLocalItem('feedProfileId') ? Number(getLocalItem('feedProfileId')) : null,
           };
         } else {
           payload = {
@@ -432,25 +426,21 @@ const ProductionUnits: NextPage<Props> = ({
             lat: farmData.lat,
             lng: farmData.lng,
             fishFarmer: farmData.fishFarmer,
-            organsationId: loggedUserData.organisationId,
-            mangerId: farmData.mangerId ? farmData.mangerId : null,
+            organisationId: loggedUserData.organisationId,
+            managerId: farmData.managerId ? farmData.managerId : null,
             userId: loggedUserData.id,
             feedProfile,
           };
         }
      
         if (Object.keys(payload).length && payload.name) {
-          const response = await fetch(
+          const response = await clientSecureFetch(
             `${isEditFarm === 'true'
               ? '/api/farm/edit-farm'
               : '/api/farm/add-farm'
             }`,
             {
               method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${token}`,
-              },
               body: JSON.stringify(payload),
             },
           );

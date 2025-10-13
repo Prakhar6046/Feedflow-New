@@ -11,6 +11,8 @@ import FeedProfiles from './FeedProfiles';
 import ProductionParaMeter from './ProductionParameter';
 import { FeedProduct } from '@/app/_typeModels/Feed';
 import { FeedSupplier } from '@/app/_typeModels/Organization';
+import { secureFetch } from '@/app/_lib/auth';
+import { getFarm } from '@/app/_lib/action';
 
 const steps = [
   {
@@ -25,6 +27,8 @@ const steps = [
   },
 ];
 interface Props {
+  EditFarmData: Farm;
+  fishfarmers: Farm[];
   farmId: string;
   farmMembers: SingleUser[];
   growthModels: any;
@@ -34,6 +38,8 @@ interface Props {
   feedSuppliers: FeedSupplier[];
 }
 const EditFarm = ({
+  EditFarmData,
+  fishfarmers,
   farmId,
   farmMembers,
   growthModels,
@@ -42,41 +48,28 @@ const EditFarm = ({
   feedstores,
   feedSuppliers,
 }: Props) => {
+  console.log('farms', farms);
   const token = getCookie('auth-token');
+  console.log('token', token);
   const activeStepIndex = Number(getCookie('activeStep'));
-  const [activeStep, setActiveStep] = useState<number>(
-    activeStepIndex !== 0 ? activeStepIndex : 0,
-  );
-  const [editFarm, setEditFarm] = useState<Farm>();
-  const [loading, setLoading] = useState<boolean>(false);
+  // const [activeStep, setActiveStep] = useState<number>(
+  //   activeStepIndex !== 0 ? activeStepIndex : 0,
+  // );
+  const [editFarm, setEditFarm] = useState<Farm | null>(null);
 
-  const getFarm = async () => {
-    const response = await fetch(`/api/farm/${farmId}`, {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    const res = await response.json();
-    return res;
-  };
+  console.log('editFarm', EditFarmData);
 
+const [activeStep, setActiveStep] = useState(0);
+
+useEffect(() => {
+  const cookieStep = getCookie('activeStep');
+  setActiveStep(cookieStep ? Number(cookieStep) : 0);
+}, []);
   useEffect(() => {
-    setCookie('activeStep', activeStep);
-  }, [activeStep]);
-  useEffect(() => {
-    setLoading(true);
-    const getFarmData = async () => {
-      const res = await getFarm();
-      setEditFarm(res.data);
-      setLoading(false);
-    };
-    getFarmData();
-  }, []);
+    if (EditFarmData) setEditFarm(EditFarmData);
+  }, [EditFarmData]);
 
-  if (loading) {
-    return <Loader />;
-  }
+  if (!editFarm) return <Loader />;
 
   return (
     <Grid
@@ -115,14 +108,16 @@ const EditFarm = ({
                 // disabled={index > activeStep}
                 completed={activeStep > index}
               >
-                <StepLabel className="stepper"
+                <StepLabel
+                  className="stepper"
                   onClick={() => setActiveStep(index)}
                   sx={{
                     cursor: 'pointer',
                     fontWeight: activeStep === index ? 'bold' : 'normal',
                   }}
-
-                >{step.label}</StepLabel>
+                >
+                  {step.label}
+                </StepLabel>
               </Step>
             ))}
           </Stepper>
@@ -150,6 +145,7 @@ const EditFarm = ({
       <Grid item xl={9} md={8} xs={12} my={2}>
         {activeStep === 0 && (
           <FarmInformation
+            fishfarmers={fishfarmers}
             setActiveStep={setActiveStep}
             editFarm={editFarm}
             farmMembers={farmMembers}
@@ -182,7 +178,6 @@ const EditFarm = ({
             growthModels={growthModels}
             feedStores={feedstores}
             feedSuppliers={feedSuppliers}
-            token={token}
           />
         )}
       </Grid>

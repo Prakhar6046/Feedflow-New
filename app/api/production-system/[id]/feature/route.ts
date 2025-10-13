@@ -1,7 +1,18 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/prisma/prisma';
+import { verifyAndRefreshToken } from '@/app/_lib/auth/verifyAndRefreshToken';
 export async function PATCH(req: Request, { params }: { params: { id: string } }) {
     try {
+          const user = await verifyAndRefreshToken(req);
+            if (user.status === 401) {
+              return new NextResponse(
+                JSON.stringify({
+                  status: false,
+                  message: 'Unauthorized: Token missing or invalid',
+                }),
+                { status: 401 },
+              );
+            }
         const { id } = params;
 
         const productionSystem = await prisma.productionSystem.findUnique({ where: { id } });

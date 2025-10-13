@@ -28,23 +28,27 @@ export const POST = async (request: Request) => {
       );
     }
 
-    const tokenPayload = { userId: user.id, email: user.email };
+    const tokenPayload = {
+      userId: user.id,
+      email: user.email,
+      role: String(user.role),
+      organizationId: user.organisationId,
+    };
     const accessToken = signAccessToken(tokenPayload);
     const refreshToken = signRefreshToken(tokenPayload);
 
-    // Set access token cookie
     cookies().set('auth-token', accessToken, {
-      httpOnly: true,
+      httpOnly: false,
       path: '/',
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
       maxAge: 60 * 15, // 15 minutes
     });
     cookies().set('refresh-token', refreshToken, {
-      httpOnly: true,
+      httpOnly: false,
       path: '/',
-      secure: false, // Use false for localhost
-      sameSite: 'lax', // Use lax for development
+      secure: false,
+      sameSite: 'lax',
       maxAge: 60 * 60 * 24 * 7,
     });
 

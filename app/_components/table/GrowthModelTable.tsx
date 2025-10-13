@@ -30,6 +30,7 @@ import { EnhancedTableHeadProps } from '../UserTable';
 import { productionSystem } from '../GrowthModel';
 import { Species } from '../feedSupply/NewFeedLibarary';
 import { getCookie } from 'cookies-next';
+import { clientSecureFetch } from '@/app/_lib/clientSecureFetch';
 
 interface GrowthModel {
   id: number;
@@ -135,19 +136,11 @@ export default function GrowthModelTable({
     const fetchData = async () => {
       try {
         const [speciesRes, productionRes] = await Promise.all([
-          fetch('/api/species', {
+          clientSecureFetch('/api/species', {
             method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`,
-            },
           }),
-          fetch('/api/production-system', {
+          clientSecureFetch('/api/production-system', {
             method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`,
-            },
           }),
         ]);
 

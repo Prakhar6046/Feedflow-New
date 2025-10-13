@@ -16,6 +16,7 @@ import { Box, Stack, Tab } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { Species } from '../feedSupply/NewFeedLibarary';
 import { getCookie } from 'cookies-next';
+import { clientSecureFetch } from '@/app/_lib/clientSecureFetch';
 interface Props {
   productions: Production[];
   farms: Farm[];
@@ -89,12 +90,8 @@ const FeedPredictionTable = ({ farms, productions }: Props) => {
     }
   }, []);
   const fetchData = async () => {
-    const res = await fetch('/api/species', {
+    const res = await clientSecureFetch('/api/species', {
       method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
     });
     setSpeciesList(await res.json());
   };

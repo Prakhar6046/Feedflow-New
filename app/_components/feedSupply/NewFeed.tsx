@@ -26,6 +26,7 @@ import {
   Typography,
 } from '@mui/material';
 import { getCookie } from 'cookies-next';
+import { clientSecureFetch } from '../../_lib/clientSecureFetch';
 import { NextPage } from 'next';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
@@ -107,14 +108,10 @@ const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
     try {
       const loggedUserData = JSON.parse(loggedUser);
       if (data) {
-        const response = await fetch(
+        const response = await clientSecureFetch(
           isEditFeed ? '/api/feedSupply/edit-feed' : '/api/feedSupply/new-feed',
           {
             method: isEditFeed ? 'PUT' : 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${token}`,
-            },
             body: isEditFeed
               ? JSON.stringify({
                   ...data,
@@ -147,21 +144,15 @@ const NewFeed: NextPage<Props> = ({ feedSupplyId }) => {
     }
   };
   const getFeedSuppliers = async () => {
-    const response = await fetch(`/api/organisation/feedSuppliers`, {
+    const response = await clientSecureFetch(`/api/organisation/feedSuppliers`, {
       method: 'GET',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
     });
     const res = response.json();
     return res;
   };
   const getFeed = async () => {
-    const data = await fetch(`/api/feedSupply/${feedSupplyId}`, {
+    const data = await clientSecureFetch(`/api/feedSupply/${feedSupplyId}`, {
       method: 'GET',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
     });
     if (data) {
     }

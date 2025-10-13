@@ -30,6 +30,7 @@ import * as validationMessage from '@/app/_lib/utils/validationsMessage/index';
 import toast from 'react-hot-toast';
 import { getCookie } from 'cookies-next';
 import { Species } from '../feedSupply/NewFeedLibarary';
+import { clientSecureFetch } from '@/app/_lib/clientSecureFetch';
 interface Props {
   isEdit?: boolean;
   fishSupplyId?: string;
@@ -51,7 +52,7 @@ interface FormInputs {
   speciesId: string;
 }
 function NewFishSupply({ isEdit, fishSupplyId, farms, organisations, speciesList }: Props) {
-
+   console.log('farms', farms);
   const router = useRouter();
   const userData: any = getCookie('logged-user');
   const token = getCookie('auth-token');
@@ -60,11 +61,8 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations, speciesList
   const [fishSupply, setFishSupply] = useState<FishSupply>();
   const featuredSpecies = speciesList?.filter((sp) => sp.isFeatured);
   const getFishSupply = async () => {
-    const response = await fetch(`/api/fish/${fishSupplyId}`, {
+    const response = await clientSecureFetch(`/api/fish/${fishSupplyId}`, {
       method: 'GET',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
     });
     return response.json();
   };
@@ -118,14 +116,10 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations, speciesList
         ...restData,
       };
 
-      const response = await fetch(
+      const response = await clientSecureFetch(
         `${isEdit ? `/api/fish/${fishSupplyId}` : '/api/fish'}`,
         {
           method: isEdit ? 'PUT' : 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
           body: JSON.stringify(payload),
         },
       );
@@ -324,7 +318,7 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations, speciesList
           <Grid item sm={6} xs={12}>
             <FormControl className="form-input" fullWidth focused>
               <InputLabel id="demo-simple-select-label">
-                Fish Producer *
+                Fish Farms *
               </InputLabel>
               <Select
                 labelId="demo-simple-select-label"

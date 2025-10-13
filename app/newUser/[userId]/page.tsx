@@ -2,6 +2,7 @@
 import { useRouter } from 'next/navigation';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { getCookie } from 'cookies-next';
+import { clientSecureFetch } from '../../_lib/clientSecureFetch';
 
 interface IFormInput {
   password: string;
@@ -24,12 +25,8 @@ const Page = ({ params }: { params: { userId: string } }) => {
         userId: params.userId,
         password: data.password,
       };
-      const response = await fetch('/api/add-new-user/setPassword', {
+      const response = await clientSecureFetch('/api/add-new-user/setPassword', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
         body: JSON.stringify(payload),
       });
       const responseData = await response.json();

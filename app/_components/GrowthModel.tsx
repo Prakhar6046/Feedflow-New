@@ -25,6 +25,7 @@ import { useRouter } from 'next/navigation';
 import { Species } from './feedSupply/NewFeedLibarary';
 import { OrganisationModelResponse } from '../_typeModels/growthModel';
 import { SingleUser } from '../_typeModels/User';
+import { clientSecureFetch } from '../_lib/clientSecureFetch';
 export interface productionSystem {
   id: string;
   name: string;
@@ -195,7 +196,7 @@ function GrowthModel({
   useEffect(() => {
     const fetchFarms = async () => {
       try {
-        const res = await fetch("/api/farm/farms", { cache: "no-store" });
+        const res = await clientSecureFetch("/api/farm/farms", { cache: "no-store" });
         if (!res.ok) throw new Error("Failed to fetch farms");
         const data = await res.json();
 
@@ -236,7 +237,7 @@ function GrowthModel({
 
       try {
         const apiUrl = `/api/growth-model?organisationId=${organisationId}`;
-        const response = await fetch(apiUrl, { cache: "no-store" });
+        const response = await clientSecureFetch(apiUrl, { cache: "no-store" });
 
         if (response.ok) {
           const data = await response.json();
@@ -298,19 +299,11 @@ function GrowthModel({
     const fetchData = async () => {
       try {
         const [speciesRes, productionRes] = await Promise.all([
-          fetch('/api/species', {
+          clientSecureFetch('/api/species', {
             method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`,
-            },
           }),
-          fetch('/api/production-system', {
+          clientSecureFetch('/api/production-system', {
             method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`,
-            },
           }),
         ]);
 
@@ -491,11 +484,8 @@ function GrowthModel({
             selectedFarms: selectedFarmsForModel,
             organisationId: user.organisationId,
           };
-        const response = await fetch(url, {
+        const response = await clientSecureFetch(url, {
           method: method,
-          headers: {
-            'Content-Type': 'application/json',
-          },
           body: JSON.stringify(body),
         });
         const result = await response.json();
