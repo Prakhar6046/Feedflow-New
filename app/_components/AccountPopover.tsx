@@ -54,8 +54,11 @@ const AccountPopover = () => {
   };
   const handleLogout = async () => {
     toast.dismiss();
-    const data = await clientSecureFetch('/api/auth/logout', {
+    const data = await fetch('/api/auth/logout', {
       method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
     const response = await data.json();
     if (response.status) {
