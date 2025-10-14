@@ -50,9 +50,7 @@ export const GET = async (request: NextRequest, context: { params: any }) => {
         },
       },
     });
-    if (farm.farmAddressId) {
-      await prisma.farmAddress.delete({ where: { id: farm.farmAddressId } });
-    }
+    
     if (!farm) {
       return new NextResponse(
         JSON.stringify({ status: false, message: 'Farm not found' }),
@@ -157,39 +155,57 @@ export const DELETE = async (
       })
     ).map((wq) => wq.id);
 
-    await prisma.$transaction([
-      prisma.feedProfileProductionUnit.deleteMany({
+    // Delete feed profile production units
+    if (productionUnitIds.length > 0) {
+      await prisma.feedProfileProductionUnit.deleteMany({
+        where: { 
+          productionUnitId: { 
+            in: productionUnitIds 
+          } 
+        },
+      });
+    }
+
+    // Delete year based prediction production units
+    if (productionUnitIds.length > 0) {
+      await prisma.yearBasedPredicationProductionUnit.deleteMany({
         where: { productionUnitId: { in: productionUnitIds } },
-      }),
-      prisma.yearBasedPredicationProductionUnit.deleteMany({
-        where: { productionUnitId: { in: productionUnitIds } },
-      }),
-      prisma.feedProfileLink.deleteMany({
+      });
+    }
+
+    // Delete feed profile related data
+    if (feedProfileIds.length > 0) {
+      await prisma.feedProfileLink.deleteMany({
         where: { feedProfileId: { in: feedProfileIds } },
-      }),
-      prisma.feedProfile.deleteMany({ where: { id: { in: feedProfileIds } } }),
+      });
+      await prisma.feedProfile.deleteMany({ where: { id: { in: feedProfileIds } } });
+    }
 
-      // Water quality related
-      prisma.yearBasedPredication.deleteMany({
+    // Delete water quality related data
+    if (waterQualityIds.length > 0) {
+      await prisma.yearBasedPredication.deleteMany({
         where: { waterQualityPredictedParameterId: { in: waterQualityIds } },
-      }),
-      prisma.waterQualityPredictedParameters.deleteMany({ where: { farmId } }),
+      });
+    }
+    await prisma.waterQualityPredictedParameters.deleteMany({ where: { farmId } });
 
-      // Fish / production
-      prisma.fishManageHistory.deleteMany({ where: { fishFarmId: farmId } }),
-      prisma.fishSupply.deleteMany({ where: { fishFarmId: farmId } }),
-      prisma.productionUnit.deleteMany({
+    // Delete fish / production data
+    await prisma.fishManageHistory.deleteMany({ where: { fishFarmId: farmId } });
+    await prisma.fishSupply.deleteMany({ where: { fishFarmId: farmId } });
+    
+    if (productionUnitIds.length > 0) {
+      await prisma.productionUnit.deleteMany({
         where: { id: { in: productionUnitIds } },
-      }),
+      });
+    }
 
-      // Growth models, managers, addresses
-      prisma.growthModelFarm.deleteMany({ where: { farmId } }),
-      prisma.farmManger.deleteMany({ where: { farmId } }),
-      prisma.farmAddress.deleteMany({ where: { id: farm.farmAddressId } }),
+    // Delete growth models, managers, addresses
+    await prisma.growthModelFarm.deleteMany({ where: { farmId } });
+    await prisma.farmManger.deleteMany({ where: { farmId } });
+    await prisma.farmAddress.deleteMany({ where: { id: farm.farmAddressId } });
 
-      // Finally delete the farm
-      prisma.farm.delete({ where: { id: farmId } }),
-    ]);
+    // Finally delete the farm
+    await prisma.farm.delete({ where: { id: farmId } });
 
     return NextResponse.json({
       status: true,

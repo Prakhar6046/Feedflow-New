@@ -248,7 +248,8 @@ const ProductionUnits: NextPage<Props> = ({
 
   const onSubmit: SubmitHandler<ProductionUnitsFormTypes> = async (data) => {
     const farmData = getLocalItem('farmData');
-   console.log('farmData in production units', farmData);
+    console.log('farmData in production units', farmData);
+    console.log('editFarm in production units', editFarm);
     const farmPredictionValues = getLocalItem('productionParametes');
     const productionParamtertsUnitsArrayLocal = getLocalItem(
       'productionParamtertsUnitsArray',
@@ -259,7 +260,29 @@ const ProductionUnits: NextPage<Props> = ({
 
     const feedProfile = getLocalItem('feedProfiles');
     
-    if (farmData && farmPredictionValues && data) {
+    // For edit mode, use editFarm data if available, otherwise fall back to farmData
+    const currentFarmData = (isEditFarm === 'true' && editFarm) ? {
+      name: editFarm.name,
+      farmAltitude: editFarm.farmAltitude,
+      lat: editFarm.lat,
+      lng: editFarm.lng,
+      fishFarmer: editFarm.fishFarmer,
+      managerId: editFarm.FarmManger?.map(m => m.userId) || [],
+      addressLine1: editFarm.farmAddress?.addressLine1 || '',
+      addressLine2: editFarm.farmAddress?.addressLine2 || '',
+      city: editFarm.farmAddress?.city || '',
+      province: editFarm.farmAddress?.province || '',
+      zipCode: editFarm.farmAddress?.zipCode || '',
+      country: editFarm.farmAddress?.country || '',
+    } : farmData;
+    
+    if (currentFarmData && farmPredictionValues && data) {
+      // Validate farm address data
+      if (!currentFarmData.addressLine1 || !currentFarmData.city || !currentFarmData.province || !currentFarmData.zipCode || !currentFarmData.country) {
+        toast.error('Please complete all farm address fields before saving.');
+        return;
+      }
+      
       // Prevent API call if one is already in progress
       if (isApiCallInProgress) return;
       setIsApiCallInProgress(true);
@@ -350,25 +373,25 @@ const ProductionUnits: NextPage<Props> = ({
             FeedProfileUnits: feedProfileUnitsPayload,
 
             farmAddress: {
-              addressLine1: farmData.addressLine1,
-              addressLine2: farmData.addressLine2,
-              city: farmData.city,
-              province: farmData.province,
-              zipCode: farmData.zipCode,
-              country: farmData.country,
+              addressLine1: currentFarmData.addressLine1,
+              addressLine2: currentFarmData.addressLine2,
+              city: currentFarmData.city,
+              province: currentFarmData.province,
+              zipCode: currentFarmData.zipCode,
+              country: currentFarmData.country,
               id: editFarm.farmAddress?.id,
             },
             productionUnits: productionUnitsWithIds,
-            name: farmData.name,
-            farmAltitude: farmData.farmAltitude,
-            fishFarmer: farmData.fishFarmer,
-            lat: farmData.lat,
-            lng: farmData.lng,
+            name: currentFarmData.name,
+            farmAltitude: currentFarmData.farmAltitude,
+            fishFarmer: currentFarmData.fishFarmer,
+            lat: currentFarmData.lat,
+            lng: currentFarmData.lng,
             id: editFarm?.id,
             organisationId: loggedUserData.organisationId,
-            organisationIds: [loggedUserData.organisationId, farmData.fishFarmer],
+            organisationIds: [loggedUserData.organisationId, currentFarmData.fishFarmer],
             productions: editFarm.production,
-            managerId: farmData.managerId ? farmData.managerId : null,
+            managerId: currentFarmData.managerId ? currentFarmData.managerId : null,
             userId: loggedUserData.id,
             feedProfile,
             feedProfileId: getLocalItem('feedProfileId') ? Number(getLocalItem('feedProfileId')) : null,
@@ -413,21 +436,21 @@ const ProductionUnits: NextPage<Props> = ({
               },
             },
             farmAddress: {
-              addressLine1: farmData.addressLine1,
-              addressLine2: farmData.addressLine2,
-              city: farmData.city,
-              province: farmData.province,
-              zipCode: farmData.zipCode,
-              country: farmData.country,
+              addressLine1: currentFarmData.addressLine1,
+              addressLine2: currentFarmData.addressLine2,
+              city: currentFarmData.city,
+              province: currentFarmData.province,
+              zipCode: currentFarmData.zipCode,
+              country: currentFarmData.country,
             },
             productionUnits: data.productionUnits,
-            name: farmData.name,
-            farmAltitude: farmData.farmAltitude,
-            lat: farmData.lat,
-            lng: farmData.lng,
-            fishFarmer: farmData.fishFarmer,
+            name: currentFarmData.name,
+            farmAltitude: currentFarmData.farmAltitude,
+            lat: currentFarmData.lat,
+            lng: currentFarmData.lng,
+            fishFarmer: currentFarmData.fishFarmer,
             organisationId: loggedUserData.organisationId,
-            managerId: farmData.managerId ? farmData.managerId : null,
+            managerId: currentFarmData.managerId ? currentFarmData.managerId : null,
             userId: loggedUserData.id,
             feedProfile,
           };

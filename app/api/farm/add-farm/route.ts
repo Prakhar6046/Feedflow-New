@@ -67,6 +67,17 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Validate farm address required fields
+    if (!farmAddress.addressLine1 || !farmAddress.city || !farmAddress.province || !farmAddress.zipCode || !farmAddress.country) {
+      return NextResponse.json(
+        {
+          status: false,
+          message: 'Farm address is missing required fields (addressLine1, city, province, zipCode, country)',
+        },
+        { status: 400 },
+      );
+    }
+
     // Check if farm already exists with the same name
     const farmExistWithName = await prisma.farm.findUnique({
       where: { name, organisationId },
@@ -83,25 +94,65 @@ export async function POST(request: NextRequest) {
     }
 
     // Create farm address
-    const newFarmAddress = await prisma.farmAddress.create({
-      data: { ...farmAddress },
-    });
-    console.log('New Farm Address:', newFarmAddress);
+    console.log('Farm Address Data:', farmAddress);
+    let newFarmAddress;
+    try {
+      newFarmAddress = await prisma.farmAddress.create({
+        data: { 
+          addressLine1: farmAddress.addressLine1,
+          addressLine2: farmAddress.addressLine2 || null,
+          city: farmAddress.city,
+          province: farmAddress.province,
+          zipCode: farmAddress.zipCode,
+          country: farmAddress.country,
+        },
+      });
+      console.log('New Farm Address:', newFarmAddress);
+    } catch (addressError) {
+      console.error('Error creating farm address:', addressError);
+      return NextResponse.json(
+        {
+          status: false,
+          message: 'Failed to create farm address',
+          error: addressError instanceof Error ? addressError.message : 'Unknown error',
+        },
+        { status: 500 },
+      );
+    }
     // Create farm
-    const farm = await prisma.farm.create({
-      data: {
-        farmAddressId: newFarmAddress.id,
-        fishFarmerId: Number(fishFarmer),
-        name,
-        farmAltitude,
-        fishFarmer,
-        lat,
-        lng,
-        organisationId,
-        userId,
-      },
-    });
-    console.log('New Farm:', farm);
+    let farm;
+    try {
+      farm = await prisma.farm.create({
+        data: {
+          farmAddressId: newFarmAddress.id,
+          fishFarmerId: Number(fishFarmer),
+          name,
+          farmAltitude,
+          fishFarmer,
+          lat,
+          lng,
+          organisationId,
+          userId,
+        },
+      });
+      console.log('New Farm:', farm);
+    } catch (farmError) {
+      console.error('Error creating farm:', farmError);
+      // Clean up the created address if farm creation fails
+      try {
+        await prisma.farmAddress.delete({ where: { id: newFarmAddress.id } });
+      } catch (cleanupError) {
+        console.error('Error cleaning up farm address:', cleanupError);
+      }
+      return NextResponse.json(
+        {
+          status: false,
+          message: 'Failed to create farm',
+          error: farmError instanceof Error ? farmError.message : 'Unknown error',
+        },
+        { status: 500 },
+      );
+    }
     // Create farm managers from contact IDs by resolving to user IDs
     if (Array.isArray(managerId) && managerId.length > 0) {
       const filteredContactIds = managerId
