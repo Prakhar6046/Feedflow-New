@@ -33,32 +33,108 @@ export async function POST(req: NextRequest) {
       idealRange: productionParameterPayload.idealRange,
       modelId,
     };
+    // Validate farm address data
+    if (!body.farmAddress) {
+      throw new Error('Farm address data is required for updating farm.');
+    }
+
+    // Validate required fields
+    if (!body.farmAddress.addressLine1 || !body.farmAddress.city || !body.farmAddress.province || !body.farmAddress.zipCode || !body.farmAddress.country) {
+      throw new Error('Farm address is missing required fields (addressLine1, city, province, zipCode, country)');
+    }
+
     // Update the existing farm address
     let farmAddressId = body.farmAddress?.id;
+    console.log('Farm Address Data for Edit:', body.farmAddress);
+    console.log('Farm Address ID from frontend:', farmAddressId);
+
+    // First, get the current farm to check if it has an existing address
+    const currentFarm = await prisma.farm.findUnique({
+      where: { id: body.id },
+      include: { farmAddress: true }
+    });
+    console.log('Current farm with address:', currentFarm);
 
     if (!farmAddressId) {
-      // Create new farm address if ID is missing
-      const newFarmAddress = await prisma.farmAddress.create({
-        data: { ...body.farmAddress },
-      });
-      farmAddressId = newFarmAddress.id;
+      // If no ID provided, check if farm already has an address
+      if (currentFarm?.farmAddress) {
+        // Update existing address
+        farmAddressId = currentFarm.farmAddress.id;
+        try {
+          await prisma.farmAddress.update({
+            where: { id: farmAddressId },
+            data: {
+              addressLine1: body.farmAddress.addressLine1,
+              addressLine2: body.farmAddress.addressLine2 || null,
+              city: body.farmAddress.city,
+              province: body.farmAddress.province,
+              zipCode: body.farmAddress.zipCode,
+              country: body.farmAddress.country,
+            },
+          });
+          console.log('Updated existing farm address (no ID provided):', farmAddressId);
+        } catch (addressError) {
+          console.error('Error updating existing farm address:', addressError);
+          throw new Error('Failed to update existing farm address: ' + (addressError instanceof Error ? addressError.message : 'Unknown error'));
+        }
+      } else {
+        // Create new farm address if no existing address
+        try {
+          const newFarmAddress = await prisma.farmAddress.create({
+            data: {
+              addressLine1: body.farmAddress.addressLine1,
+              addressLine2: body.farmAddress.addressLine2 || null,
+              city: body.farmAddress.city,
+              province: body.farmAddress.province,
+              zipCode: body.farmAddress.zipCode,
+              country: body.farmAddress.country,
+            },
+          });
+          farmAddressId = newFarmAddress.id;
+          console.log('Created new farm address (no existing address):', newFarmAddress);
+        } catch (addressError) {
+          console.error('Error creating farm address:', addressError);
+          throw new Error('Failed to create farm address: ' + (addressError instanceof Error ? addressError.message : 'Unknown error'));
+        }
+      }
     } else {
       // Update existing farm address safely
-      const existingAddress = await prisma.farmAddress.findUnique({
-        where: { id: farmAddressId },
-      });
-
-      if (!existingAddress) {
-        // If address ID sent does not exist, create new
-        const newFarmAddress = await prisma.farmAddress.create({
-          data: { ...body.farmAddress },
-        });
-        farmAddressId = newFarmAddress.id;
-      } else {
-        await prisma.farmAddress.update({
+      try {
+        const existingAddress = await prisma.farmAddress.findUnique({
           where: { id: farmAddressId },
-          data: { ...body.farmAddress },
         });
+
+        if (!existingAddress) {
+          // If address ID sent does not exist, create new
+          const newFarmAddress = await prisma.farmAddress.create({
+            data: {
+              addressLine1: body.farmAddress.addressLine1,
+              addressLine2: body.farmAddress.addressLine2 || null,
+              city: body.farmAddress.city,
+              province: body.farmAddress.province,
+              zipCode: body.farmAddress.zipCode,
+              country: body.farmAddress.country,
+            },
+          });
+          farmAddressId = newFarmAddress.id;
+          console.log('Created new farm address (ID not found):', newFarmAddress);
+        } else {
+          await prisma.farmAddress.update({
+            where: { id: farmAddressId },
+            data: {
+              addressLine1: body.farmAddress.addressLine1,
+              addressLine2: body.farmAddress.addressLine2 || null,
+              city: body.farmAddress.city,
+              province: body.farmAddress.province,
+              zipCode: body.farmAddress.zipCode,
+              country: body.farmAddress.country,
+            },
+          });
+          console.log('Updated existing farm address:', farmAddressId);
+        }
+      } catch (addressError) {
+        console.error('Error updating farm address:', addressError);
+        throw new Error('Failed to update farm address: ' + (addressError instanceof Error ? addressError.message : 'Unknown error'));
       }
     }
     if (!body.id) {
@@ -66,17 +142,41 @@ export async function POST(req: NextRequest) {
     }
 
     // Update the existing farm
-    const updatedFarm = await prisma.farm.update({
-      where: { id: body.id },
-      data: {
+    let updatedFarm;
+    try {
+      console.log('Updating farm with farmAddressId:', farmAddressId);
+      console.log('Farm update data:', {
         farmAddressId: farmAddressId,
         fishFarmerId: Number(body.fishFarmer),
         name: body.name,
         farmAltitude: body.farmAltitude,
         lat: body.lat,
         lng: body.lng,
-      },
-    });
+      });
+      
+      updatedFarm = await prisma.farm.update({
+        where: { id: body.id },
+        data: {
+          farmAddressId: farmAddressId,
+          fishFarmerId: Number(body.fishFarmer),
+          name: body.name,
+          farmAltitude: body.farmAltitude,
+          lat: body.lat,
+          lng: body.lng,
+        },
+      });
+      console.log('Updated farm:', updatedFarm);
+      
+      // Verify the farm address relationship after update
+      const farmWithAddress = await prisma.farm.findUnique({
+        where: { id: body.id },
+        include: { farmAddress: true }
+      });
+      console.log('Farm with address after update:', farmWithAddress);
+    } catch (farmError) {
+      console.error('Error updating farm:', farmError);
+      throw new Error('Failed to update farm: ' + (farmError instanceof Error ? farmError.message : 'Unknown error'));
+    }
 
     //updating existing farm manager
     if (Array.isArray(body.managerId)) {
