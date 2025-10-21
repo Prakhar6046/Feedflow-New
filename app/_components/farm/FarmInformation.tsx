@@ -102,6 +102,10 @@ const FarmInformation: NextPage<Props> = ({
       contact: selectedContactObjects,
     };
 
+    console.log('FarmInformation onSubmit - selectedManagerIds:', selectedManagerIds);
+    console.log('FarmInformation onSubmit - finalData.managerId:', finalData.managerId);
+    console.log('FarmInformation onSubmit - isEditFarm:', isEditFarm);
+
     dispatch(farmAction.updateFarm(finalData));
     setLocalItem('farmData', finalData);
     setActiveStep(1);
@@ -137,6 +141,8 @@ const FarmInformation: NextPage<Props> = ({
     // Guard: Only run when all necessary data is available
 if (!editFarm || !(fishFarmers?.length) || formData) return;
 
+    console.log('Setting up edit farm data - editFarm.FarmManger:', editFarm.FarmManger);
+
     // Set basic form fields
     setValue('name', editFarm?.name);
     setValue('farmAltitude', String(Number(editFarm?.farmAltitude).toFixed(2)));
@@ -165,6 +171,7 @@ if (!editFarm || !(fishFarmers?.length) || formData) return;
           );
           return contact ? String(contact.id) : null;
         }).filter(Boolean);
+        console.log('Setting selectedManagerIds from editFarm:', managerContactIds);
         setSelectedManagerIds(managerContactIds);
       }
     }
@@ -174,6 +181,7 @@ if (!editFarm || !(fishFarmers?.length) || formData) return;
   useEffect(() => {
     if (formData && Object.keys(formData).length) {
       const data = formData;
+      console.log('Loading from formData - data.managerId:', data?.managerId);
       setValue('name', data?.name);
       setValue('farmAltitude', data?.farmAltitude);
       setValue('addressLine1', data?.addressLine1);
@@ -185,6 +193,7 @@ if (!editFarm || !(fishFarmers?.length) || formData) return;
       setValue('fishFarmer', data?.fishFarmer);
       setValue('lat', data?.lat);
       setValue('lng', data?.lng);
+      console.log('Setting selectedManagerIds from formData:', data?.managerId || []);
       setSelectedManagerIds(data?.managerId || []);
     }
   }, [formData, setValue]);

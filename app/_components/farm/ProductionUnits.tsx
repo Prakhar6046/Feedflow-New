@@ -249,7 +249,9 @@ const ProductionUnits: NextPage<Props> = ({
   const onSubmit: SubmitHandler<ProductionUnitsFormTypes> = async (data) => {
     const farmData = getLocalItem('farmData');
     console.log('farmData in production units', farmData);
+    console.log('farmData.managerId:', farmData?.managerId);
     console.log('editFarm in production units', editFarm);
+    console.log('isEditFarm:', isEditFarm);
     const farmPredictionValues = getLocalItem('productionParametes');
     const productionParamtertsUnitsArrayLocal = getLocalItem(
       'productionParamtertsUnitsArray',
@@ -267,7 +269,7 @@ const ProductionUnits: NextPage<Props> = ({
       lat: editFarm.lat,
       lng: editFarm.lng,
       fishFarmer: editFarm.fishFarmer,
-      managerId: editFarm.FarmManger?.map(m => m.userId) || [],
+      managerId: farmData?.managerId || [], // Use managerId from farmData (contact IDs as strings)
       addressLine1: editFarm.farmAddress?.addressLine1 || '',
       addressLine2: editFarm.farmAddress?.addressLine2 || '',
       city: editFarm.farmAddress?.city || '',
@@ -457,6 +459,10 @@ const ProductionUnits: NextPage<Props> = ({
         }
      
         if (Object.keys(payload).length && payload.name) {
+          console.log('Final payload managerId:', payload.managerId);
+          console.log('Final payload type:', typeof payload.managerId);
+          console.log('Final payload managerId array:', Array.isArray(payload.managerId));
+          
           const response = await clientSecureFetch(
             `${isEditFarm === 'true'
               ? '/api/farm/edit-farm'
