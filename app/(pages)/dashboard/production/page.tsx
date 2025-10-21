@@ -32,6 +32,7 @@ export default async function Page({
     noFilter: false,
   });
   const batches = await getBatches({});
+  
   return (
     <>
       <BasicBreadcrumbs
@@ -44,9 +45,9 @@ export default async function Page({
       />
 
       <ProductionTable
-        productions={productions.data}
-        farms={farms.data}
-        batches={batches.data}
+        productions={productions?.data || []}
+        farms={farms?.data || []}
+        batches={batches?.data || []}
       />
     </>
   );

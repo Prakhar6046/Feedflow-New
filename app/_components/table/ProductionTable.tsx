@@ -56,7 +56,7 @@ import ProductionManagerFilter from '../ProductionManagerFilter';
 import { Co2Sharp } from '@mui/icons-material';
 
 interface Props {
-  productions: Production[];
+  productions?: Production[];
   farms: Farm[];
   batches: { batchNumber: string; id: number }[];
 }
@@ -66,6 +66,18 @@ export default function ProductionTable({
   farms,
   batches,
 }: Props) {
+  // Safety check for undefined productions
+  if (!productions) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-center">
+          <p className="text-gray-500">No production data available</p>
+          <p className="text-sm text-gray-400">Please try refreshing the page</p>
+        </div>
+      </div>
+    );
+  }
+
   const captureRef = useRef(null);
   const router = useRouter();
   const breakpoint = useBreakpoint();
@@ -848,7 +860,7 @@ export default function ProductionTable({
     unit: any,
     isManage: boolean,
   ) => {
-    const selectedProd = productions.find((pro) => pro.id === unit.id);
+    const selectedProd = productions?.find((pro) => pro.id === unit.id);
     const currentParams = new URLSearchParams(searchParams);
     setAnchorEl(event.currentTarget);
     if (currentParams.size) {
