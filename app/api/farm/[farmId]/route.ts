@@ -193,7 +193,12 @@ export const DELETE = async (
     await prisma.fishManageHistory.deleteMany({ where: { fishFarmId: farmId } });
     await prisma.fishSupply.deleteMany({ where: { fishFarmId: farmId } });
     
+    // Delete production records before deleting production units
     if (productionUnitIds.length > 0) {
+      await prisma.production.deleteMany({
+        where: { productionUnitId: { in: productionUnitIds } },
+      });
+      
       await prisma.productionUnit.deleteMany({
         where: { id: { in: productionUnitIds } },
       });
