@@ -93,7 +93,6 @@ function FeedingPlan({ productionData, startDate, endDate }: Props) {
     mode: 'onChange',
   });
   const onSubmit: SubmitHandler<FormInputs> = (data) => {
-    debugger
     // const formattedDate = dayjs(startDate).format('YYYY-MM-DD');
     // const diffInDays = dayjs(endDate).diff(dayjs(startDate), 'day');
     if (!selectedDropDownfarms?.length) {
