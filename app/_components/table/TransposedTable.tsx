@@ -71,6 +71,7 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
           }
         });
         defaultValues[`speciesId-${colIndex}`] = item.speciesId || '';
+        defaultValues[`isDefault-${colIndex}`] = item.isDefault || false;
       });
       reset(defaultValues);
     }
@@ -168,13 +169,90 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
   //     router.push('/dashboard/feedSupply/libarary/new');
   //   }
   // }, [filteredStores, router]);
+  const validateDefaultFeeds = (payload: any[]) => {
+    // Group feeds by supplier
+    const supplierGroups: Record<string, any[]> = {};
+    
+    payload.forEach((feed) => {
+      const suppliers = feed.ProductSupplier || [];
+      suppliers.forEach((supplierId: string) => {
+        if (!supplierGroups[supplierId]) {
+          supplierGroups[supplierId] = [];
+        }
+        supplierGroups[supplierId].push(feed);
+      });
+    });
+
+    // Validate each supplier group
+    for (const [supplierId, feeds] of Object.entries(supplierGroups)) {
+      const defaultFeeds = feeds.filter((f: any) => f.isDefault);
+      
+      if (defaultFeeds.length === 0) continue;
+      
+      // Sort by minFishSizeG
+      defaultFeeds.sort((a, b) => a.minFishSizeG - b.minFishSizeG);
+      
+      // Check for overlaps
+      for (let i = 0; i < defaultFeeds.length - 1; i++) {
+        const current = defaultFeeds[i];
+        const next = defaultFeeds[i + 1];
+        
+        if (current.maxFishSizeG >= next.minFishSizeG) {
+          throw new Error(
+            `Overlap detected in default feeds for supplier. ` +
+            `Feeds "${current.productName}" (${current.minFishSizeG}-${current.maxFishSizeG}g) and "${next.productName}" (${next.minFishSizeG}-${next.maxFishSizeG}g) overlap.`
+          );
+        }
+      }
+      
+      // Check for coverage (optional - based on client requirements)
+      // This ensures there are no gaps, but can be commented out if partial coverage is acceptable
+      const firstFeed = defaultFeeds[0];
+      const lastFeed = defaultFeeds[defaultFeeds.length - 1];
+      
+      if (defaultFeeds.length > 1) {
+        // Check for gaps
+        for (let i = 0; i < defaultFeeds.length - 1; i++) {
+          const current = defaultFeeds[i];
+          const next = defaultFeeds[i + 1];
+          
+          if (current.maxFishSizeG < next.minFishSizeG - 1) {
+            // Gap detected (allow 1 unit gap for rounding)
+            const gap = next.minFishSizeG - current.maxFishSizeG;
+            if (gap > 1) {
+              console.warn(
+                `Gap detected in default feeds for supplier. ` +
+                `Between "${current.productName}" (${current.maxFishSizeG}g) and "${next.productName}" (${next.minFishSizeG}g).`
+              );
+            }
+          }
+        }
+      }
+    }
+  };
+
   const onSubmit = async (data: any) => {
     setIsSaving(true);
     const payload = transformFeedProductsWithSuppliers(data);
     const updatedPayload = payload.map((feed) => {
-      const { ProductSupplier, supplierIds,minFishSizeG,maxFishSizeG, ...rest } = feed;
-      return { ...rest, ProductSupplier: supplierIds ,minFishSizeG:Number(minFishSizeG) ,maxFishSizeG:Number(maxFishSizeG) };
+      const { ProductSupplier, supplierIds, minFishSizeG, maxFishSizeG, isDefault, ...rest } = feed;
+      return { 
+        ...rest, 
+        ProductSupplier: supplierIds, 
+        minFishSizeG: Number(minFishSizeG), 
+        maxFishSizeG: Number(maxFishSizeG),
+        isDefault: Boolean(isDefault)
+      };
     });
+
+    // Validate default feeds for overlaps
+    try {
+      validateDefaultFeeds(updatedPayload);
+    } catch (validationError: any) {
+      setIsSaving(false);
+      toast.error(validationError.message);
+      return;
+    }
 
     try {
       const token = getCookie('auth-token');
@@ -562,6 +640,35 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
                 </TableCell>
               ))}
             </TableRow>
+            <TableRow>
+              <TableCell>Ad-hoc</TableCell>
+              {filteredStores.map((_: any, colIndex: number) => (
+                <TableCell key={colIndex}>
+                  <Controller
+                    name={`isDefault-${colIndex}`}
+                    control={control}
+                    defaultValue={filteredStores[colIndex]?.isDefault || false}
+                    render={({ field }) => (
+                      <Button
+                        variant={field.value ? "contained" : "outlined"}
+                        onClick={() => field.onChange(!field.value)}
+
+                        sx={{
+                          minWidth: 300,
+                          background: field.value ? '#06A19B' : 'transparent',
+                          color: field.value ? '#fff' : '#06A19B',
+                          border: '1px solid #0000003f',
+                          px: 2,
+                          borderRadius: 1,
+                        }}
+                      >
+                        Default
+                      </Button>
+                    )}
+                  />
+                </TableCell>
+              ))}
+            </TableRow>
             {remainingRows.map((key) => (
               <TableRow key={key}>
                 <TableCell>{formatLabel(key)}</TableCell>
@@ -591,6 +698,35 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
                 ))}
               </TableRow>
             ))}
+            {/* <TableRow>
+              <TableCell>Ad-hoc</TableCell>
+              {filteredStores.map((_: any, colIndex: number) => (
+                <TableCell key={colIndex}>
+                  <Controller
+                    name={`isDefault-${colIndex}`}
+                    control={control}
+                    defaultValue={filteredStores[colIndex]?.isDefault || false}
+                    render={({ field }) => (
+                      <Button
+                        variant={field.value ? "contained" : "outlined"}
+                        onClick={() => field.onChange(!field.value)}
+
+                        sx={{
+                          minWidth: 300,
+                          background: field.value ? '#06A19B' : 'transparent',
+                          color: field.value ? '#fff' : '#06A19B',
+                          border: '1px solid #0000003f',
+                          px: 2,
+                          borderRadius: 1,
+                        }}
+                      >
+                        Default
+                      </Button>
+                    )}
+                  />
+                </TableCell>
+              ))}
+            </TableRow> */}
             <TableRow>
               <TableCell>{formatLabel("feedIngredients")}</TableCell>
               {filteredStores.map((_: any, colIndex: number) => (

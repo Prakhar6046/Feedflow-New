@@ -106,6 +106,25 @@ const FeedUsageOutput: React.FC = () => {
     fetchModels();
   }, [organisationId]);
 
+  // Fetch and cache default feeds
+  useEffect(() => {
+    const fetchDefaultFeeds = async () => {
+      try {
+        const res = await clientSecureFetch('/api/feed-store');
+        if (res.ok) {
+          const data = await res.json();
+          const defaultFeeds = data.data?.filter((feed: any) => feed.isDefault === true) || [];
+          if (typeof window !== 'undefined') {
+            localStorage.setItem('defaultFeedsCache', JSON.stringify(defaultFeeds));
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching default feeds:', error);
+      }
+    };
+    fetchDefaultFeeds();
+  }, []);
+
   // Helper: select growth model per farm and unit
   const selectGrowthModelForUnit = (
     farm: any,

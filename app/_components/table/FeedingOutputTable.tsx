@@ -461,7 +461,7 @@ const FeedingOutputTable = ({ farms, productions }: Props) => {
               className=" production-tabs"
             >
               <Tab
-                label="Feeding Plan"
+                label="Farm/Unit Specific"
                 value="feedingPlan"
                 className={
                   selectedFeeding === 'feedingPlan' ? 'active-tab' : ''
