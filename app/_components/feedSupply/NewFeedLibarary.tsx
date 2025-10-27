@@ -339,24 +339,36 @@ const NewFeedLibarary: NextPage<Props> = ({ feedSuppliers, speciesList }) => {
                 fullWidth
                 className="form-input"
                 focused
-                {...register(field.name, {
-                  required: true,
-                  valueAsNumber: true,
-                  ...(field.name === 'minFishSizeG' && {
-                    min: { value: 1, message: 'Min Fish Size must be at least 1g' },
-                  }),
-                  ...(field.name === 'maxFishSizeG' && {
-                    max: { value: 1000, message: 'Max Fish Size cannot exceed 1000g' },
-                  }),
-                })}
-                inputProps={{
-                  step: '0.01',
-                  ...(field.name === 'minFishSizeG' && { min: 1 }),
-                  ...(field.name === 'maxFishSizeG' && { max: 1000 }),
-                }}
+                {...register(field.name, { required: true, valueAsNumber: true })}
+                inputProps={{ step: '0.01' }} 
                 error={!!errors[field.name]}
-                helperText={errors[field.name]?.message as string}
               />
+            // ) : field.type === 'number' ? (
+            //   <TextField
+            //     label={field.label}
+            //     type="number"
+            //     fullWidth
+            //     className="form-input"
+            //     focused
+            //     {...register(field.name, {
+            //       required: true,
+            //       valueAsNumber: true,
+            //       ...(field.name === 'minFishSizeG' && {
+            //         min: { value: 1, message: 'Min Fish Size must be at least 1g' },
+            //       }),
+            //       ...(field.name === 'maxFishSizeG' && {
+            //         max: { value: 1000, message: 'Max Fish Size cannot exceed 1000g' },
+            //       }),
+            //     })}
+            //     inputProps={{
+            //       step: '0.01',
+            //       ...(field.name === 'minFishSizeG' && { min: 1 }),
+            //       ...(field.name === 'maxFishSizeG' && { max: 1000 }),
+            //     }}
+            //     error={!!errors[field.name]}
+            //     helperText={errors[field.name]?.message as string}
+            //   />
+            // ) : (
             ) : (
               <TextField
                 label={field.label}
