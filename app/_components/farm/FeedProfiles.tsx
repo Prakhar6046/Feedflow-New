@@ -40,8 +40,8 @@ export const cellStyle = {
 
 
 export const fishSizes = [
-  1, 2, 3, 4, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85,
-  90, 95, 100, 120, 140, 160, 180,
+  1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 20, 25, 30, 35, 40, 45, 50, 
+  75, 100, 125, 150, 175, 200, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 1001
 ];
 
 const MAX_FISH_SIZE_CAP = 1000; 
@@ -80,25 +80,10 @@ const FeedProfiles = ({
   const [selectedSupplier, setSelectedSupplier] = useState<SupplierOptions[]>(
     [],
   );
-  // Dynamic fish sizes based on maxFishSizeG (auto-extend beyond base list)
+  // Use the fixed fish sizes list - no dynamic extension
   const newfishSizes = useMemo(() => {
-    if (!feedStores.length) return fishSizes;
-    const maxGlobalFishSize = Math.max(
-      ...feedStores.map((store) => store.maxFishSizeG || 0),
-    );
-    const baseMax = fishSizes[fishSizes.length - 1] || 0;
-    const capRaw = Math.max(maxGlobalFishSize, baseMax);
-    const cap = Math.min(capRaw, MAX_FISH_SIZE_CAP);
-    const base = fishSizes.filter((size) => size <= cap);
-    const last = base[base.length - 1] || 0;
-    if (cap > last) {
-      const step = 5;
-      const extended = [...base];
-      for (let s = last + step; s <= cap; s += step) extended.push(s);
-      return extended;
-    }
-    return base;
-  }, [feedStores]);
+    return fishSizes;
+  }, []);
 
   const onSubmit: SubmitHandler<FormValues> = (data) => {
     // Build structured payload strictly from current form selections
@@ -723,7 +708,9 @@ const FeedProfiles = ({
                           left: 0,
                           zIndex: 100,
                           background: "#fff",
-                        }} sx={cellStyle}>{size}</TableCell>
+                        }} sx={cellStyle}>
+                          {size === 1001 ? '>1000' : size}
+                        </TableCell>
                         {groupedData?.map((group, groupIndex) => {
                           const options = group.stores.map(
                             (_: FeedProduct, i: number) => `opt${i + 1}`,
