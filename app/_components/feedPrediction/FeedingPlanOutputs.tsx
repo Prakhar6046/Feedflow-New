@@ -260,6 +260,7 @@ function FeedingPlanOutput() {
                 <th style="padding: 8px; text-align: left; border: 1px solid #ddd;">Est. FCR</th>
                 <th style="padding: 8px; text-align: left; border: 1px solid #ddd;">Feed Intake (g)</th>
                 <th style="padding: 8px; text-align: left; border: 1px solid #ddd;">Feeding Rate</th>
+                <th style="padding: 8px; text-align: left; border: 1px solid #ddd;">Monthly rate %/day</th>
               </tr>
             </thead>
             <tbody>
@@ -275,6 +276,7 @@ function FeedingPlanOutput() {
                   <td style="padding: 8px; border: 1px solid #ddd; background: #f8f9fa;">${row.estimatedFCR || '2.54'}</td>
                   <td style="padding: 8px; border: 1px solid #ddd; background: #f8f9fa;">${row.feedIntake || '0'}</td>
                   <td style="padding: 8px; border: 1px solid #ddd; background: #f8f9fa;">${row.feedingRate || '59.54'}</td>
+                  <td style="padding: 8px; border: 1px solid #ddd; background: #f8f9fa;">${row.mortalityRate }</td>
                 </tr>
               `).join('')}
             </tbody>
@@ -489,6 +491,7 @@ function FeedingPlanOutput() {
       pdf.text(`${row.estimatedFCR || '2.54'}`, 130, yPosition);
       pdf.text(`${row.feedIntake || '0'}`, 145, yPosition);
       pdf.text(`${row.feedingRate || '59.54'}`, 160, yPosition);
+      pdf.text(`${row.mortalityRate}`, 175, yPosition);
       
       yPosition += 5;
     });
@@ -635,6 +638,7 @@ function FeedingPlanOutput() {
           estimatedFCR: val.estimatedFCR,
           feedIntake: val.feedIntake,
           feedingRate: val.feedingRate,
+          mortalityRate: val.mortalityRate,
         })),
       );
 
@@ -662,6 +666,7 @@ function FeedingPlanOutput() {
                   <td style=\"border:1px solid #ccc; padding:8px 12px;\">${row.estimatedFCR}</td>
                   <td style=\"border:1px solid #ccc; padding:8px 12px;\">${row.feedIntake}</td>
                   <td style=\"border:1px solid #ccc; padding:8px 12px;\">${row.feedingRate}</td>
+                  <td style=\"border:1px solid #ccc; padding:8px 12px;\">${row.mortalityRate}</td>
                 </tr>
               `,
               )
@@ -696,6 +701,7 @@ function FeedingPlanOutput() {
           estimatedFCR: val.estimatedFCR,
           feedIntake: val.feedIntake,
           feedingRate: val.feedingRate,
+          mortalityRate: val.mortalityRate,
         })),
       );
     exportFeedPredictionToXlsx(
@@ -727,6 +733,7 @@ function FeedingPlanOutput() {
           estimatedFCR: val.estimatedFCR,
           feedIntake: val.feedIntake,
           feedingRate: val.feedingRate,
+          mortalityRate: val.mortalityRate,
           farmName: growth.farm,
           unitName: growth.unit,
           numberOfFish: val.numberOfFish,
@@ -919,6 +926,14 @@ function FeedingPlanOutput() {
                           }}
                         >
                           {row.feedingRate}
+                        </td>
+                        <td
+                          style={{
+                            border: '1px solid #ccc',
+                            padding: '8px 12px',
+                          }}
+                        >
+                          {row.mortalityRate }
                         </td>
                       </tr>
                     ))}
@@ -1448,14 +1463,24 @@ function FeedingPlanOutput() {
           'day',
         );
 
-        return {
-          farm: farm.farm.name,
-          farmId: matchedUnit?.farm?.id ?? '',
-          unitId: matchedUnit.id,
-          unit: matchedUnit.productionUnit.name,
-          fishGrowthData:
-            formData.species === 'Rainbow Trout'
-              ? calculateFishGrowthRainBowTrout(
+        const mortalityRate = Number(formData.mortalityRate ?? 0.05);
+        const calculatedData = 
+          formData.species === 'Rainbow Trout'
+            ? calculateFishGrowthRainBowTrout(
+                gm,
+                Number(formData.fishWeight ?? 0),
+                formData.tempSelection === 'default'
+                  ? Number(matchedUnit.waterTemp ?? 25)
+                  : Number(formData.temp ?? 25),
+                Number(matchedUnit.fishCount ?? 0),
+                Number(formData.adjustmentFactor),
+                Number(diffInDays),
+                formattedDate,
+                formData.timeInterval ?? 1,
+                matchedUnit,
+              )
+            : formData.species === 'African Catfish'
+              ? calculateFishGrowthAfricanCatfish(
                   gm,
                   Number(formData.fishWeight ?? 0),
                   formData.tempSelection === 'default'
@@ -1468,33 +1493,32 @@ function FeedingPlanOutput() {
                   formData.timeInterval ?? 1,
                   matchedUnit,
                 )
-              : formData.species === 'African Catfish'
-                ? calculateFishGrowthAfricanCatfish(
-                    gm,
-                    Number(formData.fishWeight ?? 0),
-                    formData.tempSelection === 'default'
-                      ? Number(matchedUnit.waterTemp ?? 25)
-                      : Number(formData.temp ?? 25),
-                    Number(matchedUnit.fishCount ?? 0),
-                    Number(formData.adjustmentFactor),
-                    Number(diffInDays),
-                    formattedDate,
-                    formData.timeInterval ?? 1,
-                    matchedUnit,
-                  )
-                : calculateFishGrowthTilapia(
-                    gm,
-                    Number(formData.fishWeight ?? 0),
-                    formData.tempSelection === 'default'
-                      ? Number(matchedUnit.waterTemp ?? 25)
-                      : Number(formData.temp ?? 25),
-                    Number(matchedUnit.fishCount ?? 0),
-                    Number(formData.adjustmentFactor),
-                    Number(diffInDays),
-                    formattedDate,
-                    formData.timeInterval ?? 1,
-                    matchedUnit,
-                  ),
+              : calculateFishGrowthTilapia(
+                  gm,
+                  Number(formData.fishWeight ?? 0),
+                  formData.tempSelection === 'default'
+                    ? Number(matchedUnit.waterTemp ?? 25)
+                    : Number(formData.temp ?? 25),
+                  Number(matchedUnit.fishCount ?? 0),
+                  Number(formData.adjustmentFactor),
+                  Number(diffInDays),
+                  formattedDate,
+                  formData.timeInterval ?? 1,
+                  matchedUnit,
+                );
+
+        // Add mortality rate to each row
+        const fishGrowthDataWithMortality = calculatedData.map((row) => ({
+          ...row,
+          mortalityRate: mortalityRate,
+        }));
+
+        return {
+          farm: farm.farm.name,
+          farmId: matchedUnit?.farm?.id ?? '',
+          unitId: matchedUnit.id,
+          unit: matchedUnit.productionUnit.name,
+          fishGrowthData: fishGrowthDataWithMortality,
         };
       },
     );

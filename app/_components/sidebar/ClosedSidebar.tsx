@@ -481,7 +481,7 @@ function ClosedSidebar() {
                     textAlign: 'center',
                   }}
                 >
-                  Feed Prediction
+                  Feed Predictions
                 </ListItemText>
               </ListItemButton>
             </ListItem>

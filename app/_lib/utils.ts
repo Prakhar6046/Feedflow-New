@@ -849,6 +849,7 @@ export const CommonFeedPredictionHead = [
   'Est. FCR',
   'Feed Intake (g)',
   'Feeding Rate',
+  'Monthly rate %/day',
 ];
 function calculateTemparatureCoefficientLogarithmic(a, b, c, T) {
   const tempDiff = T - b;
@@ -934,11 +935,53 @@ function computeTGCFromModel(model, temperature) {
   return 0;
 }
 function getFeedTypeForFishSize(feedLinks: any[], fishSize: number): string {
-  if (!feedLinks || feedLinks.length === 0) return '-';
-  const feedLink = feedLinks.find(
-    (link) => fishSize >= link.minFishSize && fishSize <= link.maxFishSize,
-  );
-  return feedLink?.feedStore?.productName || '-';
+  // First try feedLinks if available
+  if (feedLinks && feedLinks.length > 0) {
+    // Try to find an exact match
+    const exactMatch = feedLinks.find(
+      (link) => fishSize >= link.minFishSize && fishSize <= link.maxFishSize,
+    );
+    if (exactMatch) {
+      return exactMatch?.feedStore?.productName || '-';
+    }
+
+    // If no exact match, find the next feed that can be used (where fishSize < minFishSize)
+    const nextFeed = feedLinks
+      .filter((link) => fishSize < link.minFishSize)
+      .sort((a, b) => a.minFishSize - b.minFishSize)[0]; // Get the next smallest minFishSize
+    
+    if (nextFeed) {
+      return nextFeed?.feedStore?.productName || '-';
+    }
+
+    // If no next feed, find the last/previous feed available (where fishSize > maxFishSize)
+    const previousFeed = feedLinks
+      .filter((link) => fishSize > link.maxFishSize)
+      .sort((a, b) => b.maxFishSize - a.maxFishSize)[0]; // Get the largest maxFishSize
+    
+    if (previousFeed) {
+      return previousFeed?.feedStore?.productName || '-';
+    }
+  }
+
+  // If no feedLinks available or no match found, try using stored default feeds from localStorage
+  try {
+    const defaultFeeds = getLocalItem('defaultFeedsCache');
+    if (defaultFeeds && Array.isArray(defaultFeeds)) {
+      // Find feed where fishSize falls within the minFishSizeG to maxFishSizeG range
+      const matchingFeed = defaultFeeds.find(
+        (feed: any) => fishSize >= feed.minFishSizeG && fishSize <= feed.maxFishSizeG
+      );
+      
+      if (matchingFeed) {
+        return matchingFeed.productName || '-';
+      }
+    }
+  } catch (e) {
+    // Fail silently and return '-' if default feeds cache is not available
+  }
+
+  return '-';
 }
 
 export function calculateFishGrowthTilapia(
@@ -952,6 +995,7 @@ export function calculateFishGrowthTilapia(
   timeInterval: number,
   selectedFarm?: FarmGroupUnit,
 ) {
+  // Get feedLinks from farm/unit if available, otherwise use empty array
   const feedLinks =
     selectedFarm?.productionUnit.FeedProfileProductionUnit?.[0]?.feedProfile
       ?.feedLinks || [];
@@ -1162,6 +1206,7 @@ export function calculateFishGrowthRainBowTrout(
   timeInterval: number,
   selectedFarm?: FarmGroupUnit,
 ) {
+  console.log("selectedGrowthModel", selectedGrowthModel);
   // Resolve feed profile links for the selected production unit, if available
   const feedLinks =
     selectedFarm?.productionUnit.FeedProfileProductionUnit?.[0]?.feedProfile

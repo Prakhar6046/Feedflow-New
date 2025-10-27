@@ -60,6 +60,7 @@ function FishGrowthTable({ data }: Props) {
                 'Est. FCR',
                 'Feed Intake (g)',
                 'Feeding Rate',
+                'Monthly rate %/day',
               ].map((head, idx) => (
                 <TableCell
                   key={idx}
@@ -181,6 +182,16 @@ function FishGrowthTable({ data }: Props) {
                   }}
                 >
                   {row.feedingRate}
+                </TableCell>
+                <TableCell
+                  sx={{
+                    borderBottomColor: '#F5F6F8',
+                    borderBottomWidth: 2,
+                    color: '#555555',
+                    fontWeight: 500,
+                  }}
+                >
+                  {row.mortalityRate}
                 </TableCell>
               </TableRow>
             ))}
