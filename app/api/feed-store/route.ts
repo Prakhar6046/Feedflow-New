@@ -220,6 +220,7 @@ export async function POST(request: NextRequest) {
       de: body.de || 13.47,
       feedingGuide: body.feedingGuide || "Feed according to the feedflow guide or as directed by a fish nutritionist",
       ProductSupplier: body.ProductSupplier || [],
+      isDefault: body.isDefault || false,
 
       // Correct way to connect organisation
       organisation: {

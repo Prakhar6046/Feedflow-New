@@ -615,7 +615,7 @@ const ExpandedSidebar = () => {
                     mt: 0.5,
                   }}
                 >
-                  Feed Prediction
+                  Feed Predictions
                 </ListItemText>
               </ListItemButton>
             </ListItem>
