@@ -21,7 +21,7 @@ export default function PrintPreviewDialog({ open, title = 'Print Preview', html
         .page{ padding:24px; }
         table{ width:100%; border-collapse:collapse; }
         th, td{ border:1px solid #ccc; padding:8px 12px; text-align:left; }
-        th{ background:#efefef; }
+        
         @media print {
           .no-print{ display:none !important; }
         }

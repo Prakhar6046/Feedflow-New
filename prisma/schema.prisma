@@ -542,17 +542,6 @@ model Model {
   specie             Species?          @relation(fields: [specieId], references: [id])
   productionSystemId String?
   productionSystem   ProductionSystem? @relation(fields: [productionSystemId], references: [id])
-  cp                 Float?
-  cf                 Float?
-  nfe                Float?
-  adcCp              Float?
-  adcCf              Float?
-  adcNfe             Float?
-  geCp               Float?
-  geCf               Float?
-  geNfe              Float?
-  wasteFactor        Float?
-
   temperatureCoefficient String?
   tgcA                   Float?
   tgcB                   Float?
@@ -563,7 +552,6 @@ model Model {
   tFCRa                  Float?
   tFCRb                  Float?
   tFCRc                  Float?
-  de                     Float?
   // Metadata
   organisationId         Int?
   organisation           Organisation?          @relation(fields: [organisationId], references: [id])

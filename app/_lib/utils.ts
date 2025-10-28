@@ -850,6 +850,7 @@ export const CommonFeedPredictionHead = [
   'Feed Intake (g)',
   'Feeding Rate',
   'Monthly rate %/day',
+  'Waste Factor %',
 ];
 function calculateTemparatureCoefficientLogarithmic(a, b, c, T) {
   const tempDiff = T - b;
@@ -984,6 +985,41 @@ function getFeedTypeForFishSize(feedLinks: any[], fishSize: number): string {
   return '-';
 }
 
+function getFeedDataForFishSize(feedLinks: any[], fishSize: number): any {
+  if (!feedLinks || feedLinks.length === 0) {
+    return null;
+  }
+
+  // Try to find exact match
+  const exactMatch = feedLinks.find(
+    (link) => fishSize >= link.minFishSize && fishSize <= link.maxFishSize,
+  );
+  
+  if (exactMatch?.feedStore) {
+    return exactMatch.feedStore;
+  }
+
+  // Find next feed
+  const nextFeed = feedLinks
+    .filter((link) => fishSize < link.minFishSize)
+    .sort((a, b) => a.minFishSize - b.minFishSize)[0];
+  
+  if (nextFeed?.feedStore) {
+    return nextFeed.feedStore;
+  }
+
+  // Find previous feed
+  const previousFeed = feedLinks
+    .filter((link) => fishSize > link.maxFishSize)
+    .sort((a, b) => b.maxFishSize - a.maxFishSize)[0];
+  
+  if (previousFeed?.feedStore) {
+    return previousFeed.feedStore;
+  }
+
+  return null;
+}
+
 export function calculateFishGrowthTilapia(
   selectedGrowthModel: OrganisationModelResponse,
   fishWeight: number,
@@ -994,6 +1030,7 @@ export function calculateFishGrowthTilapia(
   startDate: string,
   timeInterval: number,
   selectedFarm?: FarmGroupUnit,
+  wasteFactor: number = 3,
 ) {
   // Get feedLinks from farm/unit if available, otherwise use empty array
   const feedLinks =
@@ -1006,22 +1043,23 @@ export function calculateFishGrowthTilapia(
     let prevNumberOfFish: number = numberOfFishs;
     let prevFishSize: number = IBW;
     let prevGrowth: number | string = 0;
-    // let CP = selectedGrowthModel.models.cp;
-    // let ADC_CP = selectedGrowthModel.models.adcCp;
-    // let GE_CP = selectedGrowthModel.models.geCp;
-    // let CF = selectedGrowthModel.models.cf;
-    // let ADC_CF = selectedGrowthModel.models.adcCf;
-    // let GE_CF = selectedGrowthModel.models.geCf;
-    // let NFE = selectedGrowthModel.models.nfe;
-    // let ADC_NFE = selectedGrowthModel.models.adcNfe;
-    // let GE_NFE = selectedGrowthModel.models.geNfe;
-    let DE = selectedGrowthModel.models.de;
+    // Get nutritional values from feedStore, not from growth model
+    // Default values if no feed data available
+    const getFeedValues = (fishSize: number) => {
+      const feedData = getFeedDataForFishSize(feedLinks, fishSize);
+      return {
+        de: feedData?.de || 13.47,
+        feedProtein: feedData?.crudeProteinGPerKg || 400,
+        feedPrice: feedData?.feedCost || 32,
+        feedName: feedData?.productName || '-',
+      };
+    };
+    
     let tgcA = selectedGrowthModel.models.tgcA;
     let tgcB = selectedGrowthModel.models.tgcB;
     let tgcC = selectedGrowthModel.models.tgcC;
     let tgcD = selectedGrowthModel.models.tgcD;
     let tgcE = selectedGrowthModel.models.tgcE;
-    let WF = selectedGrowthModel.models.wasteFactor;
     const newData = [];
     let TGC = 0;
 
@@ -1048,6 +1086,10 @@ export function calculateFishGrowthTilapia(
     ) {
       TGC = calculateTemparatureCoefficientQuadratic(tgcA, tgcB, tgcC, T);
     }
+    // Get initial feed values
+    const initialFeedValues = getFeedValues(IBW);
+    let WF = wasteFactor; // Use passed waste factor
+    
     let tDEN = calculateDENeedLinear(
       selectedGrowthModel.models.tFCRa,
       selectedGrowthModel.models.tFCRb,
@@ -1055,7 +1097,7 @@ export function calculateFishGrowthTilapia(
       selectedGrowthModel.models.tFCRc,
     );
 
-    let tFCR = calculateTheoreticalFeedConversionRatio(tDEN, DE, WF);
+    let tFCR = calculateTheoreticalFeedConversionRatio(tDEN, initialFeedValues.de, WF);
 
     function calculateNoOfFish(
       initialSizeK4: number,
@@ -1106,9 +1148,9 @@ export function calculateFishGrowthTilapia(
       return Math.pow(Math.pow(IBW, b) + (TGC / 100) * sum_td, 1 / b);
     }
 
-    function calculateEstFCR(fishSize: number, DE: number): any {
+    function calculateEstFCR(fishSize: number, feedValues: any): any {
       const numerator = (0.009 * fishSize + 12.45) * 1.03;
-      const result = numerator / DE;
+      const result = numerator / feedValues.de;
       const finalResult = Number(result.toFixed(2));
       return finalResult;
     }
@@ -1136,7 +1178,9 @@ export function calculateFishGrowthTilapia(
         day !== 1
           ? calculateNoOfFish(prevNumberOfFish, 0.05, 7)
           : prevNumberOfFish;
-      const estfcr = calculateEstFCR(prevFishSize, DE);
+      
+      const currentFeedValues = getFeedValues(prevFishSize);
+      const estfcr = calculateEstFCR(prevFishSize, currentFeedValues);
       // Use unified fish size formula with TGC from model and provided time interval
       const TGCForStep = computeTGCFromModel(selectedGrowthModel.models, T);
       const stepDays = timeInterval || 1;
@@ -1166,14 +1210,11 @@ export function calculateFishGrowthTilapia(
         expectedWaste,
         fishSize: prevFishSize.toFixed(3),
         growth: prevGrowth,
-        feedType: getFeedTypeForFishSize(
-          feedLinks,
-          prevFishSize,
-        ),
+        feedType: currentFeedValues.feedName,
         feedSize: prevWeight >= 50 ? '#3' : prevWeight >= 25 ? '#2' : '#1',
-        feedProtein: 400,
-        feedDE: 13.47,
-        feedPrice: 32,
+        feedProtein: currentFeedValues.feedProtein,
+        feedDE: currentFeedValues.de,
+        feedPrice: currentFeedValues.feedPrice,
         estimatedFCR: estfcr,
         feedIntake: prevFeedIntake,
         partitionedFCR: 0.0,
@@ -1205,6 +1246,7 @@ export function calculateFishGrowthRainBowTrout(
   startDate: string,
   timeInterval: number,
   selectedFarm?: FarmGroupUnit,
+  wasteFactor: number = 3,
 ) {
   console.log("selectedGrowthModel", selectedGrowthModel);
   // Resolve feed profile links for the selected production unit, if available
@@ -1217,9 +1259,21 @@ export function calculateFishGrowthRainBowTrout(
   let prevNumberOfFish = numberOfFishs;
   let prevFishSize: number = IBW;
   let prevGrowth: number | string = 0;
-  let DE = selectedGrowthModel.models.de;
+  
+  // Get nutritional values from feedStore, not from growth model
+  const getFeedValues = (fishSize: number) => {
+    const feedData = getFeedDataForFishSize(feedLinks, fishSize);
+    return {
+      de: feedData?.de || 13.47,
+      feedProtein: feedData?.crudeProteinGPerKg || 400,
+      feedPrice: feedData?.feedCost || 32,
+      feedName: feedData?.productName || '-',
+    };
+  };
+  
   const newData = [];
-
+  let WF = wasteFactor; // Use passed waste factor
+  
   function calculateNoOfFish(
     initialSizeK4: number,
     growthRateL4: number,
@@ -1262,9 +1316,9 @@ export function calculateFishGrowthRainBowTrout(
     return Math.pow(Math.pow(IBW, b) + (TGC / 100) * sum_td, 1 / b);
   }
 
-  function calculateEstFCR(fishSize: number, DE: number, e10: number): number {
+  function calculateEstFCR(fishSize: number, feedValues: any, e10: number): number {
     const numerator = 38.95 * Math.pow(fishSize, 0.01903) - 28.29;
-    const denominator = DE / (1 + e10);
+    const denominator = feedValues.de / (1 + e10);
     const result = numerator / denominator;
 
     return Number(result.toFixed(2));
@@ -1292,7 +1346,9 @@ export function calculateFishGrowthRainBowTrout(
       day !== 1
         ? calculateNoOfFish(prevNumberOfFish, 0.05, 1)
         : prevNumberOfFish;
-    const estfcr = calculateEstFCR(prevFishSize, DE, 0.03);
+    
+    const currentFeedValues = getFeedValues(prevFishSize);
+    const estfcr = calculateEstFCR(prevFishSize, currentFeedValues, 0.03);
     // Use unified fish size formula
     const TGCForStep = computeTGCFromModel(selectedGrowthModel.models, T);
     const stepDays = timeInterval || 1;
@@ -1344,8 +1400,8 @@ export function calculateFishGrowthRainBowTrout(
     );
     const tFCR = calculateTheoreticalFeedConversionRatio(
       tDEN,
-      DE,
-      selectedGrowthModel.models.wasteFactor,
+      currentFeedValues.de,
+      WF,
     );
     let prevFeedingRate = parseFloat(
       String(calcUnifiedFeedingRate(IBW, TGC, T, tFCR)),
@@ -1367,11 +1423,11 @@ export function calculateFishGrowthRainBowTrout(
       fishSize: prevFishSize.toFixed(3),
       growth: prevGrowth,
       // Use production-unit feed profile if available; otherwise '-' fallback
-      feedType: getFeedTypeForFishSize(feedLinks, Number(prevFishSize)),
+      feedType: currentFeedValues.feedName,
       feedSize: prevWeight >= 50 ? '#3' : prevWeight >= 25 ? '#2' : '#1',
-      feedProtein: 400,
-      feedDE: 13.47,
-      feedPrice: 32,
+      feedProtein: currentFeedValues.feedProtein,
+      feedDE: currentFeedValues.de,
+      feedPrice: currentFeedValues.feedPrice,
       estimatedFCR: estfcr,
       feedIntake: prevFeedIntake,
       partitionedFCR: 0.0,
@@ -1400,6 +1456,7 @@ export function calculateFishGrowthAfricanCatfish(
   startDate: string,
   timeInterval: number,
   selectedFarm?: FarmGroupUnit,
+  wasteFactor: number = 3,
 ) {
   // Resolve feed profile links for the selected production unit, if available
   const feedLinks =
@@ -1411,9 +1468,21 @@ export function calculateFishGrowthAfricanCatfish(
   let prevNumberOfFish: number = numberOfFishs;
   let prevFishSize: any = IBW;
   let prevGrowth: number | string = 0;
-  let DE = selectedGrowthModel.models.de;
+  
+  // Get nutritional values from feedStore, not from growth model
+  const getFeedValues = (fishSize: number) => {
+    const feedData = getFeedDataForFishSize(feedLinks, fishSize);
+    return {
+      de: feedData?.de || 13.47,
+      feedProtein: feedData?.crudeProteinGPerKg || 400,
+      feedPrice: feedData?.feedCost || 32,
+      feedName: feedData?.productName || '-',
+    };
+  };
+  
   const newData = [];
-
+  let WF = wasteFactor; // Use passed waste factor
+  
   function calculateNoOfFish(
     initialSizeK4: number,
     growthRateL4: number,
@@ -1454,9 +1523,9 @@ export function calculateFishGrowthAfricanCatfish(
     return Math.pow(Math.pow(IBW, b) + (TGC / 100) * sum_td, 1 / b);
   }
 
-  function calculateEstFCR(fishSize: number, DE: number): number {
+  function calculateEstFCR(fishSize: number, feedValues: any): number {
     const numerator = 9.794 * Math.pow(fishSize, 0.0726);
-    const denominator = DE / 1.03;
+    const denominator = feedValues.de / 1.03;
 
     const result = numerator / denominator;
 
@@ -1484,7 +1553,9 @@ export function calculateFishGrowthAfricanCatfish(
       day !== 1
         ? calculateNoOfFish(prevNumberOfFish, 0.05, 1)
         : prevNumberOfFish;
-    const estfcr = calculateEstFCR(prevFishSize, DE);
+    
+    const currentFeedValues = getFeedValues(prevFishSize);
+    const estfcr = calculateEstFCR(prevFishSize, currentFeedValues);
     // Use unified fish size formula
     const TGCForStep = computeTGCFromModel(selectedGrowthModel.models, T);
     const stepDays = timeInterval || 1;
@@ -1536,8 +1607,8 @@ export function calculateFishGrowthAfricanCatfish(
     );
     const tFCR = calculateTheoreticalFeedConversionRatio(
       tDEN,
-      DE,
-      selectedGrowthModel.models.wasteFactor,
+      currentFeedValues.de,
+      WF,
     );
     let prevFeedingRate = parseFloat(
       String(calcUnifiedFeedingRate(IBW, TGC, T, tFCR)),
@@ -1560,11 +1631,11 @@ export function calculateFishGrowthAfricanCatfish(
       fishSize: prevFishSize.toFixed(3),
       growth: prevGrowth,
       // Use production-unit feed profile if available; otherwise '-' fallback
-      feedType: getFeedTypeForFishSize(feedLinks, Number(prevFishSize)),
+      feedType: currentFeedValues.feedName,
       feedSize: prevWeight >= 50 ? '#3' : prevWeight >= 25 ? '#2' : '#1',
-      feedProtein: 400,
-      feedDE: 13.47,
-      feedPrice: 32,
+      feedProtein: currentFeedValues.feedProtein,
+      feedDE: currentFeedValues.de,
+      feedPrice: currentFeedValues.feedPrice,
       estimatedFCR: Number(estfcr),
       feedIntake: prevFeedIntake,
       partitionedFCR: 0.0,

@@ -70,6 +70,7 @@ interface FormInputs {
   species: string;
   productionSystem: string;
   mortalityRate?: number;
+  wasteFactor?: number;
 }
 type RawDataItem = {
   date: string;
@@ -104,6 +105,7 @@ export interface FishFeedingData {
   numberOfFish: number;
   partitionedFCR: number;
   mortalityRate?: number;
+  wasteFactor?: number;
 }
 type Iprops = {
   data: FishFeedingData[];
@@ -303,6 +305,7 @@ function AdHoc({ data, setData }: Iprops) {
 
     if (data) {
       const mortalityRate = Number(data.mortalityRate ?? 0.05);
+      const wasteFactor = Number(data.wasteFactor ?? 3);
       let calculatedData: FishFeedingData[];
       
       if (speciesName === 'Rainbow Trout') {
@@ -315,6 +318,8 @@ function AdHoc({ data, setData }: Iprops) {
           Number(diffInDays),
           formattedDate,
           data?.timeInterval,
+          undefined,
+          wasteFactor,
         );
       } else if (speciesName === 'African Catfish') {
         calculatedData = calculateFishGrowthAfricanCatfish(
@@ -326,6 +331,8 @@ function AdHoc({ data, setData }: Iprops) {
           Number(diffInDays),
           formattedDate,
           data?.timeInterval,
+          undefined,
+          wasteFactor,
         );
       } else {
         calculatedData = calculateFishGrowthTilapia(
@@ -337,13 +344,16 @@ function AdHoc({ data, setData }: Iprops) {
           Number(diffInDays),
           formattedDate,
           data?.timeInterval,
+          undefined,
+          wasteFactor,
         );
       }
       
-      // Add mortality rate to each row
+      // Add mortality rate and waste factor to each row
       const dataWithMortality = calculatedData.map((row) => ({
         ...row,
         mortalityRate: mortalityRate,
+        wasteFactor: wasteFactor,
       }));
       
       setData(dataWithMortality);

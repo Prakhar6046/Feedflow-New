@@ -38,16 +38,6 @@ interface InputType {
   name: string;
   specie: string;
   productionSystem: string;
-  cp: number;
-  cf: number;
-  nfe: number;
-  adcCp: number;
-  adcCf: number;
-  adcNfe: number;
-  geCp: number;
-  geCf: number;
-  geNfe: number;
-  wasteFactor: number;
   temperatureCoefficient: CoefficientModel;
   a: number;
   b: number;
@@ -114,40 +104,6 @@ const tFCRFormulas: Record<
   },
 };
 
-export const calculateDE = ({
-  crudeProtein,
-  crudeFatGPerKg,
-  nfe,
-  geCoeffCP,
-  geCoeffCF,
-  geCoeffNFE,
-  adcCP = 90,
-  adcCF = 90,
-  adcNFE = 60,
-}: {
-  crudeProtein: number;
-  crudeFatGPerKg: number;
-  nfe: number;
-  geCoeffCP: number;
-  geCoeffCF: number;
-  geCoeffNFE: number;
-  adcCP?: number;
-  adcCF?: number;
-  adcNFE?: number;
-}) => {
-  // Step 1: Digestible values
-  const digCP = (crudeProtein / 10) * adcCP;
-  const digCF = (crudeFatGPerKg / 10) * adcCF;
-  const digNFE = (nfe / 10) * adcNFE;
-
-  // Step 2: DE contributions
-  const deCP = (digCP * geCoeffCP) / 10000;
-  const deCF = (digCF * geCoeffCF) / 10000;
-  const deNFE = (digNFE * geCoeffNFE) / 10000;
-
-  // Step 3: Total DE
-  return deCP + deCF + deNFE;
-};
 
 function GrowthModel({
   farms,
@@ -269,13 +225,6 @@ function GrowthModel({
     defaultValues: {
       temperatureCoefficient: 'logarithmic',
       tFCRModel: 'linear',
-      geCp: 23.6,
-      geCf: 39.5,
-      geNfe: 17.2,
-      adcCp: 90,
-      adcCf: 90,
-      adcNfe: 60,
-      wasteFactor: 3,
     },
   });
 
@@ -331,16 +280,6 @@ function GrowthModel({
       setValue('name', modelData.models.name || '');
       setValue('specie', modelData.models.specieId || '');
       setValue('productionSystem', modelData.models.productionSystemId || '');
-      setValue('cp', modelData.models.cp || 0);
-      setValue('cf', modelData.models.cf || 0);
-      setValue('nfe', modelData.models.nfe || 0);
-      setValue('adcCp', modelData.models.adcCp || 0);
-      setValue('adcCf', modelData.models.adcCf || 0);
-      setValue('adcNfe', modelData.models.adcNfe || 0);
-      setValue('geCp', modelData.models.geCp || 0);
-      setValue('geCf', modelData.models.geCf || 0);
-      setValue('geNfe', modelData.models.geNfe || 0);
-      setValue('wasteFactor', modelData.models.wasteFactor || 0);
       setValue(
         'temperatureCoefficient',
         modelData.models.temperatureCoefficient || 'logarithmic',
@@ -395,18 +334,6 @@ function GrowthModel({
   }, [selectedModel, selectedFCRModel, setValue]);
 
   const onSubmit: SubmitHandler<InputType> = async (data) => {
-    const DE = calculateDE({
-      crudeProtein: data.cp,
-      crudeFatGPerKg: data.cf,
-      nfe: data.nfe,
-      geCoeffCP: data.geCp,
-      geCoeffCF: data.geCf,
-      geCoeffNFE: data.geNfe,
-      adcCP: data.adcCp,
-      adcCF: data.adcCf,
-      adcNFE: data.adcNfe,
-    });
-
     const user = JSON.parse(loggedUser ?? '');
     if (user?.organisationId && data.name) {
       // Prevent API call if one is already in progress
@@ -428,16 +355,6 @@ function GrowthModel({
               name: data.name,
               specie: data.specie,
               productionSystem: data.productionSystem,
-              cp: data.cp,
-              cf: data.cf,
-              nfe: data.nfe,
-              adcCp: data.adcCp,
-              adcCf: data.adcCf,
-              adcNfe: data.adcNfe,
-              geCp: data.geCp,
-              geCf: data.geCf,
-              geNfe: data.geNfe,
-              wasteFactor: data.wasteFactor,
               temperatureCoefficient: data.temperatureCoefficient,
               a: data.a,
               b: data.b,
@@ -448,7 +365,6 @@ function GrowthModel({
               tFCRa: data.tFCRa,
               tFCRb: data.tFCRb,
               tFCRc: data.tFCRc,
-              de: DE,
             },
             organisationId: user.organisationId,
           }
@@ -457,16 +373,6 @@ function GrowthModel({
               name: data.name,
               specie: data.specie,
               productionSystem: data.productionSystem,
-              cp: data.cp,
-              cf: data.cf,
-              nfe: data.nfe,
-              adcCp: data.adcCp,
-              adcCf: data.adcCf,
-              adcNfe: data.adcNfe,
-              geCp: data.geCp,
-              geCf: data.geCf,
-              geNfe: data.geNfe,
-              wasteFactor: data.wasteFactor,
               temperatureCoefficient: data.temperatureCoefficient,
               a: data.a,
               b: data.b,
@@ -477,7 +383,6 @@ function GrowthModel({
               tFCRa: data.tFCRa,
               tFCRb: data.tFCRb,
               tFCRc: data.tFCRc,
-              de: DE,
             },
             isDefault: setDefault,
             useExistingModel: useExistingModel,
@@ -786,376 +691,6 @@ function GrowthModel({
 
               </Box>
 
-
-              <Divider
-                sx={{
-                  my: 4,
-                }}
-              />
-
-              <Box>
-                <Typography
-                  variant="h6"
-                  fontWeight={700}
-                  sx={{
-                    fontSize: {
-                      md: 24,
-                      xs: 20,
-                    },
-                    marginBottom: 2,
-                  }}
-                >
-                  General
-                </Typography>
-                <Grid container spacing={2}>
-                  <Grid item md={4} xs={12}>
-                    <Box position={'relative'}>
-                      <TextField
-                        label="CP*"
-                        type="number"
-                        className="form-input"
-                        focused
-                        inputProps={{ step: 'any' }}
-                        sx={{
-                          width: '100%',
-                        }}
-                        error={!!errors.adcCp}
-                        {...register('cp', numericValidation)}
-                      />
-                      <Typography
-                        variant="body1"
-                        color="#555555AC"
-                        sx={{
-                          position: 'absolute',
-                          right: 13,
-                          top: '30%',
-                          backgroundColor: 'white',
-                          paddingInline: '5px',
-                        }}
-                      >
-                        %
-                      </Typography>
-                      {errors.cp && (
-                        <FormHelperText error>
-                          {errors.cp.message}
-                        </FormHelperText>
-                      )}
-                    </Box>
-                  </Grid>
-                  <Grid item md={4} xs={12}>
-                    <Box position={'relative'}>
-                      <TextField
-                        label="CF*"
-                        type="number"
-                        className="form-input"
-                        focused
-                        inputProps={{ step: 'any' }}
-                        sx={{
-                          width: '100%',
-                        }}
-                        error={!!errors.adcCp}
-                        {...register('cf', numericValidation)}
-                      />
-                      <Typography
-                        variant="body1"
-                        color="#555555AC"
-                        sx={{
-                          position: 'absolute',
-                          right: 13,
-                          top: '30%',
-                          backgroundColor: 'white',
-                          paddingInline: '5px',
-                        }}
-                      >
-                        %
-                      </Typography>
-                      {errors.cf && (
-                        <FormHelperText error>
-                          {errors.cf.message}
-                        </FormHelperText>
-                      )}
-                    </Box>
-                  </Grid>
-                  <Grid item md={4} xs={12}>
-                    <Box position={'relative'}>
-                      <TextField
-                        label="NFE*"
-                        type="number"
-                        className="form-input"
-                        focused
-                        inputProps={{ step: 'any' }}
-                        sx={{
-                          width: '100%',
-                        }}
-                        error={!!errors.adcCp}
-                        {...register('nfe', numericValidation)}
-                      />
-                      <Typography
-                        variant="body1"
-                        color="#555555AC"
-                        sx={{
-                          position: 'absolute',
-                          right: 13,
-                          top: '30%',
-                          backgroundColor: 'white',
-                          paddingInline: '5px',
-                        }}
-                      >
-                        %
-                      </Typography>
-                      {errors.nfe && (
-                        <FormHelperText error>
-                          {errors.nfe.message}
-                        </FormHelperText>
-                      )}
-                    </Box>
-                  </Grid>
-                  <Grid item md={4} xs={12}>
-                    <Box position={'relative'}>
-                      <TextField
-                        label="ADC CP *"
-                        type="number"
-                        className="form-input"
-                        focused
-                        inputProps={{ step: 'any' }}
-                        sx={{
-                          width: '100%',
-                        }}
-                        error={!!errors.adcCp}
-                        {...register('adcCp', numericValidation)}
-                      />
-                      <Typography
-                        variant="body1"
-                        color="#555555AC"
-                        sx={{
-                          position: 'absolute',
-                          right: 13,
-                          top: '30%',
-                          backgroundColor: 'white',
-                          paddingInline: '5px',
-                        }}
-                      >
-                        %
-                      </Typography>
-                      {errors.adcCp && (
-                        <FormHelperText error>
-                          {errors.adcCp.message}
-                        </FormHelperText>
-                      )}
-                    </Box>
-                  </Grid>
-
-                  <Grid item md={4} xs={12}>
-                    <Box position={'relative'}>
-                      <TextField
-                        label="ADC CF *"
-                        type="number"
-                        className="form-input"
-                        focused
-                        inputProps={{ step: 'any' }}
-                        sx={{
-                          width: '100%',
-                        }}
-                        error={!!errors.adcCf}
-                        {...register('adcCf', numericValidation)}
-                      />
-                      <Typography
-                        variant="body1"
-                        color="#555555AC"
-                        sx={{
-                          position: 'absolute',
-                          right: 13,
-                          top: '30%',
-                          backgroundColor: 'white',
-                          paddingInline: '5px',
-                        }}
-                      >
-                        %
-                      </Typography>
-                      {errors.adcCf && (
-                        <FormHelperText error>
-                          {errors.adcCf.message}
-                        </FormHelperText>
-                      )}
-                    </Box>
-                  </Grid>
-
-                  <Grid item md={4} xs={12}>
-                    <Box position={'relative'}>
-                      <TextField
-                        label="ADC NFE *"
-                        type="number"
-                        className="form-input"
-                        focused
-                        inputProps={{ step: 'any' }}
-                        sx={{
-                          width: '100%',
-                        }}
-                        error={!!errors.adcNfe}
-                        {...register('adcNfe', numericValidation)}
-                      />
-                      <Typography
-                        variant="body1"
-                        color="#555555AC"
-                        sx={{
-                          position: 'absolute',
-                          right: 13,
-                          top: '30%',
-                          backgroundColor: 'white',
-                          paddingInline: '5px',
-                        }}
-                      >
-                        %
-                      </Typography>
-                      {errors.adcNfe && (
-                        <FormHelperText error>
-                          {errors.adcNfe.message}
-                        </FormHelperText>
-                      )}
-                    </Box>
-                  </Grid>
-
-                  <Grid item md={4} xs={12}>
-                    <Box position={'relative'}>
-                      <TextField
-                        label="GE Coeff CP *"
-                        type="number"
-                        className="form-input"
-                        focused
-                        inputProps={{ step: 'any' }}
-                        sx={{
-                          width: '100%',
-                        }}
-                        error={!!errors.geCp}
-                        {...register('geCp', numericValidation)}
-                      />
-                      <Typography
-                        variant="body1"
-                        color="#555555AC"
-                        sx={{
-                          position: 'absolute',
-                          right: 13,
-                          top: '30%',
-                          backgroundColor: 'white',
-                          paddingInline: '5px',
-                        }}
-                      >
-                        MJ/kg
-                      </Typography>
-                      {errors.geCp && (
-                        <FormHelperText error>
-                          {errors.geCp.message}
-                        </FormHelperText>
-                      )}
-                    </Box>
-                  </Grid>
-
-                  <Grid item md={4} xs={12}>
-                    <Box position={'relative'}>
-                      <TextField
-                        label="GE Coeff CF *"
-                        type="number"
-                        className="form-input"
-                        focused
-                        inputProps={{ step: 'any' }}
-                        sx={{
-                          width: '100%',
-                        }}
-                        error={!!errors.geCf}
-                        {...register('geCf', numericValidation)}
-                      />
-                      <Typography
-                        variant="body1"
-                        color="#555555AC"
-                        sx={{
-                          position: 'absolute',
-                          right: 13,
-                          top: '30%',
-                          backgroundColor: 'white',
-                          paddingInline: '5px',
-                        }}
-                      >
-                        MJ/kg
-                      </Typography>
-                      {errors.geCf && (
-                        <FormHelperText error>
-                          {errors.geCf.message}
-                        </FormHelperText>
-                      )}
-                    </Box>
-                  </Grid>
-
-                  <Grid item md={4} xs={12}>
-                    <Box position={'relative'}>
-                      <TextField
-                        label="GE Coeff NFE *"
-                        type="number"
-                        error={!!errors.geNfe}
-                        {...register('geNfe', numericValidation)}
-                        className="form-input"
-                        focused
-                        inputProps={{ step: 'any' }}
-                        sx={{
-                          width: '100%',
-                        }}
-                      />
-                      <Typography
-                        variant="body1"
-                        color="#555555AC"
-                        sx={{
-                          position: 'absolute',
-                          right: 13,
-                          top: '30%',
-                          backgroundColor: 'white',
-                          paddingInline: '5px',
-                        }}
-                      >
-                        MJ/kg
-                      </Typography>
-                      {errors.geNfe && (
-                        <FormHelperText error>
-                          {errors.geNfe.message}
-                        </FormHelperText>
-                      )}
-                    </Box>
-                  </Grid>
-
-                  <Grid item md={4} xs={12}>
-                    <Box position={'relative'}>
-                      <TextField
-                        label="Waste Factor *"
-                        type="number"
-                        error={!!errors.wasteFactor}
-                        {...register('wasteFactor', numericValidation)}
-                        className="form-input"
-                        focused
-                        inputProps={{ step: 'any' }}
-                        sx={{
-                          width: '100%',
-                        }}
-                      />
-                      <Typography
-                        variant="body1"
-                        color="#555555AC"
-                        sx={{
-                          position: 'absolute',
-                          right: 13,
-                          top: '30%',
-                          backgroundColor: 'white',
-                          paddingInline: '5px',
-                        }}
-                      >
-                        %
-                      </Typography>
-                      {errors.wasteFactor && (
-                        <FormHelperText error>
-                          {errors.wasteFactor.message}
-                        </FormHelperText>
-                      )}
-                    </Box>
-                  </Grid>
-                </Grid>
-              </Box>
 
               <Divider
                 sx={{

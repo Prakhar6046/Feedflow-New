@@ -39,6 +39,7 @@ interface FormInputs {
   numberOfFishs: number;
   adjustmentFactor: number;
   mortalityRate: number;
+  wasteFactor: number;
 }
 export interface FarmsFishGrowth {
   farm: string;
@@ -97,6 +98,7 @@ function FeedingPlan({ productionData, startDate, endDate }: Props) {
       tempSelection: 'default',
       adjustmentFactor: 0.05,
       mortalityRate: 0.05,
+      wasteFactor: 3,
     },
     mode: 'onChange',
   });
@@ -141,6 +143,7 @@ function FeedingPlan({ productionData, startDate, endDate }: Props) {
       tempSelection: data.tempSelection,
       adjustmentFactor: data.adjustmentFactor,
       mortalityRate: data.mortalityRate,
+      wasteFactor: data.wasteFactor,
       startDate: startDate,
       endDate: endDate,
       timeInterval: data.timeInterval,
@@ -437,6 +440,51 @@ function FeedingPlan({ productionData, startDate, endDate }: Props) {
                 {errors.mortalityRate.type === 'pattern'
                   ? ValidationMessages.OnlyNumbersWithDot
                   : ''}
+              </Typography>
+            )}
+          </Grid>
+          <Grid item xl={2} lg={4} md={4} sm={6} xs={12}>
+            <Box position={'relative'}>
+              <TextField
+                label="Waste Factor *"
+                type="text"
+                {...register('wasteFactor', {
+                  required: true,
+                  pattern: ValidationPatterns.numbersWithDot,
+                })}
+                className="form-input"
+                focused
+                sx={{
+                  width: '100%',
+                }}
+              />
+              <Typography
+                variant="body1"
+                color="#555555AC"
+                sx={{
+                  position: 'absolute',
+                  right: 13,
+                  top: '30%',
+                  backgroundColor: 'white',
+                  paddingInline: '5px',
+                }}
+              >
+                %
+              </Typography>
+            </Box>
+            {errors.wasteFactor && (
+              <Typography
+                variant="body2"
+                color="red"
+                fontSize={13}
+                mt={0.5}
+                position={'absolute'}
+              >
+                {errors.wasteFactor.type === 'required'
+                  ? ValidationMessages.required
+                  : errors.wasteFactor.type === 'pattern'
+                    ? ValidationMessages.OnlyNumbersWithDot
+                    : ''}
               </Typography>
             )}
           </Grid>

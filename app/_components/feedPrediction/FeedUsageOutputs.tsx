@@ -49,6 +49,8 @@ export interface FeedPredictionData {
   temp?: number;
   timeInterval?: number;
   species?: 'Nile Tilapia' | 'African Catfish' | 'Rainbow Trout';
+  wasteFactor?: number;
+  mortalityRate?: number;
 }
 
 // import MenuItem from "@mui/material/MenuItem";
@@ -294,7 +296,9 @@ const FeedUsageOutput: React.FC = () => {
                 Number(data.adjustmentFactor),
                 Number(diffInDays),
                 formattedDate,
-                data?.timeInterval ?? 1, 
+                data?.timeInterval ?? 1,
+                unit,
+                Number(data?.wasteFactor ?? 3),
               )
             : data?.species === 'African Catfish'
             ? calculateFishGrowthAfricanCatfish(
@@ -307,7 +311,9 @@ const FeedUsageOutput: React.FC = () => {
                 Number(data.adjustmentFactor),
                 Number(diffInDays),
                 formattedDate,
-                data?.timeInterval ?? 1, 
+                data?.timeInterval ?? 1,
+                unit,
+                Number(data?.wasteFactor ?? 3),
               )
             : calculateFishGrowthTilapia(
               gm,
@@ -320,6 +326,8 @@ const FeedUsageOutput: React.FC = () => {
                 Number(diffInDays),
                 formattedDate,
                 data?.timeInterval ?? 1,
+                unit,
+                Number(data?.wasteFactor ?? 3),
               ),
         };
       }),
