@@ -69,6 +69,8 @@ interface FormInputs {
   timeInterval: number;
   species: string;
   productionSystem: string;
+  mortalityRate?: number;
+  wasteFactor?: number;
 }
 type RawDataItem = {
   date: string;
@@ -102,6 +104,8 @@ export interface FishFeedingData {
   growth: number | string;
   numberOfFish: number;
   partitionedFCR: number;
+  mortalityRate?: number;
+  wasteFactor?: number;
 }
 type Iprops = {
   data: FishFeedingData[];
@@ -129,6 +133,7 @@ function AdHoc({ data, setData }: Iprops) {
       numberOfFishs: 7500,
       fishWeight: 2,
       adjustmentFactor: 0.05,
+      mortalityRate: 0.05,
       startDate: dayjs().format('YYYY-MM-DD'),
       temp: 24,
       period: 5,
@@ -152,7 +157,7 @@ function AdHoc({ data, setData }: Iprops) {
 
   const [selectedGrowthModel, setSelectedGrowthModel] =
     useState<OrganisationModelResponse | null>(null);
-
+  console.log("selectedGrowthModel", selectedGrowthModel);  
   const selectedSpecies = watch('species');
   const selectedProductionSystem = watch('productionSystem');
 
@@ -299,46 +304,59 @@ function AdHoc({ data, setData }: Iprops) {
     }
 
     if (data) {
+      const mortalityRate = Number(data.mortalityRate ?? 0.05);
+      const wasteFactor = Number(data.wasteFactor ?? 3);
+      let calculatedData: FishFeedingData[];
+      
       if (speciesName === 'Rainbow Trout') {
-        setData(
-          calculateFishGrowthRainBowTrout(
-            selectedGrowthModel,
-            Number(data.fishWeight),
-            Number(data.temp),
-            Number(data.numberOfFishs),
-            Number(data.adjustmentFactor),
-            Number(diffInDays),
-            formattedDate,
-            data?.timeInterval,
-          ),
+        calculatedData = calculateFishGrowthRainBowTrout(
+          selectedGrowthModel,
+          Number(data.fishWeight),
+          Number(data.temp),
+          Number(data.numberOfFishs),
+          Number(data.adjustmentFactor),
+          Number(diffInDays),
+          formattedDate,
+          data?.timeInterval,
+          undefined,
+          wasteFactor,
         );
       } else if (speciesName === 'African Catfish') {
-        setData(
-          calculateFishGrowthAfricanCatfish(
-            selectedGrowthModel,
-            Number(data.fishWeight),
-            Number(data.temp),
-            Number(data.numberOfFishs),
-            Number(data.adjustmentFactor),
-            Number(diffInDays),
-            formattedDate,
-            data?.timeInterval,
-          ),
+        calculatedData = calculateFishGrowthAfricanCatfish(
+          selectedGrowthModel,
+          Number(data.fishWeight),
+          Number(data.temp),
+          Number(data.numberOfFishs),
+          Number(data.adjustmentFactor),
+          Number(diffInDays),
+          formattedDate,
+          data?.timeInterval,
+          undefined,
+          wasteFactor,
         );
       } else {
-        setData(
-          calculateFishGrowthTilapia(
-            selectedGrowthModel,
-            Number(data.fishWeight),
-            Number(data.temp),
-            Number(data.numberOfFishs),
-            Number(data.adjustmentFactor),
-            Number(diffInDays),
-            formattedDate,
-            data?.timeInterval,
-          ),
+        calculatedData = calculateFishGrowthTilapia(
+          selectedGrowthModel,
+          Number(data.fishWeight),
+          Number(data.temp),
+          Number(data.numberOfFishs),
+          Number(data.adjustmentFactor),
+          Number(diffInDays),
+          formattedDate,
+          data?.timeInterval,
+          undefined,
+          wasteFactor,
         );
       }
+      
+      // Add mortality rate and waste factor to each row
+      const dataWithMortality = calculatedData.map((row) => ({
+        ...row,
+        mortalityRate: mortalityRate,
+        wasteFactor: wasteFactor,
+      }));
+      
+      setData(dataWithMortality);
     }
   };
   const resetAdHocData = () => {
@@ -1430,6 +1448,44 @@ function AdHoc({ data, setData }: Iprops) {
                   : errors.adjustmentFactor.type === 'pattern'
                     ? ValidationMessages.OnlyNumbersWithDot
                     : ''}
+              </Typography>
+            )}
+          </Grid>
+
+          <Grid item lg={3} md={4} sm={6} xs={12}>
+            <Box position={'relative'}>
+              <TextField
+                label="Daily Mortality Rate (Optional)"
+                type="text"
+                {...register('mortalityRate', {
+                  required: false,
+                  pattern: ValidationPatterns.numbersWithDot,
+                })}
+                className="form-input"
+                focused
+                sx={{
+                  width: '100%',
+                }}
+              />
+              <Typography
+                variant="body1"
+                color="#555555AC"
+                sx={{
+                  position: 'absolute',
+                  right: 13,
+                  top: '30%',
+                  backgroundColor: 'white',
+                  paddingInline: '5px',
+                }}
+              >
+                %/day
+              </Typography>
+            </Box>
+            {errors.mortalityRate && (
+              <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                {errors.mortalityRate.type === 'pattern'
+                  ? ValidationMessages.OnlyNumbersWithDot
+                  : ''}
               </Typography>
             )}
           </Grid>

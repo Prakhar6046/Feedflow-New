@@ -18,16 +18,6 @@ export interface Model {
   name: string;
   specieId: string;
   productionSystemId: string;
-  cp: number;
-  nfe: number;
-  cf: number;
-  adcCp: number;
-  adcCf: number;
-  adcNfe: number;
-  geCp: number;
-  geCf: number;
-  geNfe: number;
-  wasteFactor: number;
   temperatureCoefficient: CoefficientModel; // e.g., "logarithmic"
   tgcA: number;
   tgcB: number;
@@ -38,7 +28,6 @@ export interface Model {
   tFCRa: number;
   tFCRb: number;
   tFCRc: number;
-  de:number;
   organisationId: number;
   createdBy: number;
   updatedBy: string | number;

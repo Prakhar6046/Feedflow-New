@@ -20,6 +20,7 @@ import {
 } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
+import { useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { FishFeedingData } from './AdHoc';
 
@@ -37,6 +38,8 @@ interface FormInputs {
   temp: number;
   numberOfFishs: number;
   adjustmentFactor: number;
+  mortalityRate: number;
+  wasteFactor: number;
 }
 export interface FarmsFishGrowth {
   farm: string;
@@ -73,13 +76,18 @@ export const tempSelectionOptions = [
   },
 ];
 function FeedingPlan({ productionData, startDate, endDate }: Props) {
+  console.log("startDate", startDate);
+  console.log("endDate", endDate);    
+  console.log("productionData", productionData);
   const router = useRouter();
   const selectedDropDownfarms = useAppSelector(selectSelectedFarms);
+  
   const {
     register,
     handleSubmit,
     control,
     watch,
+    setValue,
     formState: { errors },
   } = useForm<FormInputs>({
     defaultValues: {
@@ -89,9 +97,28 @@ function FeedingPlan({ productionData, startDate, endDate }: Props) {
       // period: 30,
       tempSelection: 'default',
       adjustmentFactor: 0.05,
+      mortalityRate: 0.05,
+      wasteFactor: 3,
     },
     mode: 'onChange',
   });
+
+  // Autopopulate fields when one farm is selected
+  useEffect(() => {
+    if (selectedDropDownfarms?.length === 1 && productionData?.length === 1) {
+      const selectedFarmData = productionData[0];
+      // Autopopulate from the first unit's data
+      if (selectedFarmData.units?.length > 0) {
+        const unit = selectedFarmData.units[0];
+        if (unit.fishCount && Number(unit.fishCount) > 0) {
+          setValue('numberOfFishs', Number(unit.fishCount));
+        }
+        if (unit.meanWeight && Number(unit.meanWeight) > 0) {
+          setValue('fishWeight', Number(unit.meanWeight));
+        }
+      }
+    }
+  }, [selectedDropDownfarms, productionData, setValue]);
   const onSubmit: SubmitHandler<FormInputs> = (data) => {
     // const formattedDate = dayjs(startDate).format('YYYY-MM-DD');
     // const diffInDays = dayjs(endDate).diff(dayjs(startDate), 'day');
@@ -115,6 +142,8 @@ function FeedingPlan({ productionData, startDate, endDate }: Props) {
       fishWeight: data.fishWeight,
       tempSelection: data.tempSelection,
       adjustmentFactor: data.adjustmentFactor,
+      mortalityRate: data.mortalityRate,
+      wasteFactor: data.wasteFactor,
       startDate: startDate,
       endDate: endDate,
       timeInterval: data.timeInterval,
@@ -366,6 +395,94 @@ function FeedingPlan({ productionData, startDate, endDate }: Props) {
                 {errors.adjustmentFactor.type === 'required'
                   ? ValidationMessages.required
                   : errors.adjustmentFactor.type === 'pattern'
+                    ? ValidationMessages.OnlyNumbersWithDot
+                    : ''}
+              </Typography>
+            )}
+          </Grid>
+          <Grid item xl={2} lg={4} md={4} sm={6} xs={12}>
+            <Box position={'relative'}>
+              <TextField
+                label="Daily Mortality Rate (Optional)"
+                type="text"
+                {...register('mortalityRate', {
+                  required: false,
+                  pattern: ValidationPatterns.numbersWithDot,
+                })}
+                className="form-input"
+                focused
+                sx={{
+                  width: '100%',
+                }}
+              />
+              <Typography
+                variant="body1"
+                color="#555555AC"
+                sx={{
+                  position: 'absolute',
+                  right: 13,
+                  top: '30%',
+                  backgroundColor: 'white',
+                  paddingInline: '5px',
+                }}
+              >
+                %/day
+              </Typography>
+            </Box>
+            {errors.mortalityRate && (
+              <Typography
+                variant="body2"
+                color="red"
+                fontSize={13}
+                mt={0.5}
+                position={'absolute'}
+              >
+                {errors.mortalityRate.type === 'pattern'
+                  ? ValidationMessages.OnlyNumbersWithDot
+                  : ''}
+              </Typography>
+            )}
+          </Grid>
+          <Grid item xl={2} lg={4} md={4} sm={6} xs={12}>
+            <Box position={'relative'}>
+              <TextField
+                label="Waste Factor *"
+                type="text"
+                {...register('wasteFactor', {
+                  required: true,
+                  pattern: ValidationPatterns.numbersWithDot,
+                })}
+                className="form-input"
+                focused
+                sx={{
+                  width: '100%',
+                }}
+              />
+              <Typography
+                variant="body1"
+                color="#555555AC"
+                sx={{
+                  position: 'absolute',
+                  right: 13,
+                  top: '30%',
+                  backgroundColor: 'white',
+                  paddingInline: '5px',
+                }}
+              >
+                %
+              </Typography>
+            </Box>
+            {errors.wasteFactor && (
+              <Typography
+                variant="body2"
+                color="red"
+                fontSize={13}
+                mt={0.5}
+                position={'absolute'}
+              >
+                {errors.wasteFactor.type === 'required'
+                  ? ValidationMessages.required
+                  : errors.wasteFactor.type === 'pattern'
                     ? ValidationMessages.OnlyNumbersWithDot
                     : ''}
               </Typography>
