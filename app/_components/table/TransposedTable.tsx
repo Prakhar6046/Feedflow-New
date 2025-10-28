@@ -169,6 +169,42 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
   //     router.push('/dashboard/feedSupply/libarary/new');
   //   }
   // }, [filteredStores, router]);
+  // Helper function to check if a feed would cause overlap when set as default
+  const wouldCauseOverlap = (colIndex: number, wantsToBeDefault: boolean, allFeeds: any[], watchedValues: any) => {
+    if (!wantsToBeDefault) return false;
+    
+    // Get current feed data
+    const currentFeed = allFeeds[colIndex];
+    const minFishSize = Number(watchedValues[`minFishSizeG-${colIndex}`]) || currentFeed?.minFishSizeG;
+    const maxFishSize = Number(watchedValues[`maxFishSizeG-${colIndex}`]) || currentFeed?.maxFishSizeG;
+    
+    // Check against all other feeds
+    for (let i = 0; i < allFeeds.length; i++) {
+      if (i === colIndex) continue;
+      
+      const otherFeedIsDefault = watchedValues[`isDefault-${i}`] || allFeeds[i]?.isDefault;
+      if (!otherFeedIsDefault) continue;
+      
+      const otherMin = Number(watchedValues[`minFishSizeG-${i}`]) || allFeeds[i]?.minFishSizeG;
+      const otherMax = Number(watchedValues[`maxFishSizeG-${i}`]) || allFeeds[i]?.maxFishSizeG;
+      
+      // Check if ranges overlap
+      const rangesOverlap = 
+        minFishSize <= otherMax && 
+        otherMin <= maxFishSize;
+      
+      if (rangesOverlap) {
+        const otherProductName = watchedValues[`productName-${i}`] || allFeeds[i]?.productName || 'Unknown';
+        return {
+          error: true,
+          message: `Cannot set as default. Overlaps with "${otherProductName}" (${otherMin}-${otherMax}g). Please ensure only one default feed exists for any given fish size range.`
+        };
+      }
+    }
+    
+    return { error: false };
+  };
+
   const validateDefaultFeeds = (payload: any[]) => {
     // Group feeds by supplier
     const supplierGroups: Record<string, any[]> = {};
@@ -192,16 +228,26 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
       // Sort by minFishSizeG
       defaultFeeds.sort((a, b) => a.minFishSizeG - b.minFishSizeG);
       
-      // Check for overlaps
-      for (let i = 0; i < defaultFeeds.length - 1; i++) {
-        const current = defaultFeeds[i];
-        const next = defaultFeeds[i + 1];
-        
-        if (current.maxFishSizeG >= next.minFishSizeG) {
-          throw new Error(
-            `Overlap detected in default feeds for supplier. ` +
-            `Feeds "${current.productName}" (${current.minFishSizeG}-${current.maxFishSizeG}g) and "${next.productName}" (${next.minFishSizeG}-${next.maxFishSizeG}g) overlap.`
-          );
+      // Check for overlaps - compare all pairs of default feeds
+      for (let i = 0; i < defaultFeeds.length; i++) {
+        for (let j = i + 1; j < defaultFeeds.length; j++) {
+          const feed1 = defaultFeeds[i];
+          const feed2 = defaultFeeds[j];
+          
+          // Check if ranges overlap
+          // Ranges overlap if: feed1.min <= feed2.max && feed2.min <= feed1.max
+          const rangesOverlap = 
+            feed1.minFishSizeG <= feed2.maxFishSizeG && 
+            feed2.minFishSizeG <= feed1.maxFishSizeG;
+          
+          if (rangesOverlap) {
+            throw new Error(
+              `Cannot set multiple default feeds for overlapping fish size ranges. ` +
+              `"${feed1.productName}" (${feed1.minFishSizeG}-${feed1.maxFishSizeG}g) and ` +
+              `"${feed2.productName}" (${feed2.minFishSizeG}-${feed2.maxFishSizeG}g) overlap. ` +
+              `Please ensure only one default feed exists for any given fish size range.`
+            );
+          }
         }
       }
       
@@ -651,8 +697,17 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
                     render={({ field }) => (
                       <Button
                         variant={field.value ? "contained" : "outlined"}
-                        onClick={() => field.onChange(!field.value)}
-
+                        onClick={() => {
+                          const wantsToBeDefault = !field.value;
+                          const overlapCheck = wouldCauseOverlap(colIndex, wantsToBeDefault, filteredStores, watchedValues);
+                          
+                          if (overlapCheck && overlapCheck.error) {
+                            toast.error(overlapCheck.message);
+                            return;
+                          }
+                          
+                          field.onChange(wantsToBeDefault);
+                        }}
                         sx={{
                           minWidth: 300,
                           background: field.value ? '#06A19B' : 'transparent',
