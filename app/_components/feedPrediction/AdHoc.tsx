@@ -337,6 +337,13 @@ function AdHoc({ data, setData }: Iprops) {
     const speciesObj = speciesList.find((s) => s.id === data.species);
     const speciesName = speciesObj?.name || '';
 
+    // Validate that end date is after start date
+    if (diffInDays <= 0) {
+      toast.error('End date must be after the start date.');
+      setData([]);
+      return;
+    }
+
     if (!selectedGrowthModel) {
       toast.error(
         'No growth model resolved for the selected species and production system.',
@@ -1081,6 +1088,7 @@ function AdHoc({ data, setData }: Iprops) {
                         textField: { focused: true },
                       }}
                       value={field.value ? dayjs(field.value) : null}
+                      minDate={dayjs()}
                       maxDate={dayjs(watch('endDate'))}
                     />
 
