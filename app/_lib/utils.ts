@@ -849,8 +849,7 @@ export const CommonFeedPredictionHead = [
   'Est. FCR',
   'Feed Intake (g)',
   'Feeding Rate',
-  'Monthly rate %/day',
-  'Waste Factor %',
+  'Mortality rate %/day',
 ];
 function calculateTemparatureCoefficientLogarithmic(a, b, c, T) {
   const tempDiff = T - b;

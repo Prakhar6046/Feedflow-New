@@ -6,6 +6,7 @@ import {
   CommonFeedPredictionHead,
   exportFeedPredictionToXlsx,
   FeedPredictionHead,
+  getLocalItem,
 } from '@/app/_lib/utils';
 import * as ValidationPatterns from '@/app/_lib/utils/validationPatterns';
 import * as ValidationMessages from '@/app/_lib/utils/validationsMessage';
@@ -85,6 +86,7 @@ type RawDataItem = {
   feedingRate: string;
   numberOfFish: number;
   averageProjectedTemp: number;
+  mortalityRate?: number;
 };
 export interface FishFeedingData {
   date: string;
@@ -173,6 +175,25 @@ function AdHoc({ data, setData }: Iprops) {
         console.error('Error parsing user data:', error);
       }
     }
+  }, []);
+
+  // Fetch and cache default feeds for Adhoc prediction
+  useEffect(() => {
+    const fetchDefaultFeeds = async () => {
+      try {
+        const res = await clientSecureFetch('/api/feed-store');
+        if (res.ok) {
+          const data = await res.json();
+          const defaultFeeds = data.data?.filter((feed: any) => feed.isDefault === true) || [];
+          if (typeof window !== 'undefined') {
+            localStorage.setItem('defaultFeedsCache', JSON.stringify(defaultFeeds));
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching default feeds:', error);
+      }
+    };
+    fetchDefaultFeeds();
   }, []);
   useEffect(() => {
     const fetchData = async () => {
@@ -289,6 +310,27 @@ function AdHoc({ data, setData }: Iprops) {
     productionSystemList,
   ]);
 
+  // Helper function to get feed product name based on fish size from default feeds
+  const getFeedTypeForAdhoc = (fishSize: number): string => {
+    try {
+      const defaultFeeds = getLocalItem('defaultFeedsCache');
+      if (defaultFeeds && Array.isArray(defaultFeeds)) {
+        // Find feed where fishSize falls within the minFishSizeG to maxFishSizeG range
+        const matchingFeed = defaultFeeds.find(
+          (feed: any) => fishSize >= feed.minFishSizeG && fishSize <= feed.maxFishSizeG
+        );
+        
+        if (matchingFeed) {
+          return matchingFeed.productName || '-';
+        }
+      }
+    } catch (e) {
+      // Fail silently and return '-' if default feeds cache is not available
+    }
+    
+    return '-';
+  };
+
   const onSubmit: SubmitHandler<FormInputs> = (data) => {
     const formattedDate = dayjs(data.startDate).format('YYYY-MM-DD');
     const diffInDays = dayjs(data.endDate).diff(dayjs(data.startDate), 'day');
@@ -349,12 +391,18 @@ function AdHoc({ data, setData }: Iprops) {
         );
       }
       
-      // Add mortality rate and waste factor to each row
-      const dataWithMortality = calculatedData.map((row) => ({
-        ...row,
-        mortalityRate: mortalityRate,
-        wasteFactor: wasteFactor,
-      }));
+      // Add mortality rate, waste factor, and update feedType from default feeds
+      const dataWithMortality = calculatedData.map((row) => {
+        const fishSize = parseFloat(row.fishSize) || 0;
+        const feedTypeFromDefault = getFeedTypeForAdhoc(fishSize);
+        
+        return {
+          ...row,
+          mortalityRate: mortalityRate,
+          wasteFactor: wasteFactor,
+          feedType: feedTypeFromDefault !== '-' ? feedTypeFromDefault : row.feedType,
+        };
+      });
       
       setData(dataWithMortality);
     }
@@ -381,6 +429,7 @@ function AdHoc({ data, setData }: Iprops) {
         feedingRate: val.feedingRate,
         numberOfFish: val.numberOfFish,
         averageProjectedTemp: val.averageProjectedTemp,
+        mortalityRate: val.mortalityRate,
       };
     });
 
@@ -568,6 +617,14 @@ function AdHoc({ data, setData }: Iprops) {
                       >
                         {row.feedingRate}
                       </td>
+                      <td
+                        style={{
+                          border: '1px solid #ccc',
+                          padding: '8px 12px',
+                        }}
+                      >
+                        {row.mortalityRate}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -610,6 +667,7 @@ function AdHoc({ data, setData }: Iprops) {
       estimatedFCR: val.estimatedFCR,
       feedIntake: val.feedIntake,
       feedingRate: val.feedingRate,
+      mortalityRate: val.mortalityRate,
       numberOfFish: val.numberOfFish,
       averageProjectedTemp: val.averageProjectedTemp,
     }));
@@ -638,6 +696,7 @@ function AdHoc({ data, setData }: Iprops) {
                 <td style=\"border:1px solid #ccc; padding:8px 12px;\">${row.estimatedFCR}</td>
                 <td style=\"border:1px solid #ccc; padding:8px 12px;\">${row.feedIntake}</td>
                 <td style=\"border:1px solid #ccc; padding:8px 12px;\">${row.feedingRate}</td>
+                <td style=\"border:1px solid #ccc; padding:8px 12px;\">${row.mortalityRate }</td>
               </tr>
             `,
               )
@@ -872,19 +931,19 @@ function AdHoc({ data, setData }: Iprops) {
     };
   }, [loading]);
 
-  if (loading) {
-    return (
-      <Box
-        sx={{
-          position: 'absolute',
-          width: '100%',
-          height: '100%',
-        }}
-      >
-        <Loader />
-      </Box>
-    );
-  }
+  // if (loading) {
+  //   return (
+  //     <Box
+  //       sx={{
+  //         position: 'absolute',
+  //         width: '100%',
+  //         height: '100%',
+  //       }}
+  //     >
+  //       <Loader />
+  //     </Box>
+  //   );
+  // }
   return (
     <Stack>
       <PrintPreviewDialog
@@ -1571,6 +1630,7 @@ function AdHoc({ data, setData }: Iprops) {
               id="basic-button"
               type="button"
               variant="contained"
+              disabled={loading}
               onClick={CreateFeedPredictionPDF}
               sx={{
                 background: '#fff',

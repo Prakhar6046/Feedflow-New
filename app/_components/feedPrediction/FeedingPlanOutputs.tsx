@@ -288,25 +288,23 @@ function FeedingPlanOutput() {
                 <th style="padding: 8px; text-align: left; border: 1px solid #ddd;">Est. FCR</th>
                 <th style="padding: 8px; text-align: left; border: 1px solid #ddd;">Feed Intake (g)</th>
                 <th style="padding: 8px; text-align: left; border: 1px solid #ddd;">Feeding Rate</th>
-                <th style="padding: 8px; text-align: left; border: 1px solid #ddd;">Monthly rate %/day</th>
-                <th style="padding: 8px; text-align: left; border: 1px solid #ddd;">Waste Factor %</th>
+                <th style="padding: 8px; text-align: left; border: 1px solid #ddd;">Mortality rate %/day</th>
               </tr>
             </thead>
             <tbody>
               ${selectedFarmData.fishGrowthData.map((row) => `
                 <tr>
                   <td style="padding: 8px; border: 1px solid #ddd; background: #f8f9fa;">${row.date}</td>
-                  <td style="padding: 8px; border: 1px solid #ddd; background: #f8f9fa;">${row.averageProjectedTemp || '25'}</td>
-                  <td style="padding: 8px; border: 1px solid #ddd; background: #f8f9fa;">${row.numberOfFish || '2000'}</td>
-                  <td style="padding: 8px; border: 1px solid #ddd; background: #f8f9fa;">${row.fishSize || '0'}</td>
-                  <td style="padding: 8px; border: 1px solid #ddd; background: #f8f9fa;">${row.growth || '0'}</td>
-                  <td style="padding: 8px; border: 1px solid #ddd; background: #f8f9fa;">${row.feedType || '-'}</td>
-                  <td style="padding: 8px; border: 1px solid #ddd; background: #f8f9fa;">${row.feedSize || '-'}</td>
-                  <td style="padding: 8px; border: 1px solid #ddd; background: #f8f9fa;">${row.estimatedFCR || '2.54'}</td>
-                  <td style="padding: 8px; border: 1px solid #ddd; background: #f8f9fa;">${row.feedIntake || '0'}</td>
-                  <td style="padding: 8px; border: 1px solid #ddd; background: #f8f9fa;">${row.feedingRate || '59.54'}</td>
+                  <td style="padding: 8px; border: 1px solid #ddd; background: #f8f9fa;">${row.averageProjectedTemp}</td>
+                  <td style="padding: 8px; border: 1px solid #ddd; background: #f8f9fa;">${row.numberOfFish }</td>
+                  <td style="padding: 8px; border: 1px solid #ddd; background: #f8f9fa;">${row.fishSize }</td>
+                  <td style="padding: 8px; border: 1px solid #ddd; background: #f8f9fa;">${row.growth }</td>
+                  <td style="padding: 8px; border: 1px solid #ddd; background: #f8f9fa;">${row.feedType }</td>
+                  <td style="padding: 8px; border: 1px solid #ddd; background: #f8f9fa;">${row.feedSize }</td>
+                  <td style="padding: 8px; border: 1px solid #ddd; background: #f8f9fa;">${row.estimatedFCR }</td>
+                  <td style="padding: 8px; border: 1px solid #ddd; background: #f8f9fa;">${row.feedIntake }</td>
+                  <td style="padding: 8px; border: 1px solid #ddd; background: #f8f9fa;">${row.feedingRate }</td>
                   <td style="padding: 8px; border: 1px solid #ddd; background: #f8f9fa;">${row.mortalityRate}</td>
-                  <td style="padding: 8px; border: 1px solid #ddd; background: #f8f9fa;">${row.wasteFactor}</td>
                 </tr>
               `).join('')}
             </tbody>
@@ -629,8 +627,7 @@ function FeedingPlanOutput() {
       fcr: 118,
       intake: 132,
       rate: 148,
-      monthly: 164,
-      waste: 180
+      monthly: 164
     };
 
     // Table headers with teal background and vertical borders
@@ -667,8 +664,7 @@ function FeedingPlanOutput() {
     pdf.text('Est. FCR', colPositions.fcr + 1, tableHeaderY + 5);
     pdf.text('Intake', colPositions.intake + 1, tableHeaderY + 5);
     pdf.text('Rate', colPositions.rate + 1, tableHeaderY + 5);
-    pdf.text('Monthly', colPositions.monthly + 1, tableHeaderY + 5);
-    pdf.text('Waste', colPositions.waste + 1, tableHeaderY + 5);
+    pdf.text('Mortality', colPositions.monthly + 1, tableHeaderY + 5);
 
     // Table data - show all data without pagination
     pdf.setTextColor(0, 0, 0);
@@ -710,8 +706,7 @@ function FeedingPlanOutput() {
         pdf.text('Est. FCR', colPositions.fcr + 1, 20);
         pdf.text('Intake', colPositions.intake + 1, 20);
         pdf.text('Rate', colPositions.rate + 1, 20);
-        pdf.text('Monthly', colPositions.monthly + 1, 20);
-        pdf.text('Waste', colPositions.waste + 1, 20);
+        pdf.text('Mortality', colPositions.monthly + 1, 20);
         
         pdf.setTextColor(0, 0, 0);
         pdf.setFont('helvetica', 'normal');
@@ -746,7 +741,6 @@ function FeedingPlanOutput() {
       pdf.text(`${row.feedIntake || '0'}`, colPositions.intake + 1, yPosition);
       pdf.text(`${row.feedingRate || '59.54'}`, colPositions.rate + 1, yPosition);
       pdf.text(`${row.mortalityRate || '0'}`, colPositions.monthly + 1, yPosition);
-      pdf.text(`${row.wasteFactor || '0'}`, colPositions.waste + 1, yPosition);
 
       yPosition += 6;
     });
@@ -905,7 +899,6 @@ function FeedingPlanOutput() {
           feedIntake: val.feedIntake,
           feedingRate: val.feedingRate,
           mortalityRate: val.mortalityRate,
-          wasteFactor: val.wasteFactor,
         })),
       );
 
@@ -934,7 +927,6 @@ function FeedingPlanOutput() {
                   <td style=\"border:1px solid #ccc; padding:8px 12px;\">${row.feedIntake}</td>
                   <td style=\"border:1px solid #ccc; padding:8px 12px;\">${row.feedingRate}</td>
                   <td style=\"border:1px solid #ccc; padding:8px 12px;\">${row.mortalityRate}</td>
-                  <td style=\"border:1px solid #ccc; padding:8px 12px;\">${row.wasteFactor}</td>
                 </tr>
               `,
         )
@@ -970,7 +962,6 @@ function FeedingPlanOutput() {
           feedIntake: val.feedIntake,
           feedingRate: val.feedingRate,
           mortalityRate: val.mortalityRate,
-          wasteFactor: val.wasteFactor,
         })),
       );
     exportFeedPredictionToXlsx(
@@ -1003,7 +994,6 @@ function FeedingPlanOutput() {
           feedIntake: val.feedIntake,
           feedingRate: val.feedingRate,
           mortalityRate: val.mortalityRate,
-          wasteFactor: val.wasteFactor,
           farmName: growth.farm,
           unitName: growth.unit,
           numberOfFish: val.numberOfFish,
@@ -1204,14 +1194,6 @@ function FeedingPlanOutput() {
                           }}
                         >
                           {row.mortalityRate}
-                        </td>
-                        <td
-                          style={{
-                            border: '1px solid #ccc',
-                            padding: '8px 12px',
-                          }}
-                        >
-                          {row.wasteFactor}
                         </td>
                       </tr>
                     ))}
