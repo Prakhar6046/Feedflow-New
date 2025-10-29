@@ -15,6 +15,8 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import dayjs from 'dayjs';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 import React, { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { getCookie } from 'cookies-next';
@@ -28,6 +30,7 @@ import FeedUsageTable from '../table/FeedUsageTable';
 import { FarmGroup, FarmGroupUnit } from '@/app/_typeModels/production';
 import { OrganisationModelResponse } from '@/app/_typeModels/growthModel';
 import PrintPreviewDialog from '../PrintPreviewDialog';
+import { useMemo } from 'react';
 
 interface FarmOption {
   id: string;
@@ -77,6 +80,7 @@ const FeedUsageOutput: React.FC = () => {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewHtml, setPreviewHtml] = useState<string | null>(null);
   const [previewTitle, setPreviewTitle] = useState<string>('Print Preview');
+  const [loading, setLoading] = useState(false);
   const usageTableRef = useRef<HTMLDivElement | null>(null);
 
   // Fetch organisationId
@@ -250,6 +254,249 @@ const FeedUsageOutput: React.FC = () => {
     setFilteredData(data);
   }, [selectedDropDownUnits, flatData]);
 
+  // Resolve feedLinks for all selected farms/units (unit-level first, farm-level fallback)
+  const allFeedLinks = useMemo(() => {
+    try {
+      const data: FeedPredictionData | null = getLocalItem('feedPredictionData');
+      if (!data || !farmList.length) return [] as any[];
+
+      const feedLinksMap = new Map<string, any>();
+
+      // Collect feedLinks from all selected farms and units
+      selectedDropDownfarms.forEach((selectedFarm) => {
+        const farm = farmList.find(
+          (f: FarmGroup) => f.units?.[0]?.farm?.id === selectedFarm.id,
+        );
+
+        if (!farm) return;
+
+        // Get farm-level feedLinks
+        const feedProfile = (farm?.farm?.FeedProfile as any[])?.[0];
+        const farmLinks = feedProfile?.feedLinks || [];
+        farmLinks.forEach((link: any) => {
+          const key = link?.feedStore?.productName || '';
+          if (key && !feedLinksMap.has(key)) {
+            feedLinksMap.set(key, link);
+          }
+        });
+
+        // Get unit-level feedLinks for selected units
+        selectedDropDownUnits.forEach((selectedUnit) => {
+          const unit = farm.units.find(
+            (u: FarmGroupUnit) => u.id === selectedUnit.id,
+          );
+
+          if (unit) {
+            const unitLinks =
+              unit?.productionUnit?.FeedProfileProductionUnit?.[0]?.feedProfile
+                ?.feedLinks || [];
+            unitLinks.forEach((link: any) => {
+              const key = link?.feedStore?.productName || '';
+              if (key) {
+                // Unit-level links take precedence over farm-level
+                feedLinksMap.set(key, link);
+              }
+            });
+          }
+        });
+      });
+
+      return Array.from(feedLinksMap.values());
+    } catch (e) {
+      console.error('Error resolving feedLinks', e);
+      return [] as any[];
+    }
+  }, [selectedDropDownfarms, selectedDropDownUnits, farmList]);
+
+  // Handle loading state to prevent body scrolling
+  useEffect(() => {
+    if (loading) {
+      document.body.style.position = 'fixed';
+      document.body.style.width = '100%';
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.position = '';
+      document.body.style.width = '';
+      document.body.style.overflow = '';
+    }
+
+    return () => {
+      document.body.style.position = '';
+      document.body.style.width = '';
+      document.body.style.overflow = '';
+    };
+  }, [loading]);
+
+  // Create PDF function with pagination support and header on every page
+  const createFeedUsagePDF = async () => {
+    if (!filteredData.length) {
+      return;
+    }
+
+    const node = usageTableRef.current;
+    if (!node) return;
+
+    setLoading(true);
+
+    try {
+      // Wait for render to complete
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
+      // Find table elements
+      const tableElement = node.querySelector('table') as HTMLTableElement;
+      const tableHeadElement = node.querySelector('table thead') as HTMLTableSectionElement;
+      const tableBodyElement = node.querySelector('table tbody') as HTMLTableSectionElement;
+
+      if (!tableElement || !tableHeadElement || !tableBodyElement) {
+        console.error('Table, header, or body not found');
+        setLoading(false);
+        return;
+      }
+
+      // Create PDF in landscape orientation for table
+      const pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
+      const margin = 10;
+      const availableWidth = pdfWidth - (margin * 2);
+      const availableHeight = pdfHeight - (margin * 2);
+
+      // 1. Capture header separately
+      const headerCanvas = await html2canvas(tableHeadElement, {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        backgroundColor: '#ffffff',
+      });
+      const headerImgData = headerCanvas.toDataURL('image/png', 1.0);
+      const headerImgProps = pdf.getImageProperties(headerImgData);
+      const headerWidthPx = headerImgProps.width;
+      const headerHeightPx = headerImgProps.height;
+
+      // Calculate scaled header dimensions
+      const headerWidthRatio = availableWidth / headerWidthPx;
+      const headerScaledWidth = headerWidthPx * headerWidthRatio;
+      const headerScaledHeight = headerHeightPx * headerWidthRatio;
+
+      // 2. Capture body separately
+      const bodyCanvas = await html2canvas(tableBodyElement, {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        backgroundColor: '#ffffff',
+        width: tableBodyElement.scrollWidth,
+        height: tableBodyElement.scrollHeight,
+      });
+      const bodyWidthPx = bodyCanvas.width;
+      const bodyHeightPx = bodyCanvas.height;
+
+      // Calculate scaled body dimensions
+      const bodyWidthRatio = availableWidth / bodyWidthPx;
+      const bodyScaledWidth = bodyWidthPx * bodyWidthRatio;
+      const bodyScaledHeight = bodyHeightPx * bodyWidthRatio;
+
+      // Available height for body content per page (after header)
+      const bodyHeightPerPage = availableHeight - headerScaledHeight;
+
+      // Check if body fits on one page with header
+      if (bodyScaledHeight <= bodyHeightPerPage) {
+        // Single page - fits on one page
+        // Draw header
+        pdf.addImage(
+          headerImgData,
+          'PNG',
+          margin,
+          margin,
+          headerScaledWidth,
+          headerScaledHeight,
+        );
+        // Draw body below header
+        pdf.addImage(
+          bodyCanvas.toDataURL('image/png', 1.0),
+          'PNG',
+          margin,
+          margin + headerScaledHeight,
+          bodyScaledWidth,
+          bodyScaledHeight,
+        );
+      } else {
+        // Multiple pages needed - split body and repeat header on each page
+        // Calculate how much body height in pixels corresponds to the available height per page
+        const bodyHeightPerPageInPx = bodyHeightPerPage / bodyWidthRatio;
+        const pagesCount = Math.ceil(bodyHeightPx / bodyHeightPerPageInPx);
+
+        let currentSourceY = 0; // Track position in original body canvas (in pixels)
+
+        for (let i = 0; i < pagesCount; i++) {
+          if (i > 0) {
+            pdf.addPage();
+          }
+
+          // Draw header on every page
+          pdf.addImage(
+            headerImgData,
+            'PNG',
+            margin,
+            margin,
+            headerScaledWidth,
+            headerScaledHeight,
+          );
+
+          // Calculate the portion of body for this page based on available height
+          const remainingHeight = bodyHeightPx - currentSourceY;
+          const sourceHeight = Math.min(bodyHeightPerPageInPx, remainingHeight);
+
+          // Calculate scaled height for this page portion
+          const pageBodyScaledHeight = sourceHeight * bodyWidthRatio;
+
+          // Create a temporary canvas for this page's body portion
+          const pageCanvas = document.createElement('canvas');
+          pageCanvas.width = bodyWidthPx;
+          pageCanvas.height = Math.ceil(sourceHeight);
+          const pageCtx = pageCanvas.getContext('2d');
+
+          if (pageCtx) {
+            // Draw the portion of the original body canvas for this page
+            pageCtx.drawImage(
+              bodyCanvas,
+              0,
+              currentSourceY,
+              bodyWidthPx,
+              sourceHeight,
+              0,
+              0,
+              bodyWidthPx,
+              sourceHeight,
+            );
+
+            const pageBodyImgData = pageCanvas.toDataURL('image/png', 1.0);
+
+            // Draw body chunk below header (ensuring proper spacing)
+            pdf.addImage(
+              pageBodyImgData,
+              'PNG',
+              margin,
+              margin + headerScaledHeight,
+              bodyScaledWidth,
+              pageBodyScaledHeight,
+            );
+
+            // Move to next portion
+            currentSourceY += sourceHeight;
+          }
+        }
+      }
+
+      // Save PDF with a descriptive name
+      const fileName = `feed_usage_${dayjs().format('YYYY-MM-DD_HH-mm-ss')}.pdf`;
+      pdf.save(fileName);
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Build table data ONLY after growth models are loaded and form data is ready
   useEffect(() => {
     const data: FeedPredictionData | null = getLocalItem('feedPredictionData');
@@ -356,7 +603,7 @@ const FeedUsageOutput: React.FC = () => {
             xs={12}
             sx={{
               width: 'fit-content',
-              paddingTop: '8px',
+              paddingTop: '8px'
             }}
           >
             <Box sx={{ width: '100%' }}>
@@ -525,11 +772,12 @@ const FeedUsageOutput: React.FC = () => {
             }}
           >
             <Box ref={usageTableRef}>
-              <FeedUsageTable flatData={filteredData} />
+              <FeedUsageTable flatData={filteredData} feedLinks={allFeedLinks} />
             </Box>
           </Paper>
           <Box
             mt={5}
+            mb={3}
             sx={{
               display: 'flex',
               justifyContent: 'end',
@@ -557,6 +805,8 @@ const FeedUsageOutput: React.FC = () => {
             <Button
               type="button"
               variant="contained"
+              onClick={createFeedUsagePDF}
+              disabled={loading || !filteredData.length}
               sx={{
                 background: '#fff',
                 color: '#06A19B',
@@ -566,9 +816,12 @@ const FeedUsageOutput: React.FC = () => {
                 textTransform: 'capitalize',
                 borderRadius: '8px',
                 border: '1px solid #06A19B',
+                '&:disabled': {
+                  opacity: 0.6,
+                },
               }}
             >
-              Create PDF
+              {loading ? 'Creating PDF...' : 'Create PDF'}
             </Button>
             <Button
               type="button"
