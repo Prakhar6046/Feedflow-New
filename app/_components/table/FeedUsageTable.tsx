@@ -1,162 +1,688 @@
 'use client';
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   Table,
   TableBody,
   TableCell,
-  TableContainer,
   TableHead,
   TableRow,
-  Paper,
-  Typography,
+  Box,
 } from '@mui/material';
-import { FarmsFishGrowth } from '../feedPrediction/FeedingPlan'; // Assuming this is correct
+import { FarmsFishGrowth } from '../feedPrediction/FeedingPlan';
 
 interface FeedUsageTableProps {
   flatData: FarmsFishGrowth[];
   feedLinks?: any[]; 
 }
 
-// Helper to format kg to bags (assuming 20kg per bag)
-const formatFeed = (kg: number) => {
-  const bags = (kg / 20).toFixed(2);
-  // Only show the bags if kg > 0 to avoid "(0.00 Bags)"
-  return `${kg.toFixed(2)} Kg${kg > 0 ? ` (${bags} Bags)` : ''}`;
-};
+interface FeedAggregation {
+  supplier: string;
+  feedType: string;
+  bags: number;
+  kg: number;
+}
 
-// Helper to get supplier name for a feed. 
-// NOTE: Since the supplier is assumed to be unit-specific, this helper is
-// a placeholder and assumes feedLinks can find the supplier by product name.
-// For true separation, the supplier name should be included in fishGrowthData.
-const getSupplierName = (
-  feedType: string,
-  feedLinks: any[],
-): string => {
-  const link = feedLinks?.find(
-    (l: any) => l?.feedStore?.productName === feedType,
-  );
-  return link?.feedSupply?.name || 'N/A';
-};
+interface UnitFeedData {
+  unitId: number;
+  unitName: string;
+  feedData: FeedAggregation[];
+  totalBags: number;
+  totalKg: number;
+}
+
+interface FarmFeedData {
+  farmId: string;
+  farmName: string;
+  units: UnitFeedData[];
+  totalBags: number;
+  totalKg: number;
+}
 
 const FeedUsageTable: React.FC<FeedUsageTableProps> = ({
   flatData,
   feedLinks = [],
 }) => {
-  // 1. Prepare grouped data for row rendering
-  const tableRows: {
-    farm: string;
-    unit: string;
-    unitTotal: number;
-    feedDetails: {
-      feedType: string;
-      supplier: string;
-      totalKg: number;
-    }[];
-  }[] = [];
+  // Helper function to get supplier name from feedLinks
+  const getSupplierName = (feedProductName: string): string => {
+    if (!feedLinks || feedLinks.length === 0) return 'N/A';
+    const link = feedLinks.find(
+      (l: any) => l?.feedStore?.productName === feedProductName,
+    );
+    return link?.feedSupply?.name || 'N/A';
+  };
 
-  flatData.forEach((unitData) => {
-    // Group feed data within this unit by FeedType and Supplier
-    const feedGroupMap = new Map<string, { feedType: string; supplier: string; totalKg: number }>();
-    let unitTotalKg = 0;
+  // Process data to create hierarchical structure with calculations
+  const processedData = useMemo(() => {
+    if (!flatData || flatData.length === 0) return { farms: [], overallTotal: { totalBags: 0, totalKg: 0, feeds: [] } };
 
-    unitData.fishGrowthData.forEach((d) => {
-      const feedType = d.feedType;
-      // CRITICAL: We look up the supplier here. If supplier is truly unit-specific
-      // for the same feedType, you must update getSupplierName to take unit/farm IDs
-      // and use a more complex lookup, or embed the supplier in `d`.
-      const supplier = getSupplierName(feedType, feedLinks); 
-      
-      const key = `${feedType}::${supplier}`;
-      const intake = parseFloat(d.feedIntake);
-      const kg = isNaN(intake) ? 0 : intake;
-      unitTotalKg += kg;
+    // Group by farm
+    const farmMap = new Map<string, FarmFeedData>();
+    const overallFeedMap = new Map<string, { supplier: string; bags: number; kg: number }>();
 
-      if (!feedGroupMap.has(key)) {
-        feedGroupMap.set(key, { feedType, supplier, totalKg: 0 });
+    flatData.forEach((item) => {
+      const { farm, farmId, unit, unitId, fishGrowthData } = item;
+
+      // Initialize farm if not exists
+      if (!farmMap.has(farmId)) {
+        farmMap.set(farmId, {
+          farmId,
+          farmName: farm,
+          units: [],
+          totalBags: 0,
+          totalKg: 0,
+        });
       }
-      feedGroupMap.get(key)!.totalKg += kg;
+
+      const farmData = farmMap.get(farmId)!;
+
+      // Calculate feed requirements for this unit
+      const unitFeedMap = new Map<string, { supplier: string; bags: number; kg: number }>();
+
+      fishGrowthData.forEach((row) => {
+        const feedType = row.feedType || 'Unknown';
+        const intake = parseFloat(String(row.feedIntake)) || 0;
+        const bags = intake / 20;
+        const supplier = getSupplierName(feedType);
+
+        if (!unitFeedMap.has(feedType)) {
+          unitFeedMap.set(feedType, { supplier, bags: 0, kg: 0 });
+        }
+
+        const feedData = unitFeedMap.get(feedType)!;
+        feedData.bags += bags;
+        feedData.kg += intake;
+
+        // Update overall totals
+        if (!overallFeedMap.has(feedType)) {
+          overallFeedMap.set(feedType, { supplier, bags: 0, kg: 0 });
+        }
+        const overallFeed = overallFeedMap.get(feedType)!;
+        overallFeed.bags += bags;
+        overallFeed.kg += intake;
+      });
+
+      // Convert unit feed map to array and calculate totals
+      const unitFeeds: FeedAggregation[] = Array.from(unitFeedMap.entries()).map(([feedType, data]) => ({
+        supplier: data.supplier,
+        feedType,
+        bags: data.bags,
+        kg: data.kg,
+      }));
+
+      const unitTotalBags = unitFeeds.reduce((sum, f) => sum + f.bags, 0);
+      const unitTotalKg = unitFeeds.reduce((sum, f) => sum + f.kg, 0);
+
+      farmData.units.push({
+        unitId,
+        unitName: unit,
+        feedData: unitFeeds,
+        totalBags: unitTotalBags,
+        totalKg: unitTotalKg,
+      });
+
+      farmData.totalBags += unitTotalBags;
+      farmData.totalKg += unitTotalKg;
     });
 
-    tableRows.push({
-      farm: unitData.farm,
-      unit: unitData.unit,
-      unitTotal: unitTotalKg,
-      feedDetails: Array.from(feedGroupMap.values()),
-    });
-  });
+    // Convert overall feed map to array
+    const overallFeeds: FeedAggregation[] = Array.from(overallFeedMap.entries()).map(([feedType, data]) => ({
+      supplier: data.supplier,
+      feedType,
+      bags: data.bags,
+      kg: data.kg,
+    }));
 
-  // 2. Calculate Grand Totals
-  const grandTotalAll = tableRows.reduce((sum, row) => sum + row.unitTotal, 0);
+    const overallTotalBags = overallFeeds.reduce((sum, f) => sum + f.bags, 0);
+    const overallTotalKg = overallFeeds.reduce((sum, f) => sum + f.kg, 0);
+
+    return {
+      farms: Array.from(farmMap.values()),
+      overallTotal: {
+        totalBags: overallTotalBags,
+        totalKg: overallTotalKg,
+        feeds: overallFeeds,
+      },
+    };
+  }, [flatData, feedLinks]);
+
+  // Calculate row spans for farm names
+  const getFarmRowSpan = (farm: FarmFeedData): number => {
+    const farmFeedTypes = getFarmFeedTypes(farm);
+    let rowCount = 0;
+    farm.units.forEach((unit) => {
+      rowCount += unit.feedData.length; // Feed rows
+      rowCount += 1; // Unit total row
+    });
+    rowCount += farmFeedTypes.length; // Farm total feed rows (grouped by feed type)
+    rowCount += 1; // Farm total row
+    return rowCount;
+  };
+
+  // Calculate row span for unit names
+  const getUnitRowSpan = (unit: UnitFeedData): number => {
+    return unit.feedData.length + 1; // Feed rows + unit total row
+  };
+
+  // Get unique feed types for farm total section
+  const getFarmFeedTypes = (farm: FarmFeedData): FeedAggregation[] => {
+    const feedMap = new Map<string, { supplier: string; bags: number; kg: number }>();
+
+    farm.units.forEach((unit) => {
+      unit.feedData.forEach((feed) => {
+        if (!feedMap.has(feed.feedType)) {
+          feedMap.set(feed.feedType, {
+            supplier: feed.supplier,
+            bags: 0,
+            kg: 0,
+          });
+        }
+        const feedData = feedMap.get(feed.feedType)!;
+        feedData.bags += feed.bags;
+        feedData.kg += feed.kg;
+      });
+    });
+
+    return Array.from(feedMap.entries()).map(([feedType, data]) => ({
+      supplier: data.supplier,
+      feedType,
+      bags: data.bags,
+      kg: data.kg,
+    }));
+  };
 
   return (
-    <TableContainer component={Paper}>
-      <Table stickyHeader aria-label="feed usage by unit and type">
+    <Box sx={{ overflow: 'auto' }}>
+      <Table sx={{ minWidth: 800 }}>
+        {/* Header with dark teal background - Two row structure */}
         <TableHead>
           <TableRow sx={{ background: '#06a19b' }}>
-            <TableCell sx={{ color: '#fff', fontWeight: 700 }}>Farm</TableCell>
-            <TableCell sx={{ color: '#fff', fontWeight: 700 }}>Unit</TableCell>
-            <TableCell sx={{ color: '#fff', fontWeight: 700 }}>Feed Supplier</TableCell>
-            <TableCell sx={{ color: '#fff', fontWeight: 700 }}>Feed Type</TableCell>
-            <TableCell sx={{ color: '#fff', fontWeight: 700, textAlign: 'right' }}>
-              Usage (Kg / Bags)
+          <TableCell
+              rowSpan={2}
+            sx={{
+              color: '#fff',
+              fontWeight: 700,
+              textAlign: 'center',
+              padding: '12px',
+                border: '1px solid #fff',
+            }}
+          >
+            Farm
+          </TableCell>
+          <TableCell
+              rowSpan={2}
+            sx={{
+              color: '#fff',
+              fontWeight: 700,
+              textAlign: 'center',
+              padding: '12px',
+                border: '1px solid #fff',
+            }}
+          >
+            Unit
+          </TableCell>
+          <TableCell
+              rowSpan={2}
+            sx={{
+              color: '#fff',
+              fontWeight: 700,
+              textAlign: 'center',
+              padding: '12px',
+                border: '1px solid #fff',
+            }}
+          >
+            Supplier
+          </TableCell>
+          <TableCell
+              rowSpan={2}
+            sx={{
+              color: '#fff',
+              fontWeight: 700,
+              textAlign: 'center',
+              padding: '12px',
+                border: '1px solid #fff',
+              }}
+            >
+              Feed type
+            </TableCell>
+            <TableCell
+              colSpan={2}
+              sx={{
+                color: '#fff',
+                fontWeight: 700,
+                textAlign: 'center',
+                padding: '12px',
+                border: '1px solid #fff',
+                borderBottom: '2px solid #000',
+              }}
+            >
+              Requirement
+            </TableCell>
+          </TableRow>
+          <TableRow sx={{ background: '#06a19b' }}>
+            <TableCell
+              sx={{
+                color: '#fff',
+                fontWeight: 700,
+                textAlign: 'center',
+                padding: '12px',
+                border: '1px solid #fff',
+                borderBottom: '2px solid #000',
+              }}
+            >
+              Bags
+            </TableCell>
+            <TableCell
+              sx={{
+                color: '#fff',
+                fontWeight: 700,
+                textAlign: 'center',
+                padding: '12px',
+                border: '1px solid #fff',
+                borderBottom: '2px solid #000',
+              }}
+            >
+              Volume (kg)
             </TableCell>
           </TableRow>
         </TableHead>
 
         <TableBody>
-          {tableRows.map((unitRow, unitIdx) => {
-            const rowCount = unitRow.feedDetails.length;
-            
-            return unitRow.feedDetails.map((feedDetail, detailIdx) => (
-              <TableRow 
-                key={`${unitIdx}-${detailIdx}`} 
-                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+          {/* Overall Total Section - Shows aggregated feed requirements across all farms */}
+          {processedData.overallTotal.feeds.map((feed, feedIndex) => (
+            <TableRow key={`overall-feed-${feedIndex}`}>
+            <TableCell
+              sx={{
+                border: '1px solid #fff',
+                background: '#fff',
+                padding: '12px',
+              }}
               >
-                {/* Farm Cell: only appears on the first row of the unit's group */}
-                {detailIdx === 0 && (
-                  <TableCell rowSpan={rowCount} sx={{ fontWeight: 600, borderRight: '1px solid #ccc' }}>
-                    {unitRow.farm}
-                  </TableCell>
-                )}
-                
-                {/* Unit Cell: only appears on the first row of the unit's group */}
-                {detailIdx === 0 && (
-                  <TableCell rowSpan={rowCount} sx={{ fontWeight: 600, borderRight: '1px solid #ccc' }}>
-                    {unitRow.unit}
-                    <Typography variant="caption" display="block" color="text.secondary">
-                      Unit Total: {formatFeed(unitRow.unitTotal)}
-                    </Typography>
-                  </TableCell>
-                )}
-
-                {/* Feed Detail Cells (Supplier and Type) */}
-                <TableCell sx={{ whiteSpace: 'nowrap' }}>
-                  {feedDetail.supplier}
-                </TableCell>
-                <TableCell sx={{ whiteSpace: 'nowrap' }}>
-                  {feedDetail.feedType}
-                </TableCell>
-                
-                {/* Usage Cell (Kg/Bags) */}
-                <TableCell align="right" sx={{ fontWeight: 600, whiteSpace: 'nowrap' }}>
-                  {formatFeed(feedDetail.totalKg)}
-                </TableCell>
-              </TableRow>
-            ));
-          })}
-
-          {/* Grand Total Row */}
-          <TableRow sx={{ background: '#e0f7fa' }}>
-            <TableCell colSpan={4} sx={{ fontWeight: 700, background: '#06a19b', color: '#fff' }}>
-              GRAND TOTAL ALL UNITS
+                {feedIndex === 0 ? 'Total' : ''}
+              </TableCell>
+            <TableCell
+              sx={{
+                border: '1px solid #fff',
+                background: '#fff',
+                padding: '12px',
+              }}
+            />
+            <TableCell
+              sx={{
+                border: '1px solid #fff',
+                background: '#fff',
+                padding: '12px',
+              }}
+            >
+                {feed.supplier}
             </TableCell>
-            <TableCell align="right" sx={{ fontWeight: 700, background: '#06a19b', color: '#fff' }}>
-              {formatFeed(grandTotalAll)}
+            <TableCell
+              sx={{
+                border: '1px solid #fff',
+                background: '#fff',
+                padding: '12px',
+              }}
+            >
+                {feed.feedType}
+            </TableCell>
+            <TableCell
+              sx={{
+                border: '1px solid #fff',
+                background: '#fff',
+                textAlign: 'right',
+                padding: '12px',
+              }}
+            >
+                {Math.round(feed.bags)}
+            </TableCell>
+            <TableCell
+              sx={{
+                border: '1px solid #fff',
+                background: '#fff',
+                textAlign: 'right',
+                padding: '12px',
+              }}
+            >
+                {feed.kg.toFixed(2)}
             </TableCell>
           </TableRow>
+          ))}
+
+          {/* Overall Total Row */}
+          {processedData.overallTotal.feeds.length > 0 && (
+          <TableRow>
+            <TableCell
+              colSpan={2}
+              sx={{
+                borderLeft: '1px solid #fff',
+                borderRight: '1px solid #fff',
+                borderBottom: '1px solid #fff',
+                borderTop: '2px solid #000',
+                background: '#06A19B',
+                color: '#fff',
+                fontWeight: 700,
+                padding: '12px',
+              }}
+            >
+            </TableCell>
+            <TableCell
+              sx={{
+                borderLeft: '1px solid #fff',
+                borderRight: '1px solid #fff',
+                borderBottom: '1px solid #fff',
+                borderTop: '2px solid #000',
+                background: '#06A19B',
+                color: '#fff',
+                fontWeight: 700,
+                padding: '12px',
+              }}
+              />
+            <TableCell
+              sx={{
+                borderLeft: '1px solid #fff',
+                borderRight: '1px solid #fff',
+                borderBottom: '1px solid #fff',
+                borderTop: '2px solid #000',
+                background: '#06A19B',
+                color: '#fff',
+                fontWeight: 700,
+                padding: '12px',
+              }}
+            >
+                Total
+            </TableCell>
+            <TableCell
+              sx={{
+                borderLeft: '1px solid #fff',
+                borderRight: '1px solid #fff',
+                borderBottom: '1px solid #fff',
+                borderTop: '2px solid #000',
+                background: '#06A19B',
+                color: '#fff',
+                fontWeight: 700,
+                textAlign: 'right',
+                padding: '12px',
+              }}
+            >
+                {Math.round(processedData.overallTotal.totalBags)}
+            </TableCell>
+            <TableCell
+              sx={{
+                borderLeft: '1px solid #fff',
+                borderRight: '1px solid #fff',
+                borderBottom: '1px solid #fff',
+                borderTop: '2px solid #000',
+                background: '#06A19B',
+                color: '#fff',
+                fontWeight: 700,
+                textAlign: 'right',
+                padding: '12px',
+              }}
+            >
+                {processedData.overallTotal.totalKg.toFixed(2)}
+            </TableCell>
+          </TableRow>
+          )}
+
+          {/* Farm Sections - Iterate through each farm */}
+          {processedData.farms.map((farm) => {
+            const farmFeedTypes = getFarmFeedTypes(farm);
+
+            return farm.units.map((unit, unitIndex) => {
+              const isFirstUnit = unitIndex === 0;
+
+              return (
+                <React.Fragment key={`farm-${farm.farmId}-unit-${unit.unitId}`}>
+                  {/* Feed rows for this unit */}
+                  {unit.feedData.map((feed, feedIndex) => {
+                    const isFirstFeed = feedIndex === 0;
+
+                    return (
+                      <TableRow key={`farm-${farm.farmId}-unit-${unit.unitId}-feed-${feedIndex}`}>
+                        {/* Farm name cell (only on first row of first unit) */}
+                        {isFirstUnit && isFirstFeed && (
+            <TableCell
+                            rowSpan={getFarmRowSpan(farm)}
+              sx={{
+                border: '1px solid #fff',
+                background: '#fff',
+                fontWeight: 600,
+                verticalAlign: 'top',
+                padding: '12px',
+              }}
+            >
+                            {farm.farmName}
+            </TableCell>
+                        )}
+
+                        {/* Unit name cell (only on first feed row of each unit) */}
+                        {isFirstFeed && (
+            <TableCell
+                            rowSpan={getUnitRowSpan(unit)}
+              sx={{
+                border: '1px solid #fff',
+                background: '#fff',
+                fontWeight: 600,
+                verticalAlign: 'top',
+                padding: '12px',
+              }}
+            >
+                            {unit.unitName}
+            </TableCell>
+                        )}
+
+                        {/* Feed data */}
+            <TableCell
+              sx={{
+                border: '1px solid #fff',
+                background: '#fff',
+                padding: '12px',
+              }}
+            >
+                          {feed.supplier}
+            </TableCell>
+            <TableCell
+              sx={{
+                border: '1px solid #fff',
+                background: '#fff',
+                padding: '12px',
+              }}
+            >
+                          {feed.feedType}
+            </TableCell>
+            <TableCell
+              sx={{
+                border: '1px solid #fff',
+                background: '#fff',
+                textAlign: 'right',
+                padding: '12px',
+              }}
+            >
+                          {Math.round(feed.bags)}
+            </TableCell>
+            <TableCell
+              sx={{
+                border: '1px solid #fff',
+                background: '#fff',
+                textAlign: 'right',
+                padding: '12px',
+              }}
+            >
+                          {feed.kg.toFixed(2)}
+            </TableCell>
+          </TableRow>
+                    );
+                  })}
+
+                  {/* Unit Total Row */}
+          <TableRow>
+            <TableCell
+              colSpan={2}
+              sx={{
+                border: '1px solid #fff',
+                background: '#06A19B',
+                color: '#fff',
+                fontWeight: 700,
+                textAlign: 'right',
+                padding: '12px',
+              }}
+            >
+              Total
+            </TableCell>
+            <TableCell
+              sx={{
+                border: '1px solid #fff',
+                background: '#06A19B',
+                color: '#fff',
+                fontWeight: 700,
+                textAlign: 'right',
+                padding: '12px',
+              }}
+            >
+                      {Math.round(unit.totalBags)}
+            </TableCell>
+            <TableCell
+              sx={{
+                border: '1px solid #fff',
+                background: '#06A19B',
+                color: '#fff',
+                fontWeight: 700,
+                textAlign: 'right',
+                padding: '12px',
+              }}
+            >
+                      {unit.totalKg.toFixed(2)}
+            </TableCell>
+          </TableRow>
+
+                  {/* Farm Total Section - Show after last unit */}
+                  {unitIndex === farm.units.length - 1 && (
+                    <>
+                      {farmFeedTypes.map((feed, feedIndex) => (
+                        <TableRow key={`farm-${farm.farmId}-total-feed-${feedIndex}`}>
+            <TableCell
+              colSpan={2}
+              sx={{
+                border: '1px solid #fff',
+                background: '#fff',
+                padding: '12px',
+              }}
+            >
+                            {feedIndex === 0 ? 'Total' : ''}
+            </TableCell>
+            <TableCell
+              sx={{
+                border: '1px solid #fff',
+                background: '#fff',
+                padding: '12px',
+              }}
+            >
+                            {feed.feedType}
+            </TableCell>
+            <TableCell
+              sx={{
+                border: '1px solid #fff',
+                background: '#fff',
+                textAlign: 'right',
+                padding: '12px',
+              }}
+            >
+                            {Math.round(feed.bags)}
+            </TableCell>
+            <TableCell
+              sx={{
+                border: '1px solid #fff',
+                background: '#fff',
+                textAlign: 'right',
+                padding: '12px',
+              }}
+            >
+                            {feed.kg.toFixed(2)}
+                  </TableCell>
+          </TableRow>
+                      ))}
+
+                      {/* Farm Total Row */}
+          <TableRow>
+            <TableCell
+              colSpan={2}
+              sx={{
+                borderLeft: '1px solid #fff',
+                borderRight: '1px solid #fff',
+                borderBottom: '1px solid #fff',
+                borderTop: '2px solid #000',
+                background: '#06A19B',
+                color: '#fff',
+                fontWeight: 700,
+                padding: '12px',
+              }}
+                        />
+            <TableCell
+              sx={{
+                borderLeft: '1px solid #fff',
+                borderRight: '1px solid #fff',
+                borderBottom: '1px solid #fff',
+                borderTop: '2px solid #000',
+                background: '#06A19B',
+                color: '#fff',
+                fontWeight: 700,
+                padding: '12px',
+              }}
+            >
+                          Total
+            </TableCell>
+                        {/* <TableCell
+                          sx={{
+                            borderLeft: '1px solid #fff',
+                            borderRight: '1px solid #fff',
+                            borderBottom: '1px solid #fff',
+                            borderTop: '2px solid #000',
+                            background: '#06A19B',
+                            color: '#fff',
+                            fontWeight: 700,
+                            padding: '12px',
+                          }}
+                        /> */}
+            <TableCell
+              sx={{
+                borderLeft: '1px solid #fff',
+                borderRight: '1px solid #fff',
+                borderBottom: '1px solid #fff',
+                borderTop: '2px solid #000',
+                background: '#06A19B',
+                color: '#fff',
+                fontWeight: 700,
+                textAlign: 'right',
+                padding: '12px',
+              }}
+            >
+                          {Math.round(farm.totalBags)}
+            </TableCell>
+            <TableCell
+              sx={{
+                borderLeft: '1px solid #fff',
+                borderRight: '1px solid #fff',
+                borderBottom: '1px solid #fff',
+                borderTop: '2px solid #000',
+                background: '#06A19B',
+                color: '#fff',
+                fontWeight: 700,
+                textAlign: 'right',
+                padding: '12px',
+              }}
+            >
+                          {farm.totalKg.toFixed(2)}
+            </TableCell>
+          </TableRow>
+                    </>
+                  )}
+
+                </React.Fragment>
+              );
+            });
+          })}
         </TableBody>
       </Table>
-    </TableContainer>
+    </Box>
   );
 };
 

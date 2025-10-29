@@ -1029,7 +1029,7 @@ export function calculateFishGrowthTilapia(
   startDate: string,
   timeInterval: number,
   selectedFarm?: FarmGroupUnit,
-  wasteFactor: number = 3,
+  wasteFactor?: number,
 ) {
   // Get feedLinks from farm/unit if available, otherwise use empty array
   const feedLinks =
@@ -1245,7 +1245,7 @@ export function calculateFishGrowthRainBowTrout(
   startDate: string,
   timeInterval: number,
   selectedFarm?: FarmGroupUnit,
-  wasteFactor: number = 3,
+  wasteFactor?: number,
 ) {
   console.log("selectedGrowthModel", selectedGrowthModel);
   // Resolve feed profile links for the selected production unit, if available
@@ -1455,7 +1455,7 @@ export function calculateFishGrowthAfricanCatfish(
   startDate: string,
   timeInterval: number,
   selectedFarm?: FarmGroupUnit,
-  wasteFactor: number = 3,
+  wasteFactor?: number,
 ) {
   // Resolve feed profile links for the selected production unit, if available
   const feedLinks =
