@@ -126,6 +126,7 @@ function GrowthModel({
   const [selectedFarms, setSelectedFarms] = useState<string[]>([]);
   const [availableFarms, setAvailableFarms] = useState<Farm[]>([]);
   const [selectedFarmsForModel, setSelectedFarmsForModel] = useState<string[]>([]);
+  const [farmSelectionError, setFarmSelectionError] = useState<string>('');
 
   const summaryData = allFarms.flatMap((farm) =>
     (farm.FishManageHistory || []).map((history) => {
@@ -311,14 +312,19 @@ function GrowthModel({
       const duplicate = growthModels.find(
         (gm) =>
           String(gm.models.specieId) === String(species) &&
-          String(gm.models.productionSystemId) === String(productionSystem)
+          String(gm.models.productionSystemId) === String(productionSystem) &&
+          // In edit mode, exclude the current model being edited
+          (editMode ? String(gm.id) !== String(modelId) : true)
       );
       setShowExistingModelCheckbox(!!duplicate);
-
+      // Reset farm selection when duplicate status changes
+      if (!duplicate && !editMode) {
+        setSelectedFarmsForModel([]);
+      }
     } else {
       setShowExistingModelCheckbox(false);
     }
-  }, [species, productionSystem, growthModels, editMode]);
+  }, [species, productionSystem, growthModels, editMode, modelId]);
 
   useEffect(() => {
     // Set TGC defaults
@@ -335,6 +341,16 @@ function GrowthModel({
 
   const onSubmit: SubmitHandler<InputType> = async (data) => {
     const user = JSON.parse(loggedUser ?? '');
+    // Reset farm selection error
+    setFarmSelectionError('');
+    
+    // Check if farm selection is required (when duplicate exists)
+    if (showExistingModelCheckbox && selectedFarmsForModel.length === 0) {
+      setFarmSelectionError('Please select at least one farm');
+      toast.error('Please select at least one farm');
+      return;
+    }
+    
     if (user?.organisationId && data.name) {
       // Prevent API call if one is already in progress
       if (isApiCallInProgress) return;
@@ -512,20 +528,30 @@ function GrowthModel({
                         type="text"
                         className="form-input"
                         focused
-                        {...register('name', { required: true })}
+                        {...register('name', {
+                          required: 'This field is required.',
+                          validate: (value) => {
+                            const trimmedValue = value?.trim();
+                            if (!trimmedValue || trimmedValue.length === 0) {
+                              return 'Name cannot be empty or contain only whitespace.';
+                            }
+                            return true;
+                          },
+                        })}
                         error={!!errors.name}
                         sx={{
                           width: '100%',
                         }}
                       />
                     </FormControl>
+                    
                     <Typography
                       variant="body2"
                       color="red"
                       fontSize={13}
                       mt={0.5}
                     >
-                      {errors.name ? 'This field is required.' : ''}
+                      {errors.name?.message || ''}
                     </Typography>
                   </Grid>
 
@@ -617,9 +643,9 @@ function GrowthModel({
                       {errors.specie ? 'This field is required.' : ''}
                     </Typography>
                   </Grid>
-                  {availableFarms.length > 0 && (
+                  {showExistingModelCheckbox && availableFarms.length > 0 && (
                     <Grid item md={4} xs={12}>
-                      <FormControl fullWidth className="form-input" focused>
+                      <FormControl fullWidth className="form-input" focused error={!!farmSelectionError}>
                         <InputLabel id="farm-multi-select-label">Select Farms *</InputLabel>
                         <Select
                           labelId="farm-multi-select-label"
@@ -629,6 +655,10 @@ function GrowthModel({
                           onChange={(e) => {
                             const value = typeof e.target.value === 'string' ? e.target.value.split(',') : e.target.value;
                             setSelectedFarmsForModel(value as string[]);
+                            // Clear error when user selects a farm
+                            if (value.length > 0) {
+                              setFarmSelectionError('');
+                            }
                           }}
                           renderValue={(selected) =>
                             selected
@@ -645,12 +675,20 @@ function GrowthModel({
                             </MenuItem>
                           ))}
                         </Select>
-                        {selectedFarmsForModel.length === 0 && (
+                        {(selectedFarmsForModel.length === 0 || farmSelectionError) && (
                           <FormHelperText sx={{ color: '#d32f2f' }}>
-                            Please select at least one farm
+                            {farmSelectionError || 'Please select at least one farm'}
                           </FormHelperText>
                         )}
                       </FormControl>
+                      <Typography
+                        variant="body2"
+                        color="red"
+                        fontSize={13}
+                        mt={0.5}
+                      >
+                        {farmSelectionError ? 'This field is required.' : ''}
+                      </Typography>
                     </Grid>
                   )}
 
