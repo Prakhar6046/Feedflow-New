@@ -15,7 +15,6 @@ export async function POST(req: NextRequest) {
       );
     }
     const body = await req.json();
-    console.log('Received payload for updating farm:', body);
     const { yearBasedPredicationId, modelId, ...productionParameterPayload } =
       body.productionParameter;
 
@@ -45,15 +44,11 @@ export async function POST(req: NextRequest) {
 
     // Update the existing farm address
     let farmAddressId = body.farmAddress?.id;
-    console.log('Farm Address Data for Edit:', body.farmAddress);
-    console.log('Farm Address ID from frontend:', farmAddressId);
-
     // First, get the current farm to check if it has an existing address
     const currentFarm = await prisma.farm.findUnique({
       where: { id: body.id },
       include: { farmAddress: true }
     });
-    console.log('Current farm with address:', currentFarm);
 
     if (!farmAddressId) {
       // If no ID provided, check if farm already has an address
@@ -72,7 +67,6 @@ export async function POST(req: NextRequest) {
               country: body.farmAddress.country,
             },
           });
-          console.log('Updated existing farm address (no ID provided):', farmAddressId);
         } catch (addressError) {
           console.error('Error updating existing farm address:', addressError);
           throw new Error('Failed to update existing farm address: ' + (addressError instanceof Error ? addressError.message : 'Unknown error'));
@@ -91,7 +85,6 @@ export async function POST(req: NextRequest) {
             },
           });
           farmAddressId = newFarmAddress.id;
-          console.log('Created new farm address (no existing address):', newFarmAddress);
         } catch (addressError) {
           console.error('Error creating farm address:', addressError);
           throw new Error('Failed to create farm address: ' + (addressError instanceof Error ? addressError.message : 'Unknown error'));
@@ -117,7 +110,6 @@ export async function POST(req: NextRequest) {
             },
           });
           farmAddressId = newFarmAddress.id;
-          console.log('Created new farm address (ID not found):', newFarmAddress);
         } else {
           await prisma.farmAddress.update({
             where: { id: farmAddressId },
@@ -130,7 +122,6 @@ export async function POST(req: NextRequest) {
               country: body.farmAddress.country,
             },
           });
-          console.log('Updated existing farm address:', farmAddressId);
         }
       } catch (addressError) {
         console.error('Error updating farm address:', addressError);
@@ -144,15 +135,15 @@ export async function POST(req: NextRequest) {
     // Update the existing farm
     let updatedFarm;
     try {
-      console.log('Updating farm with farmAddressId:', farmAddressId);
-      console.log('Farm update data:', {
-        farmAddressId: farmAddressId,
-        fishFarmerId: Number(body.fishFarmer),
-        name: body.name,
-        farmAltitude: body.farmAltitude,
-        lat: body.lat,
-        lng: body.lng,
-      });
+
+      // console.log('Farm update data:', {
+      //   farmAddressId: farmAddressId,
+      //   fishFarmerId: Number(body.fishFarmer),
+      //   name: body.name,
+      //   farmAltitude: body.farmAltitude,
+      //   lat: body.lat,
+      //   lng: body.lng,
+      // });
       
       updatedFarm = await prisma.farm.update({
         where: { id: body.id },
@@ -165,14 +156,13 @@ export async function POST(req: NextRequest) {
           lng: body.lng,
         },
       });
-      console.log('Updated farm:', updatedFarm);
+  
       
       // Verify the farm address relationship after update
       const farmWithAddress = await prisma.farm.findUnique({
         where: { id: body.id },
         include: { farmAddress: true }
       });
-      console.log('Farm with address after update:', farmWithAddress);
     } catch (farmError) {
       console.error('Error updating farm:', farmError);
       throw new Error('Failed to update farm: ' + (farmError instanceof Error ? farmError.message : 'Unknown error'));

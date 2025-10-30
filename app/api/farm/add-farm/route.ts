@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
       productionParamtertsUnitsArray,
       FeedProfileUnits,
     } = body;
-    console.log('Received payload:', body);
+
     if (
       !productionParameter ||
       !farmAddress ||
@@ -93,8 +93,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Create farm address
-    console.log('Farm Address Data:', farmAddress);
+    // Create farm addres
     let newFarmAddress;
     try {
       newFarmAddress = await prisma.farmAddress.create({
@@ -107,7 +106,6 @@ export async function POST(request: NextRequest) {
           country: farmAddress.country,
         },
       });
-      console.log('New Farm Address:', newFarmAddress);
     } catch (addressError) {
       console.error('Error creating farm address:', addressError);
       return NextResponse.json(
@@ -135,7 +133,6 @@ export async function POST(request: NextRequest) {
           userId,
         },
       });
-      console.log('New Farm:', farm);
     } catch (farmError) {
       console.error('Error creating farm:', farmError);
       // Clean up the created address if farm creation fails

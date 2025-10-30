@@ -92,8 +92,6 @@ const FeedSelection = ({ data, feedSuppliers }: Iprops) => {
       option: string;
     }[]
   >([]);
-  console.log('supplierOptions', supplierOptions);
-  console.log('feedSuppliers with contact info', feedSuppliers);
   const [selectedSupplier, setSelectedSupplier] = useState<
     {
       id: number;

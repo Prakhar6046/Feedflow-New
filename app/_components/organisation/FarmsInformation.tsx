@@ -48,7 +48,6 @@ const FarmsInformation = ({
   watch,
   errors,
 }: Props) => {
-  console.log('organisationData?.Farm', organisationData);
   const router = useRouter();
   const loggedUser: any = getCookie('logged-user');
   const token = getCookie('auth-token');

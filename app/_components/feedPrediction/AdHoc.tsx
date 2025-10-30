@@ -159,7 +159,6 @@ function AdHoc({ data, setData }: Iprops) {
 
   const [selectedGrowthModel, setSelectedGrowthModel] =
     useState<OrganisationModelResponse | null>(null);
-  console.log("selectedGrowthModel", selectedGrowthModel);  
   const selectedSpecies = watch('species');
   const selectedProductionSystem = watch('productionSystem');
 

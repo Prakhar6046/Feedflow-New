@@ -1247,7 +1247,6 @@ export function calculateFishGrowthRainBowTrout(
   selectedFarm?: FarmGroupUnit,
   wasteFactor?: number,
 ) {
-  console.log("selectedGrowthModel", selectedGrowthModel);
   // Resolve feed profile links for the selected production unit, if available
   const feedLinks =
     selectedFarm?.productionUnit.FeedProfileProductionUnit?.[0]?.feedProfile

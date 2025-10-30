@@ -57,7 +57,7 @@ const FarmInformation: NextPage<Props> = ({
     getValues,
     reset,
   } = useForm<Farm>({ mode: 'onChange' });
- console.log('fishfarmers', fishfarmers);
+
   const loggedUser: any = getCookie('logged-user');
   const user = JSON.parse(loggedUser || '{}');
   const [selectedManagerIds, setSelectedManagerIds] = useState<string[]>([]);
@@ -66,7 +66,6 @@ const FarmInformation: NextPage<Props> = ({
   const [lat, setLat] = useState<string>('');
   const [lng, setLng] = useState<string>('');
   const [formData, setFormData] = useState<any>();
-  console.log('formData', formData);
   const [addressInformation, setAddressInformation] = useState<any>();
   const [useAddress, setUseAddress] = useState<boolean>(false);
   const [searchedAddress, setSearchedAddress] = useState<any>();
@@ -102,10 +101,6 @@ const FarmInformation: NextPage<Props> = ({
       contact: selectedContactObjects,
     };
 
-    console.log('FarmInformation onSubmit - selectedManagerIds:', selectedManagerIds);
-    console.log('FarmInformation onSubmit - finalData.managerId:', finalData.managerId);
-    console.log('FarmInformation onSubmit - isEditFarm:', isEditFarm);
-
     dispatch(farmAction.updateFarm(finalData));
     setLocalItem('farmData', finalData);
     setActiveStep(1);
@@ -140,9 +135,6 @@ const FarmInformation: NextPage<Props> = ({
   useEffect(() => {
     // Guard: Only run when all necessary data is available
 if (!editFarm || !(fishFarmers?.length) || formData) return;
-
-    console.log('Setting up edit farm data - editFarm.FarmManger:', editFarm.FarmManger);
-
     // Set basic form fields
     setValue('name', editFarm?.name);
     setValue('farmAltitude', String(Number(editFarm?.farmAltitude).toFixed(2)));
@@ -171,7 +163,6 @@ if (!editFarm || !(fishFarmers?.length) || formData) return;
           );
           return contact ? String(contact.id) : null;
         }).filter(Boolean);
-        console.log('Setting selectedManagerIds from editFarm:', managerContactIds);
         setSelectedManagerIds(managerContactIds);
       }
     }
@@ -193,7 +184,6 @@ if (!editFarm || !(fishFarmers?.length) || formData) return;
       setValue('fishFarmer', data?.fishFarmer);
       setValue('lat', data?.lat);
       setValue('lng', data?.lng);
-      console.log('Setting selectedManagerIds from formData:', data?.managerId || []);
       setSelectedManagerIds(data?.managerId || []);
     }
   }, [formData, setValue]);
