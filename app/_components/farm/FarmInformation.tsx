@@ -172,7 +172,6 @@ if (!editFarm || !(fishFarmers?.length) || formData) return;
   useEffect(() => {
     if (formData && Object.keys(formData).length) {
       const data = formData;
-      console.log('Loading from formData - data.managerId:', data?.managerId);
       setValue('name', data?.name);
       setValue('farmAltitude', data?.farmAltitude);
       setValue('addressLine1', data?.addressLine1);
