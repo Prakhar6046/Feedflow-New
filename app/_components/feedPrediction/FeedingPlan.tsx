@@ -3,7 +3,7 @@ import { setLocalItem } from '@/app/_lib/utils';
 import * as ValidationPatterns from '@/app/_lib/utils/validationPatterns';
 import * as ValidationMessages from '@/app/_lib/utils/validationsMessage';
 import { FarmGroup } from '@/app/_typeModels/production';
-import { selectSelectedFarms } from '@/lib/features/commonFilters/commonFilters';
+import { selectSelectedFarms, selectSelectedAverage } from '@/lib/features/commonFilters/commonFilters';
 import { useAppSelector } from '@/lib/hooks';
 import {
   Box,
@@ -78,6 +78,7 @@ export const tempSelectionOptions = [
 function FeedingPlan({ productionData, startDate, endDate }: Props) {
   const router = useRouter();
   const selectedDropDownfarms = useAppSelector(selectSelectedFarms);
+  const selectedAverage = useAppSelector(selectSelectedAverage);
   
   const {
     register,
@@ -100,22 +101,102 @@ function FeedingPlan({ productionData, startDate, endDate }: Props) {
     mode: 'onChange',
   });
 
-  // Autopopulate fields when one farm is selected
+  // Autopopulate fields from production data for all selected farms/units
   useEffect(() => {
-    if (selectedDropDownfarms?.length === 1 && productionData?.length === 1) {
-      const selectedFarmData = productionData[0];
-      // Autopopulate from the first unit's data
-      if (selectedFarmData.units?.length > 0) {
-        const unit = selectedFarmData.units[0];
-        if (unit.fishCount && Number(unit.fishCount) > 0) {
-          setValue('numberOfFishs', Number(unit.fishCount));
+    if (productionData && productionData.length > 0 && selectedDropDownfarms && selectedDropDownfarms.length > 0) {
+      let fishCountSum = 0;
+      let meanWeightSum = 0;
+      let unitCount = 0;
+
+      // Iterate through all farms and units in productionData
+      productionData.forEach((farmGroup) => {
+        if (farmGroup.units && farmGroup.units.length > 0) {
+          farmGroup.units.forEach((unit) => {
+            // Get fishCount and meanWeight - check averages first based on selected average type, then direct value
+            let fishCount = 0;
+            let meanWeight = 0;
+
+            // Check for average values based on selected average type
+            if (selectedAverage === 'Lastest sample average' || selectedAverage === 'Individual average') {
+              if (unit.individualAverages?.fishCount) {
+                fishCount = Number(unit.individualAverages.fishCount) || 0;
+              } else if (unit.fishCount) {
+                fishCount = Number(unit.fishCount) || 0;
+              }
+
+              if (unit.individualAverages?.meanWeight) {
+                meanWeight = Number(unit.individualAverages.meanWeight) || 0;
+              } else if (unit.meanWeight) {
+                meanWeight = Number(unit.meanWeight) || 0;
+              }
+            } else if (selectedAverage === 'Monthly average') {
+              if (unit.monthlyAverages?.fishCount) {
+                fishCount = Number(unit.monthlyAverages.fishCount) || 0;
+              } else if (unit.fishCount) {
+                fishCount = Number(unit.fishCount) || 0;
+              }
+
+              if (unit.monthlyAverages?.meanWeight) {
+                meanWeight = Number(unit.monthlyAverages.meanWeight) || 0;
+              } else if (unit.meanWeight) {
+                meanWeight = Number(unit.meanWeight) || 0;
+              }
+            } else if (selectedAverage === 'Yearly average') {
+              if (unit.yearlyAverages?.fishCount) {
+                fishCount = Number(unit.yearlyAverages.fishCount) || 0;
+              } else if (unit.fishCount) {
+                fishCount = Number(unit.fishCount) || 0;
+              }
+
+              if (unit.yearlyAverages?.meanWeight) {
+                meanWeight = Number(unit.yearlyAverages.meanWeight) || 0;
+              } else if (unit.meanWeight) {
+                meanWeight = Number(unit.meanWeight) || 0;
+              }
+            } else if (selectedAverage === 'All-time average') {
+              if (unit.allTimeAverages?.fishCount) {
+                fishCount = Number(unit.allTimeAverages.fishCount) || 0;
+              } else if (unit.fishCount) {
+                fishCount = Number(unit.fishCount) || 0;
+              }
+
+              if (unit.allTimeAverages?.meanWeight) {
+                meanWeight = Number(unit.allTimeAverages.meanWeight) || 0;
+              } else if (unit.meanWeight) {
+                meanWeight = Number(unit.meanWeight) || 0;
+              }
+            } else {
+              // Fallback to direct values if no average type matches
+              if (unit.fishCount) {
+                fishCount = Number(unit.fishCount) || 0;
+              }
+              if (unit.meanWeight) {
+                meanWeight = Number(unit.meanWeight) || 0;
+              }
+            }
+
+            // Sum up the values
+            if (fishCount > 0) {
+              fishCountSum += fishCount;
+              unitCount++;
+            }
+            if (meanWeight > 0) {
+              meanWeightSum += meanWeight;
+            }
+          });
         }
-        if (unit.meanWeight && Number(unit.meanWeight) > 0) {
-          setValue('fishWeight', Number(unit.meanWeight));
-        }
+      });
+
+      // Set the values - use sum for fish count, average for mean weight
+      if (fishCountSum > 0) {
+        setValue('numberOfFishs', fishCountSum);
+      }
+      if (meanWeightSum > 0 && unitCount > 0) {
+        const avgMeanWeight = meanWeightSum / unitCount;
+        setValue('fishWeight', avgMeanWeight);
       }
     }
-  }, [selectedDropDownfarms, productionData, setValue]);
+  }, [selectedDropDownfarms, productionData, selectedAverage, setValue]);
   const onSubmit: SubmitHandler<FormInputs> = (data) => {
     // const formattedDate = dayjs(startDate).format('YYYY-MM-DD');
     // const diffInDays = dayjs(endDate).diff(dayjs(startDate), 'day');
@@ -124,7 +205,14 @@ function FeedingPlan({ productionData, startDate, endDate }: Props) {
       toast.error('Select at least one farm.');
       return;
     }
-    if (productionData?.length === 0) {
+    if (!productionData || productionData.length === 0) {
+      toast.dismiss();
+      toast.error('No production data available. Please select farms and units with production data.');
+      return;
+    }
+    if (!startDate || !endDate) {
+      toast.dismiss();
+      toast.error('Please select both start date and end date.');
       return;
     }
 
@@ -180,7 +268,10 @@ function FeedingPlan({ productionData, startDate, endDate }: Props) {
           my: 4,
         }}
       />
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(onSubmit, (errors) => {
+        console.error('Form validation errors:', errors);
+        toast.error('Please fix the form errors before submitting.');
+      })}>
         <Grid container spacing={2} mb={5} alignItems={'center'}>
           <Grid item xl={2} lg={4} md={4} sm={6} xs={12}>
             <Box position={'relative'}>

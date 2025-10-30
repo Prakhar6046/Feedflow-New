@@ -27,8 +27,8 @@ export interface FilterState {
 const initialState: FilterState = {
   allFarms: [],
   allUnits: [],
-  startDate: dayjs().startOf('year').format(),
-  endDate: dayjs().format(),
+  startDate: dayjs().format(), // Auto-populate with current date
+  endDate: dayjs().add(30, 'day').format(), // Default to 30 days in the future
   selectedDropDownYears: [new Date().getFullYear()],
   selectedDropDownfarms: [],
   selectedDropDownUnits: [],
@@ -73,8 +73,8 @@ const commonFilterSlice = createSlice({
       state.selectedDropDownUnits = [];
       state.selectedDropDownYears = [new Date().getFullYear()];
       state.selectedAverage = averagesDropdown[0];
-      state.startDate = dayjs().startOf('year').format();
-      state.endDate = dayjs().format();
+      state.startDate = dayjs().format(); // Reset to current date
+      state.endDate = dayjs().add(30, 'day').format(); // Reset to 30 days in the future
     },
   },
 });

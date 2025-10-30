@@ -34,25 +34,17 @@ export async function POST(request: NextRequest) {
       },
     });
     if (isDefault && model.specie) {
-      // Check if a default already exists for this species in this organisation
-      const existingDefault = await prisma.growthModel.findFirst({
+      // If setting as default, unset any existing default for this species
+      await prisma.growthModel.updateMany({
         where: {
           organisationId: parseInt(organisationId),
           isDefault: true,
           models: { specieId: model.specie },
         },
+        data: {
+          isDefault: false,
+        },
       });
-
-      if (existingDefault) {
-        return NextResponse.json(
-          {
-            status: false,
-            message: `This species already has a default Production System. Do you want to replace it?`,
-            existingDefaultId: existingDefault.id,
-          },
-          { status: 400 }
-        );
-      }
     }
 
     const growthModel = await prisma.growthModel.create({
@@ -223,8 +215,8 @@ export async function PUT(request: NextRequest) {
     }
 
     if (isDefault && model.specie) {
-      // Check if another default exists for this species
-      const existingDefault = await prisma.growthModel.findFirst({
+      // If setting as default, unset any existing default for this species (excluding current model)
+      await prisma.growthModel.updateMany({
         where: {
           organisationId: parseInt(organisationId),
           isDefault: true,
@@ -233,18 +225,10 @@ export async function PUT(request: NextRequest) {
           },
           NOT: { id: parseInt(modelId) },
         },
+        data: {
+          isDefault: false,
+        },
       });
-
-      if (existingDefault) {
-        return NextResponse.json(
-          {
-            status: false,
-            message: `This species already has a default growth model. Do you want to replace it?`,
-            existingDefaultId: existingDefault.id,
-          },
-          { status: 400 }
-        );
-      }
     }
     if (selectedFarms) {
       await prisma.growthModelFarm.deleteMany({ where: { growthModelId: parseInt(modelId) } });

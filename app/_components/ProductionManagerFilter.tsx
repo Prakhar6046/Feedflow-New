@@ -424,7 +424,12 @@ function ProductionManagerFilter({
     //   startDate,
     //   endDate
     // );
-    filteredData = filterByDates(filteredData, startDate, endDate);
+    // Only filter by dates if the start date is in the past (historical filtering)
+    // If start date is today or in the future, it's a prediction period, so don't filter historical data
+    const isFutureOrToday = startDate && (dayjs(startDate).isAfter(dayjs(), 'day') || dayjs(startDate).isSame(dayjs(), 'day'));
+    if (!isFutureOrToday) {
+      filteredData = filterByDates(filteredData, startDate, endDate);
+    }
 
     // Apply averages
     const processedData = calculateAverages(filteredData, selectedAverage);
@@ -594,10 +599,15 @@ function ProductionManagerFilter({
                   value={dayjs(startDate)}
                   onChange={(value) => {
                     const isoDate = value?.toISOString();
-                    if (isoDate)
+                    if (isoDate) {
                       dispatch(commonFilterAction.setStartDate(isoDate));
+                      // If end date is before new start date, update it to the same as start date
+                      if (dayjs(endDate).isBefore(dayjs(isoDate))) {
+                        dispatch(commonFilterAction.setEndDate(isoDate));
+                      }
+                    }
                   }}
-                  maxDate={dayjs(endDate)}
+                  minDate={dayjs()} // Allow only current date and future dates (no maximum limit)
                 />
               </LocalizationProvider>
             </FormControl>
@@ -630,8 +640,7 @@ function ProductionManagerFilter({
                     borderRadius: '6px',
                   }}
                   className="date-picker form-input"
-                  minDate={dayjs(startDate)}
-                  maxDate={dayjs()}
+                  minDate={dayjs(startDate)} // Can be any date on or after the start date (no maximum limit)
                 />
               </LocalizationProvider>
             </FormControl>

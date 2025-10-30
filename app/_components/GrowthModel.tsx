@@ -3,6 +3,11 @@ import {
   Box,
   Button,
   Checkbox,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   Divider,
   FormControl,
   FormControlLabel,
@@ -212,6 +217,10 @@ function GrowthModel({
   const [setDefault, setSetDefault] = useState(false);
   const [useExistingModel, setUseExistingModel] = useState(false);
   const [showExistingModelCheckbox, setShowExistingModelCheckbox] = useState(false);
+  const [hasExistingDefault, setHasExistingDefault] = useState(false);
+  const [existingDefaultModel, setExistingDefaultModel] = useState<OrganisationModelResponse | null>(null);
+  const [showDefaultConfirmDialog, setShowDefaultConfirmDialog] = useState(false);
+  const [pendingDefaultChange, setPendingDefaultChange] = useState(false);
 
   const token = getCookie('auth-token');
   const {
@@ -326,6 +335,29 @@ function GrowthModel({
     }
   }, [species, productionSystem, growthModels, editMode, modelId]);
 
+  // Check for existing default model for the selected species
+  useEffect(() => {
+    if (species && growthModels.length > 0) {
+      const existingDefault = growthModels.find(
+        (gm) =>
+          String(gm.models.specieId) === String(species) &&
+          gm.isDefault === true &&
+          // In edit mode, exclude the current model being edited
+          (editMode ? String(gm.id) !== String(modelId) : true)
+      );
+      if (existingDefault) {
+        setHasExistingDefault(true);
+        setExistingDefaultModel(existingDefault);
+      } else {
+        setHasExistingDefault(false);
+        setExistingDefaultModel(null);
+      }
+    } else {
+      setHasExistingDefault(false);
+      setExistingDefaultModel(null);
+    }
+  }, [species, growthModels, editMode, modelId]);
+
   useEffect(() => {
     // Set TGC defaults
     const defaults = TGCFormulas[selectedModel].defaultValues;
@@ -355,7 +387,6 @@ function GrowthModel({
       // Prevent API call if one is already in progress
       if (isApiCallInProgress) return;
       setIsApiCallInProgress(true);
-      setLoading(true);
       try {
         const url = editMode ? `/api/growth-model` : '/api/growth-model';
 
@@ -413,12 +444,17 @@ function GrowthModel({
         if (response.ok) {
 
           toast.dismiss();
-          toast.success(
-            result.message ||
+          let successMessage = result.message ||
             (editMode
               ? 'Growth model updated successfully'
-              : 'Growth model created successfully'),
-          );
+              : 'Growth model created successfully');
+          
+          // If default was set and there was an existing default, add info about replacement
+          if (setDefault && hasExistingDefault) {
+            successMessage += ' The existing default model has been replaced.';
+          }
+          
+          toast.success(successMessage);
           setSpecies('');
           setProductionSystem('');
           setSetDefault(false);
@@ -451,7 +487,6 @@ function GrowthModel({
         toast.error('Something went wrong. Please try again.');
       } finally {
         setIsApiCallInProgress(false);
-        setLoading(false);
       }
     } else {
       toast.error('Please fill in all required fields.');
@@ -700,7 +735,16 @@ function GrowthModel({
                     <Checkbox
                       className="checkbox-style"
                       checked={setDefault}
-                      onChange={(e) => setSetDefault(e.target.checked)}
+                      onChange={(e) => {
+                        const newValue = e.target.checked;
+                        // If trying to set as default and there's already an existing default, show confirmation
+                        if (newValue && hasExistingDefault && existingDefaultModel) {
+                          setPendingDefaultChange(true);
+                          setShowDefaultConfirmDialog(true);
+                        } else {
+                          setSetDefault(newValue);
+                        }
+                      }}
                       disabled={!species || !productionSystem}
                     />
                   }
@@ -708,6 +752,20 @@ function GrowthModel({
                 />
                 <FormHelperText>
                   Only available after selecting both a species and a production system.
+                  {hasExistingDefault && existingDefaultModel && (
+                    <Typography
+                      variant="body2"
+                      component="span"
+                      sx={{ 
+                        display: 'block', 
+                        color: '#d32f2f', 
+                        mt: 1,
+                        fontWeight: 500
+                      }}
+                    >
+                      ⚠️ A default model already exists for this species. Checking this box will replace it.
+                    </Typography>
+                  )}
                 </FormHelperText>
                 {showExistingModelCheckbox && (
                   <Box sx={{ mt: 2 }}>
@@ -973,6 +1031,7 @@ function GrowthModel({
               >
                 <Button
                   type="submit"
+                  disabled={isApiCallInProgress}
                   variant="contained"
                   sx={{
                     color: '#fff',
@@ -992,6 +1051,95 @@ function GrowthModel({
           </Stack>
         </Grid>
       )}
+
+      {/* Confirmation Dialog for replacing existing default model */}
+      <Dialog
+        open={showDefaultConfirmDialog}
+        onClose={() => {
+          setShowDefaultConfirmDialog(false);
+          setPendingDefaultChange(false);
+        }}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>Replace Default Growth Model?</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            {existingDefaultModel && (
+              <>
+                A default growth model already exists for this species:
+                <Typography
+                  component="div"
+                  sx={{
+                    mt: 2,
+                    p: 2,
+                    bgcolor: '#f5f5f5',
+                    borderRadius: 1,
+                    fontWeight: 500,
+                  }}
+                >
+                  Model Name: {existingDefaultModel.models.name}
+                  <br />
+                  Production System: {
+                    productionSystemList.find(
+                      (ps) => ps.id === existingDefaultModel.models.productionSystemId
+                    )?.name || 'N/A'
+                  }
+                </Typography>
+                <Typography component="div" sx={{ mt: 2 }}>
+                  If you proceed, this new model will become the default and the existing default will be unset.
+                </Typography>
+              </>
+            )}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions
+           sx={{
+            p: 3,
+          }}
+        >
+          <Button
+            type="button"
+            variant="contained"
+            onClick={() => {
+              setShowDefaultConfirmDialog(false);
+              setPendingDefaultChange(false);
+            }}
+            sx={{
+              background: '#06A19B',
+              fontWeight: 600,
+              padding: '6px 16px',
+              width: 'fit-content',
+              textTransform: 'capitalize',
+              borderRadius: '8px',
+            }}
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={() => {
+              setSetDefault(true);
+              setShowDefaultConfirmDialog(false);
+              setPendingDefaultChange(false);
+              toast.success('Default model will be replaced when you save. Please click Save to confirm.');
+            }}
+            type="button"
+            variant="contained"
+            sx={{
+              background: '#fff',
+              color: '#06A19B',
+              fontWeight: 600,
+              padding: '6px 16px',
+              width: 'fit-content',
+              textTransform: 'capitalize',
+              borderRadius: '8px',
+              border: '1px solid #06A19B',
+            }}
+          >
+            Yes, Replace Default
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }
