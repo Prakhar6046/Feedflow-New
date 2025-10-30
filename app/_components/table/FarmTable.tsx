@@ -52,7 +52,7 @@ export default function FarmTable({ farms, permisions }: Props) {
   const loggedUser: any = getCookie('logged-user');
   const token = getCookie('auth-token');
   const user: SingleUser = JSON.parse(loggedUser);
-  console.log('user', user);
+  
   const [selectedFarm, setSelectedFarm] = useState<any>(null);
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null,
@@ -100,7 +100,7 @@ export default function FarmTable({ farms, permisions }: Props) {
       setOrderBy(data.column);
     }
   }, [sortDataFromLocal]);
-  console.log('token', token);
+
   
   const handleDeleteFarms = async (farmId: string) => {
     if (!farmId) return;

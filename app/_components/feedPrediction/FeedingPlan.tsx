@@ -76,9 +76,6 @@ export const tempSelectionOptions = [
   },
 ];
 function FeedingPlan({ productionData, startDate, endDate }: Props) {
-  console.log("startDate", startDate);
-  console.log("endDate", endDate);    
-  console.log("productionData", productionData);
   const router = useRouter();
   const selectedDropDownfarms = useAppSelector(selectSelectedFarms);
   
@@ -128,7 +125,6 @@ function FeedingPlan({ productionData, startDate, endDate }: Props) {
       return;
     }
     if (productionData?.length === 0) {
-      console.log('No production data available for the selected farms.');
       return;
     }
 

@@ -77,6 +77,7 @@ export const tempSelectionOptions = [
 ];
 function FeedingPlanOutput() {
   const [loading, setLoading] = useState(false);
+  const [dataLoading, setDataLoading] = useState(true);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewHtml, setPreviewHtml] = useState<string | null>(null);
   const [previewTitle, setPreviewTitle] = useState<string>('Print Preview');
@@ -1521,6 +1522,7 @@ function FeedingPlanOutput() {
   // Fetch growth models for organisation
   useEffect(() => {
     if (!organisationId) return;
+    setDataLoading(true);
     const fetchModels = async () => {
       try {
         const res = await fetch(
@@ -1531,6 +1533,8 @@ function FeedingPlanOutput() {
         setGrowthModelData(data.data || []);
       } catch (error) {
         console.error('Error fetching growth model data:', error);
+      } finally {
+        setDataLoading(false);
       }
     };
     fetchModels();
@@ -1724,15 +1728,26 @@ function FeedingPlanOutput() {
       setValue('mortalityRate', data.mortalityRate);
       setValue('wasteFactor', data.wasteFactor);
       setFomData(data);
+    } else {
+      // If no data, stop loading
+      setDataLoading(false);
     }
   }, []);
 
   useEffect(() => {
-    if (!formData || !growthModelData.length || !selectedFarm || !selectedUnit)
+    if (!formData || !growthModelData.length || !selectedFarm || !selectedUnit) {
+      // If we're still waiting for dependencies, keep loading true if growth models haven't loaded yet
+      if (!growthModelData.length) {
+        setDataLoading(true);
+      }
       return;
+    }
 
-    const selectedFlatData = formData.productionData.flatMap(
-      (farm: FarmGroup) => {
+    setDataLoading(true);
+    // Use setTimeout to allow UI to update, then process data
+    setTimeout(() => {
+      const selectedFlatData = formData.productionData.flatMap(
+        (farm: FarmGroup) => {
         // Find the matched unit first
         const matchedUnit = farm.units.find(
           (unit) => unit.id === selectedUnit && farm.farm.id === selectedFarm,
@@ -1812,10 +1827,12 @@ function FeedingPlanOutput() {
           unit: matchedUnit.productionUnit.name,
           fishGrowthData: fishGrowthDataWithMortality,
         };
-      },
-    );
+        },
+      );
 
-    setFlatData(selectedFlatData);
+      setFlatData(selectedFlatData);
+      setDataLoading(false);
+    }, 0);
   }, [selectedFarm, selectedUnit, formData, growthModelData]);
 
   useEffect(() => {
@@ -2106,53 +2123,80 @@ function FeedingPlanOutput() {
         </Grid>
       </Box>
 
+      {/* Single Loading Message - Centered */}
+      {dataLoading && (
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            minHeight: '200px',
+            mb: 4,
+          }}
+        >
+          <Typography
+            sx={{
+              color: '#666',
+              fontWeight: 500,
+              fontSize: '1.2rem',
+              padding: '8px 20px',
+            }}
+          >
+            Loading data...
+          </Typography>
+        </Box>
+      )}
+
       {/* Top-right action bar */}
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'flex-end',
-          gap: 1.5,
-          mb: 2,
-        }}
-      >
-        <Button
-          type="button"
-          variant="contained"
-          onClick={handleComprehensivePreview}
+      {!dataLoading && (
+        <Box
           sx={{
-            background: '#06A19B',
-            color: '#fff',
-            fontWeight: 600,
-            padding: '8px 20px',
-            width: 'fit-content',
-            textTransform: 'capitalize',
-            borderRadius: '8px',
-            border: '1px solid #06A19B',
+            display: 'flex',
+            justifyContent: 'flex-end',
+            gap: 1.5,
+            mb: 2,
           }}
         >
-          Preview Report
-        </Button>
-        <Button
-          type="button"
-          variant="contained"
-          onClick={handleComprehensivePDF}
-          sx={{
-            background: '#fff',
-            color: '#06A19B',
-            fontWeight: 600,
-            padding: '8px 20px',
-            width: 'fit-content',
-            textTransform: 'capitalize',
-            borderRadius: '8px',
-            border: '1px solid #06A19B',
-          }}
-        >
-          Download PDF
-        </Button>
-      </Box>
+          <Button
+            type="button"
+            variant="contained"
+            onClick={handleComprehensivePreview}
+            sx={{
+              background: '#06A19B',
+              color: '#fff',
+              fontWeight: 600,
+              padding: '8px 20px',
+              width: 'fit-content',
+              textTransform: 'capitalize',
+              borderRadius: '8px',
+              border: '1px solid #06A19B',
+            }}
+          >
+            Preview Report
+          </Button>
+          <Button
+            type="button"
+            variant="contained"
+            onClick={handleComprehensivePDF}
+            sx={{
+              background: '#fff',
+              color: '#06A19B',
+              fontWeight: 600,
+              padding: '8px 20px',
+              width: 'fit-content',
+              textTransform: 'capitalize',
+              borderRadius: '8px',
+              border: '1px solid #06A19B',
+            }}
+          >
+            Download PDF
+          </Button>
+        </Box>
+      )}
 
       {/* New Layout: Supplier Table at Top */}
-      <Box sx={{ mb: 4 }}>
+      {!dataLoading && (
+        <Box sx={{ mb: 4 }}>
         <Paper
           sx={{
             overflow: 'hidden',
@@ -2481,17 +2525,19 @@ function FeedingPlanOutput() {
           </Button>
         </Box>
       </Box>
+      )}
 
       {/* New Layout: Graph on Left, Feeding Plan Table on Right */}
-      <Grid
-        container
-        spacing={4}
-        justifyContent={'space-between'}
-        alignItems={'start'}
-        sx={{
-          mb: '20px',
-        }}
-      >
+      {!dataLoading && (
+        <Grid
+          container
+          spacing={4}
+          justifyContent={'space-between'}
+          alignItems={'start'}
+          sx={{
+            mb: '20px',
+          }}
+        >
         {/* Left Side - Graph */}
         <Grid item xs={6}>
           {flatData
@@ -2609,6 +2655,7 @@ function FeedingPlanOutput() {
           </Box>
         </Grid>
       </Grid>
+      )}
     </Stack>
   );
 }

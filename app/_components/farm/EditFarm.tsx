@@ -48,17 +48,12 @@ const EditFarm = ({
   feedstores,
   feedSuppliers,
 }: Props) => {
-  console.log('farms', farms);
   const token = getCookie('auth-token');
-  console.log('token', token);
   const activeStepIndex = Number(getCookie('activeStep'));
   // const [activeStep, setActiveStep] = useState<number>(
   //   activeStepIndex !== 0 ? activeStepIndex : 0,
   // );
   const [editFarm, setEditFarm] = useState<Farm | null>(null);
-
-  console.log('editFarm', EditFarmData);
-
 const [activeStep, setActiveStep] = useState(0);
 
 useEffect(() => {

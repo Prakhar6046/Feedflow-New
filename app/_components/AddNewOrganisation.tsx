@@ -344,11 +344,6 @@ const AddNewOrganisation = ({ type, loggedUser }: Props) => {
     getORGCount();
   }, []);
 
-  // Debug useEffect to track fields changes
-  useEffect(() => {
-    console.log('Fields array changed:', fields);
-    console.log('Fields length:', fields.length);
-  }, [fields]);
 
   return (
     <Stack

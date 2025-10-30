@@ -82,7 +82,7 @@ const FeedUsageOutput: React.FC = () => {
   const [previewTitle, setPreviewTitle] = useState<string>('Print Preview');
   const [loading, setLoading] = useState(false);
   const usageTableRef = useRef<HTMLDivElement | null>(null);
-
+  const [dataLoading, setDataLoading] = useState(true);
   // Fetch organisationId
   useEffect(() => {
     const loggedUser = Cookies.get('logged-user');
@@ -99,6 +99,7 @@ const FeedUsageOutput: React.FC = () => {
   // Fetch growth models for organisation
   useEffect(() => {
     if (!organisationId) return;
+    setDataLoading(true);
     const fetchModels = async () => {
       try {
         const res = await clientSecureFetch(`/api/growth-model?organisationId=${organisationId}`);
@@ -107,6 +108,8 @@ const FeedUsageOutput: React.FC = () => {
         setGrowthModelData(data.data || []);
       } catch (error) {
         console.error('Error fetching growth model data:', error);
+      } finally {
+        setDataLoading(false);
       }
     };
     fetchModels();
@@ -310,23 +313,30 @@ const FeedUsageOutput: React.FC = () => {
 
   // Handle loading state to prevent body scrolling
   useEffect(() => {
+    let scrollY = 0;
     if (loading) {
+      scrollY = window.scrollY;
+      document.body.style.top = `-${scrollY}px`;
       document.body.style.position = 'fixed';
       document.body.style.width = '100%';
-      document.body.style.overflow = 'hidden';
     } else {
+      const storedY = document.body.style.top;
       document.body.style.position = '';
+      document.body.style.top = '';
       document.body.style.width = '';
-      document.body.style.overflow = '';
+      if (storedY) {
+        const y = parseInt(storedY.replace('px', ''), 10) * -1;
+        window.scrollTo(0, y);
+      }
     }
-
+  
     return () => {
       document.body.style.position = '';
+      document.body.style.top = '';
       document.body.style.width = '';
-      document.body.style.overflow = '';
     };
   }, [loading]);
-
+  
   // Create PDF function with pagination support and header on every page
   const createFeedUsagePDF = async () => {
     if (!filteredData.length) {
@@ -335,7 +345,8 @@ const FeedUsageOutput: React.FC = () => {
 
     const node = usageTableRef.current;
     if (!node) return;
-
+     
+    const scrollY = window.scrollY;
     setLoading(true);
 
     try {
@@ -494,6 +505,7 @@ const FeedUsageOutput: React.FC = () => {
       console.error('Error generating PDF:', error);
     } finally {
       setLoading(false);
+      window.scrollTo(0, scrollY);
     }
   };
 
@@ -501,8 +513,14 @@ const FeedUsageOutput: React.FC = () => {
   useEffect(() => {
     const data: FeedPredictionData | null = getLocalItem('feedPredictionData');
     if (!data || !Array.isArray(growthModelData) || growthModelData.length === 0) {
+      // If growth models are not loaded yet, keep loading true (managed by growth model fetch)
+      // If growth models are loaded but no data, set loading false (nothing to process)
+      if (Array.isArray(growthModelData) && growthModelData.length === 0) {
+        setDataLoading(false);
+      }
       return;
     }
+    setDataLoading(true);
 
     const customFarms: FarmOption[] = data?.productionData?.map(
       (farm: FarmGroup) => {
@@ -582,6 +600,7 @@ const FeedUsageOutput: React.FC = () => {
     if (fishGrowthData?.length) {
       setFlatData([...fishGrowthData].flat());
     }
+    setDataLoading(false);
   }, [growthModelData, setValue]);
   return (
     <Stack>
@@ -772,7 +791,11 @@ const FeedUsageOutput: React.FC = () => {
             }}
           >
             <Box ref={usageTableRef}>
-              <FeedUsageTable flatData={filteredData} feedLinks={allFeedLinks} />
+              <FeedUsageTable 
+                flatData={filteredData} 
+                feedLinks={allFeedLinks} 
+                loading={dataLoading}
+              />
             </Box>
           </Paper>
           <Box

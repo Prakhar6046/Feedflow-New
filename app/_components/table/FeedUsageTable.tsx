@@ -12,7 +12,8 @@ import { FarmsFishGrowth } from '../feedPrediction/FeedingPlan';
 
 interface FeedUsageTableProps {
   flatData: FarmsFishGrowth[];
-  feedLinks?: any[]; 
+  feedLinks?: any[];
+  loading?: boolean;
 }
 
 interface FeedAggregation {
@@ -41,6 +42,7 @@ interface FarmFeedData {
 const FeedUsageTable: React.FC<FeedUsageTableProps> = ({
   flatData,
   feedLinks = [],
+  loading = false,
 }) => {
   // Helper function to get supplier name from feedLinks
   const getSupplierName = (feedProductName: string): string => {
@@ -196,49 +198,49 @@ const FeedUsageTable: React.FC<FeedUsageTableProps> = ({
         {/* Header with dark teal background - Two row structure */}
         <TableHead>
           <TableRow sx={{ background: '#06a19b' }}>
-          <TableCell
+            <TableCell
               rowSpan={2}
-            sx={{
-              color: '#fff',
-              fontWeight: 700,
-              textAlign: 'center',
-              padding: '12px',
+              sx={{
+                color: '#fff',
+                fontWeight: 700,
+                textAlign: 'center',
+                padding: '12px',
                 border: '1px solid #fff',
-            }}
-          >
-            Farm
-          </TableCell>
-          <TableCell
+              }}
+            >
+              Farm
+            </TableCell>
+            <TableCell
               rowSpan={2}
-            sx={{
-              color: '#fff',
-              fontWeight: 700,
-              textAlign: 'center',
-              padding: '12px',
+              sx={{
+                color: '#fff',
+                fontWeight: 700,
+                textAlign: 'center',
+                padding: '12px',
                 border: '1px solid #fff',
-            }}
-          >
-            Unit
-          </TableCell>
-          <TableCell
+              }}
+            >
+              Unit
+            </TableCell>
+            <TableCell
               rowSpan={2}
-            sx={{
-              color: '#fff',
-              fontWeight: 700,
-              textAlign: 'center',
-              padding: '12px',
+              sx={{
+                color: '#fff',
+                fontWeight: 700,
+                textAlign: 'center',
+                padding: '12px',
                 border: '1px solid #fff',
-            }}
-          >
-            Supplier
-          </TableCell>
-          <TableCell
+              }}
+            >
+              Supplier
+            </TableCell>
+            <TableCell
               rowSpan={2}
-            sx={{
-              color: '#fff',
-              fontWeight: 700,
-              textAlign: 'center',
-              padding: '12px',
+              sx={{
+                color: '#fff',
+                fontWeight: 700,
+                textAlign: 'center',
+                padding: '12px',
                 border: '1px solid #fff',
               }}
             >
@@ -287,350 +289,369 @@ const FeedUsageTable: React.FC<FeedUsageTableProps> = ({
         </TableHead>
 
         <TableBody>
-          {/* Overall Total Section - Shows aggregated feed requirements across all farms */}
-          {processedData.overallTotal.feeds.map((feed, feedIndex) => (
-            <TableRow key={`overall-feed-${feedIndex}`}>
-            <TableCell
-              sx={{
-                border: '1px solid #fff',
-                background: '#fff',
-                padding: '12px',
-              }}
+          {loading ? (
+            // Loading state - show loading message
+            <TableRow>
+              <TableCell
+                colSpan={6}
+                sx={{
+                  border: '1px solid #fff',
+                  background: '#fff',
+                  padding: '40px 12px',
+                  textAlign: 'center',
+                  fontWeight: 500,
+                  fontSize: '1.2rem',
+                  color: '#666',
+                }}
               >
-                {feedIndex === 0 ? 'Total' : ''}
+                Loading data...
               </TableCell>
-            <TableCell
-              sx={{
-                border: '1px solid #fff',
-                background: '#fff',
-                padding: '12px',
-              }}
-            />
-            <TableCell
-              sx={{
-                border: '1px solid #fff',
-                background: '#fff',
-                padding: '12px',
-              }}
-            >
-                {feed.supplier}
-            </TableCell>
-            <TableCell
-              sx={{
-                border: '1px solid #fff',
-                background: '#fff',
-                padding: '12px',
-              }}
-            >
-                {feed.feedType}
-            </TableCell>
-            <TableCell
-              sx={{
-                border: '1px solid #fff',
-                background: '#fff',
-                textAlign: 'right',
-                padding: '12px',
-              }}
-            >
-                {Math.round(feed.bags)}
-            </TableCell>
-            <TableCell
-              sx={{
-                border: '1px solid #fff',
-                background: '#fff',
-                textAlign: 'right',
-                padding: '12px',
-              }}
-            >
-                {feed.kg.toFixed(2)}
-            </TableCell>
-          </TableRow>
-          ))}
-
-          {/* Overall Total Row */}
-          {processedData.overallTotal.feeds.length > 0 && (
-          <TableRow>
-            <TableCell
-              colSpan={2}
-              sx={{
-                borderLeft: '1px solid #fff',
-                borderRight: '1px solid #fff',
-                borderBottom: '1px solid #fff',
-                borderTop: '2px solid #000',
-                background: '#06A19B',
-                color: '#fff',
-                fontWeight: 700,
-                padding: '12px',
-              }}
-            >
-            </TableCell>
-            <TableCell
-              sx={{
-                borderLeft: '1px solid #fff',
-                borderRight: '1px solid #fff',
-                borderBottom: '1px solid #fff',
-                borderTop: '2px solid #000',
-                background: '#06A19B',
-                color: '#fff',
-                fontWeight: 700,
-                padding: '12px',
-              }}
-              />
-            <TableCell
-              sx={{
-                borderLeft: '1px solid #fff',
-                borderRight: '1px solid #fff',
-                borderBottom: '1px solid #fff',
-                borderTop: '2px solid #000',
-                background: '#06A19B',
-                color: '#fff',
-                fontWeight: 700,
-                padding: '12px',
-              }}
-            >
-                Total
-            </TableCell>
-            <TableCell
-              sx={{
-                borderLeft: '1px solid #fff',
-                borderRight: '1px solid #fff',
-                borderBottom: '1px solid #fff',
-                borderTop: '2px solid #000',
-                background: '#06A19B',
-                color: '#fff',
-                fontWeight: 700,
-                textAlign: 'right',
-                padding: '12px',
-              }}
-            >
-                {Math.round(processedData.overallTotal.totalBags)}
-            </TableCell>
-            <TableCell
-              sx={{
-                borderLeft: '1px solid #fff',
-                borderRight: '1px solid #fff',
-                borderBottom: '1px solid #fff',
-                borderTop: '2px solid #000',
-                background: '#06A19B',
-                color: '#fff',
-                fontWeight: 700,
-                textAlign: 'right',
-                padding: '12px',
-              }}
-            >
-                {processedData.overallTotal.totalKg.toFixed(2)}
-            </TableCell>
-          </TableRow>
-          )}
-
-          {/* Farm Sections - Iterate through each farm */}
-          {processedData.farms.map((farm) => {
-            const farmFeedTypes = getFarmFeedTypes(farm);
-
-            return farm.units.map((unit, unitIndex) => {
-              const isFirstUnit = unitIndex === 0;
-
-              return (
-                <React.Fragment key={`farm-${farm.farmId}-unit-${unit.unitId}`}>
-                  {/* Feed rows for this unit */}
-                  {unit.feedData.map((feed, feedIndex) => {
-                    const isFirstFeed = feedIndex === 0;
-
-                    return (
-                      <TableRow key={`farm-${farm.farmId}-unit-${unit.unitId}-feed-${feedIndex}`}>
-                        {/* Farm name cell (only on first row of first unit) */}
-                        {isFirstUnit && isFirstFeed && (
-            <TableCell
-                            rowSpan={getFarmRowSpan(farm)}
-              sx={{
-                border: '1px solid #fff',
-                background: '#fff',
-                fontWeight: 600,
-                verticalAlign: 'top',
-                padding: '12px',
-              }}
-            >
-                            {farm.farmName}
-            </TableCell>
-                        )}
-
-                        {/* Unit name cell (only on first feed row of each unit) */}
-                        {isFirstFeed && (
-            <TableCell
-                            rowSpan={getUnitRowSpan(unit)}
-              sx={{
-                border: '1px solid #fff',
-                background: '#fff',
-                fontWeight: 600,
-                verticalAlign: 'top',
-                padding: '12px',
-              }}
-            >
-                            {unit.unitName}
-            </TableCell>
-                        )}
-
-                        {/* Feed data */}
-            <TableCell
-              sx={{
-                border: '1px solid #fff',
-                background: '#fff',
-                padding: '12px',
-              }}
-            >
-                          {feed.supplier}
-            </TableCell>
-            <TableCell
-              sx={{
-                border: '1px solid #fff',
-                background: '#fff',
-                padding: '12px',
-              }}
-            >
-                          {feed.feedType}
-            </TableCell>
-            <TableCell
-              sx={{
-                border: '1px solid #fff',
-                background: '#fff',
-                textAlign: 'right',
-                padding: '12px',
-              }}
-            >
-                          {Math.round(feed.bags)}
-            </TableCell>
-            <TableCell
-              sx={{
-                border: '1px solid #fff',
-                background: '#fff',
-                textAlign: 'right',
-                padding: '12px',
-              }}
-            >
-                          {feed.kg.toFixed(2)}
-            </TableCell>
-          </TableRow>
-                    );
-                  })}
-
-                  {/* Unit Total Row */}
-          <TableRow>
-            <TableCell
-              colSpan={2}
-              sx={{
-                border: '1px solid #fff',
-                background: '#06A19B',
-                color: '#fff',
-                fontWeight: 700,
-                textAlign: 'right',
-                padding: '12px',
-              }}
-            >
-              Total
-            </TableCell>
-            <TableCell
-              sx={{
-                border: '1px solid #fff',
-                background: '#06A19B',
-                color: '#fff',
-                fontWeight: 700,
-                textAlign: 'right',
-                padding: '12px',
-              }}
-            >
-                      {Math.round(unit.totalBags)}
-            </TableCell>
-            <TableCell
-              sx={{
-                border: '1px solid #fff',
-                background: '#06A19B',
-                color: '#fff',
-                fontWeight: 700,
-                textAlign: 'right',
-                padding: '12px',
-              }}
-            >
-                      {unit.totalKg.toFixed(2)}
-            </TableCell>
-          </TableRow>
-
-                  {/* Farm Total Section - Show after last unit */}
-                  {unitIndex === farm.units.length - 1 && (
-                    <>
-                      {farmFeedTypes.map((feed, feedIndex) => (
-                        <TableRow key={`farm-${farm.farmId}-total-feed-${feedIndex}`}>
-            <TableCell
-              colSpan={2}
-              sx={{
-                border: '1px solid #fff',
-                background: '#fff',
-                padding: '12px',
-              }}
-            >
-                            {feedIndex === 0 ? 'Total' : ''}
-            </TableCell>
-            <TableCell
-              sx={{
-                border: '1px solid #fff',
-                background: '#fff',
-                padding: '12px',
-              }}
-            >
-                            {feed.feedType}
-            </TableCell>
-            <TableCell
-              sx={{
-                border: '1px solid #fff',
-                background: '#fff',
-                textAlign: 'right',
-                padding: '12px',
-              }}
-            >
-                            {Math.round(feed.bags)}
-            </TableCell>
-            <TableCell
-              sx={{
-                border: '1px solid #fff',
-                background: '#fff',
-                textAlign: 'right',
-                padding: '12px',
-              }}
-            >
-                            {feed.kg.toFixed(2)}
+            </TableRow>
+          ) : (
+            <>              {/* Overall Total Section - Shows aggregated feed requirements across all farms */}
+              {processedData.overallTotal.feeds.map((feed, feedIndex) => (
+                <TableRow key={`overall-feed-${feedIndex}`}>
+                  <TableCell
+                    sx={{
+                      border: '1px solid #fff',
+                      background: '#fff',
+                      padding: '12px',
+                    }}
+                  >
+                    {feedIndex === 0 ? 'Total' : ''}
                   </TableCell>
-          </TableRow>
-                      ))}
+                  <TableCell
+                    sx={{
+                      border: '1px solid #fff',
+                      background: '#fff',
+                      padding: '12px',
+                    }}
+                  />
+                  <TableCell
+                    sx={{
+                      border: '1px solid #fff',
+                      background: '#fff',
+                      padding: '12px',
+                    }}
+                  >
+                    {feed.supplier}
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      border: '1px solid #fff',
+                      background: '#fff',
+                      padding: '12px',
+                    }}
+                  >
+                    {feed.feedType}
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      border: '1px solid #fff',
+                      background: '#fff',
+                      textAlign: 'right',
+                      padding: '12px',
+                    }}
+                  >
+                    {Math.round(feed.bags)}
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      border: '1px solid #fff',
+                      background: '#fff',
+                      textAlign: 'right',
+                      padding: '12px',
+                    }}
+                  >
+                    {feed.kg.toFixed(2)}
+                  </TableCell>
+                </TableRow>
+              ))}
 
-                      {/* Farm Total Row */}
-          <TableRow>
-            <TableCell
-              colSpan={2}
-              sx={{
-                borderLeft: '1px solid #fff',
-                borderRight: '1px solid #fff',
-                borderBottom: '1px solid #fff',
-                borderTop: '2px solid #000',
-                background: '#06A19B',
-                color: '#fff',
-                fontWeight: 700,
-                padding: '12px',
-              }}
-                        />
-            <TableCell
-              sx={{
-                borderLeft: '1px solid #fff',
-                borderRight: '1px solid #fff',
-                borderBottom: '1px solid #fff',
-                borderTop: '2px solid #000',
-                background: '#06A19B',
-                color: '#fff',
-                fontWeight: 700,
-                padding: '12px',
-              }}
-            >
+              {/* Overall Total Row */}
+              {processedData.overallTotal.feeds.length > 0 && (
+                <TableRow>
+                  <TableCell
+                    colSpan={2}
+                    sx={{
+                      borderLeft: '1px solid #fff',
+                      borderRight: '1px solid #fff',
+                      borderBottom: '1px solid #fff',
+                      borderTop: '2px solid #000',
+                      background: '#06A19B',
+                      color: '#fff',
+                      fontWeight: 700,
+                      padding: '12px',
+                    }}
+                  >
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      borderLeft: '1px solid #fff',
+                      borderRight: '1px solid #fff',
+                      borderBottom: '1px solid #fff',
+                      borderTop: '2px solid #000',
+                      background: '#06A19B',
+                      color: '#fff',
+                      fontWeight: 700,
+                      padding: '12px',
+                    }}
+                  />
+                  <TableCell
+                    sx={{
+                      borderLeft: '1px solid #fff',
+                      borderRight: '1px solid #fff',
+                      borderBottom: '1px solid #fff',
+                      borderTop: '2px solid #000',
+                      background: '#06A19B',
+                      color: '#fff',
+                      fontWeight: 700,
+                      padding: '12px',
+                    }}
+                  >
+                    Total
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      borderLeft: '1px solid #fff',
+                      borderRight: '1px solid #fff',
+                      borderBottom: '1px solid #fff',
+                      borderTop: '2px solid #000',
+                      background: '#06A19B',
+                      color: '#fff',
+                      fontWeight: 700,
+                      textAlign: 'right',
+                      padding: '12px',
+                    }}
+                  >
+                    {Math.round(processedData.overallTotal.totalBags)}
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      borderLeft: '1px solid #fff',
+                      borderRight: '1px solid #fff',
+                      borderBottom: '1px solid #fff',
+                      borderTop: '2px solid #000',
+                      background: '#06A19B',
+                      color: '#fff',
+                      fontWeight: 700,
+                      textAlign: 'right',
+                      padding: '12px',
+                    }}
+                  >
+                    {processedData.overallTotal.totalKg.toFixed(2)}
+                  </TableCell>
+                </TableRow>
+              )}
+
+              {/* Farm Sections - Iterate through each farm */}
+              {processedData.farms.map((farm) => {
+                const farmFeedTypes = getFarmFeedTypes(farm);
+
+                return farm.units.map((unit, unitIndex) => {
+                  const isFirstUnit = unitIndex === 0;
+
+                  return (
+                    <React.Fragment key={`farm-${farm.farmId}-unit-${unit.unitId}`}>
+                      {/* Feed rows for this unit */}
+                      {unit.feedData.map((feed, feedIndex) => {
+                        const isFirstFeed = feedIndex === 0;
+
+                        return (
+                          <TableRow key={`farm-${farm.farmId}-unit-${unit.unitId}-feed-${feedIndex}`}>
+                            {/* Farm name cell (only on first row of first unit) */}
+                            {isFirstUnit && isFirstFeed && (
+                              <TableCell
+                                rowSpan={getFarmRowSpan(farm)}
+                                sx={{
+                                  border: '1px solid #fff',
+                                  background: '#fff',
+                                  fontWeight: 600,
+                                  verticalAlign: 'top',
+                                  padding: '12px',
+                                }}
+                              >
+                                {farm.farmName}
+                              </TableCell>
+                            )}
+
+                            {/* Unit name cell (only on first feed row of each unit) */}
+                            {isFirstFeed && (
+                              <TableCell
+                                rowSpan={getUnitRowSpan(unit)}
+                                sx={{
+                                  border: '1px solid #fff',
+                                  background: '#fff',
+                                  fontWeight: 600,
+                                  verticalAlign: 'top',
+                                  padding: '12px',
+                                }}
+                              >
+                                {unit.unitName}
+                              </TableCell>
+                            )}
+
+                            {/* Feed data */}
+                            <TableCell
+                              sx={{
+                                border: '1px solid #fff',
+                                background: '#fff',
+                                padding: '12px',
+                              }}
+                            >
+                              {feed.supplier}
+                            </TableCell>
+                            <TableCell
+                              sx={{
+                                border: '1px solid #fff',
+                                background: '#fff',
+                                padding: '12px',
+                              }}
+                            >
+                              {feed.feedType}
+                            </TableCell>
+                            <TableCell
+                              sx={{
+                                border: '1px solid #fff',
+                                background: '#fff',
+                                textAlign: 'right',
+                                padding: '12px',
+                              }}
+                            >
+                              {Math.round(feed.bags)}
+                            </TableCell>
+                            <TableCell
+                              sx={{
+                                border: '1px solid #fff',
+                                background: '#fff',
+                                textAlign: 'right',
+                                padding: '12px',
+                              }}
+                            >
+                              {feed.kg.toFixed(2)}
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
+
+                      {/* Unit Total Row */}
+                      <TableRow>
+                        <TableCell
+                          colSpan={2}
+                          sx={{
+                            border: '1px solid #fff',
+                            background: '#06A19B',
+                            color: '#fff',
+                            fontWeight: 700,
+                            textAlign: 'right',
+                            padding: '12px',
+                          }}
+                        >
                           Total
-            </TableCell>
-                        {/* <TableCell
+                        </TableCell>
+                        <TableCell
+                          sx={{
+                            border: '1px solid #fff',
+                            background: '#06A19B',
+                            color: '#fff',
+                            fontWeight: 700,
+                            textAlign: 'right',
+                            padding: '12px',
+                          }}
+                        >
+                          {Math.round(unit.totalBags)}
+                        </TableCell>
+                        <TableCell
+                          sx={{
+                            border: '1px solid #fff',
+                            background: '#06A19B',
+                            color: '#fff',
+                            fontWeight: 700,
+                            textAlign: 'right',
+                            padding: '12px',
+                          }}
+                        >
+                          {unit.totalKg.toFixed(2)}
+                        </TableCell>
+                      </TableRow>
+
+                      {/* Farm Total Section - Show after last unit */}
+                      {unitIndex === farm.units.length - 1 && (
+                        <>
+                          {farmFeedTypes.map((feed, feedIndex) => (
+                            <TableRow key={`farm-${farm.farmId}-total-feed-${feedIndex}`}>
+                              <TableCell
+                                colSpan={2}
+                                sx={{
+                                  border: '1px solid #fff',
+                                  background: '#fff',
+                                  padding: '12px',
+                                }}
+                              >
+                                {feedIndex === 0 ? 'Total' : ''}
+                              </TableCell>
+                              <TableCell
+                                sx={{
+                                  border: '1px solid #fff',
+                                  background: '#fff',
+                                  padding: '12px',
+                                }}
+                              >
+                                {feed.feedType}
+                              </TableCell>
+                              <TableCell
+                                sx={{
+                                  border: '1px solid #fff',
+                                  background: '#fff',
+                                  textAlign: 'right',
+                                  padding: '12px',
+                                }}
+                              >
+                                {Math.round(feed.bags)}
+                              </TableCell>
+                              <TableCell
+                                sx={{
+                                  border: '1px solid #fff',
+                                  background: '#fff',
+                                  textAlign: 'right',
+                                  padding: '12px',
+                                }}
+                              >
+                                {feed.kg.toFixed(2)}
+                              </TableCell>
+                            </TableRow>
+                          ))}
+
+                          {/* Farm Total Row */}
+                          <TableRow>
+                            <TableCell
+                              colSpan={2}
+                              sx={{
+                                borderLeft: '1px solid #fff',
+                                borderRight: '1px solid #fff',
+                                borderBottom: '1px solid #fff',
+                                borderTop: '2px solid #000',
+                                background: '#06A19B',
+                                color: '#fff',
+                                fontWeight: 700,
+                                padding: '12px',
+                              }}
+                            />
+                            <TableCell
+                              sx={{
+                                borderLeft: '1px solid #fff',
+                                borderRight: '1px solid #fff',
+                                borderBottom: '1px solid #fff',
+                                borderTop: '2px solid #000',
+                                background: '#06A19B',
+                                color: '#fff',
+                                fontWeight: 700,
+                                padding: '12px',
+                              }}
+                            >
+                              Total
+                            </TableCell>
+                            {/* <TableCell
                           sx={{
                             borderLeft: '1px solid #fff',
                             borderRight: '1px solid #fff',
@@ -642,44 +663,46 @@ const FeedUsageTable: React.FC<FeedUsageTableProps> = ({
                             padding: '12px',
                           }}
                         /> */}
-            <TableCell
-              sx={{
-                borderLeft: '1px solid #fff',
-                borderRight: '1px solid #fff',
-                borderBottom: '1px solid #fff',
-                borderTop: '2px solid #000',
-                background: '#06A19B',
-                color: '#fff',
-                fontWeight: 700,
-                textAlign: 'right',
-                padding: '12px',
-              }}
-            >
-                          {Math.round(farm.totalBags)}
-            </TableCell>
-            <TableCell
-              sx={{
-                borderLeft: '1px solid #fff',
-                borderRight: '1px solid #fff',
-                borderBottom: '1px solid #fff',
-                borderTop: '2px solid #000',
-                background: '#06A19B',
-                color: '#fff',
-                fontWeight: 700,
-                textAlign: 'right',
-                padding: '12px',
-              }}
-            >
-                          {farm.totalKg.toFixed(2)}
-            </TableCell>
-          </TableRow>
-                    </>
-                  )}
+                            <TableCell
+                              sx={{
+                                borderLeft: '1px solid #fff',
+                                borderRight: '1px solid #fff',
+                                borderBottom: '1px solid #fff',
+                                borderTop: '2px solid #000',
+                                background: '#06A19B',
+                                color: '#fff',
+                                fontWeight: 700,
+                                textAlign: 'right',
+                                padding: '12px',
+                              }}
+                            >
+                              {Math.round(farm.totalBags)}
+                            </TableCell>
+                            <TableCell
+                              sx={{
+                                borderLeft: '1px solid #fff',
+                                borderRight: '1px solid #fff',
+                                borderBottom: '1px solid #fff',
+                                borderTop: '2px solid #000',
+                                background: '#06A19B',
+                                color: '#fff',
+                                fontWeight: 700,
+                                textAlign: 'right',
+                                padding: '12px',
+                              }}
+                            >
+                              {farm.totalKg.toFixed(2)}
+                            </TableCell>
+                          </TableRow>
+                        </>
+                      )}
 
-                </React.Fragment>
-              );
-            });
-          })}
+                    </React.Fragment>
+                  );
+                });
+              })}
+            </>
+          )}
         </TableBody>
       </Table>
     </Box>

@@ -74,7 +74,6 @@ const ProductionUnits: NextPage<Props> = ({
   feedSuppliers,
 }) => {
   uuidv4();
-  console.log('editFarm in production unit', editFarm);
   const dispatch = useAppDispatch();
   const isEditFarm = getCookie('isEditFarm');
   const userData = getCookie('logged-user');
@@ -248,10 +247,6 @@ const ProductionUnits: NextPage<Props> = ({
 
   const onSubmit: SubmitHandler<ProductionUnitsFormTypes> = async (data) => {
     const farmData = getLocalItem('farmData');
-    console.log('farmData in production units', farmData);
-    console.log('farmData.managerId:', farmData?.managerId);
-    console.log('editFarm in production units', editFarm);
-    console.log('isEditFarm:', isEditFarm);
     const farmPredictionValues = getLocalItem('productionParametes');
     const productionParamtertsUnitsArrayLocal = getLocalItem(
       'productionParamtertsUnitsArray',
@@ -335,7 +330,6 @@ const ProductionUnits: NextPage<Props> = ({
           isEditFarm === 'true' &&
           editFarm?.id
         ) {
-          console.log('+++++++++++++')
           payload = {
             productionParameter: {
               ...farmPredictionValues,
@@ -459,10 +453,6 @@ const ProductionUnits: NextPage<Props> = ({
         }
      
         if (Object.keys(payload).length && payload.name) {
-          console.log('Final payload managerId:', payload.managerId);
-          console.log('Final payload type:', typeof payload.managerId);
-          console.log('Final payload managerId array:', Array.isArray(payload.managerId));
-          
           const response = await clientSecureFetch(
             `${isEditFarm === 'true'
               ? '/api/farm/edit-farm'
