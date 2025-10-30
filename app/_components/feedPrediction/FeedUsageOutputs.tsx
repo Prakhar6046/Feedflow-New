@@ -179,8 +179,8 @@ const FeedUsageOutput: React.FC = () => {
 
       if (exactMatches.length > 1) {
         // If 2+ matches found → use the one with selectedFarms field that includes the current farm
-        const farmScoped = exactMatches.find((gm) => 
-          Array.isArray(gm.selectedFarms) && 
+        const farmScoped = exactMatches.find((gm) =>
+          Array.isArray(gm.selectedFarms) &&
           gm.selectedFarms.some((sf: any) => sf.farmId === farm?.id)
         );
         if (farmScoped) return farmScoped;
@@ -189,22 +189,22 @@ const FeedUsageOutput: React.FC = () => {
 
       // Step 2: If no exact matches → try species-only matches first, then default
       const speciesMatches = growthModelData.filter((gm) => gm.models.specieId === speciesId);
-      
+
       if (speciesMatches.length === 1) {
         return speciesMatches[0];
       }
-      
+
       if (speciesMatches.length > 1) {
         // Multiple species matches - prefer farm-scoped, then default
-        const farmScoped = speciesMatches.find((gm) => 
-          Array.isArray(gm.selectedFarms) && 
+        const farmScoped = speciesMatches.find((gm) =>
+          Array.isArray(gm.selectedFarms) &&
           gm.selectedFarms.some((sf: any) => sf.farmId === farm?.id)
         );
         if (farmScoped) return farmScoped;
-        
+
         const speciesDefault = speciesMatches.find((gm) => gm.isDefault);
         if (speciesDefault) return speciesDefault;
-        
+
         return speciesMatches[0];
       }
 
@@ -329,14 +329,14 @@ const FeedUsageOutput: React.FC = () => {
         window.scrollTo(0, y);
       }
     }
-  
+
     return () => {
       document.body.style.position = '';
       document.body.style.top = '';
       document.body.style.width = '';
     };
   }, [loading]);
-  
+
   // Create PDF function with pagination support and header on every page
   const createFeedUsagePDF = async () => {
     if (!filteredData.length) {
@@ -345,7 +345,7 @@ const FeedUsageOutput: React.FC = () => {
 
     const node = usageTableRef.current;
     if (!node) return;
-     
+
     const scrollY = window.scrollY;
     setLoading(true);
 
@@ -533,7 +533,7 @@ const FeedUsageOutput: React.FC = () => {
     setFarmOptions(customFarms);
     setSelectedDropDownfarms(customFarms);
     setValue('adjustmentFactor', data.adjustmentFactor);
-    
+
     const fishGrowthData = data?.productionData?.map((production) =>
       production.units.map((unit) => {
         const formattedDate = dayjs(data?.startDate).format('YYYY-MM-DD');
@@ -542,9 +542,9 @@ const FeedUsageOutput: React.FC = () => {
           'day',
         );
         setValue('period', diffInDays);
-        
+
         const gm = selectGrowthModelForUnit(unit?.farm || production?.units?.[0]?.farm, unit);
-        
+
         return {
           farm: unit.farm.name || '',
           farmId: unit?.farm?.id || '',
@@ -553,25 +553,25 @@ const FeedUsageOutput: React.FC = () => {
           fishGrowthData: data?.species === 'Rainbow Trout'
             ? calculateFishGrowthRainBowTrout(
               gm,
-                Number(data?.fishWeight ?? 0),
-                data?.tempSelection === 'default'
-                  ? Number(unit?.waterTemp ?? 25) 
-                  : Number(data?.temp ?? 25), 
-                Number(unit.fishCount ?? 0),
-                Number(data.adjustmentFactor),
-                Number(diffInDays),
-                formattedDate,
-                data?.timeInterval ?? 1,
-                unit,
-                Number(data?.wasteFactor ?? 3),
-              )
+              Number(data?.fishWeight ?? 0),
+              data?.tempSelection === 'default'
+                ? Number(unit?.waterTemp ?? 25)
+                : Number(data?.temp ?? 25),
+              Number(unit.fishCount ?? 0),
+              Number(data.adjustmentFactor),
+              Number(diffInDays),
+              formattedDate,
+              data?.timeInterval ?? 1,
+              unit,
+              Number(data?.wasteFactor ?? 3),
+            )
             : data?.species === 'African Catfish'
-            ? calculateFishGrowthAfricanCatfish(
-              gm,
+              ? calculateFishGrowthAfricanCatfish(
+                gm,
                 Number(data?.fishWeight ?? 0),
                 data?.tempSelection === 'default'
                   ? Number(unit?.waterTemp ?? 25)
-                  : Number(data?.temp ?? 25), 
+                  : Number(data?.temp ?? 25),
                 Number(unit.fishCount ?? 0),
                 Number(data.adjustmentFactor),
                 Number(diffInDays),
@@ -580,12 +580,12 @@ const FeedUsageOutput: React.FC = () => {
                 unit,
                 Number(data?.wasteFactor ?? 3),
               )
-            : calculateFishGrowthTilapia(
-              gm,
+              : calculateFishGrowthTilapia(
+                gm,
                 Number(data?.fishWeight ?? 0),
                 data?.tempSelection === 'default'
-                  ? Number(unit?.waterTemp ?? 25) 
-                  : Number(data?.temp ?? 25), 
+                  ? Number(unit?.waterTemp ?? 25)
+                  : Number(data?.temp ?? 25),
                 Number(unit.fishCount ?? 0),
                 Number(data.adjustmentFactor),
                 Number(diffInDays),
@@ -610,7 +610,7 @@ const FeedUsageOutput: React.FC = () => {
         html={previewHtml}
         onClose={() => setPreviewOpen(false)}
       />
-      
+
       <Box mb={5}>
         <Grid container spacing={2} mt={1}>
           <Grid
@@ -673,9 +673,8 @@ const FeedUsageOutput: React.FC = () => {
             <Box sx={{ width: '100%' }}>
               <FormControl
                 fullWidth
-                className={`form-input ${
-                  selectedDropDownfarms?.length >= 1 && 'selected'
-                }`}
+                className={`form-input ${selectedDropDownfarms?.length >= 1 && 'selected'
+                  }`}
                 focused
               >
                 <InputLabel
@@ -763,6 +762,7 @@ const FeedUsageOutput: React.FC = () => {
                 sx={{
                   width: '100%',
                 }}
+                defaultValue="0"
               />
               <Typography
                 variant="body1"
@@ -791,9 +791,9 @@ const FeedUsageOutput: React.FC = () => {
             }}
           >
             <Box ref={usageTableRef}>
-              <FeedUsageTable 
-                flatData={filteredData} 
-                feedLinks={allFeedLinks} 
+              <FeedUsageTable
+                flatData={filteredData}
+                feedLinks={allFeedLinks}
                 loading={dataLoading}
               />
             </Box>
