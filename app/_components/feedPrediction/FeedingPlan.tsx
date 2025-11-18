@@ -28,6 +28,8 @@ interface Props {
   productionData: FarmGroup[] | undefined;
   startDate: string;
   endDate: string;
+  canEdit?: boolean;
+  canView?: boolean;
 }
 interface FormInputs {
   startDate: string;
@@ -75,7 +77,7 @@ export const tempSelectionOptions = [
     value: 'new',
   },
 ];
-function FeedingPlan({ productionData, startDate, endDate }: Props) {
+function FeedingPlan({ productionData, startDate, endDate, canEdit, canView }: Props) {
   const router = useRouter();
   const selectedDropDownfarms = useAppSelector(selectSelectedFarms);
   const selectedAverage = useAppSelector(selectSelectedAverage);
@@ -198,6 +200,12 @@ function FeedingPlan({ productionData, startDate, endDate }: Props) {
     }
   }, [selectedDropDownfarms, productionData, selectedAverage, setValue]);
   const onSubmit: SubmitHandler<FormInputs> = (data) => {
+    // Prevent submission if user doesn't have edit permission
+    if (!canEdit) {
+      toast.error('You do not have permission to generate feed predictions.');
+      return;
+    }
+    
     // const formattedDate = dayjs(startDate).format('YYYY-MM-DD');
     // const diffInDays = dayjs(endDate).diff(dayjs(startDate), 'day');
     if (!selectedDropDownfarms?.length) {
@@ -582,23 +590,25 @@ function FeedingPlan({ productionData, startDate, endDate }: Props) {
             justifyContent: 'end',
           }}
         >
-          <Button
-            type="submit"
-            variant="contained"
-            sx={{
-              background: '#06A19B',
-              fontWeight: 600,
-              padding: '6px 16px',
-              width: 'fit-content',
-              textTransform: 'capitalize',
-              borderRadius: '8px',
-              marginLeft: 'auto',
-              display: 'block',
-              my: 3,
-            }}
-          >
-            Generate
-          </Button>
+          {canEdit && (
+            <Button
+              type="submit"
+              variant="contained"
+              sx={{
+                background: '#06A19B',
+                fontWeight: 600,
+                padding: '6px 16px',
+                width: 'fit-content',
+                textTransform: 'capitalize',
+                borderRadius: '8px',
+                marginLeft: 'auto',
+                display: 'block',
+                my: 3,
+              }}
+            >
+              Generate
+            </Button>
+          )}
         </Box>
       </form>
     </Stack>

@@ -17,11 +17,16 @@ import { useEffect, useState } from 'react';
 import { Species } from '../feedSupply/NewFeedLibarary';
 import { getCookie } from 'cookies-next';
 import { clientSecureFetch } from '@/app/_lib/clientSecureFetch';
+import { UserAccessConfig } from '@/app/_lib/constants/userAccessMatrix';
 interface Props {
   productions: Production[];
   farms: Farm[];
+  userAccess?: UserAccessConfig;
+  userRole?: string;
+  canEdit?: boolean;
+  canView?: boolean;
 }
-const FeedPredictionTable = ({ farms, productions }: Props) => {
+const FeedPredictionTable = ({ farms, productions, userAccess, userRole, canEdit, canView }: Props) => {
   const startDate = useAppSelector(selectStartDate);
   const endDate = useAppSelector(selectEndDate);
   const [adHocData, setAdHocData] = useState<FishFeedingData[]>([]);
@@ -164,11 +169,21 @@ const FeedPredictionTable = ({ farms, productions }: Props) => {
           productionData={productionData}
           startDate={startDate}
           endDate={endDate}
+          canEdit={canEdit}
+          canView={canView}
         />
       ) : selectedFeeding === 'feedingSummary' ? (
         <FeedingSummary />
       ) : (
-        <AdHoc key={selectedFeeding} data={adHocData} setData={setAdHocData} farms={farms} speciesList={speciesList} />
+        <AdHoc 
+          key={selectedFeeding} 
+          data={adHocData} 
+          setData={setAdHocData} 
+          farms={farms} 
+          speciesList={speciesList}
+          canEdit={canEdit}
+          canView={canView}
+        />
       )}
     </>
   );

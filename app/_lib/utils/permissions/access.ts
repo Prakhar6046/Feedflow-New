@@ -568,6 +568,54 @@ export const canViewFeedPrediction = (
   return accessValue === 1 || accessValue === 2 || accessValue === 3 || accessValue === 4;
 };
 
+/**
+ * Check if user can add feed prediction
+ * Level 3 or 4 required
+ * SUPERADMIN has full access
+ */
+export const canAddFeedPrediction = (
+  userAccess: UserAccessConfig | undefined,
+  userRole?: string
+): boolean => {
+  if (isSuperAdmin(userRole)) return true;
+  if (!userAccess) return false;
+  
+  const accessValue = resolveModuleAccess(userAccess, 'manage', 'feedPrediction');
+  return accessValue === 3 || accessValue === 4;
+};
+
+/**
+ * Check if user can edit feed prediction
+ * Level 2 or 4 required for their organization type (excludes level 3 - Add only)
+ * SUPERADMIN has full access
+ */
+export const canEditFeedPrediction = (
+  userAccess: UserAccessConfig | undefined,
+  userRole?: string
+): boolean => {
+  if (isSuperAdmin(userRole)) return true;
+  if (!userAccess) return false;
+  
+  const accessValue = resolveModuleAccess(userAccess, 'manage', 'feedPrediction');
+  return accessValue === 2 || accessValue === 4;
+};
+
+/**
+ * Check if user can delete feed prediction
+ * Level 4 required (full control)
+ * SUPERADMIN has full access
+ */
+export const canDeleteFeedPrediction = (
+  userAccess: UserAccessConfig | undefined,
+  userRole?: string
+): boolean => {
+  if (isSuperAdmin(userRole)) return true;
+  if (!userAccess) return false;
+  
+  const accessValue = resolveModuleAccess(userAccess, 'manage', 'feedPrediction');
+  return accessValue === 4;
+};
+
 // ==================== USERS PERMISSIONS ====================
 
 /**

@@ -109,16 +109,18 @@ export interface FishFeedingData {
   partitionedFCR: number;
   mortalityRate?: number;
   wasteFactor?: number;
-  biomass?: number | string; // Optional field for Feeding Plan
+  biomass?: number | string; 
 }
 type Iprops = {
   data: FishFeedingData[];
   setData: (val: FishFeedingData[]) => void;
   farms: Farm[];
   speciesList: Species[];
+  canEdit?: boolean;
+  canView?: boolean;
 };
 
-function AdHoc({ data, setData }: Iprops) {
+function AdHoc({ data, setData, canEdit, canView }: Iprops) {
   const [loading, setLoading] = useState(false);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewHtml, setPreviewHtml] = useState<string | null>(null);
@@ -360,6 +362,12 @@ function AdHoc({ data, setData }: Iprops) {
   };
 
   const onSubmit: SubmitHandler<FormInputs> = (data) => {
+    // Prevent submission if user doesn't have edit permission
+    if (!canEdit) {
+      toast.error('You do not have permission to generate feed predictions.');
+      return;
+    }
+    
     const formattedDate = dayjs(data.startDate).format('YYYY-MM-DD');
     const diffInDays = dayjs(data.endDate).diff(dayjs(data.startDate), 'day');
     const speciesObj = speciesList.find((s) => s.id === data.species);
@@ -2033,44 +2041,46 @@ function AdHoc({ data, setData }: Iprops) {
                   </TableBody>
                 </Table>
               </TableContainer>
-              <Box
-                display={'flex'}
-                gap={1.5}
-                justifyContent={'flex-end'}
-                mt={1.5}
-              >
-                <Button
-                  type="button"
-                  variant="contained"
-                  onClick={createFeedSummaryPDF}
-                  sx={{
-                    background: '#06A19B',
-                    color: '#fff',
-                    fontWeight: 600,
-                    padding: '6px 16px',
-                    textTransform: 'capitalize',
-                    borderRadius: '8px',
-                  }}
+              {canView && (
+                <Box
+                  display={'flex'}
+                  gap={1.5}
+                  justifyContent={'flex-end'}
+                  mt={1.5}
                 >
-                  Create PDF
-                </Button>
-                <Button
-                  type="button"
-                  variant="contained"
-                  onClick={handleFeedSummaryPreview}
-                  sx={{
-                    background: '#fff',
-                    color: '#06A19B',
-                    fontWeight: 600,
-                    padding: '6px 16px',
-                    textTransform: 'capitalize',
-                    borderRadius: '8px',
-                    border: '1px solid #06A19B',
-                  }}
-                >
-                  Print
-                </Button>
-              </Box>
+                  <Button
+                    type="button"
+                    variant="contained"
+                    onClick={createFeedSummaryPDF}
+                    sx={{
+                      background: '#06A19B',
+                      color: '#fff',
+                      fontWeight: 600,
+                      padding: '6px 16px',
+                      textTransform: 'capitalize',
+                      borderRadius: '8px',
+                    }}
+                  >
+                    Create PDF
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="contained"
+                    onClick={handleFeedSummaryPreview}
+                    sx={{
+                      background: '#fff',
+                      color: '#06A19B',
+                      fontWeight: 600,
+                      padding: '6px 16px',
+                      textTransform: 'capitalize',
+                      borderRadius: '8px',
+                      border: '1px solid #06A19B',
+                    }}
+                  >
+                    Print
+                  </Button>
+                </Box>
+              )}
             </Grid>
           </Grid>
         </Box>

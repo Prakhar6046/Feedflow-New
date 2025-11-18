@@ -3,6 +3,16 @@ import { NextPage } from 'next';
 import FeedPredictionTable from '@/app/_components/table/FeedPrediction';
 import { cookies } from 'next/headers';
 import { getFarms, getProductions } from '@/app/_lib/action';
+import { getUserAccessConfig } from '@/app/_lib/constants/userAccessMatrix';
+import { canViewFeedPrediction, canEditFeedPrediction } from '@/app/_lib/utils/permissions/access';
+import { SingleUser } from '@/app/_typeModels/User';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Feed Prediction',
+};
+export const dynamic = 'force-dynamic';
+
 const Page: NextPage = async ({
   searchParams,
 }: {
@@ -14,7 +24,13 @@ const Page: NextPage = async ({
   const loggedUser = cookieStore.get('logged-user')?.value;
   const query = searchParams?.query || '';
 
-  const user = JSON.parse(loggedUser ?? '');
+  const user: SingleUser = JSON.parse(loggedUser ?? '');
+  
+  // Get user's access configuration
+  const loggedUserOrgType = user?.organisationType || '';
+  const loggedUserType = user?.role || '';
+  const userAccess = getUserAccessConfig(loggedUserOrgType, loggedUserType);
+  
   const farms = await getFarms({
     role: user.role,
     organisationId: user.organisationId,
@@ -23,11 +39,15 @@ const Page: NextPage = async ({
   });
   const productions = await getProductions({
     role: user.role,
-    organisationId: user.organisationId,
+    organisationId: String(user.organisationId),
     query,
     noFilter: false,
-    userId: user.id,
+    userId: String(user.id),
   });
+  
+  const canView = canViewFeedPrediction(userAccess, String(user?.role));
+  const canEdit = canEditFeedPrediction(userAccess, String(user?.role));
+  
   return (
     <>
       <BasicBreadcrumbs
@@ -37,8 +57,16 @@ const Page: NextPage = async ({
           { name: 'Dashboard', link: '/dashboard' },
           { name: 'Feed Prediction', link: '/dashboard/feedPrediction' },
         ]}
+        userAccess={userAccess}
       />
-      <FeedPredictionTable farms={farms.data} productions={productions.data} />
+      <FeedPredictionTable 
+        farms={farms.data} 
+        productions={productions.data}
+        userAccess={userAccess}
+        userRole={String(user?.role)}
+        canEdit={canEdit}
+        canView={canView}
+      />
     </>
   );
 };
